@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DA435C692
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0495C35C6A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241300AbhDLMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241268AbhDLMqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:46:33 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321C4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:46:15 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j18so21199631lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=K9zFwgQThnD5eX67NpvDmwlYzeG84kCePup7Nam43iY=;
-        b=G7nI0KdFgTu9x2Gm0LgVO8BLeCpd3E53MYTduPLDoh/nAzdbUShjlY2Bq7s6wcLx6c
-         v/HzrGr9dInpgl6OIX3SjSYsR7ltPeMw+L/of9q37M+MS4OACfK9mHanwyqWo2WkPH5P
-         QfbhVfvciGXGjAprM9g4i106zLzp/2PigWVCTukRN9yhdxJYqTSamyQa/gBQiZxkMvB+
-         gOQQbnSof6Hxu5vyO/1Lvc4XRsUroCeRc+f3hmHs8j+N0ss/Ja3F3RbGMp6teocVVdSP
-         ieH/gmv1lZMO2zIy5+iIf54d+hy/5PKAYuvitDxdT27UxXJ6X9sxT3qcJCapKcicWcTC
-         IC7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=K9zFwgQThnD5eX67NpvDmwlYzeG84kCePup7Nam43iY=;
-        b=MokklcFeqj9vpgCtmK0CJ7D2dyJ6jApGbgnabtyJrnYj3QBiZIcroMG+MisUZwg56c
-         fAaPmPFBzDe2/pnfpxCkPOjBINhemylQ97jOqz6wueMcRnhEwihmv4xzaltuOyVH8b9e
-         3kOZVX/kkAtqDBLwNjm6xQ9Il6dsQqtIpdR9ZQwHN5K3uER6mHx4Su3ftTtM28tp06m8
-         sWsY9NkU5tvtnlRbVwYAnUQGNKcs3otUmFyncJPrNKK9BbdQYS1OjslbfqtQoqZN43uJ
-         XRVXEJaLQ5vrnEL85rD0sQyMCaCw7UcBtI76XKxCbIOyGcQJ5z9KqL2EXSXi2c3T2qnN
-         MXdQ==
-X-Gm-Message-State: AOAM530z1z3Zd20XsdSd3EDAguQ1DdzfMEAetGvmN5h+F+e+QU2u5pN6
-        6P/F5/wlnn9pvUFIKJnnCz2Digv5Gg+ZTQ==
-X-Google-Smtp-Source: ABdhPJzjI9GmrUK8iNW4oCMP8MXEMTbgxyK3/Sdw+SGf63/Xij/YmEw31zF4YXLxXo2MH4jCxy/Iag==
-X-Received: by 2002:a19:2387:: with SMTP id j129mr15163663lfj.478.1618231573027;
-        Mon, 12 Apr 2021 05:46:13 -0700 (PDT)
-Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
-        by smtp.gmail.com with ESMTPSA id w19sm2413556lfl.199.2021.04.12.05.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 05:46:12 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Marek Behun <marek.behun@nic.cz>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-In-Reply-To: <20210411185017.3xf7kxzzq2vefpwu@skbuf>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf>
-Date:   Mon, 12 Apr 2021 14:46:11 +0200
-Message-ID: <878s5nllgs.fsf@waldekranz.com>
+        id S241429AbhDLMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:47:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54470 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241374AbhDLMrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:47:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A676EAFEF;
+        Mon, 12 Apr 2021 12:46:53 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 14:46:52 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] kbuild: dummy-tools: Add elfedit.
+Message-ID: <20210412124652.GT6564@kitsune.suse.cz>
+References: <f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de>
+ <CAK7LNAR-zdHLpp7eQ_PUG6PQMKUKh2m0b80NGSxnxuXhjyT=3g@mail.gmail.com>
+ <20210411101829.GR6564@kitsune.suse.cz>
+ <CAK7LNASycuqb2wyizXgVs4aN33LOrxCBikLbSXs+anWJ0-SW_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNASycuqb2wyizXgVs4aN33LOrxCBikLbSXs+anWJ0-SW_Q@mail.gmail.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 21:50, Vladimir Oltean <olteanv@gmail.com> wrote:
-> On Sun, Apr 11, 2021 at 08:01:35PM +0200, Marek Behun wrote:
->> On Sat, 10 Apr 2021 15:34:46 +0200
->> Ansuel Smith <ansuelsmth@gmail.com> wrote:
->> 
->> > Hi,
->> > this is a respin of the Marek series in hope that this time we can
->> > finally make some progress with dsa supporting multi-cpu port.
->> > 
->> > This implementation is similar to the Marek series but with some tweaks.
->> > This adds support for multiple-cpu port but leave the driver the
->> > decision of the type of logic to use about assigning a CPU port to the
->> > various port. The driver can also provide no preference and the CPU port
->> > is decided using a round-robin way.
->> 
->> In the last couple of months I have been giving some thought to this
->> problem, and came up with one important thing: if there are multiple
->> upstream ports, it would make a lot of sense to dynamically reallocate
->> them to each user port, based on which user port is actually used, and
->> at what speed.
->> 
->> For example on Turris Omnia we have 2 CPU ports and 5 user ports. All
->> ports support at most 1 Gbps. Round-robin would assign:
->>   CPU port 0 - Port 0
->>   CPU port 1 - Port 1
->>   CPU port 0 - Port 2
->>   CPU port 1 - Port 3
->>   CPU port 0 - Port 4
->> 
->> Now suppose that the user plugs ethernet cables only into ports 0 and 2,
->> with 1, 3 and 4 free:
->>   CPU port 0 - Port 0 (plugged)
->>   CPU port 1 - Port 1 (free)
->>   CPU port 0 - Port 2 (plugged)
->>   CPU port 1 - Port 3 (free)
->>   CPU port 0 - Port 4 (free)
->> 
->> We end up in a situation where ports 0 and 2 share 1 Gbps bandwidth to
->> CPU, and the second CPU port is not used at all.
->> 
->> A mechanism for automatic reassignment of CPU ports would be ideal here.
->> 
->> What do you guys think?
->
-> The reason why I don't think this is such a great idea is because the
-> CPU port assignment is a major reconfiguration step which should at the
-> very least be done while the network is down, to avoid races with the
-> data path (something which this series does not appear to handle).
-> And if you allow the static user-port-to-CPU-port assignment to change
-> every time a link goes up/down, I don't think you really want to force
-> the network down through the entire switch basically.
->
-> So I'd be tempted to say 'tough luck' if all your ports are not up, and
-> the ones that are are assigned statically to the same CPU port. It's a
-> compromise between flexibility and simplicity, and I would go for
-> simplicity here. That's the most you can achieve with static assignment,
-> just put the CPU ports in a LAG if you want better dynamic load balancing
-> (for details read on below).
+On Sun, Apr 11, 2021 at 08:37:03PM +0900, Masahiro Yamada wrote:
+> On Sun, Apr 11, 2021 at 7:18 PM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Sun, Apr 11, 2021 at 03:12:40AM +0900, Masahiro Yamada wrote:
+> > > On Fri, Apr 9, 2021 at 6:31 AM Michal Suchanek <msuchanek@suse.de> wrote:
+> > > >
+> > > > elfedit is used in Makefile
+> > > >
+> > > >  Makefile:GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> > > >
+> > > > which causes this error getting printed
+> > > >
+> > > >  which: no elfedit in (./scripts/dummy-tools)
+> > >
+> > >
+> > > I am OK with this patch, but how did you reproduce it?
+> >
+> > make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
+> >
+> > it possibly depends on the config you already have, too.
+> >
+> > Thanks
+> >
+> > Michal
+> 
+> 
+> Maybey, are you working on linux-next?
+> 
+> 
+> [1]
+> $ git checkout  add74f8473^
+> $ make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
+> 
+> [2]
+> $ git checkout  add74f8473
+> $ make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
 
-I agree. Unless you only have a few really wideband flows, a LAG will
-typically do a great job with balancing. This will happen without the
-user having to do any configuration at all. It would also perform well
-in "router-on-a-stick"-setups where the incoming and outgoing port is
-the same.
+Indeed, the rust support is the cause of the issue:
 
-...
+add74f8473c5ca7d8947c760ff355df991a259bb (HEAD) Rust support
+0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b (tag: v5.12-rc4, s390/master,
+s390/linux/master) Linux 5.12-rc4
 
-> But there is something which is even more interesting about Felix with
-> the ocelot-8021q tagger. Since Marek posted his RFC and until Ansuel
-> posted the follow-up, things have happened, and now both Felix and the
-> Marvell driver support LAG offload via the bonding and/or team drivers.
-> At least for Felix, when using the ocelot-8021q tagged, it should be
-> possible to put the two CPU ports in a hardware LAG, and the two DSA
-> masters in a software LAG, and let the bond/team upper of the DSA
-> masters be the CPU port.
->
-> I would like us to keep the door open for both alternatives, and to have
-> a way to switch between static user-to-CPU port assignment, and LAG.
-> I think that if there are multiple 'ethernet = ' phandles present in the
-> device tree, DSA should populate a list of valid DSA masters, and then
-> call into the driver to allow it to select which master it prefers for
-> each user port. This is similar to what Ansuel added with 'port_get_preferred_cpu',
-> except that I chose "DSA master" and not "CPU port" for a specific reason.
-> For LAG, the DSA master would be bond0.
+While v5.12-rc4 is OK add74f8473 produces the error.
 
-I do not see why we would go through the trouble of creating a
-user-visible bond/team for this. As you detail below, it would mean
-jumping through a lot of hoops. I am not sure there is that much we can
-use from those drivers.
+There is additional issue that I noticed: dummy tools does not work
+seamlessly with O=
 
-- We know that the CPU ports are statically up, so there is no "active
-  transmit set" to manage, it always consists of all ports.
+$ make CROSS_COMPILE=$(pwd)/scripts/dummy-tools/ O=/scratch/ppc64/ V=1 ARCH=powerpc allmodconfig > /dev/null
+which: no elfedit in (/home/michal/linux-2.6/scripts/dummy-tools)
 
-- The LAG members are statically known at boot time via the DT, so we do
-  not need (or want, in fact) any management of that from userspace.
+$ make CROSS_COMPILE=scripts/dummy-tools/ O=/scratch/ppc64/ V=1 ARCH=powerpc allmodconfig > /dev/null
+which: no elfedit in (./scripts/dummy-tools)
+scripts/Kconfig.include:39: compiler 'scripts/dummy-tools/gcc' not found
+make[2]: *** [/home/michal/linux-2.6/scripts/kconfig/Makefile:63:
+allmodconfig] Error 1
+make[1]: *** [/home/michal/linux-2.6/Makefile:636: allmodconfig] Error 2
+make: *** [Makefile:222: __sub-make] Error 2
 
-We could just let the drivers setup the LAG internally, and then do the
-load-balancing in dsa_slave_xmit or provide a generic helper that the
-taggers could use.
+Perhaps linking dummy-tools into the target directory would be a good
+idea?
+
+Thanks
+
+Michal
+
