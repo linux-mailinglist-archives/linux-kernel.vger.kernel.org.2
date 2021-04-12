@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381B435BD56
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8D835BC71
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbhDLIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:51:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
+        id S237417AbhDLIm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:42:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237802AbhDLIrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70DBF61243;
-        Mon, 12 Apr 2021 08:46:56 +0000 (UTC)
+        id S237301AbhDLImx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:42:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8853A6120F;
+        Mon, 12 Apr 2021 08:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217216;
-        bh=RZ591xyVWAepXgekhNb08Ivsk/HCGGu428Z6NHr4/AM=;
+        s=korg; t=1618216956;
+        bh=ZVJTi43xZZQqiqy32/vHsa/Tjr08caIXqVoyfcHoo+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z72NHnad3HUJCUtuwVvmMhzoVQibXj3JD0JevxX0sCnoTGpv7+D44sRxFLXHdL2Fk
-         uMk9DlqHCveGPPQhoYtvlVVG2OO0G+EqqPq+9C0TzxlPQNH34/h4aNqSgYlE0T2ql6
-         SwD9Jkr3V0Vt+M1rxTu+2IZco5WSteYBHg3jiKUs=
+        b=qhO6vI0rHfNjg38oGG+sIH97WxsEfGpoIVGm1OxAvTSrMM7bdZnyxH0iMFfs288L9
+         yw0uaUv0OWGDylcvD4h8V4HdHr11AOWs6IgBHkdu3UZ19QE4VIAgK1dyWscjHSSiaL
+         AxCqrKv1Ywmcht8zQBmaMjx4IAnM9FLMtv6Ke9Xg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/111] xfrm: interface: fix ipv4 pmtu check to honor ip header df
+        stable@vger.kernel.org, Fabio Pricoco <fabio.pricoco@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 4.19 17/66] ice: Increase control queue timeout
 Date:   Mon, 12 Apr 2021 10:40:23 +0200
-Message-Id: <20210412084005.750325722@linuxfoundation.org>
+Message-Id: <20210412083958.685412029@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
+References: <20210412083958.129944265@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eyal Birger <eyal.birger@gmail.com>
+From: Fabio Pricoco <fabio.pricoco@intel.com>
 
-[ Upstream commit 8fc0e3b6a8666d656923d214e4dc791e9a17164a ]
+commit f88c529ac77b3c21819d2cf1dfcfae1937849743 upstream.
 
-Frag needed should only be sent if the header enables DF.
+250 msec timeout is insufficient for some AQ commands. Advice from FW
+team was to increase the timeout. Increase to 1 second.
 
-This fix allows packets larger than MTU to pass the xfrm interface
-and be fragmented after encapsulation, aligning behavior with
-non-interface xfrm.
-
-Fixes: f203b76d7809 ("xfrm: Add virtual xfrm interfaces")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7ec59eeac804 ("ice: Add support for control queues")
+Signed-off-by: Fabio Pricoco <fabio.pricoco@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/xfrm/xfrm_interface.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_controlq.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-index 01c65f96d283..74e90d78c3b4 100644
---- a/net/xfrm/xfrm_interface.c
-+++ b/net/xfrm/xfrm_interface.c
-@@ -302,6 +302,8 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
+--- a/drivers/net/ethernet/intel/ice/ice_controlq.h
++++ b/drivers/net/ethernet/intel/ice/ice_controlq.h
+@@ -30,8 +30,8 @@ enum ice_ctl_q {
+ 	ICE_CTL_Q_ADMIN,
+ };
  
- 			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		} else {
-+			if (!(ip_hdr(skb)->frag_off & htons(IP_DF)))
-+				goto xmit;
- 			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- 				      htonl(mtu));
- 		}
-@@ -310,6 +312,7 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
- 		return -EMSGSIZE;
- 	}
+-/* Control Queue timeout settings - max delay 250ms */
+-#define ICE_CTL_Q_SQ_CMD_TIMEOUT	2500  /* Count 2500 times */
++/* Control Queue timeout settings - max delay 1s */
++#define ICE_CTL_Q_SQ_CMD_TIMEOUT	10000 /* Count 10000 times */
+ #define ICE_CTL_Q_SQ_CMD_USEC		100   /* Check every 100usec */
  
-+xmit:
- 	xfrmi_scrub_packet(skb, !net_eq(xi->net, dev_net(dev)));
- 	skb_dst_set(skb, dst);
- 	skb->dev = tdev;
--- 
-2.30.2
-
+ struct ice_ctl_q_ring {
 
 
