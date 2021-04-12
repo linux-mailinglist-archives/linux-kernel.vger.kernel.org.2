@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7533935CA04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE38E35CA07
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242770AbhDLPgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:36:35 -0400
-Received: from mga18.intel.com ([134.134.136.126]:26609 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238352AbhDLPgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:36:32 -0400
-IronPort-SDR: bhZ94Z/eUF9NDPTns3YklvoxCceqELAraKDtAFvDZaX9hAdmwYNLTUpQrsaPKFA2ppOHN7QW3z
- hc18GlX4DdeA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181739465"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="181739465"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 08:36:13 -0700
-IronPort-SDR: cJf7K9OObX3J6F42v6XRTyTOMgYBGdgKm//Og/Eis3gfuy7SfnBK+St1KXO6p0zwLWcrZ+eOSE
- cmi2+K23D3pA==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="521230652"
-Received: from nmafzal-mobl.amr.corp.intel.com (HELO [10.209.42.102]) ([10.209.42.102])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 08:36:12 -0700
-Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
-To:     Raoul Strackx <raoul.strackx@fortanix.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <a05d07dc-1623-012c-5120-e30f64decae7@intel.com>
-Date:   Mon, 12 Apr 2021 08:36:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240372AbhDLPhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:37:01 -0400
+Received: from gateway33.websitewelcome.com ([192.185.145.239]:14447 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241983AbhDLPhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:37:00 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 7A99A15AF8EF
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:36:41 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id VycDlbcHv1cHeVycDlrjYO; Mon, 12 Apr 2021 10:36:41 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=wo8FVePTcKy/MnYBDrOcSAgwa9NyCpnEwc+w1tZVHEk=; b=Pyp3F8zt95HjMTgMT/fYuOib1m
+        PEx0LvZr7wqgu6jMWshtjI2wnuEi9WaEv+spUhDvyqy9D1MqZM13s/CWsKByq+n3cMA5Rjs9VxTUB
+        ldHqOkozdW0EB16OSrMe9qb6DW9nKSE9m0ldqXOsJyoVTZR7RMuu0kZ85qN+Ty11P9CBYIX124K5t
+        UCO3f3JpIe56GZ23Ia6FJpFUKmRX5uWqtrkNFKgoPo0pY5vx/Mf3nWVh3VphbvmWjm9C4CqGVlDhm
+        ThJix67a8Qi/hd2aYDnQHgloYhHc5SqeuuU9nGsrh5lY0szWO58H22jaSON9m6fFbFl3x0I37E3Q2
+        khuqW62w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60756 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lVycD-000zWQ-3V; Mon, 12 Apr 2021 10:36:41 -0500
+Subject: Re: [PATCH v4][next] xfs: Replace one-element arrays with
+ flexible-array members
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210412135611.GA183224@embeddedor>
+ <20210412152906.GA1075717@infradead.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <63078523-8a57-36f4-228b-1594f0e3b025@embeddedor.com>
+Date:   Mon, 12 Apr 2021 10:36:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+In-Reply-To: <20210412152906.GA1075717@infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lVycD-000zWQ-3V
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60756
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 1:59 AM, Raoul Strackx wrote:
-> This patch set adds a new ioctl to enable userspace to execute EEXTEND
-> leaf functions per 256 bytes of enclave memory. With this patch in place,
-> Linux will be able to build all valid SGXv1 enclaves.
 
-This didn't cover why we need a *NEW* ABI for this instead of relaxing
-the page alignment rules in the existing one.
 
+On 4/12/21 10:29, Christoph Hellwig wrote:
+>> Below are the results of running xfstests for "all" with the following
+>> configuration in local.config:
+> 
+> ...
+> 
+>> Other tests might need to be run in order to verify everything is working
+>> as expected. For such tests, the intervention of the maintainers might be
+>> needed.
+> 
+> This is a little weird for a commit log.  If you want to show results
+> this would be something that goes into a cover letter.
+> 
+>> +/*
+>> + * Calculates the size of structure xfs_efi_log_format followed by an
+>> + * array of n number of efi_extents elements.
+>> + */
+>> +static inline size_t
+>> +sizeof_efi_log_format(size_t n)
+>> +{
+>> +	return struct_size((struct xfs_efi_log_format *)0, efi_extents, n);
+> 
+> These helpers are completely silly.  Just keep the existing open code
+> version using sizeof with the one-off removed.
+
+This was proposed by Darrick[1]. However, I'm curious, why do you think
+they are "completely silly"?
+
+> 
+>> -					(sizeof(struct xfs_efd_log_item) +
+>> -					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
+>> -					sizeof(struct xfs_extent)),
+>> -					0, 0, NULL);
+>> +					 struct_size((struct xfs_efd_log_item *)0,
+>> +					 efd_format.efd_extents,
+>> +					 XFS_EFD_MAX_FAST_EXTENTS),
+>> +					 0, 0, NULL);
+>>  	if (!xfs_efd_zone)
+>>  		goto out_destroy_buf_item_zone;
+>>  
+>>  	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
+>> -					 (sizeof(struct xfs_efi_log_item) +
+>> -					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
+>> -					 sizeof(struct xfs_extent)),
+>> +					 struct_size((struct xfs_efi_log_item *)0,
+>> +					 efi_format.efi_extents,
+>> +					 XFS_EFI_MAX_FAST_EXTENTS),
+> 
+> Same here.  And this obsfucated version also adds completely pointless
+> overly long lines while making the code unreadable.
+
+This could actually use one of the inline helpers you think are silly. :)
+
+Thanks
+--
+Gustavo
+
+[1] https://lore.kernel.org/lkml/20210311031745.GT3419940@magnolia/
