@@ -2,93 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDF535C7EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D82535C7EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241958AbhDLNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:48:30 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:44114 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237043AbhDLNs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:48:28 -0400
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cx6cl7T3RgBzQHAA--.13657S3;
-        Mon, 12 Apr 2021 21:47:39 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <0a09783b-7522-5cf2-9014-39783aaacbdc@loongson.cn>
-Date:   Mon, 12 Apr 2021 21:47:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S239854AbhDLNsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:48:53 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:38655 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237043AbhDLNsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:48:51 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MWAjC-1l3sDU3zAo-00XfTX for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021
+ 15:48:30 +0200
+Received: by mail-wr1-f53.google.com with SMTP id w4so9275959wrt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 06:48:30 -0700 (PDT)
+X-Gm-Message-State: AOAM531ammDz68nLX8+eac9wEti1wSyYCAuRhopdSqimRd62DagGdMcu
+        1SIoPowNwpyXu58jZbKJXq0MSOmob1N1l872Qj0=
+X-Google-Smtp-Source: ABdhPJzRKsuHD0/zPPicEoAxxZxBRdHEuIhju2Sjyhs6U3CtpsN5iiGtWexs/UH9JtENKAiPv0Fc8B0whXOW4BsN5Zc=
+X-Received: by 2002:a5d:6a11:: with SMTP id m17mr32604882wru.361.1618235310703;
+ Mon, 12 Apr 2021 06:48:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Cx6cl7T3RgBzQHAA--.13657S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw17XFWxCFWUAF4ktw1UKFg_yoW8GrykpF
-        s5Aa1kGF4DKryfAasFyrWUXFy5Gws8Gr1F93y7Kr1kZF4qq3W3tr4Skr1qv3yxJFZaka4x
-        uFyftrn5uw1jv3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26F4j6r4UJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y
-        6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07brUUbUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+References: <20210216074929.29033-1-patrice.chotard@foss.st.com>
+ <1cd91834-6df8-a655-a3b1-0e16f5fe470d@foss.st.com> <52c32145-7f29-8944-58dc-dc2fb406ffb0@foss.st.com>
+In-Reply-To: <52c32145-7f29-8944-58dc-dc2fb406ffb0@foss.st.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Apr 2021 15:48:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1upDuztHd0pH_dM+OpMp8WtiMPAZN8p=9xxtCSVJGZMw@mail.gmail.com>
+Message-ID: <CAK8P3a1upDuztHd0pH_dM+OpMp8WtiMPAZN8p=9xxtCSVJGZMw@mail.gmail.com>
+Subject: Re: [Linux-stm32] [RESEND PATCH 0/3] MAINTAINERS: update
+ STMicroelectronics email
+To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SoC Team <soc@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:CNjKl+DGou3v4BG3VP5H3JCzKEpI4DZ9gDb5LCskRse0m5fX8VE
+ sTWvxGAq6f74t8GCfBOYDz+H6Q/zVz8/pQdqcNbpRrkNlxgA7PPvY7QWx/l2YpPfX3vB6nT
+ GGEBnweEP1ylEzONPSDzxSZMdrJi6H07e+QHdpBYN4v+twu9YrqXIWyLdzWErlmfx/rd/cw
+ gXUHuvTnVain8vzPIDtaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZMe/dcY9Ciw=:QlrR9o4mMCu6RCe73ytn7+
+ FlVHSB8QiJ0pWJsNOKfi7j+Pv7VZHSVRU7/xAaqX3L+w1ncGEqUm6fniSVlt78+n7/kbCUL4J
+ SGT0NeSstVEG//uCTywtE8fq3+jhg2PkwdobyA9mvOaagZVVKoB03WTnSt2I2yW+ssO0UCs2d
+ 0kviFrIIjn5n4L4C/c1OoA9pzRDl2yiDf2jWIj+m6L+OVRRPBURgjIBHxI7b9RK+M8IhZeZ4A
+ iWY42nbmnEf17/YwGACBr+x4XJreP7iZDp6XXyWZcaslXl04p7Mo4CxQ7ijBnR8Ggo6Fmw1v+
+ carKfcbMV3ULtU/OlfVo0lqjqbbbIB01jUJvGLXFcuC/i5e5/NCBmv4Fe16VuF9mSGUfCaDm/
+ kyHRTWDEkNjxdtKglz4WAHboOwSYpO1M3AMnU9ORIr62EVHj5fR2PZTs02M2PU7hEXp1JGhv2
+ T8VTJGkFMvu8ZlpvqTrBS6ZIAxuAViQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2021 07:04 PM, Jinyang He wrote:
-> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
-> strnlen_user(). Jump out when checking access_ok() with condition that
-> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
-> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
-> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+On Mon, Apr 12, 2021 at 12:19 PM Patrice CHOTARD
+<patrice.chotard@foss.st.com> wrote:
 >
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->   arch/mips/include/asm/uaccess.h | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
+> Hi
 >
-> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-> index 91bc7fb..85ba0c8 100644
-> --- a/arch/mips/include/asm/uaccess.h
-> +++ b/arch/mips/include/asm/uaccess.h
-> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
->   {
->   	long res;
->   
-> -	if (!access_ok(s, n))
-> -		return -0;
-> +	if (unlikely(n <= 0))
-> +		return 0;
-> +
-> +	if (!access_ok(s, n)) {
-> +		if (!access_ok(s, 0))
-> +			return 0;
-> +
-> +		n = __UA_LIMIT - (unsigned long)s - 1;
-Sorry for here and it should be ~__UA_LIMIT...
-earlier discussed:
-https://patchwork.kernel.org/project/linux-mips/patch/1618139092-4018-1-git-send-email-hejinyang@loongson.cn/#24107107
+> I think this series has been forgotten, any chance to see it merged into v5.13 ?
 
-Hope other comment. :-)
+It's in -rc7, but it appears that my email reply went missing when I merged it.
 
-Jinyang
-
-> +	}
->   
->   	might_fault();
->   	__asm__ __volatile__(
-
+      Arnd
