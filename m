@@ -2,123 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2F035D05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E567535D05D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244965AbhDLS3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:29:18 -0400
-Received: from mail-dm6nam12on2040.outbound.protection.outlook.com ([40.107.243.40]:29537
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245007AbhDLS3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:29:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzU885w86bscxyBhaF+6UygduZl1n0BXb9S1uWVw6SZQKsW/A1AN/aQBEpHiPTGWjwTnJjAvXJavkjzdwc/q7yrhu0lC7l8WtU4Z8+94dIqrV4o3ZVOpS3UbZYwagutgkltmz2gpnQ55fCLwF6bSJgR/okPyBMrrGoUzEG5Nhici2PFSLTirQrUezSYrCO2YX9tWIRh4Ls3O0J2/BewJKG5s94SoBnB8m7RQsDbG/l1YTpvcLh6qnVeJRxTNO+1suIZYoo8h3DmIogN/oPSdvCtwZm1BNNpOsug8fiXUfq5etZuN5H4O4kQVL5oYdtzFvrzIp3qCI+n+RxdJQCuVEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VmH8/AjNF7InWZoG97xds5NGwk4jdampc8yEyjv9z3U=;
- b=h683KczohzNgzBsdgwy/jmJXZShYQ4SUwgcLD+TYKqNRytC741rq1QYhWXad+Waf2F4uJLn6q+p/K732iyrC300TSrwa7h4cqq8Cnl1Gn+f0VbcZ3Y7c5CUZgvi/YAuwqOTfBAifP7zvvCnk/9CupKYfPVFV56mnXMZxQ/kMpiDZA8du/wrUo+ifO8q+3kxorz2s5giy4Qxf9fEi0BMKOdpUUX0DtkcOoX46qdCYgFuPCwVpygpGCsWwL1PKL7LUMKdkdVBKrUAJSMn1IlqCQrke7iK7HlQv8rWEdNgtrlq8BhtBIUt17vnfUrFzij9A4swf4I8K3JiB4YX1ylb1Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VmH8/AjNF7InWZoG97xds5NGwk4jdampc8yEyjv9z3U=;
- b=FXiVbLeEQuFtZRXSseSvwpVnwJ5/ZEJUN/VPKBTF3Yb8tCG+s/jMCTZYIb2N38n1QrzsWzQXUJ1tLlaMFlGoCmyqqjpwpkuEujwd7di/AxSugsYHyr/pjnD9yT9Mt4YuV9ZnW9iFXiasGG36AajM9VGTjajOhcVgp3F5Gsx9Nt9CrAumWiUVyHiYhhGFrxpYQXKcajRAFIAmVEQqQbJLMQahztH0NxVmrPdxUMH9v/kjAkSe8hPZGeLAkXuspR1n4DT98RYvkxlIYrE2jmDoydkfkYHLEkaQ/kSWDYpRMNie709gsy2//PmvnOQ3h6rIXqG2iJcHIEWLNs2Z9zfY7g==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1881.namprd12.prod.outlook.com (2603:10b6:3:10f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Mon, 12 Apr
- 2021 18:28:51 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 18:28:51 +0000
-Date:   Mon, 12 Apr 2021 15:28:49 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Wang Wensheng <wangwensheng4@huawei.com>
-Cc:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        brendan.cunningham@intel.com, ira.weiny@intel.com,
-        sudeep.dutt@intel.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rui.xiang@huawei.com
-Subject: Re: [PATCH -next] IB/hfi1: Fix error return code in
- parse_platform_config()
-Message-ID: <20210412182849.GC1158895@nvidia.com>
-References: <20210408113140.103032-1-wangwensheng4@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408113140.103032-1-wangwensheng4@huawei.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0033.namprd13.prod.outlook.com
- (2603:10b6:208:257::8) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S245009AbhDLS3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244978AbhDLS3k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 14:29:40 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0748C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:29:21 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id v3so12889105ybi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NNAaikW8Ua1Qsyki4qt6W9LRYrIEfVOIKl6VO661t4s=;
+        b=xXGnANS77BleJQqUspbV6NrztTu8EihzaXyyEGo77ZHpArnT/G2pomCKN54jeVTZhh
+         btngBStW9m8RBSvmH4B9a16+tVxohOwo9kbFdoExelKl5dM6xkfTzes9l1w8p7fEMnVB
+         hmWY2srztNr+gGHqPC098hxZD1lGEPdacAI2P1ZGyxo3TpDgrrQLC+HkVMtaP6D5sE/W
+         QYEl7ZhsPNWF6z3l4ytIZglVVOaed839e6UZRuojMNS7Umg6yiHdChpqJ4X1VLfWujHK
+         AdulFzJbOXje2ADQs1eJiZ5awDSBB7wQnE98zeEzCXkuZ65JrjgxZt7fmgce+LjQ5bnE
+         i9UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NNAaikW8Ua1Qsyki4qt6W9LRYrIEfVOIKl6VO661t4s=;
+        b=YRP8/g/N6wAy9yRzzztR66bwWWnQJsOQt7luUtibAc9BY6BC24gyDYpQonb9YfxdsJ
+         ioqFHka4BCFFnoJJC4zUG9s2XK2JtUVSnXpphejvRqwqvOUssMyHzxLzsrWb5MZ4No6G
+         Lp+deZR4nYBOs5nQPyS0/cd3wK4r8iGQU+fkoqpjObHFuvM/o+pgtE7Ttl6m/TVXGoW/
+         OF6TmSZ7DPv8bKBSR+xEt1SfxbT6QX1Tomf0c20L1S2+n24lhekftkFsnd0u0kXFq96Y
+         IyOxNosdYjrkUOjCM69ujE7mDwR3u8/4xQfy6aIdqTZJUPBXdBjnCRELFh4zCCrwOUzy
+         hNKA==
+X-Gm-Message-State: AOAM531CQb4EDsbhFRGI89BRPkP9H1RVqM5KRUqc9kxDl8ZqxKfl0Nbp
+        /EFFN85f21ZPEIXwdUNdOPCjNERfm11nBkr7soPVuQ==
+X-Google-Smtp-Source: ABdhPJy8iXpglY+B33iv/1KwDkDgvb2f9yIDEsJ07Xzztw6sGJGc9mmBT0CcBVxIk5bGYZJ0lN2IJi3DbMBoJKI7LcU=
+X-Received: by 2002:a05:6902:68a:: with SMTP id i10mr1460951ybt.0.1618252159898;
+ Mon, 12 Apr 2021 11:29:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0033.namprd13.prod.outlook.com (2603:10b6:208:257::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Mon, 12 Apr 2021 18:28:50 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lW1In-004rV7-Mn; Mon, 12 Apr 2021 15:28:49 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9be7d7ff-efba-439f-0d76-08d8fde0d1d6
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1881:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB188198EDC01A08151729B4A9C2709@DM5PR12MB1881.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U8RWpargceIaNnNr/LFtPSu+1+FmNyXbI4Gv00q/iZwGkSy4HN2q+ELAfHZBUcLstjtWGQLjF/ppmFHEeWUobA9vhmhSQj/3mq8NV2X51btLuQ4TZM6QltopaHHwmeMk+ig7ZLfKIYzbP6Rbzz3gtr539eSqql71mwhvAoToKKyjs86pMeXzXxKnM+ag67JlIsIPO9gCsKCJy0v9UmE+eo4EueiLmwDYInUnve5HZWpI3B8JVSYXDIaiyuIFKA4SsLvL+UTuRh2lU9yZvAeobjlCKO5WeGmyA90qDBq7osxj4B3m7VoJ0dPgazRDJycrPur4IdtnqKExOL9fj2ldz8Dx4nKEgi1t7j7TaBdVWNXWd5nA+fljrPijrjhStw9AndgnuD1+NklnuR9BxetNIUaXSFONMVLLYHOcoIMAAeFXLPWI9VGtVWKQv5kDefxu44fuTvHNYz3gJHuCqlDQ/lby3XIRNxuaoHv/wrvEXASbbtRE7i9cNB2FYGETeQRv67FBWAGX3A/Ulu6CZv5sbCPrtd/ctwHII4u3hKXGQs2Z1TgiUiRsBTXNy7jknr2ehyuaCuTOkOxG+Cg8+ljb4KHy5i9dJrXMqOVqkbBB/tQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(366004)(39860400002)(33656002)(478600001)(4744005)(9746002)(9786002)(2616005)(66476007)(2906002)(26005)(36756003)(8936002)(186003)(86362001)(4326008)(426003)(5660300002)(66556008)(38100700002)(6916009)(316002)(7416002)(8676002)(66946007)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RbZZmzjOJUh4Mtx4Z1C2xcmbzZBChOPktKwKOzWmRj52Ape6firoD+Rk4sD/?=
- =?us-ascii?Q?JY2ie2wHU0lwNE4bySMQqge6aSvWq6JkzB3GtQZz3/zrd61eB0lIP8+hJVG3?=
- =?us-ascii?Q?PqAAFqcgPr2wU9dgSFst8PycE3mYQWVR8GYe044LrMSs+9/7g15J4ZaiJPcZ?=
- =?us-ascii?Q?4No3rfD4DtBafeaVazfdudEokvmXm/oMKU5CcjFGzUnESef4Q5kgjJ4mglGT?=
- =?us-ascii?Q?1RFhq2jQYqgT4upzZYHDWQokJ2zXeOY0N48eG3q70h+fFYe3bOY3DoXpVP2W?=
- =?us-ascii?Q?xRbp56fXYrgkatQ8dvW0n0zdCy+EkyFZjYTDHRgmJsm5fvmGkMDGAbTqBOlc?=
- =?us-ascii?Q?JK30YIXNEkaEqp5owigUbQR1rEXtwEBSABPhmQjxibT2QM5IDGGNF1ncvf32?=
- =?us-ascii?Q?ZCzxyAHa+bLT60H9D1zrD7Nqd5eIcVZLJrg3NwDrXMTAmlLML5lXsCzANxtC?=
- =?us-ascii?Q?trlbt+T6FbBH0m1r6V0wTqT1H0WpNdkpjUF64Qp2TRjujXtAh/n2xlYgMjOv?=
- =?us-ascii?Q?aqL7pdyvyuYlapS4Ox2eSqpfbf34kX4tkM4JJPjNINqktqJFRdw/SCbiWFKP?=
- =?us-ascii?Q?8WnbUdTWFL3igDrSJUF3ldWu8vRHqo6MPPOp7JhrfyUhXs3M+Jp4OBzeT06X?=
- =?us-ascii?Q?oPUUFvIJ34rXV3WqZ3HAhLEY1uxEa7ugNqeZDLbXRVSpo/HFlvff/t0bxwNy?=
- =?us-ascii?Q?HDUXMg4rOKLPKCeKh1qwRMQRzNRSaMvU8a6MgKZlYSR9do7vUHvZkTDzwEnD?=
- =?us-ascii?Q?CaIEnSQGCBGv+2dikx3um2mBhFqm2PMEIIpePaz71wD2S7Da2jICfZPf8XUv?=
- =?us-ascii?Q?v5VvWmmU23zKVFtNY1Ge94iZl9QyLfBnfo/06/9zrCLCnbHZTuBLz6yr8uBh?=
- =?us-ascii?Q?Lh8MkSGsD25Mz+38ARHJez9naAwmgBnlHgKsvkfA7/yyFn4x/jwv7e9iPm62?=
- =?us-ascii?Q?Rb+KQKRJkNfz88J2PY9bT3nS1r+V4pB/UAlZdPdfhqtCRnyDs0tWFHS+yehT?=
- =?us-ascii?Q?waXoOGIPvgjku0Yjx9sID9RamDHfuq0M6rgOLP94yxjnisteQOBq4Aq1xL9t?=
- =?us-ascii?Q?VpiJ9wJBVjisFGVAXXcFCPGBDkI79W9icQYrI4qZYUxrR8Mmelk8LgXETMfE?=
- =?us-ascii?Q?Nv7ivLhoiaLnP/rCf0wS2wOYTD80nq9mJnFHsNy1421J1g0FPayWwTpvpGXF?=
- =?us-ascii?Q?1lRptXIdBw8rb8FA0/GiKo2xg/DFbObY2SLtcuKlp8wSVchrDS6shy3LTUnz?=
- =?us-ascii?Q?MVbaaxnc02W3hoT1fAgp118DXVqTnS+yMDlVOv4te5JZebcalYrjHub+53KG?=
- =?us-ascii?Q?vURWebZSWFa5VtrKz7TwjAr/QWApzh35CZooMD0hetaunA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9be7d7ff-efba-439f-0d76-08d8fde0d1d6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 18:28:51.0011
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NSlEZvatgLeKJfaVwW0PHg8x1eOIGX8/tPoIT8qKkrbmL1Ioj853ss8LFs81r0MK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1881
+References: <20210402132431.3590-1-claudiu.beznea@microchip.com>
+ <CAMpxmJVCOpkn5PfDtw8kc=xdKMFD0+yCs7EzSZDK7YTBZ7G-GQ@mail.gmail.com> <c5f0613d-c937-50ff-24af-d4e4df681511@microchip.com>
+In-Reply-To: <c5f0613d-c937-50ff-24af-d4e4df681511@microchip.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 12 Apr 2021 20:29:09 +0200
+Message-ID: <CAMpxmJWRMQ_2cyav1V4HfZf7vuAG8ngQWHrQM4Sap4v_kLoRpw@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: avoid adjusting offset for 24AA025E{48, 64}
+To:     Claudiu Beznea <Claudiu.Beznea@microchip.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:31:40AM +0000, Wang Wensheng wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> ---
->  drivers/infiniband/hw/hfi1/firmware.c | 1 +
->  1 file changed, 1 insertion(+)
+On Mon, Apr 12, 2021 at 9:42 AM <Claudiu.Beznea@microchip.com> wrote:
+>
+> On 07.04.2021 21:37, Bartosz Golaszewski wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >
+> > On Fri, Apr 2, 2021 at 3:24 PM Claudiu Beznea
+> > <claudiu.beznea@microchip.com> wrote:
+> >>
+> >> Some EEPROMs could be used only for MAC storage. In this case the
+> >> EEPROM areas where MACs resides could be modeled as NVMEM cells
+> >> (directly via DT bindings) such that the already available networking
+> >> infrastructure to read properly the MAC addresses (via
+> >> of_get_mac_address()). Add "atmel,24mac02e4", "atmel,24mac02e4"
+> >> compatible for the usage w/ 24AA025E{48, 64} type of EEPROMs and adapt
+> >> the driver to not do offset adjustments.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> >> ---
+> >>
+> >> Hi Bartosz,
+> >>
+> >> For the previously available compatibles the offset adjustment is done
+> >> (probably for compatibility w/ old DT bindings?). In my scenario 24AA025E48
+> >> is used in setup with macb driver which is calling of_get_mac_address()
+> >> to get the proper NVMEM cell in EEPROM where the MAC resides and read
+> >> directly from there. We modeled the EEPROM and NVMEM cell in DT as
+> >> follows:
+> >>
+> >> &i2cnode {
+> >>         // ...
+> >>         eeprom0: eeprom0@52 {
+> >>                 compatible = "atmel,24mac02e4";
 
-Applied to for-next, thanks
+Can you point me to the datasheet for this model, google only directs
+me to this very email.
 
-Jason
+From the device tree it looks as if it was just a regular 24c02 EEPROM
+with MAC hard-coded at 250-255 bytes, is that right?
+
+Bartosz
+
+> >>                 #address-cells = <1>;
+> >>                 #size-cells = <0>;
+> >>                 reg = <0x52>;
+> >>                 pagesize = <16>;
+> >>                 size = <256>;
+> >>                 status = "okay";
+> >>
+> >>                 eeprom0_eui48: eui48@fa {
+> >>                         reg = <0xfa 0x6>;
+> >>                 };
+> >>         };
+> >> };
+> >>
+> >> &gmac {
+> >>         // ...
+> >>
+> >>         nvmem-cells = <&eeprom0_eui48>;
+> >>         nvmem-cell-names = "mac-address";
+> >>
+> >>         // ...
+> >> };
+> >>
+> >>
+> >> Let me know if some other approach needs to be taken into account in
+> >> at24 driver for this to work.
+> >>
+> >> Thank you,
+> >> Claudiu Beznea
+> >>
+> >
+> > Hi Claudiu,
+> >
+> > First of all: any new compatibles need to go into the DT bindings document.
+>
+> Agree! I missed this.
+>
+> >
+> >
+> >>  drivers/misc/eeprom/at24.c | 69 ++++++++++++++++++++++----------------
+> >>  1 file changed, 40 insertions(+), 29 deletions(-)
+> >>
+> >> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> >> index 926408b41270..ae2fbcb5e83d 100644
+> >> --- a/drivers/misc/eeprom/at24.c
+> >> +++ b/drivers/misc/eeprom/at24.c
+> >> @@ -123,17 +123,19 @@ MODULE_PARM_DESC(at24_write_timeout, "Time (in ms) to try writes (default 25)");
+> >>  struct at24_chip_data {
+> >>         u32 byte_len;
+> >>         u8 flags;
+> >> +       u8 adjoff;
+> >>         void (*read_post)(unsigned int off, char *buf, size_t count);
+> >>  };
+> >>
+> >> -#define AT24_CHIP_DATA(_name, _len, _flags)                            \
+> >> +#define AT24_CHIP_DATA(_name, _len, _flags, _adjoff)                   \
+> >>         static const struct at24_chip_data _name = {                    \
+> >> -               .byte_len = _len, .flags = _flags,                      \
+> >> +               .byte_len = _len, .flags = _flags, .adjoff = _adjoff, \
+> >>         }
+> >>
+> >> -#define AT24_CHIP_DATA_CB(_name, _len, _flags, _read_post)             \
+> >> +#define AT24_CHIP_DATA_CB(_name, _len, _flags, _adjoff, _read_post)    \
+> >>         static const struct at24_chip_data _name = {                    \
+> >>                 .byte_len = _len, .flags = _flags,                      \
+> >> +               .adjoff = _adjoff,                                      \
+> >>                 .read_post = _read_post,                                \
+> >>         }
+> >>
+> >> @@ -158,48 +160,52 @@ static void at24_read_post_vaio(unsigned int off, char *buf, size_t count)
+> >>  }
+> >>
+> >>  /* needs 8 addresses as A0-A2 are ignored */
+> >> -AT24_CHIP_DATA(at24_data_24c00, 128 / 8, AT24_FLAG_TAKE8ADDR);
+> >> +AT24_CHIP_DATA(at24_data_24c00, 128 / 8, AT24_FLAG_TAKE8ADDR, 0);
+> >>  /* old variants can't be handled with this generic entry! */
+> >> -AT24_CHIP_DATA(at24_data_24c01, 1024 / 8, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c01, 1024 / 8, 0, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs01, 16,
+> >> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> -AT24_CHIP_DATA(at24_data_24c02, 2048 / 8, 0);
+> >> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c02, 2048 / 8, 0, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs02, 16,
+> >> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >>  AT24_CHIP_DATA(at24_data_24mac402, 48 / 8,
+> >> -       AT24_FLAG_MAC | AT24_FLAG_READONLY);
+> >> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 1);
+> >>  AT24_CHIP_DATA(at24_data_24mac602, 64 / 8,
+> >> -       AT24_FLAG_MAC | AT24_FLAG_READONLY);
+> >> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 1);
+> >> +AT24_CHIP_DATA(at24_data_24mac02e4, 48 / 8,
+> >> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24mac02e6, 64 / 8,
+> >> +       AT24_FLAG_MAC | AT24_FLAG_READONLY, 0);
+> >>  /* spd is a 24c02 in memory DIMMs */
+> >>  AT24_CHIP_DATA(at24_data_spd, 2048 / 8,
+> >> -       AT24_FLAG_READONLY | AT24_FLAG_IRUGO);
+> >> +       AT24_FLAG_READONLY | AT24_FLAG_IRUGO, 0);
+> >>  /* 24c02_vaio is a 24c02 on some Sony laptops */
+> >>  AT24_CHIP_DATA_CB(at24_data_24c02_vaio, 2048 / 8,
+> >> -       AT24_FLAG_READONLY | AT24_FLAG_IRUGO,
+> >> +       AT24_FLAG_READONLY | AT24_FLAG_IRUGO, 0,
+> >>         at24_read_post_vaio);
+> >> -AT24_CHIP_DATA(at24_data_24c04, 4096 / 8, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c04, 4096 / 8, 0, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs04, 16,
+> >> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >>  /* 24rf08 quirk is handled at i2c-core */
+> >> -AT24_CHIP_DATA(at24_data_24c08, 8192 / 8, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c08, 8192 / 8, 0, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs08, 16,
+> >> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> -AT24_CHIP_DATA(at24_data_24c16, 16384 / 8, 0);
+> >> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c16, 16384 / 8, 0, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs16, 16,
+> >> -       AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> -AT24_CHIP_DATA(at24_data_24c32, 32768 / 8, AT24_FLAG_ADDR16);
+> >> +       AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c32, 32768 / 8, AT24_FLAG_ADDR16, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs32, 16,
+> >> -       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> -AT24_CHIP_DATA(at24_data_24c64, 65536 / 8, AT24_FLAG_ADDR16);
+> >> +       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c64, 65536 / 8, AT24_FLAG_ADDR16, 0);
+> >>  AT24_CHIP_DATA(at24_data_24cs64, 16,
+> >> -       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY);
+> >> -AT24_CHIP_DATA(at24_data_24c128, 131072 / 8, AT24_FLAG_ADDR16);
+> >> -AT24_CHIP_DATA(at24_data_24c256, 262144 / 8, AT24_FLAG_ADDR16);
+> >> -AT24_CHIP_DATA(at24_data_24c512, 524288 / 8, AT24_FLAG_ADDR16);
+> >> -AT24_CHIP_DATA(at24_data_24c1024, 1048576 / 8, AT24_FLAG_ADDR16);
+> >> -AT24_CHIP_DATA(at24_data_24c2048, 2097152 / 8, AT24_FLAG_ADDR16);
+> >> +       AT24_FLAG_ADDR16 | AT24_FLAG_SERIAL | AT24_FLAG_READONLY, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c128, 131072 / 8, AT24_FLAG_ADDR16, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c256, 262144 / 8, AT24_FLAG_ADDR16, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c512, 524288 / 8, AT24_FLAG_ADDR16, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c1024, 1048576 / 8, AT24_FLAG_ADDR16, 0);
+> >> +AT24_CHIP_DATA(at24_data_24c2048, 2097152 / 8, AT24_FLAG_ADDR16, 0);
+> >>  /* identical to 24c08 ? */
+> >> -AT24_CHIP_DATA(at24_data_INT3499, 8192 / 8, 0);
+> >> +AT24_CHIP_DATA(at24_data_INT3499, 8192 / 8, 0, 0);
+> >>
+> >>  static const struct i2c_device_id at24_ids[] = {
+> >>         { "24c00",      (kernel_ulong_t)&at24_data_24c00 },
+> >> @@ -208,7 +214,9 @@ static const struct i2c_device_id at24_ids[] = {
+> >>         { "24c02",      (kernel_ulong_t)&at24_data_24c02 },
+> >>         { "24cs02",     (kernel_ulong_t)&at24_data_24cs02 },
+> >>         { "24mac402",   (kernel_ulong_t)&at24_data_24mac402 },
+> >> +       { "24mac02e4",  (kernel_ulong_t)&at24_data_24mac02e4 },
+> >>         { "24mac602",   (kernel_ulong_t)&at24_data_24mac602 },
+> >> +       { "24mac02e6",  (kernel_ulong_t)&at24_data_24mac02e6 },
+> >>         { "spd",        (kernel_ulong_t)&at24_data_spd },
+> >>         { "24c02-vaio", (kernel_ulong_t)&at24_data_24c02_vaio },
+> >>         { "24c04",      (kernel_ulong_t)&at24_data_24c04 },
+> >> @@ -238,7 +246,9 @@ static const struct of_device_id at24_of_match[] = {
+> >>         { .compatible = "atmel,24c02",          .data = &at24_data_24c02 },
+> >>         { .compatible = "atmel,24cs02",         .data = &at24_data_24cs02 },
+> >>         { .compatible = "atmel,24mac402",       .data = &at24_data_24mac402 },
+> >> +       { .compatible = "atmel,24mac02e4",      .data = &at24_data_24mac02e4 },
+> >>         { .compatible = "atmel,24mac602",       .data = &at24_data_24mac602 },
+> >> +       { .compatible = "atmel,24mac02e6",      .data = &at24_data_24mac02e6 },
+> >>         { .compatible = "atmel,spd",            .data = &at24_data_spd },
+> >>         { .compatible = "atmel,24c04",          .data = &at24_data_24c04 },
+> >>         { .compatible = "atmel,24cs04",         .data = &at24_data_24cs04 },
+> >> @@ -690,7 +700,8 @@ static int at24_probe(struct i2c_client *client)
+> >>         at24->flags = flags;
+> >>         at24->read_post = cdata->read_post;
+> >>         at24->num_addresses = num_addresses;
+> >> -       at24->offset_adj = at24_get_offset_adj(flags, byte_len);
+> >> +       at24->offset_adj = cdata->adjoff ?
+> >> +                               at24_get_offset_adj(flags, byte_len) : 0;
+> >>         at24->client[0].client = client;
+> >>         at24->client[0].regmap = regmap;
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> >
+> > What is the problem you're trying to solve?
+>
+> I wanted to instantiate a NVMEM cell with proper offset and size via DT and
+> make whatever Ethernet driver aware of this NVMEM cell via DT bindings, as
+> bellow:
+>
+> &i2cnode {
+>         // ...
+>         eeprom0: eeprom0@52 {
+>                 compatible = "atmel,24mac02e4";
+>                 #address-cells = <1>;
+>                 #size-cells = <0>;
+>                 reg = <0x52>;
+>                 pagesize = <16>;
+>                 size = <256>;
+>                 status = "okay";
+>
+>                 eeprom0_eui48: eui48@fa {
+>                         reg = <0xfa 0x6>;
+>                 };
+>         };
+> };
+>
+> &gmac {
+>         // ...
+>
+>         nvmem-cells = <&eeprom0_eui48>;
+>         nvmem-cell-names = "mac-address";
+>
+>         // ...
+> };
+>
+> By adding this new compatible and changing the driver to not adjust the
+> NVMEM cell offset for it but make it use the one provided in DT I was
+> thinking this may scale for any future EEPROM storing MAC addresses at any
+> offsets (because these would be provided via DT and not adjusted by driver).
+>
+> I the current at24 driver I haven't managed to find a compatible in the
+> driver that mach the offset 0xfa (used to store MAC address on case of
+> 24AA025E48).
+>
+> > The MAC area is accessible
+> > on a different device address. The variants with serial and MAC areas
+> > are meant to be instantiated as devices separate from the main
+> > writeable area and you can then create an nvmem cell that will take up
+> > the whole MAC.
+> >
+> > Or does your model keep the MAC in the same block that's used for
+> > writing? In which case just using a regular compatible that matches
+> > the size and creating the nvmem cell at the right offset should be
+> > enough, right?
+>
+> Meaning describing the NVMEM cell in DT with an offset such that the driver
+> adjustment +/- that offset to lead to the offset described in EEPROM datasheet?
+>
+> >
+> > Am I missing something?
+>
+>
+>
+> >
+> > Bartosz
+> >
+>
