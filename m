@@ -2,129 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C0235CFA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A1835CFA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244383AbhDLRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243722AbhDLRpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:45:35 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A96EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:45:17 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id x12so874868ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:45:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=3xnaEEJhvcgYB6H30gqNdWydrQcTwwN2YWzvFG0UcF0=;
-        b=Mthr+PB9Ks44xNEySOhUf3vlLE34C0ze3e8CFpQMGKIApANJsnaQecXJ2gdbBzQAzM
-         xNY3j6UxoE0HqLM1Ql7LeADCGoaGpaPRBTP8raq84vC/3zqVi9Ges0o+TN9sl8eLs8z4
-         GIr20G5HI9twuQt7up5h+UREH6UzhVNxyVtLKvM8XETCiUatdBHNB583QyEXQmZdFgnG
-         BMdB+J+PS1ADymN4ZsNr4+J/AVLNwGURIvCAwuAI5qBmU4hbCvqOTSiJJ+Ia/egVAQ+w
-         Q3scG5ofNJ2yezfNhZsIxFFEB5eCaOcUbmpyApPlxKbDbP542CAGjzLqrmwBftiL0582
-         1fDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=3xnaEEJhvcgYB6H30gqNdWydrQcTwwN2YWzvFG0UcF0=;
-        b=aTsG6YvQgNDZ0OlYxP+SnSLOfIWmv9j6e950f2itaFo/RfVeuqdBnyf3XtI1EsjGKO
-         HncDiIXiu1l+BTsWCJ8cgW9vE+8t4/zNej0kGU9cz1a6lmzRn4ZjGFVuRApOsAZhJSO8
-         ltCLxN16EJY4HbP0XLKuD7sP5E5lYPZ8JkEGn0TVMMBSOzXguCEkgF4ZalMSu1rsBjau
-         lWLnwgRHvjZbrgKxevnMgUPuwAgkPAKfBPkizraQE2h0Vgmg9u0JDXtC2Y3KXIQvl9gz
-         GC14AOg9AY+TQ/BTyOV48Gwwee5XmZQOD0eJXN9qEFLlUEGaC9Ve9GYITr/mzxgq7qPR
-         3nBw==
-X-Gm-Message-State: AOAM530b5PTNwAWdR0XUVYYMR2dIFSKlfMo/omxtjwvZYOjOUNre1I8j
-        3fQVJoLn8SuOIGHhn0cyiZgNmBtFvf4OL0c0334=
-X-Google-Smtp-Source: ABdhPJyowJLPk1ZWpFVr2mXVRk0R9ymoG2e25Zu1E0OTk+nsaCxBULdsHcuiFQW5joDedrKfGpl5qTUYzV6L3kZK5l8=
-X-Received: by 2002:a17:906:cc49:: with SMTP id mm9mr27641160ejb.339.1618249515026;
- Mon, 12 Apr 2021 10:45:15 -0700 (PDT)
+        id S244412AbhDLRpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:45:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239032AbhDLRpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:45:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA2F61354;
+        Mon, 12 Apr 2021 17:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618249534;
+        bh=hjXOIbROE3wx3QWF7DGqV3HSLhGxUvo3LHE4nDAEZa0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nJr0jyHk7pflX0oLpJJgsdtYEo0c/0ApOWTY3jpy6MrOQUXgRWbDsV7xmAbJk22NF
+         +aBV65BwNrdz53qBGGPUvAFnVespNYQ1hOKY4VRJqrL0Q0wrM7WIUsGtK0ILDmyuR3
+         y1ZlMJ9U5qKwJAXzvZL3oVhzonUyYL11zzkQm2E4lHv2ir2UNkdDeY2BgdQeEkxvTx
+         IW0EqOURG+F3Oe2bwk9O5gcURJi77kNEq03P2TvaBO6pVRZzM/J/9RSKsct5Fn73n4
+         3p13J0i2KgfOrdIqiEm1zsdYcXUJmR/uAyna3XznChoLgCk305sMS/y74B9/JBaHyG
+         QN/UQdZshqwHg==
+Date:   Mon, 12 Apr 2021 10:45:32 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Message-ID: <YHSHPIXLhHjOu0jw@gmail.com>
+References: <20210412140932.31162-1-crecklin@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6400:5b8d:0:0:0:0 with HTTP; Mon, 12 Apr 2021 10:45:14
- -0700 (PDT)
-Reply-To: missfarrinakipkalya@yandex.com
-From:   Miss Farrina Kipkalya <corisbankofafricabf@gmail.com>
-Date:   Mon, 12 Apr 2021 18:45:14 +0100
-Message-ID: <CAJmM+qwAHN0UuG28H6moSrgs8kh-A=G_bO+8k6nGO4DTDesBgw@mail.gmail.com>
-Subject: A cry for help
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412140932.31162-1-crecklin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My dearest,
+On Mon, Apr 12, 2021 at 10:09:32AM -0400, Chris von Recklinghausen wrote:
+> Suspend fails on a system in fips mode because md5 is used for the e820
+> integrity check and is not available. Use crc32 instead.
+> 
+> This patch changes the integrity check algorithm from md5 to crc32.
+> 
+> The purpose of the integrity check is to detect possible differences
+> between the memory map used at the time when the hibernation image is
+> about to be loaded into memory and the memory map used at the image
+> creation time, because it is generally unsafe to load the image if the
+> current memory map doesn't match the one used when it was created. so
+> it is not intended as a cryptographic integrity check.
 
-I am writing this mail to you with tears and sorrow from my heart.
-With due respect, trust and humanity, i appeal to you to exercise a
-little patience and read through my letter i feel quite safe dealing
-with you in this important business having gone through your
-remarkable profile, honestly i am writing this email to you with
-pains, tears and sorrow from my heart, i will really like to have good
-relationship with you and i have a special reason why I decided to
-contact you. I decided to contact you due to the urgency of my
-situation.
+This still doesn't actually explain why a non-cryptographic checksum is
+sufficient.  "Detection of possible differences" could very well require
+cryptographic authentication; it depends on whether malicious changes need to be
+detected or not.
 
-My name is Miss. Farrina Kipkalya, 22yrs old female and i am from
-Kenya in East Africa. Light in complexion, single (never married) but
-presently i am residing here in Ouagadougou, Burkina Faso refugee
-camp. My father Late Dr Kipkalya Kones was the former Kenyan road
-Minister. He and Assistant Minister of Home Affairs Lorna Laboso had
-been on board the Cessna 210, which was headed to Kericho and crashed
-in a remote area called Kajong'a, in western Kenya. The plane crashed
-on the Tuesday 10th, June, 2008. You can read more about the crash
-through the below
-site:http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?=
-iref=3Dnextin
+> 
+> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+>        by md5 digest")
+> 
+> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> ---
+> v1 -> v2
+>    bump up RESTORE_MAGIC
+> v2 -> v3
+>    move embelishment from cover letter to commit comments (no code change)
+> v3 -> v4
+>    add note to comments that md5 isn't used for encryption here.
+> v4 -> v5
+>    reword comment per Simo's suggestion
+> v5 -> v6
+>    use wording from Eric Biggers, use crc32_le instead of crc32 from crypto
+> 	framework (crc32_le is in the core API and removes need for #defines)
+> 
+>  arch/x86/power/hibernate.c | 76 +++++++++++---------------------------
+>  1 file changed, 22 insertions(+), 54 deletions(-)
+> 
+> diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> index cd3914fc9f3d..f39e507e34ca 100644
+> --- a/arch/x86/power/hibernate.c
+> +++ b/arch/x86/power/hibernate.c
+> @@ -13,6 +13,8 @@
+>  #include <linux/kdebug.h>
+>  #include <linux/cpu.h>
+>  #include <linux/pgtable.h>
+> +#include <linux/types.h>
+> +#include <linux/crc32.h>
+>  
+>  #include <crypto/hash.h>
 
-After the burial of my father, my Father Brothers conspired and sold
-my father' s property to an Italian Expert rate which they shared the
-money among themselves and live nothing for me. One faithful morning,
-I opened my father's briefcase and found out the documents which he
-have deposited huge amount of money in one bank in Burkina Faso with
-my name as the next of kin, because when he was alive he deposited
-some amount of money in a Bank in Burkina Faso which he used my name
-as the next of kin. The amount in question is $2.7Million.
+crypto/hash.h is no longer needed.
 
-I have informed the bank about claiming this money and the only thing
-they told me is to look for a foreign partner who will assist me in
-the transfer due to my refugee status here in Burkina Faso. God told
-me that you are the honest and reliable person who will help me and
-stand as my trustee so that I will present you to the Bank for
-transferring of my father=E2=80=99s money to your bank account in overseas.=
- I
-have chosen to contact you after my prayers and I believe that you
-will not betray my trust. But rather take me as your own biological
-sister or daughter which I will be coming to your country as soon as
-this money is transferred to your account.
+>  
+> @@ -55,94 +57,60 @@ int pfn_is_nosave(unsigned long pfn)
+>  }
+>  
+>  
+> -#define MD5_DIGEST_SIZE 16
+> +#define CRC32_DIGEST_SIZE (sizeof (u32))
+>  
+>  struct restore_data_record {
+>  	unsigned long jump_address;
+>  	unsigned long jump_address_phys;
+>  	unsigned long cr3;
+>  	unsigned long magic;
+> -	u8 e820_digest[MD5_DIGEST_SIZE];
+> +	u8 e820_digest[CRC32_DIGEST_SIZE];
+>  };
 
-My dearest, things are very bad for me here in the refugee camp when I
-am living today. People are dying here day after day because of lack
-of food and poor medical treatment. Even one of us died last night and
-was buried this morning. I am afraid of what i am seeing here. I don't
-know who it will be her turn tomorrow; I was planning to read law in
-my life before the ugly incident that killed my parents that put me in
-this horrible place i found myself today. This place is like a prison
-as we are only allowed to go out on Monday and Friday of the week as
-given by the united nation rules and regulation here in Burkina Faso.
-It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
-eek
-it=E2=80=99s just like one staying in the prison and i hope by Gods grace I
-will come out here soon.
+It would be simpler to just make this field 'unsigned long'.  Then there would
+be no need to deal with memcpy().
 
-I don' t have any relatives now whom i can go to and the only person I
-have now is Rev Isaac Ambrose who is the pastor of the (Christ for all
-Churches) here in the refugee he has been very nice to me since i came
-here but i am not living with him rather i am leaving in the women's
-hostel because the refugee have two hostels one for men the other for
-women, Please if you want to help me out of this situation respond
-back so that I will tell you more about me.
+> -#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
+>  /**
+> - * get_e820_md5 - calculate md5 according to given e820 table
+> + * get_e820_crc32 - calculate crc32 according to given e820 table
 
-Thanks
-Miss Farrina
+Calling this "compute_e820_crc32()" would avoid confusion with retrieving the
+previously-stored crc32 value.
+
+> +	ret = crc32_le(0, (unsigned char const *)table, size);
+
+It would be better to do ~crc32_le(~0, ...) (i.e., invert at beginning and end)
+to match the recommended usage of CRC-32.  Unfortunately the library function
+doesn't do the inversions by default.
+
+>  static int hibernation_e820_save(void *buf)
+>  {
+> -	return get_e820_md5(e820_table_firmware, buf);
+> +	return get_e820_crc32(e820_table_firmware, buf);
+>  }
+
+This should be inlined into arch_hibernation_header_save().  Also note that it
+can no longer fail.
+
+>  
+>  static bool hibernation_e820_mismatch(void *buf)
+>  {
+
+This should be inlined into arch_hibernation_header_restore().
+
+>  	int ret;
+> -	u8 result[MD5_DIGEST_SIZE];
+> +	u8 result[CRC32_DIGEST_SIZE];
+>  
+> -	memset(result, 0, MD5_DIGEST_SIZE);
+> +	memset(result, 0, CRC32_DIGEST_SIZE);
+>  	/* If there is no digest in suspend kernel, let it go. */
+> -	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
+> +	if (!memcmp(result, buf, CRC32_DIGEST_SIZE))
+>  		return false;
+
+There's no need to handle the "no digest" case anymore, right?  Since crc32_le()
+is always available.
+
+- Eric
