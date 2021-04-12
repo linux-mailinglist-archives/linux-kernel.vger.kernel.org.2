@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA93035C02F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B374B35BE93
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240928AbhDLJLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49260 "EHLO mail.kernel.org"
+        id S239323AbhDLI7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238105AbhDLI4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C71261249;
-        Mon, 12 Apr 2021 08:55:47 +0000 (UTC)
+        id S238003AbhDLIsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:48:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B605461278;
+        Mon, 12 Apr 2021 08:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217747;
-        bh=NRtHKydRuvA7XqixRpGw4jbZ2dyk9afHXFvqaYT6jT4=;
+        s=korg; t=1618217273;
+        bh=5J0l2HZ6W8csjuE0JV1x7NGFn/OkXC9lgEblRfVVkpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9qlL9Zs7leVWrQPkizeIEfB0rZHd4HXnLLgjsPN2TV5+OiYPMoTh0StJjhjEKp9Y
-         EBdwe7a7OE+LmZdpepSnxcpKTV6CfPNhQaymqdzfLOnzL/Sw5Frhpk0fCfPDeKrM0a
-         1y/HU7GS1t3PL9tqfz7oNQYxuA/i7f6hnyRvrjA4=
+        b=An06sitt4CRB7e6fFAnpsofJK4XHWwvHko7uP/Qumz1B0BTyC3HNW1Q0lbW2Co2d8
+         FoGXiJl1V+6RgKO6Gd7RY+AHu9DCNWOFFi+UNSe3wtOlJRVcaABKe6iAM3elrK2bcw
+         SnnW10ukJB6owKuyj94+CTvs6ZIrS58k0B/ruqRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E6=9D=A8=E6=96=87=E9=BE=99=20 ?= <ywltyut@sina.cn>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>, Wolfram Sang <wsa@kernel.org>,
+        stable@vger.kernel.org, Yinjun Zhang <yinjun.zhang@corigine.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 129/188] I2C: JZ4780: Fix bug for Ingenic X1000.
-Date:   Mon, 12 Apr 2021 10:40:43 +0200
-Message-Id: <20210412084017.936466952@linuxfoundation.org>
+Subject: [PATCH 5.4 066/111] nfp: flower: ignore duplicate merge hints from FW
+Date:   Mon, 12 Apr 2021 10:40:44 +0200
+Message-Id: <20210412084006.452673632@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +42,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+From: Yinjun Zhang <yinjun.zhang@corigine.com>
 
-[ Upstream commit 942bfbecc0281c75db84f744b9b77b0f2396f484 ]
+[ Upstream commit 2ea538dbee1c79f6f6c24a6f2f82986e4b7ccb78 ]
 
-Only send "X1000_I2C_DC_STOP" when last byte, or it will cause
-error when I2C write operation which should look like this:
+A merge hint message needs some time to process before the merged
+flow actually reaches the firmware, during which we may get duplicate
+merge hints if there're more than one packet that hit the pre-merged
+flow. And processing duplicate merge hints will cost extra host_ctx's
+which are a limited resource.
 
-device_addr + w, reg_addr, data;
+Avoid the duplicate merge by using hash table to store the sub_flows
+to be merged.
 
-But without this patch, it looks like this:
-
-device_addr + w, reg_addr, device_addr + w, data;
-
-Fixes: 21575a7a8d4c ("I2C: JZ4780: Add support for the X1000.")
-Reported-by: 杨文龙 (Yang Wenlong) <ywltyut@sina.cn>
-Tested-by: 杨文龙 (Yang Wenlong) <ywltyut@sina.cn>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 8af56f40e53b ("nfp: flower: offload merge flows")
+Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-jz4780.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/ethernet/netronome/nfp/flower/main.h  |  8 ++++
+ .../ethernet/netronome/nfp/flower/metadata.c  | 16 ++++++-
+ .../ethernet/netronome/nfp/flower/offload.c   | 48 ++++++++++++++++++-
+ 3 files changed, 69 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-jz4780.c b/drivers/i2c/busses/i2c-jz4780.c
-index cb4a25ebb890..2a946c207928 100644
---- a/drivers/i2c/busses/i2c-jz4780.c
-+++ b/drivers/i2c/busses/i2c-jz4780.c
-@@ -526,8 +526,8 @@ static irqreturn_t jz4780_i2c_irq(int irqno, void *dev_id)
- 				i2c_sta = jz4780_i2c_readw(i2c, JZ4780_I2C_STA);
- 				data = *i2c->wbuf;
- 				data &= ~JZ4780_I2C_DC_READ;
--				if ((!i2c->stop_hold) && (i2c->cdata->version >=
--						ID_X1000))
-+				if ((i2c->wt_len == 1) && (!i2c->stop_hold) &&
-+						(i2c->cdata->version >= ID_X1000))
- 					data |= X1000_I2C_DC_STOP;
- 				jz4780_i2c_writew(i2c, JZ4780_I2C_DC, data);
- 				i2c->wbuf++;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/main.h b/drivers/net/ethernet/netronome/nfp/flower/main.h
+index 31d94592a7c0..2d99533ad3e0 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/main.h
++++ b/drivers/net/ethernet/netronome/nfp/flower/main.h
+@@ -164,6 +164,7 @@ struct nfp_fl_internal_ports {
+  * @qos_rate_limiters:	Current active qos rate limiters
+  * @qos_stats_lock:	Lock on qos stats updates
+  * @pre_tun_rule_cnt:	Number of pre-tunnel rules offloaded
++ * @merge_table:	Hash table to store merged flows
+  */
+ struct nfp_flower_priv {
+ 	struct nfp_app *app;
+@@ -196,6 +197,7 @@ struct nfp_flower_priv {
+ 	unsigned int qos_rate_limiters;
+ 	spinlock_t qos_stats_lock; /* Protect the qos stats */
+ 	int pre_tun_rule_cnt;
++	struct rhashtable merge_table;
+ };
+ 
+ /**
+@@ -310,6 +312,12 @@ struct nfp_fl_payload_link {
+ };
+ 
+ extern const struct rhashtable_params nfp_flower_table_params;
++extern const struct rhashtable_params merge_table_params;
++
++struct nfp_merge_info {
++	u64 parent_ctx;
++	struct rhash_head ht_node;
++};
+ 
+ struct nfp_fl_stats_frame {
+ 	__be32 stats_con_id;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/metadata.c b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+index aa06fcb38f8b..327bb56b3ef5 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/metadata.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+@@ -490,6 +490,12 @@ const struct rhashtable_params nfp_flower_table_params = {
+ 	.automatic_shrinking	= true,
+ };
+ 
++const struct rhashtable_params merge_table_params = {
++	.key_offset	= offsetof(struct nfp_merge_info, parent_ctx),
++	.head_offset	= offsetof(struct nfp_merge_info, ht_node),
++	.key_len	= sizeof(u64),
++};
++
+ int nfp_flower_metadata_init(struct nfp_app *app, u64 host_ctx_count,
+ 			     unsigned int host_num_mems)
+ {
+@@ -506,6 +512,10 @@ int nfp_flower_metadata_init(struct nfp_app *app, u64 host_ctx_count,
+ 	if (err)
+ 		goto err_free_flow_table;
+ 
++	err = rhashtable_init(&priv->merge_table, &merge_table_params);
++	if (err)
++		goto err_free_stats_ctx_table;
++
+ 	get_random_bytes(&priv->mask_id_seed, sizeof(priv->mask_id_seed));
+ 
+ 	/* Init ring buffer and unallocated mask_ids. */
+@@ -513,7 +523,7 @@ int nfp_flower_metadata_init(struct nfp_app *app, u64 host_ctx_count,
+ 		kmalloc_array(NFP_FLOWER_MASK_ENTRY_RS,
+ 			      NFP_FLOWER_MASK_ELEMENT_RS, GFP_KERNEL);
+ 	if (!priv->mask_ids.mask_id_free_list.buf)
+-		goto err_free_stats_ctx_table;
++		goto err_free_merge_table;
+ 
+ 	priv->mask_ids.init_unallocated = NFP_FLOWER_MASK_ENTRY_RS - 1;
+ 
+@@ -550,6 +560,8 @@ err_free_last_used:
+ 	kfree(priv->mask_ids.last_used);
+ err_free_mask_id:
+ 	kfree(priv->mask_ids.mask_id_free_list.buf);
++err_free_merge_table:
++	rhashtable_destroy(&priv->merge_table);
+ err_free_stats_ctx_table:
+ 	rhashtable_destroy(&priv->stats_ctx_table);
+ err_free_flow_table:
+@@ -568,6 +580,8 @@ void nfp_flower_metadata_cleanup(struct nfp_app *app)
+ 				    nfp_check_rhashtable_empty, NULL);
+ 	rhashtable_free_and_destroy(&priv->stats_ctx_table,
+ 				    nfp_check_rhashtable_empty, NULL);
++	rhashtable_free_and_destroy(&priv->merge_table,
++				    nfp_check_rhashtable_empty, NULL);
+ 	kvfree(priv->stats);
+ 	kfree(priv->mask_ids.mask_id_free_list.buf);
+ 	kfree(priv->mask_ids.last_used);
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/offload.c b/drivers/net/ethernet/netronome/nfp/flower/offload.c
+index 4dd3f8a5a9b8..f57e7f337012 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/offload.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/offload.c
+@@ -923,6 +923,8 @@ int nfp_flower_merge_offloaded_flows(struct nfp_app *app,
+ 	struct netlink_ext_ack *extack = NULL;
+ 	struct nfp_fl_payload *merge_flow;
+ 	struct nfp_fl_key_ls merge_key_ls;
++	struct nfp_merge_info *merge_info;
++	u64 parent_ctx = 0;
+ 	int err;
+ 
+ 	ASSERT_RTNL();
+@@ -933,6 +935,15 @@ int nfp_flower_merge_offloaded_flows(struct nfp_app *app,
+ 	    nfp_flower_is_merge_flow(sub_flow2))
+ 		return -EINVAL;
+ 
++	/* check if the two flows are already merged */
++	parent_ctx = (u64)(be32_to_cpu(sub_flow1->meta.host_ctx_id)) << 32;
++	parent_ctx |= (u64)(be32_to_cpu(sub_flow2->meta.host_ctx_id));
++	if (rhashtable_lookup_fast(&priv->merge_table,
++				   &parent_ctx, merge_table_params)) {
++		nfp_flower_cmsg_warn(app, "The two flows are already merged.\n");
++		return 0;
++	}
++
+ 	err = nfp_flower_can_merge(sub_flow1, sub_flow2);
+ 	if (err)
+ 		return err;
+@@ -974,16 +985,33 @@ int nfp_flower_merge_offloaded_flows(struct nfp_app *app,
+ 	if (err)
+ 		goto err_release_metadata;
+ 
++	merge_info = kmalloc(sizeof(*merge_info), GFP_KERNEL);
++	if (!merge_info) {
++		err = -ENOMEM;
++		goto err_remove_rhash;
++	}
++	merge_info->parent_ctx = parent_ctx;
++	err = rhashtable_insert_fast(&priv->merge_table, &merge_info->ht_node,
++				     merge_table_params);
++	if (err)
++		goto err_destroy_merge_info;
++
+ 	err = nfp_flower_xmit_flow(app, merge_flow,
+ 				   NFP_FLOWER_CMSG_TYPE_FLOW_MOD);
+ 	if (err)
+-		goto err_remove_rhash;
++		goto err_remove_merge_info;
+ 
+ 	merge_flow->in_hw = true;
+ 	sub_flow1->in_hw = false;
+ 
+ 	return 0;
+ 
++err_remove_merge_info:
++	WARN_ON_ONCE(rhashtable_remove_fast(&priv->merge_table,
++					    &merge_info->ht_node,
++					    merge_table_params));
++err_destroy_merge_info:
++	kfree(merge_info);
+ err_remove_rhash:
+ 	WARN_ON_ONCE(rhashtable_remove_fast(&priv->flow_table,
+ 					    &merge_flow->fl_node,
+@@ -1211,7 +1239,9 @@ nfp_flower_remove_merge_flow(struct nfp_app *app,
+ {
+ 	struct nfp_flower_priv *priv = app->priv;
+ 	struct nfp_fl_payload_link *link, *temp;
++	struct nfp_merge_info *merge_info;
+ 	struct nfp_fl_payload *origin;
++	u64 parent_ctx = 0;
+ 	bool mod = false;
+ 	int err;
+ 
+@@ -1248,8 +1278,22 @@ nfp_flower_remove_merge_flow(struct nfp_app *app,
+ err_free_links:
+ 	/* Clean any links connected with the merged flow. */
+ 	list_for_each_entry_safe(link, temp, &merge_flow->linked_flows,
+-				 merge_flow.list)
++				 merge_flow.list) {
++		u32 ctx_id = be32_to_cpu(link->sub_flow.flow->meta.host_ctx_id);
++
++		parent_ctx = (parent_ctx << 32) | (u64)(ctx_id);
+ 		nfp_flower_unlink_flow(link);
++	}
++
++	merge_info = rhashtable_lookup_fast(&priv->merge_table,
++					    &parent_ctx,
++					    merge_table_params);
++	if (merge_info) {
++		WARN_ON_ONCE(rhashtable_remove_fast(&priv->merge_table,
++						    &merge_info->ht_node,
++						    merge_table_params));
++		kfree(merge_info);
++	}
+ 
+ 	kfree(merge_flow->action_data);
+ 	kfree(merge_flow->mask_data);
 -- 
 2.30.2
 
