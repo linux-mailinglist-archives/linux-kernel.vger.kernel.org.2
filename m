@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF02235B80C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A793B35B80E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236490AbhDLBV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236329AbhDLBV2 (ORCPT
+        id S236517AbhDLBYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:24:51 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3524 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236329AbhDLBYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:21:28 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38501C061574;
-        Sun, 11 Apr 2021 18:21:10 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t22so5167843ply.1;
-        Sun, 11 Apr 2021 18:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YZNlQJhFG4qD/x7YVQs5Q/vIJOU+Y0vRNafnFm9QJmM=;
-        b=h9JWQ6Ol/bM/2R9gY9tZa5rc+gsWRaAgOUw2l3PC9nYKCxW/Kqk/TmPo1R1ybRFHP7
-         1EILT6YvI5wl9RJQI/8ZduiVwu27qXyX69YNABMCnIezE6Igl3scrCOizyyWCqzP1Y4v
-         ioGpyXFpR1ju0r4PrgjoSvDuYkhNyzrbR2N/CLTVPehn2f1yRNBJ8uB5K3xwjMVmYKd8
-         iBM1fCSZ+daTyHDEP0lK2mxlCLSktaBHG2egUGSxL7COThsqOxWHlvMm5xczSlmV/Jhw
-         6ZzROiS++6gTxAccCPinOd1DHA8NZj+qkKK2BSQb0yuzvvNCFHXSNCohzkrEEMxX/Ooo
-         n/Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YZNlQJhFG4qD/x7YVQs5Q/vIJOU+Y0vRNafnFm9QJmM=;
-        b=sR3H4EuaaXxPMhBXp6UOu3i9zn2Ch3UocBeMFdifzWk6BcAdY09FXDDhp0OVVmCtUC
-         aITpimleeNBeNSuX1eyyeuDJpOtpIgmEYFuSYv+lg8HNu/CTjdjXen6w9p9dRC4CGx2S
-         qz8lMMhjES58qHW8XZnT482kIeY9n9FNC9yygjJ4fWpbwcX6K/+bPXneccPquyHIbNWb
-         1Zyw9rXeBf3Wssp732lJaSP8ZtRZIVbwKC1ePwJ3W4q33yxpAi6zzqbjwAUSeH1i0kFl
-         h4hCbKm2iI7NXjX0tVbIIhUJwfjyIkch8VT8PT8ckx65q/bZxLLet3G23he0yPhI1WKE
-         z02g==
-X-Gm-Message-State: AOAM5317rvvZ3ZpJYU3qzyDxfk+p0pQnbdv1YdrIqoiEIApyS6ip2I2d
-        1xoJCd0fHMcTiyHRuAhCaxA=
-X-Google-Smtp-Source: ABdhPJxvcsTgZjtXqK32GaAuV2MtCNgkx+s1Bjk3eR8/pGt2rFEPU53LYOGuqOvzBSy3EvwtzUuBLw==
-X-Received: by 2002:a17:90a:6304:: with SMTP id e4mr19053959pjj.63.1618190469675;
-        Sun, 11 Apr 2021 18:21:09 -0700 (PDT)
-Received: from localhost.localdomain ([2401:e180:8830:7d97:945d:de90:edc9:855b])
-        by smtp.gmail.com with ESMTPSA id i73sm10093477pgc.9.2021.04.11.18.21.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Apr 2021 18:21:08 -0700 (PDT)
-From:   Johnny Chuang <johnny.chuang.emc@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Harry Cutts <hcutts@chromium.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>
-Cc:     James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jingle <jingle.wu@emc.com.tw>
-Subject: [PATCH v2] HID: i2c-hid: Skip ELAN power-on command after reset
-Date:   Mon, 12 Apr 2021 09:21:03 +0800
-Message-Id: <1618190463-12993-1-git-send-email-johnny.chuang.emc@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 11 Apr 2021 21:24:50 -0400
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FJWDz2M80zRc3N;
+        Mon, 12 Apr 2021 09:22:27 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 12 Apr 2021 09:24:31 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 12 Apr
+ 2021 09:24:31 +0800
+Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
+ qdisc
+To:     Hillf Danton <hdanton@sina.com>, Juergen Gross <jgross@suse.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <JKosina@suse.com>
+References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
+ <20210409090909.1767-1-hdanton@sina.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <9cb8d8e3-89e5-2b00-ad16-43f34d6b1340@huawei.com>
+Date:   Mon, 12 Apr 2021 09:24:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
+MIME-Version: 1.0
+In-Reply-To: <20210409090909.1767-1-hdanton@sina.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous commit 43b7029f475e ("HID: i2c-hid:
-Send power-on command after reset"), it fixed issue for SIS touchscreen.
+On 2021/4/9 17:09, Hillf Danton wrote:
+> On Fri, 9 Apr 2021 07:31:03  Juergen Gross wrote:
+>> On 25.03.21 04:13, Yunsheng Lin wrote:
+>> I have a setup which is able to reproduce the issue quite reliably:
+>>
+>> In a Xen guest I'm mounting 8 NFS shares and run sysbench fileio on
+>> each of them. The average latency reported by sysbench is well below
+>> 1 msec, but at least once per hour I get latencies in the minute
+>> range.
+>>
+>> With this patch I don't see these high latencies any longer (test
+>> is running for more than 20 hours now).
+>>
+>> So you can add my:
+>>
+>> Tested-by: Juergen Gross <jgross@suse.com>
+>>
+> 
+> If retry is allowed in the dequeue method then a simple seqcount can do the
+> work of serializing enqueuer and dequeuer. IIUC it was not attempted last year.
 
-For ELAN touchscreen, we found our boot code of IC was not flexible enough
-to receive and handle this command.
-Once the FW main code of our controller is crashed for some reason,
-the controller could not be enumerated successfully to be recognized
-by the system host. therefore, it lost touch functionality.
+At the first glance, I do not think the below patch fix the data race
+described in the commit log, as it does not handle the time window
+between dequeuing and q->seqlock releasing, as below:
 
-Add quirk for skip send power-on command after reset.
-It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+The cpu1 may not see the qdisc->pad changed after pfifo_fast_dequeue(),
+and cpu2 is not able to take the q->seqlock yet because cpu1 do not
+release the q->seqlock.
 
-Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
----
-Changes in v2:
-    - move comment to quirk entry
----
- drivers/hid/i2c-hid/i2c-hid-core.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 9993133..957d865 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -45,6 +45,7 @@
- #define I2C_HID_QUIRK_BOGUS_IRQ			BIT(4)
- #define I2C_HID_QUIRK_RESET_ON_RESUME		BIT(5)
- #define I2C_HID_QUIRK_BAD_INPUT_SIZE		BIT(6)
-+#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET	BIT(7)
- 
- 
- /* flags */
-@@ -178,6 +179,12 @@ static const struct i2c_hid_quirks {
- 		 I2C_HID_QUIRK_RESET_ON_RESUME },
- 	{ USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
- 		I2C_HID_QUIRK_BAD_INPUT_SIZE },
-+/*
-+ * Sending the wakeup after reset actually break ELAN touchscreen controller
-+ * Add I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET to skip wakeup after reset
-+ */
-+	{ USB_VENDOR_ID_ELAN, HID_ANY_ID,
-+		 I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
- 	{ 0, 0 }
- };
- 
-@@ -461,7 +468,8 @@ static int i2c_hid_hwreset(struct i2c_client *client)
- 	}
- 
- 	/* At least some SIS devices need this after reset */
--	ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
-+	if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
-+		ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
- 
- out_unlock:
- 	mutex_unlock(&ihid->reset_lock);
--- 
-2.7.4
+> 
+> --- x/net/sched/sch_generic.c
+> +++ y/net/sched/sch_generic.c
+> @@ -632,6 +632,9 @@ static int pfifo_fast_enqueue(struct sk_
+>  			return qdisc_drop(skb, qdisc, to_free);
+>  	}
+>  
+> +	qdisc->pad++;
+> +	smp_wmb();
+> +
+>  	qdisc_update_stats_at_enqueue(qdisc, pkt_len);
+>  	return NET_XMIT_SUCCESS;
+>  }
+> @@ -641,6 +644,11 @@ static struct sk_buff *pfifo_fast_dequeu
+>  	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+>  	struct sk_buff *skb = NULL;
+>  	int band;
+> +	int seq;
+> +
+> +again:
+> +	seq = READ_ONCE(qdisc->pad);
+> +	smp_rmb();
+>  
+>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>  		struct skb_array *q = band2list(priv, band);
+> @@ -652,10 +660,15 @@ static struct sk_buff *pfifo_fast_dequeu
+>  	}
+>  	if (likely(skb)) {
+>  		qdisc_update_stats_at_dequeue(qdisc, skb);
+> -	} else {
+> -		WRITE_ONCE(qdisc->empty, true);
+> +		return skb;
+>  	}
+>  
+> +	smp_rmb();
+> +	if (seq != READ_ONCE(qdisc->pad))
+> +		goto again;
+> +
+> +	WRITE_ONCE(qdisc->empty, true);
+> +
+>  	return skb;
+>  }
+>  
+> 
+> .
+> 
 
