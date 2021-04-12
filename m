@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6850235C649
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2B935C64D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240917AbhDLMc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:32:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45340 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239061AbhDLMc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:32:26 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lVvjU-00GGID-7f; Mon, 12 Apr 2021 14:32:00 +0200
-Date:   Mon, 12 Apr 2021 14:32:00 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        liuwe@microsoft.com, netdev@vger.kernel.org, leon@kernel.org,
-        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <YHQ9wBFbjpRIj45k@lunn.ch>
-References: <20210412023455.45594-1-decui@microsoft.com>
+        id S240973AbhDLMc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239061AbhDLMc5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:32:57 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE9BC061574;
+        Mon, 12 Apr 2021 05:32:39 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id b139so7620089qkc.10;
+        Mon, 12 Apr 2021 05:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mA58phHCIh0Fa6R2ws4D2uh9fwyQMsDVNdVth2KiCIY=;
+        b=c6kaqcuTHS1/9SLVDIAXUxG5NHciZc0wUgbJYgFrvtbINty94AlexqXnaYC5HqISDi
+         FUmVUobfAZcbeK8aV7iXtiPjwyT/f6Ac4UiEQYUP+u/KJOiKFW+h2WPp6LoMTIuCkym8
+         cSZIdGTJ0AhJ8M/5O4N39UdJ81NJAVhhveA2Aje21J2hYMWT484rrFu6dJAPaRMXUgcK
+         vid/w7HKTpyj7HNgPWhXAx8f+jAYel1OzvsP4nO9Tc9FAnq5Se8dv1zeLzPbLy3MmYTz
+         My5REGKsMYp5PIHYnMuALKgN59ytobrrteqh29FWtgdhbm7QVr1ZG7NL9GxthIAwoesg
+         bF6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mA58phHCIh0Fa6R2ws4D2uh9fwyQMsDVNdVth2KiCIY=;
+        b=iEibrzYBHXuMNU5Px5U5N7+poKmVAGTkDXagG2P/lLIXaK+DWgjzKxxjOvASk71u+f
+         05xRnc4EpfompIMARucdVfY9pUdehshJUxcq37iMCHsdB6a5NIg7v+NQwtPpWOLTT8GF
+         DlMGxuONbVDHvjMOYxrQ+GezAytKPeHt+qZl/CVLnoioUiJLZAF+btFgxAqprBGYpp01
+         lE9OjLbIpHs4xJPrwRNSB4YA5ii/MzeyQ72iSaCm78MxE/A1uhgXdWpx+X3w8sIh6Guw
+         PgsmUFgx96mF3h3oGyReHyA6HyZvBNX2ly7nM1gn9i6MsXuQ4uWKokA9ZIaO0mrTjLsY
+         3/nQ==
+X-Gm-Message-State: AOAM533c7AFAV7JEYSHrC7ew7ge9NCke4pHtocuOu+TMJPtggy+D56YK
+        4DQvXNTryslxMZnwdTXO7GY=
+X-Google-Smtp-Source: ABdhPJxQEao5wGjpEmTQoa9QbrprmuIkT6cZTAAZsPz6CEg0q/anF4HvSiA0699g0JB7y9kbvm9njQ==
+X-Received: by 2002:a37:a485:: with SMTP id n127mr1124762qke.454.1618230757975;
+        Mon, 12 Apr 2021 05:32:37 -0700 (PDT)
+Received: from focaruja ([2001:1284:f016:a037:476a:dfcd:f18f:9ad5])
+        by smtp.gmail.com with ESMTPSA id m14sm7101397qke.107.2021.04.12.05.32.36
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 12 Apr 2021 05:32:37 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 09:32:34 -0300
+From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: [Outreachy kernel][PATCH 1/4] Replace macro function by static
+ inline function in file iss.c
+Message-ID: <b963fdc8ef989e5505b26d0c8f91315ea26c4899.1618230425.git.alinesantanacordeiro@gmail.com>
+References: <cover.1618230425.git.alinesantanacordeiro@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412023455.45594-1-decui@microsoft.com>
+In-Reply-To: <cover.1618230425.git.alinesantanacordeiro@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void mana_gd_deregiser_irq(struct gdma_queue *queue)
-> +{
-> +	struct gdma_dev *gd = queue->gdma_dev;
-> +	struct gdma_irq_context *gic;
-> +	struct gdma_context *gc;
-> +	struct gdma_resource *r;
-> +	unsigned int msix_index;
-> +	unsigned long flags;
-> +
-> +	/* At most num_online_cpus() + 1 interrupts are used. */
-> +	msix_index = queue->eq.msix_index;
-> +	if (WARN_ON(msix_index > num_online_cpus()))
-> +		return;
+Replace macro function by static inline function.
+Issue suggested by Julia.
 
-Do you handle hot{un}plug of CPUs?
+Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+---
+ drivers/staging/media/omap4iss/iss.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-> +static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
-> +					struct gdma_event *event)
-> +{
-> +	struct hw_channel_context *hwc = ctx;
-> +	struct gdma_dev *gd = hwc->gdma_dev;
-> +	union hwc_init_type_data type_data;
-> +	union hwc_init_eq_id_db eq_db;
-> +	u32 type, val;
-> +
-> +	switch (event->type) {
-> +	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
-> +		eq_db.as_uint32 = event->details[0];
-> +		hwc->cq->gdma_eq->id = eq_db.eq_id;
-> +		gd->doorbell = eq_db.doorbell;
-> +		break;
-> +
-> +	case GDMA_EQE_HWC_INIT_DATA:
-> +
-> +		type_data.as_uint32 = event->details[0];
-> +
-> +	case GDMA_EQE_HWC_INIT_DONE:
-> +		complete(&hwc->hwc_init_eqe_comp);
-> +		break;
+diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+index c89f268a..3bbc39e 100644
+--- a/drivers/staging/media/omap4iss/iss.c
++++ b/drivers/staging/media/omap4iss/iss.c
+@@ -27,22 +27,24 @@
+ #include "iss.h"
+ #include "iss_regs.h"
+ 
+-#define ISS_PRINT_REGISTER(iss, name)\
+-	dev_dbg(iss->dev, "###ISS " #name "=0x%08x\n", \
+-		iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_##name))
++static inline iss_print_register(iss, name)
++{
++	dev_dbg(iss->dev, "###ISS " #name "=0x%08x\n",
++		iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_##name));
++}
+ 
+ static void iss_print_status(struct iss_device *iss)
+ {
+ 	dev_dbg(iss->dev, "-------------ISS HL Register dump-------------\n");
+ 
+-	ISS_PRINT_REGISTER(iss, HL_REVISION);
+-	ISS_PRINT_REGISTER(iss, HL_SYSCONFIG);
+-	ISS_PRINT_REGISTER(iss, HL_IRQSTATUS(5));
+-	ISS_PRINT_REGISTER(iss, HL_IRQENABLE_SET(5));
+-	ISS_PRINT_REGISTER(iss, HL_IRQENABLE_CLR(5));
+-	ISS_PRINT_REGISTER(iss, CTRL);
+-	ISS_PRINT_REGISTER(iss, CLKCTRL);
+-	ISS_PRINT_REGISTER(iss, CLKSTAT);
++	iss_print_register(iss, HL_REVISION);
++	iss_print_register(iss, HL_SYSCONFIG);
++	iss_print_register(iss, HL_IRQSTATUS(5));
++	iss_print_register(iss, HL_IRQENABLE_SET(5));
++	iss_print_register(iss, HL_IRQENABLE_CLR(5));
++	iss_print_register(iss, CTRL);
++	iss_print_register(iss, CLKCTRL);
++	iss_print_register(iss, CLKSTAT);
+ 
+ 	dev_dbg(iss->dev, "-----------------------------------------------\n");
+ }
+-- 
+2.7.4
 
-...
-
-> +	default:
-> +		WARN_ON(1);
-> +		break;
-> +	}
-
-Are these events from the firmware? If you have newer firmware with an
-older driver, are you going to spam the kernel log with WARN_ON dumps?
-
-> +static int mana_move_wq_tail(struct gdma_queue *wq, u32 num_units)
-> +{
-> +	u32 used_space_old;
-> +	u32 used_space_new;
-> +
-> +	used_space_old = wq->head - wq->tail;
-> +	used_space_new = wq->head - (wq->tail + num_units);
-> +
-> +	if (used_space_new > used_space_old) {
-> +		WARN_ON(1);
-> +		return -ERANGE;
-> +	}
-
-You could replace the 1 by the condition. There are a couple of these.
-
-    Andrew
