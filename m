@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F55635BDAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8441835BCA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238253AbhDLIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:52:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        id S237519AbhDLIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237609AbhDLIrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BCA61245;
-        Mon, 12 Apr 2021 08:47:26 +0000 (UTC)
+        id S237561AbhDLInx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4625D61221;
+        Mon, 12 Apr 2021 08:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217247;
-        bh=WSeefSsqMuG3Mr5UAE3ee/lBTH5oOweGMA1tlOQK5ew=;
+        s=korg; t=1618217015;
+        bh=yZ4RDwF4eYw0HNvFN02ubTvSDkJz0zTvxg86LRgDtec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4t6wRT7AutqHhcYSOykmZ38pbRi8oPX0uYxD3C0oOl3V4IiUiX9rQnUdzN9v9JES
-         57q4JoICu9kA8inPf7LgTLUJLR551OFfp7qpxPNWHy8i+2CztnC+AqulH/WjeWljMG
-         ++zGb1LxePlgSIRJxKBcjgPOsIF/CtnP1OTUIl10=
+        b=CC4NDmrQUuqWmrrXWWzo4g5n5cT545LrhwADdAExEEhikSM4Iv81sEAjpZisP0a9N
+         9jNgU5B0htnPTM+pqW3oSMJOAGsbfDqujajRZlweXG7LuPJMZSvbITDn8jjE3YERen
+         Ub5qSSwJPY4oCeeQ7SUArB7iPTh+JV/TAWdQL7S0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Oliver=20St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/111] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
+Subject: [PATCH 4.19 31/66] net: xfrm: Localize sequence counter per network namespace
 Date:   Mon, 12 Apr 2021 10:40:37 +0200
-Message-Id: <20210412084006.227578624@linuxfoundation.org>
+Message-Id: <20210412083959.133534415@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
+References: <20210412083958.129944265@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
+From: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-[ Upstream commit 5cfad4f45806f6f898b63b8c77cea7452c704cb3 ]
+[ Upstream commit e88add19f68191448427a6e4eb059664650a837f ]
 
-Fix address of the pad control register
-(IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-to be a typo but it leads to an exception when pinctrl is applied due to
-wrong memory address access.
+A sequence counter write section must be serialized or its internal
+state can get corrupted. The "xfrm_state_hash_generation" seqcount is
+global, but its write serialization lock (net->xfrm.xfrm_state_lock) is
+instantiated per network namespace. The write protection is thus
+insufficient.
 
-Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Fixes: c1c9d41319c3 ("dt-bindings: imx: Add pinctrl binding doc for imx8mm")
-Fixes: 748f908cc882 ("arm64: add basic DTS for i.MX8MQ")
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+To provide full protection, localize the sequence counter per network
+namespace instead. This should be safe as both the seqcount read and
+write sections access data exclusively within the network namespace. It
+also lays the foundation for transforming "xfrm_state_hash_generation"
+data type from seqcount_t to seqcount_LOCKNAME_t in further commits.
+
+Fixes: b65e3d7be06f ("xfrm: state: add sequence count to detect hash resizes")
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
- arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/net/netns/xfrm.h |  4 +++-
+ net/xfrm/xfrm_state.c    | 10 +++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-index cffa8991880d..93b44efdbc52 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-@@ -124,7 +124,7 @@
- #define MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-index b94b02080a34..68e8fa172974 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-@@ -130,7 +130,7 @@
- #define MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
+diff --git a/include/net/netns/xfrm.h b/include/net/netns/xfrm.h
+index 9991e5ef52cc..fbfa59801454 100644
+--- a/include/net/netns/xfrm.h
++++ b/include/net/netns/xfrm.h
+@@ -70,7 +70,9 @@ struct netns_xfrm {
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	struct dst_ops		xfrm6_dst_ops;
+ #endif
+-	spinlock_t xfrm_state_lock;
++	spinlock_t		xfrm_state_lock;
++	seqcount_t		xfrm_state_hash_generation;
++
+ 	spinlock_t xfrm_policy_lock;
+ 	struct mutex xfrm_cfg_mutex;
+ };
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 84dea0ad1666..44acc724122b 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -41,7 +41,6 @@ static void xfrm_state_gc_task(struct work_struct *work);
+  */
+ 
+ static unsigned int xfrm_state_hashmax __read_mostly = 1 * 1024 * 1024;
+-static __read_mostly seqcount_t xfrm_state_hash_generation = SEQCNT_ZERO(xfrm_state_hash_generation);
+ static struct kmem_cache *xfrm_state_cache __ro_after_init;
+ 
+ static DECLARE_WORK(xfrm_state_gc_work, xfrm_state_gc_task);
+@@ -137,7 +136,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	}
+ 
+ 	spin_lock_bh(&net->xfrm.xfrm_state_lock);
+-	write_seqcount_begin(&xfrm_state_hash_generation);
++	write_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
+ 
+ 	nhashmask = (nsize / sizeof(struct hlist_head)) - 1U;
+ 	odst = xfrm_state_deref_prot(net->xfrm.state_bydst, net);
+@@ -153,7 +152,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	rcu_assign_pointer(net->xfrm.state_byspi, nspi);
+ 	net->xfrm.state_hmask = nhashmask;
+ 
+-	write_seqcount_end(&xfrm_state_hash_generation);
++	write_seqcount_end(&net->xfrm.xfrm_state_hash_generation);
+ 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
+ 
+ 	osize = (ohashmask + 1) * sizeof(struct hlist_head);
+@@ -965,7 +964,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 
+ 	to_put = NULL;
+ 
+-	sequence = read_seqcount_begin(&xfrm_state_hash_generation);
++	sequence = read_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
+ 
+ 	rcu_read_lock();
+ 	h = xfrm_dst_hash(net, daddr, saddr, tmpl->reqid, encap_family);
+@@ -1076,7 +1075,7 @@ out:
+ 	if (to_put)
+ 		xfrm_state_put(to_put);
+ 
+-	if (read_seqcount_retry(&xfrm_state_hash_generation, sequence)) {
++	if (read_seqcount_retry(&net->xfrm.xfrm_state_hash_generation, sequence)) {
+ 		*err = -EAGAIN;
+ 		if (x) {
+ 			xfrm_state_put(x);
+@@ -2406,6 +2405,7 @@ int __net_init xfrm_state_init(struct net *net)
+ 	net->xfrm.state_num = 0;
+ 	INIT_WORK(&net->xfrm.state_hash_work, xfrm_hash_resize);
+ 	spin_lock_init(&net->xfrm.xfrm_state_lock);
++	seqcount_init(&net->xfrm.xfrm_state_hash_generation);
+ 	return 0;
+ 
+ out_byspi:
 -- 
 2.30.2
 
