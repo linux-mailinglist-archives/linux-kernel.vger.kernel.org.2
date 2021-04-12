@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4C35C03C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AD435C03E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241204AbhDLJL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
+        id S241237AbhDLJL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238573AbhDLI4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F321B6124A;
-        Mon, 12 Apr 2021 08:56:11 +0000 (UTC)
+        id S238616AbhDLI4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:56:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B8661289;
+        Mon, 12 Apr 2021 08:56:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217772;
-        bh=2sIrRiXC24IZ3c+sMIwarCIiK0yziEiQgeC2Jk0JQKw=;
+        s=korg; t=1618217775;
+        bh=2WZkXOt956qtWOlf8pzkbON2qStVVDV7YsrnMCDXkwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UxD//1Z51U1zgQcFCa2j8xTvxqIaLiTExiLfQ3sRzL0cVteqeV4Ducyhr7Rga9xaq
-         SGCgxFIxi9qPF13l1R/MS8dawwVOHplosovVoI6cGzYGp86SYmPEDGrxtQ+WEvqce1
-         2P4bQEunK+OvwPYa40lNZrWxreNwuys8C/vjrlLk=
+        b=Tq21XaoWa4bd0V0SMGRFt1vjQ8+SAyQ2R1vpQoQrIvkZnIj35i8/UqHmcGbEkPvR2
+         GmtFPuSxqBmxM9vZw+ELSE1Bhq1PyPSWcCaYZAH/ep7rhwctPSE9HwIal374FnwnCE
+         VkVaTsNBrofcBhtQYkMF5mJQ9/5AOLwi5u3CSViM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Norbert Ciosek <norbertx.ciosek@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 104/188] xfrm: Fix NULL pointer dereference on policy lookup
-Date:   Mon, 12 Apr 2021 10:40:18 +0200
-Message-Id: <20210412084017.108022670@linuxfoundation.org>
+Subject: [PATCH 5.10 105/188] virtchnl: Fix layout of RSS structures
+Date:   Mon, 12 Apr 2021 10:40:19 +0200
+Message-Id: <20210412084017.140123086@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -40,38 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Klassert <steffen.klassert@secunet.com>
+From: Norbert Ciosek <norbertx.ciosek@intel.com>
 
-[ Upstream commit b1e3a5607034aa0a481c6f69a6893049406665fb ]
+[ Upstream commit 22f8b5df881e9f1302514bbbbbb8649c2051de55 ]
 
-When xfrm interfaces are used in combination with namespaces
-and ESP offload, we get a dst_entry NULL pointer dereference.
-This is because we don't have a dst_entry attached in the ESP
-offloading case and we need to do a policy lookup before the
-namespace transition.
+Remove padding from RSS structures. Previous layout
+could lead to unwanted compiler optimizations
+in loops when iterating over key and lut arrays.
 
-Fix this by expicit checking of skb_dst(skb) before accessing it.
-
-Fixes: f203b76d78092 ("xfrm: Add virtual xfrm interfaces")
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 65ece6de0114 ("virtchnl: Add missing explicit padding to structures")
+Signed-off-by: Norbert Ciosek <norbertx.ciosek@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/xfrm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/avf/virtchnl.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index bfbc7810df94..c58a6d4eb610 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1097,7 +1097,7 @@ static inline int __xfrm_policy_check2(struct sock *sk, int dir,
- 		return __xfrm_policy_check(sk, ndir, skb, family);
+diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
+index 40bad71865ea..532bcbfc4716 100644
+--- a/include/linux/avf/virtchnl.h
++++ b/include/linux/avf/virtchnl.h
+@@ -476,7 +476,6 @@ struct virtchnl_rss_key {
+ 	u16 vsi_id;
+ 	u16 key_len;
+ 	u8 key[1];         /* RSS hash key, packed bytes */
+-	u8 pad[1];
+ };
  
- 	return	(!net->xfrm.policy_count[dir] && !secpath_exists(skb)) ||
--		(skb_dst(skb)->flags & DST_NOPOLICY) ||
-+		(skb_dst(skb) && (skb_dst(skb)->flags & DST_NOPOLICY)) ||
- 		__xfrm_policy_check(sk, ndir, skb, family);
- }
+ VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_rss_key);
+@@ -485,7 +484,6 @@ struct virtchnl_rss_lut {
+ 	u16 vsi_id;
+ 	u16 lut_entries;
+ 	u8 lut[1];        /* RSS lookup table */
+-	u8 pad[1];
+ };
  
+ VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_rss_lut);
 -- 
 2.30.2
 
