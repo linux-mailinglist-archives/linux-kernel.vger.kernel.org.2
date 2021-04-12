@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F3335C8FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CCF35C909
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242533AbhDLOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:39:36 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29202 "EHLO mga09.intel.com"
+        id S242242AbhDLOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:40:52 -0400
+Received: from mga09.intel.com ([134.134.136.24]:29206 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242437AbhDLOjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:39:02 -0400
-IronPort-SDR: 6ZT42N2pRd6IWnbSuPBco669bgUIcvlWq1HxqOivHjCBQDjwqFdnvKgVGiGuyiXFhkqX5jva/w
- pQWhMjCCK3yA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194318026"
+        id S242516AbhDLOjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:39:08 -0400
+IronPort-SDR: zNifX/YpFiAeZjrFyCIIqJp7FM03x27RlElw5kGR7hrEimdMHfsV6r636pnNBBKRUU075+Lyew
+ 4OUz4xLQ0IIw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194318029"
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="194318026"
+   d="scan'208";a="194318029"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:36 -0700
-IronPort-SDR: W6ujWwTJEqoc7zcMCQEamCVjYCknQ0mhEL0qXOOXEmoselzKEaVB2VlIGKATdZMv79/st1O98a
- iHkk+Zc2suCg==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:37 -0700
+IronPort-SDR: OtecLBDVD9YIzEsxQgbjs/ZysGGFhA01PI8lwHoBJBiCHI+t6CmgSwoNs+ASqyyM2t6afBR6O3
+ sApUejLV5+oA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="398392875"
+   d="scan'208";a="398392892"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:36 -0700
+  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:37 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -33,9 +33,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ricardo.neri-calderon@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 22/25] perf/x86/intel/uncore: Add Alder Lake support
-Date:   Mon, 12 Apr 2021 07:31:02 -0700
-Message-Id: <1618237865-33448-23-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V6 23/25] perf/x86/msr: Add Alder Lake CPU support
+Date:   Mon, 12 Apr 2021 07:31:03 -0700
+Message-Id: <1618237865-33448-24-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
 References: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
@@ -45,229 +45,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The uncore subsystem for Alder Lake is similar to the previous Tiger
-Lake.
+PPERF and SMI_COUNT MSRs are also supported on Alder Lake.
 
-The difference includes:
-- New MSR addresses for global control, fixed counters, CBOX and ARB.
-  Add a new adl_uncore_msr_ops for uncore operations.
-- Add a new threshold field for CBOX.
-- New PCIIDs for IMC devices.
+The External Design Specification (EDS) is not published yet. It comes
+from an authoritative internal source.
+
+The patch has been tested on real hardware.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/uncore.c     |   7 ++
- arch/x86/events/intel/uncore.h     |   1 +
- arch/x86/events/intel/uncore_snb.c | 131 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 139 insertions(+)
+ arch/x86/events/msr.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 35b3470..70816f3 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1740,6 +1740,11 @@ static const struct intel_uncore_init_fun rkl_uncore_init __initconst = {
- 	.pci_init = skl_uncore_pci_init,
- };
- 
-+static const struct intel_uncore_init_fun adl_uncore_init __initconst = {
-+	.cpu_init = adl_uncore_cpu_init,
-+	.mmio_init = tgl_uncore_mmio_init,
-+};
-+
- static const struct intel_uncore_init_fun icx_uncore_init __initconst = {
- 	.cpu_init = icx_uncore_cpu_init,
- 	.pci_init = icx_uncore_pci_init,
-@@ -1794,6 +1799,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&tgl_l_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&tgl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ROCKETLAKE,		&rkl_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&adl_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&adl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
- 	{},
- };
-diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 549cfb2..426212f 100644
---- a/arch/x86/events/intel/uncore.h
-+++ b/arch/x86/events/intel/uncore.h
-@@ -575,6 +575,7 @@ void snb_uncore_cpu_init(void);
- void nhm_uncore_cpu_init(void);
- void skl_uncore_cpu_init(void);
- void icl_uncore_cpu_init(void);
-+void adl_uncore_cpu_init(void);
- void tgl_uncore_cpu_init(void);
- void tgl_uncore_mmio_init(void);
- void tgl_l_uncore_mmio_init(void);
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index 5127128..0f63706 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -62,6 +62,8 @@
- #define PCI_DEVICE_ID_INTEL_TGL_H_IMC		0x9a36
- #define PCI_DEVICE_ID_INTEL_RKL_1_IMC		0x4c43
- #define PCI_DEVICE_ID_INTEL_RKL_2_IMC		0x4c53
-+#define PCI_DEVICE_ID_INTEL_ADL_1_IMC		0x4660
-+#define PCI_DEVICE_ID_INTEL_ADL_2_IMC		0x4641
- 
- /* SNB event control */
- #define SNB_UNC_CTL_EV_SEL_MASK			0x000000ff
-@@ -131,12 +133,33 @@
- #define ICL_UNC_ARB_PER_CTR			0x3b1
- #define ICL_UNC_ARB_PERFEVTSEL			0x3b3
- 
-+/* ADL uncore global control */
-+#define ADL_UNC_PERF_GLOBAL_CTL			0x2ff0
-+#define ADL_UNC_FIXED_CTR_CTRL                  0x2fde
-+#define ADL_UNC_FIXED_CTR                       0x2fdf
-+
-+/* ADL Cbo register */
-+#define ADL_UNC_CBO_0_PER_CTR0			0x2002
-+#define ADL_UNC_CBO_0_PERFEVTSEL0		0x2000
-+#define ADL_UNC_CTL_THRESHOLD			0x3f000000
-+#define ADL_UNC_RAW_EVENT_MASK			(SNB_UNC_CTL_EV_SEL_MASK | \
-+						 SNB_UNC_CTL_UMASK_MASK | \
-+						 SNB_UNC_CTL_EDGE_DET | \
-+						 SNB_UNC_CTL_INVERT | \
-+						 ADL_UNC_CTL_THRESHOLD)
-+
-+/* ADL ARB register */
-+#define ADL_UNC_ARB_PER_CTR0			0x2FD2
-+#define ADL_UNC_ARB_PERFEVTSEL0			0x2FD0
-+#define ADL_UNC_ARB_MSR_OFFSET			0x8
-+
- DEFINE_UNCORE_FORMAT_ATTR(event, event, "config:0-7");
- DEFINE_UNCORE_FORMAT_ATTR(umask, umask, "config:8-15");
- DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
- DEFINE_UNCORE_FORMAT_ATTR(inv, inv, "config:23");
- DEFINE_UNCORE_FORMAT_ATTR(cmask5, cmask, "config:24-28");
- DEFINE_UNCORE_FORMAT_ATTR(cmask8, cmask, "config:24-31");
-+DEFINE_UNCORE_FORMAT_ATTR(threshold, threshold, "config:24-29");
- 
- /* Sandy Bridge uncore support */
- static void snb_uncore_msr_enable_event(struct intel_uncore_box *box, struct perf_event *event)
-@@ -422,6 +445,106 @@ void tgl_uncore_cpu_init(void)
- 	skl_uncore_msr_ops.init_box = rkl_uncore_msr_init_box;
- }
- 
-+static void adl_uncore_msr_init_box(struct intel_uncore_box *box)
-+{
-+	if (box->pmu->pmu_idx == 0)
-+		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
-+}
-+
-+static void adl_uncore_msr_enable_box(struct intel_uncore_box *box)
-+{
-+	wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, SNB_UNC_GLOBAL_CTL_EN);
-+}
-+
-+static void adl_uncore_msr_disable_box(struct intel_uncore_box *box)
-+{
-+	if (box->pmu->pmu_idx == 0)
-+		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, 0);
-+}
-+
-+static void adl_uncore_msr_exit_box(struct intel_uncore_box *box)
-+{
-+	if (box->pmu->pmu_idx == 0)
-+		wrmsrl(ADL_UNC_PERF_GLOBAL_CTL, 0);
-+}
-+
-+static struct intel_uncore_ops adl_uncore_msr_ops = {
-+	.init_box	= adl_uncore_msr_init_box,
-+	.enable_box	= adl_uncore_msr_enable_box,
-+	.disable_box	= adl_uncore_msr_disable_box,
-+	.exit_box	= adl_uncore_msr_exit_box,
-+	.disable_event	= snb_uncore_msr_disable_event,
-+	.enable_event	= snb_uncore_msr_enable_event,
-+	.read_counter	= uncore_msr_read_counter,
-+};
-+
-+static struct attribute *adl_uncore_formats_attr[] = {
-+	&format_attr_event.attr,
-+	&format_attr_umask.attr,
-+	&format_attr_edge.attr,
-+	&format_attr_inv.attr,
-+	&format_attr_threshold.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group adl_uncore_format_group = {
-+	.name		= "format",
-+	.attrs		= adl_uncore_formats_attr,
-+};
-+
-+static struct intel_uncore_type adl_uncore_cbox = {
-+	.name		= "cbox",
-+	.num_counters   = 2,
-+	.perf_ctr_bits	= 44,
-+	.perf_ctr	= ADL_UNC_CBO_0_PER_CTR0,
-+	.event_ctl	= ADL_UNC_CBO_0_PERFEVTSEL0,
-+	.event_mask	= ADL_UNC_RAW_EVENT_MASK,
-+	.msr_offset	= ICL_UNC_CBO_MSR_OFFSET,
-+	.ops		= &adl_uncore_msr_ops,
-+	.format_group	= &adl_uncore_format_group,
-+};
-+
-+static struct intel_uncore_type adl_uncore_arb = {
-+	.name		= "arb",
-+	.num_counters   = 2,
-+	.num_boxes	= 2,
-+	.perf_ctr_bits	= 44,
-+	.perf_ctr	= ADL_UNC_ARB_PER_CTR0,
-+	.event_ctl	= ADL_UNC_ARB_PERFEVTSEL0,
-+	.event_mask	= SNB_UNC_RAW_EVENT_MASK,
-+	.msr_offset	= ADL_UNC_ARB_MSR_OFFSET,
-+	.constraints	= snb_uncore_arb_constraints,
-+	.ops		= &adl_uncore_msr_ops,
-+	.format_group	= &snb_uncore_format_group,
-+};
-+
-+static struct intel_uncore_type adl_uncore_clockbox = {
-+	.name		= "clock",
-+	.num_counters	= 1,
-+	.num_boxes	= 1,
-+	.fixed_ctr_bits	= 48,
-+	.fixed_ctr	= ADL_UNC_FIXED_CTR,
-+	.fixed_ctl	= ADL_UNC_FIXED_CTR_CTRL,
-+	.single_fixed	= 1,
-+	.event_mask	= SNB_UNC_CTL_EV_SEL_MASK,
-+	.format_group	= &icl_uncore_clock_format_group,
-+	.ops		= &adl_uncore_msr_ops,
-+	.event_descs	= icl_uncore_events,
-+};
-+
-+static struct intel_uncore_type *adl_msr_uncores[] = {
-+	&adl_uncore_cbox,
-+	&adl_uncore_arb,
-+	&adl_uncore_clockbox,
-+	NULL,
-+};
-+
-+void adl_uncore_cpu_init(void)
-+{
-+	adl_uncore_cbox.num_boxes = icl_get_cbox_num();
-+	uncore_msr_uncores = adl_msr_uncores;
-+}
-+
- enum {
- 	SNB_PCI_UNCORE_IMC,
- };
-@@ -1203,6 +1326,14 @@ static const struct pci_device_id tgl_uncore_pci_ids[] = {
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_TGL_H_IMC),
- 		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
- 	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ADL_1_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
-+	{ /* IMC */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_ADL_2_IMC),
-+		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
-+	},
- 	{ /* end: all zeroes */ }
- };
- 
+diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
+index 680404c..c853b28 100644
+--- a/arch/x86/events/msr.c
++++ b/arch/x86/events/msr.c
+@@ -100,6 +100,8 @@ static bool test_intel(int idx, void *data)
+ 	case INTEL_FAM6_TIGERLAKE_L:
+ 	case INTEL_FAM6_TIGERLAKE:
+ 	case INTEL_FAM6_ROCKETLAKE:
++	case INTEL_FAM6_ALDERLAKE:
++	case INTEL_FAM6_ALDERLAKE_L:
+ 		if (idx == PERF_MSR_SMI || idx == PERF_MSR_PPERF)
+ 			return true;
+ 		break;
 -- 
 2.7.4
 
