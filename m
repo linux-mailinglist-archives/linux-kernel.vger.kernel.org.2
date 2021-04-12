@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0A735C254
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A8135C20E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243783AbhDLJnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        id S239396AbhDLJid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240722AbhDLJKy (ORCPT
+        with ESMTP id S240727AbhDLJKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:10:54 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA059C06138E
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id f29so8882785pgm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9454AC06138F
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:24 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id c17so8798996pfn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3QeA4bIK5GaZsi48yUhmbO7fOznvzIDvWJ10aqKKUg0=;
-        b=vt2TktJL6sP6xFjdFxGR7uglI/UC0Owncgl8oyIgcTZouxROhQ4JVSQBQ4nDOL/4Qj
-         I8slMZbYCulDkKW2d+RvBuWslqB0rQ9oQ0Q3uOyhPTlaw6kaNamGmyqxKFmp79aZJtWH
-         0HwAxCww3+LRgwE4Y3/RdPoNUHfydxxQzUxPlMF8C0C1l5OArPdsi5zWFbgUv+SZbPMV
-         GhBS2qouSqcjPaz3ed9eeIROs6d/FECR31NybBYArkfO9Ffr9OkTD/bUE6rGGvQbhToH
-         WKmoOYCrtdKmQgpkacR5WWXXkZrdi5v5uS4w3fk3XaUvAa1gqSy6ExTgfugTODb7dxbH
-         xJXg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gk/+cUxEFhkA5Sr23xDJi6lyVwLgABo9cNglBLLd61g=;
+        b=qsjsJo50hMoR+naug+xFzA1xHA7FjV62lRTjqRKpyOeNHq484SHORyD50a47lqNiQL
+         2S93nlQ504n8QC2srq0dF+8NMIR2V+VSBVXXLsG2sREV7nuHoC0qk+8/1Y3MvUFClXrC
+         ozjfha2lhiMge6Isa4h1FlkCmwYv8YvbOhXgeAz3eZYi2Fliy3SMq97uN7WPjRzQgYZs
+         BvlE3MiZniIvZhUK7cmrp2+ieJDjEKH8ODDmt8co0BMYBQ7/kV+ZJN1CfdMhO8xow3i/
+         j9ub/jzZ3UmIURCMsVgC5lomgOgrAAZTX/FEDGCYBQ8bOXe7489IhF0Ag/ZtfdikQHl6
+         /l8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3QeA4bIK5GaZsi48yUhmbO7fOznvzIDvWJ10aqKKUg0=;
-        b=kAbdmUE1L0PMOTxlDznjx06Ce5XGmLNXz2GYqtBI1dVWNH3fAluZ1ubxT1pvCPg1+V
-         jGhNHXrJGBny5A63tB3A5msWaWVmQf7gCTRG7vOGYXsYmo7jevCqL17sgk9WGluSNsf6
-         dR80O34J73Y/XDRb30flBTEzOu4ltmyiqo95omfCOCl7EAfF7ec32CzP3RJ93zh4ppCe
-         AsfZpaZI1Es0/NVgj2fAIE/oh6ogAW24dRpZhbgrlWwnQXGEd3j23IkIrLB1VXZM+dKv
-         gAWW5mnbVhaFjAoqhTVw2aDT+6PDMT2KAQCDiASxlpwqmCshy0hKgERKsdxlkJqE5xyM
-         vZvg==
-X-Gm-Message-State: AOAM531v/0J9en9HcdHujRfjgRuWaJOZWtiI5f0ZLW2LbVod5m0V3Lny
-        p2zfq83DLwf1RnFhjjOtHs/mUw==
-X-Google-Smtp-Source: ABdhPJx0D8tER8JD0nOmci8alet46I5dGHvx0NScfJNBsS9ElKisGVU5VVvwo9X10yefzRdfZOZiaA==
-X-Received: by 2002:a63:77cf:: with SMTP id s198mr25996394pgc.252.1618218621208;
-        Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gk/+cUxEFhkA5Sr23xDJi6lyVwLgABo9cNglBLLd61g=;
+        b=lzfZGT6h60Epv31oMAVv1NDotwpFzx3yHJ/tsOX6298cP8wmvT/9KJS1mmF04pMQ9X
+         QyWar7dv5fZNhCvIn2ol9eQNJ20SyZCybL06JOIElA5kcc6hAn9+i8iWcRYO9nOxGXEV
+         v4SNGQbYo3hzyTLv4PUODCLA0WTmoRyKKLEmjncNymieqfCXr/VnXa3csx0BVSQ3oxFh
+         DeJ9Bx4WwQVpddD3K6EBIyCvpYeKDIXV4ZvTL6eF2oHzA2qcKhdrp+i4e+jhsD9shAPk
+         WW3+OPF8QvAqTCWLYUq4ngKD2xqcfU0tEK1kvfScQpN7rhdKP1XVxS1tgmqJhg08g1Va
+         gwuQ==
+X-Gm-Message-State: AOAM532LPQVV/JkCUaBVY4IxwfS48x8xU/MGku/Ew7r0CyHbfsF+SYt8
+        mpXKv3BzR8xKGua2VQnAS5NWVg==
+X-Google-Smtp-Source: ABdhPJzx4UCGci4yBj68Z38bKn4CVgVVUcd1FUN7aq/GXQ6aG1ontDmelZc0UdEirWIw3d5B9x3RaQ==
+X-Received: by 2002:a62:2943:0:b029:24b:f35d:2565 with SMTP id p64-20020a6229430000b029024bf35d2565mr5605768pfp.52.1618218624176;
+        Mon, 12 Apr 2021 02:10:24 -0700 (PDT)
 Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id l10sm9231324pfc.125.2021.04.12.02.10.20
+        by smtp.gmail.com with ESMTPSA id x12sm9537709pjk.53.2021.04.12.02.10.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 02:10:20 -0700 (PDT)
+        Mon, 12 Apr 2021 02:10:23 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>,
@@ -65,55 +65,37 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <James.Clark@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 0/6] perf arm-spe: Enable timestamp
-Date:   Mon, 12 Apr 2021 17:10:00 +0800
-Message-Id: <20210412091006.468557-1-leo.yan@linaro.org>
+Subject: [PATCH v4 1/6] perf arm-spe: Remove unused enum value ARM_SPE_PER_CPU_MMAPS
+Date:   Mon, 12 Apr 2021 17:10:01 +0800
+Message-Id: <20210412091006.468557-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210412091006.468557-1-leo.yan@linaro.org>
+References: <20210412091006.468557-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set is to enable timestamp for Arm SPE trace.  It reads out
-TSC parameters from the TIME_CONV event, the parameters are used for
-conversion between timer counter and kernel time and which is applied
-for Arm SPE samples.
+The enum value 'ARM_SPE_PER_CPU_MMAPS' is never used so remove it.
 
-This version dropped the change for adding hardware clock parameters
-into auxtrace info, alternatively, it utilizes the TIME_CONV event to
-extract the clock parameters which is used for timestamp calculation.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ tools/perf/util/arm-spe.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-This patch set can be clearly applied on perf/core branch with:
-
-  commit 2c0cb9f56020 ("perf test: Add a shell test for 'perf stat --bpf-counters' new option")
-
-Ths patch series has been tested on Hisilicon D06 platform.
-
-Changes from v3:
-* Let to be backwards-compatible for TIME_CONV event (Adrian).
-
-Changes from v2:
-* Changed to use TIME_CONV event for extracting clock parameters (Al).
-
-Changes from v1:
-* Rebased patch series on the latest perf/core branch;
-* Fixed the patch for dumping TSC parameters to support both the
-  older and new auxtrace info format.
-
-
-Leo Yan (6):
-  perf arm-spe: Remove unused enum value ARM_SPE_PER_CPU_MMAPS
-  perf arm-spe: Save clock parameters from TIME_CONV event
-  perf arm-spe: Convert event kernel time to counter value
-  perf arm-spe: Assign kernel time to synthesized event
-  perf arm-spe: Bail out if the trace is later than perf event
-  perf arm-spe: Don't wait for PERF_RECORD_EXIT event
-
- tools/perf/util/arm-spe.c | 74 +++++++++++++++++++++++++++++++++------
- tools/perf/util/arm-spe.h |  1 -
- 2 files changed, 64 insertions(+), 11 deletions(-)
-
+diff --git a/tools/perf/util/arm-spe.h b/tools/perf/util/arm-spe.h
+index 98d3235781c3..105ce0ea0a01 100644
+--- a/tools/perf/util/arm-spe.h
++++ b/tools/perf/util/arm-spe.h
+@@ -11,7 +11,6 @@
+ 
+ enum {
+ 	ARM_SPE_PMU_TYPE,
+-	ARM_SPE_PER_CPU_MMAPS,
+ 	ARM_SPE_AUXTRACE_PRIV_MAX,
+ };
+ 
 -- 
 2.25.1
 
