@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2B835C13C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE54035C010
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241284AbhDLJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:25:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
+        id S240046AbhDLJJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238399AbhDLJCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D05F861207;
-        Mon, 12 Apr 2021 09:00:40 +0000 (UTC)
+        id S238322AbhDLIxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:53:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2331761285;
+        Mon, 12 Apr 2021 08:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218041;
-        bh=gLUIuEpYwlpOlFUPuzXAFx6I7OuCt8QpiuA7uwQG5Tk=;
+        s=korg; t=1618217500;
+        bh=5C1kcqYKpH8LmQDYoQ9ZRdeJZfU7nUFTTbFu8wbbdFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nDt3LiWgj1YwnJk9T2XeNKjfj1B8H1essnWQ6i6xVAjgB8hk4X6b162nk4heQS+SK
-         rO6uL7wRZ+kbE0cwObzArtd0eku4nGuIsVfhzXI0jTgQ1hVfPuBzBaAF4bDjU3Z4iW
-         t5V0T/NJuSxCbbHkKWU9soum6CHuiHIGzdgeX9R8=
+        b=1DM7h4WbjxdkNRQGJvklAglFKTbKtmz9FZOD61llYAg74q7gg4ePUPutM2k7+7cy2
+         RgYJOLnDStU10mHVP2RkFyI4sS3TVCYSxcspXAXHZMjEz7xZP1+BVmCraBhpinsvge
+         V4BycjoAIaK46yuTQMRv80vO+xUtHE0ff/wui8so=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.11 048/210] iwlwifi: pcie: properly set LTR workarounds on 22000 devices
+        stable@vger.kernel.org,
+        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.10 039/188] ice: Use port number instead of PF ID for WoL
 Date:   Mon, 12 Apr 2021 10:39:13 +0200
-Message-Id: <20210412084017.611304212@linuxfoundation.org>
+Message-Id: <20210412084014.952931559@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,156 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
 
-commit 25628bc08d4526d3673ca7d039eb636aa9006076 upstream.
+commit 3176551979b92b02756979c0f1e2d03d1fc82b1e upstream.
 
-As the context info gen3 code is only called for >=AX210 devices
-(from iwl_trans_pcie_gen2_start_fw()) the code there to set LTR
-on 22000 devices cannot actually do anything (22000 < AX210).
+As per the spec, the WoL control word read from the NVM should be
+interpreted as port numbers, and not PF numbers. So when checking
+if WoL supported, use the port number instead of the PF ID.
 
-Fix this by moving the LTR code to iwl_trans_pcie_gen2_start_fw()
-where it can handle both devices. This then requires that we kick
-the firmware only after that rather than doing it from the context
-info code.
+Also, ice_is_wol_supported doesn't really need a pointer to the pf
+struct, but just needs a pointer to the hw instance.
 
-Note that this again had a dead branch in gen3 code, which I've
-removed here.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Fixes: ed0022da8bd9 ("iwlwifi: pcie: set LTR on more devices")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20210326125611.675486178ed1.Ib61463aba6920645059e366dcdca4c4c77f0ff58@changeid
+Fixes: 769c500dcc1e ("ice: Add advanced power mgmt for WoL")
+Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c |   31 -------------
- drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info.c      |    3 -
- drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c     |   35 +++++++++++++++
- 3 files changed, 37 insertions(+), 32 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h         |    2 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c |    4 ++--
+ drivers/net/ethernet/intel/ice/ice_main.c    |    9 ++++-----
+ 3 files changed, 7 insertions(+), 8 deletions(-)
 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info-gen3.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
- /*
-- * Copyright (C) 2018-2020 Intel Corporation
-+ * Copyright (C) 2018-2021 Intel Corporation
-  */
- #include "iwl-trans.h"
- #include "iwl-fh.h"
-@@ -75,15 +75,6 @@ int iwl_pcie_ctxt_info_gen3_init(struct
- 				 const struct fw_img *fw)
- {
- 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
--	u32 ltr_val = CSR_LTR_LONG_VAL_AD_NO_SNOOP_REQ |
--		      u32_encode_bits(CSR_LTR_LONG_VAL_AD_SCALE_USEC,
--				      CSR_LTR_LONG_VAL_AD_NO_SNOOP_SCALE) |
--		      u32_encode_bits(250,
--				      CSR_LTR_LONG_VAL_AD_NO_SNOOP_VAL) |
--		      CSR_LTR_LONG_VAL_AD_SNOOP_REQ |
--		      u32_encode_bits(CSR_LTR_LONG_VAL_AD_SCALE_USEC,
--				      CSR_LTR_LONG_VAL_AD_SNOOP_SCALE) |
--		      u32_encode_bits(250, CSR_LTR_LONG_VAL_AD_SNOOP_VAL);
- 	struct iwl_context_info_gen3 *ctxt_info_gen3;
- 	struct iwl_prph_scratch *prph_scratch;
- 	struct iwl_prph_scratch_ctrl_cfg *prph_sc_ctrl;
-@@ -217,26 +208,6 @@ int iwl_pcie_ctxt_info_gen3_init(struct
- 	iwl_set_bit(trans, CSR_CTXT_INFO_BOOT_CTRL,
- 		    CSR_AUTO_FUNC_BOOT_ENA);
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -586,7 +586,7 @@ int ice_schedule_reset(struct ice_pf *pf
+ void ice_print_link_msg(struct ice_vsi *vsi, bool isup);
+ const char *ice_stat_str(enum ice_status stat_err);
+ const char *ice_aq_str(enum ice_aq_err aq_err);
+-bool ice_is_wol_supported(struct ice_pf *pf);
++bool ice_is_wol_supported(struct ice_hw *hw);
+ int
+ ice_fdir_write_fltr(struct ice_pf *pf, struct ice_fdir_fltr *input, bool add,
+ 		    bool is_tun);
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -3472,7 +3472,7 @@ static void ice_get_wol(struct net_devic
+ 		netdev_warn(netdev, "Wake on LAN is not supported on this interface!\n");
  
--	/*
--	 * To workaround hardware latency issues during the boot process,
--	 * initialize the LTR to ~250 usec (see ltr_val above).
--	 * The firmware initializes this again later (to a smaller value).
--	 */
--	if ((trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_AX210 ||
--	     trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_22000) &&
--	    !trans->trans_cfg->integrated) {
--		iwl_write32(trans, CSR_LTR_LONG_VAL_AD, ltr_val);
--	} else if (trans->trans_cfg->integrated &&
--		   trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_22000) {
--		iwl_write_prph(trans, HPM_MAC_LTR_CSR, HPM_MAC_LRT_ENABLE_ALL);
--		iwl_write_prph(trans, HPM_UMAC_LTR, ltr_val);
--	}
--
--	if (trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_AX210)
--		iwl_write_umac_prph(trans, UREG_CPU_INIT_RUN, 1);
--	else
--		iwl_set_bit(trans, CSR_GP_CNTRL, CSR_AUTO_FUNC_INIT);
--
- 	return 0;
+ 	/* Get WoL settings based on the HW capability */
+-	if (ice_is_wol_supported(pf)) {
++	if (ice_is_wol_supported(&pf->hw)) {
+ 		wol->supported = WAKE_MAGIC;
+ 		wol->wolopts = pf->wol_ena ? WAKE_MAGIC : 0;
+ 	} else {
+@@ -3492,7 +3492,7 @@ static int ice_set_wol(struct net_device
+ 	struct ice_vsi *vsi = np->vsi;
+ 	struct ice_pf *pf = vsi->back;
  
- err_free_ctxt_info:
---- a/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/ctxt-info.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
- /*
-  * Copyright (C) 2017 Intel Deutschland GmbH
-- * Copyright (C) 2018-2020 Intel Corporation
-+ * Copyright (C) 2018-2021 Intel Corporation
-  */
- #include "iwl-trans.h"
- #include "iwl-fh.h"
-@@ -240,7 +240,6 @@ int iwl_pcie_ctxt_info_init(struct iwl_t
+-	if (vsi->type != ICE_VSI_PF || !ice_is_wol_supported(pf))
++	if (vsi->type != ICE_VSI_PF || !ice_is_wol_supported(&pf->hw))
+ 		return -EOPNOTSUPP;
  
- 	/* kick FW self load */
- 	iwl_write64(trans, CSR_CTXT_INFO_BA, trans_pcie->ctxt_info_dma_addr);
--	iwl_write_prph(trans, UREG_CPU_INIT_RUN, 1);
- 
- 	/* Context info will be released upon alive or failure to get one */
- 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
-@@ -260,6 +260,34 @@ void iwl_trans_pcie_gen2_fw_alive(struct
- 	mutex_unlock(&trans_pcie->mutex);
+ 	/* only magic packet is supported */
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -3515,15 +3515,14 @@ static int ice_init_interrupt_scheme(str
  }
  
-+static void iwl_pcie_set_ltr(struct iwl_trans *trans)
-+{
-+	u32 ltr_val = CSR_LTR_LONG_VAL_AD_NO_SNOOP_REQ |
-+		      u32_encode_bits(CSR_LTR_LONG_VAL_AD_SCALE_USEC,
-+				      CSR_LTR_LONG_VAL_AD_NO_SNOOP_SCALE) |
-+		      u32_encode_bits(250,
-+				      CSR_LTR_LONG_VAL_AD_NO_SNOOP_VAL) |
-+		      CSR_LTR_LONG_VAL_AD_SNOOP_REQ |
-+		      u32_encode_bits(CSR_LTR_LONG_VAL_AD_SCALE_USEC,
-+				      CSR_LTR_LONG_VAL_AD_SNOOP_SCALE) |
-+		      u32_encode_bits(250, CSR_LTR_LONG_VAL_AD_SNOOP_VAL);
-+
-+	/*
-+	 * To workaround hardware latency issues during the boot process,
-+	 * initialize the LTR to ~250 usec (see ltr_val above).
-+	 * The firmware initializes this again later (to a smaller value).
-+	 */
-+	if ((trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_AX210 ||
-+	     trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_22000) &&
-+	    !trans->trans_cfg->integrated) {
-+		iwl_write32(trans, CSR_LTR_LONG_VAL_AD, ltr_val);
-+	} else if (trans->trans_cfg->integrated &&
-+		   trans->trans_cfg->device_family == IWL_DEVICE_FAMILY_22000) {
-+		iwl_write_prph(trans, HPM_MAC_LTR_CSR, HPM_MAC_LRT_ENABLE_ALL);
-+		iwl_write_prph(trans, HPM_UMAC_LTR, ltr_val);
-+	}
-+}
-+
- int iwl_trans_pcie_gen2_start_fw(struct iwl_trans *trans,
- 				 const struct fw_img *fw, bool run_in_rfkill)
+ /**
+- * ice_is_wol_supported - get NVM state of WoL
+- * @pf: board private structure
++ * ice_is_wol_supported - check if WoL is supported
++ * @hw: pointer to hardware info
+  *
+  * Check if WoL is supported based on the HW configuration.
+  * Returns true if NVM supports and enables WoL for this port, false otherwise
+  */
+-bool ice_is_wol_supported(struct ice_pf *pf)
++bool ice_is_wol_supported(struct ice_hw *hw)
  {
-@@ -326,6 +354,13 @@ int iwl_trans_pcie_gen2_start_fw(struct
- 	if (ret)
- 		goto out;
+-	struct ice_hw *hw = &pf->hw;
+ 	u16 wol_ctrl;
  
-+	iwl_pcie_set_ltr(trans);
-+
-+	if (trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_AX210)
-+		iwl_write_umac_prph(trans, UREG_CPU_INIT_RUN, 1);
-+	else
-+		iwl_write_prph(trans, UREG_CPU_INIT_RUN, 1);
-+
- 	/* re-check RF-Kill state since we may have missed the interrupt */
- 	hw_rfkill = iwl_pcie_check_hw_rf_kill(trans);
- 	if (hw_rfkill && !run_in_rfkill)
+ 	/* A bit set to 1 in the NVM Software Reserved Word 2 (WoL control
+@@ -3532,7 +3531,7 @@ bool ice_is_wol_supported(struct ice_pf
+ 	if (ice_read_sr_word(hw, ICE_SR_NVM_WOL_CFG, &wol_ctrl))
+ 		return false;
+ 
+-	return !(BIT(hw->pf_id) & wol_ctrl);
++	return !(BIT(hw->port_info->lport) & wol_ctrl);
+ }
+ 
+ /**
 
 
