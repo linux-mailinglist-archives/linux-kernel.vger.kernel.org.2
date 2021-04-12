@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAE935C0D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB1735C0D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241572AbhDLJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:16:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
+        id S241609AbhDLJQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239117AbhDLI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239123AbhDLI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 04:59:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C6161249;
-        Mon, 12 Apr 2021 08:57:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F30561207;
+        Mon, 12 Apr 2021 08:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217847;
-        bh=QxmsrCTn/9n1/8aQBFIoSviyTKNO6UzZHOjKMK600qc=;
+        s=korg; t=1618217849;
+        bh=7qqUKXHjyPAHtVY69D149azJupeQhNFwiZ92L7+KpNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=apRYVeDa/xj64F1UKa77pWal3+xGfUHlStEwNyBGeGi16VdNHDLKntPEGJZBY9SM5
-         u1XafpGKs7BFJPnD6fOxWV7Eba3gNOdZMzgu+NnwBf3+YDgv2PQB6qaTWMhP7dJ7a0
-         O04y/1vm6NQCrfNbJCyaZirrGf+Vh4r8Za/WEypg=
+        b=UnNB88mIgl8I5tTkjYjmHmT02Egs/But2cnH9tK3poMC97agZH941NL/u4anpKn0d
+         RAR+VBXvgfVfVHYw1/03fTgq3pcc+FwM8Ttiecl3kMm0+qiWhvepyvFeCUHC7PF7Js
+         IiSw3Gg5IhyWBiYzI25gQ7o84kFOSyKhZ/jcSfxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Grzegorz Siwik <grzegorz.siwik@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 165/188] i40e: Fix parameters in aq_get_phy_register()
-Date:   Mon, 12 Apr 2021 10:41:19 +0200
-Message-Id: <20210412084019.117776085@linuxfoundation.org>
+Subject: [PATCH 5.10 166/188] RDMA/addr: Be strict with gid size
+Date:   Mon, 12 Apr 2021 10:41:20 +0200
+Message-Id: <20210412084019.150344926@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,37 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Siwik <grzegorz.siwik@intel.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit b2d0efc4be7ed320e33eaa9b6dd6f3f6011ffb8e ]
+[ Upstream commit d1c803a9ccd7bd3aff5e989ccfb39ed3b799b975 ]
 
-Change parameters order in aq_get_phy_register() due to wrong
-statistics in PHY reported by ethtool. Previously all PHY statistics were
-exactly the same for all interfaces
-Now statistics are reported correctly - different for different interfaces
+The nla_len() is less than or equal to 16.  If it's less than 16 then end
+of the "gid" buffer is uninitialized.
 
-Fixes: 0514db37dd78 ("i40e: Extend PHY access with page change flag")
-Signed-off-by: Grzegorz Siwik <grzegorz.siwik@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+Link: https://lore.kernel.org/r/20210405074434.264221-1-leon@kernel.org
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/addr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 849e38be69ff..31d48a85cfaf 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -5285,7 +5285,7 @@ static int i40e_get_module_eeprom(struct net_device *netdev,
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 0abce004a959..65e3e7df8a4b 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
  
- 		status = i40e_aq_get_phy_register(hw,
- 				I40E_AQ_PHY_REG_ACCESS_EXTERNAL_MODULE,
--				true, addr, offset, &value, NULL);
-+				addr, true, offset, &value, NULL);
- 		if (status)
- 			return -EIO;
- 		data[i] = value;
+ static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
+ 	[LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
+-		.len = sizeof(struct rdma_nla_ls_gid)},
++		.len = sizeof(struct rdma_nla_ls_gid),
++		.validation_type = NLA_VALIDATE_MIN,
++		.min = sizeof(struct rdma_nla_ls_gid)},
+ };
+ 
+ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
 -- 
 2.30.2
 
