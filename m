@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCE335C5D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9397735C5D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240502AbhDLMAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:00:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42254 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238448AbhDLMAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:00:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9AAEEAE5C;
-        Mon, 12 Apr 2021 11:59:55 +0000 (UTC)
-Date:   Mon, 12 Apr 2021 13:59:52 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH V2 4/6] mm: Drop redundant
- ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION
-Message-ID: <20210412115952.GC27818@linux>
-References: <1617259448-22529-1-git-send-email-anshuman.khandual@arm.com>
- <1617259448-22529-5-git-send-email-anshuman.khandual@arm.com>
+        id S240730AbhDLMAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:00:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238448AbhDLMAu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618228832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqhV33RkbsMbtO9g46LNef0TvFJ+Oo49emjwqgVWPXY=;
+        b=WCoBJ9ww9/3t1COXjbh1ibLY0xm8m4VvGPrvoE4Fe00mYEYYwbiOwNSdf6EygTzfkkxkeg
+        bnDrVvz8fxf65GJcKuUtItHgm20jqe8fLBkkq9WxtgNLJ9vnAC1l/cQGQ9fDfJvOKIn3qL
+        69JhbZezDctcg3njJEZskD2azAMx0A0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-MGzVky1IOmeJ8UGhVTNogA-1; Mon, 12 Apr 2021 08:00:30 -0400
+X-MC-Unique: MGzVky1IOmeJ8UGhVTNogA-1
+Received: by mail-wr1-f72.google.com with SMTP id j4so5935135wru.20
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:00:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fqhV33RkbsMbtO9g46LNef0TvFJ+Oo49emjwqgVWPXY=;
+        b=SgRc1jE2nF1DgvdcDWfo746/SugKSZH92/ugV1IPEHjZCpWZPH5G/vpYBqd6TGBl33
+         qKv/kF2iEgaO5DGmghN5kfFMTLjihiEDfsDVmHNg19pv1xGgmxaiIhsWfWoJLeembSzA
+         Z98hLMTP0MTo64NTCEGpnUHxskIEg4YJEyjNQUsTY/SzsfJy6Sr5ABvR9jNjbENilpv+
+         tKZdYAFAMCDVEBHrAVB6/+E1fdvmIuxufV4Mx0ivHFOV/9mdPVvvBjjVXzZpxFp28YUT
+         Xb5bLxMrdQACqDZPl3xiLHa6l9y5bWYTNXKFrjopdR2EnpdvmoX80KloZFzEB4no+EOq
+         vuxg==
+X-Gm-Message-State: AOAM532lWm5bideaSHDmAmO/9unZLH4wQjW6uuDYq7Xnj2KG7wp3OAeP
+        AsvG56n/LifcUjfy7NgHyB+SmZb2o6Gc+/AAfB9qDWWYDaGjUHP+Fkg+eN1Z1k7Mm5Q4Bq1k9lQ
+        ROmvEhHnBfrd5ua+gMw7s5iLe
+X-Received: by 2002:a1c:2985:: with SMTP id p127mr21710540wmp.165.1618228829148;
+        Mon, 12 Apr 2021 05:00:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx2SCE8sMznZG6rxO4GSbL4qQt0Uw6bMoyj3GCEYG1byM8BieOAw3WLYqRj7PoobgERMieckw==
+X-Received: by 2002:a1c:2985:: with SMTP id p127mr21710521wmp.165.1618228828984;
+        Mon, 12 Apr 2021 05:00:28 -0700 (PDT)
+Received: from redhat.com ([2a10:8006:2281:0:1994:c627:9eac:1825])
+        by smtp.gmail.com with ESMTPSA id j14sm16118383wrw.69.2021.04.12.05.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 05:00:28 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 08:00:24 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Enrico Granata <egranata@google.com>, jasowang@redhat.com,
+        pbonzini@redhat.com, axboe@kernel.dk,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_blk: Add support for lifetime feature
+Message-ID: <20210412074309-mutt-send-email-mst@kernel.org>
+References: <20210330231602.1223216-1-egranata@google.com>
+ <YHQQL1OTOdnuOYUW@stefanha-x1.localdomain>
+ <20210412094217.GA981912@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617259448-22529-5-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210412094217.GA981912@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 12:14:06PM +0530, Anshuman Khandual wrote:
-> ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION configs have duplicate definitions on
-> platforms that subscribe them. Drop these reduntant definitions and instead
-> just select them appropriately.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: x86@kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com> (arm64)
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+On Mon, Apr 12, 2021 at 10:42:17AM +0100, Christoph Hellwig wrote:
+> A note to the virtio committee:  eMMC is the worst of all the currently
+> active storage standards by a large margin.  It defines very strange
+> ad-hoc interfaces that expose very specific internals and often provides
+> very poor abstractions.
 
-Hi Anshuman, 
+Are we talking about the lifetime feature here?  UFS has it too right?
+It's not too late to
+change things if necessary... it would be great if you could provide
+more of the feedback on this on the TC mailing list.
 
-X86 needs fixing, see below:
+> It would be great it you could reach out to the
+> wider storage community before taking bad ideas from the eMMC standard
+> and putting it into virtio.
 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 503d8b2e8676..10702ef1eb57 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -60,8 +60,10 @@ config X86
->  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
->  	select ARCH_32BIT_OFF_T			if X86_32
->  	select ARCH_CLOCKSOURCE_INIT
-> +	select ARCH_ENABLE_HUGEPAGE_MIGRATION if x86_64 && HUGETLB_PAGE && MIGRATION
->  	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
->  	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
-> +	select ARCH_ENABLE_THP_MIGRATION if x86_64 && TRANSPARENT_HUGEPAGE
-
-you need s/x86_64/X86_64/, otherwise we are left with no migration :-)
+Noted.  It would be great if we had more representation from the storage
+community ... meanwhile what would a good forum for this be?
+linux-block@vger.kernel.org ?
+Thanks,
 
 -- 
-Oscar Salvador
-SUSE L3
+MST
+
