@@ -2,120 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2373B35BE97
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ACA35C014
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239386AbhDLJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:00:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S240175AbhDLJJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238328AbhDLItb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:49:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D155F61379;
-        Mon, 12 Apr 2021 08:48:32 +0000 (UTC)
+        id S238822AbhDLIyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:54:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A446061363;
+        Mon, 12 Apr 2021 08:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618217313;
-        bh=eLznHwvEfmec088sW414tCcwJZyAy1dqSqy3r+pI7zc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uey+W82dISxV0CSUCEiP+7gx9QuEZBJfcRoFlSMpkmrDlRAJJ0xVAOCsY94BkROLO
-         zR/I466PgDid3faek70DuVNVg7noHojv66W6cwsIyY2yvu9Lt2qRuc9nGzCIxgZBXn
-         b+pFwRet18DXS13aa8a0O4MFYM9FTwIPGTmzP+TKLFSBeZqwLd+xPrXiLpfNkZam//
-         nTLqalOsrHTkSgYJ0euxXxHf96MAHZTKfV0Uyr+Q3gmjq/OvXQUq6zhW/U9m2u5Nji
-         FvCPzYE1fW7fbdBhJcyx8lAQrFqUby6/4TW+Qu7SCI6vP9Tw1jB9lcRoTkvaxiDZxi
-         iOtWMOODr0mgA==
-Received: by mail-wr1-f48.google.com with SMTP id a6so12023710wrw.8;
-        Mon, 12 Apr 2021 01:48:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532eWGV1hrPeuH8JRUJZ3NwfO5LXvWL3KOuKwK1eC7rK6S6szAGj
-        ExltV7g47vRwzoDHS11IYRaUMbgTSbFR/zbyazI=
-X-Google-Smtp-Source: ABdhPJwdOphNG/NExZknsy5yMxBCnGZA+q7EKNOchQAgxbs01jSI9QEePmT+lsicnZYJB8nH9FG1BOhyUFdSoL2u8ew=
-X-Received: by 2002:adf:c70b:: with SMTP id k11mr30918454wrg.165.1618217311367;
- Mon, 12 Apr 2021 01:48:31 -0700 (PDT)
+        s=k20201202; t=1618217579;
+        bh=hrWfHU5AAc5N/c21/smS4Sap61CFVbzlbuSTQUEq1B8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aYsWHDuHjnYvcAjqadsSxQE3wBtMTzBJMv67OFHZ5rnLhkQEFxnpgMWfRjaovnwr6
+         GFivLGNUi5hmjXJTxmEINEa8JIxgDGnNxZ4DqYqUQgOVtYVWPagBvsfsuOsmihUbVJ
+         lepBlXLejyPqZIl54p2qfjqIcqMXlBhHKYXgKYmKR8OUAfqEPCABpXyKW1NkfFkpgl
+         LXPlPrG1FYluboLSa58//ynE8gpd69NGsob4AV/XzqasTw8qqd8BGApp26eITreDDG
+         Amrc+hbX1696QejfORGBqICHtep//3uJgHHXIDqMeRpTI+KqE2pXXl1f5r2S5JMXw3
+         d5TV+hMh53tcA==
+Date:   Mon, 12 Apr 2021 11:52:43 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <YHQKWx6Alcc6OQ9X@unreal>
+References: <20210412023455.45594-1-decui@microsoft.com>
+ <YHP6s2zagD67Xr0z@unreal>
+ <MW2PR2101MB08920145C271FCEF8D337BE2BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-16-andrew@aj.id.au>
- <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com> <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
-In-Reply-To: <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 12 Apr 2021 10:48:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
-Message-ID: <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
-Subject: Re: [PATCH v2 16/21] ipmi: kcs_bmc: Add a "raw" character device interface
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        openipmi-developer@lists.sourceforge.net,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Corey Minyard <minyard@acm.org>, Joel Stanley <joel@jms.id.au>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Benjamin Fair <benjaminfair@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB08920145C271FCEF8D337BE2BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
-> > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> > >
-> > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
-> > > However, KCS devices are useful beyond IPMI (or keyboards), as they
-> > > provide a means to generate IRQs and exchange arbitrary data between a
-> > > BMC and its host system.
-> >
-> > I only noticed the series after Joel asked about the DT changes on the arm
-> > side. One question though:
-> >
-> > How does this related to the drivers/input/serio/ framework that also talks
-> > to the keyboard controller for things that are not keyboards?
->
-> I've taken a brief look and I feel they're somewhat closely related.
->
-> It's plausible that we could wrangle the code so the Aspeed and Nuvoton
-> KCS drivers move under drivers/input/serio. If you squint, the i8042
-> serio device driver has similarities with what the Aspeed and Nuvoton
-> device drivers are providing to the KCS IPMI stack.
+On Mon, Apr 12, 2021 at 08:35:32AM +0000, Dexuan Cui wrote:
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Monday, April 12, 2021 12:46 AM
+> > To: Dexuan Cui <decui@microsoft.com>
+> > > ...
+> > > +#define ANA_MAJOR_VERSION	0
+> > > +#define ANA_MINOR_VERSION	1
+> > > +#define ANA_MICRO_VERSION	1
+> > 
+> > Please don't introduce drier versions.
+> 
+> This is not the usual "driver version", though it's called  "drv version" :-)
+> As you can see, the driver does not use the macro MODULE_VERSION().
+> 
+> Here the "drv version" actually means the version of the VF-to-PF protocol,
+> with which the Azure Network Adapter ethernet NIC driver (i.e. the VF driver)
+> talks to the PF driver.  The protocol version determines the formats of the
+> messages that are sent from the VF driver to the PF driver, e.g. query the
+> MAC address, create Send/Receive queues, configure RSS, etc.
+> 
+> Currently the protocol versin is 0.1.1 You may ask why it's called
+> "drv version" rather than "protocol version" -- it's because the PF driver
+> calls it that way, so I think here the VF driver may as well use the same
+> name. BTW, the "drv ver" info is passed to the PF driver in the below
+> function:
 
-After looking some more into it, I finally understood that the two are
-rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
-is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
-that the proposed kcs_bmc_cdev_raw.c interface would be
-what corresponds to the other side of
-drivers/input/serio/i8042.c+userio.c. Then again, these are also on
-separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
-KCS), so they would never actually talk to one another.
+Ohh, yes, the "driver version" is not the ideal name for that.
 
-> Both the KCS IPMI and raw chardev I've implemented in this patch need
-> both read and write access to the status register (STR). serio could
-> potentially expose its value through serio_interrupt() using the
-> SERIO_OOB_DATA flag, but I haven't put any thought into it beyond this
-> sentence. We'd need some extra support for writing STR via the serio
-> API. I'm not sure that fits into the abstraction (unless we make
-> serio_write() take a flags argument?).
->
-> In that vein, the serio_raw interface is close to the functionality
-> that the raw chardev provides in this patch, though again serio_raw
-> lacks userspace access to STR. Flags are ignored in the ->interrupt()
-> callback so all values received via ->interrupt() are exposed as data.
-> The result is there's no way to take care of SERIO_OOB_DATA in the
-> read() path. Given that, I think we'd have to expose an ioctl() to
-> access the STR value after taking care of SERIO_OOB_DATA in
-> ->interrupt().
->
-> I'm not sure where that lands us.
+I already looked on it in previous patch, came to the conclusion about
+the protocol and forgot :(.
 
-Based on what I looked up, I think you can just forget about my original
-question. We have two separate interfaces that use an Intel 8042-style
-protocol, but they don't really interact.
-
-      Arnd
+> 
+> static int mana_query_client_cfg(struct ana_context *ac, u32 drv_major_ver,
+>                                  u32 drv_minor_ver, u32 drv_micro_ver,
+>                                  u16 *max_num_vports)
+> {
+>         struct gdma_context *gc = ac->gdma_dev->gdma_context;
+>         struct ana_query_client_cfg_resp resp = {};
+>         struct ana_query_client_cfg_req req = {};
+>         struct device *dev = gc->dev;
+>         int err = 0;
+> 
+>         mana_gd_init_req_hdr(&req.hdr, ANA_QUERY_CLIENT_CONFIG,
+>                              sizeof(req), sizeof(resp));
+>         req.drv_major_ver = drv_major_ver;
+>         req.drv_minor_ver = drv_minor_ver;
+>         req.drv_micro_ver = drv_micro_ver;
+> 
+>         err = mana_send_request(ac, &req, sizeof(req), &resp, sizeof(resp));
+> 
+> Thanks,
+> Dexuan
+> 
