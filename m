@@ -2,64 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE45735D2CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E74535D2C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343568AbhDLWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:00:30 -0400
-Received: from gate.crashing.org ([63.228.1.57]:54271 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238235AbhDLWA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:00:27 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13CLsVAn011590;
-        Mon, 12 Apr 2021 16:54:31 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13CLsTMj011588;
-        Mon, 12 Apr 2021 16:54:29 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 12 Apr 2021 16:54:28 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when possible
-Message-ID: <20210412215428.GM26583@gate.crashing.org>
-References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S240717AbhDLVzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:55:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238235AbhDLVzC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 17:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618264484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rSg/4g7S1VAs0BEe21c6JFZm2CbvqXRaPJMkscjjUzQ=;
+        b=inutjazrEeRzr033gJXnuAEJuuW9F61w88eB6QP+2TNHEt0tFFDArPcZj3U8M1YpVdk7JW
+        BfRB9Knk9OA2v5Oh3C41ky1mfC5O3GivqYUDNjomj4KBEATTIuEIIH23XIlgKaM6L0eDY2
+        K/Z+AJoaP01Cy69B1xAfDUia4djdYkY=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-PljpxEpRNSGXJmng-yk5vw-1; Mon, 12 Apr 2021 17:54:42 -0400
+X-MC-Unique: PljpxEpRNSGXJmng-yk5vw-1
+Received: by mail-qv1-f71.google.com with SMTP id n3so8887612qvr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:54:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rSg/4g7S1VAs0BEe21c6JFZm2CbvqXRaPJMkscjjUzQ=;
+        b=LAVxXbFLqXilOp6IVRZtAHFgPi2rU0Te2MVbdnp+lt0rabNECW6uMAUyO67y7BWIC7
+         1jp5ymzcgIRxx9bo5kFqWgo+kFcRj337jFY4/1XvxPum7KWMks6PmQqGq/HndPyEB1rH
+         RLohiUXl1ELiVSIYnM/oveJHzzVnjXRK220zxiYWZx3mDn6q4IwZ2bP+GhOKUKIwJZT6
+         gv9q4gRFXnzUBlW94A7Q0IG2HT6SlbNMGAMbr2zn9EhPyjQaRRlB7KcSYcUV2na+pnE1
+         VRQMqIZmE3e68UiBiDm5/7GnHC3yoXjuP6coag/6Bg65FzgKGUfT9OHc4CtKxUt8EanV
+         1tqw==
+X-Gm-Message-State: AOAM531fmjwyiUViyvHrqhzOKV0WybUMSnYVI/XA99KxveukFbbAjFMq
+        r6kQ9atapPA7ibVO+zvw9a0y6wBr9QIYrzgDmYHqUR8jm7LIAeRGaGfdKCOPAg43qzdSWJP9UfW
+        uN0DpQtEf0cSNlaaA/3fL87pr
+X-Received: by 2002:a05:6214:14b4:: with SMTP id bo20mr4943799qvb.20.1618264482036;
+        Mon, 12 Apr 2021 14:54:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbD4DC7OMtAMwjp3Zq2ZGY5AAvdzECr9OQOYMWUawBpI5JNBVDfUwjpTZGyULdEUCkWeV3/g==
+X-Received: by 2002:a05:6214:14b4:: with SMTP id bo20mr4943769qvb.20.1618264481785;
+        Mon, 12 Apr 2021 14:54:41 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id z18sm3501170qkg.42.2021.04.12.14.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 14:54:40 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 17:54:37 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTINUE behavior
+Message-ID: <20210412215437.GA1001332@xz-x1>
+References: <20210401183701.1774159-1-axelrasmussen@google.com>
+ <alpine.LSU.2.11.2104062307110.14082@eggly.anvils>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <alpine.LSU.2.11.2104062307110.14082@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi, Hugh,
 
-On Thu, Apr 08, 2021 at 03:33:44PM +0000, Christophe Leroy wrote:
-> For clear bits, on 32 bits 'rlwinm' can be used instead or 'andc' for
-> when all bits to be cleared are consecutive.
+On Tue, Apr 06, 2021 at 11:14:30PM -0700, Hugh Dickins wrote:
+> > +static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> > +				     struct vm_area_struct *dst_vma,
+> > +				     unsigned long dst_addr, struct page *page,
+> > +				     enum mcopy_atomic_mode mode, bool wp_copy)
+> > +{
 
-Also on 64-bits, as long as both the top and bottom bits are in the low
-32-bit half (for 32 bit mode, it can wrap as well).
+[...]
 
-> For the time being only
-> handle the single bit case, which we detect by checking whether the
-> mask is a power of two.
+> > +	if (writable) {
+> > +		_dst_pte = pte_mkdirty(_dst_pte);
+> > +		if (wp_copy)
+> > +			_dst_pte = pte_mkuffd_wp(_dst_pte);
+> > +		else
+> > +			_dst_pte = pte_mkwrite(_dst_pte);
+> > +	} else if (vm_shared) {
+> > +		/*
+> > +		 * Since we didn't pte_mkdirty(), mark the page dirty or it
+> > +		 * could be freed from under us. We could do this
+> > +		 * unconditionally, but doing it only if !writable is faster.
+> > +		 */
+> > +		set_page_dirty(page);
+> 
+> I do not remember why Andrea or I preferred set_page_dirty() here to
+> pte_mkdirty(); but I suppose there might somewhere be a BUG_ON(pte_dirty)
+> which this would avoid.  Risky to change it, though it does look odd.
 
-You could look at rs6000_is_valid_mask in GCC:
-  <https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/rs6000/rs6000.c;h=48b8efd732b251c059628096314848305deb0c0b;hb=HEAD#l11148>
-used by rs6000_is_valid_and_mask immediately after it.  You probably
-want to allow only rlwinm in your case, and please note this checks if
-something is a valid mask, not the inverse of a valid mask (as you
-want here).
+Is any of the possible BUG_ON(pte_dirty) going to trigger because the pte has
+write bit cleared?  That's one question I was not very sure, e.g., whether one
+pte is allowed to be "dirty" if it's not writable.
 
-So yes this is pretty involved :-)
+To me it's okay, it's actually very suitable for UFFDIO_COPY case, where it is
+definitely dirty data (so we must never drop it) even if it's installed as RO,
+however to achieve that we can still set the dirty on the page rather than the
+pte as what we do here.  It's just a bit awkward as you said.
 
-Your patch looks good btw.  But please use "n", not "i", as constraint?
+Meanwhile today I just noticed this in arm64 code:
 
+static inline pte_t pte_wrprotect(pte_t pte)
+{
+	/*
+	 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
+	 * clear), set the PTE_DIRTY bit.
+	 */
+	if (pte_hw_dirty(pte))
+		pte = pte_mkdirty(pte);
 
-Segher
+	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
+	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
+	return pte;
+}
+
+So arm64 will explicitly set the dirty bit (from the HW dirty bit) when
+wr-protect.  It seems to prove that at least for arm64 it's very valid to have
+!write && dirty pte.
+
+Thanks,
+
+-- 
+Peter Xu
+
