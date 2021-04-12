@@ -2,85 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5417535C678
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E544B35C66E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241220AbhDLMlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:41:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241214AbhDLMls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:41:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36F7B61027;
-        Mon, 12 Apr 2021 12:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618231290;
-        bh=YoBNM0KK19yBjUA1qlzbhAxnoNZZQ7sS/n3u78ikZp0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Yml25TxioqYez+uY+20afQzLsEqRkAB4h4AN71BcxIvosxAidQlMAzXWp160/XLRX
-         QWJvrvkQyzv7ViamRKfCecbXMBD2+pJI9m+162cTsXLvfOYn8agY4r8ElKOvr5REdT
-         NNG+kyWNRyFVXeW2NyAyOs5KLiYVvXI44qvNZlEa/dbLzbchTd9Qzgi5+CAkJMfcio
-         bNqHlNreAjz3ubfAsB9oCqQxuJ08jzXJhhWoX2EaEf41NijQeCbqhjk3HB+qq7QnsV
-         InJ5cjYi/4Ef9Fisy2oluXaqF7gR5G3aypLbHL/Ts2llPjiTKGuRytiJ9o/l/54JHm
-         Wo2w5skXiTbKA==
-Received: by pali.im (Postfix)
-        id 160A7687; Mon, 12 Apr 2021 14:41:28 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain to zero
-Date:   Mon, 12 Apr 2021 14:39:36 +0200
-Message-Id: <20210412123936.25555-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S241081AbhDLMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238587AbhDLMkI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:40:08 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5151C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:39:50 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so2203994pja.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=gr77k9QIz5RgOpRuocDvfRh6v9EnFR0pe6j1Y5IYB2c=;
+        b=0lVDWVm2c4P6uDnoiat392Tzm+7LBnyUzpU5Wt2kYXqlKQqRgnzzkcPBZ5bC96fT53
+         WaC89SsJzCZZlw3XjnaoKp9POAJNaMWypeUhMOUXE6UwNf5evSUhXjINsGpDJEsjykpG
+         tK4/+emmLri02KKDgdDuT/vFBXZWYc/QRWd3pdGijKa7waLuYw8wMsXeioTJJ9vf+gKk
+         EU/AOtNsPQVpQ9z+yJFvwQeN7OqAdRPMdVwxGqMSFL0IYWthX8FUVd2Uh+qCj6KDvHDk
+         aOFih1e0kXItsRoYXmJ/gIdqXF8JkybU1sEja7r93RvLioldEwYsJPIr+K0xBciiDb4e
+         53NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gr77k9QIz5RgOpRuocDvfRh6v9EnFR0pe6j1Y5IYB2c=;
+        b=ZCekZc3ORKWg00duTq8RxDVu0KeKFKqdEmPUaoJ5TIIluSVdXKPgXVHMpWUncFILZ3
+         D59WUwGxRQeDbyTmsqQLJEZbG3lafC0hpNppfDTCfPFZS4iaIHdfs8MDAMdjb1I4retY
+         TvkISMiKou5TJu+WKgsAJpP1ZtwKPm6rnc0P2cgFw0zmzizhg2AnvKKY7PmrpJfh2brw
+         oZ1iqiZyO5kiNqnXkYUhx3znMqGu2ISOjXcXs6Z8/ObXSSyEXhNwgGCZxSwxOgbWX+dL
+         1fN4FZxC3hG/F2QJ6rvi/jo/rLuf5dC9ptRLkilQxabL0JiGz8SvdgylfTcEALTLcvia
+         pFvw==
+X-Gm-Message-State: AOAM532XP1yfPwaxf8UiVU+5s1Vn2Psy2jWF61GmIjAsf+hBw0tpXsDG
+        dCe4t2f9ZmeDIugiXRKR+Bowet7bG0GzyQ==
+X-Google-Smtp-Source: ABdhPJx6BDqLnXuiU8ZrCCZF5U8r3KW7U8g+JmBycODpTH8WyxV7HHlVa393OvPHk1gCIGIMZGhBAQ==
+X-Received: by 2002:a17:90a:f307:: with SMTP id ca7mr27538838pjb.80.1618231190278;
+        Mon, 12 Apr 2021 05:39:50 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id a3sm10238643pjq.36.2021.04.12.05.39.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 05:39:49 -0700 (PDT)
+Subject: Re: mmotm 2021-04-11-20-47 uploaded (fs/io_uring.c)
+To:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
+        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mm-commits@vger.kernel.org
+References: <20210412034813.EK9k9%akpm@linux-foundation.org>
+ <34ed89e1-683e-7c12-ceb0-f5b71148a8a7@infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9533afdd-208e-c25d-2e11-cc7f2c9d147b@kernel.dk>
+Date:   Mon, 12 Apr 2021 06:39:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <34ed89e1-683e-7c12-ceb0-f5b71148a8a7@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove'
-function and allow to build it as module") PCIe controller driver for
-Armada 37xx can be dynamically loaded and unloaded at runtime. Also driver
-allows dynamic binding and unbinding of PCIe controller device.
+On 4/12/21 1:21 AM, Randy Dunlap wrote:
+> On 4/11/21 8:48 PM, akpm@linux-foundation.org wrote:
+>> The mm-of-the-moment snapshot 2021-04-11-20-47 has been uploaded to
+>>
+>>    https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> https://ozlabs.org/~akpm/mmotm/series
+>>
+>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>> followed by the base kernel version against which this patch series is to
+>> be applied.
+>>
+>> This tree is partially included in linux-next.  To see which patches are
+>> included in linux-next, consult the `series' file.  Only the patches
+>> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+>> linux-next.
+> 
+> on i386:
+> # CONFIG_BLOCK is not set
+> 
+> ../fs/io_uring.c: In function ‘kiocb_done’:
+> ../fs/io_uring.c:2766:7: error: implicit declaration of function ‘io_resubmit_prep’; did you mean ‘io_put_req’? [-Werror=implicit-function-declaration]
+>    if (io_resubmit_prep(req)) {
 
-Kernel PCI subsystem assigns by default dynamically allocated PCI domain
-number (starting from zero) for this PCIe controller every time when device
-is bound. So PCI domain changes after every unbind / bind operation.
+I'll apply the below to take care of that.
 
-Alternative way for assigning PCI domain number is to use static allocated
-numbers defined in Device Tree. This option has requirement that every PCI
-controller in system must have defined PCI bus number in Device Tree.
 
-Armada 37xx has only one PCIe controller, so assign for it PCI domain 0 in
-Device Tree.
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 3a837d2b8331..aa29918944f6 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2464,6 +2464,10 @@ static bool io_rw_should_reissue(struct io_kiocb *req)
+ 	return true;
+ }
+ #else
++static bool io_resubmit_prep(struct io_kiocb *req)
++{
++	return false;
++}
+ static bool io_rw_should_reissue(struct io_kiocb *req)
+ {
+ 	return false;
+@@ -2504,14 +2508,8 @@ static void io_complete_rw_iopoll(struct kiocb *kiocb, long res, long res2)
+ 	if (kiocb->ki_flags & IOCB_WRITE)
+ 		kiocb_end_write(req);
+ 	if (unlikely(res != req->result)) {
+-		bool fail = true;
+-
+-#ifdef CONFIG_BLOCK
+-		if (res == -EAGAIN && io_rw_should_reissue(req) &&
+-		    io_resubmit_prep(req))
+-			fail = false;
+-#endif
+-		if (fail) {
++		if (!(res == -EAGAIN && io_rw_should_reissue(req) &&
++		    io_resubmit_prep(req))) {
+ 			req_set_fail_links(req);
+ 			req->flags |= REQ_F_DONT_REISSUE;
+ 		}
 
-After this change PCI domain on Armada 37xx is always zero, even after
-repeated unbind and bind operations.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 526a76991b7b ("PCI: aardvark: Implement driver 'remove' function and allow to build it as module")
----
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 7a2df148c6a3..f02058ef5364 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -495,6 +495,7 @@
- 					<0 0 0 2 &pcie_intc 1>,
- 					<0 0 0 3 &pcie_intc 2>,
- 					<0 0 0 4 &pcie_intc 3>;
-+			linux,pci-domain = <0>;
- 			max-link-speed = <2>;
- 			phys = <&comphy1 0>;
- 			pcie_intc: interrupt-controller {
 -- 
-2.20.1
+Jens Axboe
 
