@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F4435C47B
+	by mail.lfdr.de (Postfix) with ESMTP id 27B6D35C47A
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239745AbhDLK4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239482AbhDLK4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:56:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8EFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ys3C0Ut54acSs9l5VxPhbodFpcrmvcx7s05IJDaIX+k=; b=vcVW8ir8krS7ck3GLo60IoPKEL
-        xSg7r6yB5XMPNt6dZRm0SMO7JGQFIeV3LTXOMWtEOOF5NxvLUmjYNDJeT9G9CJRIJNLE8IIJ85NCg
-        sMbuuX+cpMNuIqXrR3xcTwofug16NSre03Kuy5a0j981x3DsDMh2hTXxqCJx8zL7ZR/QIQdGswQ33
-        sSbYBk4IE9AMWRf9eoqGtivivVz4239y0xOj0OnBAwVR3d0h3WDO2QGl09vW46Zr8RymF5+wU2sP3
-        NWUTUXmacfo/PGtWlfSENjIBNzGvuldD0oR21Uic7wIis+Qc37RpDg3HZB5K2gBQmYcwMEvvC81W2
-        /YKVwG8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVuDr-004Dhb-Gr; Mon, 12 Apr 2021 10:55:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 881C9300036;
-        Mon, 12 Apr 2021 12:55:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4F15820224209; Mon, 12 Apr 2021 12:55:14 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 12:55:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     valentin.schneider@arm.com, tglx@linutronix.de, mingo@kernel.org,
-        bigeasy@linutronix.de, swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] cpumask: Introduce DYING mask
-Message-ID: <YHQnEgXFi3YAFvIP@hirez.programming.kicks-ass.net>
-References: <20210310145258.899619710@infradead.org>
- <20210310150109.151441252@infradead.org>
- <20210321193037.7o3mqcmwjthbos7n@e107158-lin>
+        id S239674AbhDLK4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:56:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238214AbhDLK4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 06:56:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66C0B61241;
+        Mon, 12 Apr 2021 10:55:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618224955;
+        bh=aB95kWMNAXrwLQ8EZE2R9Q6SELn4hSsYTEVZtDp+QTA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hhxe+VouqAXKE4yzXmh1cofs+D/yKh5VxL+zo/lYhsgTuU8TbzH2Lx8XNNhH7hfAZ
+         pECgOp1QRqRpPzPdp6VXI/MeNWHRvNuf7HaQP+J8fIn74O2bRmC7VfSdc6x+zexTZ2
+         pXay2yJkEYpZdUPzOMY3ISHdKr+VL4e4nkeZZ+Rs=
+Date:   Mon, 12 Apr 2021 12:55:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mitali Borkar <mitaliborkar810@gmail.com>, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in, laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH 1/6] staging: media: intel-ipu3: replace bit shifts with
+ BIT() macro
+Message-ID: <YHQnOJ2t0+q65La2@kroah.com>
+References: <cover.1618180659.git.mitaliborkar810@gmail.com>
+ <cc7b827a3264f08cedb76adddd16a34df48f935f.1618180659.git.mitaliborkar810@gmail.com>
+ <20210412094230.GI3@paasikivi.fi.intel.com>
+ <YHQXty07oAP1L0W9@kroah.com>
+ <20210412104435.GL3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210321193037.7o3mqcmwjthbos7n@e107158-lin>
+In-Reply-To: <20210412104435.GL3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 07:30:37PM +0000, Qais Yousef wrote:
-> On 03/10/21 15:53, Peter Zijlstra wrote:
-> > --- a/kernel/cpu.c
-> > +++ b/kernel/cpu.c
-> > @@ -160,6 +160,9 @@ static int cpuhp_invoke_callback(unsigne
-> >  	int (*cb)(unsigned int cpu);
-> >  	int ret, cnt;
-> >  
-> > +	if (bringup != !cpu_dying(cpu))
+On Mon, Apr 12, 2021 at 01:44:35PM +0300, Sakari Ailus wrote:
+> Hi Greg,
 > 
-> nit: this condition is hard to read
+> On Mon, Apr 12, 2021 at 11:49:43AM +0200, Greg KH wrote:
+> > On Mon, Apr 12, 2021 at 12:42:30PM +0300, Sakari Ailus wrote:
+> > > Hi Mitali,
+> > > 
+> > > On Mon, Apr 12, 2021 at 04:38:39AM +0530, Mitali Borkar wrote:
+> > > > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
+> > > > This BIT() macro from linux/bitops.h is used to define IPU3_UAPI_GRID_Y_START_EN
+> > > > and IPU3_UAPI_AWB_RGBS_THR_B_* bitmask.
+> > > > Use of macro is better and neater. It maintains consistency.
+> > > > Reported by checkpatch.
+> > > > 
+> > > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > > > ---
+> > > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 7 ++++---
+> > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > index edd8edda0647..589d5ccee3a7 100644
+> > > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > @@ -5,6 +5,7 @@
+> > > >  #define __IPU3_UAPI_H
+> > > >  
+> > > >  #include <linux/types.h>
+> > > > +#include <linux/bitops.h>
+> > > >  
+> > > >  /* from /drivers/staging/media/ipu3/include/videodev2.h */
+> > > >  
+> > > > @@ -22,11 +23,11 @@
+> > > >  #define IPU3_UAPI_MAX_BUBBLE_SIZE			10
+> > > >  
+> > > >  #define IPU3_UAPI_GRID_START_MASK			((1 << 12) - 1)
+> > > > -#define IPU3_UAPI_GRID_Y_START_EN			(1 << 15)
+> > > > +#define IPU3_UAPI_GRID_Y_START_EN			BIT(15)
+> > > 
+> > > This header is used in user space where you don't have the BIT() macro.
+> > 
+> > If that is true, why is it not in a "uapi" subdir within this driver?
+> > 
+> > Otherwise it is not obvious at all that this is the case :(
 > 
-> > +		set_cpu_dying(cpu, !bringup);
+> It defines an interface towards the user space and the argument has been a
+> staging driver shouldn't be doing that (for the lack of ABI stability),
+> hence leaving it where it is currently.
 
-How's:
+I think we are talking past each other here...
 
-	if (cpu_dying(cpu) != !bringup)
-		set_cpu_dying(cpu, !bringup);
+If you have a userspace api, then put that in a .h file that has a
+"uapi" in the path.  Just because you have this in a staging driver does
+not mean you should not have such a thing, otherwise you are going to
+constantly fight against people sending you patches like this as there
+is no obvious way to determine this.
 
-> since cpu_dying() will do cpumask_test_cpu(), are we saving  much if we
-> unconditionally call set_cpu_dying(cpu, !bringup) which performs
-> cpumask_{set, clear}_cpu()?
+So how about moving this file to:
+	drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
 
-This is hotplug, it's all slow, endlessly rewriting that bit shouldn't
-be a problem I suppose.
+thanks,
+
+greg k-h
