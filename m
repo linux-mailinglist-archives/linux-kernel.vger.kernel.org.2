@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2482D35BAAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8C635BAB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236833AbhDLHPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhDLHP3 (ORCPT
+        id S236849AbhDLHTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:19:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37928 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236745AbhDLHTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:15:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99707C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:15:11 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618211708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VdRBl/Hc8oxjJjZID5EuedD1AhqEQU8Ej3s/0QRRD+o=;
-        b=vxt9eiKf9KD5fd7yNE8V7UD7/2mPVfPm2pMx9jWYgGHZs4bkmK4JjaJ02HhlWTSo9Bc+bQ
-        r8pF0Iv8G6PwwzpWTFH4K+oti01YaVQTA3mvAhwbX59xVgxiWEa1Fi2cNdepho8MxCQil/
-        RQEriaasBJ+hoiHUalO3Z6WRs0811+W1G4mkQ2gDw/ZQ4uvLuJsKuzX2votnMVZ30ivrex
-        dScEutBKh/2kY9mQEQqhBma1jk87ykjCKg3SH8x6Qy4o5/DG4+ZShvFvupDSkTNKGIu41x
-        XQfrHaje9dcBTXE+fApOZ/iYmPCIVfOigjTKa1E2ufQs5fprORi/RgP/QxCmRg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618211708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VdRBl/Hc8oxjJjZID5EuedD1AhqEQU8Ej3s/0QRRD+o=;
-        b=1R3KZ5gt8SRjTeOEpaZwvADPiBRc+aMtWv1mW6uP7zi+gIy+hfMHZ/PEhp2WWwtnIsmth1
-        4QfGkFh6YRZ8WADg==
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
-Subject: Re: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
-In-Reply-To: <YGe/IwJSNHnuhU2d@otcwcpicx3.sc.intel.com>
-References: <20210313054910.2503968-1-fenghua.yu@intel.com> <20210313054910.2503968-3-fenghua.yu@intel.com> <871rca6dbp.fsf@nanos.tec.linutronix.de> <YFUjVwBg133LN+kS@otcwcpicx3.sc.intel.com> <878s6iatdf.fsf@nanos.tec.linutronix.de> <YGe/IwJSNHnuhU2d@otcwcpicx3.sc.intel.com>
-Date:   Mon, 12 Apr 2021 09:15:08 +0200
-Message-ID: <8735vw2cub.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 03:19:48 -0400
+X-UUID: f9c370dcbca343a9a175ac8cc5963b49-20210412
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IhR0w7fkxv9QLOyDCj64kNBA7EE1dIlzyNRNY8w1a0w=;
+        b=dLPWpx6wT8oLrLoarFUAoruHTv5L9gWxemzw1WyTYeW1mre4BLYBfXZoXcmtjRnWZQsrB5PohkfBzwMvAFkb978RAluoyVz9Ua2RPh/v7Y7vczuAwL3lgNmSAkyKpYC5Pu6sZ6MFmYMrSqJxNzCotbQ60hSl997iWCvbSh2UbL4=;
+X-UUID: f9c370dcbca343a9a175ac8cc5963b49-20210412
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <flora.fu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1439433201; Mon, 12 Apr 2021 15:19:27 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Apr 2021 15:19:25 +0800
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Apr 2021 15:19:25 +0800
+Message-ID: <1618211965.25062.34.camel@mtksdccf07>
+Subject: Re: [PATCH 3/8] dt-bindings: apu: Add MT8192 APU power domain
+From:   Flora Fu <flora.fu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
+        Chiawen Lee <chiawen.lee@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        Flora Fu <flora.fu@mediatek.com>
+Date:   Mon, 12 Apr 2021 15:19:25 +0800
+In-Reply-To: <20210409182338.GA3895583@robh.at.kernel.org>
+References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
+         <1617766086-5502-4-git-send-email-flora.fu@mediatek.com>
+         <20210409182338.GA3895583@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-TM-SNTS-SMTP: E6D439E09D1D32AB80FED7FFF7DDF6F5225F21D18AC1F0D6CB82EE2986E5CDF52000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 03 2021 at 01:04, Fenghua Yu wrote:
-> On Sat, Mar 20, 2021 at 01:42:52PM +0100, Thomas Gleixner wrote:
->> On Fri, Mar 19 2021 at 22:19, Fenghua Yu wrote:
->> And even with throttling the injection rate further down to 25k per
->> second the impact on the workload is still significant in the 10% range.
->
-> Thank you for your insight!
->
-> So I can change the ratelimit to system wide and call usleep_range()
-> to sleep: 
->                while (!__ratelimit(&global_bld_ratelimit))
->                        usleep_range(1000000 / bld_ratelimit,
->                                     1000000 / bld_ratelimit);
->
-> The max bld_ratelimit is 1000,000/s because the max sleeping time is 1
-> usec.
+SGksIFJvYiwNCg0KSW4gbXQ4MTkyIGhhcmR3YXJlLCB3ZSBvbmx5IGNvbnRyb2wgdG9wIHBvd2Vy
+IGRvbWFpbiBpbiBrZXJuZWwuDQpJdCBpcyB1bm5lY2Vzc2FyeSB0byBjcmVhdGUgYSBzcGVjaWZp
+YyBoZWFkZXIganVzdCBmb3Igc3VjaCBwdXJwb3NlLiANCkkgd2lsbCB1cGRhdGUgdGhlIHBhdGNo
+IGluIHRoZSBuZXh0IHZlcnNpb24uDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3Lg0KDQpUaGFua3Ms
+DQpGbG9yYQ0KDQoNCk9uIEZyaSwgMjAyMS0wNC0wOSBhdCAxMzoyMyAtMDUwMCwgUm9iIEhlcnJp
+bmcgd3JvdGU6DQo+IE9uIFdlZCwgQXByIDA3LCAyMDIxIGF0IDExOjI4OjAxQU0gKzA4MDAsIEZs
+b3JhIEZ1IHdyb3RlOg0KPiA+IENyZWF0ZSBNVDgxOTIgQVBVIHBvd2VyIGRvbWFpbiBiaW5kaW5n
+cy4NCj4gPiBBZGQgdG9wIHBvd2VyIGRvbWFpbiBpZC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBGbG9yYSBGdSA8ZmxvcmEuZnVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBpbmNsdWRl
+L2R0LWJpbmRpbmdzL3Bvd2VyL210ODE5Mi1hcHUtcG93ZXIuaCB8IDExICsrKysrKysrKysrDQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL3Bvd2VyL210ODE5Mi1hcHUtcG93ZXIuaA0KPiA+IA0K
+PiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2R0LWJpbmRpbmdzL3Bvd2VyL210ODE5Mi1hcHUtcG93
+ZXIuaCBiL2luY2x1ZGUvZHQtYmluZGluZ3MvcG93ZXIvbXQ4MTkyLWFwdS1wb3dlci5oDQo+ID4g
+bmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmI4MjFiZDQ4MTFh
+Ng0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9pbmNsdWRlL2R0LWJpbmRpbmdzL3Bvd2Vy
+L210ODE5Mi1hcHUtcG93ZXIuaA0KPiA+IEBAIC0wLDAgKzEsMTEgQEANCj4gPiArLyogU1BEWC1M
+aWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4gPiArICoNCj4gPiArICogQ29weXJpZ2h0IChj
+KSAyMDIxIE1lZGlhVGVrIEluYy4NCj4gPiArICovDQo+ID4gKw0KPiA+ICsjaWZuZGVmIF9EVF9C
+SU5ESU5HU19QT1dFUl9NVDgxOTJfQVBVX1BPV0VSX0gNCj4gPiArI2RlZmluZSBfRFRfQklORElO
+R1NfUE9XRVJfTVQ4MTkyX0FQVV9QT1dFUl9IDQo+ID4gKw0KPiA+ICsjZGVmaW5lIE1UODE5Ml9Q
+T1dFUl9ET01BSU5fQVBVU1lTX1RPUAkwDQo+IA0KPiBSZWFsbHksIHlvdSBkb24ndCBrbm93IHdo
+YXQgdGhlIG90aGVyIHBvd2VyIGRvbWFpbnMgYXJlPyBQbGVhc2UgbWFrZSANCj4gdGhpcyBhcyBj
+b21wbGV0ZSBhcyBwb3NzaWJsZS4gVGhlc2UgaGVhZGVycyBjcmVhdGUgYSBtZXJnZSBtZXNzLg0K
+PiANCj4gUm9iDQoNCg==
 
-Maximum sleep time is 1usec?
-
-> The min bld_ratelimit is 1/s.
-
-Again. This does not make sense at all. 1Mio bus lock events per second
-are way beyond the point where the machine does anything else than being
-stuck in buslocks.
-
-Aside of that why are you trying to make this throttling in any way
-accurate? It does not matter at all, really. Limit reached, put it to
-sleep for some time and be done with it. No point in trying to be clever
-for no value.
-
-Thanks,
-
-        tglx
