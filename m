@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D019E35BDC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C58835BDCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238102AbhDLIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S238441AbhDLIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238030AbhDLItE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:49:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D460D61286;
-        Mon, 12 Apr 2021 08:47:59 +0000 (UTC)
+        id S238264AbhDLItS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC816128A;
+        Mon, 12 Apr 2021 08:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217280;
-        bh=9g/bVRJ1aoldgEKD3LoXYipmQ7cfIU+mi+YDdBADxgk=;
+        s=korg; t=1618217308;
+        bh=4cSzsEVemC/UV8DH69wccv8vc2Pq2VJ3z7LdQ636hWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tYqRbk1ZymRhOqa2deqYyxgONKlCb9vu+7sg7ilMFzdHJD2ApTvSXAoUXryb4MySX
-         9PMJog+rrfSZA+nxI/gIG2w0Pv7RR75Bz5WWqr0QYLwx2UWp/YKOYtLPLUT/Vco0uY
-         BxMRXkAjaMty5/G8aAj3yoapfYlM8cSCh8rEPWzA=
+        b=AOpkaG/brn/WPv760Xyis8ffczFmgvALP74M1w5jpKfiZ9es3/tHLrY8iFa3bxpHG
+         LlObIhCYVzos3W6C0QcqsUDXp70VYCeGZwiR9tEh0hTP8cDVRFhJaLk2FarJ9TsdIg
+         uTlKYqgg/3ryojxQb0w8Tu+UEHaf4yVnpqMuKSYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 051/111] ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled for some chips
-Date:   Mon, 12 Apr 2021 10:40:29 +0200
-Message-Id: <20210412084005.963420648@linuxfoundation.org>
+Subject: [PATCH 5.4 052/111] xfrm: Fix NULL pointer dereference on policy lookup
+Date:   Mon, 12 Apr 2021 10:40:30 +0200
+Message-Id: <20210412084005.999865658@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -41,51 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Steffen Klassert <steffen.klassert@secunet.com>
 
-[ Upstream commit 16b82e75c15a7dbd564ea3654f3feb61df9e1e6f ]
+[ Upstream commit b1e3a5607034aa0a481c6f69a6893049406665fb ]
 
-The input MCLK is 12.288MHz, the desired output sysclk is 11.2896MHz
-and sample rate is 44100Hz, with the configuration pllprescale=2,
-postscale=sysclkdiv=1, some chip may have wrong bclk
-and lrclk output with pll enabled in master mode, but with the
-configuration pllprescale=1, postscale=2, the output clock is correct.
+When xfrm interfaces are used in combination with namespaces
+and ESP offload, we get a dst_entry NULL pointer dereference.
+This is because we don't have a dst_entry attached in the ESP
+offloading case and we need to do a policy lookup before the
+namespace transition.
 
->From Datasheet, the PLL performs best when f2 is between
-90MHz and 100MHz when the desired sysclk output is 11.2896MHz
-or 12.288MHz, so sysclkdiv = 2 (f2/8) is the best choice.
+Fix this by expicit checking of skb_dst(skb) before accessing it.
 
-So search available sysclk_divs from 2 to 1 other than from 1 to 2.
-
-Fixes: 84fdc00d519f ("ASoC: codec: wm9860: Refactor PLL out freq search")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/1616150926-22892-1-git-send-email-shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: f203b76d78092 ("xfrm: Add virtual xfrm interfaces")
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ include/net/xfrm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 6cf0f6612bda..708fc4ed54ed 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -707,7 +707,13 @@ int wm8960_configure_pll(struct snd_soc_component *component, int freq_in,
- 	best_freq_out = -EINVAL;
- 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index c00b9ae71ae4..614f19bbad74 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1098,7 +1098,7 @@ static inline int __xfrm_policy_check2(struct sock *sk, int dir,
+ 		return __xfrm_policy_check(sk, ndir, skb, family);
  
--	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+	/*
-+	 * From Datasheet, the PLL performs best when f2 is between
-+	 * 90MHz and 100MHz, the desired sysclk output is 11.2896MHz
-+	 * or 12.288MHz, then sysclkdiv = 2 is the best choice.
-+	 * So search sysclk_divs from 2 to 1 other than from 1 to 2.
-+	 */
-+	for (i = ARRAY_SIZE(sysclk_divs) - 1; i >= 0; --i) {
- 		if (sysclk_divs[i] == -1)
- 			continue;
- 		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
+ 	return	(!net->xfrm.policy_count[dir] && !secpath_exists(skb)) ||
+-		(skb_dst(skb)->flags & DST_NOPOLICY) ||
++		(skb_dst(skb) && (skb_dst(skb)->flags & DST_NOPOLICY)) ||
+ 		__xfrm_policy_check(sk, ndir, skb, family);
+ }
+ 
 -- 
 2.30.2
 
