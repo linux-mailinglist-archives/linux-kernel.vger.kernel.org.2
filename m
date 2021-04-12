@@ -2,87 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5B735C916
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AFE35C919
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242345AbhDLOp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237806AbhDLOpz (ORCPT
+        id S242398AbhDLOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:46:45 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:45654 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237806AbhDLOqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:45:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189D3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 07:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uELYZ4IQcrbpt0a9i9NAzW81i1oJqwg2V7TpDRNRtF8=; b=ev7YJokTeZp3zKC2a1B8htOcLG
-        SZrlkUW89Tq/sVUq51lYbMJLAJS8FXt+/XTdlUVM73UW5TkbUtinHIeuU+ujEdjONBQezHa5LU6Fu
-        PGbXdwuGUuG3ewlVGNZpm76QWCV8mhVmrMxEZI5UNkOUq5YsgeuW3dzcka/bX6MnJJPYkwCsW4/XL
-        fBexWp+fq3+YL9FoBV3jMJshjAC/KprUntiRiTIbj9RWrW+DfNuK5Pt0qkODF6A/6Tlxk/8f3J2Wk
-        RcEsY/kxIgw30BBba47dAijTnd5oEQDUAUfpcG6yOK4wEDc/VAjHEQbOIXOchoBB4OLYFBBRJ769L
-        6hXO6YKA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVxob-004TdK-17; Mon, 12 Apr 2021 14:45:25 +0000
-Date:   Mon, 12 Apr 2021 15:45:25 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        bigeasy@linutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/17] locking: Add split_lock
-Message-ID: <20210412144525.GM2531743@casper.infradead.org>
-References: <20210409025131.4114078-3-willy@infradead.org>
- <87blaj1sqf.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 10:46:44 -0400
+Received: by mail-oi1-f179.google.com with SMTP id d12so13620150oiw.12;
+        Mon, 12 Apr 2021 07:46:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BBPuXYXDFAebMpO7hX78kRtpKa7xPH9e7ESb75jHFpU=;
+        b=g5bjnB5Zk7Hwb1SzwSzQVPXxqQYtLN6fhfI1wTE1WYMSXIXFLUNb9hcttMAFB5tHfm
+         ALcGMB8JsKRyrSFzVJhHU7YNmV3Zgo3iutk5NYfiLvSgbzWBo9CityBSqSx6ghvgYr3L
+         qr7pUwDoYDxZ3Q54n1fxQcyHpi/UOI2PjrO/UZW2rtWn7gbnFxeARkNg8OdH0XNgk8SL
+         3OLNwTzX6dhi8jTjlfHSALpvxhzFBIbDZI+33nab9+blXbgDQV4lI8UhCDcgjn19+lNQ
+         MmWDLMmogQ7m/mMNntVpoSBoI64FnK652jLddS+yy5H25YqTgHc5pO8Y3bxMNGHDPNEY
+         ajng==
+X-Gm-Message-State: AOAM5312VM2uC+osgV3NxPQIAVlbD4+dDQ3WEOPVEE7F//c1p2X3gQN6
+        xIuUiIh+aPDK70eS0MMuqA==
+X-Google-Smtp-Source: ABdhPJyBHM/xFgKX+zWoqH+Q7DDfFP2U35vqrpxnyrF7eVNWQCgRqR9UptRKGv6Zpyj0RnSC3IAknQ==
+X-Received: by 2002:a05:6808:94:: with SMTP id s20mr3914209oic.56.1618238786113;
+        Mon, 12 Apr 2021 07:46:26 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k44sm4616ool.33.2021.04.12.07.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 07:46:25 -0700 (PDT)
+Received: (nullmailer pid 3870762 invoked by uid 1000);
+        Mon, 12 Apr 2021 14:46:24 -0000
+Date:   Mon, 12 Apr 2021 09:46:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+Message-ID: <20210412144624.GA3868831@robh.at.kernel.org>
+References: <20210408202137.GA1890401@robh.at.kernel.org>
+ <20210411114804.151754-1-giulio.benetti@benettiengineering.com>
+ <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87blaj1sqf.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 04:29:28PM +0200, Thomas Gleixner wrote:
-> On Fri, Apr 09 2021 at 03:51, Matthew Wilcox wrote:
-> > Bitlocks do not currently participate in lockdep.  Conceptually, a
-> > bit_spinlock is a split lock, eg across each bucket in a hash table.
-> > The struct split_lock gives us somewhere to record the lockdep_map.
+On Sun, Apr 11, 2021 at 01:48:03PM +0200, Giulio Benetti wrote:
+> This adds device tree bindings for the Hycon HY46XX touchscreen series.
 > 
-> I like the concept, but the name is strange. The only purpose of 
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+> V1->V2:
+> As suggested by Rob Herring:
+> * fixed $id: address
+> * added "hycon," in front of every custom property
+> * changed all possible property to boolean type
+> * removed proximity-sensor-switch property since it's not handled in driver
+> V2->V3:
+> As suggested by Jonathan Neuschäfer:
+> * fixed some typo
+> * fixed description indentation
+> * improved boolean properties descriptions
+> * improved hycon,report-speed description
+> V3->V4:
+> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
+> V4->V5:
+> As suggested by Rob Herring:
+> * drop hycon- prefix from compatible
+> * use Hertz unit suffix for hycon,report-speed instead of u32
+
+hycon,report-speed-hz
+
+> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do nothing
+> * change hycon,power-noise-enable property name to hycon,noise-filter-enable
+> * improve hycon,filter-data property description
+> * use generic touchscreen node name in example
+> ---
+>  .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
 > 
-> > +struct split_lock {
-> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > +	struct lockdep_map dep_map;
-> > +#endif
-> > +};
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> new file mode 100644
+> index 000000000000..ae792e3716ff
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> @@ -0,0 +1,119 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/hycon,hy46xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hycon HY46XX series touchscreen controller bindings
+> +
+> +description: |
+> +  There are 6 variants of the chip for various touch panel sizes and cover lens material
+> +   Glass: 0.3mm--4.0mm
+> +    PET/PMMA: 0.2mm--2.0mm
+> +    HY4613(B)-N048  < 6"
+> +    HY4614(B)-N068  7" .. 10.1"
+> +    HY4621-NS32  < 5"
+> +    HY4623-NS48  5.1" .. 7"
+> +   Glass: 0.3mm--8.0mm
+> +    PET/PMMA: 0.2mm--4.0mm
+> +    HY4633(B)-N048  < 6"
+> +    HY4635(B)-N048  < 7" .. 10.1"
+> +
+> +maintainers:
+> +  - Giulio Benetti <giulio.benetti@benettiengineering.com>
+> +
+> +allOf:
+> +  - $ref: touchscreen.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - hycon,hy4613
+> +      - hycon,hy4614
+> +      - hycon,hy4621
+> +      - hycon,hy4623
+> +      - hycon,hy4633
+> +      - hycon,hy4635
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  vcc-supply: true
+> +
+> +  hycon,threshold:
+> +    description: Allows setting the sensitivity in the range from 0 to 255.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 255
+> +
+> +  hycon,glove-enable:
+> +    type: boolean
+> +    description: Allows enabling glove setting.
+> +
+> +  hycon,report-speed:
+> +    description: Allows setting the report speed in Hertz.
+> +    minimum: 1
+> +    maximum: 255
+> +
+> +  hycon,noise-filter-enable:
+> +    type: boolean
+> +    description: Allows enabling power noise filter.
+> +
+> +  hycon,filter-data:
+> +    description: Allows setting how many samples throw before reporting touch
+> +                 in the range from 0 to 5.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 5
+> +
+> +  hycon,gain:
+> +    description: Allows setting the sensitivity distance in the range from 0 to 5.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 5
+> +
+> +  hycon,edge-offset:
+> +    description: Allows setting the edge compensation in the range from 0 to 16.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 0
+> +    maximum: 16
+> +
+> +  touchscreen-size-x: true
+> +  touchscreen-size-y: true
+> +  touchscreen-fuzz-x: true
+> +  touchscreen-fuzz-y: true
+> +  touchscreen-inverted-x: true
+> +  touchscreen-inverted-y: true
+> +  touchscreen-swapped-x-y: true
+> +  interrupt-controller: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      touchscreen@1c {
+> +        compatible = "hycon,hy4633";
+> +        reg = <0x1c>;
+> +        interrupt-parent = <&gpio2>;
+> +        interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+> +        reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+> +      };
+> +    };
+> +
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7fdc513392f4..18a50942c019 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8250,6 +8250,12 @@ S:	Maintained
+>  F:	mm/hwpoison-inject.c
+>  F:	mm/memory-failure.c
+>  
+> +HYCON HY46XX TOUCHSCREEN SUPPORT
+> +M:	Giulio Benetti <giulio.benetti@benettiengineering.com>
+> +L:	linux-input@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+> +
+>  HYGON PROCESSOR SUPPORT
+>  M:	Pu Wen <puwen@hygon.cn>
+>  L:	linux-kernel@vger.kernel.org
+> -- 
+> 2.25.1
 > 
-> is to have a place to stick the lockdep map into. So it's not a lock
-> construct as the name suggests, it's just auxiliary data when lockdep is
-> enabled.
-
-That's the implementation _today_, but conceptually, it's a single lock.
-I was thinking that for non-RT, we could put a qspinlock in there for a
-thread to spin on if the bit is contended.  It'd need a bit of ingenuity
-to make sure that a thread unlocking a bitlock made sure that a thread
-spinning on the qspinlock saw the wakeup, but it should be doable.
-
-Anyway, from the point of view of the user, they should be declaring
-"this is the lock", not "this is the lock tracking structure", right?
-
-> I know you hinted that RT could make use of that data structure and the
-> fact that it's mandatory for the various lock functions, but that's not
-> really feasible if this is related to a hash with a bit spinlock per
-> bucket as the data structure is hash global.
-> 
-> Sure, we can do pointer math to find out the bucket index and do
-> something from there, but I'm not sure whether that really helps. Need
-> to stare at the remaining few places where bit spinlocks are an issue on
-> RT.
-
-I obviously don't understand exactly what the RT patchset does.  My
-thinking was that you could handle the bit locks like rw sems, and
-sacrifice the scalability of per-bucket-lock for the determinism of
-a single PI lock.
