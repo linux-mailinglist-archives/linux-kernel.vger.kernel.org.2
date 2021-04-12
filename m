@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFBD35C020
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C7635C02C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240526AbhDLJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:10:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
+        id S240854AbhDLJLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239037AbhDLIz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:55:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AAA661244;
-        Mon, 12 Apr 2021 08:55:07 +0000 (UTC)
+        id S238568AbhDLIz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:55:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA8F161244;
+        Mon, 12 Apr 2021 08:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217708;
-        bh=a2/KlIOhfZVE0ULLCyfKNEC2aC9EBC7sBfGewH1J7wc=;
+        s=korg; t=1618217739;
+        bh=dp3sJjqaLFb+hTH+4gjTdIJ4GrF/LgqqL1T2O0d3+/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LwdaxHVpTodQZ3yQqUF0x4018MyeFKWeDrTgGaFGGW3Chn7cgwPPaTUdpp3KVNqte
-         33jNtHPfrlGIuD87ferEy/4ULaJgoWuTEaLy1bXgsns6bbDExLRMPp4E8H6Gn5jQUP
-         0aAaGgTbCjDUsycD6BGI2VfBluqm87na7q7Ofpl4=
+        b=cOClJBnEtQELAzm3arPRHPWqRdzkhgoXMQhcPuvE+kqfJ8MUgyLzcw5cgqnRHc1p5
+         PsjHZjO/+ltDrZYJWZl40rQlp3uYOka78UatSa6vqbcLK/gnNt9ECpsOYzMPzX7l2T
+         cmuYfhskZieqMxEF9km68MJSQbEb/PPY8bWsyu/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carlos Leija <cileija@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Bryan Buckley <bryan.buckley@ti.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Ivan Jelincic <parazyd@dyne.org>, Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 099/188] ARM: OMAP4: PM: update ROM return address for OSWR and OFF
-Date:   Mon, 12 Apr 2021 10:40:13 +0200
-Message-Id: <20210412084016.943877912@linuxfoundation.org>
+Subject: [PATCH 5.10 100/188] net: xfrm: Localize sequence counter per network namespace
+Date:   Mon, 12 Apr 2021 10:40:14 +0200
+Message-Id: <20210412084016.975473512@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -48,122 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Carlos Leija <cileija@ti.com>
+From: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-[ Upstream commit b3d09a06d89f474cb52664e016849315a97e09d9 ]
+[ Upstream commit e88add19f68191448427a6e4eb059664650a837f ]
 
-We need to add a dummy smc call to the cpuidle wakeup path to force the
-ROM code to save the return address after MMU is enabled again. This is
-needed to prevent random hangs on secure devices like droid4.
+A sequence counter write section must be serialized or its internal
+state can get corrupted. The "xfrm_state_hash_generation" seqcount is
+global, but its write serialization lock (net->xfrm.xfrm_state_lock) is
+instantiated per network namespace. The write protection is thus
+insufficient.
 
-Otherwise the system will eventually hang when entering deeper SoC idle
-states with the core and mpu domains in open-switch retention (OSWR).
-The hang happens as the ROM code tries to use the earlier physical return
-address set by omap-headsmp.S with MMU off while waking up CPU1 again.
+To provide full protection, localize the sequence counter per network
+namespace instead. This should be safe as both the seqcount read and
+write sections access data exclusively within the network namespace. It
+also lays the foundation for transforming "xfrm_state_hash_generation"
+data type from seqcount_t to seqcount_LOCKNAME_t in further commits.
 
-The hangs started happening in theory already with commit caf8c87d7ff2
-("ARM: OMAP2+: Allow core oswr for omap4"), but in practise the issue went
-unnoticed as various drivers were often blocking any deeper idle states
-with hardware autoidle features.
-
-This patch is based on an earlier TI Linux kernel tree commit 92f0b3028d9e
-("OMAP4: PM: update ROM return address for OSWR and OFF") written by
-Carlos Leija <cileija@ti.com>, Praneeth Bajjuri <praneeth@ti.com>, and
-Bryan Buckley <bryan.buckley@ti.com>. A later version of the patch was
-updated to use CPU_PM notifiers by Tero Kristo <t-kristo@ti.com>.
-
-Signed-off-by: Carlos Leija <cileija@ti.com>
-Signed-off-by: Praneeth Bajjuri <praneeth@ti.com>
-Signed-off-by: Bryan Buckley <bryan.buckley@ti.com>
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Fixes: caf8c87d7ff2 ("ARM: OMAP2+: Allow core oswr for omap4")
-Reported-by: Carl Philipp Klemm <philipp@uvos.xyz>
-Reported-by: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Ivan Jelincic <parazyd@dyne.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Tero Kristo <kristo@kernel.org>
-[tony@atomide.com: updated to apply, updated description]
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: b65e3d7be06f ("xfrm: state: add sequence count to detect hash resizes")
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap2/omap-secure.c | 39 +++++++++++++++++++++++++++++++
- arch/arm/mach-omap2/omap-secure.h |  1 +
- 2 files changed, 40 insertions(+)
+ include/net/netns/xfrm.h |  4 +++-
+ net/xfrm/xfrm_state.c    | 10 +++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/omap-secure.c b/arch/arm/mach-omap2/omap-secure.c
-index f70d561f37f7..0659ab4cb0af 100644
---- a/arch/arm/mach-omap2/omap-secure.c
-+++ b/arch/arm/mach-omap2/omap-secure.c
-@@ -9,6 +9,7 @@
+diff --git a/include/net/netns/xfrm.h b/include/net/netns/xfrm.h
+index 59f45b1e9dac..b59d73d529ba 100644
+--- a/include/net/netns/xfrm.h
++++ b/include/net/netns/xfrm.h
+@@ -72,7 +72,9 @@ struct netns_xfrm {
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	struct dst_ops		xfrm6_dst_ops;
+ #endif
+-	spinlock_t xfrm_state_lock;
++	spinlock_t		xfrm_state_lock;
++	seqcount_t		xfrm_state_hash_generation;
++
+ 	spinlock_t xfrm_policy_lock;
+ 	struct mutex xfrm_cfg_mutex;
+ };
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 2f1517827995..77499abd9f99 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -44,7 +44,6 @@ static void xfrm_state_gc_task(struct work_struct *work);
   */
  
- #include <linux/arm-smccc.h>
-+#include <linux/cpu_pm.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/io.h>
-@@ -20,6 +21,7 @@
+ static unsigned int xfrm_state_hashmax __read_mostly = 1 * 1024 * 1024;
+-static __read_mostly seqcount_t xfrm_state_hash_generation = SEQCNT_ZERO(xfrm_state_hash_generation);
+ static struct kmem_cache *xfrm_state_cache __ro_after_init;
  
- #include "common.h"
- #include "omap-secure.h"
-+#include "soc.h"
+ static DECLARE_WORK(xfrm_state_gc_work, xfrm_state_gc_task);
+@@ -140,7 +139,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	}
  
- static phys_addr_t omap_secure_memblock_base;
+ 	spin_lock_bh(&net->xfrm.xfrm_state_lock);
+-	write_seqcount_begin(&xfrm_state_hash_generation);
++	write_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
  
-@@ -213,3 +215,40 @@ void __init omap_secure_init(void)
- {
- 	omap_optee_init_check();
- }
-+
-+/*
-+ * Dummy dispatcher call after core OSWR and MPU off. Updates the ROM return
-+ * address after MMU has been re-enabled after CPU1 has been woken up again.
-+ * Otherwise the ROM code will attempt to use the earlier physical return
-+ * address that got set with MMU off when waking up CPU1. Only used on secure
-+ * devices.
-+ */
-+static int cpu_notifier(struct notifier_block *nb, unsigned long cmd, void *v)
-+{
-+	switch (cmd) {
-+	case CPU_CLUSTER_PM_EXIT:
-+		omap_secure_dispatcher(OMAP4_PPA_SERVICE_0,
-+				       FLAG_START_CRITICAL,
-+				       0, 0, 0, 0, 0);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block secure_notifier_block = {
-+	.notifier_call = cpu_notifier,
-+};
-+
-+static int __init secure_pm_init(void)
-+{
-+	if (omap_type() == OMAP2_DEVICE_TYPE_GP || !soc_is_omap44xx())
-+		return 0;
-+
-+	cpu_pm_register_notifier(&secure_notifier_block);
-+
-+	return 0;
-+}
-+omap_arch_initcall(secure_pm_init);
-diff --git a/arch/arm/mach-omap2/omap-secure.h b/arch/arm/mach-omap2/omap-secure.h
-index 4aaa95706d39..172069f31616 100644
---- a/arch/arm/mach-omap2/omap-secure.h
-+++ b/arch/arm/mach-omap2/omap-secure.h
-@@ -50,6 +50,7 @@
- #define OMAP5_DRA7_MON_SET_ACR_INDEX	0x107
+ 	nhashmask = (nsize / sizeof(struct hlist_head)) - 1U;
+ 	odst = xfrm_state_deref_prot(net->xfrm.state_bydst, net);
+@@ -156,7 +155,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	rcu_assign_pointer(net->xfrm.state_byspi, nspi);
+ 	net->xfrm.state_hmask = nhashmask;
  
- /* Secure PPA(Primary Protected Application) APIs */
-+#define OMAP4_PPA_SERVICE_0		0x21
- #define OMAP4_PPA_L2_POR_INDEX		0x23
- #define OMAP4_PPA_CPU_ACTRL_SMP_INDEX	0x25
+-	write_seqcount_end(&xfrm_state_hash_generation);
++	write_seqcount_end(&net->xfrm.xfrm_state_hash_generation);
+ 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
  
+ 	osize = (ohashmask + 1) * sizeof(struct hlist_head);
+@@ -1061,7 +1060,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 
+ 	to_put = NULL;
+ 
+-	sequence = read_seqcount_begin(&xfrm_state_hash_generation);
++	sequence = read_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
+ 
+ 	rcu_read_lock();
+ 	h = xfrm_dst_hash(net, daddr, saddr, tmpl->reqid, encap_family);
+@@ -1174,7 +1173,7 @@ out:
+ 	if (to_put)
+ 		xfrm_state_put(to_put);
+ 
+-	if (read_seqcount_retry(&xfrm_state_hash_generation, sequence)) {
++	if (read_seqcount_retry(&net->xfrm.xfrm_state_hash_generation, sequence)) {
+ 		*err = -EAGAIN;
+ 		if (x) {
+ 			xfrm_state_put(x);
+@@ -2664,6 +2663,7 @@ int __net_init xfrm_state_init(struct net *net)
+ 	net->xfrm.state_num = 0;
+ 	INIT_WORK(&net->xfrm.state_hash_work, xfrm_hash_resize);
+ 	spin_lock_init(&net->xfrm.xfrm_state_lock);
++	seqcount_init(&net->xfrm.xfrm_state_hash_generation);
+ 	return 0;
+ 
+ out_byspi:
 -- 
 2.30.2
 
