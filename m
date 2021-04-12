@@ -2,122 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BBA35D0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F64435D106
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245244AbhDLTXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
+        id S245248AbhDLTZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236999AbhDLTXh (ORCPT
+        with ESMTP id S237137AbhDLTZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:23:37 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B74C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:23:18 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id l4so22095905ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:23:18 -0700 (PDT)
+        Mon, 12 Apr 2021 15:25:55 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9A9C061574;
+        Mon, 12 Apr 2021 12:25:36 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 7so15449492qka.7;
+        Mon, 12 Apr 2021 12:25:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mELRjVqp68r+toZVxtj/nROQLw+PqRw01stMy/JKAoI=;
-        b=RuXsPBJDF3pxAI6ljG05ZKqt8YUmS44gosy5CljDMisMK7z6FRDFFa42SQlfxTeZcm
-         pMmiFuREi/CsiEwh3n4f9myye40LULlH6dAutk4fRQm1YLoMfR/GWhHj3j8fvco171Qj
-         WVEHi6qmZRdbLgD9XmwL0IDXk3XH1cq1hK5hcjIn+f0FIAUa0DRmEFHP7g2GxPzv8hdk
-         kx1AbJe5MgMR8FvTP2jpZy9wdqlHQ7VB3+PRXr524woYvd0H0j+RLlzfJw4VtRrz/98Q
-         Pr42+gOxdhKEqRz6dM8XW2MhQA7TutftrfPsfvndRojle93KrK94IGNUc0GTCkm1vYu3
-         XQ+Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EAOBbEIZlFDzXoi0Sp9FWL3CYelnvTw/J4PVfYOgrZk=;
+        b=uNznQpSuXYdrtTvTibDNk1OknoGzngDinSUmjuZbcAFNgiy/aocOUTMEdbFnRig3yz
+         cBe4DVF/4ykUXy7zVFVV4FgeZ/CK+rBBbFCvkdwBchDcgbZS40t6I/gH7nbAbdhxB+lf
+         MwO2Ffg++S0JRl2lrL8sK0HOQpPOXAI57XFiu6vkkR7C4DHR2qDKdHTZOk7G/eiMaOzc
+         xbgj/xmdoUFS+4ycK5E54VP3yBZtvToH/0UaMxZJwoZ/B3c+0R06PMSJPemAjvJ7qBvO
+         esYnF4AD0T5YFg74d05qAgqtGbzhId/7OYh7a8otS+X5GpdPmHLmrF2RlUWHPLj+jzi+
+         Cn4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mELRjVqp68r+toZVxtj/nROQLw+PqRw01stMy/JKAoI=;
-        b=dmqfgIsvSCez6n4A8WgnSrZTktuQ8Gh8f6Lm8AfQHeL6BKl3rcsx2Uxr9SdtRWQO6v
-         ubc736wZ6cAtnyafaELV1Me4B4m08yKW/KkMB1hzndbnG6X3MzqbZ8Zdgh/OJ/qoFi7x
-         tQA/JJfVF4+NBGyby5a9UbF9wDJBqj1UNE/f4ofWk2OYN2ceWp5Q30ERfgfTTKmws1aS
-         hDJuZ/hF2WpnwcJnRwe4Zt5zH3RIIogwxoYVfxvx/f8uS+NgBXHz9HvyXvSgsyWG/epw
-         Q/MgnSQ5EDz5fUVD0AaCbfkXydBZZa1uOyyS9fRHP2CM1n0H515Xm8uDjMEzUMyHGawJ
-         kKyQ==
-X-Gm-Message-State: AOAM531vGJcQtG1iqcdkwiLYTOk4VwKc11tLE/MNty36Tt5NU+4Vqpwj
-        KaUQDNUGcEmpwLPZEN5QSgHkBa0KDM9xTQI2tnpo0Q==
-X-Google-Smtp-Source: ABdhPJwXphtNs2B1kAW+Ay203fgklD+JVIJDuKSEoScP5GErDcEj86IB5CIU+IcorY4kTj6jGjHvAx5XiZS9A93+OEk=
-X-Received: by 2002:a17:906:1313:: with SMTP id w19mr12522249ejb.64.1618255397479;
- Mon, 12 Apr 2021 12:23:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EAOBbEIZlFDzXoi0Sp9FWL3CYelnvTw/J4PVfYOgrZk=;
+        b=So6pZAZzqj/rp9Qhx09KvNsjXepkWJJvzWVwQwFfo+P+rXwAShF2YQfYxDfGGcvBO+
+         Q+tXRHS4M1sEFZzq3QvGADvXa5VkQDd/qbBJBjHkAhRQHQAV+lQ+I/A6G+WA+RQRXHST
+         B3pTasxkioOaf+beBKzseym4JtdCNrnahLkW2wtb71jYp1IZmT1xfe5kWu2h9cYG+Gyg
+         Zpx2m4XYubkF/WR38y8lSTPK5BvPAWod4JKcHgWhJ3xQvGLRDGrvW1sbxwzO70xURLZy
+         7m4m5XFfj/btRS0o13axs7ZQ2NTKRW5QVlEpXXnKRXDHUmjseojG3FgQ28UEoDfyf0LS
+         enXw==
+X-Gm-Message-State: AOAM5314L5E33npwXht8d7PF671rtRRqBuGPmL1z+mdxa5xleSME/lWH
+        pkl4U4pzY3GrnKo1vu639XE=
+X-Google-Smtp-Source: ABdhPJyzQZvikmtooDGKaaUlhXS4ZfppmEozmQBQ86q8I57sjs+dzXsaVe1JlRdJHwNH102o1asWdA==
+X-Received: by 2002:a37:e30c:: with SMTP id y12mr11556664qki.33.1618255535792;
+        Mon, 12 Apr 2021 12:25:35 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id l16sm3841679qtr.65.2021.04.12.12.25.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 12:25:35 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Pedro Tammela <pctammela@mojatatu.com>
+Subject: [PATCH bpf-next v2] libbpf: clarify flags in ringbuf helpers
+Date:   Mon, 12 Apr 2021 16:24:32 -0300
+Message-Id: <20210412192434.944343-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200629065008.27620-1-brgl@bgdev.pl> <20200629065008.27620-5-brgl@bgdev.pl>
- <CAKdAkRRRyC3x39CDRq_3ur1=MWuUug6ov-NWmSBc3h+XyRcsgQ@mail.gmail.com>
-In-Reply-To: <CAKdAkRRRyC3x39CDRq_3ur1=MWuUug6ov-NWmSBc3h+XyRcsgQ@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 12 Apr 2021 21:23:06 +0200
-Message-ID: <CAMRc=MfU8QFPWu_e6oQgtq0cBA34kCSi9=9-1iaFW4gW+yXN6A@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] devres: handle zero size in devm_kmalloc()
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, linux-hwmon@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 5:21 AM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Bartosz,
->
-> On Mon, Jun 29, 2020 at 1:56 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Make devm_kmalloc() behave similarly to non-managed kmalloc(): return
-> > ZERO_SIZE_PTR when requested size is 0. Update devm_kfree() to handle
-> > this case.
->
-> This is wrong if you consider devm_krealloc API that you added. The
-> premise of devm_krealloc() is that it does not disturb devres "stack",
-> however in this case there is no entry in the stack. Consider:
->
->         ptr = devm_kzalloc(dev, 0, GFP_KERNEL);
->         ...
->         more devm API calls
->         ...
->
->         /* This allocation will be on top of devm stack, not bottom ! */
->         ptr = devm_krealloc(dev, ptr, 16, GFP_KERNEL);
->
-> And also:
->
->         ptr = devm_kzalloc(dev, 16, GFP_KERNEL);
->         ...
->         more devm API calls
->         ...
->         /* Here we lose out position */
->         ptr = devm_krealloc(dev, ptr, 0, GFP_KERNEL);
->         ...
->         /* and now our memory allocation will be released first */
->         ptr = devm_krealloc(dev, ptr, 16, GFP_KERNEL);
->
->
-> IMO special-casing 0-size allocations for managed memory allocations
-> should not be done.
->
-> Thanks.
->
-> --
-> Dmitry
+In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
 
-You're right about the ordering being lost. At the same time
-allocating 0 bytes is quite a special case and should result in
-returning ZERO_SIZE_PTR as the fault dump resulting from its
-dereference will indicate what the bug is.
+For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
+notification to the process if needed.
 
-I need to give it a thought because I'm not yet sure what the right
-solution would be. Let me get back to you.
+Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+---
+ include/uapi/linux/bpf.h       | 16 ++++++++++++++++
+ tools/include/uapi/linux/bpf.h | 16 ++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-Bartosz
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 49371eba98ba..24593fd72f9d 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4061,12 +4061,20 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		An adaptive notification is a notification sent whenever the user-space
++ * 		process has caught up and consumed all available payloads. In case the user-space
++ * 		process is still processing a previous payload, then no notification is needed
++ * 		as it will process the newly added payload automatically.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
+  * 	Description
+  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
++ * 		*flags* must be 0.
+  * 	Return
+  * 		Valid pointer with *size* bytes of memory available; NULL,
+  * 		otherwise.
+@@ -4078,6 +4086,10 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+@@ -4088,6 +4100,10 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 69902603012c..8debc8280f3e 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4061,12 +4061,20 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		An adaptive notification is a notification sent whenever the user-space
++ * 		process has caught up and consumed all available payloads. In case the user-space
++ * 		process is still processing a previous payload, then no notification is needed
++ * 		as it will process the newly added payload automatically.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
+  *
+  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
+  * 	Description
+  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
++ * 		*flags* must be 0.
+  * 	Return
+  * 		Valid pointer with *size* bytes of memory available; NULL,
+  * 		otherwise.
+@@ -4078,6 +4086,10 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+@@ -4088,6 +4100,10 @@ union bpf_attr {
+  * 		of new data availability is sent.
+  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
+  * 		of new data availability is sent unconditionally.
++ * 		If **0** is specified in *flags*, an adaptive notification
++ * 		of new data availability is sent.
++ *
++ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
+  * 	Return
+  * 		Nothing. Always succeeds.
+  *
+-- 
+2.25.1
+
