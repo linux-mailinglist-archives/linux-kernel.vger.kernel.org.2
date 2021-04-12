@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9145135B9F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78A035B9F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhDLFwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 01:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhDLFwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 01:52:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A75D561207;
-        Mon, 12 Apr 2021 05:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618206747;
-        bh=efCpCnAinHSf2kSKdV1JoeqCUQSQ/06SRXMJwGOgVdc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oWgropJxyAI8fh04gSOaCZDSUtj00UIEqrA1HMKf54YVJLlfVfGzlIZqRmMH29h3M
-         8n0DXpGk0AvcvVsvIHvGkfwhG/VKqdkHNdNwefP4EvhPkyBWbuqo+E8DpqppwZea74
-         asFZk45SAuqLMKJGYJ4+CtCiT44m331SXxTo8ylU=
-Date:   Mon, 12 Apr 2021 07:52:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     dillon.minfei@gmail.com
-Cc:     jirislaby@kernel.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: stm32: optimize spin lock usage
-Message-ID: <YHPgGI6EmTzmVH7g@kroah.com>
-References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+        id S230353AbhDLF7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 01:59:33 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:49062 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229448AbhDLF7c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 01:59:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UVD1scv_1618207148;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVD1scv_1618207148)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 12 Apr 2021 13:59:13 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     sathya.prakash@broadcom.com
+Cc:     sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] scsi: message: fusion: remove useless variable
+Date:   Mon, 12 Apr 2021 13:59:06 +0800
+Message-Id: <1618207146-96542-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> To avoid potential deadlock in spin_lock usage, change to use
-> spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn) context.
-> spin_lock(), spin_unlock() under handler context.
-> 
-> remove unused local_irq_save/restore call.
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
-> Was verified on stm32f469-disco board. need more test on stm32mp platform.
-> 
->  drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-> index b3675cf25a69..c4c859b34367 100644
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-> @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
->  	struct tty_port *tport = &port->state->port;
->  	struct stm32_port *stm32_port = to_stm32_port(port);
->  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-> -	unsigned long c;
-> +	unsigned long c, flags;
->  	u32 sr;
->  	char flag;
->  
-> @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
->  		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
->  	}
->  
-> -	spin_unlock(&port->lock);
-> +	if (threaded)
-> +		spin_unlock_irqrestore(&port->lock, flags);
-> +	else
-> +		spin_unlock(&port->lock);
+Fix the following gcc warning:
 
-You shouldn't have to check for this, see the other patches on the list
-recently that fixed this up to not be an issue for irq handlers.
+drivers/message/fusion/mptsas.c:783:14: warning: variable ‘vtarget’ set
+but not used [-Wunused-but-set-variable].
 
-thanks,
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/message/fusion/mptsas.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-greg k-h
+diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
+index 5eb0b33..c54e823 100644
+--- a/drivers/message/fusion/mptsas.c
++++ b/drivers/message/fusion/mptsas.c
+@@ -780,13 +780,11 @@ static inline MPT_ADAPTER *rphy_to_ioc(struct sas_rphy *rphy)
+ mptsas_add_device_component_starget(MPT_ADAPTER *ioc,
+ 	struct scsi_target *starget)
+ {
+-	VirtTarget	*vtarget;
+ 	struct sas_rphy	*rphy;
+ 	struct mptsas_phyinfo	*phy_info = NULL;
+ 	struct mptsas_enclosure	enclosure_info;
+ 
+ 	rphy = dev_to_rphy(starget->dev.parent);
+-	vtarget = starget->hostdata;
+ 	phy_info = mptsas_find_phyinfo_by_sas_address(ioc,
+ 			rphy->identify.sas_address);
+ 	if (!phy_info)
+-- 
+1.8.3.1
+
