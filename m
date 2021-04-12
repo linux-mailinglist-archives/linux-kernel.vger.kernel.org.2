@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11B835BEAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B993935C133
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239764AbhDLJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:01:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
+        id S241013AbhDLJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238471AbhDLIwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:52:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A455561221;
-        Mon, 12 Apr 2021 08:51:18 +0000 (UTC)
+        id S237542AbhDLJBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D10E26137C;
+        Mon, 12 Apr 2021 09:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217479;
-        bh=D/HvxFYjZJ/ANAhaqPehwJ3N5Iqsp0HOSQFW644kqmM=;
+        s=korg; t=1618218020;
+        bh=Os2eMfap6Li10iuYEB7IpMWQI78Y7AdLLCg/JsE547Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOvcHI6uV1aQT7jnrOXMSoY4XQ5UJ3KBL6m/B3nd2xdXbCQ3xb/eTcMtQ8Yt7LtTF
-         CP4aBbNl5Lomrdlf5YyTgv5pdSs8BERTmoGZSmvmd9Gq/wc7Pgyu1wrLdKSe6jxCxu
-         0dgT/SVnQr0Wtt02PAVccBkEZn6LShoZ53ViCYtk=
+        b=bja3WyAtwIKNzC2BHa4scMJfzQ8Gjii7t6zgBRzxn5ZNlcDI2qUeXkWw8JMGZGB7o
+         /qXsnz+lpjWpid40GlHw37XRcejfbzSeEHrOqTzS4O7BdnM4ERE1k7ZToMTSVoVwiA
+         FtZuFcLpr+x6eDF1Q1dCidcZCVtNEBOAcZ7UPc48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Rui Salvaterra <rsalvaterra@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 5.10 031/188] ARM: dts: turris-omnia: configure LED[2]/INTn pin as interrupt pin
-Date:   Mon, 12 Apr 2021 10:39:05 +0200
-Message-Id: <20210412084014.686141907@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Pricoco <fabio.pricoco@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.11 041/210] ice: Increase control queue timeout
+Date:   Mon, 12 Apr 2021 10:39:06 +0200
+Message-Id: <20210412084017.385378464@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Fabio Pricoco <fabio.pricoco@intel.com>
 
-commit a26c56ae67fa9fbb45a8a232dcd7ebaa7af16086 upstream.
+commit f88c529ac77b3c21819d2cf1dfcfae1937849743 upstream.
 
-Use the `marvell,reg-init` DT property to configure the LED[2]/INTn pin
-of the Marvell 88E1514 ethernet PHY on Turris Omnia into interrupt mode.
+250 msec timeout is insufficient for some AQ commands. Advice from FW
+team was to increase the timeout. Increase to 1 second.
 
-Without this the pin is by default in LED[2] mode, and the Marvell PHY
-driver configures LED[2] into "On - Link, Blink - Activity" mode.
-
-This fixes the issue where the pca9538 GPIO/interrupt controller (which
-can't mask interrupts in HW) received too many interrupts and after a
-time started ignoring the interrupt with error message:
-  IRQ 71: nobody cared
-
-There is a work in progress to have the Marvell PHY driver support
-parsing PHY LED nodes from OF and registering the LEDs as Linux LED
-class devices. Once this is done the PHY driver can also automatically
-set the pin into INTn mode if it does not find LED[2] in OF.
-
-Until then, though, we fix this via `marvell,reg-init` DT property.
-
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Reported-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Fixes: 26ca8b52d6e1 ("ARM: dts: add support for Turris Omnia")
-Cc: Uwe Kleine-König <uwe@kleine-koenig.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: <stable@vger.kernel.org>
-Tested-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Fixes: 7ec59eeac804 ("ice: Add support for control queues")
+Signed-off-by: Fabio Pricoco <fabio.pricoco@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/armada-385-turris-omnia.dts |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/ice/ice_controlq.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm/boot/dts/armada-385-turris-omnia.dts
-+++ b/arch/arm/boot/dts/armada-385-turris-omnia.dts
-@@ -236,6 +236,7 @@
- 		status = "okay";
- 		compatible = "ethernet-phy-id0141.0DD1", "ethernet-phy-ieee802.3-c22";
- 		reg = <1>;
-+		marvell,reg-init = <3 18 0 0x4985>;
+--- a/drivers/net/ethernet/intel/ice/ice_controlq.h
++++ b/drivers/net/ethernet/intel/ice/ice_controlq.h
+@@ -31,8 +31,8 @@ enum ice_ctl_q {
+ 	ICE_CTL_Q_MAILBOX,
+ };
  
- 		/* irq is connected to &pcawan pin 7 */
- 	};
+-/* Control Queue timeout settings - max delay 250ms */
+-#define ICE_CTL_Q_SQ_CMD_TIMEOUT	2500  /* Count 2500 times */
++/* Control Queue timeout settings - max delay 1s */
++#define ICE_CTL_Q_SQ_CMD_TIMEOUT	10000 /* Count 10000 times */
+ #define ICE_CTL_Q_SQ_CMD_USEC		100   /* Check every 100usec */
+ #define ICE_CTL_Q_ADMIN_INIT_TIMEOUT	10    /* Count 10 times */
+ #define ICE_CTL_Q_ADMIN_INIT_MSEC	100   /* Check every 100msec */
 
 
