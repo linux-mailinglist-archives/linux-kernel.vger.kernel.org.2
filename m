@@ -2,248 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2AC35CEBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A510335CED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244159AbhDLQs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:48:27 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:35574 "EHLO lizzard.sbs.de"
+        id S1343583AbhDLQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:49:53 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23091 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344639AbhDLQkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:40:36 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 13CGe340004788
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 18:40:03 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.180])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 13CGe2F9029197;
-        Mon, 12 Apr 2021 18:40:02 +0200
-Date:   Mon, 12 Apr 2021 18:40:01 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        "Jonathan Yong" <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, <hdegoede@redhat.com>
-Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in
- non-ACPI system
-Message-ID: <20210412184001.2fc359c1@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-        <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
-        <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S244306AbhDLQkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:40:46 -0400
+IronPort-SDR: 6afENUzDgRkFVLS7gAtFzzccLkJSvF4dY3vJbQWi5oxjDura3NUbICUGngqEfxzlIiltWRnOYN
+ 0dRdvdvvyrFw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194263956"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="194263956"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:40:22 -0700
+IronPort-SDR: xEhCPFkXMYN4fD+DLZPqff5LrIk20dBVzUZXZLZt1ODe7iGKdroEQAeRXsxGbZPF2vO7N9AjdX
+ 0PooAHnW45Yw==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="521262535"
+Received: from nmafzal-mobl.amr.corp.intel.com (HELO [10.209.42.102]) ([10.209.42.102])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:40:21 -0700
+Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
+To:     Jethro Beekman <jethro@fortanix.com>,
+        Raoul Strackx <raoul.strackx@fortanix.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+ <a05d07dc-1623-012c-5120-e30f64decae7@intel.com>
+ <f3366028-286a-8543-0604-3db6799364b5@fortanix.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ae4b4271-9e74-99e6-fa59-369863c891b5@intel.com>
+Date:   Mon, 12 Apr 2021 09:40:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <f3366028-286a-8543-0604-3db6799364b5@fortanix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tan or Andy,
+On 4/12/21 8:58 AM, Jethro Beekman wrote:
+> On 2021-04-12 17:36, Dave Hansen wrote:
+>> On 4/12/21 1:59 AM, Raoul Strackx wrote:
+>>> This patch set adds a new ioctl to enable userspace to execute EEXTEND
+>>> leaf functions per 256 bytes of enclave memory. With this patch in place,
+>>> Linux will be able to build all valid SGXv1 enclaves.
+>> This didn't cover why we need a *NEW* ABI for this instead of relaxing
+>> the page alignment rules in the existing one.
+>>
+> In executing the ECREATE, EADD, EEXTEND, EINIT sequence, you currently have 2 options for EADD/EEXTEND using the SGX_IOC_ENCLAVE_ADD_PAGES ioctl:
+> - execute EADD on any address
+> - execute EADD on any address followed by 16× EEXTEND for that address span
 
-maybe you can point me to a user of that patch. I guess there might be
-an out-of-tree driver or userland code on how to use the GPIOs from
-there.
+I think you forgot a key piece of the explanation here.  The choice as
+to whether you just EADD or EADD+16xEEXTEND is governed by the addition
+of the: SGX_PAGE_MEASURE flag.
 
-Feel free to send directly to me in case it is not published anywhere
-and should not yet be on the list, i could just use it for inspiration.
-A driver will likely be GPL anyways.
+> Could you be more specific on how you're suggesting that the current ioctl is modified to in addition support the following?
+> - execute EEXTEND on any address
 
-regards,
-Henning
+I'm still not convinced you *NEED* EEXTEND on arbitrary addresses.
 
-Am Mon, 12 Apr 2021 18:01:06 +0200
-schrieb Henning Schild <henning.schild@siemens.com>:
+Right now, we have (roughly):
 
-> Am Mon, 8 Mar 2021 14:20:19 +0200
-> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> 
-> > From: Tan Jui Nee <jui.nee.tan@intel.com>
-> > 
-> > Add support for non-ACPI systems, such as system that uses
-> > Advanced Boot Loader (ABL) whereby a platform device has to be
-> > created in order to bind with pin control and GPIO.
-> > 
-> > At the moment, Intel Apollo Lake In-Vehicle Infotainment (IVI)
-> > system requires a driver to hide and unhide P2SB to lookup P2SB BAR
-> > and pass the PCI BAR address to GPIO.
-> > 
-> > Signed-off-by: Tan Jui Nee <jui.nee.tan@intel.com>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/mfd/lpc_ich.c | 100
-> > +++++++++++++++++++++++++++++++++++++++++- 1 file changed, 99
-> > insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
-> > index 8e9bd6813287..959247b6987a 100644
-> > --- a/drivers/mfd/lpc_ich.c
-> > +++ b/drivers/mfd/lpc_ich.c
-> > @@ -8,7 +8,8 @@
-> >   *  Configuration Registers.
-> >   *
-> >   *  This driver is derived from lpc_sch.
-> > -
-> > + *
-> > + *  Copyright (C) 2017, 2021 Intel Corporation
-> >   *  Copyright (c) 2011 Extreme Engineering Solution, Inc.
-> >   *  Author: Aaron Sierra <asierra@xes-inc.com>
-> >   *
-> > @@ -43,6 +44,7 @@
-> >  #include <linux/acpi.h>
-> >  #include <linux/pci.h>
-> >  #include <linux/pci-p2sb.h>
-> > +#include <linux/pinctrl/pinctrl.h>
-> >  #include <linux/mfd/core.h>
-> >  #include <linux/mfd/lpc_ich.h>
-> >  #include <linux/platform_data/itco_wdt.h>
-> > @@ -140,6 +142,73 @@ static struct mfd_cell lpc_ich_gpio_cell = {
-> >  	.ignore_resource_conflicts = true,
-> >  };
-> >  
-> > +/* Offset data for Apollo Lake GPIO controllers */
-> > +#define APL_GPIO_SOUTHWEST_OFFSET	0xc00000
-> > +#define APL_GPIO_SOUTHWEST_SIZE		0x654
-> > +#define APL_GPIO_NORTHWEST_OFFSET	0xc40000
-> > +#define APL_GPIO_NORTHWEST_SIZE		0x764
-> > +#define APL_GPIO_NORTH_OFFSET		0xc50000
-> > +#define APL_GPIO_NORTH_SIZE		0x76c  
-> 
-> drivers/pinctrl/intel/pinctrl-broxton.c:653
-> BXT_COMMUNITY(0, 77),
-> 
-> > +#define APL_GPIO_WEST_OFFSET		0xc70000
-> > +#define APL_GPIO_WEST_SIZE		0x674  
-> 
-> All these sizes correlate with 4 magic numbers from pinctrl-broxton.
-> 
-> SIZE - 0x500 (pad_base?) - 4 (no clue) / 8
-> 
-> It might be worth basing both numbers on a define and giving the magic
-> numbers some names.
-> 
-> But all this seems like duplication of pinctrl-broxton, maybe the
-> pinctrl driver should unhide the p2sb ...
-> 
-> regards,
-> Henning
-> 
-> > +
-> > +#define APL_GPIO_NR_DEVICES		4
-> > +#define APL_GPIO_IRQ			14
-> > +
-> > +static struct resource apl_gpio_resources[APL_GPIO_NR_DEVICES][2]
-> > = {
-> > +	{
-> > +		DEFINE_RES_MEM(APL_GPIO_NORTH_OFFSET,
-> > APL_GPIO_NORTH_SIZE),
-> > +		DEFINE_RES_IRQ(APL_GPIO_IRQ),
-> > +	},
-> > +	{
-> > +		DEFINE_RES_MEM(APL_GPIO_NORTHWEST_OFFSET,
-> > APL_GPIO_NORTHWEST_SIZE),
-> > +		DEFINE_RES_IRQ(APL_GPIO_IRQ),
-> > +	},
-> > +	{
-> > +		DEFINE_RES_MEM(APL_GPIO_WEST_OFFSET,
-> > APL_GPIO_WEST_SIZE),
-> > +		DEFINE_RES_IRQ(APL_GPIO_IRQ),
-> > +	},
-> > +	{
-> > +		DEFINE_RES_MEM(APL_GPIO_SOUTHWEST_OFFSET,
-> > APL_GPIO_SOUTHWEST_SIZE),
-> > +		DEFINE_RES_IRQ(APL_GPIO_IRQ),
-> > +	},
-> > +};
-> > +
-> > +/* The order must be in sync with apl_pinctrl_soc_data */
-> > +static const struct mfd_cell apl_gpio_devices[APL_GPIO_NR_DEVICES]
-> > = {
-> > +	{
-> > +		/* North */
-> > +		.name = "apollolake-pinctrl",
-> > +		.id = 0,
-> > +		.num_resources = ARRAY_SIZE(apl_gpio_resources[0]),
-> > +		.resources = apl_gpio_resources[0],
-> > +		.ignore_resource_conflicts = true,
-> > +	},
-> > +	{
-> > +		/* NorthWest */
-> > +		.name = "apollolake-pinctrl",
-> > +		.id = 1,
-> > +		.num_resources = ARRAY_SIZE(apl_gpio_resources[1]),
-> > +		.resources = apl_gpio_resources[1],
-> > +		.ignore_resource_conflicts = true,
-> > +	},
-> > +	{
-> > +		/* West */
-> > +		.name = "apollolake-pinctrl",
-> > +		.id = 2,
-> > +		.num_resources = ARRAY_SIZE(apl_gpio_resources[2]),
-> > +		.resources = apl_gpio_resources[2],
-> > +		.ignore_resource_conflicts = true,
-> > +	},
-> > +	{
-> > +		/* SouthWest */
-> > +		.name = "apollolake-pinctrl",
-> > +		.id = 3,
-> > +		.num_resources = ARRAY_SIZE(apl_gpio_resources[3]),
-> > +		.resources = apl_gpio_resources[3],
-> > +		.ignore_resource_conflicts = true,
-> > +	},
-> > +};
-> >  
-> >  static struct mfd_cell lpc_ich_spi_cell = {
-> >  	.name = "intel-spi",
-> > @@ -1082,6 +1151,29 @@ static int lpc_ich_init_wdt(struct pci_dev
-> > *dev) return ret;
-> >  }
-> >  
-> > +static int lpc_ich_init_pinctrl(struct pci_dev *dev)
-> > +{
-> > +	struct resource base;
-> > +	unsigned int i;
-> > +	int ret;
-> > +
-> > +	ret = pci_p2sb_bar(dev, PCI_DEVFN(13, 0), &base);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(apl_gpio_devices); i++) {
-> > +		struct resource *mem = &apl_gpio_resources[i][0];
-> > +
-> > +		/* Fill MEM resource */
-> > +		mem->start += base.start;
-> > +		mem->end += base.start;
-> > +		mem->flags = base.flags;
-> > +	}
-> > +
-> > +	return mfd_add_devices(&dev->dev, 0, apl_gpio_devices,
-> > +			       ARRAY_SIZE(apl_gpio_devices), NULL,
-> > 0, NULL); +}
-> > +
-> >  static void lpc_ich_test_spi_write(struct pci_dev *dev, unsigned
-> > int devfn, struct intel_spi_boardinfo *info)
-> >  {
-> > @@ -1198,6 +1290,12 @@ static int lpc_ich_probe(struct pci_dev *dev,
-> >  			cell_added = true;
-> >  	}
-> >  
-> > +	if (priv->chipset == LPC_APL) {
-> > +		ret = lpc_ich_init_pinctrl(dev);
-> > +		if (!ret)
-> > +			cell_added = true;
-> > +	}
-> > +
-> >  	if (lpc_chipset_info[priv->chipset].spi_type) {
-> >  		ret = lpc_ich_init_spi(dev);
-> >  		if (!ret)  
-> 
+	 ioctl(ADD_PAGES, ptr, PAGE_SIZE, MEASURE)
 
+which translates in the kernel to:
+
+	__eadd(ptr, epc)
+	if (flags & MEASURE) {
+		for (i = 0; i < PAGE_SIZE/256; i++)
+			__eextend(epc + i*256);
+	}
+
+Instead, we could allow add_arg.src and add_arg.offset to be
+non-page-aligned.  Then, we still do the same __eadd(), but modify the
+__eextend() loop to only cover the actual range referred to by 'add_arg'.
+
+The downside is that you only get a single range of measured data per
+page.  Let's say a 'X' means measured (EEXTEND'ed) and '_' means not.
+You could have patterns like:
+
+	XXXXXXXXXXXXXXXX
+or
+	XXXXXXXXXXXXXXX_
+or
+	____XXXXXXXXXXXX
+
+but not:
+
+	_X_X_X_X_X_X_X_X
+or
+	_XXXXXXXXXXXXXX_
+
+
+Is that a problem?
