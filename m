@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DE035D291
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFA235D296
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245656AbhDLVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 17:23:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:37824 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245107AbhDLVXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 17:23:12 -0400
-IronPort-SDR: W+V1SKcO7tOCCMIN/6ssKpKaWoxgcFSYJVYOir8riin7+35mcLpUAvjRoDmyUIk3wLE9dJ6xcA
- ckVsch22Fvcg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258255043"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="258255043"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:22:53 -0700
-IronPort-SDR: w20xRPbCNHbZFV4m4XNmVa95UmIEMCg5aIdaO7+IhGBpJS5OGhALVd7CkDtoYszRuLy2sWGJpr
- Pclup8EAGWSg==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="521337381"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:22:50 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id B5855200E8;
-        Tue, 13 Apr 2021 00:22:48 +0300 (EEST)
-Date:   Tue, 13 Apr 2021 00:22:48 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] Re: [PATCH 2/6] staging: media: intel-ipu3:
- preferred __aligned(size) over __attribute__aligned(size)
-Message-ID: <20210412212248.GN3@paasikivi.fi.intel.com>
-References: <cover.1618180659.git.mitaliborkar810@gmail.com>
- <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
- <20210412094315.GJ3@paasikivi.fi.intel.com>
- <YHRZSYmHfXTh/S39@kali>
+        id S238170AbhDLVZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231854AbhDLVZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 17:25:11 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97DDC061574;
+        Mon, 12 Apr 2021 14:24:52 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id b17so10390204pgh.7;
+        Mon, 12 Apr 2021 14:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VPYHn6SoT76CwnEfuJiXdLvt5dm5XY4Tt5lyyt5vt4w=;
+        b=qV/IEh+ZvH3L1nnBL9wgx3VQicsPPp6Esz78OZOadwMl9cgeUrFS9HYfFL6dwFQaie
+         MhdHJRqGhWCJuRl7lqzIogbJpkW8goXzXFf01FiieZiisCFaizq8PjAUNjkHEFIy5DD2
+         OO7nDu7r29beu7k+qnWiT2DREcXunKYwt2osM90t+NvmYmw/ZmRzdU8yRqlaNRIO2Bm+
+         0Kukge5SSPEZnavngl4G59g4+ZaXIXI4YY48JHw2zycGZvHlsEXsW/Pu61J7T+5r9t3L
+         JBY06h58EdEs4V/IPQI4MTXO9A9YPeNTAuoiZPwmjqgY0e79XolJZwT4DzeBgTElY0Mo
+         285Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VPYHn6SoT76CwnEfuJiXdLvt5dm5XY4Tt5lyyt5vt4w=;
+        b=goR0Bkm/fBhH/N0Bt8kndxfum7XaKjbP1EH+yelryNmcGfRifIYYbmqMUCxUqLqYKY
+         lVDOyhYs5bzXS3JZ2AlSthrw3joUjtDWMNR60hylfHsaQHIQkz7DzMbOXCV1JDRwuNW2
+         nMTXndTmgq0hBtLcyr+7h4rDjvkfpoVXMZ/YxA7BGSuNkWdtbNR9c8HuNqNRcBfAi3u+
+         njh/E/vf+jRBgb+XGzEdBBkHlaSoA45aiM42h7LfJZqyxrpQOZEVS0ng8pvZ26ZpqeKW
+         E9H2bWhreQmTtRpCeCRE/f5AXvdIi/ERjW+H/re1/W6qBO1pd1Y2ZAA29HpB/RCVqZmt
+         sp6g==
+X-Gm-Message-State: AOAM532zy4q+1KaagVoh7RcCW2QassjIMlLNjB4kuZy8W/KRv19h03lV
+        KcukrIxKD5N1v4T7s0k6/iknY4bxTm/21QZ/sGA=
+X-Google-Smtp-Source: ABdhPJyF5y7spTxqV3x57uu/69DBsM/7qBumstsLy8e5p46pfBx/40I9Dj8ryjWQPvK8CyBIHlPjKiEPhBtFYXJWN2s=
+X-Received: by 2002:a63:d815:: with SMTP id b21mr28907903pgh.217.1618262692310;
+ Mon, 12 Apr 2021 14:24:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHRZSYmHfXTh/S39@kali>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-5-mgross@linux.intel.com> <20210305210140.GA622142@robh.at.kernel.org>
+ <20210308202008.GA138795@linux.intel.com>
+In-Reply-To: <20210308202008.GA138795@linux.intel.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Mon, 12 Apr 2021 16:24:41 -0500
+Message-ID: <CABb+yY3kRj2F1ao9A1_+ve5dZm0Q=tThJyu-cVo-cqMjZ+uQ2g@mail.gmail.com>
+Subject: Re: [PATCH v6 04/34] dt-bindings: Add bindings for Keem Bay IPC driver
+To:     mgross@linux.intel.com
+Cc:     Rob Herring <robh@kernel.org>, markgross@kernel.org,
+        "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de, damien.lemoal@wdc.com,
+        dragan.cvetic@xilinx.com, Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mitali,
-
-On Mon, Apr 12, 2021 at 07:59:29PM +0530, Mitali Borkar wrote:
-> On Mon, Apr 12, 2021 at 12:43:15PM +0300, Sakari Ailus wrote:
-> > Hi Mitali,
-> > 
-> > On Mon, Apr 12, 2021 at 04:38:59AM +0530, Mitali Borkar wrote:
-> > > This patch fixes the warning identified by checkpatch.pl by replacing
-> > > __attribute__aligned(size) with __aligned(size)
-> > 
-> > Same comments on this than the 1st patch.
-> > 
-> > It's a staging driver so even if this is a user space header, it's not
-> > under include/uapi/linux.
+On Mon, Mar 8, 2021 at 2:20 PM mark gross <mgross@linux.intel.com> wrote:
+>
+> On Fri, Mar 05, 2021 at 03:01:40PM -0600, Rob Herring wrote:
+> > On Fri, Feb 12, 2021 at 02:22:34PM -0800, mgross@linux.intel.com wrote:
+> > > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> > >
+> > > Add DT binding documentation for the Intel Keem Bay IPC driver, which
 > >
-> Sir, I am not able to understandd what you are trying to say in this. As you
-> mentioned in patch 1/6, I removed and added header where BIT() macro under 
-> apprpriate userpace, but what should I modify in this patch?
+> > Bindings are for h/w blocks, not drivers. From a binding perspective, I
+> > don't really care what the driver architecture for some OS looks like. I
+> > continue to not understand what this h/w looks like. A block diagram
+> > would help as would understanding what blocks have multiple clients
+> > (mailboxes and xlink in particular).
+> I'm working to gather this info.
+>
+Do I pick the mailbox related patches (and which ones exactly) ?
 
-The comment on the 1st patch and above was a weird way of saying "please
-drop patches 1 and 2".
-
-BIT(), __aligned() and __packed are macros in kernel headers that generally
-are not available in headers exported for user space consumption.
-
--- 
-Kind regards,
-
-Sakari Ailus
+thanks.
