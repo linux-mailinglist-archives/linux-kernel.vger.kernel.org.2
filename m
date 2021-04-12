@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E7535B8CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B1C35B8CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhDLDDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:03:52 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:59805 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235857AbhDLDDv (ORCPT
+        id S236642AbhDLDFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 23:05:48 -0400
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:55006 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236411AbhDLDFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:03:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UVCfw3p_1618196607;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVCfw3p_1618196607)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 12 Apr 2021 11:03:32 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     aradford@gmail.com
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] scsi: 3w-9xxx: remove useless variable
-Date:   Mon, 12 Apr 2021 11:03:24 +0800
-Message-Id: <1618196604-101870-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 11 Apr 2021 23:05:47 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 13C354xU001261; Mon, 12 Apr 2021 12:05:04 +0900
+X-Iguazu-Qid: 34trpShQI277aZkbf5
+X-Iguazu-QSIG: v=2; s=0; t=1618196704; q=34trpShQI277aZkbf5; m=lP9cfn233k75Uk+XzofdsciNBCS2CP+P5GkJetk8OSo=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1513) id 13C353JR017710
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 12 Apr 2021 12:05:03 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 324491000A7;
+        Mon, 12 Apr 2021 12:05:03 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 13C352MU012428;
+        Mon, 12 Apr 2021 12:05:02 +0900
+Date:   Mon, 12 Apr 2021 12:04:58 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+X-TSB-HOP: ON
+Message-ID: <20210412030458.t2vhg4nxwyi5yp4o@toshiba.co.jp>
+References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210410185222.4tfpgm2hcka26e6g@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210410185222.4tfpgm2hcka26e6g@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+Hi,
 
-drivers/scsi/3w-9xxx.c:942:24: warning: variable ‘response_que_value’
-set but not used [-Wunused-but-set-variable].
+On Sat, Apr 10, 2021 at 08:52:22PM +0200, Uwe Kleine-K�nig wrote:
+> Hello,
+> 
+> one more comment:
+> 
+> On Sat, Apr 10, 2021 at 08:08:37AM +0900, Nobuhiro Iwamatsu wrote:
+> > +static inline struct visconti_pwm_chip *to_visconti_chip(struct pwm_chip *chip)
+> 
+> all functions but this one start have the common prefix "visconti_pwm_".
+> I like the concept of a common prefix and so you could rename this
+> function to visconti_pwm_from_chip or similar.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/scsi/3w-9xxx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+OK, I will change. 
 
-diff --git a/drivers/scsi/3w-9xxx.c b/drivers/scsi/3w-9xxx.c
-index b96e82d..1856a99 100644
---- a/drivers/scsi/3w-9xxx.c
-+++ b/drivers/scsi/3w-9xxx.c
-@@ -939,13 +939,13 @@ static int twa_decode_bits(TW_Device_Extension *tw_dev, u32 status_reg_value)
- /* This function will empty the response queue */
- static int twa_empty_response_queue(TW_Device_Extension *tw_dev)
- {
--	u32 status_reg_value, response_que_value;
-+	u32 status_reg_value;
- 	int count = 0, retval = 1;
- 
- 	status_reg_value = readl(TW_STATUS_REG_ADDR(tw_dev));
- 
- 	while (((status_reg_value & TW_STATUS_RESPONSE_QUEUE_EMPTY) == 0) && (count < TW_MAX_RESPONSE_DRAIN)) {
--		response_que_value = readl(TW_RESPONSE_QUEUE_REG_ADDR(tw_dev));
-+		readl(TW_RESPONSE_QUEUE_REG_ADDR(tw_dev));
- 		status_reg_value = readl(TW_STATUS_REG_ADDR(tw_dev));
- 		count++;
- 	}
--- 
-1.8.3.1
+> 
+> Best regards
+> Uwe
+> 
 
+Best regards,
+  Nobuhiro
