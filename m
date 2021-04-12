@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A949235BB3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E924D35BB40
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhDLHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237006AbhDLHvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:51:18 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D86C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:51:00 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id x4so2668480vkx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6bwXeF6DPNCUNrDpkgt9DFKvZdBX7LfKFuuDUCZIcIw=;
-        b=NWjaNJ4sKzmsXTFfXMIoboYg4yCXg346ZnHIuFbXlJB5dHFk3M1Ww97JRXLhu888T4
-         R8+zjK7tTykf3LcP4oRMa8MN18/sNPWJIdBRJdCQtE4U+WYolAW2/918YHpZO1m2TiYq
-         xB74kHPGjDnTw3ctivsAjVMIAGos7rgTvQ78l+akCS5Ua2NcxG4mZnJkgXnuzToAlwzp
-         /kIUCUxfIVQzZiBklUqcaNZ8wsmU1QPVUpUsyyJYzNeMuHohpPh7MH5q6uGcq2Rrvr7s
-         TIlJdYwHZOAwhzZL+zey/cs8e82dwvK4hUiJSiQ6Tw/5r8mIoqfU6UfmIehHlZ8wJnjr
-         KpRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6bwXeF6DPNCUNrDpkgt9DFKvZdBX7LfKFuuDUCZIcIw=;
-        b=ppGvuJh1FAt9Q7NOsgsR1Go/lyTrnC++IxGtKirESP0NrZ3TCt4sX5ugEAsoU4hoLc
-         vw6sgqL2OJ5Qm+jfSbLDgteYw7CQeYahl6l5BgyqdHbh8FtbGKj1fNC6toPlCPXSJayj
-         JbVSV5mI0pxfrvWYir79Ip2va7wm/WWJ8wvlrQqHwGT/vfSu8GJ7P+smO1egU2bhUZCF
-         m3kvHEaBSCT93P4MeE2744r+fWiGZ+ZrCmhT0WJjLVq56l1A4FJNzy152p6U/7eKRnoK
-         XCnpoQI2T1ph9d+v6xU4nRttzNLbhMH103/xtpzbUiyz3etCGdUI+tqNsSuJoRG9wowR
-         1oEQ==
-X-Gm-Message-State: AOAM533xR4FTQK0DPIL5gfU1GDsvANAAHRlPP2mHicSqnLzhTCkfosob
-        8VdKjydUpzoMWH/Qdyfob+2NThxVKgkZBvzQz30NDw==
-X-Google-Smtp-Source: ABdhPJy3gSf1u5aHEM+c4Vjkj50BZURW2s9YkL8uFokqZdDKN51Q0Ihpy2lsV68v6DqmIdcb/6ZsOfvK3AfsQiSrkmk=
-X-Received: by 2002:a1f:2a95:: with SMTP id q143mr18758937vkq.8.1618213859970;
- Mon, 12 Apr 2021 00:50:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210402092432.25069-1-huobean@gmail.com> <20210402092432.25069-3-huobean@gmail.com>
-In-Reply-To: <20210402092432.25069-3-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 12 Apr 2021 09:50:23 +0200
-Message-ID: <CAPDyKFoT4YoG1wwHYXMMpXmq-ybLMh_qipzr5yKkWUY8Yt5q0A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mmc: core: Let sanitize not retry in case of timeout/failure
-To:     Bean Huo <huobean@gmail.com>
-Cc:     "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236905AbhDLHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:51:29 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:11654 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237006AbhDLHv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:51:27 -0400
+Received: from localhost.localdomain (unknown [10.192.139.175])
+        by mail-app2 (Coremail) with SMTP id by_KCgDHzzff+3NgzOICAQ--.39126S4;
+        Mon, 12 Apr 2021 15:51:00 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: renesas: rcar-usb2-clock-sel: Fix error handling in rcar_usb2_clock_sel_probe
+Date:   Mon, 12 Apr 2021 15:50:53 +0800
+Message-Id: <20210412075053.28727-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgDHzzff+3NgzOICAQ--.39126S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4UCr4rAF4UuFW5Cw4fuFg_yoW8WFWUp3
+        W8G3yrtryY9FWIq3W3tF4kZFn0y3W5tay2krWxGw1kZwsxCF18Xr4SqFyaga4kXrW8Gr4a
+        v39F9FW8CF4qvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkq1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcNBlZdtTWazAAKsZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 at 11:24, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> Not any commands need to retry in case of timeout/failure.
-> Currently, the sanitize command is issued by the IOCTL interface,
-> and once its timeouts, the user normally decides to retry or not .
-> Just blindly retry three times sanitize in the driver, it doesn't
-> help sanitize retry succeed in the end, on the contrary, it only
-> makes the user feel sanitize timeouts after 12 minutes.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/mmc/core/block.c   | 13 +++++++----
->  drivers/mmc/core/mmc.c     | 47 ++++++++++++++++++++++----------------
->  drivers/mmc/core/mmc_ops.c | 19 +++++++--------
->  drivers/mmc/core/mmc_ops.h |  4 ++--
->  4 files changed, 47 insertions(+), 36 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8bfd4d95b386..9778093d7006 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -836,7 +836,7 @@ static inline int mmc_blk_part_switch(struct mmc_card *card,
->
->                 ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
->                                  EXT_CSD_PART_CONFIG, part_config,
-> -                                card->ext_csd.part_time);
-> +                                card->ext_csd.part_time, MMC_CMD_RETRIES);
+When clk_get_rate() fails, a pairing PM usage counter decrement
+and disable is required to prevent refcount leak. It's the same
+for the subsequent error paths. When of_clk_add_hw_provider()
+fails, we need to unregister clk_hw.
 
-I would rather not change the mmc_switch() function definition, but
-only __mmc_switch(). Just let mmc_switch() pass another in-parameter
-(MMC_CMD_RETRIES) to __mmc_switch(), which means all callers of
-mmc_switch() doesn't need to get changed, but only callers of
-__mmc_switch().
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/clk/renesas/rcar-usb2-clock-sel.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-[...]
+diff --git a/drivers/clk/renesas/rcar-usb2-clock-sel.c b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+index 3abafd78f7c8..ad7bd50b9d1b 100644
+--- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
++++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
+@@ -180,7 +180,8 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 
+ 	if (!priv->extal && !priv->xtal) {
+ 		dev_err(dev, "This driver needs usb_extal or usb_xtal\n");
+-		return -ENOENT;
++		ret = -ENOENT;
++		goto pm_put;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, priv);
+@@ -194,10 +195,23 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
+ 	priv->hw.init = &init;
+ 
+ 	clk = clk_register(NULL, &priv->hw);
+-	if (IS_ERR(clk))
+-		return PTR_ERR(clk);
++	if (IS_ERR(clk)) {
++		ret = PTR_ERR(clk);
++		goto pm_put;
++	}
++
++	ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
++	if (ret)
++		goto clk_unregister;
++
++	return 0;
+ 
+-	return of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
++clk_unregister:
++	clk_hw_unregister(&priv->hw);
++pm_put:
++	pm_runtime_put(dev);
++	pm_runtime_disable(dev);
++	return ret;
+ }
+ 
+ static const struct dev_pm_ops rcar_usb2_clock_sel_pm_ops = {
+-- 
+2.17.1
 
-Kind regards
-Uffe
