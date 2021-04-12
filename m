@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBC835BE99
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97AA35C06D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239425AbhDLJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
+        id S239703AbhDLJNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238402AbhDLIto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:49:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE2A61243;
-        Mon, 12 Apr 2021 08:48:40 +0000 (UTC)
+        id S238797AbhDLI5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:57:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF5361263;
+        Mon, 12 Apr 2021 08:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217321;
-        bh=qLAsV6EnQZ410mfAvXEaP21dJEdJ6verPYq8REvQuYE=;
+        s=korg; t=1618217791;
+        bh=7uUxMY2b5AUDPx1uRSCv2kK+yJ9drbykL70OGJuMKRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/uTaMkF/x9iKjo1cbcIzJBnGOLT47OGattnKuxbe6goHll0x4vNHR6OGwgmFA83e
-         jFG8RNCpV7pyZhWRlAbwOOT8UVp2+2Y19CEgD0Xb7aZX6pGDP8Zuexf+RJbGJY6PJs
-         qgAzfeaaIlHIQ2VIDqolxSTldQAJKV9uw2exQsTg=
+        b=HefiBEGxbw3w2Z0PHCgEnKKJYnNZALUS1/pETOtUYhIG2bJ8No6o3Kebitc5zi4pz
+         OsAk/6lDwYGlPH2BpwGQy4OXMQx1ljVfBeKtv3ES237gtreMbbS4M5x15dqn/Gcq+j
+         19vKWcM1aJW8xPrQBzirrRUUEZUR8AAMtbG3MVv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lukasz Bartosik <lb@semihalf.com>,
         Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/111] clk: fix invalid usage of list cursor in unregister
+Subject: [PATCH 5.10 147/188] clk: fix invalid usage of list cursor in unregister
 Date:   Mon, 12 Apr 2021 10:41:01 +0200
-Message-Id: <20210412084007.026729988@linuxfoundation.org>
+Message-Id: <20210412084018.511753361@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -91,10 +91,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 13 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 5db91903d02b..6ff87cd86712 100644
+index dae090124263..61c78714c095 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -4188,32 +4188,28 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
+@@ -4299,32 +4299,28 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
   */
  int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
  {
