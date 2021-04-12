@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871A235BC77
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB1D35BD67
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237453AbhDLInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34352 "EHLO mail.kernel.org"
+        id S238113AbhDLIvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:51:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237437AbhDLInD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 204C061220;
-        Mon, 12 Apr 2021 08:42:40 +0000 (UTC)
+        id S237812AbhDLIrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F5261248;
+        Mon, 12 Apr 2021 08:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216961;
-        bh=pXS7HcrEri1qk/T2C4B0R49ir6M9TZCkcZPLOhAro5c=;
+        s=korg; t=1618217224;
+        bh=mFVcdJ1kXDj6iMi0Jr7Ek4Q5Rwk6pnMFASFHtYOSMjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jAfXQHCNLanBSOBP4Glt3VgUwi2Mtwo37sHLVfgGUUKcygiJChm5MYbIAGmIETzFF
-         gIEvXwx5Fzr9Mtx65hba+jmNMWdqa9aZQvQdsRuSv8ojj/p3vxiFq3t9tH7NknG1vq
-         2+fKN3avWgmk7ZfNxzHPoh+IjGtXdvjnygO2qUfs=
+        b=Xzg3m1ZEQMgjBDCZEZf2eTwvbKH81IxrB6BRB3cKYTeo3ghTKqGwHb1Jvgf0Beram
+         Em/fWlwCtTNIdtxG2Pwi2p/748OfANafAo3mL+7E/Vm7uXIL/k13aN7cCjCPHN+zu1
+         mLaxijuta0/PiSrN/o2InOz1UO04UB464MevpGn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Balazs Nemeth <bnemeth@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 19/66] net: ensure mac header is set in virtio_net_hdr_to_skb()
-Date:   Mon, 12 Apr 2021 10:40:25 +0200
-Message-Id: <20210412083958.755739151@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 048/111] esp: delete NETIF_F_SCTP_CRC bit from features for esp offload
+Date:   Mon, 12 Apr 2021 10:40:26 +0200
+Message-Id: <20210412084005.858846509@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,77 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 61431a5907fc36d0738e9a547c7e1556349a03e9 upstream.
+[ Upstream commit 154deab6a3ba47792936edf77f2f13a1cbc4351d ]
 
-Commit 924a9bc362a5 ("net: check if protocol extracted by virtio_net_hdr_set_proto is correct")
-added a call to dev_parse_header_protocol() but mac_header is not yet set.
+Now in esp4/6_gso_segment(), before calling inner proto .gso_segment,
+NETIF_F_CSUM_MASK bits are deleted, as HW won't be able to do the
+csum for inner proto due to the packet encrypted already.
 
-This means that eth_hdr() reads complete garbage, and syzbot complained about it [1]
+So the UDP/TCP packet has to do the checksum on its own .gso_segment.
+But SCTP is using CRC checksum, and for that NETIF_F_SCTP_CRC should
+be deleted to make SCTP do the csum in own .gso_segment as well.
 
-This patch resets mac_header earlier, to get more coverage about this change.
+In Xiumei's testing with SCTP over IPsec/veth, the packets are kept
+dropping due to the wrong CRC checksum.
 
-Audit of virtio_net_hdr_to_skb() callers shows that this change should be safe.
-
-[1]
-
-BUG: KASAN: use-after-free in eth_header_parse_protocol+0xdc/0xe0 net/ethernet/eth.c:282
-Read of size 2 at addr ffff888017a6200b by task syz-executor313/8409
-
-CPU: 1 PID: 8409 Comm: syz-executor313 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- eth_header_parse_protocol+0xdc/0xe0 net/ethernet/eth.c:282
- dev_parse_header_protocol include/linux/netdevice.h:3177 [inline]
- virtio_net_hdr_to_skb.constprop.0+0x99d/0xcd0 include/linux/virtio_net.h:83
- packet_snd net/packet/af_packet.c:2994 [inline]
- packet_sendmsg+0x2325/0x52b0 net/packet/af_packet.c:3031
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- sock_no_sendpage+0xf3/0x130 net/core/sock.c:2860
- kernel_sendpage.part.0+0x1ab/0x350 net/socket.c:3631
- kernel_sendpage net/socket.c:3628 [inline]
- sock_sendpage+0xe5/0x140 net/socket.c:947
- pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
- splice_from_pipe_feed fs/splice.c:418 [inline]
- __splice_from_pipe+0x43e/0x8a0 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0xd4/0x140 fs/splice.c:746
- do_splice_from fs/splice.c:767 [inline]
- do_splice+0xb7e/0x1940 fs/splice.c:1079
- __do_splice+0x134/0x250 fs/splice.c:1144
- __do_sys_splice fs/splice.c:1350 [inline]
- __se_sys_splice fs/splice.c:1332 [inline]
- __x64_sys_splice+0x198/0x250 fs/splice.c:1332
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-
-Fixes: 924a9bc362a5 ("net: check if protocol extracted by virtio_net_hdr_set_proto is correct")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Balazs Nemeth <bnemeth@redhat.com>
-Cc: Willem de Bruijn <willemb@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Fixes: 7862b4058b9f ("esp: Add gso handlers for esp4 and esp6")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/virtio_net.h |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/esp4_offload.c | 6 ++++--
+ net/ipv6/esp6_offload.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -62,6 +62,8 @@ static inline int virtio_net_hdr_to_skb(
- 			return -EINVAL;
- 	}
+diff --git a/net/ipv4/esp4_offload.c b/net/ipv4/esp4_offload.c
+index 25c8ba6732df..8c0af30fb067 100644
+--- a/net/ipv4/esp4_offload.c
++++ b/net/ipv4/esp4_offload.c
+@@ -177,10 +177,12 @@ static struct sk_buff *esp4_gso_segment(struct sk_buff *skb,
  
-+	skb_reset_mac_header(skb);
-+
- 	if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
- 		u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
- 		u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
+ 	if ((!(skb->dev->gso_partial_features & NETIF_F_HW_ESP) &&
+ 	     !(features & NETIF_F_HW_ESP)) || x->xso.dev != skb->dev)
+-		esp_features = features & ~(NETIF_F_SG | NETIF_F_CSUM_MASK);
++		esp_features = features & ~(NETIF_F_SG | NETIF_F_CSUM_MASK |
++					    NETIF_F_SCTP_CRC);
+ 	else if (!(features & NETIF_F_HW_ESP_TX_CSUM) &&
+ 		 !(skb->dev->gso_partial_features & NETIF_F_HW_ESP_TX_CSUM))
+-		esp_features = features & ~NETIF_F_CSUM_MASK;
++		esp_features = features & ~(NETIF_F_CSUM_MASK |
++					    NETIF_F_SCTP_CRC);
+ 
+ 	xo->flags |= XFRM_GSO_SEGMENT;
+ 
+diff --git a/net/ipv6/esp6_offload.c b/net/ipv6/esp6_offload.c
+index 93e086cf058a..1c532638b2ad 100644
+--- a/net/ipv6/esp6_offload.c
++++ b/net/ipv6/esp6_offload.c
+@@ -210,9 +210,11 @@ static struct sk_buff *esp6_gso_segment(struct sk_buff *skb,
+ 	skb->encap_hdr_csum = 1;
+ 
+ 	if (!(features & NETIF_F_HW_ESP) || x->xso.dev != skb->dev)
+-		esp_features = features & ~(NETIF_F_SG | NETIF_F_CSUM_MASK);
++		esp_features = features & ~(NETIF_F_SG | NETIF_F_CSUM_MASK |
++					    NETIF_F_SCTP_CRC);
+ 	else if (!(features & NETIF_F_HW_ESP_TX_CSUM))
+-		esp_features = features & ~NETIF_F_CSUM_MASK;
++		esp_features = features & ~(NETIF_F_CSUM_MASK |
++					    NETIF_F_SCTP_CRC);
+ 
+ 	xo->flags |= XFRM_GSO_SEGMENT;
+ 
+-- 
+2.30.2
+
 
 
