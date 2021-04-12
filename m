@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8282C35CF0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190B835CF21
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244398AbhDLRBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244004AbhDLRAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:00:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 138A36023C;
-        Mon, 12 Apr 2021 16:59:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618246793;
-        bh=BQycS0ErGs1iBx+gONK+Cmo+KhJHO+nr3dZiwSHZ1H8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gIO+h/h2Eee2A9ixqvwzRwQpJMoYHOugv0n5s0CqtQCLii4NmeeMd95x0MDE5NQw8
-         cF0RIi0+hT/5IS9E9kKkIvv4PlZFAl3EH52UKP8xtCzF/Z86KV/Bs7dPx1WDjOYTCO
-         31XIEj7v0tCS/kgaRWS+6eUR0ARpgv/3x6awTpeTv4eYSYLOdp/jRzJbt0Qq1k63ll
-         TesUn6WaSbAi9sdjNK2iEo8h0Dxyaxt/ZJsnOxA1iKqNomCoMsHS779/Vvid7Gbxgk
-         cfO5f9MkLr1Nf7KtPrWfpKjDBWAcB9Bnw3M5Kuu0I4p1Fbljom0BLQdv+WNO4D5T2E
-         MM7BIbfDYOjoQ==
-Date:   Mon, 12 Apr 2021 17:59:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
- checks
-Message-ID: <20210412165933.GD5379@sirena.org.uk>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210409120859.GA51636@C02TD0UTHF1T.local>
- <20210409213741.kqmwyajoppuqrkge@treble>
- <8c30ec5f-b51e-494f-5f6c-d2f012135f69@linux.microsoft.com>
- <20210409223227.rvf6tfhvgnpzmabn@treble>
+        id S244116AbhDLRDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:03:07 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:16009 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243659AbhDLRBo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:01:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1618246887; x=1649782887;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=rqIXEoKr8J06sdj1H8DHbETKlNN7iSR0KNAHaBFZ++A=;
+  b=SclBWRXYus0mkGCeRdXZ3YXtUZKaVogr37JxIqMhkU7N5Q3U5crEECus
+   nXf5iWOcFJ5lLp4StAidEcagIlSPpXAX6Y2VbKDCFSA4cLk/CPD2zhUeZ
+   c1u2t/ZcO8wERxbilT720jcyOH30NtYWNFI8GrP5ldWYPY8TUDmwDOA2L
+   8=;
+X-IronPort-AV: E=Sophos;i="5.82,216,1613433600"; 
+   d="scan'208";a="126988018"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Apr 2021 17:00:59 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id D3C0DC03BD;
+        Mon, 12 Apr 2021 17:00:52 +0000 (UTC)
+Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.253) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 12 Apr 2021 17:00:44 +0000
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Joerg Roedel" <joro@8bytes.org>
+CC:     Siddharth Chandrasekaran <sidcha@amazon.de>,
+        Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+Subject: [PATCH v2 0/4]  Add support for XMM fast hypercalls
+Date:   Mon, 12 Apr 2021 19:00:13 +0200
+Message-ID: <cover.1618244920.git.sidcha@amazon.de>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tEFtbjk+mNEviIIX"
-Content-Disposition: inline
-In-Reply-To: <20210409223227.rvf6tfhvgnpzmabn@treble>
-X-Cookie: Air is water with holes in it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.253]
+X-ClientProxiedBy: EX13D16UWB001.ant.amazon.com (10.43.161.17) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hyper-V supports the use of XMM registers to perform fast hypercalls.
+This allows guests to take advantage of the improved performance of the
+fast hypercall interface even though a hypercall may require more than
+(the current maximum of) two general purpose registers.
 
---tEFtbjk+mNEviIIX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The XMM fast hypercall interface uses an additional six XMM registers
+(XMM0 to XMM5) to allow the caller to pass an input parameter block of
+up to 112 bytes. Hyper-V can also return data back to the guest in the
+remaining XMM registers that are not used by the current hypercall.
 
-On Fri, Apr 09, 2021 at 05:32:27PM -0500, Josh Poimboeuf wrote:
+Although the Hyper-v TLFS mentions that a guest cannot use this feature
+unless the hypervisor advertises support for it, some hypercalls which
+we plan on upstreaming in future uses them anyway. This patchset adds
+necessary infrastructure for handling input/output via XMM registers and
+patches kvm_hv_flush_tlb() to use xmm input arguments.
 
-> Hm, for that matter, even without renaming things, a comment above
-> stack_trace_save_tsk_reliable() describing the meaning of "reliable"
-> would be a good idea.
+~ Sid.
 
-Might be better to place something at the prototype for
-arch_stack_walk_reliable() or cross link the two since that's where any
-new architectures should be starting, or perhaps even better to extend
-the document that Mark wrote further and point to that from both places. =
-=20
+v2:
+- Add hc.fast to is_xmm_fast_hypercall() check
+- Split CPUID feature bits for input and output
 
-Some more explict pointer to live patching as the only user would
-definitely be good but I think the more important thing would be writing
-down any assumptions in the API that aren't already written down and
-we're supposed to be relying on.  Mark's document captured a lot of it
-but it sounds like there's more here, and even with knowing that this
-interface is only used by live patch and digging into what it does it's
-not always clear what happens to work with the code right now and what's
-something that's suitable to be relied on.
+Siddharth Chandrasekaran (4):
+  KVM: x86: Move FPU register accessors into fpu.h
+  KVM: hyper-v: Collect hypercall params into struct
+  KVM: x86: kvm_hv_flush_tlb use inputs from XMM registers
+  KVM: hyper-v: Advertise support for fast XMM hypercalls
 
---tEFtbjk+mNEviIIX
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/x86/include/asm/hyperv-tlfs.h |   7 +-
+ arch/x86/kvm/emulate.c             | 138 +++-------------
+ arch/x86/kvm/fpu.h                 | 140 +++++++++++++++++
+ arch/x86/kvm/hyperv.c              | 242 +++++++++++++++++++----------
+ 4 files changed, 327 insertions(+), 200 deletions(-)
+ create mode 100644 arch/x86/kvm/fpu.h
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.17.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB0fHQACgkQJNaLcl1U
-h9BPRAf+NknqRddw9/JMSV4GN9JKMESH9K3fOY4CyjuolYmZJoCKKoCAmXcWCaun
-V99Qs8EJGcRlgqV3nwc1EeEvRkb44OM905mGy1Dpu90+Xb/9lFJypW/Ob6EnucQh
-1UqAN912l8kcF/hz2LPA/OIogUQxpoxxcvwy6UdfMigJlFAdCU3rZXX0OP3OKPIT
-Yu5eV2u/lgIQCBqZFg+hsDw/gA66IMq8TGm8GKF7opJmerVc3cGUpTKHBZ2hdynq
-3QTQTEasr1BQ+zxkHonAmnqduIBVfHRGLkfbdb/tdPnwPaHF6fcOe0KiXGJtZKDR
-RtvU1zr4YAGT8A5XEy7QiYr0Xqu7uQ==
-=EZ5K
------END PGP SIGNATURE-----
 
---tEFtbjk+mNEviIIX--
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
