@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6303335C172
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8776635C16F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241460AbhDLJ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:26:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
+        id S241054AbhDLJZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238988AbhDLJCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4A5E61220;
-        Mon, 12 Apr 2021 09:00:51 +0000 (UTC)
+        id S237704AbhDLJBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E665460241;
+        Mon, 12 Apr 2021 09:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218052;
-        bh=hVbYCz/9WfYrFQmnE77euXnoc9pDzhUZ0wwqOUp4IAg=;
+        s=korg; t=1618218025;
+        bh=/68vqr8FnoWZIGzu1nMiYubZM/avCAEBOkMNwca8iz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w4H/0jHryT8UCFQxDHQtYHibNpRROEf1n3gki+kr9vFf499uh82R6rdByPGqydm08
-         Cm5FsRsZVTH6r2QyUvvVlbNRKWLpBQK7PSUnxE70mnNQaBdKEMb8jnpndG2YFX0aSX
-         m0qQvYJtc/VxngT8SAv+WUX8LPjEtLqTZkJ4eyOE=
+        b=k4c5/3iA7FQB8gaJ/e4y5DMaUXFg4EeIV549UVZbBpM8aYGjmQYoTsdeVMvafmIB0
+         gje27UO55YeynUCTNRSGgCOfyfmSxG9ZbO/H/tcflBNx4YEzq7LzXPnXjTEV7exQx4
+         R9k2a+40hSSiQSfTceASyHL364Mj/a0vYz2tvZV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 018/210] net: dsa: lantiq_gswip: Configure all remaining GSWIP_MII_CFG bits
-Date:   Mon, 12 Apr 2021 10:38:43 +0200
-Message-Id: <20210412084016.614703345@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Goreczny <krzysztof.goreczny@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.11 042/210] ice: prevent ice_open and ice_stop during reset
+Date:   Mon, 12 Apr 2021 10:39:07 +0200
+Message-Id: <20210412084017.415235078@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,93 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Krzysztof Goreczny <krzysztof.goreczny@intel.com>
 
-commit 4b5923249b8fa427943b50b8f35265176472be38 upstream.
+commit e95fc8573e07c5e4825df4650fd8b8c93fad27a7 upstream.
 
-There are a few more bits in the GSWIP_MII_CFG register for which we
-did rely on the boot-loader (or the hardware defaults) to set them up
-properly.
+There is a possibility of race between ice_open or ice_stop calls
+performed by OS and reset handling routine both trying to modify VSI
+resources. Observed scenarios:
+- reset handler deallocates memory in ice_vsi_free_arrays and ice_open
+  tries to access it in ice_vsi_cfg_txq leading to driver crash
+- reset handler deallocates memory in ice_vsi_free_arrays and ice_close
+  tries to access it in ice_down leading to driver crash
+- reset handler clears port scheduler topology and sets port state to
+  ICE_SCHED_PORT_STATE_INIT leading to ice_ena_vsi_txq fail in ice_open
 
-For some external RMII PHYs we need to select the GSWIP_MII_CFG_RMII_CLK
-bit and also we should un-set it for non-RMII PHYs. The
-GSWIP_MII_CFG_RMII_CLK bit is ignored for other PHY connection modes.
+To prevent this additional checks in ice_open and ice_stop are
+introduced to make sure that OS is not allowed to alter VSI config while
+reset is in progress.
 
-The GSWIP IP also supports in-band auto-negotiation for RGMII PHYs when
-the GSWIP_MII_CFG_RGMII_IBS bit is set. Clear this bit always as there's
-no known hardware which uses this (so it is not tested yet).
-
-Clear the xMII isolation bit when set at initialization time if it was
-previously set by the bootloader. Not doing so could lead to no traffic
-(neither RX nor TX) on a port with this bit set.
-
-While here, also add the GSWIP_MII_CFG_RESET bit. We don't need to
-manage it because this bit is self-clearning when set. We still add it
-here to get a better overview of the GSWIP_MII_CFG register.
-
-Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Cc: stable@vger.kernel.org
-Suggested-by: Hauke Mehrtens <hauke@hauke-m.de>
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: cdedef59deb0 ("ice: Configure VSIs for Tx/Rx")
+Signed-off-by: Krzysztof Goreczny <krzysztof.goreczny@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/lantiq_gswip.c |   19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h      |    1 +
+ drivers/net/ethernet/intel/ice/ice_lib.c  |    4 ++--
+ drivers/net/ethernet/intel/ice/ice_main.c |   28 ++++++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 2 deletions(-)
 
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -93,8 +93,12 @@
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -604,6 +604,7 @@ int ice_fdir_create_dflt_rules(struct ic
+ int ice_aq_wait_for_event(struct ice_pf *pf, u16 opcode, unsigned long timeout,
+ 			  struct ice_rq_event_info *event);
+ int ice_open(struct net_device *netdev);
++int ice_open_internal(struct net_device *netdev);
+ int ice_stop(struct net_device *netdev);
+ void ice_service_task_schedule(struct ice_pf *pf);
  
- /* GSWIP MII Registers */
- #define GSWIP_MII_CFGp(p)		(0x2 * (p))
-+#define  GSWIP_MII_CFG_RESET		BIT(15)
- #define  GSWIP_MII_CFG_EN		BIT(14)
-+#define  GSWIP_MII_CFG_ISOLATE		BIT(13)
- #define  GSWIP_MII_CFG_LDCLKDIS		BIT(12)
-+#define  GSWIP_MII_CFG_RGMII_IBS	BIT(8)
-+#define  GSWIP_MII_CFG_RMII_CLK		BIT(7)
- #define  GSWIP_MII_CFG_MODE_MIIP	0x0
- #define  GSWIP_MII_CFG_MODE_MIIM	0x1
- #define  GSWIP_MII_CFG_MODE_RMIIP	0x2
-@@ -833,9 +837,11 @@ static int gswip_setup(struct dsa_switch
- 	/* Configure the MDIO Clock 2.5 MHz */
- 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -2489,7 +2489,7 @@ int ice_ena_vsi(struct ice_vsi *vsi, boo
+ 			if (!locked)
+ 				rtnl_lock();
  
--	/* Disable the xMII link */
-+	/* Disable the xMII interface and clear it's isolation bit */
- 	for (i = 0; i < priv->hw_info->max_ports; i++)
--		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
-+		gswip_mii_mask_cfg(priv,
-+				   GSWIP_MII_CFG_EN | GSWIP_MII_CFG_ISOLATE,
-+				   0, i);
+-			err = ice_open(vsi->netdev);
++			err = ice_open_internal(vsi->netdev);
  
- 	/* enable special tag insertion on cpu port */
- 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
-@@ -1611,6 +1617,9 @@ static void gswip_phylink_mac_config(str
- 		break;
- 	case PHY_INTERFACE_MODE_RMII:
- 		miicfg |= GSWIP_MII_CFG_MODE_RMIIM;
+ 			if (!locked)
+ 				rtnl_unlock();
+@@ -2518,7 +2518,7 @@ void ice_dis_vsi(struct ice_vsi *vsi, bo
+ 			if (!locked)
+ 				rtnl_lock();
+ 
+-			ice_stop(vsi->netdev);
++			ice_vsi_close(vsi);
+ 
+ 			if (!locked)
+ 				rtnl_unlock();
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -6612,6 +6612,28 @@ static void ice_tx_timeout(struct net_de
+ int ice_open(struct net_device *netdev)
+ {
+ 	struct ice_netdev_priv *np = netdev_priv(netdev);
++	struct ice_pf *pf = np->vsi->back;
 +
-+		/* Configure the RMII clock as output: */
-+		miicfg |= GSWIP_MII_CFG_RMII_CLK;
- 		break;
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
-@@ -1623,7 +1632,11 @@ static void gswip_phylink_mac_config(str
- 			"Unsupported interface: %d\n", state->interface);
- 		return;
- 	}
--	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_MODE_MASK, miicfg, port);
++	if (ice_is_reset_in_progress(pf->state)) {
++		netdev_err(netdev, "can't open net device while reset is in progress");
++		return -EBUSY;
++	}
 +
-+	gswip_mii_mask_cfg(priv,
-+			   GSWIP_MII_CFG_MODE_MASK | GSWIP_MII_CFG_RMII_CLK |
-+			   GSWIP_MII_CFG_RGMII_IBS | GSWIP_MII_CFG_LDCLKDIS,
-+			   miicfg, port);
++	return ice_open_internal(netdev);
++}
++
++/**
++ * ice_open_internal - Called when a network interface becomes active
++ * @netdev: network interface device structure
++ *
++ * Internal ice_open implementation. Should not be used directly except for ice_open and reset
++ * handling routine
++ *
++ * Returns 0 on success, negative value on failure
++ */
++int ice_open_internal(struct net_device *netdev)
++{
++	struct ice_netdev_priv *np = netdev_priv(netdev);
+ 	struct ice_vsi *vsi = np->vsi;
+ 	struct ice_pf *pf = vsi->back;
+ 	struct ice_port_info *pi;
+@@ -6690,6 +6712,12 @@ int ice_stop(struct net_device *netdev)
+ {
+ 	struct ice_netdev_priv *np = netdev_priv(netdev);
+ 	struct ice_vsi *vsi = np->vsi;
++	struct ice_pf *pf = vsi->back;
++
++	if (ice_is_reset_in_progress(pf->state)) {
++		netdev_err(netdev, "can't stop net device while reset is in progress");
++		return -EBUSY;
++	}
  
- 	switch (state->interface) {
- 	case PHY_INTERFACE_MODE_RGMII_ID:
+ 	ice_vsi_close(vsi);
+ 
 
 
