@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E8435BEA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9C735C132
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239640AbhDLJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
+        id S240952AbhDLJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:25:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238138AbhDLIvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:51:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B454361243;
-        Mon, 12 Apr 2021 08:50:59 +0000 (UTC)
+        id S237550AbhDLJBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4779961382;
+        Mon, 12 Apr 2021 09:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217460;
-        bh=0kr8QWFvtcZLMgeafwh5vmuEU8lY8MldROstZqTnSk0=;
+        s=korg; t=1618218022;
+        bh=xP7z3D3xVMshlpGHETo/ZM6PXFeJURpMtgodQtBDOm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1xIUmONNV/Lsx6TxSi/a3fqqv5wvdiZHbWit5e+aDATqFh7BeG7lVyG3mm+zg77jB
-         FpmLhEyTfY/zIfWgAc/cQWuqYoCH6p8IqKTCS9VGbg0jnau0TX/nnjgfoLPIL5GbsR
-         9GelOXNAxpJGHPnW9IR5cfZ0stJJ9IRpNFavUDQk=
+        b=yYhMREDz7QUDAunhzeYHMMSUyqOLKc+U2N+M2JJLDeCstdHQOhyJYKHV7wALF9tQZ
+         ShcBRFDH9oq2hZAV8rsWb1t0Lq6f8mYtf3FtJSAq9kd2vpbRCklFpDzIWeJ9lz1zFf
+         t7wTqGO4Z8bkxHQdJ3qrR+GrySQR5wHgi+dRyhlk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
+        stable@vger.kernel.org,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 006/188] nfc: fix refcount leak in llcp_sock_bind()
+Subject: [PATCH 5.11 015/210] net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
 Date:   Mon, 12 Apr 2021 10:38:40 +0200
-Message-Id: <20210412084013.858890902@linuxfoundation.org>
+Message-Id: <20210412084016.513159862@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoming Ni <nixiaoming@huawei.com>
+From: Muhammad Usama Anjum <musamaanjum@gmail.com>
 
-commit c33b1cc62ac05c1dbb1cdafe2eb66da01c76ca8d upstream.
+commit 864db232dc7036aa2de19749c3d5be0143b24f8f upstream.
 
-nfc_llcp_local_get() is invoked in llcp_sock_bind(),
-but nfc_llcp_local_put() is not invoked in subsequent failure branches.
-As a result, refcount leakage occurs.
-To fix it, add calling nfc_llcp_local_put().
+nlh is being checked for validtity two times when it is dereferenced in
+this function. Check for validity again when updating the flags through
+nlh pointer to make the dereferencing safe.
 
-fix CVE-2020-25670
-Fixes: c7aa12252f51 ("NFC: Take a reference on the LLCP local pointer when creating a socket")
-Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
-Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
-Cc: <stable@vger.kernel.org> #v3.6
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+CC: <stable@vger.kernel.org>
+Addresses-Coverity: ("NULL pointer dereference")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/llcp_sock.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv6/route.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -108,11 +108,13 @@ static int llcp_sock_bind(struct socket
- 					  llcp_sock->service_name_len,
- 					  GFP_KERNEL);
- 	if (!llcp_sock->service_name) {
-+		nfc_llcp_local_put(llcp_sock->local);
- 		ret = -ENOMEM;
- 		goto put_dev;
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -5203,9 +5203,11 @@ static int ip6_route_multipath_add(struc
+ 		 * nexthops have been replaced by first new, the rest should
+ 		 * be added to it.
+ 		 */
+-		cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
+-						     NLM_F_REPLACE);
+-		cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		if (cfg->fc_nlinfo.nlh) {
++			cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
++							     NLM_F_REPLACE);
++			cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		}
+ 		nhn++;
  	}
- 	llcp_sock->ssap = nfc_llcp_get_sdp_ssap(local, llcp_sock);
- 	if (llcp_sock->ssap == LLCP_SAP_MAX) {
-+		nfc_llcp_local_put(llcp_sock->local);
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
- 		ret = -EADDRINUSE;
+ 
 
 
