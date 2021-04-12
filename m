@@ -2,256 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F76935C2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EE535C2B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244076AbhDLJvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241923AbhDLJjt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:39:49 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEB7C0612AF
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:32:58 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bx20so13072484edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a2eVpz0vjK4XR17egg1D+T/D/U3eg9YU3caPcVjxZf4=;
-        b=gDE80X5NAJ3E+WygRXt24KdONCDPXRZt9gIaQdVxpOaQH2TisomM1l6xn6VH3pM71Y
-         /sIwVK1nu/zs2KRlsoND0IIe8txz4VROHOW4OnByVPcQSVOPeTO31apdnXYXdM6zD3vj
-         rxwkivf9cLRoPFPTcN8JmUkUor8NSvYMT84q+eFgANmbQUJy1ZfCJ55JOqRlNN3H9B64
-         5zhBkiXUAdpeUfxzW38jSPUHJ5YY6LyISOG8bnepdSySeAyySdRUF2ZmDkYBIPrgcAVD
-         C08ZlhoLEqJEve5i4P4xavMZvET3t3dgGGxRSlWkUUPZNRuIgy5hrFT2YgzdFCv+fu8q
-         ypbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a2eVpz0vjK4XR17egg1D+T/D/U3eg9YU3caPcVjxZf4=;
-        b=aSRkPHegK10LxvsTthPvrapA15NdcpkyX1U9deX6CAw6tAsAGK8jP2BRpCdF0RH7Uj
-         9c4R/EXBdQsXhyzaC8WDXjZkx+9u7XgxV/nxcvBRUmpRu1GZu6bz+6eUfvtwOo85TGyT
-         xTiFrPFVantkylx8zrS6+6HY4FX0hL18KiBOHPdPgm6foYDiDJCAxb7I7xss1MxKn+ns
-         uCz2gdxr9m2RyM6xyulUNTCZRuwg5/ZWvAoRBIATFWxeLSHoMz4rK93hjWf1KQwU7kAc
-         y9eyX6n/avOtQXf4eIUqkZAZpuzUJrzOB1KajgMkpwXX2WpJMVpO3Cz4X2P5mm+fozV4
-         LbXg==
-X-Gm-Message-State: AOAM532+xPQhYRUbuQgYLArJ8JlDuBa/711PnjBZgIB3Y/05y1Q3BfEE
-        u3oUzZSnAA/IYJ/H/5heBJ7/3w==
-X-Google-Smtp-Source: ABdhPJwcYA2zZ2a6dFtjkBxJp30ztXAiefsS5u0Qnom4Qk8dO+lP9CjXznHhJ5kIYjxGroHLFeMOaA==
-X-Received: by 2002:a05:6402:31a9:: with SMTP id dj9mr28868997edb.343.1618219976855;
-        Mon, 12 Apr 2021 02:32:56 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id h13sm6208559edz.71.2021.04.12.02.32.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Apr 2021 02:32:56 -0700 (PDT)
-Subject: Re: [RESEND PATCH] arm64: dts: qcom: sdm845-xiaomi-beryllium: Add
- audio support
-To:     Joel Selvaraj <jo@jsfamily.in>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <BN6PR2001MB17963B035BEFCBC740FEB6A9D9759@BN6PR2001MB1796.namprd20.prod.outlook.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <a4a315a7-58e7-fb80-eed5-54bdd4852ab1@linaro.org>
-Date:   Mon, 12 Apr 2021 10:32:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S238101AbhDLJsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238364AbhDLJeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:34:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 002A261248;
+        Mon, 12 Apr 2021 09:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618220066;
+        bh=9s3yiTLRat04T1hmQnybEmXExdwH0wgaqtOSw/eug/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=11Mojb249CyZdYFjl9AKDPyVnJtYa23EDXU1Q+L4H+/1nMYc7cfqapkDjauXxDE+N
+         F9vklIMKQBdDcHPHDIwL/ivb6tNb/GR+7PeFPRWFjEFuY6vmvFsk1KHOwtlhLomWer
+         7c8svJNnlth5B3oPgBGVYA0yo0hPNBSdZdaAlWnw=
+Date:   Mon, 12 Apr 2021 11:34:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 2/3] staging: rtl8723bs: Use existing arc4 implementation
+Message-ID: <YHQUH+Nqc/zS14Tb@kroah.com>
+References: <7e16c40d5baa007dca81a12b967a597ed00d8dd7.1618055514.git.christophe.jaillet@wanadoo.fr>
+ <6a4aebf9feb9ece975734f2e51da5ecae2996cee.1618055514.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <BN6PR2001MB17963B035BEFCBC740FEB6A9D9759@BN6PR2001MB1796.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a4aebf9feb9ece975734f2e51da5ecae2996cee.1618055514.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07/04/2021 21:07, Joel Selvaraj wrote:
-> This patch adds audio support for Xiaomi Poco F1 phone. Phone's primary
-> Mic and 3.5mm Headphone jack are handled through the SDM845 sound card
-> and WCD9340 codec.
+On Sat, Apr 10, 2021 at 03:35:52PM +0200, Christophe JAILLET wrote:
+> Use functions provided by <crypto/arc4.h> instead of hand writing them.
 > 
-> Tested-by: Amit Pundir <amit.pundir@linaro.org>
-> Signed-off-by: Joel Selvaraj <jo@jsfamily.in>
+> The implementations are slightly different, but are equivalent. It has
+> been checked with a test program which compares the output of the 2 sets of
+> functions.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->   .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 117 ++++++++++++++++++
->   1 file changed, 117 insertions(+)
+>  drivers/staging/rtl8723bs/core/rtw_security.c | 101 ++++--------------
+>  1 file changed, 21 insertions(+), 80 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> index 86cbae63eaf7..5b5786595cdb 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-> @@ -5,6 +5,8 @@
->   #include <dt-bindings/gpio/gpio.h>
->   #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include <dt-bindings/sound/qcom,q6afe.h>
-> +#include <dt-bindings/sound/qcom,q6asm.h>
->   #include "sdm845.dtsi"
->   #include "pm8998.dtsi"
->   #include "pmi8998.dtsi"
-> @@ -240,6 +242,28 @@ resin {
->   	};
->   };
->   
-> +/* QUAT I2S Uses 1 I2S SD Line for audio on TAS2559/60 amplifiers */
-> +&q6afedai {
-> +	qi2s@22 {
-> +		reg = <22>;
-> +		qcom,sd-lines = <0>;
-> +	};
-> +};
-> +
-> +&q6asmdai {
-> +	dai@0 {
-> +		reg = <0>;
-> +	};
-> +
-> +	dai@1 {
-> +		reg = <1>;
-> +	};
-> +
-> +	dai@2 {
-> +		reg = <2>;
-> +	};
-> +};
-> +
->   &qupv3_id_0 {
->   	status = "okay";
->   };
-> @@ -257,6 +281,73 @@ &sdhc_2 {
->   	cd-gpios = <&tlmm 126 GPIO_ACTIVE_HIGH>;
->   };
->   
-> +&sound {
-> +	compatible = "qcom,db845c-sndcard";
-> +	pinctrl-0 = <&quat_mi2s_active
-> +			&quat_mi2s_sd0_active>;
-> +	pinctrl-names = "default";
-> +	model = "Xiaomi Poco F1";
-> +	audio-routing =
-> +		"RX_BIAS", "MCLK",
-> +		"AMIC1", "MIC BIAS1",
-> +		"AMIC2", "MIC BIAS2",
-> +		"AMIC3", "MIC BIAS3",
-> +		"MM_DL1",  "MultiMedia1 Playback",
-> +		"MM_DL2",  "MultiMedia2 Playback",
-> +		"MultiMedia3 Capture", "MM_UL3";
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+> index 9587d89a6b24..86949a65e96f 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+> @@ -6,6 +6,7 @@
+>   ******************************************************************************/
+>  #define  _RTW_SECURITY_C_
+>  
+> +#include <crypto/arc4.h>
+>  #include <linux/crc32poly.h>
+>  #include <drv_types.h>
+>  #include <rtw_debug.h>
+> @@ -31,66 +32,6 @@ const char *security_type_str(u8 value)
+>  
+>  /* WEP related ===== */
+>  
+> -struct arc4context {
+> -	u32 x;
+> -	u32 y;
+> -	u8 state[256];
+> -};
+> -
+> -
+> -static void arcfour_init(struct arc4context	*parc4ctx, u8 *key, u32 key_len)
+> -{
+> -	u32 t, u;
+> -	u32 keyindex;
+> -	u32 stateindex;
+> -	u8 *state;
+> -	u32 counter;
+> -
+> -	state = parc4ctx->state;
+> -	parc4ctx->x = 0;
+> -	parc4ctx->y = 0;
+> -	for (counter = 0; counter < 256; counter++)
+> -		state[counter] = (u8)counter;
+> -	keyindex = 0;
+> -	stateindex = 0;
+> -	for (counter = 0; counter < 256; counter++) {
+> -		t = state[counter];
+> -		stateindex = (stateindex + key[keyindex] + t) & 0xff;
+> -		u = state[stateindex];
+> -		state[stateindex] = (u8)t;
+> -		state[counter] = (u8)u;
+> -		if (++keyindex >= key_len)
+> -			keyindex = 0;
+> -	}
+> -}
+> -
+> -static u32 arcfour_byte(struct arc4context	*parc4ctx)
+> -{
+> -	u32 x;
+> -	u32 y;
+> -	u32 sx, sy;
+> -	u8 *state;
+> -
+> -	state = parc4ctx->state;
+> -	x = (parc4ctx->x + 1) & 0xff;
+> -	sx = state[x];
+> -	y = (sx + parc4ctx->y) & 0xff;
+> -	sy = state[y];
+> -	parc4ctx->x = x;
+> -	parc4ctx->y = y;
+> -	state[y] = (u8)sx;
+> -	state[x] = (u8)sy;
+> -	return state[(sx + sy) & 0xff];
+> -}
+> -
+> -static void arcfour_encrypt(struct arc4context *parc4ctx, u8 *dest, u8 *src, u32 len)
+> -{
+> -	u32 i;
+> -
+> -	for (i = 0; i < len; i++)
+> -		dest[i] = src[i] ^ (unsigned char)arcfour_byte(parc4ctx);
+> -}
+> -
+>  static signed int bcrc32initialized;
+>  static u32 crc32_table[256];
+>  
+> @@ -150,7 +91,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+>  {																	/*  exclude ICV */
+>  
+>  	unsigned char crc[4];
+> -	struct arc4context	 mycontext;
+> +	struct arc4_ctx mycontext;
 
-Overall the patch LGTM,
+Are you sure you can declare that much space on the stack?  Is that what
+other users of this api do?  In looking at the in-kernel users, they do
+not :(
 
-As Stephan Gerhold said these three lines are redundant.
-Once removed, you could add
+Can you fix up this series to not take up so much stack memory?
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+thanks,
 
-
---srini
-
-> +
-> +	mm1-dai-link {
-> +		link-name = "MultiMedia1";
-> +		cpu {
-> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-> +		};
-> +	};
-> +
-> +	mm2-dai-link {
-> +		link-name = "MultiMedia2";
-> +		cpu {
-> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
-> +		};
-> +	};
-> +
-> +	mm3-dai-link {
-> +		link-name = "MultiMedia3";
-> +		cpu {
-> +			sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
-> +		};
-> +	};
-> +
-> +	slim-dai-link {
-> +		link-name = "SLIM Playback";
-> +		cpu {
-> +			sound-dai = <&q6afedai SLIMBUS_0_RX>;
-> +		};
-> +
-> +		platform {
-> +			sound-dai = <&q6routing>;
-> +		};
-> +
-> +		codec {
-> +			sound-dai =  <&wcd9340 0>;
-> +		};
-> +	};
-> +
-> +	slimcap-dai-link {
-> +		link-name = "SLIM Capture";
-> +		cpu {
-> +			sound-dai = <&q6afedai SLIMBUS_0_TX>;
-> +		};
-> +
-> +		platform {
-> +			sound-dai = <&q6routing>;
-> +		};
-> +
-> +		codec {
-> +			sound-dai = <&wcd9340 1>;
-> +		};
-> +	};
-> +};
-> +
->   &tlmm {
->   	gpio-reserved-ranges = <0 4>, <81 4>;
->   
-> @@ -285,6 +376,15 @@ sdc2_card_det_n: sd-card-det-n {
->   		function = "gpio";
->   		bias-pull-up;
->   	};
-> +
-> +	wcd_intr_default: wcd_intr_default {
-> +		pins = <54>;
-> +		function = "gpio";
-> +
-> +		input-enable;
-> +		bias-pull-down;
-> +		drive-strength = <2>;
-> +	};
->   };
->   
->   &uart6 {
-> @@ -345,6 +445,23 @@ &usb_1_qmpphy {
->   	vdda-pll-supply = <&vreg_l1a_0p875>;
->   };
->   
-> +&wcd9340{
-> +	pinctrl-0 = <&wcd_intr_default>;
-> +	pinctrl-names = "default";
-> +	clock-names = "extclk";
-> +	clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
-> +	reset-gpios = <&tlmm 64 0>;
-> +	vdd-buck-supply = <&vreg_s4a_1p8>;
-> +	vdd-buck-sido-supply = <&vreg_s4a_1p8>;
-> +	vdd-tx-supply = <&vreg_s4a_1p8>;
-> +	vdd-rx-supply = <&vreg_s4a_1p8>;
-> +	vdd-io-supply = <&vreg_s4a_1p8>;
-> +	qcom,micbias1-microvolt = <2700000>;
-> +	qcom,micbias2-microvolt = <1800000>;
-> +	qcom,micbias3-microvolt = <2700000>;
-> +	qcom,micbias4-microvolt = <2700000>;
-> +};
-> +
->   &wifi {
->   	status = "okay";
->   
-> 
+greg k-h
