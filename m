@@ -2,82 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2B235CF8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1AD35CF93
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243796AbhDLRhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:37:10 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:42021
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241512AbhDLRhJ (ORCPT
+        id S241512AbhDLRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238649AbhDLRjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:37:09 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AB6KvC6ktcv9yupI+gmW6Ea262EDpDfLN3DAb?=
- =?us-ascii?q?vn1ZSRFFG/GwvcaogfgdyFvImC8cMUtQ/eyoFaGcTRrnnqJdzpIWOd6ZNjXOmG?=
- =?us-ascii?q?ztF4166Jun/juIIUzD38p88YslTKRkEt33CjFB/KPHyS21CcwpztXC0I3Av4fj?=
- =?us-ascii?q?5kxgRw1rdK1shj0RYjqzKUF4SBJLApA0DvOnl6l6jgC9cncaZNnTPBc4dtXEzu?=
- =?us-ascii?q?emqLvbexIcQzYo5A6S5AnYioLSIlyomi0TVD5C2t4ZnFTtmQaR3Mqej80=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,216,1613430000"; 
-   d="scan'208";a="378452073"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:36:49 +0200
-Date:   Mon, 12 Apr 2021 19:36:48 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     ascordeiro <alinesantanacordeiro@gmail.com>
-cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel][PATCH 1/4 v2] staging: media: omap4iss:
- Replace macro function by static inline function in file iss.c
-In-Reply-To: <babb019f0950cf11857a4bcf20a572f2eace1777.camel@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104121935590.19780@hadrien>
-References: <cover.1618231618.git.alinesantanacordeiro@gmail.com>  <e302566a3d9e5180ab27eb2c2824fd1b678a6d99.1618231618.git.alinesantanacordeiro@gmail.com>  <YHRNzq3h3LEp3Dgc@pendragon.ideasonboard.com>  <7457fd4eb5afbf66b3a6f2fed4dd1e440e6ed422.camel@gmail.com>
-  <YHRjPpMVVrhTF7Tc@pendragon.ideasonboard.com> <babb019f0950cf11857a4bcf20a572f2eace1777.camel@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 12 Apr 2021 13:39:07 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8E7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:38:49 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id g38so15040374ybi.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xKqpB62SjNio2Vd56mEqjJEuhNSyfFYY6eHBB/193EQ=;
+        b=p4PodsA1vpWv71j2yZJVbDvfmrbUTGbEFVb88ZbZhJ187WBM1ypqp2kVqBq6u5t+MQ
+         WoW5s5KSbvgXMFRBVRd1ctEbA/hoZORBHjX2FROvw6VImed5q9Y55xCdupdd5byeMmUT
+         U/vUHMhhJ/K1TaH7dZDwIiAo3RdrNTTp7bXWUIi8bie8ssHOjGtei0HSyWll5i04APXB
+         nxRbm16fUlmD6MmBfQpz9aFAZPvVTg/G+lvKo4A2EwpNoH+2ZlmnsJe7VeU7ilSdY1K6
+         1v9N5EV4/VUhV5sktr7Z8RUHjKCI1HVSsuUXTwmyTHBEeLb8QEsZSNjR7Lj6KWUfd1MD
+         17oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xKqpB62SjNio2Vd56mEqjJEuhNSyfFYY6eHBB/193EQ=;
+        b=noIBD/++OtjtQBWDVxLs6GQccEVnW1w7Ez5JuvyGJxqSNOFpQ93KcHy1hMVCmqEOni
+         qxox/JXygS7Cs2v7uQfGVV+1vNPW7qvWHy3VkhFsXgR+rr5i0m2LU8atUazfFBrpeH54
+         gWtDq47GNoQDBmJFhjlXJzWZAT4Z4WUNDTtB2QPC4zyD229vTBn6sLLQ8ZjqkChhrdqg
+         +9KrdzD3EjPZ5IsxEGdWUoDd7sLFOBO2hYs9lv6aGyQ1qzAzgJtRkcNOWlmCEmdEHJy1
+         hJbrYX+YTZ4JpevDQBxVrFIThmSAAd2tMlq0E/dNGOUBt4ubk3/YH4/zmxMaAg54RTRo
+         sIOA==
+X-Gm-Message-State: AOAM532Z4gexvxToQv0fdXfxWK5BL4iL67uB6UX3PvR9dLVQb/JhGL/y
+        ZXteRuGhU+y10KMRjqRfCtmtssJDkfi8rmCkZAG+NA2w6sdRnQ==
+X-Google-Smtp-Source: ABdhPJy0EiYNU3fwxaO23AZhu4GaOvCjO3kSPlebWlyhQK9ZuPI9EKRW3Vu04v64PYdcqxw19cp07O8cMOhJ2J700QI=
+X-Received: by 2002:a25:4244:: with SMTP id p65mr10489640yba.452.1618249128058;
+ Mon, 12 Apr 2021 10:38:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1464564743-1618249009=:19780"
+References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
+ <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
+ <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com> <78c858ba-a847-884f-80c3-cb1eb84d4113@roeck-us.net>
+In-Reply-To: <78c858ba-a847-884f-80c3-cb1eb84d4113@roeck-us.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 12 Apr 2021 19:38:36 +0200
+Message-ID: <CANn89i+wQoaiFEe1Qi1k96d-ACLmAtJJQ36bs5Z5knYO1v+rOg@mail.gmail.com>
+Subject: Re: Linux 5.12-rc7
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1464564743-1618249009=:19780
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-
-
-On Mon, 12 Apr 2021, ascordeiro wrote:
-
-> Em seg, 2021-04-12 às 18:11 +0300, Laurent Pinchart escreveu:
-> > Hi Aline,
+On Mon, Apr 12, 2021 at 7:31 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 4/12/21 9:31 AM, Eric Dumazet wrote:
+> > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> >>
+> >> On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>
+> >>> Qemu test results:
+> >>>         total: 460 pass: 459 fail: 1
+> >>> Failed tests:
+> >>>         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+> >>>
+> >>> The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
+> >>> skb->head"). It is a spurious problem - the test passes roughly every other
+> >>> time. When the failure is seen, udhcpc fails to get an IP address and aborts
+> >>> with SIGTERM. So far I have only seen this with the "sh" architecture.
+> >>
+> >> Hmm. Let's add in some more of the people involved in that commit, and
+> >> also netdev.
+> >>
+> >> Nothing in there looks like it should have any interaction with
+> >> architecture, so that "it happens on sh" sounds odd, but maybe it's
+> >> some particular interaction with the qemu environment.
 > >
-> > On Mon, Apr 12, 2021 at 10:58:45AM -0300, ascordeiro wrote:
-> > > Em seg, 2021-04-12 às 16:40 +0300, Laurent Pinchart escreveu:
-> > > > While testing on a device isn't a requirement as you can't be
-> > > > expected
-> > > > to have the necessary hardware, changes are expected to be at
-> > > > least
-> > > > compile-tested before being submitted.
-> > >
-> > > Hi Laurent,
-> > >
-> > > I thought recompiling the kernel would be enough in this case.
-> > > I recompiled it in native Ubuntu 16.04 without errors.
+> > Yes, maybe.
 > >
-> > Did it compile the driver you modified ?
+> > I spent few hours on this, and suspect a buggy memcpy() implementation
+> > on SH, but this was not conclusive.
 > >
-> I'm sorry, It didn't. I forgot to enable the option to compile the
-> driver as a module in "make menuconfig" and now I'm seeing the problems
-> I generated.
+>
+> I replaced all memcpy() calls in skbuff.h with calls to
+>
+> static inline void __my_memcpy(unsigned char *to, const unsigned char *from,
+>                                unsigned int len)
+> {
+>        while (len--)
+>                *to++ = *from++;
+> }
+>
+> That made no difference, so unless you have some other memcpy() in mind that
+> seems to be unlikely.
 
-You can easily compile a single file using make path/foo.o and a single
-directory using make path/.
 
-julia
---8323329-1464564743-1618249009=:19780--
+Sure, note I also had :
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index af8c1ea040b9364b076e2d72f04dc3de2d7e2f11..4e05a32542dd606aaaaee8038017fea949939c0e
+100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5938,7 +5938,7 @@ static void gro_pull_from_frag0(struct sk_buff
+*skb, int grow)
+
+        BUG_ON(skb->end - skb->tail < grow);
+
+-       memcpy(skb_tail_pointer(skb), NAPI_GRO_CB(skb)->frag0, grow);
++       memmove(skb_tail_pointer(skb), NAPI_GRO_CB(skb)->frag0, grow);
+
+        skb->data_len -= grow;
+        skb->tail += grow;
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index c421c8f809256f7b13a8b5a1331108449353ee2d..41796dedfa9034f2333cf249a0d81b7250e14d1f
+100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -2278,7 +2278,7 @@ int skb_copy_bits(const struct sk_buff *skb, int
+offset, void *to, int len)
+                                              skb_frag_off(f) + offset - start,
+                                              copy, p, p_off, p_len, copied) {
+                                vaddr = kmap_atomic(p);
+-                               memcpy(to + copied, vaddr + p_off, p_len);
++                               memmove(to + copied, vaddr + p_off, p_len);
+                                kunmap_atomic(vaddr);
+                        }
+
+
+>
+> > By pulling one extra byte, the problem goes away.
+> >
+> > Strange thing is that the udhcpc process does not go past sendto().
+> >
+>
+> I have been trying to debug that one. Unfortunately gdb doesn't work with sh,
+> so I can't use it to debug the problem. I'll spend some more time on this today.
+
+Yes, I think this is the real issue here. This smells like some memory
+corruption.
+
+In my traces, packet is correctly received in AF_PACKET queue.
+
+I have checked the skb is well formed.
+
+But the user space seems to never call poll() and recvmsg() on this
+af_packet socket.
