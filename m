@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4398735D028
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E829A35D026
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244748AbhDLSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbhDLSVP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:21:15 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB34C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:20:57 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id p19so7380134wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0z3XzP3OkACR5NstqNEyPn1NJX+7W0uBkbKJqycox7I=;
-        b=Owyxnfwck/7sZd6w11qbFpCmlRdKFNwzk5IfNE+bly++OpJqLDhS3Ou96PczHVjbFs
-         2eDsyArloENl7T4b78cQWsXFqDnbwIEA5LIfHuPhxLzBxBrxayeGAduKvud7HIin7NZr
-         xol0FaNN9BORkFR4imlcVzVXO5YvFND0u1BQjBoTDGLs3qoZyMTm7kcN644LL2kJVi+4
-         1YlCNP4wf40/qcwOWrMHpSZaFrqwnv6WYg1BagOHMbgTM0+yNXDDkIJ4o+2JO4GZS79d
-         TySdWlbffFhToD7nZuHLas/1l9yJQ01THVMesGrCUbBY6702SEmu1r2bYGj/4e6027hV
-         0wcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0z3XzP3OkACR5NstqNEyPn1NJX+7W0uBkbKJqycox7I=;
-        b=gfS0aSmFMT+liv16pRLq/UsZ8vWsa5yegBYqrA+jgS+8kfZsEtXFDzFipmvO9b/Vvd
-         46TURMIrq5LvjzaqlsF53+KC+G86XbilAICSWH2UFEZmLS40cuPnQqHts2mnADLvBUk3
-         jqQLhgX1CYl5Tfvq2SUCwco3KGIXuC7Fz5rVOAd18YD+Dsje7XBhJH/wMCzij0qt7/zR
-         rznf1lhF7agAfR1VFbvvQdV+2hY8ZA+0w8SabroJ3n01dg3JXSSI9mQd6gdcw4+c2hvP
-         XeUzpk1CitP239i3iujuuNji4muOko8QCZc/5TRATFHKSg+l02taFFKVCuQJ6FgEDlUg
-         S9Nw==
-X-Gm-Message-State: AOAM530rJbdOjCeanpuBQg7XGpCYTQi3pNFT0saeF7QIRhOS5qJdCe78
-        0p1p5anoDDaF7lCvSJgj/SGYfA==
-X-Google-Smtp-Source: ABdhPJz71K7/57uPCiR89xSOHHgTjPmpmi1JlsdyaAHF49nrC0vBeITcntzH+c2vNK3NyDOJ4hb0Zg==
-X-Received: by 2002:a05:600c:189e:: with SMTP id x30mr415323wmp.44.1618251655804;
-        Mon, 12 Apr 2021 11:20:55 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:197c:ad7a:49b7:8f5c])
-        by smtp.gmail.com with ESMTPSA id g16sm18643195wrs.76.2021.04.12.11.20.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 11:20:55 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 20:20:46 +0200
-From:   Marco Elver <elver@google.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, Hao Sun <sunhao.th@gmail.com>,
-        jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        paulmck@kernel.org, dvyukov@google.com
-Subject: Re: KCSAN: data-race in __jbd2_journal_file_buffer /
- jbd2_journal_dirty_metadata
-Message-ID: <YHSPfiJ/h/f3ky5n@elver.google.com>
-References: <CACkBjsZW5Sp4jB51+C5mrMssgq73x8iEko_EV6CTXVvtVa7KPQ@mail.gmail.com>
- <20210406123232.GD19407@quack2.suse.cz>
- <YGx308zQXxOjmwNZ@mit.edu>
+        id S244652AbhDLSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhDLSVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 14:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D00F961289;
+        Mon, 12 Apr 2021 18:20:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618251649;
+        bh=+qNcZZVKpnD42SZYygELSRzFGrquBNCnSaALrYgY+94=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MgZRmT0mOa+cpabctG7YJzQyeQAOnsQKoRPvOTZyh+FefpcWhHyRn+PEh7mhSmtE8
+         9+Fo3WFkl3dJMO/8kZkPmn9/hd5URj1uyGfcv4YLbu3TCx8ZwYwgE6hlcfIOUJtEki
+         /uTT1tQFD1iUd+G4rCa/lIMuO1zjSzMuvPpxLXv3HdoydIz6ywZoIVufDAf6LWSGD7
+         IxniP4TVki25c2sM4wjJMpPSCsqGAHy4B3fEJFoMarTdcfGM1jbkvmg4S5nQawGzqa
+         pByP5wN74BETHDGVowXxl1qupAuWtNmJuC/d5VjKXSOs8cPQWhnt/43fpw8zFO5Tmg
+         xMeOzkERROTZA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 91E4A5C034B; Mon, 12 Apr 2021 11:20:49 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 11:20:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: Re: [PATCH v7 clocksource 3/5] clocksource: Check per-CPU clock
+ synchronization when marked unstable
+Message-ID: <20210412182049.GE4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210402224828.GA3683@paulmck-ThinkPad-P72>
+ <20210402224906.3912-3-paulmck@kernel.org>
+ <87blam4iqe.ffs@nanos.tec.linutronix.de>
+ <20210411002020.GV4510@paulmck-ThinkPad-P17-Gen-1>
+ <878s5p2jqv.ffs@nanos.tec.linutronix.de>
+ <20210411164612.GZ4510@paulmck-ThinkPad-P17-Gen-1>
+ <20210412042157.GA1889369@paulmck-ThinkPad-P17-Gen-1>
+ <87k0p71whr.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGx308zQXxOjmwNZ@mit.edu>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <87k0p71whr.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:01AM -0400, Theodore Ts'o wrote:
-> On Tue, Apr 06, 2021 at 02:32:33PM +0200, Jan Kara wrote:
-> > And the comment explains, why we do this unreliable check. Again, if we
-> > wanted to silence KCSAN, we could use data_race() macro but AFAIU Ted isn't
-> > very fond of that annotation.
+On Mon, Apr 12, 2021 at 03:08:16PM +0200, Thomas Gleixner wrote:
+> On Sun, Apr 11 2021 at 21:21, Paul E. McKenney wrote:
+> > On Sun, Apr 11, 2021 at 09:46:12AM -0700, Paul E. McKenney wrote:
+> >> So I need to is inline clocksource_verify_percpu_wq()
+> >> into clocksource_verify_percpu() and then move the call to
+> >> clocksource_verify_percpu() to __clocksource_watchdog_kthread(), right
+> >> before the existing call to list_del_init().  Will do!
+> >
+> > Except that this triggers the WARN_ON_ONCE() in smp_call_function_single()
+> > due to interrupts being disabled across that list_del_init().
+> >
+> > Possibilities include:
+> >
+> > 1.	Figure out why interrupts must be disabled only sometimes while
+> > 	holding watchdog_lock, in the hope that they need not be across
+> > 	the entire critical section for __clocksource_watchdog_kthread().
+> > 	As in:
+> >
+> > 		local_irq_restore(flags);
+> > 		clocksource_verify_percpu(cs);
+> > 		local_irq_save(flags);
+> >
+> > 	Trying this first with lockdep enabled.  Might be spectacular.
 > 
-> I'm not fond of the data_race macro, but I like bogus KCSAN reports
-> even less.  My main complaint is if we're going to have to put the
-> data_race() macro in place, we're going to need to annotate each
-> location with an explanation of why it's there (suppress a KCSAN false
-> positive), and why's it's safe.  If it's only one or two places, it'll
-> probably be fine.  If it's dozens, then I would say that KCSAN is
-> becoming a net negative in terms of making the Linux kernel code
-> maintainable.
+> Yes, it's a possible deadlock against the watchdog timer firing ...
 
-I've just seen the latest reports on these data races [1], but it seems
-the more relevant context is here.
-[1] https://lore.kernel.org/linux-ext4/20210412113158.GA4679@quack2.suse.cz/
+And lockdep most emphatically agrees with you.  ;-)
 
-Let me try to put things in perspective.
+> The reason for irqsave is again historical AFAICT and nobody bothered to
+> clean it up. spin_lock_bh() should be sufficient to serialize against
+> the watchdog timer, though I haven't looked at all possible scenarios.
 
-No, we do not want maintainability to suffer. Whether or not documenting
-the concurrency design via data_race() and a few comments is a negative
-or positive is up to you. To me, it'd be a positive because I don't have
-to guess what the code is trying to do because concurrent code rarely is
-obvious. (In fairness, if you don't like to add comments, just a
-data_race() without comment tells a reader more than now; perhaps they'd
-then rummage in the git logs.)
+Though if BH is disabled, there is not so much advantage to
+invoking it from __clocksource_watchdog_kthread().  Might as
+well just invoke it directly from clocksource_watchdog().
 
-Yes, there are currently lots of data-racy accesses in the kernel that
-are mostly benign. Yet, they are data races in the memory model's eyes,
-and every optimizing compiler is free to screw them up! For example a
-lot of those plain read-modify-write bitops ("...  |= ...").
+> > 2.	Invoke clocksource_verify_percpu() from its original
+> > 	location in clocksource_watchdog(), just before the call to
+> > 	__clocksource_unstable().  This relies on the fact that
+> > 	clocksource_watchdog() acquires watchdog_lock without
+> > 	disabling interrupts.
+> 
+> That should be fine, but this might cause the softirq to 'run' for a
+> very long time which is not pretty either.
+> 
+> Aside of that, do we really need to check _all_ online CPUs? What you
+> are trying to figure out is whether the wreckage is CPU local or global,
+> right?
+> 
+> Wouldn't a shirt-sleeve approach of just querying _one_ CPU be good
+> enough? Either the other CPU has the same wreckage, then it's global or
+> it hasn't which points to a per CPU local issue.
+> 
+> Sure it does not catch the case where a subset (>1) of all CPUs is
+> affected, but I'm not seing how that really buys us anything.
 
-Unfortunately tooling cannot determine without hints (like data_race())
-whether or not those are safe, since the programmer's intent is unclear.
-Crucially, the programmer's intent is also unclear to the compiler!
-Which means the compiler _is_ free to screw up those operations.
+Good point!  My thought is to randomly pick eight CPUs to keep the
+duration reasonable while having a good chance of hitting "interesting"
+CPU choices in multicore and multisocket systems.
 
-If we could somehow precisely determine which plain accesses can race,
-we'd solve a decades-old problem: optimizing compilers and concurrent
-code do not get along. Therefore, C needed a memory model to sort out
-this mess, which we have since C11. The Linux kernel, however, doesn't
-play by those rules. The Linux Kernel Memory Model (LKMM) tries to
-specify the rules the kernel can safely play by.
+However, if a hard-to-reproduce problem occurred, it would be good to take
+the hit and scan all the CPUs.  Additionally, there are some workloads
+for which the switch from TSC to HPET is fatal anyway due to increased
+overhead.  For these workloads, the full CPU scan is no additional pain.
 
-But since we have KCSAN, which initially tried to follow the LKMM
-strictly, various feedback has resulted in taming KCSAN to a subset of
-the LKMM. A lot of the data races that are left, yet appear benign,
-simply have no obvious rules or patterns (otherwise we wouldn't have the
-problem we have with optimizing compilers). I couldn't, in good
-conscience, tame KCSAN based on poorly thought-out rules. Because we
-know they're data races, and the compiler _is_ free to subject them to
-concurrency-unsafe optimizations.
+So I am thinking in terms of a default that probes eight randomly selected
+CPUs without worrying about duplicates (as in there would be some chance
+that fewer CPUs would actually be probed), but with a boot-time flag
+that does all CPUs.  I would add the (default) random selection as a
+separate patch.
 
-Because we knew that different codes will want different KCSAN exposure
-until there is a de-facto LKMM that is to be followed everywhere (one
-can dream), KCSAN has lots of knobs. They are described in detail here:
-https://lwn.net/Articles/816854/
+I will send a new series out later today, Pacific Time.
 
-> I'm not fond of the data_race macro, but I like bogus KCSAN reports
-> even less.
-
-While the data_race() macro was meant to be exactly for this case, to
-tell tooling "this data race is fine, even if the compiler messes it
-up", if there are too many data races for you right now feel free to add
-'KCSAN_SANITIZE_file.o := n' to the files you don't want checked. Or
-even 'KCSAN_SANITIZE := n' to ignore all files in a directory. It would
-avoid the robots sending you reports. Not ideal, but it'd give some time
-to see how things evolve elsewhere if you'd rather avoid all this for
-now.
-
-Thanks,
--- Marco
+							Thanx, Paul
