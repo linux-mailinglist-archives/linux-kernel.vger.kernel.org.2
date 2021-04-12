@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010DF35B9EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9145135B9F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhDLFto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 01:49:44 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:38050 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229482AbhDLFtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 01:49:43 -0400
-Received: from localhost.localdomain (unknown [10.192.139.175])
-        by mail-app4 (Coremail) with SMTP id cS_KCgDHiAxU33NgrAm2AA--.58807S4;
-        Mon, 12 Apr 2021 13:49:17 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] usb: cdns3: Fix runtime PM imbalance on error
-Date:   Mon, 12 Apr 2021 13:49:07 +0800
-Message-Id: <20210412054908.7975-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgDHiAxU33NgrAm2AA--.58807S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrWfKF4rur4DtFWxCFy3Jwb_yoWfGwc_Ww
-        4Dur1jkF13Wa4DXw17Gw15uryFqrnxXw1kXan7tw13uFWYkFykCry8XrWkCr17Zw47Grn8
-        Aw18tFs3CFZ7CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
-        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUKBlZdtTUxDAATsu
+        id S230345AbhDLFwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 01:52:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhDLFwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 01:52:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A75D561207;
+        Mon, 12 Apr 2021 05:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618206747;
+        bh=efCpCnAinHSf2kSKdV1JoeqCUQSQ/06SRXMJwGOgVdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oWgropJxyAI8fh04gSOaCZDSUtj00UIEqrA1HMKf54YVJLlfVfGzlIZqRmMH29h3M
+         8n0DXpGk0AvcvVsvIHvGkfwhG/VKqdkHNdNwefP4EvhPkyBWbuqo+E8DpqppwZea74
+         asFZk45SAuqLMKJGYJ4+CtCiT44m331SXxTo8ylU=
+Date:   Mon, 12 Apr 2021 07:52:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     dillon.minfei@gmail.com
+Cc:     jirislaby@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: stm32: optimize spin lock usage
+Message-ID: <YHPgGI6EmTzmVH7g@kroah.com>
+References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When cdns3_gadget_start() fails, a pairing PM usage counter
-decrement is needed to keep the counter balanced.
+On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> To avoid potential deadlock in spin_lock usage, change to use
+> spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn) context.
+> spin_lock(), spin_unlock() under handler context.
+> 
+> remove unused local_irq_save/restore call.
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+> Was verified on stm32f469-disco board. need more test on stm32mp platform.
+> 
+>  drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> index b3675cf25a69..c4c859b34367 100644
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+> @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+>  	struct tty_port *tport = &port->state->port;
+>  	struct stm32_port *stm32_port = to_stm32_port(port);
+>  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+> -	unsigned long c;
+> +	unsigned long c, flags;
+>  	u32 sr;
+>  	char flag;
+>  
+> @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+>  		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+>  	}
+>  
+> -	spin_unlock(&port->lock);
+> +	if (threaded)
+> +		spin_unlock_irqrestore(&port->lock, flags);
+> +	else
+> +		spin_unlock(&port->lock);
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+You shouldn't have to check for this, see the other patches on the list
+recently that fixed this up to not be an issue for irq handlers.
 
-Changelog:
+thanks,
 
-v2: - Use pm_runtime_put_sync() to decrease refcount.
----
- drivers/usb/cdns3/cdns3-gadget.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-index 582bfeceedb4..a49fc68ec2ef 100644
---- a/drivers/usb/cdns3/cdns3-gadget.c
-+++ b/drivers/usb/cdns3/cdns3-gadget.c
-@@ -3255,8 +3255,10 @@ static int __cdns3_gadget_init(struct cdns *cdns)
- 	pm_runtime_get_sync(cdns->dev);
- 
- 	ret = cdns3_gadget_start(cdns);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_put_sync(cdns->dev);
- 		return ret;
-+	}
- 
- 	/*
- 	 * Because interrupt line can be shared with other components in
--- 
-2.17.1
-
+greg k-h
