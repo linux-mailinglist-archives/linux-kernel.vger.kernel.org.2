@@ -2,1413 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D0635D3B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4830435D3B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344002AbhDLXEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:04:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48940 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244959AbhDLXDq (ORCPT
+        id S1344020AbhDLXEq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Apr 2021 19:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241815AbhDLXEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:03:46 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id C61C91F453CD
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id ED8B04800DE; Tue, 13 Apr 2021 01:03:21 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 6/6] dt-bindings: power: mfd: ab8500: Convert to DT schema format
-Date:   Tue, 13 Apr 2021 01:03:20 +0200
-Message-Id: <20210412230320.382885-7-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412230320.382885-1-sebastian.reichel@collabora.com>
-References: <20210412230320.382885-1-sebastian.reichel@collabora.com>
+        Mon, 12 Apr 2021 19:04:45 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84F5C061574;
+        Mon, 12 Apr 2021 16:04:26 -0700 (PDT)
+Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 0FA8B13FC7A;
+        Tue, 13 Apr 2021 01:04:24 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 01:04:23 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Tobias Waldekranz <tobias@waldekranz.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+Message-ID: <20210413010423.6986bd85@thinkpad>
+In-Reply-To: <20210412224805.sgweqvx7ngbtmf4n@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com>
+        <20210411200135.35fb5985@thinkpad>
+        <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+        <878s5nllgs.fsf@waldekranz.com>
+        <20210412213045.4277a598@thinkpad>
+        <8735vvkxju.fsf@waldekranz.com>
+        <20210412213402.vwvon2fdtzf4hnrt@skbuf>
+        <87zgy3jhr1.fsf@waldekranz.com>
+        <20210412220655.27rsiyxlf3f3tydm@skbuf>
+        <87tuobjg0j.fsf@waldekranz.com>
+        <20210412224805.sgweqvx7ngbtmf4n@skbuf>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the binding to DT schema format.
+On Tue, 13 Apr 2021 01:48:05 +0300
+Vladimir Oltean <olteanv@gmail.com> wrote:
 
-I slightly modified the binding by renaming the gpio node from
-ab8500-gpio to ab8500-gpiocontroller, since the -gpio suffix
-is used for gpio consumers.
+> On Tue, Apr 13, 2021 at 12:26:52AM +0200, Tobias Waldekranz wrote:
+> > On Tue, Apr 13, 2021 at 01:06, Vladimir Oltean <olteanv@gmail.com> wrote:  
+> > > On Mon, Apr 12, 2021 at 11:49:22PM +0200, Tobias Waldekranz wrote:  
+> > >> On Tue, Apr 13, 2021 at 00:34, Vladimir Oltean <olteanv@gmail.com> wrote:  
+> > >> > On Mon, Apr 12, 2021 at 11:22:45PM +0200, Tobias Waldekranz wrote:  
+> > >> >> On Mon, Apr 12, 2021 at 21:30, Marek Behun <marek.behun@nic.cz> wrote:  
+> > >> >> > On Mon, 12 Apr 2021 14:46:11 +0200
+> > >> >> > Tobias Waldekranz <tobias@waldekranz.com> wrote:
+> > >> >> >  
+> > >> >> >> I agree. Unless you only have a few really wideband flows, a LAG will
+> > >> >> >> typically do a great job with balancing. This will happen without the
+> > >> >> >> user having to do any configuration at all. It would also perform well
+> > >> >> >> in "router-on-a-stick"-setups where the incoming and outgoing port is
+> > >> >> >> the same.  
+> > >> >> >
+> > >> >> > TLDR: The problem with LAGs how they are currently implemented is that
+> > >> >> > for Turris Omnia, basically in 1/16 of configurations the traffic would
+> > >> >> > go via one CPU port anyway.
+> > >> >> >
+> > >> >> >
+> > >> >> >
+> > >> >> > One potencial problem that I see with using LAGs for aggregating CPU
+> > >> >> > ports on mv88e6xxx is how these switches determine the port for a
+> > >> >> > packet: only the src and dst MAC address is used for the hash that
+> > >> >> > chooses the port.
+> > >> >> >
+> > >> >> > The most common scenario for Turris Omnia, for example, where we have 2
+> > >> >> > CPU ports and 5 user ports, is that into these 5 user ports the user
+> > >> >> > plugs 5 simple devices (no switches, so only one peer MAC address for
+> > >> >> > port). So we have only 5 pairs of src + dst MAC addresses. If we simply
+> > >> >> > fill the LAG table as it is done now, then there is 2 * 0.5^5 = 1/16
+> > >> >> > chance that all packets would go through one CPU port.
+> > >> >> >
+> > >> >> > In order to have real load balancing in this scenario, we would either
+> > >> >> > have to recompute the LAG mask table depending on the MAC addresses, or
+> > >> >> > rewrite the LAG mask table somewhat randomly periodically. (This could
+> > >> >> > be in theory offloaded onto the Z80 internal CPU for some of the
+> > >> >> > switches of the mv88e6xxx family, but not for Omnia.)  
+> > >> >> 
+> > >> >> I thought that the option to associate each port netdev with a DSA
+> > >> >> master would only be used on transmit. Are you saying that there is a
+> > >> >> way to configure an mv88e6xxx chip to steer packets to different CPU
+> > >> >> ports depending on the incoming port?
+> > >> >> 
+> > >> >> The reason that the traffic is directed towards the CPU is that some
+> > >> >> kind of entry in the ATU says so, and the destination of that entry will
+> > >> >> either be a port vector or a LAG. Of those two, only the LAG will offer
+> > >> >> any kind of balancing. What am I missing?
+> > >> >> 
+> > >> >> Transmit is easy; you are already in the CPU, so you can use an
+> > >> >> arbitrarily fancy hashing algo/ebpf classifier/whatever to load balance
+> > >> >> in that case.  
+> > >> >
+> > >> > Say a user port receives a broadcast frame. Based on your understanding
+> > >> > where user-to-CPU port assignments are used only for TX, which CPU port
+> > >> > should be selected by the switch for this broadcast packet, and by which
+> > >> > mechanism?  
+> > >> 
+> > >> AFAIK, the only option available to you (again, if there is no LAG set
+> > >> up) is to statically choose one CPU port per entry. But hopefully Marek
+> > >> can teach me some new tricks!
+> > >> 
+> > >> So for any known (since the broadcast address is loaded in the ATU it is
+> > >> known) destination (b/m/u-cast), you can only "load balance" based on
+> > >> the DA. You would also have to make sure that unknown unicast and
+> > >> unknown multicast is only allowed to egress one of the CPU ports.
+> > >> 
+> > >> If you have a LAG OTOH, you could include all CPU ports in the port
+> > >> vectors of those same entries. The LAG mask would then do the final
+> > >> filtering so that you only send a single copy to the CPU.  
+> > >
+> > > I forgot that mv88e6xxx keeps the broadcast address in the ATU. I wanted
+> > > to know what is done in the flooding case, therefore I should have asked
+> > > about unknown destination traffic. It is sent to one CPU but not the
+> > > other based on what information?
+> > >
+> > > And for destinations loaded into the ATU, how is user port isolation
+> > > performed? Say lan0 and lan1 have the same MAC address of 00:01:02:03:04:05,
+> > > but lan0 goes to the eth0 DSA master and lan1 goes to eth1. How many ATU
+> > > entries would there be for host addresses, and towards which port would
+> > > they point? Are they isolated by a port private VLAN or something along
+> > > those lines?  
+> > 
+> > This is what I do not understand. This is what I hope that Marek can
+> > tell me. To my knowledge, there is no way to per-port load balancing
+> > from the switch to the CPU. In any given FID, there can be only one
+> > entry per address, and that entry can only point to either a vector or a
+> > LAG.
+> > 
+> > So my theory is that the only way of getting any load balancing, however
+> > flawed, on receive (from switch to CPU) is by setting up a
+> > LAG. Hopefully there is some trick that I do not know about which means
+> > we have another option available to us.  
+> 
+> Understood. So as far as you know the Marvell Linkstreet hardware
+> capabilities, it isn't possible to do a clean-cut "all traffic from port
+> X goes to CPU port A and none to B", but instead it's more of a mushy
+> mess like "unknown unicast is flooded to CPU port A, unknown multicast
+> to CPU port B, MAC address 00:01:02:03:04:05 may go to CPU port A, MAC
+> address 00:01:02:03:04:06 to CPU port B". Basically an open-coded mess
+> of a LAG handled by some logic like DSA, once the RX filtering series
+> gets merged. Until then, all traffic to the CPU is unknown-destination
+> traffic as long as I know the mv88e6xxx (due to that limitation where it
+> doesn't learn from the MAC SA of FROM_CPU packets, and DSA does not
+> install into the ATU any of the host addresses, nor does it send any
+> FORWARD frames). But if this is the case and everything towards the CPU
+> is currently flooded, what sort of load balancing do we even have?
+> Between unknown unicast and unknown multicast? :)
+> 
+> So excuse me for believing that the hardware is capable of doing what
+> these 3 patches pretend without seeing the driver-side code!
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+I just now noticed that this series does not include the proposed code
+change for mv88e6xxx.
+
+I am attaching below a patch we use for our TurrisOS 5.4 kernel that
+uses this API for Omnia in the mv88e6xxx driver.
+
+Subject: [PATCH] net: dsa: mv88e6xxx: support multi-CPU DSA
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add support for multi-CPU DSA for mv88e6xxx.
+Currently only works with multiple CPUs when there is only one switch in
+the switch tree.
+
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
 ---
- .../devicetree/bindings/mfd/ab8500.txt        | 280 -------
- .../bindings/mfd/stericsson,ab8500.yaml       | 696 ++++++++++++++++++
- .../bindings/pinctrl/ste,abx500.txt           | 318 --------
- .../supply/stericsson,ab8500-battery.txt      |  34 -
- 4 files changed, 696 insertions(+), 632 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/ab8500.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/stericsson,ab8500.yaml
- delete mode 100644 Documentation/devicetree/bindings/pinctrl/ste,abx500.txt
- delete mode 100644 Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
+ drivers/net/dsa/mv88e6xxx/chip.c | 48 ++++++++++++++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
-deleted file mode 100644
-index d2a6e835c257..000000000000
---- a/Documentation/devicetree/bindings/mfd/ab8500.txt
-+++ /dev/null
-@@ -1,280 +0,0 @@
--* AB8500 Multi-Functional Device (MFD)
--
--Required parent device properties:
--- compatible             : contains "stericsson,ab8500" or "stericsson,ab8505";
--- interrupts             : contains the IRQ line for the AB8500
--- interrupt-controller   : describes the AB8500 as an Interrupt Controller (has its own domain)
--- #interrupt-cells       : should be 2, for 2-cell format
--                            - The first cell is the AB8500 local IRQ number
--                            - The second cell is used to specify optional parameters
--                              - bits[3:0] trigger type and level flags:
--                                  1 = low-to-high edge triggered
--                                  2 = high-to-low edge triggered
--                                  4 = active high level-sensitive
--                                  8 = active low level-sensitive
--
--The AB8500 consists of a large and varied group of sub-devices:
--
--Device                     IRQ Names              Supply Names   Description
--------                     ---------              ------------   -----------
--ab8500-bm                :                      :              : Battery Manager
--ab8500-btemp             :                      :              : Battery Temperature
--ab8500-charger           :                      :              : Battery Charger
--ab8500-codec             :                      :              : Audio Codec
--ab8500-fg                : 			: vddadc       : Fuel Gauge
--			 : NCONV_ACCU           :	       : Accumulate N Sample Conversion
--			 : BATT_OVV		:	       : Battery Over Voltage
--			 : LOW_BAT_F		:	       : LOW threshold battery voltage
--			 : CC_INT_CALIB		:	       : Coulomb Counter Internal Calibration
--			 : CCEOC		:	       : Coulomb Counter End of Conversion
--ab8500-btemp		 :			: vtvout       : Battery Temperature
--			 : BAT_CTRL_INDB        :              : Battery Removal Indicator
--			 : BTEMP_LOW            :              : Btemp < BtempLow, if battery temperature is lower than -10°C
--			 : BTEMP_LOW_MEDIUM     :              : BtempLow < Btemp < BtempMedium,if battery temperature is between -10 and 0°C
--			 : BTEMP_MEDIUM_HIGH    :	       : BtempMedium < Btemp < BtempHigh,if battery temperature is between 0°C and MaxTemp
--			 : BTEMP_HIGH           :              : Btemp > BtempHigh, if battery temperature is higher than MaxTemp
--ab8500-charger		 :			: vddadc       : Charger interface
--			 : MAIN_CH_UNPLUG_DET	:	       : main charger unplug detection management (not in 8505)
--			 : MAIN_CHARGE_PLUG_DET	:	       : main charger plug detection management (not in 8505)
--			 : MAIN_EXT_CH_NOT_OK	:	       : main charger not OK
--			 : MAIN_CH_TH_PROT_R	:	       : Die temp is above main charger
--			 : MAIN_CH_TH_PROT_F	:	       : Die temp is below main charger
--			 : VBUS_DET_F		:	       : VBUS falling detected
--			 : VBUS_DET_R		:	       : VBUS rising detected
--			 : USB_LINK_STATUS	:	       : USB link status has changed
--			 : USB_CH_TH_PROT_R	:	       : Die temp is above usb charger
--			 : USB_CH_TH_PROT_F	:	       : Die temp is below usb charger
--			 : USB_CHARGER_NOT_OKR	:	       : allowed USB charger not ok detection
--			 : VBUS_OVV		:	       : Overvoltage on Vbus ball detected (USB charge is stopped)
--			 : CH_WD_EXP		:	       : Charger watchdog detected
--ab8500-gpadc             : HW_CONV_END          : vddadc       : Analogue to Digital Converter
--                           SW_CONV_END          :              :
--ab8500-gpio              :                      :              : GPIO Controller (AB8500)
--ab8505-gpio              :                      :              : GPIO Controller (AB8505)
--ab8500-ponkey            : ONKEY_DBF            :              : Power-on Key
--                           ONKEY_DBR            :              :
--ab8500-pwm               :                      :              : Pulse Width Modulator
--ab8500-regulator         :                      :              : Regulators (AB8500)
--ab8505-regulator         :                      :              : Regulators (AB8505)
--ab8500-rtc               : 60S                  :              : Real Time Clock
--                         : ALARM                :              :
--ab8500-sysctrl           :                      :              : System Control
--ab8500-usb               : ID_WAKEUP_R          : vddulpivio18 : Universal Serial Bus
--                         : ID_WAKEUP_F          : v-ape        :
--                         : VBUS_DET_F           : musb_1v8     :
--                         : VBUS_DET_R           :              :
--                         : USB_LINK_STATUS      :              :
--                         : USB_ADP_PROBE_PLUG   :              :
--                         : USB_ADP_PROBE_UNPLUG :              :
--
--Required child device properties:
--- compatible             : "stericsson,ab8500-[bm|btemp|charger|fg|gpadc|gpio|ponkey|
--                                               pwm|regulator|rtc|sysctrl|usb]";
--
--  A few child devices require ADC channels from the GPADC node. Those follow the
--  standard bindings from iio/iio-bindings.txt and iio/adc/adc.txt
--
--  abx500-temp		 : io-channels "aux1" and "aux2" for measuring external
--			   temperatures.
--  ab8500-fg		 : io-channel "main_bat_v" for measuring main battery voltage,
--  ab8500-btemp		 : io-channels "btemp_ball" and "bat_ctrl" for measuring the
--			   battery voltage.
--  ab8500-charger	 : io-channels "main_charger_v", "main_charger_c", "vbus_v",
--			   "usb_charger_c" for measuring voltage and current of the
--			   different charging supplies.
--
--Optional child device properties:
--- interrupts             : contains the device IRQ(s) using the 2-cell format (see above)
--- interrupt-names        : contains names of IRQ resource in the order in which they were
--                           supplied in the interrupts property
--- <supply_name>-supply   : contains a phandle to the regulator supply node in Device Tree
--
--Non-standard child device properties:
-- - Audio CODEC:
--   - stericsson,amic[1|2]-type-single-ended : Single-ended Analoge Mic (default: differential)
--   - stericsson,amic1a-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
--   - stericsson,amic1b-bias-vamic2          : Analoge Mic wishes to use a non-standard Vamic
--   - stericsson,amic2-bias-vamic1           : Analoge Mic wishes to use a non-standard Vamic
--   - stericsson,earpeice-cmv                : Earpeice voltage (only: 950 | 1100 | 1270 | 1580)
--
--ab8500 {
--         compatible = "stericsson,ab8500";
--         interrupts = <0 40 0x4>;
--         interrupt-controller;
--         #interrupt-cells = <2>;
--
--         ab8500-rtc {
--                 compatible = "stericsson,ab8500-rtc";
--                 interrupts = <17 0x4
--                               18 0x4>;
--                 interrupt-names = "60S", "ALARM";
--         };
--
--        ab8500-gpadc {
--                compatible = "stericsson,ab8500-gpadc";
--                interrupts = <32 0x4
--                              39 0x4>;
--                interrupt-names = "HW_CONV_END", "SW_CONV_END";
--                vddadc-supply = <&ab8500_ldo_tvout_reg>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--		#io-channel-cells = <1>;
--
--		/* GPADC channels */
--		bat_ctrl: channel@1 {
--			reg = <0x01>;
--		};
--		btemp_ball: channel@2 {
--			reg = <0x02>;
--		};
--		main_charger_v: channel@3 {
--			reg = <0x03>;
--		};
--		acc_detect1: channel@4 {
--			reg = <0x04>;
--		};
--		acc_detect2: channel@5 {
--			reg = <0x05>;
--		};
--		adc_aux1: channel@6 {
--			reg = <0x06>;
--		};
--		adc_aux2: channel@7 {
--			reg = <0x07>;
--		};
--		main_batt_v: channel@8 {
--			reg = <0x08>;
--		};
--		vbus_v: channel@9 {
--			reg = <0x09>;
--		};
--		main_charger_c: channel@a {
--			reg = <0x0a>;
--		};
--		usb_charger_c: channel@b {
--			reg = <0x0b>;
--		};
--		bk_bat_v: channel@c {
--			reg = <0x0c>;
--		};
--		die_temp: channel@d {
--			reg = <0x0d>;
--		};
--		usb_id: channel@e {
--			reg = <0x0e>;
--		};
--		xtal_temp: channel@12 {
--			reg = <0x12>;
--		};
--		vbat_true_meas: channel@13 {
--			reg = <0x13>;
--		};
--		bat_ctrl_and_ibat: channel@1c {
--			reg = <0x1c>;
--		};
--		vbat_meas_and_ibat: channel@1d {
--			reg = <0x1d>;
--		};
--		vbat_true_meas_and_ibat: channel@1e {
--			reg = <0x1e>;
--		};
--		bat_temp_and_ibat: channel@1f {
--			reg = <0x1f>;
--		};
--        };
--
--	ab8500_temp {
--		compatible = "stericsson,abx500-temp";
--		io-channels = <&gpadc 0x06>,
--			      <&gpadc 0x07>;
--		io-channel-name = "aux1", "aux2";
--	};
--
--	ab8500_battery: ab8500_battery {
--		stericsson,battery-type = "LIPO";
--		thermistor-on-batctrl;
--	};
--
--	ab8500_fg {
--		compatible = "stericsson,ab8500-fg";
--		battery	   = <&ab8500_battery>;
--		io-channels = <&gpadc 0x08>;
--		io-channel-name = "main_bat_v";
--	};
--
--	ab8500_btemp {
--		compatible = "stericsson,ab8500-btemp";
--		battery	   = <&ab8500_battery>;
--		io-channels = <&gpadc 0x02>,
--			      <&gpadc 0x01>;
--		io-channel-name = "btemp_ball",
--				"bat_ctrl";
--	};
--
--	ab8500_charger {
--		compatible	= "stericsson,ab8500-charger";
--		battery		= <&ab8500_battery>;
--		vddadc-supply	= <&ab8500_ldo_tvout_reg>;
--		io-channels = <&gpadc 0x03>,
--			      <&gpadc 0x0a>,
--			      <&gpadc 0x09>,
--			      <&gpadc 0x0b>;
--		io-channel-name = "main_charger_v",
--				"main_charger_c",
--				"vbus_v",
--				"usb_charger_c";
--	};
--
--        ab8500-usb {
--                compatible = "stericsson,ab8500-usb";
--                interrupts = < 90 0x4
--                               96 0x4
--                               14 0x4
--                               15 0x4
--                               79 0x4
--                               74 0x4
--                               75 0x4>;
--                interrupt-names = "ID_WAKEUP_R",
--                                  "ID_WAKEUP_F",
--                                  "VBUS_DET_F",
--                                  "VBUS_DET_R",
--                                  "USB_LINK_STATUS",
--                                  "USB_ADP_PROBE_PLUG",
--                                  "USB_ADP_PROBE_UNPLUG";
--                vddulpivio18-supply = <&ab8500_ldo_intcore_reg>;
--                v-ape-supply = <&db8500_vape_reg>;
--                musb_1v8-supply = <&db8500_vsmps2_reg>;
--        };
--
--        ab8500-ponkey {
--                compatible = "stericsson,ab8500-ponkey";
--                interrupts = <6 0x4
--                              7 0x4>;
--                interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
--        };
--
--        ab8500-sysctrl {
--                compatible = "stericsson,ab8500-sysctrl";
--        };
--
--        ab8500-pwm {
--                compatible = "stericsson,ab8500-pwm";
--        };
--
--	codec: ab8500-codec {
--		compatible = "stericsson,ab8500-codec";
--
--		stericsson,earpeice-cmv = <950>; /* Units in mV. */
--	};
--
--        ab8500-regulators {
--                compatible = "stericsson,ab8500-regulator";
--
--                ab8500_ldo_aux1_reg: ab8500_ldo_aux1 {
--                        /*
--                         * See: Documentation/devicetree/bindings/regulator/regulator.txt
--                         * for more information on regulators
--                         */
--                };
--        };
--};
-diff --git a/Documentation/devicetree/bindings/mfd/stericsson,ab8500.yaml b/Documentation/devicetree/bindings/mfd/stericsson,ab8500.yaml
-new file mode 100644
-index 000000000000..80d33f21d72f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/stericsson,ab8500.yaml
-@@ -0,0 +1,696 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/mfd/stericsson,ab8500.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: AB8500 Multi-Functional Device
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+  - Lee Jones <lee.jones@linaro.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - stericsson,ab8500
-+      - stericsson,ab8505
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    description: First cell is IRQ number, second cell is flags
-+    const: 2
-+
-+  clock-controller:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-clk
-+
-+      "#clock-cells":
-+        const: 1
-+
-+    required:
-+      - compatible
-+      - "#clock-cells"
-+
-+    additionalProperties: false
-+
-+  ab8500-rtc:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-rtc
-+
-+      interrupts:
-+        maxItems: 2
-+
-+      interrupt-names:
-+        items:
-+          - const: 60S
-+          - const: ALARM
-+
-+    required:
-+      - compatible
-+      - interrupts
-+      - interrupt-names
-+
-+    additionalProperties: false
-+
-+  ab8500-gpadc:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-gpadc
-+
-+      interrupts:
-+        minItems: 1
-+        maxItems: 2
-+
-+      interrupt-names:
-+        minItems: 1
-+        maxItems: 2
-+        items:
-+          anyOf:
-+            - const: HW_CONV_END
-+            - const: SW_CONV_END
-+
-+      vddadc-supply:
-+        description: analog supply
-+
-+      "#address-cells":
-+        const: 1
-+
-+      "#size-cells":
-+        const: 0
-+
-+      "#io-channel-cells":
-+        const: 1
-+
-+    required:
-+      - compatible
-+
-+    patternProperties:
-+      "^channel@[0-9a-f]+$":
-+        type: object
-+        properties:
-+          reg:
-+            maxItems: 1
-+
-+        required:
-+          - reg
-+
-+        additionalProperties: false
-+
-+    additionalProperties: false
-+
-+  ab8500_temp:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,abx500-temp
-+
-+      interrupts:
-+        maxItems: 1
-+
-+      interrupt-names:
-+        items:
-+          - const: ABX500_TEMP_WARM
-+
-+      io-channels:
-+        maxItems: 2
-+
-+      io-channel-names:
-+        items:
-+          - const: aux1
-+          - const: aux2
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  ab8500_btemp:
-+    type: object
-+    $ref: ../power/supply/stericsson,ab8500-btemp.yaml
-+
-+  ab8500_charger:
-+    type: object
-+    $ref: ../power/supply/stericsson,ab8500-charger.yaml
-+
-+  ab8500_fg:
-+    type: object
-+    $ref: ../power/supply/stericsson,ab8500-fg.yaml
-+
-+  ab8500_chargalg:
-+    type: object
-+    $ref: ../power/supply/stericsson,ab8500-chargalg.yaml
-+
-+  ab8500_battery:
-+    type: object
-+    properties:
-+      stericsson,battery-type:
-+        description: battery chemistry
-+        enum:
-+          - UNKNOWN
-+          - NiMH
-+          - LION
-+          - LIPO
-+          - LiFe
-+          - NiCd
-+          - LiMn
-+
-+      thermistor-on-batctrl:
-+        type: boolean
-+        description:
-+          if set 'batctrl' is used for thermal measurement, otherwise 'btemp'
-+          is used for thermal measurement.
-+
-+    additionalProperties: false
-+
-+  ab8500_usb:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-usb
-+
-+      interrupts:
-+        maxItems: 7
-+
-+      interrupt-names:
-+        items:
-+          - const: ID_WAKEUP_R
-+          - const: ID_WAKEUP_F
-+          - const: VBUS_DET_F
-+          - const: VBUS_DET_R
-+          - const: USB_LINK_STATUS
-+          - const: USB_ADP_PROBE_PLUG
-+          - const: USB_ADP_PROBE_UNPLUG
-+
-+      vddulpivio18-supply:
-+        description: 1.8V VIO
-+
-+      v-ape-supply:
-+        description: V-APE
-+
-+      musb_1v8-supply:
-+        description: MUSB 1.8V
-+
-+      clocks:
-+        maxItems: 1
-+
-+      clock-names:
-+        items:
-+          - const: sysclk
-+
-+    additionalProperties: false
-+
-+  ab8500-ponkey:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-poweron-key
-+
-+      interrupts:
-+        maxItems: 2
-+
-+      interrupt-names:
-+        items:
-+          - const: ONKEY_DBF
-+          - const: ONKEY_DBR
-+
-+    additionalProperties: false
-+
-+  ab8500-sysctrl:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-sysctrl
-+
-+    additionalProperties: false
-+
-+  ab8500-debugfs:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-debug
-+
-+    additionalProperties: false
-+
-+  ab8500-codec:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-codec
-+
-+      V-AUD-supply:
-+        description: V-AUD supply
-+
-+      V-AMIC1-supply:
-+        description: V-AMIC1 supply
-+
-+      V-AMIC2-supply:
-+        description: V-AMIC2 supply
-+
-+      V-DMIC-supply:
-+        description: V-DMIC supply
-+
-+      clocks:
-+        maxItems: 1
-+
-+      clock-names:
-+        items:
-+          - const: audioclk
-+
-+      stericsson,earpeice-cmv:
-+        description: earpiece voltage in mV
-+        enum: [950, 1100, 1270, 1580]
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+
-+    additionalProperties: false
-+
-+  ab8500-ext-regulators:
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-ext-regulator
-+
-+    patternProperties:
-+      "^ab8500_ext[1-3]$":
-+        $ref: /schemas/regulator/regulator.yaml
-+
-+    additionalProperties: false
-+
-+patternProperties:
-+  "^ab8500-pwm(-[1-3])?$":
-+    type: object
-+    properties:
-+      compatible:
-+        const: stericsson,ab8500-pwm
-+
-+      clocks:
-+        maxItems: 1
-+
-+      clock-names:
-+        items:
-+          - const: intclk
-+
-+    additionalProperties: false
-+  "^ab850[05]-gpiocontroller$":
-+    type: object
-+    properties:
-+      compatible:
-+        enum:
-+          - stericsson,ab8500-gpio
-+          - stericsson,ab8505-gpio
-+          - stericsson,ab8540-gpio
-+          - stericsson,ab9540-gpio
-+
-+      gpio-controller: true
-+
-+      "#gpio-cells":
-+        const: 2
-+
-+    required:
-+      - compatible
-+      - gpio-controller
-+      - "#gpio-cells"
-+
-+    patternProperties:
-+      "^.*$":
-+        $ref: "/schemas/pinctrl/pincfg-node.yaml"
-+
-+    additionalProperties: false
-+
-+  "^ab850[05]-regulators$":
-+    type: object
-+    properties:
-+      compatible:
-+        enum:
-+          - stericsson,ab8500-regulator
-+          - stericsson,ab8505-regulator
-+
-+      vin-supply:
-+        description: input supply
-+
-+    patternProperties:
-+      "^ab8500_ldo_adc$|^ab8500_ldo_aux[1-8]$|^ab8500_ldo_intcore$|^ab8500_ldo_tvout$|^ab8500_ldo_audio$|^ab8500_ldo_anamic[12]$|^ab8500_ldo_dmic$|^ab8500_ldo_ana$":
-+        $ref: /schemas/regulator/regulator.yaml
-+
-+    additionalProperties: false
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/mfd/dbx500-prcmu.h>
-+    #include <dt-bindings/clock/ste-ab8500.h>
-+    ab8500 {
-+        compatible = "stericsson,ab8500";
-+        interrupt-parent = <&intc>;
-+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+
-+        ab8500_clock: clock-controller {
-+            compatible = "stericsson,ab8500-clk";
-+            #clock-cells = <1>;
-+        };
-+
-+        ab8500_gpio: ab8500-gpiocontroller {
-+            compatible = "stericsson,ab8500-gpio";
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+        };
-+
-+        ab8500-rtc {
-+            compatible = "stericsson,ab8500-rtc";
-+            interrupts = <17 IRQ_TYPE_LEVEL_HIGH>,
-+                         <18 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "60S", "ALARM";
-+        };
-+
-+        gpadc: ab8500-gpadc {
-+            compatible = "stericsson,ab8500-gpadc";
-+            interrupts = <32 IRQ_TYPE_LEVEL_HIGH>,
-+                         <39 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "HW_CONV_END", "SW_CONV_END";
-+            vddadc-supply = <&ab8500_ldo_tvout_reg>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            #io-channel-cells = <1>;
-+
-+            /* GPADC channels */
-+            bat_ctrl: channel@1 {
-+                reg = <0x01>;
-+            };
-+            btemp_ball: channel@2 {
-+                reg = <0x02>;
-+            };
-+            main_charger_v: channel@3 {
-+                reg = <0x03>;
-+            };
-+            acc_detect1: channel@4 {
-+                reg = <0x04>;
-+            };
-+            acc_detect2: channel@5 {
-+                reg = <0x05>;
-+            };
-+            adc_aux1: channel@6 {
-+                reg = <0x06>;
-+            };
-+            adc_aux2: channel@7 {
-+                reg = <0x07>;
-+            };
-+            main_batt_v: channel@8 {
-+                reg = <0x08>;
-+            };
-+            vbus_v: channel@9 {
-+                reg = <0x09>;
-+            };
-+            main_charger_c: channel@a {
-+                reg = <0x0a>;
-+            };
-+            usb_charger_c: channel@b {
-+                reg = <0x0b>;
-+            };
-+            bk_bat_v: channel@c {
-+                reg = <0x0c>;
-+            };
-+            die_temp: channel@d {
-+                reg = <0x0d>;
-+            };
-+            usb_id: channel@e {
-+                reg = <0x0e>;
-+            };
-+            xtal_temp: channel@12 {
-+                reg = <0x12>;
-+            };
-+            vbat_true_meas: channel@13 {
-+                reg = <0x13>;
-+            };
-+            bat_ctrl_and_ibat: channel@1c {
-+                reg = <0x1c>;
-+            };
-+            vbat_meas_and_ibat: channel@1d {
-+                reg = <0x1d>;
-+            };
-+            vbat_true_meas_and_ibat: channel@1e {
-+                reg = <0x1e>;
-+            };
-+            bat_temp_and_ibat: channel@1f {
-+                reg = <0x1f>;
-+            };
-+        };
-+
-+        ab8500_temp {
-+            compatible = "stericsson,abx500-temp";
-+            interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "ABX500_TEMP_WARM";
-+            io-channels = <&gpadc 0x06>,
-+                          <&gpadc 0x07>;
-+            io-channel-names = "aux1", "aux2";
-+        };
-+
-+        ab8500_battery: ab8500_battery {
-+            stericsson,battery-type = "LIPO";
-+            thermistor-on-batctrl;
-+        };
-+
-+        ab8500_fg {
-+            compatible = "stericsson,ab8500-fg";
-+            interrupts = <24 IRQ_TYPE_LEVEL_HIGH>,
-+                         <8 IRQ_TYPE_LEVEL_HIGH>,
-+                         <28 IRQ_TYPE_LEVEL_HIGH>,
-+                         <27 IRQ_TYPE_LEVEL_HIGH>,
-+                         <26 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "NCONV_ACCU",
-+                              "BATT_OVV",
-+                              "LOW_BAT_F",
-+                              "CC_INT_CALIB",
-+                              "CCEOC";
-+            battery = <&ab8500_battery>;
-+            io-channels = <&gpadc 0x08>;
-+            io-channel-names = "main_bat_v";
-+        };
-+
-+        ab8500_btemp {
-+            compatible = "stericsson,ab8500-btemp";
-+            interrupts = <20 IRQ_TYPE_LEVEL_HIGH>,
-+                         <80 IRQ_TYPE_LEVEL_HIGH>,
-+                         <83 IRQ_TYPE_LEVEL_HIGH>,
-+                         <81 IRQ_TYPE_LEVEL_HIGH>,
-+                         <82 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "BAT_CTRL_INDB",
-+                              "BTEMP_LOW",
-+                              "BTEMP_HIGH",
-+                              "BTEMP_LOW_MEDIUM",
-+                              "BTEMP_MEDIUM_HIGH";
-+            battery = <&ab8500_battery>;
-+            io-channels = <&gpadc 0x02>,
-+                          <&gpadc 0x01>;
-+            io-channel-names = "btemp_ball",
-+                            "bat_ctrl";
-+        };
-+
-+        ab8500_charger {
-+            compatible = "stericsson,ab8500-charger";
-+            interrupts = <10 IRQ_TYPE_LEVEL_HIGH>,
-+                         <11 IRQ_TYPE_LEVEL_HIGH>,
-+                         <0 IRQ_TYPE_LEVEL_HIGH>,
-+                         <107 IRQ_TYPE_LEVEL_HIGH>,
-+                         <106 IRQ_TYPE_LEVEL_HIGH>,
-+                         <14 IRQ_TYPE_LEVEL_HIGH>,
-+                         <15 IRQ_TYPE_LEVEL_HIGH>,
-+                         <79 IRQ_TYPE_LEVEL_HIGH>,
-+                         <105 IRQ_TYPE_LEVEL_HIGH>,
-+                         <104 IRQ_TYPE_LEVEL_HIGH>,
-+                         <89 IRQ_TYPE_LEVEL_HIGH>,
-+                         <22 IRQ_TYPE_LEVEL_HIGH>,
-+                         <21 IRQ_TYPE_LEVEL_HIGH>,
-+                         <16 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "MAIN_CH_UNPLUG_DET",
-+                              "MAIN_CHARGE_PLUG_DET",
-+                              "MAIN_EXT_CH_NOT_OK",
-+                              "MAIN_CH_TH_PROT_R",
-+                              "MAIN_CH_TH_PROT_F",
-+                              "VBUS_DET_F",
-+                              "VBUS_DET_R",
-+                              "USB_LINK_STATUS",
-+                              "USB_CH_TH_PROT_R",
-+                              "USB_CH_TH_PROT_F",
-+                              "USB_CHARGER_NOT_OKR",
-+                              "VBUS_OVV",
-+                              "CH_WD_EXP",
-+                              "VBUS_CH_DROP_END";
-+            battery = <&ab8500_battery>;
-+            vddadc-supply = <&ab8500_ldo_tvout_reg>;
-+            io-channels = <&gpadc 0x03>,
-+                          <&gpadc 0x0a>,
-+                          <&gpadc 0x09>,
-+                          <&gpadc 0x0b>;
-+            io-channel-names = "main_charger_v",
-+                            "main_charger_c",
-+                            "vbus_v",
-+                            "usb_charger_c";
-+        };
-+
-+        ab8500_chargalg {
-+            compatible = "stericsson,ab8500-chargalg";
-+            battery = <&ab8500_battery>;
-+        };
-+
-+        ab8500_usb {
-+            compatible = "stericsson,ab8500-usb";
-+            interrupts = <90 IRQ_TYPE_LEVEL_HIGH>,
-+                         <96 IRQ_TYPE_LEVEL_HIGH>,
-+                         <14 IRQ_TYPE_LEVEL_HIGH>,
-+                         <15 IRQ_TYPE_LEVEL_HIGH>,
-+                         <79 IRQ_TYPE_LEVEL_HIGH>,
-+                         <74 IRQ_TYPE_LEVEL_HIGH>,
-+                         <75 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "ID_WAKEUP_R",
-+                              "ID_WAKEUP_F",
-+                              "VBUS_DET_F",
-+                              "VBUS_DET_R",
-+                              "USB_LINK_STATUS",
-+                              "USB_ADP_PROBE_PLUG",
-+                              "USB_ADP_PROBE_UNPLUG";
-+            vddulpivio18-supply = <&ab8500_ldo_intcore_reg>;
-+            v-ape-supply = <&db8500_vape_reg>;
-+            musb_1v8-supply = <&db8500_vsmps2_reg>;
-+            clocks = <&prcmu_clk PRCMU_SYSCLK>;
-+            clock-names = "sysclk";
-+        };
-+
-+        ab8500-ponkey {
-+            compatible = "stericsson,ab8500-poweron-key";
-+            interrupts = <6 IRQ_TYPE_LEVEL_HIGH>,
-+                         <7 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
-+        };
-+
-+        ab8500-sysctrl {
-+            compatible = "stericsson,ab8500-sysctrl";
-+        };
-+
-+        ab8500-pwm-1 {
-+            compatible = "stericsson,ab8500-pwm";
-+            clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
-+            clock-names = "intclk";
-+        };
-+
-+        ab8500-pwm-2 {
-+            compatible = "stericsson,ab8500-pwm";
-+            clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
-+            clock-names = "intclk";
-+        };
-+
-+        ab8500-pwm-3 {
-+            compatible = "stericsson,ab8500-pwm";
-+            clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
-+            clock-names = "intclk";
-+        };
-+
-+        ab8500-debugfs {
-+            compatible = "stericsson,ab8500-debug";
-+        };
-+
-+        codec: ab8500-codec {
-+            compatible = "stericsson,ab8500-codec";
-+
-+            V-AUD-supply = <&ab8500_ldo_audio_reg>;
-+            V-AMIC1-supply = <&ab8500_ldo_anamic1_reg>;
-+            V-AMIC2-supply = <&ab8500_ldo_anamic2_reg>;
-+            V-DMIC-supply = <&ab8500_ldo_dmic_reg>;
-+
-+            clocks = <&ab8500_clock AB8500_SYSCLK_AUDIO>;
-+            clock-names = "audioclk";
-+
-+            stericsson,earpeice-cmv = <950>; /* Units in mV. */
-+        };
-+
-+        ext_regulators: ab8500-ext-regulators {
-+            compatible = "stericsson,ab8500-ext-regulator";
-+
-+            ab8500_ext1_reg: ab8500_ext1 {
-+                regulator-min-microvolt = <1800000>;
-+                regulator-max-microvolt = <1800000>;
-+                regulator-boot-on;
-+                regulator-always-on;
-+            };
-+
-+            ab8500_ext2_reg: ab8500_ext2 {
-+                regulator-min-microvolt = <1360000>;
-+                regulator-max-microvolt = <1360000>;
-+                regulator-boot-on;
-+                regulator-always-on;
-+            };
-+
-+            ab8500_ext3_reg: ab8500_ext3 {
-+                regulator-min-microvolt = <3400000>;
-+                regulator-max-microvolt = <3400000>;
-+                regulator-boot-on;
-+            };
-+        };
-+
-+        ab8500-regulators {
-+            compatible = "stericsson,ab8500-regulator";
-+            vin-supply = <&ab8500_ext3_reg>;
-+
-+            // supplies to the display/camera
-+            ab8500_ldo_aux1_reg: ab8500_ldo_aux1 {
-+                regulator-min-microvolt = <2500000>;
-+                regulator-max-microvolt = <2900000>;
-+                regulator-boot-on;
-+                /* BUG: If turned off MMC will be affected. */
-+                regulator-always-on;
-+            };
-+
-+            // supplies to the on-board eMMC
-+            ab8500_ldo_aux2_reg: ab8500_ldo_aux2 {
-+                regulator-min-microvolt = <1100000>;
-+                regulator-max-microvolt = <3300000>;
-+            };
-+
-+            // supply for VAUX3; SDcard slots
-+            ab8500_ldo_aux3_reg: ab8500_ldo_aux3 {
-+                regulator-min-microvolt = <1100000>;
-+                regulator-max-microvolt = <3300000>;
-+            };
-+
-+            // supply for v-intcore12; VINTCORE12 LDO
-+            ab8500_ldo_intcore_reg: ab8500_ldo_intcore {
-+            };
-+
-+            // supply for tvout; gpadc; TVOUT LDO
-+            ab8500_ldo_tvout_reg: ab8500_ldo_tvout {
-+            };
-+
-+            // supply for ab8500-vaudio; VAUDIO LDO
-+            ab8500_ldo_audio_reg: ab8500_ldo_audio {
-+            };
-+
-+            // supply for v-anamic1 VAMIC1 LDO
-+            ab8500_ldo_anamic1_reg: ab8500_ldo_anamic1 {
-+            };
-+
-+            // supply for v-amic2; VAMIC2 LDO; reuse constants for AMIC1
-+            ab8500_ldo_anamic2_reg: ab8500_ldo_anamic2 {
-+            };
-+
-+            // supply for v-dmic; VDMIC LDO
-+            ab8500_ldo_dmic_reg: ab8500_ldo_dmic {
-+            };
-+
-+            // supply for U8500 CSI/DSI; VANA LDO
-+            ab8500_ldo_ana_reg: ab8500_ldo_ana {
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/pinctrl/ste,abx500.txt b/Documentation/devicetree/bindings/pinctrl/ste,abx500.txt
-deleted file mode 100644
-index 87697420439e..000000000000
---- a/Documentation/devicetree/bindings/pinctrl/ste,abx500.txt
-+++ /dev/null
-@@ -1,318 +0,0 @@
--ST Ericsson abx500 pinmux controller
--
--Required properties:
--- compatible: "stericsson,ab8500-gpio",  "stericsson,ab8540-gpio",
--	      "stericsson,ab8505-gpio", "stericsson,ab9540-gpio",
--
--Please refer to pinctrl-bindings.txt in this directory for details of the
--common pinctrl bindings used by client devices, including the meaning of the
--phrase "pin configuration node".
--
--ST Ericsson's pin configuration nodes use the generic pin multiplexing
--and pin configuration bindings, see pinctrl-bindings.txt
--
--Example board file extract:
--
--&pinctrl_abx500 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&sysclkreq2_default_mode>, <&sysclkreq3_default_mode>, <&gpio3_default_mode>, <&sysclkreq6_default_mode>, <&pwmout1_default_mode>, <&pwmout2_default_mode>, <&pwmout3_default_mode>, <&adi1_default_mode>, <&dmic12_default_mode>, <&dmic34_default_mode>, <&dmic56_default_mode>, <&sysclkreq5_default_mode>, <&batremn_default_mode>, <&service_default_mode>, <&pwrctrl0_default_mode>, <&pwrctrl1_default_mode>, <&pwmextvibra1_default_mode>, <&pwmextvibra2_default_mode>, <&gpio51_default_mode>, <&gpio52_default_mode>, <&gpio53_default_mode>, <&gpio54_default_mode>, <&pdmclkdat_default_mode>;
--
--	sysclkreq2 {
--		sysclkreq2_default_mode: sysclkreq2_default {
--			default_mux {
--				function = "sysclkreq";
--				groups = "sysclkreq2_d_1";
--			};
--			default_cfg {
--				pins = "GPIO1";
--				bias-disable;
--			};
--		};
--	};
--	sysclkreq3 {
--		sysclkreq3_default_mode: sysclkreq3_default {
--			default_mux {
--				function = "sysclkreq";
--				groups = "sysclkreq3_d_1";
--			};
--			default_cfg {
--				pins = "GPIO2";
--				output-low;
--			};
--		};
--	};
--	gpio3 {
--		gpio3_default_mode: gpio3_default {
--			default_mux {
--				function = "gpio";
--				groups = "gpio3_a_1";
--			};
--			default_cfg {
--				pins = "GPIO3";
--				output-low;
--			};
--		};
--	};
--	sysclkreq6 {
--		sysclkreq6_default_mode: sysclkreq6_default {
--			default_mux {
--				function = "sysclkreq";
--				groups = "sysclkreq6_d_1";
--			};
--			default_cfg {
--				pins = "GPIO4";
--				bias-disable;
--			};
--		};
--	};
--	pwmout1 {
--		pwmout1_default_mode: pwmout1_default {
--			default_mux {
--				function = "pwmout";
--				groups = "pwmout1_d_1";
--			};
--			default_cfg {
--				pins = "GPIO14";
--				output-low;
--			};
--		};
--	};
--	pwmout2 {
--		pwmout2_default_mode: pwmout2_default {
--			pwmout2_default_mux {
--				function = "pwmout";
--				groups = "pwmout2_d_1";
--			};
--			pwmout2_default_cfg {
--				pins = "GPIO15";
--				output-low;
--			};
--		};
--	};
--	pwmout3 {
--		pwmout3_default_mode: pwmout3_default {
--			pwmout3_default_mux {
--				function = "pwmout";
--				groups = "pwmout3_d_1";
--			};
--			pwmout3_default_cfg {
--				pins = "GPIO16";
--				output-low;
--			};
--		};
--	};
--	adi1 {
--
--		adi1_default_mode: adi1_default {
--			adi1_default_mux {
--				function = "adi1";
--				groups = "adi1_d_1";
--			};
--			adi1_default_cfg1 {
--				pins = "GPIO17","GPIO19","GPIO20";
--				bias-disable;
--			};
--			adi1_default_cfg2 {
--				pins = "GPIO18";
--				output-low;
--			};
--		};
--	};
--	dmic12 {
--		dmic12_default_mode: dmic12_default {
--			dmic12_default_mux {
--				function = "dmic";
--				groups = "dmic12_d_1";
--			};
--			dmic12_default_cfg1 {
--				pins = "GPIO27";
--				output-low;
--			};
--			dmic12_default_cfg2 {
--				pins = "GPIO28";
--				bias-disable;
--			};
--		};
--	};
--	dmic34 {
--		dmic34_default_mode: dmic34_default {
--			dmic34_default_mux {
--				function = "dmic";
--				groups = "dmic34_d_1";
--			};
--			dmic34_default_cfg1 {
--				pins = "GPIO29";
--				output-low;
--			};
--			dmic34_default_cfg2 {
--				pins = "GPIO30";
--				bias-disable;{
--
--			};
--		};
--	};
--	dmic56 {
--		dmic56_default_mode: dmic56_default {
--			dmic56_default_mux {
--				function = "dmic";
--				groups = "dmic56_d_1";
--			};
--			dmic56_default_cfg1 {
--				pins = "GPIO31";
--				output-low;
--			};
--			dmic56_default_cfg2 {
--				pins = "GPIO32";
--				bias-disable;
--			};
--		};
--	};
--	sysclkreq5 {
--		sysclkreq5_default_mode: sysclkreq5_default {
--			sysclkreq5_default_mux {
--				function = "sysclkreq";
--				groups = "sysclkreq5_d_1";
--			};
--			sysclkreq5_default_cfg {
--				pins = "GPIO42";
--				output-low;
--			};
--		};
--	};
--	batremn {
--		batremn_default_mode: batremn_default {
--			batremn_default_mux {
--				function = "batremn";
--				groups = "batremn_d_1";
--			};
--			batremn_default_cfg {
--				pins = "GPIO43";
--				bias-disable;
--			};
--		};
--	};
--	service {
--		service_default_mode: service_default {
--			service_default_mux {
--				function = "service";
--				groups = "service_d_1";
--			};
--			service_default_cfg {
--				pins = "GPIO44";
--				bias-disable;
--			};
--		};
--	};
--	pwrctrl0 {
--		pwrctrl0_default_mux: pwrctrl0_mux {
--			pwrctrl0_default_mux {
--				function = "pwrctrl";
--				groups = "pwrctrl0_d_1";
--			};
--		};
--		pwrctrl0_default_mode: pwrctrl0_default {
--			pwrctrl0_default_cfg {
--				pins = "GPIO45";
--				bias-disable;
--			};
--		};
--	};
--	pwrctrl1 {
--		pwrctrl1_default_mux: pwrctrl1_mux {
--			pwrctrl1_default_mux {
--				function = "pwrctrl";
--				groups = "pwrctrl1_d_1";
--			};
--		};
--		pwrctrl1_default_mode: pwrctrl1_default {
--			pwrctrl1_default_cfg {
--				pins = "GPIO46";
--				bias-disable;
--			};
--		};
--	};
--	pwmextvibra1 {
--		pwmextvibra1_default_mode: pwmextvibra1_default {
--			pwmextvibra1_default_mux {
--				function = "pwmextvibra";
--				groups = "pwmextvibra1_d_1";
--			};
--			pwmextvibra1_default_cfg {
--				pins = "GPIO47";
--				bias-disable;
--			};
--		};
--	};
--	pwmextvibra2 {
--		pwmextvibra2_default_mode: pwmextvibra2_default {
--			pwmextvibra2_default_mux {
--				function = "pwmextvibra";
--				groups = "pwmextvibra2_d_1";
--			};
--			pwmextvibra1_default_cfg {
--				pins = "GPIO48";
--				bias-disable;
--			};
--		};
--	};
--	gpio51 {
--		gpio51_default_mode: gpio51_default {
--				gpio51_default_mux {
--				function = "gpio";
--				groups = "gpio51_a_1";
--			};
--			gpio51_default_cfg {
--				pins = "GPIO51";
--				output-low;
--			};
--		};
--	};
--	gpio52 {
--		gpio52_default_mode: gpio52_default {
--			gpio52_default_mux {
--				function = "gpio";
--				groups = "gpio52_a_1";
--			};
--			gpio52_default_cfg {
--				pins = "GPIO52";
--				bias-pull-down;
--			};
--		};
--	};
--	gpio53 {
--		gpio53_default_mode: gpio53_default {
--			gpio53_default_mux {
--				function = "gpio";
--				groups = "gpio53_a_1";
--			};
--			gpio53_default_cfg {
--				pins = "GPIO53";
--				bias-pull-down;
--			};
--		};
--	};
--	gpio54 {
--		gpio54_default_mode: gpio54_default {
--			gpio54_default_mux {
--				function = "gpio";
--				groups = "gpio54_a_1";
--			};
--			gpio54_default_cfg {
--				pins = "GPIO54";
--				output-low;
--			};
--		};
--	};
--	pdmclkdat {
--		pdmclkdat_default_mode: pdmclkdat_default {
--			pdmclkdat_default_mux {
--				function = "pdm";
--				groups = "pdmclkdat_d_1";
--			};
--			pdmclkdat_default_cfg {
--				pins = "GPIO55", "GPIO56";
--				bias-disable;
--			};
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt b/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
-deleted file mode 100644
-index ee125cb0e46d..000000000000
---- a/Documentation/devicetree/bindings/power/supply/stericsson,ab8500-battery.txt
-+++ /dev/null
-@@ -1,34 +0,0 @@
--AB85000 PMIC contains a node, which contains shared
--information about the battery connected to the PMIC.
--The node has no compatible property.
--
--Properties of this node are:
--
--thermistor-on-batctrl:
--	A boolean value indicating thermistor interface	to battery
--
--	Note:
--	'btemp' and 'batctrl' are the pins interfaced for battery temperature
--	measurement, 'btemp' signal is used when NTC(negative temperature
--	coefficient) resister is interfaced external to battery whereas
--	'batctrl' pin is used when NTC resister is internal to battery.
--
--	Example:
--	ab8500_battery: ab8500_battery {
--		thermistor-on-batctrl;
--	};
--	indicates: NTC resister is internal to battery, 'batctrl' is used
--		for thermal measurement.
--
--	The absence of property 'thermal-on-batctrl' indicates
--	NTC resister is external to battery and  'btemp' signal is used
--	for thermal measurement.
--
--battery-type:
--	This shall be the battery manufacturing technology type,
--	allowed types are:
--		"UNKNOWN" "NiMH" "LION" "LIPO" "LiFe" "NiCd" "LiMn"
--	Example:
--	ab8500_battery: ab8500_battery {
--		stericsson,battery-type = "LIPO";
--	}
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 33b391376352..804ba563540e 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1080,6 +1080,7 @@ static u16 mv88e6xxx_port_vlan(struct mv88e6xxx_chip *chip, int dev, int port)
+ {
+ 	struct dsa_switch *ds = NULL;
+ 	struct net_device *br;
++	u8 upstream;
+ 	u16 pvlan;
+ 	int i;
+ 
+@@ -1091,17 +1092,36 @@ static u16 mv88e6xxx_port_vlan(struct mv88e6xxx_chip *chip, int dev, int port)
+ 		return 0;
+ 
+ 	/* Frames from DSA links and CPU ports can egress any local port */
+-	if (dsa_is_cpu_port(ds, port) || dsa_is_dsa_port(ds, port))
++	if (dsa_is_dsa_port(ds, port))
+ 		return mv88e6xxx_port_mask(chip);
+ 
++	if (dsa_is_cpu_port(ds, port)) {
++		u16 pmask = mv88e6xxx_port_mask(chip);
++		pvlan = 0;
++
++		for (i = 0; i < mv88e6xxx_num_ports(chip); ++i) {
++			if (dsa_is_cpu_port(ds, i)) {
++				if (i == port)
++					pvlan |= BIT(i);
++				continue;
++			}
++			if ((pmask & BIT(i)) &&
++			     dsa_upstream_port(chip->ds, i) == port)
++				pvlan |= BIT(i);
++		}
++
++		return pvlan;
++	}
++
+ 	br = ds->ports[port].bridge_dev;
+ 	pvlan = 0;
+ 
+ 	/* Frames from user ports can egress any local DSA links and CPU ports,
+ 	  * as well as any local member of their bridge group.
+ 	  */
++	upstream = dsa_upstream_port(chip->ds, port);
+ 	for (i = 0; i < mv88e6xxx_num_ports(chip); ++i)
+-		if (dsa_is_cpu_port(chip->ds, i) ||
++		if ((dsa_is_cpu_port(chip->ds, i) && i == upstream) ||
+ 		     dsa_is_dsa_port(chip->ds, i) ||
+ 		     (br && dsa_to_port(chip->ds, i)->bridge_dev == br))
+ 			pvlan |= BIT(i);
+@@ -2388,6 +2408,7 @@ static int mv88e6xxx_setup_upstream_port(struct mv88e6xxx_chip *chip, int port)
+ 	}
+ 
+ 	if (port == upstream_port) {
++		dev_info(chip->dev, "Setting CPU port as port %i\n", port);
+ 		if (chip->info->ops->set_cpu_port) {
+ 			err = chip->info->ops->set_cpu_port(chip,
+ 							     upstream_port);
+@@ -2406,6 +2427,28 @@ static int mv88e6xxx_setup_upstream_port(struct mv88e6xxx_chip *chip, int port)
+ 	return 0;
+ }
+ 
++static int mv88e6xxx_port_change_cpu_port(struct dsa_switch *ds, int port,
++					   struct dsa_port *new_cpu_dp)
++{
++	struct mv88e6xxx_chip *chip = ds->priv;
++	int err;
++
++	mv88e6xxx_reg_lock(chip);
++
++	err = mv88e6xxx_setup_upstream_port(chip, port);
++	if (err)
++		goto unlock;
++
++	err = mv88e6xxx_port_vlan_map(chip, port);
++	if (err)
++		goto unlock;
++
++unlock:
++	mv88e6xxx_reg_unlock(chip);
++
++	return err;
++}
++
+ static int mv88e6xxx_setup_port(struct mv88e6xxx_chip *chip, int port)
+ {
+ 	struct dsa_switch *ds = chip->ds;
+@@ -4996,6 +5039,7 @@ static const struct dsa_switch_ops mv88e6xxx_switch_ops = {
+ 	.port_hwtstamp_get	= mv88e6xxx_port_hwtstamp_get,
+ 	.port_txtstamp		= mv88e6xxx_port_txtstamp,
+ 	.port_rxtstamp		= mv88e6xxx_port_rxtstamp,
++	.port_change_cpu_port	= mv88e6xxx_port_change_cpu_port,
+ 	.get_ts_info		= mv88e6xxx_get_ts_info,
+ };
+ 
 -- 
-2.30.2
-
+2.24.1
