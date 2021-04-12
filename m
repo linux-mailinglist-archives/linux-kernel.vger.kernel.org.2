@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA7A35CAE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7819C35CAE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239684AbhDLQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S241288AbhDLQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237798AbhDLQQ6 (ORCPT
+        with ESMTP id S237798AbhDLQRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:16:58 -0400
+        Mon, 12 Apr 2021 12:17:33 -0400
 Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A5D5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:16:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD937C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=YpOlDgDwAR8y20H8Gm8o0X6WO1zAuOxCsykTgd3UXC8=; b=EJwWzfZtxxM/S
-        nndp28soJ2TQPlXIHP0kXpjfguAbc+Y6oy4Aw1YilXI9rTJq9ItWkN7kOGF235yq
-        xozQ98EhkHDQH0FkJW5SHg2WkXqmA4YtRdjngO4UrueLsxxZWTnc+8v3zweMRjhG
-        J0apWXo/zhvDofz2e5hZ2O8QLcpnVE=
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=HPUQ5hikiB/PpNEHlz4qMgRr8a4Ky8d+Pa
+        s5GCx2Zt4=; b=mivupzkpXptRxp9N1ifz0wtDutpyuLRAKVv6LYt8+CTJcct0O1
+        ffjGX+j1PUmbwuycphSBYkipj8AdG4+qGnYrfmCnFHsJ5TgevkPSQE+HU8uDpgAL
+        +z1yVfr5AUnyS3oFHSxme+5oMr2VBzvg0VaEvL/UDjnx3pIctEpcMKnaU=
 Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygC3WplUcnRgiTfLAA--.61003S2;
-        Tue, 13 Apr 2021 00:16:20 +0800 (CST)
-Date:   Tue, 13 Apr 2021 00:11:10 +0800
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn70t9cnRgbDjLAA--.59972S2;
+        Tue, 13 Apr 2021 00:17:02 +0800 (CST)
+Date:   Tue, 13 Apr 2021 00:11:59 +0800
 From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -45,28 +45,30 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Luke Nelson <luke.r.nels@gmail.com>,
         Xi Wang <xi.wang@gmail.com>, Anup Patel <anup@brainfault.org>
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 00/10] riscv: improve self-protection
-Message-ID: <20210413001110.7209bae6@xhacker>
+Subject: [PATCH v3 01/10] riscv: mm: Remove setup_zero_page()
+Message-ID: <20210413001159.341a95d6@xhacker>
+In-Reply-To: <20210413001110.7209bae6@xhacker>
+References: <20210413001110.7209bae6@xhacker>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygC3WplUcnRgiTfLAA--.61003S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8urWkpr
-        45Cr15urW5Ar93C3Wayrn7ur1rJws5K3yagw43Aw18Aw4avFyjywnYgw4vqryDXFW0g3ZY
-        kF13u34Fkr18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4
+X-CM-TRANSID: LkAmygDn70t9cnRgbDjLAA--.59972S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDCw48tF4fWF4rKrW5trb_yoWDGFb_Wr
+        yvvr4fWFy5Wa18uanrXwsxJr1UAayvyF4DXr1Iy34ayr13Wan8A3s5KFW3Xw1kGr4SvFZ2
+        gFW3JFZxtr12kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
         vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
         0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
         04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
         0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
         0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUg0D7DU
-        UUU
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU81GQDUUUU
+        U==
 X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,66 +76,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jisheng Zhang <jszhang@kernel.org>
 
-patch1 removes the non-necessary setup_zero_page()
-patch2 is a trivial improvement patch to move some functions to .init
-section
+The empty_zero_page sits at .bss..page_aligned section, so will be
+cleared to zero during clearing bss, we don't need to clear it again.
 
-Then following patches improve self-protection by:
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/mm/init.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Marking some variables __ro_after_init
-Constifing some variables
-Enabling ARCH_HAS_STRICT_MODULE_RWX
-
-Hi Anup,
-
-I kept the __init modification to trap_init(), I will cook a trivial
-series to provide a __weak but NULL trap_init() implementation in
-init/main.c then remove all NULL implementation from all arch.
-
-Thanks
-
-Since v2:
-  - collect Reviewed-by tag
-  - add one patch to remove unnecessary setup_zero_page()
-
-Since v1:
-  - no need to move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
-    because RV32 uses the default module_alloc() for jit code which also
-    meets W^X after patch8
-  - fix a build error caused by local debug code clean up
-
-
-Jisheng Zhang (10):
-  riscv: mm: Remove setup_zero_page()
-  riscv: add __init section marker to some functions
-  riscv: Mark some global variables __ro_after_init
-  riscv: Constify sys_call_table
-  riscv: Constify sbi_ipi_ops
-  riscv: kprobes: Implement alloc_insn_page()
-  riscv: bpf: Write protect JIT code
-  riscv: bpf: Avoid breaking W^X on RV64
-  riscv: module: Create module allocations without exec permissions
-  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
-
- arch/riscv/Kconfig                 |  1 +
- arch/riscv/include/asm/smp.h       |  4 ++--
- arch/riscv/include/asm/syscall.h   |  2 +-
- arch/riscv/kernel/cpufeature.c     |  2 +-
- arch/riscv/kernel/module.c         | 10 ++++++++--
- arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
- arch/riscv/kernel/sbi.c            | 10 +++++-----
- arch/riscv/kernel/smp.c            |  6 +++---
- arch/riscv/kernel/syscall_table.c  |  2 +-
- arch/riscv/kernel/time.c           |  2 +-
- arch/riscv/kernel/traps.c          |  2 +-
- arch/riscv/kernel/vdso.c           |  4 ++--
- arch/riscv/mm/init.c               | 16 +++++-----------
- arch/riscv/mm/kasan_init.c         |  6 +++---
- arch/riscv/mm/ptdump.c             |  2 +-
- arch/riscv/net/bpf_jit_comp64.c    |  2 +-
- arch/riscv/net/bpf_jit_core.c      |  1 +
- 17 files changed, 45 insertions(+), 35 deletions(-)
-
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 7f5036fbee8c..dbeaa4144e4d 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -57,11 +57,6 @@ static void __init zone_sizes_init(void)
+ 	free_area_init(max_zone_pfns);
+ }
+ 
+-static void setup_zero_page(void)
+-{
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+-}
+-
+ #if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
+ static inline void print_mlk(char *name, unsigned long b, unsigned long t)
+ {
+@@ -589,7 +584,6 @@ void mark_rodata_ro(void)
+ void __init paging_init(void)
+ {
+ 	setup_vm_final();
+-	setup_zero_page();
+ }
+ 
+ void __init misc_mem_init(void)
 -- 
 2.31.0
 
