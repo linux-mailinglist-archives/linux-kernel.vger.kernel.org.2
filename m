@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60F235C167
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A7235C14F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242745AbhDLJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:29:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54796 "EHLO mail.kernel.org"
+        id S242280AbhDLJ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:28:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240298AbhDLJFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:05:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F4E761379;
-        Mon, 12 Apr 2021 09:02:44 +0000 (UTC)
+        id S239125AbhDLJEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:04:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0E0611F0;
+        Mon, 12 Apr 2021 09:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218164;
-        bh=bGsL0uAg6QUglhB9Wj2caNaKjIoqystq0DZ8Pw8JIH0=;
+        s=korg; t=1618218095;
+        bh=rm9ZjEf/HQADCsU0jlY7B37iAmdTfwMuIlDGHZFKl1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZjoqBh62Yw++TSr6kgvD14MqyRo8HCgmLXIlSf4TX4ZVe14AkV1raC7xoVzEm6xBC
-         77bl4XNaFb19CJCrT+AVznFc67TSHovwR7DHq27YZp1BVBs7yk0GT2pstvPZnmBOE7
-         0ASiNjmHjkCiAt+VpXKUS2sdNL5mK0e9iiSjvdlo=
+        b=WzCTn7OQi4Ua2jRr1inYnAV2Rsmd2jXpruld5oppH3cnrdCzOEusQu+WkJI0Vn31D
+         0uJzTfc0PEtw6aKf3rr1UirIHTOTGgcN9Z0IKUAq6CSOFVtldd80PRFBH3hf6m33tD
+         4rD+ND3MhOrFin37a1fI/zQ9Z7+/CrDSATmwmSrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 050/210] net: hso: fix null-ptr-deref during tty device unregistration
-Date:   Mon, 12 Apr 2021 10:39:15 +0200
-Message-Id: <20210412084017.671807904@linuxfoundation.org>
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH 5.11 052/210] bpf: Enforce that struct_ops programs be GPL-only
+Date:   Mon, 12 Apr 2021 10:39:17 +0200
+Message-Id: <20210412084017.735640517@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,143 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-commit 8a12f8836145ffe37e9c8733dce18c22fb668b66 upstream.
+commit 12aa8a9467b354ef893ce0fc5719a4de4949a9fb upstream.
 
-Multiple ttys try to claim the same the minor number causing a double
-unregistration of the same device. The first unregistration succeeds
-but the next one results in a null-ptr-deref.
+With the introduction of the struct_ops program type, it became possible to
+implement kernel functionality in BPF, making it viable to use BPF in place
+of a regular kernel module for these particular operations.
 
-The get_free_serial_index() function returns an available minor number
-but doesn't assign it immediately. The assignment is done by the caller
-later. But before this assignment, calls to get_free_serial_index()
-would return the same minor number.
+Thus far, the only user of this mechanism is for implementing TCP
+congestion control algorithms. These are clearly marked as GPL-only when
+implemented as modules (as seen by the use of EXPORT_SYMBOL_GPL for
+tcp_register_congestion_control()), so it seems like an oversight that this
+was not carried over to BPF implementations. Since this is the only user
+of the struct_ops mechanism, just enforcing GPL-only for the struct_ops
+program type seems like the simplest way to fix this.
 
-Fix this by modifying get_free_serial_index to assign the minor number
-immediately after one is found to be and rename it to obtain_minor()
-to better reflect what it does. Similary, rename set_serial_by_index()
-to release_minor() and modify it to free up the minor number of the
-given hso_serial. Every obtain_minor() should have corresponding
-release_minor() call.
-
-Fixes: 72dc1c096c705 ("HSO: add option hso driver")
-Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 0baf26b0fcd7 ("bpf: tcp: Support tcp_congestion_ops in bpf")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20210326100314.121853-1-toke@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |   33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+ kernel/bpf/verifier.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -611,7 +611,7 @@ static struct hso_serial *get_serial_by_
- 	return serial;
- }
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11570,6 +11570,11 @@ static int check_struct_ops_btf_id(struc
+ 	u32 btf_id, member_idx;
+ 	const char *mname;
  
--static int get_free_serial_index(void)
-+static int obtain_minor(struct hso_serial *serial)
- {
- 	int index;
- 	unsigned long flags;
-@@ -619,8 +619,10 @@ static int get_free_serial_index(void)
- 	spin_lock_irqsave(&serial_table_lock, flags);
- 	for (index = 0; index < HSO_SERIAL_TTY_MINORS; index++) {
- 		if (serial_table[index] == NULL) {
-+			serial_table[index] = serial->parent;
-+			serial->minor = index;
- 			spin_unlock_irqrestore(&serial_table_lock, flags);
--			return index;
-+			return 0;
- 		}
- 	}
- 	spin_unlock_irqrestore(&serial_table_lock, flags);
-@@ -629,15 +631,12 @@ static int get_free_serial_index(void)
- 	return -1;
- }
- 
--static void set_serial_by_index(unsigned index, struct hso_serial *serial)
-+static void release_minor(struct hso_serial *serial)
- {
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&serial_table_lock, flags);
--	if (serial)
--		serial_table[index] = serial->parent;
--	else
--		serial_table[index] = NULL;
-+	serial_table[serial->minor] = NULL;
- 	spin_unlock_irqrestore(&serial_table_lock, flags);
- }
- 
-@@ -2230,6 +2229,7 @@ static int hso_stop_serial_device(struct
- static void hso_serial_tty_unregister(struct hso_serial *serial)
- {
- 	tty_unregister_device(tty_drv, serial->minor);
-+	release_minor(serial);
- }
- 
- static void hso_serial_common_free(struct hso_serial *serial)
-@@ -2253,24 +2253,22 @@ static void hso_serial_common_free(struc
- static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
- 				    int rx_size, int tx_size)
- {
--	int minor;
- 	int i;
- 
- 	tty_port_init(&serial->port);
- 
--	minor = get_free_serial_index();
--	if (minor < 0)
-+	if (obtain_minor(serial))
- 		goto exit2;
- 
- 	/* register our minor number */
- 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
--			tty_drv, minor, &serial->parent->interface->dev,
-+			tty_drv, serial->minor, &serial->parent->interface->dev,
- 			serial->parent, hso_serial_dev_groups);
--	if (IS_ERR(serial->parent->dev))
-+	if (IS_ERR(serial->parent->dev)) {
-+		release_minor(serial);
- 		goto exit2;
++	if (!prog->gpl_compatible) {
++		verbose(env, "struct ops programs must have a GPL compatible license\n");
++		return -EINVAL;
 +	}
- 
--	/* fill in specific data for later use */
--	serial->minor = minor;
- 	serial->magic = HSO_SERIAL_MAGIC;
- 	spin_lock_init(&serial->serial_lock);
- 	serial->num_rx_urbs = num_urbs;
-@@ -2667,9 +2665,6 @@ static struct hso_device *hso_create_bul
- 
- 	serial->write_data = hso_std_serial_write_data;
- 
--	/* and record this serial */
--	set_serial_by_index(serial->minor, serial);
--
- 	/* setup the proc dirs and files if needed */
- 	hso_log_port(hso_dev);
- 
-@@ -2726,9 +2721,6 @@ struct hso_device *hso_create_mux_serial
- 	serial->shared_int->ref_count++;
- 	mutex_unlock(&serial->shared_int->shared_int_lock);
- 
--	/* and record this serial */
--	set_serial_by_index(serial->minor, serial);
--
- 	/* setup the proc dirs and files if needed */
- 	hso_log_port(hso_dev);
- 
-@@ -3113,7 +3105,6 @@ static void hso_free_interface(struct us
- 			cancel_work_sync(&serial_table[i]->async_get_intf);
- 			hso_serial_tty_unregister(serial);
- 			kref_put(&serial_table[i]->ref, hso_serial_ref_free);
--			set_serial_by_index(i, NULL);
- 		}
- 	}
- 
++
+ 	btf_id = prog->aux->attach_btf_id;
+ 	st_ops = bpf_struct_ops_find(btf_id);
+ 	if (!st_ops) {
 
 
