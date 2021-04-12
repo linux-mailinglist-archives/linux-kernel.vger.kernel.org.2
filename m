@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D8C35BEAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A5D35C134
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239807AbhDLJBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45752 "EHLO mail.kernel.org"
+        id S241075AbhDLJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238497AbhDLIw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:52:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 325EB6135A;
-        Mon, 12 Apr 2021 08:51:24 +0000 (UTC)
+        id S238591AbhDLJB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C4E61249;
+        Mon, 12 Apr 2021 09:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217484;
-        bh=QfaVVaYoLDnipK6ASqOTcGAk4lY9H4AoxvZ5b5fMMCw=;
+        s=korg; t=1618218028;
+        bh=df6Rd755LKm4Brq3oACAw5MjiDAk5KfTbpVgDpAeEkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HZSGAZesriJZYCudhSeSr59zZUiIJ3eMKQ8UW2+HpokZ/wcOx4wi/fKJu4Cz7cUp4
-         qL9uykt8GbrQEGMgSy3rUF41+5WkEeEgI2lOtAo1DVDtGqREYU9xSOZY+Rm0z/+PTD
-         RUh4F9LGPC+M96JG/uXFX6N2fKv1ZfY740r/Z5w4=
+        b=YuJauujnPQqwhCsIyz1X7jRH5SyQ0vf6bwIC7DcOrclOzWT7t39BYS7nQsJIxcN1g
+         n9s65J/ZIfOd03O+zj6f8Im3B3M9jvjSds/A2ehXGQuAUhdas7SRz59MCaTilaHHDZ
+         saM/7ShnOIm0cBz7VITQD+IKHaTay2rKGA7Fk6Yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        stable@vger.kernel.org, Bruce Allan <bruce.w.allan@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.10 033/188] ice: Continue probe on link/PHY errors
-Date:   Mon, 12 Apr 2021 10:39:07 +0200
-Message-Id: <20210412084014.752339641@linuxfoundation.org>
+Subject: [PATCH 5.11 043/210] ice: fix memory allocation call
+Date:   Mon, 12 Apr 2021 10:39:08 +0200
+Message-Id: <20210412084017.445667227@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+From: Bruce Allan <bruce.w.allan@intel.com>
 
-commit 08771bce330036d473be6ce851cd00bcd351ebf6 upstream.
+commit 59df14f9cc2326bd6432d60eca0df8201d9d3d4b upstream.
 
-An incorrect NVM update procedure can result in the driver failing probe.
-In this case, the recommended resolution method is to update the NVM
-using the right procedure. However, if the driver fails probe, the user
-will not be able to update the NVM. So do not fail probe on link/PHY
-errors.
+Fix the order of number of array members and member size parameters in a
+*calloc() call.
 
-Fixes: 1a3571b5938c ("ice: restore PHY settings on media insertion")
-Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+Fixes: b3c3890489f6 ("ice: avoid unnecessary single-member variable-length structs")
+Signed-off-by: Bruce Allan <bruce.w.allan@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_main.c |   15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_common.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -4170,28 +4170,25 @@ ice_probe(struct pci_dev *pdev, const st
- 		goto err_send_version_unroll;
- 	}
+--- a/drivers/net/ethernet/intel/ice/ice_common.c
++++ b/drivers/net/ethernet/intel/ice/ice_common.c
+@@ -717,8 +717,8 @@ static enum ice_status ice_cfg_fw_log(st
  
-+	/* not a fatal error if this fails */
- 	err = ice_init_nvm_phy_type(pf->hw.port_info);
--	if (err) {
-+	if (err)
- 		dev_err(dev, "ice_init_nvm_phy_type failed: %d\n", err);
--		goto err_send_version_unroll;
--	}
- 
-+	/* not a fatal error if this fails */
- 	err = ice_update_link_info(pf->hw.port_info);
--	if (err) {
-+	if (err)
- 		dev_err(dev, "ice_update_link_info failed: %d\n", err);
--		goto err_send_version_unroll;
--	}
- 
- 	ice_init_link_dflt_override(pf->hw.port_info);
- 
- 	/* if media available, initialize PHY settings */
- 	if (pf->hw.port_info->phy.link_info.link_info &
- 	    ICE_AQ_MEDIA_AVAILABLE) {
-+		/* not a fatal error if this fails */
- 		err = ice_init_phy_user_cfg(pf->hw.port_info);
--		if (err) {
-+		if (err)
- 			dev_err(dev, "ice_init_phy_user_cfg failed: %d\n", err);
--			goto err_send_version_unroll;
--		}
- 
- 		if (!test_bit(ICE_FLAG_LINK_DOWN_ON_CLOSE_ENA, pf->flags)) {
- 			struct ice_vsi *vsi = ice_get_main_vsi(pf);
+ 			if (!data) {
+ 				data = devm_kcalloc(ice_hw_to_dev(hw),
+-						    sizeof(*data),
+ 						    ICE_AQC_FW_LOG_ID_MAX,
++						    sizeof(*data),
+ 						    GFP_KERNEL);
+ 				if (!data)
+ 					return ICE_ERR_NO_MEMORY;
 
 
