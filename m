@@ -2,321 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D179435C564
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD6F35C566
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240642AbhDLLgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:36:48 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:54858 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238550AbhDLLgr (ORCPT
+        id S240665AbhDLLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237829AbhDLLhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:36:47 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id 3F1C045899;
-        Mon, 12 Apr 2021 13:36:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id tj5_KavKC9Wa; Mon, 12 Apr 2021 13:36:26 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id E160645898;
-        Mon, 12 Apr 2021 13:36:25 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] nvmem: eeprom: at25: add support for FRAM
-Date:   Mon, 12 Apr 2021 13:36:18 +0200
-Message-Id: <20210412113618.44462-1-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
+        Mon, 12 Apr 2021 07:37:20 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A03C061574;
+        Mon, 12 Apr 2021 04:37:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJmt23Wyfz9sSC;
+        Mon, 12 Apr 2021 21:36:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618227419;
+        bh=5Tm82joAyQGhlRVkligE/W4B7Of7AjerYJW8diN4MEA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d9Qt/wPwTc109NqOXowwdC81si7i/pdRFKgKJ4uXHlUVUXuX6TXSIkC6LPMxU5UP8
+         N2xOH8mhxzxDCsAWNbHWGSFHmqiPpT7jmuAV8wVQt0989g3Wjd7pv7ocLTPYoiZdbJ
+         N2oOgSQkH4RfvWKI7Unigbk18+o/MYM3QBkoewcQoJNSUwy9Skvd2iYUBZWyAJeLCm
+         A3y5Kn5v0KXpIYsGF2ypTS0cumFDrDW24YFLR9XpGwJXOpYZLZmbwT+nGp6pRY42qT
+         an5sVj+eNDra7aUAtIJVz3pH3VcE7x3r5et4rNBk/gTt4Sxgg6mWl8iwlBjh1cxV/a
+         mWe17nqb8q4Cg==
+Date:   Mon, 12 Apr 2021 21:36:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the usb tree
+Message-ID: <20210412213655.3776e15e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/oOe35JQYRW0UFf2GvQRqcgu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added support for Cypress FRAMs.
-These frams have ID and some of them have serial number too.
-Size of them is recognized by ID. They don't have pages, it could
-be read or written at once, but it's limited in this driver to
-io limit 4096.
+--Sig_/oOe35JQYRW0UFf2GvQRqcgu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
-v2: fixed warning at %zd at int
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/misc/eeprom/Kconfig |   5 +-
- drivers/misc/eeprom/at25.c  | 151 +++++++++++++++++++++++++++++-------
- 2 files changed, 124 insertions(+), 32 deletions(-)
+Hi all,
 
-diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
-index 0f791bfdc1f5..f0a7531f354c 100644
---- a/drivers/misc/eeprom/Kconfig
-+++ b/drivers/misc/eeprom/Kconfig
-@@ -32,12 +32,13 @@ config EEPROM_AT24
- 	  will be called at24.
- 
- config EEPROM_AT25
--	tristate "SPI EEPROMs from most vendors"
-+	tristate "SPI EEPROMs (FRAMs) from most vendors"
- 	depends on SPI && SYSFS
- 	select NVMEM
- 	select NVMEM_SYSFS
- 	help
--	  Enable this driver to get read/write support to most SPI EEPROMs,
-+	  Enable this driver to get read/write support to most SPI EEPROMs
-+	  and Cypress FRAMs,
- 	  after you configure the board init code to know about each eeprom
- 	  on your target board.
- 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index b76e4901b4a4..4f6e983c278b 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * at25.c -- support most SPI EEPROMs, such as Atmel AT25 models
-+ *	     and Cypress FRAMs FM25 models
-  *
-  * Copyright (C) 2006 David Brownell
-  */
-@@ -16,6 +17,8 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/eeprom.h>
- #include <linux/property.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
- 
- /*
-  * NOTE: this is an *EEPROM* driver.  The vagaries of product naming
-@@ -34,6 +37,7 @@ struct at25_data {
- 	unsigned		addrlen;
- 	struct nvmem_config	nvmem_config;
- 	struct nvmem_device	*nvmem;
-+	int has_sernum;
- };
- 
- #define	AT25_WREN	0x06		/* latch the write enable */
-@@ -42,6 +46,9 @@ struct at25_data {
- #define	AT25_WRSR	0x01		/* write status register */
- #define	AT25_READ	0x03		/* read byte(s) */
- #define	AT25_WRITE	0x02		/* write byte(s)/sector */
-+#define	FM25_SLEEP	0xb9		/* enter sleep mode */
-+#define	FM25_RDID	0x9f		/* read device ID */
-+#define	FM25_RDSN	0xc3		/* read S/N */
- 
- #define	AT25_SR_nRDY	0x01		/* nRDY = write-in-progress */
- #define	AT25_SR_WEN	0x02		/* write enable (latched) */
-@@ -51,6 +58,9 @@ struct at25_data {
- 
- #define	AT25_INSTR_BIT3	0x08		/* Additional address bit in instr */
- 
-+#define	FM25_ID_LEN	9		/* ID length */
-+#define	FM25_SN_LEN	8		/* serial number length */
-+
- #define EE_MAXADDRLEN	3		/* 24 bit addresses, up to 2 MBytes */
- 
- /* Specs often allow 5 msec for a page write, sometimes 20 msec;
-@@ -58,6 +68,9 @@ struct at25_data {
-  */
- #define	EE_TIMEOUT	25
- 
-+#define	IS_EEPROM	0
-+#define	IS_FRAM		1
-+
- /*-------------------------------------------------------------------------*/
- 
- #define	io_limit	PAGE_SIZE	/* bytes */
-@@ -129,6 +142,36 @@ static int at25_ee_read(void *priv, unsigned int offset,
- 	return status;
- }
- 
-+/*
-+ * read extra registers as ID or serial number
-+ */
-+static int fm25_aux_read(struct at25_data *at25, char *buf, uint8_t command,
-+			 int len)
-+{
-+	int status;
-+	struct spi_transfer t[2];
-+	struct spi_message m;
-+
-+	spi_message_init(&m);
-+	memset(t, 0, sizeof(t));
-+
-+	t[0].tx_buf = &command;
-+	t[0].len = 1;
-+	spi_message_add_tail(&t[0], &m);
-+
-+	t[1].rx_buf = buf;
-+	t[1].len = len;
-+	spi_message_add_tail(&t[1], &m);
-+
-+	mutex_lock(&at25->lock);
-+
-+	status = spi_sync(at25->spi, &m);
-+	dev_dbg(&at25->spi->dev, "read %d aux bytes --> %d\n", len, status);
-+
-+	mutex_unlock(&at25->lock);
-+	return status;
-+}
-+
- static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
- {
- 	struct at25_data *at25 = priv;
-@@ -303,34 +346,48 @@ static int at25_fw_to_chip(struct device *dev, struct spi_eeprom *chip)
- 	return 0;
- }
- 
-+static const struct of_device_id at25_of_match[] = {
-+	{ .compatible = "atmel,at25", .data = (const void *)IS_EEPROM },
-+	{ .compatible = "cypress,fm25", .data = (const void *)IS_FRAM },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, at25_of_match);
-+
-+static int mypow(int x, int n)
-+{
-+	int i;
-+	int res = 1;
-+
-+	for (i = 0; i < n; ++i)
-+		res *= x;
-+
-+	return res;
-+}
-+
- static int at25_probe(struct spi_device *spi)
- {
- 	struct at25_data	*at25 = NULL;
- 	struct spi_eeprom	chip;
- 	int			err;
- 	int			sr;
--	int			addrlen;
-+	char id[FM25_ID_LEN];
-+	const struct of_device_id *match;
-+	int is_fram = 0;
-+
-+	match = of_match_device(of_match_ptr(at25_of_match), &spi->dev);
-+	if (match)
-+		is_fram = (int)(uintptr_t)match->data;
- 
- 	/* Chip description */
- 	if (!spi->dev.platform_data) {
--		err = at25_fw_to_chip(&spi->dev, &chip);
--		if (err)
--			return err;
-+		if (!is_fram) {
-+			err = at25_fw_to_chip(&spi->dev, &chip);
-+			if (err)
-+				return err;
-+		}
- 	} else
- 		chip = *(struct spi_eeprom *)spi->dev.platform_data;
- 
--	/* For now we only support 8/16/24 bit addressing */
--	if (chip.flags & EE_ADDR1)
--		addrlen = 1;
--	else if (chip.flags & EE_ADDR2)
--		addrlen = 2;
--	else if (chip.flags & EE_ADDR3)
--		addrlen = 3;
--	else {
--		dev_dbg(&spi->dev, "unsupported address type\n");
--		return -EINVAL;
--	}
--
- 	/* Ping the chip ... the status register is pretty portable,
- 	 * unlike probing manufacturer IDs.  We do expect that system
- 	 * firmware didn't write it in the past few milliseconds!
-@@ -349,9 +406,49 @@ static int at25_probe(struct spi_device *spi)
- 	at25->chip = chip;
- 	at25->spi = spi;
- 	spi_set_drvdata(spi, at25);
--	at25->addrlen = addrlen;
- 
--	at25->nvmem_config.type = NVMEM_TYPE_EEPROM;
-+	if (is_fram) {
-+		/* Get ID of chip */
-+		fm25_aux_read(at25, id, FM25_RDID, FM25_ID_LEN);
-+		if (id[6] != 0xc2) {
-+			dev_err(&spi->dev,
-+				"Error: no Cypress FRAM (id %02x)\n", id[6]);
-+			return -ENODEV;
-+		}
-+		/* set size found in ID */
-+		if (id[7] < 0x21 || id[7] > 0x26) {
-+			dev_err(&spi->dev, "Error: unsupported size (id %02x)\n", id[7]);
-+			return -ENODEV;
-+		}
-+		chip.byte_len = mypow(2, id[7] - 0x21 + 4) * 1024;
-+
-+		if (at25->chip.byte_len > 64 * 1024)
-+			at25->chip.flags |= EE_ADDR3;
-+		else
-+			at25->chip.flags |= EE_ADDR2;
-+
-+		if (id[8])
-+			at25->has_sernum = 1;
-+		else
-+			at25->has_sernum = 0;
-+
-+		at25->chip.page_size = PAGE_SIZE;
-+		strncpy(at25->chip.name, "fm25", sizeof(at25->chip.name));
-+	}
-+
-+	/* For now we only support 8/16/24 bit addressing */
-+	if (at25->chip.flags & EE_ADDR1)
-+		at25->addrlen = 1;
-+	else if (at25->chip.flags & EE_ADDR2)
-+		at25->addrlen = 2;
-+	else if (at25->chip.flags & EE_ADDR3)
-+		at25->addrlen = 3;
-+	else {
-+		dev_dbg(&spi->dev, "unsupported address type\n");
-+		return -EINVAL;
-+	}
-+
-+	at25->nvmem_config.type = is_fram ? NVMEM_TYPE_FRAM : NVMEM_TYPE_EEPROM;
- 	at25->nvmem_config.name = dev_name(&spi->dev);
- 	at25->nvmem_config.dev = &spi->dev;
- 	at25->nvmem_config.read_only = chip.flags & EE_READONLY;
-@@ -370,23 +467,17 @@ static int at25_probe(struct spi_device *spi)
- 	if (IS_ERR(at25->nvmem))
- 		return PTR_ERR(at25->nvmem);
- 
--	dev_info(&spi->dev, "%d %s %s eeprom%s, pagesize %u\n",
--		(chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
--		(chip.byte_len < 1024) ? "Byte" : "KByte",
--		at25->chip.name,
--		(chip.flags & EE_READONLY) ? " (readonly)" : "",
--		at25->chip.page_size);
-+	dev_info(&spi->dev, "%d %s %s %s%s, pagesize %u\n",
-+		 (chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
-+		 (chip.byte_len < 1024) ? "Byte" : "KByte",
-+		 at25->chip.name, is_fram ? "fram" : "eeprom",
-+		 (chip.flags & EE_READONLY) ? " (readonly)" : "",
-+		 at25->chip.page_size);
- 	return 0;
- }
- 
- /*-------------------------------------------------------------------------*/
- 
--static const struct of_device_id at25_of_match[] = {
--	{ .compatible = "atmel,at25", },
--	{ }
--};
--MODULE_DEVICE_TABLE(of, at25_of_match);
--
- static struct spi_driver at25_driver = {
- 	.driver = {
- 		.name		= "at25",
--- 
-2.25.1
+After merging the usb tree, today's linux-next build (x86_64 almodconfig
+modules_install) failed like this:
 
+depmod: ERROR: Cycle detected: usbcore -> typec -> usbcore
+depmod: ERROR: Found 2 modules in dependency cycles!
+
+Caused by commit
+
+  63cd78617350 ("usb: Link the ports to the connectors they are attached to=
+")
+
+I have reverted that commit for today.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oOe35JQYRW0UFf2GvQRqcgu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB0MNcACgkQAVBC80lX
+0GxLJQf/Qn84/tY2Fid1bb1Ro8nWvSiXzL9KsXZ/EiCGKCCWLBRaJ5y1ZWFwluuH
+DWsV1yAhF1Gpg53gBT7DkABO7hfgkqHF6Kq2WOXjaaqMlQBvkPXIgmSaV0sAyjW3
+BRMQ70/0hrAbz5jSaAJLhK9yy4J9vD0dlb8hDa/E+cS47vIZ/rg/NydbSpQ0mD05
+ytSiEVFnSKs9AslVQ5ksx3uvcgDgnBsgmawFtw4B5lYosPizkZAKOjhRoXYyDbve
+ugkNIoJZ5bEJD9msYMCCfag+y4haXZoCscsrG6u5+xWfDdYNf8KtthHQCEEUsXuU
+7l7kBTPm2BOYMiumDF5rOpELps8dWg==
+=a1iN
+-----END PGP SIGNATURE-----
+
+--Sig_/oOe35JQYRW0UFf2GvQRqcgu--
