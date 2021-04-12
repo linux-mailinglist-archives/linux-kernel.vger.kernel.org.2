@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E530C35BC2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D8335BC42
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbhDLIaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:30:10 -0400
-Received: from smtp.asem.it ([151.1.184.197]:56302 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237019AbhDLIaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:30:07 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 8.0.0)
-        with ESMTP id d6fa8948b99f46fe8198235ad8dc1141.MSG
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:29:47 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 12
- Apr 2021 10:29:45 +0200
-Received: from ASAS044.asem.intra ([::1]) by ASAS044.asem.intra ([::1]) with
- mapi id 15.01.2176.009; Mon, 12 Apr 2021 10:29:45 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wim Van Sebroeck" <wim@linux-watchdog.org>
-Subject: RE: [PATCH v1] watchdog: add new parameter to start the watchdog on
- module insertion
-Thread-Topic: [PATCH v1] watchdog: add new parameter to start the watchdog on
- module insertion
-Thread-Index: AQHXLSOOmAAsohE6hEGHBV7oGLFCBKqsNgyAgARSfzA=
-Date:   Mon, 12 Apr 2021 08:29:45 +0000
-Message-ID: <98f7ca84e44e4625b54e1aecef88f238@asem.it>
-References: <20210409093434.2089459-1-f.suligoi@asem.it>
- <e44f3366-cb12-7d7c-fe77-20b5bfea620d@roeck-us.net>
-In-Reply-To: <e44f3366-cb12-7d7c-fe77-20b5bfea620d@roeck-us.net>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.17.208]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S237317AbhDLIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237019AbhDLIf2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:35:28 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EA3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:35:10 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso6688720pjh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pizZNzREwJ8JNpXJLbilIEpw+MUWppPCVd3LEkiYJrU=;
+        b=sNGF7Fpt+gjDiRIdua1tCLAW7K251qfWvkT7bvZvXwhyyEQXfYAOYezX79F4yAn/fM
+         T4JNPbQbCJyzVKmnnpiHF0BN86ndT9AWvqOVlL3LB7uwgAxXA26DVrSvhX+U+n1KBrct
+         jX4uBn5XUCL5oJTf8aqduBVi6Ixm9ked0Pt3JdDpyTVeAR5DXGdNbZqYo6w7s1isfwpB
+         542EjpgsDR03HsuI4rWcgZEiBjrUVeBTzL7dufG6AzngYxiqFN/YriGTkm4SJcLFCR/S
+         XAK0yP0V0T4pMX+/7OAr7o0kWgjSfXBsEkJIQAqM3/oB/L5DOTa5Qqzepqqz/gadDrZC
+         7OXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pizZNzREwJ8JNpXJLbilIEpw+MUWppPCVd3LEkiYJrU=;
+        b=YpKUzpR2X0I/Xwj/M0fg+dqQnXg9Nu8JEyTf2yCpsDoGjemFQn06NRM02aUSGUEQ0U
+         N1HtzhP7UX141zDbAa5ndzs6t49XzTB1rQFEnDnK7tjwHwyQ+ze+SD8mY9trmdY8zVk7
+         pIhshe/EAJ4zD0NHHbjlIKqdOgsl67YQUjMrt59zOzRUFSYOKqBXH8mgXrLeN21/+yRw
+         ZEhOZvj0FJYnmJwAyOeG+asjSsmLyUzJ1Bbcjf99QcBcCE4QkrUsVaxrfTcGfqr6OOcP
+         h5aOITna2EeTdiMirk7TQ4ULx3A5OSK63Cd1jWtJuvTkRoLozcKHimybmVASadvjjIDE
+         zgUA==
+X-Gm-Message-State: AOAM532XZnjptzx6NY9QXjptkrCGlprbNwE1rLGyYFM1TmLF9MvQ8m+3
+        oP8D9LN14U9EMzCpPQv+M9jkig==
+X-Google-Smtp-Source: ABdhPJzO8B2h/uCqjk4SmYMbiCi+x0co/V1Du+IC8i/YyXa+gNGxkGz57aH+0E9PbMchWW0A4Hsgaw==
+X-Received: by 2002:a17:902:e803:b029:e9:7f25:862c with SMTP id u3-20020a170902e803b02900e97f25862cmr22699123plg.27.1618216509753;
+        Mon, 12 Apr 2021 01:35:09 -0700 (PDT)
+Received: from localhost ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id b21sm10276208pji.39.2021.04.12.01.35.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 01:35:09 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v1 0/3] perf: Allow TIME_CONV to be backwards-compatible and dump it
+Date:   Mon, 12 Apr 2021 16:34:56 +0800
+Message-Id: <20210412083459.462817-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F1E.607404F9.00DA,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3VlbnRlciwNCg0KLi4uDQoNCj4gT24gNC85LzIxIDI6MzQgQU0sIEZsYXZpbyBTdWxpZ29p
-IHdyb3RlOg0KPiA+IFRoZSBuZXcgcGFyYW1ldGVyICJzdGFydF9lbmFibGVkIiBzdGFydHMgdGhl
-IHdhdGNoZG9nIGF0IHRoZSBzYW1lIHRpbWUNCj4gPiBvZiB0aGUgbW9kdWxlIGluc2VydGlvbi4N
-Cj4gPiBUaGlzIGZlYXR1cmUgaXMgdmVyeSB1c2VmdWwgaW4gZW1iZWRkZWQgc3lzdGVtcywgdG8g
-YXZvaWQgY2FzZXMgd2hlcmUNCj4gPiB0aGUgc3lzdGVtIGhhbmdzIGJlZm9yZSByZWFjaGluZyB1
-c2Vyc3BhY2UuDQo+ID4NCj4gPiBUaGlzIGZ1bmN0aW9uIGNhbiBiZSBhbHNvIGVuYWJsZWQgaW4g
-dGhlIGtlcm5lbCBjb25maWcsIHNvIGNhbiBiZQ0KPiA+IHVzZWQgd2hlbiB0aGUgd2F0Y2hkb2cg
-ZHJpdmVyIGlzIGJ1aWxkIGFzIGJ1aWx0LWluLg0KPiA+DQo+ID4gVGhpcyBwYXJhbWV0ZXIgaW52
-b2x2ZXMgdGhlICJjb3JlIiBzZWN0aW9uIG9mIHRoZSB3YXRjaGRvZyBkcml2ZXI7DQo+ID4gaW4g
-dGhpcyB3YXkgaXQgaXMgY29tbW9uIGZvciBhbGwgdGhlIHdhdGNoZG9nIGhhcmR3YXJlIGltcGxl
-bWVudGF0aW9ucy4NCj4gPg0KPiA+IE5vdGU6IHRvIHVzZSBvbmx5IGZvciB3YXRjaGRvZyBkcml2
-ZXJzIHdoaWNoIGRvZXNuJ3Qgc3VwcG9ydCB0aGlzDQo+ID4gICAgICAgcGFyYW1ldGVyIGJ5IGl0
-c2VsZi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEZsYXZpbyBTdWxpZ29pIDxmLnN1bGlnb2lA
-YXNlbS5pdD4NCj4gPiAtLS0NCj4gPiAgRG9jdW1lbnRhdGlvbi93YXRjaGRvZy93YXRjaGRvZy1w
-YXJhbWV0ZXJzLnJzdCB8ICA1ICsrKysrDQo+ID4gIGRyaXZlcnMvd2F0Y2hkb2cvS2NvbmZpZyAg
-ICAgICAgICAgICAgICAgICAgICAgfCAxNCArKysrKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL3dh
-dGNoZG9nL3dhdGNoZG9nX2NvcmUuYyAgICAgICAgICAgICAgIHwgMTIgKysrKysrKysrKysrDQo+
-ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzEgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
-dCBhL0RvY3VtZW50YXRpb24vd2F0Y2hkb2cvd2F0Y2hkb2ctcGFyYW1ldGVycy5yc3QNCj4gYi9E
-b2N1bWVudGF0aW9uL3dhdGNoZG9nL3dhdGNoZG9nLXBhcmFtZXRlcnMucnN0DQo+ID4gaW5kZXgg
-MjIzYzk5MzYxYTMwLi42MjNmZDA2NGRmOTEgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlv
-bi93YXRjaGRvZy93YXRjaGRvZy1wYXJhbWV0ZXJzLnJzdA0KPiA+ICsrKyBiL0RvY3VtZW50YXRp
-b24vd2F0Y2hkb2cvd2F0Y2hkb2ctcGFyYW1ldGVycy5yc3QNCj4gPiBAQCAtMjEsNiArMjEsMTEg
-QEAgd2F0Y2hkb2cgY29yZToNCj4gPiAgCXRpbWVvdXQuIFNldHRpbmcgdGhpcyB0byBhIG5vbi16
-ZXJvIHZhbHVlIGNhbiBiZSB1c2VmdWwgdG8gZW5zdXJlIHRoYXQNCj4gPiAgCWVpdGhlciB1c2Vy
-c3BhY2UgY29tZXMgdXAgcHJvcGVybHksIG9yIHRoZSBib2FyZCBnZXRzIHJlc2V0IGFuZCBhbGxv
-d3MNCj4gPiAgCWZhbGxiYWNrIGxvZ2ljIGluIHRoZSBib290bG9hZGVyIHRvIHRyeSBzb21ldGhp
-bmcgZWxzZS4NCj4gPiArICAgIHN0YXJ0X2VuYWJsZWQ6DQo+ID4gKwlXYXRjaGRvZyBpcyBzdGFy
-dGVkIG9uIG1vZHVsZSBpbnNlcnRpb24uIFRoaXMgb3B0aW9uIGNhbiBiZSBhbHNvDQo+ID4gKwlz
-ZWxlY3RlZCBieSBrZXJuZWwgY29uZmlnIChkZWZhdWx0PWtlcm5lbCBjb25maWcgcGFyYW1ldGVy
-KS4NCj4gPiArCVVzZSBvbmx5IGZvciB3YXRjaGRvZyBkcml2ZXJzIHdoaWNoIGRvZXNuJ3Qgc3Vw
-cG9ydCB0aGlzIHBhcmFtZXRlcg0KPiA+ICsJYnkgaXRzZWxmLg0KPiANCj4gV2h5ID8NCg0KVGhl
-cmUgYXJlIHR3byBkcml2ZXJzIHdpdGggYW4gYW5hbG9nb3VzIGZlYXR1cmUgKHBueDgzM3hfd2R0
-IGFuZA0Kb21hcF93ZHQpIGFuZCBpdCBpcyBpbXBvcnRhbnQgbm90IHRvIGVuYWJsZSB0aGUgd2F0
-Y2hkb2cgdHdpY2UuDQoNCk9rLCBJIGNhbiBzdWJzdGl0dXRlIHRoZSBzZW50ZW5jZTogIiBVc2Ug
-b25seSBmb3Igd2F0Y2hkb2cgZHJpdmVycw0Kd2hpY2ggZG9lc24ndCBzdXBwb3J0IHRoaXMgcGFy
-YW1ldGVyIGl0c2VsZi4iIHdpdGggYW5vdGhlciBvbmUsIGxpa2U6DQoiSWYgdGhlIGRyaXZlciBz
-dXBwb3J0cyB0aGlzIGZlYXR1cmUgYnkgaXRzZWxmLCBiZSBjYXJlZnVsbHkgbm90IHRvIGVuYWJs
-ZQ0KdGhlIHdhdGNoZG9nIHR3aWNlIi4NCg0KV2hhdCBkbyB5b3UgdGhpbms/DQoNCj4gDQo+ID4N
-Cj4gPiAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-PiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvd2F0Y2hkb2cvS2NvbmZpZyBiL2RyaXZlcnMv
-d2F0Y2hkb2cvS2NvbmZpZw0KPiA+IGluZGV4IDA0NzBkYzE1YzA4NS4uYzJhNjY4ZDZiYmJjIDEw
-MDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvd2F0Y2hkb2cvS2NvbmZpZw0KPiA+ICsrKyBiL2RyaXZl
-cnMvd2F0Y2hkb2cvS2NvbmZpZw0KPiA+IEBAIC00Nyw2ICs0NywyMCBAQCBjb25maWcgV0FUQ0hE
-T0dfTk9XQVlPVVQNCj4gPiAgCSAgZ2V0IGtpbGxlZC4gSWYgeW91IHNheSBZIGhlcmUsIHRoZSB3
-YXRjaGRvZyBjYW5ub3QgYmUgc3RvcHBlZCBvbmNlDQo+ID4gIAkgIGl0IGhhcyBiZWVuIHN0YXJ0
-ZWQuDQo+ID4NCj4gPiArY29uZmlnIFdBVENIRE9HX1NUQVJUX0VOQUJMRUQNCj4gPiArCWJvb2wg
-IlN0YXJ0IHdhdGNoZG9nIG9uIG1vZHVsZSBpbnNlcnRpb24iDQo+ID4gKwloZWxwDQo+ID4gKwkg
-IFNheSBZIGlmIHlvdSB3YW50IHRvIHN0YXJ0IHRoZSB3YXRjaGRvZyBhdCB0aGUgc2FtZSB0aW1l
-IHdoZW4gdGhlDQo+ID4gKwkgIGRyaXZlciBpcyBsb2FkZWQuDQo+ID4gKwkgIFRoaXMgZmVhdHVy
-ZSBpcyB2ZXJ5IHVzZWZ1bCBpbiBlbWJlZGRlZCBzeXN0ZW1zLCB0byBhdm9pZCBjYXNlcyB3aGVy
-ZQ0KPiA+ICsJICB0aGUgc3lzdGVtIGNvdWxkIGhhbmcgYmVmb3JlIHJlYWNoaW5nIHVzZXJzcGFj
-ZS4NCj4gPiArCSAgVGhpcyBwYXJhbWV0ZXIgaW52b2x2ZXMgdGhlICJjb3JlIiBzZWN0aW9uIG9m
-IHRoZSB3YXRjaGRvZyBkcml2ZXIsDQo+ID4gKwkgIGluIHRoaXMgd2F5IGl0IGlzIGNvbW1vbiBm
-b3IgYWxsIHRoZSB3YXRjaGRvZyBoYXJkd2FyZQ0KPiA+ICsJICBpbXBsZW1lbnRhdGlvbnMuDQo+
-IA0KPiAiVGhpcyBwYXJhbWV0ZXIgYXBwbGllcyB0byBhbGwgd2F0Y2hkb2cgZHJpdmVycy4iLiBU
-aGUgcmVzdCBpcyBpbXBsZW1lbnRhdGlvbg0KPiBkZXRhaWwgYW5kIGlycmVsZXZhbnQgaGVyZS4N
-Cg0KT2sNCg0KPiANCj4gPiArDQo+ID4gKwkgIE5vdGU6IHRvIHVzZSBvbmx5IGZvciB3YXRjaGRv
-ZyBkcml2ZXJzIHdoaWNoIGRvZXNuJ3Qgc3VwcG9ydCB0aGlzDQo+ID4gKwkgICAgICAgIHBhcmFt
-ZXRlciBieSBpdHNlbGYuDQo+ID4gKw0KPiANCj4gVGhpcyBjb21tZW50IGlzIHF1aXRlIHVzZWxl
-c3MgaW4gdGhlIEtjb25maWcgZGVzY3JpcHRpb24uIElmIGVuYWJsZWQsIGl0IGlzIGVuYWJsZWQs
-DQo+IHBlcmlvZC4NCg0KT2ssIEknbGwgcmVtb3ZlIHRoaXMgY29tbWVudC4NCg0KPiANCj4gPiAg
-Y29uZmlnIFdBVENIRE9HX0hBTkRMRV9CT09UX0VOQUJMRUQNCj4gPiAgCWJvb2wgIlVwZGF0ZSBi
-b290LWVuYWJsZWQgd2F0Y2hkb2cgdW50aWwgdXNlcnNwYWNlIHRha2VzIG92ZXIiDQo+ID4gIAlk
-ZWZhdWx0IHkNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy93YXRjaGRvZy93YXRjaGRvZ19jb3Jl
-LmMNCj4gYi9kcml2ZXJzL3dhdGNoZG9nL3dhdGNoZG9nX2NvcmUuYw0KPiA+IGluZGV4IDVkZjBh
-MjJlMmNiNC4uNTA1MmFlMzU1MjE5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvd2F0Y2hkb2cv
-d2F0Y2hkb2dfY29yZS5jDQo+ID4gKysrIGIvZHJpdmVycy93YXRjaGRvZy93YXRjaGRvZ19jb3Jl
-LmMNCj4gPiBAQCAtNDMsNiArNDMsMTEgQEAgc3RhdGljIGludCBzdG9wX29uX3JlYm9vdCA9IC0x
-Ow0KPiA+ICBtb2R1bGVfcGFyYW0oc3RvcF9vbl9yZWJvb3QsIGludCwgMDQ0NCk7DQo+ID4gIE1P
-RFVMRV9QQVJNX0RFU0Moc3RvcF9vbl9yZWJvb3QsICJTdG9wIHdhdGNoZG9ncyBvbiByZWJvb3Qg
-KDA9a2VlcA0KPiB3YXRjaGluZywgMT1zdG9wKSIpOw0KPiA+DQo+ID4gK3N0YXRpYyBib29sIHN0
-YXJ0X2VuYWJsZWQgPQ0KPiBJU19FTkFCTEVEKENPTkZJR19XQVRDSERPR19TVEFSVF9FTkFCTEVE
-KTsNCj4gPiArbW9kdWxlX3BhcmFtKHN0YXJ0X2VuYWJsZWQsIGJvb2wsIDA0NDQpOw0KPiA+ICtN
-T0RVTEVfUEFSTV9ERVNDKHN0YXJ0X2VuYWJsZWQsICJTdGFydCB3YXRjaGRvZyBvbiBtb2R1bGUg
-aW5zZXJ0aW9uDQo+IChkZWZhdWx0PSINCj4gPiArDQo+IAlfX01PRFVMRV9TVFJJTkcoSVNfRU5B
-QkxFRChDT05GSUdfV0FUQ0hET0dfU1RBUlRfRU5BQkwNCj4gRUQpKSAiKSIpOw0KPiA+ICsNCj4g
-PiAgLyoNCj4gPiAgICogRGVmZXJyZWQgUmVnaXN0cmF0aW9uIGluZnJhc3RydWN0dXJlLg0KPiA+
-ICAgKg0KPiA+IEBAIC0yMjQsNiArMjI5LDEzIEBAIHN0YXRpYyBpbnQgX193YXRjaGRvZ19yZWdp
-c3Rlcl9kZXZpY2Uoc3RydWN0DQo+IHdhdGNoZG9nX2RldmljZSAqd2RkKQ0KPiA+ICAJICogY29y
-cnVwdGVkIGluIGEgbGF0ZXIgc3RhZ2UgdGhlbiB3ZSBleHBlY3QgYSBrZXJuZWwgcGFuaWMhDQo+
-ID4gIAkgKi8NCj4gPg0KPiA+ICsJLyogSWYgcmVxdWlyZWQsIHN0YXJ0IHRoZSB3YXRjaGRvZyBp
-bW1lZGlhdGVseSAqLw0KPiA+ICsJaWYgKHN0YXJ0X2VuYWJsZWQpIHsNCj4gPiArCQlzZXRfYml0
-KFdET0dfSFdfUlVOTklORywgJndkZC0+c3RhdHVzKTsNCj4gPiArCQl3ZGQtPm9wcy0+c3RhcnQo
-d2RkKTsNCj4gPiArCQlwcl9pbmZvKCJXYXRjaGRvZyBlbmFibGVkXG4iKTsNCj4gPiArCX0NCj4g
-PiArDQo+ID4gIAkvKiBVc2UgYWxpYXMgZm9yIHdhdGNoZG9nIGlkIGlmIHBvc3NpYmxlICovDQo+
-ID4gIAlpZiAod2RkLT5wYXJlbnQpIHsNCj4gPiAgCQlyZXQgPSBvZl9hbGlhc19nZXRfaWQod2Rk
-LT5wYXJlbnQtPm9mX25vZGUsICJ3YXRjaGRvZyIpOw0KPiA+DQoNCkJlc3QgcmVnYXJkcywNCkZs
-YXZpbyBTdWxpZ29pDQoNCg==
+The event PERF_RECORD_TIME_CONV was extended for clock parameters, but
+the tool fails to be backwards-compatible for the old event format.
+
+Based on checking the event size, this patch series can decide if the
+extended clock parameters are contained in the perf event or not.  This
+allows the event PERF_RECORD_TIME_CONV to be backwards-compatible.
+
+The last patch also is introduced for dumping the event, for both the
+old and latest event formats.
+
+The patch set has been tested on Arm64 HiSilicon D06 platform.
+
+Leo Yan (3):
+  perf jit: Let convert_timestamp() to be backwards-compatible
+  perf session: Add swap operation for event TIME_CONV
+  perf session: Dump PERF_RECORD_TIME_CONV event
+
+ tools/perf/util/jitdump.c | 31 +++++++++++++++++++++----------
+ tools/perf/util/session.c | 35 +++++++++++++++++++++++++++++++++--
+ tools/perf/util/tsc.c     | 31 +++++++++++++++++++++++++++++++
+ tools/perf/util/tsc.h     |  4 ++++
+ 4 files changed, 89 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
+
