@@ -2,47 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873A835C8AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F92735C8B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241900AbhDLOYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:24:12 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45554 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241922AbhDLOYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:24:09 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lVxTb-00GH8N-N8; Mon, 12 Apr 2021 16:23:43 +0200
-Date:   Mon, 12 Apr 2021 16:23:43 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Radu Nicolae Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: nxp-c45: add driver for tja1103
-Message-ID: <YHRX7x0Nm9Kb0Kai@lunn.ch>
-References: <20210409184106.264463-1-radu-nicolae.pirea@oss.nxp.com>
- <YHCsrVNcZmeTPJzW@lunn.ch>
- <64e44d26f45a4fcfc792073fe195e731e6f7e6d9.camel@oss.nxp.com>
- <YHRDtTKUI0Uck00n@lunn.ch>
- <111528aed55593de83a17dc8bd6d762c1c5a3171.camel@oss.nxp.com>
+        id S241410AbhDLO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238002AbhDLO2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:28:43 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C2BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 07:28:23 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id r7so1175791wrm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 07:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5wosYuEdRDumEnBXzIheT9pdmOTpIyhQh146dwiPvB4=;
+        b=QAGr8ID0S2S/RNKo79E6PW0g5QWI2bXQrRCfA47hGGFfP5iK/eKG1MgoDSol4c2N5w
+         l8T3s5GycM4L7hCmrrCh6PNxzsc8FGe/XsEUFb4FW7HYxlyYUup2thYvTMx0N05KILVn
+         VPfP9iMlglUOrdS3HZmHlfg84wZKvD4Cl4Bhk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=5wosYuEdRDumEnBXzIheT9pdmOTpIyhQh146dwiPvB4=;
+        b=fvLtYwyfe7kckcNMByFHLHtk2I4zWq0gVNzGWVn1WD2uAHduoLAx/P2rMjxAdAyhRG
+         yNA25lWZqa9FFQbp9jBWztaNOTg1nFFQgDyuGY8rktq3HAIx9RWZfna7NTNSc7515Pwf
+         Yk58xn88O9rHczyHpJ12BePOpibPbXaUCEl2M4ONXhZFgzVS9M8641UW+kk+UTmwzK6s
+         zPfwz8FFREpXOf58zjuA1/UHmYJoWc9LuSmc4m9TAT7BIv3HgaCkhDArNCpvtuQnKZjp
+         yGMsCidwKxfQ4ZTzHKIRSGSfQHF4hBKv2eXPGDhKUXsdmA0hGLCQGAWkXrl00zfOMxXb
+         YsdQ==
+X-Gm-Message-State: AOAM533AhBt/xcEpBf/rN3K13W5KdvksYdxiwxJfOBBCfTfhj9Kgw+e5
+        tvdN5T+aCTJV9cc2QWBLx/2F9w==
+X-Google-Smtp-Source: ABdhPJwW7XJUWc6vGSnWB691vgJU4jHRcu8CrcrhHOlfLAA6xKTVcenJoOA1sHfz3snNXNY470tO9g==
+X-Received: by 2002:a05:6000:1371:: with SMTP id q17mr23685250wrz.326.1618237702168;
+        Mon, 12 Apr 2021 07:28:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g13sm21223836wrr.9.2021.04.12.07.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 07:28:21 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 16:28:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Subject: Re: [PATCH 0/8] drm/msm: Swappable GEM objects
+Message-ID: <YHRZA+WBbWrUdpAV@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>
+References: <20210405174532.1441497-1-robdclark@gmail.com>
+ <YG7l0LwVQ2s4Y0Sa@phenom.ffwll.local>
+ <CAF6AEGsH2gbKv-Q04gRbjz=ue1TF7S_6DXa06bvYPcmYvG684w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <111528aed55593de83a17dc8bd6d762c1c5a3171.camel@oss.nxp.com>
+In-Reply-To: <CAF6AEGsH2gbKv-Q04gRbjz=ue1TF7S_6DXa06bvYPcmYvG684w@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It is purely a C45 device.
+On Thu, Apr 08, 2021 at 08:23:42AM -0700, Rob Clark wrote:
+> On Thu, Apr 8, 2021 at 4:15 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Apr 05, 2021 at 10:45:23AM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > One would normally hope not to be under enough memory pressure to need
+> > > to swap GEM objects to disk backed swap.  But memory backed zram swap
+> > > (as enabled on chromebooks, for example) can actually be quite fast
+> > > and useful on devices with less RAM.  On a 4GB device, opening up ~4
+> > > memory intensive web pages (in separate windows rather than tabs, to try
+> > > and prevent tab discard), I see ~500MB worth of GEM objects, of which
+> > > maybe only 10% are active at any time, and with unpin/evict enabled,
+> > > only about half resident (which is a number that gets much lower if you
+> > > simulate extreme memory pressure).  Assuming a 2:1 compression ratio (I
+> > > see a bit higher in practice, but cannot isolate swapped out GEM pages
+> > > vs other), that is like having an extra 100+MB of RAM, or more under
+> > > higher memory pressure.
+> > >
+> > > Rob Clark (8):
+> > >   drm/msm: ratelimit GEM related WARN_ON()s
+> > >   drm/msm: Reorganize msm_gem_shrinker_scan()
+> > >   drm/msm: Clear msm_obj->sgt in put_pages()
+> > >   drm/msm: Split iova purge and close
+> > >   drm/msm: Add $debugfs/gem stats on resident objects
+> > >   drm/msm: Track potentially evictable objects
+> > >   drm/msm: Small msm_gem_purge() fix
+> > >   drm/msm: Support evicting GEM objects to swap
+> >
+> > Given how much entertainement shrinkers are, should we aim for more common
+> > code here?
+> >
+> > Christian has tons of fun with adding something like this for ttm (well
+> > different shades of grey). i915 is going to adopt ttm, at least for
+> > discrete.
+> >
+> > The locking is also an utter pain, and msm seems to still live a lot in
+> > its own land here. I think as much as possible a standard approach here
+> > would be really good, ideally maybe as building blocks shared between ttm
+> > and gem-shmem drivers ...
+> 
+> I don't disagree.. but also replacing the engines on an airplane
+> mid-flight isn't a great option either.. ;-)
+> 
+> The hard part (esp. wrt to locking) is tracking the state of a given
+> bo.. ie. is it active, active+purgable, inactive+purgable,
+> inactive+unpinnable, etc.  Currently the shmem helpers don't really
+> provide anything here.  If they did, I suppose they could provide some
+> shrinker helpers as well.  Unfortunately these days I barely have
+> enough time for drm/msm, let alone bolting this onto the shmem
+> helpers.  I would recommend that if someone wanted to do this, that
+> they look at recent drm/msm shrinker patches that I've sent (ie. make
+> shrinker->count() lockless, and drop the locks in shrinker->scan()
+> body.. when the system is under heavy memory pressure, you start
+> getting shrinker called from all the threads so contention for mm_lock
+> can be a really bad problem)
+> 
+> (Well, the other potential problem is that drm/msm has a lot of
+> different possible iommu pairings across the generations, so there is
+> some potential here to uncover exciting new bugs.. the locking at
+> least is the same for all the generations and pretty easy to test with
+> and without lockdep with some tests that push essentially all memory
+> into swap)
 
-> Even if the PHY will be based on the same IP or not, if it is a C45
-> PHY, it will be supported by this driver. We are not talking about 2 or
-> 3 PHYs. This driver will support all future C45 PHYs. That's why we
-> named it "NXP C45".
+So what we aimed for with i915 and discrete gpu is to first align on
+locking with dma_resv_lock for all buffer state, plus a bunch of
+lru/allocator locks for lists and stuff.
 
-So if in future you produce C45 multi-gige PHYs, which have nothing in
-common with the T1 automative PHY, it will still be in this driver?
+And then with more aligned locking, figure out how to maybe share more
+code.
 
-       Andrew
+The trouble is that right now neither shmem helpers, nor drivers using
+them, are really using dma_resv_lock to protect their per-buffer state.
+
+So yeah it's a bit an awkward situation, and I don't know myself really
+how to get out of it. Lack of people with tons of free time doesn't help
+much.
+
+So best case I think is that every time we touch helpers or drivers
+locking in a big way, we check whether it's at least slightly going
+towards dma_resv_lock or not. And at least make sure we're not going
+backwards, and maybe not spin wheels at standstill.
+
+I guess my question is, what would be good to have to make sure we at
+least all agree on the overall direction?
+-Daniel
+
+> 
+> BR,
+> -R
+> 
+> > -Daniel
+> >
+> > >
+> > >  drivers/gpu/drm/msm/msm_drv.c          |   2 +-
+> > >  drivers/gpu/drm/msm/msm_drv.h          |  13 ++-
+> > >  drivers/gpu/drm/msm/msm_gem.c          | 155 +++++++++++++++++--------
+> > >  drivers/gpu/drm/msm/msm_gem.h          |  68 +++++++++--
+> > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 129 ++++++++++++--------
+> > >  drivers/gpu/drm/msm/msm_gpu_trace.h    |  13 +++
+> > >  6 files changed, 272 insertions(+), 108 deletions(-)
+> > >
+> > > --
+> > > 2.30.2
+> > >
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
