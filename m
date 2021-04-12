@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8E35C1FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AB735C234
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240899AbhDLJhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60966 "EHLO mail.kernel.org"
+        id S243016AbhDLJlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240606AbhDLJKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4572A61391;
-        Mon, 12 Apr 2021 09:05:49 +0000 (UTC)
+        id S240985AbhDLJLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:11:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B30613A2;
+        Mon, 12 Apr 2021 09:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218349;
-        bh=O/x923Ua/aCxnAlLUK8NTTGSTkG40YPZNM/h21AGjmo=;
+        s=korg; t=1618218466;
+        bh=ZC9P+5xP3+OydY9MNJjPYLvj1I9Z6Phlpj5+CuUf/SI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pks+CGAG74Evjvh8d+NIPuU7Yh9yHhds8XQ1jIPC1bcAdfNArU/kXUqtoUeSt8rEH
-         hFA/EvJ/xUUbQFXbNOm625YobFwohohMZmXVBzgbemRPuainwq0vCY7io5bfKaEMMo
-         czJA3OstXUm6JZ4ciCd9HmE74VpxHyxKvCsoPU0E=
+        b=t5oBdDTMqeaDWCikjmsmK26bp7VQo3iHoqohsyhJCPdez/iiIsJYQHUHGPSZEyS7J
+         1BO5nsMc9qPL3NuAPX1+29UN4Zdqmc94MQo482GS6BGwzjpGqL5RIHsF6LvqpEJ1rh
+         vScuXp85XzgAEzbVzoO5Y44XYypdXspJyMUU1RhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rui Salvaterra <rsalvaterra@gmail.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 163/210] ARM: dts: turris-omnia: fix hardware buffer management
-Date:   Mon, 12 Apr 2021 10:41:08 +0200
-Message-Id: <20210412084021.466517940@linuxfoundation.org>
+Subject: [PATCH 5.11 164/210] net: cls_api: Fix uninitialised struct field bo->unlocked_driver_cb
+Date:   Mon, 12 Apr 2021 10:41:09 +0200
+Message-Id: <20210412084021.496315714@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -42,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Salvaterra <rsalvaterra@gmail.com>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 5b2c7e0ae762fff2b172caf16b2766cc3e1ad859 ]
+[ Upstream commit 990b03b05b2fba79de2a1ee9dc359fc552d95ba6 ]
 
-Hardware buffer management has never worked on the Turris Omnia, as the
-required MBus window hadn't been reserved. Fix thusly.
+The 'unlocked_driver_cb' struct field in 'bo' is not being initialized
+in tcf_block_offload_init(). The uninitialized 'unlocked_driver_cb'
+will be used when calling unlocked_driver_cb(). So initialize 'bo' to
+zero to avoid the issue.
 
-Fixes: 018b88eee1a2 ("ARM: dts: turris-omnia: enable HW buffer management")
-
-Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 0fdcf78d5973 ("net: use flow_indr_dev_setup_offload()")
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/armada-385-turris-omnia.dts | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/sched/cls_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/armada-385-turris-omnia.dts b/arch/arm/boot/dts/armada-385-turris-omnia.dts
-index b0f3fd8e1429..5bd6a66d2c2b 100644
---- a/arch/arm/boot/dts/armada-385-turris-omnia.dts
-+++ b/arch/arm/boot/dts/armada-385-turris-omnia.dts
-@@ -32,7 +32,8 @@
- 		ranges = <MBUS_ID(0xf0, 0x01) 0 0xf1000000 0x100000
- 			  MBUS_ID(0x01, 0x1d) 0 0xfff00000 0x100000
- 			  MBUS_ID(0x09, 0x19) 0 0xf1100000 0x10000
--			  MBUS_ID(0x09, 0x15) 0 0xf1110000 0x10000>;
-+			  MBUS_ID(0x09, 0x15) 0 0xf1110000 0x10000
-+			  MBUS_ID(0x0c, 0x04) 0 0xf1200000 0x100000>;
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index 87cac07da7c3..b3a2cba130a1 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -646,7 +646,7 @@ static void tc_block_indr_cleanup(struct flow_block_cb *block_cb)
+ 	struct net_device *dev = block_cb->indr.dev;
+ 	struct Qdisc *sch = block_cb->indr.sch;
+ 	struct netlink_ext_ack extack = {};
+-	struct flow_block_offload bo;
++	struct flow_block_offload bo = {};
  
- 		internal-regs {
- 
+ 	tcf_block_offload_init(&bo, dev, sch, FLOW_BLOCK_UNBIND,
+ 			       block_cb->indr.binder_type,
 -- 
 2.30.2
 
