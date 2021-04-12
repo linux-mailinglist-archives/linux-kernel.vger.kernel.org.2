@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F5635B7FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324ED35B7FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236428AbhDLBQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235835AbhDLBQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:16:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B43FC061574;
-        Sun, 11 Apr 2021 18:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T0Zq9EStO1wC7R34W+g3UOBErmBYCTh0458TpX7pzAM=; b=sJNR212kfJE88C8nTxg0l1UoXm
-        Cbal0fqU992DQHm3N5P+Ml/9N9Nv8acJ4+M9c61cLDw5tVx1vo3l6fZZROGO3u3JvlmQVNt4MgFBF
-        g/LmZnGbLw61COtglVjylsbOp2kznKGio6cRT0PAyvdOG++3HcY0Qj2N4YAZR7/Ongh3aFzuLqR8m
-        XpLj86Ky06EguyRTY9VLPmpIBLI0SVSSf/qM7da3I6iIUxLPkRa6HQGofx88BF7zq2UCvMpdlkUh2
-        BFDTkwUVNukJv24on8dSKLRot4g8EsOusTp5QhTE7Rt9RCw1g68fuBAJPJZZ1YyczV5CDfiii3KiL
-        qrpu7ngQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVlAq-003fOL-Tu; Mon, 12 Apr 2021 01:15:34 +0000
-Date:   Mon, 12 Apr 2021 02:15:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210412011532.GG2531743@casper.infradead.org>
-References: <20210410205246.507048-1-willy@infradead.org>
- <20210410205246.507048-2-willy@infradead.org>
- <20210411114307.5087f958@carbon>
- <20210411103318.GC2531743@casper.infradead.org>
+        id S236375AbhDLBP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:15:56 -0400
+Received: from mga05.intel.com ([192.55.52.43]:38727 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235835AbhDLBPz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 21:15:55 -0400
+IronPort-SDR: 23dfKJ5xcrYRFZ3F5MWmpWvqRQKZGj95NgRcdzPxUZQEdQH32LLw5cz7FCchBCaCsroqz7lbJv
+ W4jy/n0WpoXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="279381991"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="279381991"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:15:38 -0700
+IronPort-SDR: n6uThAuu0JhtEm7/fJYJGpEV2nB9cTYvrTy+zJGZG95qwqzHtoGbmR3+eQh8un5QxAMgSVK11t
+ OteXsn89D4gw==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="451215568"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:15:36 -0700
+Subject: Re: [PATCH v3 09/27] perf parse-events: Create two hybrid cache
+ events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210329070046.8815-1-yao.jin@linux.intel.com>
+ <20210329070046.8815-10-yao.jin@linux.intel.com> <YHBa820crfHSIZuz@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <00b56b3c-c88d-8340-e8b7-703f6023bf03@linux.intel.com>
+Date:   Mon, 12 Apr 2021 09:15:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210411103318.GC2531743@casper.infradead.org>
+In-Reply-To: <YHBa820crfHSIZuz@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 11:33:18AM +0100, Matthew Wilcox wrote:
-> Basically, we have three aligned dwords here.  We can either alias with
-> @flags and the first word of @lru, or the second word of @lru and @mapping,
-> or @index and @private.  @flags is a non-starter.  If we use @mapping,
-> then you have to set it to NULL before you free it, and I'm not sure
-> how easy that will be for you.  If that's trivial, then we could use
-> the layout:
+Hi Jiri,
+
+On 4/9/2021 9:48 PM, Jiri Olsa wrote:
+> On Mon, Mar 29, 2021 at 03:00:28PM +0800, Jin Yao wrote:
 > 
-> 	unsigned long _pp_flags;
-> 	unsigned long pp_magic;
-> 	union {
-> 		dma_addr_t dma_addr;    /* might be one or two words */
-> 		unsigned long _pp_align[2];
-> 	};
-> 	unsigned long pp_pfmemalloc;
-> 	unsigned long xmi;
+> SNIP
+> 
+>> index 1bbd0ba92ba7..3692fa3c964a 100644
+>> --- a/tools/perf/util/parse-events.c
+>> +++ b/tools/perf/util/parse-events.c
+>> @@ -458,6 +458,7 @@ int parse_events_add_cache(struct list_head *list, int *idx,
+>>   	int cache_type = -1, cache_op = -1, cache_result = -1;
+>>   	char *op_result[2] = { op_result1, op_result2 };
+>>   	int i, n;
+>> +	bool hybrid;
+>>   
+>>   	/*
+>>   	 * No fallback - if we cannot get a clear cache type
+>> @@ -517,6 +518,13 @@ int parse_events_add_cache(struct list_head *list, int *idx,
+>>   		if (get_config_terms(head_config, &config_terms))
+>>   			return -ENOMEM;
+>>   	}
+>> +
+>> +	i = parse_events__add_cache_hybrid(list, idx, &attr,
+>> +					   config_name ? : name, &config_terms,
+>> +					   &hybrid);
+>> +	if (hybrid)
+>> +		return i;
+> 
+> please define 'ret' for the return value, i is confusing
+> 
+> thanks,
+> jirka
+> 
 
-I forgot about the munmap path.  That calls zap_page_range() which calls
-set_page_dirty() which calls page_mapping().  If we use page->mapping,
-that's going to get interpreted as an address_space pointer.
+Previously I wanted to save a 'ret' variable, but yes it's confusing. I will define 'ret' in next 
+version.
 
-*sigh*.  Foiled at every turn.
+Thanks
+Jin Yao
 
-I'm kind of inclined towards using two (or more) bits for PageSlab as
-we discussed here:
-
-https://lore.kernel.org/linux-mm/01000163efe179fe-d6270c58-eaba-482f-a6bd-334667250ef7-000000@email.amazonses.com/
-
-so we have PageKAlloc that's true for PageSlab, PagePool, PageDMAPool,
-PageVMalloc, PageFrag and maybe a few other kernel-internal allocations.
-
-(see also here:)
-https://lore.kernel.org/linux-mm/20180518194519.3820-18-willy@infradead.org/
+>> +
+>>   	return add_event(list, idx, &attr, config_name ? : name, &config_terms);
+>>   }
+>>   
+>> -- 
+>> 2.17.1
+>>
+> 
