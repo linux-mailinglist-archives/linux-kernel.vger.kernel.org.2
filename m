@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F3C35D42F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0963235D432
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239535AbhDLXyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbhDLXyC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:54:02 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C512C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:53:42 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id k25so15264643oic.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cgT1HApdmZ6zS0OsJ1xfBAFlpTT4bt9tHkmOVAqIDmE=;
-        b=rLfqXGY3INUuJ2aRB/CzZnSw4KvS7BIaZPNNa/NJ1C6Dt/jGgiBhZl2iKVpg8KnTtY
-         7MPjxY1QIymJLvhWtu9lX2CCNfmk4y2TeONlYDrYiocw2TnD2jtNeJESwir3O3aSb30X
-         8AivrzRbyZLO64KNIsm0/yeVJ5bYFWdhV/anHLWvC+dcrkChxvWGjXgvDqKMhfr9NVAq
-         uqzTsxGZkBkL+EAFLngxQnUc74zp5KTUZ9CBDmPrOIygQjfBgLBmTAnT9FXGd2vzTkow
-         MBAD3KghXlIfSODGL/ftQxpjE9Cw3y+aAwyDmTs4yy1p3c+y+6Cc8eUmuzR2vK7K2QQj
-         0GzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cgT1HApdmZ6zS0OsJ1xfBAFlpTT4bt9tHkmOVAqIDmE=;
-        b=QV6mjfTUmpYEeWFiGf6zLrJJgIuRP3VObB0Px002oFleAvyFyOLfLzyvCCdvKsEPhT
-         7b0SO32UDMpEVDcS60l7iyTr4+ZuvT31Qr/ywpKkZwPHqBoDRasSmU4HKCNhnEQRzSYh
-         6z9vjo1ljLJXv0wbYR7A+pFEEHnXYpVXunBn+WDo+a0++aT0VaaTOzvM7jNSNkG7xEk7
-         ubLz/UGqDAgOVQyor5QSNhbuBAfgItEqg41zxyK45J7fjNhH6xViKJgUYqsQRqkOZ8r+
-         DFz11QA0d9AiQ7RIfSB7cybWGzoT4Wnh5M5bqa6+OSIM6hSYT1Y6u0OToCibeWkIxLmw
-         S0ig==
-X-Gm-Message-State: AOAM532/XcKI9f/sEY4u1x+fNJsfZwKDruyl5usRPjAHF01g2xP4OIau
-        UlEH+k6C9C/KEOkNeP34vIJFjw==
-X-Google-Smtp-Source: ABdhPJwB8eYTup93oYQNOALWr8lw5AXfKmpA25UytBaSHUI5Cm/0tYufSL5e57UWns9RDNfc9MMg4A==
-X-Received: by 2002:aca:5d82:: with SMTP id r124mr1229083oib.59.1618271621720;
-        Mon, 12 Apr 2021 16:53:41 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q10sm2451934ooo.34.2021.04.12.16.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 16:53:41 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 18:53:39 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] phy: qcom-qmp: remove redundant error of clock bulk
-Message-ID: <20210412235339.GF1538589@yoga>
-References: <1617937630-24832-1-git-send-email-chunfeng.yun@mediatek.com>
+        id S243427AbhDLXzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:55:11 -0400
+Received: from mail.nic.cz ([217.31.204.67]:58582 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237250AbhDLXzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:55:10 -0400
+Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 949C0140655;
+        Tue, 13 Apr 2021 01:54:50 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 01:54:50 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Tobias Waldekranz <tobias@waldekranz.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+Message-ID: <20210413015450.1ae597da@thinkpad>
+In-Reply-To: <87o8ejjdu6.fsf@waldekranz.com>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com>
+        <20210411200135.35fb5985@thinkpad>
+        <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+        <878s5nllgs.fsf@waldekranz.com>
+        <20210412213045.4277a598@thinkpad>
+        <8735vvkxju.fsf@waldekranz.com>
+        <20210412235054.73754df9@thinkpad>
+        <87wnt7jgzk.fsf@waldekranz.com>
+        <20210413005518.2f9b9cef@thinkpad>
+        <87r1jfje26.fsf@waldekranz.com>
+        <87o8ejjdu6.fsf@waldekranz.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617937630-24832-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08 Apr 22:07 CDT 2021, Chunfeng Yun wrote:
+On Tue, 13 Apr 2021 01:13:53 +0200
+Tobias Waldekranz <tobias@waldekranz.com> wrote:
 
-> There is error log in clk_bulk_prepare/enable()
+> > ...you could get the isolation in place. But you will still lookup the
+> > DA in the ATU, and there you will find a destination of either cpu0 or
+> > cpu1. So for one of the ports, the destination will be outside of its
+> > port based VLAN. Once the vectors are ANDed together, it is left with no
+> > valid port to egress through, and the packet is dropped.
+> >  
+> >> Am I wrong? I confess that I did not understand this into the most fine
+> >> details, so it is entirely possible that I am missing something
+> >> important and am completely wrong. Maybe this cannot be done.  
+> >
+> > I really doubt that it can be done. Not in any robust way at
+> > least. Happy to be proven wrong though! :)  
 > 
+> I think I figured out why it "works" for you. Since the CPU address is
+> never added to the ATU, traffic for it is treated as unknown. Thanks to
+> that, it flooded and the isolation brings it together. As soon as
+> mv88e6xxx starts making use of Vladimirs offloading of host addresses
+> though, I suspect this will fall apart.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Hmm :( This is bad news. I would really like to make it balance via
+input ports. The LAG balancing for this usecase is simply unacceptable,
+since the switch puts so little information into the hash function.
 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index 9cdebe7..f14b8be 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -3598,10 +3598,8 @@ static int qcom_qmp_phy_com_init(struct qmp_phy *qphy)
->  	}
->  
->  	ret = clk_bulk_prepare_enable(cfg->num_clks, qmp->clks);
-> -	if (ret) {
-> -		dev_err(qmp->dev, "failed to enable clks, err=%d\n", ret);
-> +	if (ret)
->  		goto err_rst;
-> -	}
->  
->  	if (cfg->has_phy_dp_com_ctrl) {
->  		qphy_setbits(dp_com, QPHY_V3_DP_COM_POWER_DOWN_CTRL,
-> @@ -4035,10 +4033,8 @@ static int __maybe_unused qcom_qmp_phy_runtime_resume(struct device *dev)
->  	}
->  
->  	ret = clk_bulk_prepare_enable(cfg->num_clks, qmp->clks);
-> -	if (ret) {
-> -		dev_err(qmp->dev, "failed to enable clks, err=%d\n", ret);
-> +	if (ret)
->  		return ret;
-> -	}
->  
->  	ret = clk_prepare_enable(qphy->pipe_clk);
->  	if (ret) {
-> -- 
-> 1.8.1.1.dirty
-> 
+I will look into this, maybe ask some follow-up questions.
+
+Marek
