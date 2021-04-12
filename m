@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE2835D011
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2FF35D014
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241111AbhDLSMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238145AbhDLSMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B5F461350;
-        Mon, 12 Apr 2021 18:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618251101;
-        bh=VOjjidsArMWHVu6+STthr6t7XDFmwhg8C/WgwQsOgao=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BD8CFJt8C00PoYjLt7N2KkB6JBZTpdwxyzPxNfePcr3LbO1Y0jL7bLmMlV2aTsD/A
-         GDB8nZl1zlB8yBPixh4it3kxFZST7rxdmvrF5b3xs34fRofNjTnCpcjR1hVESsWmdW
-         grWbk6D99h1SVqfvr9T6nHJ+YK4FymQE6bfj5Anawj97yQn9GKkZgDDTJBWSj3q8wz
-         GaOKFT7cNq0QdOjnnt2/3+AR2ac6VCM2prMoBpAKaOhHR4xBjfKpQcBDEywG/JFJwt
-         9qwTnjWfCjlH9r3Lw7bG10spUmIZNQ3H3yfyq3jbBTy9mW85ynf0aNuEUu9oOm6nwt
-         CmHAc5Xe9M4pw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Snitzer <snitzer@redhat.com>, kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@google.com>, stable@vger.kernel.org
-Subject: [PATCH] dm verity: fix not aligned logical block size of RS roots IO
-Date:   Mon, 12 Apr 2021 11:11:23 -0700
-Message-Id: <20210412181123.2550918-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+        id S244708AbhDLSNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:13:10 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:46838 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238145AbhDLSNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 14:13:09 -0400
+Received: by mail-oi1-f177.google.com with SMTP id m13so14300112oiw.13;
+        Mon, 12 Apr 2021 11:12:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LLRmIGD0mbtrbQWE0Wz075QLFoZ2M2WQQT4khJXSwzs=;
+        b=kUI+/IAv+RCVodrsvsLq++s0fAz4nhefsBuN9M6ujTreL+GvdTO5BRDzy+ONu6rsRW
+         VrR+/oV9dnd7tiBfRJ//aGkl15PEMjXteDXqCEgkjda7dVPqok40jJbBHRRd8ocZ1JUm
+         RG6g5upa+uGI00pId3aTUaAyrPTvwdxCWiMzRPWe0k8aGpqDc/+H+23CV+mVIvbyt+rc
+         PzxvZ8Vw9EBTSf+1pfQ+0+Lg3BpbiCrVeClEYCN/KrL1U2Mu4GCyEoDkDJGq4r6hO57m
+         srhGvtqWZXgQZzkDYQA60KMxGLsJMZA1FP3w4adu8z9KrgG84gT0zfHEAqDRi7jOSD5x
+         e6+g==
+X-Gm-Message-State: AOAM531hHqWg9rzAhFJkAxDXzXF1ColzzU3kp+hceLmNDN95upoRroLe
+        4X4xVVvZV020pINBDfClPBKjiXx8T/mUpJl43uyguF9B
+X-Google-Smtp-Source: ABdhPJxk0RjgumnGUEVHGOg01bTZd8kK1/X40tZnDgvo74P9hdZkOj1C8QiGp+eODzXqdmYVynrW+vck8hBPGp1WvKs=
+X-Received: by 2002:aca:aa8f:: with SMTP id t137mr315642oie.71.1618251169899;
+ Mon, 12 Apr 2021 11:12:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210410134718.1942273-1-andy.shevchenko@gmail.com>
+ <CAJZ5v0jQ=UU8FgFFF_ht_v1dZwhp-32wi_QNaZuf6vBaORU41w@mail.gmail.com>
+ <CAHp75VeW7w-tX96B8Gh=E1meTHLzuocqaM2MTLyokc5hETVj7A@mail.gmail.com>
+ <CAJZ5v0jTQziFzc7pZ631=iigm6nv7xKAYyaA64pssAPKTA522g@mail.gmail.com> <CAHp75VcdZq9afovEP1Di6ScoFvBMuV0Es-XcuP60-Ewr9mfX5w@mail.gmail.com>
+In-Reply-To: <CAHp75VcdZq9afovEP1Di6ScoFvBMuV0Es-XcuP60-Ewr9mfX5w@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Apr 2021 20:12:38 +0200
+Message-ID: <CAJZ5v0jHWF2q550pAo+s2s+dN+FLKAQ8yzY9d1p1Ww3t116pzA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ACPI: bus: Introduce acpi_dev_get() and reuse it
+ in ACPI code
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@google.com>
+On Mon, Apr 12, 2021 at 8:10 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 9:05 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Mon, Apr 12, 2021 at 7:47 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Mon, Apr 12, 2021 at 8:32 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > On Sat, Apr 10, 2021 at 3:47 PM Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > ...
+> > >
+> > > > >  static void get_acpi_device(void *dev)
+> > > > >  {
+> > > > > -       if (dev)
+> > > > > -               get_device(&((struct acpi_device *)dev)->dev);
+> > > > > +       acpi_dev_get(dev);
+> > > >
+> > > > I would do
+> > > >
+> > > > if (dev)
+> > > >     acpi_dev_get(dev);
+> > > >
+> > > > here.
+> > >
+> > > Hmm... I don't see a point. acpi_dev_get() guaranteed to perform this check.
+> > >
+> > > > >  }
+> > >
+> > >
+> > > > > +static inline void acpi_dev_get(struct acpi_device *adev)
+> > > > > +{
+> > > > > +       if (adev)
+> > > > > +               get_device(&adev->dev);
+> > > >
+> > > > And I would drop the adev check from here (because the code calling it
+> > > > may be running with wrong assumptions if adev is NULL).  Or it should
+> > > > return adev and the caller should be held responsible for checking it
+> > > > against NULL (if they care).
+> > >
+> > > But this follows the get_device() / put_device() logic.
+> >
+> > Not really.  get_device() returns a pointer.
+> >
+> > > Personally I don't think this is a good idea to deviate.
+> >
+> > Well, exactly. :-)
+> >
+> > > Note the acpi_bus_get_acpi_device()
+> >
+> > This also returns a pointer.
+>
+> Is it okay to return a pointer in acpi_dev_get() then?
 
-commit df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
-made dm_bufio->block_size 1024, if f->roots is 2. But, that gives the below EIO
-if the logical block size of the device is 4096, given v->data_dev_block_bits=12.
-
-E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
-E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
-
-Let's use f->roots for dm_bufio iff it's aligned to v->data_dev_block_bits.
-
-Fixes: df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
----
- drivers/md/dm-verity-fec.c | 11 ++++++++---
- drivers/md/dm-verity-fec.h |  1 +
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
-index 66f4c6398f67..cea2b3789736 100644
---- a/drivers/md/dm-verity-fec.c
-+++ b/drivers/md/dm-verity-fec.c
-@@ -65,7 +65,7 @@ static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
- 	u8 *res;
- 
- 	position = (index + rsb) * v->fec->roots;
--	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
-+	block = div64_u64_rem(position, v->fec->io_size, &rem);
- 	*offset = (unsigned)rem;
- 
- 	res = dm_bufio_read(v->fec->bufio, block, buf);
-@@ -154,7 +154,7 @@ static int fec_decode_bufs(struct dm_verity *v, struct dm_verity_fec_io *fio,
- 
- 		/* read the next block when we run out of parity bytes */
- 		offset += v->fec->roots;
--		if (offset >= v->fec->roots << SECTOR_SHIFT) {
-+		if (offset >= v->fec->io_size) {
- 			dm_bufio_release(buf);
- 
- 			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
-@@ -742,8 +742,13 @@ int verity_fec_ctr(struct dm_verity *v)
- 		return -E2BIG;
- 	}
- 
-+	if ((f->roots << SECTOR_SHIFT) & ((1 << v->data_dev_block_bits) - 1))
-+		f->io_size = 1 << v->data_dev_block_bits;
-+	else
-+		f->io_size = v->fec->roots << SECTOR_SHIFT;
-+
- 	f->bufio = dm_bufio_client_create(f->dev->bdev,
--					  f->roots << SECTOR_SHIFT,
-+					  f->io_size,
- 					  1, 0, NULL, NULL);
- 	if (IS_ERR(f->bufio)) {
- 		ti->error = "Cannot initialize FEC bufio client";
-diff --git a/drivers/md/dm-verity-fec.h b/drivers/md/dm-verity-fec.h
-index 42fbd3a7fc9f..3c46c8d61883 100644
---- a/drivers/md/dm-verity-fec.h
-+++ b/drivers/md/dm-verity-fec.h
-@@ -36,6 +36,7 @@ struct dm_verity_fec {
- 	struct dm_dev *dev;	/* parity data device */
- 	struct dm_bufio_client *data_bufio;	/* for data dev access */
- 	struct dm_bufio_client *bufio;		/* for parity data access */
-+	size_t io_size;		/* IO size for roots */
- 	sector_t start;		/* parity data start in blocks */
- 	sector_t blocks;	/* number of blocks covered */
- 	sector_t rounds;	/* number of interleaving rounds */
--- 
-2.31.1.295.g9ea45b61b8-goog
-
+Yes, it is, as I've said already.
