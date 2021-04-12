@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE00135C250
+	by mail.lfdr.de (Postfix) with ESMTP id 62BB835C24F
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243690AbhDLJmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:42:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        id S243660AbhDLJmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240694AbhDLJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240699AbhDLJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:10:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0AA61363;
-        Mon, 12 Apr 2021 09:06:20 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B17F0613A0;
+        Mon, 12 Apr 2021 09:06:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218381;
-        bh=XMiwNQTDOiRTSd56F8WAVOgIVi5fgZLreImXNBJsaWw=;
+        s=korg; t=1618218384;
+        bh=sfhFdS9Q1MWM/QFvieKxTx9T3Fmq0TZMfPpk+tmKXrk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=unES/LWSd7Ax2w4qZfTnEkJkTAIxBLyFUJygDJKvAraqczNmJkaH1c9kM+LrZDvGD
-         /DFgzxhmINXajYLza9+7UDA60cqVlLYvTEw9OW1gf5OQVuJNw/X38tH+W3E6zi3fuP
-         mkPWx4GNWdFVClolLMqrSwljXHgPgko8tpNiGUKs=
+        b=xE/ErS2bpDVXTVlUQQI77suw4OHzSqal04ZNVGJ34dV4Zx619ZA/JT8ClPLwir7y0
+         s2TxA5DN/0BtJ+dzdNERVcvx28uly60tKpTYCDuzyKY4SUsPCBlSxs8T3L2UjOTVhb
+         RLJY5x7RRYh4Jnmkmz70WRaKu+racAPMWNgMbbA4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 177/210] net: hns3: clear VF down state bit before request link status
-Date:   Mon, 12 Apr 2021 10:41:22 +0200
-Message-Id: <20210412084021.913427795@linuxfoundation.org>
+Subject: [PATCH 5.11 178/210] net/mlx5: Fix HW spec violation configuring uplink
+Date:   Mon, 12 Apr 2021 10:41:23 +0200
+Message-Id: <20210412084021.943972043@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,49 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangbin Huang <huangguangbin2@huawei.com>
+From: Eli Cohen <elic@nvidia.com>
 
-[ Upstream commit ed7bedd2c3ca040f1e8ea02c6590a93116b1ec78 ]
+[ Upstream commit 1a73704c82ed4ee95532ac04645d02075bd1ce3d ]
 
-Currently, the VF down state bit is cleared after VF sending
-link status request command. There is problem that when VF gets
-link status replied from PF, the down state bit may still set
-as 1. In this case, the link status replied from PF will be
-ignored and always set VF link status to down.
+Make sure to modify uplink port to follow only if the uplink_follow
+capability is set as required by the HW spec. Failure to do so causes
+traffic to the uplink representor net device to cease after switching to
+switchdev mode.
 
-To fix this problem, clear VF down state bit before VF requests
-link status.
-
-Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7d0314b11cdd ("net/mlx5e: Modify uplink state on interface up/down")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 674b3a22e91f..3bd7bc794677 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2575,14 +2575,14 @@ static int hclgevf_ae_start(struct hnae3_handle *handle)
- {
- 	struct hclgevf_dev *hdev = hclgevf_ae_get_hdev(handle);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index f0ceae65f6cf..8afbb485197e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -1103,8 +1103,9 @@ static void mlx5e_uplink_rep_enable(struct mlx5e_priv *priv)
  
-+	clear_bit(HCLGEVF_STATE_DOWN, &hdev->state);
-+
- 	hclgevf_reset_tqp_stats(handle);
+ 	mlx5e_rep_tc_enable(priv);
  
- 	hclgevf_request_link_info(hdev);
- 
- 	hclgevf_update_link_mode(hdev);
- 
--	clear_bit(HCLGEVF_STATE_DOWN, &hdev->state);
--
- 	return 0;
- }
- 
+-	mlx5_modify_vport_admin_state(mdev, MLX5_VPORT_STATE_OP_MOD_UPLINK,
+-				      0, 0, MLX5_VPORT_ADMIN_STATE_AUTO);
++	if (MLX5_CAP_GEN(mdev, uplink_follow))
++		mlx5_modify_vport_admin_state(mdev, MLX5_VPORT_STATE_OP_MOD_UPLINK,
++					      0, 0, MLX5_VPORT_ADMIN_STATE_AUTO);
+ 	mlx5_lag_add(mdev, netdev);
+ 	priv->events_nb.notifier_call = uplink_rep_async_event;
+ 	mlx5_notifier_register(mdev, &priv->events_nb);
 -- 
 2.30.2
 
