@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F8335C8E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0FA35C901
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241764AbhDLOid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:38:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51526 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237558AbhDLOid (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:38:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618238294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jPyzOJSADw1ugiLVGR/0etGoaBvM2CULjUgMo7FWp2A=;
-        b=AaMK0Rctb67BgNJrcRQHT8rbVNSEXb6MoVnQztkgRC3xO/AGNL38bsU0CB7cyc/u9UntoU
-        eeXbKk7bq+tT1VScnnJqs5MsYkpFcxIXTZPITR9LibtgJ5FxDCbLUSi1mPwa4vUgMApKGH
-        8gGsFAPmCCOtnH8qPP5qL1QGGJRmrJM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-k7kdLMMmMvesWyhYmho-bA-1; Mon, 12 Apr 2021 10:38:09 -0400
-X-MC-Unique: k7kdLMMmMvesWyhYmho-bA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C7CB189C44E;
-        Mon, 12 Apr 2021 14:38:08 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-148.ams2.redhat.com [10.36.112.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AF6D75D6B1;
-        Mon, 12 Apr 2021 14:38:05 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
-        <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
-        <20210412143139.GE24283@zn.tnic>
-Date:   Mon, 12 Apr 2021 16:38:15 +0200
-In-Reply-To: <20210412143139.GE24283@zn.tnic> (Borislav Petkov's message of
-        "Mon, 12 Apr 2021 16:31:39 +0200")
-Message-ID: <878s5nk1pk.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S242663AbhDLOjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242733AbhDLOje (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:39:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 113F2610CA;
+        Mon, 12 Apr 2021 14:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618238356;
+        bh=4iaq/hWN+JZ86ndvjDUD0IpAoN+dU38yNS/GbzTSJc8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YIqq0P9GIDgEU8pUsU2Q12JNtQY9k2Q+G9Aa918gwwQDeyFNlrvKCKisuvaHOrc5O
+         f6EBLC67gkuto5UGw4sngfEv6TfZmCSAtoL9UpQa3uKsV9oMoUMZXCmObGTDujXTV2
+         u0MhR82joS9uk3kQb2FPToAGanWFZt8j09BB+XxkrNZW4Qg61dOfUbnJlLopq/Wy50
+         2zYxAK1dsaw+xXu9ByR+PNSDJXuvgqpAq4aioL3uHCQ0KAWEXQMSAbEzNxc0aVME9U
+         21lZobBP5FneQkCJ5KSl8ne17U2VrXkhndfkNBis6w2OQYCOg9mrkAaSSJBFHafrkJ
+         8pmcjcCmrtXbw==
+Received: by pali.im (Postfix)
+        id B17BF687; Mon, 12 Apr 2021 16:39:13 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 16:39:13 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell: fix detection of PHY on Topaz switches
+Message-ID: <20210412143913.qhlge7koggjswyjg@pali>
+References: <20210412121430.20898-1-pali@kernel.org>
+ <YHRH2zWsYkv/yjYz@lunn.ch>
+ <20210412133447.fyqkavrs5r5wbino@pali>
+ <YHRZa9R22UyIRSd9@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHRZa9R22UyIRSd9@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Borislav Petkov:
+On Monday 12 April 2021 16:30:03 Andrew Lunn wrote:
+> > > > +/* This table contains representative model for every family */
+> > > > +static const enum mv88e6xxx_model family_model_table[] = {
+> > > > +	[MV88E6XXX_FAMILY_6095] = MV88E6095,
+> > > > +	[MV88E6XXX_FAMILY_6097] = MV88E6097,
+> > > > +	[MV88E6XXX_FAMILY_6185] = MV88E6185,
+> > > > +	[MV88E6XXX_FAMILY_6250] = MV88E6250,
+> > > > +	[MV88E6XXX_FAMILY_6320] = MV88E6320,
+> > > > +	[MV88E6XXX_FAMILY_6341] = MV88E6341,
+> > > > +	[MV88E6XXX_FAMILY_6351] = MV88E6351,
+> > > > +	[MV88E6XXX_FAMILY_6352] = MV88E6352,
+> > > > +	[MV88E6XXX_FAMILY_6390] = MV88E6390,
+> > > > +};
+> > > 
+> > > This table is wrong. MV88E6390 does not equal
+> > > MV88E6XXX_PORT_SWITCH_ID_PROD_6390. MV88E6XXX_PORT_SWITCH_ID_PROD_6390
+> > > was chosen because it is already an MDIO device ID, in register 2 and
+> > > 3. It probably will never clash with a real Marvell PHY ID. MV88E6390
+> > > is just a small integer, and there is a danger it will clash with a
+> > > real PHY.
+> > 
+> > So... how to solve this issue? What should be in the mapping table?
+> 
+> You need to use MV88E6XXX_PORT_SWITCH_ID_PROD_6095,
+> MV88E6XXX_PORT_SWITCH_ID_PROD_6097,
+> ...
+> MV88E6XXX_PORT_SWITCH_ID_PROD_6390,
 
-> On Mon, Apr 12, 2021 at 04:19:29PM +0200, Florian Weimer wrote:
->> Maybe we could have done this in 2016 when I reported this for the first
->> time.  Now it is too late, as more and more software is using
->> CPUID-based detection for AVX-512.
->
-> So as I said on another mail today, I don't think a library should rely
-> solely on CPUID-based detection of features especially if those features
-> need kernel support too. IOW, it should ask whether the kernel can
-> handle those too, first.
+But I'm using it.
 
-Yes, that's why we have the XGETBV handshake.  I was imprecise.  It's
-CPUID + XGETBV of course.  Or even AT_HWCAP2 (for FSGSBASE).
+First chip->info->family (enum mv88e6xxx_family; MV88E6XXX_FAMILY_6341)
+is mapped to enum mv88e6xxx_model (MV88E6341) via family_model_table[]
+and then enum mv88e6xxx_model (MV88E6341) is mapped to prod_num
+(MV88E6XXX_PORT_SWITCH_ID_PROD_6341) via mv88e6xxx_table[].
 
-> And the CPUID-faulting thing would solve stuff like that because then
-> the kernel can *actually* get involved into answering something where it
-> has a say in, too.
+All this is done in mv88e6xxx_physid_for_family() function.
 
-But why wouldn't we use a syscall or an entry in the auxiliary vector
-for that?  Why fault a potentially performance-critical instruction?
+So at the end, this function converts MV88E6XXX_FAMILY_6341 to
+MV88E6XXX_PORT_SWITCH_ID_PROD_6341.
 
-Thanks,
-Florian
+And therefore I do not see anything wrong in family_model_table[] table.
 
+I defined family_model_table[] table to just maps enum mv88e6xxx_family
+to enum mv88e6xxx_model as mv88e6xxx_table[] table already contains
+mapping from enum mv88e6xxx_model to phys_id, to simplify
+implementation.
