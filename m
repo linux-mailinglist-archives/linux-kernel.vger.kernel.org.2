@@ -2,482 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9414435C661
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF35E35C67C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241115AbhDLMfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240109AbhDLMfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:35:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9574BC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:35:20 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVvmX-0005ls-5G; Mon, 12 Apr 2021 14:35:09 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVvmR-0001gy-0w; Mon, 12 Apr 2021 14:35:03 +0200
-Date:   Mon, 12 Apr 2021 14:35:02 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        billy_tasi@aspeedtech.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
-Subject: Re: [PATCH 3/4] pwm: Add Aspeed ast2600 PWM support
-Message-ID: <20210412123502.v77fvmi3awvbmduu@pengutronix.de>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
- <20210412095457.15095-4-billy_tsai@aspeedtech.com>
+        id S241232AbhDLMmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:42:55 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:50389 "EHLO ned.t-8ch.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237626AbhDLMmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:42:54 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 08:42:53 EDT
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1618230943;
+        bh=rw+YsJkoAwg27DzxQFYkTP7+A9CYPDkmBLhEtuxfF0I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dLipbk08zKkVY94ihzGN7iiNEhvCzszP2sNCUJNME8kbHK4+BxxVmIrjxkj3CIlt2
+         muCC3lC/cFkGD9TSYELcYFeXs4KAb/T1lUwg4SYss9C9KS/KiFr4JkFXXqyU6wAWkt
+         IR2Im8h69k1P3h56dVWS76hWqcYiWYoVHvp1GVOM=
+To:     platform-driver-x86@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: [PATCH v5] platform/x86: add Gigabyte WMI temperature driver
+Date:   Mon, 12 Apr 2021 14:35:13 +0200
+Message-Id: <20210412123513.628901-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210410181856.144988-1-linux@weissschuh.net>
+References: <20210410181856.144988-1-linux@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jzhggbiygyuccl5t"
-Content-Disposition: inline
-In-Reply-To: <20210412095457.15095-4-billy_tsai@aspeedtech.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tested with
+* X570 I Aorus Pro Wifi (rev 1.0)
+* B550M DS3H
+* B550 Gaming X V2 (rev.1.x)
+* Z390 I AORUS PRO WIFI (rev. 1.0)
+
+Those mainboards contain an ITE chips for management and
+monitoring.
+
+They could also be handled by drivers/hwmon/i87.c.
+But the SuperIO range used by i87 is already claimed and used by the
+firmware.
+
+The following warning is printed at boot:
+
+kernel: ACPI Warning: SystemIO range 0x0000000000000A45-0x0000000000000A46 conflicts with OpRegion 0x0000000000000A45-0x0000000000000A46 (\GSA1.SIO1) (20200528/utaddress-204)
+kernel: ACPI: This conflict may cause random problems and system instability
+kernel: ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
+
+This driver implements such an ACPI driver.
+
+Unfortunately not all sensor registers are handled by the firmware and even
+less are exposed via WMI.
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+---
+
+Changes since v4:
+* Style
+* Wording
+* Alignment of email addresses
+---
+ MAINTAINERS                         |   6 +
+ drivers/platform/x86/Kconfig        |  11 ++
+ drivers/platform/x86/Makefile       |   1 +
+ drivers/platform/x86/gigabyte-wmi.c | 195 ++++++++++++++++++++++++++++
+ 4 files changed, 213 insertions(+)
+ create mode 100644 drivers/platform/x86/gigabyte-wmi.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d92f85ca831d..7fb5e2ba489b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7543,6 +7543,12 @@ F:	Documentation/filesystems/gfs2*
+ F:	fs/gfs2/
+ F:	include/uapi/linux/gfs2_ondisk.h
+ 
++GIGABYTE WMI DRIVER
++M:	Thomas Weißschuh <thomas@weissschuh.net>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++F:	drivers/platform/x86/gigabyte-wmi.c
++
+ GNSS SUBSYSTEM
+ M:	Johan Hovold <johan@kernel.org>
+ S:	Maintained
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index ad4e630e73e2..96622a2106f7 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -123,6 +123,17 @@ config XIAOMI_WMI
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called xiaomi-wmi.
+ 
++config GIGABYTE_WMI
++	tristate "Gigabyte WMI temperature driver"
++	depends on ACPI_WMI
++	depends on HWMON
++	help
++	  Say Y here if you want to support WMI-based temperature reporting on
++	  Gigabyte mainboards.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called gigabyte-wmi.
++
+ config ACERHDF
+ 	tristate "Acer Aspire One temperature and fan driver"
+ 	depends on ACPI && THERMAL
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 60d554073749..1621ebfd04fd 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
+ obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
+ obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
+ obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
++obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
+ 
+ # Acer
+ obj-$(CONFIG_ACERHDF)		+= acerhdf.o
+diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+new file mode 100644
+index 000000000000..bb1b0b205fa7
+--- /dev/null
++++ b/drivers/platform/x86/gigabyte-wmi.c
+@@ -0,0 +1,195 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ *  Copyright (C) 2021 Thomas Weißschuh <thomas@weissschuh.net>
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/acpi.h>
++#include <linux/dmi.h>
++#include <linux/hwmon.h>
++#include <linux/module.h>
++#include <linux/wmi.h>
++
++#define GIGABYTE_WMI_GUID	"DEADBEEF-2001-0000-00A0-C90629100000"
++#define NUM_TEMPERATURE_SENSORS	6
++
++static bool force_load;
++module_param(force_load, bool, 0444);
++MODULE_PARM_DESC(force_load, "Force loading on unknown platform");
++
++static u8 usable_sensors_mask;
++
++enum gigabyte_wmi_commandtype {
++	GIGABYTE_WMI_BUILD_DATE_QUERY       =   0x1,
++	GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =   0x2,
++	GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =   0x4,
++	GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =   0x5,
++	GIGABYTE_WMI_TEMPERATURE_QUERY      = 0x125,
++};
++
++struct gigabyte_wmi_args {
++	u32 arg1;
++};
++
++static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
++				      enum gigabyte_wmi_commandtype command,
++				      struct gigabyte_wmi_args *args, struct acpi_buffer *out)
++{
++	const struct acpi_buffer in = {
++		.length = sizeof(*args),
++		.pointer = args,
++	};
++
++	acpi_status ret = wmidev_evaluate_method(wdev, 0x0, command, &in, out);
++
++	if (ACPI_FAILURE(ret))
++		return -EIO;
++
++	return 0;
++}
++
++static int gigabyte_wmi_query_integer(struct wmi_device *wdev,
++				      enum gigabyte_wmi_commandtype command,
++				      struct gigabyte_wmi_args *args, u64 *res)
++{
++	union acpi_object *obj;
++	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
++	int ret;
++
++	ret = gigabyte_wmi_perform_query(wdev, command, args, &result);
++	if (ret)
++		return ret;
++	obj = result.pointer;
++	if (obj && obj->type == ACPI_TYPE_INTEGER)
++		*res = obj->integer.value;
++	else
++		ret = -EIO;
++	kfree(result.pointer);
++	return ret;
++}
++
++static int gigabyte_wmi_temperature(struct wmi_device *wdev, u8 sensor, long *res)
++{
++	struct gigabyte_wmi_args args = {
++		.arg1 = sensor,
++	};
++	u64 temp;
++	acpi_status ret;
++
++	ret = gigabyte_wmi_query_integer(wdev, GIGABYTE_WMI_TEMPERATURE_QUERY, &args, &temp);
++	if (ret == 0) {
++		if (temp == 0)
++			return -ENODEV;
++		*res = (s8)temp * 1000; // value is a signed 8-bit integer
++	}
++	return ret;
++}
++
++static int gigabyte_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
++				   u32 attr, int channel, long *val)
++{
++	struct wmi_device *wdev = dev_get_drvdata(dev);
++
++	return gigabyte_wmi_temperature(wdev, channel, val);
++}
++
++static umode_t gigabyte_wmi_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
++					     u32 attr, int channel)
++{
++	return usable_sensors_mask & BIT(channel) ? 0444  : 0;
++}
++
++static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
++	HWMON_CHANNEL_INFO(temp,
++			   HWMON_T_INPUT,
++			   HWMON_T_INPUT,
++			   HWMON_T_INPUT,
++			   HWMON_T_INPUT,
++			   HWMON_T_INPUT,
++			   HWMON_T_INPUT),
++	NULL
++};
++
++static const struct hwmon_ops gigabyte_wmi_hwmon_ops = {
++	.read = gigabyte_wmi_hwmon_read,
++	.is_visible = gigabyte_wmi_hwmon_is_visible,
++};
++
++static const struct hwmon_chip_info gigabyte_wmi_hwmon_chip_info = {
++	.ops = &gigabyte_wmi_hwmon_ops,
++	.info = gigabyte_wmi_hwmon_info,
++};
++
++static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
++{
++	int i;
++	long temp;
++	u8 r = 0;
++
++	for (i = 0; i < NUM_TEMPERATURE_SENSORS; i++) {
++		if (!gigabyte_wmi_temperature(wdev, i, &temp))
++			r |= BIT(i);
++	}
++	return r;
++}
++
++static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
++	{ .matches = {
++		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
++		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
++	}},
++	{ .matches = {
++		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
++		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
++	}},
++	{ .matches = {
++		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
++		DMI_EXACT_MATCH(DMI_BOARD_NAME, "Z390 I AORUS PRO WIFI-CF"),
++	}},
++	{ .matches = {
++		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
++		DMI_EXACT_MATCH(DMI_BOARD_NAME, "X570 I AORUS PRO WIFI"),
++	}},
++	{ }
++};
++
++static int gigabyte_wmi_probe(struct wmi_device *wdev, const void *context)
++{
++	struct device *hwmon_dev;
++
++	if (!dmi_check_system(gigabyte_wmi_known_working_platforms)) {
++		if (!force_load)
++			return -ENODEV;
++		dev_warn(&wdev->dev, "Forcing load on unknown platform");
++	}
++
++	usable_sensors_mask = gigabyte_wmi_detect_sensor_usability(wdev);
++	if (!usable_sensors_mask) {
++		dev_info(&wdev->dev, "No temperature sensors usable");
++		return -ENODEV;
++	}
++
++	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev, "gigabyte_wmi", wdev,
++							 &gigabyte_wmi_hwmon_chip_info, NULL);
++
++	return PTR_ERR_OR_ZERO(hwmon_dev);
++}
++
++static const struct wmi_device_id gigabyte_wmi_id_table[] = {
++	{ GIGABYTE_WMI_GUID, NULL },
++	{ }
++};
++
++static struct wmi_driver gigabyte_wmi_driver = {
++	.driver = {
++		.name = "gigabyte-wmi",
++	},
++	.id_table = gigabyte_wmi_id_table,
++	.probe = gigabyte_wmi_probe,
++};
++module_wmi_driver(gigabyte_wmi_driver);
++
++MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
++MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
++MODULE_DESCRIPTION("Gigabyte WMI temperature driver");
++MODULE_LICENSE("GPL");
+
+base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+-- 
+2.31.1
 
---jzhggbiygyuccl5t
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Billy,
-
-On Mon, Apr 12, 2021 at 05:54:56PM +0800, Billy Tsai wrote:
-> This patch add the support of PWM controller which can find at aspeed
-> ast2600 soc chip. This controller supoorts up to 16 channels.
->=20
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/pwm/pwm-aspeed-g6.c | 291 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 291 insertions(+)
->  create mode 100644 drivers/pwm/pwm-aspeed-g6.c
->=20
-> diff --git a/drivers/pwm/pwm-aspeed-g6.c b/drivers/pwm/pwm-aspeed-g6.c
-> new file mode 100644
-> index 000000000000..4bb4f97453c6
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-aspeed-g6.c
-> @@ -0,0 +1,291 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) ASPEED Technology Inc.
-
-Don't you need to add a year here?
-
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 or lat=
-er as
-> + * published by the Free Software Foundation.
-
-Hmm, the comment and the SPDX-License-Identifier contradict each other.
-The idea of the latter is that the former isn't needed.
-
-> + */
-
-Is there documentation available in the internet for this hardware? If
-yes, please mention a link here.
-
-Also describe the hardware here similar to how e.g.
-drivers/pwm/pwm-sifive.c does it. Please stick to the same format for
-easy grepping.
-
-> +
-> +#include <linux/clk.h>
-> +#include <linux/errno.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/reset.h>
-> +#include <linux/regmap.h>
-> +#include <linux/pwm.h>
-> +/* The channel number of Aspeed pwm controller */
-> +#define ASPEED_NR_PWMS 16
-> +/* PWM Control Register */
-> +#define ASPEED_PWM_CTRL_CH(ch) ((ch * 0x10) + 0x00)
-
-#define ASPEED_PWM_CTRL_CH(ch) (((ch) * 0x10) + 0x00)
-
-> +#define PWM_LOAD_SEL_AS_WDT BIT(19)
-> +#define LOAD_SEL_FALLING 0
-> +#define LOAD_SEL_RIGING 1
-> +#define PWM_DUTY_LOAD_AS_WDT_EN BIT(18)
-> +#define PWM_DUTY_SYNC_DIS BIT(17)
-> +#define PWM_CLK_ENABLE BIT(16)
-> +#define PWM_LEVEL_OUTPUT BIT(15)
-> +#define PWM_INVERSE BIT(14)
-> +#define PWM_OPEN_DRAIN_EN BIT(13)
-> +#define PWM_PIN_EN BIT(12)
-> +#define PWM_CLK_DIV_H_SHIFT 8
-> +#define PWM_CLK_DIV_H_MASK (0xf << PWM_CLK_DIV_H_SHIFT)
-> +#define PWM_CLK_DIV_L_SHIFT 0
-> +#define PWM_CLK_DIV_L_MASK (0xff << PWM_CLK_DIV_L_SHIFT)
-> +/* PWM Duty Cycle Register */
-> +#define ASPEED_PWM_DUTY_CYCLE_CH(ch) ((ch * 0x10) + 0x04)
-> +#define PWM_PERIOD_SHIFT (24)
-> +#define PWM_PERIOD_MASK (0xff << PWM_PERIOD_SHIFT)
-> +#define PWM_POINT_AS_WDT_SHIFT (16)
-> +#define PWM_POINT_AS_WDT_MASK (0xff << PWM_POINT_AS_WDT_SHIFT)
-> +#define PWM_FALLING_POINT_SHIFT (8)
-> +#define PWM_FALLING_POINT_MASK (0xffff << PWM_FALLING_POINT_SHIFT)
-> +#define PWM_RISING_POINT_SHIFT (0)
-> +#define PWM_RISING_POINT_MASK (0xffff << PWM_RISING_POINT_SHIFT)
-> +/* PWM default value */
-> +#define DEFAULT_PWM_PERIOD 0xff
-> +#define DEFAULT_TARGET_PWM_FREQ 25000
-> +#define DEFAULT_DUTY_PT 10
-> +#define DEFAULT_WDT_RELOAD_DUTY_PT 16
-
-You could spend a few empty lines to make this better readable. Also
-please use a consistent driver-specific prefix for your defines and
-consider using the macros from <linux/bitfield.h>. Also defines
-for bitfields should contain the register name.
-
-> +struct aspeed_pwm_data {
-> +	struct pwm_chip chip;
-> +	struct regmap *regmap;
-> +	unsigned long clk_freq;
-> +	struct reset_control *reset;
-> +};
-> +/**
-> + * struct aspeed_pwm - per-PWM driver data
-> + * @freq: cached pwm freq
-> + */
-> +struct aspeed_pwm {
-> +	u32 freq;
-> +};
-
-This is actually unused, please drop it. (You save a value in it, but
-make never use of it.)
-
-> +static void aspeed_set_pwm_channel_enable(struct regmap *regmap, u8 pwm_=
-channel,
-> +					  bool enable)
-> +{
-> +	regmap_update_bits(regmap, ASPEED_PWM_CTRL_CH(pwm_channel),
-> +			   (PWM_CLK_ENABLE | PWM_PIN_EN),
-> +			   enable ? (PWM_CLK_ENABLE | PWM_PIN_EN) : 0);
-
-What is the semantic of PIN_EN?
-
-> +}
-> +/*
-> + * The PWM frequency =3D HCLK(200Mhz) / (clock division L bit *
-> + * clock division H bit * (period bit + 1))
-> + */
-> +static void aspeed_set_pwm_freq(struct aspeed_pwm_data *priv,
-> +				struct pwm_device *pwm, u32 freq)
-> +{
-> +	u32 target_div, cal_freq;
-> +	u32 tmp_div_h, tmp_div_l, diff, min_diff =3D INT_MAX;
-> +	u32 div_h =3D BIT(5) - 1, div_l =3D BIT(8) - 1;
-> +	u8 div_found;
-> +	u32 index =3D pwm->hwpwm;
-> +	struct aspeed_pwm *channel =3D pwm_get_chip_data(pwm);
-> +
-> +	cal_freq =3D priv->clk_freq / (DEFAULT_PWM_PERIOD + 1);
-> +	target_div =3D DIV_ROUND_UP(cal_freq, freq);
-> +	div_found =3D 0;
-> +	/* calculate for target frequence */
-
-s/frequence/frequency/
-
-> +	for (tmp_div_h =3D 0; tmp_div_h < 0x10; tmp_div_h++) {
-> +		tmp_div_l =3D target_div / BIT(tmp_div_h) - 1;
-> +
-> +		if (tmp_div_l < 0 || tmp_div_l > 255)
-> +			continue;
-> +
-> +		diff =3D freq - cal_freq / (BIT(tmp_div_h) * (tmp_div_l + 1));
-> +		if (abs(diff) < abs(min_diff)) {
-> +			min_diff =3D diff;
-> +			div_l =3D tmp_div_l;
-> +			div_h =3D tmp_div_h;
-> +			div_found =3D 1;
-> +			if (diff =3D=3D 0)
-> +				break;
-> +		}
-> +	}
-
-If my understanding is right (i.e. H divides by a power of two and L by
-an integer) this can be simplified.
-
-> +	if (div_found =3D=3D 0) {
-> +		pr_debug("target freq: %d too slow set minimal frequency\n",
-> +			 freq);
-> +	}
-> +	channel->freq =3D cal_freq / (BIT(div_h) * (div_l + 1));
-> +	pr_debug("div h %x, l : %x pwm out clk %d\n", div_h, div_l,
-> +		 channel->freq);
-> +	pr_debug("hclk %ld, target pwm freq %d, real pwm freq %d\n",
-> +		 priv->clk_freq, freq, channel->freq);
-> +
-> +	regmap_update_bits(priv->regmap, ASPEED_PWM_CTRL_CH(index),
-> +			   (PWM_CLK_DIV_H_MASK | PWM_CLK_DIV_L_MASK),
-> +			   (div_h << PWM_CLK_DIV_H_SHIFT) |
-> +				   (div_l << PWM_CLK_DIV_L_SHIFT));
-> +}
-> +
-> +static void aspeed_set_pwm_duty(struct aspeed_pwm_data *priv,
-> +				struct pwm_device *pwm, u32 duty_pt)
-> +{
-> +	u32 index =3D pwm->hwpwm;
-> +
-> +	if (duty_pt =3D=3D 0) {
-> +		aspeed_set_pwm_channel_enable(priv->regmap, index, false);
-> +	} else {
-> +		regmap_update_bits(priv->regmap,
-> +				   ASPEED_PWM_DUTY_CYCLE_CH(index),
-> +				   PWM_FALLING_POINT_MASK,
-> +				   duty_pt << PWM_FALLING_POINT_SHIFT);
-> +		aspeed_set_pwm_channel_enable(priv->regmap, index, true);
-> +	}
-> +}
-> +
-> +static void aspeed_set_pwm_polarity(struct aspeed_pwm_data *priv,
-> +				    struct pwm_device *pwm, u8 polarity)
-> +{
-> +	u32 index =3D pwm->hwpwm;
-> +
-> +	regmap_update_bits(priv->regmap, ASPEED_PWM_CTRL_CH(index), PWM_INVERSE,
-> +			   (polarity) ? PWM_INVERSE : 0);
-> +}
-> +
-> +static int aspeed_pwm_request(struct pwm_chip *chip, struct pwm_device *=
-pwm)
-> +{
-> +	struct device *dev =3D chip->dev;
-> +	struct aspeed_pwm_data *priv =3D dev_get_drvdata(dev);
-> +	struct aspeed_pwm *channel;
-> +	u32 index =3D pwm->hwpwm;
-> +	/*
-> +	 * Fixed the period to the max value and rising point to 0
-> +	 * for high resolution and =08simplified frequency calculation.
-
-s/^H//
-
-> +	 */
-> +	regmap_update_bits(priv->regmap, ASPEED_PWM_DUTY_CYCLE_CH(index),
-> +			   PWM_PERIOD_MASK,
-> +			   DEFAULT_PWM_PERIOD << PWM_PERIOD_SHIFT);
-> +
-> +	regmap_update_bits(priv->regmap, ASPEED_PWM_DUTY_CYCLE_CH(index),
-> +			   PWM_RISING_POINT_MASK, 0);
-
-Only .apply is supposed to modify the PWM's configuration.
-
-> +	channel =3D devm_kzalloc(dev, sizeof(*channel), GFP_KERNEL);
-> +	if (!channel)
-> +		return -ENOMEM;
-
-Don't use devm_kzalloc if freeing isn't done at device cleanup time.
-
-> +	pwm_set_chip_data(pwm, channel);
-> +
-> +	return 0;
-
-> +}
-> +
-> +static void aspeed_pwm_free(struct pwm_chip *chip, struct pwm_device *pw=
-m)
-> +{
-> +	struct device *dev =3D chip->dev;
-> +	struct aspeed_pwm *channel =3D pwm_get_chip_data(pwm);
-> +
-> +	devm_kfree(dev, channel);
-> +}
-> +
-> +static int aspeed_pwm_apply(struct pwm_chip *chip, struct pwm_device *pw=
-m,
-> +			    const struct pwm_state *state)
-> +{
-> +	struct device *dev =3D chip->dev;
-> +	struct aspeed_pwm_data *priv =3D dev_get_drvdata(dev);
-
-Please consider using
-
-	priv =3D container_of(chip, struct aspeed_pwm_data, chip);
-
-(preferably wrapped in a macro) which is more type safe and more
-effective to calculate.
-
-> +	struct pwm_state *cur_state =3D &pwm->state;
-> +	u32 freq =3D DIV_ROUND_UP_ULL(1000000000, state->period);
-> +	u32 duty_pt =3D DIV_ROUND_UP_ULL(
-> +		state->duty_cycle * (DEFAULT_PWM_PERIOD + 1), state->period);
-
-You're loosing precision here.
-
-> +	dev_dbg(dev, "freq: %d, duty_pt: %d", freq, duty_pt);
-> +	if (state->enabled) {
-> +		aspeed_set_pwm_freq(priv, pwm, freq);
-> +		aspeed_set_pwm_duty(priv, pwm, duty_pt);
-> +		aspeed_set_pwm_polarity(priv, pwm, state->polarity);
-
-How does the hardware behave between these calls? E.g. can it happen
-that it already emits a normal period when inversed polarity is
-requested just before aspeed_set_pwm_polarity is called? Or there is a
-period with the previous duty cycle and the new period?
-
-> +	} else {
-> +		aspeed_set_pwm_duty(priv, pwm, 0);
-> +	}
-> +	cur_state->period =3D state->period;
-> +	cur_state->duty_cycle =3D state->duty_cycle;
-> +	cur_state->polarity =3D state->polarity;
-> +	cur_state->enabled =3D state->enabled;
-
-The driver is not supposed to modify pwm->state.
-
-> +	return 0;
-> +}
-
-=46rom your code I understood: The period of the signal is
-
-	(PWM_PERIOD + 1) * (2 ** DIV_H) * (DIV_L + 1) / 200 MHz
-
-=2E The duty cycle is
-
-	PWM_FALLING_POINT * (2 ** DIV_H) * (DIV_L + 1) / 200 MHz
-
-=2E So the PWM cannot provide a 100% relative duty cycle.
-
-Is this right?
-
-> +static const struct pwm_ops aspeed_pwm_ops =3D {
-> +	.request =3D aspeed_pwm_request,
-> +	.free =3D aspeed_pwm_free,
-> +	.apply =3D aspeed_pwm_apply,
-
-Please test your driver with PWM_DEBUG enabled.
-
-> +	.owner =3D THIS_MODULE,
-> +};
-> +
-> +static int aspeed_pwm_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct clk *clk;
-> +	int ret;
-> +	struct aspeed_pwm_data *priv;
-> +	struct device_node *np;
-> +
-> +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	np =3D pdev->dev.parent->of_node;
-> +	if (!of_device_is_compatible(np, "aspeed,ast2600-pwm-tach")) {
-> +		dev_err(dev, "unsupported pwm device binding\n");
-> +		return -ENODEV;
-> +	}
-
-Is this pwm-tach an mfd?
-
-> +	priv->regmap =3D syscon_node_to_regmap(np);
-> +	if (IS_ERR(priv->regmap)) {
-> +		dev_err(dev, "Couldn't get regmap\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	clk =3D devm_clk_get(dev, NULL);
-> +	if (IS_ERR(clk))
-> +		return -ENODEV;
-> +	priv->clk_freq =3D clk_get_rate(clk);
-
-If you intend to use this clock, you have to enable it.
-
-> +	priv->reset =3D reset_control_get_shared(&pdev->dev, NULL);
-> +	if (IS_ERR(priv->reset)) {
-> +		dev_err(&pdev->dev, "can't get aspeed_pwm_tacho reset\n");
-> +		return PTR_ERR(priv->reset);
-> +	}
-> +	reset_control_deassert(priv->reset);
-
-missing error checking
-
-> +	priv->chip.dev =3D dev;
-> +	priv->chip.ops =3D &aspeed_pwm_ops;
-> +	priv->chip.base =3D -1;
-
-This isn't necessary since f9a8ee8c8bcd118e800d88772c6457381db45224,
-please drop the assignment to base.
-
-> +	priv->chip.npwm =3D ASPEED_NR_PWMS;
-> +	priv->chip.of_xlate =3D of_pwm_xlate_with_flags;
-> +	priv->chip.of_pwm_n_cells =3D 3;
-> +
-> +	ret =3D pwmchip_add(&priv->chip);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
-
-Please use %pe to make the error messages better readable.
-
-> +		return ret;
-> +	}
-> +	dev_set_drvdata(dev, priv);
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id of_pwm_match_table[] =3D {
-> +	{
-> +		.compatible =3D "aspeed,ast2600-pwm",
-> +	},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, of_pwm_match_table);
-> +
-> +static struct platform_driver aspeed_pwm_driver =3D {
-> +	.probe		=3D aspeed_pwm_probe,
-
-Please implement a .remove callback.
-
-> +	.driver		=3D {
-> +		.name	=3D "aspeed_pwm",
-> +		.of_match_table =3D of_pwm_match_table,
-> +	},
-> +};
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---jzhggbiygyuccl5t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB0PnMACgkQwfwUeK3K
-7Alzegf/YT3V2IatEJsB6eLsxeZ/4oXm+pIdj5tejNTKZUP6q+qlaLpGwDNK4d1q
-cuGKGXwzDN8p8d6ivM51QdDah3dT/bsdxHsllnnm+qHnJnz3frAcdRnHwncgOZGf
-6d+Djdt6ZOTTrVAg5/rIS3kUZX5UcdIN6+DYlDJ5QSs+JIoja36IkJoudDGxcrCT
-sBB+nbI2k0dZTmL8b+flKdUE+VB0TxxdH4hwiapews6WtSbQgK9gdO2QJh5ecsfD
-woPOSnludKA/PNu+Ymbg1yjMyLCrqWew9xbem1xVx4fOA0zP9SXuK4r3ke8lfLjr
-LtkO4iBnZI7twKE7ZA7lPYhqXtEb1A==
-=Xoxt
------END PGP SIGNATURE-----
-
---jzhggbiygyuccl5t--
