@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8403235C0DF
+	by mail.lfdr.de (Postfix) with ESMTP id 391CE35C0DE
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhDLJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49930 "EHLO mail.kernel.org"
+        id S241865AbhDLJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239219AbhDLI7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1310661279;
-        Mon, 12 Apr 2021 08:57:54 +0000 (UTC)
+        id S239230AbhDLI7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:59:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9846D61289;
+        Mon, 12 Apr 2021 08:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217875;
-        bh=bzVuBvH+GsH8uCOPRG66Fn+aAgAUrd5smUzl+9BbwAg=;
+        s=korg; t=1618217878;
+        bh=IwPyNd0lz068b6JGkwWLSEsRGqdAhyKXBmcl8vnUyDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mZKawlWwW0Gbdx1Bv0z4uu2GL+k/3SH5oR0wb0qoaVbC6nY9oN+BVuhvYxY31t1ll
-         xs7jT/d7RWBt4SvukyJuS2gAQoX8IGw+n25Xgf+W0WgRSqg50r3rA/n/HX6XCzXGgC
-         +rlosfWkchjBpzFqtEBuhR0nBUS+AnQlseAl8kuM=
+        b=HsWMRNszYd1HWzmsHP607H5/VrB2V+ktiUAegRZM9351gjhpbv2L91Gp8+LLG5pNo
+         9YGyhTf4CkMSA4jErXdBzzH+eF4/JtZYlzCo9ZeScWA4katSdgFTo1sBFpb+JjHIQh
+         fW28HN3jlZtBwD9Wj9Og1hFyYSP5L0lkPPhDfmNs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 143/188] scsi: ufs: core: Fix wrong Task Tag used in task management request UPIUs
-Date:   Mon, 12 Apr 2021 10:40:57 +0200
-Message-Id: <20210412084018.384209122@linuxfoundation.org>
+Subject: [PATCH 5.10 144/188] net: cls_api: Fix uninitialised struct field bo->unlocked_driver_cb
+Date:   Mon, 12 Apr 2021 10:40:58 +0200
+Message-Id: <20210412084018.417258579@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,104 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Can Guo <cang@codeaurora.org>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 4b42d557a8add52b9a9924fb31e40a218aab7801 ]
+[ Upstream commit 990b03b05b2fba79de2a1ee9dc359fc552d95ba6 ]
 
-In __ufshcd_issue_tm_cmd(), it is not correct to use hba->nutrs + req->tag
-as the Task Tag in a TMR UPIU. Directly use req->tag as the Task Tag.
+The 'unlocked_driver_cb' struct field in 'bo' is not being initialized
+in tcf_block_offload_init(). The uninitialized 'unlocked_driver_cb'
+will be used when calling unlocked_driver_cb(). So initialize 'bo' to
+zero to avoid the issue.
 
-Fixes: e293313262d3 ("scsi: ufs: Fix broken task management command implementation")
-Link: https://lore.kernel.org/r/1617262750-4864-3-git-send-email-cang@codeaurora.org
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 0fdcf78d5973 ("net: use flow_indr_dev_setup_offload()")
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 30 +++++++++++++-----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ net/sched/cls_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 7e1168ee2474..4215d9a8e5de 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6256,38 +6256,34 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	DECLARE_COMPLETION_ONSTACK(wait);
- 	struct request *req;
- 	unsigned long flags;
--	int free_slot, task_tag, err;
-+	int task_tag, err;
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index d48ba4dee9a5..9383dc29ead5 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -646,7 +646,7 @@ static void tc_block_indr_cleanup(struct flow_block_cb *block_cb)
+ 	struct net_device *dev = block_cb->indr.dev;
+ 	struct Qdisc *sch = block_cb->indr.sch;
+ 	struct netlink_ext_ack extack = {};
+-	struct flow_block_offload bo;
++	struct flow_block_offload bo = {};
  
- 	/*
--	 * Get free slot, sleep if slots are unavailable.
--	 * Even though we use wait_event() which sleeps indefinitely,
--	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-+	 * blk_get_request() is used here only to get a free tag.
- 	 */
- 	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
- 	if (IS_ERR(req))
- 		return PTR_ERR(req);
- 
- 	req->end_io_data = &wait;
--	free_slot = req->tag;
--	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
- 	ufshcd_hold(hba, false);
- 
- 	spin_lock_irqsave(host->host_lock, flags);
--	task_tag = hba->nutrs + free_slot;
- 	blk_mq_start_request(req);
- 
-+	task_tag = req->tag;
- 	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
- 
--	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
--	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
-+	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
-+	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
- 
- 	/* send command to the controller */
--	__set_bit(free_slot, &hba->outstanding_tasks);
-+	__set_bit(task_tag, &hba->outstanding_tasks);
- 
- 	/* Make sure descriptors are ready before ringing the task doorbell */
- 	wmb();
- 
--	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
-+	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
- 	/* Make sure that doorbell is committed immediately */
- 	wmb();
- 
-@@ -6307,24 +6303,24 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete_err");
- 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
- 				__func__, tm_function);
--		if (ufshcd_clear_tm_cmd(hba, free_slot))
--			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
--					__func__, free_slot);
-+		if (ufshcd_clear_tm_cmd(hba, task_tag))
-+			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
-+					__func__, task_tag);
- 		err = -ETIMEDOUT;
- 	} else {
- 		err = 0;
--		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
-+		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
- 
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete");
- 	}
- 
- 	spin_lock_irqsave(hba->host->host_lock, flags);
--	__clear_bit(free_slot, &hba->outstanding_tasks);
-+	__clear_bit(task_tag, &hba->outstanding_tasks);
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 
-+	ufshcd_release(hba);
- 	blk_put_request(req);
- 
--	ufshcd_release(hba);
- 	return err;
- }
- 
+ 	tcf_block_offload_init(&bo, dev, sch, FLOW_BLOCK_UNBIND,
+ 			       block_cb->indr.binder_type,
 -- 
 2.30.2
 
