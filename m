@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183C35C6BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5219035C681
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241496AbhDLMuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:50:24 -0400
-Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:58932 "EHLO
-        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238534AbhDLMuX (ORCPT
+        id S241266AbhDLMoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:44:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38844 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241239AbhDLMoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:50:23 -0400
-X-Greylist: delayed 483 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 08:50:22 EDT
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FJpK41DD6z1VPs;
-        Mon, 12 Apr 2021 14:42:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1618231320;
-        bh=an0I2Pi77+7RFQeYVkdJg3pvIoAezOsYDpfl+GxO9Q0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=r3XN6zbfILHQ+PiBr06WKJ3LmzmL/v92jsxQW7h6stnXhR4VYzk42A+hzdfadJRu4
-         cYnYIR3wqM+XRq6W+aFY5A6jZZT3KA1Z9DrboBzULiBanHqpP8ApipR0e7irrufr/U
-         +rwCPbJm4x9A/Lna4BH+6k9HKxndqsD1F54jvsAw=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FJpK413JKzTmgvW;
-        Mon, 12 Apr 2021 14:42:00 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id z6KjXUtJEyly; Mon, 12 Apr 2021 14:41:59 +0200 (CEST)
-Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Mon, 12 Apr 2021 14:41:28 +0200 (CEST)
-Message-ID: <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
-Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Petr Mladek <pmladek@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Mon, 12 Apr 2021 14:41:27 +0200
-In-Reply-To: <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Mon, 12 Apr 2021 08:44:04 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618231425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9RuZZ4YV+l/Us1m/Gl2I6gMNQ53ylhCIs4MIYcNu8BU=;
+        b=MruXWSjJepNb9KkoQUa+lcI+0juAUt8HZ2X957HwSkNGAm/DN3lU1Y5cizzDlj2UFmARy8
+        tSZAFvJIUMlazms/oMivAw0j2SBVBBcMOOqF25CWVJ9qaBa7uMNqhOrBNkq1okxAZrePCt
+        QBpF//hntSRN6FXDIqGjqjmdzBaKRMZrkTRoCAU+jkBkG06TZ79WxRxjQkdLRgKTtzqId/
+        rB5tybsxlr8fcp8IZKYLd681qVpsh0e95eOKSMvFldeusmf4GgeRjyUxMPuAmRK1ASfFDt
+        ZsxSOXR+xKRQSQOCjtYtMQK3pMc/M91iXUnkCc3LmEBgAraBu2Ch4qLxM1rYSg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618231425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9RuZZ4YV+l/Us1m/Gl2I6gMNQ53ylhCIs4MIYcNu8BU=;
+        b=yZc/jQ5gj6CXcOugItpqnX2WdyhWZIkock/eHfAL8/F0oScfCQJMBcbvI18/HD7fhTVD2V
+        PBpovqvVcH+A2yAQ==
+To:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] genirq: reduce irqdebug bouncing cachelines
+In-Reply-To: <2dae4501-6f01-1b32-4b69-1dfc94c93425@kaod.org>
+References: <20210402132037.574661-1-npiggin@gmail.com> <87im4u2vxx.ffs@nanos.tec.linutronix.de> <2dae4501-6f01-1b32-4b69-1dfc94c93425@kaod.org>
+Date:   Mon, 12 Apr 2021 14:43:45 +0200
+Message-ID: <87wnt71xmm.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 12.04.2021 (pon) ob 19:39 +0900 je Tetsuo Handa napisal(a):
-> What is the intended usage of /dev/ttyprintk ?
-> 
+C=C3=A9dric,
 
-The intended use of 'ttyprintk' is to redirect console to /dev/ttyprintk
-via the TIOCCONS ioctl. After successfull redirection, all console
-messages get "merged" with kernel messages and as such automatically processed
-(stored/transferred) by the syslog service for example.
+On Mon, Apr 12 2021 at 11:06, C=C3=A9dric Le Goater wrote:
+> On 4/10/21 1:58 PM, Thomas Gleixner wrote:
+>> --- a/kernel/irq/spurious.c
+>> +++ b/kernel/irq/spurious.c
+>> @@ -274,7 +274,7 @@ void note_interrupt(struct irq_desc *des
+>>  	unsigned int irq;
+>>=20=20
+>>  	if (desc->istate & IRQS_POLL_INPROGRESS ||
+>> -	    irq_settings_is_polled(desc))
+>> +	    irq_settings_is_polled(desc) | irq_settings_no_debug(desc))
+>
+> Shouldn't it be '||' instead  ?
 
-best regards, Samo
+It could. But that's intentionally '|'. Why?
 
+Because that lets the compiler merge the bit checks into one and
+therefore spares one conditional branch.
 
+>>  		return;
+>>=20=20
+>>  	if (bad_action_ret(action_ret)) {
+>>=20
+>
+> We could test irq_settings_no_debug() directly under handle_nested_irq()=
+=20
+> and handle_irq_event_percpu() to avoid calling note_interrupt(), just=20
+> like we do for noirqdebug.
+
+We can do that, but then we should not just make it:
+
+   if (!irqnodebug && !irq_settings_no_debug(desc))
+   	note_interrupt(...);
+
+Instead have only one condition:
+
+   if (!irq_settings_no_debug(desc))
+   	note_interrupt(...);
+
+See the uncompiled delta patch below.
+
+Thanks,
+
+        tglx
+---
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1690,6 +1690,9 @@ static int
+ 				irq_settings_set_no_debug(desc);
+ 		}
+=20
++		if (noirqdebug)
++			irq_settings_set_no_debug(desc);
++
+ 		if (new->flags & IRQF_ONESHOT)
+ 			desc->istate |=3D IRQS_ONESHOT;
+=20
+--- a/kernel/irq/spurious.c
++++ b/kernel/irq/spurious.c
+@@ -274,7 +274,7 @@ void note_interrupt(struct irq_desc *des
+ 	unsigned int irq;
+=20
+ 	if (desc->istate & IRQS_POLL_INPROGRESS ||
+-	    irq_settings_is_polled(desc) | irq_settings_no_debug(desc))
++	    irq_settings_is_polled(desc))
+ 		return;
+=20
+ 	if (bad_action_ret(action_ret)) {
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -481,7 +481,7 @@ void handle_nested_irq(unsigned int irq)
+ 	for_each_action_of_desc(desc, action)
+ 		action_ret |=3D action->thread_fn(action->irq, action->dev_id);
+=20
+-	if (!noirqdebug)
++	if (!irq_settings_no_debug(desc))
+ 		note_interrupt(desc, action_ret);
+=20
+ 	raw_spin_lock_irq(&desc->lock);
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -197,7 +197,7 @@ irqreturn_t handle_irq_event_percpu(stru
+=20
+ 	add_interrupt_randomness(desc->irq_data.irq, flags);
+=20
+-	if (!noirqdebug)
++	if (!irq_settings_no_debug(desc))
+ 		note_interrupt(desc, retval);
+ 	return retval;
+ }
