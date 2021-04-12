@@ -2,73 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87D935C6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5A235C6E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241576AbhDLM55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:57:57 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:45404 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241506AbhDLM5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:57:53 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lVw85-00GGXV-JZ; Mon, 12 Apr 2021 14:57:25 +0200
-Date:   Mon, 12 Apr 2021 14:57:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Radu Nicolae Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
+        id S241580AbhDLM6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:58:44 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:58568 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240631AbhDLM6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:58:43 -0400
+Received: from wanjb-KLV-WX9.lan (unknown [60.232.195.58])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 14220400381;
+        Mon, 12 Apr 2021 20:58:23 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: nxp-c45: add driver for tja1103
-Message-ID: <YHRDtTKUI0Uck00n@lunn.ch>
-References: <20210409184106.264463-1-radu-nicolae.pirea@oss.nxp.com>
- <YHCsrVNcZmeTPJzW@lunn.ch>
- <64e44d26f45a4fcfc792073fe195e731e6f7e6d9.camel@oss.nxp.com>
+Cc:     kael_w@yeah.net
+Subject: [PATCH] [v2] selftests: powerpc: Remove unneeded variables
+Date:   Mon, 12 Apr 2021 20:57:44 +0800
+Message-Id: <20210412125746.2766-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <64e44d26f45a4fcfc792073fe195e731e6f7e6d9.camel@oss.nxp.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQktISlZDTh1CT0JPS04YTENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ND46SRw4NT8NEh8XDwEUAUgY
+        NDEKCwlVSlVKTUpDSUhJSEtPS0JJVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlN
+        S1VJSElVSkJOVU5DWVdZCAFZQUxITkM3Bg++
+X-HM-Tid: 0a78c6296015d991kuws14220400381
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 01:02:07PM +0300, Radu Nicolae Pirea (NXP OSS) wrote:
-> On Fri, 2021-04-09 at 21:36 +0200, Andrew Lunn wrote:
-> > On Fri, Apr 09, 2021 at 09:41:06PM +0300, Radu Pirea (NXP OSS) wrote:
-> > > Add driver for tja1103 driver and for future NXP C45 PHYs.
-> > 
-> > So apart from c45 vs c22, how does this differ to nxp-tja11xx.c?
-> > Do we really want two different drivers for the same hardware? 
-> > Can we combine them somehow?
-> It looks like the PHYs are the same hardware, but that's not entirely
-> true. Just the naming is the same. TJA1103 is using a different IP and
-> is having timestamping support(I will add it later).
+Fix coccicheck warning:
 
-Is the IP very different? You often see different generations of a PHY
-supported by the same driver, if the generations are similar.
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:539:5-7:
+Unneeded variable: "rc". Return "0" on line 562
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:567:5-7:
+Unneeded variable: "rc". Return "0" on line 580
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:585:5-7:
+Unneeded variable: "rc". Return "0" on line 594
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:600:5-7:
+Unneeded variable: "rc". Return "0" on line 611
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:416:5-7:
+Unneeded variable: "rc". Return "0" on line 470
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:475:5-7:
+Unneeded variable: "rc". Return "0" on line 485
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:490:5-7:
+Unneeded variable: "rc". Return "0" on line 506
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:511:5-7:
+Unneeded variable: "rc". Return "0" on line 534
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:331:5-7:
+Unneeded variable: "rc". Return "0" on line 344
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:349:5-7:
+Unneeded variable: "rc". Return "0" on line 360
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:365:5-7:
+Unneeded variable: "rc". Return "0" on line 392
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:397:5-7:
+Unneeded variable: "rc". Return "0" on line 411
 
-Does it support C22 or it is purely a C45 device?
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+Changelog:
+v2:
+- Modify the subject line.
+---
+ .../powerpc/alignment/alignment_handler.c     | 48 +++++--------------
+ 1 file changed, 12 insertions(+), 36 deletions(-)
 
-> TJA is also not an Ethernet PHY series, but a general prefix for media
-> interfaces including also CAN, LIN, etc.
-> > 
-> > > +config NXP_C45_PHY
-> > > +       tristate "NXP C45 PHYs"
-> > 
-> > This is also very vague. So in the future it will support PHYs other
-> > than the TJA series?
-> Yes, in the future this driver will support other PHYs too.
+diff --git a/tools/testing/selftests/powerpc/alignment/alignment_handler.c b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+index c25cf7cd45e9..48bfb7b36d84 100644
+--- a/tools/testing/selftests/powerpc/alignment/alignment_handler.c
++++ b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+@@ -328,8 +328,6 @@ static bool can_open_cifile(void)
+ 
+ int test_alignment_handler_vsx_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -341,13 +339,11 @@ int test_alignment_handler_vsx_206(void)
+ 	STORE_VSX_XFORM_TEST(stxvd2x);
+ 	STORE_VSX_XFORM_TEST(stxvw4x);
+ 	STORE_VSX_XFORM_TEST(stxsdx);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_207(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_2_07));
+ 
+@@ -357,13 +353,11 @@ int test_alignment_handler_vsx_207(void)
+ 	LOAD_VSX_XFORM_TEST(lxsiwzx);
+ 	STORE_VSX_XFORM_TEST(stxsspx);
+ 	STORE_VSX_XFORM_TEST(stxsiwx);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_300(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_00));
+@@ -389,13 +383,11 @@ int test_alignment_handler_vsx_300(void)
+ 	STORE_VSX_XFORM_TEST(stxvx);
+ 	STORE_VSX_XFORM_TEST(stxvl);
+ 	STORE_VSX_XFORM_TEST(stxvll);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -408,13 +400,11 @@ int test_alignment_handler_vsx_prefix(void)
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXSSP, 0);
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXV0, 0);
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXV1, 1);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	printf("Integer\n");
+@@ -467,13 +457,11 @@ int test_alignment_handler_integer(void)
+ 	STORE_DFORM_TEST(stmw);
+ #endif
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -482,13 +470,11 @@ int test_alignment_handler_integer_206(void)
+ 	LOAD_XFORM_TEST(ldbrx);
+ 	STORE_XFORM_TEST(stdbrx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -503,13 +489,11 @@ int test_alignment_handler_integer_prefix(void)
+ 	STORE_MLS_PREFIX_TEST(PSTH);
+ 	STORE_MLS_PREFIX_TEST(PSTW);
+ 	STORE_8LS_PREFIX_TEST(PSTD);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vmx(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_HAS_ALTIVEC));
+ 
+@@ -531,13 +515,11 @@ int test_alignment_handler_vmx(void)
+ 	STORE_VMX_XFORM_TEST(stvehx);
+ 	STORE_VMX_XFORM_TEST(stvewx);
+ 	STORE_VMX_XFORM_TEST(stvxl);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	printf("Floating point\n");
+@@ -559,13 +541,11 @@ int test_alignment_handler_fp(void)
+ 	STORE_FLOAT_XFORM_TEST(stfsux);
+ 	STORE_FLOAT_XFORM_TEST(stfiwx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp_205(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_05));
+ 
+@@ -577,13 +557,11 @@ int test_alignment_handler_fp_205(void)
+ 	STORE_FLOAT_DFORM_TEST(stfdp);
+ 	STORE_FLOAT_XFORM_TEST(stfdpx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -591,14 +569,12 @@ int test_alignment_handler_fp_206(void)
+ 
+ 	LOAD_FLOAT_XFORM_TEST(lfiwzx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ 
+ int test_alignment_handler_fp_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -608,7 +584,7 @@ int test_alignment_handler_fp_prefix(void)
+ 	LOAD_FLOAT_MLS_PREFIX_TEST(PLFD);
+ 	STORE_FLOAT_MLS_PREFIX_TEST(PSTFS);
+ 	STORE_FLOAT_MLS_PREFIX_TEST(PSTFD);
+-	return rc;
++	return 0;
+ }
+ 
+ void usage(char *prog)
+-- 
+2.30.2
 
-Based on the same IP? Or different IP? Are we talking about 2 more
-PHYs, so like the nxp-tja11xx.c will support 3 PHYs. And then the
-tja1106 will come along and need a new driver? What will you call
-that? I just don't like 'NXP C45 PHYs", it gives no clue as to what it
-actually supports, and it gives you problems when you need to add yet
-another driver.
-
-At minimum, there needs to be a patch to add tja1102 to the help for
-the nxp-tja11xx.c driver. And this driver needs to list tja1103.
-
-    Andrew
