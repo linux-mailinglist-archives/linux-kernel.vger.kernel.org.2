@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D6535C2DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F6335C2DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244201AbhDLJvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:51:44 -0400
-Received: from ozlabs.org ([203.11.71.1]:35405 "EHLO ozlabs.org"
+        id S244233AbhDLJvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243343AbhDLJmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:42:02 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJkK23pJvz9sCD;
-        Mon, 12 Apr 2021 19:41:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618220503;
-        bh=qKUReVSabx2CuMNjbJlsyrB/4dzn/agdSM7iEVUdJFE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=EI0crJes1a/+RqdpvZLEAvaeJSuKP8N8cwfdww93gWYxTDEwk/z7w5zNQZG5BAEZd
-         ev3Jn5y9op0/i9JCxYb9TguxAMm8bB/voRAgJLL4Ijy05V7KcdYLFTXDKOke8vJbCS
-         RjzGshVhLlUYRHa2SNMBvGbr1dFb2MSejY1iYDIauJls7QOB5ypl7lVgKongVwTmuD
-         7h+MR2KVudCiNQSNYaaKPV9eqVoxbvnpndlLZmB3u5KZfN+rX/LVphobTYVG53Z3+L
-         d6f1izCOSt7lDm1hwVd+/bwDl0PSXgw/yDq+w0FxS9jnvnqXM2ThTwAITB7vaKbRMa
-         6M/gf3g51FSHQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/2] vfio/pci: remove vfio_pci_nvlink2
-In-Reply-To: <20210406133805.715120bd@omen>
-References: <20210326061311.1497642-1-hch@lst.de>
- <20210326061311.1497642-2-hch@lst.de> <20210406133805.715120bd@omen>
-Date:   Mon, 12 Apr 2021 19:41:41 +1000
-Message-ID: <87y2dndelm.fsf@mpe.ellerman.id.au>
+        id S243475AbhDLJmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:42:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D6F61241;
+        Mon, 12 Apr 2021 09:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618220516;
+        bh=nryu7mJqQngn8j8YZtZLJYylcpSAA1GV7IacvGJBhU8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=STuZV4GG16WFSbDXkoIzgUj4qrGE+BNfUh2Lg/WrGBN+xuo3qmDW8oxav8Am7+q5q
+         gF/rw4eY3zm1BugsCBhA865iV4Ks6WF33e28RZbPtqreibVHp1BFK68nJtVmCtWld+
+         laVT1Liw4U7iEvDtgZ3dSDEJzsCG9W3QZLfwevTY=
+Date:   Mon, 12 Apr 2021 11:41:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: emxx_udc: remove useless variable
+Message-ID: <YHQV4sX6rGjFb9yj@kroah.com>
+References: <1618195990-85967-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1618195990-85967-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alex Williamson <alex.williamson@redhat.com> writes:
-> On Fri, 26 Mar 2021 07:13:10 +0100
-> Christoph Hellwig <hch@lst.de> wrote:
+On Mon, Apr 12, 2021 at 10:53:10AM +0800, Jiapeng Chong wrote:
+> Fix the following gcc warning:
+> 
+> vers/staging/emxx_udc/emxx_udc.c:41:19: warning: ‘driver_desc’ defined
+> but not used [-Wunused-const-variable=].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/staging/emxx_udc/emxx_udc.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+> index 3536c03..741147a 100644
+> --- a/drivers/staging/emxx_udc/emxx_udc.c
+> +++ b/drivers/staging/emxx_udc/emxx_udc.c
+> @@ -38,7 +38,6 @@
+>  static int vbus_irq;
+>  
+>  static const char	driver_name[] = "emxx_udc";
+> -static const char	driver_desc[] = DRIVER_DESC;
+>  
+>  /*===========================================================================*/
+>  /* Prototype */
+> -- 
+> 1.8.3.1
+> 
 >
->> This driver never had any open userspace (which for VFIO would include
->> VM kernel drivers) that use it, and thus should never have been added
->> by our normal userspace ABI rules.
->> 
->> Signed-off-by: Christoph Hellwig <hch@lst.de>
->> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>  drivers/vfio/pci/Kconfig            |   6 -
->>  drivers/vfio/pci/Makefile           |   1 -
->>  drivers/vfio/pci/vfio_pci.c         |  18 -
->>  drivers/vfio/pci/vfio_pci_nvlink2.c | 490 ----------------------------
->>  drivers/vfio/pci/vfio_pci_private.h |  14 -
->>  include/uapi/linux/vfio.h           |  38 +--
->>  6 files changed, 4 insertions(+), 563 deletions(-)
->>  delete mode 100644 drivers/vfio/pci/vfio_pci_nvlink2.c
->
-> Hearing no objections, applied to vfio next branch for v5.13.  Thanks,
 
-Looks like you only took patch 1?
-
-I can't take patch 2 on its own, that would break the build.
-
-Do you want to take both patches? There's currently no conflicts against
-my tree. It's possible one could appear before the v5.13 merge window,
-though it would probably just be something minor.
-
-Or I could apply both patches to my tree, which means patch 1 would
-appear as two commits in the git history, but that's not a big deal.
-
-cheers
+Does not apply to my tree at all :(
