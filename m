@@ -2,201 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2094635C7D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208C835C7D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240809AbhDLNmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237043AbhDLNmM (ORCPT
+        id S242014AbhDLNlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:41:44 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:54005 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239992AbhDLNlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:42:12 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1E2C061574;
-        Mon, 12 Apr 2021 06:41:54 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id v26so13459489iox.11;
-        Mon, 12 Apr 2021 06:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Pv38UteoXPGc9YXROMqdyiZjnIKpHuvd+rCQ+sbZeWw=;
-        b=IgnsvOg1yc+DKw8WBbPTuGFqtyCK45AVOGjp7CUdDarvXkIV1poSdV+eQLDgcHxDX8
-         Kvz4nv3sE9Z8txCaFm6Ndroo5pPbrpSZsoCqj2eEK9gSs7icFybeHwkXzqyI5Kw9fV+x
-         RK4S1ye3TnixqXv22X/w+CYQrVM4THdn1vMNtmM7f+kM57up82nKNlzola6F5LqheT0S
-         S1G8hqz0525+dQX7t/7F5/MXkGv97BZHCe0PRHQ64R9yIBNWdxVVS0k+W6yafbdYiDQO
-         SHpxtq+Lj3tVf8KW0UK2n/wGNiEj3SltZUBkx5v9nuQCIhU5HNQQa4aIbbH6vu3xEM3z
-         OYKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Pv38UteoXPGc9YXROMqdyiZjnIKpHuvd+rCQ+sbZeWw=;
-        b=S9SLGTrR8Q13sUCWYLuccDT35NhmRgX16nD4IGAp96O63Uz/Pt6t6icjKGkkpRu1sF
-         An9c+F/dtoQ2DnEdVvVHfBeR8moJalNFItm4FcwyNPQZMdAYoHYbWaI08GcbbhxBR/l3
-         F9ssb9bAfFMfUfKllaBHMjkrm5oMG/NSNWyYxK35IyDGsl9xgn/dDUa4DkfzT1hs/YOH
-         OMsGWQrf+IJ2KzaK4y92vNVmi/1B3gr+u65Y4p75i5qEoPo4UeNennsge+Y9WyM1YWvJ
-         F+Dlw0iwG3KKHecxrkyBwuNXJOClHHt2zarTWBMp0uK4+EqZq5DdaE97Ia+dZwsYU+lH
-         idMw==
-X-Gm-Message-State: AOAM530jqvrnioVjx/1EdemXeBxA8JIVfERGp3U6xhtCVhVRldS/MxlE
-        COqWvz2r0dDTkA3nPNayN8F409bqJVoHN4EAMyM=
-X-Google-Smtp-Source: ABdhPJyIRqHuaDnOp8+loeCg8vnJNjHw72xLypbdBBrx8vI6+21/qEwTHah2Nclx/TaTP2h1BcpOzUH+VGmoo5YxRzQ=
-X-Received: by 2002:a02:818b:: with SMTP id n11mr4899093jag.62.1618234913716;
- Mon, 12 Apr 2021 06:41:53 -0700 (PDT)
+        Mon, 12 Apr 2021 09:41:39 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 1FDF3E0012;
+        Mon, 12 Apr 2021 13:41:18 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 15:41:57 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen.Hristev@microchip.com
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 30/30] media: atmel: atmel-isc: add microchip-xisc
+ driver
+Message-ID: <20210412134157.4cqva5thylmiqds7@uno.localdomain>
+References: <20210405155105.162529-1-eugen.hristev@microchip.com>
+ <20210405155105.162529-31-eugen.hristev@microchip.com>
+ <a22c2065-1a79-8a96-2b54-a2e28fa08b8a@microchip.com>
 MIME-Version: 1.0
-Received: by 2002:a5d:8a0e:0:0:0:0:0 with HTTP; Mon, 12 Apr 2021 06:41:53
- -0700 (PDT)
-In-Reply-To: <f3985d70-4f00-7442-de4e-e382b19e3e50@foss.st.com>
-References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
- <YHPgGI6EmTzmVH7g@kroah.com> <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
- <YHQEA9jn5uXQCtrN@kroah.com> <CAL9mu0+hi5eYEder1Mj2yjUN+eicJ9qG8Kr4GTC2mqfY405Jkg@mail.gmail.com>
- <f3985d70-4f00-7442-de4e-e382b19e3e50@foss.st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Mon, 12 Apr 2021 21:41:53 +0800
-Message-ID: <CAL9mu0LnxD69Y2F_TK_b+N5QhMS6bjz6YU-zJdscY75S3jj8qQ@mail.gmail.com>
-Subject: Re: [Linux-stm32] [PATCH] serial: stm32: optimize spin lock usage
-To:     Erwan LE RAY <erwan.leray@foss.st.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-serial@vger.kernel.org,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        jirislaby@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a22c2065-1a79-8a96-2b54-a2e28fa08b8a@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21, Erwan LE RAY <erwan.leray@foss.st.com> wrote:
-> Hi Dillon,
->
-> Thanks for your patch.
->
-> Could you please elaborate the use case in your commit message ?
+Hi Eugene,
 
-Sorry, local_irq_save() plus spin_lock() same to spin_lock_irqsave()
-There is no deadlock . Please ignore this patch.
+On Mon, Apr 12, 2021 at 12:37:41PM +0000, Eugen.Hristev@microchip.com wrote:
+> > +static int xisc_parse_dt(struct device *dev, struct isc_device *isc)
+> > +{
+> > +	struct device_node *np = dev->of_node;
+> > +	struct device_node *epn = NULL;
+> > +	struct isc_subdev_entity *subdev_entity;
+> > +	unsigned int flags;
+> > +	int ret;
+> > +	bool mipi_mode;
+> > +
+> > +	INIT_LIST_HEAD(&isc->subdev_entities);
+> > +
+> > +	mipi_mode = of_property_read_bool(np, "microchip,mipi-mode");
+> > +
+> > +	while (1) {
+> > +		struct v4l2_fwnode_endpoint v4l2_epn = { .bus_type = 0 };
+> > +
+> > +		epn = of_graph_get_next_endpoint(np, epn);
+> > +		if (!epn)
+> > +			return 0;
+> > +
+> > +		ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(epn),
+> > +						 &v4l2_epn);
+> > +		if (ret) {
+> > +			ret = -EINVAL;
+> > +			dev_err(dev, "Could not parse the endpoint\n");
+> > +			break;
+> > +		}
+> > +
+> > +		subdev_entity = devm_kzalloc(dev, sizeof(*subdev_entity),
+> > +					     GFP_KERNEL);
+> > +		if (!subdev_entity) {
+> > +			ret = -ENOMEM;
+> > +			break;
+> > +		}
+> > +		subdev_entity->epn = epn;
+> > +
+> > +		flags = v4l2_epn.bus.parallel.flags;
+> > +
+> > +		if (flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+> > +			subdev_entity->pfe_cfg0 = ISC_PFE_CFG0_HPOL_LOW;
+> > +
+> > +		if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> > +			subdev_entity->pfe_cfg0 |= ISC_PFE_CFG0_VPOL_LOW;
+> > +
+> > +		if (flags & V4L2_MBUS_PCLK_SAMPLE_FALLING)
+> > +			subdev_entity->pfe_cfg0 |= ISC_PFE_CFG0_PPOL_LOW;
+> > +
+> > +		if (v4l2_epn.bus_type == V4L2_MBUS_BT656)
+> > +			subdev_entity->pfe_cfg0 |= ISC_PFE_CFG0_CCIR_CRC |
+> > +					ISC_PFE_CFG0_CCIR656;
+>
+> Hi Jacopo,
+>
+> If I use the bus-type property for the 'port' , do I actually have to
+> change something here ?
+
+You can set bus_type to the desired type, if it doesn't match the
+'bus-type' property you will have an immediate error and a more strict
+check on the properties.
+
+You would likely:
+
+        v4l2_epn.bus_type = V4L2_MBUS_PARALLEL;
+        ret = v4l2_fwnode_endpoint_parse()
+        if (!ret) {
+                /* It's parallel */
+        } else {
+                v4l2_epn.bus_type = V4L2_MBUS_BT656;
+                ret = v4l2_fwnode_endpoint_parse()
+                if (ret) {
+                        /* Unsupported bus type: error out. */
+                }
+
+                /* It's BT656 */
+        }
+
+Not the greatest API, but it's more robust.
+
+> the v4l2_epn.bus_type won't be set automatically ? by the endpoint
+> parser I mean.
+
+Yes, that's what auto-discovery is, the endpoint parser tries to
+deduce the bus type from the properties that are there specified. It
+works, but leaves quite some ambiguity between ie PARALLEL and BT656
+as some polarities might not be necessarily specified even for
+PARALLEL bus types.
+
+As I've said, there's still plenty of code that relies on
+auto-discovery so I don't think this is blocking, also because making
+bus-type mandatory on existing DTS is quite painful. Since this is a
+new DTS you can consider this solution if you want to.
 
 Thanks
+   j
 
-Dillon
 >
-> Best Regards, Erwan.
+> Thanks,
+> Eugen
 >
-> On 4/12/21 10:54 AM, dillon min wrote:
->> Hi Greg,
->>
->> On Mon, Apr 12, 2021 at 4:25 PM Greg KH <gregkh@linuxfoundation.org>
->> wrote:
->>>
->>> On Mon, Apr 12, 2021 at 02:50:20PM +0800, dillon min wrote:
->>>> Hi Greg=EF=BC=8C
->>>>
->>>> Thanks for the quick response, please ignore the last private mail.
->>>>
->>>> On Mon, Apr 12, 2021 at 1:52 PM Greg KH <gregkh@linuxfoundation.org>
->>>> wrote:
->>>>>
->>>>> On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com
->>>>> wrote:
->>>>>> From: dillon min <dillon.minfei@gmail.com>
->>>>>>
->>>>>> To avoid potential deadlock in spin_lock usage, change to use
->>>>>> spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn)
->>>>>> context.
->>>>>> spin_lock(), spin_unlock() under handler context.
->>>>>>
->>>>>> remove unused local_irq_save/restore call.
->>>>>>
->>>>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
->>>>>> ---
->>>>>> Was verified on stm32f469-disco board. need more test on stm32mp
->>>>>> platform.
->>>>>>
->>>>>>   drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
->>>>>>   1 file changed, 17 insertions(+), 10 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/tty/serial/stm32-usart.c
->>>>>> b/drivers/tty/serial/stm32-usart.c
->>>>>> index b3675cf25a69..c4c859b34367 100644
->>>>>> --- a/drivers/tty/serial/stm32-usart.c
->>>>>> +++ b/drivers/tty/serial/stm32-usart.c
->>>>>> @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct
->>>>>> uart_port *port, bool threaded)
->>>>>>        struct tty_port *tport =3D &port->state->port;
->>>>>>        struct stm32_port *stm32_port =3D to_stm32_port(port);
->>>>>>        const struct stm32_usart_offsets *ofs =3D
->>>>>> &stm32_port->info->ofs;
->>>>>> -     unsigned long c;
->>>>>> +     unsigned long c, flags;
->>>>>>        u32 sr;
->>>>>>        char flag;
->>>>>>
->>>>>> @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct
->>>>>> uart_port *port, bool threaded)
->>>>>>                uart_insert_char(port, sr, USART_SR_ORE, c, flag);
->>>>>>        }
->>>>>>
->>>>>> -     spin_unlock(&port->lock);
->>>>>> +     if (threaded)
->>>>>> +             spin_unlock_irqrestore(&port->lock, flags);
->>>>>> +     else
->>>>>> +             spin_unlock(&port->lock);
->>>>>
->>>>> You shouldn't have to check for this, see the other patches on the
->>>>> list
->>>>> recently that fixed this up to not be an issue for irq handlers.
->>>> Can you help to give more hints, or the commit id of the patch which
->>>> fixed this. thanks.
->>>>
->>>> I'm still confused with this.
->>>>
->>>> The stm32_usart_threaded_interrupt() is a kthread context, once
->>>> port->lock holds by this function, another serial interrupts raised,
->>>> such as USART_SR_TXE,stm32_usart_interrupt() can't get the lock,
->>>> there will be a deadlock. isn't it?
->>>>
->>>>   So, shouldn't I use spin_lock{_irqsave} according to the caller's
->>>> context ?
->>>
->>> Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
->>> handlers") for when threaded irq handlers have irqs disabled, isn't tha=
-t
->>> the case you are trying to "protect" from here?
->>>
->>> Why is the "threaded" flag used at all?  The driver should not care.
->>>
->>> Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
->>> threading") in linux-next for an example of how this was fixed up in a
->>> serial driver.
->>>
->>> does that help?
->>>
->> Yes, it's really helpful. and 81e2073c175b should be highlighted in a
->> doc.
->> In my past knowledge, we should care about hard irq & thread_fn lock
->> conflict.
->> This patch has totally avoided patching code in the separate driver side=
-.
->> thanks.
->>
->> I will just keep the changes in stm32_usart_console_write(), remove
->> these code in
->> thread_fn. update version 2 for you.
->>
->> thanks.
->>
->> Dillon,
->>> thanks,
->>>
->>> greg k-h
->> _______________________________________________
->> Linux-stm32 mailing list
->> Linux-stm32@st-md-mailman.stormreply.com
->> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
->>
+> > +
+> > +		if (mipi_mode)
+> > +			subdev_entity->pfe_cfg0 |= ISC_PFE_CFG0_MIPI;
+> > +
+> > +		list_add_tail(&subdev_entity->list, &isc->subdev_entities);
+> > +	}
+> > +	of_node_put(epn);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int microchip_xisc_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct isc_device *isc;
+> > +	struct resource *res;
+> > +	void __iomem *io_base;
+> > +	struct isc_subdev_entity *subdev_entity;
+> > +	int irq;
+> > +	int ret;
+> > +	u32 ver;
+> > +
+> > +	isc = devm_kzalloc(dev, sizeof(*isc), GFP_KERNEL);
+> > +	if (!isc)
+> > +		return -ENOMEM;
+> > +
+> > +	platform_set_drvdata(pdev, isc);
+> > +	isc->dev = dev;
+> > +
+> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	io_base = devm_ioremap_resource(dev, res);
+> > +	if (IS_ERR(io_base))
+> > +		return PTR_ERR(io_base);
+> > +
+> > +	isc->regmap = devm_regmap_init_mmio(dev, io_base, &isc_regmap_config);
+> > +	if (IS_ERR(isc->regmap)) {
+> > +		ret = PTR_ERR(isc->regmap);
+> > +		dev_err(dev, "failed to init register map: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	irq = platform_get_irq(pdev, 0);
+> > +	if (irq < 0)
+> > +		return irq;
+> > +
+> > +	ret = devm_request_irq(dev, irq, isc_interrupt, 0,
+> > +			       "microchip-sama7g5-xisc", isc);
+> > +	if (ret < 0) {
+> > +		dev_err(dev, "can't register ISR for IRQ %u (ret=%i)\n",
+> > +			irq, ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	isc->gamma_table = isc_sama7g5_gamma_table;
+> > +	isc->gamma_max = 0;
+> > +
+> > +	isc->max_width = ISC_SAMA7G5_MAX_SUPPORT_WIDTH;
+> > +	isc->max_height = ISC_SAMA7G5_MAX_SUPPORT_HEIGHT;
+> > +
+> > +	isc->config_dpc = isc_sama7g5_config_dpc;
+> > +	isc->config_csc = isc_sama7g5_config_csc;
+> > +	isc->config_cbc = isc_sama7g5_config_cbc;
+> > +	isc->config_cc = isc_sama7g5_config_cc;
+> > +	isc->config_gam = isc_sama7g5_config_gam;
+> > +	isc->config_rlp = isc_sama7g5_config_rlp;
+> > +	isc->config_ctrls = isc_sama7g5_config_ctrls;
+> > +
+> > +	isc->adapt_pipeline = isc_sama7g5_adapt_pipeline;
+> > +
+> > +	isc->offsets.csc = ISC_SAMA7G5_CSC_OFFSET;
+> > +	isc->offsets.cbc = ISC_SAMA7G5_CBC_OFFSET;
+> > +	isc->offsets.sub422 = ISC_SAMA7G5_SUB422_OFFSET;
+> > +	isc->offsets.sub420 = ISC_SAMA7G5_SUB420_OFFSET;
+> > +	isc->offsets.rlp = ISC_SAMA7G5_RLP_OFFSET;
+> > +	isc->offsets.his = ISC_SAMA7G5_HIS_OFFSET;
+> > +	isc->offsets.dma = ISC_SAMA7G5_DMA_OFFSET;
+> > +	isc->offsets.version = ISC_SAMA7G5_VERSION_OFFSET;
+> > +	isc->offsets.his_entry = ISC_SAMA7G5_HIS_ENTRY_OFFSET;
+> > +
+> > +	isc->controller_formats = sama7g5_controller_formats;
+> > +	isc->controller_formats_size = ARRAY_SIZE(sama7g5_controller_formats);
+> > +	isc->formats_list = sama7g5_formats_list;
+> > +	isc->formats_list_size = ARRAY_SIZE(sama7g5_formats_list);
+> > +
+> > +	/* sama7g5-isc RAM access port is full AXI4 - 32 bits per beat */
+> > +	isc->dcfg = ISC_DCFG_YMBSIZE_BEATS32 | ISC_DCFG_CMBSIZE_BEATS32;
+> > +
+> > +	ret = isc_pipeline_init(isc);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	isc->hclock = devm_clk_get(dev, "hclock");
+> > +	if (IS_ERR(isc->hclock)) {
+> > +		ret = PTR_ERR(isc->hclock);
+> > +		dev_err(dev, "failed to get hclock: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(isc->hclock);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to enable hclock: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = isc_clk_init(isc);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to init isc clock: %d\n", ret);
+> > +		goto unprepare_hclk;
+> > +	}
+> > +
+> > +	isc->ispck = isc->isc_clks[ISC_ISPCK].clk;
+> > +
+> > +	ret = clk_prepare_enable(isc->ispck);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to enable ispck: %d\n", ret);
+> > +		goto unprepare_hclk;
+> > +	}
+> > +
+> > +	/* ispck should be greater or equal to hclock */
+> > +	ret = clk_set_rate(isc->ispck, clk_get_rate(isc->hclock));
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to set ispck rate: %d\n", ret);
+> > +		goto unprepare_clk;
+> > +	}
+> > +
+> > +	ret = v4l2_device_register(dev, &isc->v4l2_dev);
+> > +	if (ret) {
+> > +		dev_err(dev, "unable to register v4l2 device.\n");
+> > +		goto unprepare_clk;
+> > +	}
+> > +
+> > +	ret = xisc_parse_dt(dev, isc);
+> > +	if (ret) {
+> > +		dev_err(dev, "fail to parse device tree\n");
+> > +		goto unregister_v4l2_device;
+> > +	}
+> > +
+> > +	if (list_empty(&isc->subdev_entities)) {
+> > +		dev_err(dev, "no subdev found\n");
+> > +		ret = -ENODEV;
+> > +		goto unregister_v4l2_device;
+> > +	}
+> > +
+> > +	list_for_each_entry(subdev_entity, &isc->subdev_entities, list) {
+> > +		struct v4l2_async_subdev *asd;
+> > +
+> > +		v4l2_async_notifier_init(&subdev_entity->notifier);
+> > +
+> > +		asd = v4l2_async_notifier_add_fwnode_remote_subdev(
+> > +					&subdev_entity->notifier,
+> > +					of_fwnode_handle(subdev_entity->epn),
+> > +					struct v4l2_async_subdev);
+> > +
+> > +		of_node_put(subdev_entity->epn);
+> > +		subdev_entity->epn = NULL;
+> > +
+> > +		if (IS_ERR(asd)) {
+> > +			ret = PTR_ERR(asd);
+> > +			goto cleanup_subdev;
+> > +		}
+> > +
+> > +		subdev_entity->notifier.ops = &isc_async_ops;
+> > +
+> > +		ret = v4l2_async_notifier_register(&isc->v4l2_dev,
+> > +						   &subdev_entity->notifier);
+> > +		if (ret) {
+> > +			dev_err(dev, "fail to register async notifier\n");
+> > +			goto cleanup_subdev;
+> > +		}
+> > +
+> > +		if (video_is_registered(&isc->video_dev))
+> > +			break;
+> > +	}
+> > +
+> > +	pm_runtime_set_active(dev);
+> > +	pm_runtime_enable(dev);
+> > +	pm_request_idle(dev);
+> > +
+> > +	regmap_read(isc->regmap, ISC_VERSION + isc->offsets.version, &ver);
+> > +	dev_info(dev, "Microchip XISC version %x\n", ver);
+> > +
+> > +	return 0;
+> > +
+> > +cleanup_subdev:
+> > +	isc_subdev_cleanup(isc);
+> > +
+> > +unregister_v4l2_device:
+> > +	v4l2_device_unregister(&isc->v4l2_dev);
+> > +
+> > +unprepare_clk:
+> > +	clk_disable_unprepare(isc->ispck);
+> > +unprepare_hclk:
+> > +	clk_disable_unprepare(isc->hclock);
+> > +
+> > +	isc_clk_cleanup(isc);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int microchip_xisc_remove(struct platform_device *pdev)
+> > +{
+> > +	struct isc_device *isc = platform_get_drvdata(pdev);
+> > +
+> > +	pm_runtime_disable(&pdev->dev);
+> > +
+> > +	isc_subdev_cleanup(isc);
+> > +
+> > +	v4l2_device_unregister(&isc->v4l2_dev);
+> > +
+> > +	clk_disable_unprepare(isc->ispck);
+> > +	clk_disable_unprepare(isc->hclock);
+> > +
+> > +	isc_clk_cleanup(isc);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused xisc_runtime_suspend(struct device *dev)
+> > +{
+> > +	struct isc_device *isc = dev_get_drvdata(dev);
+> > +
+> > +	clk_disable_unprepare(isc->ispck);
+> > +	clk_disable_unprepare(isc->hclock);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused xisc_runtime_resume(struct device *dev)
+> > +{
+> > +	struct isc_device *isc = dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret = clk_prepare_enable(isc->hclock);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = clk_prepare_enable(isc->ispck);
+> > +	if (ret)
+> > +		clk_disable_unprepare(isc->hclock);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct dev_pm_ops microchip_xisc_dev_pm_ops = {
+> > +	SET_RUNTIME_PM_OPS(xisc_runtime_suspend, xisc_runtime_resume, NULL)
+> > +};
+> > +
+> > +static const struct of_device_id microchip_xisc_of_match[] = {
+> > +	{ .compatible = "microchip,sama7g5-isc" },
+> > +	{ }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, microchip_xisc_of_match);
+> > +
+> > +static struct platform_driver microchip_xisc_driver = {
+> > +	.probe	= microchip_xisc_probe,
+> > +	.remove	= microchip_xisc_remove,
+> > +	.driver	= {
+> > +		.name		= "microchip-sama7g5-xisc",
+> > +		.pm		= &microchip_xisc_dev_pm_ops,
+> > +		.of_match_table = of_match_ptr(microchip_xisc_of_match),
+> > +	},
+> > +};
+> > +
+> > +module_platform_driver(microchip_xisc_driver);
+> > +
+> > +MODULE_AUTHOR("Eugen Hristev <eugen.hristev@microchip.com>");
+> > +MODULE_DESCRIPTION("The V4L2 driver for Microchip-XISC");
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_SUPPORTED_DEVICE("video");
+> >
 >
