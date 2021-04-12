@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141AD35D3F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A3635D3F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344136AbhDLX2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:28:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244732AbhDLX2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344124AbhDLX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 12 Apr 2021 19:28:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41691 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237531AbhDLX2R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:28:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618270079;
+        s=mimecast20190719; t=1618270078;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=B3MciDovAET7AdKaJb34X6uAEc0eUn8r5vV5LysAEI0=;
-        b=Fz1YrF9QH8bw1O9dsL3Biwn7wRVd9ycfDrSFrSVjxNPLrd6MLrUDcl6rNulzV5VfDRTICw
-        9pDi9qxEYYGmacx6cE+Nrr11b9wPBChP3qzf7eFsPVxT5bj+v9BmrhiYjngAbHEX0z3AAu
-        PNbulcSPdfoKYBoI6iO6tMgIPKYeUYY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-bmmwlZyEMv2gGs497nqK8w-1; Mon, 12 Apr 2021 19:27:56 -0400
-X-MC-Unique: bmmwlZyEMv2gGs497nqK8w-1
-Received: by mail-qk1-f199.google.com with SMTP id 79so3491958qkm.20
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:27:56 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8RGMu5U4C672ZFkUHV1HUutAzRw00/5hGpU2qjqaw+g=;
+        b=ik+iRlrxh7hPPnvos0zGnriJrBvCGHLz7LS/hXsW0VlqT/44lnwqPkVLIZdMhvqyIY2vL7
+        P45Cac3nxhfzzu9w8Nz6nesUDiil+uokWPMrYKM5/Fky4ZkMuM03emRjKSpCzapKpeYDa9
+        2YhK6x7SSgx0bgyRYSwClvu97yLoqFE=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-bZTjzXCXPzukV_petnkBmQ-1; Mon, 12 Apr 2021 19:27:57 -0400
+X-MC-Unique: bZTjzXCXPzukV_petnkBmQ-1
+Received: by mail-qv1-f69.google.com with SMTP id p2so8977670qvi.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:27:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=B3MciDovAET7AdKaJb34X6uAEc0eUn8r5vV5LysAEI0=;
-        b=a6ux8mIiqE9d6DsrB8CPYMij/FmBknmbo5VFEcykp6JeLM806W4HC7olTFYEo9oN42
-         aGtDnHRm7njyUr2mSQOXgqdCMv0GlVg6QkKn23B+tUXvvosDLlol1Wx3zQ6U6s3OMi4x
-         TsKePn95BfjgZDIOsw5wmUvE1S8aBKbxbLJ4mQiMZaf6g6YIUPwcvWBKhEHWVJ5Fs3N4
-         5bPyCs3wwshUkuvt4TuAZ7KTkYrm48/I/Tz6E7ps++PoNE4Ycl8QE4ezvJb2zviwBcw/
-         pLglnOpkAtJJoPJmDju5gzEmXotJCrwNXalN4A3PLu4pu+q5utK80hpFBOqc4Cduc1UG
-         pxdQ==
-X-Gm-Message-State: AOAM531ap86kK0KHF3fTO+tj5ynbtMzulPULxZmnUtabAvKIXCqw2wS7
-        dGMhNrH/CHl6o3CIb1g8O1UJZQeZ27WwrPFHJC+PKJC5B4qO0QduhOGBJ2GSchRiY2t4rJK9sp2
-        TCVDw5nPXNs4WN3bs0FR2Vvup
-X-Received: by 2002:ac8:4899:: with SMTP id i25mr15885739qtq.59.1618270075672;
-        Mon, 12 Apr 2021 16:27:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9oKrYFJovLvCdWOPw1lzMa5WybRJob4vZYvb0D1NdJvR0XacKd6O0BbBXdl435m22pa3oug==
-X-Received: by 2002:ac8:4899:: with SMTP id i25mr15885710qtq.59.1618270075445;
-        Mon, 12 Apr 2021 16:27:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8RGMu5U4C672ZFkUHV1HUutAzRw00/5hGpU2qjqaw+g=;
+        b=TvJ7f+Ev7WvYoyG8TYXn4I1/9WkIM2IYCIeGOrrAkt5VMXfrVj1cHe+GVS5ODtScW6
+         2uk+zI30TUgynOHeNSjYgJ8Fwf+GcVYaiVMLQfB3q3G9Ak+JkZUKSj+HcS9Y/tBW6nPe
+         8eoNJytq9fIcCnsDw/MUS7WfdwsMCIAS+bYIbMXgweMfqfGjtGFxE4uQ9ZlIwZFMkfYp
+         wyUZ2/cx9xNHVxrQujXjcgGWIpwOtk+DeZXAL/8gdAQJ9T7JP6/wJHcXz54IKjlZnDO0
+         iCg0H0Tz40xLhqOi5EM0lmvHR6PWjULZ5oSNclpUzUMzbXDSkDx2zR6LfM+OA7k4ZkvL
+         3N+A==
+X-Gm-Message-State: AOAM5337JYuBwu5OfKCpbjzSiXS5DpP4LB2V3HUGv1Mw+QMQ2MwrV9Gz
+        3Fo0B5vt6r1x4w5f0TZcsysfxBC6a2gp/N6Q0JugZmDwb/ZY8KitjSR7eDXl5VHXe4BwzsXBZ3F
+        ODSJXlYbP7jOoDTC87QOJkVGK
+X-Received: by 2002:ac8:6d09:: with SMTP id o9mr3892032qtt.382.1618270076826;
+        Mon, 12 Apr 2021 16:27:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxn5W/tQj+R3pMmXzP0Ur8Z8NUkCG0N6aVa54TjdIDXDmk9C1P06JrNCv3t9AkIZY1b6K3Tow==
+X-Received: by 2002:ac8:6d09:: with SMTP id o9mr3892019qtt.382.1618270076645;
+        Mon, 12 Apr 2021 16:27:56 -0700 (PDT)
 Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id y29sm8958925qtm.13.2021.04.12.16.27.54
+        by smtp.gmail.com with ESMTPSA id y29sm8958925qtm.13.2021.04.12.16.27.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 16:27:54 -0700 (PDT)
+        Mon, 12 Apr 2021 16:27:56 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Rapoport <rppt@linux.vnet.ibm.com>,
         Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH v2 0/5] userfaultfd/selftests: A few cleanups
-Date:   Mon, 12 Apr 2021 19:27:48 -0400
-Message-Id: <20210412232753.1012412-1-peterx@redhat.com>
+Subject: [PATCH v2 1/5] userfaultfd/selftests: Use user mode only
+Date:   Mon, 12 Apr 2021 19:27:49 -0400
+Message-Id: <20210412232753.1012412-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210412232753.1012412-1-peterx@redhat.com>
+References: <20210412232753.1012412-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2:=0D
-- rebase to v5.12-rc7-mmots-2021-04-11-20-49=0D
-- collect r-bs from Axel=0D
-=0D
-I wanted to cleanup userfaultfd.c fault handling for a long time. If it's n=
-ot=0D
-cleaned, when the new code grows the file it'll also grow the size that nee=
-ds=0D
-to be cleaned...  This is my attempt to cleanup the userfaultfd selftest on=
-=0D
-fault handling, to use an err() macro instead of either fprintf() or perror=
-()=0D
-then another exit() call.=0D
-=0D
-The huge cleanup is done in the last patch.  The first 4 patches are some o=
-ther=0D
-standalone cleanups for the same file, so I put them together.=0D
-=0D
-Please review, thanks.=0D
-=0D
-Peter Xu (5):=0D
-  userfaultfd/selftests: Use user mode only=0D
-  userfaultfd/selftests: Remove the time() check on delayed uffd=0D
-  userfaultfd/selftests: Dropping VERIFY check in locking_thread=0D
-  userfaultfd/selftests: Only dump counts if mode enabled=0D
-  userfaultfd/selftests: Unify error handling=0D
-=0D
- tools/testing/selftests/vm/userfaultfd.c | 649 ++++++++---------------=0D
- 1 file changed, 208 insertions(+), 441 deletions(-)=0D
-=0D
--- =0D
-2.26.2=0D
-=0D
+Userfaultfd selftest does not need to handle kernel initiated fault.  Set user
+mode so it can be run even if unprivileged_userfaultfd=0 (which is the default).
+
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ tools/testing/selftests/vm/userfaultfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index f5ab5e0312e7..ce23db8eec26 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -831,7 +831,7 @@ static int userfaultfd_open_ext(uint64_t *features)
+ {
+ 	struct uffdio_api uffdio_api;
+ 
+-	uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
++	uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK | UFFD_USER_MODE_ONLY);
+ 	if (uffd < 0) {
+ 		fprintf(stderr,
+ 			"userfaultfd syscall not available in this kernel\n");
+-- 
+2.26.2
 
