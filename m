@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F62B35CA7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1800235CA7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243179AbhDLPxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S243185AbhDLPxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243013AbhDLPxP (ORCPT
+        with ESMTP id S243188AbhDLPxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:53:15 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD00C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:52:57 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so7183294wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:52:57 -0700 (PDT)
+        Mon, 12 Apr 2021 11:53:21 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E6CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:53:03 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id c16so13906712oib.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uV02flmSrRt81WJ4T3wiSuGURL6Hk/SHKuFa7qavV00=;
-        b=RjCj+XhW0mahSBR+DCjq261dtioFS3pQNq26EqT2Eme+Qgs1kQY7q87bJJp6ROMlz3
-         5TJYBHplQvmY0YB9sIglMsOH5V6KN8wL8vLTUZ+aqt4weVGFL7awcTi24PtR3Gb6H5wD
-         a5CsXAlFfYCAtrqLykuU0dVkaBOrQV2/tlGJX2Uu5CL7VEaIAXlUYSRbE7woTcHatmL4
-         rGlNPvxo33IMFNfke109vH5LbDqfjBWdYMjWvJMuzN5DpvqtIh3ycy7ch7GmANIvm1zK
-         icz6085aChrb+HiSMhFMqdr/qkpO3IZbevQJVTJpM3Rw4ENv25e9DpDZSrOod1km+z8S
-         sOkg==
+        bh=EGgrX92i1CB3OPQao+cuq1musN3IzhJqLg7gLbewWcE=;
+        b=Da5wxyjtIT2eqpyD3nJJD9VgkhZv8oJJzx+vhKV6gXH4lv50bb4ibs/61+gyjW3O7C
+         zUUpg6pyKEE1QM+EZc7bVY5MCkQ/d7nccSmQ9egsSnWr4d4ULpRZwWqRCahSx5nZuusw
+         el91K1lVklsu2/Jbw6aRQzK7XdI+yP+etcvNVeJ90fqEhDdDehppHYjXUNJQ5VG+FSJa
+         z98sRt5BxA+kUTZNtM16Evp9WyDXevDgcQyAS5Qr2ECrxG1nlh7nZvwI+Pv8UDwDrR3M
+         0sAl5tMT+SOvEA+jUvMRe1MB3a7jwUjAg57LPcgt26i7kCU55jkT7Ek7/l5thgAZW0wd
+         ohTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=uV02flmSrRt81WJ4T3wiSuGURL6Hk/SHKuFa7qavV00=;
-        b=ZoMAD1Q3IyUbd/nSL1yTgkP/soBFC7QKW0Vkx7GlmxBICBpQ9Cpj6xLQFbStj85wuI
-         tW8AczfNhYCILiXl+3RDSZ8I5uXQ1pcI0ZokEcUg7SQrkbswCpDy14kME8NNvW8t1blq
-         GpKMbYrkxjCmSOWs73sbR0S2bxt0Ld1AsFqj+AErroIhHo6FpbFcKdshJv+CblTOCE1G
-         SVuQKQVdoVKY9ppR4E+Vtr+zeLE2CPivIlrfz/HUHoJjbxizrYpEHgwa9jQvjdCJ74ef
-         WXa/rYZlL2+a80LWyNhuPV2LZlWo0723QEPGdFk9tVUkAN7uET1bVbka1HAS7l/lNI+t
-         l3yg==
-X-Gm-Message-State: AOAM530YHcmYGIu6tWAsQhs3NssxFRqPNa0whnHl+gddaN+tPOC+vhVR
-        g+pHZm6yRTwLoXVswmgDtd36qssbipCoQS3d
-X-Google-Smtp-Source: ABdhPJwfbFcviVSfTAbSMAnrXzK7dC+k5xmXgB/S2xxGvTPdrnsrbWO6uw4gslsvMhncxNmUXUSSSg==
-X-Received: by 2002:a1c:4d0e:: with SMTP id o14mr4859927wmh.141.1618242775624;
-        Mon, 12 Apr 2021 08:52:55 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:4c21:b00e:ff79:bf20? ([2a01:e0a:90c:e290:4c21:b00e:ff79:bf20])
-        by smtp.gmail.com with ESMTPSA id g84sm15277215wmf.30.2021.04.12.08.52.54
+        bh=EGgrX92i1CB3OPQao+cuq1musN3IzhJqLg7gLbewWcE=;
+        b=O+ugKOZXOsEaRZiyKee3smv2fOrtiTT8yXJ0mcSCUdvNX5O3Tya2N0hap6RjgcWFRh
+         tfeBdSyf0XhfXwoDynXL07l/kl5IV2J22LRC51XgeV0Tf3qn454EDF6LCeNbaEuo2hdc
+         Rz4wHZpfR7cpK/v2SJaD0PeqP8qjr1tUf14tAeqBhtgE6JfXUYB7EohzDsqrtYL3WYxL
+         tFn8Q9uArWh9z00Zh1dGo6BFsH12hDEXSxmeBYfWl3budXgnpvYS3AQ+9VQfdPGccnwQ
+         Z4tA+urVvQb/hTKDKAKEhDQgvwsETn878K6UlYBFhABytVZ832e5tKeQayBzWO3RiPib
+         Ml3g==
+X-Gm-Message-State: AOAM530txtEKLgyv+HyfXuGO67DHusHn811bsd1Xj4wHmUtvBbHR/Lc5
+        uz4fPygNp/0ZOVXuguQQqoJJ2Tq+afI=
+X-Google-Smtp-Source: ABdhPJzzaa2P9f/w1olkcrEJJkz5Syr+wkQK42HLVbh5QNzj01EPqL4qtMBWXuu7v9cYRwlZPNnjOg==
+X-Received: by 2002:aca:4284:: with SMTP id p126mr18911026oia.178.1618242782134;
+        Mon, 12 Apr 2021 08:53:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d2sm2776817otl.48.2021.04.12.08.53.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 08:52:55 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] dt-bindings: display: mediatek,hdmi: Convert to
- use graph schema
-To:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
-        matthias.bgg@gmail.com, devicetree@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210412093928.3321194-1-narmstrong@baylibre.com>
- <20210412093928.3321194-2-narmstrong@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <415e0331-fc7c-6362-e81d-108f7ff8a654@baylibre.com>
-Date:   Mon, 12 Apr 2021 17:52:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 12 Apr 2021 08:53:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Don't use devm_regmap_init_mmio_clk
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1616141203-13344-1-git-send-email-shengjiu.wang@nxp.com>
+ <20210411144157.GA80935@roeck-us.net>
+ <CAA+D8AOKuGivfPxKRL6r6z1=dbLCWDHR0BRAi=T1uOHq6cUd-w@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <2d2ce2e8-cfdb-89e7-9c79-60770f2c24f0@roeck-us.net>
+Date:   Mon, 12 Apr 2021 08:52:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210412093928.3321194-2-narmstrong@baylibre.com>
+In-Reply-To: <CAA+D8AOKuGivfPxKRL6r6z1=dbLCWDHR0BRAi=T1uOHq6cUd-w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,103 +122,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2021 11:39, Neil Armstrong wrote:
-> Update the mediatek,dpi binding to use the graph schema.
+On 4/12/21 3:37 AM, Shengjiu Wang wrote:
+[ ... ]
+> The SAI module is not supported in QEMU, so the access of the register
+> failed.
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  .../display/mediatek/mediatek,cec.yaml        |  51 +++++++
->  .../display/mediatek/mediatek,hdmi-ddc.yaml   |  57 ++++++++
->  .../display/mediatek/mediatek,hdmi.txt        | 136 ------------------
->  .../display/mediatek/mediatek,hdmi.yaml       | 131 +++++++++++++++++
->  4 files changed, 239 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,cec.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi-ddc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.txt
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.yaml
+> you can add bypass the access in QEMU, for example:
 > 
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,cec.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,cec.yaml
-> new file mode 100644
-> index 000000000000..408e7dfce409
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,cec.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,cec.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek HDMI CEC Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - CK Hu <ck.hu@mediatek.com>
-> +  - Jitao shi <jitao.shi@mediatek.com>
-> +
-> +description: |
-> +  The HDMI CEC controller handles hotplug detection and CEC communication.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt7623-hdmi
+> diff --git a/hw/arm/fsl-imx6ul.c b/hw/arm/fsl-imx6ul.c
+> index e0128d7316..62f7bd92a4 100644
+> --- a/hw/arm/fsl-imx6ul.c
+> +++ b/hw/arm/fsl-imx6ul.c
+> @@ -534,6 +534,10 @@ static void fsl_imx6ul_realize(DeviceState *dev,
+> Error **errp)
+>       */
+>      create_unimplemented_device("sdma", FSL_IMX6UL_SDMA_ADDR, 0x4000);
+> 
+> +    create_unimplemented_device("sai1", 0x02028000, 0x4000);
+> +    create_unimplemented_device("sai2", 0x0202c000, 0x4000);
+> +    create_unimplemented_device("sai3", 0x02030000, 0x4000);
+> 
+Ah, yes, that takes care of the problem.
 
-=> mediatek,mt7623-cec
+Thanks, and sorry for the noise.
 
-> +      - mediatek,mt8173-hdmi
-
-=> mediatek,mt8173-cec
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-
-[..]
-
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi-ddc.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi-ddc.yaml
-> new file mode 100644
-> index 000000000000..c15b3470d652
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi-ddc.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,hdmi-ddc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek HDMI DDC Device Tree Bindings
-> +
-> +maintainers:
-> +  - CK Hu <ck.hu@mediatek.com>
-> +  - Jitao shi <jitao.shi@mediatek.com>
-> +
-> +description: |
-> +  The HDMI DDC i2c controller is used to interface with the HDMI DDC pins.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt7623-hdmi
-
-=> mediatek,mt7623-hdmi-ddc
-
-> +      - mediatek,mt8173-hdmi
-
-=> mediatek,mt8173-hdmi-ddc
-
-> +
-> +  reg:
-> +    maxItems: 1
-
-
-[..]
-will repost with these fixes in  a few days,
-
-Neil
+Guenter
