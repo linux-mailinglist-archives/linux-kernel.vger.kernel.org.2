@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BF035C226
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0AC35C225
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242023AbhDLJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:40:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
+        id S241878AbhDLJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240842AbhDLJLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240847AbhDLJLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:11:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB4A6137C;
-        Mon, 12 Apr 2021 09:06:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF7361382;
+        Mon, 12 Apr 2021 09:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218417;
-        bh=B6lBmkJc9AGNNM626ehx8HKi/VCxD74uQiqmG5rhVgI=;
+        s=korg; t=1618218419;
+        bh=TCXEMikJXcCBZLK2r7i0DQTd1VbXXE3eKIaTzas+/F8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bS0l8lRBGGMnPkJ7hoiBQLAYnYMMvg5Eb9lXvdC6Hs/t94ho7ZGCs9d7mRZzmc2gS
-         6tDeB5Kq7dr6Rc0WFIZmQ6ipVbDkCHb76egCcMKPX9B7asmfnpAT+Vp7qJMuPIYABh
-         x3Nha2L5W5roZjXmbX6qDMmpJcB7LVF9i7+XFGn4=
+        b=vx66ERT6MflwknQT98z5fEr70RRwZQGzy9uTsGJ5LBPCHUvkOeYyEz6ZnxQSHHLv7
+         6MRpV5aEVLqYEHUmQTgpExn7RrOfmnOnBMQ5OnXrlDz/n3+IhuHr9Z/BoEx+dkE49O
+         0YIHFnH0+A2i/qqDMu+lewyNqAwG0N7AHkRS+KZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, William Roche <william.roche@oracle.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.11 190/210] RAS/CEC: Correct ce_add_elem()s returned values
-Date:   Mon, 12 Apr 2021 10:41:35 +0200
-Message-Id: <20210412084022.350715648@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.11 191/210] clk: socfpga: fix iomem pointer cast on 64-bit
+Date:   Mon, 12 Apr 2021 10:41:36 +0200
+Message-Id: <20210412084022.380259185@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -39,60 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Roche <william.roche@oracle.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-commit 3a62583c2853b0ab37a57dde79decea210b5fb89 upstream.
+commit 2867b9746cef78745c594894aece6f8ef826e0b4 upstream.
 
-ce_add_elem() uses different return values to signal a result from
-adding an element to the collector. Commit in Fixes: broke the case
-where the element being added is not found in the array. Correct that.
+Pointers should be cast with uintptr_t instead of integer.  This fixes
+warning when compile testing on ARM64:
 
- [ bp: Rewrite commit message, add kernel-doc comments. ]
+  drivers/clk/socfpga/clk-gate.c: In function ‘socfpga_clk_recalc_rate’:
+  drivers/clk/socfpga/clk-gate.c:102:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 
-Fixes: de0e0624d86f ("RAS/CEC: Check count_threshold unconditionally")
-Signed-off-by: William Roche <william.roche@oracle.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/1617722939-29670-1-git-send-email-william.roche@oracle.com
+Fixes: b7cec13f082f ("clk: socfpga: Look for the GPIO_DB_CLK by its offset")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+Link: https://lore.kernel.org/r/20210314110709.32599-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ras/cec.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/clk/socfpga/clk-gate.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -309,11 +309,20 @@ static bool sanity_check(struct ce_array
- 	return ret;
- }
- 
-+/**
-+ * cec_add_elem - Add an element to the CEC array.
-+ * @pfn:	page frame number to insert
-+ *
-+ * Return values:
-+ * - <0:	on error
-+ * -  0:	on success
-+ * - >0:	when the inserted pfn was offlined
-+ */
- static int cec_add_elem(u64 pfn)
- {
- 	struct ce_array *ca = &ce_arr;
-+	int count, err, ret = 0;
- 	unsigned int to = 0;
--	int count, ret = 0;
- 
- 	/*
- 	 * We can be called very early on the identify_cpu() path where we are
-@@ -330,8 +339,8 @@ static int cec_add_elem(u64 pfn)
- 	if (ca->n == MAX_ELEMS)
- 		WARN_ON(!del_lru_elem_unlocked(ca));
- 
--	ret = find_elem(ca, pfn, &to);
--	if (ret < 0) {
-+	err = find_elem(ca, pfn, &to);
-+	if (err < 0) {
- 		/*
- 		 * Shift range [to-end] to make room for one more element.
- 		 */
+--- a/drivers/clk/socfpga/clk-gate.c
++++ b/drivers/clk/socfpga/clk-gate.c
+@@ -99,7 +99,7 @@ static unsigned long socfpga_clk_recalc_
+ 		val = readl(socfpgaclk->div_reg) >> socfpgaclk->shift;
+ 		val &= GENMASK(socfpgaclk->width - 1, 0);
+ 		/* Check for GPIO_DB_CLK by its offset */
+-		if ((int) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
++		if ((uintptr_t) socfpgaclk->div_reg & SOCFPGA_GPIO_DB_CLK_OFFSET)
+ 			div = val + 1;
+ 		else
+ 			div = (1 << val);
 
 
