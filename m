@@ -2,209 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D87035BA15
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E534435BA1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhDLGWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:22:32 -0400
-Received: from mail-bn8nam08on2042.outbound.protection.outlook.com ([40.107.100.42]:35808
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229461AbhDLGWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:22:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CiujYO0gX1jOrFRg1K1CzYiVkdo3Q7+XbZbvG1u53c7E/Mbu4CWdXDP/33XRPNJLmQSWqWeCMYB88jY1cpADrQK3XRswp2rDdLu/JTqElcpMk40mtZLFXHhVypZ7r0N7tUxDk5BXSXUd7FcKj+GKsZaM++DO67l0bZ4ITlqGK3muzzPfcVszIOpqcOJA7SYyH3Sr6/RWTgTA1HQckTZAIEie7zjEutKUgX0KKcJmxMIffis+LG/NDhl7NuQhF482r2tjRmB2x7kDjTT1ZjnQWHWyWgPKkyaWNR6mfKDJ+Jbbs5FJ52GUa0MBMmeoQCnyqVizECyxlFpfmkIE2jRKhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zV52orzhaGVrKDc9ehYqvL/uLA4wpO1m63w0z2/cOBE=;
- b=nK+cKhvKfXQgO6qFhKi4gmIu6edzAhI/GedExYng7J3sGUQNPHQe1l1bsVY79EHVndgHrU2dvDP/FGbbf68KteZzPYrpg2cUv6DwctWwduOXH+clp0wPJPxp5mZ7iIF8K+W6GOygUGfR/jRSJtUiL1dMhgd+D7k63t8H+dukS+PY/pTSR7jHUMmZxhfWFdGSSdKiSzhdsaAAdtDxxi33PyfohxlG1/m6N+UaOumEhoaa8/qWeih9HZffcmLEM9K2O3F8DcHPFC4wfKPMzOHicWxIHRPNAoKzI1CuSMKPP0wIL4kxP8jTQh3LeqimAAEtMyNffNNRH26aLsfq6f4Iug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zV52orzhaGVrKDc9ehYqvL/uLA4wpO1m63w0z2/cOBE=;
- b=YSGWsixkl4yH7zb/A/waYrvauSqWbotqbZsR4zqpal97GtWAJN0WQBHCGE5sNJVuTiYLgh9GwF22gehlXm2kGah5KoXicofrF1wASotCiXD/+hfjTnvVa4ox9FZTBRDCBa8YBiwiP8HkXmXIY8YeTXT/EzJTD+3k/E+moRoa4aQ=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by BYAPR03MB4485.namprd03.prod.outlook.com (2603:10b6:a03:c3::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Mon, 12 Apr
- 2021 06:22:11 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 06:22:11 +0000
-Date:   Mon, 12 Apr 2021 14:22:03 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     liu@jiuyang.me, alex@ghiti.fr, waterman@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        geert@linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] implement flush_cache_vmap and flush_cache_vunmap for
- RISC-V
-Message-ID: <20210412142203.6d86e5c6@xhacker.debian>
-In-Reply-To: <mhng-92e28f5c-ced0-4a92-949f-0fd865c0bbf5@palmerdabbelt-glaptop>
-References: <20210329015510.44110-1-liu@jiuyang.me>
-        <mhng-92e28f5c-ced0-4a92-949f-0fd865c0bbf5@palmerdabbelt-glaptop>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: SJ0PR03CA0193.namprd03.prod.outlook.com
- (2603:10b6:a03:2ef::18) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        id S231262AbhDLGZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 02:25:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19030 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229461AbhDLGZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 02:25:25 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C649on134311;
+        Mon, 12 Apr 2021 02:24:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=eQDF9ujJJY1Oib2WDryZnxZgAzRGulf0L4Jpj2/mffg=;
+ b=FunUbA/BVdEqCWavf3QheCKwzK6NsedM3tdgVe3YutaQNrwfVqkSjJ1DO19ridOjhP6/
+ j0TK0R8C50hqx/6NmpfYWbjY6KL+y6VTw9OfcyNcr0Guy5JWCKEzlajndGcq337xwYbL
+ VPy6waYsD9aFH7us2E6BAnqifi9xVm9MXtQPesrmKz6oiyK78pcblGp4gS6H4l6xABiZ
+ 9c1xJif355leB3N+P9R9u7geiNjhfdnZK0vJDUz7g84BQ9ZchtKpMRq66cySI2iwzInu
+ WW+YGxxXemdDfyD0IdqPlIJtdPYUnGk3Tv3hukZCRdQgQolsee6j5pLcbdsbdzNun/bj /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37us0ypnj7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 02:24:45 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13C6JaRB041340;
+        Mon, 12 Apr 2021 02:24:44 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37us0ypnhh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 02:24:44 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13C69De7023086;
+        Mon, 12 Apr 2021 06:24:42 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n89hfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 06:24:42 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13C6OdHL47055284
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 06:24:39 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A07ECA405E;
+        Mon, 12 Apr 2021 06:24:39 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2133A4055;
+        Mon, 12 Apr 2021 06:24:36 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 12 Apr 2021 06:24:36 +0000 (GMT)
+Date:   Mon, 12 Apr 2021 11:54:36 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Parth Shah <parth@linux.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC/PATCH] powerpc/smp: Add SD_SHARE_PKG_RESOURCES flag to MC
+ sched-domain
+Message-ID: <20210412062436.GB2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0193.namprd03.prod.outlook.com (2603:10b6:a03:2ef::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Mon, 12 Apr 2021 06:22:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0dd0bc45-19fd-49c8-3892-08d8fd7b4e2e
-X-MS-TrafficTypeDiagnostic: BYAPR03MB4485:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB4485B2A456492665A0C58FE3ED709@BYAPR03MB4485.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Svg0rtE/qkz1YeJdMqdr8HnPA/ckRl6ek8h+fOAZTYGkLylg/ITSfdAAA+5DqGn35AWQ2iWg3x59M+xRUssvg7MX3bKppIx7iG5JtPE7bU4hzW/4K4xNnO2dxWTDeLUAcPRCgRwbZNGvpr/NtKFdcG2KQg26vdSqeQxcLE5zKASd8d9gWNHNekqD6KLxgAs9HWUm2NvDUNHfRDGd4wGtWW7OiEOQtAF+fl8qWKlqHRJ9sjscEgVSjSwSozxUSh5KcOOnhDB4Z3e66KuouzMIMC8JFruu5OxbHA5q55GDsnS169hOR6t6qViZX8dasPJeoqqK94lflpt7z+Iik9Wdk/9EA1jmpeEWJSvZIpvoyf9dIM4Uyyv1vk0X+9VRBUw36cg4a54OQcwwE+HOnpic37DmvHOCBA1SYow9MMxLgP7EO7mW13BaIE85+N/f7B0P3+1VSpOJPe0x7I0UiSWljU8ugY95kQu7vbuEjLAOcJkOkCEc5eIDZZeabb3sy7NA6FhuBRPuZpyrIVcfyRfGnbo5MZLL+i6qlouYFjPhY+5yGRk8bjTdkj1a0qgrnPnQg2GTI2yyhdmWmG7t0sLlTQY15r887LzY/QzrDExPKa9g4JttN5Mvrx6h/VxaPBVw3ZS0va6aHFQqRoMJL0qwXbPv5zg3XK21DkXxBEIQv+o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(136003)(366004)(39850400004)(16526019)(186003)(6666004)(26005)(2906002)(1076003)(316002)(4326008)(6506007)(9686003)(6916009)(55016002)(83380400001)(86362001)(7416002)(8936002)(38350700002)(956004)(38100700002)(478600001)(66476007)(66556008)(66946007)(7696005)(5660300002)(8676002)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Kp8CwY7Gl9TP1X1DN1cqWqE3XyBNwjAekCY4pJu5bFhch+VqHPB8RNGwVees?=
- =?us-ascii?Q?6c3NCPT4Nhw6AUaiYEteTxgSElG7sbIbowFV3lcUPFyiKQq6BWjQ/1PcVITI?=
- =?us-ascii?Q?cZQ+9WRTUKs6zGf+TClLVzFEy0hc0K82x2fqETJ44oYSOd2/9RNxfw66TCEo?=
- =?us-ascii?Q?ssK4g1r3Pc7MYFZWebERUMNR3neT5gXccTjlc8cpD2932WZO5IrRNJ65abuQ?=
- =?us-ascii?Q?rQL1VAQtYjobYbSFrWXeEUJSILETl3U8df3PTPnoqxHttZpe3A+woxFi77lX?=
- =?us-ascii?Q?q0FL2atypmYMom5Nax71PRGq9p8l0G3t+1Oqe4xSX3ZBTD2oQKLOi0U0uDpA?=
- =?us-ascii?Q?asWvRaL4BdS3RiMcVbwZaKDPSjw5FXxk3zOUjo8RFnQwzuHiVa2G6FLvHaLQ?=
- =?us-ascii?Q?nhMUtTv30PV5MhpSVy+dgxYhgmTbW7CTcOTDjerbJ+92i0nbcAvyNTqf08ed?=
- =?us-ascii?Q?k8OQzLfTE1MFjFbQ3scOVAEV6pAxCAObc588jMgEUdy1L/BH4ClOgYgTsWSC?=
- =?us-ascii?Q?nPKa4JdCay87e84IpS0WuTe/IdgnJknFRs4BKVtrH6JY1joXsQ+9EE7Ajmw7?=
- =?us-ascii?Q?XF+VcvXLG/tAzOgYkP2uHW7blVOiAUo75wSllHTi9///4/Nx5cPqtr/8/Na/?=
- =?us-ascii?Q?ymZum3kXF3EuSL3/xd6f/FikruxjpG02fsUPdNu3PfpN02752VMzGHPQpOb9?=
- =?us-ascii?Q?VQzWM3Oag/N6SMa4vSmHafLznnY8zJ8nS9+fuKUcT2W3Vn2fzgIIXtXBwKB4?=
- =?us-ascii?Q?+Fl9wHkVwoWVzZi8afTZGQ1M0CC+9Fp/Dele8p4dTjbYFskFFzEEfPI9or9C?=
- =?us-ascii?Q?t/mjwErNqQM7AuMjw1f6h4k0WB8hgVP2OSN3N8bQC57oG7bqvNo5mrj3YsIy?=
- =?us-ascii?Q?tWuQiHlin7aWDGy12TtDKSdim8vpAOZF9i9nyVj1hh4vXFnO3BVeGPnIDfPt?=
- =?us-ascii?Q?k/Ylo5B6SKiZv2PrJuKLFsAia76l2xIRS5yWYJLe67IX/VMdRsK0cgN4Wq87?=
- =?us-ascii?Q?wZmcK0eeROYzLILL8EPt7J7ymZYHLj7uO6Pj1W3DUKR5bHNb5xsiQf6HP2Nc?=
- =?us-ascii?Q?3XH4KThF6OXkKDNrJee0FRxGmDmK9ThjQoQ5LTZPwl+7vu/ik5hv3nJyRsgj?=
- =?us-ascii?Q?CpvwfzIuXFKhLD0CCt8YbxlXafeWsB3n4E6IxXkQ7pNYWiw3R5CcaVyJsx0u?=
- =?us-ascii?Q?98NEmpSC3TipVdcW/tTQV+VHe9O7rD6szEj9DEzhgBluNJLNEJPJO7g4VW+h?=
- =?us-ascii?Q?0QdqRNaeYYtmcRDSCGqEZJAooLLgIEC6aDlO1Z3FDga5/qK9U+Ew3cx5IwQ8?=
- =?us-ascii?Q?x/qDpHFTnA1poL6PGakxeiVd?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0dd0bc45-19fd-49c8-3892-08d8fd7b4e2e
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 06:22:10.9632
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0qoS8PfFhcol+bEBsn1qKBigM0ariuH9vGMM3UT8y8bO0oI5HGotbtTNJ7LdJnpzc3xJQpbaF9A6nl40lOuTCQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4485
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -c-LAaG1u6T276gOvFfbJbWJAq4uSFoW
+X-Proofpoint-ORIG-GUID: EhsRFdFm16QVdzrJrN4Lf8CqVbkQThNl
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_03:2021-04-09,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 clxscore=1011 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 spamscore=0 adultscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=715 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104120040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021 14:41:07 -0700 (PDT)=20
-Palmer Dabbelt <palmer@dabbelt.com> wrote:
+* Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2021-04-02 11:07:54]:
 
+> 
+> To remedy this, this patch proposes that the LLC be moved to the MC
+> level which is a group of cores in one half of the chip.
+> 
+>       SMT (SMT4) --> MC (Hemisphere)[LLC] --> DIE
+> 
 
->=20
->=20
-> On Sun, 28 Mar 2021 18:55:09 PDT (-0700), liu@jiuyang.me wrote:
-> > This patch implements flush_cache_vmap and flush_cache_vunmap for
-> > RISC-V, since these functions might modify PTE. Without this patch,
-> > SFENCE.VMA won't be added to related codes, which might introduce a bug
-> > in some out-of-order micro-architecture implementations.
-> >
-> > Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
-> > ---
-> >  arch/riscv/include/asm/cacheflush.h | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/a=
-sm/cacheflush.h
-> > index 23ff70350992..4adf25248c43 100644
-> > --- a/arch/riscv/include/asm/cacheflush.h
-> > +++ b/arch/riscv/include/asm/cacheflush.h
-> > @@ -8,6 +8,14 @@
-> >
-> >  #include <linux/mm.h>
-> >
-> > +/*
-> > + * flush_cache_vmap and flush_cache_vunmap might modify PTE, needs SFE=
-NCE.VMA.
-> > + * - flush_cache_vmap is invoked after map_kernel_range() has installe=
-d the page table entries.
-> > + * - flush_cache_vunmap is invoked before unmap_kernel_range() deletes=
- the page table entries =20
->=20
-> These should have line breaks.
->=20
-> > + */
-> > +#define flush_cache_vmap(start, end) flush_tlb_all() =20
->=20
-> We shouldn't need cache flushes for permission upgrades: the ISA allows
-> the old mappings to be visible until a fence, but the theory is that
-> window will be sort for reasonable architectures so the overhead of
-> flushing the entire TLB will overwhelm the extra faults.  There are a
-> handful of places where we preemptively flush, but those are generally
-> because we can't handle the faults correctly.
->=20
-> If you have some benchmark that demonstrates a performance issue on real
-> hardware here then I'm happy to talk about this further, but this
-> assumption is all over arch/riscv so I'd prefer to keep things
-> consistent for now.
+I think marking Hemisphere as a LLC in a P10 scenario is a good idea.
 
-IMHO the flush_cache_vmap() isn't necessary. From previous discussion, it
-seems the reason to implement flush_cache_vmap() is we missed sfence.vma
-in vmalloc related code path. But...
-The riscv privileged spec says "In particular, if a leaf PTE is modified bu=
-t
-a subsuming SFENCE.VMA is not executed, either the old translation or the
-new translation will be used, but the choice is unpredictable. The behavior
-is otherwise well-defined"
+> While there is no cache being shared at this level, this is still the
+> level where some amount of cache-snooping takes place and it is
+> relatively faster to access the data from the caches of the cores
+> within this domain. With this change, we no longer see regressions on
+> P10 for applications which require single threaded performance.
 
-*If old translation, we do have a page fault, but the vmalloc_fault() will
-take care of it, then local_flush_tlb_page() will sfence.vma properly.
+Peter, Valentin, Vincent, Mel, etal
 
-*If new translation, we don't do anything.
+On architectures where we have multiple levels of cache access latencies
+within a DIE, (For example: one within the current LLC or SMT core and the
+other at MC or Hemisphere, and finally across hemispheres), do you have any
+suggestions on how we could handle the same in the core scheduler?
 
-In both cases, we don't need to implement the flush_cache_vmap()
-
-From another side, even we insert sfence.vma() in advance rather than
-rely on the vmalloc_fault() we still can't ensure other harts use the
-new translation. Take below small window case for example:
-
-	cpu0				cpu1
-map_kernel_range()
-  map_kernel_range_noflush()
-					access the new vmalloced space.
-
-  flush_cache_vmap()
-
-That's to say, we sill rely on the vmalloc_fault().
-
-
->=20
-> > +#define flush_cache_vunmap(start, end) flush_tlb_all() =20
->=20
-
-In flush_cache_vunmap() caller's code path, the translation is modified
-*after* the flush_cache_vunmap(), for example:
-
-unmap_kernel_range()
-  flush_cache_vunmap()
-  vunmap_page_range()
-  flush_tlb_kernel_range()
-
-IOW, when we call flush_cache_vunmap(), the translation has not changed.
-Instead, I believe it's the flush_tlb_kernel_range() to flush the translati=
-ons
-after we changed the translation in vunmap_page_range()
-
-Regards
+-- 
+Thanks and Regards
+Srikar Dronamraju
