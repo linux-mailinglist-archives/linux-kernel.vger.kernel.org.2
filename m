@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0541135C251
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE00135C250
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243715AbhDLJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34456 "EHLO mail.kernel.org"
+        id S243690AbhDLJmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:42:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240690AbhDLJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240694AbhDLJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:10:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 958126135C;
-        Mon, 12 Apr 2021 09:06:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0AA61363;
+        Mon, 12 Apr 2021 09:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218379;
-        bh=aIWSXVPs/ssgdoRjvq1cQKyT8rYYsx9cBo3Abtpr+GA=;
+        s=korg; t=1618218381;
+        bh=XMiwNQTDOiRTSd56F8WAVOgIVi5fgZLreImXNBJsaWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2CqrtOwiX+x5oOvsuPVq0QH8wEvf8jc2/sLCCt6KRCxrzUxo7PX3drCa3MyUq1UB
-         iREJgZKZ32XX51Ni9kqTC+FTRPLQPGTpFf6ym1tUiuZ1IqSuKPM09G1KjBQbtHlkn9
-         hPXaj3TmCfMH54cjovJV/IEKWwv5UgBF8sfq1Q4A=
+        b=unES/LWSd7Ax2w4qZfTnEkJkTAIxBLyFUJygDJKvAraqczNmJkaH1c9kM+LrZDvGD
+         /DFgzxhmINXajYLza9+7UDA60cqVlLYvTEw9OW1gf5OQVuJNw/X38tH+W3E6zi3fuP
+         mkPWx4GNWdFVClolLMqrSwljXHgPgko8tpNiGUKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Shuang <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
+        stable@vger.kernel.org, Guangbin Huang <huangguangbin2@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 176/210] tipc: increment the tmp aead refcnt before attaching it
-Date:   Mon, 12 Apr 2021 10:41:21 +0200
-Message-Id: <20210412084021.881024941@linuxfoundation.org>
+Subject: [PATCH 5.11 177/210] net: hns3: clear VF down state bit before request link status
+Date:   Mon, 12 Apr 2021 10:41:22 +0200
+Message-Id: <20210412084021.913427795@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,63 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Guangbin Huang <huangguangbin2@huawei.com>
 
-[ Upstream commit 2a2403ca3add03f542f6b34bef9f74649969b06d ]
+[ Upstream commit ed7bedd2c3ca040f1e8ea02c6590a93116b1ec78 ]
 
-Li Shuang found a NULL pointer dereference crash in her testing:
+Currently, the VF down state bit is cleared after VF sending
+link status request command. There is problem that when VF gets
+link status replied from PF, the down state bit may still set
+as 1. In this case, the link status replied from PF will be
+ignored and always set VF link status to down.
 
-  [] BUG: unable to handle kernel NULL pointer dereference at 0000000000000020
-  [] RIP: 0010:tipc_crypto_rcv_complete+0xc8/0x7e0 [tipc]
-  [] Call Trace:
-  []  <IRQ>
-  []  tipc_crypto_rcv+0x2d9/0x8f0 [tipc]
-  []  tipc_rcv+0x2fc/0x1120 [tipc]
-  []  tipc_udp_recv+0xc6/0x1e0 [tipc]
-  []  udpv6_queue_rcv_one_skb+0x16a/0x460
-  []  udp6_unicast_rcv_skb.isra.35+0x41/0xa0
-  []  ip6_protocol_deliver_rcu+0x23b/0x4c0
-  []  ip6_input+0x3d/0xb0
-  []  ipv6_rcv+0x395/0x510
-  []  __netif_receive_skb_core+0x5fc/0xc40
+To fix this problem, clear VF down state bit before VF requests
+link status.
 
-This is caused by NULL returned by tipc_aead_get(), and then crashed when
-dereferencing it later in tipc_crypto_rcv_complete(). This might happen
-when tipc_crypto_rcv_complete() is called by two threads at the same time:
-the tmp attached by tipc_crypto_key_attach() in one thread may be released
-by the one attached by that in the other thread.
-
-This patch is to fix it by incrementing the tmp's refcnt before attaching
-it instead of calling tipc_aead_get() after attaching it.
-
-Fixes: fc1b6d6de220 ("tipc: introduce TIPC encryption & authentication")
-Reported-by: Li Shuang <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/crypto.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index f4fca8f7f63f..97710ce36047 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -1941,12 +1941,13 @@ static void tipc_crypto_rcv_complete(struct net *net, struct tipc_aead *aead,
- 			goto rcv;
- 		if (tipc_aead_clone(&tmp, aead) < 0)
- 			goto rcv;
-+		WARN_ON(!refcount_inc_not_zero(&tmp->refcnt));
- 		if (tipc_crypto_key_attach(rx, tmp, ehdr->tx_key, false) < 0) {
- 			tipc_aead_free(&tmp->rcu);
- 			goto rcv;
- 		}
- 		tipc_aead_put(aead);
--		aead = tipc_aead_get(tmp);
-+		aead = tmp;
- 	}
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index 674b3a22e91f..3bd7bc794677 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2575,14 +2575,14 @@ static int hclgevf_ae_start(struct hnae3_handle *handle)
+ {
+ 	struct hclgevf_dev *hdev = hclgevf_ae_get_hdev(handle);
  
- 	if (unlikely(err)) {
++	clear_bit(HCLGEVF_STATE_DOWN, &hdev->state);
++
+ 	hclgevf_reset_tqp_stats(handle);
+ 
+ 	hclgevf_request_link_info(hdev);
+ 
+ 	hclgevf_update_link_mode(hdev);
+ 
+-	clear_bit(HCLGEVF_STATE_DOWN, &hdev->state);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
