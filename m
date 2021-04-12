@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCD735C0DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403235C0DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241829AbhDLJR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49838 "EHLO mail.kernel.org"
+        id S241886AbhDLJRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:17:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239213AbhDLI71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61B1261244;
-        Mon, 12 Apr 2021 08:57:52 +0000 (UTC)
+        id S239219AbhDLI7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:59:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1310661279;
+        Mon, 12 Apr 2021 08:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217873;
-        bh=Jd2AWhfXkzVNuGiCaTyWYyBojlL7KDdfAqfNE0XYASY=;
+        s=korg; t=1618217875;
+        bh=bzVuBvH+GsH8uCOPRG66Fn+aAgAUrd5smUzl+9BbwAg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iBzQY2fJUpbC+w3w87b4hHzN0aST+OTdJRx7F9wUTSamhTgv12NjBYj6udA/FZt/O
-         kOb2m+TUHwcenV4Yqx3nAZEARVITzoY1z5/t2VKxPOSZ/TmPNkuYX8HpognOwbhNa7
-         bA9XoSdqvseCsFgK++/kfn6zFxo5L5jKs8fK1anM=
+        b=mZKawlWwW0Gbdx1Bv0z4uu2GL+k/3SH5oR0wb0qoaVbC6nY9oN+BVuhvYxY31t1ll
+         xs7jT/d7RWBt4SvukyJuS2gAQoX8IGw+n25Xgf+W0WgRSqg50r3rA/n/HX6XCzXGgC
+         +rlosfWkchjBpzFqtEBuhR0nBUS+AnQlseAl8kuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Can Guo <cang@codeaurora.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 142/188] scsi: ufs: core: Fix task management request completion timeout
-Date:   Mon, 12 Apr 2021 10:40:56 +0200
-Message-Id: <20210412084018.353268797@linuxfoundation.org>
+Subject: [PATCH 5.10 143/188] scsi: ufs: core: Fix wrong Task Tag used in task management request UPIUs
+Date:   Mon, 12 Apr 2021 10:40:57 +0200
+Message-Id: <20210412084018.384209122@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -43,35 +43,101 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Can Guo <cang@codeaurora.org>
 
-[ Upstream commit 1235fc569e0bf541ddda0a1224d4c6fa6d914890 ]
+[ Upstream commit 4b42d557a8add52b9a9924fb31e40a218aab7801 ]
 
-ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn = ufshcd_compl_tm()),
-but since blk_mq_tagset_busy_iter() only iterates over all reserved tags
-and requests which are not in IDLE state, ufshcd_compl_tm() never gets a
-chance to run. Thus, TMR always ends up with completion timeout. Fix it by
-calling blk_mq_start_request() in __ufshcd_issue_tm_cmd().
+In __ufshcd_issue_tm_cmd(), it is not correct to use hba->nutrs + req->tag
+as the Task Tag in a TMR UPIU. Directly use req->tag as the Task Tag.
 
-Link: https://lore.kernel.org/r/1617262750-4864-2-git-send-email-cang@codeaurora.org
-Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate and free TMFs")
+Fixes: e293313262d3 ("scsi: ufs: Fix broken task management command implementation")
+Link: https://lore.kernel.org/r/1617262750-4864-3-git-send-email-cang@codeaurora.org
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Can Guo <cang@codeaurora.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/ufs/ufshcd.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 97d9d5d99adc..7e1168ee2474 100644
+index 7e1168ee2474..4215d9a8e5de 100644
 --- a/drivers/scsi/ufs/ufshcd.c
 +++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6274,6 +6274,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+@@ -6256,38 +6256,34 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 	DECLARE_COMPLETION_ONSTACK(wait);
+ 	struct request *req;
+ 	unsigned long flags;
+-	int free_slot, task_tag, err;
++	int task_tag, err;
+ 
+ 	/*
+-	 * Get free slot, sleep if slots are unavailable.
+-	 * Even though we use wait_event() which sleeps indefinitely,
+-	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
++	 * blk_get_request() is used here only to get a free tag.
+ 	 */
+ 	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
+ 	if (IS_ERR(req))
+ 		return PTR_ERR(req);
+ 
+ 	req->end_io_data = &wait;
+-	free_slot = req->tag;
+-	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+ 	ufshcd_hold(hba, false);
  
  	spin_lock_irqsave(host->host_lock, flags);
- 	task_tag = hba->nutrs + free_slot;
-+	blk_mq_start_request(req);
+-	task_tag = hba->nutrs + free_slot;
+ 	blk_mq_start_request(req);
  
++	task_tag = req->tag;
  	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
+ 
+-	memcpy(hba->utmrdl_base_addr + free_slot, treq, sizeof(*treq));
+-	ufshcd_vops_setup_task_mgmt(hba, free_slot, tm_function);
++	memcpy(hba->utmrdl_base_addr + task_tag, treq, sizeof(*treq));
++	ufshcd_vops_setup_task_mgmt(hba, task_tag, tm_function);
+ 
+ 	/* send command to the controller */
+-	__set_bit(free_slot, &hba->outstanding_tasks);
++	__set_bit(task_tag, &hba->outstanding_tasks);
+ 
+ 	/* Make sure descriptors are ready before ringing the task doorbell */
+ 	wmb();
+ 
+-	ufshcd_writel(hba, 1 << free_slot, REG_UTP_TASK_REQ_DOOR_BELL);
++	ufshcd_writel(hba, 1 << task_tag, REG_UTP_TASK_REQ_DOOR_BELL);
+ 	/* Make sure that doorbell is committed immediately */
+ 	wmb();
+ 
+@@ -6307,24 +6303,24 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete_err");
+ 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
+ 				__func__, tm_function);
+-		if (ufshcd_clear_tm_cmd(hba, free_slot))
+-			dev_WARN(hba->dev, "%s: unable clear tm cmd (slot %d) after timeout\n",
+-					__func__, free_slot);
++		if (ufshcd_clear_tm_cmd(hba, task_tag))
++			dev_WARN(hba->dev, "%s: unable to clear tm cmd (slot %d) after timeout\n",
++					__func__, task_tag);
+ 		err = -ETIMEDOUT;
+ 	} else {
+ 		err = 0;
+-		memcpy(treq, hba->utmrdl_base_addr + free_slot, sizeof(*treq));
++		memcpy(treq, hba->utmrdl_base_addr + task_tag, sizeof(*treq));
+ 
+ 		ufshcd_add_tm_upiu_trace(hba, task_tag, "tm_complete");
+ 	}
+ 
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+-	__clear_bit(free_slot, &hba->outstanding_tasks);
++	__clear_bit(task_tag, &hba->outstanding_tasks);
+ 	spin_unlock_irqrestore(hba->host->host_lock, flags);
+ 
++	ufshcd_release(hba);
+ 	blk_put_request(req);
+ 
+-	ufshcd_release(hba);
+ 	return err;
+ }
  
 -- 
 2.30.2
