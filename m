@@ -2,259 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAC935BB56
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A949235BB3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237136AbhDLHwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:52:24 -0400
-Received: from m12-13.163.com ([220.181.12.13]:55905 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237110AbhDLHwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:52:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=G/6Z4nNqZYq7RUqhry
-        lTggPskhrSTLLuKMTwylozwN8=; b=Pd9HUn5gUA4b5cO5VygQjnTLjN3HdtVAbt
-        1/AwKWWC6sMw7oP/zTJbjb2a9QO4VpEAL4Gk3S1wSvuDSn4TIVpN+XwMonoOCM+l
-        CCrzwyiobo2NF3oiFanGrOkv2ih8+sF9VPG48vU6oyJE39hskcdsjXAhlUn37+x0
-        7J1aneeSg=
-Received: from localhost.localdomain (unknown [14.17.22.36])
-        by smtp9 (Coremail) with SMTP id DcCowAA3Huux+3Ng4SZBFg--.46650S3;
-        Mon, 12 Apr 2021 15:50:10 +0800 (CST)
-From:   ultrachin@163.com
-To:     linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, Chen Xiaoguang <xiaoggchen@tencent.com>,
-        Chen He <heddchen@tencent.com>
-Subject: [PATCH] mm: optimize memory allocation
-Date:   Mon, 12 Apr 2021 15:49:53 +0800
-Message-Id: <1618213793-17741-1-git-send-email-ultrachin@163.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DcCowAA3Huux+3Ng4SZBFg--.46650S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Jr43Gw17Ar4DXF1rWFW3ZFb_yoWxuryrpF
-        sxJ3Z3Aw4rArWrGrsxKFWq934rZ3WkXFZ5A3y7Jw48X343tw1jyFnrGFy8AFy8GFZ7Jry3
-        GF45tw1kGa1DAaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5PEfUUUUU=
-X-Originating-IP: [14.17.22.36]
-X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbivxJyWFWBtZlafgAAsb
+        id S237102AbhDLHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237006AbhDLHvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:51:18 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D86C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:51:00 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id x4so2668480vkx.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6bwXeF6DPNCUNrDpkgt9DFKvZdBX7LfKFuuDUCZIcIw=;
+        b=NWjaNJ4sKzmsXTFfXMIoboYg4yCXg346ZnHIuFbXlJB5dHFk3M1Ww97JRXLhu888T4
+         R8+zjK7tTykf3LcP4oRMa8MN18/sNPWJIdBRJdCQtE4U+WYolAW2/918YHpZO1m2TiYq
+         xB74kHPGjDnTw3ctivsAjVMIAGos7rgTvQ78l+akCS5Ua2NcxG4mZnJkgXnuzToAlwzp
+         /kIUCUxfIVQzZiBklUqcaNZ8wsmU1QPVUpUsyyJYzNeMuHohpPh7MH5q6uGcq2Rrvr7s
+         TIlJdYwHZOAwhzZL+zey/cs8e82dwvK4hUiJSiQ6Tw/5r8mIoqfU6UfmIehHlZ8wJnjr
+         KpRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6bwXeF6DPNCUNrDpkgt9DFKvZdBX7LfKFuuDUCZIcIw=;
+        b=ppGvuJh1FAt9Q7NOsgsR1Go/lyTrnC++IxGtKirESP0NrZ3TCt4sX5ugEAsoU4hoLc
+         vw6sgqL2OJ5Qm+jfSbLDgteYw7CQeYahl6l5BgyqdHbh8FtbGKj1fNC6toPlCPXSJayj
+         JbVSV5mI0pxfrvWYir79Ip2va7wm/WWJ8wvlrQqHwGT/vfSu8GJ7P+smO1egU2bhUZCF
+         m3kvHEaBSCT93P4MeE2744r+fWiGZ+ZrCmhT0WJjLVq56l1A4FJNzy152p6U/7eKRnoK
+         XCnpoQI2T1ph9d+v6xU4nRttzNLbhMH103/xtpzbUiyz3etCGdUI+tqNsSuJoRG9wowR
+         1oEQ==
+X-Gm-Message-State: AOAM533xR4FTQK0DPIL5gfU1GDsvANAAHRlPP2mHicSqnLzhTCkfosob
+        8VdKjydUpzoMWH/Qdyfob+2NThxVKgkZBvzQz30NDw==
+X-Google-Smtp-Source: ABdhPJy3gSf1u5aHEM+c4Vjkj50BZURW2s9YkL8uFokqZdDKN51Q0Ihpy2lsV68v6DqmIdcb/6ZsOfvK3AfsQiSrkmk=
+X-Received: by 2002:a1f:2a95:: with SMTP id q143mr18758937vkq.8.1618213859970;
+ Mon, 12 Apr 2021 00:50:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210402092432.25069-1-huobean@gmail.com> <20210402092432.25069-3-huobean@gmail.com>
+In-Reply-To: <20210402092432.25069-3-huobean@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 12 Apr 2021 09:50:23 +0200
+Message-ID: <CAPDyKFoT4YoG1wwHYXMMpXmq-ybLMh_qipzr5yKkWUY8Yt5q0A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mmc: core: Let sanitize not retry in case of timeout/failure
+To:     Bean Huo <huobean@gmail.com>
+Cc:     "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bean Huo <beanhuo@micron.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Xiaoguang <xiaoggchen@tencent.com>
+On Fri, 2 Apr 2021 at 11:24, Bean Huo <huobean@gmail.com> wrote:
+>
+> From: Bean Huo <beanhuo@micron.com>
+>
+> Not any commands need to retry in case of timeout/failure.
+> Currently, the sanitize command is issued by the IOCTL interface,
+> and once its timeouts, the user normally decides to retry or not .
+> Just blindly retry three times sanitize in the driver, it doesn't
+> help sanitize retry succeed in the end, on the contrary, it only
+> makes the user feel sanitize timeouts after 12 minutes.
+>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/mmc/core/block.c   | 13 +++++++----
+>  drivers/mmc/core/mmc.c     | 47 ++++++++++++++++++++++----------------
+>  drivers/mmc/core/mmc_ops.c | 19 +++++++--------
+>  drivers/mmc/core/mmc_ops.h |  4 ++--
+>  4 files changed, 47 insertions(+), 36 deletions(-)
+>
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 8bfd4d95b386..9778093d7006 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -836,7 +836,7 @@ static inline int mmc_blk_part_switch(struct mmc_card *card,
+>
+>                 ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+>                                  EXT_CSD_PART_CONFIG, part_config,
+> -                                card->ext_csd.part_time);
+> +                                card->ext_csd.part_time, MMC_CMD_RETRIES);
 
-Check memory cgroup limit before allocating real memory. This may
-improve performance especially in slow path when memory allocation
-exceeds cgroup limitation.
+I would rather not change the mmc_switch() function definition, but
+only __mmc_switch(). Just let mmc_switch() pass another in-parameter
+(MMC_CMD_RETRIES) to __mmc_switch(), which means all callers of
+mmc_switch() doesn't need to get changed, but only callers of
+__mmc_switch().
 
-Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
-Signed-off-by: Chen He <heddchen@tencent.com>
----
- include/linux/memcontrol.h | 30 ++++++++++++++++++++++--------
- mm/memcontrol.c            | 34 ++++++++++++++++------------------
- mm/page_alloc.c            | 24 +++++++++++++++++-------
- 3 files changed, 55 insertions(+), 33 deletions(-)
+[...]
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0c04d39..59bb3ba 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1583,8 +1583,9 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
- #endif
- 
- #ifdef CONFIG_MEMCG_KMEM
--int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
--void __memcg_kmem_uncharge_page(struct page *page, int order);
-+int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp, int order);
-+void __memcg_kmem_uncharge_page(struct page *page, int order,
-+				struct mem_cgroup *memcg);
- 
- struct obj_cgroup *get_obj_cgroup_from_current(void);
- 
-@@ -1610,18 +1611,30 @@ static inline bool memcg_kmem_enabled(void)
- 	return static_branch_likely(&memcg_kmem_enabled_key);
- }
- 
-+extern struct mem_cgroup *get_mem_cgroup_from_current(void);
-+
- static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
- 					 int order)
- {
--	if (memcg_kmem_enabled())
--		return __memcg_kmem_charge_page(page, gfp, order);
--	return 0;
-+	struct mem_cgroup *memcg;
-+	int ret = 0;
-+
-+	memcg = get_mem_cgroup_from_current();
-+	if (memcg && memcg_kmem_enabled() && !mem_cgroup_is_root(memcg)) {
-+		ret = __memcg_kmem_charge_page(memcg, gfp, order);
-+		if (!ret) {
-+			page->memcg_data = (unsigned long)memcg | MEMCG_DATA_KMEM;
-+			return 0;
-+		}
-+		css_put(&memcg->css);
-+	}
-+	return ret;
- }
- 
- static inline void memcg_kmem_uncharge_page(struct page *page, int order)
- {
- 	if (memcg_kmem_enabled())
--		__memcg_kmem_uncharge_page(page, order);
-+		__memcg_kmem_uncharge_page(page, order, NULL);
- }
- 
- /*
-@@ -1647,13 +1660,14 @@ static inline void memcg_kmem_uncharge_page(struct page *page, int order)
- {
- }
- 
--static inline int __memcg_kmem_charge_page(struct page *page, gfp_t gfp,
-+static inline int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp,
- 					   int order)
- {
- 	return 0;
- }
- 
--static inline void __memcg_kmem_uncharge_page(struct page *page, int order)
-+static inline void __memcg_kmem_uncharge_page(struct page *page, int order,
-+					    struct mem_cgroup *memcg)
- {
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e064ac0d..8df57b7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1085,7 +1085,7 @@ static __always_inline bool memcg_kmem_bypass(void)
- /**
-  * If active memcg is set, do not fallback to current->mm->memcg.
-  */
--static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
-+struct mem_cgroup *get_mem_cgroup_from_current(void)
- {
- 	if (memcg_kmem_bypass())
- 		return NULL;
-@@ -3113,21 +3113,11 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
-  *
-  * Returns 0 on success, an error code on failure.
-  */
--int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-+int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp, int order)
- {
--	struct mem_cgroup *memcg;
--	int ret = 0;
-+	int ret;
- 
--	memcg = get_mem_cgroup_from_current();
--	if (memcg && !mem_cgroup_is_root(memcg)) {
--		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
--		if (!ret) {
--			page->memcg_data = (unsigned long)memcg |
--				MEMCG_DATA_KMEM;
--			return 0;
--		}
--		css_put(&memcg->css);
--	}
-+	ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
- 	return ret;
- }
- 
-@@ -3136,17 +3126,25 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-  * @page: page to uncharge
-  * @order: allocation order
-  */
--void __memcg_kmem_uncharge_page(struct page *page, int order)
-+void __memcg_kmem_uncharge_page(struct page *page, int order,
-+		struct mem_cgroup *memcg_in)
- {
--	struct mem_cgroup *memcg = page_memcg(page);
-+	struct mem_cgroup *memcg;
- 	unsigned int nr_pages = 1 << order;
- 
-+	if (page)
-+		memcg = page_memcg(page);
-+	else
-+		memcg = memcg_in;
-+
- 	if (!memcg)
- 		return;
- 
--	VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
-+	if (page)
-+		VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
- 	__memcg_kmem_uncharge(memcg, nr_pages);
--	page->memcg_data = 0;
-+	if (page)
-+		page->memcg_data = 0;
- 	css_put(&memcg->css);
- }
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cfc7287..c3d1d0c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1230,7 +1230,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 		 * Untie memcg state and reset page's owner
- 		 */
- 		if (memcg_kmem_enabled() && PageMemcgKmem(page))
--			__memcg_kmem_uncharge_page(page, order);
-+			__memcg_kmem_uncharge_page(page, order, NULL);
- 		reset_page_owner(page, order);
- 		return false;
- 	}
-@@ -1260,7 +1260,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 	if (PageMappingFlags(page))
- 		page->mapping = NULL;
- 	if (memcg_kmem_enabled() && PageMemcgKmem(page))
--		__memcg_kmem_uncharge_page(page, order);
-+		__memcg_kmem_uncharge_page(page, order, NULL);
- 	if (check_free)
- 		bad += check_free_page(page);
- 	if (bad)
-@@ -4976,6 +4976,8 @@ struct page *
- 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
- 	gfp_t alloc_mask; /* The gfp_t that was actually used for allocation */
- 	struct alloc_context ac = { };
-+	struct mem_cgroup *memcg;
-+	bool charged = false;
- 
- 	/*
- 	 * There are several places where we assume that the order value is sane
-@@ -4987,6 +4989,15 @@ struct page *
- 	}
- 
- 	gfp_mask &= gfp_allowed_mask;
-+	memcg = get_mem_cgroup_from_current();
-+	if (memcg && memcg_kmem_enabled() && (gfp_mask & __GFP_ACCOUNT) &&
-+	    !mem_cgroup_is_root(memcg)) {
-+		if (unlikely(__memcg_kmem_charge_page(memcg, gfp_mask, order) != 0)) {
-+			css_put(&memcg->css);
-+			return NULL;
-+		}
-+		charged = true;
-+	}
- 	alloc_mask = gfp_mask;
- 	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
- 		return NULL;
-@@ -5020,11 +5031,10 @@ struct page *
- 	page = __alloc_pages_slowpath(alloc_mask, order, &ac);
- 
- out:
--	if (memcg_kmem_enabled() && (gfp_mask & __GFP_ACCOUNT) && page &&
--	    unlikely(__memcg_kmem_charge_page(page, gfp_mask, order) != 0)) {
--		__free_pages(page, order);
--		page = NULL;
--	}
-+	if (page && charged)
-+		page->memcg_data = (unsigned long)memcg | MEMCG_DATA_KMEM;
-+	else if (charged)
-+		__memcg_kmem_uncharge_page(NULL, order, memcg);
- 
- 	trace_mm_page_alloc(page, order, alloc_mask, ac.migratetype);
- 
--- 
-1.8.3.1
-
-
+Kind regards
+Uffe
