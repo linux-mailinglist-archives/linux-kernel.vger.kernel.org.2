@@ -2,190 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E626335B869
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B221335B86E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236525AbhDLCLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 22:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbhDLCLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 22:11:07 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D582DC061574;
-        Sun, 11 Apr 2021 19:10:50 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id p16so1586749plf.12;
-        Sun, 11 Apr 2021 19:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yaVUjVzZXG//isVveNusfn2LxuJbXyw20jQCaiyjYIc=;
-        b=g+A+zCWwzK8ZAyXoHM/Ve1WTT/2MDH7nWwtxrikbn+RKWzXglEh05nwTduS4mBiQ2Q
-         LNajmxu/Y0PuNDWOAd8TIMWtrEbC6hQLt1W5LuLEyU36NwXSP9tDRNnzxidIqHdsHLSg
-         P6WxljovJLA16cW+C/8RkYO2fq6wRurjRAw6NBjACmNFqlzHL+xtzOofT9VOnqJbt2J+
-         ACE9aFC7hGBDO/EpTn6YDdfyLan04ZncrLwTKdmaA1NYmaVbHR07KYvZ0F+MrHnJJJ1n
-         fsC9NSDf4f56zkegwM8L2Wv9V/WqxbRC9UQjFw6OhMoRoRH9JpKyWiqAYKolqAuLWHoq
-         7eBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yaVUjVzZXG//isVveNusfn2LxuJbXyw20jQCaiyjYIc=;
-        b=Fy8vau9OScnKW444Xju85uyKSj3uz1BuvwFs97/R+Qd9y8BYP2aFDyDjxJva3eaZiH
-         C/IEwz6NhCcu1zT0xiWdvqe/daHqZyI1V2FXd7gDzkC3Mr1S8OXMilmreTJZEG9FaWX1
-         pKnmSNyvwUfyW9XWFSlJ6GxCUIAVKZYYDRCCekznRASV5brQdCq1uWxmIu07zcOMsB4S
-         uGLn6C6legpSPtWnVF45/BLPIbKf4eKaVgNesMdGi7N8cRex9G4UFdw79u+lLiGcyWyl
-         UJz0BRyBNV5jqxBpb89mSyPK9T8aZJtGBEU+8IRKD/uUnOtogMAsIU7tc6O+t/MWLc6u
-         rzCQ==
-X-Gm-Message-State: AOAM530zBNjZ4WtIJvV0XAsx2Dp+GhGJxPQUdNi1WBEgo6Seseuh7mGr
-        F1R+D7YMDvs6JctUK8ofNr8KEVYmW5o=
-X-Google-Smtp-Source: ABdhPJx2wmATqmthqB7ZmSq1zVZR6kkoXI3XiyffqvT+fsBt6cE6zWZqk+sMD93x5VpYnRCIcyeAGw==
-X-Received: by 2002:a17:90b:2317:: with SMTP id mt23mr10290838pjb.24.1618193449717;
-        Sun, 11 Apr 2021 19:10:49 -0700 (PDT)
-Received: from [10.230.2.159] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id j10sm8912785pjs.11.2021.04.11.19.10.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Apr 2021 19:10:49 -0700 (PDT)
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Marek Behun <marek.behun@nic.cz>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-References: <20210410133454.4768-1-ansuelsmth@gmail.com>
- <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf>
- <20210411235358.vpql2mppobjhknfg@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <84a27330-73cb-3ebe-a0a9-eb6afec55902@gmail.com>
-Date:   Sun, 11 Apr 2021 19:10:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S236551AbhDLCOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 22:14:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44062 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235543AbhDLCOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 22:14:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 91B93B020;
+        Mon, 12 Apr 2021 02:13:50 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 19:13:45 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de
+Subject: Re: [RFC] [PATCH] ipc/util.c: Use binary search for max_idx
+Message-ID: <20210412021345.lvhxhsro5wqm6w6b@offworld>
+References: <20210407105926.198404-1-manfred@colorfullife.com>
 MIME-Version: 1.0
-In-Reply-To: <20210411235358.vpql2mppobjhknfg@skbuf>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210407105926.198404-1-manfred@colorfullife.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 07 Apr 2021, Manfred Spraul wrote:
+
+>If semctl(), msgctl() and shmctl() are called with IPC_INFO, SEM_INFO,
+>MSG_INFO or SHM_INFO, then the return value is the index of the highest
+>used entry in the kernel's internal array recording information about
+>all SysV objects of the requested type for the current namespace.
+>(This information can be used with repeated ..._STAT or ..._STAT_ANY
+>operations to obtain information about all SysV objects on the system.)
+>
+>If the current highest used entry is destroyed, then the new highest
+>used entry is determined by looping over all possible values.
+>With the introduction of IPCMNI_EXTEND_SHIFT, this could be a
+>loop over 16 million entries.
+
+So the lineal search, starting from the end of the range, won't suck
+as long as there aren't big holes in the range from the max_idx to
+the next max_idx, minimizing the amount of idr_find calls - this was
+accepted as the cost of doing caching the max_idx for O(1) access.
+Of course, when not the case, the binary search can save a lot of cycles,
+and I agree it's overall better than trying to predict rmid patterns.
+
+>
+>As there is no get_last() function for idr structures:
+>Implement a "get_last()" using a binary search.
+
+Right, nor do I think there are any users that try to avoid the lookup
+caching the value.
+
+>
+>As far as I see, ipc is the only user that needs get_last(), thus
+>implement it in ipc/util.c and not in a central location.
+
+I find your implementation to be both obscure and elegant :)
+
+Some nit comments below, but I agree with the idea, with the observation
+that the search will always do the worst case amount of logN loops, even
+when the retval is found (in which normal implementations would just
+break out of the looping).
+
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
+
+>
+>Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+>---
+> ipc/util.c | 44 +++++++++++++++++++++++++++++++++++++++-----
+> 1 file changed, 39 insertions(+), 5 deletions(-)
+>
+>diff --git a/ipc/util.c b/ipc/util.c
+>index cfa0045e748d..0121bf6b2617 100644
+>--- a/ipc/util.c
+>+++ b/ipc/util.c
+>@@ -64,6 +64,7 @@
+> #include <linux/memory.h>
+> #include <linux/ipc_namespace.h>
+> #include <linux/rhashtable.h>
+>+#include <linux/log2.h>
+>
+> #include <asm/unistd.h>
+>
+>@@ -450,6 +451,40 @@ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+>				       ipc_kht_params);
+> }
+>
+>+/**
+>+ * ipc_get_maxusedidx - get highest in-use index
+>+ * @ids: ipc identifier set
+>+ * @limit: highest possible index.
+>+ *
+>+ * The function determines the highest in use index value.
+>+ * ipc_ids.rwsem needs to be owned by the caller.
+>+ * If no ipc object is allocated, then -1 is returned.
+>+ */
+>+static int ipc_get_maxusedidx(struct ipc_ids *ids, int limit)
+>+{
+>+	void *val;
+>+	int tmpidx;
+>+	int i;
+>+	int retval;
+>+
+>+	i = ilog2(limit+1);
+>+
+>+	retval = 0;
+>+	for (; i >= 0; i--) {
+>+		tmpidx = retval | (1<<i);
+>+		/*
+>+		 * "0" is a possible index value, thus search using
+>+		 * e.g. 15,7,3,1,0 instead of 16,8,4,2,1.
+>+		 */
+>+		tmpidx = tmpidx-1;
+>+		val = idr_get_next(&ids->ipcs_idr, &tmpidx);
+>+		if (val)
+>+			retval |= (1<<i);
+
+Perhaps get rid of 'val', and just do this instead?
+
+		if (idr_get_next(...))
+		   retval = tmpidx;
+
+>+	}
+
+Mostly thinking out-loud. Suppose the caller is doing RMID(10) == max_idx,
+and no holes, so the next expected max_idx should be 9:
+
+ids->max_idx == ipc_get_maxusedidx(10-1) == 9;
+
+So this will loop from 1 << 3 to 1 << 0:
+
+	       idr_get_next(7)  == T   ==> retval = 8
+	       idr_get_next(11) == F
+	       idr_get_next(9)  == T   ==> retval = 10
+	       idr_get_next(10) == F
+
+	       return 10 - 1; // good
+
+And with holes, ie: 1 2 7 10, so RMID(10) should update next to 7:
+
+ipc_get_maxusedidx(10-1) == 7
+
+	       idr_get_next(7)  == T   ==> retval = 8
+	       idr_get_next(11) == F
+	       idr_get_next(9)  == F
+	       idr_get_next(8)  == F
+
+	       return 8 - 1; // good
+
+>+	retval--;
+>+	return retval;
+
+Instead, just do?
+	 return retval - 1;
+
+>+}
+
+>+
+> /**
+>  * ipc_rmid - remove an ipc identifier
+>  * @ids: ipc identifier set
+>@@ -468,11 +503,10 @@ void ipc_rmid(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+>	ipcp->deleted = true;
+>
+>	if (unlikely(idx == ids->max_idx)) {
+>-		do {
+>-			idx--;
+>-			if (idx == -1)
+>-				break;
+>-		} while (!idr_find(&ids->ipcs_idr, idx));
+>+
+>+		idx = ids->max_idx-1;
+
+>+		if (idx >= 0)
+>+			idx = ipc_get_maxusedidx(ids, idx);
 
 
-On 4/11/2021 4:53 PM, Vladimir Oltean wrote:
-> On Sun, Apr 11, 2021 at 09:50:17PM +0300, Vladimir Oltean wrote:
->> On Sun, Apr 11, 2021 at 08:01:35PM +0200, Marek Behun wrote:
->>> On Sat, 10 Apr 2021 15:34:46 +0200
->>> Ansuel Smith <ansuelsmth@gmail.com> wrote:
->>>
->>>> Hi,
->>>> this is a respin of the Marek series in hope that this time we can
->>>> finally make some progress with dsa supporting multi-cpu port.
->>>>
->>>> This implementation is similar to the Marek series but with some tweaks.
->>>> This adds support for multiple-cpu port but leave the driver the
->>>> decision of the type of logic to use about assigning a CPU port to the
->>>> various port. The driver can also provide no preference and the CPU port
->>>> is decided using a round-robin way.
->>>
->>> In the last couple of months I have been giving some thought to this
->>> problem, and came up with one important thing: if there are multiple
->>> upstream ports, it would make a lot of sense to dynamically reallocate
->>> them to each user port, based on which user port is actually used, and
->>> at what speed.
->>>
->>> For example on Turris Omnia we have 2 CPU ports and 5 user ports. All
->>> ports support at most 1 Gbps. Round-robin would assign:
->>>   CPU port 0 - Port 0
->>>   CPU port 1 - Port 1
->>>   CPU port 0 - Port 2
->>>   CPU port 1 - Port 3
->>>   CPU port 0 - Port 4
->>>
->>> Now suppose that the user plugs ethernet cables only into ports 0 and 2,
->>> with 1, 3 and 4 free:
->>>   CPU port 0 - Port 0 (plugged)
->>>   CPU port 1 - Port 1 (free)
->>>   CPU port 0 - Port 2 (plugged)
->>>   CPU port 1 - Port 3 (free)
->>>   CPU port 0 - Port 4 (free)
->>>
->>> We end up in a situation where ports 0 and 2 share 1 Gbps bandwidth to
->>> CPU, and the second CPU port is not used at all.
->>>
->>> A mechanism for automatic reassignment of CPU ports would be ideal here.
->>>
->>> What do you guys think?
->>
->> The reason why I don't think this is such a great idea is because the
->> CPU port assignment is a major reconfiguration step which should at the
->> very least be done while the network is down, to avoid races with the
->> data path (something which this series does not appear to handle).
->> And if you allow the static user-port-to-CPU-port assignment to change
->> every time a link goes up/down, I don't think you really want to force
->> the network down through the entire switch basically.
->>
->> So I'd be tempted to say 'tough luck' if all your ports are not up, and
->> the ones that are are assigned statically to the same CPU port. It's a
->> compromise between flexibility and simplicity, and I would go for
->> simplicity here. That's the most you can achieve with static assignment,
->> just put the CPU ports in a LAG if you want better dynamic load balancing
->> (for details read on below).
-> 
-> Just one more small comment, because I got so carried away with
-> describing what I already had in mind, that I forgot to completely
-> address your idea.
-> 
-> I think that DSA should provide the means to do what you want but not
-> the policy.
 
-Could not agree more, this point is what has historically prevented any
-multi-CPU port patch series from landing because what everyone seems to
-have wanted so far is along these lines:
+>		ids->max_idx = idx;
 
-- assign LAN ports 0-3 to CPU port #0
-- assign WAN port 4 to CPU port #1
+We already have ipc_get_maxidx(), so the naming here is a bit strange.
+How about renaming ipc_get_maxusedidx() to ipc_get_nextidx() and let it
+handle the whole logic, pass along the ids->max_id without decrementing?
 
-and do that from Device Tree, problem solved? Not entirely unfortunately.
+       if (unlikely(idx == ids->max_idx))
+	 ids->max_idx = ipc_get_nextidx(ids->max_idx);
 
-Being able to change the mapping via iproute2 is definitively an
-improvement, and to echo to your comment on the iproute2 change proper
-we can try to agree on a more specialized syntax.
-
-> Meaning that you can always write a user space program that
-> monitors the NETLINK_ROUTE rtnetlink through a socket and listens for
-> link state change events on it with poll(), then does whatever (like
-> moves the static user-to-CPU port mapping in the way that is adequate to
-> your network's requirements). The link up/down events are already
-> emitted, and the patch set here gives user space the rope to hang itself.
-
-That seems like an entirely reasonable approach to me, and solving how
-to map a given user-port to a particular CPU port definitively belongs
-in user-space, within the constraints expressed by what the switch
-driver can do of course.
-
-> 
-> If you need inspiration, one user of the rtnetlink socket that I know of
-> is ptp4l:
-> https://github.com/richardcochran/linuxptp/blob/master/rtnl.c
-> 
-
--- 
-Florian
+Thanks,
+Davidlohr
