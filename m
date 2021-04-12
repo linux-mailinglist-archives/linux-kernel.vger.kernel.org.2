@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B7035BF61
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736CF35BF5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238027AbhDLJGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:06:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45752 "EHLO mail.kernel.org"
+        id S240118AbhDLJEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238837AbhDLIyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:54:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91ABE61244;
-        Mon, 12 Apr 2021 08:53:07 +0000 (UTC)
+        id S238840AbhDLIy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:54:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7759161369;
+        Mon, 12 Apr 2021 08:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217588;
-        bh=F8b3vb5PTEDH2Um/4peEt+2NFeHbIcQ86UXLBpPN+Ew=;
+        s=korg; t=1618217591;
+        bh=QV23nfLcDyAHvWzHcAueEE3r3+Nf6a3TBnLb/GZZRiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J/WHYwpzq3tsBP+r6yfTbQ9UcXcZVGj6Uz5ZUDTQM9ZeLiLkHqKUkxXuy6axzxRO0
-         YqCEmhiMxittzBHpAKbf0HMHdzUENeW2MsZEuAMoLuxWIxgCXfyeLUYAaqvgX9wkCG
-         B2wpNRHE8eFLYTCxgqzhyC038lhJlMEcpXMtjKPQ=
+        b=nSmznqV2RqJmfMjzy4lKqlvRK+y2y6x/1++9SGUlmkueZz+GmXfDDxfKD2XKOXkSj
+         +v0ZQKAZLL9JQ/x/nHePQ1p2gumQAA2ZSYJZIMAga1iO7ibIXCf4Ma43Z7mKYB6QOM
+         7jvU4Opuwhda6jBIL+VRexCIv9lCtPe8RUdfeYHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 5.10 071/188] thunderbolt: Fix a leak in tb_retimer_add()
-Date:   Mon, 12 Apr 2021 10:39:45 +0200
-Message-Id: <20210412084016.018126342@linuxfoundation.org>
+Subject: [PATCH 5.10 072/188] thunderbolt: Fix off by one in tb_port_find_retimer()
+Date:   Mon, 12 Apr 2021 10:39:46 +0200
+Message-Id: <20210412084016.048474042@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -42,17 +41,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit bec4d7c93afc07dd0454ae41c559513f858cfb83 upstream.
+commit 08fe7ae1857080f5075df5ac7fef2ecd4e289117 upstream.
 
-After the device_register() succeeds, then the correct way to clean up
-is to call device_unregister().  The unregister calls both device_del()
-and device_put().  Since this code was only device_del() it results in
-a memory leak.
+This array uses 1-based indexing so it corrupts memory one element
+beyond of the array.  Fix it by making the array one element larger.
 
 Fixes: dacb12877d92 ("thunderbolt: Add support for on-board retimers")
 Cc: stable@vger.kernel.org
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -61,14 +57,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/thunderbolt/retimer.c
 +++ b/drivers/thunderbolt/retimer.c
-@@ -347,7 +347,7 @@ static int tb_retimer_add(struct tb_port
- 	ret = tb_retimer_nvm_add(rt);
- 	if (ret) {
- 		dev_err(&rt->dev, "failed to add NVM devices: %d\n", ret);
--		device_del(&rt->dev);
-+		device_unregister(&rt->dev);
- 		return ret;
- 	}
+@@ -406,7 +406,7 @@ static struct tb_retimer *tb_port_find_r
+  */
+ int tb_retimer_scan(struct tb_port *port)
+ {
+-	u32 status[TB_MAX_RETIMER_INDEX] = {};
++	u32 status[TB_MAX_RETIMER_INDEX + 1] = {};
+ 	int ret, i, last_idx = 0;
  
+ 	if (!port->cap_usb4)
 
 
