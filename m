@@ -2,97 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8B235E237
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317D235E23A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345597AbhDMPDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:03:00 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:52295 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239510AbhDMPCv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:02:51 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id WKYclFiBNMxedWKYglj7fF; Tue, 13 Apr 2021 17:02:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618326150; bh=IDKasFqgZQXyRzPPd8mvlQ7HH6pYthpdVRPFi2j8brk=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=m+9KtqUrym5RH2Ct0yC59jWTznQCxXhAcOOb4wusDJbrLjOZ3ROSjr0m16UgfxQgc
-         uu/OoEvPY1oQFvtMM2Tgtco/Pzy/BNWT2YRIb07ZRmKL3itqS2XeZIFGe1zLJVLI0h
-         1cs/BjKYTXitacN/xTf1Qpxse/P/TuaEX0wbHRz1el4JOjtcT3TtDqgOIkkr0jdeWV
-         ibKJN5I49MfmSVf0PVERX4aBxKiB9vRkupEFW7THNRODh6QpQtHOwkz6eWjE+HdF/C
-         m3w23zWzMOK/7iAC1RloSd1SxF9wyskULWJLhffkmshuz4MYLY1YGsCSWBLmkebZsH
-         rraX0L+0fFuJA==
-Subject: Re: [PATCH v3 1/2] media: zoran: add spaces around '<<'
-To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-References: <cover.1618066787.git.mitaliborkar810@gmail.com>
- <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1618066787.git.mitaliborkar810@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <1b70e00e-383f-17c2-231e-e7e8a11acf90@xs4all.nl>
-Date:   Tue, 13 Apr 2021 17:02:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S1345625AbhDMPD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:03:27 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48516 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242462AbhDMPDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:03:25 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lWKZA-00GUMK-8h; Tue, 13 Apr 2021 17:03:00 +0200
+Date:   Tue, 13 Apr 2021 17:03:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michal =?utf-8?B?Vm9rw6HEjQ==?= <michal.vokac@ysoft.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: imx6dl-yapp4: Fix RGMII connection to QCA8334
+ switch
+Message-ID: <YHWypAVAv2Qkc3K3@lunn.ch>
+References: <1618325157-5774-1-git-send-email-michal.vokac@ysoft.com>
 MIME-Version: 1.0
-In-Reply-To: <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1618066787.git.mitaliborkar810@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfC4JMNIPm95Mxy3A/xjTotsLqMg61nIii6HL9k+S5EOSb+HzHtqjhne4NdDOE/a5W/DF6BC+VczczhAwfGqSSxkkWtJkHmaEXwjTFzOhEKJrwMBR4d8Q
- sLxQSIqPG04BrMLGhdne74i3Q1wpHj4JfVzESgMJs6pCFl2Rk1irChga1WsdyE7QcGTFii+x/f07IKl2Gp1QMkagoC75EmXdRiOsDyRk/kT8KaPvcQQ9YSYt
- jo6SPSBOUOYaiTxImTTmpDNkD/Q/2mKWEucQ7kuWpZM34un6e/lUTNw5s/949xvb2sWQ9W4ogyV2cI9pW/HvN7lZ3Vfl/521GtFVQ4BwFn95SXp/1wf4gLRG
- Dk/dK0+ukXb4TQ0dSOwEcWXE8tqizZslmeMDGSZejeWcKIbzzRlp365Z5nrzYmdq1spFloQPi16ENVgotCxb9ikWlE0dBb5cOtTieTXQPAX1HaSJwMJz+5sf
- iUe+ueM605rGxBDwWxnQhK5DScauorQmiYGbaw==
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1618325157-5774-1-git-send-email-michal.vokac@ysoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missing commit message.
-
-You used to have one in v1 of this patch!
-
-Regards,
-
-	Hans
-
-On 10/04/2021 17:33, Mitali Borkar wrote:
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
-> Changes from v2:- No changes. 
-> Changes from v1:- NO changes.
+On Tue, Apr 13, 2021 at 04:45:57PM +0200, Michal Vokáč wrote:
+> The FEC does not have a PHY so it should not have a phy-handle. It is
+> connected to the switch at RGMII level so we need a fixed-link sub-node
+> on both ends.
 > 
->  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> This was not a problem until the qca8k.c driver was converted to PHYLINK
+> by commit b3591c2a3661 ("net: dsa: qca8k: Switch to PHYLINK instead of
+> PHYLIB"). That commit revealed the FEC configuration was not correct.
 > 
-> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> index 71b651add35a..a2a75fd9f535 100644
-> --- a/drivers/staging/media/zoran/zr36057.h
-> +++ b/drivers/staging/media/zoran/zr36057.h
-> @@ -30,13 +30,13 @@
->  #define ZR36057_VFESPFR_HOR_DCM          14
->  #define ZR36057_VFESPFR_VER_DCM          8
->  #define ZR36057_VFESPFR_DISP_MODE        6
-> -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
->  
->  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
->  
-> 
+> Fixes: 87489ec3a77f ("ARM: dts: imx: Add Y Soft IOTA Draco, Hydra and Ursa boards")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
