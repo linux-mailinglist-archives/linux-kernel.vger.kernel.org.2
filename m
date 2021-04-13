@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AEE35DA23
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B66B35DA28
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhDMId0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhDMIdV (ORCPT
+        id S243002AbhDMIek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:34:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53070 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229656AbhDMIei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:33:21 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C61C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:33:01 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id 7so17042732qka.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:33:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nrqvVxvltpzH7RYZqpvLzY8XnwRwce2q6/g0kk8slc=;
-        b=QAOG0RG8adp5ycX0lJkHwnEJPjkPyROHvocgANgIV0TKKHsqDrBvWVkwkq0BMm3fl0
-         pREAlHcCXQ5OYela9E9tkJ+wZ2gDhE734EADbRRQ+Ag9u5PxdtAOEXpyaC8+pYFRDZmK
-         l8brOtdr8mZdh2GQ+udPuWKEUwz5HbwWkfsBfEdZrslLlB+s3NDz+mf5B3Hx7cbqaBnj
-         lA7G3VKGQUJ0eAyrGYvUHMDbMd0HEVuDJwjc4SxzCwXRuUZyClngI3BKmCWooSluJggB
-         oq/VXu9s2qS04lfZtV1WOSmyn5+nDLEV3hZCamvFizFtXYnll6OekZ/41AIHgdRlRKlI
-         sKcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nrqvVxvltpzH7RYZqpvLzY8XnwRwce2q6/g0kk8slc=;
-        b=rAJ/GgLteYJP9Evkos1JMP9tU9OxFZlyJadaeAiWz3AveSL/4p+vQvdKuyZzUBLkHF
-         cyJK+Eea0oFFUd/cQfm5NAAqaloS4ex18Tlp4iTuYbUQBui9dmk7KEzg1sqy7MjnDVWL
-         iheQNyDatOEv3//m5LaxRrN9BI9IUjfCQhnGf6h1MkJumMpKBYuFDlt7oD0g6R/Nrb2E
-         7anu7mqCVtRxxF33SpP2R4MPjZmnw8Hh1VjkuFzlcXHe3o1Xxav+SZBP38hjxI3sE56P
-         4gxF5QReu5T+Bs/JuJqVwge+ph7qfDS/+tlhMEj4KwZHhVHjdG7ZVBejdBhUfjmcOMLe
-         /pXg==
-X-Gm-Message-State: AOAM530fqx8k8fT98TT+Sy7Q9jKgDAnq0Zc8EPXHBImf85ti3ooPWmUL
-        hRzYX+FxX7H6QLtjuMHXQNgr9Z9tekH850I4k2JFbg==
-X-Google-Smtp-Source: ABdhPJz+1ReMEouOSg1zddV3GpTwRAtGceqbdLT5e7gbK5z0KeIyb0y7vjOodqSziBb/LhSo5KaJKtJZG8vCt6jwMU4=
-X-Received: by 2002:a05:620a:a47:: with SMTP id j7mr8648989qka.350.1618302780925;
- Tue, 13 Apr 2021 01:33:00 -0700 (PDT)
+        Tue, 13 Apr 2021 04:34:38 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D8XDB4071495;
+        Tue, 13 Apr 2021 04:33:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=H1Y2/bGYlV5wOp/OT6q1ivbSoZaewBAhlcce0EfVJDw=;
+ b=hF6Tcce0q1E8/JsKwPEi11yovP5JnZmCCT6MhTHguCXtZ7HFAcCci66mCzkEHBJ98TPS
+ 1bL0ovKXyId2H4sT8as6eqBZ4gFngfZDlgFRALMyIpkeE5LM1fNNGOo+PydFIEukU7Kb
+ iUkzkLzHvkhviArbfORPEBAfqWk49tYahF3Ss2zq/ECsY3f4b9SodN+f961TpwOouEK5
+ gk4L/PFOGaP8Omu3GOacpHPg9zwvleL+qm9LZKeZKVpAPX/h3K3+H/PgOfp5+E9Xh9wf
+ cDKMOcx/+TKYTkTzNIau20xuPdnVVCnvcRMxjJmgAGVpjDTCt8bk8xGGpsk5UILue+JO pQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37w76qsawv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 04:33:15 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13D8XEpW071703;
+        Tue, 13 Apr 2021 04:33:14 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37w76qsat3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 04:33:14 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D8X28V004312;
+        Tue, 13 Apr 2021 08:33:03 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 37u39h9b0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 08:33:02 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D8WcuQ34865494
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 08:32:38 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 822D0A4053;
+        Tue, 13 Apr 2021 08:33:00 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A7E1A404D;
+        Tue, 13 Apr 2021 08:32:59 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 08:32:59 +0000 (GMT)
+Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>
+References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <76aa7dcc-ba57-f12d-bf19-880fa71f429f@de.ibm.com>
+Date:   Tue, 13 Apr 2021 10:32:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5hr-l3q1hOV6VZnSkK6fZ5ICd8UFpN4g
+X-Proofpoint-ORIG-GUID: gr05uOpjtFFEiy3n2Ir3Us5sLnazPonJ
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <00000000000073afff05bbe9a54d@google.com> <00000000000020564605bedb716e@google.com>
- <20210401133037.GA1052133@rowland.harvard.edu>
-In-Reply-To: <20210401133037.GA1052133@rowland.harvard.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 10:32:50 +0200
-Message-ID: <CACT4Y+ZMFwTLrdK+8YZifJR_7V21gwOxbVKnbRP3Yj=YQ+k7xQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in ieee802154_del_seclevel
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     syzbot <syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com>,
-        a@unstable.cc, alex.aring@gmail.com,
-        b.a.t.m.a.n@lists.open-mesh.org,
-        David Miller <davem@davemloft.net>, info@sophiescuban.com,
-        Jiri Kosina <jkosina@suse.cz>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-wpan@vger.kernel.org,
-        mareklindner@neomailbox.ch, netdev <netdev@vger.kernel.org>,
-        stefan@datenfreihafen.org, sw@simonwunderlich.de,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 priorityscore=1501 spamscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 3:30 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Wed, Mar 31, 2021 at 02:03:08PM -0700, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit 416dacb819f59180e4d86a5550052033ebb6d72c
-> > Author: Alan Stern <stern@rowland.harvard.edu>
-> > Date:   Wed Aug 21 17:27:12 2019 +0000
-> >
-> >     HID: hidraw: Fix invalid read in hidraw_ioctl
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127430fcd00000
-> > start commit:   6e5a03bc ethernet/netronome/nfp: Fix a use after free in n..
-> > git tree:       net
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=117430fcd00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=167430fcd00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=fbf4fc11a819824e027b
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bfe45ed00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1188e31ad00000
-> >
-> > Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
-> > Fixes: 416dacb819f5 ("HID: hidraw: Fix invalid read in hidraw_ioctl")
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->
-> It seems likely that the bisection ran off the rails here.  This commit
-> could not have caused a problem, although it may have revealed a
-> pre-existing problem that previously was hidden.
-
-Hi Alan,
-
-Yes, bisection log shows it was derailed by:
-KASAN: use-after-free Read in batadv_iv_ogm_queue_add
-and:
-BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-
-https://syzkaller.appspot.com/x/bisect.txt?x=127430fcd00000
 
 
-> By the way, what happened to the annotated stack dumps that syzkaller
-> used to provide in its bug reports?
+On 13.04.21 09:16, Wanpeng Li wrote:
+> The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
+> reported that the guest time remains 0 when running a while true
+> loop in the guest.
+> 
+> The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
+> belongs") moves guest_exit_irqoff() close to vmexit breaks the
+> tick-based time accouting when the ticks that happen after IRQs are
+> disabled are incorrectly accounted to the host/system time. This is
+> because we exit the guest state too early.
+> 
+> This patchset splits both context tracking logic and the time accounting
+> logic from guest_enter/exit_irqoff(), keep context tracking around the
+> actual vmentry/exit code, have the virt time specific helpers which
+> can be placed at the proper spots in kvm. In addition, it will not
+> break the world outside of x86.
+> 
+> v1 -> v2:
+>   * split context_tracking from guest_enter/exit_irqoff
+>   * provide separate vtime accounting functions for consistent
+>   * place the virt time specific helpers at the proper splot
+> 
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Michael Tokarev <mjt@tls.msk.ru>
+> 
+> Wanpeng Li (3):
+>    context_tracking: Split guest_enter/exit_irqoff
+>    context_tracking: Provide separate vtime accounting functions
+>    x86/kvm: Fix vtime accounting
+> 
+>   arch/x86/kvm/svm/svm.c           |  6 ++-
+>   arch/x86/kvm/vmx/vmx.c           |  6 ++-
+>   arch/x86/kvm/x86.c               |  1 +
+>   include/linux/context_tracking.h | 84 +++++++++++++++++++++++++++++++---------
+>   4 files changed, 74 insertions(+), 23 deletions(-)
+> 
 
-Nothing has changed in this respect, they are still in bug reports:
-https://lore.kernel.org/lkml/00000000000073afff05bbe9a54d@google.com/
+The non CONFIG_VIRT_CPU_ACCOUNTING_GEN look good.
