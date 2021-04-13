@@ -2,166 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CAD35E6EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036BD35E6ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245299AbhDMTH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236935AbhDMTHx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:07:53 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC26C061574;
-        Tue, 13 Apr 2021 12:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=5IS1kdjQ/wiovyMBlwaRQmI6DR2U+GDZoX5Ga6CzJBQ=; b=SWMMfeMR8QXg6ExV2ShIUEXXce
-        YXQpA18y8ZtTm8wlph3xXnq45/yTGFharQ7QepvNuhPPoO/lXFpKosDqH1vqctC6bFlzZ7ceE9ZtK
-        8mhX+F1WliOXFRe7Eo3iuZoYJWiM3UOh/jNkvsgYXFJmGOVLud88JYrqEDt8zryBojk4msfgpla9L
-        Y7ofdK8zSMpkCVOKgZwbexY5Mk3QYZKR5zEn7YS6r27PmS/uIVc5VrxgMA4FG+c73hwlO9VcVsKKO
-        kqBUcLkFQ9QrtrYbdeWEtcGEWERQCq6O6JyzE7j2SYWym/EbuRFIPOXj86IdGryxuogL0Rj1AaVeJ
-        rzc/ef3A==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWONm-00ADIa-FA; Tue, 13 Apr 2021 19:07:31 +0000
-Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-References: <20210409215103.03999588@canb.auug.org.au>
- <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
- <YHPlTifk6jST5auY@kernel.org>
- <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org>
- <YHR86T15BzETVHhk@kernel.org>
- <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
- <YHU03AIwrpHCUlU/@kernel.org>
- <7cec048d-26f0-104a-6bca-d9afc6a7d1e8@infradead.org>
- <YHXNyVVUwZbVDBrr@kernel.org>
- <7bc072c0-bf10-bd0f-95db-0f0a7db47b93@infradead.org>
- <YHXhhtCVf0RsgsDs@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4b980588-d7b8-24e8-dc68-709a3f9b9fc0@infradead.org>
-Date:   Tue, 13 Apr 2021 12:07:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1343833AbhDMTIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231150AbhDMTI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:08:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBEEB613C3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618340889;
+        bh=ywzMELvuLStRdTUBxJiKFLMdIc6HNxynJnmE2U9/rqc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=swATTxQklp8zfyXQhR8trLeNK9PR+hOWOGGOjaphQGCGb5016ff1N7l0bXbJ9lFGv
+         pupAr0RyIqgysjd1tGbAQ6RV6ZsFP88TTrqyvqLt2Pbk2vg/mDNap8p4kE4C6qEJLv
+         B+GKgSOrOAmnT7f7Xm1hzRPbwmjo+PjUkoQ/s/Z9CjM8/HoJ3jwguXcR8VFo86TBMq
+         k1VfMwW1iziWvesVz40o99sYv0JR1+AwA4/PVJYlKoAm95oRbAaA5NKScBgcUjPAYI
+         weOe3Hc4DFG+t90rqwbzP05+T5WfOPmLxgeWyEhxM8pgwUMt8VP8q6x022zVYSvAro
+         0SoFk+/p/K8aQ==
+Received: by mail-qt1-f175.google.com with SMTP id o2so183583qtr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:08:09 -0700 (PDT)
+X-Gm-Message-State: AOAM532wpek/9ONRLaJQV/bTSbAEh+4ipFedVPmkXGUWHeZMJvSeWyqX
+        lVrhTBVGZpqaE6IuJPkhQuiT+AW5BifyuOkH+A==
+X-Google-Smtp-Source: ABdhPJwfRxzIlae3g/qZ0IWEoIKv89bPc97n4rJP55jI5G9y9RUqKudjjR7WtDELOE5XBV9aWngr+ZPRe6Ie5oBHUFE=
+X-Received: by 2002:a05:622a:8:: with SMTP id x8mr22693772qtw.31.1618340888866;
+ Tue, 13 Apr 2021 12:08:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YHXhhtCVf0RsgsDs@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210413171606.1825808-1-robh@kernel.org> <20210413171606.1825808-3-robh@kernel.org>
+ <YHXlXMd2Bp+90851@kernel.org>
+In-Reply-To: <YHXlXMd2Bp+90851@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 13 Apr 2021 14:07:57 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJfCNuvavU1xVUBxRFDopfsLW+E0kZXH8oZ2pmCDybPpA@mail.gmail.com>
+Message-ID: <CAL_JsqJfCNuvavU1xVUBxRFDopfsLW+E0kZXH8oZ2pmCDybPpA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/4] libperf: Add evsel mmap support
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 11:23 AM, Mike Rapoport wrote:
-> On Tue, Apr 13, 2021 at 10:34:25AM -0700, Randy Dunlap wrote:
->> On 4/13/21 9:58 AM, Mike Rapoport wrote:
+On Tue, Apr 13, 2021 at 1:39 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Apr 13, 2021 at 12:16:04PM -0500, Rob Herring escreveu:
+> > In order to support usersapce access, an event must be mmapped. While
+> > there's already mmap support for evlist, the usecase is a bit different
+> > than the self monitoring with userspace access. So let's add a new
+> > perf_evsel__mmap() function to mmap an evsel. This allows implementing
+> > userspace access as a fastpath for perf_evsel__read().
+> >
+> > The mmapped address is returned by perf_evsel__mmap_base() which
+> > primarily for users/tests to check if userspace access is enabled.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > v7:
+> >  - Add NULL fd check to perf_evsel__mmap
+> > v6:
+> >  - split mmap struct into it's own xyarray
+> > v5:
+> >  - Create an mmap for every underlying event opened. Due to this, we
+> >    need a different way to get the mmap ptr, so perf_evsel__mmap_base()
+> >    is introduced.
+> > v4:
+> >  - Change perf_evsel__mmap size to pages instead of bytes
+> > v3:
+> >  - New patch split out from user access patch
+> > ---
+> >  tools/lib/perf/Documentation/libperf.txt |  2 +
+> >  tools/lib/perf/evsel.c                   | 54 ++++++++++++++++++++++++
+> >  tools/lib/perf/include/internal/evsel.h  |  1 +
+> >  tools/lib/perf/include/perf/evsel.h      |  2 +
+> >  tools/lib/perf/libperf.map               |  2 +
+> >  5 files changed, 61 insertions(+)
+> >
+> > diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+> > index 0c74c30ed23a..a2c73df191ca 100644
+> > --- a/tools/lib/perf/Documentation/libperf.txt
+> > +++ b/tools/lib/perf/Documentation/libperf.txt
+> > @@ -136,6 +136,8 @@ SYNOPSIS
+> >                         struct perf_thread_map *threads);
+> >    void perf_evsel__close(struct perf_evsel *evsel);
+> >    void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
+> > +  int perf_evsel__mmap(struct perf_evsel *evsel, int pages);
+> > +  void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread);
+> >    int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+> >                         struct perf_counts_values *count);
+> >    int perf_evsel__enable(struct perf_evsel *evsel);
+> > diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> > index 4dc06289f4c7..7e140763552f 100644
+> > --- a/tools/lib/perf/evsel.c
+> > +++ b/tools/lib/perf/evsel.c
+> > @@ -11,10 +11,12 @@
+> >  #include <stdlib.h>
+> >  #include <internal/xyarray.h>
+> >  #include <internal/cpumap.h>
+> > +#include <internal/mmap.h>
+> >  #include <internal/threadmap.h>
+> >  #include <internal/lib.h>
+> >  #include <linux/string.h>
+> >  #include <sys/ioctl.h>
+> > +#include <sys/mman.h>
+> >
+> >  void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
+> >  {
+> > @@ -38,6 +40,7 @@ void perf_evsel__delete(struct perf_evsel *evsel)
+> >  }
+> >
+> >  #define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
+> > +#define MMAP(e, x, y) (e->mmap ? ((struct perf_mmap *) xyarray__entry(e->mmap, x, y)) : NULL)
+> >
+> >  int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
+> >  {
+> > @@ -55,6 +58,13 @@ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
+> >       return evsel->fd != NULL ? 0 : -ENOMEM;
+> >  }
+> >
+> > +static int perf_evsel__alloc_mmap(struct perf_evsel *evsel, int ncpus, int nthreads)
+> > +{
+> > +     evsel->mmap = xyarray__new(ncpus, nthreads, sizeof(struct perf_mmap));
+> > +
+> > +     return evsel->mmap != NULL ? 0 : -ENOMEM;
+> > +}
+> > +
+> >  static int
+> >  sys_perf_event_open(struct perf_event_attr *attr,
+> >                   pid_t pid, int cpu, int group_fd,
+> > @@ -137,6 +147,8 @@ void perf_evsel__free_fd(struct perf_evsel *evsel)
+> >  {
+> >       xyarray__delete(evsel->fd);
+> >       evsel->fd = NULL;
+> > +     xyarray__delete(evsel->mmap);
+> > +     evsel->mmap = NULL;
+> >  }
+> >
+> >  void perf_evsel__close(struct perf_evsel *evsel)
+> > @@ -156,6 +168,48 @@ void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu)
+> >       perf_evsel__close_fd_cpu(evsel, cpu);
+> >  }
+> >
+> > +int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+> > +{
+> > +     int ret, cpu, thread;
+> > +     struct perf_mmap_param mp = {
+> > +             .prot = PROT_READ | PROT_WRITE,
+> > +             .mask = (pages * page_size) - 1,
+> > +     };
+> > +
+> > +     if (evsel->fd == NULL)
+> > +             return -EINVAL;
+> > +
+> > +     if (evsel->mmap == NULL &&
+> > +         perf_evsel__alloc_mmap(evsel, xyarray__max_x(evsel->fd), xyarray__max_y(evsel->fd)) < 0)
+> > +             return -ENOMEM;
+> > +
+> > +     for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
+> > +             for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
+> > +                     int fd = FD(evsel, cpu, thread);
+> > +                     struct perf_mmap *map = MMAP(evsel, cpu, thread);
+> > +
+> > +                     if (fd < 0)
+> > +                             continue;
+> > +
+> > +                     perf_mmap__init(map, NULL, false, NULL);
+> > +
+> > +                     ret = perf_mmap__mmap(map, &mp, fd, cpu);
+> > +                     if (ret)
+> > +                             return -1;
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+>
+> Where is the counterpart?
 
->>
->> Mike,
->> That works.
->>
->> Please send the next test.
-> 
-> I think I've found the reason. trim_snb_memory() reserved the entire first
-> megabyte very early leaving no room for real mode trampoline allocation.
-> Since this reservation is needed only to make sure integrated gfx does not
-> access some memory, it can be safely done after memblock allocations are
-> possible.
-> 
-> I don't know if it can be fixed on the graphics device driver side, but
-> from the setup_arch() perspective I think this would be the proper fix:
-> 
-> From c05f6046137abbcbb700571ce1ac54e7abb56a7d Mon Sep 17 00:00:00 2001
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> Date: Tue, 13 Apr 2021 21:08:39 +0300
-> Subject: [PATCH] x86/setup: move trim_snb_memory() later in setup_arch to fix
->  boot hangs
-> 
-> Commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-> moved reservation of the memory inaccessible by Sandy Bride integrated
-> graphics very early and as the result on systems with such devices the
-> first 1M was reserved by trim_snb_memory() which prevented the allocation
-> of the real mode trampoline and made the boot hang very early.
-> 
-> Since the purpose of trim_snb_memory() is to prevent problematic pages ever
-> reaching the graphics device, it is safe to reserve these pages after
-> memblock allocations are possible.
-> 
-> Move trim_snb_memory later in boot so that it will be called after
-> reserve_real_mode() and make comments describing trim_snb_memory()
-> operation more elaborate.
-> 
-> Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+I was assuming implicitly unmapped when closing the fd(s), but looks
+like it's when exiting the process only.
 
-Yay! That boots.
+I.e. perf_evsel__munmap(), and it should be
+> called if perf_evsel__mmap() fails, right?
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+If perf_evsel__mmap() fails, the caller shouldn't have to do anything
+WRT mmap, right? But if the perf_mmap__mmap() call fails, we do need
+some internal clean-up. I'll fix both.
 
-Thanks.
-
-> ---
->  arch/x86/kernel/setup.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 59e5e0903b0c..ccdcfb19df1e 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -633,11 +633,16 @@ static void __init trim_snb_memory(void)
->  	printk(KERN_DEBUG "reserving inaccessible SNB gfx pages\n");
->  
->  	/*
-> -	 * Reserve all memory below the 1 MB mark that has not
-> -	 * already been reserved.
-> +	 * SandyBridge integrated graphic devices have a bug that prevents
-> +	 * them from accessing certain memory ranges, namely anything below
-> +	 * 1M and in the pages listed in the bad_pages.
-> +	 *
-> +	 * To avoid these pages being ever accessed by SNB gfx device
-> +	 * reserve all memory below the 1 MB mark and bad_pages that have
-> +	 * not already been reserved at boot time.
->  	 */
->  	memblock_reserve(0, 1<<20);
-> -	
-> +
->  	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
->  		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
->  			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
-> @@ -746,8 +751,6 @@ static void __init early_reserve_memory(void)
->  
->  	reserve_ibft_region();
->  	reserve_bios_regions();
-> -
-> -	trim_snb_memory();
->  }
->  
->  /*
-> @@ -1083,6 +1086,13 @@ void __init setup_arch(char **cmdline_p)
->  
->  	reserve_real_mode();
->  
-> +	/*
-> +	 * Reserving memory causing GPU hangs on Sandy Bridge integrated
-> +	 * graphic devices should be done after we allocated memory under
-> +	 * 1M for the real mode trampoline
-> +	 */
-> +	trim_snb_memory();
-> +
->  	init_mem_mapping();
->  
->  	idt_setup_early_pf();
-> 
-
-
--- 
-~Randy
-
+Rob
