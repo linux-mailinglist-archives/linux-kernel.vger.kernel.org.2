@@ -2,88 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8CE35E8D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CCC35E8E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347125AbhDMWKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231648AbhDMWKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:10:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D606861249;
-        Tue, 13 Apr 2021 22:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618351810;
-        bh=FSLHKB18JSSgjogb29XxS0VuBaUCWkBk7hZ8VUgrRkg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BPw910v5yOEtt9nWt01ryGQB7wRe8IBSuf6TxfvpyriWcV6iWe43QvbtkOoniZ4Wl
-         9JLgpGfmt+j1IVjXxN6txmlpUXOEQ3anpj5Qkc2Px1QZuLx8FeOgGpZvqzkLjGyvFa
-         Oh7Zd2pzDvadK0Kx4TB4VpR6dVYKvAazmetMp4iYeQTNmIhEUcPAfrEE+ZCjR/vrcs
-         uqwAVAEwYxG2zJa3o90eFRnKgwXJqb3NdpWcAyCZ/Y+675nUWoAPbQqlz0awTGB2tT
-         vuSLVU77+Z+VZvrGI1Z4IkxDC+75PzqfrOf7SKnyIgGEHeAFTMzeZ+8rkhffc8sAQ3
-         aYQa94FH4k2DA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CE1BC60CCF;
-        Tue, 13 Apr 2021 22:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1348626AbhDMWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:11:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348615AbhDMWLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 18:11:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618351892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FwHJYneX3jqLvQL75mdfgjni6//ZDHqX9VNzr6xXMHI=;
+        b=Ww5cao2LWhWc2LhE2LaTl4pmHVINTUoqX7FAEjtB9RwBO1atKmCa3tZ4qu7PO6ryi8Nkay
+        MqeCbjPz98Dc+lMZ33g222Afn0tL+NHOjM26TPCYK93BYwvOAvCgFxnD6B5ERBhzvuUqpI
+        Ahq2nMi0OdMIhf1jcffIw5lXQQidew4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-xsvjn-CqNmG6_kp__L6xRA-1; Tue, 13 Apr 2021 18:11:30 -0400
+X-MC-Unique: xsvjn-CqNmG6_kp__L6xRA-1
+Received: by mail-wr1-f71.google.com with SMTP id t14-20020a5d6a4e0000b029010277dcae0fso64549wrw.22
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:11:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FwHJYneX3jqLvQL75mdfgjni6//ZDHqX9VNzr6xXMHI=;
+        b=DDsUCFjTFfendIBrklQ4ANqoiSK6O8QuZcal5G8Jao26uxJQKmjIuruwFBFzW3k5AJ
+         GvE3E8XgwDU5Q/a62okJRlcWqePwxDaJEVur78o1mt8h0SQwrHRpn5xx6Oq9HOxBcpy6
+         7esPPz8HX4L+igUiscxqiS6cocrOFt35pB6u+mm6afgl2nl89DnmUVU8tlY7DwTv1fz4
+         dYI3uMz7Xfpq9wyX55jnFMnfzKN3KTh+dKDr82Le6aKCQAMARZ2PB6bBOPDNRsh06Yi4
+         FMxxazjeDOUN0MBrCIkRRCqu7H4kjAbov4qJJsx3RXPk25eV/gK9LDWzkMmvu2KrVcKZ
+         HIUA==
+X-Gm-Message-State: AOAM531osVS9icAqNGsuT3Ngb3BvjAXO+dAn0ZFMl1tspspIE6K7TPsz
+        jsFCjn06qDnYOy7+sQ+QLbbuo2I/cOKIGX7ldF8NG7+bnrCJ5wHhXzhOZyJo0+c4/Ilp6z7LxQs
+        AtxVHT686BO+wvyE2XpdVpCOW
+X-Received: by 2002:adf:e34f:: with SMTP id n15mr39188347wrj.224.1618351888720;
+        Tue, 13 Apr 2021 15:11:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw5dnyOsFJS1wT/Ww00ClVTfJyI0R8HAlU1+tiUWsyxyQSYd5Kbxrzx0ZYgAtA0joZ160eBpQ==
+X-Received: by 2002:adf:e34f:: with SMTP id n15mr39188335wrj.224.1618351888477;
+        Tue, 13 Apr 2021 15:11:28 -0700 (PDT)
+Received: from redhat.com ([2a10:8006:2281:0:1994:c627:9eac:1825])
+        by smtp.gmail.com with ESMTPSA id b5sm20635800wri.57.2021.04.13.15.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 15:11:27 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 18:11:24 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, Wei Wang <weiwan@google.com>,
+        David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH RFC v2 1/4] virtio: fix up virtio_disable_cb
+Message-ID: <20210413180830-mutt-send-email-mst@kernel.org>
+References: <20210413054733.36363-1-mst@redhat.com>
+ <20210413054733.36363-2-mst@redhat.com>
+ <CA+FuTSe_SjUY4JxR6G9b8a0nx-MfQOkLdHJSzmjpuRG4BvsVPw@mail.gmail.com>
+ <20210413153951-mutt-send-email-mst@kernel.org>
+ <CA+FuTSd7qagJAN0wpvudvi2Rvxn-SvQaBZ1SU9rwdb1x0j1s3g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/7] stmmac: add XDP ZC support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161835181083.31494.7438008757120147305.git-patchwork-notify@kernel.org>
-Date:   Tue, 13 Apr 2021 22:10:10 +0000
-References: <20210413093626.3447-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210413093626.3447-1-boon.leong.ong@intel.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, alexandre.torgue@foss.st.com,
-        mcoquelin.stm32@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+FuTSd7qagJAN0wpvudvi2Rvxn-SvQaBZ1SU9rwdb1x0j1s3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Tue, 13 Apr 2021 17:36:19 +0800 you wrote:
-> Hi,
+On Tue, Apr 13, 2021 at 05:44:42PM -0400, Willem de Bruijn wrote:
+> On Tue, Apr 13, 2021 at 3:54 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Tue, Apr 13, 2021 at 10:01:11AM -0400, Willem de Bruijn wrote:
+> > > On Tue, Apr 13, 2021 at 1:47 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > virtio_disable_cb is currently a nop for split ring with event index.
+> > > > This is because it used to be always called from a callback when we know
+> > > > device won't trigger more events until we update the index.  However,
+> > > > now that we run with interrupts enabled a lot we also poll without a
+> > > > callback so that is different: disabling callbacks will help reduce the
+> > > > number of spurious interrupts.
+> > >
+> > > The device may poll for transmit completions as a result of an interrupt
+> > > from virtnet_poll_tx.
+> > >
+> > > As well as asynchronously to this transmit interrupt, from start_xmit or
+> > > from virtnet_poll_cleantx as a result of a receive interrupt.
+> > >
+> > > As of napi-tx, transmit interrupts are left enabled to operate in standard
+> > > napi mode. While previously they would be left disabled for most of the
+> > > time, enabling only when the queue as low on descriptors.
+> > >
+> > > (in practice, for the at the time common case of split ring with event index,
+> > > little changed, as that mode does not actually enable/disable the interrupt,
+> > > but looks at the consumer index in the ring to decide whether to interrupt)
+> > >
+> > > Combined, this may cause the following:
+> > >
+> > > 1. device sends a packet and fires transmit interrupt
+> > > 2. driver cleans interrupts using virtnet_poll_cleantx
+> > > 3. driver handles transmit interrupt using vring_interrupt,
+> > >     detects that the vring is empty: !more_used(vq),
+> > >     and records a spurious interrupt.
+> > >
+> > > I don't quite follow how suppressing interrupt suppression, i.e.,
+> > > skipping disable_cb, helps avoid this.
+> > > I'm probably missing something. Is this solving a subtly different
+> > > problem from the one as I understand it?
+> >
+> > I was thinking of this one:
+> >
+> >  1. device is sending packets
+> >  2. driver cleans them at the same time using virtnet_poll_cleantx
+> >  3. device fires transmit interrupts
+> >  4. driver handles transmit interrupts using vring_interrupt,
+> >      detects that the vring is empty: !more_used(vq),
+> >      and records spurious interrupts.
 > 
-> This is the v2 patch series to add XDP ZC support to stmmac driver.
-> 
-> Summary of v2 patch change:-
-> 
-> 6/7: fix synchronize_rcu() is called stmmac_disable_all_queues() that is
->      used by ndo_setup_tc().
-> 
-> [...]
+> I think that's the same scenario
 
-Here is the summary with links:
-  - [net-next,v2,1/7] net: stmmac: rearrange RX buffer allocation and free functions
-    https://git.kernel.org/netdev/net-next/c/4298255f26fa
-  - [net-next,v2,2/7] net: stmmac: introduce dma_recycle_rx_skbufs for stmmac_reinit_rx_buffers
-    https://git.kernel.org/netdev/net-next/c/80f573c995fc
-  - [net-next,v2,3/7] net: stmmac: refactor stmmac_init_rx_buffers for stmmac_reinit_rx_buffers
-    https://git.kernel.org/netdev/net-next/c/da5ec7f22a0f
-  - [net-next,v2,4/7] net: stmmac: rearrange RX and TX desc init into per-queue basis
-    https://git.kernel.org/netdev/net-next/c/de0b90e52a11
-  - [net-next,v2,5/7] net: stmmac: Refactor __stmmac_xdp_run_prog for XDP ZC
-    https://git.kernel.org/netdev/net-next/c/bba71cac680f
-  - [net-next,v2,6/7] net: stmmac: Enable RX via AF_XDP zero-copy
-    https://git.kernel.org/netdev/net-next/c/bba2556efad6
-  - [net-next,v2,7/7] net: stmmac: Add TX via XDP zero-copy socket
-    https://git.kernel.org/netdev/net-next/c/132c32ee5bc0
+Not a big difference I agree.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> >
+> >
+> > but even yours is also fixed I think.
+> >
+> > The common point is that a single spurious interrupt is not a problem.
+> > The problem only exists if there are tons of spurious interrupts with no
+> > real ones. For this to trigger, we keep polling the ring and while we do
+> > device keeps firing interrupts. So just disable interrupts while we
+> > poll.
+> 
+> But the main change in this patch is to turn some virtqueue_disable_cb
+> calls into no-ops.
 
+Well this was not the design. This is the main change:
+
+
+@@ -739,7 +742,10 @@ static void virtqueue_disable_cb_split(struct virtqueue *_vq)
+
+        if (!(vq->split.avail_flags_shadow & VRING_AVAIL_F_NO_INTERRUPT)) {
+                vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
+-               if (!vq->event)
++               if (vq->event)
++                       /* TODO: this is a hack. Figure out a cleaner value to write. */
++                       vring_used_event(&vq->split.vring) = 0x0;
++               else
+                        vq->split.vring.avail->flags =
+                                cpu_to_virtio16(_vq->vdev,
+                                                vq->split.avail_flags_shadow);
+
+
+IIUC previously when event index was enabled (vq->event) virtqueue_disable_cb_split
+was a nop. Now it sets index to 0x0 (which is a hack, but good enough
+for testing I think).
+
+> I don't understand how that helps reduce spurious
+> interrupts, as if anything, it keeps interrupts enabled for longer.
+> 
+> Another patch in the series disable callbacks* before starting to
+> clean the descriptors from the rx interrupt. That I do understand will
+> suppress additional tx interrupts that might see no work to be done. I
+> just don't entire follow this patch on its own.
+> 
+> *(I use interrupt and callback as a synonym in this context, correct
+> me if I'm glancing over something essential)
+
+It's the same for the pci transport.
+
+-- 
+MST
 
