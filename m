@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EC335DA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DFD35DA65
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhDMIyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:54:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35251 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243812AbhDMIyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:54:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618304025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LDhoSh21yQrWIxiZzfscdfh5hO+ef3/ijfa5Lxrgzu8=;
-        b=IyIxUIslQmFm7Ti9NSAMWRUvyFDMBVF1eU8j+yoZsRodihxh31/H8duSKi3rkphwNOYGXX
-        l1q9ESRtoF8/8JU7X+tbAIDqRBMPhA5jhycXfAKPUmhjEd2dJLkp4lj4JWscZbjTwekqW1
-        AebpzkuGZtIEqo01adRfeZDoURQbDdY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-ucyBEUMsMZS0xJSAi2JD3Q-1; Tue, 13 Apr 2021 04:53:41 -0400
-X-MC-Unique: ucyBEUMsMZS0xJSAi2JD3Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D7B010054F6;
-        Tue, 13 Apr 2021 08:53:40 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-128.pek2.redhat.com [10.72.13.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 37A2D1C952;
-        Tue, 13 Apr 2021 08:53:33 +0000 (UTC)
-Subject: Re: [PATCH RFC v2 2/4] virtio_net: disable cb aggressively
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210413054733.36363-1-mst@redhat.com>
- <20210413054733.36363-3-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <43db5c1e-9908-55bb-6d1a-c6c8d71e2315@redhat.com>
-Date:   Tue, 13 Apr 2021 16:53:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S243354AbhDMIyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:54:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52188 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229867AbhDMIyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:54:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82D69AF0E;
+        Tue, 13 Apr 2021 08:54:05 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 10:54:04 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Steve Wise <swise@opengridcomputing.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: Re: [PATCH] nvme: Drop WQ_MEM_RECLAIM flag from core workqueues
+Message-ID: <20210413085404.tzam5lprtspwcek4@beryllium.lan>
+References: <20210412122330.5166-1-dwagner@suse.de>
+ <20210412123149.GE227011@ziepe.ca>
+ <20210412124909.olui5hfhceakt4u4@beryllium.lan>
+ <20210412130402.GF227011@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210413054733.36363-3-mst@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412130402.GF227011@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 12, 2021 at 10:04:02AM -0300, Jason Gunthorpe wrote:
+> Basically the allocation of importance in the workqueue is assigning a
+> worker, so pre-allocating a worker ensures the work can continue to
+> progress without becoming dependent on allocations.
 
-ÔÚ 2021/4/13 ÏÂÎç1:47, Michael S. Tsirkin Ð´µÀ:
-> There are currently two cases where we poll TX vq not in response to a
-> callback: start xmit and rx napi.  We currently do this with callbacks
-> enabled which can cause extra interrupts from the card.  Used not to be
-> a big issue as we run with interrupts disabled but that is no longer the
-> case, and in some cases the rate of spurious interrupts is so high
-> linux detects this and actually kills the interrupt.
+Ah okay, got it. I didn't really understood this part. So the
+WQ_MEM_RECLAIM is 'just' avoiding a new worker creation.
+
+> This is why work under the WQ_MEM_RECLAIM cannot recurse back into the
+> allocator as it would get a rescurer thread stuck at a point when all
+> other threads are already stuck.
 >
-> Fix up by disabling the callbacks before polling the tx vq.
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->   drivers/net/virtio_net.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 82e520d2cb12..16d5abed582c 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1429,6 +1429,7 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
->   		return;
->   
->   	if (__netif_tx_trylock(txq)) {
-> +		virtqueue_disable_cb(sq->vq);
->   		free_old_xmit_skbs(sq, true);
->   		__netif_tx_unlock(txq);
+> To remove WQ_MEM_RECLAIM you have to make assertions about the calling
+> contexts and blocking contexts of the workqueue, not what the work
+> itself is doing.
 
+Hmm, I am struggling with your last statement. If a worker does an
+allocation it might block. I understand this is something which a worker
+in a WQ_MEM_RECLAIM context is not allowed to do.
 
-Any reason that we don't need to enable the cb here?
+My aim is still to get rid of the warning triggered by the rdma
+code.
 
-And as we discussed in the past, it's probably the time to have a single 
-NAPI for both tx and rx?
-
-Thanks
-
-
->   	}
-> @@ -1582,6 +1583,7 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
->   	bool use_napi = sq->napi.weight;
->   
->   	/* Free up any pending old buffers before queueing new ones. */
-> +	virtqueue_disable_cb(sq->vq);
->   	free_old_xmit_skbs(sq, false);
->   
->   	if (use_napi && kick)
-
+Anyway, thanks for explaining.
