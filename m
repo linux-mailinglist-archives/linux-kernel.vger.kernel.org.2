@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7210D35E847
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D56E35E849
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbhDMV1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:27:36 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:36892 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbhDMV1f (ORCPT
+        id S240963AbhDMV2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:28:10 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.93]:22999 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240409AbhDMV2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:27:35 -0400
-Received: by mail-il1-f198.google.com with SMTP id m1so553718ilu.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:27:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xDDD+z8mPQ5ilOZQIpBBThivgSi92o21FgCcuznZo/U=;
-        b=oxHVaqkjTL5gT2H6RZrT7m5be0qLTTlPvHd5UzdP+CuFCzY3VSqgEgClrFTmByZ3rV
-         EC51bilRJhogLJVAFU9kieLGS23HMvdYpuT4mykoIvTxPzj6UIsQrk08vjkb5J4PAFEq
-         VxtUIJkqPXGjT/ku+YYQZTMKNH6cGMPJCXY6BvFl9As8KLMSEUpN+p/5IdtXIfoso/6Q
-         nkmcqo5hETz1+3qPKxN1/iovWXPw1qVwqc7GuHC9d/c1LoOCFcroKjUAErqUchxvBA6g
-         P2yGRyKB29oQBgRMgdUs5M+pMqyXE9fWwTM4LNe6ehq/gnJzigR/X6dTi7coZrEjHJJb
-         rHVw==
-X-Gm-Message-State: AOAM532wDKsNgSh4mFu6fnXwdgeapvVbuhrbud6aaP+KYXNzz/DuZ9mp
-        sQJH2WXbSjPUWLwgyKAPJjaJY2a86HJA3HI+87Kix534Il7q
-X-Google-Smtp-Source: ABdhPJyIAy/n27a6g2gws9rXWXft/UTAdQJ4y1FQbp+THnsHQxwbEmfa8cGP9PWohTvQmhsAXC5BGLqvXomFnqLZVsjjN9FtygNK
+        Tue, 13 Apr 2021 17:28:05 -0400
+X-Greylist: delayed 109625 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 17:28:05 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 4BFCBE0CF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 16:27:43 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id WQZTllwhDL7DmWQZTlziLT; Tue, 13 Apr 2021 16:27:43 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TfokYtkeeoGp29/7KUX5x78tAWhkf7xQAs5zdzU8auA=; b=NoT3yarjF9YYL8WIsWkPmrhAGs
+        7IbzngQxKKDl26S1M1tscWsoZAXI64kXoRNRQs1oNLr1+6+XzCokT0ewHesrqWbMcvU/LyaLmMh8Y
+        7UU45KM5BwrqBSEe5ku5ej77R70rjDtfLaXw2C84fBNz3DgwhJ5lw9vOGwMSP8/OmhKtH1FBRLE50
+        RVaQkoqaH54Ltb9nU08om2CdMdAL3iQqpP28eT34pPGLewc1Ssal5av3sPSsOkTCYmKAN0x1tuTb9
+        X7haz0w6++MAkqfTMVXszHCMv/goHWeidsX5uFswpMlLogqSR7HafmIXFVFvVxBEFhHnB4OxmqMo/
+        Ph8OAGUg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50214 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lWQZP-003KVE-RB; Tue, 13 Apr 2021 16:27:39 -0500
+Subject: Re: [PATCH v2 0/2][next] wl3501_cs: Fix out-of-bounds warnings
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <cover.1617226663.git.gustavoars@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <9e0972ef-4d42-3896-d92b-01113c445775@embeddedor.com>
+Date:   Tue, 13 Apr 2021 16:27:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2591:: with SMTP id s17mr34549205jat.87.1618349233541;
- Tue, 13 Apr 2021 14:27:13 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 14:27:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000301a4d05bfe14b8f@google.com>
-Subject: [syzbot] unexpected kernel reboot (4)
-From:   syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1617226663.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lWQZP-003KVE-RB
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50214
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi all,
 
-syzbot found the following issue on:
+Friendly ping: could somebody give us some feedback or take
+this series, please?
 
-HEAD commit:    89698bec Merge tag 'm68knommu-for-v5.12-rc7' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1243fcfed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b234ddbbe2953747
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ce030d4c89856b27619
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173e92fed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1735da2ed00000
+Thanks
+--
+Gustavo
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com
-
-output_len: 0x000000000e74eb68
-kernel_total_size: 0x000000000f226000
-needed_size: 0x000000000f400000
-trampoline_32bit: 0x000000000009d000
-Decompressing Linux... Parsing ELF... done.
-Booting the kernel.
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+On 3/31/21 16:43, Gustavo A. R. Silva wrote:
+> Fix the a couple of  out-of-bounds warnings by making the code
+> a bit more structured.
+> 
+> This helps with the ongoing efforts to enable -Warray-bounds and
+> avoid confusing the compiler.
+> 
+> Link: https://github.com/KSPP/linux/issues/109
+> 
+> Changes in v2:
+>  - Update changelog text in patch 1/2.
+>  - Replace a couple of magic numbers with new variable sig_addr_len.
+> 
+> Gustavo A. R. Silva (2):
+>   wl3501_cs: Fix out-of-bounds warning in wl3501_send_pkt
+>   wl3501_cs: Fix out-of-bounds warning in wl3501_mgmt_join
+> 
+>  drivers/net/wireless/wl3501.h    | 28 ++++++++++++++++------------
+>  drivers/net/wireless/wl3501_cs.c | 11 ++++++-----
+>  2 files changed, 22 insertions(+), 17 deletions(-)
+> 
