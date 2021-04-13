@@ -2,128 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1EF35E8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A967A35E8AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346975AbhDMV7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:59:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:47144 "EHLO foss.arm.com"
+        id S1348553AbhDMWAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:00:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346909AbhDMV7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:59:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02BD211D4;
-        Tue, 13 Apr 2021 14:58:41 -0700 (PDT)
-Received: from mammon-tx2.austin.arm.com (mammon-tx2.austin.arm.com [10.118.28.62])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E1C9E3F694;
-        Tue, 13 Apr 2021 14:58:40 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-usb@vger.kernel.org
-Cc:     hminas@synopsys.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH v3 1/1] usb: dwc2: Enable RPi in ACPI mode
-Date:   Tue, 13 Apr 2021 16:58:34 -0500
-Message-Id: <20210413215834.3126447-2-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210413215834.3126447-1-jeremy.linton@arm.com>
-References: <20210413215834.3126447-1-jeremy.linton@arm.com>
+        id S1347013AbhDMWAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 18:00:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E10B3613B1;
+        Tue, 13 Apr 2021 22:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618351211;
+        bh=j/AYgv69HBntVOwg2WIUQMPAJaKrQqE3LEUpXN2Ddq8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CeVwRUayYSKWdaV7cMW5wm3tEVpZ4JixuQsL0U/IiMdws5LZtW8H+huxI6A2rU4nc
+         ybfnn/adCLm+GXully6useUp98h21H045ghJJjnff/eSftYQt6u/J1NA4mBHdjSjIP
+         xI6WHipPXxfoeN/kHZF40YE5TprjjSoTH/1DOKIb3/7X5Sm+BbPyDu1mv964VTM4GE
+         aJN6O2oBajRO0K8KvZK9tRalWK0NaYKkKJDQn10ni5HHrVQDFfjkGOSL33Zm8ddVyP
+         GckVuRJhU7GdbPiJeIH7990QEbaF9zUG3/cZES6BBg+x7Bkq67cOZwigcg1daEuc2q
+         J2P0A6cq7oPIw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D2FFF609B9;
+        Tue, 13 Apr 2021 22:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] nfc: st-nci: remove unnecessary label
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161835121185.27588.5056681740611769897.git-patchwork-notify@kernel.org>
+Date:   Tue, 13 Apr 2021 22:00:11 +0000
+References: <20210413094530.22076-1-samirweng1979@163.com>
+In-Reply-To: <20210413094530.22076-1-samirweng1979@163.com>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     davem@davemloft.net, alex.dewar90@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng@yulong.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dwc2 driver has everything we need to run
-in ACPI mode except for the ACPI module device table
-boilerplate. With that added and identified as "BCM2848",
-an id in use by other OSs for this device, the dw2
-controller on the BCM2711 will work.
+Hello:
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/usb/dwc2/core.h     |  2 ++
- drivers/usb/dwc2/params.c   | 18 +++++++++++++++++-
- drivers/usb/dwc2/platform.c |  1 +
- 3 files changed, 20 insertions(+), 1 deletion(-)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
-index 7161344c6522..defc6034af49 100644
---- a/drivers/usb/dwc2/core.h
-+++ b/drivers/usb/dwc2/core.h
-@@ -38,6 +38,7 @@
- #ifndef __DWC2_CORE_H__
- #define __DWC2_CORE_H__
- 
-+#include <linux/acpi.h>
- #include <linux/phy/phy.h>
- #include <linux/regulator/consumer.h>
- #include <linux/usb/gadget.h>
-@@ -1339,6 +1340,7 @@ irqreturn_t dwc2_handle_common_intr(int irq, void *dev);
- 
- /* The device ID match table */
- extern const struct of_device_id dwc2_of_match_table[];
-+extern const struct acpi_device_id dwc2_acpi_match[];
- 
- int dwc2_lowlevel_hw_enable(struct dwc2_hsotg *hsotg);
- int dwc2_lowlevel_hw_disable(struct dwc2_hsotg *hsotg);
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 92df3d620f7d..7a6089fa81e1 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -232,6 +232,12 @@ const struct of_device_id dwc2_of_match_table[] = {
- };
- MODULE_DEVICE_TABLE(of, dwc2_of_match_table);
- 
-+const struct acpi_device_id dwc2_acpi_match[] = {
-+	{ "BCM2848", (kernel_ulong_t)dwc2_set_bcm_params },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, dwc2_acpi_match);
-+
- static void dwc2_set_param_otg_cap(struct dwc2_hsotg *hsotg)
- {
- 	u8 val;
-@@ -866,10 +872,12 @@ int dwc2_get_hwparams(struct dwc2_hsotg *hsotg)
- 	return 0;
- }
- 
-+typedef void (*set_params_cb)(struct dwc2_hsotg *data);
-+
- int dwc2_init_params(struct dwc2_hsotg *hsotg)
- {
- 	const struct of_device_id *match;
--	void (*set_params)(struct dwc2_hsotg *data);
-+	set_params_cb set_params;
- 
- 	dwc2_set_default_params(hsotg);
- 	dwc2_get_device_properties(hsotg);
-@@ -878,6 +886,14 @@ int dwc2_init_params(struct dwc2_hsotg *hsotg)
- 	if (match && match->data) {
- 		set_params = match->data;
- 		set_params(hsotg);
-+	} else {
-+		const struct acpi_device_id *amatch;
-+
-+		amatch = acpi_match_device(dwc2_acpi_match, hsotg->dev);
-+		if (amatch && amatch->driver_data) {
-+			set_params = (set_params_cb)amatch->driver_data;
-+			set_params(hsotg);
-+		}
- 	}
- 
- 	dwc2_check_params(hsotg);
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 5f18acac7406..53fc6bc3ed1a 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -734,6 +734,7 @@ static struct platform_driver dwc2_platform_driver = {
- 	.driver = {
- 		.name = dwc2_driver_name,
- 		.of_match_table = dwc2_of_match_table,
-+		.acpi_match_table = ACPI_PTR(dwc2_acpi_match),
- 		.pm = &dwc2_dev_pm_ops,
- 	},
- 	.probe = dwc2_driver_probe,
--- 
-2.29.2
+On Tue, 13 Apr 2021 17:45:30 +0800 you wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> in st_nci_spi_write function, first assign a value to a variable then
+> goto exit label. return statement just follow the label and exit label
+> just used once, so we should directly return and remove exit label.
+> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - nfc: st-nci: remove unnecessary label
+    https://git.kernel.org/netdev/net-next/c/eba43fac8dfa
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
