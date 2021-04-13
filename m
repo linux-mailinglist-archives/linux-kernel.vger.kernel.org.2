@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0822535D740
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E021635D745
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344666AbhDMF30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245569AbhDMF3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:29:15 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541E7C06138D
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:28:56 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x13so15175615lfr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AvM1ldJd1PKthEmfQSYxE8KSNEBVhrFycB3fykwgq2c=;
-        b=UK3JH759G5m7p0pnsTXSHGCiELHJAr54O5vcX1IB6nRyAoAETABf7dCAHSlGY/lPhU
-         WUXj/erFHsdspCxelTHH6uL8NGXau+QJ3AaAEGL/i8aX1ON2ysWli9CSVKKCPW320tPv
-         06lJbsmE+UsWs6YIPzVQikof8W+h9yCRAqa9+2Z13jlUT6BdGNZ06LMW79Tw6QDi8B0S
-         McA2kNbpz/P22FYKFoOm4oDwrNbCh+zAJs0QHQ410EXbBr2BZ0hmnefPGl6xdBgPqtHV
-         4XCjcpjsCBNvoKGm4ZTU+0B/AL2zpyvfV1S0G9gGfLkhIYS/poU85AqHGMQGVabPY9zO
-         FHUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AvM1ldJd1PKthEmfQSYxE8KSNEBVhrFycB3fykwgq2c=;
-        b=KIfTSq7EgFzOaJUZ0QY+OdNGK62EWQf6n8d2FqrQpWygG3lTryddFzUDjT2fkXUzzb
-         5w0bF4/xeSTEmS5FunhlHaQtE+Ca+q0JpADCqyGScBEs7n5jYj1ZE9itot8xEZ3uErAM
-         tVhJLYwuWt/XJZcgWf3GKrZHj5wJkCfxlK/qk6DZaiDXyXkTzGubh+4t+J2L6iK0R+j0
-         PkKDQTJfwcVV+MHu2H+52Pky3ufzNEaWcU9enuteH/SS/oNqCTuSXCCRHzvzx7bR8379
-         SmyqK393ZW/CFwKPbyOlUySOQiEsXG4fQStEdf1Qnc66PAaaAYcjLUxBGlaaGWcXMbjJ
-         p2ig==
-X-Gm-Message-State: AOAM530XFzr8g738KPOLgQORbP17XY1lZehpfkXtoH0uf6wN+4GQCWos
-        xhsFn6FvDyAezxf7ihlTHAB8c1Xyk2HXG5u9yS4tOA==
-X-Google-Smtp-Source: ABdhPJx9ng30E0BX/dlKP+vG2PKF/myAqIZYQjX8xoWOhcGfWAFEM7eX3+jRMIpdP8gqwgxzRTls3J+2Xp/efIqxLfE=
-X-Received: by 2002:ac2:4db9:: with SMTP id h25mr8011757lfe.108.1618291734612;
- Mon, 12 Apr 2021 22:28:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412160101.1627882-1-colin.king@canonical.com>
-In-Reply-To: <20210412160101.1627882-1-colin.king@canonical.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 13 Apr 2021 10:58:43 +0530
-Message-ID: <CAFA6WYM65kjt0rbheAorX9uwWnhd5z7Gqed7a3YxjXMdHai1pw@mail.gmail.com>
-Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from kzalloc call
-To:     Colin King <colin.king@canonical.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S243676AbhDMFcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:32:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34741 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243206AbhDMFcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 01:32:02 -0400
+IronPort-SDR: plvvLNxG192VjKNsg79P6A4iU02Sr8Z2bddU7RyuB8C+5Kqi4tfcE+TUM9PyDq4RAXjcE2XcL9
+ C+2G0FnrVeyQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194457337"
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="194457337"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 22:31:42 -0700
+IronPort-SDR: 2XOnrPR2Qbhpj2AuNnofFkGP0QPF6AXYuxkutw4j//KCmxXtqUtXYKOqb+QWQ0oFkGqFGaAiT9
+ Z439+IcHj6HA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="521469331"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Apr 2021 22:31:38 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rui.zhang@intel.com, andi.kleen@intel.com, dave.hansen@intel.com,
+        len.brown@intel.com, Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v2 1/2] x86/tsc: add a timer to make sure tsc_adjust is always checked
+Date:   Tue, 13 Apr 2021 13:31:36 +0800
+Message-Id: <1618291897-71581-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 21:31, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The kzalloc call can return null with the GFP_KERNEL flag so
-> add a null check and exit via a new error exit label. Use the
-> same exit error label for another error path too.
->
-> Addresses-Coverity: ("Dereference null return value")
-> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys framework")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  security/keys/trusted-keys/trusted_core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
+Normally the tsc_sync will get checked every time system enters idle state,
+but Thomas Gleixner mentioned there is still a caveat that a system won't
+enter idle [1], either because it's too busy or configured purposely to not
+enter idle. Setup a periodic timer to make sure the check is always on.
 
-Ah, it's my bad. Thanks for fixing this issue.
+[1]. https://lore.kernel.org/lkml/875z286xtk.fsf@nanos.tec.linutronix.de/
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+Change log:
+  
+  v2:
+     * skip timer setup when tsc_clocksource_reliabe==1 (Thomas)
+     * refine comment and code format (Thomas) 
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+ arch/x86/kernel/tsc_sync.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
--Sumit
+diff --git a/arch/x86/kernel/tsc_sync.c b/arch/x86/kernel/tsc_sync.c
+index 3d3c761..39f18fa 100644
+--- a/arch/x86/kernel/tsc_sync.c
++++ b/arch/x86/kernel/tsc_sync.c
+@@ -30,6 +30,7 @@ struct tsc_adjust {
+ };
+ 
+ static DEFINE_PER_CPU(struct tsc_adjust, tsc_adjust);
++static struct timer_list tsc_sync_check_timer;
+ 
+ /*
+  * TSC's on different sockets may be reset asynchronously.
+@@ -77,6 +78,44 @@ void tsc_verify_tsc_adjust(bool resume)
+ 	}
+ }
+ 
++/*
++ * Normally the tsc_sync will be checked every time system enters idle state,
++ * but there is still caveat that a system won't enter idle, either because
++ * it's too busy or configured purposely to not enter idle.
++ *
++ * So setup a periodic timer to make sure the check is always on.
++ */
++
++#define SYNC_CHECK_INTERVAL		(HZ * 600)
++
++static void tsc_sync_check_timer_fn(struct timer_list *unused)
++{
++	int next_cpu;
++
++	tsc_verify_tsc_adjust(false);
++
++	/* Run the check for all onlined CPUs in turn */
++	next_cpu = cpumask_next(raw_smp_processor_id(), cpu_online_mask);
++	if (next_cpu >= nr_cpu_ids)
++		next_cpu = cpumask_first(cpu_online_mask);
++
++	tsc_sync_check_timer.expires += SYNC_CHECK_INTERVAL;
++	add_timer_on(&tsc_sync_check_timer, next_cpu);
++}
++
++static int __init start_sync_check_timer(void)
++{
++	if (!boot_cpu_has(X86_FEATURE_TSC_ADJUST) || tsc_clocksource_reliable)
++		return 0;
++
++	timer_setup(&tsc_sync_check_timer, tsc_sync_check_timer_fn, 0);
++	tsc_sync_check_timer.expires = jiffies + SYNC_CHECK_INTERVAL;
++	add_timer(&tsc_sync_check_timer);
++
++	return 0;
++}
++late_initcall(start_sync_check_timer);
++
+ static void tsc_sanitize_first_cpu(struct tsc_adjust *cur, s64 bootval,
+ 				   unsigned int cpu, bool bootcpu)
+ {
+-- 
+2.7.4
 
-> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> index ec3a066a4b42..90774793f0b1 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -116,11 +116,13 @@ static struct trusted_key_payload *trusted_payload_alloc(struct key *key)
->
->         ret = key_payload_reserve(key, sizeof(*p));
->         if (ret < 0)
-> -               return p;
-> +               goto err;
->         p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +       if (!p)
-> +               goto err;
->
->         p->migratable = migratable;
-> -
-> +err:
->         return p;
->  }
->
-> --
-> 2.30.2
->
