@@ -2,72 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0D835E766
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B6A35E770
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348153AbhDMUGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:06:05 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:59146 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhDMUGE (ORCPT
+        id S231135AbhDMULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhDMUI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:06:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 5FE4B6122D44;
-        Tue, 13 Apr 2021 22:05:42 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pb2ba3nKQmwb; Tue, 13 Apr 2021 22:05:42 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 0C271606BA5E;
-        Tue, 13 Apr 2021 22:05:42 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VDArCqsXGLPe; Tue, 13 Apr 2021 22:05:41 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id D4E4A6122D44;
-        Tue, 13 Apr 2021 22:05:41 +0200 (CEST)
-Date:   Tue, 13 Apr 2021 22:05:41 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        miquel.raynal@bootlin.com, vigneshr@ti.com
-Message-ID: <1678691098.178869.1618344341740.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] MTD fixes for 5.12-rc7
+        Tue, 13 Apr 2021 16:08:56 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F76BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:08:36 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 18so20898446edx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FxiwZS1ypRO0CPpMIgmz+1n36gXQuCqv0DCfrFyvXvE=;
+        b=WFzCm2+96E3AicJ9cw/P49tSLgNUOuab+s4Tax+yEMToNezQn+4WBP7DRAdu08t8OA
+         ops0vkEYfihzCABQvwehY/4Zcm+zdVSrylQgQ/aL7W00kLGC/UNwfjRj7b7EAZudqgBK
+         ChYtZs0yX1Y1qeJqaP+TtBKDkqSp9u1TUuZTCad3uMc2lFVJ92fy+uyLJ5mYPWW71QRz
+         /PYZ2I1uxJnMWCTcdGpwaySLuIdeXA2CqdEzXXCksCrgTPUxFAfG2rjCCm2xHFT1VsJR
+         d+O9tDYdfnO24qMWxoJdsqlqR39zOyovSEGEJ5bZr3+u17CDwC4gfg2bFivIRTgReij5
+         3xNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FxiwZS1ypRO0CPpMIgmz+1n36gXQuCqv0DCfrFyvXvE=;
+        b=e/eZIRAiwWlhK9LwYMrmIDCnxCc/PatFHAzinhffcE8KhmhbD87Do7ClyGZGow6IBi
+         pOoJpmv1kX54XmNKJdu4gGJBn/vFlVSFeaVYuy6HKwwJeHkttfj6OaWtmIlLq1dX9yS0
+         6kTSicKrCjc3ppCJwRbut9dWylVULctQiQC02vhui0W8S9c64ByziXw1UCwzEf4s3nkr
+         cBMFhM8IEefMh9ukyVV/sHZabgJfuWU2Ku2KIpm2vNw5lylWYgSvpyjKDlgdBgjDnPy6
+         AysuJL5SOQAqWD5EWUqNuwMaMKN/J2yNhN9t0jtibhavCRPS4uBF9VCPrH8ORynVxSU9
+         0zOA==
+X-Gm-Message-State: AOAM533MAC4/o9187zavM3mL0m95Fd2RKD74k6xrMxU/gyaeOFaINoKa
+        qFHqLhNidajOcxIlDfyVJew=
+X-Google-Smtp-Source: ABdhPJykMu/ukwA7ubmUAgc8lcQfkw6PAN2aol05P4sYO6p3GvosDhkDnm1lOwVIyQGB839li64QCA==
+X-Received: by 2002:a50:fd16:: with SMTP id i22mr36470144eds.239.1618344513898;
+        Tue, 13 Apr 2021 13:08:33 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id t1sm10207562edy.6.2021.04.13.13.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 13:08:33 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] :staging: rtl8723bs: Remove useless led_blink_hdl()
+Date:   Tue, 13 Apr 2021 22:08:32 +0200
+Message-ID: <3505455.GpAHCVcAZI@linux.local>
+In-Reply-To: <20210413194844.GR2531743@casper.infradead.org>
+References: <20210413155908.8691-1-fmdefrancesco@gmail.com> <7008359.Jy8utYDuns@linux.local> <20210413194844.GR2531743@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: WK6HXCg3/KZU8vvevUTpx25CD/Z4vw==
-Thread-Topic: MTD fixes for 5.12-rc7
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Tuesday, April 13, 2021 9:48:44 PM CEST Matthew Wilcox wrote:
+> On Tue, Apr 13, 2021 at 09:45:03PM +0200, Fabio M. De Francesco wrote:
+> > 1) The driver doesn't call that function from anywhere else than the
+> > macro. 2) You have explained that the macro add its symbol to a slot
+> > in an array that would shift all the subsequent elements down if that
+> > macro is not used exactly in the line where it is.
+> > 3) Dan Carpenter said that that array is full of null functions (or
+> > empty slots?).
+> > 
+> > Unless that function is called anonymously dereferencing its address
+> > from the position it occupies in the array, I'm not able to see what
+> > else means can any caller use.
+> > 
+> > I know I have much less experience than you with C: what can go wrong?
+> 
+> Here's where the driver calls that function:
+> 
+> $ git grep wlancmds drivers/staging/rtl8723bs/
+> drivers/staging/rtl8723bs/core/rtw_cmd.c:static struct cmd_hdl wlancmds[]
+> = { drivers/staging/rtl8723bs/core/rtw_cmd.c:               if
+> (pcmd->cmdcode < ARRAY_SIZE(wlancmds)) {
+> drivers/staging/rtl8723bs/core/rtw_cmd.c:                       cmd_hdl
+> = wlancmds[pcmd->cmdcode].h2cfuns;
+>
+OK, I had imagined an anonymous call from its location in the array (as I 
+wrote in the last phrase of my message). However, I thought that it could 
+have been an improbable possibility, not a real one.
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Linux uses a lot of interesting ideas that newcomers like me should learn. 
+Things here are trickier than they appear at first sight.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Thanks,
 
-are available in the Git repository at:
+Fabio
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/fixes-for-5.12-rc7
 
-for you to fetch changes up to 2fb164f0ce95e504e2688b4f984893c29ebd19ab:
 
-  mtd: rawnand: mtk: Fix WAITRDY break condition and timeout (2021-03-11 12:23:11 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following bug fix for MTD:
-
-- nand: Fix WAITRDY break condition and timeout in mtk driver
-
-----------------------------------------------------------------
-Hauke Mehrtens (1):
-      mtd: rawnand: mtk: Fix WAITRDY break condition and timeout
-
- drivers/mtd/nand/raw/mtk_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
