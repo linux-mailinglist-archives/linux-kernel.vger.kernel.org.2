@@ -2,96 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F41935E074
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FE035E087
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346077AbhDMNpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346062AbhDMNpU (ORCPT
+        id S1346173AbhDMNqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:46:36 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44718 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346151AbhDMNq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:45:20 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBF7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id iu14so8052644qvb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
-        b=P8TZ3q/K2FYMwgX8ih6dAOpznLZqzG37b1Il+KiMHbiWEjdcrBMIXlzDa57UplaUu8
-         1cAAmqJDwP+fMGvD6pfollJBQ39I4eEqGf7lGvVy2tw198zw6adWvWR1L3rvb6WgYOFV
-         uQGjCtawvPEMW58igm5A0CBka0uwolxOU4LEpFWKSs1lhPa77NKyBLPUg4WWHQTJy3LB
-         156DznYIBE8+OodCuxpBC0EFExw/tzwn0R97kcNdKbOkaiQkydvJ+gJ0LLFY0JZWEeRv
-         camQQdnfN4b3Ipkdf/GOljO8I/WtnNMwVi71Eh0N1IqdmIxk8/zkFM1RV0Whu15RMwut
-         uVGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
-        b=DkEWcoEs6FThcmdAyrxJTw0Pif36LA4GhJsajHLBpogpnPosIX4JyVHQahpDMnZoNW
-         OkcM/fe1npsBYwSSFOGSGDO/NrRtrYnbemW6DYY7bkoAEOQuQjcBwyRQE7OpJsUL9Uf2
-         Sfcg7j1NVNdO9EQcDDdbjIIDEoBjisJCgxP0JTicctQq4Nf0rLirlu7BYIhVeX7tDvSW
-         bQ6HBbNfQ252o0Q0WyC2rmdPDwFgLhnD5G7XuYkxJu5qElK+tLLePjvIeUQv6DyopVbT
-         t0OK2pAKz/eu3Mu08TwDQodQX6z1AaBXsiemuCQm9m1QY+JANaILDEFWTBh+DeC/sLvK
-         RLOw==
-X-Gm-Message-State: AOAM532aZZD+XkLoSvS88vAmrUe/YApWxxnJalHZJdLs4ivlM/+1ZIzO
-        Op9NFuCyrDUThxByfZw+BU2cNg==
-X-Google-Smtp-Source: ABdhPJxTLJu6I3qqH/XCtkZYAon1RFtHUEySj+DXtp3rSpBUrRvTcwgxXLIb7BBpqqA3GaZlyYTKOA==
-X-Received: by 2002:ad4:458b:: with SMTP id x11mr163890qvu.36.1618321500031;
-        Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id i21sm1369148qtr.94.2021.04.13.06.44.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 06:44:59 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lWJLe-005HU5-T4; Tue, 13 Apr 2021 10:44:58 -0300
-Date:   Tue, 13 Apr 2021 10:44:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-Message-ID: <20210413134458.GI227011@ziepe.ca>
-References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
- <20210413133359.GG227011@ziepe.ca>
- <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
+        Tue, 13 Apr 2021 09:46:29 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A3D1D8AF;
+        Tue, 13 Apr 2021 15:46:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618321567;
+        bh=ERzFPHfwcC1rsN/DqiEKlswPknAmFAYpH+SlZCHO53s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M+mVpGANMD7po+3PLGrcQK+tltANs7uEpInW1c0IEonhQ3Rd/h5sawXyi0/08uqdD
+         1gf6EPhyF5ypqxn0ylQFS1KOOI+/qhlfpEJNlZTSMMjSlhM6QwW0qoCmmoQr37FJFF
+         bcfl9eWNSPHvuHH9tlsMlpoxghqi1IWm/oJdwLxs=
+Date:   Tue, 13 Apr 2021 16:45:17 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-media@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Mitali Borkar <mitaliborkar810@gmail.com>,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [PATCH 1/1] staging: ipu3-imgu: Move the UAPI header from
+ include under include/uapi
+Message-ID: <YHWgbZTDAWBX9EpR@pendragon.ideasonboard.com>
+References: <20210412111120.31625-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
+In-Reply-To: <20210412111120.31625-1-sakari.ailus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
-> Jason Gunthorpe <jgg@ziepe.ca> 于2021年4月13日周二 下午9:34写道：
-> >
-> > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
-> > > Hi
-> > >
-> > > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
-> > > the Linux kernel, I found two use-after-free bugs which have been
-> > > reported a long time ago by Syzbot.
-> > > Although the corresponding patches have been merged into upstream,
-> > > these two bugs can still be triggered easily.
-> > > The original information about Syzbot report can be found here:
-> > > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-> > > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-> >
-> > Then why hasn't syzbot seen this in a year's time? Seems strange
-> >
+Hi Sakari,
+
+Thank you for the patch.
+
+On Mon, Apr 12, 2021 at 02:11:20PM +0300, Sakari Ailus wrote:
+> The header defines the user space interface but may be mistaken as
+> kernel-only header due to its location. Add "uapi" directory under
+> driver's include directory and move the header there.
 > 
-> Seems strange to me too, but the fact is that the reproduction program
-> in attachment can trigger these two bugs quickly.
+> Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> ---
+>  Documentation/admin-guide/media/ipu3.rst      | 35 ++++++++++---------
+>  .../media/v4l/pixfmt-meta-intel-ipu3.rst      |  2 +-
+>  .../ipu3/include/{ => uapi}/intel-ipu3.h      |  0
+>  drivers/staging/media/ipu3/ipu3-abi.h         |  2 +-
+>  4 files changed, 20 insertions(+), 19 deletions(-)
+>  rename drivers/staging/media/ipu3/include/{ => uapi}/intel-ipu3.h (100%)
+> 
+> diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
+> index f59697c7b374..d6454f637ff4 100644
+> --- a/Documentation/admin-guide/media/ipu3.rst
+> +++ b/Documentation/admin-guide/media/ipu3.rst
+> @@ -234,22 +234,23 @@ The IPU3 ImgU pipelines can be configured using the Media Controller, defined at
+>  Running mode and firmware binary selection
+>  ------------------------------------------
+>  
+> -ImgU works based on firmware, currently the ImgU firmware support run 2 pipes in
+> -time-sharing with single input frame data. Each pipe can run at certain mode -
+> -"VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture, and
+> -"STILL" is used for still frame capture. However, you can also select "VIDEO" to
+> -capture still frames if you want to capture images with less system load and
+> -power. For "STILL" mode, ImgU will try to use smaller BDS factor and output
+> -larger bayer frame for further YUV processing than "VIDEO" mode to get high
+> -quality images. Besides, "STILL" mode need XNR3 to do noise reduction, hence
+> -"STILL" mode will need more power and memory bandwidth than "VIDEO" mode. TNR
+> -will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is running at
+> -“VIDEO” mode by default, the user can use v4l2 control V4L2_CID_INTEL_IPU3_MODE
+> -(currently defined in drivers/staging/media/ipu3/include/intel-ipu3.h) to query
+> -and set the running mode. For user, there is no difference for buffer queueing
+> -between the "VIDEO" and "STILL" mode, mandatory input and main output node
+> -should be enabled and buffers need be queued, the statistics and the view-finder
+> -queues are optional.
+> +ImgU works based on firmware, currently the ImgU firmware support run 2 pipes
+> +in time-sharing with single input frame data. Each pipe can run at certain mode
+> +- "VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture,
+> +and "STILL" is used for still frame capture. However, you can also select
+> +"VIDEO" to capture still frames if you want to capture images with less system
+> +load and power. For "STILL" mode, ImgU will try to use smaller BDS factor and
+> +output larger bayer frame for further YUV processing than "VIDEO" mode to get
+> +high quality images. Besides, "STILL" mode need XNR3 to do noise reduction,
+> +hence "STILL" mode will need more power and memory bandwidth than "VIDEO" mode.
+> +TNR will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is
+> +running at “VIDEO” mode by default, the user can use v4l2 control
+> +V4L2_CID_INTEL_IPU3_MODE (currently defined in
+> +drivers/staging/media/ipu3/include/uapi/intel-ipu3.h) to query and set the
+> +running mode. For user, there is no difference for buffer queueing between the
+> +"VIDEO" and "STILL" mode, mandatory input and main output node should be
+> +enabled and buffers need be queued, the statistics and the view-finder queues
+> +are optional.
 
-Do you have this in the C format?
+The reflow of the whole paragraph is a bit painful to review.
 
-Jason
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  
+>  The firmware binary will be selected according to current running mode, such log
+>  "using binary if_to_osys_striped " or "using binary if_to_osys_primary_striped"
+> @@ -586,7 +587,7 @@ preserved.
+>  References
+>  ==========
+>  
+> -.. [#f5] drivers/staging/media/ipu3/include/intel-ipu3.h
+> +.. [#f5] drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+>  
+>  .. [#f1] https://github.com/intel/nvt
+>  
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst b/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
+> index 5f33d35532ef..84d81dd7a7b5 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
+> @@ -78,4 +78,4 @@ hardware and algorithm details.
+>  Intel IPU3 ImgU uAPI data types
+>  ===============================
+>  
+> -.. kernel-doc:: drivers/staging/media/ipu3/include/intel-ipu3.h
+> +.. kernel-doc:: drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> similarity index 100%
+> rename from drivers/staging/media/ipu3/include/intel-ipu3.h
+> rename to drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+> diff --git a/drivers/staging/media/ipu3/ipu3-abi.h b/drivers/staging/media/ipu3/ipu3-abi.h
+> index e1185602c7fd..c76935b436d7 100644
+> --- a/drivers/staging/media/ipu3/ipu3-abi.h
+> +++ b/drivers/staging/media/ipu3/ipu3-abi.h
+> @@ -4,7 +4,7 @@
+>  #ifndef __IPU3_ABI_H
+>  #define __IPU3_ABI_H
+>  
+> -#include "include/intel-ipu3.h"
+> +#include "include/uapi/intel-ipu3.h"
+>  
+>  /******************* IMGU Hardware information *******************/
+>  
+
+-- 
+Regards,
+
+Laurent Pinchart
