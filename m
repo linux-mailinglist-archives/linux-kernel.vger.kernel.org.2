@@ -2,87 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E29835DFC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83CF35DFCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhDMNK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:10:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231483AbhDMNKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:10:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA6B60FED;
-        Tue, 13 Apr 2021 13:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618319401;
-        bh=vvY4tuETc+Xa/tBMGoEIqFLIZ+8YzeuypXqR4OfLAyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ELxWVDoMBrAD202t2nHfsmaQKjmghiJ2yY4IgObjsoxp4A/wUUzSx9dT5+6fHgPxN
-         P2fmbn5LchzAHvl1R7+nH31yLzzFckwydkiRhPXrtyClsoN6Z8oYl96lh9Cq+9XWEd
-         q2oOVYJEnlFkqrE1yuLJf8qCLxhkozXoS6C9w9xQ0mEtUkRPBaP6p3I+oQUOTi98nA
-         yFW/zflfLUl8axi6YLMWWUTvcKwr3p4orVIARvXsDnbFrPqU8YQEOOo3ESyZ7cmEeZ
-         qVGJ7asAxD1kmOOU0Mpx53SYAsvY5NudwMEtpPeFqVyaZeViiF8QI1bfUyen6U66ad
-         3f7t4lu/c4ynA==
-Date:   Tue, 13 Apr 2021 14:09:39 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jay Fang <f.fangjian@huawei.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wei Xu <xuwei5@hisilicon.com>, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        huangdaode@huawei.com
-Subject: Re: [PATCH] spi: SPI_HISI_KUNPENG should depend on ARCH_HISI
-Message-ID: <20210413130939.GF5586@sirena.org.uk>
-References: <d93934dfdbb4d35e35371517de3b64c144aeb5ef.1618316782.git.geert+renesas@glider.be>
- <20210413124715.GE5586@sirena.org.uk>
- <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
+        id S238121AbhDMNLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:11:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37826 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231486AbhDMNLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:11:51 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DD328w032076;
+        Tue, 13 Apr 2021 09:11:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qw/B9esAJ26jq7yxahNr8Pmb2V3EmQElYpeUAyWSuCo=;
+ b=HzNtnzYy5WdPgZzfCfgGMdiEiAE7AnkmlcPb9WxVvB3nyK3ITopeJKNxKSU2LWEwicfF
+ DAPcudq0xmDrulrjNuBuRqbqalHr0N88iDc8CfHGfU3AR50uDCiAMLCm0/RdDg8i08zj
+ bo4J2DmILy8JlM5yiq6SfL7MW+1u6rCxHbgWSFIxi9jVx42VjJOiVFeKwcEoJkp+uGNU
+ Y5t7fGsdyC2u4Eb/eJuxkIP0SExrU0wA0bUvofJhMBo6k7Gz0OcJAIoQd4ALE6/DGvxD
+ nvRohljN/klNJW3rMDAwFqKpcP9NlkVBvSfAELRBqW4MxCFWVFHtJlMzU5o5w5b6xYUI Hg== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37vtvyfwxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 09:11:27 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DD2l8l016028;
+        Tue, 13 Apr 2021 13:11:25 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 37u3n89dt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 13:11:25 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DDB0jl27591162
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 13:11:00 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 645AF11C06C;
+        Tue, 13 Apr 2021 13:11:22 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B79811C052;
+        Tue, 13 Apr 2021 13:11:22 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 13:11:21 +0000 (GMT)
+Subject: Re: [PATCH 3/4] kbuild: spilt cc-option and friends to
+ scripts/Makefile.compiler
+To:     Janosch Frank <frankja@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+References: <20210228061028.239459-1-masahiroy@kernel.org>
+ <20210228061028.239459-3-masahiroy@kernel.org>
+ <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <395d2db1-b860-0da2-a859-d1d840508a46@de.ibm.com>
+Date:   Tue, 13 Apr 2021 15:11:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aPdhxNJGSeOG9wFI"
-Content-Disposition: inline
-In-Reply-To: <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
-X-Cookie: Shake well before using.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: JmFjsGkHnMSCqLBVrV6rsv5U0Cg1SgUv
+X-Proofpoint-GUID: JmFjsGkHnMSCqLBVrV6rsv5U0Cg1SgUv
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 clxscore=1011 adultscore=0
+ suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104130091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---aPdhxNJGSeOG9wFI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 13, 2021 at 08:59:02PM +0800, Jay Fang wrote:
-> On 2021/4/13 20:47, Mark Brown wrote:
-> > On Tue, Apr 13, 2021 at 02:27:23PM +0200, Geert Uytterhoeven wrote:
+On 13.04.21 14:51, Janosch Frank wrote:
+> On 2/28/21 7:10 AM, Masahiro Yamada wrote:
+>> scripts/Kbuild.include is included everywhere, but macros such as
+>> cc-option are needed by build targets only.
+>>
+>> For example, when 'make clean' traverses the tree, it does not need
+>> to evaluate $(call cc-option,).
+>>
+>> Split cc-option, ld-option, etc. to scripts/Makefile.compiler, which
+>> is only included from the top Makefile and scripts/Makefile.build.
+>>
+>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> 
+> This commit broke the KVM selftest compilation under s390 in linux-next
+> for me. Funny enough the compilation is only broken on Ubuntu, under
+> Fedora the test fails with an assertion.
+> 
+> FEDORA:
+> [root@fedora kvm]# ./set_memory_region_test
+> Allowed number of memory slots: 32767
+> ==== Test Assertion Failure ====
+>    lib/kvm_util.c:142: vm->fd >= 0
+>    pid=1541645 tid=1541645 - Invalid argument
+>       1	0x0000000001002f4b: vm_open at kvm_util.c:142
+>       2	 (inlined by) vm_create at kvm_util.c:258
+>       3	0x00000000010015ef: test_add_max_memory_regions at
+> set_memory_region_test.c:351
+>       4	 (inlined by) main at set_memory_region_test.c:397
+>       5	0x000003ffa3d2bb89: ?? ??:0
+>       6	0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
+>    KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
+> 
+> 
+> Ubuntu:
+> make[1]: Leaving directory '/mnt/dev/linux'
+> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
+> -fno-stack-protector -fno-PIE -I../../../../tools/include
+> -I../../../../tools/arch/s390/include -I../../../../usr/include/
+> -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/sparsebit.c -o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
+> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
+> -fno-stack-protector -fno-PIE -I../../../../tools/include
+> -I../../../../tools/arch/s390/include -I../../../../usr/include/
+> -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/kvm_util.c -o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
+> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
+> -fno-stack-protector -fno-PIE -I../../../../tools/include
+> -I../../../../tools/arch/s390/include -I../../../../usr/include/
+> -Iinclude -Ilib/s390x -Iinclude/s390x -I..   -c
+> lib/s390x/diag318_test_handler.c -o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
+> ar crs /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/assert.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/elf.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/io.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/test_util.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/guest_modes.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/perf_test_util.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/processor.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/ucall.o
+> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
+> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
+> -fno-stack-protector -fno-PIE -I../../../../tools/include
+> -I../../../../tools/arch/s390/include -I../../../../usr/include/
+> -Iinclude -Is390x -Iinclude/s390x -I..  -pthread    s390x/memop.c
+> /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a  -o
+> /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop
+> /usr/bin/ld: /tmp/ccFU8WYF.o: `stdout@@GLIBC_2.2' non-PLT reloc for
+> symbol defined in shared library and accessed from executable (rebuild
+> file with -fPIC ?)
+> /usr/bin/ld: final link failed: bad value
+> collect2: error: ld returned 1 exit status
+> make: *** [../lib.mk:139:
+> /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop] Error 1
+> 
 
-> >> The HiSilicon Kunpeng SPI controller is only present on HiSilicon
-> >> Kunpeng SoCs.  Hence add a dependency on ARCH_HISI, to prevent asking
-> >> the user about this driver when configuring a kernel without Hisilicon
-> >> platform support.
 
-> > Are you *sure* about this?  HiSilicon produce a wide range of SoCs with
-> > very diverse target markets, this driver looks like it's for enterprise
-> > stuff while most things guarded by that config option look like they're
-> > for embedded applications.
 
-> SPI_HISI_KUNPENG does not depend on ARCH_HISI.
+It looks like that from tools/testing/selftests/kvm/Makefile
+additional linker flags are being ignored with this patch.
 
-Right, but that's what Geert is proposing to change - the question is
-does it make sense to do so or not?
+no-pie-option := $(call try-run, echo 'int main() { return 0; }' | \
+         $(CC) -Werror -no-pie -x c - -o "$$TMP", -no-pie)
 
---aPdhxNJGSeOG9wFI
-Content-Type: application/pgp-signature; name="signature.asc"
+# On s390, build the testcases KVM-enabled
+pgste-option = $(call try-run, echo 'int main() { return 0; }' | \
+         $(CC) -Werror -Wl$(comma)--s390-pgste -x c - -o "$$TMP",-Wl$(comma)--s390-pgste)
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB1mBMACgkQJNaLcl1U
-h9BibAf/UGsOeW1w9mT9jPqivXHv0DUWhbNDh4VWXrThIYf7eiLUwjPWWH6fT9hL
-XhjtAPDoZyknZByoC3IUCWsOSHFLhcZquBM+10Pto0auYaOvhKwfi0d+KyX9wu2e
-IwsgxZ0tlRssUroxZaVyLFjcEW6ExmHmibzCAyD4iM4bUt5NXSsIycmBfO8MnIma
-IO0pUYAljaAmlU96cZONUJW6RvD0RDIJbV2RZ52Kof+J5HtPoNeiBTl9uq+mqEpF
-jalNdK2F3XyrUjt1McgSSTqs0pVA76fgwDSnGqpaKuL9+ESOMv5EFbIQzmz7FohT
-QUFwsNBJf+60ufEcL8KF+uw30Ie7EQ==
-=pm6V
------END PGP SIGNATURE-----
+LDFLAGS += -pthread $(no-pie-option) $(pgste-option)
 
---aPdhxNJGSeOG9wFI--
