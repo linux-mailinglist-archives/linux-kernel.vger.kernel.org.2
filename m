@@ -2,113 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CFA35DC81
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B839835DC84
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245420AbhDMKeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:34:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38343 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245379AbhDMKeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:34:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FKMQl2TMRz9sVb;
-        Tue, 13 Apr 2021 20:33:50 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618310032;
-        bh=0QSTG7AgKcAj2zXsiIn2BwtPbzxwF9Qsx+zdz7te+9Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=C0Q/O3/4b26VYHU25DT2IbFkx+YsFpUiIJiJoPf4zqXMpxlFsXflhd6RBqqFVEmHK
-         O7GzA0PHnJs3v3PdN0JzJQb16BL/LJuZC3VYmGHH64LZLGSegP55vps4JTAnqoJ3Sl
-         rwCqYvAm9NzeDqx/kSSHYOaPUKMBtDMHtavoW4FITMkPk7qiHvlqoBfM3YXMXIyNho
-         CoU/crrHuJXCCrN15z9QsKsH9eCfDoaQ3ZozySOJxxTgjDD35LSYkUC6d1OWEcdFQ8
-         zUqy87gtEPQTCK13E4EMM5vGbDSKmNKAU3tlOy/yYL4sbx6tcxfIudTROrv3g9DHdd
-         QUMC9r9YbW6Sg==
-Date:   Tue, 13 Apr 2021 20:33:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Wireless <linux-wireless@vger.kernel.org>
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the mac80211-next tree
-Message-ID: <20210413203349.43d3451e@canb.auug.org.au>
+        id S245611AbhDMKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245197AbhDMKeh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:34:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476ECC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:34:18 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lWGN2-0008Cb-Vn; Tue, 13 Apr 2021 12:34:12 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lWGN2-0002a2-FD; Tue, 13 Apr 2021 12:34:12 +0200
+Date:   Tue, 13 Apr 2021 12:34:12 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 6/8] pwm: pca9685: Support new PWM_USAGE_POWER flag
+Message-ID: <20210413103412.ngvtk5cw2ftyjvob@pengutronix.de>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-6-clemens.gruber@pqgruber.com>
+ <20210412163045.apgnac7atgpboths@pengutronix.de>
+ <YHR/Xm5nOjrSwVYs@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CLleS31GUfCWDobcilOra.f";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5yi73bsuwgixsqmt"
+Content-Disposition: inline
+In-Reply-To: <YHR/Xm5nOjrSwVYs@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CLleS31GUfCWDobcilOra.f
-Content-Type: text/plain; charset=US-ASCII
+
+--5yi73bsuwgixsqmt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi Clemens,
 
-After merging the mac80211-next tree, today's linux-next build (htmldocs)
-produced this warning:
+On Mon, Apr 12, 2021 at 07:11:58PM +0200, Clemens Gruber wrote:
+> On Mon, Apr 12, 2021 at 06:30:45PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Mon, Apr 12, 2021 at 03:27:43PM +0200, Clemens Gruber wrote:
+> > >  static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int ch=
+annel)
+> > >  {
+> > > -	unsigned int off_h =3D 0, val =3D 0;
+> > > +	struct pwm_device *pwm =3D &pca->chip.pwms[channel];
+> > > +	unsigned int off =3D 0, on =3D 0, val =3D 0;
+> > > =20
+> > >  	if (WARN_ON(channel >=3D PCA9685_MAXCHAN)) {
+> > >  		/* HW does not support reading state of "all LEDs" channel */
+> > >  		return 0;
+> > >  	}
+> > > =20
+> > > -	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off_h);
+> > > -	if (off_h & LED_FULL) {
+> > > +	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off);
+> > > +	if (off & LED_FULL) {
+> > >  		/* Full OFF bit is set */
+> > >  		return 0;
+> > >  	}
+> > > =20
+> > > -	regmap_read(pca->regmap, LED_N_ON_H(channel), &val);
+> > > -	if (val & LED_FULL) {
+> > > +	regmap_read(pca->regmap, LED_N_ON_H(channel), &on);
+> > > +	if (on & LED_FULL) {
+> > >  		/* Full ON bit is set */
+> > >  		return PCA9685_COUNTER_RANGE;
+> > >  	}
+> > > =20
+> > > -	val =3D 0;
+> > >  	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
+> > > -	return ((off_h & 0xf) << 8) | (val & 0xff);
+> > > +	off =3D ((off & 0xf) << 8) | (val & 0xff);
+> > > +	if (!pwm->args.usage_power)
+> > > +		return off;
+> > > +
+> > > +	/* Read ON register to calculate duty cycle of staggered output */
+> > > +	val =3D 0;
+> > > +	regmap_read(pca->regmap, LED_N_ON_L(channel), &val);
+> > > +	on =3D ((on & 0xf) << 8) | (val & 0xff);
+> > > +	return (off - on) & (PCA9685_COUNTER_RANGE - 1);
+> >=20
+> > If LED_N_ON is !=3D 0 but usage_power is false, the returned state is
+> > bogus.
+>=20
+> If usage_power is false, LED_N_ON is guaranteed to be 0. It is reset to
+> 0 in probe and never changed. Or did I miss something?
 
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
-include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
-set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+Ah right, so my concern is only a challenge once the reset in probe goes
+away.
 
-Introduced by commit
+> > >  }
+> > > =20
+> > >  #if IS_ENABLED(CONFIG_GPIOLIB)
+> > > @@ -439,9 +469,11 @@ static int pca9685_pwm_probe(struct i2c_client *=
+client,
+> > >  	reg &=3D ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
+> > >  	regmap_write(pca->regmap, PCA9685_MODE1, reg);
+> > > =20
+> > > -	/* Reset OFF registers to POR default */
+> > > +	/* Reset OFF/ON registers to POR default */
+> > >  	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
+> > >  	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
+> > > +	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
+> > > +	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
+> > > =20
+> > >  	pca->chip.ops =3D &pca9685_pwm_ops;
+> > >  	/* Add an extra channel for ALL_LED */
+> > > @@ -450,6 +482,9 @@ static int pca9685_pwm_probe(struct i2c_client *c=
+lient,
+> > >  	pca->chip.dev =3D &client->dev;
+> > >  	pca->chip.base =3D -1;
+> > > =20
+> > > +	pca->chip.of_xlate =3D of_pwm_xlate_with_flags;
+> > > +	pca->chip.of_pwm_n_cells =3D 3;
+> > > +
+> >=20
+> > Huh, you're incompatibly changing the device tree binding here.
+>=20
+> No, I don't think so:
+>=20
+> The third cell is optional with of_pwm_xlate_with_flags.
+> So previous DTs with pwm-cells =3D <2> will still work.
 
-  6f779a66dc84 ("cfg80211: allow specifying a reason for hw_rfkill")
+I thought that .of_pwm_n_cells was enforced, let me check the code ... I
+had in mind that of_pwm_get() enforced that, but I cannot find it, so I
+guess you're right and my concern is unjustified.
+
+Best regards
+Uwe
 
 --=20
-Cheers,
-Stephen Rothwell
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---Sig_/CLleS31GUfCWDobcilOra.f
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--5yi73bsuwgixsqmt
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB1c40ACgkQAVBC80lX
-0GxGlAf9HEF0WTisn6VJtPlv2O6InYLiBP+qbCslxrrpJAHfppUktma6Ued0aDLm
-gx49xPRmR+lu1MdnXw9Z7Pu1b/1I3t0xVmZJqAq31+eGYFmqSsrUaI5c80epJ/Na
-Xzw3s0EC2wc8uqUBzqz7ZrCM7OyHaQvwls3ta/NU1qGr82WPW7oum+4oq23nbjxM
-EeaanUOT9RbRwtg4OjhqpCLaJPD5f2ekJbs31NYhUiv/TxAyXm48XUfdNcANRD7F
-AIl1Zf9saW1NrI+sGaeh3j3PzE/2q7DHJZxwkMegkycMDxo1uy9BI3oeAlzTvLoj
-AetHK4KXGFqOrukjsOXuN9pA+6u/2A==
-=AKUc
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB1c6AACgkQwfwUeK3K
+7AklQQgAmLXZlUmBHqlmxp/futrTOuHVljzfFpomRmDqlZuObEjkJP81nV8mExNu
+DBAxVX1Th6DSWddMWZzkEUzVrqGo3xe9EDM1GhSRufq3Eh+PpIQfBEi4j1EiRjW0
+uq6Gz0e58FtVAGbcwQl/xEPTBDNdYtPQ3cPcNQ0btvlFGPnyALVaD1TzIajpxoOQ
+6sa4XqoXweKu+HNdD3l/VmnT9S7odmJw7BMgnJ8EMtGJVW4T/w9UvKFh6ZcJzskQ
+cAgv6qMUmEEjKd1bKZeIPui3OPAxVn7lwf9AVpem/U9iTikpuCpmPI7fbHp3jWw9
+5TUqU7sLjtkRr9qJr/VkCHNG2Wodeg==
+=KDCe
 -----END PGP SIGNATURE-----
 
---Sig_/CLleS31GUfCWDobcilOra.f--
+--5yi73bsuwgixsqmt--
