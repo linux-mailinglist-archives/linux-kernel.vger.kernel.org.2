@@ -2,292 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3400735D454
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913EC35D458
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344272AbhDMAIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238214AbhDMAIb (ORCPT
+        id S1344285AbhDMAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:10:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24346 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239862AbhDMAKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:08:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552E6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:08:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id h69so9794223ybg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=528n/XU1I2aQix/5LzpH6U+fVKtBCozvVZSzDVU9kHk=;
-        b=QFEOkq5d8vO/qSnz0eiFMeEa/WpbJXLNxN4qNchD6wj5dfcyJ8PNA4oHZTEz7KSHY8
-         qy3i7ywZ9nmbW0eDWB9pzPkOj469JGJBp5CRDb3lL+QIntai8MQVn0OZcBiwKsC+Jw0D
-         8XK7bkVqWKfVGvvaT4icvpu43V0+FMXKCVVyQ2OTy6uyOEI6Zd4FsoruhRLqZxwnxa8V
-         UNSrJkHZb6F0faqL97QQyp5+uEu9ydicbixNqnCP0Jg1izG8ZR7jDSNcXlv4t892ciZG
-         ZTZeNCgYq04gwqs4waUZNkGD1HvBEboOkESWvK6IL2vzb/2h29fOXjed4wDh3jUqGPc9
-         xm7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=528n/XU1I2aQix/5LzpH6U+fVKtBCozvVZSzDVU9kHk=;
-        b=rLCl8hTqFGPDvK8W/jld0Tkd6TKGwX4aw3uMYPc6usUsR+Zsw5E9qV2YFkGEr5+jXR
-         i3jZMmCn/zWSkYjq/ZoEtcqq+evlJZjX3s6NP4F53RJ3aizTG2zIBiMYl6UHDXyPGZKq
-         zDNU8IQZe0Az0M0bTcsWWXFtORMI7XzCh33s5VPwUYLr6oXKUGgUyY8dU+zn0v0kYDuZ
-         ev3EO60Angd2q/P8dJuyBwwUpTPopJqRzzfLSksTVHJ5dwwYGj7/Y/dZ9fjobtxaA9g8
-         02rTcs2JADldD3J6An6TuiSTlnW5XtGZPrJWNPk3/e6noVjrKTYYYECfA6u55wFd2aSW
-         njAQ==
-X-Gm-Message-State: AOAM533adCcLwuxUWEu4AiwKBOhr2uJzFNqZ4IM3iFWflMDQjSxYUQ/9
-        y4FIZv0ZPLnULpDEvV8h3+8/VnEz2FjcxQ==
-X-Google-Smtp-Source: ABdhPJya6eMpR5lhPM6eJCOliv3v2eGzjeSxZeG+5umxlWDyjW+zvpFGG4fttZrVefwTowrqg3GM2v0oSfMCKA==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:9582:4774:7806:b32])
- (user=dlatypov job=sendgmr) by 2002:a25:d7d4:: with SMTP id
- o203mr31497028ybg.95.1618272491634; Mon, 12 Apr 2021 17:08:11 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 17:08:03 -0700
-Message-Id: <20210413000803.778099-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH] kunit: add unit test for filtering suites by names
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 12 Apr 2021 20:10:39 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D033Au074297;
+        Mon, 12 Apr 2021 20:10:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=b5OkmVCIlgrSNkc0HXVFd7Y74lhcvJOs79Gyz/bi1os=;
+ b=BFd4OOshzYxytYPezKs8Lp5ocCWZK8R3xLxMHAsQMUhkLngtJ8TUwg20j4lk90jggkfb
+ MWrhzWNXBMtuxQtT/7Wi5ovFIT99PQfJic85dc2l3BdT7mBCCjn8baz/3yMUKFKtCDXb
+ 1q9Gp0kT58BsmcJwEebudUmEXwWjkoe82ZkSup2Uc85spDUQHR6Nn+DjULELFKNyrpGN
+ Ef+mtj1uP0ZTuj16Z2NRqSQ0GzPDfoGjduJp9sXrEqSlPNQPaORdsUX44zYzjC8mIKmE
+ KIpbtmyWgkNx2TLk97od/VY8IPa8WQKaF2EwwS62azELvSCEWSNeANuC+/vrfweqzizB YQ== 
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37uskah5xy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 20:10:13 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D08APE026827;
+        Tue, 13 Apr 2021 00:10:12 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02dal.us.ibm.com with ESMTP id 37u3n9hcuk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 00:10:12 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D0ABJT20906406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 00:10:11 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B1C5BE053;
+        Tue, 13 Apr 2021 00:10:11 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C135EBE04F;
+        Tue, 13 Apr 2021 00:10:10 +0000 (GMT)
+Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 00:10:10 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Brian King <brking@linux.vnet.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH] ibmvfc: Fix invalid state machine BUG_ON
+Date:   Mon, 12 Apr 2021 18:10:09 -0600
+Message-Id: <20210413001009.902400-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9A9OYfiBUiRlRes3E9Oel-LhcAYgExpD
+X-Proofpoint-GUID: 9A9OYfiBUiRlRes3E9Oel-LhcAYgExpD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds unit tests for kunit_filter_subsuite() and
-kunit_filter_suites().
+From: Brian King <brking@linux.vnet.ibm.com>
 
-Note: what the executor means by "subsuite" is the array of suites
-corresponding to each test file.
+This fixes an issue hitting the BUG_ON in ibmvfc_do_work. When
+going through a host action of IBMVFC_HOST_ACTION_RESET,
+we change the action to IBMVFC_HOST_ACTION_TGT_DEL,
+then drop the host lock, and reset the CRQ, which changes
+the host state to IBMVFC_NO_CRQ. If, prior to setting the
+host state to IBMVFC_NO_CRQ, ibmvfc_init_host is called,
+it can then end up changing the host action to IBMVFC_HOST_ACTION_INIT.
+If we then change the host state to IBMVFC_NO_CRQ, we will then
+hit the BUG_ON. This patch makes a couple of changes to avoid this.
+It leaves the host action to be IBMVFC_HOST_ACTION_RESET
+or IBMVFC_HOST_ACTION_REENABLE until after we drop the host
+lock and reset or reenable the CRQ. It also hardens the
+host state machine to ensure we cannot leave the reset / reenable
+state until we've finished processing the reset or reenable.
 
-This patch lightly refactors executor.c to avoid the use of global
-variables to make it testable.
-It also includes a clever `kfree_at_end()` helper that makes this test
-easier to write than it otherwise would have been.
-
-Tested by running just the new tests using itself
-$ ./tools/testing/kunit/kunit.py run '*exec*'
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Fixes: 73ee5d867287 ("[SCSI] ibmvfc: Fix soft lockup on resume")
+Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
+[tyreld: added fixes tag]
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 ---
- lib/kunit/executor.c      |  26 ++++----
- lib/kunit/executor_test.c | 132 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 147 insertions(+), 11 deletions(-)
- create mode 100644 lib/kunit/executor_test.c
+ drivers/scsi/ibmvscsi/ibmvfc.c | 53 ++++++++++++++++++++++------------
+ 1 file changed, 34 insertions(+), 19 deletions(-)
 
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 15832ed44668..96a4ae983786 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -19,7 +19,7 @@ MODULE_PARM_DESC(filter_glob,
- 		"Filter which KUnit test suites run at boot-time, e.g. list*");
- 
- static struct kunit_suite * const *
--kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
-+kunit_filter_subsuite(struct kunit_suite * const * const subsuite, const char *filter_glob)
- {
- 	int i, n = 0;
- 	struct kunit_suite **filtered;
-@@ -52,19 +52,14 @@ struct suite_set {
- 	struct kunit_suite * const * const *end;
- };
- 
--static struct suite_set kunit_filter_suites(void)
-+static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
-+					    const char *filter_glob)
- {
- 	int i;
- 	struct kunit_suite * const **copy, * const *filtered_subsuite;
- 	struct suite_set filtered;
- 
--	const size_t max = __kunit_suites_end - __kunit_suites_start;
--
--	if (!filter_glob) {
--		filtered.start = __kunit_suites_start;
--		filtered.end = __kunit_suites_end;
--		return filtered;
--	}
-+	const size_t max = suite_set->end - suite_set->start;
- 
- 	copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
- 	filtered.start = copy;
-@@ -74,7 +69,7 @@ static struct suite_set kunit_filter_suites(void)
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 61831f2fdb30..f813608d74cc 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -603,8 +603,17 @@ static void ibmvfc_set_host_action(struct ibmvfc_host *vhost,
+ 		if (vhost->action == IBMVFC_HOST_ACTION_ALLOC_TGTS)
+ 			vhost->action = action;
+ 		break;
++	case IBMVFC_HOST_ACTION_REENABLE:
++	case IBMVFC_HOST_ACTION_RESET:
++		vhost->action = action;
++		break;
+ 	case IBMVFC_HOST_ACTION_INIT:
+ 	case IBMVFC_HOST_ACTION_TGT_DEL:
++	case IBMVFC_HOST_ACTION_LOGO:
++	case IBMVFC_HOST_ACTION_QUERY_TGTS:
++	case IBMVFC_HOST_ACTION_TGT_DEL_FAILED:
++	case IBMVFC_HOST_ACTION_NONE:
++	default:
+ 		switch (vhost->action) {
+ 		case IBMVFC_HOST_ACTION_RESET:
+ 		case IBMVFC_HOST_ACTION_REENABLE:
+@@ -614,15 +623,6 @@ static void ibmvfc_set_host_action(struct ibmvfc_host *vhost,
+ 			break;
+ 		}
+ 		break;
+-	case IBMVFC_HOST_ACTION_LOGO:
+-	case IBMVFC_HOST_ACTION_QUERY_TGTS:
+-	case IBMVFC_HOST_ACTION_TGT_DEL_FAILED:
+-	case IBMVFC_HOST_ACTION_NONE:
+-	case IBMVFC_HOST_ACTION_RESET:
+-	case IBMVFC_HOST_ACTION_REENABLE:
+-	default:
+-		vhost->action = action;
+-		break;
  	}
- 
- 	for (i = 0; i < max; ++i) {
--		filtered_subsuite = kunit_filter_subsuite(__kunit_suites_start[i]);
-+		filtered_subsuite = kunit_filter_subsuite(suite_set->start[i], filter_glob);
- 		if (filtered_subsuite)
- 			*copy++ = filtered_subsuite;
- 	}
-@@ -98,8 +93,13 @@ static void kunit_print_tap_header(struct suite_set *suite_set)
- int kunit_run_all_tests(void)
- {
- 	struct kunit_suite * const * const *suites;
-+	struct suite_set suite_set = {
-+		.start = __kunit_suites_start,
-+		.end = __kunit_suites_end,
-+	};
- 
--	struct suite_set suite_set = kunit_filter_suites();
-+	if (filter_glob)
-+		suite_set = kunit_filter_suites(&suite_set, filter_glob);
- 
- 	kunit_print_tap_header(&suite_set);
- 
-@@ -115,4 +115,8 @@ int kunit_run_all_tests(void)
- 	return 0;
  }
  
-+#if IS_BUILTIN(CONFIG_KUNIT_TEST)
-+#include "executor_test.c"
-+#endif
+@@ -5373,30 +5373,45 @@ static void ibmvfc_do_work(struct ibmvfc_host *vhost)
+ 	case IBMVFC_HOST_ACTION_INIT_WAIT:
+ 		break;
+ 	case IBMVFC_HOST_ACTION_RESET:
+-		vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
+ 		list_splice_init(&vhost->purge, &purge);
+ 		spin_unlock_irqrestore(vhost->host->host_lock, flags);
+ 		ibmvfc_complete_purge(&purge);
+ 		rc = ibmvfc_reset_crq(vhost);
 +
- #endif /* IS_BUILTIN(CONFIG_KUNIT) */
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-new file mode 100644
-index 000000000000..8e925395beeb
---- /dev/null
-+++ b/lib/kunit/executor_test.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test for the KUnit executor.
-+ *
-+ * Copyright (C) 2021, Google LLC.
-+ * Author: Daniel Latypov <dlatypov@google.com>
-+ */
+ 		spin_lock_irqsave(vhost->host->host_lock, flags);
+-		if (rc == H_CLOSED)
++		if (!rc || rc == H_CLOSED)
+ 			vio_enable_interrupts(to_vio_dev(vhost->dev));
+-		if (rc || (rc = ibmvfc_send_crq_init(vhost)) ||
+-		    (rc = vio_enable_interrupts(to_vio_dev(vhost->dev)))) {
+-			ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
+-			dev_err(vhost->dev, "Error after reset (rc=%d)\n", rc);
++		if (vhost->action == IBMVFC_HOST_ACTION_RESET) {
++			/* The only action we could have changed to would have been reenable,
++			 in which case, we skip the rest of this path and wait until
++			 we've done the re-enable before sending the crq init */
 +
-+#include <kunit/test.h>
++			vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
 +
-+static void kfree_at_end(struct kunit *test, const void *to_free);
-+static struct kunit_suite *alloc_fake_suite(struct kunit *test,
-+					    const char *suite_name);
++			if (rc || (rc = ibmvfc_send_crq_init(vhost)) ||
++			    (rc = vio_enable_interrupts(to_vio_dev(vhost->dev)))) {
++				ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
++				dev_err(vhost->dev, "Error after reset (rc=%d)\n", rc);
++			}
+ 		}
+ 		break;
+ 	case IBMVFC_HOST_ACTION_REENABLE:
+-		vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
+ 		list_splice_init(&vhost->purge, &purge);
+ 		spin_unlock_irqrestore(vhost->host->host_lock, flags);
+ 		ibmvfc_complete_purge(&purge);
+ 		rc = ibmvfc_reenable_crq_queue(vhost);
 +
-+static void filter_subsuite_test(struct kunit *test)
-+{
-+	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-+	struct kunit_suite * const *filtered;
+ 		spin_lock_irqsave(vhost->host->host_lock, flags);
+-		if (rc || (rc = ibmvfc_send_crq_init(vhost))) {
+-			ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
+-			dev_err(vhost->dev, "Error after enable (rc=%d)\n", rc);
++		if (vhost->action == IBMVFC_HOST_ACTION_REENABLE) {
++			/* The only action we could have changed to would have been reset,
++			 in which case, we skip the rest of this path and wait until
++			 we've done the reset before sending the crq init */
 +
-+	subsuite[0] = alloc_fake_suite(test, "suite1");
-+	subsuite[1] = alloc_fake_suite(test, "suite2");
-+
-+	/* Want: suite1, suite2, NULL -> suite2, NULL */
-+	filtered = kunit_filter_subsuite(subsuite, "suite2*");
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered);
-+	kfree_at_end(test, filtered);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered[0]);
-+	KUNIT_EXPECT_STREQ(test, (const char *)filtered[0]->name, "suite2");
-+
-+	KUNIT_EXPECT_FALSE(test, filtered[1]);
-+}
-+
-+static void filter_subsuite_to_empty_test(struct kunit *test)
-+{
-+	struct kunit_suite *subsuite[3] = {NULL, NULL, NULL};
-+	struct kunit_suite * const *filtered;
-+
-+	subsuite[0] = alloc_fake_suite(test, "suite1");
-+	subsuite[1] = alloc_fake_suite(test, "suite2");
-+
-+	filtered = kunit_filter_subsuite(subsuite, "not_found");
-+	kfree_at_end(test, filtered); /* just in case */
-+
-+	KUNIT_EXPECT_FALSE_MSG(test, filtered,
-+			       "should be NULL to indicate no match");
-+}
-+
-+static void kfree_subsuites_at_end(struct kunit *test, struct suite_set *suite_set)
-+{
-+	struct kunit_suite * const * const *suites;
-+
-+	for (suites = suite_set->start; suites < suite_set->end; suites++)
-+		kfree_at_end(test, *suites);
-+}
-+
-+static void filter_suites_test(struct kunit *test)
-+{
-+	/* Suites per-file are stored as a NULL terminated array */
-+	struct kunit_suite *subsuites[2][2] = {
-+		{NULL, NULL},
-+		{NULL, NULL},
-+	};
-+	/* Match the memory layout of suite_set */
-+	struct kunit_suite * const * const suites[2] = {
-+		subsuites[0], subsuites[1],
-+	};
-+
-+	const struct suite_set suite_set = {
-+		.start = suites,
-+		.end = suites + 2,
-+	};
-+	struct suite_set filtered = {.start = NULL, .end = NULL};
-+
-+	/* Emulate two files, each having one suite */
-+	subsuites[0][0] = alloc_fake_suite(test, "suite0");
-+	subsuites[1][0] = alloc_fake_suite(test, "suite1");
-+
-+	/* Filter out suite1 */
-+	filtered = kunit_filter_suites(&suite_set, "suite0");
-+	kfree_subsuites_at_end(test, &filtered); /* let us use ASSERTs without leaking */
-+	KUNIT_ASSERT_EQ(test, filtered.end - filtered.start, (ptrdiff_t) 1);
-+
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, filtered.start[0]);
-+	KUNIT_EXPECT_PTR_EQ(test, filtered.start[0][0], subsuites[0][0]);
-+}
-+
-+static struct kunit_case executor_test_cases[] = {
-+	KUNIT_CASE(filter_subsuite_test),
-+	KUNIT_CASE(filter_subsuite_to_empty_test),
-+	KUNIT_CASE(filter_suites_test),
-+	{}
-+};
-+
-+static struct kunit_suite executor_test_suite = {
-+	.name = "kunit_executor_test",
-+	.test_cases = executor_test_cases,
-+};
-+
-+kunit_test_suites(&executor_test_suite);
-+
-+/* Test helpers */
-+
-+static void kfree_res_free(struct kunit_resource *res)
-+{
-+	kfree(res->data);
-+}
-+
-+/* Use the resource API to register a call to kfree(to_free).
-+ * Since we never actually use the resource, it's safe to use on const data.
-+ */
-+static void kfree_at_end(struct kunit *test, const void *to_free)
-+{
-+	/* kfree() handles NULL already, but avoid allocating a no-op cleanup. */
-+	if (IS_ERR_OR_NULL(to_free))
-+		return;
-+	kunit_alloc_and_get_resource(test, NULL, kfree_res_free, GFP_KERNEL,
-+				     (void *)to_free);
-+}
-+
-+static struct kunit_suite *alloc_fake_suite(struct kunit *test,
-+					    const char *suite_name)
-+{
-+	struct kunit_suite *suite;
-+
-+	/* We normally never expect to allocate suites, hence the non-const cast. */
-+	suite = kunit_kzalloc(test, sizeof(*suite), GFP_KERNEL);
-+	strncpy((char *)suite->name, suite_name, sizeof(suite->name));
-+
-+	return suite;
-+}
-
-base-commit: 1678e493d530e7977cce34e59a86bb86f3c5631e
++			vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
++			if (rc || (rc = ibmvfc_send_crq_init(vhost))) {
++				ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
++				dev_err(vhost->dev, "Error after enable (rc=%d)\n", rc);
++			}
+ 		}
+ 		break;
+ 	case IBMVFC_HOST_ACTION_LOGO:
 -- 
-2.31.1.295.g9ea45b61b8-goog
+2.27.0
 
