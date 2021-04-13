@@ -2,203 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5917A35E902
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9245535E904
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347318AbhDMW2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        id S1347371AbhDMW2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244379AbhDMW2D (ORCPT
+        with ESMTP id S244379AbhDMW2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:28:03 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC681C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:27:39 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id s5so10836849qkj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rgFY8x0zq0Pabg4Abiq7MJVjIpGtxc8sg3kp5cufSKs=;
-        b=gFcTpDF814f+UVigQLUqhxPVE8WJgLIVn3BcNJ9rq1U4wY45vKtl5AX0c9l4TSK7YK
-         RuNuM1WQ0sqmhr56Q5kzG1GNjb0SCofFp7D/ZBDG1it7tkK4W0O3SpvBWaMTLpASz5Rr
-         T9g3rhT6bMTwS5BmhYYMnkuqMbGKrq6iYNoh3APD1EQBSyD+N1Rimg6036gkIZ3Ua25H
-         P/7su8QtUhcUbKJNFCBu5D0qtq2+xDWzAugoI9fqUI+fCgrB4u0/M9bBd7uxkkaF6Kzc
-         cSW0gDpZJr1WAbShmT3QOQY7iK7+L4Ay+kWJULmZWzWx+X4+bb4lGAnqYIhUWwbXzbig
-         cpFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rgFY8x0zq0Pabg4Abiq7MJVjIpGtxc8sg3kp5cufSKs=;
-        b=Sj5AKVd7AEc7A2v3d9zgPT3xGnqB7TVcHxdUU+9KsDhnGfee+C9jrPZI/xgRqm77Ne
-         mw8RFY5URnskguJ8E3zxif3gF8DiOQjeXFwE7DLuN8nBjP/mKzHp6xoLOBiSvVZlSdlv
-         MGcUYO7oECRG+nujYqTbrXQJSBJphXZcPrRlNlTsADYxD7v4bj0TnEq94kd1ZvpXX2g9
-         GAv7JJZ1E+hNqKH40XQBAJn2c88U3tOrYJHBDo4F4ua4ZklbgNoFhp1CaYdfE8U06sqc
-         QB4qW6yT34c66t2WAFfKzBi9y+Ke7fi7MKuLLUkxxHUjoVAW0mZSOtCU9UBAhTnnZAiW
-         O0Fw==
-X-Gm-Message-State: AOAM533uES76N+HELvZV3CBBLKaAZEY5wQ81Unpv3ldiDNVHyrN3VGd+
-        +86rLM8DomReg80a5LtrZ/WB8GS/KYKSzg==
-X-Google-Smtp-Source: ABdhPJx8OlHyTfidUFnV2le3ndgc2t+MTF0+oYam74PHMao1CxljRATxTNmyHpYGiS2WPKlQJMxYlA==
-X-Received: by 2002:a05:620a:2013:: with SMTP id c19mr34517163qka.403.1618352858549;
-        Tue, 13 Apr 2021 15:27:38 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c145sm1276772qkg.48.2021.04.13.15.27.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 15:27:37 -0700 (PDT)
-Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210225182716.1402449-7-thara.gopinath@linaro.org>
- <20210405221848.GA904837@yoga>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <64543792-7237-8622-9619-7020ed0b3fa1@linaro.org>
-Date:   Tue, 13 Apr 2021 18:27:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210405221848.GA904837@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 13 Apr 2021 18:28:42 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA754C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:28:21 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 83C94891AE;
+        Wed, 14 Apr 2021 10:28:18 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1618352898;
+        bh=RxrNCKMwhAy/Fnw4Mqa90d74D72/M5uhkvxBLfVuIpE=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=sy278UyoHWq9WGpL2I13Rm1Z0AKjsl02z0XyS+VjY0hLnk9ZU/X3iRPSJg4tgF6Jc
+         LmsvUMht8QTyWCVake34uT5jbKS0AzEP1tzgvs9I6iP3caob2ODizaPRQgf7+JteuP
+         mB6AlneQDw6iJvN4PZmlSyiHxI6UeRcIXs/ZPUcs9qJo6iNYleROhRxhGDdCoWfKG/
+         ql0BivYJvDwwzqZcrNR4CaWzREt93tbjMU5lF/1mRZtJpvFaWPDF6fIPPHPmpQ9N5r
+         gou0Wxe1f70iLhxncr27y/P86kTFQIKxeWpKFJ41/DTFvJm7+BjuDLBwUW3sk60FCU
+         74FFj4WW28EWQ==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60761b020001>; Wed, 14 Apr 2021 10:28:18 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 10:28:18 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Wed, 14 Apr 2021 10:28:18 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Wolfram Sang <wsa@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
+Thread-Topic: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
+Thread-Index: AQHXMCNCEeDrN5NOHkKnCG2Hfg5PhKqxrvOAgACQNYA=
+Date:   Tue, 13 Apr 2021 22:28:17 +0000
+Message-ID: <09f636b8-c126-af14-fbc3-9d6becb15df5@alliedtelesis.co.nz>
+References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
+ <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
+ <CAHp75VfR2zNmstvqCSRC2=0hf2DRV7sMdmy9-TDkO07KHwLjGA@mail.gmail.com>
+In-Reply-To: <CAHp75VfR2zNmstvqCSRC2=0hf2DRV7sMdmy9-TDkO07KHwLjGA@mail.gmail.com>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AB84BF9A6EA3E94B92BF6C3C137A0BA9@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=AUvUAFASbHWzQvhM9VkA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/5/21 6:18 PM, Bjorn Andersson wrote:
-> On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
-> 
->> Add register programming sequence for enabling AEAD
->> algorithms on the Qualcomm crypto engine.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>   drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
->>   1 file changed, 153 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
->> index 05a71c5ecf61..54d209cb0525 100644
->> --- a/drivers/crypto/qce/common.c
->> +++ b/drivers/crypto/qce/common.c
->> @@ -15,6 +15,16 @@
->>   #include "core.h"
->>   #include "regs-v5.h"
->>   #include "sha.h"
->> +#include "aead.h"
->> +
->> +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->> +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
->> +};
->> +
->> +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->> +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
->> +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
->> +};
->>   
->>   static inline u32 qce_read(struct qce_device *qce, u32 offset)
->>   {
->> @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
->>   		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
->>   }
->>   
->> -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->> +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>   static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>   {
->>   	u32 cfg = 0;
->> @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>   
->>   	return cfg;
->>   }
->> +#endif
->>   
->> +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->>   static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>   {
->>   	struct ahash_request *req = ahash_request_cast(async_req);
->> @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>   }
->>   #endif
->>   
->> -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->> +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>   static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>   {
->>   	u32 cfg = 0;
->> @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>   
->>   	return cfg;
->>   }
->> +#endif
->>   
->> +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->>   static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
->>   {
->>   	u8 swap[QCE_AES_IV_LENGTH];
->> @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
->>   }
->>   #endif
->>   
->> +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
->> +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
->> +{
->> +	struct aead_request *req = aead_request_cast(async_req);
->> +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
->> +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
->> +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
->> +	struct qce_device *qce = tmpl->qce;
->> +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
->> +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
->> +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
->> +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
->> +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
->> +	unsigned int enc_keylen = ctx->enc_keylen;
->> +	unsigned int auth_keylen = ctx->auth_keylen;
->> +	unsigned int enc_ivsize = rctx->ivsize;
->> +	unsigned int auth_ivsize;
->> +	unsigned int enckey_words, enciv_words;
->> +	unsigned int authkey_words, authiv_words, authnonce_words;
->> +	unsigned long flags = rctx->flags;
->> +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
-> 
-> I don't see any reason to initialize encr_cfg or auth_cfg.
-> 
->> +	u32 *iv_last_word;
->> +
->> +	qce_setup_config(qce);
->> +
->> +	/* Write encryption key */
->> +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
->> +	enckey_words = enc_keylen / sizeof(u32);
->> +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
-> 
-> Afaict all "array registers" in this function are affected by the
-> CRYPTO_SETUP little endian bit, but you set this bit before launching
-> the operation dependent on IS_CCM(). So is this really working for the
-> !IS_CCM() case?
-> 
->> +
->> +	/* Write encryption iv */
->> +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
->> +	enciv_words = enc_ivsize / sizeof(u32);
->> +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
-> 
-> It would be nice if this snippet was extracted to a helper function.
-
-I kind of forgot to type this earlier. So yes I agree in principle.
-It is more elegant to have something like qce_convert_be32_and_write
-and in the function do the above three steps. This snippet is prevalent 
-in this driver code across other alogs as well (skcipher and hash).
-Take it up as a separate clean up activity  ?
-
--- 
-Warm Regards
-Thara
+DQpPbiAxNC8wNC8yMSAxOjUyIGFtLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6DQo+IE9uIFR1ZSwg
+QXByIDEzLCAyMDIxIGF0IDg6MTAgQU0gQ2hyaXMgUGFja2hhbQ0KPiA8Y2hyaXMucGFja2hhbUBh
+bGxpZWR0ZWxlc2lzLmNvLm56PiB3cm90ZToNCj4+IFRoZSBmc2wtaTJjIGNvbnRyb2xsZXIgd2ls
+bCBnZW5lcmF0ZSBhbiBpbnRlcnJ1cHQgYWZ0ZXIgZXZlcnkgYnl0ZQ0KPj4gdHJhbnNmZXJyZWQu
+IE1ha2UgdXNlIG9mIHRoaXMgaW50ZXJydXB0IHRvIGRyaXZlIGEgc3RhdGUgbWFjaGluZSB3aGlj
+aA0KPj4gYWxsb3dzIHRoZSBuZXh0IHBhcnQgb2YgYSB0cmFuc2ZlciB0byBoYXBwZW4gYXMgc29v
+biBhcyB0aGUgaW50ZXJydXB0IGlzDQo+PiByZWNlaXZlZC4gVGhpcyBpcyBwYXJ0aWN1bGFybHkg
+aGVscGZ1bCB3aXRoIFNNQlVTIGRldmljZXMgbGlrZSB0aGUgTE04MQ0KPj4gd2hpY2ggd2lsbCB0
+aW1lb3V0IGlmIHdlIHRha2UgdG9vIGxvbmcgYmV0d2VlbiBieXRlcyBpbiBhIHRyYW5zZmVyLg0K
+PiBBbHNvIHNlZSBteSBvdGhlciBjb21tZW50cyBiZWxvdy4NCj4NCj4gLi4uDQo+DQo+PiArLy8g
+U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4gSSB0aGluayBpdCBpcyBiZXR0ZXIg
+dG8gc3BsaXQgdGhpcyB3aXRoIGEgcmVtb3ZhbCBvZiBvbGQgc3R1ZmYgYW5kDQo+IHVwZGF0aW5n
+IGEgY29weXJpZ2h0IG5vdGljZSBhbmQgZ28gYXMgYSBsYXN0IG9uZSBpbiB0aGUgc2VyaWVzLg0K
+Pg0KPiAuLi4NCkhhdmUgc3BsaXQgb3V0IGludG8gbmV3IHBhdGNoLg0KPj4gK3N0YXRpYyBjaGFy
+ICphY3Rpb25fc3RyW10gPSB7DQo+IHN0YXRpYyBjb25zdCBjaGFyICogY29uc3QgYWN0aW9uX3N0
+cltdDQpBY2suDQo+PiArICAgICAgICJpbnZhbGlkIiwNCj4+ICsgICAgICAgInN0YXJ0IiwNCj4+
+ICsgICAgICAgInJlc3RhcnQiLA0KPj4gKyAgICAgICAicmVhZCBiZWdpbiIsDQo+PiArICAgICAg
+ICJyZWFkIiwNCj4+ICsgICAgICAgIndyaXRlIiwNCj4+ICsgICAgICAgInN0b3AiLA0KPj4gK307
+DQo+IC4uLg0KPg0KPj4gKyAgICAgICBkZXZfZGJnKGkyYy0+ZGV2LCAiJXM6IGFjdGlvbiA9ICVz
+XG4iLCBfX2Z1bmNfXywNCj4+ICsgICAgICAgICAgICAgICBhY3Rpb25fc3RyW2kyYy0+YWN0aW9u
+XSk7DQo+IERyb3AgdXNlbGVzcyBfX2Z1bmNfXy4gV2l0aCBEeW5hbWljIERlYnVnIGVuYWJsZWQg
+aXQgY2FuIGJlIHR1cm5lZCBvbg0KPiBhbmQgb2ZmIGF0IHJ1biB0aW1lLg0KDQpBY2suIE90aGVy
+IGluc3RhbmNlcyBvZiBfX2Z1bmNfXyBhbHNvLg0KDQo+DQo+IC4uLg0KPg0KPj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgLyogR2VuZXJhdGUgdHhhY2sgb24gbmV4dCB0byBsYXN0IGJ5dGUgKi8N
+Cj4gVHggQUNLID8gRGl0dG8gZm9yIG90aGVyIGNvbW1lbnRzLg0KPg0KPiAuLi4NCkFDSy4NCj4N
+Cj4+ICsgICAgICAgICAgICAgICBkZXZfZGJnKGkyYy0+ZGV2LCAiJXM6ICVzICUwMnhcbiIsIF9f
+ZnVuY19fLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYWN0aW9uX3N0cltpMmMtPmFjdGlv
+bl0sIGJ5dGUpOw0KPiBZb3UgYWxyZWFkeSBwcmludGVkIGFjdGlvbi4gQW55dGhpbmcgY2hhbmdl
+ZD8NCkl0J3MgbWFpbmx5IHRoZSBhZGRpdGlvbiBvZiB0aGUgYnl0ZSByZWFkLiBJIGNvdWxkbid0
+IGZpZ3VyZSBvdXQgYSANCnNlbnNpYmxlIHdheSBvZiBhbHdheXMgcHJpbnRpbmcgdGhlIGFjdGlv
+biB0aGVuIGFwcGVuZGluZyB0aGUgZGF0YSBpbiANCnRoZSByZWFkL3dyaXRlIGNhc2UuIE9wZW4g
+dG8gc3VnZ2VzdGlvbnMuDQo+DQo+PiArICAgICAgICAgICAgICAgZGV2X2RiZyhpMmMtPmRldiwg
+IiVzOiAlcyAlMDJ4XG4iLCBfX2Z1bmNfXywNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIGFj
+dGlvbl9zdHJbaTJjLT5hY3Rpb25dLCBtc2ctPmJ1ZltpMmMtPmJ5dGVfcG9zbl0pOw0KPiBEZWR1
+cGxpY2F0ZSB0aGlzLiBQZXJoYXBzIGF0IHRoZSBlbmQgb2Ygc3dpdGNoLWNhc2UgcHJpbnQgb25j
+ZSB3aXRoDQo+IHdoYXRldmVyIHRlbXBvcmFyeSB2YXJpYWJsZSB2YWx1ZSB5b3Ugd2FudCB0by4N
+Cj4NCj4gLi4uDQpJIHRob3VnaHQgYWJvdXQgdGhpcyBidXQgZGVjaWRlZCBub3QgdG8gYmVjYXVz
+ZSBpbiB0aGUgd3JpdGUgY2FzZSBpdCdzIA0KcHJpbnRlZCBiZWZvcmUgZ29pbmcgdG8gaGFyZHdh
+cmUgYW5kIGluIHRoZSByZWFkIGNhc2UgaXQncyBhZnRlci4gSWYgSSANCm1vdmVkIGl0IGFmdGVy
+IHRoZSBjYXNlIEknZCBoYXZlIHRvIHVzZSBzb21ldGhpbmcgb3RoZXIgdGhhbiANCmkyYy0+Ynl0
+ZV9wb3NuIHdoaWNoIHNlZW1lZCBlcnJvciBwcm9uZS4NCj4NCj4+ICsgICAgICAgY2FzZSBNUENf
+STJDX0FDVElPTl9JTlZBTElEOg0KPj4gKyAgICAgICBkZWZhdWx0Og0KPiBEb2VzIHRoZSBmaXJz
+dCBvbmUgZGVzZXJ2ZSBsb3VkIFdBUk4/DQo+IE90aGVyd2lzZSwgd2h5IGlzIGl0IGRlZmluZWQg
+YXQgYWxsPw0KSSBhZGRlZCBNUENfSTJDX0FDVElPTl9JTlZBTElEIHRvIG1ha2Ugc3VyZSB0aGF0
+IGEgdmFsdWUgb2YgMCB3YXMgbm90IA0Kc29tZXRoaW5nIHRoYXQgd291bGQgbmF0dXJhbGx5IGhh
+cHBlbiB2aWEgYSB6ZXJvZWQgaW5pdGlhbGl6YXRpb24uIEkgDQpjb3VsZCBwcm9iYWJseSBhY2hp
+ZXZlIHRoZSBzYW1lIHRoaW5nIGJ5IG1ha2luZyBNUENfSTJDX0FDVElPTl9TVEFSVCA9IDEuDQo+
+PiArICAgICAgICAgICAgICAgV0FSTigxLCAiVW5leHBlY3RlZCBhY3Rpb24gJWRcbiIsIGkyYy0+
+YWN0aW9uKTsNCj4+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gLi4uDQo+DQo+PiArc3RhdGlj
+IHZvaWQgbXBjX2kyY19kb19pbnRyKHN0cnVjdCBtcGNfaTJjICppMmMsIHU4IHN0YXR1cykNCj4+
+ICAgew0KPj4gKyAgICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmaTJjLT5sb2NrLCBmbGFncyk7DQo+
+IFdoeSBfaXJxc2F2ZT8NCj4NCj4gLi4uDQpQcmltYXJpbHkgYmVjYXVzZSBpdCdzIHRoZSBvbmx5
+IG9uZSBJJ3ZlIGV2ZXIgdXNlZCBhbmQgaXQgd2FzIHRoZSBvbmUgDQpzaW1pbGFyIGkyYyBkcml2
+ZXJzIHVzZWQgd2hlbiBJIHN0YXJ0ZWQgdGhpcyB3b3JrLiBJIHNlZSB0aGV5J3ZlIG5vdyANCmJl
+ZW4gdXBkYXRlZCBzbyBJIGRvbid0IHRoaW5rIHRoZXJlIHdpbGwgYmUgYSBwcm9ibGVtIHN3aXRj
+aGluZyB0byANCnNwaW5fbG9jaygpLg0KPj4gKyAgICAgICAgICAgICAgIGRldl9kYmcoaTJjLT5k
+ZXYsICJhcmJpcml0cmF0aW9uIGxvc3RcbiIpOw0KPiBhcmJpdHJhdGlvbg0KQWNrLg0KPiAuLi4N
+Cj4NCj4+ICsgICAgICAgaWYgKGkyYy0+ZXhwZWN0X3J4YWNrICYmIChzdGF0dXMgJiBDU1JfUlhB
+SykpIHsNCj4+ICsgICAgICAgICAgICAgICBkZXZfZGJnKGkyYy0+ZGV2LCAibm8gUlhBS1xuIik7
+DQo+IFlvdSBzZWUsIHlvdSBoYXZlIHRvIGJlIGNvbnNpc3RlbnQgaW4gY29tbWVudHMgYW5kIG1l
+c3NhZ2VzLg0KPiBFaXRoZXIgdXNlIFRYQUsvUlhBSywgb3IgbW9yZSB2ZXJib3NlICdUeCBBQ0sv
+UnggQUNLJyBldmVyeXdoZXJlLg0KPg0KPiAuLi4NClVwZGF0ZWQgdG8gIlJ4IEFDSyIuIEkgdGhp
+bmsgSSd2ZSBnb3QgdGhlbSBhbGwgbm93Lg0KPg0KPj4gK291dDoNCj4gb3V0X3VubG9jazoNCj4N
+Cj4+ICsgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmaTJjLT5sb2NrLCBmbGFncyk7DQo+
+IC4uLg0KPg0KPj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBtcGNfaTJjX2lzcihpbnQgaXJxLCB2b2lk
+ICpkZXZfaWQpDQo+PiArew0KPj4gKyAgICAgICBzdHJ1Y3QgbXBjX2kyYyAqaTJjID0gZGV2X2lk
+Ow0KPj4gKyAgICAgICB1OCBzdGF0dXMgPSByZWFkYihpMmMtPmJhc2UgKyBNUENfSTJDX1NSKTsN
+Cj4gSSB3b3VsZCBzcGxpdCB0aGlzIGFzc2lnbm1lbnQsIHNvIGl0IHdpbGwgYmUgY2xvc2VyIHRv
+IGl0cyB1c2VyLg0KQWNrLg0KPj4gKyAgICAgICBpZiAoc3RhdHVzICYgQ1NSX01JRikgew0KPj4g
+KyAgICAgICAgICAgICAgIHdyaXRlYigwLCBpMmMtPmJhc2UgKyBNUENfSTJDX1NSKTsNCj4+ICsg
+ICAgICAgICAgICAgICBtcGNfaTJjX2RvX2ludHIoaTJjLCBzdGF0dXMpOw0KPj4gKyAgICAgICAg
+ICAgICAgIHJldHVybiBJUlFfSEFORExFRDsNCj4+ICAgICAgICAgIH0NCj4+ICsgICAgICAgcmV0
+dXJuIElSUV9OT05FOw0KPj4gK30NCj4gLi4uDQo+DQo+PiArICAgICAgIHRpbWVfbGVmdCA9IHdh
+aXRfZXZlbnRfdGltZW91dChpMmMtPndhaXRxLCAhaTJjLT5ibG9jaywgaTJjLT5hZGFwLnRpbWVv
+dXQpOw0KPj4gKw0KPiBObyBuZWVkIGZvciBhIGJsYW5rIGxpbmUgaGVyZS4NCkFjay4NCj4+ICsg
+ICAgICAgaWYgKCF0aW1lX2xlZnQpDQo+PiArICAgICAgICAgICAgICAgaTJjLT5yYyA9IC1FVElN
+RURPVVQ7DQo+PiArICAgICAgIGVsc2UgaWYgKHRpbWVfbGVmdCA8IDApDQo+IFJlZHVuZGFudCAn
+ZWxzZScNCkFjay4NCj4+ICsgICAgICAgICAgICAgICBpMmMtPnJjID0gdGltZV9sZWZ0Ow0KPiBD
+YW4ndCB5b3UgcmV0dXJuIGFuIGVycm9yIGNvZGUgZnJvbSBoZXJlLCByYXRoZXIgdGhhbiBpbmpl
+Y3RpbmcgaXQNCj4gc29tZXdoZXJlIHdoZXJlIGl0IGRvZXNuJ3QgYmVsb25nIHRvPw0KWWVzIEkg
+dGhpbmsgc28uIElmIEkgbWFrZSBtcGNfaTJjX3dhaXRfZm9yX2NvbXBsZXRpb24oKSByZXR1cm4g
+YW4gaW50IA0KdGhlbiBoYXZlIG1wY19pMmNfZXhlY3V0ZV9tc2coKSBjaGVjayBpdCBhbmQgc2V0
+IGkyYy0+cmMgaWYgbmVlZGVkLg0KPj4gICB9DQo+IC0tDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0K
+PiBBbmR5IFNoZXZjaGVua28=
