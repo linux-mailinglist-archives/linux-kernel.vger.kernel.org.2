@@ -2,115 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA49C35E1D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B6735E1DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhDMOq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhDMOqz (ORCPT
+        id S1345186AbhDMOro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:47:44 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:34541 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238171AbhDMOrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:46:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465D9C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:46:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x13so17672205lfr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:46:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=ZkxBrXhgahAL76PVBBK7Q4bfFvD6vehXOz4V8yxaY8Q=;
-        b=ARk9lGt4JUI7Mwp/JCQhq8RXeBHM4DdVbLAd7FTZVbJxylhsyaKm3Ykp+7auLj8u+l
-         epOt4KXUSGKsbAslnWOue4nlxmY1IrGboR3HUtXg1egFEtnSQnMjDJJ+zcddlXQ1atlU
-         oOGH8qiDHRez91vwXq+PBP0WsoNAStD3Bj8613wkWL91RIQg5Ph0AVpBcV6vp2NEHAzd
-         AYZ2KMZlIGERN3j3Rn/rtg5NAs0NyJhBHfYg9u+piXo+5plZByQcNfjDkh4r6q0n16a8
-         ChiYWVl1dZwfYsZJ6Ae+0DTqUj9NPO9J0epXKgVvPrYKeQDhm/t2zDwz3zLmZza4gW3I
-         V2Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ZkxBrXhgahAL76PVBBK7Q4bfFvD6vehXOz4V8yxaY8Q=;
-        b=ZxePbJBsu813UfBuEGrAHmr2AfDRYiNsHnirYwDhOxkfb6JFuehoieKjR016tRjqrn
-         mV9aDmc8dU0So6AO498cug6TwseUppf7e401N3ooDHD6CA2ytXM429hGXIIzykbrRAJF
-         WcoADLc6nRulcOb6pd+KkL5cwQGQF98jMMkr2mj2enZintpXDSLTQmJuf+ambEMxFgcz
-         yP0yziSBVH1tv5syNl5/yb6WN2Z3zS+PB7LmsqkLXWBaZNB8SDorf1lUC/LMhcJeHRow
-         QQnzbdtDQqEKdNU9f9k6Jsz7wYoa9uBq5gLW1DJ9mZRYK/p+aqjkJmX59FkzA1r5Dviv
-         8QjA==
-X-Gm-Message-State: AOAM530s+Pl+tXurU++YZVN9j2pXAB2NCU8isWTR1EPOMObijs4TK/Hi
-        mpX/Bgc319MgNvXrjUbNE8AKqA0xkj88v5IT
-X-Google-Smtp-Source: ABdhPJyqBSvBQkRrpVsn5SdmR929MtyUuaXqbaUqDciPYHwVuL4enRrtMzFCXKhvvh5875PM3QNtwQ==
-X-Received: by 2002:a05:6512:34c7:: with SMTP id w7mr22365583lfr.83.1618325193402;
-        Tue, 13 Apr 2021 07:46:33 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id f3sm4046840ljm.5.2021.04.13.07.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:46:32 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-In-Reply-To: <20210413022730.2a51c083@thinkpad>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412235054.73754df9@thinkpad> <87wnt7jgzk.fsf@waldekranz.com> <20210413005518.2f9b9cef@thinkpad> <87r1jfje26.fsf@waldekranz.com> <87o8ejjdu6.fsf@waldekranz.com> <20210413015450.1ae597da@thinkpad> <20210413022730.2a51c083@thinkpad>
-Date:   Tue, 13 Apr 2021 16:46:32 +0200
-Message-ID: <87im4qjl87.fsf@waldekranz.com>
+        Tue, 13 Apr 2021 10:47:41 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id WKJvlFbznMxedWKJylj3WG; Tue, 13 Apr 2021 16:47:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618325239; bh=anP9IqN9A8xsrahea21FJgK0DHxjvujnKAWwQt2DbNc=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=L5K9i8Z4RgVUfP0go+amsV0Hh5wuH5mkWq/WgZQ3kLQbKfB5EyDt3rrnVU0SLXNTR
+         KphT7/o25amFe4kwd37Du0qozW181cmWiM4/LArFepeq85LiU3RnqfVazvUpgSP+7x
+         yENrOe7hLQPjBdMIBIxWZrHqT+awNuLlp9YJDsxb0G9xawn7uASNGsoWC0QVPegm/1
+         p3i2wiEUCGS6ivnXk8lT0CZMhBg1MDV6Sql8pS4vJFQuThHY8O6eFInrn6cx7UL0JH
+         2A+0prU5p1XtBilkC5xVXtE+brvajRc8S4za6FH5A9oqYuB1Dis84bCuggYb3dLr4X
+         HHNruGnsTZwzg==
+Subject: Re: [PATCH v3 2/2] staging: media: zoran: align code appropriately
+To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+References: <cover.1618066787.git.mitaliborkar810@gmail.com>
+ <bf18b0301f10dae2d2151839b02c3202093940b3.1618066787.git.mitaliborkar810@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9e563bdb-4f6a-485f-9108-0005277eae77@xs4all.nl>
+Date:   Tue, 13 Apr 2021 16:47:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <bf18b0301f10dae2d2151839b02c3202093940b3.1618066787.git.mitaliborkar810@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBoGu1JSDDziLmtbsOiHaiIepNiPB8LTK8LvNoVoiLkEQdg+aXiBXIeONdsbqgSrv7Bl2Jfu763VABeuqOZYfF4YGIKPC+9vFTXbWiAykne726OSxRrR
+ XMBQNeEqGQrciLgrdetXOtCmbtQep6PlEgaDtC5Q/NytUiS750J5myek/zoONqcbzGD+Aby4S86QLSSGciFH1Ds3hE1JHTSyKbGWpwVGvrjNpYFKhraPv1Nr
+ uIFRzHbAHExFEGRQzWUDl8yf/6q8n9uc7DY1P10fhnrUxiLRyaT2JyTLZeDpHcEcxa1VvOgUmVyf4XovCXQuYzCZQQykXmfkAXF4+nCQY1hA9h7rb7RL0/uw
+ KPreROu/JQ4YLkperyIB++DWkuh33UFg28Xy5/D74h4dKvnFXgqLoVvuYZvmk7MzD92eamIJYx3CWGabCOMllQEjOefWTEg5tWq3MpgM6euZ9xOw9ZJCzhWW
+ Asj6h2MdXJdm3h52nDaD67q6p2L97mbB0WcOzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:27, Marek Behun <marek.behun@nic.cz> wrote:
-> On Tue, 13 Apr 2021 01:54:50 +0200
-> Marek Behun <marek.behun@nic.cz> wrote:
->
->> I will look into this, maybe ask some follow-up questions.
->
-> Tobias,
->
-> it seems that currently the LAGs in mv88e6xxx driver do not use the
-> HashTrunk feature (which can be enabled via bit 11 of the
-> MV88E6XXX_G2_TRUNK_MAPPING register).
+On 10/04/2021 17:34, Mitali Borkar wrote:
+> Aligned the code properly by using tabs to make code neater and improve
+> readability.
+> 
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+>  drivers/staging/media/zoran/zr36057.h | 108 +++++++++++++-------------
+>  1 file changed, 54 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
+> index 198d344a8879..db42f445248f 100644
+> --- a/drivers/staging/media/zoran/zr36057.h
+> +++ b/drivers/staging/media/zoran/zr36057.h
+> @@ -13,28 +13,28 @@
+>  /* Zoran ZR36057 registers */
+>  
+>  /* Video Front End, Horizontal Configuration Register */
+> -#define ZR36057_VFEHCR			0x000
+> +#define ZR36057_VFEHCR				0x000
+>  #define ZR36057_VFEHCR_HS_POL			BIT(30)
 
-This should be set at the bottom of mv88e6xxx_lag_sync_masks.
+Same issue as the other patches: this patch depends on other local changes
+so won't apply to mainline code...
 
-> If we used this feature and if we knew what hash function it uses, we
-> could write a userspace tool that could recompute new MAC
-> addresses for the CPU ports in order to avoid the problem I explained
-> previously...
->
-> Or the tool can simply inject frames into the switch and try different
-> MAC addresses for the CPU ports until desired load-balancing is reached.
->
-> What do you think?
+Regards,
 
-As you concluded in your followup, not being able to have a fixed MAC
-for the CPU seems weird.
+	Hans
 
-Maybe you could do the inverse? Allow userspace to set the masks for an
-individual bond/team port in a hash-based LAG, then you can offload that
-to DSA. Here there be dragons though, you need to ensure that there is
-no intermediate config in which any buckets are enabled on multiple
-ports.
+> -#define ZR36057_VFEHCR_H_START		10
+> -#define ZR36057_VFEHCR_H_END		0
+> -#define ZR36057_VFEHCR_HMASK		0x3ff
+> +#define ZR36057_VFEHCR_H_START			10
+> +#define ZR36057_VFEHCR_H_END			0
+> +#define ZR36057_VFEHCR_HMASK			0x3ff
+>  
+>  /* Video Front End, Vertical Configuration Register */
+> -#define ZR36057_VFEVCR			0x004
+> +#define ZR36057_VFEVCR				0x004
+>  #define ZR36057_VFEVCR_VS_POL			BIT(30)
+> -#define ZR36057_VFEVCR_V_START		10
+> -#define ZR36057_VFEVCR_V_END		0
+> -#define ZR36057_VFEVCR_VMASK		0x3ff
+> +#define ZR36057_VFEVCR_V_START			10
+> +#define ZR36057_VFEVCR_V_END			0
+> +#define ZR36057_VFEVCR_VMASK			0x3ff
+>  
+>  /* Video Front End, Scaler and Pixel Format Register */
+>  #define ZR36057_VFESPFR			0x008
+>  #define ZR36057_VFESPFR_EXT_FL			BIT(26)
+>  #define ZR36057_VFESPFR_TOP_FIELD		BIT(25)
+>  #define ZR36057_VFESPFR_VCLK_POL		BIT(24)
+> -#define ZR36057_VFESPFR_H_FILTER	21
+> +#define ZR36057_VFESPFR_H_FILTER		21
+>  #define ZR36057_VFESPFR_HOR_DCM		14
+>  #define ZR36057_VFESPFR_VER_DCM		8
+> -#define ZR36057_VFESPFR_DISP_MODE	6
+> +#define ZR36057_VFESPFR_DISP_MODE		6
+>  #define ZR36057_VFESPFR_YUV422			(0 << 3)
+>  #define ZR36057_VFESPFR_RGB888			BIT(3)
+>  #define ZR36057_VFESPFR_RGB565			(2 << 3)
+> @@ -44,34 +44,34 @@
+>  #define ZR36057_VFESPFR_LITTLE_ENDIAN		BIT(0)
+>  
+>  /* Video Display "Top" Register */
+> -#define ZR36057_VDTR			0x00c
+> +#define ZR36057_VDTR				0x00c
+>  
+>  /* Video Display "Bottom" Register */
+> -#define ZR36057_VDBR			0x010
+> +#define ZR36057_VDBR				0x010
+>  
+>  /* Video Stride, Status, and Frame Grab Register */
+> -#define ZR36057_VSSFGR			0x014
+> -#define ZR36057_VSSFGR_DISP_STRIDE	16
+> +#define ZR36057_VSSFGR				0x014
+> +#define ZR36057_VSSFGR_DISP_STRIDE		16
+>  #define ZR36057_VSSFGR_VID_OVF			BIT(8)
+>  #define ZR36057_VSSFGR_SNAP_SHOT		BIT(1)
+>  #define ZR36057_VSSFGR_FRAME_GRAB		BIT(0)
+>  
+>  /* Video Display Configuration Register */
+> -#define ZR36057_VDCR			0x018
+> +#define ZR36057_VDCR				0x018
+>  #define ZR36057_VDCR_VID_EN			BIT(31)
+> -#define ZR36057_VDCR_MIN_PIX		24
+> +#define ZR36057_VDCR_MIN_PIX			24
+>  #define ZR36057_VDCR_TRITON			BIT(24)
+>  #define ZR36057_VDCR_VID_WIN_HT		12
+> -#define ZR36057_VDCR_VID_WIN_WID	0
+> +#define ZR36057_VDCR_VID_WIN_WID		0
+>  
+>  /* Masking Map "Top" Register */
+> -#define ZR36057_MMTR			0x01c
+> +#define ZR36057_MMTR				0x01c
+>  
+>  /* Masking Map "Bottom" Register */
+> -#define ZR36057_MMBR			0x020
+> +#define ZR36057_MMBR				0x020
+>  
+>  /* Overlay Control Register */
+> -#define ZR36057_OCR			0x024
+> +#define ZR36057_OCR				0x024
+>  #define ZR36057_OCR_OVL_ENABLE			BIT(15)
+>  #define ZR36057_OCR_MASK_STRIDE		0
+>  
+> @@ -83,42 +83,42 @@
+>  #define ZR36057_GPPGCR1			0x02c
+>  
+>  /* MPEG Code Source Address Register */
+> -#define ZR36057_MCSAR			0x030
+> +#define ZR36057_MCSAR				0x030
+>  
+>  /* MPEG Code Transfer Control Register */
+> -#define ZR36057_MCTCR			0x034
+> +#define ZR36057_MCTCR				0x034
+>  #define ZR36057_MCTCR_COD_TIME			BIT(30)
+>  #define ZR36057_MCTCR_C_EMPTY			BIT(29)
+>  #define ZR36057_MCTCR_C_FLUSH			BIT(28)
+> -#define ZR36057_MCTCR_COD_GUEST_ID	20
+> -#define ZR36057_MCTCR_COD_GUEST_REG	16
+> +#define ZR36057_MCTCR_COD_GUEST_ID		20
+> +#define ZR36057_MCTCR_COD_GUEST_REG		16
+>  
+>  /* MPEG Code Memory Pointer Register */
+> -#define ZR36057_MCMPR			0x038
+> +#define ZR36057_MCMPR				0x038
+>  
+>  /* Interrupt Status Register */
+> -#define ZR36057_ISR			0x03c
+> +#define ZR36057_ISR				0x03c
+>  #define ZR36057_ISR_GIRQ1			BIT(30)
+>  #define ZR36057_ISR_GIRQ0			BIT(29)
+> -#define ZR36057_ISR_COD_REP_IRQ			BIT(28)
+> +#define ZR36057_ISR_COD_REP_IRQ		BIT(28)
+>  #define ZR36057_ISR_JPEG_REP_IRQ		BIT(27)
+>  
+>  /* Interrupt Control Register */
+> -#define ZR36057_ICR			0x040
+> +#define ZR36057_ICR				0x040
+>  #define ZR36057_ICR_GIRQ1			BIT(30)
+>  #define ZR36057_ICR_GIRQ0			BIT(29)
+> -#define ZR36057_ICR_COD_REP_IRQ			BIT(28)
+> +#define ZR36057_ICR_COD_REP_IRQ		BIT(28)
+>  #define ZR36057_ICR_JPEG_REP_IRQ		BIT(27)
+>  #define ZR36057_ICR_INT_PIN_EN			BIT(24)
+>  
+>  /* I2C Bus Register */
+> -#define ZR36057_I2CBR			0x044
+> +#define ZR36057_I2CBR				0x044
+>  #define ZR36057_I2CBR_SDA			BIT(1)
+>  #define ZR36057_I2CBR_SCL			BIT(0)
+>  
+>  /* JPEG Mode and Control */
+> -#define ZR36057_JMC			0x100
+> -#define ZR36057_JMC_JPG				BIT(31)
+> +#define ZR36057_JMC				0x100
+> +#define ZR36057_JMC_JPG			BIT(31)
+>  #define ZR36057_JMC_JPG_EXP_MODE		(0 << 29)
+>  #define ZR36057_JMC_JPG_CMP_MODE		BIT(29)
+>  #define ZR36057_JMC_MJPG_EXP_MODE		(2 << 29)
+> @@ -132,56 +132,56 @@
+>  #define ZR36057_JMC_STLL_LIT_ENDIAN		BIT(0)
+>  
+>  /* JPEG Process Control */
+> -#define ZR36057_JPC			0x104
+> +#define ZR36057_JPC				0x104
+>  #define ZR36057_JPC_P_RESET			BIT(7)
+> -#define ZR36057_JPC_COD_TRNS_EN			BIT(5)
+> +#define ZR36057_JPC_COD_TRNS_EN		BIT(5)
+>  #define ZR36057_JPC_ACTIVE			BIT(0)
+>  
+>  /* Vertical Sync Parameters */
+> -#define ZR36057_VSP			0x108
+> -#define ZR36057_VSP_VSYNC_SIZE		16
+> -#define ZR36057_VSP_FRM_TOT		0
+> +#define ZR36057_VSP				0x108
+> +#define ZR36057_VSP_VSYNC_SIZE			16
+> +#define ZR36057_VSP_FRM_TOT			0
+>  
+>  /* Horizontal Sync Parameters */
+> -#define ZR36057_HSP			0x10c
+> +#define ZR36057_HSP				0x10c
+>  #define ZR36057_HSP_HSYNC_START		16
+> -#define ZR36057_HSP_LINE_TOT		0
+> +#define ZR36057_HSP_LINE_TOT			0
+>  
+>  /* Field Horizontal Active Portion */
+> -#define ZR36057_FHAP			0x110
+> -#define ZR36057_FHAP_NAX		16
+> -#define ZR36057_FHAP_PAX		0
+> +#define ZR36057_FHAP				0x110
+> +#define ZR36057_FHAP_NAX			16
+> +#define ZR36057_FHAP_PAX			0
+>  
+>  /* Field Vertical Active Portion */
+> -#define ZR36057_FVAP			0x114
+> -#define ZR36057_FVAP_NAY		16
+> -#define ZR36057_FVAP_PAY		0
+> +#define ZR36057_FVAP				0x114
+> +#define ZR36057_FVAP_NAY			16
+> +#define ZR36057_FVAP_PAY			0
+>  
+>  /* Field Process Parameters */
+> -#define ZR36057_FPP			0x118
+> +#define ZR36057_FPP				0x118
+>  #define ZR36057_FPP_ODD_EVEN			BIT(0)
+>  
+>  /* JPEG Code Base Address */
+> -#define ZR36057_JCBA			0x11c
+> +#define ZR36057_JCBA				0x11c
+>  
+>  /* JPEG Code FIFO Threshold */
+> -#define ZR36057_JCFT			0x120
+> +#define ZR36057_JCFT				0x120
+>  
+>  /* JPEG Codec Guest ID */
+> -#define ZR36057_JCGI			0x124
+> -#define ZR36057_JCGI_JPE_GUEST_ID	4
+> -#define ZR36057_JCGI_JPE_GUEST_REG	0
+> +#define ZR36057_JCGI				0x124
+> +#define ZR36057_JCGI_JPE_GUEST_ID		4
+> +#define ZR36057_JCGI_JPE_GUEST_REG		0
+>  
+>  /* GuestBus Control Register (2) */
+> -#define ZR36057_GCR2			0x12c
+> +#define ZR36057_GCR2				0x12c
+>  
+>  /* Post Office Register */
+> -#define ZR36057_POR			0x200
+> +#define ZR36057_POR				0x200
+>  #define ZR36057_POR_PO_PEN			BIT(25)
+>  #define ZR36057_POR_PO_TIME			BIT(24)
+>  #define ZR36057_POR_PO_DIR			BIT(23)
+>  
+>  /* "Still" Transfer Register */
+> -#define ZR36057_STR			0x300
+> +#define ZR36057_STR				0x300
+>  
+>  #endif
+> 
 
