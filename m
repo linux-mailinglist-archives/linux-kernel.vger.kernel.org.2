@@ -2,189 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0988D35E467
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E7D35E46A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346928AbhDMQzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:55:08 -0400
-Received: from mail.efficios.com ([167.114.26.124]:55802 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231909AbhDMQzH (ORCPT
+        id S232437AbhDMQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:56:23 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:36810 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232214AbhDMQ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:55:07 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 402BC339BE6;
-        Tue, 13 Apr 2021 12:54:47 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WSEUydMmTHtt; Tue, 13 Apr 2021 12:54:45 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8E3A6339C74;
-        Tue, 13 Apr 2021 12:54:45 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8E3A6339C74
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618332885;
-        bh=19r8E9l+nNtb+foE6hIEANruyXZGmyX4i3IECUfrxmA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=RW0dSyPNY1QcYmrJPeU/gBXpB2gWJMXEPomOS+fZ7aeBnqK8X6TN9Ct0I7rdv8zVf
-         Mth1fRxgMrHYZnzLbbRFikbUw8lh4p4vcJgvCWJOuB7uy/faxowNBwAqg4J1qm7X7V
-         YqYfDHtJvbn8Ms0ZHWxqh430qhXm9ja07TB08fCx5Xp698cjp5XvmDtz/XN01ux6pd
-         XfHHRt+NDYVXfAwLjO32rm998j8TTzFYTCxbbV6kfT+3PyB3Ra7B1smWZcvsiivr1C
-         1duLm5QvRnrIaEcN1CQE0JSo5vUxMiAkCIC0C1n1oWWdy/lzAI44zTgs3C2BMSZozO
-         7CdxoFve70DYA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0Oz4F5x51s9S; Tue, 13 Apr 2021 12:54:45 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 7B540339DB2;
-        Tue, 13 Apr 2021 12:54:45 -0400 (EDT)
-Date:   Tue, 13 Apr 2021 12:54:45 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Message-ID: <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210413162240.3131033-4-eric.dumazet@gmail.com>
-References: <20210413162240.3131033-1-eric.dumazet@gmail.com> <20210413162240.3131033-4-eric.dumazet@gmail.com>
-Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
- clear_rseq_cs()
+        Tue, 13 Apr 2021 12:56:22 -0400
+Received: by mail-pf1-f178.google.com with SMTP id b26so6668754pfr.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sUpSVvkMU+aPK+DNmgsnS+6a8vD5+JAsTuntfol5gy8=;
+        b=hdVno7YavyzfILsuVJzbAKdc7CvbcuqREdEPVLJ5PWQ23XyYjIwj9RFSnwx6rDi+lA
+         se5UZki2Lyjyl1YJ73HV15f8ZUgiGrrvBTgB2ZsyBISUZ91lizUJxF+qFMQDO2JcZY9A
+         yRB7JXlnC5WkgYt4edgOa856+AEmGRGoB7XEpJC2eJ0H0hFe7zTfObQ0qAr94yDdjDpY
+         oWURagE62WRe3sbXhvkjTAFvzPz6iTWH4f7fK8C1nO3sLI9GSsVcEbTrTc3udtPkrcXY
+         xA191vjacb7u1NZWC8n/0x8yP/P/K8Qmp9MsBux8h6Ef0ownsbbnIUwLWQG/em/IHPL2
+         psGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sUpSVvkMU+aPK+DNmgsnS+6a8vD5+JAsTuntfol5gy8=;
+        b=JuUSaZreha09hpE6J9WFOdvXmPtS4HBE+gvEEU/XSC8lg/ru4ennx/kKZCZ7Urr1ii
+         to+A4XQ7h8pBlH78RkHT8ifCN+4kGl+aUDpf1TIeeE1PWgH7V+3nmANZXZYiWgnDIwqw
+         asRj+/6sUhFqSB3en68H07Ywf2m5hNP4lo/K0W0dHc9Li4CAnW6MMvB0z3p6EPadfCwS
+         HtCwyh4pZNVXvuJZDKyZgoCusWpXkOiT6XZfl9tShkuRy4U+AhGyiUbITxadT7SXhPoh
+         icYiyGYL1aIM0I5Z2VW1lcRIGxqle8bdojRKLYNGviZ8R3jpL+P2tqmu8ocZ+UV0Yjn5
+         T9cg==
+X-Gm-Message-State: AOAM531LuhNT6En9Aoe2hnc8dP6Sk9JgGf59YjHTb+oDuU/rttF46xcd
+        VRzBSFRNjG+nY105p66P70+0tA==
+X-Google-Smtp-Source: ABdhPJxGy692tTN+dAOl9VqSyETi6yi+oKFuJ1oc6Yaz09/MXY2NIMPJ7ZzOr0XOCifqeGzc5V0v2w==
+X-Received: by 2002:aa7:9843:0:b029:24e:8215:f546 with SMTP id n3-20020aa798430000b029024e8215f546mr8204673pfq.10.1618332902565;
+        Tue, 13 Apr 2021 09:55:02 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id v6sm9905966pfb.130.2021.04.13.09.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 09:55:02 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 10:55:00 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V3 2/8] dt-bindings: remoteproc: imx_rproc: add i.MX7ULP
+ support
+Message-ID: <20210413165500.GA750651@xps15>
+References: <1617846898-13662-1-git-send-email-peng.fan@oss.nxp.com>
+ <1617846898-13662-3-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
-Thread-Index: W0pbtVW2B+w+tUTMTDDH34Aw1yg2aQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617846898-13662-3-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
-
-> From: Eric Dumazet <edumazet@google.com>
+On Thu, Apr 08, 2021 at 09:54:52AM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
-> update includes") added regressions for our servers.
+> Add i.MX7ULP compatible.
 > 
-> Using copy_from_user() and clear_user() for 64bit values
-> is suboptimal.
+> We use i.MX7ULP dual mode and in which case i.MX7ULP A7 core runs under
+> control of M4 core, M4 core starts by ROM and powers most serivces used
+
+s/serivces/services
+
+> by A7 core, so A7 core has no power to start and stop M4 core. So
+> clocks and syscon are not required.
 > 
-> We can use faster put_user() and get_user().
-> 
-> 32bit arches can be changed to use the ptr32 field,
-> since the padding field must always be zero.
-> 
-> v2: added ideas from Peter and Mathieu about making this
->    generic, since my initial patch was only dealing with
->    64bit arches.
-
-Ah, now I remember the reason why reading and clearing the entire 64-bit
-is important: it's because we don't want to allow user-space processes to
-use this change in behavior to figure out whether they are running on a
-32-bit or in a 32-bit compat mode on a 64-bit kernel.
-
-So although I'm fine with making 64-bit kernels faster, we'll want to keep
-updating the entire 64-bit ptr field on 32-bit kernels as well.
-
-Thanks,
-
-Mathieu
-
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Arjun Roy <arjunroy@google.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 > ---
-> kernel/rseq.c | 41 +++++++++++++++++++++++++++++++++--------
-> 1 file changed, 33 insertions(+), 8 deletions(-)
+>  .../devicetree/bindings/remoteproc/fsl,imx-rproc.yaml          | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index
-> cfe01ab5253c1c424c0e8b25acbb6a8e1b41a5b6..f2eee3f7f5d330688c81cb2e57d47ca6b843873e
-> 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -119,23 +119,46 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
-> 	return 0;
-> }
+> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> index b13bf8d70488..58bc2a23f97b 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
+> @@ -18,6 +18,7 @@ properties:
+>        - fsl,imx8mq-cm4
+>        - fsl,imx8mm-cm4
+>        - fsl,imx7d-cm4
+> +      - fsl,imx7ulp-cm4
+>        - fsl,imx6sx-cm4
+>  
+>    clocks:
+> @@ -57,8 +58,6 @@ properties:
+>  
+>  required:
+>    - compatible
+> -  - clocks
+> -  - syscon
+>  
+>  additionalProperties: false
+>  
+> -- 
+> 2.30.0
 > 
-> +#ifdef CONFIG_64BIT
-> +static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
-> +			   const struct rseq __user *rseq)
-> +{
-> +	u64 ptr;
-> +
-> +	if (get_user(ptr, &rseq->rseq_cs.ptr64))
-> +		return -EFAULT;
-> +	*uptrp = (struct rseq_cs __user *)ptr;
-> +	return 0;
-> +}
-> +#else
-> +static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
-> +			   const struct rseq __user *rseq)
-> +{
-> +	u32 ptr;
-> +
-> +	if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
-> +		return -EFAULT;
-> +	*uptrp = (struct rseq_cs __user *)ptr;
-> +	return 0;
-> +}
-> +#endif
-> +
-> static int rseq_get_rseq_cs(struct task_struct *t, struct rseq_cs *rseq_cs)
-> {
-> 	struct rseq_cs __user *urseq_cs;
-> -	u64 ptr;
-> 	u32 __user *usig;
-> 	u32 sig;
-> 	int ret;
-> 
-> -	if (copy_from_user(&ptr, &t->rseq->rseq_cs.ptr64, sizeof(ptr)))
-> +	if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
-> 		return -EFAULT;
-> -	if (!ptr) {
-> +	if (!urseq_cs) {
-> 		memset(rseq_cs, 0, sizeof(*rseq_cs));
-> 		return 0;
-> 	}
-> -	if (ptr >= TASK_SIZE)
-> +	if ((unsigned long)urseq_cs >= TASK_SIZE)
-> 		return -EINVAL;
-> -	urseq_cs = (struct rseq_cs __user *)(unsigned long)ptr;
-> +
-> 	if (copy_from_user(rseq_cs, urseq_cs, sizeof(*rseq_cs)))
-> 		return -EFAULT;
-> 
-> @@ -211,9 +234,11 @@ static int clear_rseq_cs(struct task_struct *t)
-> 	 *
-> 	 * Set rseq_cs to NULL.
-> 	 */
-> -	if (clear_user(&t->rseq->rseq_cs.ptr64, sizeof(t->rseq->rseq_cs.ptr64)))
-> -		return -EFAULT;
-> -	return 0;
-> +#ifdef CONFIG_64BIT
-> +	return put_user(0UL, &t->rseq->rseq_cs.ptr64);
-> +#else
-> +	return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
-> +#endif
-> }
-> 
-> /*
-> --
-> 2.31.1.295.g9ea45b61b8-goog
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
