@@ -2,96 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B86C35DB80
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791E435DB85
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhDMJnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhDMJnb (ORCPT
+        id S230330AbhDMJps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:45:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229683AbhDMJpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:43:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69332C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:43:12 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lWFZa-0000ey-I8; Tue, 13 Apr 2021 11:43:06 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lWFZZ-0002qD-8B; Tue, 13 Apr 2021 11:43:05 +0200
-Date:   Tue, 13 Apr 2021 11:43:05 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-Message-ID: <20210413094305.kvjgaiseppg5hrzh@pengutronix.de>
-References: <20210309112615.625-1-o.rempel@pengutronix.de>
- <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
- <YGM2AGfawEFTKOtE@lunn.ch>
- <CAOMZO5CRFHh5vv3vQqaatDnq55ZMmO5DfJH1VtZ1n0DBgf5Whg@mail.gmail.com>
+        Tue, 13 Apr 2021 05:45:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618307126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FovRzir69GjJpIMDPymDt6UWLVisdeK1mUh5/bQVIT4=;
+        b=GwtLLUsivVQIz3Jlppk0CWOwA0QXRaNCLUWZwA+1o3AcLms/FY0CU5CxidsE1f3tX28/bt
+        tsGFc4tBw3qQOWQn7pS4I5YkeoMflmWzxUYM48hzxkKutKm7vHrgV99qVAn6CHvL4Y0t8o
+        mCFa84Y0bml7fVQxJkvY6aodXbBuo7s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-DSoJS-4tMJCTwZ6FU43IpA-1; Tue, 13 Apr 2021 05:45:24 -0400
+X-MC-Unique: DSoJS-4tMJCTwZ6FU43IpA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D91D87A841;
+        Tue, 13 Apr 2021 09:45:22 +0000 (UTC)
+Received: from localhost (ovpn-12-38.pek2.redhat.com [10.72.12.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6F4CB6E51F;
+        Tue, 13 Apr 2021 09:45:18 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 17:45:15 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Lianbo Jiang <lijiang@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        kexec@lists.infradead.org, Dave Young <dyoung@redhat.com>
+Subject: Re: [PATCH] x86/efi: Do not release sub-1MB memory regions when the
+ crashkernel option is specified
+Message-ID: <20210413094515.GD4282@MiWiFi-R3L-srv>
+References: <20210412011347.GA4282@MiWiFi-R3L-srv>
+ <8FAA2A0E-0A09-4308-B936-CDD2C0568BAE@amacapital.net>
+ <20210412095231.GC4282@MiWiFi-R3L-srv>
+ <CALCETrV0dgn1=7CoB+BSHdDuzqtfpKGOPvjJg+sNo74VrcJE=A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAOMZO5CRFHh5vv3vQqaatDnq55ZMmO5DfJH1VtZ1n0DBgf5Whg@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:41:25 up 131 days, 23:47, 48 users,  load average: 0.14, 0.07,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrV0dgn1=7CoB+BSHdDuzqtfpKGOPvjJg+sNo74VrcJE=A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, Mar 30, 2021 at 12:04:50PM -0300, Fabio Estevam wrote:
-> Hi Andrew,
-> 
-> On Tue, Mar 30, 2021 at 11:30 AM Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> > Hi Fabio
+On 04/12/21 at 08:24am, Andy Lutomirski wrote:
+> On Mon, Apr 12, 2021 at 2:52 AM Baoquan He <bhe@redhat.com> wrote:
 > >
-> > I think it should be merged, and we fixup anything which does break.
-> > We are probably at the point where more is broken by not merging it
-> > than merging it.
+> > On 04/11/21 at 06:49pm, Andy Lutomirski wrote:
+> > >
+> > >
+> > > > On Apr 11, 2021, at 6:14 PM, Baoquan He <bhe@redhat.com> wrote:
+> > > >
+> > > > ﻿On 04/09/21 at 07:59pm, H. Peter Anvin wrote:
+> > > >> Why don't we do this unconditionally? At the very best we gain half a megabyte of memory (except the trampoline, which has to live there, but it is only a few kilobytes.)
+> > > >
+> > > > This is a great suggestion, thanks. I think we can fix it in this way to
+> > > > make code simpler. Then the specific caring of real mode in
+> > > > efi_free_boot_services() can be removed too.
+> > > >
+> > >
+> > > This whole situation makes me think that the code is buggy before and buggy after.
+> > >
+> > > The issue here (I think) is that various pieces of code want to reserve specific pieces of otherwise-available low memory for their own nefarious uses. I don’t know *why* crash kernel needs this, but that doesn’t matter too much.
+> >
+> > Kdump kernel also need go through real mode code path during bootup. It
+> > is not different than normal kernel except that it skips the firmware
+> > resetting. So kdump kernel needs low 1M as system RAM just as normal
+> > kernel does. Here we reserve the whole low 1M with memblock_reserve()
+> > to avoid any later kernel or driver data reside in this area. Otherwise,
+> > we need dump the content of this area to vmcore. As we know, when crash
+> > happened, the old memory of 1st kernel should be untouched until vmcore
+> > dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
+> > In the past, we used a back up region to copy out the low 1M area, and
+> > map the back up region into the low 1M area in vmcore elf file. In
+> > 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+> > option is specified"), we changed to lock the whole low 1M to avoid
+> > writting any kernel data into, like this we can skip this area when
+> > dumping vmcore.
+> >
+> > Above is why we try to memblock reserve the whole low 1M. We don't want
+> > to use it, just don't want anyone to use it in 1st kernel.
+> >
+> > >
+> > > I propose that the right solution is to give low-memory-reserving code paths two chances to do what they need: once at the very beginning and once after EFI boot services are freed.
+> > >
+> > > Alternatively, just reserve *all* otherwise unused sub 1M memory up front, then release it right after releasing boot services, and then invoke the special cases exactly once.
+> >
+> > I am not sure if I got both suggested ways clearly. They look a little
+> > complicated in our case. As I explained at above, we want the whole low
+> > 1M locked up, not one piece or some pieces of it.
 > 
-> Thanks for your feedback. I agree.
+> My second suggestion is probably the better one.  Here it is, concretely:
 > 
-> Shawn wants to collect some Acked-by for this series.
+> The early (pre-free_efi_boot_services) code just reserves all
+> available sub-1M memory unconditionally, but it specially marks it as
+> reserved-but-available-later.  We stop allocating the trampoline page
+> at this stage.
 > 
-> Could you please give your Acked-by for this series?
+> In free_efi_boot_services, instead of *freeing* the sub-1M memory, we
+> stick it in the pile of reserved memory created in the early step.
+> This may involve splitting a block, kind of like the current
+> trampoline late allocation works.
+> 
+> Then, *after* free_efi_boot_services(), we run a single block of code
+> that lets everything that wants sub-1M code claim some.  This means
+> that the trampoline gets allocated and, if crashkernel wants to claim
+> everything else, it can.  After that, everything still unclaimed gets
+> freed.
 
-Andrew, can you please add you ACK?
+void __init setup_arch(char **cmdline_p)
+{
+...
+	efi_reserve_boot_services();
+	e820__memblock_alloc_reserved_mpc_new();
+#ifdef CONFIG_X86_CHECK_BIOS_CORRUPTION
+        setup_bios_corruption_check();
+#endif
+        reserve_real_mode();                                                                                                                      
 
-Shawn will it be enough or you need more ACKs?
+        trim_platform_memory_ranges();
+        trim_low_memory_range();
+...
+}
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+After efi_reserve_boot_services(), there are several function calling to
+require memory reservation under low 1M.
+
+
+asmlinkage __visible void __init __no_sanitize_address start_kernel(void)                                                                         
+{
+...
+	setup_arch(&command_line);
+...
+	mm_init();
+		--> mem_init();
+			 -->memblock_free_all();
+
+...
+#ifdef CONFIG_X86
+        if (efi_enabled(EFI_RUNTIME_SERVICES))
+                efi_enter_virtual_mode();
+			-->efi_free_boot_services();
+				-->memblock_free_late();
+#endif
+...
+}
+
+So from the code flow, we can see that buddy allocator is built in
+mm_init() which puts all memory from memblock.memory excluding
+memblock.reserved into buddy. And much later, we call
+efi_free_boot_services() to release those reserved efi boot memory into
+buddy too.
+
+Are you suggesting we should do the memory reservation from low 1M
+after efi_free_boot_services()? To require memory pages from buddy for
+them? Please help point out my misunderstanding if have any.
+
+With my understanding, in non-efi case, we have done the memory
+reservation with memblock_reserve(), e.g
+e820__memblock_alloc_reserved_mpc_new, reserve_real_mode() are calling
+to do. Just efi_reserve|free_boot_services() break them when efi is
+enabled. We can do them again in efi_free_boot_services() just like the
+real_mode reservation does.
+
+Thanks
+Baoquan
+
