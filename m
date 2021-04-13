@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E7335D998
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E8535D99E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240551AbhDMIHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:07:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238814AbhDMIHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:07:13 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CB6960FE8;
-        Tue, 13 Apr 2021 08:06:54 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lWE4S-007BTF-H5; Tue, 13 Apr 2021 09:06:52 +0100
-Date:   Tue, 13 Apr 2021 09:06:51 +0100
-Message-ID: <8735vuobfo.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
+        id S240719AbhDMII2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:08:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14604 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238229AbhDMII0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:08:26 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D834iN024563;
+        Tue, 13 Apr 2021 04:07:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Ql7r4twH3uyhCQI3WyBa/+Qd1zCPeMx1W+pnxHpMXU4=;
+ b=pdLfpNvjq37NJ9D7fhlZy5Sj4vGHxYnqDGkxvRFHkj967UNeZg1U+2mSkrRMvR638S0G
+ grkhTD+Zz1MWJ6JFp11j6ahLEtu5fb/TEzDT139pSrPDOGm3gi4E4SssqSv0/2IUcJnk
+ +TICj7Ud4tIbCywrgm+FEkfYlABgzWTRj/Q1l/4CjuAlL2AjO9ZDh4gfrInSV61/qHN/
+ LYGLVhmNRRZ14BU/XM3E2qPqIZJ9BE8L2WS9IRnvUuoba3CKj3nIbMBLIY/QEKhec3Fa
+ m4UxQLvXMZSAkDr5HfzEi67tNpuIeQJn1ONrpRRFRj65iMuJpkZl038kdNMBNmDY9yDq Yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37w6uvhbcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 04:07:20 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13D83HNG026422;
+        Tue, 13 Apr 2021 04:07:19 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37w6uvhbbu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 04:07:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D7wmPb002367;
+        Tue, 13 Apr 2021 08:07:17 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8agce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 08:07:17 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D87FjY41812328
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 08:07:15 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8EDBC4C044;
+        Tue, 13 Apr 2021 08:07:15 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00B2A4C052;
+        Tue, 13 Apr 2021 08:07:15 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 08:07:14 +0000 (GMT)
+Subject: Re: [PATCH v2 1/3] context_tracking: Split guest_enter/exit_irqoff
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Greg Ungerer <gerg@kernel.org>
-Subject: Re: [RFC v4 net-next 2/4] net: dsa: mt7530: add interrupt support
-In-Reply-To: <YHTgu1+6GZFdFgWJ@lunn.ch>
-References: <20210412034237.2473017-1-dqfext@gmail.com>
-        <20210412034237.2473017-3-dqfext@gmail.com>
-        <87fszvoqvb.wl-maz@kernel.org>
-        <20210412152210.929733-1-dqfext@gmail.com>
-        <YHTgu1+6GZFdFgWJ@lunn.ch>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: andrew@lunn.ch, dqfext@gmail.com, davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com, matthias.bgg@gmail.com, linux@armlinux.org.uk, sean.wang@mediatek.com, vivien.didelot@gmail.com, olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org, gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-staging@lists.linux.dev, devicetree@vger.kernel.org, netdev@vger.kernel.org, weijie.gao@mediatek.com, gch981213@gmail.com, opensource@vdorst.com, frank-w@public-files.de, tglx@linutronix.de, gerg@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Michael Tokarev <mjt@tls.msk.ru>
+References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
+ <1618298169-3831-2-git-send-email-wanpengli@tencent.com>
+ <81112cec-72fa-dd8c-21c8-b24f51021f43@de.ibm.com>
+ <CANRm+CwNxcKPKdV4Bxr-5sWJtg_SKZEN5atGJKRyLcVnWVSKSg@mail.gmail.com>
+ <4551632e-5584-29f6-68dd-d85fa968858b@de.ibm.com>
+ <CANRm+Cw=7kKztPFHaXrK926ve7pY3NN4O22t_QaevHnCXqX5tg@mail.gmail.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <1d6a5fa9-3639-0908-206f-c9e941270f11@de.ibm.com>
+Date:   Tue, 13 Apr 2021 10:07:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <CANRm+Cw=7kKztPFHaXrK926ve7pY3NN4O22t_QaevHnCXqX5tg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sib58JeUfnxZZPGmfodP0ElEmi9mFVRE
+X-Proofpoint-GUID: EQAoTGuOQtv-r8sP28ywUXslUTNSPbjo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 01:07:23 +0100,
-Andrew Lunn <andrew@lunn.ch> wrote:
+
+
+On 13.04.21 09:52, Wanpeng Li wrote:
+>> Or did I miss anything.
 > 
-> > > > +static void
-> > > > +mt7530_setup_mdio_irq(struct mt7530_priv *priv)
-> > > > +{
-> > > > +	struct dsa_switch *ds = priv->ds;
-> > > > +	int p;
-> > > > +
-> > > > +	for (p = 0; p < MT7530_NUM_PHYS; p++) {
-> > > > +		if (BIT(p) & ds->phys_mii_mask) {
-> > > > +			unsigned int irq;
-> > > > +
-> > > > +			irq = irq_create_mapping(priv->irq_domain, p);
-> > > 
-> > > This seems odd. Why aren't the MDIO IRQs allocated on demand as
-> > > endpoint attached to this interrupt controller are being probed
-> > > individually? In general, doing this allocation upfront is an
-> > > indication that there is some missing information in the DT to perform
-> > > the discovery.
-> > 
-> > This is what Andrew's mv88e6xxx does, actually. In addition, I also check
-> > the phys_mii_mask to avoid creating mappings for unused ports.
-> 
-> It can be done via DT, using the standard interrupt property, so long
-> as you use of_mdiobus_register(np).
-> 
-> But when you have an 7 port switch, and a nice simple mapping, port 0
-> PHY using interrupt 0, you can save a lot of device tree boilerplate
-> by doing it in code. And when you have 4 of these switches, it gets
-> very boring adding all the DT to just wire up the interrupts 28
-> interrupts.
+> I mean the if (!context_tracking_enabled_this_cpu()) part in the
+> function context_guest_enter_irqoff() ifdef
+> CONFIG_VIRT_CPU_ACCOUNTING_GEN. :)
 
-I guess this is depends whether the most usual case is to have all
-these interrupts being actively in use or not. Most interrupts only
-use a limited portion of their interrupt space at any given time.
-Allocating all interrupts and creating mappings upfront is a waste of
-memory.
-
-If the use case here is that all these interrupts will be wired and
-used in most cases, then upfront allocation is probably not a problem.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Ah I missed that. Thanks.
