@@ -2,168 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE9235D616
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BF835D61A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240622AbhDMDmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:42:01 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16905 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237526AbhDMDmA (ORCPT
+        id S237526AbhDMDmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241675AbhDMDmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:42:00 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKBF05FMCzlXVc;
-        Tue, 13 Apr 2021 11:39:48 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 13 Apr
- 2021 11:41:32 +0800
-Subject: Re: [PATCH v3] f2fs: fix to keep isolation of atomic write
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Yi Chen <chenyi77@huawei.com>
-References: <20210412081512.103592-1-yuchao0@huawei.com>
- <YHUPjDY9ifsffk4z@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <1171d722-8810-998c-e4b3-0845dbbdea19@huawei.com>
-Date:   Tue, 13 Apr 2021 11:41:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 12 Apr 2021 23:42:20 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28AEC061574;
+        Mon, 12 Apr 2021 20:42:00 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so14916310otn.1;
+        Mon, 12 Apr 2021 20:42:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XkkvQgfcjHQEpjiPM1SboUkFweftUrw9ElIgdb+4xEU=;
+        b=qjOuuLQR8XUEJClHDPTY8WXaGpizDlgkpNRBV/4uY22q7J9PJxxkVNmI7YRQlfR38H
+         tJ+DuevvJUZ4nePa6l42GklgSNxITqOo0IrDIGchz/iHsgP1+p/QnelvRJxDAtRGlO50
+         HxQufjYNgTedHES/hyqKgFmWhmzsHi7YGt6tAtSqzY5zZoKg4yPaVhEmzsf+zVSyEXPt
+         nUK239VrXks3fS72moo+mSpvHrp2eGSS4IP/Tjfhr/8YQ7nlI7N3ChhIsQOiTcQ5H9Mg
+         r2p2qgbQZvENMio+xCFp4a/jkaAgGbw+sCLBTMbvKYKyBTN7zvWUQRGxIek+sIzPrRnQ
+         nwQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XkkvQgfcjHQEpjiPM1SboUkFweftUrw9ElIgdb+4xEU=;
+        b=b7cTd0LTkjVsHjGdbtdvGFoFTi+rfkDsAhgHdKQWoUBDo72uHPmzt6RdmcJJa+FiPV
+         vin3F+sxPzt+x+9l73cWHY9cslj6vLsnzA3699I1a5QUzQVMJz07cz6T1Fj9JoRYfu58
+         FlHnKPPp3LrMKnus7nmLP17+dzayYchx6jjXgYAIUI+iyQ1iqaeWcYS9CGE0zaLEzyQ+
+         s+Ii1txIP60JFURYNTsJiiWPtRny9De9NRQvW+Q51Fx5f8t+b/8J0OG2wUaQhMrr/XRU
+         UIh2sU2VeAkQUWDomU1P/acmfu9xk8rhV6Tigxybrnf50n9bH9QOGoYX0iUKASLatSI+
+         ISVQ==
+X-Gm-Message-State: AOAM531ILITrI90kwxpZUlvpfmT6TZUXwDawZUyRj+55zVOTwP0Kt2N7
+        NLmCxjIG2ZBvRU44VCgOa3I=
+X-Google-Smtp-Source: ABdhPJw6TalcEV+heLx4+qc1GbQxvamh3BhYsbEPQQOBujgLoBlGt9km5dkGMa4H2F4qViu0FDdpZg==
+X-Received: by 2002:a05:6830:8f:: with SMTP id a15mr26658719oto.299.1618285320137;
+        Mon, 12 Apr 2021 20:42:00 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b22sm3168056ots.59.2021.04.12.20.41.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Apr 2021 20:41:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 12 Apr 2021 20:41:58 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/210] 5.11.14-rc1 review
+Message-ID: <20210413034158.GB235256@roeck-us.net>
+References: <20210412084016.009884719@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <YHUPjDY9ifsffk4z@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/13 11:27, Jaegeuk Kim wrote:
-> On 04/12, Chao Yu wrote:
->> As Yi Chen reported, there is a potential race case described as below:
->>
->> Thread A			Thread B
->> - f2fs_ioc_start_atomic_write
->> 				- mkwrite
->> 				 - set_page_dirty
->> 				  - f2fs_set_page_private(page, 0)
->>   - set_inode_flag(FI_ATOMIC_FILE)
->> 				- mkwrite same page
->> 				 - set_page_dirty
->> 				  - f2fs_register_inmem_page
->> 				   - f2fs_set_page_private(ATOMIC_WRITTEN_PAGE)
->> 				     failed due to PagePrivate flag has been set
->> 				   - list_add_tail
->> 				- truncate_inode_pages
->> 				 - f2fs_invalidate_page
->> 				  - clear page private but w/o remove it from
->> 				    inmem_list
->> 				 - set page->mapping to NULL
->> - f2fs_ioc_commit_atomic_write
->>   - __f2fs_commit_inmem_pages
->>     - __revoke_inmem_pages
->>      - f2fs_put_page panic as page->mapping is NULL
->>
->> The root cause is we missed to keep isolation of atomic write in the case
->> of start_atomic_write vs mkwrite, let start_atomic_write helds i_mmap_sem
->> lock to avoid this issue.
+On Mon, Apr 12, 2021 at 10:38:25AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.14 release.
+> There are 210 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> My only concern is performance regression. Could you please verify the numbers?
-
-Do you have specific test script?
-
-IIRC, the scenario you mean is multi-threads write/mmap the same db, right?
-
-Thanks,
-
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
 > 
->>
->> Reported-by: Yi Chen <chenyi77@huawei.com>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->> v3:
->> - rebase to last dev branch
->> - update commit message because this patch fixes a different racing issue
->> of atomic write
->>   fs/f2fs/file.c    | 3 +++
->>   fs/f2fs/segment.c | 6 ++++++
->>   2 files changed, 9 insertions(+)
->>
->> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->> index d697c8900fa7..6284b2f4a60b 100644
->> --- a/fs/f2fs/file.c
->> +++ b/fs/f2fs/file.c
->> @@ -2054,6 +2054,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   		goto out;
->>   
->>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>   
->>   	/*
->>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
->> @@ -2064,6 +2065,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   			  inode->i_ino, get_dirty_pages(inode));
->>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
->>   	if (ret) {
->> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>   		goto out;
->>   	}
->> @@ -2077,6 +2079,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>   	/* add inode in inmem_list first and set atomic_file */
->>   	set_inode_flag(inode, FI_ATOMIC_FILE);
->>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
->> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>   
->>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 0cb1ca88d4aa..78c8342f52fd 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -325,6 +325,7 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>   	struct f2fs_inode_info *fi = F2FS_I(inode);
->>   
->>   	do {
->> +		down_write(&F2FS_I(inode)->i_mmap_sem);
->>   		mutex_lock(&fi->inmem_lock);
->>   		if (list_empty(&fi->inmem_pages)) {
->>   			fi->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
->> @@ -339,11 +340,13 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>   			spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
->>   
->>   			mutex_unlock(&fi->inmem_lock);
->> +			up_write(&F2FS_I(inode)->i_mmap_sem);
->>   			break;
->>   		}
->>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
->>   						true, false, true);
->>   		mutex_unlock(&fi->inmem_lock);
->> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->>   	} while (1);
->>   }
->>   
->> @@ -468,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>   	f2fs_balance_fs(sbi, true);
->>   
->>   	down_write(&fi->i_gc_rwsem[WRITE]);
->> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>   
->>   	f2fs_lock_op(sbi);
->>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
->> @@ -479,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
->>   
->>   	f2fs_unlock_op(sbi);
->> +
->> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>   	up_write(&fi->i_gc_rwsem[WRITE]);
->>   
->>   	return err;
->> -- 
->> 2.29.2
-> .
-> 
+
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 460 pass: 459 fail: 1
+Failed tests:
+	sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+
+udhcpc fails to get an IP address over virtio-net. I reported the same
+problem against mainline. This is a spurious problem; the test succeeds
+in roughly every other test. It is unknown at this time if the problem
+is the patch introducing the problem (commit 0f6925b3e8da ("virtio_net:
+Do not pull payload in skb->head")), the sh4 kernel code, qemu, or the
+sh4 compiler (though I tried several compiler versions).
+
+I see that this patch is now in pretty much all kernels, so I may report
+this on and off until the underlying problem has been found and fixed.
+Until then, I guess we'll have to live with it.
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
