@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A22A35E1E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF3235E1E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhDMOwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhDMOwl (ORCPT
+        id S237455AbhDMOx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:53:26 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:43868 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhDMOxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:52:41 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFE2C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:52:22 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id e186so17338382iof.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CaG9SlK2TqX99hyj4X3DH5qQ2uV7HTsovkwb7Rge0m0=;
-        b=OLZX5pjB4+Qr6jM0mMsqBEBVXYfIiHD0F7lzBGhl3NJKceaJtqhcH7L6PIu3gGrw9y
-         OgGRhSeVFCyzHM+uawZvUpGuwpSIQNh0annQ3+zlcE1R16Tz7MuZofY6tF1tUnJKytHF
-         d+imtLuTxc81AIJMIFjTwkm1H09XGIXAmFp1OWqjOQqU4JxczaIPfuO/vWD5iEAiCXTf
-         8/ym8y8ofR3AYzveO5TSyIw3pC4g4YfI8zyAglmSRaAvBF5KJik4il01hbUjGgDBfkbL
-         fcbq1nxUQ7UVo1YKVgl6sMXqfn+sot1o0hXM9X4hXo38v+1WOSHvjSfbqWMKVTiWlCkR
-         N0eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CaG9SlK2TqX99hyj4X3DH5qQ2uV7HTsovkwb7Rge0m0=;
-        b=cE5RM/TkRQg/ox2l52kSqrus7zQRSUucVC69I6/FpMRS4b7oNdqfC1F7PK6HNA0cUi
-         HfnKzycqgphzh9hG6q8Fo1rWMWAWgI/bVOYSPzqbNS7ricAYCQLUZgT1WhrQd9ER/Qsd
-         OETc41naLBw5DinL8PACjsZuXC/E3g1MYLTYOb/hIdTHLOiPqPGRuxBuwE1uagrI4EOS
-         OOmKB2BlLaSbshJwntlIqj0l+8E2ePay9N98UnmarBCMIA9nDdMHDGYpmH/qtH9/2uK5
-         PbMtM+t8XvHg4A67cBF5mpg1CfjWuemN7gEKX2jx55bVEjkXbOPMLFZA7CKSYLGALXWu
-         6vhw==
-X-Gm-Message-State: AOAM532ySvi9vplVtOZpEUbBqWvlVTwQ7q8NHBrLdByj2hqVXzAxpPSq
-        pvw/POr/+2QP5bdvALg4VaGa3y7tsjbfUiJNAVQqGA==
-X-Google-Smtp-Source: ABdhPJw+jNjf7CuSQF9i/4XJn8Pnlv48cWwrH20lo7x6+MyPZRxg8ejfueCvWfkLpPOrcJQevhlU+PqzZPPCxfUxpgM=
-X-Received: by 2002:a05:6638:ecf:: with SMTP id q15mr3950964jas.129.1618325541042;
- Tue, 13 Apr 2021 07:52:21 -0700 (PDT)
+        Tue, 13 Apr 2021 10:53:22 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEnYa3036778;
+        Tue, 13 Apr 2021 14:52:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=XlmNGq/1+E4+j5kYmK7x5/m8LnmtU0Ndl1MhNnKYffw=;
+ b=BAlV+9aQn2uvlp+oY1x6eG6BdK8q5jawmxxEhaRqVG0LLkcOpVQPdMnhvG89CuxK4Pjj
+ X6b7oatlzJiMcak5gExyMzQH+w5GVB2cVYMr3XFPpRXMZegJRIfybGn+0eL8WMIxWLqz
+ YfSt9NLfEd+AVQSWrQ4erA7sugClm7ZvG9oUdFfj7tNnITWH6TMVtcqSeY/Zg5ZZp7z1
+ YCvT+YmCN6V+/zAitttIbP7CUsvxsNeQFsXFIRb0NNmM1KXYCiXpGS2sWFvE2Izw7HW7
+ yrRz7PtZL90yK5+cj5bl22yBektnLW8e7t4MFmOKsIjT1Al0YGjlIrwynQrjGhB/f7x3 Zw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 37u1hbffj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 14:52:53 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEjeu8161362;
+        Tue, 13 Apr 2021 14:52:52 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 37unwyvv2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 14:52:52 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13DEqpq6014908;
+        Tue, 13 Apr 2021 14:52:51 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Apr 2021 07:52:51 -0700
+Date:   Tue, 13 Apr 2021 17:52:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/19] staging: rtl8723bs: remove unnecessary bracks on
+ DBG_871X removal sites
+Message-ID: <20210413145245.GG6021@kadam>
+References: <cover.1617802415.git.fabioaiuto83@gmail.com>
+ <35f5edf0f39b717b3de3ad7861cbaa5f4ba60576.1617802415.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-References: <20210412074309.38484-1-psampat@linux.ibm.com>
-In-Reply-To: <20210412074309.38484-1-psampat@linux.ibm.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Tue, 13 Apr 2021 07:52:14 -0700
-Message-ID: <CAAYoRsVob1UBukdDAQBJrp6xV03u0V67SgfTVkWQ9bN1XhS8Jw@mail.gmail.com>
-Subject: Re: [RFC v4 0/2] CPU-Idle latency selftest framework
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
-        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35f5edf0f39b717b3de3ad7861cbaa5f4ba60576.1617802415.git.fabioaiuto83@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130106
+X-Proofpoint-GUID: 5WBQ4qNszvuj1d5rr6ONVqtYsYaBpGu4
+X-Proofpoint-ORIG-GUID: 5WBQ4qNszvuj1d5rr6ONVqtYsYaBpGu4
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104130106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratik,
+On Wed, Apr 07, 2021 at 03:49:36PM +0200, Fabio Aiuto wrote:
+> @@ -2586,11 +2583,9 @@ static int rtw_dbg_port(struct net_device *dev,
+>  
+>  								plist = get_next(plist);
+>  
+> -								if (extra_arg == psta->aid) {
+> -									for (j = 0; j < 16; j++) {
+> +								if (extra_arg == psta->aid)
+> +									for (j = 0; j < 16; j++)
+>  										preorder_ctrl = &psta->recvreorder_ctrl[j];
+> -									}
+> -								}
 
-V4 seems fine. Thank you.
+I think Greg already applied this so no stress (don't bother fixing),
+but you removed a bit too much on this one.  Multi-line indents normally
+get curly braces for readability.  In other words:
 
-On Mon, Apr 12, 2021 at 12:43 AM Pratik Rajesh Sampat
-<psampat@linux.ibm.com> wrote:
->
-> Changelog v3-->v4
-> Based on review comments by Doug Smythies,
-> 1. Parsing the thread_siblings_list for CPU topology information to
->    correctly identify the cores the test should run on in
->    default(quick) mode.
-> 2. The source CPU to source CPU interaction in the IPI test will always
->    result in a lower latency and cause a bias in the average, hence
->    avoid adding the latency to be averaged for same cpu IPIs. The
->    latency will still be displayed in the detailed logs.
->
-> RFC v3: https://lkml.org/lkml/2021/4/4/31
+				if (extra_arg == psta->aid) {
+					for (j = 0; j < 16; j++)
+						preorder_ctrl = &psta->recvreorder_ctrl[j];
+				}
 
-Example output for an Intel i5-10600K, HWP active, performance mode.
-System very idle:
+regards,
+dan carpenter
 
-$ sudo ./cpuidle.sh -v -i
-Inserting /lib/modules/5.12.0-rc7-prs-v4/kernel/drivers/cpuidle/test-cpuidle_latency.ko
-module
-
---IPI Latency Test---
-Baseline Avg IPI latency(ns): 686
-Observed Avg IPI latency(ns) - State 0: 468
-Observed Avg IPI latency(ns) - State 1: 956
-Observed Avg IPI latency(ns) - State 2: 17936
-Observed Avg IPI latency(ns) - State 3: 17968
-
---Timeout Latency Test--
-Baseline Avg timeout diff(ns): 445
-Observed Avg timeout diff(ns) - State 0: 377
-Observed Avg timeout diff(ns) - State 1: 630
-Observed Avg timeout diff(ns) - State 2: 322812
-Observed Avg timeout diff(ns) - State 3: 306067
-Removing /lib/modules/5.12.0-rc7-prs-v4/kernel/drivers/cpuidle/test-cpuidle_latency.ko
-module
-Full Output logged at: cpuidle.log
-
-$ grep . /sys/devices/system/cpu/cpu7/cpuidle/state*/residency
-/sys/devices/system/cpu/cpu7/cpuidle/state0/residency:0
-/sys/devices/system/cpu/cpu7/cpuidle/state1/residency:1
-/sys/devices/system/cpu/cpu7/cpuidle/state2/residency:360
-/sys/devices/system/cpu/cpu7/cpuidle/state3/residency:3102
-$ grep . /sys/devices/system/cpu/cpu7/cpuidle/state*/latency
-/sys/devices/system/cpu/cpu7/cpuidle/state0/latency:0
-/sys/devices/system/cpu/cpu7/cpuidle/state1/latency:1
-/sys/devices/system/cpu/cpu7/cpuidle/state2/latency:120
-/sys/devices/system/cpu/cpu7/cpuidle/state3/latency:1034
-
-... Doug
