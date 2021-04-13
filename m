@@ -2,175 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E6B35E4E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1987435E4E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347131AbhDMRVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:21:52 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]:37573 "EHLO
-        mail-qk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347127AbhDMRVo (ORCPT
+        id S1347113AbhDMRVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:21:18 -0400
+Received: from mail.efficios.com ([167.114.26.124]:40496 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhDMRVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:21:44 -0400
-Received: by mail-qk1-f179.google.com with SMTP id 130so4417120qkm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OxU0Eujrm9GQyvXdIjhuiVVTC0s99PIjeEwmRYVaK0M=;
-        b=TvQ0AiMsfQyBkVrkMDo18tZSvp8ItDKLX9tIp24gJJi9NrydOSekkMLSPHzrYhWjkV
-         kXfwlD8SA8kKV/fBmZHnkDl7WgoA2uz4kz0fJ7rWdXXQ69IkfLAnlDT/vm7Ptw/lexEa
-         iDybKWcdRXGnOCWSfkGPqZ4dkCHaoRuNzrxQ3wkNmL7avVA1jv66QGIuJhTalp9yccWi
-         NABnGz+dNplEJ3EybgzfEkASRU8pZxjuDuM6zwCBX4Yf/H0dXOQrFGg1UjfcT/g2x+fp
-         Gr8+YicXBTWxLVD1DR4OjHi8EUuWZpJeAkBPbQKhcUAPTTHmILuIgSiCpcB9SfHGysPL
-         ZPAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OxU0Eujrm9GQyvXdIjhuiVVTC0s99PIjeEwmRYVaK0M=;
-        b=Bal5mAaBnqRWur+a4RLKUq+dDU8XUGm6XVFTeURMOUlPkrPx6C76NIaZjP4gaR5GMH
-         hV9VKCNsNOVn2HYgEwjbla5aV/kHKLbTk5v156FhqCwLn83g5c4GFRbk+0ylB8Qvimrc
-         mJu9hBYCyt9wK/mA7zqnbBAjkFQQNZTsePG2OdAXDYWmZQMJFLPCI92/S6p1oZMd37DS
-         E23NJ2eolwS9qSWOJXymz9QOeiG0pcBjuBQfMGGW8EkqlBLfeaW/9WwRyQ2QsrHw5y/v
-         3pXdWpsNJFHU7lCTSwRySEN5OgNZR6bqGBTmQuhYIWOjewczSamTPYOaXYTho9liaWbL
-         CGDA==
-X-Gm-Message-State: AOAM531pcc7Of2xMGjd+XxP/721ePyyIohA+4HRzzpmdx4YEtQ/52yP5
-        TA2S++fFjpfF9Jo++4V5a+gPtFx05ZHMr0PYPke07A==
-X-Google-Smtp-Source: ABdhPJzZbF9SOsSr1JV8btp47Zzg36R3JvHSGAwCv47evxt2VeGK3yqlQo147eL5mHjg5iEX+jdnHlDqSzZOV8YjVsc=
-X-Received: by 2002:a05:620a:243:: with SMTP id q3mr14170127qkn.501.1618334423663;
- Tue, 13 Apr 2021 10:20:23 -0700 (PDT)
+        Tue, 13 Apr 2021 13:21:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5F183339FEF;
+        Tue, 13 Apr 2021 13:20:56 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id BQNBlN6wuHEr; Tue, 13 Apr 2021 13:20:54 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 48948339E5D;
+        Tue, 13 Apr 2021 13:20:54 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 48948339E5D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618334454;
+        bh=YUjWthisCp0OCFcGAe18fNtauvFDoWW70bDbaxELBO0=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=EOygOwJNG5Pdyo+RCnrO9hTUgi4J9sOPfbxSKp/fKOZjrhBB7Lh2AUB0AejlfJLTx
+         +ZZwjreUDfmS3lV2D6ktH0eaAzlA9VrjjGz4jncxm+lYUX2KyWrmCyNR3/lXYU5hBL
+         yFDIXfqaT0Ysfco7kVVXVBccfTcw+yyEFTV1dOcKJw1ARHwKwUvAn6tfxM5ew7RD3j
+         0ezaxZHN4yQd3jJyU4vIXKotdKcz/8FYk87XY18YtGk1nWkoAVoBMy98WGEGbIAH/7
+         8QiFNWaJUUyeSqiTAAM1NZMNfWUNCh2NVY+35zC7HFoikE0XW/N7lOF8EXkc0RDO10
+         sf1xn8RHQ2ASQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id L851gMCTpG8Y; Tue, 13 Apr 2021 13:20:54 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 34A3E33A291;
+        Tue, 13 Apr 2021 13:20:54 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 13:20:54 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com> <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com> <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com> <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com> <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
+ clear_rseq_cs()
 MIME-Version: 1.0
-References: <000000000000ca9a6005bec29ebe@google.com> <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
- <20210331042922.GE2065@kadam> <20210401121933.GA2710221@ziepe.ca>
-In-Reply-To: <20210401121933.GA2710221@ziepe.ca>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 19:20:12 +0200
-Message-ID: <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        daniel.vetter@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        James Morris <jmorris@namei.org>,
-        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        m.szyprowski@samsung.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+Thread-Index: xIQ6aFR0SwDAeYP737PrFeI02rGwUQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 2:19 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Mar 31, 2021 at 07:29:22AM +0300, Dan Carpenter wrote:
-> > On Tue, Mar 30, 2021 at 07:04:30PM +0200, Paolo Bonzini wrote:
-> > > On 30/03/21 17:26, syzbot wrote:
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    93129492 Add linux-next specific files for 20210326
-> > > > git tree:       linux-next
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
-> > > >
-> > > > The issue was bisected to:
-> > > >
-> > > > commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
-> > > > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > > Date:   Tue Mar 16 15:33:01 2021 +0000
-> > > >
-> > > >      mm: Add unsafe_follow_pfn
-> > > >
-> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
-> > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
-> > > > Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
-> > >
-> > > This is basically intentional because get_vaddr_frames is broken, isn't it?
-> > > I think it needs to be ignored in syzkaller.
-> >
-> > What?
-> >
-> > The bisect is wrong (because it's blaming the commit which added the
-> > warning instead of the commit which added the buggy caller) but the
-> > warning is correct.
-> >
-> > Plus users are going to be seeing this as well.  According to the commit
-> > message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
-> > there's some users where this is not fixable (like v4l userptr of iomem
-> > mappings)".  It sort of seems crazy to dump this giant splat and then
-> > tell users to ignore it forever because it can't be fixed...  0_0
->
-> I think the discussion conclusion was that this interface should not
-> be used by userspace anymore, it is obsolete by some new interface?
->
-> It should be protected by some kconfig and the kconfig should be
-> turned off for syzkaller runs.
+----- On Apr 13, 2021, at 1:07 PM, Eric Dumazet edumazet@google.com wrote:
 
-If this is not a kernel bug, then it must not use WARN_ON[_ONCE]. It
-makes the kernel untestable for both automated systems and humans:
+> On Tue, Apr 13, 2021 at 7:01 PM Eric Dumazet <edumazet@google.com> wrote:
+>>
+>> On Tue, Apr 13, 2021 at 6:57 PM Eric Dumazet <edumazet@google.com> wrote:
+>> >
+>> > On Tue, Apr 13, 2021 at 6:54 PM Mathieu Desnoyers
+>> > <mathieu.desnoyers@efficios.com> wrote:
+>> > >
+>> > > ----- On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
+>> > >
+>> > > > From: Eric Dumazet <edumazet@google.com>
+>> > > >
+>> > > > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+>> > > > update includes") added regressions for our servers.
+>> > > >
+>> > > > Using copy_from_user() and clear_user() for 64bit values
+>> > > > is suboptimal.
+>> > > >
+>> > > > We can use faster put_user() and get_user().
+>> > > >
+>> > > > 32bit arches can be changed to use the ptr32 field,
+>> > > > since the padding field must always be zero.
+>> > > >
+>> > > > v2: added ideas from Peter and Mathieu about making this
+>> > > >    generic, since my initial patch was only dealing with
+>> > > >    64bit arches.
+>> > >
+>> > > Ah, now I remember the reason why reading and clearing the entire 64-bit
+>> > > is important: it's because we don't want to allow user-space processes to
+>> > > use this change in behavior to figure out whether they are running on a
+>> > > 32-bit or in a 32-bit compat mode on a 64-bit kernel.
+>> > >
+>> > > So although I'm fine with making 64-bit kernels faster, we'll want to keep
+>> > > updating the entire 64-bit ptr field on 32-bit kernels as well.
+>> > >
+>> > > Thanks,
+>> > >
+>> >
+>> > So... back to V1 then ?
+>>
+>> Or add more stuff as in :
+> 
+> diff against v2, WDYT ?
 
-https://lwn.net/Articles/769365/
+I like this approach slightly better, because it moves the preprocessor ifdefs into
+rseq_get_rseq_cs and clear_rseq_cs, while keeping the same behavior for a 32-bit
+process running on native 32-bit kernel and as compat task on a 64-bit kernel.
 
-<quote>
-Greg Kroah-Hartman raised the problem of core kernel API code that
-will use WARN_ON_ONCE() to complain about bad usage; that will not
-generate the desired result if WARN_ON_ONCE() is configured to crash
-the machine. He was told that the code should just call pr_warn()
-instead, and that the called function should return an error in such
-situations. It was generally agreed that any WARN_ON() or
-WARN_ON_ONCE() calls that can be triggered from user space need to be
-fixed.
-</quote>
+That being said, I don't expect anyone to care much about performance of 32-bit
+kernels, so we could use copy_from_user() on 32-bit kernels to remove special-cases
+in 32-bit specific code. This would eliminate the 32-bit specific "padding" read, and
+let the TASK_SIZE comparison handle the check for both 32-bit and 64-bit kernels.
 
+As for clear_user(), I wonder whether we could simply keep using it, but change the
+clear_user() macro to figure out that it can use a faster 8-byte put_user ? I find it
+odd that performance optimizations which would be relevant elsewhere creep into the
+rseq code.
 
-https://lore.kernel.org/netdev/20210413085522.2caee809@gandalf.local.home/
-From: Steven Rostedt
-<quote>
+Thanks,
 
-I agree. WARN_ON(_ONCE) should be reserved for anomalies that should not
-happen ever. Anything that the user could trigger, should not trigger a
-WARN_ON.
+Mathieu
 
-A WARN_ON is perfectly fine for detecting an accounting error inside the
-kernel. I have them scattered all over my code, but they should never be
-hit, even if something in user space tries to hit it. (with an exception of
-an interface I want to deprecate, where I want to know if it's still being
-used ;-) Of course, that wouldn't help bots testing the code. And I haven't
-done that in years)
+> 
+> diff --git a/kernel/rseq.c b/kernel/rseq.c
+> index
+> f2eee3f7f5d330688c81cb2e57d47ca6b843873e..537b1f684efa11069990018ffa3642c209993011
+> 100644
+> --- a/kernel/rseq.c
+> +++ b/kernel/rseq.c
+> @@ -136,6 +136,10 @@ static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
+> {
+>        u32 ptr;
+> 
+> +       if (get_user(ptr, &rseq->rseq_cs.ptr.padding))
+> +               return -EFAULT;
+> +       if (ptr)
+> +               return -EINVAL;
+>        if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
+>                return -EFAULT;
+>        *uptrp = (struct rseq_cs __user *)ptr;
+> @@ -150,8 +154,9 @@ static int rseq_get_rseq_cs(struct task_struct *t,
+> struct rseq_cs *rseq_cs)
+>        u32 sig;
+>        int ret;
+> 
+> -       if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
+> -               return -EFAULT;
+> +       ret = rseq_get_cs_ptr(&urseq_cs, t->rseq);
+> +       if (ret)
+> +               return ret;
+>        if (!urseq_cs) {
+>                memset(rseq_cs, 0, sizeof(*rseq_cs));
+>                return 0;
+> @@ -237,7 +242,8 @@ static int clear_rseq_cs(struct task_struct *t)
+> #ifdef CONFIG_64BIT
+>        return put_user(0UL, &t->rseq->rseq_cs.ptr64);
+> #else
+> -       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
+> +       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32) |
+> +              put_user(0UL, &t->rseq->rseq_cs.ptr.padding);
+> #endif
+>  }
 
-Any anomaly that can be triggered by user space doing something it should
-not be doing really needs a pr_warn().
-</quote>
-
-And if it's a kernel bug reachable from user-space, then I think this
-code should be removed entirely, not just on all testing systems. Or
-otherwise if we are not removing it for some reason, then it needs to
-be fixed.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
