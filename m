@@ -2,144 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5C935D580
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B974735D5A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343647AbhDMC6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:58:00 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33852 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237380AbhDMC57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:57:59 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx78ucCHVgX2IHAA--.14150S2;
-        Tue, 13 Apr 2021 10:57:33 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jessica Yu <jeyu@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH RFC] module: Use ARG_MAX as second argument of strndup_user() in load_module()
-Date:   Tue, 13 Apr 2021 10:57:31 +0800
-Message-Id: <1618282651-14507-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx78ucCHVgX2IHAA--.14150S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF15GFWrZFy3WrWDKF17Jrb_yoW5Ww1xpa
-        y3Cr95GFs8Wr4rCayIyry09Fyrur45Gr4ag3Z8Cwn5ZFn0vF48AFZa93ZI9FyxGrW8GFy8
-        Kryrtr15uF4jkw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUb1rW7UUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S242118AbhDMDNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:13:21 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:53814 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240114AbhDMDNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:13:20 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210413031300epoutp03737bca36ae8f608014797b327071c324~1TFeSiHjC1990119901epoutp03u
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:13:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210413031300epoutp03737bca36ae8f608014797b327071c324~1TFeSiHjC1990119901epoutp03u
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1618283580;
+        bh=E59oJL75rFYvm6E0aq9p2/IepEJhpvDxf5DtHZbFvo0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ZI2x2o/OFuTdGNn0TdfF4dghPmfwrGlVfY6jWsUV/MbDP/uDdWTySFNvdZc/V+Vdv
+         Z6LSG935VU/0dcD1e4e5kXWY9/BukvukcCZhFem1zJhjmoUsX2Yy+flmzUcAwF1K7W
+         j9IplPjSUgnz0znBlveU3LzFcHDkEIMlG/ZuSSMU=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210413031258epcas1p2a896cffe4130a70b8b2c404535d80c7e~1TFc2fE4O0459904599epcas1p2s;
+        Tue, 13 Apr 2021 03:12:58 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FK9f123nkz4x9Pw; Tue, 13 Apr
+        2021 03:12:57 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        42.5B.22618.93C05706; Tue, 13 Apr 2021 12:12:57 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210413031256epcas1p2f3c3f140192178928b92fc070010354d~1TFa7RCsD1606216062epcas1p2K;
+        Tue, 13 Apr 2021 03:12:56 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210413031256epsmtrp1190f35a8e8f1dced9b9effeb2f7c6f20~1TFa5_oJe2206622066epsmtrp1H;
+        Tue, 13 Apr 2021 03:12:56 +0000 (GMT)
+X-AuditID: b6c32a38-e4dff7000001585a-33-60750c396deb
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5F.95.33967.83C05706; Tue, 13 Apr 2021 12:12:56 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210413031256epsmtip253c954d12cdb01282a7df646b09c9174~1TFamREXH1215112151epsmtip2T;
+        Tue, 13 Apr 2021 03:12:56 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com, bvanassche@acm.org,
+        Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, gregkh@linuxfoundation.org, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v7 0/3] limit bio max size
+Date:   Tue, 13 Apr 2021 11:54:59 +0900
+Message-Id: <20210413025502.31579-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUxbVRzdfa+8FhSthcFdnYM1IwoOaFcKlwmMKJvPoAZFIyGa0sELEPq1
+        vnabGh2uowhjAxzp+JZt6JaCq5aOAAlfrYjIWNACW0iAERh0sMHkY7ChiS2PRf77nXPP7557
+        fvdeDs6bJficbKWW0ihlcgHhxWq2B4eHRj+vSxPOj3mhalMzQA1jxQQyPnqCo7z8xxjSXzET
+        qL/kMoaKpk97oH8LxzG0Okmj9tHXkaOtmkC2C3oMXWyqxtHIxE02so8Ps9BkfSmObvUteaDa
+        qXj09GoPQIvrt9noj5YLODK3PyHi/UjHUCJZql9gk62VY2yy6VoI6RjQkRZTAUF21jSyycWO
+        YYI8bzUBctmyh8zvOoslPZcqj8miZBmUJpBSpqsyspWZsYLEZOlbUkmkUBQqikZRgkClTEHF
+        ChLeTQo9ki13JRUEHpfJdS4qSUbTgvC4GI1Kp6UCs1S0NlZAqTPkapFQHUbLFLROmRmWrlIc
+        FAmFByQuZZo8q944ANR3iJMzl66CXGBnFQIOB3IjYJf5RCHw4vC4LQC2FMxhDFgCsGz0BzYD
+        HgOY11CFFwLPzY7m3g0Ws9AO4O2/bVuqZQALv2nE3CqCux+efzhKuBd8uX0YXG/oB26Ac6cA
+        HOozEG6VDzcEjhpGgLtmcYOg417zpoc39w04cuMXFuMXAP+ZKNriX4J9FdObPO7i9TfcZ/Jy
+        ae5yYKfeCpiGBLiWV81mah8412vdqvnwfrGBzTScBVBv+B4woATA+tkfMUYlhkvLy8A9HJwb
+        DM1t4Qy9F7Zu1ADG+QW4sFrkwczPG35r4DGSffDmmQn8mdfsT61bO5JwvLZuMzCP+xnsKFhm
+        lYCAym15KrflqfzfuA7gJuBHqWlFJkWL1BHbL9YCNl98CGoBNQ8fhdkAxgE2ADm4wNf7SJk2
+        jeedIfv8C0qjkmp0coq2AYlrwqU4f2e6yvVllFqpSHJALBajiMioSIlY4O99VHhXyuNmyrRU
+        DkWpKc2zPozjyc/FdiUKbT0z5waNnz4our5iObaj4UPLd5kVvI71zvTdv6ts98vW4bXW8ofJ
+        fP8PnF0isXkt+NdU35MJ1kPWnak/l6wOoKK23s57VYn6tdCj/tF0vGn/Qh+bNfDyvNQzkjxT
+        bgpcHLjcZVQtxL09tufrQafjt2H417Hdl+IidrwzquRtGC1+3Tn8YSr30EfdbLHzRdZGVFPQ
+        g7mv+g35KZq9Zv3pxRXJndpXmnbNV63M5FxpHUmxfTky019vf60x5vBTR8V1n6kTAUbpe7Vj
+        k9l61lD34OG86dryOnK157g11fPjU5+8X2Fvd/65ryTonLg45dZBXt6paftF6lXnmwpnocKW
+        LGDRWTJRCK6hZf8BuaUufXoEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsWy7bCSvK4FT2mCwf+DIhZzVm1jtFh9t5/N
+        YtqHn8wWre3fmCyaF69nszg9YRGTRc+TJlaLv133mCy+Piy22HtL2+LyrjlsFocmNzNZTN88
+        h9ni2v0z7BaH711lsXi4ZCKzxbmTn1gt5j12sPi1/Cijxfsf19ktTu2YzGyxfu9PNgcxj8tX
+        vD0mNr9j99g56y67x+YVWh6Xz5Z6bFrVyeaxf+4ado/3+66yefRtWcXo8XmTnEf7gW6mAO4o
+        LpuU1JzMstQifbsErowl084yFtxgq3i2cDljA+Nhli5GTg4JAROJbcd/A9lcHEICuxkljrRO
+        ZYZISEkcP/GWtYuRA8gWljh8uBii5iOjxJ0rtxlBatgEdCT63t5iA0mICNxmkri05SjYJGaB
+        14wSXY8Xga0QFtCSuNV2DayDRUBV4vLTbWAbeAWsJa5t3Qh1hrzEn/s9UHFBiZMzn4DFmYHi
+        zVtnM09g5JuFJDULSWoBI9MqRsnUguLc9NxiwwLDvNRyveLE3OLSvHS95PzcTYzgeNPS3MG4
+        fdUHvUOMTByMhxglOJiVRHjdppQkCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEk
+        NTs1tSC1CCbLxMEp1cA081fFevPvq1W+xG+q6G/3N+zbJi3JskdleuS0Gv2zC+/8PP3KaX66
+        TfL8I46b6resPPKeKfLpHDfTs0vqL85Q5xS+/qRrd2LTJ2slsTAvv/uztDfkW57pEpq0e0r0
+        pw1L/heJBDmyfz5hEfkx7br20X43J8UVd9JN+S9s37mySuuKDr+Oaewfn9u9TwvXTpdZME/g
+        LeNvbfGUvE9nJG//elW7K2BTelZYf78/++9+vogbp7laP/z/YjGzzVDjcPD8yc90ml6dzDmU
+        +0fv+t776jFXZ17x3cXz4qNaje+MrkK7G5/y8hbdy98Y9C1M5k9NzoQnJ4LPSLkeNuDZ9sQm
+        +8uHX9999/988vPuF13mZUosxRmJhlrMRcWJAPJ18L4mAwAA
+X-CMS-MailID: 20210413031256epcas1p2f3c3f140192178928b92fc070010354d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210413031256epcas1p2f3c3f140192178928b92fc070010354d
+References: <CGME20210413031256epcas1p2f3c3f140192178928b92fc070010354d@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When update kernel with the latest mips-next, we can not login through a
-graphical interface, this is because drm radeon GPU driver does not work,
-we can not see the boot message "[drm] radeon kernel modesetting enabled."
-through the serial console.
+I found a inefficient behavior from multipage bvec. Large chunk DIO
+scenario is that. This patch series could be a solution to improve it.
 
-drivers/gpu/drm/radeon/radeon_drv.c
-static int __init radeon_module_init(void)
-{
-	[...]
-	DRM_INFO("radeon kernel modesetting enabled.\n");
-	[...]
-}
+Changheun Lee (3):
+  bio: limit bio max size
+  ufs: set QUEUE_FLAG_LIMIT_BIO_SIZE
+  bio: add limit_bio_size sysfs
 
-I use git bisect to find out the commit 04324f44cb69 ("MIPS: Remove
-get_fs/set_fs") is the first bad commit.
+ Documentation/ABI/testing/sysfs-block | 10 ++++++++++
+ Documentation/block/queue-sysfs.rst   |  7 +++++++
+ block/bio.c                           | 13 ++++++++++++-
+ block/blk-settings.c                  | 17 +++++++++++++++++
+ block/blk-sysfs.c                     |  3 +++
+ drivers/scsi/scsi_lib.c               |  2 ++
+ drivers/scsi/ufs/ufshcd.c             |  1 +
+ include/linux/bio.h                   |  4 +++-
+ include/linux/blkdev.h                |  4 ++++
+ include/scsi/scsi_host.h              |  2 ++
+ 10 files changed, 61 insertions(+), 2 deletions(-)
 
-I analysis and test the changes in the above first bad commit and then
-find out the following obvious difference which leads to the login issue.
-
-arch/mips/include/asm/uaccess.h
-static inline long strnlen_user(const char __user *s, long n)
-{
-	[...]
-	if (!access_ok(s, n))
-		return -0;
-	[...]
-}
-
-I use dump_stack() to find out the following call trace:
-load_module()
-	strndup_user()
-		strnlen_user()
-
-load_module() failed in the following error path, we can see that the
-second argument of strndup_user() is very big.
-
-static int load_module(struct load_info *info, const char __user *uargs,
-		       int flags)
-{
-	[...]
-	mod->args = strndup_user(uargs, ~0UL >> 1);
-	if (IS_ERR(mod->args)) {
-		err = PTR_ERR(mod->args);
-		goto free_arch_cleanup;
-	}
-	[...]
-}
-
-As discussed earlier [1], it seems that just modify the exception check
-condition in strnlen_user() to fix load_module() failure, like this:
-
-diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index 9e9e3aa..f4fb8ca 100644
---- a/arch/mips/include/asm/uaccess.h
-+++ b/arch/mips/include/asm/uaccess.h
-@@ -612,8 +612,8 @@ static inline long strnlen_user(const char __user *s, long n)
- {
- 	long res;
-
--	if (!access_ok(s, n))
--		return -0;
-+	if (!access_ok(s, 1))
-+		return 0;
-
- 	might_fault();
- 	__asm__ __volatile__(
-
-At the other hand, I search strndup_user() in the kernel tree, the second
-argument of them are almost a macro or a fixed value which is relatively
-small, such as PAGE_SIZE, PATH_MAX. So I think maybe we can use ARG_MAX as
-second argument of strndup_user() in load_module().
-
-With this patch, the load_module() failure disappered and we can login
-normally through a graphical interface.
-
-[1] https://lore.kernel.org/patchwork/patch/1411214/
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- kernel/module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 3047935..30d320b 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3998,7 +3998,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 	flush_module_icache(mod);
- 
- 	/* Now copy in args */
--	mod->args = strndup_user(uargs, ~0UL >> 1);
-+	mod->args = strndup_user(uargs, ARG_MAX);
- 	if (IS_ERR(mod->args)) {
- 		err = PTR_ERR(mod->args);
- 		goto free_arch_cleanup;
 -- 
-2.1.0
+2.29.0
 
