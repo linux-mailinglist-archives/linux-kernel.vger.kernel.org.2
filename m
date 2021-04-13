@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D78A35D812
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A7635D818
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242514AbhDMGaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230418AbhDMGaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:30:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD1D6103D;
-        Tue, 13 Apr 2021 06:29:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618295384;
-        bh=sPxJl1FBKHo9wvJk+aIWpc4405aN7VFdL2pRj5QVE14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rN6whHDsadLaWVJvPMV6+udmq/X6jqoxmR/vzyfXcnG6zNO343BmMJIP3EZZgq5Rl
-         sHXKP5N6ca24t6FCVkuMMoj2aNdTHuTf5y+AMz41V07Zti2B2YVeUGPFErW5HEuaNI
-         AOn3s+QaH/t2dOsTLT1v1UKY0/Sbr779NJh83V1nY+6C27d6EyXwdw94P6QuyB+R2O
-         jWPCnolyzrUsf1ykYtoY6bK2Fw+vpuWijUU4oZqahT7iIQfMkRY3VLp2vaV/2ir0fM
-         Vv1wKjKnJBsq5jK+Mwvvnfc7Sga7x56wGPyyEGrgvNWLKnd0/cXfdjXnCVOHT7/bgR
-         HO0r+RSbod0Ww==
-Date:   Tue, 13 Apr 2021 09:29:41 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
- use it in RDS
-Message-ID: <YHU6VXP6kZABXIYA@unreal>
-References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
- <20210412225847.GA1189461@nvidia.com>
+        id S244028AbhDMGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhDMGcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 02:32:00 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69149C061574;
+        Mon, 12 Apr 2021 23:31:40 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FKG3970gmz9sVb;
+        Tue, 13 Apr 2021 16:31:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1618295497;
+        bh=tMH4STlE0KCPkig0ixz3tk4Pi9eX9DRFBNDHWYY01Ts=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o2/PtY2poIFEx77VRY0BfPEzN/kb88EHi7/vCJWpPx+lINy6RBoE2ODKSw8EAuoS0
+         pqMFuC4cNfJ1iKEu61nuc50SL+B2Vf3oH/z+eufKAVYJLlj9ryfjyDNy02Rz2u2qJM
+         yv+EoMmVWFFCbKMeNmTast89xuFs+sBbNFOe4myjLJ+02Ej+NMfYfy/1QeRdJaV/vV
+         y4+hQOjO7Kw4uW47mSQQMfxcibmWTRihbkri1Hp8VJvrarJ2rYsWSm3eHbOs86hgWC
+         VTaicS0GIPCdSyviECNSmn6tTP6yVjhLG3IXo0yAw9hQMp5PfVEiRpq5vz4VQhsvoY
+         1abQoEgmQRejg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dima@arista.com, avagin@gmail.com, arnd@arndb.de,
+        vincenzo.frascino@arm.com, luto@kernel.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 0/4] powerpc/vdso: Add support for time
+ namespaces
+In-Reply-To: <87mtu31xd3.ffs@nanos.tec.linutronix.de>
+References: <cover.1617209141.git.christophe.leroy@csgroup.eu>
+ <87mtu31xd3.ffs@nanos.tec.linutronix.de>
+Date:   Tue, 13 Apr 2021 16:31:33 +1000
+Message-ID: <87tuoag0fu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210412225847.GA1189461@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:58:47PM -0300, Jason Gunthorpe wrote:
-> On Wed, Mar 31, 2021 at 08:43:12PM +0200, Håkon Bugge wrote:
-> > ib_modify_qp() is an expensive operation on some HCAs running
-> > virtualized. This series removes two ib_modify_qp() calls from RDS.
-> > 
-> > I am sending this as a v3, even though it is the first sent to
-> > net. This because the IB Core commit has reach v3.
-> > 
-> > Håkon Bugge (2):
-> >   IB/cma: Introduce rdma_set_min_rnr_timer()
-> >   rds: ib: Remove two ib_modify_qp() calls
-> 
-> Applied to rdma for-next, thanks
+Thomas Gleixner <tglx@linutronix.de> writes:
+> On Wed, Mar 31 2021 at 16:48, Christophe Leroy wrote:
+>> [Sorry, resending with complete destination list, I used the wrong script on the first delivery]
+>>
+>> This series adds support for time namespaces on powerpc.
+>>
+>> All timens selftests are successfull.
+>
+> If PPC people want to pick up the whole lot, no objections from my side.
 
-Jason,
+Thanks, will do.
 
-It should be 
-+	WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT);
-
-and not
-+	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT))
-+		return -EINVAL;
-
-Thanks
-
-> 
-> Jason
+cheers
