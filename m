@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4437D35E77D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAEA35E780
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348161AbhDMURB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:17:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhDMURA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:17:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F316161242
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618345000;
-        bh=018/wT7YNp41Opa/wOlmQasGzutY4YJko3lMFOUYFkU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uFTx73jL2VN8tGeX/xS4VRQQEnRCaJMsw+8u4HZa2mlUUgFPXWNvef27/irWxa38o
-         oXuYsjbNHVxp/mdgNSFtZbmRRlsVUms/ULYQsQIwyRNDVloi5PGrQEeOEyp04wVxdM
-         yw5ZyTNQlZCPppcmp1f+5QI40eAq3mydIZZLIpsmo/4S9nB9dvkn3yANO54pmA81n+
-         itSuME8eZYjKe2dRFcAQChPsuWRUyK60CCxB7iQF7PrtudQ9rM20m6FNjpDBxnHiNX
-         etlD+IcrURJKi2o7VUaEN0Xm+wUdCQ2wA6ke1athykkb2kgWJh7gj/ZDcp1Hk9Zg0O
-         DhVUAMpsqp8Wg==
-Received: by mail-ed1-f54.google.com with SMTP id 18so20925459edx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:16:39 -0700 (PDT)
-X-Gm-Message-State: AOAM530Py8j/kzdMTHLgBkE1sZcCcVXhGRvfuVBXVttJ5LD/ojmvXVkY
-        c2qoeS/k/6QNXYWQGGpuON3/2XJQzaCL3BNz2F0boQ==
-X-Google-Smtp-Source: ABdhPJz7z2X87zi2gHmfkAhv+g3fXHvwguoTjKVadVygUMK05U6oCXWxRpoCYKJtJ7EbRn8B3ifu6UmLIDXROcSXykE=
-X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr36407363edb.97.1618344998640;
- Tue, 13 Apr 2021 13:16:38 -0700 (PDT)
+        id S1348164AbhDMURP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:17:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21774 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229590AbhDMURO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 16:17:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618345014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iFBhLR1Gx0aeiV6J1eM1yEOIsjeKpw+FknvPJH209wU=;
+        b=OfwZdNZ7FEpdjwMMGE82ZG6+x5WYimn5GoBeFLZGxp7bWBZiP6v0PMRmdKlIxMXq1vm4HM
+        7JEP/uGOY+ZTlh3obQKqCRKMflgJci9vLHh+RU47Xqm1qNV3MM/SNVw2yEkUbvDXi9rcv2
+        Bt+MIw8otm1uAd3RjJk3RCDvonQf0gw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-HN5anrSkMoyO_NPIhMZ-PA-1; Tue, 13 Apr 2021 16:16:52 -0400
+X-MC-Unique: HN5anrSkMoyO_NPIhMZ-PA-1
+Received: by mail-qv1-f69.google.com with SMTP id u7so10774720qvf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iFBhLR1Gx0aeiV6J1eM1yEOIsjeKpw+FknvPJH209wU=;
+        b=AlNTPpeebxAC0tNksXiwdimG+iKDQLDNbCFUylfQhGDx161mH2BW1juPkx2UcRLWEE
+         jE/jD2vlM9e6mh6qTP4Qdyat7lbO6AadPbJriu7iZzDuG5FKmVvSENfx7T7jRbsZE6QJ
+         E1jpD0B6rJ33DwS1D3LODZqefZUxyXfpaRWk8rqVu9vYK6zitNffmoZid5rx2tbRr1+p
+         2CFtLuSP5Gg+zLaMH46+/ZLPwL2z2Q21y0Yf/QZxXxRa58dtKR/141i0Mbgzk8JvfS1I
+         LRFD59e/Qm4Vhl58LxzTT1t48m6ix8bl9FSftK1n5CNXR5G+sgUvk+5fb74KdR9ztKoy
+         6CYw==
+X-Gm-Message-State: AOAM531WFG4i7LJxxOnyqhNSpZRdLgsK/DBlQ6ZUAtBUQfwwpAoSWD4g
+        Gbjcmf66MFB6tkxCUFnBdYj64Q3bpB8ixHOgm5d6qF0dn9GKf66tsce2JUB/8JXZ9IUvQW5VdBH
+        I9Hb+my1LckFrGIcJXAkmiW3p
+X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr33673816qki.27.1618345012351;
+        Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx3IttBM2aAsbOlGIkYA5j8AtGXTYyXS8sJV22svEAsTrySp6idSonzYhdMsJWvU4N7vhjqHw==
+X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr33673803qki.27.1618345012160;
+        Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id t4sm4362370qkg.75.2021.04.13.13.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 13:16:51 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 16:16:49 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v2 5/9] userfaultfd/selftests: use memfd_create for shmem
+ test type
+Message-ID: <20210413201649.GE4440@xz-x1>
+References: <20210413051721.2896915-1-axelrasmussen@google.com>
+ <20210413051721.2896915-6-axelrasmussen@google.com>
 MIME-Version: 1.0
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
- <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
- <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
-In-Reply-To: <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 13 Apr 2021 13:16:27 -0700
-X-Gmail-Original-Message-ID: <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
-Message-ID: <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Len Brown <lenb@kernel.org>, Willy Tarreau <w@1wt.eu>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210413051721.2896915-6-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 4:46 PM Len Brown <lenb@kernel.org> wrote:
->
-> On Mon, Apr 12, 2021 at 11:21 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> > AMX: Multiplying a 4x4 matrix probably looks *great* in a
-> > microbenchmark.  Do it once and you permanently allocate 8kB (is that
-> > even a constant?  can it grow in newer parts?), potentially hurts all
-> > future context switches, and does who-knows-what to Turbo licenses and
-> > such.
->
-> Intel expects that AMX will be extremely valuable to key workloads.
-> It is true that you may never run that kind of workload on the machine
-> in front of you,
-> and so you have every right to be doubtful about the value of AMX.
+On Mon, Apr 12, 2021 at 10:17:17PM -0700, Axel Rasmussen wrote:
+> This is a preparatory commit. In the future, we want to be able to setup
+> alias mappings for area_src and area_dst in the shmem test, like we do
+> in the hugetlb_shared test. With a VMA obtained via
+> mmap(MAP_ANONYMOUS | MAP_SHARED), it isn't clear how to do this.
+> 
+> So, mmap() with an fd, so we can create alias mappings. Use memfd_create
+> instead of actually passing in a tmpfs path like hugetlb does, since
+> it's more convenient / simpler to run, and works just as well.
+> 
+> Future commits will:
+> 
+> 1. Setup the alias mappings.
+> 2. Extend our tests to actually take advantage of this, to test new
+>    userfaultfd behavior being introduced in this series.
+> 
+> Also, a small fix in the area we're changing: when the hugetlb setup
+> fails in main(), pass in the right argv[] so we actually print out the
+> hugetlb file path.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-I fully believe that AMX will be amazing when used for the right
-workload.  The problem is that a library may have no way to tell
-whether a workload is the type of computationally intensive workload
-for which it makes sense.  Imagine you have a little function:
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
-int matrix_times_vector(int dim, float *out, const float *matrix,
-const float *vector);
+-- 
+Peter Xu
 
-A clever library might use AMX for this.  If dim == 4 and the caller
-is planning to call it in a long, tight loop, maybe this even makes
-sense.  If dim == 4 and it's being called once, AMX is probably a
-losing proposition.  With previous technologies, at least the impact
-was limited to the function itself and maybe once per call to the
-caller.  But now, with AMX, the program that invoked this takes a
-performance and memory hit *forever* if it uses AMX once.
-
-Beyond that, we have the signal handling issue.  One solution, going
-off of what WIlly mentioned, is:
-
-bool amx_begin(void *signal_save_buffer);
-void amx_end();
-
-In the amx_begin() region, if you get a signal, the AMX state is saved
-in the buffer.  Outside the region, if you get a signal and AMX is in
-use, the kernel will either unceremoniously kill the task or will
-deliver SIGYOUBLEWIT. [0]
-
-I'm really hoping some userspace people can chime in.
-
-
-[0] We really ought to have a SIGSIGNALFAILURE or something for the
-case where normal signal delivery fails.  This is the userspace
-equivalent of #DF.  SIGYOUBLEWIT could be folded in.  There would be a
-flag in the signal frame saying "don't even try to sigreturn".
