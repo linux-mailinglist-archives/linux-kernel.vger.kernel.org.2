@@ -2,82 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB59035D5EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8568235D5F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344321AbhDMDaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245500AbhDMDaQ (ORCPT
+        id S1344354AbhDMDcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:32:22 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:52164 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241613AbhDMDcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:30:16 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE762C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:29:57 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so3438096pja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=DynDyWvccRYWPixdZN4H8oJ4zvAUSDNQf2dmUS2wW00=;
-        b=Ql2Y2Kg3KxgNqF3Zg8yz0YIMGEicTbn1eIgNdhf4EPE2qyysjk8AssDl42K3Div+5T
-         /4xnHeJVzx4DG9EHMdtng46958IMwdL0u1FlfgKzZapuBL42VnweL9/i3pYSquPq/GCE
-         y16hpkz/ha8LsmU7OZiz0FcfjDQCJvz2sCi5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=DynDyWvccRYWPixdZN4H8oJ4zvAUSDNQf2dmUS2wW00=;
-        b=gfjzmQBx9Z/D8ZqjN0cwCMHa36F+0nmyJoGZS9OUfGwy3YzLX+MCH+XT9+hvbralZH
-         P1etyCH+ByveUCf6ysRq1/Q2lDFLXE8409xdCzRPkNw243IfPVVg2PyUoLKXk9nB0VQU
-         EFn6jTw1Oubx9h+gs/gVOYs5suRRRUn7t6I3bbxhaYK5Kb7DAUcRKcMc4Z3iI+YU1K4j
-         528PIGS16eVj4GXYJrqRuGS+t8SlxBVDdwC7EqwW3EbIHQej6TdkbRG0PnLFxhLyKLkP
-         pvlnofyJCT7QAPBvZDKkXvqrB99xBjlmb6EUvG5ot0KzMs1r/1b8/oGujE1HCiQYkp9Z
-         XZag==
-X-Gm-Message-State: AOAM533xXusSI0N6vEyiarb3yEuMZ7tOkj1Z7dnLJBIeLKKAGjOfkEdB
-        /iqfpBdhKLT6gjwenWaim/Ma1A==
-X-Google-Smtp-Source: ABdhPJw9dbnsMYGsSa9Am46g8wAw3a8D88wOwThNmlb1jIzTMyJnO6BG+AI6KgAd6QyZgQVycVY1Vg==
-X-Received: by 2002:a17:90a:e28b:: with SMTP id d11mr2583048pjz.53.1618284597380;
-        Mon, 12 Apr 2021 20:29:57 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
-        by smtp.gmail.com with ESMTPSA id r1sm11724978pfh.153.2021.04.12.20.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 20:29:57 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 12 Apr 2021 23:32:21 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 13D3LYpM091103;
+        Tue, 13 Apr 2021 11:21:34 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr
+ 2021 11:31:58 +0800
+Date:   Tue, 13 Apr 2021 11:31:56 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ryan Chen <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio
+ and power-switch-gpio
+Message-ID: <20210413033155.GA3522@aspeedtech.com>
+References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
+ <20210408015218.20560-2-steven_lee@aspeedtech.com>
+ <CAPDyKFr=Gtwu4v22FBaax5EjRbXTNez1N2ZQxP=v0LKGFTCovw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618246971-28754-1-git-send-email-khsieh@codeaurora.org>
-References: <1618246971-28754-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH 1/2] drm/msm/dp: check sink_count before update is_connected status
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Mon, 12 Apr 2021 20:29:55 -0700
-Message-ID: <161828459569.3764895.16686521998891540267@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFr=Gtwu4v22FBaax5EjRbXTNez1N2ZQxP=v0LKGFTCovw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 13D3LYpM091103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-04-12 10:02:51)
-> At pm_resume check link sisnk_count before update is_connected status
-> base on HPD real time link status. Also print out error message only
-> when either EV_CONNECT_PENDING_TIMEOUT or EV_DISCONNECT_PENDING_TIMEOUT
-> happen.
->=20
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+The 04/12/2021 15:38, Ulf Hansson wrote:
+> On Thu, 8 Apr 2021 at 03:52, Steven Lee <steven_lee@aspeedtech.com> wrote:
+> >
+> > AST2600-A2 EVB provides the reference design for enabling SD bus power
+> > and toggling SD bus signal voltage by GPIO pins.
+> > Add the definition and example for power-gpio and power-switch-gpio
+> > properties.
+> >
+> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
+> > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
+> > a 1.8v and a 3.3v power load switch that providing signal voltage to
+> > SD1 bus.
+> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > disabled.
+> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
+> > voltage is 3.3v. Otherwise, 1.8v power load switch will be enabled, SD1
+> > signal voltage becomes 1.8v.
+> >
+> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and GPIOV3
+> > as power-switch-gpio.
+> 
+> Thanks for sharing the details, it certainly helps while reviewing.
+> 
+> >
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > index 987b287f3bff..515a74614f3c 100644
+> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > @@ -37,6 +37,14 @@ properties:
+> >    clocks:
+> >      maxItems: 1
+> >      description: The SD/SDIO controller clock gate
+> > +  power-gpio:
+> > +    description:
+> > +      The GPIO for enabling/disabling SD bus power.
+> > +    maxItems: 1
+> > +  power-switch-gpio:
+> > +    description:
+> > +      The GPIO for toggling the signal voltage between 3.3v and 1.8v.
+> > +    maxItems: 1
+> 
+> 
+> >
+> >  patternProperties:
+> >    "^sdhci@[0-9a-f]+$":
+> > @@ -61,6 +69,14 @@ patternProperties:
+> >        sdhci,auto-cmd12:
+> >          type: boolean
+> >          description: Specifies that controller should use auto CMD12
+> > +      power-gpio:
+> > +        description:
+> > +          The GPIO for enabling/disabling SD bus power.
+> > +        maxItems: 1
+> > +      power-switch-gpio:
+> > +        description:
+> > +          The GPIO for toggling the signal voltage between 3.3v and 1.8v.
+> > +        maxItems: 1
+> >      required:
+> 
+> Please do not model these as GPIO pins like this. Instead, it's better
+> to model them as gpio regulators, since the mmc core manages them as
+> regulators.
+> 
+> We have a vmmc regulator (corresponding to vdd) and a vqmmc regulator
+> (corresponding the signal-voltage level). These are also described in
+> the common mmc DT bindings, see
+> Documentation/devicetree/bindings/mmc/mmc-controller.yaml.
+> 
 
-Also please include
+Thanks for the information. I will modify it.
 
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-
-in the next post.
+> >        - compatible
+> >        - reg
+> > @@ -80,6 +96,7 @@ required:
+> >  examples:
+> >    - |
+> >      #include <dt-bindings/clock/aspeed-clock.h>
+> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
+> >      sdc@1e740000 {
+> >              compatible = "aspeed,ast2500-sd-controller";
+> >              reg = <0x1e740000 0x100>;
+> > @@ -94,6 +111,10 @@ examples:
+> >                      interrupts = <26>;
+> >                      sdhci,auto-cmd12;
+> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 0)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 1)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> >              };
+> >
+> >              sdhci1: sdhci@200 {
+> > @@ -102,5 +123,9 @@ examples:
+> >                      interrupts = <26>;
+> >                      sdhci,auto-cmd12;
+> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 2)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 3)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> >              };
+> >      };
+> 
+> Kind regards
+> Uffe
