@@ -2,136 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BE535E671
+	by mail.lfdr.de (Postfix) with ESMTP id B6CC535E672
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347850AbhDMSal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S1347861AbhDMSbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347819AbhDMSaT (ORCPT
+        with ESMTP id S231787AbhDMSbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:30:19 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E03C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:29:56 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id t9so6562600ybd.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:29:56 -0700 (PDT)
+        Tue, 13 Apr 2021 14:31:04 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48909C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:30:44 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g17so19808816edm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:30:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=ZLBo4g8Ay3j59zTWAeAVK1AEJcKiEUGCOtGCkug1Xm8=;
-        b=AaD3yleh8mz8kgSJJgqPAiZzvg6sryX2ta9uwSnAsRDcOcNyBAbY6KGhgzO1rlhZBk
-         11s8XkfFEJZlnp8hq6zog+bkCHpC1mn1LqL072WlJoBjJps9nBO25CktotduMpIWW42P
-         +26fZ5B1q4UHwQZ03a8ZOZHEXU/wZ7TS+4UiaRSR4AaacU0iDirwJlg2swGqzp1U5QO4
-         5i0+2mdrYyoIVyZJgfVttKgwtzIOH8soEck0FTGklOL7GtKvwrVKHnXlGXeh46xptfAQ
-         2rZgtnvJI3SifCu2tSfdEDQjj0Aqup16XyOP85/CBIB32dYa9W6QT4FyVkW9E/HDUFGG
-         4kaw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=99F53NVNWQBwxX1Mzz0xGwNtjs0DyLQjl7oHgfB7e+8=;
+        b=Wva5nn9YWOZ7JK0xjBRFO6MIIoiOkmo+5WiqG5rmc9rc4vuYeRPW/Zi5S0Jd/ZbB4H
+         uJ7XuXAoEtyvXMcHKFksOg+wGCBRrzeCAP9o1RMaC9cH28dCOFgGHtyZM1IAABNhxtOm
+         Pd0GOz26XFK7UmEhGEbPqbtNlDALmhVnJEm6ZFBVmYlRKbbuhzefr360TMbaRzR74aMx
+         ue/I84hF+zVXSL6Fdiq6HSK8QPt65kcCgPUE3Q/RIlaf9v0qpDxIgjuM7fDAAQpHl29I
+         XqlBqrARrqOAZ1RL3gWe1rhvQZtgCTL8XrmeRgMLu7yz+YXhdmvt4EZxHmgoQs+gbu8y
+         d8/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=ZLBo4g8Ay3j59zTWAeAVK1AEJcKiEUGCOtGCkug1Xm8=;
-        b=W3MIwck4gNA96DQ0NN99YCqS0AyouARxa8C1kfhCXDBRyFlaMgbqM5TF3MTbVpx1cP
-         IahK15vle+RJWbGGaVhR5JFn4p6s3Pg/Qq2fF4ypgUfb9jd75s8BSpF7NNIL2vA+pBuy
-         EyZBT3OHzhGePyOwtpsvRz5gFPFVB2obgQoNif1OoRxf7/nQ4HOFGmBkSt6qEicMiQDr
-         rN8ox1X49Z1cuQiP2bD4C9jZSgLSRWLPpJl6b5sjZZrDxsIxSB7ClmTPp1DE6mF3f4RN
-         wvNby9k6Acj+vA9iZayGkqofqtc5cAvIrmPB4ai0EBHC2HHNEvWx4b5xuF7UXHAVQIL/
-         W26g==
-X-Gm-Message-State: AOAM5319+s7/g0gpHZP+dO0FJ62MtExCxG1ccceTB+Ir1yjm1oHVQrkA
-        iyLuLV5q+g2zMMsHOdRf1Xr2CHzQOoY=
-X-Google-Smtp-Source: ABdhPJzgDbopp2o77po8l7A/S0LFZa5mDiEt8CIMZnU2TNFpHgkoh9deOcwEfKMMMuWk2+TVZO+w/WwC2bU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:f031:9c1c:56c7:c3bf])
- (user=seanjc job=sendgmr) by 2002:a25:ba87:: with SMTP id s7mr45194375ybg.222.1618338596029;
- Tue, 13 Apr 2021 11:29:56 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 13 Apr 2021 11:29:33 -0700
-In-Reply-To: <20210413182933.1046389-1-seanjc@google.com>
-Message-Id: <20210413182933.1046389-8-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210413182933.1046389-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [RFC PATCH 7/7] KVM: x86: Defer tick-based accounting 'til after IRQ handling
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Tokarev <mjt@tls.msk.ru>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=99F53NVNWQBwxX1Mzz0xGwNtjs0DyLQjl7oHgfB7e+8=;
+        b=IJ+wdgcfSSF3+lJ+kvjCLN9/cjpwaTaCsH+1o+xPYe7/75IE3XW1/u0jZBgY32Ma8G
+         Moy4dV4weXd8btZB15rpbr3V0OcRm//9hQF8q7Gb4+tSUGKcVLQc+kEsR/cH6ZMZilht
+         +60td10xR7NAbEDMuS7ti4DVFlVGgaJ6gX3OBT3qg/DO+8CSf02MYqvc0DyXmg6sLiEd
+         UA/OoBqWEbESOjjFWpwuRytSMzGZn29N9vNWPuDwIpQPOw6AA11h1eRPfuRFzCa3wMu8
+         y6cv7e7AaHEqz1vappo9D4LwyQbKg+Yw0264uJRgZtDpwGRc+o3aS5oDkADesDemDH+X
+         +7GA==
+X-Gm-Message-State: AOAM532R+DwcGMSINWTHS3CmuurwWG7BQZUI/MAempIYOGzIGWYampKs
+        ObN0/SYs3Zptcd9QbdclVIw=
+X-Google-Smtp-Source: ABdhPJy47WwQ5xWba4QPGSm3CH7izt0aWMyUyHG1rPlziXO6exjus11KkmyZgF6Yym7Y1NIcbJ0EQA==
+X-Received: by 2002:aa7:db9a:: with SMTP id u26mr35975916edt.292.1618338642983;
+        Tue, 13 Apr 2021 11:30:42 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id i5sm374101edv.68.2021.04.13.11.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 11:30:42 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] :staging: rtl8723bs: Remove useless led_blink_hdl()
+Date:   Tue, 13 Apr 2021 20:30:41 +0200
+Message-ID: <4666345.5ezhEZ0rgB@linux.local>
+In-Reply-To: <20210413182050.GJ6021@kadam>
+References: <20210413155908.8691-1-fmdefrancesco@gmail.com> <3381109.TaO10cqo9c@linux.local> <20210413182050.GJ6021@kadam>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using tick-based accounting, defer the call to account guest time
-until after servicing any IRQ(s) that happened in the guest (or
-immediately after VM-Exit).  When using tick-based accounting, time is
-accounted to the guest when PF_VCPU is set when the tick IRQ handler
-runs.  The current approach of unconditionally accounting time in
-kvm_guest_exit_irqoff() prevents IRQs that occur in the guest from ever
-being processed with PF_VCPU set, since PF_VCPU ends up being set only
-during the relatively short VM-Enter sequence, which runs entirely with
-IRQs disabled.
+On Tuesday, April 13, 2021 8:20:50 PM CEST Dan Carpenter wrote:
+> On Tue, Apr 13, 2021 at 06:47:06PM +0200, Fabio M. De Francesco wrote:
+> > On Tuesday, April 13, 2021 6:27:17 PM CEST Julia Lawall wrote:
+> > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
+> > > > On Tuesday, April 13, 2021 6:04:16 PM CEST Julia Lawall wrote:
+> > > > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
+> > > > > > Removed the led_blink_hdl() function (declaration, definition,
+> > > > > > and
+> > > > > > caller code) because it's useless. It only seems to check
+> > > > > > whether
+> > > > > > or
+> > > > > > not a given pointer is NULL. There are other (simpler) means
+> > > > > > for
+> > > > > > that
+> > > > > > purpose.
+> > > > > > 
+> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > > > > ---
+> > > > > > 
+> > > > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 1 -
+> > > > > >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
+> > > > > >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
+> > > > > >  3 files changed, 11 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
+> > > > > > 0297fbad7bce..4c44dfd21514 100644
+> > > > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > > > > @@ -150,7 +150,6 @@ static struct cmd_hdl wlancmds[] = {
+> > > > > > 
+> > > > > >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
+> > > > > >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param),
+> > > > > >  	set_chplan_hdl) /*59*/>
+> > > > > > 
+> > > > > > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param),
+> > > > 
+> > > > led_blink_hdl)
+> > > > 
+> > > > > > /*60*/
+> > > > > 
+> > > > > This is worrisome.  Doyou fully understand the impact of this? 
+> > > > > If
+> > > > > not,
+> > > > > the change is probably not a good idea.
+> > > > 
+> > > > This is that macro definition:
+> > > > 
+> > > > #define GEN_MLME_EXT_HANDLER(size, cmd) {size, cmd},
+> > > > 
+> > > > struct C2HEvent_Header {
+> > > > 
+> > > > #ifdef __LITTLE_ENDIAN
+> > > > 
+> > > >         unsigned int len:16;
+> > > >         unsigned int ID:8;
+> > > >         unsigned int seq:8;
+> > > > 
+> > > > #else
+> > > > 
+> > > >         unsigned int seq:8;
+> > > >         unsigned int ID:8;
+> > > >         unsigned int len:16;
+> > > > 
+> > > > #endif
+> > > > 
+> > > >         unsigned int rsvd;
+> > > > 
+> > > > };
+> > > > 
+> > > > It's a bit convoluted with regard to my experience. Probably I
+> > > > don't
+> > > > understand it fully, but it seems to me to not having effects to
+> > > > the
+> > > > code where I removed its use within core/rtw_cmd.c.
+> > > > 
+> > > > What am I missing?
+> > > 
+> > > It seems that the function is being put into an array.  Probably
+> > > someone
+> > > expects to find it there.  Probably you have shifted all of the
+> > > functions that come afterwards back one slot so that they are all in
+> > > the wrong places.
+> > > 
+> > > julia
+> > 
+> > Thanks for your explanation. Obviously this implies that the function
+> > cannot be removed, unless one fill the slot that is deleted by to not
+> > calling this macro at the right moment.
+> > 
+> > I also suppose that providing a function pointer with a NULL value
+> > wouldn't work either.
+> 
+> It would work.  That array is full of NULL function pointers.
+> 
+Interesting, thanks.
 
-Fixes: 87fa7f3e98a131 ("x86/kvm: Move context tracking where it belongs")
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Michael Tokarev <mjt@tls.msk.ru>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 8 ++++++++
- arch/x86/kvm/x86.h | 9 ++++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
+I'm going to remove that function and replace its name in the macro with a 
+NULL function pointer.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 16fb39503296..096bbf50b7a9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9230,6 +9230,14 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	local_irq_disable();
- 	kvm_after_interrupt(vcpu);
- 
-+	/*
-+	 * When using tick-based account, wait until after servicing IRQs to
-+	 * account guest time so that any ticks that occurred while running the
-+	 * guest are properly accounted to the guest.
-+	 */
-+	if (!IS_ENABLED(CONFIG_VIRT_CPU_ACCOUNTING_GEN))
-+		kvm_vtime_account_guest_exit();
-+
- 	if (lapic_in_kernel(vcpu)) {
- 		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
- 		if (delta != S64_MIN) {
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 74ef92f47db8..039a7d585925 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -38,15 +38,18 @@ static __always_inline void kvm_guest_exit_irqoff(void)
- 	 * have them in state 'on' as recorded before entering guest mode.
- 	 * Same as enter_from_user_mode().
- 	 *
--	 * guest_exit_irqoff() restores host context and reinstates RCU if
--	 * enabled and required.
-+	 * context_tracking_guest_exit_irqoff() restores host context and
-+	 * reinstates RCU if enabled and required.
- 	 *
- 	 * This needs to be done before the below as native_read_msr()
- 	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
- 	 * into world and some more.
- 	 */
- 	lockdep_hardirqs_off(CALLER_ADDR0);
--	guest_exit_irqoff();
-+	context_tracking_guest_exit_irqoff();
-+
-+	if (IS_ENABLED(CONFIG_VIRT_CPU_ACCOUNTING_GEN))
-+		kvm_vtime_account_guest_exit();
- 
- 	instrumentation_begin();
- 	trace_hardirqs_off_finish();
--- 
-2.31.1.295.g9ea45b61b8-goog
+I couldn't believe it would work when I wrote about that.
+
+Thanks a lot,
+
+Fabio
+>
+> regards,
+> dan carpenter
+
+
 
