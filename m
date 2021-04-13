@@ -2,170 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEB035E4DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E6B35E4E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347088AbhDMRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:20:10 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:37578 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345795AbhDMRUJ (ORCPT
+        id S1347131AbhDMRVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:21:52 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]:37573 "EHLO
+        mail-qk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347127AbhDMRVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:20:09 -0400
-Received: by mail-ej1-f48.google.com with SMTP id w3so27215690ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:19:49 -0700 (PDT)
+        Tue, 13 Apr 2021 13:21:44 -0400
+Received: by mail-qk1-f179.google.com with SMTP id 130so4417120qkm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:21:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jkvzafPbrg+X+AJ3kwsFhRtlHXxaUDuQz4L61cHSRfI=;
-        b=ZKxHa37AHjBKNTVdaQFI+GHYjgFIxeUZfVAEeXygst02YvDcjNQiRX+XXvQdI7or1/
-         qPKdT6b+6CzeW5cTb/Y+5ZW8P4HW4Qui7I1RzOgX7+AIwC0+Bsbyr9zJg/7e3vtG0ZEj
-         R/4xGN+YYfeHK5wA2yychUfznxx7DMUkXxNvNYorIvwR6rTx7nGNG5muXrLex7WGOA8T
-         tf7dPdKNpOJlMDd1V71yNI3IBv74smhUwoybq1i5v5QXLBFSQR+BFiJBH3xu/His8DU9
-         R53CzyMmCECAeYgDQA0WBL8yIZQfcg0ldsmlax/FPx9Lkc6Jrqn76f0a8c/wNeyZicLu
-         7Lig==
+        bh=OxU0Eujrm9GQyvXdIjhuiVVTC0s99PIjeEwmRYVaK0M=;
+        b=TvQ0AiMsfQyBkVrkMDo18tZSvp8ItDKLX9tIp24gJJi9NrydOSekkMLSPHzrYhWjkV
+         kXfwlD8SA8kKV/fBmZHnkDl7WgoA2uz4kz0fJ7rWdXXQ69IkfLAnlDT/vm7Ptw/lexEa
+         iDybKWcdRXGnOCWSfkGPqZ4dkCHaoRuNzrxQ3wkNmL7avVA1jv66QGIuJhTalp9yccWi
+         NABnGz+dNplEJ3EybgzfEkASRU8pZxjuDuM6zwCBX4Yf/H0dXOQrFGg1UjfcT/g2x+fp
+         Gr8+YicXBTWxLVD1DR4OjHi8EUuWZpJeAkBPbQKhcUAPTTHmILuIgSiCpcB9SfHGysPL
+         ZPAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jkvzafPbrg+X+AJ3kwsFhRtlHXxaUDuQz4L61cHSRfI=;
-        b=XSMcflVdvE1sbNzySG456dCr2FvamN3RmMiDYOA1lz86qqBHNbcxuBt1dhg+5zPWY7
-         k3SsnjP0SK9Yo89zy/jZw7rFaX6KcfJ4KaSfWNGd9bdpU633PqTfBKWBr3g97g/uuptx
-         RPMjashgSdhdEx7lOVl69qP90rnB0ouAGsyOWx8VsBKiedBC97o1G6eAulINBIpPmqf6
-         uhXQY4BFxwJchVUGZqnMFne0XwVcq4HqKdmPbK5J6p0GVrJ4Q0nKvOKigSaR7xOuvVYx
-         Gbl+pHkBEN+FS0HUjXy+3wXIIzOyJWtfSJT5toho6kfsOdRTMRzyX+erlVEnrn+t6TK0
-         KEhg==
-X-Gm-Message-State: AOAM533R/jsit5pK2HgXZ1vXArmjKOyOqL/CjX7soeY+2KhYxwWWfb9H
-        2632GvqF7a4Cg4llo4+MdTcsUlrCvhKZb7QcP/LGOw==
-X-Google-Smtp-Source: ABdhPJwoSR+MbE+iRqrH9WpFvm2uOWKpJJqFA7IN2EjxRY4vIjqrFQKUasGhoUeRO3cozMnu6lxBofhtBkXQp2gP3U4=
-X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr34126838eji.323.1618334328378;
- Tue, 13 Apr 2021 10:18:48 -0700 (PDT)
+        bh=OxU0Eujrm9GQyvXdIjhuiVVTC0s99PIjeEwmRYVaK0M=;
+        b=Bal5mAaBnqRWur+a4RLKUq+dDU8XUGm6XVFTeURMOUlPkrPx6C76NIaZjP4gaR5GMH
+         hV9VKCNsNOVn2HYgEwjbla5aV/kHKLbTk5v156FhqCwLn83g5c4GFRbk+0ylB8Qvimrc
+         mJu9hBYCyt9wK/mA7zqnbBAjkFQQNZTsePG2OdAXDYWmZQMJFLPCI92/S6p1oZMd37DS
+         E23NJ2eolwS9qSWOJXymz9QOeiG0pcBjuBQfMGGW8EkqlBLfeaW/9WwRyQ2QsrHw5y/v
+         3pXdWpsNJFHU7lCTSwRySEN5OgNZR6bqGBTmQuhYIWOjewczSamTPYOaXYTho9liaWbL
+         CGDA==
+X-Gm-Message-State: AOAM531pcc7Of2xMGjd+XxP/721ePyyIohA+4HRzzpmdx4YEtQ/52yP5
+        TA2S++fFjpfF9Jo++4V5a+gPtFx05ZHMr0PYPke07A==
+X-Google-Smtp-Source: ABdhPJzZbF9SOsSr1JV8btp47Zzg36R3JvHSGAwCv47evxt2VeGK3yqlQo147eL5mHjg5iEX+jdnHlDqSzZOV8YjVsc=
+X-Received: by 2002:a05:620a:243:: with SMTP id q3mr14170127qkn.501.1618334423663;
+ Tue, 13 Apr 2021 10:20:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <161728748083.2474040.753623311074560290.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210408224215.GA1964510@bjorn-Precision-5520> <CAPcyv4hAc=DERr1z8kr=V01+NSi74f-kSfMAdeArLmVb112_Dw@mail.gmail.com>
-In-Reply-To: <CAPcyv4hAc=DERr1z8kr=V01+NSi74f-kSfMAdeArLmVb112_Dw@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 13 Apr 2021 10:18:44 -0700
-Message-ID: <CAPcyv4iQjePCpsG=SxZ-pbHuCX9cxVZtBzyYKVstNowUQg7WPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] cxl/port: Introduce cxl_port objects
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthew Wilcox <willy@infradead.org>
+References: <000000000000ca9a6005bec29ebe@google.com> <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
+ <20210331042922.GE2065@kadam> <20210401121933.GA2710221@ziepe.ca>
+In-Reply-To: <20210401121933.GA2710221@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 13 Apr 2021 19:20:12 +0200
+Message-ID: <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        daniel.vetter@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morris <jmorris@namei.org>,
+        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        m.szyprowski@samsung.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 7:13 PM Dan Williams <dan.j.williams@intel.com> wrote:
+On Thu, Apr 1, 2021 at 2:19 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> Hi Bjorn, thanks for taking a look.
->
->
-> On Thu, Apr 8, 2021 at 3:42 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> On Wed, Mar 31, 2021 at 07:29:22AM +0300, Dan Carpenter wrote:
+> > On Tue, Mar 30, 2021 at 07:04:30PM +0200, Paolo Bonzini wrote:
+> > > On 30/03/21 17:26, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    93129492 Add linux-next specific files for 20210326
+> > > > git tree:       linux-next
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=169ab21ad00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6f2f73285ea94c45
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=015dd7cdbbbc2c180c65
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119b8d06d00000
+> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112e978ad00000
+> > > >
+> > > > The issue was bisected to:
+> > > >
+> > > > commit d40b9fdee6dc819d8fc35f70c345cbe0394cde4c
+> > > > Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > > > Date:   Tue Mar 16 15:33:01 2021 +0000
+> > > >
+> > > >      mm: Add unsafe_follow_pfn
+> > > >
+> > > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122d2016d00000
+> > > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=112d2016d00000
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=162d2016d00000
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com
+> > > > Fixes: d40b9fdee6dc ("mm: Add unsafe_follow_pfn")
+> > >
+> > > This is basically intentional because get_vaddr_frames is broken, isn't it?
+> > > I think it needs to be ignored in syzkaller.
 > >
-> > [+cc Greg, Rafael, Matthew: device model questions]
+> > What?
 > >
-> > Hi Dan,
+> > The bisect is wrong (because it's blaming the commit which added the
+> > warning instead of the commit which added the buggy caller) but the
+> > warning is correct.
 > >
-> > On Thu, Apr 01, 2021 at 07:31:20AM -0700, Dan Williams wrote:
-> > > Once the cxl_root is established then other ports in the hierarchy can
-> > > be attached. The cxl_port object, unlike cxl_root that is associated
-> > > with host bridges, is associated with PCIE Root Ports or PCIE Switch
-> > > Ports. Add cxl_port instances for all PCIE Root Ports in an ACPI0016
-> > > host bridge.
-> >
-> > I'm not a device model expert, but I'm not sure about adding a new
-> > /sys/bus/cxl/devices hierarchy.  I'm under the impression that CXL
-> > devices will be enumerated by the PCI core as PCIe devices.
+> > Plus users are going to be seeing this as well.  According to the commit
+> > message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
+> > there's some users where this is not fixable (like v4l userptr of iomem
+> > mappings)".  It sort of seems crazy to dump this giant splat and then
+> > tell users to ignore it forever because it can't be fixed...  0_0
 >
-> Yes, PCIe is involved, but mostly only for the CXL.io slow path
-> (configuration and provisioning via mailbox) when we're talking about
-> memory expander devices (CXL calls these Type-3). So-called "Type-3"
-> support is the primary driver of this infrastructure.
+> I think the discussion conclusion was that this interface should not
+> be used by userspace anymore, it is obsolete by some new interface?
 >
-> You might be thinking of CXL accelerator devices that will look like
-> plain PCIe devices that happen to participate in the CPU cache
-> hierarchy (CXL calls these Type-1). There will also be accelerator
-> devices that want to share coherent memory with the system (CXL calls
-> these Type-2).
->
-> The infrastructure being proposed here is primarily for the memory
-> expander (Type-3) device case where the PCI sysfs hierarchy is wholly
-> unsuited for modeling it. A single CXL memory region device may span
-> multiple endpoints, switches, and host bridges. It poses similar
-> stress to an OS device model as RAID where there is a driver for the
-> component contributors to an upper level device / driver that exposes
-> the RAID Volume (CXL memory region interleave set). The CXL memory
-> decode space (HDM: Host Managed Device Memory) is independent of the
-> PCIe MMIO BAR space.
->
-> That's where the /sys/bus/cxl hierarchy is needed, to manage the HDM
-> space across the CXL topology in a way that is foreign to PCIE (HDM
-> Decoder hierarchy).
->
-> > Doesn't
-> > that mean we will have one struct device in the pci_dev, and another
-> > one in the cxl_port?
->
-> Yes, that is the proposal.
->
-> > That seems like an issue to me.  More below.
->
-> hmm...
->
-> >
-> > > The cxl_port instances for PCIE Switch Ports are not
-> > > included here as those are to be modeled as another service device
-> > > registered on the pcie_port_bus_type.
-> >
-> > I'm hesitant about the idea of adding more uses of pcie_port_bus_type.
-> > I really dislike portdrv because it makes a parallel hierarchy:
-> >
-> >   /sys/bus/pci
-> >   /sys/bus/pci_express
-> >
-> > for things that really should not be different.  There's a struct
-> > device in pci_dev, and potentially several pcie_devices, each with
-> > another struct device.  We make these pcie_device things for AER, DPC,
-> > hotplug, etc.  E.g.,
-> >
-> >   /sys/bus/pci/devices/0000:00:1c.0
-> >   /sys/bus/pci_express/devices/0000:00:1c.0:pcie002  # AER
-> >   /sys/bus/pci_express/devices/0000:00:1c.0:pcie010  # BW notification
-> >
-> > These are all the same PCI device.  AER is a PCI capability.
-> > Bandwidth notification is just a feature of all Downstream Ports.  I
-> > think it makes zero sense to have extra struct devices for them.  From
-> > a device point of view (enumeration, power management, VM assignment),
-> > we can't manage them separately from the underlying PCI device.  For
-> > example, we have three separate "power/" directories, but obviously
-> > there's only one point of control (00:1c.0):
-> >
-> >   /sys/devices/pci0000:00/0000:00:1c.0/power/
-> >   /sys/devices/pci0000:00/0000:00:1c.0/0000:00:1c.0:pcie002/power/
-> >   /sys/devices/pci0000:00/0000:00:1c.0/0000:00:1c.0:pcie010/power/
->
-> The superfluous power/ issue can be cleaned up with
-> device_set_pm_not_required().
->
-> What are the other problems this poses, because in other areas this
-> ability to subdivide a device's functionality into sub-drivers is a
-> useful organization principle? So much so that several device writer
-> teams came together to create the auxiliary-bus for the purpose of
-> allowing sub-drivers to be carved off for independent functionality
-> similar to the portdrv organization.
->
+> It should be protected by some kconfig and the kconfig should be
+> turned off for syzkaller runs.
 
-Bjorn, any further thoughts on this?
+If this is not a kernel bug, then it must not use WARN_ON[_ONCE]. It
+makes the kernel untestable for both automated systems and humans:
 
-This port architecture question is in the critical path for the next
-phase of CXL development (targeting v5.14 not v5.13).
+https://lwn.net/Articles/769365/
+
+<quote>
+Greg Kroah-Hartman raised the problem of core kernel API code that
+will use WARN_ON_ONCE() to complain about bad usage; that will not
+generate the desired result if WARN_ON_ONCE() is configured to crash
+the machine. He was told that the code should just call pr_warn()
+instead, and that the called function should return an error in such
+situations. It was generally agreed that any WARN_ON() or
+WARN_ON_ONCE() calls that can be triggered from user space need to be
+fixed.
+</quote>
+
+
+https://lore.kernel.org/netdev/20210413085522.2caee809@gandalf.local.home/
+From: Steven Rostedt
+<quote>
+
+I agree. WARN_ON(_ONCE) should be reserved for anomalies that should not
+happen ever. Anything that the user could trigger, should not trigger a
+WARN_ON.
+
+A WARN_ON is perfectly fine for detecting an accounting error inside the
+kernel. I have them scattered all over my code, but they should never be
+hit, even if something in user space tries to hit it. (with an exception of
+an interface I want to deprecate, where I want to know if it's still being
+used ;-) Of course, that wouldn't help bots testing the code. And I haven't
+done that in years)
+
+Any anomaly that can be triggered by user space doing something it should
+not be doing really needs a pr_warn().
+</quote>
+
+And if it's a kernel bug reachable from user-space, then I think this
+code should be removed entirely, not just on all testing systems. Or
+otherwise if we are not removing it for some reason, then it needs to
+be fixed.
