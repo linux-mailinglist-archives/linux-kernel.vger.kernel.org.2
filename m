@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585ED35E6F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB58835E6F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344738AbhDMTI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S232992AbhDMTJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343838AbhDMTIv (ORCPT
+        with ESMTP id S231340AbhDMTJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:08:51 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF5CC061574;
-        Tue, 13 Apr 2021 12:08:31 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id j3so8644928qvs.1;
-        Tue, 13 Apr 2021 12:08:31 -0700 (PDT)
+        Tue, 13 Apr 2021 15:09:41 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718FEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:09:21 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id e13so9148802qkl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:09:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LdE+UQyPBir3qEoJ25yiHIhY36a9GrhFUDezW/crBk4=;
-        b=BEK3HZeWPrQDeh+CQpY/A2Suo78Mt9YLm+JV/SteoPBcRqJQC7v0VsCNMosSzHucsc
-         5JsdaE+HufhKwm6r1EmXlughUDl6JLpOmFD6PS1SPmh5FKzW1b2t4YEa/WdJP7/Vaj+v
-         TvSFnwq+6PAqsZ62Y5cZCFkBfNGAeNJxF9NGOWJl8+kRkbbFeMfNs2VKGWhIKToOwElt
-         qG11q2fIKtXIE/bEiG2fvlTBg7z7eYZQh+T8wKO0m7Swuhzona8gF9NJHvQ3G3kXRMK/
-         GB98jjUK6oLImzAERXJ3KaJA6r9XrgCL8YR3g2GgefZQUOtc8zrBgvOqmPO69kDlSh3A
-         7K7g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=7hlbKO+nfOBQ9jb/4q5zl38fZNJwCd9YNYudz1e6oJo=;
+        b=emUo/ODKrTSEKAjOumtSF4lr31MN8w+c7mJq9O7Q7bHXDLIN1y/Mo948Umq7rGdAzn
+         RAsuiyqIQg1+d9PTPO650M50ud8ZcaC2g7sergtqjR7zOzsTd8ejTAc64nV9boZuYb0R
+         wMtjB/t+VQm6Bxp8EDMh8xJ3Si2KMnLMSdIJ5bjoLjS7etD90jnj6bEwc/er0yPCUE+S
+         zfL4o7U/kdXBRouiQfAPxkXHQw7DZHH5F53lYhTpp0dHrF8/fL6G82OLqaERdYSNbl9c
+         4NqwqpOyw8JYcCMmEtDbojq2r1Y7c7i562IV4g+trYrjVi+1mPVa01z+EkkxnFJWtshj
+         wn5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LdE+UQyPBir3qEoJ25yiHIhY36a9GrhFUDezW/crBk4=;
-        b=H3nuYi+4zr3+am35DZQOCl6JZyWHnBteokAbviKQVqyGB7rruXyCcLABu+cE1Xftee
-         4engbbNKT8y2Opx/yBuE+0wQf3CNj0YAYaDQG0nO3ucUbrNm/mZn4eNlvf2wd3qMdMiA
-         3YMHv+g8Par5Rdc7E+V02FBzLtSr7wiWrvaoRdjjuITca+bomA/bFKqxoukcfncz9Imf
-         nvu7/v2SHZpGHF/4f702Sf+Q2WLVMeQzmoITiy1BvkPTHXuZbcE8C2WFYJJugfOlszbL
-         jGpQGaWc3w6UYrDmwkL/esPbl1oXLLi8pbnza4jCPBRsOwsK77BZ7mMDJ0yukp74Mr8C
-         7bYA==
-X-Gm-Message-State: AOAM5319dpHivxGT8DtTb0YjIuDG1zq/VybkMU4p84rzoeRDXtoH0Nea
-        Vet6x/6a5A0Q/w3qqFt0cxFDkAOMm2txcggb
-X-Google-Smtp-Source: ABdhPJzm61hO84yfhzWDbLnjvZ8nCJaWWv3w8LwgDu2a6LGoO7P0cTMNNDC+ALBOmi/spyLIBhwO2g==
-X-Received: by 2002:a05:6214:19c4:: with SMTP id j4mr34361602qvc.27.1618340910256;
-        Tue, 13 Apr 2021 12:08:30 -0700 (PDT)
-Received: from horizon.localdomain ([177.220.174.149])
-        by smtp.gmail.com with ESMTPSA id t6sm4792130qtq.83.2021.04.13.12.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 12:08:29 -0700 (PDT)
-Received: by horizon.localdomain (Postfix, from userid 1000)
-        id 7CAA2C0784; Tue, 13 Apr 2021 16:08:27 -0300 (-03)
-Date:   Tue, 13 Apr 2021 16:08:27 -0300
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     Or Cohen <orcohen@paloaltonetworks.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
-        kuba@kernel.org, linux-sctp@vger.kernel.org, lucien.xin@gmail.com,
-        nmarkus@paloaltonetworks.com
-Subject: Re: [PATCH v2] net/sctp: fix race condition in sctp_destroy_sock
-Message-ID: <YHXsK3DzBTsO00lb@horizon.localdomain>
-References: <20210413181031.27557-1-orcohen@paloaltonetworks.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=7hlbKO+nfOBQ9jb/4q5zl38fZNJwCd9YNYudz1e6oJo=;
+        b=OVaFMK6oXllXRUY1FC7yBcfMM+nXqAozjBq/0mqw+wYh2eUa41B9s6qdSoDZ8LefCo
+         9qM2yqhxsX10XFhJMajYt82Mk8/vtI8IOe81V07cYC8ibKvB9DOUtGgOoniJuZAkOrC/
+         JsuL5LxJ8nFAFsQUN8g16OgOsyheUT82rs9J6kyBy36jcmLo3ZIsclgWsPgctlpIOCXI
+         adxERRITyg/AA+doTrYbbIGcbJLK+s6wp+aUwVDwr90Vs49d7K9ZrgNOXk4P6TU/UC1d
+         XE/2aBqm3XOF/wlZjFtFiRZYxj3/pXPKScVUIxzUkYtm+MLKM2EKel9awavEmddEuMc9
+         NWhQ==
+X-Gm-Message-State: AOAM531PfnPlpKWcZx4KQI0/r4E0o10sLjV25kx8ZhSxSIIvUP247mJH
+        FW9HrvyQasp3h8vRq2nZ33fRcQ==
+X-Google-Smtp-Source: ABdhPJwRLs56//HXapWYHGi0JxUqlYObxwGV06Fj6/7/tUMiy6xQehOCqYGMtCNI7kvFvDd5f/SelQ==
+X-Received: by 2002:a37:2cc1:: with SMTP id s184mr14892831qkh.489.1618340960420;
+        Tue, 13 Apr 2021 12:09:20 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w1sm8833346qto.85.2021.04.13.12.09.18
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 13 Apr 2021 12:09:20 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 12:09:08 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Mike Rapoport <rppt@kernel.org>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
+In-Reply-To: <YHXhhtCVf0RsgsDs@kernel.org>
+Message-ID: <alpine.LSU.2.11.2104131158350.1037@eggly.anvils>
+References: <20210409215103.03999588@canb.auug.org.au> <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org> <YHPlTifk6jST5auY@kernel.org> <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org> <YHR86T15BzETVHhk@kernel.org> <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
+ <YHU03AIwrpHCUlU/@kernel.org> <7cec048d-26f0-104a-6bca-d9afc6a7d1e8@infradead.org> <YHXNyVVUwZbVDBrr@kernel.org> <7bc072c0-bf10-bd0f-95db-0f0a7db47b93@infradead.org> <YHXhhtCVf0RsgsDs@kernel.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413181031.27557-1-orcohen@paloaltonetworks.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:10:31PM +0300, Or Cohen wrote:
-> If sctp_destroy_sock is called without sock_net(sk)->sctp.addr_wq_lock
-> held and sp->do_auto_asconf is true, then an element is removed
-> from the auto_asconf_splist without any proper locking.
+On Tue, 13 Apr 2021, Mike Rapoport wrote:
 > 
-> This can happen in the following functions:
-> 1. In sctp_accept, if sctp_sock_migrate fails.
-> 2. In inet_create or inet6_create, if there is a bpf program
->    attached to BPF_CGROUP_INET_SOCK_CREATE which denies
->    creation of the sctp socket.
+> I think I've found the reason. trim_snb_memory() reserved the entire first
+> megabyte very early leaving no room for real mode trampoline allocation.
+> Since this reservation is needed only to make sure integrated gfx does not
+> access some memory, it can be safely done after memblock allocations are
+> possible.
 > 
-> The bug is fixed by acquiring addr_wq_lock in sctp_destroy_sock
-> instead of sctp_close.
+> I don't know if it can be fixed on the graphics device driver side, but
+> from the setup_arch() perspective I think this would be the proper fix:
 > 
-> This addresses CVE-2021-23133.
+> From c05f6046137abbcbb700571ce1ac54e7abb56a7d Mon Sep 17 00:00:00 2001
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> Date: Tue, 13 Apr 2021 21:08:39 +0300
+> Subject: [PATCH] x86/setup: move trim_snb_memory() later in setup_arch to fix
+>  boot hangs
 > 
-> Reported-by: Or Cohen <orcohen@paloaltonetworks.com>
-> Reviewed-by: Xin Long <lucien.xin@gmail.com>
-> Fixes: 610236587600 ("bpf: Add new cgroup attach type to enable sock modifications")
-> Signed-off-by: Or Cohen <orcohen@paloaltonetworks.com>
+> Commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+> moved reservation of the memory inaccessible by Sandy Bride integrated
+> graphics very early and as the result on systems with such devices the
+> first 1M was reserved by trim_snb_memory() which prevented the allocation
+> of the real mode trampoline and made the boot hang very early.
+> 
+> Since the purpose of trim_snb_memory() is to prevent problematic pages ever
+> reaching the graphics device, it is safe to reserve these pages after
+> memblock allocations are possible.
+> 
+> Move trim_snb_memory later in boot so that it will be called after
+> reserve_real_mode() and make comments describing trim_snb_memory()
+> operation more elaborate.
+> 
+> Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Thanks folks.
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Tested-by: Hugh Dickins <hughd@google.com>
+
+Thanks Mike and Randy. ThinkPad T420s here. I didn't notice this thread
+until this morning, but had been investigating bootup panic on mmotm
+yesterday. I was more fortunate than Randy, in getting some console
+output which soon led to a799c2bd29d1 without bisection. Expected
+to go through it line by line today, but you've saved me - thanks.
+
+> ---
+>  arch/x86/kernel/setup.c | 20 +++++++++++++++-----
+>  1 file changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 59e5e0903b0c..ccdcfb19df1e 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -633,11 +633,16 @@ static void __init trim_snb_memory(void)
+>  	printk(KERN_DEBUG "reserving inaccessible SNB gfx pages\n");
+>  
+>  	/*
+> -	 * Reserve all memory below the 1 MB mark that has not
+> -	 * already been reserved.
+> +	 * SandyBridge integrated graphic devices have a bug that prevents
+> +	 * them from accessing certain memory ranges, namely anything below
+> +	 * 1M and in the pages listed in the bad_pages.
+> +	 *
+> +	 * To avoid these pages being ever accessed by SNB gfx device
+> +	 * reserve all memory below the 1 MB mark and bad_pages that have
+> +	 * not already been reserved at boot time.
+>  	 */
+>  	memblock_reserve(0, 1<<20);
+> -	
+> +
+>  	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
+>  		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
+>  			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
+> @@ -746,8 +751,6 @@ static void __init early_reserve_memory(void)
+>  
+>  	reserve_ibft_region();
+>  	reserve_bios_regions();
+> -
+> -	trim_snb_memory();
+>  }
+>  
+>  /*
+> @@ -1083,6 +1086,13 @@ void __init setup_arch(char **cmdline_p)
+>  
+>  	reserve_real_mode();
+>  
+> +	/*
+> +	 * Reserving memory causing GPU hangs on Sandy Bridge integrated
+> +	 * graphic devices should be done after we allocated memory under
+> +	 * 1M for the real mode trampoline
+> +	 */
+> +	trim_snb_memory();
+> +
+>  	init_mem_mapping();
+>  
+>  	idt_setup_early_pf();
+> -- 
+> 2.28.0
