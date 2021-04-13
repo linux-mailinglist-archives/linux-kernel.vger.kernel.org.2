@@ -2,121 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA4C35D528
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277DF35D52C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245304AbhDMCMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:12:02 -0400
-Received: from mail-eopbgr1300139.outbound.protection.outlook.com ([40.107.130.139]:29568
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239254AbhDMCL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:11:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AtJ3ukqLuGSdXiZYRcAiUs0FF/uXiHrdqRbulrth59M9o5hBpRNP+v7hMEIMVYZHtGGUHliJREsVwVLcRIDdddOGj8OzwqiQBgaGUE84WntyGgZ+mVJXnbVjbk+56XBXMM6xDfU1vHZKuppTtl17lICgxYILNlBVfMl+rxOkByQEnuy7NTT5jnJZyRcLe84jQeBpgrrhe4l8KZGmSyvpxm+3nGaoqLGFqXp3M0IQh9yZT5cYN5y6VGugfuMmZAvFe7EeuARxp48/F2Fcu38y+GMfbrhWcG/6ERBt5h5FHS1xcWkv1gNboRoCDpjPRk8oQRSNI4If/bvX57byHq31qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RtFkONwTsv4YY8agLXNOZThLsllqfV5U6g9hvd3Ksow=;
- b=bKG3MRkFj5u/g1mKn+dT00uODhoSs3ypM8ewqjIOpDGZbq5+D7ZctTInLB7dhN0FQV1RRst630Xfp1e8kjqgH1lGSIXVjbUnNCSuoBo/Qulic0G7PxozkEG3N1cjwatIiRnq3SnDxj2/8D/mZEoo3i4c9V6Wm6UaA1HV2rDv1sau3qCFlDyGTCRMtru/jgtw87TjaJ0YPWdRfUATnMha4hW/oQg5PlAmpJwJOqUhpCvTnTcx8gW9FGD0x/FcG7u1/D+kIUscMGyMfFmYq8EAWy88UfGUH4uj3qeWzqQUk2IOo/xCYPP8tJr8CTQxCg7miw8Q9sc52Wm854SRJyU+Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3362.apcprd06.prod.outlook.com (2603:1096:203:8b::10)
- by HK2PR06MB3537.apcprd06.prod.outlook.com (2603:1096:202:36::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
- 2021 02:11:30 +0000
-Received: from HK0PR06MB3362.apcprd06.prod.outlook.com
- ([fe80::4d49:12fe:2d9a:b1bd]) by HK0PR06MB3362.apcprd06.prod.outlook.com
- ([fe80::4d49:12fe:2d9a:b1bd%3]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 02:11:30 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "billy_tasi@aspeedtech.com" <billy_tasi@aspeedtech.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [PATCH 4/4] pwm: Add support for aspeed pwm controller
-Thread-Topic: [PATCH 4/4] pwm: Add support for aspeed pwm controller
-Thread-Index: AQHXL4HkpEnvYhPT9U6/7p/B4+axNaqwutwAgAGA3YA=
-Date:   Tue, 13 Apr 2021 02:11:30 +0000
-Message-ID: <BAD0AD58-BE95-4EF2-BC3F-EFAA19A91965@aspeedtech.com>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
- <20210412095457.15095-5-billy_tsai@aspeedtech.com>
- <20210412111400.w4yafy2r2lcy3qqv@pengutronix.de>
-In-Reply-To: <20210412111400.w4yafy2r2lcy3qqv@pengutronix.de>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none
- header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: acf280fe-c321-4469-d16d-08d8fe2173bd
-x-ms-traffictypediagnostic: HK2PR06MB3537:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK2PR06MB353703725F848F10BCD7A6C78B4F9@HK2PR06MB3537.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5u4ME1wft5yNZjvJ7oiG4xvQ51pt7QTK/NDFTiGO8/EHt/dOQh34cmvpevXpvlupY0KBXr0TScPEBraExoQYqdIczfkJWKtQJ3JCBxTk6xMmgpcIhJO35aJAX3X0JM37o2t0ke73KrC85JMXTinPko1Ri2J4ReS08vNC+w6gku/n+VfTeqUHHc3wRvyLAS8nuMOpAlVO5Y39Zom2Wr1Wf4mr/Q07VkPNjj5b/eGQgPJHopnLkCuJSwv377bSuuqeV7jM6zzOhjCAb8us1foDTRm5KrMPifGkOPWVBvtjGVs0VfpGffWwL1gf0rCroGDex5AXISZrS+600Rt7RRUQrcIQr33J1eaxvm8NrN9t2ysUSffJakQ2lAWSn0xM7EiyjLTdQUJ0G9c32yQKst026SjwGWQpjdpb+aBINJ8Hcgn2jMIzxShow9Jovbkl/sTyOTcOwPyYh5Pa2rFXGh+xMYBtlwSJBZ3cE4xh3Qq1SGMIA+43Qf1pFJX6Pxoch1Z5+VgFBU8gBvpnQ4kSB/q12DQ8WNbY1lC0dhkIomFDh6YUraYvKqDSmDXFDwiV0tP+QIfU/TC91GPEoHMjYy/yku51PMFVDK7kuLHCtaSIbgtfKLcGFm+deszX1dDOmKiFqmo9HazpEVyGeoQp2WYAAvay/hpdWeype5XW6sn44bMx0qlWPvZouGo7476fTPCERUn55BNBVAbEvcmXXnQxhPRoEQuSnQzWniEiqgK2VhQxdTqldB/MKXtO58p+uJub
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3362.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(346002)(39840400004)(71200400001)(38100700002)(76116006)(107886003)(66476007)(66946007)(33656002)(64756008)(66446008)(7416002)(66556008)(6506007)(54906003)(6512007)(8676002)(55236004)(5660300002)(2906002)(4326008)(6916009)(478600001)(26005)(86362001)(6486002)(36756003)(966005)(316002)(2616005)(66574015)(8936002)(186003)(122000001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: axW2e844Y3ISbp+wwEYlsqyunoTro8Ki6wOmysjGdl4DQcPd1+9GYqGjkWHEDMnr9flS3XHNxgsiHDTS3y3/O0zZRzluq5OULAt/GWgs1s2zzcS9yDH1/9IH83HE1Dn/HGBGB9nrQqf+hIRyibGBG5O++678URMOP70eedoUs8YS8v/jO+adohLWLnbcWnWyB2DaORd8nshesSyHn25A4jHaizZL0VQ5wH83HJv2YCHnSA/zQqfdnKl7HzsmzRNhtbErlx1RjnUjATHydF/0NQQJRIEUO5G2PZ+BiFPJ/hI/5F6xJ1Ju4yLDTGt0S/7AFLpHfbBHzLWrBRPcHjxidUilhgOOj769MJxQu0DOTv3FlSvHv9ymNztEVn3jOD4JJaTXdXbIi24C5cD3HyVUFMcRbPd8OJKQ7Yp73q34kX36HmVtfxmk0yMC3VKWLEldeqxK0vF8VQYDixsH9Jd8eAxbg8ZJi3DvNdnCv1v8UsWI7md5XjznYncbbElkGYbpGRZmpUV3acKF1Aq/Fjl5RCW5vIhNJ3n0sBvhJCgaVFHSDS1f0RCMvbI2v8YbiDv+f12etDI91flRWaza7qq+qQT+ocblmpDv+3By7KuN2Xldv1LtLgW65PopZtNGkWPkSTGrtsupijXIwDJeB3mF5XYqlaHhWRVU0K9AYXrh8DRVs8VOtV5DCc3seygH6w9hgqVVnRMQQFYWaE6fyW/Ss5umcoCDE1OyC/ISOgJENZwP+9CHpP9jn4q7ISawduIU
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <95FB6D91137D5E42B958F38694EDCE15@apcprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S245403AbhDMCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:15:56 -0400
+Received: from mga07.intel.com ([134.134.136.100]:62321 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241049AbhDMCPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 22:15:54 -0400
+IronPort-SDR: hQzvGHaO6y35Jo62SZX+a7dKysFfbc0LtZmXW1W+PygwdyX8rwEQcE0KsdiAm/ZJm6bE/lAVum
+ s+f18vI6G9Sw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258294113"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="258294113"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:15:34 -0700
+IronPort-SDR: VzxR/KhFUZ/Ug55YnFHEK5Q7gZ1bCZ/qTo8WhwKpTCn3iqlw/suCN/yM8GfMF2kKUCNu2ht1Mf
+ RtYCGO+k0+RQ==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="417656688"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:15:32 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "David Rientjes" <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+        <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
+        <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
+        <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+        <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
+Date:   Tue, 13 Apr 2021 10:15:30 +0800
+In-Reply-To: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com> (Tim
+        Chen's message of "Fri, 9 Apr 2021 16:26:53 -0700")
+Message-ID: <877dl7udz1.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3362.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: acf280fe-c321-4469-d16d-08d8fe2173bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2021 02:11:30.1121
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NIEjRLeydxa5WGPTxvDKzKmG/PVN0e5yErJIvlNpzyeRjk0Smq9uqhgPOJVLKSGUFDjF4vn1wrIktW4JDP2kLAH2OzBQddk2SFr6xIZHYL8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3537
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHJldmlldw0KDQpCZXN0IFJlZ2FyZHMsDQpCaWxseSBUc2FpDQoNCk9u
-IDIwMjEvNC8xMiwgNzoxNCBQTSxVd2UgS2xlaW5lLUvDtm5pZ3dyb3RlOg0KDQogICAgPkhlbGxv
-LA0KDQogICAgPk9uIE1vbiwgQXByIDEyLCAyMDIxIGF0IDA1OjU0OjU3UE0gKzA4MDAsIEJpbGx5
-IFRzYWkgd3JvdGU6DQogICAgPj4gQWRkIHN1cHBvcnQgZm9yIHRoZSBwd20gY29udHJvbGxlciB3
-aGljaCBjYW4gYmUgZm91bmQgYXQgYXNwZWVkIGFzdDI2MDANCiAgICA+PiBzb2MuIFRoaXMgZHJp
-dmVyIGlzIHBhcnQgZnVuY3Rpb24gb2YgbXVsdGktZnVuY2l0b24gb2YgZGV2aWNlICJwd20tdGFj
-aA0KICAgID4+IGNvbnRyb2xsZXIiLg0KDQogICAgPnBsZWFzZSBzcXVhc2ggdGhpcyBpbnRvIHBh
-dGNoIDMuDQoNCk9LLCBJIHdpbGwgc3F1YXNoIGl0IHdoZW4gc2VuZGluZyB2Mi4NCg0KICAgID4+
-IFNpZ25lZC1vZmYtYnk6IEJpbGx5IFRzYWkgPGJpbGx5X3RzYWlAYXNwZWVkdGVjaC5jb20+DQog
-ICAgPj4gLS0tDQogICAgPj4gIGRyaXZlcnMvcHdtL0tjb25maWcgIHwgNiArKysrKysNCiAgICA+
-PiAgZHJpdmVycy9wd20vTWFrZWZpbGUgfCAxICsNCiAgICA+PiAgMiBmaWxlcyBjaGFuZ2VkLCA3
-IGluc2VydGlvbnMoKykNCiAgICA+PiANCiAgICA+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wd20v
-S2NvbmZpZyBiL2RyaXZlcnMvcHdtL0tjb25maWcNCiAgICA+PiBpbmRleCA2M2JlNTM2MmZkM2Eu
-Ljk0N2VkNjQyZGViZSAxMDA2NDQNCiAgICA+PiAtLS0gYS9kcml2ZXJzL3B3bS9LY29uZmlnDQog
-ICAgPj4gKysrIGIvZHJpdmVycy9wd20vS2NvbmZpZw0KICAgID4+IEBAIC00Miw2ICs0MiwxMiBA
-QCBjb25maWcgUFdNX0RFQlVHDQogICAgPj4gIAkgIEl0IGlzIGV4cGVjdGVkIHRvIGludHJvZHVj
-ZSBzb21lIHJ1bnRpbWUgb3ZlcmhlYWQgYW5kIGRpYWdub3N0aWMNCiAgICA+PiAgCSAgb3V0cHV0
-IHRvIHRoZSBrZXJuZWwgbG9nLCBzbyBvbmx5IGVuYWJsZSB3aGlsZSB3b3JraW5nIG9uIGEgZHJp
-dmVyLg0KICAgID4+ICANCiAgICA+PiArY29uZmlnIFBXTV9BU1BFRURfRzYNCiAgICA+PiArCXRy
-aXN0YXRlICJBU1BFRURHNiBQV00gc3VwcG9ydCINCg0KICAgID5ObyBkZXBlbmRzPw0KDQpJIHdp
-bGwgYWRkICJkZXBlbmRzIG9uIChBUkNIX0FTUEVFRCB8fCBDT01QSUxFX1RFU1QpIiBmb3IgdGhp
-cyBjb25maWd1cmUuDQoNCiAgICA+QmVzdCByZWdhcmRzDQogICAgPlV3ZQ0KDQogICAgPi0tIA0K
-ICAgID5QZW5ndXRyb25peCBlLksuICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBVd2UgS2xl
-aW5lLUvDtm5pZyAgICAgICAgICAgIHwNCiAgICA+SW5kdXN0cmlhbCBMaW51eCBTb2x1dGlvbnMg
-ICAgICAgICAgICAgICAgIHwgaHR0cHM6Ly93d3cucGVuZ3V0cm9uaXguZGUvIHwNCg0K
+Tim Chen <tim.c.chen@linux.intel.com> writes:
+
+> On 4/8/21 4:52 AM, Michal Hocko wrote:
+>
+>>> The top tier memory used is reported in
+>>>
+>>> memory.toptier_usage_in_bytes
+>>>
+>>> The amount of top tier memory usable by each cgroup without
+>>> triggering page reclaim is controlled by the
+>>>
+>>> memory.toptier_soft_limit_in_bytes 
+>> 
+>
+> Michal,
+>
+> Thanks for your comments.  I will like to take a step back and
+> look at the eventual goal we envision: a mechanism to partition the 
+> tiered memory between the cgroups. 
+>
+> A typical use case may be a system with two set of tasks.
+> One set of task is very latency sensitive and we desire instantaneous
+> response from them. Another set of tasks will be running batch jobs
+> were latency and performance is not critical.   In this case,
+> we want to carve out enough top tier memory such that the working set
+> of the latency sensitive tasks can fit entirely in the top tier memory.
+> The rest of the top tier memory can be assigned to the background tasks.  
+>
+> To achieve such cgroup based tiered memory management, we probably want
+> something like the following.
+>
+> For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
+> where tier t_0 sits at the top and demotes to the lower tier. 
+> We envision for this top tier memory t0 the following knobs and counters 
+> in the cgroup memory controller
+>
+> memory_t0.current 	Current usage of tier 0 memory by the cgroup.
+>
+> memory_t0.min		If tier 0 memory used by the cgroup falls below this low
+> 			boundary, the memory will not be subjected to demotion
+> 			to lower tiers to free up memory at tier 0.  
+>
+> memory_t0.low		Above this boundary, the tier 0 memory will be subjected
+> 			to demotion.  The demotion pressure will be proportional
+> 			to the overage.
+>
+> memory_t0.high		If tier 0 memory used by the cgroup exceeds this high
+> 			boundary, allocation of tier 0 memory by the cgroup will
+> 			be throttled. The tier 0 memory used by this cgroup
+> 			will also be subjected to heavy demotion.
+
+I think we don't really need throttle here, because we can fallback to
+allocate memory from the t1.  That will not cause something like IO
+device bandwidth saturation.
+
+Best Regards,
+Huang, Ying
+
+> memory_t0.max		This will be a hard usage limit of tier 0 memory on the cgroup.
+>
+> If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
+> This follows closely with the design of the general memory controller interface.  
+>
+> Will such an interface looks sane and acceptable with everyone?
+>
+> The patch set I posted is meant to be a straw man cgroup v1 implementation
+> and I readily admits that it falls short of the eventual functionality 
+> we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
+> memory management should work.
+>
+>> Are you trying to say that soft limit acts as some sort of guarantee?
+>
+> No, the soft limit does not offers guarantee.  It will only serves to keep the usage
+> of the top tier memory in the vicinity of the soft limits.
+>
+>> Does that mean that if the memcg is under memory pressure top tiear
+>> memory is opted out from any reclaim if the usage is not in excess?
+>
+> In the prototype implementation, regular memory reclaim is still in effect
+> if we are under heavy memory pressure. 
+>
+>> 
+>> From you previous email it sounds more like the limit is evaluated on
+>> the global memory pressure to balance specific memcgs which are in
+>> excess when trying to reclaim/demote a toptier numa node.
+>
+> On a top tier node, if the free memory on the node falls below a percentage, then
+> we will start to reclaim/demote from the node.
+>
+>> 
+>> Soft limit reclaim has several problems. Those are historical and
+>> therefore the behavior cannot be changed. E.g. go after the biggest
+>> excessed memcg (with priority 0 - aka potential full LRU scan) and then
+>> continue with a normal reclaim. This can be really disruptive to the top
+>> user.
+>
+> Thanks for pointing out these problems with soft limit explicitly.
+>
+>> 
+>> So you can likely define a more sane semantic. E.g. push back memcgs
+>> proporitional to their excess but then we have two different soft limits
+>> behavior which is bad as well. I am not really sure there is a sensible
+>> way out by (ab)using soft limit here.
+>> 
+>> Also I am not really sure how this is going to be used in practice.
+>> There is no soft limit by default. So opting in would effectivelly
+>> discriminate those memcgs. There has been a similar problem with the
+>> soft limit we have in general. Is this really what you are looing for?
+>> What would be a typical usecase?
+>
+>>> Want to make sure I understand what you mean by NUMA aware limits.
+>>> Yes, in the patch set, it does treat the NUMA nodes differently.
+>>> We are putting constraint on the "top tier" RAM nodes vs the lower
+>>> tier PMEM nodes.  Is this what you mean?
+>> 
+>> What I am trying to say (and I have brought that up when demotion has been
+>> discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
+>> The specific technology shouldn't be imprinted into the interface.
+>> Fundamentally you are trying to balance memory among NUMA nodes as we do
+>> not have other abstraction to use. So rather than talking about top,
+>> secondary, nth tier we have different NUMA nodes with different
+>> characteristics and you want to express your "priorities" for them.
+>
+> With node priorities, how would the system reserve enough
+> high performance memory for those performance critical task cgroup? 
+>
+> By priority, do you mean the order of allocation of nodes for a cgroup?
+> Or you mean that all the similar performing memory node will be grouped in
+> the same priority?
+>
+> Tim
