@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F91835E6D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2AE35E6D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348015AbhDMTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
+        id S1348018AbhDMTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:05:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhDMTFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:05:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AFD613CA;
-        Tue, 13 Apr 2021 19:05:05 +0000 (UTC)
+        id S231734AbhDMTFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F37F9613CA;
+        Tue, 13 Apr 2021 19:05:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618340705;
-        bh=adPubgfpOrI6A9TuJBDs8NDXHEvW3E+ZI2frnmYzgaM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=gUREuKWiLE9Bq+o/j58E6XCRWi5cFvHI0oGGS5LjGmUsAtF6mR6lFZXwkpJpVNdcC
-         HRCsQVs8ovmUhm9rVONpaoBV9xk2UfMC6zAHhtrSC6ylO+yMQuFvLn+LVwArG314bk
-         FYveLJw6UeDOthVe/Dy3NRNdtC9KfuNeQ5z+f+Uj+kaVT5m+zg36b/1ik5W2YixD5g
-         oW0j32qRPtoCOVoYTFlno8VAVMFBCHjflBROwJWUBukPn7/BUHjMy1NALWSaVmEPiH
-         ZYt5MEZ2EBzGV8Fyiub/ODlmZqrXKsMqoGBQt96bpGKUVwVddDGF8kt0vIuzQQLORV
-         HRqsp9Sr1JNfQ==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1618340711;
+        bh=4Ni2D0JUJ42Est7AJ0WpTT8dYYJFoHWL2Gb1omodwC4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=E5tOj1ht7JAZoA45fjn5AJPCOcYkUxA6HJR0noeyrwa0ogD1ofa+bAfI/4gy9GRAt
+         zcSV7bWTOSQ64roa6Bfwe4x48tAuqG3Tx5zO3fbr8NhZB3J86SFA109BXiXhKxDyl4
+         MDSN+61Bf0p8Rq1jurlKFVNLiRTdBHMdW5ccdYQ7FhuS+1bOL4Je3dbCueP5CjFQ2S
+         bWueyMhZRODLv8geYEgzBuBBhjm/08so5aJf6uefuYyiDOulL4UHysVJcgzdrYpzsy
+         0jDiXfEh80Hl0sZbCn7iM4VVeGwZR2UvInbWe+BvGPMVzOnMcal0S/eVcQ4gpnLcKV
+         Ez3CDMD1OBJ3A==
+Date:   Tue, 13 Apr 2021 14:05:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, bhelgaas@google.com,
+        lorenzo.pieralisi@arm.com, amurray@thegoodpenguin.co.uk,
+        robh@kernel.org, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, Krishna Thota <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: Device driver location for the PCIe root port's DMA engine
+Message-ID: <20210413190509.GA2256814@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210410055059.13518-2-sergio.paracuellos@gmail.com>
-References: <20210410055059.13518-1-sergio.paracuellos@gmail.com> <20210410055059.13518-2-sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH v13 1/4] clk: ralink: add clock driver for mt7621 SoC
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 13 Apr 2021 12:05:03 -0700
-Message-ID: <161834070385.3764895.8150982536236653732@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5fe57865-41f8-67c5-e6a6-9abe7252591c@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sergio Paracuellos (2021-04-09 22:50:56)
-> The documentation for this SOC only talks about two
-> registers regarding to the clocks:
-> * SYSC_REG_CPLL_CLKCFG0 - provides some information about
-> boostrapped refclock. PLL and dividers used for CPU and some
-> sort of BUS.
-> * SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable
-> clocks for all or some ip cores.
->=20
-> Looking into driver code, and some openWRT patched there are
-> another frequencies which are used in some drivers (uart, sd...).
-> According to all of this information the clock plan for this
-> SoC is set as follows:
-> - Main top clock "xtal" from where all the rest of the world is
-> derived.
-> - CPU clock "cpu" derived from "xtal" frequencies and a bunch of
-> register reads and predividers.
-> - BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
-> - Fixed clocks from "xtal":
->     * "50m": 50 MHz.
->     * "125m": 125 MHz.
->     * "150m": 150 MHz.
->     * "250m": 250 MHz.
->     * "270m": 270 MHz.
->=20
-> We also have a buch of gate clocks with their parents:
->   * "hsdma": "150m"
->   * "fe": "250m"
->   * "sp_divtx": "270m"
->   * "timer": "50m"
->   * "pcm": "270m"
->   * "pio": "50m"
->   * "gdma": "bus"
->   * "nand": "125m"
->   * "i2c": "50m"
->   * "i2s": "270m"
->   * "spi": "bus"
->   * "uart1": "50m"
->   * "uart2": "50m"
->   * "uart3": "50m"
->   * "eth": "50m"
->   * "pcie0": "125m"
->   * "pcie1": "125m"
->   * "pcie2": "125m"
->   * "crypto": "250m"
->   * "shxc": "50m"
->=20
-> With this information the clk driver will provide clock and gates
-> functionality from a a set of hardcoded clocks allowing to define
-> a nice device tree without fixed clocks.
->=20
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
+On Tue, Apr 13, 2021 at 11:42:15PM +0530, Vidya Sagar wrote:
+> On 4/13/2021 3:23 AM, Bjorn Helgaas wrote:
 
-Applied to clk-next
+> > The existing port services (AER, DPC, hotplug, etc) are things the
+> > device advertises via the PCI Capabilities defined by the generic PCIe
+> > spec, and in my opinion the support for them should be directly part
+> > of the PCI core and activated when the relevant Capability is present.
+> Is there an on-going activity to remove port service drivers are move
+> AER/DPC/Hotplug etc.. handling within PCI core?
+
+No, not that I'm aware of.  I'd just like to avoid extending that
+model.
+
+Bjorn
