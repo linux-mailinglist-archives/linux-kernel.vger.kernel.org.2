@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBFE35D791
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1AE35D78F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344658AbhDMFzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:55:52 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40581 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhDMFzn (ORCPT
+        id S245613AbhDMFzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:55:44 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55003 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhDMFzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:55:43 -0400
-Received: by mail-io1-f69.google.com with SMTP id e18so10419234iot.7
+        Tue, 13 Apr 2021 01:55:42 -0400
+Received: by mail-io1-f72.google.com with SMTP id s6so10347354iom.21
         for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:55:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=R0V41VPjtdq4CbqALc6UHI6VSrUD8eghdzvP0gT6H28=;
-        b=QWB3Pp9OQPCvbTVh7SYTf18X65Dba6vwEZpXPYblyCNLegaoYqVcA6aiL18LcsgEGd
-         bHCl4BHzWaayvVooJxY5V0qx/pP2qZX7OPhDdrBOGWaTQbvMYju0q4QBH5a4C1MSeJea
-         VOEPrNHeFSkRHkElCBATpggZXJd9SEXlafFB9dsmDrGDRNkx/CV53y70N9cDdQ3dyBwm
-         CT5nBJ/O+FsdcQe4DGGTkInMv1BhxPNT6ydNbM/5wOxV50vYaxJVpPoc9M2qSpXqXJHe
-         uRcbdUC00NqnYh+4ZbLCESLgvPB5Hg/wqMgHwspxH39bTQzC3/B3Gl1OAjAhAvPfEf/W
-         2VMg==
-X-Gm-Message-State: AOAM533J3tAF/WdTHNXQHINuR30OcIRbWN/StFc928URhCiVMwm/yG+x
-        p/5UjNrECT+Kka8V2BEQUswbnw36flA42hEBc9xeM32raRlr
-X-Google-Smtp-Source: ABdhPJzcHrd6jOSGXBpsav3/JUDEHsX85zLITr3IM6crVNQ5YQV29SoJSVQ/9aXz/JDnlrFKEwfp/T65ik+24Olg51QjbjKb3Vnh
+        bh=3UvEYXwfzE96WskXPc41XH3OXkDOqDJ6GKvKrcqu/Uw=;
+        b=MswPrO5YNMF1iEXMxoy4E7kshF4cF6qxLDFh2f9O7f+MPoFHCgHSNMPcAZkIv+2d4G
+         NinJjWGAjy6qPa/t/7bzMQPdNJMsLI/cefdxFlPzKr0jg5NZ5nZAExsryfYyzuO+0KIr
+         RRtTCW8TsegC+iD5FbAtvkz2crEg4D8gsZSYPLu3fye2/e2rNUBbchSd1WRAP3E9eStb
+         yie6+vZGaW+3NNrY5KL0tBkPC9RQ6Z6mODGT2VyDWIUa3X/8MyBOx2KN5mU6/JNHtj9B
+         YZl0wwRyJV03/mAwtNnVDJmb8Hn9F7j34rt5cfPsLCUWFPKlmayrpzIvsS4eBu+ZzShN
+         ++tw==
+X-Gm-Message-State: AOAM5320K4TDmM8Q72PfA2M+/ShjGsl90mZh99OF7Kgy24uySbYgG7v9
+        Pbr9VuQAFU0Ch8CXnHmlNUDh5IibEJTDJigeE5hwIBkvuh1U
+X-Google-Smtp-Source: ABdhPJzkvywe8nghQGlyW4KyrKYQ+oCi7WuYn+97neCZjGlZhKBc5vJmJINRUieCiGsObIsYjsCptSjzWm0fekO8ZFO+5MzzIyRX
 MIME-Version: 1.0
-X-Received: by 2002:a02:ba1a:: with SMTP id z26mr28701650jan.43.1618293322415;
+X-Received: by 2002:a05:6602:73c:: with SMTP id g28mr14502869iox.47.1618293322621;
  Mon, 12 Apr 2021 22:55:22 -0700 (PDT)
 Date:   Mon, 12 Apr 2021 22:55:22 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a005ac05bfd4463d@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Read in reiserfs_xattr_get
-From:   syzbot <syzbot+72ba979b6681c3369db4@syzkaller.appspotmail.com>
-To:     christian.brauner@ubuntu.com, jack@suse.cz,
-        jamorris@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000a324c305bfd446c0@google.com>
+Subject: [syzbot] BUG: unable to handle kernel NULL pointer dereference in
+ __lookup_slow (2)
+From:   syzbot <syzbot+11c49ce9d4e7896f3406@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,136 +48,78 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3a229812 Merge tag 'arm-fixes-5.11-2' of git://git.kernel...
+HEAD commit:    d93a0d43 Merge tag 'block-5.12-2021-04-02' of git://git.ke..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b4d196d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f91155ccddaf919c
-dashboard link: https://syzkaller.appspot.com/bug?extid=72ba979b6681c3369db4
+console output: https://syzkaller.appspot.com/x/log.txt?x=16519431d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a75beb62b62a34
+dashboard link: https://syzkaller.appspot.com/bug?extid=11c49ce9d4e7896f3406
 compiler:       Debian clang version 11.0.1-2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+72ba979b6681c3369db4@syzkaller.appspotmail.com
+Reported-by: syzbot+11c49ce9d4e7896f3406@syzkaller.appspotmail.com
 
-loop3: detected capacity change from 0 to 65534
-==================================================================
-BUG: KASAN: slab-out-of-bounds in reiserfs_xattr_get+0xe0/0x590 fs/reiserfs/xattr.c:681
-Read of size 8 at addr ffff888028983198 by task syz-executor.3/4211
-
-CPU: 1 PID: 4211 Comm: syz-executor.3 Not tainted 5.12.0-rc6-syzkaller #0
+REISERFS (device loop4): Using r5 hash to sort names
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 6bb82067 P4D 6bb82067 PUD 6bb81067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 11072 Comm: syz-executor.4 Not tainted 5.12.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc90008f8fa20 EFLAGS: 00010246
+RAX: 1ffffffff13872e8 RBX: dffffc0000000000 RCX: 0000000000040000
+RDX: 0000000000000000 RSI: ffff88802e9d9490 RDI: ffff88807f140190
+RBP: ffffffff89c39740 R08: ffffffff81c9d4de R09: fffffbfff200a946
+R10: fffffbfff200a946 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88807f140190 R14: 1ffff11005d3b292 R15: ffff88802e9d9490
+FS:  00007f894af88700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000006bb83000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x176/0x24e lib/dump_stack.c:120
- print_address_description+0x5f/0x3a0 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report+0x15c/0x200 mm/kasan/report.c:416
- reiserfs_xattr_get+0xe0/0x590 fs/reiserfs/xattr.c:681
- reiserfs_get_acl+0x63/0x670 fs/reiserfs/xattr_acl.c:211
- get_acl+0x152/0x2e0 fs/posix_acl.c:141
- check_acl fs/namei.c:294 [inline]
- acl_permission_check fs/namei.c:339 [inline]
- generic_permission+0x2ed/0x5b0 fs/namei.c:392
- do_inode_permission fs/namei.c:446 [inline]
- inode_permission+0x28e/0x500 fs/namei.c:513
- may_open+0x228/0x3e0 fs/namei.c:2985
- do_open fs/namei.c:3365 [inline]
- path_openat+0x2697/0x3860 fs/namei.c:3500
- do_filp_open+0x1a3/0x3b0 fs/namei.c:3527
- do_sys_openat2+0xba/0x380 fs/open.c:1187
- do_sys_open fs/open.c:1203 [inline]
- __do_sys_openat fs/open.c:1219 [inline]
- __se_sys_openat fs/open.c:1214 [inline]
- __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1214
+ __lookup_slow+0x240/0x370 fs/namei.c:1626
+ lookup_one_len+0x10e/0x200 fs/namei.c:2649
+ reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:980
+ reiserfs_fill_super+0x2a69/0x3160 fs/reiserfs/super.c:2176
+ mount_bdev+0x26c/0x3a0 fs/super.c:1367
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x188a/0x29a0 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x419544
-Code: 84 00 00 00 00 00 44 89 54 24 0c e8 96 f9 ff ff 44 8b 54 24 0c 44 89 e2 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 34 44 89 c7 89 44 24 0c e8 c8 f9 ff ff 8b 44
-RSP: 002b:00007fa357a03f30 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000419544
-RDX: 0000000000010000 RSI: 0000000020000100 RDI: 00000000ffffff9c
-RBP: 0000000020000100 R08: 0000000000000000 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000010000
-R13: 0000000020000100 R14: 00007fa357a04000 R15: 0000000020065600
-
-Allocated by task 4210:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc+0xc2/0xf0 mm/kasan/common.c:506
- kasan_kmalloc include/linux/kasan.h:233 [inline]
- kmem_cache_alloc_trace+0x21b/0x350 mm/slub.c:2934
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- smk_fetch security/smack/smack_lsm.c:288 [inline]
- smack_d_instantiate+0x65c/0xcc0 security/smack/smack_lsm.c:3411
- security_d_instantiate+0xa5/0x100 security/security.c:1987
- d_instantiate_new+0x61/0x110 fs/dcache.c:2025
- ext4_add_nondir+0x22b/0x290 fs/ext4/namei.c:2590
- ext4_symlink+0x8ce/0xe90 fs/ext4/namei.c:3417
- vfs_symlink+0x3a0/0x540 fs/namei.c:4178
- do_symlinkat+0x1c9/0x440 fs/namei.c:4208
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 4210:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
- kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:357
- ____kasan_slab_free+0x100/0x140 mm/kasan/common.c:360
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x171/0x270 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xcf/0x2d0 mm/slub.c:4213
- smk_fetch security/smack/smack_lsm.c:300 [inline]
- smack_d_instantiate+0x6db/0xcc0 security/smack/smack_lsm.c:3411
- security_d_instantiate+0xa5/0x100 security/security.c:1987
- d_instantiate_new+0x61/0x110 fs/dcache.c:2025
- ext4_add_nondir+0x22b/0x290 fs/ext4/namei.c:2590
- ext4_symlink+0x8ce/0xe90 fs/ext4/namei.c:3417
- vfs_symlink+0x3a0/0x540 fs/namei.c:4178
- do_symlinkat+0x1c9/0x440 fs/namei.c:4208
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Last potentially related work creation:
- kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
- kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3039 [inline]
- call_rcu+0x130/0x8e0 kernel/rcu/tree.c:3114
- fib6_info_release include/net/ip6_fib.h:337 [inline]
- nsim_rt6_release drivers/net/netdevsim/fib.c:507 [inline]
- nsim_fib6_event_fini+0x100/0x1f0 drivers/net/netdevsim/fib.c:833
- nsim_fib_event drivers/net/netdevsim/fib.c:885 [inline]
- nsim_fib_event_work+0x3e0a/0x5480 drivers/net/netdevsim/fib.c:1368
- process_one_work+0x789/0xfd0 kernel/workqueue.c:2275
- process_scheduled_works kernel/workqueue.c:2337 [inline]
- worker_thread+0xe28/0x1300 kernel/workqueue.c:2423
- kthread+0x39a/0x3c0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-The buggy address belongs to the object at ffff888028983000
- which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 152 bytes to the right of
- 256-byte region [ffff888028983000, ffff888028983100)
-The buggy address belongs to the page:
-page:ffffea0000a26080 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28982
-head:ffffea0000a26080 order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 ffffea00007fd400 0000000300000003 ffff888010841b40
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888028983080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888028983100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888028983180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                            ^
- ffff888028983200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888028983280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+RIP: 0033:0x46797a
+Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f894af87fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f894af88000
+RBP: 00007f894af88040 R08: 00007f894af88040 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000000
+R13: 0000000020000100 R14: 00007f894af88000 R15: 0000000020011500
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace a1b8dbb111baf993 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc90008f8fa20 EFLAGS: 00010246
+RAX: 1ffffffff13872e8 RBX: dffffc0000000000 RCX: 0000000000040000
+RDX: 0000000000000000 RSI: ffff88802e9d9490 RDI: ffff88807f140190
+RBP: ffffffff89c39740 R08: ffffffff81c9d4de R09: fffffbfff200a946
+R10: fffffbfff200a946 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88807f140190 R14: 1ffff11005d3b292 R15: ffff88802e9d9490
+FS:  00007f894af88700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 000000006bb83000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
