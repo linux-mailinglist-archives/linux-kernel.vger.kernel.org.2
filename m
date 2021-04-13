@@ -2,307 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4AE35D862
+	by mail.lfdr.de (Postfix) with ESMTP id 99C7535D863
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244503AbhDMG6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345123AbhDMG5Y (ORCPT
+        id S245290AbhDMG6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:58:17 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24456 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1345166AbhDMG5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:57:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C06C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:05 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id p75so9209574ybc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=fZsS4S+ppDN6vse6LQilTb+995ZpejDyoXEkWEzhPiI=;
-        b=JPzEmLg8IXqkikE/b+k7FNKSdKIPd2lLmXlP9sfI87JvOkw09qdZ+KRrlaAD+a9Dhn
-         005sbjcbFZ0lFEPYPSKaDUzlN3hBr3DSo7pYAg76+SLl3Ga5vXEbxhKRzSwelQO0SjpX
-         rhHL0KytAzNOPmRXNi0zkAQkCW4EAqyrBAkMJuC7dTB6jIRG6ER1dzInKps5oaOL1wQs
-         HLIiBt2/Ahnea89fcjAFJPIS7nNG2lwTqqUVTkoanckNkavhBDYk0VsP07i7LdiYi9zN
-         +LOuJNV+snejmLdfr2/3+aMXbxqjF2clhWnkNv/9X/ng5LI35tZxiwJOcncdT6c0vONU
-         rPQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=fZsS4S+ppDN6vse6LQilTb+995ZpejDyoXEkWEzhPiI=;
-        b=Mmy7jkv8AlhXjPNjblEwvM3ZtDGk7NKvJ6rsLmF6f0BWgbZq1tIB6pdyHgFU312oCj
-         y4lT+2OfaNXkHdc1m9GGWuWIiWBODWDms6SOZyoSt3DzZKzcdOzZvjUSS2YPZRhtMBP8
-         dB9FKMTZmwSiNzB4tdOneaAVzDRY5bshb8bACVfCaWFqtKUYRJ7IUedFh3omjJHSY8FV
-         6STGtMN3VWQZjRvtH7TufrAvCfWEWJ4oYHPhHmGG2DIS+7aQ6CbYgjel6Xiw7E9VkAg2
-         JoiFRDcRNv+ByQW+uYw+Z96cYJm5wf4hkkC+/iCib2vWT1vXRgZ7CRYsjyRwZmHJd2Jy
-         fKJA==
-X-Gm-Message-State: AOAM532ohDzhQEIUgvNgG4R8COEdtptVwp/WFnYFKQYURGql6xBpawoF
-        Y2GA+8fymXJP5OJ1UDw0RBDHBeXkM1Q=
-X-Google-Smtp-Source: ABdhPJzHOTHYLMuXC88wBZEF39dm7Sun3+0TVIBRLg85pDR3z2FX1I51OcfzuM68n03ioC4rVU3FQw4etPM=
-X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:d02d:cccc:9ebe:9fe9])
- (user=yuzhao job=sendgmr) by 2002:a25:e00f:: with SMTP id x15mr25695207ybg.85.1618297024186;
- Mon, 12 Apr 2021 23:57:04 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 00:56:33 -0600
-In-Reply-To: <20210413065633.2782273-1-yuzhao@google.com>
-Message-Id: <20210413065633.2782273-17-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20210413065633.2782273-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2 16/16] mm: multigenerational lru: documentation
-From:   Yu Zhao <yuzhao@google.com>
-To:     linux-mm@kvack.org
-Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        page-reclaim@google.com, Yu Zhao <yuzhao@google.com>
+        Tue, 13 Apr 2021 02:57:47 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D6XcJO017030;
+        Tue, 13 Apr 2021 02:57:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=wfGBjbDgG1oEUZ1VK7iNc4tMkpGi4D3LcN0jWjA/f9I=;
+ b=tNKW0g6fQVzLpXRZPdR7Wv5Xe+xz7qTOF6crdVsw624EDaoA430BV/w1Xxv4bBJdKMrd
+ j6RlH0A6ydR/nvNPnBn69/jE2Kj2HUFD+gbbjD1vxfHmhud9x7xWIyyzcK2GWPKlPbXb
+ NBbV6lr02wOuoCrmr+mlCgSYT+rw6dYptW0KUGxKoOF4qu1m7H5tXmA2hhq++H4n4R8p
+ rWBAIwGk13F+coMafRzfZ4NQZnLa0dUIEdfrLsRe0QZcNfXzU3FUo2B5xXo0kdfXTfEK
+ ButNbcQuvnsUkK7sD54W7/FqCUzrbxBD29AMWJYJNHFtjaXW9TNJHNIEYhX7d+MQGY3H Qw== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37vtnswsp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 02:57:25 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D6ps6E008247;
+        Tue, 13 Apr 2021 06:57:24 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 37u3n8h9gb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 06:57:23 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D6uwna33358292
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 06:56:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A28524C040;
+        Tue, 13 Apr 2021 06:57:20 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 286DE4C058;
+        Tue, 13 Apr 2021 06:57:20 +0000 (GMT)
+Received: from sig-9-145-159-22.de.ibm.com (unknown [9.145.159.22])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 06:57:20 +0000 (GMT)
+Message-ID: <88c62c2789d5798338736308672867f30d617794.camel@linux.ibm.com>
+Subject: Re: [PATCH 0/1] Use of
+ =?UTF-8?Q?=2Fsys=2Fbus=2Fpci=2Fdevices=2F=E2=80=A6=2Findex?= for non-SMBIOS
+ platforms
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Narendra K <narendra_k@dell.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>,
+        Stefan Raspl <raspl@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Date:   Tue, 13 Apr 2021 08:57:19 +0200
+In-Reply-To: <YHUujU1o6bdHDfmS@unreal>
+References: <20210412135905.1434249-1-schnelle@linux.ibm.com>
+         <YHUujU1o6bdHDfmS@unreal>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: gele9Ca_pxdoc31XAH_rNTQyTvycxGQD
+X-Proofpoint-ORIG-GUID: gele9Ca_pxdoc31XAH_rNTQyTvycxGQD
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxscore=0 impostorscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
+ priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation/vm/multigen_lru.rst.
+On Tue, 2021-04-13 at 08:39 +0300, Leon Romanovsky wrote:
+> On Mon, Apr 12, 2021 at 03:59:04PM +0200, Niklas Schnelle wrote:
+> > Hi Narendra, Hi All,
+> > 
+> > According to Documentation/ABI/testing/sysfs-bus-pci you are responsible
+> > for the index device attribute that is used by systemd to create network
+> > interface names.
+> > 
+> > Now we would like to reuse this attribute for firmware provided PCI
+> > device index numbers on the s390 architecture which doesn't have
+> > SMBIOS/DMI nor ACPI. All code changes are within our architecture
+> > specific code but I'd like to get some Acks for this reuse. I've sent an
+> > RFC version of this patch on 15th of March with the subject:
+> > 
+> >    s390/pci: expose a PCI device's UID as its index
+> > 
+> > but got no response. Would it be okay to re-use this attribute for
+> > essentially the same purpose but with index numbers provided by
+> > a different platform mechanism? I think this would be cleaner than
+> > further proliferation of /sys/bus/pci/devices/<dev>/xyz_index
+> > attributes and allows re-use of the existing userspace infrastructure.
+> 
+> I'm missing an explanation that this change is safe for systemd and
+> they don't have some hard-coded assumption about the meaning of existing
+> index on s390.
+> 
+> Thanks
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- Documentation/vm/index.rst        |   1 +
- Documentation/vm/multigen_lru.rst | 192 ++++++++++++++++++++++++++++++
- 2 files changed, 193 insertions(+)
- create mode 100644 Documentation/vm/multigen_lru.rst
 
-diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
-index eff5fbd492d0..c353b3f55924 100644
---- a/Documentation/vm/index.rst
-+++ b/Documentation/vm/index.rst
-@@ -17,6 +17,7 @@ various features of the Linux memory management
- 
-    swap_numa
-    zswap
-+   multigen_lru
- 
- Kernel developers MM documentation
- ==================================
-diff --git a/Documentation/vm/multigen_lru.rst b/Documentation/vm/multigen_lru.rst
-new file mode 100644
-index 000000000000..cf772aeca317
---- /dev/null
-+++ b/Documentation/vm/multigen_lru.rst
-@@ -0,0 +1,192 @@
-+=====================
-+Multigenerational LRU
-+=====================
-+
-+Quick Start
-+===========
-+Build Options
-+-------------
-+:Required: Set ``CONFIG_LRU_GEN=y``.
-+
-+:Optional: Change ``CONFIG_NR_LRU_GENS`` to a number ``X`` to support
-+ a maximum of ``X`` generations.
-+
-+:Optional: Change ``CONFIG_TIERS_PER_GEN`` to a number ``Y`` to support
-+ a maximum of ``Y`` tiers per generation.
-+
-+:Optional: Set ``CONFIG_LRU_GEN_ENABLED=y`` to turn the feature on by
-+ default.
-+
-+Runtime Options
-+---------------
-+:Required: Write ``1`` to ``/sys/kernel/mm/lru_gen/enable`` if the
-+ feature was not turned on by default.
-+
-+:Optional: Change ``/sys/kernel/mm/lru_gen/spread`` to a number ``N``
-+ to spread pages out across ``N+1`` generations. ``N`` should be less
-+ than ``X``. Larger values make the background aging more aggressive.
-+
-+:Optional: Read ``/sys/kernel/debug/lru_gen`` to verify the feature.
-+ This file has the following output:
-+
-+::
-+
-+  memcg  memcg_id  memcg_path
-+    node  node_id
-+      min_gen  birth_time  anon_size  file_size
-+      ...
-+      max_gen  birth_time  anon_size  file_size
-+
-+Given a memcg and a node, ``min_gen`` is the oldest generation
-+(number) and ``max_gen`` is the youngest. Birth time is in
-+milliseconds. The sizes of anon and file types are in pages.
-+
-+Recipes
-+-------
-+:Android on ARMv8.1+: ``X=4``, ``N=0``
-+
-+:Android on pre-ARMv8.1 CPUs: Not recommended due to the lack of
-+ ``ARM64_HW_AFDBM``
-+
-+:Laptops running Chrome on x86_64: ``X=7``, ``N=2``
-+
-+:Working set estimation: Write ``+ memcg_id node_id gen [swappiness]``
-+ to ``/sys/kernel/debug/lru_gen`` to account referenced pages to
-+ generation ``max_gen`` and create the next generation ``max_gen+1``.
-+ ``gen`` should be equal to ``max_gen``. A swap file and a non-zero
-+ ``swappiness`` are required to scan anon type. If swapping is not
-+ desired, set ``vm.swappiness`` to ``0``.
-+
-+:Proactive reclaim: Write ``- memcg_id node_id gen [swappiness]
-+ [nr_to_reclaim]`` to ``/sys/kernel/debug/lru_gen`` to evict
-+ generations less than or equal to ``gen``. ``gen`` should be less
-+ than ``max_gen-1`` as ``max_gen`` and ``max_gen-1`` are active
-+ generations and therefore protected from the eviction. Use
-+ ``nr_to_reclaim`` to limit the number of pages to be evicted.
-+ Multiple command lines are supported, so does concatenation with
-+ delimiters ``,`` and ``;``.
-+
-+Framework
-+=========
-+For each ``lruvec``, evictable pages are divided into multiple
-+generations. The youngest generation number is stored in ``max_seq``
-+for both anon and file types as they are aged on an equal footing. The
-+oldest generation numbers are stored in ``min_seq[2]`` separately for
-+anon and file types as clean file pages can be evicted regardless of
-+swap and write-back constraints. Generation numbers are truncated into
-+``order_base_2(CONFIG_NR_LRU_GENS+1)`` bits in order to fit into
-+``page->flags``. The sliding window technique is used to prevent
-+truncated generation numbers from overlapping. Each truncated
-+generation number is an index to an array of per-type and per-zone
-+lists. Evictable pages are added to the per-zone lists indexed by
-+``max_seq`` or ``min_seq[2]`` (modulo ``CONFIG_NR_LRU_GENS``),
-+depending on whether they are being faulted in.
-+
-+Each generation is then divided into multiple tiers. Tiers represent
-+levels of usage from file descriptors only. Pages accessed N times via
-+file descriptors belong to tier order_base_2(N). In contrast to moving
-+across generations which requires the lru lock, moving across tiers
-+only involves an atomic operation on ``page->flags`` and therefore has
-+a negligible cost.
-+
-+The workflow comprises two conceptually independent functions: the
-+aging and the eviction.
-+
-+Aging
-+-----
-+The aging produces young generations. Given an ``lruvec``, the aging
-+scans page tables for referenced pages of this ``lruvec``. Upon
-+finding one, the aging updates its generation number to ``max_seq``.
-+After each round of scan, the aging increments ``max_seq``.
-+
-+The aging maintains either a system-wide ``mm_struct`` list or
-+per-memcg ``mm_struct`` lists, and it only scans page tables of
-+processes that have been scheduled since the last scan. Since scans
-+are differential with respect to referenced pages, the cost is roughly
-+proportional to their number.
-+
-+The aging is due when both of ``min_seq[2]`` reaches ``max_seq-1``,
-+assuming both anon and file types are reclaimable.
-+
-+Eviction
-+--------
-+The eviction consumes old generations. Given an ``lruvec``, the
-+eviction scans the pages on the per-zone lists indexed by either of
-+``min_seq[2]``. It first tries to select a type based on the values of
-+``min_seq[2]``. When anon and file types are both available from the
-+same generation, it selects the one that has a lower refault rate.
-+
-+During a scan, the eviction sorts pages according to their generation
-+numbers, if the aging has found them referenced.  It also moves pages
-+from the tiers that have higher refault rates than tier 0 to the next
-+generation.
-+
-+When it finds all the per-zone lists of a selected type are empty, the
-+eviction increments ``min_seq[2]`` indexed by this selected type.
-+
-+Rationale
-+=========
-+Limitations of Current Implementation
-+-------------------------------------
-+Notion of Active/Inactive
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+For servers equipped with hundreds of gigabytes of memory, the
-+granularity of the active/inactive is too coarse to be useful for job
-+scheduling. False active/inactive rates are relatively high, and thus
-+the assumed savings may not materialize.
-+
-+For phones and laptops, executable pages are frequently evicted
-+despite the fact that there are many less recently used anon pages.
-+Major faults on executable pages cause ``janks`` (slow UI renderings)
-+and negatively impact user experience.
-+
-+For ``lruvec``\s from different memcgs or nodes, comparisons are
-+impossible due to the lack of a common frame of reference.
-+
-+Incremental Scans via ``rmap``
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+Each incremental scan picks up at where the last scan left off and
-+stops after it has found a handful of unreferenced pages. For
-+workloads using a large amount of anon memory, incremental scans lose
-+the advantage under sustained memory pressure due to high ratios of
-+the number of scanned pages to the number of reclaimed pages. On top
-+of that, the ``rmap`` has poor memory locality due to its complex data
-+structures. The combined effects typically result in a high amount of
-+CPU usage in the reclaim path.
-+
-+Benefits of Multigenerational LRU
-+---------------------------------
-+Notion of Generation Numbers
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+The notion of generation numbers introduces a quantitative approach to
-+memory overcommit. A larger number of pages can be spread out across
-+configurable generations, and thus they have relatively low false
-+active/inactive rates. Each generation includes all pages that have
-+been referenced since the last generation.
-+
-+Given an ``lruvec``, scans and the selections between anon and file
-+types are all based on generation numbers, which are simple and yet
-+effective. For different ``lruvec``\s, comparisons are still possible
-+based on birth times of generations.
-+
-+Differential Scans via Page Tables
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+Each differential scan discovers all pages that have been referenced
-+since the last scan. Specifically, it walks the ``mm_struct`` list
-+associated with an ``lruvec`` to scan page tables of processes that
-+have been scheduled since the last scan. The cost of each differential
-+scan is roughly proportional to the number of referenced pages it
-+discovers. Unless address spaces are extremely sparse, page tables
-+usually have better memory locality than the ``rmap``. The end result
-+is generally a significant reduction in CPU usage, for workloads
-+using a large amount of anon memory.
-+
-+To-do List
-+==========
-+KVM Optimization
-+----------------
-+Support shadow page table scanning.
-+
-+NUMA Optimization
-+-----------------
-+Support NUMA policies and per-node RSS counters.
--- 
-2.31.1.295.g9ea45b61b8-goog
+Sure, good point. So first off yes this change does create new index
+based names also on existing systemd versions, this is known and
+intended and we'll certainly closely collaborate with any distributions
+wishing to backport this change.
+
+As for being otherwise safe or having unintended consequences, Viktor
+(see R-b) and I recently got the following PR merged in that exact area
+of systemd to fix how hotplug slot derived interface names are
+generated:
+https://github.com/systemd/systemd/pull/19017
+In working on that we did also analyse the use of the index attribute
+for hidden assumptions and tested with this attribute added. Arguably,
+as the nature of that PR shows we haven't had a perfect track record of
+keeping this monitored but will in the future as PCI based NICs become
+increasingly important for our platform. We also have special NIC
+naming logic in the same area for our channel based platform specific
+NICs which was also contributed by Viktor.
+
+Thanks,
+Niklas
 
