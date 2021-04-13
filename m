@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6D035D57D
+	by mail.lfdr.de (Postfix) with ESMTP id 8665435D57E
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241600AbhDMC5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:57:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5130 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237380AbhDMC5E (ORCPT
+        id S241674AbhDMC51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:57:27 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16578 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237380AbhDMC5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:57:04 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FK9Dt4vwTzYVxH;
-        Tue, 13 Apr 2021 10:54:38 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 13 Apr 2021 10:56:43 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 13 Apr
- 2021 10:56:43 +0800
-Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
- qdisc
-To:     Hillf Danton <hdanton@sina.com>
-CC:     Juergen Gross <jgross@suse.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jiri Kosina <JKosina@suse.com>
-References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
- <20210409090909.1767-1-hdanton@sina.com>
- <20210412032111.1887-1-hdanton@sina.com>
- <20210412072856.2046-1-hdanton@sina.com>
- <20210413022129.2203-1-hdanton@sina.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <57ace28a-93bb-6581-bbba-18d77a9871f7@huawei.com>
-Date:   Tue, 13 Apr 2021 10:56:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 12 Apr 2021 22:57:25 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FK9F62RWfz18HpF;
+        Tue, 13 Apr 2021 10:54:50 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 13 Apr 2021 10:57:02 +0800
+Subject: Re: [RFC PATCH v3 0/3] vfio/hisilicon: add acc live migration driver
+To:     <alex.williamson@redhat.com>
+CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <1618276821-8320-1-git-send-email-liulongfang@huawei.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <e5a056e1-2ca0-e6f8-0526-b9c9597e4bc8@huawei.com>
+Date:   Tue, 13 Apr 2021 10:57:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210413022129.2203-1-hdanton@sina.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <1618276821-8320-1-git-send-email-liulongfang@huawei.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+X-Originating-IP: [10.67.102.118]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/13 10:21, Hillf Danton wrote:
-> On Mon, 12 Apr 2021 20:00:43  Yunsheng Lin wrote:
->>
->> Yes, the below patch seems to fix the data race described in
->> the commit log.
->> Then what is the difference between my patch and your patch below:)
+On 2021/4/13 9:20, Longfang Liu wrote:
+> The live migration solution relies on the vfio_device_migration_info protocol.
+> The structure vfio_device_migration_info is placed at the 0th offset of
+> the VFIO_REGION_SUBTYPE_MIGRATION region to get and set VFIO device related
+> migration information. Field accesses from this structure are only supported
+> at their native width and alignment. Otherwise, the result is undefined and
+> vendor drivers should return an error.
 > 
-> Hehe, this is one of the tough questions over a bounch of weeks.
+> (1).The driver framework is based on vfio_pci_register_dev_region() of vfio-pci,
+> and then a new live migration region is added, and the live migration is
+> realized through the ops of this region.
 > 
-> If a seqcount can detect the race between skb enqueue and dequeue then we
-> cant see any excuse for not rolling back to the point without NOLOCK.
-
-I am not sure I understood what you meant above.
-
-As my understanding, the below patch is essentially the same as
-your previous patch, the only difference I see is it uses qdisc->pad
-instead of __QDISC_STATE_NEED_RESCHEDULE.
-
-So instead of proposing another patch, it would be better if you
-comment on my patch, and make improvement upon that.
-
+> (2).In order to ensure the compatibility of the devices before and after the
+> migration, the device compatibility information check will be performed in
+> the Pre-copy stage. If the check fails, an error will be returned and the
+> source VM will exit the migration function.
 > 
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -632,6 +632,7 @@ static int pfifo_fast_enqueue(struct sk_
->  			return qdisc_drop(skb, qdisc, to_free);
->  	}
->  
-> +	qdisc->pad++;
-
-As has been mentioned:
-Doing updating in pfifo_fast_enqueue() unconditionally does not
-seems to be performance friendly, which is something my patch
-tries to avoid as much as possible.
-
->  	qdisc_update_stats_at_enqueue(qdisc, pkt_len);
->  	return NET_XMIT_SUCCESS;
->  }
-> @@ -642,6 +643,7 @@ static struct sk_buff *pfifo_fast_dequeu
->  	struct sk_buff *skb = NULL;
->  	int band;
->  
-> +	qdisc->pad = 0;
->  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->  		struct skb_array *q = band2list(priv, band);
->  
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -176,8 +176,12 @@ static inline bool qdisc_run_begin(struc
->  static inline void qdisc_run_end(struct Qdisc *qdisc)
->  {
->  	write_seqcount_end(&qdisc->running);
-> -	if (qdisc->flags & TCQ_F_NOLOCK)
-> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		spin_unlock(&qdisc->seqlock);
-> +
-> +		if (qdisc->pad != 0)
-> +			__netif_schedule(qdisc);
-> +	}
->  }
->  
->  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+> (3).After the compatibility check is passed, it will enter the Stop-and-copy
+> stage. At this time, all the live migration data will be copied, and then
+> saved to the VF device of the destination, and then the VF device of the
+> destination will be started and the VM of the source will be exited.
 > 
-> .
+> Longfang Liu (3):
+>   vfio/hisilicon: add acc live migration driver
+>   vfio/hisilicon: register the driver to vfio
+>   vfio/hisilicom: add debugfs for driver
+> 
+>  drivers/vfio/pci/Kconfig                      |    9 +
+>  drivers/vfio/pci/Makefile                     |    3 +-
+>  drivers/vfio/pci/hisilicon/acc_vf_migration.c | 1357 +++++++++++++++++++++++++
+>  drivers/vfio/pci/hisilicon/acc_vf_migration.h |  172 ++++
+>  drivers/vfio/pci/vfio_pci.c                   |   11 +
+>  drivers/vfio/pci/vfio_pci_private.h           |   10 +
+>  6 files changed, 1561 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.c
+>  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.h
 > 
 
+Sorry!
+Please ignore this patch, I will resend it.
+Thanks
+Longfang.
