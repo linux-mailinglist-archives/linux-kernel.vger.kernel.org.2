@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B364235E7A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FF735E7AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240919AbhDMUk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:40:59 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35594 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhDMUkz (ORCPT
+        id S1348253AbhDMUlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:41:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232041AbhDMUlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:40:55 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id EA6FF33CC1A;
-        Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LxrJC51uGUZE; Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8160533CC81;
-        Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8160533CC81
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618346433;
-        bh=mhATnPcG2pEt9LaX/4iSx9SzPcWzgRXeAfgoBziMBkQ=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=NLzPj6Q+8rL6yYgwRuJ9UwHcmjl2mATJ8E7yHWud0Mq1oii4dF3AsD5TMZq861LcP
-         5nHt12O2TN8btQLzcmiQPyki+RwmsCBunupYPRzK/OzFiEDHorcPp8gHB2CPmh3aQY
-         IzcS6wsHbDFieTBYdXeWDC1tHVGpj5wwelPBIhXzgtQ5h09K/yZL1H3LcNmDBOZ75w
-         EC6x2C6A/dagQdm0mjeskYWeAltr8GXkOtxmJauWzsJl4UHPDCWsQXWLEGOiRpAMG2
-         HaTWnzKJH3s9QoXK0UoZ5zTnu11l+Ihcl/Dpnpu7CA4TNpkv3DI8WUyO7yTMFBmwCs
-         QrTU5k53iW98A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UwU4K-8J3AWD; Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 7672D33C84E;
-        Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-Date:   Tue, 13 Apr 2021 16:40:33 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Message-ID: <1447691783.73957.1618346433394.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210413203352.71350-1-eric.dumazet@gmail.com>
-References: <20210413203352.71350-1-eric.dumazet@gmail.com>
-Subject: Re: [PATCH v3 0/3] rseq: minor optimizations
+        Tue, 13 Apr 2021 16:41:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618346475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bJQMkeUjT9KF4eEXY9TfAwJ1xFGxyGdcFU5piXvMFcs=;
+        b=NKKXmNzuzxcRnYQ8AHYtguZ/AfXHuvMfwADo0Qv49UHGBzTfpuipLg7j/D07oxJYVOXr/V
+        Al9b3zfkF3dMnrtXAlaX6JsUZ+ekuqVIHbulfWa4IgFCUeFmLJY/yxxKt8GriGBXWikSMA
+        BltryZ6E2MwpUNMGDc7fAC2JRh14B9I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-FZE2aXeANyGTS-bQn-87Mw-1; Tue, 13 Apr 2021 16:41:10 -0400
+X-MC-Unique: FZE2aXeANyGTS-bQn-87Mw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7555D195D587;
+        Tue, 13 Apr 2021 20:41:09 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-152.rdu2.redhat.com [10.10.116.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E65EC67C7B;
+        Tue, 13 Apr 2021 20:41:02 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 72E1022054F; Tue, 13 Apr 2021 16:41:02 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 16:41:02 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, miklos@szeredi.hu
+Cc:     seth.forshee@canonical.com
+Subject: Re: [Virtio-fs] [PATCH v2 0/2] fuse: Fix clearing SGID when access
+ ACL is set
+Message-ID: <20210413204102.GK1235549@redhat.com>
+References: <20210325151823.572089-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: rseq: minor optimizations
-Thread-Index: 7vNPwzPJf/6sqmppvmRqLcFK/+bWPQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325151823.572089-1-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 13, 2021, at 4:33 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
+Hi Miklos,
 
-> From: Eric Dumazet <edumazet@google.com>
+Ping for this patch series.
+
+Vivek
+
+On Thu, Mar 25, 2021 at 11:18:21AM -0400, Vivek Goyal wrote:
 > 
-> rseq is a heavy user of copy to/from user data in fast paths.
-> This series tries to reduce the cost.
+> Hi,
 > 
-> v3: Third patch going back to v1 (only deal with 64bit arches)
-> v2: Addressed Peter and Mathieu feedbacks, thanks !
-
-For the whole series:
-
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-Thanks Eric!
-
-Mathieu
-
+> This is V2 of the patchset. Posted V1 here.
 > 
-> Eric Dumazet (3):
->  rseq: optimize rseq_update_cpu_id()
->  rseq: remove redundant access_ok()
->  rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+> https://lore.kernel.org/linux-fsdevel/20210319195547.427371-1-vgoyal@redhat.com/
 > 
-> kernel/rseq.c | 29 +++++++++++++++++++++--------
-> 1 file changed, 21 insertions(+), 8 deletions(-)
+> Changes since V1:
 > 
-> --
-> 2.31.1.295.g9ea45b61b8-goog
+> - Dropped the helper to determine if SGID should be cleared and open
+>   coded it instead. I will follow up on helper separately in a different
+>   patch series. There are few places already which open code this, so
+>   for now fuse can do the same. Atleast I can make progress on this
+>   and virtiofs can enable ACL support.
+> 
+> Luis reported that xfstests generic/375 fails with virtiofs. Little
+> debugging showed that when posix access acl is set that in some
+> cases SGID needs to be cleared and that does not happen with virtiofs.
+> 
+> Setting posix access acl can lead to mode change and it can also lead
+> to clear of SGID. fuse relies on file server taking care of all
+> the mode changes. But file server does not have enough information to
+> determine whether SGID should be cleared or not.
+> 
+> Hence this patch series add support to send a flag in SETXATTR message
+> to tell server to clear SGID.
+> 
+> I have staged corresponding virtiofsd patches here.
+> 
+> https://github.com/rhvgoyal/qemu/commits/acl-sgid-setxattr-flag
+> 
+> With these patches applied "./check -g acl" passes now on virtiofs.
+> 
+> Thanks
+> Vivek
+> 
+> Vivek Goyal (2):
+>   fuse: Add support for FUSE_SETXATTR_V2
+>   fuse: Add a flag FUSE_SETXATTR_ACL_KILL_SGID to kill SGID
+> 
+>  fs/fuse/acl.c             |  8 +++++++-
+>  fs/fuse/fuse_i.h          |  5 ++++-
+>  fs/fuse/inode.c           |  4 +++-
+>  fs/fuse/xattr.c           | 21 +++++++++++++++------
+>  include/uapi/linux/fuse.h | 17 +++++++++++++++++
+>  5 files changed, 46 insertions(+), 9 deletions(-)
+> 
+> -- 
+> 2.25.4
+> 
+> _______________________________________________
+> Virtio-fs mailing list
+> Virtio-fs@redhat.com
+> https://listman.redhat.com/mailman/listinfo/virtio-fs
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
