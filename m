@@ -2,268 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E0935D562
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3A735D577
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245576AbhDMCnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:43:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21812 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241723AbhDMCnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:43:37 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D2X98r046733
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:43:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
- : cc : date : references : content-type : message-id :
- content-transfer-encoding : mime-version : subject; s=pp1;
- bh=1EegNePvlfRJ5UCnwknjrsGUcTK3dCk5x+70rY0+tQY=;
- b=LQfIT23J9dz4tgv/5nlFRGvn+G/K/GG1H2ozfnSP1A4GBuWa1LE9AG2uReyCtS1wqc0x
- 6dwM//jaWpPWob2VOy074SNcqGNo/RT/fQ+mJ1NwN33D2K6JXDc74EaBgW8fkiyvgSwq
- IFSG+PB+hJaM/owBVZg8Et+G3b4vWfy2eHdyuQSDs7vhcDlbDicOVtMAVlEjANe7pIEN
- YUs021NlquF7Cm3n/9Hd+JGYYUf3B8riEyIKSwDLquJM6wjjwJZBOK6TSAAfnBUebpKR
- +UokSKO+h9pWi+XlvX1esMl3R//MqbRoH7cFc7GrTYf7jHQOthuT9wXCH71jeUa1PFuJ hg== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.109])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37vkpj8w9w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:43:17 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-kernel@vger.kernel.org> from <miltonm@us.ibm.com>;
-        Tue, 13 Apr 2021 02:43:17 -0000
-Received: from us1b3-smtp07.a3dr.sjc01.isc4sb.com (10.122.203.198)
-        by smtp.notes.na.collabserv.com (10.122.47.48) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 13 Apr 2021 02:43:15 -0000
-Received: from us1b3-mail228.a3dr.sjc03.isc4sb.com ([10.168.214.55])
-          by us1b3-smtp07.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2021041302431439-860115 ;
-          Tue, 13 Apr 2021 02:43:14 +0000 
-In-Reply-To: <20210413013010.GA353@aspeedtech.com>
-From:   "Milton Miller II" <miltonm@us.ibm.com>
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 13 Apr 2021 02:43:14 +0000
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20210413013010.GA353@aspeedtech.com>,<20210408015218.20560-1-steven_lee@aspeedtech.com>
- <20210408015218.20560-2-steven_lee@aspeedtech.com>
- <20210409184118.GA3934798@robh.at.kernel.org>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-LLNOutbound: False
-X-Disclaimed: 12715
-X-TNEFEvaluated: 1
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21041302-1429-0000-0000-000003AD7C50
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0; SC=0;
- ST=0; TS=0; UL=0; ISC=; MB=0.008445
-X-IBM-SpamModules-Versions: BY=3.00014940; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000296; SDB=6.01526390; UDB=6.00825164; IPR=6.01308223;
- MB=3.00036522; MTD=3.00000008; XFM=3.00000015; UTC=2021-04-13 02:43:16
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-03-22 13:55:12 - 6.00012377
-x-cbparentid: 21041302-1430-0000-0000-00003A2C7F01
-Message-Id: <OF2606E97A.D9A04B5B-ON002586B6.000DC6EE-002586B6.000EF1DC@notes.na.collabserv.com>
-X-Proofpoint-GUID: hytYdYv8JgDl0PYohGjqOJGnQmRMgx15
-X-Proofpoint-ORIG-GUID: hytYdYv8JgDl0PYohGjqOJGnQmRMgx15
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1343635AbhDMCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:51:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:17659 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238431AbhDMCvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 22:51:45 -0400
+IronPort-SDR: qVznAS8GNEqlvTsRbxzuoqdS4gk3jXDW4YH5zl3ZyqyS4ccdRTQfeSkT3udMtH17Z7X1krANfz
+ 1ed2e4e59SlA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181843747"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="181843747"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:51:24 -0700
+IronPort-SDR: C/pz0Bo8wG7zPRBY1g+nsnnxYmdXfRyhaLPs+FB1hzhb2zWN3YARepyj0eXnF4bOB2Py7XyxZ0
+ ymUhgYsb+87Q==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="532108026"
+Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:51:22 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Huang Ying <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Ming Lei <ming.lei@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: [RFC PATCH] percpu_ref: Make percpu_ref_tryget*() ACQUIRE operations
+Date:   Tue, 13 Apr 2021 10:47:03 +0800
+Message-Id: <20210413024703.2745636-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Subject: RE: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio and
- power-switch-gpio
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_15:2021-04-12,2021-04-12 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+One typical use case of percpu_ref_tryget() family functions is as
+follows,
 
+  if (percpu_ref_tryget(&p->ref)) {
+	  /* Operate on the other fields of *p */
+  }
 
------"openbmc" <openbmc-bounces+miltonm=3Dus.ibm.com@lists.ozlabs.org> wrot=
-e: -----
+The refcount needs to be checked before operating on the other fields
+of the data structure (*p), otherwise, the values gotten from the
+other fields may be invalid or inconsistent.  To guarantee the correct
+memory ordering, percpu_ref_tryget*() needs to be the ACQUIRE
+operations.
 
->To: Rob Herring <robh@kernel.org>
->From: Steven Lee=20
->Sent by: "openbmc"=20
->Date: 04/12/2021 08:31PM
->Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
-><devicetree@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
->Ryan Chen <ryan_chen@aspeedtech.com>, "moderated list:ASPEED SD/MMC
->DRIVER" <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery
-><andrew@aj.id.au>, "open list:ASPEED SD/MMC DRIVER"
-><linux-mmc@vger.kernel.org>, "moderated list:ASPEED SD/MMC DRIVER"
-><openbmc@lists.ozlabs.org>, Ryan Chen <ryanchen.aspeed@gmail.com>,
->Adrian Hunter <adrian.hunter@intel.com>, open list
-><linux-kernel@vger.kernel.org>, Chin-Ting Kuo
-><chin-ting_kuo@aspeedtech.com>, "moderated list:ARM/ASPEED MACHINE
->SUPPORT" <linux-arm-kernel@lists.infradead.org>
->Subject: [EXTERNAL] Re: [PATCH v1 1/2] dt-bindings: mmc:
->sdhci-of-aspeed: Add power-gpio and power-switch-gpio
->
->The 04/10/2021 02:41, Rob Herring wrote:
->> On Thu, Apr 08, 2021 at 09:52:17AM +0800, Steven Lee wrote:
->> > AST2600-A2 EVB provides the reference design for enabling SD bus
->power
->> > and toggling SD bus signal voltage by GPIO pins.
->> > Add the definition and example for power-gpio and
->power-switch-gpio
->> > properties.
->> >=20
->> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
->power
->> > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
->connected to
->> > a 1.8v and a 3.3v power load switch that providing signal voltage
->to
->> > SD1 bus.
->> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus
->is
->> > disabled.
->> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
->signal
->> > voltage is 3.3v. Otherwise, 1.8v power load switch will be
->enabled, SD1
->> > signal voltage becomes 1.8v.
->> >=20
->> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
->> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio
->and GPIOV3
->> > as power-switch-gpio.
->> >=20
->> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
->> > ---
->> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25
->+++++++++++++++++++
->> >  1 file changed, 25 insertions(+)
->> >=20
->> > diff --git
->a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
->b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
->> > index 987b287f3bff..515a74614f3c 100644
->> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
->> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
->> > @@ -37,6 +37,14 @@ properties:
->> >    clocks:
->> >      maxItems: 1
->> >      description: The SD/SDIO controller clock gate
->> > +  power-gpio:
->>=20
->> '-gpios' is the preferred form even if just 1.
->>=20
->
->Thanks for reviewing, I will change the name.
+This function implements that via using smp_load_acquire() in
+__ref_is_percpu() to read the percpu pointer.
 
-is this a clock gate or a power on gpio?
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+---
+ include/linux/percpu-refcount.h | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-
->
->> > +    description:
->> > +      The GPIO for enabling/disabling SD bus power.
->> > +    maxItems: 1
->>=20
->> blank line
->>=20
->
->I will remove the blank line.
->
->> > +  power-switch-gpio:
->> > +    description:
->> > +      The GPIO for toggling the signal voltage between 3.3v and
->1.8v.
-
-Which way does it toggle for which voltage?
-
-Oh, you said in the change log but not in the binding.
-
-But please, use gpio controled regulators as Ulf suggested and is
-already used by other mmc controllers upstream.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/
-Documentation/devicetree/bindings/regulator/gpio-regulator.yaml
-
-Ulf> Please do not model these as GPIO pins like this. Instead, it's better
-Ulf> to model them as gpio regulators, since the mmc core manages them as
-Ulf> regulators.
-Ulf>=20
-Ulf> We have a vmmc regulator (corresponding to vdd) and a vqmmc regulator
-Ulf> (corresponding the signal-voltage level). These are also described in
-Ulf> the common mmc DT bindings, see
-Ulf> Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-Ulf> .
-
-milton
-
->> > +    maxItems: 1
->> >=20=20
->> >  patternProperties:
->> >    "^sdhci@[0-9a-f]+$":
->> > @@ -61,6 +69,14 @@ patternProperties:
->> >        sdhci,auto-cmd12:
->> >          type: boolean
->> >          description: Specifies that controller should use auto
->CMD12
->> > +      power-gpio:
->> > +        description:
->> > +          The GPIO for enabling/disabling SD bus power.
->> > +        maxItems: 1
->> > +      power-switch-gpio:
->> > +        description:
->> > +          The GPIO for toggling the signal voltage between 3.3v
->and 1.8v.
->> > +        maxItems: 1
->> >      required:
->> >        - compatible
->> >        - reg
->> > @@ -80,6 +96,7 @@ required:
->> >  examples:
->> >    - |
->> >      #include <dt-bindings/clock/aspeed-clock.h>
->> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
->> >      sdc@1e740000 {
->> >              compatible =3D "aspeed,ast2500-sd-controller";
->> >              reg =3D <0x1e740000 0x100>;
->> > @@ -94,6 +111,10 @@ examples:
->> >                      interrupts =3D <26>;
->> >                      sdhci,auto-cmd12;
->> >                      clocks =3D <&syscon ASPEED_CLK_SDIO>;
->> > +                    power-gpio =3D <&gpio0 ASPEED_GPIO(V, 0)
->> > +                                     GPIO_ACTIVE_HIGH>;
->> > +                    power-switch-gpio =3D <&gpio0 ASPEED_GPIO(V,
->1)
->> > +                                     GPIO_ACTIVE_HIGH>;
->> >              };
->> >=20=20
->> >              sdhci1: sdhci@200 {
->> > @@ -102,5 +123,9 @@ examples:
->> >                      interrupts =3D <26>;
->> >                      sdhci,auto-cmd12;
->> >                      clocks =3D <&syscon ASPEED_CLK_SDIO>;
->> > +                    power-gpio =3D <&gpio0 ASPEED_GPIO(V, 2)
->> > +                                     GPIO_ACTIVE_HIGH>;
->> > +                    power-switch-gpio =3D <&gpio0 ASPEED_GPIO(V,
->3)
->> > +                                     GPIO_ACTIVE_HIGH>;
->> >              };
->> >      };
->> > --=20
->> > 2.17.1
->> >=20
->
->
+diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+index 16c35a728b4c..9838f7ea4bf1 100644
+--- a/include/linux/percpu-refcount.h
++++ b/include/linux/percpu-refcount.h
+@@ -165,13 +165,13 @@ static inline bool __ref_is_percpu(struct percpu_ref *ref,
+ 	 * !__PERCPU_REF_ATOMIC, which may be set asynchronously, and then
+ 	 * used as a pointer.  If the compiler generates a separate fetch
+ 	 * when using it as a pointer, __PERCPU_REF_ATOMIC may be set in
+-	 * between contaminating the pointer value, meaning that
+-	 * READ_ONCE() is required when fetching it.
++	 * between contaminating the pointer value, smp_load_acquire()
++	 * will prevent this.
+ 	 *
+-	 * The dependency ordering from the READ_ONCE() pairs
++	 * The dependency ordering from the smp_load_acquire() pairs
+ 	 * with smp_store_release() in __percpu_ref_switch_to_percpu().
+ 	 */
+-	percpu_ptr = READ_ONCE(ref->percpu_count_ptr);
++	percpu_ptr = smp_load_acquire(&ref->percpu_count_ptr);
+ 
+ 	/*
+ 	 * Theoretically, the following could test just ATOMIC; however,
+@@ -231,6 +231,9 @@ static inline void percpu_ref_get(struct percpu_ref *ref)
+  * Returns %true on success; %false on failure.
+  *
+  * This function is safe to call as long as @ref is between init and exit.
++ *
++ * This function is an ACQUIRE operation, that is, all memory operations
++ * after will appear to happen after checking the refcount.
+  */
+ static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
+ 					  unsigned long nr)
+@@ -260,6 +263,9 @@ static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
+  * Returns %true on success; %false on failure.
+  *
+  * This function is safe to call as long as @ref is between init and exit.
++ *
++ * This function is an ACQUIRE operation, that is, all memory operations
++ * after will appear to happen after checking the refcount.
+  */
+ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+ {
+@@ -280,6 +286,9 @@ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+  * percpu_ref_tryget_live().
+  *
+  * This function is safe to call as long as @ref is between init and exit.
++ *
++ * This function is an ACQUIRE operation, that is, all memory operations
++ * after will appear to happen after checking the refcount.
+  */
+ static inline bool percpu_ref_tryget_live(struct percpu_ref *ref)
+ {
+-- 
+2.30.2
 
