@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AF135DE8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72E835DE8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240712AbhDMMVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:21:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33073 "EHLO mga12.intel.com"
+        id S244646AbhDMMVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhDMMVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:21:04 -0400
-IronPort-SDR: qTWGQHDbT0MJjB7eYo4rY/nPbaaWwU/OwTS11eb7F50GZAZvGf6w4hqqBUPnXhWAvTCD7w/bsd
- ccUe4NLVTpaw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="173891937"
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="173891937"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:20:45 -0700
-IronPort-SDR: Z7bA1j7jkyVDLB8y+D1HMUEnWYRwrRWxYQ3a2xSzv5qVl/Ztlwvao5G5bfXwrTg2vzcO7KnNHD
- /GOjmhdXbBWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="521581070"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 13 Apr 2021 05:20:41 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Apr 2021 15:20:41 +0300
-Date:   Tue, 13 Apr 2021 15:20:41 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
- API
-Message-ID: <YHWMmR5gBvlpd7rl@kuha.fi.intel.com>
-References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
- <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
- <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
- <39e2ab87-3b70-8659-6282-5b03d30f901b@linux.intel.com>
+        id S230025AbhDMMVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:21:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF88610C8;
+        Tue, 13 Apr 2021 12:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618316476;
+        bh=tbqVv8Jnr1JaAfHvLirC2gV+qobKlzu7qyT6j41ne1s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AhfWJTgW5qvBi2q8OYRlKbe7GTJc4cSCkXZfqPZs82YapJJcBHyYQmxYNAtwfcfB2
+         NP+xPElEug73KFr1AW21D0rKMu2TpVnYGnnROxmy3/F8ibEAg3Em7UEKl+p8f8Fy80
+         XGKH8H31FHdpD3OzhcX1VBozLUOteKNuFzYWpTdQN9uYBNskl74hWsx/Z6A57bkyZv
+         DU+il5Si7i0mqVscuPHFaPIejY1rkVOpGSX0M6cb61Z6OXZgf/lkXkVd3D4iLVOCMy
+         /0lV6Bc53dKrrKoAd8sluHp2TjbgcUrQsLwRzXPasFHcmYbk6pISkYEOiDgoBfpvCw
+         QIcmznTbswWSg==
+Date:   Tue, 13 Apr 2021 14:21:13 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] i2c: mpc: use device managed APIs
+Message-ID: <20210413122113.GB1553@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
+ <20210413050956.23264-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
 Content-Disposition: inline
-In-Reply-To: <39e2ab87-3b70-8659-6282-5b03d30f901b@linux.intel.com>
+In-Reply-To: <20210413050956.23264-2-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 03:36:20PM -0500, Pierre-Louis Bossart wrote:
-> I took the code and split it in two for BYT/CHT (modified to remove devm_)
-> and SoundWire parts (added as is).
-> 
-> https://github.com/thesofproject/linux/pull/2810
-> 
-> Both cases result in a refcount error on device_remove_sof when removing the
-> platform device. I don't understand the code well enough to figure out what
-> happens, but it's likely a case of the software node being removed twice?
 
-Right. Because you are injecting the node to an already existing
-device, the node does not get linked with the device in sysfs. That
-would increment the reference count in a normal case. It all happens
-in the function software_node_notify(). Driver core calls it when a
-device is added and also when it's removed. In this case it is only
-called when it's removed.
+--98e8jtXdkpgskNou
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think the best way to handle this now is to simply not decrementing
-the ref count when you add the properties, so don't call
-fwnode_handle_put() there (but add a comment explaining why you are
-not calling it).
 
-For a better solution you would call device_reprobe() after you have
-injected the software node, but before that you need to modify
-device_reprobe() so it calls device_platform_notify() (which it really
-should call in any case). But this should probable be done later,
-separately.
+>       Yongjun[1] into the original patch. If Wei's patch is applied on top
+>       of whats already in i2c/for-next then this patch can be ignored.
 
-thanks,
+I applied Wei's patch instead. It was easier.
 
-P.S.
 
-Have you guys considered the possibility of describing the connections
-between all these components by using one of the methods that we now
-have for that in kernel, for example device graph? It can now be
-used also with software nodes (OF graph and ACPI device graph are of
-course already fully supported).
+--98e8jtXdkpgskNou
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-heikki
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jLkACgkQFA3kzBSg
+KbZ1zA/9FEC1wzNTZzRPy2y3sj5tni8iTspeEAlMruTnCBYv/lcQ2D8kY04Fmk60
+7ErA+1R/RDIKE1DIqKNIlaM169wsKSCga6U2ZNBzGS79E1ri8ngFivDqHOc9Ef1f
+9o1QTI3UdjjTyd1Myk/rWfg0pH8BqJeBnGkjvQWMJ4Vijw/Dy3Y5DEOQOFZoOlCY
+k9u9jNhQPQqClIJDPqW3xsGEMh6uMCSsVAHlFvod4XGQ7aqdefkWoR5+2hrY5Eh0
+O8kvxKNc5QgpZ5JQ5fYJebWVFcTsmfvFYGncG/MSgBl8WjUuAVTN1VJAdwDMn4Bf
+un5Nni37UMQt+iimD5SY93UHcpPKY8f/nzDGm6aNqSrQZz81Va8JzpdMnMCxsj5l
+n1LDMokfyLQh0hPtlRrBTrsPAkbqA2ByAuTBdescBlWlRkCtWCnUZSuJheCsq/8A
+7xBENgtPhbpcJ4NxGdnt0YKM+bPOH8WECuTXnCT4EF9RKzetvvnS50UwsQ9DRb8i
+CkHVIrpW4BmY4skxyk2h3rzJrZuNjTPs3EWd24LBnHy4jiDBXtAawSfR7KYJpaIZ
+KXVW2SOA3Ouugu7hykWbAagjLp7yAueiG5V2ZKGy32clk9WC+HHIsXis/GfqIVIl
+mdSmsiHX0+6IEKRY4Dto0ofCkfY4yhByB0kfz8UYiwaWVpTSagg=
+=Y/zA
+-----END PGP SIGNATURE-----
+
+--98e8jtXdkpgskNou--
