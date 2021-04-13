@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D9635E626
+	by mail.lfdr.de (Postfix) with ESMTP id 3693035E624
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244595AbhDMSSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:18:13 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43374 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237951AbhDMSSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:18:11 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DI9xJ8196156;
-        Tue, 13 Apr 2021 18:17:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=F+1v+yIScK3Z0cLFoMNXHBXlxp/8G6ap/elyXl4WIHg=;
- b=Ci7afjVXTtJKTW/ZtERoTqO4RrHFdUKLlRW8gkzAQcNN4JINoN+s5aDEr/T7bTj9AChf
- ZHMBV8rNR/1LUx4M5URKbroB+KeSqnZDOJP5bUOLBU5JJWtgpmaN0duveYQvJLmqSZi6
- 09p4GUnBKIjsSZQ/6JZTlD9T2SoUrfjTjGYSvX2T/Uen2vlx3QZDBdBi86JMC1xaG77w
- VpMCdMxEYh+9E6HM99ms+DNVdoEA1k0ytWWr8jNMRURkID9YTI8iDmDt9aSNs6np6b5m
- NIrHzrWABmpLjM8gWy8xhGIHWqPK9dA5VbjnRgFnKEAeg8gpcGm10HI2nYpuwsoX/qng TQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 37u3erg25t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 18:17:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DI9fIS022035;
-        Tue, 13 Apr 2021 18:17:27 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 37unx04wnc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 18:17:27 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13DIHKIP031139;
-        Tue, 13 Apr 2021 18:17:20 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Apr 2021 18:17:20 +0000
-Date:   Tue, 13 Apr 2021 21:17:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH v3 4/4] staging: media: intel-ipu3: remove space before
- tabs
-Message-ID: <20210413181712.GI6021@kadam>
-References: <cover.1618326535.git.mitaliborkar810@gmail.com>
- <01ad7ff353f805dfc48e7bcc26ed974e7bb5ef9f.1618326535.git.mitaliborkar810@gmail.com>
+        id S1347597AbhDMSSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238322AbhDMSSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:18:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35251613BA;
+        Tue, 13 Apr 2021 18:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618337862;
+        bh=WnJiO8xMI84T93ixx6pdUvMpBrWgeGZXvzjBysS19Yw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bEvtTnHQ5UqIFlRDkZndzLIFghxt7ReVRVwQig8raE4wmg7tAFhXBmlHCYyBy/xmv
+         bUYZ48nBTrCfmIf/56UkPJatNuYmUU9MWoEJB62HfVz9ArjYxLYVD6WNZSbkWmVprN
+         W2ZkoChA9RIsRslNSRZBbsMbX3Bt/WfzZ+q1BYAJCtwQVKy1BTusESDxmGdlfDgz09
+         RmziPKFozn7sKgyatoRu7spRhAMbo9YWtPmRQpSl2PdOfzq2g2wzQQOoMNcVJ833uJ
+         uJaE4bQSAK3xxcqSbZ9Dqvwj+KeWamta/f7u8QrxfTJLRi4ETInwQ1oLcBmrUWH9IW
+         PQ7IOmKgzLRSw==
+Received: by mail-qv1-f41.google.com with SMTP id h3so7784446qve.13;
+        Tue, 13 Apr 2021 11:17:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530YhAt6Tf0WR3qLi/jo/b46n87AHD7nfDbTMiP621D4RUhOLnoP
+        oDPuUp7kWiYwRK5rNDdkbPqpA+D9G/5WnI11jQ==
+X-Google-Smtp-Source: ABdhPJyYLs47pOcEN0xLW3aBws14zdPQh2BhTHl0PKd48sZecSWQSqM5HXIpccjFgJzAUPXEN0xZk6Y/vV++v3aSCjY=
+X-Received: by 2002:a05:6214:8c4:: with SMTP id da4mr34891158qvb.57.1618337861448;
+ Tue, 13 Apr 2021 11:17:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01ad7ff353f805dfc48e7bcc26ed974e7bb5ef9f.1618326535.git.mitaliborkar810@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130123
-X-Proofpoint-ORIG-GUID: DWT0JG83Ahgw0Uf143jhZJqIDTuuAyuC
-X-Proofpoint-GUID: DWT0JG83Ahgw0Uf143jhZJqIDTuuAyuC
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1011
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130123
+References: <20210412123936.25555-1-pali@kernel.org>
+In-Reply-To: <20210412123936.25555-1-pali@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 13 Apr 2021 13:17:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
+Message-ID: <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain to zero
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 08:59:34PM +0530, Mitali Borkar wrote:
-> Removed unnecessary space before tabs to adhere to linux kernel coding
-> style.
-> Reported by checkpatch.
-> 
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+On Mon, Apr 12, 2021 at 7:41 AM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+>
+> Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove'
+> function and allow to build it as module") PCIe controller driver for
+> Armada 37xx can be dynamically loaded and unloaded at runtime. Also drive=
+r
+> allows dynamic binding and unbinding of PCIe controller device.
+>
+> Kernel PCI subsystem assigns by default dynamically allocated PCI domain
+> number (starting from zero) for this PCIe controller every time when devi=
+ce
+> is bound. So PCI domain changes after every unbind / bind operation.
+
+PCI host bridges as a module are relatively new, so seems likely a bug to m=
+e.
+
+> Alternative way for assigning PCI domain number is to use static allocate=
+d
+> numbers defined in Device Tree. This option has requirement that every PC=
+I
+> controller in system must have defined PCI bus number in Device Tree.
+
+That seems entirely pointless from a DT point of view with a single PCI bri=
+dge.
+
+> Armada 37xx has only one PCIe controller, so assign for it PCI domain 0 i=
+n
+> Device Tree.
+>
+> After this change PCI domain on Armada 37xx is always zero, even after
+> repeated unbind and bind operations.
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> Fixes: 526a76991b7b ("PCI: aardvark: Implement driver 'remove' function a=
+nd allow to build it as module")
 > ---
->  
-> Changes from v2:- No changes.
-> Changes from v1:- No changes.
-> 
->  drivers/staging/media/ipu3/include/intel-ipu3.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> index 47e98979683c..42edac5ee4e4 100644
-> --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> @@ -633,7 +633,7 @@ struct ipu3_uapi_bnr_static_config_wb_gains_thr_config {
->   * @cg:	Gain coefficient for threshold calculation, [0, 31], default 8.
->   * @ci:	Intensity coefficient for threshold calculation. range [0, 0x1f]
->   *	default 6.
-> - * 	format: u3.2 (3 most significant bits represent whole number,
-> + *format: u3.2 (3 most significant bits represent whole number,
->   *	2 least significant bits represent the fractional part
-
-Just remove the spaces, don't remove the tab.  It's looks silly now.
-
-regards,
-dan carpenter
-
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/bo=
+ot/dts/marvell/armada-37xx.dtsi
+> index 7a2df148c6a3..f02058ef5364 100644
+> --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+> @@ -495,6 +495,7 @@
+>                                         <0 0 0 2 &pcie_intc 1>,
+>                                         <0 0 0 3 &pcie_intc 2>,
+>                                         <0 0 0 4 &pcie_intc 3>;
+> +                       linux,pci-domain =3D <0>;
+>                         max-link-speed =3D <2>;
+>                         phys =3D <&comphy1 0>;
+>                         pcie_intc: interrupt-controller {
+> --
+> 2.20.1
+>
