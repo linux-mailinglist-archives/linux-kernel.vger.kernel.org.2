@@ -2,98 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7356235E926
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C85735E929
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245719AbhDMWmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
+        id S1347529AbhDMWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244005AbhDMWmd (ORCPT
+        with ESMTP id S244005AbhDMWor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:42:33 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FC9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:42:13 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t22so8706067ply.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:42:13 -0700 (PDT)
+        Tue, 13 Apr 2021 18:44:47 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56B0C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:44:25 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id er3so473992qvb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cgaYXSZOTsyuI2WQc1xYtFXeTOnpeK93EKkn9K0IUZM=;
-        b=NHIvJLjZvj2yheXBL2MqUjNQkNY6Uy6WHGfb4g/3dEzh4TtbeUyH5d6KDvP/WGzgJc
-         ffs9qn6MA654xYGiq/7HyT1k000QhAyXejXNBqy0fa0DtjAp/YdEgaxNMznM0IIv5Gxi
-         ve2QWYQ00T2YjJT8IxxW9fS4mMqqF/S+7z65yB2XSiwa6npHuGlax3v7Q/OafRxcolOb
-         iKoSJfABpJYpj8M74t+Hk2tL6mPhongynPs1tGlKiQpaWLTMCn3ywjgS1BCJbQbKMwTL
-         +rZMzeDdauSTD9udmKrZ/5fHXJpVcm26j0c3jwGmSOgMqZsz5K6Q1aQQg1dcGFBiqqo7
-         ruqw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fRv1VLSmNT5c1ESBt9iq7OX+vEe0OiwZ74hunxukn24=;
+        b=cIW1F8yAX/DJdnbvmy7FYBM6joZgTHbxealIFNS5keGvWV0ZXXjx2QAyhBkcFhjOx/
+         /H/CsWClsPRnd6cU//zQ8EypwmIWhyqYct/KTKfa4EtVQytC1Akekp9FQyEzUx6C95je
+         lCK5++r6GG1ZLMq+MvvYOiUX3sxB195v5BoShlL+8uDr8ZtPj/63YTJdWpytqkjh2SFa
+         ecY2KsqkD82kQplQXEGw3019RcgNcbJajy5u7L6HIpywtJVl1bg2vfoICdDpo9hHgGQ0
+         huWwH5AhvmYqzhPFC1vr7S9sQWKxsRcFUcU66qNUhTop731JlesnTRB/BEKR2xhBPLYK
+         B7CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cgaYXSZOTsyuI2WQc1xYtFXeTOnpeK93EKkn9K0IUZM=;
-        b=ib/Nic2oJPQcvMC2cGAwuYDwg+meQNVtNnql9nxu3wWFsuiR8F6mlQzzsZBk72+0hP
-         2/+5tx/ucAKpF4gOtbSAPvwPH9YIZ9E2ZtYF32dDPlCvR6d3o5bTBVwCE3pOFl3hD6Me
-         AUB5KfILplkUp8GA3zeJqKkzCLmbb2gyKFEaD8tKSD4hZRcdUsjDxvM5WHiGiTqvumRH
-         2H7WPkfQPMRzTgCmAeAbnaXQFfVtdsDp9muz+GTK+9cDSqImAetdJXNz99I7xwhHKVJw
-         XtEWCvnw1gzqDB7lu+b1rBytW2Y4E9MNpytoqLxpENqFf/k7HmEmmQA/rzKZoHQyJovc
-         xo9Q==
-X-Gm-Message-State: AOAM532RLwadHfPh+wOXCwh57zHJzH7dz+K/LMysTgHBgoBCDWmlF0CT
-        Xz0DmwCnD2QIeza3Gi7MCrRb/Q==
-X-Google-Smtp-Source: ABdhPJyxb5q2GZ1mmHMGL3ezR77APOp1QJYh0z5peMbiSCu3uKwrKSFnHn7ItND/dn+v9f4YWSdmuw==
-X-Received: by 2002:a17:90a:5998:: with SMTP id l24mr45539pji.76.1618353732705;
-        Tue, 13 Apr 2021 15:42:12 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id e190sm13244357pfe.3.2021.04.13.15.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 15:42:12 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 15:42:04 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: Space: remove hp100 probe
-Message-ID: <20210413154204.1ae59d6a@hermes.local>
-In-Reply-To: <20210413141627.2414092-1-arnd@kernel.org>
-References: <20210413141627.2414092-1-arnd@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fRv1VLSmNT5c1ESBt9iq7OX+vEe0OiwZ74hunxukn24=;
+        b=WxEQCWJgWySphFLKj5LONt3qu+uy6cIwJs5hlwQrx7NsZYLYwnARswnOr/++/mXOQm
+         ocM3bn5vR1jqQmcfAtEap7iFB6QhxkoqFutXEkeDPocqenzxDiBeJ0PdJ7zT523cXU7F
+         9ddk+Mct+bxnpjX5tdcSyffRKJlqlgcK6au5FCikislFpdNcumP1n5AvJ5DEVOB3wnwU
+         T6k0WHjdABjlZYAPFuuRYRfI3nwd2mnZ+sU/h645KW23L2gVd21JZkW/z/7qbY6xdK+f
+         IiYBnu63K3e8qLiouWguPd3OCxOjaxSE2bLslUq7tk0ADy6VL6yXQAfvsB0enN35wsmg
+         ITfA==
+X-Gm-Message-State: AOAM530+uzhLCdsRlezROrvms2knpl9tjjm1PRkw/VUl+GJG0g11Ovpl
+        G+IJI7UH6X37BPOYumxVv/rWNkqYdPgupQ==
+X-Google-Smtp-Source: ABdhPJzbp8mb/fUdcl29XGm7Kr96tZ5fAUfspG7oB+Blo4Ncn9B7VeFuuQE1CIx0XkrVf3xQHsDI5g==
+X-Received: by 2002:a05:6214:1381:: with SMTP id g1mr13193821qvz.21.1618353864371;
+        Tue, 13 Apr 2021 15:44:24 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id q67sm9065716qkb.89.2021.04.13.15.44.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 15:44:23 -0700 (PDT)
+Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+ <20210225182716.1402449-7-thara.gopinath@linaro.org>
+ <20210405221848.GA904837@yoga>
+ <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
+ <20210413222014.GS1538589@yoga>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <4c4a9df6-7ad5-85ab-bfcd-2c123bd86ca0@linaro.org>
+Date:   Tue, 13 Apr 2021 18:44:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210413222014.GS1538589@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 16:16:17 +0200
-Arnd Bergmann <arnd@kernel.org> wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The driver was removed last year, but the static initialization got left
-> behind by accident.
-> 
-> Fixes: a10079c66290 ("staging: remove hp100 driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/Space.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/net/Space.c b/drivers/net/Space.c
-> index 7bb699d7c422..a61cc7b26a87 100644
-> --- a/drivers/net/Space.c
-> +++ b/drivers/net/Space.c
-> @@ -59,9 +59,6 @@ static int __init probe_list2(int unit, struct devprobe2 *p, int autoprobe)
->   * look for EISA/PCI cards in addition to ISA cards).
->   */
->  static struct devprobe2 isa_probes[] __initdata = {
-> -#if defined(CONFIG_HP100) && defined(CONFIG_ISA)	/* ISA, EISA */
-> -	{hp100_probe, 0},
-> -#endif
->  #ifdef CONFIG_3C515
->  	{tc515_probe, 0},
->  #endif
 
-Thanks, do we even need to have the static initialization anymore?
+On 4/13/21 6:20 PM, Bjorn Andersson wrote:
+> On Tue 13 Apr 16:31 CDT 2021, Thara Gopinath wrote:
+> 
+>>
+>> Hi Bjorn,
+>>
+>> On 4/5/21 6:18 PM, Bjorn Andersson wrote:
+>>> On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
+>>>
+>>>> Add register programming sequence for enabling AEAD
+>>>> algorithms on the Qualcomm crypto engine.
+>>>>
+>>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>>>> ---
+>>>>    drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
+>>>>    1 file changed, 153 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
+>>>> index 05a71c5ecf61..54d209cb0525 100644
+>>>> --- a/drivers/crypto/qce/common.c
+>>>> +++ b/drivers/crypto/qce/common.c
+>>>> @@ -15,6 +15,16 @@
+>>>>    #include "core.h"
+>>>>    #include "regs-v5.h"
+>>>>    #include "sha.h"
+>>>> +#include "aead.h"
+>>>> +
+>>>> +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
+>>>> +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
+>>>> +};
+>>>> +
+>>>> +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
+>>>> +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
+>>>> +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
+>>>> +};
+>>>>    static inline u32 qce_read(struct qce_device *qce, u32 offset)
+>>>>    {
+>>>> @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
+>>>>    		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
+>>>>    }
+>>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
+>>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
+>>>>    static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
+>>>>    {
+>>>>    	u32 cfg = 0;
+>>>> @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
+>>>>    	return cfg;
+>>>>    }
+>>>> +#endif
+>>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
+>>>>    static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
+>>>>    {
+>>>>    	struct ahash_request *req = ahash_request_cast(async_req);
+>>>> @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
+>>>>    }
+>>>>    #endif
+>>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
+>>>>    static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
+>>>>    {
+>>>>    	u32 cfg = 0;
+>>>> @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
+>>>>    	return cfg;
+>>>>    }
+>>>> +#endif
+>>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>>>>    static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
+>>>>    {
+>>>>    	u8 swap[QCE_AES_IV_LENGTH];
+>>>> @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
+>>>>    }
+>>>>    #endif
+>>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
+>>>> +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
+>>>> +{
+>>>> +	struct aead_request *req = aead_request_cast(async_req);
+>>>> +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
+>>>> +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
+>>>> +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
+>>>> +	struct qce_device *qce = tmpl->qce;
+>>>> +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
+>>>> +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
+>>>> +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
+>>>> +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
+>>>> +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
+>>>> +	unsigned int enc_keylen = ctx->enc_keylen;
+>>>> +	unsigned int auth_keylen = ctx->auth_keylen;
+>>>> +	unsigned int enc_ivsize = rctx->ivsize;
+>>>> +	unsigned int auth_ivsize;
+>>>> +	unsigned int enckey_words, enciv_words;
+>>>> +	unsigned int authkey_words, authiv_words, authnonce_words;
+>>>> +	unsigned long flags = rctx->flags;
+>>>> +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
+>>>
+>>> I don't see any reason to initialize encr_cfg or auth_cfg.
+>>
+>> right.. I will remove it
+>>
+>>>
+>>>> +	u32 *iv_last_word;
+>>>> +
+>>>> +	qce_setup_config(qce);
+>>>> +
+>>>> +	/* Write encryption key */
+>>>> +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
+>>>> +	enckey_words = enc_keylen / sizeof(u32);
+>>>> +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
+>>>
+>>> Afaict all "array registers" in this function are affected by the
+>>> CRYPTO_SETUP little endian bit, but you set this bit before launching
+>>> the operation dependent on IS_CCM(). So is this really working for the
+>>> !IS_CCM() case?
+>>
+>> I am not sure I understand you. Below ,
+>> 	/* get little endianness */
+>> 	config = qce_config_reg(qce, 1);
+>> 	qce_write(qce, REG_CONFIG, config);
+>>
+>> is outside of any checks..
+>>
+> 
+> You're right, I misread that snippet as I was jumping through the
+> function. So we're unconditionally running the hardware in little endian
+> mode.
+> 
+>>>
+>>>> +
+>>>> +	/* Write encryption iv */
+>>>> +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
+>>>> +	enciv_words = enc_ivsize / sizeof(u32);
+>>>> +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
+>>>
+>>> It would be nice if this snippet was extracted to a helper function.
+>>>
+>>>> +
+>>>> +	if (IS_CCM(rctx->flags)) {
+>>>> +		iv_last_word = (u32 *)&enciv[enciv_words - 1];
+>>>> +//		qce_write(qce, REG_CNTR3_IV3, enciv[enciv_words - 1] + 1);
+>>>
+>>> I believe this is a remnant of the two surrounding lines.
+>>
+>> It indeed is.. I will remove it.
+>>
+>>>
+>>>> +		qce_write(qce, REG_CNTR3_IV3, (*iv_last_word) + 1);
+>>>
+>>> enciv is an array of big endian 32-bit integers, which you tell the
+>>> compiler to treat as cpu-native endian, and then you do math on it.
+>>> Afaict from the documentation the value of REG_CNTR3_IVn should be set
+>>> to rctx->iv + 1, but if the hardware expects these in big endian then I
+>>> think you added 16777216.
+>>
+>> So, the crypto engine documentation talks of writing to these registers in
+>> little endian mode. The byte stream that you get for iv from the user
+>> is in big endian mode as in the MSB is byte 0. So we kind of invert this and
+>> write  to these registers. This is what happens with declaring the __be32
+>> array and copying words to it from the byte stream. So now byte 0 is the LSB
+>> and a +1 will just add a 1 to it.
+>>
+> 
+> But if the data come in big endian and after qce_cpu_to_be32p_array()
+> you're able to do math on them with expected result and you're finally
+> passing the data to writel() then I think that qce_cpu_to_be32p_array()
+> is actually be32_to_cpu() and after the conversion you should carry the
+> results in CPU-native u32 arrays - and thereby skip the typecasting.
+
+you mean I can replace __be32 arrays with u32 arrays ?? yes I probably 
+can. I will try this out and if it works do the change.
+
+> 
+>> I suspect from what I read in the documentation we could get away by
+>> removing this and writing the big endian byte stream directly and never
+>> setting the little endian in config register. Though I am not sure if this
+>> has ever been tested out. If we change it, it will be across algorithms and
+>> as a separate effort.
+> 
+> writel() will, at least on arm64, convert the CPU native value to little
+> endian before writing it out, so I think the current setting make sense.
+
+hmm.. ok.
+
+> 
+>>
+>>>
+>>> Perhaps I'm missing something here though?
+>>>
+>>> PS. Based on how the documentation is written, shouldn't you write out
+>>> REG_CNTR_IV[012] as well?
+>>
+>> It is done on top, right ?
+>> qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
+>>
+> 
+> You're right, depending on enciv_words you write the 4 registers, then
+> increment the last word and write that out again.
+> 
+>>>
+>>>> +		qce_write_array(qce, REG_ENCR_CCM_INT_CNTR0, (u32 *)enciv, enciv_words);
+>>>> +		qce_write(qce, REG_CNTR_MASK, ~0);
+>>>> +		qce_write(qce, REG_CNTR_MASK0, ~0);
+>>>> +		qce_write(qce, REG_CNTR_MASK1, ~0);
+>>>> +		qce_write(qce, REG_CNTR_MASK2, ~0);
+>>>> +	}
+>>>> +
+>>>> +	/* Clear authentication IV and KEY registers of previous values */
+>>>> +	qce_clear_array(qce, REG_AUTH_IV0, 16);
+>>>> +	qce_clear_array(qce, REG_AUTH_KEY0, 16);
+>>>> +
+>>>> +	/* Clear byte count */
+>>>> +	qce_clear_array(qce, REG_AUTH_BYTECNT0, 4);
+>>>> +
+>>>> +	/* Write authentication key */
+>>>> +	qce_cpu_to_be32p_array(authkey, ctx->auth_key, auth_keylen);
+>>>> +	authkey_words = DIV_ROUND_UP(auth_keylen, sizeof(u32));
+>>>> +	qce_write_array(qce, REG_AUTH_KEY0, (u32 *)authkey, authkey_words);
+>>>> +
+>>>> +	if (IS_SHA_HMAC(rctx->flags)) {
+>>>> +		/* Write default authentication iv */
+>>>> +		if (IS_SHA1_HMAC(rctx->flags)) {
+>>>> +			auth_ivsize = SHA1_DIGEST_SIZE;
+>>>> +			memcpy(authiv, std_iv_sha1, auth_ivsize);
+>>>> +		} else if (IS_SHA256_HMAC(rctx->flags)) {
+>>>> +			auth_ivsize = SHA256_DIGEST_SIZE;
+>>>> +			memcpy(authiv, std_iv_sha256, auth_ivsize);
+>>>> +		}
+>>>> +		authiv_words = auth_ivsize / sizeof(u32);
+>>>> +		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
+>>>
+>>> AUTH_IV0 is affected by the little endian configuration, does this imply
+>>> that IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags? If so
+>>> I think it would be nice if you grouped the conditionals in a way that
+>>> made that obvious when reading the function.
+>>
+>> So yes IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags.
+>> AUTH_IVn is 0 for ccm and has initial value for HMAC algorithms. I don't
+>> understand the confusion here.
+>>
+> 
+> I'm just saying that writing is as below would have made it obvious to
+> me that IS_SHA_HMAC() and IS_CCM() are exclusive:
+
+So regardless of the mode, it is a good idea  to clear the IV  registers 
+which happens above in
+
+	qce_clear_array(qce, REG_AUTH_IV0, 16);
+
+
+This is important becasue the size of IV varies between HMAC(SHA1) and 
+HMAC(SHA256) and we don't want any previous bits sticking around.
+For CCM after the above step we don't do anything with AUTH_IV where as 
+for SHA_HMAC we have to go and program the registers. I can split it into
+if (IS_SHA_HMAC(flags)) {
+	...
+} else {
+	...
+}
+
+but both snippets will have the above line code clearing the IV register 
+and the if part will have more stuff actually programming these 
+registers.. Is that what you are looking for ?
+
+
+-- 
+Warm Regards
+Thara
