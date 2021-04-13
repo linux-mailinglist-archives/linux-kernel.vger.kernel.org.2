@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA80E35E605
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B531D35E60A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347534AbhDMSL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
+        id S1347550AbhDMSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbhDMSLx (ORCPT
+        with ESMTP id S1347547AbhDMSML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:11:53 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8BCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:33 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c123so13963326qke.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:33 -0700 (PDT)
+        Tue, 13 Apr 2021 14:12:11 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B7AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:50 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id b139so13400324qkc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hP1yZTQwOtiqVSS9i6sWp1c/yU9rYxNAzNbGrmEt0E4=;
-        b=O99pOisvrXihRCyF25FzuvCNjnpt7uwox3cvgEbbO3eyL3YgU1oI5auyn0FP+9+BnO
-         pz1uyshGwNHqhKYgAwd9JavcOLnWf+QdGluUd9ouOJBXn4FmFuAJXnrckY8dhDHeXjoe
-         Ge6MPmUjX70keUCE+C7TMK4uvM8+ep7LQWjUNfWUePXMHsw4u/hMSD26MhhqoBIRnsRk
-         YDaZ23r3IapEHtw8nGTGHOTU7dT5+rOE0vZi7jEVrrWpNtz9tFrpHqEaqUtM5+p/YebF
-         NL89SOJ1YOmcdAo5gc74md1TQLgDtg9707Ul5y/tJ/jpXw6e//QFPk+d/3X68XHka8rn
-         JqMA==
+        bh=10O+jPL+OEccKqpj/hH+I4ElPmWsuuh1UAUW2Q6XaMc=;
+        b=peihZeIdAVSH5KcQpZhcxJydUFf5486sTu9ZesihRIbDtWtEQYyF7Am/Rz+3v6wp7/
+         Vyz+eoXTtfF+eM7sx5K32zas5MclrOGalteAvd5OCOsmOKEglqH1A5HmdArw1D6Rf3H4
+         F55+MPxPMCn4esziaFyVfLhTOJJcoxt+0FlMmSmDNpv7FUlUBla+ajavFeZNhSskhLuO
+         +46JZGequ3FKkV8vBx3BedjEguv/Qa7NwdEPgw2xvQ8pMBgM+vQGTaC2D8aXINDLXv0O
+         yRhHBo9ekIKjaSwRciHTCWnPYS4QPvACtx26pSSU1Wtax9I62T2OjzyVGMo9fjDLNzhu
+         GCpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hP1yZTQwOtiqVSS9i6sWp1c/yU9rYxNAzNbGrmEt0E4=;
-        b=uHUO119a4ylLJHaHTCFprz2lo/+17iZs57+qxDKD0HIJO6EMeGo24kARQznO+1yNyr
-         6/7YR6rGS9o2zF4rMrBeaWMFRs4aIXOOXwJd7+kS+3LjFeUjto08K8Jc++1u1vQMu00f
-         dYOTUvKpmZqo7stm16iZsZ6atN3W8xvSDvef5s/GD9673NzWFH+nMdU4v6SBcfkflE7V
-         cY30iw4HnCRFFdnErykZMAt0XfCIKuAgO6U/rS4BN/tUsO+glqjmitwXisluQkZ25kP1
-         NmKwqWcdwE00QVL4KnHpwetJUQzhJhJpDYqaZKu4cuLHbk9vaVAekxXiiCFwW8thqd9x
-         xuEw==
-X-Gm-Message-State: AOAM530MggKsvtsraW7vLTM+Vh5J1fjT7svwWy/W+KwDNx6vs+oD9Pzu
-        FBqlWtem5YDVTGxR+nLTprz3iNIcitKhWXmuSeK6QQ==
-X-Google-Smtp-Source: ABdhPJzp3P2TkGIWOF+5MkddfdRlvtoKFnlmTx6gm09J2EWdjg2DwxYbwlFRKdQlf1lAkvmXTGG1sqR/qGOhFRBx1jI=
-X-Received: by 2002:a05:620a:a47:: with SMTP id j7mr11046809qka.350.1618337492194;
- Tue, 13 Apr 2021 11:11:32 -0700 (PDT)
+        bh=10O+jPL+OEccKqpj/hH+I4ElPmWsuuh1UAUW2Q6XaMc=;
+        b=S4n1s6w974qDGoKnEaz2xARxMTnAf+YeRZY1jzwRl2fUO9/MpDvXfwnuWRNbUdg2fK
+         z4Zm5dbosziYHA1QROMr7v4eXram6lIebypAMTGdDs1RAS2lD+CBJ58oUi5Ks4zyINoe
+         bzb5gFiAMbzQBUdzarIcIZl/h7BWZRiac4OtrHPjpr7gZkNHSLY1wBM7Lkp+V4iqRYhH
+         rIk57z6DZ17Z3HDcMOj9JvP3T47bDn97mUwJUrJSDDXc0KcWUra41USQxWEzOZyxrmri
+         BpVGNZ7HWasfV6St/O7XGeZR2RDVhGViPN6EDp0VVxSEX9DN9m03+EFhx5B+vkYpLpnw
+         uIcA==
+X-Gm-Message-State: AOAM5305/EKAE+jrXr37FIo9E3PKZx+k47tVo8ldfdmA5XL8L8ylXu1D
+        E+Py9528yqymuqZ1lExoU2fHbz9vInf7pRAKj1k4ug==
+X-Google-Smtp-Source: ABdhPJxTzart4cK+GierPgt6a6wC8/NNabJskhlHhlZTyQiQyE41giAZRYB0NYcQosS5+v5vst1pc9CimxrTgi1J7dE=
+X-Received: by 2002:a05:620a:146e:: with SMTP id j14mr10312294qkl.424.1618337509665;
+ Tue, 13 Apr 2021 11:11:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000ea3ddb05bf15fdf8@google.com>
-In-Reply-To: <000000000000ea3ddb05bf15fdf8@google.com>
+References: <00000000000066b6f405bf0d0660@google.com>
+In-Reply-To: <00000000000066b6f405bf0d0660@google.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 20:11:21 +0200
-Message-ID: <CACT4Y+ZrYn9GU0JT+2NkujT5f9ESPA4cDbs4_0NbkraCtkPOVQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in copy_pte_range
-To:     syzbot <syzbot+c2d2a6e2af34adb88749@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
+Date:   Tue, 13 Apr 2021 20:11:38 +0200
+Message-ID: <CACT4Y+a7m9_hGjb0f8r_ZELSGqs=NvpocST9pXex23y57RLGug@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in __schedule
+To:     syzbot <syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 8:54 PM syzbot
-<syzbot+c2d2a6e2af34adb88749@syzkaller.appspotmail.com> wrote:
+On Sat, Apr 3, 2021 at 10:12 AM syzbot
+<syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com> wrote:
 >
 > Hello,
 >
@@ -72,65 +73,46 @@ On Sat, Apr 3, 2021 at 8:54 PM syzbot
 >
 > HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
 > git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15604986d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=71a75beb62b62a34
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c2d2a6e2af34adb88749
-> compiler:       Debian clang version 11.0.1-2
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1432bd1ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=78a83786814e7724
+> dashboard link: https://syzkaller.appspot.com/bug?extid=be81a058b10931003a4a
+> userspace arch: arm
 >
 > Unfortunately, I don't have any reproducer for this issue yet.
 >
 > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c2d2a6e2af34adb88749@syzkaller.appspotmail.com
+> Reported-by: syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com
 
 #syz dup: WARNING: suspicious RCU usage in getname_flags
 
 > =============================
 > WARNING: suspicious RCU usage
-> 5.12.0-rc5-syzkaller #0 Not tainted
+> 5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0 Not tainted
 > -----------------------------
-> kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+> kernel/sched/core.c:4841 Illegal context switch in RCU-sched read-side critical section!
 >
 > other info that might help us debug this:
 >
 >
 > rcu_scheduler_active = 2, debug_locks = 0
-> 3 locks held by syz-executor.2/8400:
->  #0: ffffffff8c796770 (dup_mmap_sem){.+.+}-{0:0}, at: dup_mmap+0x73/0xde0 kernel/fork.c:479
->  #1: ffff8880286c0158 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
->  #1: ffff8880286c0158 (&mm->mmap_lock#2){++++}-{3:3}, at: dup_mmap+0x87/0xde0 kernel/fork.c:480
->  #2: ffff8880286c2458 (&mm->mmap_lock/1){+.+.}-{3:3}, at: mmap_write_lock_nested include/linux/mmap_lock.h:78 [inline]
->  #2: ffff8880286c2458 (&mm->mmap_lock/1){+.+.}-{3:3}, at: dup_mmap+0xd1/0xde0 kernel/fork.c:489
+> no locks held by migration/1/17.
 >
 > stack backtrace:
-> CPU: 1 PID: 8400 Comm: syz-executor.2 Not tainted 5.12.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
+> CPU: 1 PID: 17 Comm: migration/1 Not tainted 5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0
+> Hardware name: linux,dummy-virt (DT)
+> Stopper: 0x0 <- 0x0
+> Call trace:
+>  dump_backtrace+0x0/0x3e0 arch/arm64/include/asm/pointer_auth.h:76
+>  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:191
 >  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x176/0x24e lib/dump_stack.c:120
->  ___might_sleep+0xb4/0x530 kernel/sched/core.c:8294
->  copy_pte_range+0x255b/0x2a20 mm/memory.c:1010
->  copy_pmd_range mm/memory.c:1064 [inline]
->  copy_pud_range mm/memory.c:1101 [inline]
->  copy_p4d_range mm/memory.c:1125 [inline]
->  copy_page_range+0xba9/0xff0 mm/memory.c:1198
->  dup_mmap+0x9aa/0xde0 kernel/fork.c:594
->  dup_mm+0x8c/0x310 kernel/fork.c:1368
->  copy_mm kernel/fork.c:1424 [inline]
->  copy_process+0x24c1/0x5690 kernel/fork.c:2113
->  kernel_clone+0x1a6/0x6c0 kernel/fork.c:2500
->  __do_sys_clone kernel/fork.c:2617 [inline]
->  __se_sys_clone kernel/fork.c:2601 [inline]
->  __x64_sys_clone+0x1d5/0x220 kernel/fork.c:2601
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x464a4b
-> Code: ed 0f 85 60 01 00 00 64 4c 8b 0c 25 10 00 00 00 45 31 c0 4d 8d 91 d0 02 00 00 31 d2 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 89 00 00 00 41 89 c5 85 c0 0f 85 90 00 00
-> RSP: 002b:00007ffc64260880 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000464a4b
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000003070400
-> R10: 00000000030706d0 R11: 0000000000000246 R12: 0000000000000001
-> R13: 0000000000000000 R14: 0000000000000001 R15: 00007ffc64260970
+>  dump_stack+0x120/0x1a8 lib/dump_stack.c:120
+>  lockdep_rcu_suspicious+0x130/0x148 kernel/locking/lockdep.c:6428
+>  schedule_debug kernel/sched/core.c:4841 [inline]
+>  __schedule+0x1244/0x1bc4 kernel/sched/core.c:4967
+>  schedule+0xac/0x22c kernel/sched/core.c:5152
+>  smpboot_thread_fn+0x278/0x7f4 kernel/smpboot.c:161
+>  kthread+0x320/0x3bc kernel/kthread.c:292
+>  ret_from_fork+0x10/0x3c arch/arm64/kernel/entry.S:958
 >
 >
 > ---
@@ -144,4 +126,4 @@ On Sat, Apr 3, 2021 at 8:54 PM syzbot
 > --
 > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
 > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ea3ddb05bf15fdf8%40google.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000066b6f405bf0d0660%40google.com.
