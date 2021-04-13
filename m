@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BDA35DA8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBEB35DA8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243822AbhDMI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhDMI6J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:58:09 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAECC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:57:50 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id r196so3464339vkd.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D5uDSu+GYJjaWPoe8h3mJwhd/DcJYP150YgFVzspmgY=;
-        b=b5yrKS8aPr7bTDMX8mH6+Fq/epKx0YSIK5VkWKmOEGzqNx1gi8KL4KpK7134yf//KU
-         b+PIbkJKISKmcsa8P63lCkdZvcRD7Tm7bkWsOOwW7h/QogtNhJgfMBk+qv0qkdJ3uKjx
-         1F6YXdE1YQLUxBOIE0719ILXx67GO1Y9s6OMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D5uDSu+GYJjaWPoe8h3mJwhd/DcJYP150YgFVzspmgY=;
-        b=USbrv9LQeJqK8wqzKeMELct9LNw18pXar/sCfcJMwrMlLgQkfNIXGV+0aS69wvSCn/
-         aJgCyiwwA0zSaZm0hW115oZNNNqBwTU0C7Xdrq/6DYRvYkqN4+i1GvgEeHS3vgQlmKYX
-         bfAYzWLhTMbbq91d8qsaMHMm8+LRdNkFTtOeH10rU13rELljks7b2YpAjCO0gD2P/9hY
-         CMDtcUiczyJmbHoBk6y7yppxEMVNLxSxV5/W1Ye92hUK4dMaciEa5rDO2slF8ApUp0P1
-         dtVlChEQRI57reeKKdxTXBKRlUwTsbHp2Jf36KVPiFPOewOIe2oi6/hkTFmAfzUTbjnz
-         TLbQ==
-X-Gm-Message-State: AOAM530QTii2TYT9ti6lu2H8Xw+Nj53QyKw/2obk+rc+7pbBJyTtlWbY
-        D3WRvAKu+riwxD3ogid/7y5dsjGl505lOugKOAkA1KLRnBBDvoP21xo=
-X-Google-Smtp-Source: ABdhPJyXnwG9a5aRq35LnL98GQ/xhaxSugwAWCGB7jsjYQHAgQtsfd2JmppOJRFQWhoLc3//9s0nwlZvs4qJvkH/CHA=
-X-Received: by 2002:a1f:4ec3:: with SMTP id c186mr22566430vkb.11.1618304269218;
- Tue, 13 Apr 2021 01:57:49 -0700 (PDT)
+        id S243312AbhDMJAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:00:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37577 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhDMJAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:00:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FKKL265Ypz9sVb;
+        Tue, 13 Apr 2021 18:59:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618304379;
+        bh=VKtSIaZlN6zQgB77gsMfonlemjizw1ElaXso+Si9YOE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZeIiuNgY4qlzWmMk4wrp33AyrrXfrBG4+k9tv+TQx2uALBjtk6qqlnlC4LId8MRD2
+         J3xorn/N00x0PhHMPNi+loGrLwfFlxw2v3euF6DgPbJyvvsFTaus5uU8WueT2tUMcO
+         qWj7q3mK4XlrtHIqLuVXyeLjqxSdRMwpF7l29PDOHLLEqtgJ4IBP/1S2+Czsb/lBgN
+         8/FXvAFbR/Faztk3bHT6YXFoydRtWFt5YOfsbrKlzzrqjxb7KJiq3dncmOs8DTqh+o
+         7uQG6uEWUtO/v9sKtGdH+wO2Htuqnur72zK4n809J8yWt5aK3oQEpeVF12ZUoHqH1K
+         vuhLfWEIkfVbA==
+Date:   Tue, 13 Apr 2021 18:59:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: linux-next: manual merge of the akpm-current tree with the arm64
+ tree
+Message-ID: <20210413185936.5095cb11@canb.auug.org.au>
 MIME-Version: 1.0
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
-In-Reply-To: <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 13 Apr 2021 10:57:38 +0200
-Message-ID: <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/tVdMoat4DynxqT9aEq/GMUk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 3:23 PM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> Hi Miklos,
->
-> =E5=9C=A8 2021/3/27 14:36, Baolin Wang =E5=86=99=E9=81=93:
-> > We can meet below deadlock scenario when writing back dirty pages, and
-> > writing files at the same time. The deadlock scenario can be reproduced
-> > by:
-> >
-> > - A writeback worker thread A is trying to write a bunch of dirty pages=
- by
-> > fuse_writepages(), and the fuse_writepages() will lock one page (named =
-page 1),
-> > add it into rb_tree with setting writeback flag, and unlock this page 1=
-,
-> > then try to lock next page (named page 2).
-> >
-> > - But at the same time a file writing can be triggered by another proce=
-ss B,
-> > to write several pages by fuse_perform_write(), the fuse_perform_write(=
-)
-> > will lock all required pages firstly, then wait for all writeback pages
-> > are completed by fuse_wait_on_page_writeback().
-> >
-> > - Now the process B can already lock page 1 and page 2, and wait for pa=
-ge 1
-> > waritehack is completed (page 1 is under writeback set by process A). B=
-ut
-> > process A can not complete the writeback of page 1, since it is still
-> > waiting for locking page 2, which was locked by process B already.
-> >
-> > A deadlock is occurred.
-> >
-> > To fix this issue, we should make sure each page writeback is completed
-> > after lock the page in fuse_fill_write_pages() separately, and then wri=
-te
-> > them together when all pages are stable.
-> >
-> > [1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than=
- 120 seconds.
-> > [1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
-> > [1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
-> > [1450578.796188] Call trace:
-> > [1450578.798804]  __switch_to+0xd8/0x148
-> > [1450578.802458]  __schedule+0x280/0x6a0
-> > [1450578.806112]  schedule+0x34/0xe8
-> > [1450578.809413]  io_schedule+0x20/0x40
-> > [1450578.812977]  __lock_page+0x164/0x278
-> > [1450578.816718]  write_cache_pages+0x2b0/0x4a8
-> > [1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
-> > [1450578.825592]  do_writepages+0x58/0x108
-> > [1450578.829412]  __writeback_single_inode+0x48/0x448
-> > [1450578.834217]  writeback_sb_inodes+0x220/0x520
-> > [1450578.838647]  __writeback_inodes_wb+0x50/0xe8
-> > [1450578.843080]  wb_writeback+0x294/0x3b8
-> > [1450578.846906]  wb_do_writeback+0x2ec/0x388
-> > [1450578.850992]  wb_workfn+0x80/0x1e0
-> > [1450578.854472]  process_one_work+0x1bc/0x3f0
-> > [1450578.858645]  worker_thread+0x164/0x468
-> > [1450578.862559]  kthread+0x108/0x138
-> > [1450578.865960] INFO: task doio:207752 blocked for more than 120 secon=
-ds.
-> > [1450578.888321] doio            D    0 207752 207740 0x00000000
-> > [1450578.888329] Call trace:
-> > [1450578.890945]  __switch_to+0xd8/0x148
-> > [1450578.894599]  __schedule+0x280/0x6a0
-> > [1450578.898255]  schedule+0x34/0xe8
-> > [1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
-> > [1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
-> > [1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
-> > [1450578.917207]  do_iter_readv_writev+0x110/0x188
-> > [1450578.921724]  do_iter_write+0x90/0x1c8
-> > [1450578.925598]  vfs_writev+0x84/0xf8
-> > [1450578.929071]  do_writev+0x70/0x110
-> > [1450578.932552]  __arm64_sys_writev+0x24/0x30
-> > [1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
-> > [1450578.941694]  el0_svc_handler+0x30/0x80
-> > [1450578.945606]  el0_svc+0x10/0x14
-> >
-> > Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
-> > Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->
-> Do you have any comments for this patch set? Thanks.
+--Sig_/tVdMoat4DynxqT9aEq/GMUk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-I guess this is related:
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-https://lore.kernel.org/linux-fsdevel/20210209100115.GB1208880@miu.piliscsa=
-ba.redhat.com/
+  lib/test_kasan.c
 
-Can you verify that the patch at the above link fixes your issue?
+between commits:
 
-Thanks,
-Miklos
+  2603f8a78dfb ("kasan: Add KASAN mode kernel parameter")
+  e80a76aa1a91 ("kasan, arm64: tests supports for HW_TAGS async mode")
+
+from the arm64 tree and commit:
+
+  c616ba7e0d63 ("kasan: detect false-positives in tests")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc lib/test_kasan.c
+index 785e724ce0d8,bf9225002a7e..000000000000
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@@ -78,33 -83,30 +83,35 @@@ static void kasan_test_exit(struct kuni
+   * fields, it can reorder or optimize away the accesses to those fields.
+   * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
+   * expression to prevent that.
++  *
++  * In between KUNIT_EXPECT_KASAN_FAIL checks, fail_data.report_found is k=
+ept as
++  * false. This allows detecting KASAN reports that happen outside of the =
+checks
++  * by asserting !fail_data.report_found at the start of KUNIT_EXPECT_KASA=
+N_FAIL
++  * and in kasan_test_exit.
+   */
+- #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
+- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
+- 	    !kasan_async_mode_enabled())			\
+- 		migrate_disable();				\
+- 	WRITE_ONCE(fail_data.report_expected, true);		\
+- 	WRITE_ONCE(fail_data.report_found, false);		\
+- 	kunit_add_named_resource(test,				\
+- 				NULL,				\
+- 				NULL,				\
+- 				&resource,			\
+- 				"kasan_data", &fail_data);	\
+- 	barrier();						\
+- 	expression;						\
+- 	barrier();						\
+- 	if (kasan_async_mode_enabled())				\
+- 		kasan_force_async_fault();			\
+- 	barrier();						\
+- 	KUNIT_EXPECT_EQ(test,					\
+- 			READ_ONCE(fail_data.report_expected),	\
+- 			READ_ONCE(fail_data.report_found));	\
+- 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
+- 	    !kasan_async_mode_enabled()) {			\
+- 		if (READ_ONCE(fail_data.report_found))		\
+- 			kasan_enable_tagging_sync();		\
+- 		migrate_enable();				\
+- 	}							\
++ #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {			\
+ -	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))				\
+++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&				\
+++	    !kasan_async_mode_enabled())				\
++ 		migrate_disable();					\
++ 	KUNIT_EXPECT_FALSE(test, READ_ONCE(fail_data.report_found));	\
++ 	WRITE_ONCE(fail_data.report_expected, true);			\
++ 	barrier();							\
++ 	expression;							\
++ 	barrier();							\
+++	if (kasan_async_mode_enabled())					\
+++		kasan_force_async_fault();				\
+++	barrier();							\
++ 	KUNIT_EXPECT_EQ(test,						\
++ 			READ_ONCE(fail_data.report_expected),		\
++ 			READ_ONCE(fail_data.report_found));		\
+ -	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {				\
+++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&				\
+++	    !kasan_async_mode_enabled()) {				\
++ 		if (READ_ONCE(fail_data.report_found))			\
+ -			kasan_enable_tagging();				\
+++			kasan_enable_tagging_sync();			\
++ 		migrate_enable();					\
++ 	}								\
++ 	WRITE_ONCE(fail_data.report_found, false);			\
++ 	WRITE_ONCE(fail_data.report_expected, false);			\
+  } while (0)
+ =20
+  #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
+
+--Sig_/tVdMoat4DynxqT9aEq/GMUk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB1XXgACgkQAVBC80lX
+0GyHlgf/YsCKthj/vtus/O+bZc4LIYI5YqZS84vgnRe+l6nWQSh/xJaEyAJ3xzL4
+z5ZmDBs0Prb9vBC5Opi7i6m5pEUjLmZ7HH48u3Q5BDxbwwpiqw92ycTEZarxdsiL
+WlwKToxHG7hUS9Y7mHM0GTI+y3S2Li/nAsdyF9RZpzIFPkskznW21spSu4pnd+km
+zG9x6QJAOUWGF6R4hWfGd9Jv856KvbJ46AZtc134DaCGShsu0kkPOglAZkDQPX18
+CZzcCFxxffFtZ7UZ2d/jsWzD+tORHnm+Y/uRlLM96BGxu42rQ6VAqogaYOrtUCss
+LATtY7ADZMHzfTXbUc26a0XBkc6BfQ==
+=gmbd
+-----END PGP SIGNATURE-----
+
+--Sig_/tVdMoat4DynxqT9aEq/GMUk--
