@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F25935E54D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4621035E554
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347311AbhDMRru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:47:50 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60046 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347306AbhDMRro (ORCPT
+        id S1347329AbhDMRt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:49:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20058 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347320AbhDMRtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:47:44 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DHZIwM013289;
-        Tue, 13 Apr 2021 10:47:18 -0700
+        Tue, 13 Apr 2021 13:49:25 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DHXHHX008428;
+        Tue, 13 Apr 2021 10:48:58 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=nmVEag0JEVvJrbzW7VvpOlEjxBl/fDzSdryIrI2MNNA=;
- b=GtVj/lJKhl9eg7fYRGexcdyveW50abIbrKHJTb8eii+vAg9zRY17yi6CRzteC/sLcQgw
- NOFz2fqMf55Ykle7dTeE7ASYnx2jCWUEPbgYzb+cujA88dqDJuC95MvBhKTe8uuwMd8I
- bOc2FfvU2uNr2kXdGGr0oef80z0hrLrfP3U= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37wd5ws79m-4
+ mime-version; s=facebook; bh=b4LCig6QV6Y6KLrSWnbORke+5WAPq+fhnSfBKH0S3WU=;
+ b=pZ3VAS3Rj61Gx5/9sszV+r5SDGd461hp7867oTf947Pl3wSxGZxF9BtF++Dc6WA9J+Rm
+ 1aR9w5kUkgQD4opP2t27p2/P0UKdVazSBTzfInN9hHPcp1ICa+9YrNjyzLwiHgtzSy3f
+ 1B38yGW7PG+OUU1XQFoEx9B6d0yJYO/1rmY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37wabfa89k-16
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 13 Apr 2021 10:47:18 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+        Tue, 13 Apr 2021 10:48:58 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 13 Apr 2021 10:47:17 -0700
+ 15.1.2176.2; Tue, 13 Apr 2021 10:48:56 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igt5DYwtRuz3PbmX2YTv8GFPNWQqQv505qEJ0eBTwqZL0BNB4qM1CKLrnema/oXsBlhDunZeQoSf929RmifA8Uop4Rx9A6NmJ4ZlmaRbyxWTtccjC5iNGsafwc4QwCXJT1i4OHSkumq00LxTYe5Ogrk+IPacy9oLyw873lb8o6Q37zDSJrM50MG7RhTDxTLSiSSXw2iB33Sn68oU7ZOD2/PNmduuPCYCpl4vXSP7TK5724LaSaPJ+Tb6tZup5WLvdyDYbwXxW9JpEo/OPxcb76fGdtblZkHIRJql/1J92ShX21lgo0UfYjc8fe1IF2CUhhOaYwe53AUWIEBekSIJBg==
+ b=IobEBhWPXdgUOxYn6zzSxZJ8bZ6nACvelBrTTv2nOAyIMuJdtSqf6MyX4f1kM3A1/5/5mtIM6Nm0Lpyc9OK+voivVed/K4E+2JEHJJsoSLQ6pXOqmgaD4mcgfqKhiPvg6iVtdIDTi1P/7xo91gtuBK65q5DCz8mk1J2R3TJF/Fpj7InMn967W7zBE/881jaQMdWY007tQsO7zdOHhbsvGXv2eLWfLKVWFDeLjb6EYoBro0GBCA+BILpqfwlzPblnRZEkVOIdcWwYcoY/QQcgb7fOmeKnGIbGWjmezseDN+iSD3OYfnvDpvdZUE0PBvz9Fq85x6prEGE8XbTAoH3f1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nmVEag0JEVvJrbzW7VvpOlEjxBl/fDzSdryIrI2MNNA=;
- b=BZAX3vnkDPByDFoLaNndKvFr1RugI9Ut8Tf9K/61scwu1yAFL5u1zhiOvRpb2saUJR+HWyenJ776Fo66S/OiqzmKWT1igdSVAZ2SsEV0KdT0F9Hdqmu7QjbGZ+9ZzK4V2oe0Iid5imu9BlPDjvX5dOG6t66vBjqQTUqe+uRZ2sCc2H98+KAsIC2GPKZeTYvpM751ius48i4KPDppqs3mDxmkGyVnKDtXigbR1uMzwwJArXwJQrfk6dRD3c3B1Amf3jRsI+TfUsVsN+bDj3QXukonDfyjANhWEevLcFnVSTP+v7d3TgZZ6LIAVqq7l1bpD6v2oHXsKOzv9iiKhWQJ9A==
+ bh=b4LCig6QV6Y6KLrSWnbORke+5WAPq+fhnSfBKH0S3WU=;
+ b=E8xr6/bvUc7HxJOD/Z1FUWtOjBJlNNCjFCRo8V8XFP/Fk9hihqn8B6vGvHEV4rGiOGcCIUaa5m8cHUVuo/4wTlS72+zCi9J9x9M+p5E56f4fj4ksZKkieI95c/nqy1T0brvkkQOYzxZe+AhLkkNAkQ0aATJT2rGyrLutVPmHnob4yVjcn5Nou31ExY+q/1ETjPn99i9sgChb2SUCvSAI/lx0z1H+TMAX5exFATvaEN4Wlu3Vpv+gpy/PdfPz3uxbXtfLFoLCjATi6YQKJYgHK/06OXBIhHUu8WVAGIIHyZ3/0QA6z1uxO7TfWY6q4fsSb6AR/gFI1Y5wOnaZhixM7A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: bytedance.com; dkim=none (message not signed)
  header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2759.namprd15.prod.outlook.com (2603:10b6:a03:151::14) with
+ by BYAPR15MB3077.namprd15.prod.outlook.com (2603:10b6:a03:b1::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Tue, 13 Apr
- 2021 17:47:16 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Tue, 13 Apr
+ 2021 17:48:55 +0000
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 17:47:16 +0000
-Date:   Tue, 13 Apr 2021 10:47:12 -0700
+ 17:48:55 +0000
+Date:   Tue, 13 Apr 2021 10:48:51 -0700
 From:   Roman Gushchin <guro@fb.com>
 To:     Muchun Song <songmuchun@bytedance.com>
 CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
@@ -58,131 +58,208 @@ CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
         <vdavydov.dev@gmail.com>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>, <duanxiongchun@bytedance.com>,
         <fam.zheng@bytedance.com>
-Subject: Re: [PATCH 2/7] mm: memcontrol: bail out early when !mm in
- get_mem_cgroup_from_mm
-Message-ID: <YHXZIMp+i5SwFjoj@carbon.dhcp.thefacebook.com>
+Subject: Re: [PATCH 3/7] mm: memcontrol: remove the pgdata parameter of
+ mem_cgroup_page_lruvec
+Message-ID: <YHXZgwpx2RRJ2qJW@carbon.dhcp.thefacebook.com>
 References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-3-songmuchun@bytedance.com>
+ <20210413065153.63431-4-songmuchun@bytedance.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210413065153.63431-3-songmuchun@bytedance.com>
+In-Reply-To: <20210413065153.63431-4-songmuchun@bytedance.com>
 X-Originating-IP: [2620:10d:c090:400::5:ec38]
-X-ClientProxiedBy: CO2PR06CA0057.namprd06.prod.outlook.com
- (2603:10b6:104:3::15) To BYAPR15MB4136.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR20CA0013.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::23) To BYAPR15MB4136.namprd15.prod.outlook.com
  (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:ec38) by CO2PR06CA0057.namprd06.prod.outlook.com (2603:10b6:104:3::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Tue, 13 Apr 2021 17:47:15 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:ec38) by MWHPR20CA0013.namprd20.prod.outlook.com (2603:10b6:300:13d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 17:48:54 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65f45349-c3a4-4c16-3aa6-08d8fea42d61
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2759:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2759A4E73AC43BA6CA7841A6BE4F9@BYAPR15MB2759.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 53fe8854-2e0d-457b-c0ee-08d8fea46821
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3077:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3077F53F1570262C1E1EAA9EBE4F9@BYAPR15MB3077.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LFV3YTLEUhWBSyV9afR8EZYLD8r3Ks3Q36/NzHvbAM+XnoaGOLJ6qCke8d8YscWqd6UeDApApudFpUWiNmDaXfAMEaTwuqh7mzDrQmS5r1r8o/uTn2RRKX+z90q4X/TaDKwavrAyuX1yQCyaHfoQt6S1v8d0MN9zpcCjxs0TeMqU/jRRNeFgIiIk4InLD/XSUyS9ZGkshbP+FLfXlsvYwKJ+f74144b2KjWG4HVzyRFhhhn6YvjpODjtt6EICneVRLD9RplTAPDyX5uDMdSFxFucH2LVS7Pc4vcSmJq1p2lU/sWWt23rc3YzBru/GGI8zYBJeL3QH68MvfKymLMhaNvG2EKpz+jh8cOp0m2ntEZ3CPoL16sC7NqCTAHlT3gxW+GBtA790fy26yR6E5U/NJXGxbzFrT/te8/uQmJ4TDxMR33Jbvln+gw0I+Fbma58fA8Q7Wwt+jMxmQOlSFT5cV5rpicUXeGTOvOptDwEf/t23mOxqciFwP0X/UVGnQe1rbxo+YSorvnL07j1tro8FajKzHfGMYozx3cTXHvKFMhf55/4lMAAsdg0wNsxQmWgaH3ouAqWtit/RHKtQsts0QZZeWUnm0fTbaqFvPE6BpwJg99JdvrK0+mMClw8ERWon2xnLpbI9Cy7JJUJn4qtvQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39850400004)(396003)(346002)(2906002)(6506007)(83380400001)(186003)(7416002)(478600001)(38100700002)(6666004)(86362001)(4326008)(316002)(5660300002)(8936002)(66946007)(9686003)(55016002)(8676002)(66476007)(6916009)(66556008)(16526019)(7696005)(52116002)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LwShggkvfOAxGJO96H143tIGtU9xcuxr9XxB7r158GNPiNEfJEgnsE0O5f8D?=
- =?us-ascii?Q?dX+B/VcR4JajisSxi9JU0KPkCWtekCqLWhgiIgUlbB/SaUt3DdpCKiWOK1UA?=
- =?us-ascii?Q?ckGtYkyXcXoQimMjycMZ0a4bv1JiVgBEQKGCo/bldbzUBask97QGsL80gi1R?=
- =?us-ascii?Q?tZGRjKgsEGaD+wL2Dpls9JtfKhkxCKBAs6RhkaMyLjjmAXaikXVrjxta34LH?=
- =?us-ascii?Q?bYndGoXJhBJh/+Ird/MijBcxTX2ajXhhFpVTNL75Od/7ctARiVt1eIz82gxX?=
- =?us-ascii?Q?6mtyNRg+OuBEhRPoBgXQNNrC/ic3I8W/TAqb7fQlG28E9uStI4CFQ2ooU5cC?=
- =?us-ascii?Q?/JvVhhYqVol97YH4TSeQHRLwDoJME7WCVnVJwvrEJhFf300+0F/eXHU8/+TB?=
- =?us-ascii?Q?B2YIQnHzIXpfz4uw0OgKFm+p52VI4U6mC4+Lgua+fxtJzjX/7mt4QjlYi4GY?=
- =?us-ascii?Q?tAPzbKAoFKOF1pteENlzX4wrouKe7JtQ+BwxXb3D7ukgl9/2uM9QA/IISE+E?=
- =?us-ascii?Q?jQCeathqDvrJERp59qi5f5g0yr2H9O+klWL2E2dgbDeW10cpP4MuezSUhnmp?=
- =?us-ascii?Q?z61tfkQaqJTVY2zfocFdDe4r4xPK8Ll7gDleSd0ag+0Y59mHh8y0KjG02kEG?=
- =?us-ascii?Q?lxs+DqAx/rI7N+gsvDVA1tBoO5RkWMDDw5t7D2Plw0AIrmkvEZ03V70tEdiG?=
- =?us-ascii?Q?Rt29TaEDvacGjPHJXw2FUunXYQHV3CB56pQDskZS3WJJ7S45G81du3JveLlV?=
- =?us-ascii?Q?W9RZC13Y4dhtTnqNc9B89jTdzSTAitH1O+Jog1eiWatlCSBMIcQdD3JSfvzm?=
- =?us-ascii?Q?gN8Ke/a7n6GX6HW8dvYpGm3ATJNFqoFT4l62YQYBwl41Rt+7W+Rzaycfd0eq?=
- =?us-ascii?Q?0JDSgqzGi8W/2fBcl7R4xwnrGvXigpbW7WIs6PfZ/R2LqenluepRx05l3yfm?=
- =?us-ascii?Q?AT4/25VFYIBC0Wudfx0uEoSTWzH+UBouPfM6EzJPTb/39SkfIPBAWBN/L9V1?=
- =?us-ascii?Q?IO+3T06LHjP82uaiKNYwvQsS90Y5UYy6QA0hW8sXVC5jDLxWdB4T1soHUCLd?=
- =?us-ascii?Q?GHAj7njVH11hYZUNwsGJaKr9Hy/hR1KH9ph6gGQWLG1SecQFcmERHAVMufVJ?=
- =?us-ascii?Q?NUPuOsBlv3oQ1LH2ubb8p/QAo9C1A5H2NsVKJbQUEmEh9mXlpcuEzJYMHIil?=
- =?us-ascii?Q?mA2q/gvXZNCLMHfYEJkHISr5XqGrOfPzQtZQxVEv7oIjFoRNRFDL9q5T2X0g?=
- =?us-ascii?Q?lN9KMfVsYGedbRf9kI2coY/carxkw/jcxG1hTktgBundJKJLPBreyNxClu29?=
- =?us-ascii?Q?/WVUu2TBz145CldsqRdIjcOoPwQDWgT+W+VJ8cGsA31BoA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65f45349-c3a4-4c16-3aa6-08d8fea42d61
+X-Microsoft-Antispam-Message-Info: EGytNd3aQSvHsUFVWhV3oVn/HzxROw5ZdSMkxcTIGv2KPFqDqPJTaXlVquV0JkSWaB0LWPgq6xqtmssSioSCyZxM4PzEPFv9Uo4a1dcEYsmH1boy0nrgjIjbQDRsG/ILlHRD1f5XzuCVwBjTetuOmSg8r4k4NOBgidGubUSx3k8FR/Kr7Gaql+xRbNJ8Pc3X368Q/1quAuVW44GSNvIwh1BGDKQW1PbNJBW4cV38MhNNU1Ubh38Klibyu/AKbxThStBq3b4mA86dlmI2kOYZiG8ITmx+7D9NUxZ96rpMel0qG1+qtJXd494zJbpFawhAF6qTXe+FrlcOH4u+dmn00IOaIeEmU7Cj4Bzxk0iMsNA1lKTUsWVvNhszO35OSeNPkjt0R+m6HyWBb4wFrADLbJKJ6ExMZZ7F0MhTiZFm9gcaGzvd7MLUizmKPdagWXgiU8DIRO/Vm35XJezVs908QqLcqB/X2qlpJ33TgCuJCWscc/kt/QT74DUK3cqikVrU/Q7iGNluTrWwGVgYs5PWqj/Euu7PTOSvNmOq6x42TqNUK4TRio6eWK/qsuPIY+pfbipRajO4NnT+fW8rvzK6uNrsy0P+lLMiDILxOjrQHu4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(39860400002)(346002)(366004)(83380400001)(316002)(86362001)(6666004)(8676002)(7696005)(7416002)(38100700002)(478600001)(6506007)(66476007)(186003)(16526019)(66556008)(9686003)(4326008)(5660300002)(8936002)(2906002)(6916009)(52116002)(66946007)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Cm22TidWv94MtfDygqjos351i6JhygyGIYshaHker3RHLvgJngaT0T6o0UJp?=
+ =?us-ascii?Q?WD3GBBYStxofHrblk6uIeZCw+AB2bIjH45CkoGSERxkrXgKLrUEOlDNlgNQr?=
+ =?us-ascii?Q?6klbqjlxgNRIhPYH5kSkl7SOTA/eJnTqFzTg03PC8AxPekWTGuf+imnGnBR7?=
+ =?us-ascii?Q?10+iKPN92KLdZxdcdDBOSgouVPUu5jLB/NFlyEhkii8o2U+BSSS5ecVKfJnI?=
+ =?us-ascii?Q?2ALtUN2h+AkJj51jMXCpmNPdlnLQ1tDkdrOgo8u8AE5m2Tj6/A2ivzP/tTT/?=
+ =?us-ascii?Q?oCAiICCnvJyE9uB2dlQyCnCqc4bnp4bI67PulhSb0MhuT4yxnvrUqhbGWg2D?=
+ =?us-ascii?Q?WWL/GpWcBadrf8cCgUll1CJzmyCBlEDJX81paXxezGeRHFP86x3pMvjOC2aK?=
+ =?us-ascii?Q?M51j4k6t/sk7HdPNGVL+svNfqBXF+oQ1pPteGP2JOrDhVmAk/YdIyu+9DntX?=
+ =?us-ascii?Q?Ah8vxQPGrunoQFwe0EovlrBhtew1tV29TwXKaCUytPoxaHJ+1+MyaGInlAgw?=
+ =?us-ascii?Q?MuS16jtfgow4j2n0iPDcJegtQV/6VC8zQM537XV3PMTkFgttxPQbRDgCbYGw?=
+ =?us-ascii?Q?KK5P2QacJ7vyIzp9FKBAVCzxMrlLAVhE3S2yLEGV20jZqB6c3/hJsFRLCRBs?=
+ =?us-ascii?Q?1vfG+m5oMCzhg2VP36yAMIc54R8uYjJSvIEqjOYOV+kOUl0MWAzrl1cj+z+n?=
+ =?us-ascii?Q?mRoLAmxdmfhf9k6PaUBHWd7z8hxFBNgubLyX4ymea/qHo+RnhgjXiCBoKvzy?=
+ =?us-ascii?Q?NS3+JBrlnb+AfSMdjiyzCoRALzIBGN5rT3TuWS/mG+lHYLfCXUho0WV2avoO?=
+ =?us-ascii?Q?Eh7mLt8XQNjVjW+XtkcDLmLrxoYM8k1MzcpxH7hLKH2Bggu2voYt9TDgcMQY?=
+ =?us-ascii?Q?i/qlmgiZyCSiFB8UNbcoPFvgy50CvYe32bE49e5l0ID4LzkeNKHZgez7QPEu?=
+ =?us-ascii?Q?IgMCrKMyQMxc8ks1zZ2L7baSOwcHK/d0BWgj3SADvmmblZjMorslsRJJ8H1H?=
+ =?us-ascii?Q?JL2XECCSZ8O+HEk5zBYAsvVMz827OcGlsVoP4bIx04vKgn6gExRnWn4VFT4w?=
+ =?us-ascii?Q?EoJkdk9in/f9VMeZp2W/z0soFxqeapVYRsBd0HSgf+1oUIhydGVYjxT5xu3u?=
+ =?us-ascii?Q?98PU3zD+V6FcLjFG+dbC/yKH3uywQdQfa3p3j9bFKqdo1TErhSoRoLwEyHS5?=
+ =?us-ascii?Q?kPYOH1o9TL957d9fIARZKqsAazBhi1b7eXm2Ec5V/u7gDK6DjsAGMnIqfIgN?=
+ =?us-ascii?Q?WBdSCluBMQgPwRf3b3EgnsPBJl+Vzqdc6tCOGjZO/N8xBI1wym9pCuC4RMmu?=
+ =?us-ascii?Q?ApAgHwkMpfHMEXYbA2Zhaf4Dt1bxRN0G500rFqKdZUMTAA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53fe8854-2e0d-457b-c0ee-08d8fea46821
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 17:47:16.3792
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 17:48:54.9378
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zwAc4j7GADHsw4TBSAA8jLp2VzQNj/ZaXVp4MEbqXDEfjHPA2gdPsJoHcTTB2M2j
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2759
+X-MS-Exchange-CrossTenant-UserPrincipalName: kTQgZYVN27HGmktGpQFNyB/0OJic9vZqCA8eiSChJBCbi4f4aaq7+b5Ezx7eYLx2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3077
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: CzpGSKoXZHF5jaNXkODns_fyLkAApbnQ
-X-Proofpoint-ORIG-GUID: CzpGSKoXZHF5jaNXkODns_fyLkAApbnQ
+X-Proofpoint-ORIG-GUID: ih28UNQVCPrmIpTw30AMSXn68c-VESmy
+X-Proofpoint-GUID: ih28UNQVCPrmIpTw30AMSXn68c-VESmy
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-13_12:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxlogscore=926 priorityscore=1501
- suspectscore=0 impostorscore=0 adultscore=0 mlxscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130120
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=889 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104130120
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:51:48PM +0800, Muchun Song wrote:
-> When mm is NULL, we do not need to hold rcu lock and call css_tryget for
-> the root memcg. And we also do not need to check !mm in every loop of
-> while. So bail out early when !mm.
+On Tue, Apr 13, 2021 at 02:51:49PM +0800, Muchun Song wrote:
+> All the callers of mem_cgroup_page_lruvec() just pass page_pgdat(page)
+> as the 2nd parameter to it (except isolate_migratepages_block()). But
+> for isolate_migratepages_block(), the page_pgdat(page) is also equal
+> to the local variable of @pgdat. So mem_cgroup_page_lruvec() do not
+> need the pgdat parameter. Just remove it to simplify the code.
 > 
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
 Acked-by: Roman Gushchin <guro@fb.com>
 
-Nice!
-
 > ---
->  mm/memcontrol.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
+>  include/linux/memcontrol.h | 10 +++++-----
+>  mm/compaction.c            |  2 +-
+>  mm/memcontrol.c            |  9 +++------
+>  mm/swap.c                  |  2 +-
+>  mm/workingset.c            |  2 +-
+>  5 files changed, 11 insertions(+), 14 deletions(-)
 > 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index c960fd49c3e8..4f49865c9958 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -743,13 +743,12 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  /**
+>   * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+>   * @page: the page
+> - * @pgdat: pgdat of the page
+>   *
+>   * This function relies on page->mem_cgroup being stable.
+>   */
+> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> -						struct pglist_data *pgdat)
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+>  {
+> +	pg_data_t *pgdat = page_pgdat(page);
+>  	struct mem_cgroup *memcg = page_memcg(page);
+>  
+>  	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
+> @@ -1223,9 +1222,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  	return &pgdat->__lruvec;
+>  }
+>  
+> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> -						    struct pglist_data *pgdat)
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+>  {
+> +	pg_data_t *pgdat = page_pgdat(page);
+> +
+>  	return &pgdat->__lruvec;
+>  }
+>  
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index caa4c36c1db3..e7da342003dd 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1033,7 +1033,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  		if (!TestClearPageLRU(page))
+>  			goto isolate_fail_put;
+>  
+> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +		lruvec = mem_cgroup_page_lruvec(page);
+>  
+>  		/* If we already hold the lock, we can skip some rechecking */
+>  		if (lruvec != locked) {
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f229de925aa5..9cbfff59b171 100644
+> index 9cbfff59b171..1f807448233e 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -901,20 +901,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
->  	if (mem_cgroup_disabled())
->  		return NULL;
+> @@ -1177,9 +1177,8 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+>  struct lruvec *lock_page_lruvec(struct page *page)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
 >  
-> +	/*
-> +	 * Page cache insertions can happen without an
-> +	 * actual mm context, e.g. during disk probing
-> +	 * on boot, loopback IO, acct() writes etc.
-> +	 */
-> +	if (unlikely(!mm))
-> +		return root_mem_cgroup;
-> +
->  	rcu_read_lock();
->  	do {
-> -		/*
-> -		 * Page cache insertions can happen without an
-> -		 * actual mm context, e.g. during disk probing
-> -		 * on boot, loopback IO, acct() writes etc.
-> -		 */
-> -		if (unlikely(!mm))
-> +		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> +		if (unlikely(!memcg))
->  			memcg = root_mem_cgroup;
-> -		else {
-> -			memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> -			if (unlikely(!memcg))
-> -				memcg = root_mem_cgroup;
-> -		}
->  	} while (!css_tryget(&memcg->css));
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock(&lruvec->lru_lock);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> @@ -1190,9 +1189,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
+>  struct lruvec *lock_page_lruvec_irq(struct page *page)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock_irq(&lruvec->lru_lock);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> @@ -1203,9 +1201,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
+>  struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> diff --git a/mm/swap.c b/mm/swap.c
+> index a75a8265302b..e0d5699213cc 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -313,7 +313,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
+>  
+>  void lru_note_cost_page(struct page *page)
+>  {
+> -	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
+> +	lru_note_cost(mem_cgroup_page_lruvec(page),
+>  		      page_is_file_lru(page), thp_nr_pages(page));
+>  }
+>  
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index b7cdeca5a76d..4f7a306ce75a 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -408,7 +408,7 @@ void workingset_activation(struct page *page)
+>  	memcg = page_memcg_rcu(page);
+>  	if (!mem_cgroup_disabled() && !memcg)
+>  		goto out;
+> -	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	workingset_age_nonresident(lruvec, thp_nr_pages(page));
+>  out:
 >  	rcu_read_unlock();
->  	return memcg;
 > -- 
 > 2.11.0
 > 
