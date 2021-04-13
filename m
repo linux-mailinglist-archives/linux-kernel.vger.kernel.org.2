@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB4C35D5E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6508935D5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242778AbhDMD0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
+        id S243943AbhDMD00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242503AbhDMD0G (ORCPT
+        with ESMTP id S239428AbhDMD0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:26:06 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4878BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:25:47 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t22so7129340ply.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:25:47 -0700 (PDT)
+        Mon, 12 Apr 2021 23:26:24 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1F2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:26:05 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso8279645pje.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=dSZfSUphe0NnbZB4k0O50WfWli08mKIdprthWm9Rpno=;
-        b=Q2zyqbhkJBE+68u2PKiL6DXL1fRUnCaElQ5huclQL9s5/ARpDjGe+BQ+/6Fwu6SJoB
-         lhhqE++b+6bpKJBmIxMtXPtOeuYPrwxliwSyyhXxyVzMV5QMo4/pQnP+sbYWtMNCwzDB
-         SaO3oIjJAr60Q6hHixI6zO30B/buCvH6clz1gwhuzujMC6zK1nYe8qCdDKTOK2Uo6tO0
-         aLAWxN4au9GG2KGT9XT2uhSnpezXZJypo9G279gHbm/fPLZZi6uBZDj5eGqndlErlah+
-         GXKswWWEDlemT8ZkZF1RlNWxogeMEZ4KFjNDsKxxvEDVCs/+Bdw+tz1eYQAx2GtPZKYR
-         L8yw==
+        bh=cp9Q3q4NFkapY3F7PFjTBCPu8I2/yhix4VA8BHzZzls=;
+        b=jyL39EPKMRbMkF0H8rbw6NZX1+zZgJP8rqnJ9V6W7SeaX1Fw+PMHo6LHRRnE71F2xP
+         bZ/6MQNeBhJTo1CzCfmYpLq5c2VubtyUZr0eiQtmNy2RGP3QU+wu/ca5sMZFgXLQuK95
+         i6gRCxHKrHH2qCctRZJRKtDFah5eRxFykDujHolvqAodLegAzHmvJFRej3zVNy9rgwtU
+         kz/gLWmS3UJ/T0Hrp9OQBYtoKT6nM4qy6B1PQ6oQnMoAavfe2PhjnkL7nbSGS6yNNCPI
+         w1niRXACKkVIzC2zt3lRl7jkhwVgTPPIKSC7ftfHuBNpC/mMdNLn2ZE3tbu6Uryrn5UO
+         3zBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dSZfSUphe0NnbZB4k0O50WfWli08mKIdprthWm9Rpno=;
-        b=G33m/ZOxlRd5AV0pKLK/WsVSXR1cr0PEMU1Reyk9ZjoSu2HKvVoJ8tx5WuENYvmijK
-         tihF9WTdKxUvVnsKrJZrplbF6EehqqK9Hkfk6NvVPuJZtv+SlRilNRRsF09GPZ3BXn1E
-         Iv4yst1cRySa3aP6jgSxC1LS9p2Cuz3hFi2k8AsEZ4I+GY/IAi72Eh/JZ2ltT9iw68B9
-         yHPkJThHjw11jEwMXsfi8PayztZ38xoDVpm9atbb+SpWeSsggTAn88kMsoc30cbJwcl0
-         bAY9TDW58zkyg9xObapBV9gfn+vBBwbGBBt6NfOc5pfbTtukCqSJGv/b4dg90yqZosp0
-         iAqA==
-X-Gm-Message-State: AOAM5306BJDdit+ZROX/6Ah+EWI6ta65kbGeG9OYEDz6aujDdgSf1gSh
-        zEvWsBhEIQJ+eayIIkoAuWg=
-X-Google-Smtp-Source: ABdhPJyKAZCA9CN6M9vXmT3sUkhVKKtehRUoTVZaKf8uB1pYlKWygMK+JjrfoVEBNT56jYha6AGeBw==
-X-Received: by 2002:a17:902:d306:b029:ea:bb6c:3c99 with SMTP id b6-20020a170902d306b02900eabb6c3c99mr15772422plc.9.1618284346794;
-        Mon, 12 Apr 2021 20:25:46 -0700 (PDT)
+        bh=cp9Q3q4NFkapY3F7PFjTBCPu8I2/yhix4VA8BHzZzls=;
+        b=cGbKBqlz8n4sgSWmMGb0JM+oT0kFLlqQj4Oqw1abRH8mBNITogm8oFENSf6vM0ftYt
+         XFJV6xcIlFZA2T/1MjqCksFBS35d1HPWB8Ni69TXWAS8vKC3XV//NyTZzn5Bplch1lWZ
+         rm4W4+U+PGYCWNnf/trh9viSeK+O8ICnji0WLNxMdnn1c0X9Me/QOs7Ruca+PvZ7RnKc
+         rbP+yi5ECt+LnLRtXCXaQ3BO6SITInwKvqMdXr4xfP2V4Ek5OHTnZ+bPsKhevDKquUq4
+         XFqSg8hFuMIlEpJhpuA6lILPPIqafADEgw9xLVZhE40819YtkszHRpW7Qg84t6rp+r3d
+         tZtQ==
+X-Gm-Message-State: AOAM533r5zrk6TaLq+e/YGdEzaYugNgkM5YXAj76V8TgopkwVAnSAHm5
+        s+DiBVu5k7Ij6EDlvFSwZFbEqRUwIwVB2w==
+X-Google-Smtp-Source: ABdhPJwPBj4usCtQBUi8pHfrA3aalNYSfLkG0mr4ylFDBqGGii21/i1YneBshIqaxZsHVc6efl6mpQ==
+X-Received: by 2002:a17:90a:a403:: with SMTP id y3mr2490713pjp.227.1618284365145;
+        Mon, 12 Apr 2021 20:26:05 -0700 (PDT)
 Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id k13sm10334636pfc.50.2021.04.12.20.25.43
+        by smtp.gmail.com with ESMTPSA id h19sm11284507pfc.172.2021.04.12.20.26.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 20:25:46 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 08:55:41 +0530
+        Mon, 12 Apr 2021 20:26:04 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 08:55:59 +0530
 From:   Mitali Borkar <mitaliborkar810@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH v5 2/3] staging: rtl8192e: remove unnecessary ftrace-like
- logging
-Message-ID: <460ba9cdd256bf1064c4e3a694caa046171cb60e.1618283232.git.mitaliborkar810@gmail.com>
+Subject: [PATCH v5 3/3] staging: rtl8192e: remove casts and parentheses
+Message-ID: <4a26a0e155e3ea1ed48aad5a1df4b543c35346f5.1618283232.git.mitaliborkar810@gmail.com>
 References: <cover.1618283232.git.mitaliborkar810@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -65,50 +64,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unncessary ftrace-like logging by simply deleting that statement
-as we have other modes of logging like ftrace.
-Reported by checkpatch.
+Removed unnecessary (void *) cast and parentheses to meet linux kernel
+coding style.
 
 Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
 ---
  
-Changes from v4:- No changes.
+Changes from v4:- Removed unnecessary casts and parentheses.
 Changes from v3:- No changes.
-Changes from v2:- No changes.
+Changes from v2:- Rectified spelling mistake in subject description.
+Changes has been made in v3.
 Changes from v1:- No changes.
 
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 0b1e92f17805..89d0e9ec188d 100644
+index 431202927036..ec6b46166e84 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -630,7 +630,6 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *pHTInfo = ieee->pHTInfo;
+@@ -646,14 +646,10 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
+ 	pHTInfo->CurrentMPDUDensity = pHTInfo->MPDU_Density;
+ 	pHTInfo->CurrentAMPDUFactor = pHTInfo->AMPDU_Factor;
  
--	netdev_vdbg(ieee->dev, "%s()\n", __func__);
- 	pHTInfo->bCurrentHTSupport = false;
+-	memset((void *)(&pHTInfo->SelfHTCap), 0,
+-	       sizeof(pHTInfo->SelfHTCap));
+-	memset((void *)(&pHTInfo->SelfHTInfo), 0,
+-	       sizeof(pHTInfo->SelfHTInfo));
+-	memset((void *)(&pHTInfo->PeerHTCapBuf), 0,
+-	       sizeof(pHTInfo->PeerHTCapBuf));
+-	memset((void *)(&pHTInfo->PeerHTInfoBuf), 0,
+-	       sizeof(pHTInfo->PeerHTInfoBuf));
++	memset(&pHTInfo->SelfHTCap, 0, sizeof(pHTInfo->SelfHTCap));
++	memset(&pHTInfo->SelfHTInfo, 0, sizeof(pHTInfo->SelfHTInfo));
++	memset(&pHTInfo->PeerHTCapBuf, 0, sizeof(pHTInfo->PeerHTCapBuf));
++	memset(&pHTInfo->PeerHTInfoBuf, 0, sizeof(pHTInfo->PeerHTInfoBuf));
  
- 	pHTInfo->bCurBW40MHz = false;
-@@ -698,7 +697,6 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 	struct rt_hi_throughput *pHTInfo = ieee->pHTInfo;
- 	u8	bIOTAction = 0;
+ 	pHTInfo->bSwBwInProgress = false;
  
--	netdev_vdbg(ieee->dev, "%s()\n", __func__);
- 	/* unmark bEnableHT flag here is the same reason why unmarked in
- 	 * function rtllib_softmac_new_net. WB 2008.09.10
- 	 */
-@@ -832,8 +830,6 @@ static void HTSetConnectBwModeCallback(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *pHTInfo = ieee->pHTInfo;
- 
--	netdev_vdbg(ieee->dev, "%s()\n", __func__);
--
- 	if (pHTInfo->bCurBW40MHz) {
- 		if (pHTInfo->CurSTAExtChnlOffset == HT_EXTCHNL_OFFSET_UPPER)
- 			ieee->set_chan(ieee->dev,
 -- 
 2.30.2
 
