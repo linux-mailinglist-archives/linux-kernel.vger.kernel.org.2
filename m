@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655B235DD08
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B01035DD7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344798AbhDMLAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:00:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:45373 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344714AbhDMK7m (ORCPT
+        id S244207AbhDMLL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:11:28 -0400
+Received: from bosmailout09.eigbox.net ([66.96.189.9]:43501 "EHLO
+        bosmailout09.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243281AbhDMLLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:59:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618311561; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=m0BphGKv3ot9eovnDlG46kpvyBSpZUYgaoAjCjQNs8M=;
- b=mQrxWmMxcg0qEjQ4MsSDxRaxrHWpI8F8RtJBnaki/Mbi9IlkfGGu/4Uf6GG873jskcH1Bt41
- U9Te8kSIGpScNI1dfi1RMPnT8UYaaxQh0+EJkTGkMdP32yYI3+gB+QyFkdDP+8JRQJIsIYjp
- EWZuntBGimocM0h6lmRscrqLTqA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6075798574f773a6645a8d75 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Apr 2021 10:59:17
- GMT
-Sender: sbhanu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 40986C43462; Tue, 13 Apr 2021 10:59:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbhanu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D468C433CA;
-        Tue, 13 Apr 2021 10:59:16 +0000 (UTC)
+        Tue, 13 Apr 2021 07:11:16 -0400
+X-Greylist: delayed 1810 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 07:11:16 EDT
+Received: from bosmailscan09.eigbox.net ([10.20.15.9])
+        by bosmailout09.eigbox.net with esmtp (Exim)
+        id 1lWGTK-00009O-Ty
+        for linux-kernel@vger.kernel.org; Tue, 13 Apr 2021 06:40:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=allas32u.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
+        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=j/2w54k6QiND+xCmDlhOZ4FhmnEVovmAfHp4mNSvZpw=; b=ybO7BF+jbOoL3ah65l3DL4hQU9
+        5y38DZP1uj/nsbjGmfMe5rPff949nuW092SgmaRpwwRyFX5dY31P2qg3jld3QfcdewYdbbNMU2Hno
+        6qIcL7hW2J0+dc/K0fR+oHenvch2+TCopC/LgT97ztkIWhouiKmhvzXslh17naUQx9z7LLF/2zk4D
+        95Y5J5KCLiEAjrbxekTWc47kWR2JOW1HLFm7P919iwChCsqg6b3phMOEyibKwl8G/ksJF7ZyafgQa
+        fAydw+O8zsHqtgI0RSzmJlXAhnQrDbB2nHOb0CYDP9Upid4ZCNFVvzc4QST6GTF2/Je35LNyybMp2
+        u8pyNi3w==;
+Received: from [10.115.3.34] (helo=bosimpout04)
+        by bosmailscan09.eigbox.net with esmtp (Exim)
+        id 1lWGTG-0002DN-4j; Tue, 13 Apr 2021 06:40:38 -0400
+Received: from boswebmail08.eigbox.net ([10.20.16.8])
+        by bosimpout04 with 
+        id sAg22400B0ASFPu01AgPto; Tue, 13 Apr 2021 06:40:38 -0400
+X-EN-SP-DIR: OUT
+X-EN-SP-SQ: 1
+Received: from [127.0.0.1] (helo=homestead)
+        by boswebmail08.eigbox.net with esmtp (Exim)
+        id 1lWGT0-0002i8-Iw; Tue, 13 Apr 2021 06:40:22 -0400
+Received: from [41.138.102.229]
+ by emailmg.homestead.com
+ with HTTP (HTTP/1.1 POST); Tue, 13 Apr 2021 06:40:22 -0400
 MIME-Version: 1.0
+Date:   Tue, 13 Apr 2021 12:40:22 +0200
+From:   janete Moon <jush3@allas32u.com>
+To:     undisclosed-recipients:;
+Subject: an Orphan needs your help
+Organization: financial institution
+Reply-To: janete.moon20@gmail.com
+Mail-Reply-To: janete.moon20@gmail.com
+Message-ID: <389933b95cba706e1267fc0c55516d54@allas32u.com>
+X-Sender: jush3@allas32u.com
+User-Agent: Roundcube Webmail/1.3.14
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 13 Apr 2021 16:29:16 +0530
-From:   sbhanu@codeaurora.org
-To:     Doug Anderson <dianders@google.com>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
- card
-In-Reply-To: <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
- <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
- <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
- <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
-Message-ID: <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
-X-Sender: sbhanu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-EN-AuthUser: jush3@allas32u.com
+Sender:  janete Moon <jush3@allas32u.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-29 20:26, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Mar 25, 2021 at 11:57 PM <sbhanu@codeaurora.org> wrote:
->> 
->> >>> +                       max-frequency = <192000000>;
->> >> Why do you need to specify this?
->> This helps to avoid lower speed modes running in high clock rate,
->> and As Veerabhadrarao Badiganti mentioned
-> 
-> Just to be clear, both Stephen and I agree that you should remove
-> "max-frequency" here (see previous discussion). Bjorn is, of course,
-> the file decision maker. However, unless he says "yeah, totally keep
-> it in" I'd suggest dropping it from the next version.
-> 
-sure will drop in next version.
-> 
->> >>> +                                       required-opps =
->> >>> <&rpmhpd_opp_low_svs>;
->> >>> +                                       opp-peak-kBps = <1200000
->> >>> 76000>;
->> >>> +                                       opp-avg-kBps = <1200000
->> >>> 50000>;
->> >> Why are the kBps numbers so vastly different than the ones on sc7180
->> >> for the same OPP point. That implies:
->> >>
->> >> a) sc7180 is wrong.
->> >>
->> >> b) This patch is wrong.
->> >>
->> >> c) The numbers are essentially random and don't really matter.
->> >>
->> >> Can you identify which of a), b), or c) is correct, or propose an
->> >> alternate explanation of the difference?
->> >>
->> 
->> We calculated bus votes values for both sc7180 and sc7280 with ICB 
->> tool,
->> above mentioned values we got for sc7280.
-> 
-> I don't know what an ICB tool is. Please clarify.
-> 
-> Also: just because a tool spits out numbers that doesn't mean it's
-> correct. Presumably the tool could be wrong or incorrectly configured.
-> We need to understand why these numbers are different.
-> 
-we checked with ICB tool team on this they conformed as Rennell & Kodiak 
-are different chipsets,
-we might see delta in ib/ab values due to delta in scaling factors.
 
-> -Doug
+
+Hello Friend,
+
+Greetings and thanks for your reply.
+
+I am Janete moon but unfortunately, I 'm now an orphan,the only child 
+and
+Daughter of late Mr and Mrs Joseph moon, from Ivory Coast  Abidjan.
+I know it may have sounded very strange to you on why I contact you as
+you are a complete stranger to me and I must tell you this,
+
+It will be very difficult for me to get in touch with someone here
+who knows me because of the ugly circumstance that surrounds
+the demise of my lovely parents with whom my future ws looking
+very bright from all looks.
+
+My uncle conspired with my father's business rivals and poisoned my
+parents during a business lunch hour and their motive for eliminating
+them was to take over their businesses and inherit their wealth. In one 
+of
+their letter's that I stumbled into, they were asking my uncle to give
+them their own part of the deal so While reading that letter,
+I fainted and my uncle came in and caught me with the letter.
+I'm afraid that they might decide to kill me or poison me as they did
+to my parents in order to keep me silent for the evil they did to my
+beloved late parents. For safety, I decided to run away from the house.
+I'm now hiding in a neigbouring country called Burkina Faso.
+
+My purpose of contacting you is because I need to come to your country
+secretly so that my uncle will not know my where about. I got 
+information
+from my father before he died in the hospital about the secret fund
+(15.5 Million US Dollars only) he kept in a finance house here in
+Burkina Faso  West Africa.
+
+I have verified this with them before contacting you. I shall require 
+your help
+in transfering this money to your country for investment purpose like 
+buying of
+company shares,Real Estate Investment Trust funds,Jewels or Diamond,
+and to continue my studies from where I stopped as Immediately after the
+transfer I will come to live in your country.
+
+I will give you more information once I hear from you as I am in
+sincere desire of your humble assistance in this regard. Your
+suggestions and ideas will be highly welcomed and I am willing to
+offer you 15% of the total fund once it is transferred to your account
+.
+
+Now permit me to ask these few questions
+
+1. Can you honestly help me from your heart?
+2. Can I completely trust you?
+
+
+Thank you and God bless.
+Yours affectionately
+Miss. Janete moon.
