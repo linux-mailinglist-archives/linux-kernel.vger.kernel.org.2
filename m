@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E8835DC4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C11F35DC4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237579AbhDMKN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:13:56 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:52423 "EHLO
+        id S231472AbhDMKNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:13:51 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:57085 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231322AbhDMKNt (ORCPT
+        by vger.kernel.org with ESMTP id S231156AbhDMKNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Apr 2021 06:13:49 -0400
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id E94221ABB;
+        by mailnew.west.internal (Postfix) with ESMTP id 003AD1ABD;
         Tue, 13 Apr 2021 06:13:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
+Received: from mailfrontend1 ([10.202.2.162])
   by compute6.internal (MEProxy); Tue, 13 Apr 2021 06:13:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:content-type:mime-version
-        :content-transfer-encoding; s=fm2; bh=Pkg2kboYAC5nTcmClnwVE954LT
-        tXEgfGAcYRYIm8EPU=; b=reakQQ1ySK5GSXpN0t2zP9I9bv1qisz8X788SNpQO7
-        FMeUJIj5ZVjT7iDLnVDSLF3Q5OVnncFqu7PmnbiPgpWCToesLeA9laTjJzWd1oiy
-        7LpG/BT5oItd19ffERy201TuSvJx5Ho5JacrobTTN4xawk/Rev+S9jDSSFv9tHFE
-        fVBYpR/KchyDy6VRNqhV8lyKYdnSvpUo/Kko24JfgCEqCF0Q6oxGzpC6KC1dw8xR
-        tmj1PpZTsxUUK+Udggf0JzUwsu6BGB7QMHxuDRhEqtdLhqgrgLsfFDMBE8i85VFM
-        gtYQwPJfoCwUks9fgjkou5LCsbUQcCY51pr2L9BenWYw==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=Mww4pcFNyn6sO
+        HNoVCH/3MFZg3szPYpqrga340jaTbw=; b=LU5U+BtXUL6Q5na5H5NETrWq1FYcL
+        1WlbSrHTN9Kok+1aaymCuPy6DZ0mBafJqttPCPucSN+uxETebWt0Fq38z+jLi3pR
+        V0CfAp2RJDN5cPKqT+bSCfcYxtMYFL4a5S0oRBiIkKq0IpmPqTffMt7zyDenZnWN
+        YNk7BYcLOlSB4XFNBGkEW7OK8oobQFpVOmFOF3D9Z0bd07lB+/IoEohp4+E8yh7S
+        IKIl3sZ15YEms7NKlA7FPhryE/xY4JCd7ChcZZ8OytatqHYev34UNOx+oywbPDWE
+        pvw20KTn8iL15B4w/oFhioxzUGHtrhswi/ChFQ+sacR/ab47QwaPnjJfg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Pkg2kb
-        oYAC5nTcmClnwVE954LTtXEgfGAcYRYIm8EPU=; b=Qzt2s51J9abkyV+kogGp3J
-        9gyA739Yx0NavY75cbuEMZkSKTvNb4vdN3ZyBEMA12nHCE2gp4nGIuY8BqnAD3Er
-        RIL32vBiYs7GnjrskvNu3JjF/50nKI+otB70TZJf0uPHD6cmtaMS0p5rps+vx6A3
-        /QqVmkESDqfs+yuTJsnaHznOUVpvCg0Dr61wINrfGrbmed0zFG4Ojo2frb647rM1
-        Hm/x7E4Tz9DfPoGhomuFsnWUD4thlhT8f5011vwo6n1cgunV+6prhAc4xolRfY21
-        CureZnWFAnD4ieKvTEIPvp7ScHGc5rfTTCblRkfQP9pBxrNKwDEiZF606qiB5Lgw
-        ==
-X-ME-Sender: <xms:wm51YCqk-zmpbA6p92LeeZh_LhKictnqNgm5osCI5F42-FqHlQRnkw>
-    <xme:wm51YAq-UNDyLz1npfzdl_0xJ_FoRW4hl4RXo33EDKUY0ddsdFCxD3yzc6Thm5GWX
-    By9X3QRlFkmWT_HeFw>
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=Mww4pcFNyn6sOHNoVCH/3MFZg3szPYpqrga340jaTbw=; b=tZTMT9KE
+        2WTWQ1Xuxq3uf4+hV94zUQSrzE0GA7LdvVRUrX5t9IxsZDanxHsbuy9qoIfuXuJF
+        1GF4FovJhjarCVaq2CuHSgRWe3oaoSHeciksUg4lbapJQRjrIsce6QK5uro977+u
+        CpGp+MVMMPePNw5Ct3goI6PR4r3Sy293QuOcrXrbwryo0C4zGAYHWB2TBRrxx5qZ
+        QQ7/8QQlggKgwgzD9N0HKTsmEWsv1N2yd40o88kmOQrV4K2N8PHQupEIu+HnGimA
+        CcSwXAOehmtmqPCYsSzqSznrw0UAlA3AS6jYD2BhofwbmDD/8EyYwZczwO1xkLeJ
+        RKiEn9BqI2zsLA==
+X-ME-Sender: <xms:xW51YDTbhVdx9qX9Q9_ZjYSQdP57cHQz8302xM46DlWQh3m0VpVcdA>
+    <xme:xW51YEwp1foTzX0nOSx7fYOomapcFcUZo-Wq3kYCvHQNRKiNjgAW5gECNqgLVN6G9
+    -Wy7SUMleBEDoCImBo>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledgvdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeetteeltddujefhffdtuefgudffleelleehjeeggeffuddvvdfgvdfhhfelgfet
-    ffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeikedrje
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
-    gihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wm51YHM-thGTF-Q83CIZi3AgCLgOM-nAUbEyg5Pb7hVfbcIWANUkrw>
-    <xmx:wm51YB5Vm9eRdnC6-kjlC2MIH04ZjIEg5ia7sF99NZYIQevrC04LDw>
-    <xmx:wm51YB72hxMpNW1aKhQW7G6KeppFU52xXP9jQHqcb6s-55PhHmqMUQ>
-    <xmx:xm51YIq9guRZZ_u0OeQ0n8mtdDJrhWIPWyiUx08I-zNFLbS47q46hahkZIs>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:xW51YI01TUGp4L-BvUTF-VKfdwMt-kslaZhbAs-jOfkpAnqRmlulmw>
+    <xmx:xW51YDDn2xRZNwobXeGYfcSTw1pr7wNWkEbyxGqwipABanaUExBkyA>
+    <xmx:xW51YMhT2m9uYnwDofJlbC7VMJEn2Sav89Ek4pwGbMv7--qEpH0CyA>
+    <xmx:xm51YIzzu01GGnnBbcgCC2yhtYuR42QnOMuZsRs0Z1G_bEHiiR4iXZpXh0Q>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9020D108005F;
-        Tue, 13 Apr 2021 06:13:22 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 608A0240057;
+        Tue, 13 Apr 2021 06:13:25 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Mike Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -72,54 +71,301 @@ Cc:     Eric Anholt <eric@anholt.net>, Daniel Vetter <daniel@ffwll.ch>,
         Tim Gover <tim.gover@raspberrypi.com>,
         Dom Cobley <dom@raspberrypi.com>, linux-clk@vger.kernel.org,
         Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH 0/2] clk: Implement a clock request API
-Date:   Tue, 13 Apr 2021 12:13:18 +0200
-Message-Id: <20210413101320.321584-1-maxime@cerno.tech>
+Subject: [PATCH 1/2] clk: Introduce a clock request API
+Date:   Tue, 13 Apr 2021 12:13:19 +0200
+Message-Id: <20210413101320.321584-2-maxime@cerno.tech>
 X-Mailer: git-send-email 2.30.2
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210413101320.321584-1-maxime@cerno.tech>
+References: <20210413101320.321584-1-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=0D
-=0D
-This is a follow-up of the discussion here:=0D
-https://lore.kernel.org/linux-clk/20210319150355.xzw7ikwdaga2dwhv@gilmour/=
-=0D
-=0D
-This implements a mechanism to raise and lower clock rates based on consume=
-r=0D
-workloads, with an example of such an implementation for the RaspberryPi4 H=
-DMI=0D
-controller.=0D
-=0D
-There's a couple of things worth discussing:=0D
-=0D
-  - The name is in conflict with clk_request_rate, and even though it feels=
-=0D
-    like the right name to me, we should probably avoid any confusion=0D
-=0D
-  - The code so far implements a policy of always going for the lowest rate=
-=0D
-    possible. While we don't have an use-case for something else, this shou=
-ld=0D
-    maybe be made more flexible?=0D
-=0D
-Let me know what you think=0D
-Maxime=0D
-=0D
-Maxime Ripard (2):=0D
-  clk: Introduce a clock request API=0D
-  drm/vc4: hdmi: Convert to the new clock request API=0D
-=0D
- drivers/clk/clk.c              | 121 +++++++++++++++++++++++++++++++++=0D
- drivers/gpu/drm/vc4/vc4_hdmi.c |  19 ++++--=0D
- drivers/gpu/drm/vc4/vc4_hdmi.h |   3 +=0D
- include/linux/clk.h            |   4 ++=0D
- 4 files changed, 140 insertions(+), 7 deletions(-)=0D
-=0D
--- =0D
-2.30.2=0D
-=0D
+It's not unusual to find clocks being shared across multiple devices
+that need to change the rate depending on what the device is doing at a
+given time.
+
+The SoC found on the RaspberryPi4 (BCM2711) is in such a situation
+between its two HDMI controllers that share a clock that needs to be
+raised depending on the output resolution of each controller.
+
+The current clk_set_rate API doesn't really allow to support that case
+since there's really no synchronisation between multiple users, it's
+essentially a fire-and-forget solution.
+
+clk_set_min_rate does allow for such a synchronisation, but has another
+drawback: it doesn't allow to reduce the clock rate once the work is
+over.
+
+In our previous example, this means that if we were to raise the
+resolution of one HDMI controller to the largest resolution and then
+changing for a smaller one, we would still have the clock running at the
+largest resolution rate resulting in a poor power-efficiency.
+
+In order to address both issues, let's create an API that allows user to
+create temporary requests to increase the rate to a minimum, before
+going back to the initial rate once the request is done.
+
+This introduces mainly two side-effects:
+
+  * There's an interaction between clk_set_rate and requests. This has
+    been addressed by having clk_set_rate increasing the rate if it's
+    greater than what the requests asked for, and in any case changing
+    the rate the clock will return to once all the requests are done.
+
+  * Similarly, clk_round_rate has been adjusted to take the requests
+    into account and return a rate that will be greater or equal to the
+    requested rates.
+
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/clk/clk.c   | 121 ++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/clk.h |   4 ++
+ 2 files changed, 125 insertions(+)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 5052541a0986..4fd91a57e6db 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -77,12 +77,14 @@ struct clk_core {
+ 	unsigned int		protect_count;
+ 	unsigned long		min_rate;
+ 	unsigned long		max_rate;
++	unsigned long		default_request_rate;
+ 	unsigned long		accuracy;
+ 	int			phase;
+ 	struct clk_duty		duty;
+ 	struct hlist_head	children;
+ 	struct hlist_node	child_node;
+ 	struct hlist_head	clks;
++	struct list_head	pending_requests;
+ 	unsigned int		notifier_count;
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry		*dentry;
+@@ -105,6 +107,12 @@ struct clk {
+ 	struct hlist_node clks_node;
+ };
+ 
++struct clk_request {
++	struct list_head list;
++	struct clk *clk;
++	unsigned long rate;
++};
++
+ /***           runtime pm          ***/
+ static int clk_pm_runtime_get(struct clk_core *core)
+ {
+@@ -1434,10 +1442,14 @@ unsigned long clk_hw_round_rate(struct clk_hw *hw, unsigned long rate)
+ {
+ 	int ret;
+ 	struct clk_rate_request req;
++	struct clk_request *clk_req;
+ 
+ 	clk_core_get_boundaries(hw->core, &req.min_rate, &req.max_rate);
+ 	req.rate = rate;
+ 
++	list_for_each_entry(clk_req, &hw->core->pending_requests, list)
++		req.min_rate = max(clk_req->rate, req.min_rate);
++
+ 	ret = clk_core_round_rate_nolock(hw->core, &req);
+ 	if (ret)
+ 		return 0;
+@@ -1458,6 +1470,7 @@ EXPORT_SYMBOL_GPL(clk_hw_round_rate);
+ long clk_round_rate(struct clk *clk, unsigned long rate)
+ {
+ 	struct clk_rate_request req;
++	struct clk_request *clk_req;
+ 	int ret;
+ 
+ 	if (!clk)
+@@ -1471,6 +1484,9 @@ long clk_round_rate(struct clk *clk, unsigned long rate)
+ 	clk_core_get_boundaries(clk->core, &req.min_rate, &req.max_rate);
+ 	req.rate = rate;
+ 
++	list_for_each_entry(clk_req, &clk->core->pending_requests, list)
++		req.min_rate = max(clk_req->rate, req.min_rate);
++
+ 	ret = clk_core_round_rate_nolock(clk->core, &req);
+ 
+ 	if (clk->exclusive_count)
+@@ -1938,6 +1954,7 @@ static struct clk_core *clk_calc_new_rates(struct clk_core *core,
+ 	unsigned long new_rate;
+ 	unsigned long min_rate;
+ 	unsigned long max_rate;
++	struct clk_request *req;
+ 	int p_index = 0;
+ 	long ret;
+ 
+@@ -1952,6 +1969,9 @@ static struct clk_core *clk_calc_new_rates(struct clk_core *core,
+ 
+ 	clk_core_get_boundaries(core, &min_rate, &max_rate);
+ 
++	list_for_each_entry(req, &core->pending_requests, list)
++		min_rate = max(req->rate, min_rate);
++
+ 	/* find the closest rate and parent clk/rate */
+ 	if (clk_core_can_round(core)) {
+ 		struct clk_rate_request req;
+@@ -2156,6 +2176,7 @@ static unsigned long clk_core_req_round_rate_nolock(struct clk_core *core,
+ {
+ 	int ret, cnt;
+ 	struct clk_rate_request req;
++	struct clk_request *clk_req;
+ 
+ 	lockdep_assert_held(&prepare_lock);
+ 
+@@ -2170,6 +2191,9 @@ static unsigned long clk_core_req_round_rate_nolock(struct clk_core *core,
+ 	clk_core_get_boundaries(core, &req.min_rate, &req.max_rate);
+ 	req.rate = req_rate;
+ 
++	list_for_each_entry(clk_req, &core->pending_requests, list)
++		req.min_rate = max(clk_req->rate, req.min_rate);
++
+ 	ret = clk_core_round_rate_nolock(core, &req);
+ 
+ 	/* restore the protection */
+@@ -2263,6 +2287,9 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
+ 
+ 	ret = clk_core_set_rate_nolock(clk->core, rate);
+ 
++	if (!list_empty(&clk->core->pending_requests))
++		clk->core->default_request_rate = rate;
++
+ 	if (clk->exclusive_count)
+ 		clk_core_rate_protect(clk->core);
+ 
+@@ -2428,6 +2455,99 @@ int clk_set_max_rate(struct clk *clk, unsigned long rate)
+ }
+ EXPORT_SYMBOL_GPL(clk_set_max_rate);
+ 
++/**
++ * clk_request_start - Request a rate to be enforced temporarily
++ * @clk: the clk to act on
++ * @rate: the new rate asked for
++ *
++ * This function will create a request to temporarily increase the rate
++ * of the clock to a given rate to a certain minimum.
++ *
++ * This is meant as a best effort mechanism and while the rate of the
++ * clock will be guaranteed to be equal or higher than the requested
++ * rate, there's none on what the actual rate will be due to other
++ * factors (other requests previously set, clock boundaries, etc.).
++ *
++ * Once the request is marked as done through clk_request_done(), the
++ * rate will be reverted back to what the rate was before the request.
++ *
++ * The reported boundaries of the clock will also be adjusted so that
++ * clk_round_rate() take those requests into account. A call to
++ * clk_set_rate() during a request will affect the rate the clock will
++ * return to after the requests on that clock are done.
++ *
++ * Returns 0 on success, an ERR_PTR otherwise.
++ */
++struct clk_request *clk_request_start(struct clk *clk, unsigned long rate)
++{
++	struct clk_request *req;
++	int ret;
++
++	if (!clk)
++		return ERR_PTR(-EINVAL);
++
++	req = kzalloc(sizeof(*req), GFP_KERNEL);
++	if (!req)
++		return ERR_PTR(-ENOMEM);
++
++	clk_prepare_lock();
++
++	req->clk = clk;
++	req->rate = rate;
++
++	if (list_empty(&clk->core->pending_requests))
++		clk->core->default_request_rate = clk_core_get_rate_recalc(clk->core);
++
++	ret = clk_core_set_rate_nolock(clk->core, rate);
++	if (ret) {
++		clk_prepare_unlock();
++		kfree(req);
++		return ERR_PTR(ret);
++	}
++
++	list_add_tail(&req->list, &clk->core->pending_requests);
++	clk_prepare_unlock();
++
++	return req;
++}
++EXPORT_SYMBOL_GPL(clk_request_start);
++
++/**
++ * clk_request_done - Mark a clk_request as done
++ * @req: the request to mark done
++ *
++ * This function will remove the rate request from the clock and adjust
++ * the clock rate back to either to what it was before the request
++ * started, or if there's any other request on that clock to a proper
++ * rate for them.
++ */
++void clk_request_done(struct clk_request *req)
++{
++	struct clk_core *core = req->clk->core;
++
++	clk_prepare_lock();
++
++	list_del(&req->list);
++
++	if (list_empty(&core->pending_requests)) {
++		clk_core_set_rate_nolock(core, core->default_request_rate);
++		core->default_request_rate = 0;
++	} else {
++		struct clk_request *cur_req;
++		unsigned long new_rate = 0;
++
++		list_for_each_entry(cur_req, &core->pending_requests, list)
++			new_rate = max(new_rate, cur_req->rate);
++
++		clk_core_set_rate_nolock(core, new_rate);
++	}
++
++	clk_prepare_unlock();
++
++	kfree(req);
++}
++EXPORT_SYMBOL_GPL(clk_request_done);
++
+ /**
+  * clk_get_parent - return the parent of a clk
+  * @clk: the clk whose parent gets returned
+@@ -3863,6 +3983,7 @@ __clk_register(struct device *dev, struct device_node *np, struct clk_hw *hw)
+ 		goto fail_parents;
+ 
+ 	INIT_HLIST_HEAD(&core->clks);
++	INIT_LIST_HEAD(&core->pending_requests);
+ 
+ 	/*
+ 	 * Don't call clk_hw_create_clk() here because that would pin the
+diff --git a/include/linux/clk.h b/include/linux/clk.h
+index 266e8de3cb51..2aa52140d8a9 100644
+--- a/include/linux/clk.h
++++ b/include/linux/clk.h
+@@ -15,6 +15,7 @@
+ 
+ struct device;
+ struct clk;
++struct clk_request;
+ struct device_node;
+ struct of_phandle_args;
+ 
+@@ -783,6 +784,9 @@ int clk_save_context(void);
+  */
+ void clk_restore_context(void);
+ 
++struct clk_request *clk_request_start(struct clk *clk, unsigned long rate);
++void clk_request_done(struct clk_request *req);
++
+ #else /* !CONFIG_HAVE_CLK */
+ 
+ static inline struct clk *clk_get(struct device *dev, const char *id)
+-- 
+2.30.2
+
