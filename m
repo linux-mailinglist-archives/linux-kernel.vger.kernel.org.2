@@ -2,97 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD1735DD1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1A835DD17
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344430AbhDMLBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:01:31 -0400
-Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:33815 "EHLO
-        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344356AbhDMLB2 (ORCPT
+        id S230193AbhDMLBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:01:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:16971 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344356AbhDMLBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:01:28 -0400
-X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 07:01:28 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailforward.nyi.internal (Postfix) with ESMTP id CC3531940903;
-        Tue, 13 Apr 2021 06:54:29 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 13 Apr 2021 06:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nYS1mA
-        zCp2YtcTMjHCRKhhzeV2J92kIDnXr4neGXktk=; b=TDTBsTdxMzg6bBVi7TqYer
-        0DiW0XQ2lPr8gTYCfUJmjHyh0G3/IbFZ/iSMs5glMUidDD3jiTtwFN0cEFzUiyI2
-        mNuGR5Tg00icmUi3YBF7868ldmf4e9OLD2cAfqe184fp5Q2b39Q4yxeENAs36qKe
-        DuVmwcgHjExF1pk9n4votO+qu4bCMAKy94p+XHe4lm87KQbmFKTwVyImTRzR0lKp
-        yV1onAkLx9vKf0xgG4TBhb2vyDAxnWek5Y6jnZDX1pVkXJDgslsMNyzeS+JocR7K
-        IyRLWgq/3aBNF5tweavqcOfbzX0xjLn0mQF+71QRD3m3paFOni7NOFlO+eVtKbTQ
-        ==
-X-ME-Sender: <xms:ZHh1YE-Z6ytB5OV209cw4IVpfPhJgTRlfspWa6MxdpLvlhAu7AoAfA>
-    <xme:ZHh1YMtc132ApvaPGAFJaoKFx4gpDIKdbMrT1-gcE1BQm39mTVPVB1KzUecLmngu9
-    _vg33hsKQeSa3jEuew>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
-    gfgumhhonhgushhonhcuoegumhgvsegumhgvrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    fhkeeguedtvdegffffteehjedvjeeitefgfefgffdugeffffegudehgeetgeelkeenucfk
-    phepkedurddukeejrddviedrvdefkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegumhgvsegumhgvrdhorhhg
-X-ME-Proxy: <xmx:ZHh1YKA8lZ6spgRuGqhDQSUCaD3V7bc4ZEYJ2YeufmqPbtz7CVy4BA>
-    <xmx:ZHh1YEf8ZYKV-RhV0l_2Kfws_e_3L0pzwmgdXxIDE047Ou0s5JDjSg>
-    <xmx:ZHh1YJP4y4UNPwX24gNMMziYr59XEZFUw0WaYwEFzpnvGa2DdntQIw>
-    <xmx:ZXh1YPs0p-YqVbYmr5UcLO4ftZ6ifb0IKHF17qrPbAvDjHBpepgnT_YsmwE>
-Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D7575108005C;
-        Tue, 13 Apr 2021 06:54:26 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id bf0b8dca;
-        Tue, 13 Apr 2021 10:54:25 +0000 (UTC)
-To:     Jim Mattson <jmattson@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 0/6] KVM: x86: Make the cause of instruction emulation
- available to user-space
-In-Reply-To: <CALMp9eRTy-m6DkXRSGNU=r7xmrzFFQU60DB2asUDZLCgw93wRQ@mail.gmail.com>
-References: <20210412130938.68178-1-david.edmondson@oracle.com>
- <CALMp9eRTy-m6DkXRSGNU=r7xmrzFFQU60DB2asUDZLCgw93wRQ@mail.gmail.com>
-X-HGTTG: zarquon
-From:   David Edmondson <dme@dme.org>
-X-Now-Playing: Dido - Life for Rent: Stoned
-Date:   Tue, 13 Apr 2021 11:54:25 +0100
-Message-ID: <cunk0p6sbdq.fsf@dme.org>
+        Tue, 13 Apr 2021 07:01:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1618311641; x=1649847641;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=9itboi6gqOjFSEGymjEiC6FR0AsxGOS+h9qzt7wDgPg=;
+  b=qz16vN5mqOfaSqR2FRYhiX9trJZwT2aQ0xDnhFFMneVzBVoPfeusaVpk
+   vAoWFqEfNj8sXZQAqoC8LUXKcqvoC24RkQOSuItF+8RW+4IJWlf1qOtL4
+   1bHEAeMhQAjqxHuZMi9o2/qxLgS+1ZEiTG7LkVw31RgpQyIVPNEL2rVxv
+   p1nhxWJOBUXF+t4LOpmHodXwWfUB0Yg347zftKMHaCLeZ2tBPZJLyPl0v
+   n82E4p+lu+CG7YRTZPHM4fQxK6YWRqKwCiffg0cKg2utgn7HJiVal/KLR
+   NrHm2TDsOdhd4LWD1z8RU2NcCuIMvMBdYQKvTfhV3Pt7KGj7e6HcvE1IK
+   A==;
+IronPort-SDR: caahwGNtZSGguS6+qBrBgtU6NxgjfprfbmbouuuqIfwTBR+VfntZ/amQ7oeHxfewOe9BIFJFVH
+ UECAS6BXfPhyUJhWg18VOlCZps/5GrxzOm0rHszGertXzkAzSDZx7aSzv/HkBshlNhlCEX7N6m
+ rD0rBFlVGmnRdGuhhZc/oXFF4BtDw7nVCzNXC++WNrv51qeldsXA/MBhLBvkc06+EyQdBERhKC
+ pzCrXuaORa++IDVigtvji3lEGvW4OgLXNvcXozSepjwxpUi3n8wA6iw9VG1ChdG/1X2XMu7zLw
+ gdg=
+X-IronPort-AV: E=Sophos;i="5.82,219,1613458800"; 
+   d="scan'208";a="116804103"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Apr 2021 04:00:41 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 13 Apr 2021 04:00:40 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 13 Apr 2021 04:00:21 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <devicetree@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <jacopo@jmondi.org>, <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH v3 08/33] media: atmel: atmel-isc: create register offsets struct
+Date:   Tue, 13 Apr 2021 13:57:06 +0300
+Message-ID: <20210413105731.610028-9-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210413105731.610028-1-eugen.hristev@microchip.com>
+References: <20210413105731.610028-1-eugen.hristev@microchip.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 2021-04-12 at 11:34:33 -07, Jim Mattson wrote:
+Create a struct that holds register offsets that are product specific.
+Add initially the CSC register.
+This allows each product that contains a variant of the ISC to add their
+own register offset.
 
-> On Mon, Apr 12, 2021 at 6:09 AM David Edmondson
-> <david.edmondson@oracle.com> wrote:
->>
->> Instruction emulation happens for a variety of reasons, yet on error
->> we have no idea exactly what triggered it. Add a cause of emulation to
->> the various originators and pass it upstream when emulation fails.
->
-> What is userspace going to do with this information? It's hard to say
-> whether or not this is the right ABI without more context.
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+ drivers/media/platform/atmel/atmel-isc-base.c |  2 +-
+ drivers/media/platform/atmel/atmel-isc-regs.h |  3 +++
+ drivers/media/platform/atmel/atmel-isc.h      | 12 +++++++++++
+ .../media/platform/atmel/atmel-sama5d2-isc.c  | 20 +++++++++++++------
+ 4 files changed, 30 insertions(+), 7 deletions(-)
 
-Logging for debug purposes, see reply to Sean.
-
-dme.
+diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+index bc036e8ac4fe..019d931d1367 100644
+--- a/drivers/media/platform/atmel/atmel-isc-base.c
++++ b/drivers/media/platform/atmel/atmel-isc-base.c
+@@ -2311,7 +2311,7 @@ int isc_pipeline_init(struct isc_device *isc)
+ 		REG_FIELD(ISC_GAM_CTRL, 1, 1),
+ 		REG_FIELD(ISC_GAM_CTRL, 2, 2),
+ 		REG_FIELD(ISC_GAM_CTRL, 3, 3),
+-		REG_FIELD(ISC_CSC_CTRL, 0, 0),
++		REG_FIELD(ISC_CSC_CTRL + isc->offsets.csc, 0, 0),
+ 		REG_FIELD(ISC_CBC_CTRL, 0, 0),
+ 		REG_FIELD(ISC_SUB422_CTRL, 0, 0),
+ 		REG_FIELD(ISC_SUB420_CTRL, 0, 0),
+diff --git a/drivers/media/platform/atmel/atmel-isc-regs.h b/drivers/media/platform/atmel/atmel-isc-regs.h
+index f1e160ed4351..5a65600c5f88 100644
+--- a/drivers/media/platform/atmel/atmel-isc-regs.h
++++ b/drivers/media/platform/atmel/atmel-isc-regs.h
+@@ -153,6 +153,9 @@
+ /* ISC_Gamma Correction Green Entry Register */
+ #define ISC_GAM_RENTRY	0x00000298
+ 
++/* Offset for CSC register specific to sama5d2 product */
++#define ISC_SAMA5D2_CSC_OFFSET	0
++
+ /* Color Space Conversion Control Register */
+ #define ISC_CSC_CTRL    0x00000398
+ 
+diff --git a/drivers/media/platform/atmel/atmel-isc.h b/drivers/media/platform/atmel/atmel-isc.h
+index bb0b4419deff..ef3a0451192d 100644
+--- a/drivers/media/platform/atmel/atmel-isc.h
++++ b/drivers/media/platform/atmel/atmel-isc.h
+@@ -144,6 +144,14 @@ struct isc_ctrls {
+ 
+ #define ISC_PIPE_LINE_NODE_NUM	11
+ 
++/*
++ * struct isc_reg_offsets - ISC device register offsets
++ * @csc:		Offset for the CSC register
++ */
++struct isc_reg_offsets {
++	u32 csc;
++};
++
+ /*
+  * struct isc_device - ISC device driver data/config struct
+  * @regmap:		Register map
+@@ -195,6 +203,8 @@ struct isc_ctrls {
+  *
+  * @config_csc:		pointer to a function that initializes product
+  *			specific CSC module
++ *
++ * @offsets:		struct holding the product specific register offsets
+  */
+ struct isc_device {
+ 	struct regmap		*regmap;
+@@ -266,6 +276,8 @@ struct isc_device {
+ 	struct {
+ 		void (*config_csc)(struct isc_device *isc);
+ 	};
++
++	struct isc_reg_offsets		offsets;
+ };
+ 
+ extern struct isc_format formats_list[];
+diff --git a/drivers/media/platform/atmel/atmel-sama5d2-isc.c b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
+index f041bd75090e..9e557d17e731 100644
+--- a/drivers/media/platform/atmel/atmel-sama5d2-isc.c
++++ b/drivers/media/platform/atmel/atmel-sama5d2-isc.c
+@@ -61,12 +61,18 @@ void isc_sama5d2_config_csc(struct isc_device *isc)
+ 	struct regmap *regmap = isc->regmap;
+ 
+ 	/* Convert RGB to YUV */
+-	regmap_write(regmap, ISC_CSC_YR_YG, 0x42 | (0x81 << 16));
+-	regmap_write(regmap, ISC_CSC_YB_OY, 0x19 | (0x10 << 16));
+-	regmap_write(regmap, ISC_CSC_CBR_CBG, 0xFDA | (0xFB6 << 16));
+-	regmap_write(regmap, ISC_CSC_CBB_OCB, 0x70 | (0x80 << 16));
+-	regmap_write(regmap, ISC_CSC_CRR_CRG, 0x70 | (0xFA2 << 16));
+-	regmap_write(regmap, ISC_CSC_CRB_OCR, 0xFEE | (0x80 << 16));
++	regmap_write(regmap, ISC_CSC_YR_YG + isc->offsets.csc,
++		     0x42 | (0x81 << 16));
++	regmap_write(regmap, ISC_CSC_YB_OY + isc->offsets.csc,
++		     0x19 | (0x10 << 16));
++	regmap_write(regmap, ISC_CSC_CBR_CBG + isc->offsets.csc,
++		     0xFDA | (0xFB6 << 16));
++	regmap_write(regmap, ISC_CSC_CBB_OCB + isc->offsets.csc,
++		     0x70 | (0x80 << 16));
++	regmap_write(regmap, ISC_CSC_CRR_CRG + isc->offsets.csc,
++		     0x70 | (0xFA2 << 16));
++	regmap_write(regmap, ISC_CSC_CRB_OCR + isc->offsets.csc,
++		     0xFEE | (0x80 << 16));
+ }
+ 
+ /* Gamma table with gamma 1/2.2 */
+@@ -215,6 +221,8 @@ static int atmel_isc_probe(struct platform_device *pdev)
+ 
+ 	isc->config_csc = isc_sama5d2_config_csc;
+ 
++	isc->offsets.csc = ISC_SAMA5D2_CSC_OFFSET;
++
+ 	/* sama5d2-isc - 8 bits per beat */
+ 	isc->dcfg = ISC_DCFG_YMBSIZE_BEATS8 | ISC_DCFG_CMBSIZE_BEATS8;
+ 
 -- 
-You make me feel like a natural woman.
+2.25.1
+
