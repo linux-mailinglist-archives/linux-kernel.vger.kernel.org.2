@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0073E35DE90
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC2735DE94
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345466AbhDMMWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbhDMMW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:22:28 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AF8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:22:08 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ed15:b7e9:afd7:f062])
-        by xavier.telenet-ops.be with bizsmtp
-        id sCN42400F1dBBzp01CN4h7; Tue, 13 Apr 2021 14:22:06 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lWI3P-00FJHU-TZ; Tue, 13 Apr 2021 14:22:03 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lWI3P-002kNZ-EJ; Tue, 13 Apr 2021 14:22:03 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] irqchip: APPLE_AIC should depend on ARCH_APPLE
-Date:   Tue, 13 Apr 2021 14:21:58 +0200
-Message-Id: <f37e8daea37d50651d2164b0b3dad90780188548.1618316398.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S1345476AbhDMMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230025AbhDMMXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:23:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E7BD61278;
+        Tue, 13 Apr 2021 12:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618316581;
+        bh=ND/X5PX2F50VVA44GaiVxpFt4RRi9WYFZe/ETjrmJRA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A07tmit26Z1hkuVBBr3htpkoV63+IyAC1YHM/7SHgFLlMucegNyEZzRJtQUSSot4v
+         nY6ASTaCF25336mR4ox7kx+7DMsrcglZXjtZlBpeQj7OdNR8IDWpE9hA7nPWbKJN68
+         7noArUgSXxdaA9CX9s73pmP8hq8FlPyaFiUeo//NneKfB7FzK41MW5VFZ8ig8O5Vj2
+         rka/ha2upJwc/daguFwxYUMuwkvlDGBAD3afTEFea+VrmoI/XUa0r9k1rRq5S8Xx5z
+         68nFM1V0WenqPieTJv4Uq/uVayQE05TwvRjE5nDXTAPZ9gNaMVDIn1WNeIIMfPFIf/
+         SUFxJDPptHtkw==
+Date:   Tue, 13 Apr 2021 14:22:58 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
+Message-ID: <20210413122258.GC1553@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
+ <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="V88s5gaDVPzZ0KCq"
+Content-Disposition: inline
+In-Reply-To: <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Apple Interrupt Controller is only present on Apple Silicon SoCs.
-Hence add a dependency on ARCH_APPLE, to prevent asking the user about
-this driver when configuring a kernel without Apple Silicon SoC support.
 
-Drop the default, as ARCH_APPLE already selects APPLE_AIC.
+--V88s5gaDVPzZ0KCq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 76cde26394114f6a ("irqchip/apple-aic: Add support for the Apple Interrupt Controller")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/irqchip/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Apr 13, 2021 at 05:09:53PM +1200, Chris Packham wrote:
+> The fsl-i2c controller will generate an interrupt after every byte
+> transferred. Make use of this interrupt to drive a state machine which
+> allows the next part of a transfer to happen as soon as the interrupt is
+> received. This is particularly helpful with SMBUS devices like the LM81
+> which will timeout if we take too long between bytes in a transfer.
+>=20
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index d3a14f304ec80caa..b165b3285d9b0555 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -580,7 +580,7 @@ config MST_IRQ
- config APPLE_AIC
- 	bool "Apple Interrupt Controller (AIC)"
- 	depends on ARM64
--	default ARCH_APPLE
-+	depends on ARCH_APPLE || COMPILE_TEST
- 	help
- 	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
- 	  such as the M1.
--- 
-2.25.1
+Thanks for the update. I'll wait a little, because IIRC Andy wanted to
+review.
 
+
+--V88s5gaDVPzZ0KCq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jSEACgkQFA3kzBSg
+KbbYBBAAlXcLqEENblEIDE7psEDr4mEm+m3yO79FZEb7BBNe3+VZhfoRfjikkcbu
+IgP4JEjveLzN3oKuV2jniio7h5eX4I48yXAQJHonBUv8pDqCeMQ/D/trxfHE08GO
+iL36Yv9Ehun695nGDxmck1CwqvR8CuIUMDvnw08zgaNDHzPn1y9cQL38WF4uZLsc
+Exv4xrlxJESnSIkGEOSAEQO07Cz9ZULVIQK9hMboPIVvim8FwR8ZckEFly+HgGut
+CAt3DZHbNkSzA0tbmVoMLuVNhOkGd8mCNy30oB9ykuY6ZVGCmNYTWfVDPBa6KLgF
+6o8uuOPhWn2MfyWf95xYBJXiJvDeD0fS0tGTykGHgx+l2DR0etTukQBJzYLXZjna
+bNMCy0mMpPegRjQcPnSItRSJzkRo9/sKiQe0oSSP/zHkqKnX7vkGBlOYwLRmm4o/
+8PYM/IAi526elOGKVRX8D+sg5SkIymnHxzMVniqQb1xSnkv9qWGNJVC4cypXw0fi
+JIdie4YPkKh0p66PMiysCSg3JtQx6t/nwvu8N87e0vSJawcswCAqJYhh/F7N25Iv
+xlnu/lPphQTqiaqdphEsy0BVy2z1w3DBDu75zrBmXwqQ7jUUc17mJZBAbjxkjpAg
+hcjJGcGKfWoOO9gcAewgks/Q17XO/FjLviga63AQDsW29d8d30Q=
+=jhNF
+-----END PGP SIGNATURE-----
+
+--V88s5gaDVPzZ0KCq--
