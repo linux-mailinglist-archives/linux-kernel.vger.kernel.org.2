@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019FA35D63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FB935D67A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhDMENi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 00:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        id S229871AbhDMEaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 00:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDMENg (ORCPT
+        with ESMTP id S229695AbhDME3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 00:13:36 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA037C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 21:13:17 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so3483586pja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 21:13:17 -0700 (PDT)
+        Tue, 13 Apr 2021 00:29:55 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15427C061574;
+        Mon, 12 Apr 2021 21:29:34 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 65so16719967ybc.4;
+        Mon, 12 Apr 2021 21:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=K5X8AJjHKiCZK0BhbNCisc+OHk931849utpPy1D/A/Y=;
-        b=FZ6DlvumwSYNO8j03BjG/sKwj7cmy9NNat6k+jHy1yad11B+7VU1HAoyyObowjJjsZ
-         NYQhuVevivMBAe3/TVInPqhnSQbiGxtGE0HVI4ck3UiG+uVyegOOaTQSt6U5/hABlXnx
-         nJmMenXB6AzA8lpXwrHidOYzwK2sgxTxoTjBxIq0Daw0MkuSLym+7PQgMHqaECPj8Ynq
-         CI+D9aIlFI1gGMy3MsSo/LlhzBamzD7cVhNXMKUgDMth4nPfKI+EYpInLQX22NySqrqa
-         EG7om1Qdkk1kuRGirSjkyolEn+e8PV1MfT/CszE/WvrKl/2FCCIYQVaX7RVcXw1cqFSL
-         8+Vw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j5372T7oiTYIcSbokwY9txcLYb4l3MFl5tmPs5Qu1g4=;
+        b=BFfi9g7cTyM4uAYGsM8ghUZhjP3ucL5jxhFX0bLofyQI2XfE9XFq9dDaNQ1DQKpBqC
+         6LxmdhThUqD6gDMy9szjRZxc4ntZFhaYMjeGrNh52rsoO5TWEF8EPLQrDoR74rVYSUGr
+         c2GdHiiXS6r349VFN1VfeA6MAxz8CMgcev7EVBBYdm3Z0uJKxa92HuHBpBUT2sPeADsz
+         PtuyEc7k8AoNYeJOBX0z2QCfW8AstnLaw3y3VgUBLXCcj15EFReyU1FXHhTEUOwdTJy7
+         y/mJWr1ooUu7lSgFZvfYPba2o2p5q4vENaMeW5BSpH3ceb7lxubBCA8rozstp6g3iQ71
+         dnOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=K5X8AJjHKiCZK0BhbNCisc+OHk931849utpPy1D/A/Y=;
-        b=cP16hmfyy6sETnTsG9uPbwRKplDDs47xV15dEF+2yKpmqQueDuaTYH30htCWAxWL/I
-         jwMv5SclLrBBdJundctTehZAuIRWV5HjpxNXpLIuz7915arUX067ADP3JBejs724bQzF
-         aiNfOmgm09JGPHFfGQYPDbO59bF/fc1hwp23n+on6QM4ZbMkrx+GRGE190ALZTpER+Yt
-         UFQjQ63JAg7gc8cvBZwxPWkbqNWdvI3GgVBc0QuFdg4hU2+WrRPBJ1nanV4nYzjQw7A8
-         z+gxsaSSlYyQjWqtn7dEmBVHXfdble1B3zkX6qgUk2fn/4tWqCR39/NzGxRMBXCcplDt
-         4zIg==
-X-Gm-Message-State: AOAM5319ZmzqgzEORaV8B/5t5Ydj6LARXZC5COUa6DzbM/Kd3Papy8Hs
-        /2LLIy1iQd86m3eJTkusfMi3uQTBrKSNQNNBt58=
-X-Google-Smtp-Source: ABdhPJx6wmL4sIk/bRmC2/g+o0SZon4vnriXS/UYRi3fmL8/6z873Is5CN2iAb5bH4dy7f4KUEVjakJaSID964qH3tg=
-X-Received: by 2002:a17:90a:c7d5:: with SMTP id gf21mr2642171pjb.80.1618287197136;
- Mon, 12 Apr 2021 21:13:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j5372T7oiTYIcSbokwY9txcLYb4l3MFl5tmPs5Qu1g4=;
+        b=I73oLMgYd+aJ6EUB2Idh7bO3KcAwM0YNZl2Rc/MM2aavnlKR7o9cimqXehKPFJVVMS
+         nBFGDWURWZEkjNSacHv23ZQuj4Wwb6rg6XbY0w8MhaOIRZPsy6x4X3Xebi6+7vujixaF
+         4PtfA1aKJwC4frH7pNZZnhoZ4dcDpzxPFv1nHM9iuAqVdsxW7W0J9UZ+f2ZfJQYGDSiX
+         ONDJ8vJS+/a9rSpm1yiC1yxYiWIdywXHlaWOtQNcqJhFiW4DuXvaQeouldr6ygv6jYwg
+         j10ihOVnh3fBzAS1h2d1tfxgPJlZ43NpN8LfzHDOhSEOR1UxSIyWtINY/N6OTikF9/7o
+         HjOA==
+X-Gm-Message-State: AOAM533CY/O0Wrrgl8sSni1wAJ3yKvqq+CebAlhtQGqimqRRDExXfx05
+        V2J4IPWYKwL8p0b7nNhR7FWcdkSjtXujNNaAbnM=
+X-Google-Smtp-Source: ABdhPJxmxLvgoFC3aQ/40OwrDREnq0pYuJ7z8XoASt89RE+IV+WjOoaCUu/FFJSRmfSX62tkNvGadIpC+rwMTx85t0o=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr41399080ybo.230.1618288173358;
+ Mon, 12 Apr 2021 21:29:33 -0700 (PDT)
 MIME-Version: 1.0
-Sender: allentbarry11@gmail.com
-Received: by 2002:a05:6a11:327:0:0:0:0 with HTTP; Mon, 12 Apr 2021 21:13:16
- -0700 (PDT)
-From:   Alexandra Kelly <alexandrakelly779@gmail.com>
-Date:   Tue, 13 Apr 2021 05:13:16 +0100
-X-Google-Sender-Auth: -p8W33dwu_ATn1ZvqBVFZ_hTGcw
-Message-ID: <CAOWzjW36su1b18MVMuxYyxKY9B74_hkXFSYBRJCio0-fOsPLww@mail.gmail.com>
-Subject: Urgent Response
-To:     undisclosed-recipients:;
+References: <20210412192434.944343-1-pctammela@mojatatu.com>
+In-Reply-To: <20210412192434.944343-1-pctammela@mojatatu.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 12 Apr 2021 21:29:22 -0700
+Message-ID: <CAEf4BzYrK+TbYT6_rjZHjeDQ5Nea15Zk2JYU4Dqp_g8MPVup8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: clarify flags in ringbuf helpers
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+On Mon, Apr 12, 2021 at 12:25 PM Pedro Tammela <pctammela@gmail.com> wrote:
+>
+> In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
+>
+> For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
+> notification to the process if needed.
+>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> ---
 
+Great, thanks! Applied to bpf-next.
 
-I am contacting you independently of my investigation in
-my bank and no one is informed of this communication. I need your
-urgent assistance in transferring the sum of $5.3 million dollars to
-your private account,that belongs to one of our foreign customers who
-died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
-money has been here in our Bank lying dormant for years now without
-anybody coming for the claim of it.
+>  include/uapi/linux/bpf.h       | 16 ++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 16 ++++++++++++++++
+>  2 files changed, 32 insertions(+)
+>
 
-I want to release the money to you as the relative to our deceased
-customer , the Banking laws here does not allow such money to stay
-more than 18 years, because the money will be recalled to the Bank
-treasury account as unclaimed fund. I am ready to share with you 40%
-for you and 60% will be kept for me, by indicating your interest i
-will send you the full details on how the business will be executed, i
-will be waiting for your urgent response.
-....
+[...]
