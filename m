@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4DA35D6F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2058235D6F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243147AbhDMFPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
+        id S243241AbhDMFPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242475AbhDMFPT (ORCPT
+        with ESMTP id S230173AbhDMFPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:15:19 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DBCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:15:00 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 95CF2891AE;
-        Tue, 13 Apr 2021 17:14:57 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1618290897;
-        bh=WLT2HRmZG+yAD2euirij3ShXl7XLE8a+E/Bxplpap7s=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=B/QVZvY68FT5CrvG/ciW/pXXpPbCxY7k8rojo7ksR0KSdYKt2RgKGtxeLXbMTpvjV
-         stUFbXFNYw/plsciz/dM62J2S2T0C33hdrIldAI0LxJOfJA2CkvMLzvdF9XiVbbTNP
-         2++uz30eqij6pvZtS2XcjFlH8fNcwIO67axrpcREN32pwD8rMt5TQhNCyoWv7pM6Xj
-         vYDU+Z6fiZz0OtaL7fG52q87M8y3SI8bgYQR7Z+nQDFlYbKYxIIbWTKehpkWAVsZAA
-         1UwFrqTmDIK5tYUdSyoktbhD9aOjdfM5YaSADQch37upebQ3Y0z2Vvpd92lHoKpCic
-         FCgM9rpqckDIA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B607528d10001>; Tue, 13 Apr 2021 17:14:57 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 17:14:57 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 17:14:57 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Wolfram Sang <wsa@kernel.org>
-CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: Add Chris Packham as FREESCALE MPC
- I2C maintainer
-Thread-Topic: [PATCH v3 3/3] MAINTAINERS: Add Chris Packham as FREESCALE MPC
- I2C maintainer
-Thread-Index: AQHXMCNDm/XTR0fU0EG5EYtvCWa2D6qxHnEA
-Date:   Tue, 13 Apr 2021 05:14:56 +0000
-Message-ID: <2e4e208d-d410-5b60-6992-1a9b8d23f7d4@alliedtelesis.co.nz>
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
- <20210413050956.23264-5-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20210413050956.23264-5-chris.packham@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AE77EC9DFF6F6A47BAB233B462226C72@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Tue, 13 Apr 2021 01:15:37 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B3C061574;
+        Mon, 12 Apr 2021 22:15:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id e2so3261590plh.8;
+        Mon, 12 Apr 2021 22:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=TrWrFryNSzPKJP5fTzUG9PfiRUJAobg9pZY4O3rR+fc=;
+        b=acpu65aV+rMpf10pSGE9y4X0HC+bdtGZqcJ+hEUAk1WgUA5Bp5JSmQa9u6CvjNEZAF
+         9o6g4dsncgcMCcbRJ/m/rVSnk8AMOqLy5G0KxeuQuLYyI5BS5BI9je24yggsn3V1Tx2g
+         0kzW/8aZm4Y748iWMNGsNNu9H4oL4D96PiVDu7G6ZkQ5vUdgfFXfPgB/fJydOX8a3A/C
+         KGiCgf2ZHnFP34u2bWNrMWtudBkqIezsYaUam2fveKquWx9YweNRPIFTI9913fuvyr4O
+         7qkfkASoW48dYOu6oQbx5euWT552QYXo7mLkB53h8ElUrA+SiFZFfiYknXIpqc7+RGrz
+         f/Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=TrWrFryNSzPKJP5fTzUG9PfiRUJAobg9pZY4O3rR+fc=;
+        b=kQr6KJhmA4iYzetBI4pHqyW67BV+/K3GRpL+E6KB6837zz/AIdW2iQOsbJ0JHSQ50L
+         WpL2XYWek2XZFvknRUWpeLmbGKj/jVra5QJNvOt8lFfUobYBWUmeGTaTeVY2G2t6uVZf
+         dZFWDSxq91ttkF0Ta/c89HnkxXqP43u/EQkWO+Tj9ykNFVRpFdwPy/j3m5xEIXuyFHCm
+         axmHVydqotpLup04lYzGZa/L7hhVd/Vje5Noyi3avtvh1vMmQXWt0QSvHwsBJP31Y9o2
+         XmrUmxZvOKI4tSFBIH0RDyo4g+n9XF2oU59clsDKiI98pXBcSgDXJeIsbDJ5xY1ud4M4
+         VRpw==
+X-Gm-Message-State: AOAM531g8alIY8/kRMDd2MM4n7MRwzLcKknTLOZ+Ovdz0hd7hfpNn9cE
+        QRID3FUhDN6CatusTvJ69GY=
+X-Google-Smtp-Source: ABdhPJwO6ofb2zQAdrctcX8eqcNteWdixruCgaAs+5HjYGg89JzO0O4ffm9XHG3jpWWEGhDHo7eHUg==
+X-Received: by 2002:a17:902:d64a:b029:e6:30a6:64e3 with SMTP id y10-20020a170902d64ab02900e630a664e3mr30785825plh.28.1618290918006;
+        Mon, 12 Apr 2021 22:15:18 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id l35sm13144853pgm.10.2021.04.12.22.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 22:15:17 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 10:45:11 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH v2 0/4] staging: media: intel-ipu3: Cleanup patchset for
+ style issues
+Message-ID: <cover.1618289130.git.mitaliborkar810@gmail.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=VwQbUJbxAAAA:8 a=8AirrxEcAAAA:8 a=bX_5FWTj0mLFruiLH2MA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=ST-jHhOKWsTCqRlWije3:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMy8wNC8yMSA1OjA5IHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBBZGQgQ2hyaXMg
-UGFja2hhbSBhcyBGUkVFU0NBTEUgTVBDIEkyQyBtYWludGFpbmVyLg0KPg0KPiBTaWduZWQtb2Zm
-LWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQpT
-b3JyeSBmb3IgdGhlIGR1cGxpY2F0ZS4gSSBoYWQgZXhpc3Rpbmcgb3V0cHV0IGZyb20gYW4gZWFy
-bGllciANCmludm9jYXRpb24gb2YgZ2l0IGZvcm1hdC1wYXRjaCBseWluZyBhcm91bmQuICJbUEFU
-Q0ggdjMgNC80XSANCk1BSU5UQUlORVJTOiAuLi4iIGlzIHRoZSBvbmUgSSBpbnRlbmRlZCB0byBz
-ZW5kIChhbHRob3VnaCB0aGUgY29udGVudCBpcyANCnRoZSBzYW1lKS4NCj4gLS0tDQo+ICAgTUFJ
-TlRBSU5FUlMgfCA3ICsrKysrKysNCj4gICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCsp
-DQo+DQo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQo+IGluZGV4IDU2
-ZTllNGQ3NzdkOC4uM2JjNzdiYThjZDA1IDEwMDY0NA0KPiAtLS0gYS9NQUlOVEFJTkVSUw0KPiAr
-KysgYi9NQUlOVEFJTkVSUw0KPiBAQCAtNzEzNSw2ICs3MTM1LDEzIEBAIFM6CU1haW50YWluZWQN
-Cj4gICBGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1pbXgtbHBp
-MmMueWFtbA0KPiAgIEY6CWRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LWxwaTJjLmMNCj4gICAN
-Cj4gK0ZSRUVTQ0FMRSBNUEMgSTJDIERSSVZFUg0KPiArTToJQ2hyaXMgUGFja2hhbSA8Y2hyaXMu
-cGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiArTDoJbGludXgtaTJjQHZnZXIua2VybmVs
-Lm9yZw0KPiArUzoJTWFpbnRhaW5lZA0KPiArRjoJRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL2kyYy9pMmMtbXBjLnlhbWwNCj4gK0Y6CWRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXBj
-LmMNCj4gKw0KPiAgIEZSRUVTQ0FMRSBRT1JJUSBEUEFBIEVUSEVSTkVUIERSSVZFUg0KPiAgIE06
-CU1hZGFsaW4gQnVjdXIgPG1hZGFsaW4uYnVjdXJAbnhwLmNvbT4NCj4gICBMOgluZXRkZXZAdmdl
-ci5rZXJuZWwub3Jn
+Changes from v1:-
+Dropped patches 1/6 and 2/6 and compiled this as a patchset of 4
+patches.
+[PATCH 1/4]:- No changes.
+[PATCH 2/4]:- No changes.
+[PATCH 3/4]:- Reduced length of a line under 80 characters. This was
+patch 5/6 previously.
+[PATCH 4/4]:- No changes.
+
+Mitali Borkar (4):
+  staging: media: intel-ipu3: remove unnecessary blank line
+  staging: media: intel-ipu3: reduce length of line
+  staging: media: intel-ipu3: reduce length of line
+  staging: media: intel-ipu3: remove space before tabs
+
+ .../staging/media/ipu3/include/intel-ipu3.h    | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+-- 
+2.30.2
+
