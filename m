@@ -2,55 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B092735DB8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4745235DB90
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238431AbhDMJqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:46:38 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50595 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230447AbhDMJqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:46:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVRhDJ6_1618307174;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UVRhDJ6_1618307174)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 17:46:14 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     amitkarwar@gmail.com
-Cc:     siva8118@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] rsi: remove unused including <linux/version.h>
-Date:   Tue, 13 Apr 2021 17:46:12 +0800
-Message-Id: <1618307172-70927-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S238331AbhDMJsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230386AbhDMJsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:48:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 572C0613B6;
+        Tue, 13 Apr 2021 09:47:54 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+Subject: Re: [PATCH v16 0/9] arm64: ARMv8.5-A: MTE: Add async mode support
+Date:   Tue, 13 Apr 2021 10:47:37 +0100
+Message-Id: <161830715687.1113.4436583872879811764.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210315132019.33202-1-vincenzo.frascino@arm.com>
+References: <20210315132019.33202-1-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following versioncheck warning:
-./drivers/net/wireless/rsi/rsi_91x_ps.c: 19 linux/version.h not needed.
+On Mon, 15 Mar 2021 13:20:10 +0000, Vincenzo Frascino wrote:
+> This patchset implements the asynchronous mode support for ARMv8.5-A
+> Memory Tagging Extension (MTE), which is a debugging feature that allows
+> to detect with the help of the architecture the C and C++ programmatic
+> memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> 
+> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+> subset of its address space that is multiple of a 16 bytes granule. MTE
+> is based on a lock-key mechanism where the lock is the tag associated to
+> the physical memory and the key is the tag associated to the virtual
+> address.
+> When MTE is enabled and tags are set for ranges of address space of a task,
+> the PE will compare the tag related to the physical memory with the tag
+> related to the virtual address (tag check operation). Access to the memory
+> is granted only if the two tags match. In case of mismatch the PE will raise
+> an exception.
+> 
+> [...]
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/wireless/rsi/rsi_91x_ps.c | 1 -
- 1 file changed, 1 deletion(-)
+Applied to arm64 (for-next/mte-async-kernel-mode) but with a note that
+I'll drop them if Andrew prefers to take the patches via the mm tree.
+Thanks!
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_ps.c b/drivers/net/wireless/rsi/rsi_91x_ps.c
-index fdaa5a7..a029049 100644
---- a/drivers/net/wireless/rsi/rsi_91x_ps.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_ps.c
-@@ -16,7 +16,6 @@
- 
- #include <linux/etherdevice.h>
- #include <linux/if.h>
--#include <linux/version.h>
- #include "rsi_debugfs.h"
- #include "rsi_mgmt.h"
- #include "rsi_common.h"
+[1/9] arm64: mte: Add asynchronous mode support
+      https://git.kernel.org/arm64/c/f3b7deef8dca
+[2/9] kasan: Add KASAN mode kernel parameter
+      https://git.kernel.org/arm64/c/2603f8a78dfb
+[3/9] arm64: mte: Drop arch_enable_tagging()
+      https://git.kernel.org/arm64/c/c137c6145b11
+[4/9] kasan: Add report for async mode
+      https://git.kernel.org/arm64/c/8f7b5054755e
+[5/9] arm64: mte: Enable TCO in functions that can read beyond buffer limits
+      https://git.kernel.org/arm64/c/e60beb95c08b
+[6/9] arm64: mte: Conditionally compile mte_enable_kernel_*()
+      https://git.kernel.org/arm64/c/d8969752cc4e
+[7/9] arm64: mte: Enable async tag check fault
+      https://git.kernel.org/arm64/c/65812c6921cc
+[8/9] arm64: mte: Report async tag faults before suspend
+      https://git.kernel.org/arm64/c/eab0e6e17d87
+[9/9] kasan, arm64: tests supports for HW_TAGS async mode
+      https://git.kernel.org/arm64/c/e80a76aa1a91
+
 -- 
-1.8.3.1
+Catalin
 
