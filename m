@@ -2,156 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAD535DA96
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC5B35DAA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbhDMJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:03:13 -0400
-Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:44576
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230244AbhDMJDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:03:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X/zsr4UNjuZUx9BkRJxX6kQgqJSCI7U2hbY4gUffl+K3HuCKQe48Zqoylvs2JFdxPYuzR5Sdzrk/l+9laGvQiNdGwzPfJMHlRW3SSvKbWUieSsY9TYsOXd0UHaViUX1+CuoqoLoWDHy24wbZASRrk85YRZAWUpVxlO/fVYeCPWloMAX14UvsaPXjJcZME13O3OBaRAwEWI3wPbyXWsUhdAhPhocGxv6i3fK0x8aBlHvMZGe6TiOrckU4EWkXmXdk0G/5CWaQvbNdiI22wqXtCM9St7z3XrKnGgQXr42fJxN/5NsMBRJj0SyaNiUnUKHu1GapjA4YZYiRv3sfCbXjXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+yPWeme+xeeLdq4gXEumrWjRb/rqm6L+B7YFyQrAv7k=;
- b=N6xw2EXt7LgxmpbbFGFvwibhnorrAdVK5mnmpCtVSfkgnaXA7EhzcUpONXrGNR7sD4OtELeKN1FQ1PldqustF3F2STCpud/w+k/3OjWyNQp8CBjIgimYVu6hhgClGZ61IVvKd50IYJdLHp4Z1FiEyQ1leYzV6bLXtomWvLbvmUsmzj3sPAdr3I3bhmpHJWWavls58SLNyzfhJWv25rR3gR/9EDkpVjs9T6dEKW08zFDYprX2mmiZE6Wj/VB2yqDdbd0Qvp6g+IjW0T+tS0NENEqJOwK57M4fO1rqKS/gOlLEoHGqmIitn80Jq7PTWmk+Lk1s2SAYFk4gRb9QOYwTXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+yPWeme+xeeLdq4gXEumrWjRb/rqm6L+B7YFyQrAv7k=;
- b=k/b/qMOdGUCvboWJjgronG6eOCkKkJxdLQlW/+WW3FsNx7NsVPa95aMxN0sHhF7o4UzcwWPizKtP0Rq1PM2zM/6wbzESky3/L8axhMcJWCFugjXQpBLWXIcImMqVH9R1BJFoRUvKeUNmgGd2MwwSUmdSCmL2N4pB5dvTGQH/rHE=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by BY5PR03MB5048.namprd03.prod.outlook.com (2603:10b6:a03:1e8::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
- 2021 09:02:51 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 09:02:51 +0000
-Date:   Tue, 13 Apr 2021 17:02:40 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Jon Bloomfield <jon.bloomfield@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915: Fix "mitigations" parsing if i915 is builtin
-Message-ID: <20210413170240.0d4ffa38@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR04CA0005.namprd04.prod.outlook.com
- (2603:10b6:a03:40::18) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        id S236850AbhDMJE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:04:57 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3527 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244480AbhDMJEJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:04:09 -0400
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FKKNP5ymYzRdpd;
+        Tue, 13 Apr 2021 17:01:41 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 13 Apr 2021 17:03:31 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 13 Apr
+ 2021 17:03:30 +0800
+Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
+ qdisc
+To:     Hillf Danton <hdanton@sina.com>
+CC:     Juergen Gross <jgross@suse.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jiri Kosina <JKosina@suse.com>
+References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
+ <20210409090909.1767-1-hdanton@sina.com>
+ <20210412032111.1887-1-hdanton@sina.com>
+ <20210412072856.2046-1-hdanton@sina.com>
+ <20210413022129.2203-1-hdanton@sina.com>
+ <20210413032620.2259-1-hdanton@sina.com>
+ <20210413071241.2325-1-hdanton@sina.com>
+ <20210413083352.2424-1-hdanton@sina.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <1cd37014-4b2a-b82c-0cfc-6beffb8d36de@huawei.com>
+Date:   Tue, 13 Apr 2021 17:03:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR04CA0005.namprd04.prod.outlook.com (2603:10b6:a03:40::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Tue, 13 Apr 2021 09:02:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 35b9efab-da46-4724-fbeb-08d8fe5aeab3
-X-MS-TrafficTypeDiagnostic: BY5PR03MB5048:
-X-Microsoft-Antispam-PRVS: <BY5PR03MB5048EF8CF743B456888DA4D7ED4F9@BY5PR03MB5048.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G1iu8wAJO19rfWIc9wqVC34i4SudX7oyTz3RbV2B3JQeOShBz2mkVQ975yQjoCR2AOwnz6PSRcWOTLVSzihbZR5U4jgM7mCoe1ILJON5H66tHzfoICcZgjI1ERY+Vk8jlXB6XzaYiNC1fk/hy/rOv+ZRhdDpLpDE0IRsfTHLEZz3SIdGadzXLzz8ZReUqavr0G3JryCES8onazg0XSzMbCu+aM0oVifoTbf56QLFI5ldlHZUdn9FO/sFH+MmbvqsF81ehfKBEjdT6IJOA5TiASoB8X0vCmaHlkvzy1XwV15lCkoV5Rwnvw826+JwDVdMA8CHMFO8HPE2RUAwzc9Drk1klRGLunr62X/qRqG57I1b9/l2wokh7jLd0djqnUsQfSxOTBTSUw8uaI6Al4P3BKWomNi2MG59XveaDTGlYjKm00m4DzOsWbQlM9TI/N2878OrfEo1wrubXV2IJxM0TxmtOVSp6L/vlRxxHLf5ujj6fJfSnaJIhWG9PxVh9YlfAOCRVu+6rvLWfoaTrfVBM9lsN2yJM+2IO7Owvoa2YTjs/rAV0r+DwNbiA4tmdKTgKqt3ufjLC93KzCII91OdQJFDDjvFz3pnhIpFwRnaosd+OWwiPSVgXuCsqLNg7YHcxvqUvA6SmbS2wC85QQs4aY/Y9yUIE5GfgAR/4aRV2Qc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(396003)(346002)(136003)(956004)(66556008)(2906002)(52116002)(110136005)(83380400001)(55016002)(316002)(6506007)(186003)(4326008)(7696005)(38350700002)(38100700002)(8936002)(26005)(5660300002)(9686003)(478600001)(8676002)(1076003)(6666004)(66946007)(86362001)(16526019)(7416002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QwGNvOy33PtTW7Nijzp3mWd3LmsjXURgezYEtXJ/3KJ94HUtraXwNUHHvy1G?=
- =?us-ascii?Q?Ttx2Ng6TlhlKek5++09pVhVwtDH47z3xG45qpAREUCdx7LbkvlBOapqXdSzs?=
- =?us-ascii?Q?aCLaFS44RLqlCMaATjeGWxuWXREp/Udg7281zfi6xlj7TXUyhg+/8y8CfrK0?=
- =?us-ascii?Q?9aDLOch9QqXaC6PacPfPLH9dIayXy0hlsa5JJgl5n/7QgMuvGKUxxKSiUPv0?=
- =?us-ascii?Q?gZFqlkz43sC2titGYXx0bISh6qvM0CtTRf22o3VqKNBDGi3OKzoAczm9zUY4?=
- =?us-ascii?Q?5ijsLNzm6KocNlrl6JFBr1sPF2Fbkix18yNvczQaGZLHSKB7wTs7che6YArM?=
- =?us-ascii?Q?MLWqk1y3TwTbFJWm6Ldj2w5KpCOnDsxnDLy6a34hf2X1fwwaTmlskf48aUQP?=
- =?us-ascii?Q?mv6uZd7eKZ9Ff4W6fzpmYL1hcOplOP0tIgZTx0JXfGMTbO+lm3/pNOLNXvN2?=
- =?us-ascii?Q?1TG/crRvjOJ+DAoaPUbqVaCqwR6QqGfvYSl0+2klFahhygeD9Y0QLlC2Gx70?=
- =?us-ascii?Q?uDD9na/wn3hwU7wi1mLGWV8tPeRBbSYs+cS/vp1joC6KSTkH9QXZLPQT3j1a?=
- =?us-ascii?Q?zV2xQh5HLUzSXti4v+FbIN1h5kupGC9UzirSD+48tBZSndE9xe1b4fGY2DKS?=
- =?us-ascii?Q?rOVE4LXoDSjQ4IItc3UEglB8Kc6oQcY6Ok4JlO6u2OPMrDStVCvAERTUAa1i?=
- =?us-ascii?Q?Ik13d6wlppQdeDCh22mWbOauHSBFJXXI8ziRwk0ogTxpjuNnTH31jTHIVxns?=
- =?us-ascii?Q?/8if8ikPFXA1K4sqtPRjtFSG93PeAenr6yH7TeTM6jcF8VWzE5xkasJO99c8?=
- =?us-ascii?Q?5Ood8GMgdkJ5ZsjXCNjG1sHukWPiUhwYUN22UKIL6XIxoDBwiUCH7qpS40qH?=
- =?us-ascii?Q?/9jA526I7XBf1dQ7hVU2+3p1l8BPNaBooAQlkIvG16Hzuh9xHGAaUpxw3vMI?=
- =?us-ascii?Q?KTLjFDTg7PxX44ZWzsoh2mDFozW+hNJNOLPp6/ewZlmuQWibeRwGbR/QRyAQ?=
- =?us-ascii?Q?ZFn/1BLodc8gXmNIDdkfd6KKx3ND1EQuCFzVV3nsHlY3AbA+ERUIidDbAFgK?=
- =?us-ascii?Q?lBo3BLoQ62LDmQr9WvOQECrM5sIyMNiEgCRtHOATabJ8O21HHjYvYL0lyj0k?=
- =?us-ascii?Q?el646MfbMeJYDG0kQzvCI16iCl1QGrP2SwqjYJry4N+BRUyIonXMArCue3T7?=
- =?us-ascii?Q?pjncuTBxxdJtjyOW4ueS0eoZs2FtVtaXdjhT/rzOkuMQOJSfuRupBT09enZ1?=
- =?us-ascii?Q?9mwa9oVuTMcBz5Ad1JQuZ2bj5gIW581GrZ2TK/xzNnSn8U/yKw40Wjdnws/B?=
- =?us-ascii?Q?2+zcPupwR4NOzLBhjXBmMoet?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35b9efab-da46-4724-fbeb-08d8fe5aeab3
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 09:02:51.3261
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PldfhMBpt4oFZR3gmxAUYbxHeG3ziJYeUfLcDCWsJw/cObVDQfU/jm6hxE6LP8we/VDQn9KyppCw6Ylt91KAmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5048
+In-Reply-To: <20210413083352.2424-1-hdanton@sina.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I met below error during boot with i915 builtin if pass
-"i915.mitigations=off":
-[    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
+On 2021/4/13 16:33, Hillf Danton wrote:
+> On Tue, 13 Apr 2021 15:57:29  Yunsheng Lin wrote:
+>> On 2021/4/13 15:12, Hillf Danton wrote:
+>>> On Tue, 13 Apr 2021 11:34:27 Yunsheng Lin wrote:
+>>>> On 2021/4/13 11:26, Hillf Danton wrote:
+>>>>> On Tue, 13 Apr 2021 10:56:42 Yunsheng Lin wrote:
+>>>>>> On 2021/4/13 10:21, Hillf Danton wrote:
+>>>>>>> On Mon, 12 Apr 2021 20:00:43  Yunsheng Lin wrote:
+>>>>>>>>
+>>>>>>>> Yes, the below patch seems to fix the data race described in
+>>>>>>>> the commit log.
+>>>>>>>> Then what is the difference between my patch and your patch below:)
+>>>>>>>
+>>>>>>> Hehe, this is one of the tough questions over a bounch of weeks.
+>>>>>>>
+>>>>>>> If a seqcount can detect the race between skb enqueue and dequeue then we
+>>>>>>> cant see any excuse for not rolling back to the point without NOLOCK.
+>>>>>>
+>>>>>> I am not sure I understood what you meant above.
+>>>>>>
+>>>>>> As my understanding, the below patch is essentially the same as
+>>>>>> your previous patch, the only difference I see is it uses qdisc->pad
+>>>>>> instead of __QDISC_STATE_NEED_RESCHEDULE.
+>>>>>>
+>>>>>> So instead of proposing another patch, it would be better if you
+>>>>>> comment on my patch, and make improvement upon that.
+>>>>>>
+>>>>> Happy to do that after you show how it helps revert NOLOCK.
+>>>>
+>>>> Actually I am not going to revert NOLOCK, but add optimization
+>>>> to it if the patch fixes the packet stuck problem.
+>>>>
+>>> Fix is not optimization, right?
+>>
+>> For this patch, it is a fix.
+>> In case you missed it, I do have a couple of idea to optimize the
+>> lockless qdisc:
+>>
+>> 1. RFC patch to add lockless qdisc bypass optimization:
+>>
+>> https://patchwork.kernel.org/project/netdevbpf/patch/1616404156-11772-1-git-send-email-linyunsheng@huawei.com/
+>>
+>> 2. implement lockless enqueuing for lockless qdisc using the idea
+>>   from Jason and Toke. And it has a noticable proformance increase with
+>>   1-4 threads running using the below prototype based on ptr_ring.
+>>
+>> static inline int __ptr_ring_multi_produce(struct ptr_ring *r, void *ptr)
+>> {
+>>
+>>        int producer, next_producer;
+>>
+>>
+>>        do {
+>>                producer = READ_ONCE(r->producer);
+>>                if (unlikely(!r->size) || r->queue[producer])
+>>                        return -ENOSPC;
+>>                next_producer = producer + 1;
+>>                if (unlikely(next_producer >= r->size))
+>>                        next_producer = 0;
+>>        } while(cmpxchg_relaxed(&r->producer, producer, next_producer) != producer);
+>>
+>>        /* Make sure the pointer we are storing points to a valid data. */
+>>        /* Pairs with the dependency ordering in __ptr_ring_consume. */
+>>        smp_wmb();
+>>
+>>        WRITE_ONCE(r->queue[producer], ptr);
+>>        return 0;
+>> }
+>>
+>> 3. Maybe it is possible to remove the netif_tx_lock for lockless qdisc
+>>   too, because dev_hard_start_xmit is also in the protection of
+>>   qdisc_run_begin()/qdisc_run_end()(if there is only one qdisc using
+>>   a netdev queue, which is true for pfifo_fast, I believe).
+>>
+>> 4. Remove the qdisc->running seqcount operation for lockless qdisc, which
+>>   is mainly used to do heuristic locking on q->busylock for locked qdisc.
+>>
+> 
+> Sounds good. They can stand two months, cant they?
+>>>
+>>>> Is there any reason why you want to revert it?
+>>>>
+>>> I think you know Jiri's plan and it would be nice to wait a couple of
+>>> months for it to complete.
+>>
+>> I am not sure I am aware of Jiri's plan.
+>> Is there any link referring to the plan?
+>>
+> https://lore.kernel.org/lkml/eaff25bc-9b64-037e-b9bc-c06fc4a5a9fb@huawei.com/
 
-The reason is slab subsystem isn't ready at that time, so kstrdup()
-returns NULL. Fix this issue by using stack var instead of kstrdup().
+I think there is some misunderstanding here.
 
-Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+As my understanding, Jiri and Juergen are from the same team(using
+the suse.com mail server).
+what Jiri said about "I am still planning to have Yunsheng Lin's
+(CCing) fix [1] tested in the coming days." is that Juergen has
+done the test and provide a "Tested-by" tag.
 
-diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
-index 84f12598d145..7dadf41064e0 100644
---- a/drivers/gpu/drm/i915/i915_mitigations.c
-+++ b/drivers/gpu/drm/i915/i915_mitigations.c
-@@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
- static int mitigations_set(const char *val, const struct kernel_param *kp)
- {
- 	unsigned long new = ~0UL;
--	char *str, *sep, *tok;
-+	char str[64], *sep, *tok;
- 	bool first = true;
- 	int err = 0;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
- 
--	str = kstrdup(val, GFP_KERNEL);
--	if (!str)
--		return -ENOMEM;
-+	strncpy(str, val, sizeof(str) - 1);
- 
- 	for (sep = str; (tok = strsep(&sep, ","));) {
- 		bool enable = true;
-@@ -86,7 +84,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
- 			break;
- 		}
- 	}
--	kfree(str);
- 	if (err)
- 		return err;
- 
--- 
-2.31.0
+So if this patch fixes the packet stuck problem, Jiri is ok with
+NOLOCK qdisc too.
+
+Or do I misunderstand it again? Perhaps Jiri and Juergen can help to
+clarify this?
+
+
+> 
+> .
+> 
 
