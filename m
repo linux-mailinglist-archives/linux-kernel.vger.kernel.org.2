@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98D635DC7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CFA35DC81
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245330AbhDMKca convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 06:32:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32643 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229784AbhDMKc2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:32:28 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-111-z87EccfoNGWB0XIN9fdlag-1; Tue, 13 Apr 2021 11:32:06 +0100
-X-MC-Unique: z87EccfoNGWB0XIN9fdlag-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 11:32:05 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 11:32:05 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'sakari.ailus@linux.intel.com'" <sakari.ailus@linux.intel.com>
-CC:     'Mitali Borkar' <mitaliborkar810@gmail.com>,
-        "bingbu.cao@intel.com" <bingbu.cao@intel.com>,
-        "tian.shu.qiu@intel.com" <tian.shu.qiu@intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "outreachy-kernel@googlegroups.com" 
-        <outreachy-kernel@googlegroups.com>,
-        "mitali_s@me.iitr.ac.in" <mitali_s@me.iitr.ac.in>
-Subject: RE: [PATCH 2/6] staging: media: intel-ipu3: preferred __aligned(size)
- over __attribute__aligned(size)
-Thread-Topic: [PATCH 2/6] staging: media: intel-ipu3: preferred
- __aligned(size) over __attribute__aligned(size)
-Thread-Index: AQHXLyewN18t7A08NkSuo10kWluH2aqyET/AgAAWMYCAABkZMA==
-Date:   Tue, 13 Apr 2021 10:32:05 +0000
-Message-ID: <249c86809f374e13ac0be28c279eae7e@AcuMS.aculab.com>
-References: <cover.1618180659.git.mitaliborkar810@gmail.com>
- <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
- <277be5f4da82449aaf0a635b60ad0728@AcuMS.aculab.com>
- <20210413095621.GQ3@paasikivi.fi.intel.com>
-In-Reply-To: <20210413095621.GQ3@paasikivi.fi.intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S245420AbhDMKeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:34:18 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38343 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245379AbhDMKeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:34:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FKMQl2TMRz9sVb;
+        Tue, 13 Apr 2021 20:33:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618310032;
+        bh=0QSTG7AgKcAj2zXsiIn2BwtPbzxwF9Qsx+zdz7te+9Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=C0Q/O3/4b26VYHU25DT2IbFkx+YsFpUiIJiJoPf4zqXMpxlFsXflhd6RBqqFVEmHK
+         O7GzA0PHnJs3v3PdN0JzJQb16BL/LJuZC3VYmGHH64LZLGSegP55vps4JTAnqoJ3Sl
+         rwCqYvAm9NzeDqx/kSSHYOaPUKMBtDMHtavoW4FITMkPk7qiHvlqoBfM3YXMXIyNho
+         CoU/crrHuJXCCrN15z9QsKsH9eCfDoaQ3ZozySOJxxTgjDD35LSYkUC6d1OWEcdFQ8
+         zUqy87gtEPQTCK13E4EMM5vGbDSKmNKAU3tlOy/yYL4sbx6tcxfIudTROrv3g9DHdd
+         QUMC9r9YbW6Sg==
+Date:   Tue, 13 Apr 2021 20:33:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Wireless <linux-wireless@vger.kernel.org>
+Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the mac80211-next tree
+Message-ID: <20210413203349.43d3451e@canb.auug.org.au>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; boundary="Sig_/CLleS31GUfCWDobcilOra.f";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: sakari.ailus@linux.intel.com
-> Sent: 13 April 2021 10:56
-> 
-> Hi David,
-> 
-> On Tue, Apr 13, 2021 at 07:40:12AM +0000, David Laight wrote:
-> > From: Mitali Borkar
-> > > Sent: 12 April 2021 00:09
-> > >
-> > > This patch fixes the warning identified by checkpatch.pl by replacing
-> > > __attribute__aligned(size) with __aligned(size)
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  .../staging/media/ipu3/include/intel-ipu3.h   | 74 +++++++++----------
-> > >  1 file changed, 37 insertions(+), 37 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > index 589d5ccee3a7..d95ca9ebfafb 100644
-> > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > @@ -84,7 +84,7 @@ struct ipu3_uapi_grid_config {
-> > >   */
-> > >  struct ipu3_uapi_awb_raw_buffer {
-> > >  	__u8 meta_data[IPU3_UAPI_AWB_MAX_BUFFER_SIZE]
-> > > -		__attribute__((aligned(32)));
-> > > +		__aligned(32);
-> > >  } __packed;
-> >
-> > WTF?
-> >
-> > It either has 1-byte alignment because it is just __u8,
-> > 32-byte because of the aligned(32),
-> > or 1 byte because of the outer packed.
-> >
-> > What alignment does this (and all the other) structures
-> > actually need?
-> 
-> 32 as noted above. Here packed makes no difference though.
+--Sig_/CLleS31GUfCWDobcilOra.f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Bollocks - it ought to override the __aligned(32);
+Hi all,
 
+After merging the mac80211-next tree, today's linux-next build (htmldocs)
+produced this warning:
 
-> Some of these structs are used embedded in other structs or alone. I
-> haven't checked this one.
-> 
-> It's also possible to have __packed and __aligned() conflict (in which case
-> a decent compiler would give you a warning) --- which does not happen
-> currently AFAIK.
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
+include/net/cfg80211.h:6643: warning: expecting prototype for wiphy_rfkill_=
+set_hw_state(). Prototype was for wiphy_rfkill_set_hw_state_reason() instead
 
-At least one compiler is objecting to some similar constructs.
+Introduced by commit
 
-> >
-> > Specifying 'packed' isn't free.
-> 
-> It may be free if the packed alignment of the fields corresponds to
-> architecture's packing. Here __aligned() is used to satisfy
-> hardware alignment requirements and __packed is used to ensure the same
-> memory layout independently of ABI rules.
+  6f779a66dc84 ("cfg80211: allow specifying a reason for hw_rfkill")
 
-No that isn't what packed is for.
-'packed' also tells the compiler that the structure may 'exist' at
-an unaligned address.
-On many architectures this requires the compiler use byte sized
-access and shifts for all members.
+--=20
+Cheers,
+Stephen Rothwell
 
-If you are worried that the compiler/ABI might have inserted
-padding then add a compile-time assert on the structure size.
-But most kernel code assumes that structures where everything
-is on its natural boundary won't have any padding.
+--Sig_/CLleS31GUfCWDobcilOra.f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-	David
+-----BEGIN PGP SIGNATURE-----
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB1c40ACgkQAVBC80lX
+0GxGlAf9HEF0WTisn6VJtPlv2O6InYLiBP+qbCslxrrpJAHfppUktma6Ued0aDLm
+gx49xPRmR+lu1MdnXw9Z7Pu1b/1I3t0xVmZJqAq31+eGYFmqSsrUaI5c80epJ/Na
+Xzw3s0EC2wc8uqUBzqz7ZrCM7OyHaQvwls3ta/NU1qGr82WPW7oum+4oq23nbjxM
+EeaanUOT9RbRwtg4OjhqpCLaJPD5f2ekJbs31NYhUiv/TxAyXm48XUfdNcANRD7F
+AIl1Zf9saW1NrI+sGaeh3j3PzE/2q7DHJZxwkMegkycMDxo1uy9BI3oeAlzTvLoj
+AetHK4KXGFqOrukjsOXuN9pA+6u/2A==
+=AKUc
+-----END PGP SIGNATURE-----
 
+--Sig_/CLleS31GUfCWDobcilOra.f--
