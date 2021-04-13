@@ -2,96 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5218635D6FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAAB35D706
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243965AbhDMFQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S244593AbhDMFRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhDMFQt (ORCPT
+        with ESMTP id S230173AbhDMFRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:16:49 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AE8C061574;
-        Mon, 12 Apr 2021 22:16:30 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so10114929pjb.0;
-        Mon, 12 Apr 2021 22:16:30 -0700 (PDT)
+        Tue, 13 Apr 2021 01:17:45 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26877C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:26 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id o196so1841491qka.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4XDX8cIaJxLhyXnc3hBMVHgdvzoZ+hyINeFmm7eH+kg=;
-        b=A7Ec2k4DKxgt4iaOM4wzFNrzbGicCPfrkYDg+42NjbsV1MqVQ/0A0AVXWfO8QuxFKO
-         +3SEP7Q0RNQ4f2PP18PGUf8soqkaLoacCDIva1/GKda1Wpo4Q3fIXIi3j8za8wPtAKEZ
-         qW5jvfXL4zoUqvFuZuVCJvDPf1wUYVvOft6mshPzF+TzGdizx0Ye3Rd8037ZaHsXI66E
-         uVmAXMJHwboaRd8GAa43J4mFXjYd0nBQOhBV4cwV0RjXABq36cr4prIuRiy4JSmS8BXT
-         ybAODTDgKZWRN1+T6q4ruac9MX3m6gbvmsrvsxCRJaPm8z/HEC/xVSnUUP10uXfvURKk
-         B2lA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=wrbaVOYVgCtHDmQ7j5oVc9kHRwzikE6fRM9DNAMARAs=;
+        b=ZGD2PSv90bQPpcK7ImkqdxJeL3mh0oBpLqIRyzGn3TPamps4ADC6Ha6Z1lp3ZChArz
+         FYE4L8Ygcgoc7zV3RgtZSAewQqWFefjPu3FBOyCcqJyPh9TAjxvxQxMKXKe4MhWXiPL9
+         QlTF3H3CT0tkjpPIqB33NvonB1G43LMnC/p9UCQdAEaTlaFwukIB8uyn0RkFOwGoWvdW
+         F6opuB/CEyRc1du8vcR2QCriYNIi+qI4CLa5f635Jtc8Qs8dRMEJZekk5JPSdlB9NDsP
+         Hab2N4VkNBHBEqH4yI/6UJz7A6LzW+BohwZtJWT7nBSM1/lQJNewPX8yHrH6i4FdegNV
+         gfiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4XDX8cIaJxLhyXnc3hBMVHgdvzoZ+hyINeFmm7eH+kg=;
-        b=apj01z60IJVtdKjuIs3tPePyAEsL8Xw60seM3dm65LuTir13T83df/dDQn+PVmqV+b
-         eYkw0wnAiX5xMcF3ai6skAr1nRXTrYtOrsCN7k9W/ktU10KbrmnB0bLzVCgfTK4gJXSK
-         FsfoVp3NN0Z1xOmD3bky/8NUgeGrGxHUL4yk6TM29TrWhOa9f491C4XC9A6Q6K3tFNXo
-         9HeyVeeTIU14KsgwZsft0yk4UubNNvSADMM3x4ALB8S0V9RMEj5dGz5TCTgLKRQOgukP
-         nmkWxuDw5OCSrAQjcGP7RLzlR+wXNzxVFbckpyAUe+s//S4B+L8dZSSqwbsfPfKESo4H
-         WX8g==
-X-Gm-Message-State: AOAM532VSZbo7YkXtb34dIuD0x161h9aHEy936Cwlo3WYXigceQiULBP
-        EW6JtykRPbV5dJpHdhtwG8k=
-X-Google-Smtp-Source: ABdhPJxeTMs3C/SB153yC/dYzXjpgpgVgWPbur7IpKAmHgi8Abi8apVHsMqKL+2M2Cw322fMQXCSOQ==
-X-Received: by 2002:a17:902:e5d0:b029:eb:2814:8619 with SMTP id u16-20020a170902e5d0b02900eb28148619mr2079964plf.30.1618290989854;
-        Mon, 12 Apr 2021 22:16:29 -0700 (PDT)
-Received: from kali ([103.141.87.253])
-        by smtp.gmail.com with ESMTPSA id u7sm957393pjx.8.2021.04.12.22.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 22:16:29 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 10:46:22 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: [PATCH v2 4/4] staging: media: intel-ipu3: remove space before tabs
-Message-ID: <a01ff63a3b2fb14704f32e83bd12c4cf36410275.1618289130.git.mitaliborkar810@gmail.com>
-References: <cover.1618289130.git.mitaliborkar810@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618289130.git.mitaliborkar810@gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=wrbaVOYVgCtHDmQ7j5oVc9kHRwzikE6fRM9DNAMARAs=;
+        b=J3WUfeM9bmcMXg9aRmqR8Czf3hE0JVD4pes6mSNpIqKIf4gsZFIpDdXYCbW9Rc0DQR
+         VFK1vhf2+nduQ77C1zzH0af7OM0qpFk0s8suEdE3dr1EmVffOk7voe/djYm75N/tsKfX
+         kvZPo3XmObbSz1uNL3tl2n8ZOXT+qqzJ2bnOabERNEoq2M1ZxWOR7qgslN1ihges3Ta/
+         zBpbzXsLWmY7JPM1kRx4ScAw8Ukisdo0P/3uhO+zwn0S+pA2n+QIzZ9YmQtY60TdGlCI
+         Jrsag+UhW8Av9l2tgtVpa5/pnhOLZyDKUHB847iCPLghBhxojYcXPPe4Y/enpiFH31Su
+         uG8Q==
+X-Gm-Message-State: AOAM532PLBOV3D/Zh6tveuNc3677JNqQ0YEb8g/I0v0yGattItwrD9lQ
+        UL8yv5m5s26QfvStDjg8NgD5H8kVmExrrlkYZqE7
+X-Google-Smtp-Source: ABdhPJwpXWWVE6i6ZWio5ETUunQ5fX9pAV/e48HAXSa7RcyZWuQ4usmUgDe2/6lisFP49TmDPqMTfjVY+n212CLoIqm+
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:d508:eee5:2d57:3e32])
+ (user=axelrasmussen job=sendgmr) by 2002:a0c:8d44:: with SMTP id
+ s4mr31548867qvb.53.1618291045176; Mon, 12 Apr 2021 22:17:25 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 22:17:12 -0700
+Message-Id: <20210413051721.2896915-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v2 0/9] userfaultfd: add minor fault handling for shmem
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>
+Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unnecessary space before tabs to adhere to  linux kernel coding
-style.
-Reported by checkpatch.
+Base
+====
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
- 
-Changes from v1:- No changes.
+This series is based on (and therefore should apply cleanly to) the tag
+"v5.12-rc7-mmots-2021-04-11-20-49", additionally with Peter's selftest cleanup
+series applied *first*:
 
- drivers/staging/media/ipu3/include/intel-ipu3.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://lore.kernel.org/patchwork/cover/1412450/
 
-diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-index 0451f8b7ba4f..340d97160bbb 100644
---- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-+++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-@@ -631,7 +631,7 @@ struct ipu3_uapi_bnr_static_config_wb_gains_thr_config {
-  * @cg:	Gain coefficient for threshold calculation, [0, 31], default 8.
-  * @ci:	Intensity coefficient for threshold calculation. range [0, 0x1f]
-  *	default 6.
-- * 	format: u3.2 (3 most significant bits represent whole number,
-+ *	format: u3.2 (3 most significant bits represent whole number,
-  *	2 least significant bits represent the fractional part
-  *	with each count representing 0.25)
-  *	e.g. 6 in binary format is 00110, that translates to 1.5
--- 
-2.30.2
+Changelog
+=========
+
+v1->v2:
+- Pick up Reviewed-by's.
+- Don't swapin page when a minor fault occurs. Notice that it needs to be
+  swapped in, and just immediately fire the minor fault. Let a future CONTINUE
+  deal with swapping in the page. [Peter]
+- Clarify comment about i_size checks in mm/userfaultfd.c. [Peter]
+- Only forward declare once (out of #ifdef) in hugetlb.h. [Peter]
+
+Changes since [2]:
+- Squash the fixes ([2]) in with the original series ([1]). This makes reviewing
+  easier, as we no longer have to sift through deltas undoing what we had done
+  before. [Hugh, Peter]
+- Modify shmem_mcopy_atomic_pte() to use the new mcopy_atomic_install_ptes()
+  helper, reducing code duplication. [Hugh]
+- Properly trigger handle_userfault() in the shmem_swapin_page() case. [Hugh]
+- Use shmem_getpage() instead of find_lock_page() to lookup the existing page in
+  for continue. This properly deals with swapped-out pages. [Hugh]
+- Unconditionally pte_mkdirty() for anon memory (as before). [Peter]
+- Don't include userfaultfd_k.h in either hugetlb.h or shmem_fs.h. [Hugh]
+- Add comment for UFFD_FEATURE_MINOR_SHMEM (to match _HUGETLBFS). [Hugh]
+- Fix some small cleanup issues (parens, reworded conditionals, reduced plumbing
+  of some parameters, simplify labels/gotos, ...). [Hugh, Peter]
+
+Overview
+========
+
+See the series which added minor faults for hugetlbfs [3] for a detailed
+overview of minor fault handling in general. This series adds the same support
+for shmem-backed areas.
+
+This series is structured as follows:
+
+- Commits 1 and 2 are cleanups.
+- Commits 3 and 4 implement the new feature (minor fault handling for shmem).
+- Commits 5, 6, 7, 8 update the userfaultfd selftest to exercise the feature.
+- Commit 9 is one final cleanup, modifying an existing code path to re-use a new
+  helper we've introduced. We rely on the selftest to show that this change
+  doesn't break anything.
+
+Use Case
+========
+
+In some cases it is useful to have VM memory backed by tmpfs instead of
+hugetlbfs. So, this feature will be used to support the same VM live migration
+use case described in my original series.
+
+Additionally, Android folks (Lokesh Gidra <lokeshgidra@google.com>) hope to
+optimize the Android Runtime garbage collector using this feature:
+
+"The plan is to use userfaultfd for concurrently compacting the heap. With
+this feature, the heap can be shared-mapped at another location where the
+GC-thread(s) could continue the compaction operation without the need to
+invoke userfault ioctl(UFFDIO_COPY) each time. OTOH, if and when Java threads
+get faults on the heap, UFFDIO_CONTINUE can be used to resume execution.
+Furthermore, this feature enables updating references in the 'non-moving'
+portion of the heap efficiently. Without this feature, uneccessary page
+copying (ioctl(UFFDIO_COPY)) would be required."
+
+[1] https://lore.kernel.org/patchwork/cover/1388144/
+[2] https://lore.kernel.org/patchwork/patch/1408161/
+[3] https://lore.kernel.org/linux-fsdevel/20210301222728.176417-1-axelrasmussen@google.com/T/#t
+
+Axel Rasmussen (9):
+  userfaultfd/hugetlbfs: avoid including userfaultfd_k.h in hugetlb.h
+  userfaultfd/shmem: combine shmem_{mcopy_atomic,mfill_zeropage}_pte
+  userfaultfd/shmem: support minor fault registration for shmem
+  userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
+  userfaultfd/selftests: use memfd_create for shmem test type
+  userfaultfd/selftests: create alias mappings in the shmem test
+  userfaultfd/selftests: reinitialize test context in each test
+  userfaultfd/selftests: exercise minor fault handling shmem support
+  userfaultfd/shmem: modify shmem_mcopy_atomic_pte to use install_ptes
+
+ fs/userfaultfd.c                         |   6 +-
+ include/linux/hugetlb.h                  |   4 +-
+ include/linux/shmem_fs.h                 |  15 +-
+ include/linux/userfaultfd_k.h            |   5 +
+ include/uapi/linux/userfaultfd.h         |   7 +-
+ mm/hugetlb.c                             |   1 +
+ mm/memory.c                              |   8 +-
+ mm/shmem.c                               | 112 +++------
+ mm/userfaultfd.c                         | 183 ++++++++++-----
+ tools/testing/selftests/vm/userfaultfd.c | 280 +++++++++++++++--------
+ 10 files changed, 377 insertions(+), 244 deletions(-)
+
+--
+2.31.1.295.g9ea45b61b8-goog
 
