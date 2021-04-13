@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138335D909
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFDC35D90B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241038AbhDMHhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:37:17 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:36492 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240890AbhDMHhP (ORCPT
+        id S241148AbhDMHh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240979AbhDMHhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:37:15 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 5D6AE40162;
-        Tue, 13 Apr 2021 07:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618299416; bh=8Wm8ArFTDkXMAZMgFkFQMI2XRAMfTrV/2W6Sg9JcQCs=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=jzhJyLzu+Kn9s+Gr7rk8yTQmW9xewZsssP+0tgHceDntnhrGmYZ1bVo51GrJoVfXq
-         BZnjHc+Bw7jKWbSvcDahYw1ebY/mijsRUBWLZyg60GuK3Sm2VCSI2bLcw9qi5JKrtP
-         bptuzk5TqWZbc16cZjcywAJGszKJN6X7gf3kb/jWimIEI2bvZhuqqvORSEPHmwScwh
-         jWiRsyHLQUIDW4qpFLufzRi3epC1I8tLEQuS0hyGXisJHIxPv0HcH67ocNz6NOZv25
-         H0sRMxDzBDbBg2v95fScxhWeh4q4xfVQ4UKIPWlKDEisXeKxsyq1cFoq8/IOUUNxjT
-         NU6qbvEbhdK+w==
-Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 9F493A0094;
-        Tue, 13 Apr 2021 07:36:53 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Tue, 13 Apr 2021 11:36:52 +0400
-Date:   Tue, 13 Apr 2021 11:36:52 +0400
-In-Reply-To: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
-References: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
-X-SNPS-Relay: synopsys.com
-From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH v2 07/12] usb: dwc2: Update enter clock gating when port is suspended
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     John Youn <John.Youn@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Message-Id: <20210413073653.9F493A0094@mailhost.synopsys.com>
+        Tue, 13 Apr 2021 03:37:22 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EDFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:37:03 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id n38so10897256pfv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1wj/P641sD/e5hD8zFgOUD41DvnEOt3Hc9lA4lyfQJw=;
+        b=NK3frzvdW3ud3kjLPx4OsxwMpdZ1NjA1NtsDL9Y1kDzUCyA32byROcomS1jI6UhsLO
+         jumgwA75Emo0ROYheWpVPfZ/C5rYerF2GHo2NonsePo8L3sC2HoiiZLL/gkJ7K+A5zaN
+         U0VnIbLj2yAV4Bf4g4JnEIgugsP7kjexCtZ6m2KptQAtYP+AvEKPDslfDpsNme6TNDRx
+         7TNmPbOSunzhVPYTuoYw17dO0F16ilR/XgW0QyHqofKiPgoQ4dLzdVrcEpoROrSKSARS
+         J/VKSZWS92NKEb12CvcWuVYTy4CAK5T6v8HFJjemsJRuLvKOA9zkPkn104cvDjOSTiAd
+         9c1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1wj/P641sD/e5hD8zFgOUD41DvnEOt3Hc9lA4lyfQJw=;
+        b=m1URs5RmZDl3K+bjN5mtMnJMWvUdmzS13MW4iFWfLJOBx/4RfF4JjU2rzurUTWrkRU
+         WukJznb3qbHguaXL6XkvZFnX17PEWEW49EHYJQbSMYMg7JQ2o624TO3oSRMWEtiqjVVX
+         VKuUVdNC9+kXhJLvWgQ9xPT2pHFTr7FxII6pJPFYV7ewORxlaL0ZPEhsEx3ZcOy+80zD
+         1KImd2nMgEyV1xF+HAHIpaGDj3cOjuMyDS3yZvU7iUl6cMJyCUK/2pIZ0WTO3yq0M+mw
+         EQqhoXFauChymRj+Zr44yXUAviE34ReNDM1p6oyfTHaSE80bePG0ZBBd8SRzJV0BGOS8
+         KC7A==
+X-Gm-Message-State: AOAM532g+B2mH4gsbviEKrQl14bvKzauLQlSaBvWwOHaesM5lE+AuHH3
+        EE0dnNFS9Z06QXK3dV2cNWQ=
+X-Google-Smtp-Source: ABdhPJyS7ftMEF/xsFmdK0Wat9VKq3jB5YuLN83Faf1UBZGxDO180LmfYZFu98qs8MOXunX6jK9DkQ==
+X-Received: by 2002:a62:5bc1:0:b029:20d:69a5:189 with SMTP id p184-20020a625bc10000b029020d69a50189mr6216012pfb.57.1618299422983;
+        Tue, 13 Apr 2021 00:37:02 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:71d7:d843:bfe8:bec7])
+        by smtp.gmail.com with ESMTPSA id a3sm1349068pjq.36.2021.04.13.00.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 00:37:02 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Subject: [PATCH 0/3] rseq: minor optimizations
+Date:   Tue, 13 Apr 2021 00:36:54 -0700
+Message-Id: <20210413073657.2308450-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Updates the implementation of entering clock gating mode
-when core receives port suspend.
-Instead of setting the required bit fields of the registers
-inline, called the "dwc2_host_enter_clock_gating()" function.
+From: Eric Dumazet <edumazet@google.com>
 
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
----
- Changes in v2:
- - None
+rseq is a heavy user of copy to/from user data in fast paths.
+This series tries to reduce the cost.
 
- drivers/usb/dwc2/hcd.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+Eric Dumazet (3):
+  rseq: optimize rseq_update_cpu_id()
+  rseq: remove redundant access_ok()
+  rseq: optimise for 64bit arches
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 27f030d5de54..e1225fe6c61a 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -3298,7 +3298,6 @@ static int dwc2_host_is_b_hnp_enabled(struct dwc2_hsotg *hsotg)
- int dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
- {
- 	unsigned long flags;
--	u32 hprt0;
- 	u32 pcgctl;
- 	u32 gotgctl;
- 	int ret = 0;
-@@ -3323,22 +3322,12 @@ int dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
- 		break;
- 	case DWC2_POWER_DOWN_PARAM_HIBERNATION:
- 	case DWC2_POWER_DOWN_PARAM_NONE:
--	default:
--		hprt0 = dwc2_read_hprt0(hsotg);
--		hprt0 |= HPRT0_SUSP;
--		dwc2_writel(hsotg, hprt0, HPRT0);
--		hsotg->bus_suspended = true;
- 		/*
--		 * If power_down is supported, Phy clock will be suspended
--		 * after registers are backuped.
-+		 * If not hibernation nor partial power down are supported,
-+		 * clock gating is used to save power.
- 		 */
--		if (!hsotg->params.power_down) {
--			/* Suspend the Phy Clock */
--			pcgctl = dwc2_readl(hsotg, PCGCTL);
--			pcgctl |= PCGCTL_STOPPCLK;
--			dwc2_writel(hsotg, pcgctl, PCGCTL);
--			udelay(10);
--		}
-+		dwc2_host_enter_clock_gating(hsotg);
-+		break;
- 	}
- 
- 	/* For HNP the bus must be suspended for at least 200ms */
+ kernel/rseq.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
+
 -- 
-2.25.1
+2.31.1.295.g9ea45b61b8-goog
 
