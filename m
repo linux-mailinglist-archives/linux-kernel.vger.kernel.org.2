@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C5435D4AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B1335D4B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240385AbhDMBIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:08:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:34156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239318AbhDMBIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:08:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7EB5106F;
-        Mon, 12 Apr 2021 18:08:16 -0700 (PDT)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB2793F792;
-        Mon, 12 Apr 2021 18:08:11 -0700 (PDT)
-Subject: Re: [PATCH V2 4/6] mm: Drop redundant
- ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-References: <1617259448-22529-1-git-send-email-anshuman.khandual@arm.com>
- <1617259448-22529-5-git-send-email-anshuman.khandual@arm.com>
- <20210412115952.GC27818@linux>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <3ae8627b-68dc-8a86-fbf0-5e65e25ebffb@arm.com>
-Date:   Tue, 13 Apr 2021 06:38:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239318AbhDMBP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhDMBPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 21:15:24 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1007BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:15:06 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h19-20020a9d64130000b02902875a567768so3647240otl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:15:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=P7da0pve3GTeg7tfaJoPJsQHXIE7bpHZW1MbGPf2/4s=;
+        b=pHFC7D+LtL2XY9iqB1BDhy8JA5ESozYYbNqjl72BFCj/2vzRs+LeInqyc65Ba7LpD1
+         BfXV3ncJDfmv/A8RKnxInMhmTXFt6BQSTN7xCZNckWLTGSjD13h7a239lMBw6F4aFhGW
+         D2Ls7sabfuTbCad/DqsA7Z1Dl3nTOzCupvHDaj76u4Ch5qzC9UEL6nj4U4kgtADwd9Nl
+         GpZKnjjjr43S4Sqw/ibkW9nh0oREy9Sh7b4rVoLtplzNQ/D5EmQQnlIjVKnLDtZk8bVl
+         /POWuxQELGUUsMyOvAhUGLUl90KNuohE0NlSiMzh/RGDjlmSXa3sNZBNfU0esyc3L+lC
+         S7FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=P7da0pve3GTeg7tfaJoPJsQHXIE7bpHZW1MbGPf2/4s=;
+        b=BpXWiWIcqNaX0DcLjRQlv30vm+9aN3LxnNXlfhSQoaWWtRWFGoI9IfEUtT4JqRYzL3
+         nduygeEp8OJaYE//D05V/58u3JVrNEh/e9T/t3BIro0VZnMuxD8fte4zl23u3VS1FzNX
+         YCAN0b18DThvn1Agi+AAMqzY6Ra3/lUoL1k15JxVl+wzQiwrwf6rFlGKc4qB1BJGOblg
+         cZ2vct/4z2mPdS+0gp+dDs35Q7o5Fhc7dFcxA3yjkzFtIaXrM7Wf/6wKWWVkMaNjN6xJ
+         ziHOdInXTQxVlI+J6Hzneqi0X2f/I2Wxacd3XYAAzlTu73Fik1yvmdmLuE240RFBMxCv
+         WaZQ==
+X-Gm-Message-State: AOAM532p1fDR+HTYhSB0Fq2CaE9j8ZICCSzCJq2Xf7i0ORX5DWvx58kz
+        n+/O+BKmjtpaIzLhQBKELIWwe1x46LLWNcGo42Q=
+X-Google-Smtp-Source: ABdhPJzHYpVdjDgoifNgn9QwSOjbgVsyAU79a089J0XfDyGZiHZk7sPu37mjS2MvsB54czg55U1KCd0Cv/DwfnARjQs=
+X-Received: by 2002:a05:6830:1d74:: with SMTP id l20mr6843433oti.211.1618276505396;
+ Mon, 12 Apr 2021 18:15:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210412115952.GC27818@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:2365:0:0:0:0:0 with HTTP; Mon, 12 Apr 2021 18:15:04
+ -0700 (PDT)
+Reply-To: alahmedhassan5602@gmail.com
+From:   Ahmed Hassan <sherffusni2020@gmail.com>
+Date:   Tue, 13 Apr 2021 01:15:04 +0000
+Message-ID: <CANuFybJ_nVjnFWamKFKs+Dn+6HKPHFDRVEWGMiq0QSxJf7Nv6A@mail.gmail.com>
+Subject: Please respond urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 5:29 PM, Oscar Salvador wrote:
-> On Thu, Apr 01, 2021 at 12:14:06PM +0530, Anshuman Khandual wrote:
->> ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION configs have duplicate definitions on
->> platforms that subscribe them. Drop these reduntant definitions and instead
->> just select them appropriately.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: "H. Peter Anvin" <hpa@zytor.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: x86@kernel.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Acked-by: Catalin Marinas <catalin.marinas@arm.com> (arm64)
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> Hi Anshuman, 
-> 
-> X86 needs fixing, see below:
-> 
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index 503d8b2e8676..10702ef1eb57 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -60,8 +60,10 @@ config X86
->>  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
->>  	select ARCH_32BIT_OFF_T			if X86_32
->>  	select ARCH_CLOCKSOURCE_INIT
->> +	select ARCH_ENABLE_HUGEPAGE_MIGRATION if x86_64 && HUGETLB_PAGE && MIGRATION
->>  	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
->>  	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
->> +	select ARCH_ENABLE_THP_MIGRATION if x86_64 && TRANSPARENT_HUGEPAGE
-> 
-> you need s/x86_64/X86_64/, otherwise we are left with no migration :-)
+Greetings,
 
-Ahh, right. I guess this could not have got detected during a build test.
-As the series is in mmotm tree, wondering if Andrew could help fix these
-typos in this patch.
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your urgent
+assistance in transferring the sum of $11.3 million USD to your
+private account Where this money can be shared between us.
+
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family on 16th October 2005.
+
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Best Regards,
+Ahmed Hassan
