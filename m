@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE3C35D8C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753AC35D8C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238756AbhDMHXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:23:52 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:60024 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237646AbhDMHXr (ORCPT
+        id S230248AbhDMH01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:26:27 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16906 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhDMH0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:23:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UVQBm1o_1618298586;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVQBm1o_1618298586)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 15:23:16 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     maintainers@bluecherrydvr.com
-Cc:     anton@corp.bluecherry.net, andrey_utkin@fastmail.com,
-        ismael@iodev.co.uk, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] media: solo6x10: remove useless function
-Date:   Tue, 13 Apr 2021 15:23:01 +0800
-Message-Id: <1618298581-33566-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 13 Apr 2021 03:26:24 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKHCt69fJzlXP5;
+        Tue, 13 Apr 2021 15:24:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.202) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Tue, 13 Apr 2021
+ 15:25:57 +0800
+Subject: Re: [PATCH 0/3] scsi: mptfusion: Clear the warnings indicating that
+ the variable is not used
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "MPT-FusionLinux . pdl" <MPT-FusionLinux.pdl@broadcom.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210408061851.3089-1-thunder.leizhen@huawei.com>
+ <yq1blai7p1z.fsf@ca-mkp.ca.oracle.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <7b538451-4e1e-4f4b-36e5-ad496ab40598@huawei.com>
+Date:   Tue, 13 Apr 2021 15:25:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <yq1blai7p1z.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
 
-drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c:394:19: warning: unused
-function 'vop_interlaced' [-Wunused-function].
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c | 5 -----
- 1 file changed, 5 deletions(-)
+On 2021/4/13 13:07, Martin K. Petersen wrote:
+> 
+> Zhen,
+> 
+>> Zhen Lei (3):
+>>   scsi: mptfusion: Remove unused local variable 'time_count'
+>>   scsi: mptfusion: Remove unused local variable 'port'
+>>   scsi: mptfusion: Fix error return code of mptctl_hp_hostinfo()
+> 
+> I applied patches 1+2. I hesitate making functional changes to such an
+> old driver.
 
-diff --git a/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c b/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-index 0abcad4..8c4fae7 100644
---- a/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-v4l2-enc.c
-@@ -391,11 +391,6 @@ static int solo_send_desc(struct solo_enc_dev *solo_enc, int skip,
- }
- 
- /* Extract values from VOP header - VE_STATUSxx */
--static inline int vop_interlaced(const vop_header *vh)
--{
--	return (__le32_to_cpu((*vh)[0]) >> 30) & 1;
--}
--
- static inline u8 vop_channel(const vop_header *vh)
- {
- 	return (__le32_to_cpu((*vh)[0]) >> 24) & 0x1F;
--- 
-1.8.3.1
+I think patch 3 does not change any functions. The current modification only
+ensures that error codes are correctly returned in the error branch. In the
+previous version, 0 is always returned.
+
+> 
 
