@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3976035DDEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD7435DDED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238888AbhDMLlJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 07:41:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:41208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231378AbhDMLlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:41:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42C88113E;
-        Tue, 13 Apr 2021 04:40:45 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A96E03F73B;
+        id S231437AbhDMLlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231163AbhDMLlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 07:41:02 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A68C061574;
         Tue, 13 Apr 2021 04:40:43 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
-        dietmar.eggemann@arm.com, mingo@kernel.org,
-        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm: topology: parse the topology from the dt
-In-Reply-To: <CAG7+-3OMYVTc+ja9CK+94X8XtKq3hbRb+XOEv7xOeuXgNm0BHQ@mail.gmail.com>
-References: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com> <87y2dnn3gw.mognet@arm.com> <CAG7+-3MsjuChoEOj11VAMX9W61UY6MmphkxWDF=-_R1A8sfvpA@mail.gmail.com> <87tuobmsba.mognet@arm.com> <CAG7+-3OMYVTc+ja9CK+94X8XtKq3hbRb+XOEv7xOeuXgNm0BHQ@mail.gmail.com>
-Date:   Tue, 13 Apr 2021 12:40:39 +0100
-Message-ID: <87o8eimmyw.mognet@arm.com>
+Received: by mail-wm1-x334.google.com with SMTP id s10-20020a05600c318ab029012d7c83637bso25129wmp.0;
+        Tue, 13 Apr 2021 04:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MkaJsdRxcT7X9SeJC6tmjhb8Lb+kbsYW+1qTzC0vHSg=;
+        b=NbbEjj+8QyG7yInSEnyfAVZV6f6bHqYIPq95qqf0KoINEPGw0i3ulBOFhROAIWORdQ
+         g+s8tG8VHqKqpxZsAnX/0KCumHKedofe0vc7poTggkp1+dOm1Fa8pOTF/lseWzDzcIq1
+         alicTMoZ8XNxDCY06jnaNIiwdHP1cyj/zuKUqlPk674rX6W1Qw/yQDT/41o71/HjAFIJ
+         UizZOzTRJNAPbh9ZtRmnXFMJJ2u5NTnQPov9XN1iCBECoSF95psRq38s4cHxIMgj7aGj
+         msPPuytaklTeVc1vv2mgdIUgozwZVj08eCsvD1NliWMziUep0Fni0JPvfFnRs1fcebX4
+         AdYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MkaJsdRxcT7X9SeJC6tmjhb8Lb+kbsYW+1qTzC0vHSg=;
+        b=IeHuel2DMqne24nSt+u1NR0w9xmUvzv5EjeQViv1ncoJukbfjcbQGpAwz58Yp6Kwrd
+         V/QAgSFWbOrOl+pt3B+Bvc305X9ovV4UsZXGrJ3Z7fXLqUQZLO13+yKmLYYA8YMoIuB5
+         tgGma1o2p+uVxI9VGlzzDtg0YAhlqAUiJQaUwBjr0MfVmXUccgrcwQrUsAeLjMSK+PSK
+         Grd5TQ6Kl/+SMVDv3Z6v498zmbx5wNYIRpVNvsTscmmlHzU7wdf9ZQRc3NBLSd8I4mSk
+         CVzI/SSPqdpufYOQXfvgWLc82dF43I+t0XL7PmymO2ph+xHDD2Y0io1LscadKLfIIVGl
+         1s3Q==
+X-Gm-Message-State: AOAM532wpeWueSKC2I3nGGs2sp8oczNcmxQ+LCD3O9GPTuk5S13Ldzz+
+        VW3gFAMn/21k2T8SHd0Rte+VrdCS4+4=
+X-Google-Smtp-Source: ABdhPJxOAUE/BxJoRtiCqbQFHbbi/VfFLPUrutL9mYtMCQ9Eg2HJvT1cDY7t0WOv6pvny2LQphBirw==
+X-Received: by 2002:a1c:6887:: with SMTP id d129mr3770013wmc.114.1618314041846;
+        Tue, 13 Apr 2021 04:40:41 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id z8sm20198827wrh.37.2021.04.13.04.40.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 04:40:40 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 13:41:20 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
+Message-ID: <YHWDYOPKGylFKQvl@orome.fritz.box>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-4-clemens.gruber@pqgruber.com>
+ <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
+ <YHR5eyLPqiwhTGrr@workstation.tuxnet>
+ <20210413113805.mjft5jxt3qhsxg6e@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1vkEgIoTkhyBIpER"
+Content-Disposition: inline
+In-Reply-To: <20210413113805.mjft5jxt3qhsxg6e@pengutronix.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/21 14:13, Ruifeng Zhang wrote:
-> Valentin Schneider <valentin.schneider@arm.com> 于2021年4月12日周一 下午11:33写道：
->> I'm not fluent at all in armv7 (or most aarch32 compat mode stuff), but
->> I couldn't find anything about MPIDR format differences:
->>
->>   DDI 0487G.a G8.2.113
->>   """
->>   AArch32 System register MPIDR bits [31:0] are architecturally mapped to
->>   AArch64 System register MPIDR_EL1[31:0].
->>   """
->>
->> Peeking at some armv7 doc and arm/kernel/topology.c the layout really looks
->> just the same, i.e. for both of them, with your example of:
->
-> The cortex-a7 spec DDI0464F 4.3.5
-> https://developer.arm.com/documentation/ddi0464/f/?lang=en
->
 
-Ah, so that's where the core_id=bit[1:0] comes from. That does still
-conform to the MPIDR format, and as you point out below that's being parsed
-the same (aff2, aff1, aff0) == mpidr([23:16][15:8][7:0])
+--1vkEgIoTkhyBIpER
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The current arch/arm/kernel/topology code parse the MPIDR with a armv7 format.
-> the parse code is:
-> void store_cpu_topology(unsigned int cpuid)
-> {
->     ...
->     cpuid_topo->thread_id = -1;
->     cpuid_topo->core_id = MPIDR_AFFINITY_LEVEL(mpidr, 0);
->     cpuid_topo->package_id = MPIDR_AFFINITY_LEVEL(mpidr, 1);
->     ...
-> }
->>
->>   core0: 0000000080000000
->>   core1: 0000000080000100
->>   core2: 0000000080000200
->>   ...
->>
->> we'll get:
->>
->>   |       | aff2 | aff1 | aff0 |
->>   |-------+------+------+------|
->>   | Core0 |    0 |    0 |    0 |
->>   | Core1 |    0 |    1 |    0 |
->>   | Core2 |    0 |    2 |    0 |
->>       ...
->>
->> Now, arm64 doesn't fallback to MPIDR for topology information anymore since
->>
->>   3102bc0e6ac7 ("arm64: topology: Stop using MPIDR for topology information")
->>
->> so without DT we would get:
->>   |       | package_id | core_id |
->>   |-------+------------+---------|
->>   | Core0 |          0 |       0 |
->>   | Core1 |          0 |       1 |
->>   | Core2 |          0 |       2 |
->>
->> Whereas with an arm kernel we'll end up parsing MPIDR as:
->>   |       | package_id | core_id |
->>   |-------+------------+---------|
->>   | Core0 |          0 |       0 |
->>   | Core1 |          1 |       0 |
->>   | Core2 |          2 |       0 |
->>
->> Did I get this right? Is this what you're observing?
->
-> Yes, this is a problem if an armv8.2 or above cpu is running a 32-bit
-> kernel on EL1.
+On Tue, Apr 13, 2021 at 01:38:05PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> Hello,
+>=20
+> On Mon, Apr 12, 2021 at 06:46:51PM +0200, Clemens Gruber wrote:
+> > On Mon, Apr 12, 2021 at 06:27:23PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
+> > > > Add the flag and corresponding documentation for PWM_USAGE_POWER.
+> > >=20
+> > > My concern here in the previous round was that PWM_USAGE_POWER isn't a
+> > > name that intuitively suggests its semantic. Do you disagree?
+> >=20
+> > No. It is more abstract and requires documentation. But I also didn't
+> > want to waste too much time on discussing names, so I used Thierry's
+> > suggestion.
+>=20
+> If you introduce API thinking about the name before actually introducing
+> it is a good idea in general. (OK, the name doesn't become part of the
+> (binary) dt API, but we don't even agree about its semantic here.)
+>=20
+> And IMHO a bad name with a good documentation isn't good enough.
+> Otherwise we can better just agree on using plain numbers in the .dts
+> files.
 
+Plain numbers or not doesn't change anything. The meaning of the bit has
+to be defined. This has nothing to do with the symbolic name at all.
 
-With the above MPIDR(_EL1) values, you would have the same problem in
-aarch64 mode on any kernel predating
+Thierry
 
-  3102bc0e6ac7 ("arm64: topology: Stop using MPIDR for topology information")
+--1vkEgIoTkhyBIpER
+Content-Type: application/pgp-signature; name="signature.asc"
 
-since all Aff0 values are 0. Arguably those MPIDR(_EL1) values don't
-make much sense (cores in the same cluster should have different Aff0
-values, unless SMT), but in arm64 that's usually "corrected" by DT.
+-----BEGIN PGP SIGNATURE-----
 
-As you pointed out, arm doesn't currently leverage the cpu-map DT entry. I
-don't see any obvious problem with adding support for it, so if you can fix
-the capacity issue Dietmar reported, I think we could consider it.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB1g2AACgkQ3SOs138+
+s6GFIhAAsJVQtvNUbdNjFIrlooVmgFsgZDdz6nvRDINjq5wAXhr9VC25lzKFUu2y
+M3obnsBkTZ54FR4GGbtMFmQnrQcDj+E8xpxqNMaupLBmTwWpgZgsSCqxag1quVFL
+NNZvyIrnYKDaRRfxvWVVPI8GXWlzceEuCpStmggjjp8qv2isqlvPGq+VxW9AURLR
+zuGWp7a7DIgO5i5bbhJ7gPAI48V0QIqN0c1Oq4jkPsQm0x5L8+qoTlD/4o1smhxE
+HKBqgKyLtcnT2FJKvcbVsVhCQK+ZtWBYiTM/NIQ2Ym/70jD9Ktz6a3w5EDMu5Rfl
+S0iUTFQ0tAZUGlDs3aLl0EH95/bdvlu5eEp8r7HzTh/vrvcv+fSI5Fj1Isek37+c
+NEDuJb0LP7CChm7KiN6WCtpxeBQSJ9t7MUk0/1EEqR++PD/iFQ04X6I66gxBBJLf
+Su6ho/Pet3SgjkridToUUDmxZqTrfZ4fzxG1Jf4yIAO9ePfwPxTnLSrayZDVFl6M
+IymcjlBuel15E5rXIhUIBKQjNamZQUG11LEviQtvmF3YWddsaOQcFyoc27lM508h
+nLjyFhxSGa+AXSM3GB/eR8ZRHt8XfQ76JFdSK4MKT+VwJKZnWClH03IRo+XnqsKM
+xWmvvP3aT9+/sInV4Fl5FyKCcdmEw0oSCSWGbSQx2+AbFWbAk7M=
+=GeVW
+-----END PGP SIGNATURE-----
+
+--1vkEgIoTkhyBIpER--
