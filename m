@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C19635DDE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D57835DDEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238148AbhDMLie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244674AbhDMLib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:38:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD227C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:38:11 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWHMs-0000xm-0y; Tue, 13 Apr 2021 13:38:06 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWHMr-0007JF-BA; Tue, 13 Apr 2021 13:38:05 +0200
-Date:   Tue, 13 Apr 2021 13:38:05 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
-Message-ID: <20210413113805.mjft5jxt3qhsxg6e@pengutronix.de>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412132745.76609-4-clemens.gruber@pqgruber.com>
- <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
- <YHR5eyLPqiwhTGrr@workstation.tuxnet>
+        id S231311AbhDMLkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:40:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38722 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231407AbhDMLjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 07:39:00 -0400
+Received: from zn.tnic (p200300ec2f0b8400d01b5005d8257d7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:8400:d01b:5005:d825:7d7f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C4F181EC0104;
+        Tue, 13 Apr 2021 13:38:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618313919;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=8LLIP4MVOHmMuRIMnBjiUKHHsTTVk9M0d7ol+ja3uRw=;
+        b=Zb8Usl6pKoaY1/coJom+cM7hv2VAuknDAP44xEHaaac+5eN4QHzscFW0VtiDmuLQjr/MHH
+        HcxoAExNV9r1TJ3BBqVEEwrrfHxU4FICRvFQkhyeYCx2/lfNNJbnK5hFosE89DwtMnSkVj
+        6S7INZ+jMEbnbTy92sec1BQGgfnpEIk=
+Date:   Tue, 13 Apr 2021 13:38:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Documentation/submitting-patches: Document RESEND tag on
+ patches
+Message-ID: <20210413113834.GE16519@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6ylyknhukjyy5n3f"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YHR5eyLPqiwhTGrr@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201217183756.GE23634@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jon,
 
---6ylyknhukjyy5n3f
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+here's the next piece of documentation which should be generic enough.
 
-Hello,
+Thx.
 
-On Mon, Apr 12, 2021 at 06:46:51PM +0200, Clemens Gruber wrote:
-> On Mon, Apr 12, 2021 at 06:27:23PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
-> > > Add the flag and corresponding documentation for PWM_USAGE_POWER.
-> >=20
-> > My concern here in the previous round was that PWM_USAGE_POWER isn't a
-> > name that intuitively suggests its semantic. Do you disagree?
->=20
-> No. It is more abstract and requires documentation. But I also didn't
-> want to waste too much time on discussing names, so I used Thierry's
-> suggestion.
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Tue, 13 Apr 2021 13:26:29 +0200
 
-If you introduce API thinking about the name before actually introducing
-it is a good idea in general. (OK, the name doesn't become part of the
-(binary) dt API, but we don't even agree about its semantic here.)
+Explain when a submitter should tag a patch or a patch series with the
+"RESEND" tag.
 
-And IMHO a bad name with a good documentation isn't good enough.
-Otherwise we can better just agree on using plain numbers in the .dts
-files.
+This has been partially carved out from a tip subsystem handbook
+patchset by Thomas Gleixner:
 
-Best regards
-Uwe
+  https://lkml.kernel.org/r/20181107171010.421878737@linutronix.de
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+and incorporates follow-on comments.
 
---6ylyknhukjyy5n3f
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ Documentation/process/submitting-patches.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index ab92d9ccd39a..9284735e0b34 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -346,6 +346,16 @@ that you have sent your patches to the right place.  Wait for a minimum of
+ one week before resubmitting or pinging reviewers - possibly longer during
+ busy times like merge windows.
+ 
++It's also ok to resend the patch or the patch series after a couple of
++weeks with the word "RESEND" added to the subject line::
++
++   [PATCH Vx RESEND] sub/sys: Condensed patch summary
++
++Don't add "RESEND" when you are submitting a modified version of your
++patch or patch series - "RESEND" only applies to resubmission of a
++patch or patch series which have not been modified in any way from the
++previous submission.
++
+ 
+ Include PATCH in the subject
+ -----------------------------
+-- 
+2.29.2
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB1gpoACgkQwfwUeK3K
-7AnlhQf+LbijeNL99k/BA6DLPwjCqv1BwTNIbQYP8NQWZ+wHI2T36hTFTTkCckKB
-MHq5AsWUyTAlD680U+Ya+BStulu3Tw+0NE52w+XHC6d2sK1MtKQxeUvt6px8ynUP
-lwtMGi4ceVcGXxlToJtJSRYwO/aOG/aezHdYOqrQ6CQoW1tK6Qux471FY6I3eRx6
-oy+X+YZ+eEB6gEj8FdCk46x5Tq/jjLZ5CiW22yppoY6GJH03LsJC/wyKgfhxQBQg
-22v2otHIiOxX5jjb2E0ISFh37Oid16PICWEZU7l6aZSYe1Q9nOFjl6L1r8zaqh2g
-gxolPAqWjxMlpQnuUNQ+gOrESy3WOA==
-=69Rv
------END PGP SIGNATURE-----
 
---6ylyknhukjyy5n3f--
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
