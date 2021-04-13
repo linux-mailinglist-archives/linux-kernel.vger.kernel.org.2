@@ -2,215 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CB835E84B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CF935E87D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346660AbhDMV25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:28:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60568 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhDMV2z (ORCPT
+        id S1346774AbhDMVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:46:22 -0400
+Received: from gateway20.websitewelcome.com ([192.185.61.9]:22416 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346297AbhDMVqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:28:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DL99eM115740;
-        Tue, 13 Apr 2021 21:28:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=vrI9h3AQGqM5K+zo8FhFAP836TgFhBqKGW4Ctv1BXCA=;
- b=f6fmQrE+aHCfL1ruDhV9N8QJSyz6cgrp78y2neUmTeXCE+ha4yNqo9mdDuOtJX9hZmpo
- UgKByCPiUG7K7nXe3Ofck2/6A5ezQWqDXzsn/mq77GNKj/bZjjZtrqQk1fosfi+BlRRI
- JKtxawsFb3AJjni48OdworEwKQKRl9dsWr4KPjilAE7OVS3RJZmeH/GkdsqmwLSzylmb
- Q/bDfiVw+dev14whno1BP288Y9mXhEK8zrbIF2vw3gr4VwW5jf6rET4IGrasmOAv0sxx
- a5xXyOQp7Q3q1vngf43C/HiQKMyA3bo2nRmKuar2CtxGxNiAlLN/4ZQv6MwVOJXFDMza eQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 37u4nngfss-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 21:28:26 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DLGU67093752;
-        Tue, 13 Apr 2021 21:28:25 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by aserp3030.oracle.com with ESMTP id 37unkq3777-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 21:28:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a3glfYNYTjpKqkJG/9MxAuZKqPuwk+aIMJilUcZR03C8p8d80D49jhSHlOIbhjGggi/XfT41ETCvsiS61/pFOujwoUeT0r+FVFURcumH0Hi5GQFJRzRXHsqPrqFDSA9Bxo8TOd+KHEV3a/GJPMdt76sIeTJPXdMVzBFzA/1p9hC0E6mA9bJqK8QcH+lFIM1dqWlKyO5qyFTs/Gq1GFJS1D3d+Srh0uo846furpLtTsDD5t860LPvEI45hhNrRLQpvdy6Z/Ne4d7RvMDL3sdONnYZKM/LKix97lQdz7c54MDiF/Yh8AQJ/cXf7FNX5UL3zfgSP6TTf+5yjCb8o1wE5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vrI9h3AQGqM5K+zo8FhFAP836TgFhBqKGW4Ctv1BXCA=;
- b=QS3pvFyEzXYnL7zafZaWWSYlYXjqEP688s6Nh8OKo5Aq9e3PTOxBfN5zbAVYL9l5RzCiEMHacGitYiD6yecAbTXRV5Y1+LUrMDCrVdLgZgKOgF5Ih0YvRZY7wQk1qEipf1fgc1RfwiTam86oYqnYp8toAANnkUVyovW2V6X6pThnHzHIw3b3pphgQwCFYlEBRs69DToxpuxlPFR216CI5Mr9X7FpUvZQ8jWcoPRbIyW6MifFXdYJhh72jB/+AI0/eaDTX+yskn5Emyhx+WTY8xZ/o1O0VlAAhVoo9MexqBApXiby0hNWUXT8wAgYm6at3vXC4u/yB0B8NmF5TPA1XA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vrI9h3AQGqM5K+zo8FhFAP836TgFhBqKGW4Ctv1BXCA=;
- b=kmSrjfqQqJtOJ8NDCla+TNh4zULbU625oUyqzi48oqtoO/f9//lA+DU7qIe2GHsN3Klzhq4b8Bo2OcOO1Gxxr0vOHW/ky5Wz6/SbkZjSpmbIkVge7Cotm0p5HvWjbz03jn1ubRlDZ7iXI7+dmN7IySx99brdV7Eg6QlWedoCMqo=
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
- by DM6PR10MB3436.namprd10.prod.outlook.com (2603:10b6:5:63::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
- 2021 21:28:23 +0000
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::e490:f9ff:f8f3:c1e6]) by DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::e490:f9ff:f8f3:c1e6%7]) with mapi id 15.20.4020.023; Tue, 13 Apr 2021
- 21:28:23 +0000
-Subject: Re: [PATCH] ACPI: x86: Call acpi_boot_table_init() after
- acpi_table_upgrade()
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        x86 Maintainers <x86@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>
-References: <11752259.O9o76ZdvQC@kreacher>
-From:   George Kennedy <george.kennedy@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <a3865ef0-6185-fdab-ffbe-8f5884e73486@oracle.com>
-Date:   Tue, 13 Apr 2021 17:28:19 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <11752259.O9o76ZdvQC@kreacher>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [108.26.147.230]
-X-ClientProxiedBy: SA0PR11CA0181.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::6) To DM6PR10MB3851.namprd10.prod.outlook.com
- (2603:10b6:5:1fb::17)
+        Tue, 13 Apr 2021 17:46:20 -0400
+X-Greylist: delayed 1218 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 17:46:20 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id F14D6400C8762
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 16:15:01 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id WQXVl7qLi1cHeWQXVlMHwj; Tue, 13 Apr 2021 16:25:41 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=BeO8GkAjgrMdjfp0UoCjCPgX7wT/SJDYDrx5yHmB4jM=; b=GURnayccnGmttggv8tWi7/B6eW
+        cqI+AksMy4q8I8vZQHVTFoVIWyJEa0g5sakcJY1HlLOjz/5dEGBnzbGWe6J4NaE5WslpTIU3y2sui
+        7IKI/0vWhjrn2tmd3QLPxAIMcyRLklDUg/FBgidzssAYZrLQqKWzCIMQj/m9r1o04lWM1DF1UWc4c
+        /XwX2HMYIxHi9T2EjU4ak73eT4nF2ozmT7Qe6yO5D5G/cs1DlLKy5m+rrl7GDulOIWca0QlFJmp4B
+        +FSMOTZ6rVqhkVVA92rPLCEwGgnhgrQTDfeJ1jnRgQ5iwXuijapm1BG4Lmxi5gc/IQfoT3tarC5jU
+        6kT0+1Pw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50198 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lWQXS-003IaF-0m; Tue, 13 Apr 2021 16:25:38 -0500
+Subject: Re: [PATCH v2 2/2][next] wl3501_cs: Fix out-of-bounds warning in
+ wl3501_mgmt_join
+To:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <cover.1617226663.git.gustavoars@kernel.org>
+ <83b0388403a61c01fad8d638db40b4245666ff53.1617226664.git.gustavoars@kernel.org>
+ <202104071158.B4FA1956@keescook>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <2bc27d10-efa2-3ab7-fb58-556cfd252927@embeddedor.com>
+Date:   Tue, 13 Apr 2021 16:25:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.246] (108.26.147.230) by SA0PR11CA0181.namprd11.prod.outlook.com (2603:10b6:806:1bc::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 21:28:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 222eb53d-4a82-4b21-7d19-08d8fec310de
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3436:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR10MB34360B86CCDA8185132FE5BFE64F9@DM6PR10MB3436.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QV3JASN1xhI30IMPCK5M4fk//GaukJynV3aoQSt+jb/ohGLdvItS/iyAJvEDvXxGX/3QbykVmXXS2gduwxaDDvQ5eeClNyv2TGEQKZPpqslF7z6WaoXczgVQse3e69XIKwrWkvxcFobJn7qpZzMQ+PzoKXvWVkj4S2emunGwqKLfsbPS8eHg1kY2VzqKy6LKE0+GF/U2RJ9lPdnjBONzR9QdiuITzMO+wSw0Qino8K7a9ea2fk1z5yPWIw+leFNdTeYLwPuO1WVFPkjgca31xttlEPcDzotUjVDRsH9AEvtylzyosUn0wxLXEiewPBCHCGAfRLISH4TV+fUeqneVH/U7hbL2u8bGk6cmLQn278H7WwlrGFgh7xnATUQC2CNmyDkIJwltFOcKO60Uk4SxyCwpl7GpAVzgVuk1bN8Pdr0KclZU1GSw6Evd1H8rKG5htvqnNLNBL3tIbtZeEB9x8q4XkM/YY2vjHUWcIjxEesWoGUX7lG3ujicF+Ud2j6hER879pcpfIjMAWkg2SHcSjhrWggUaLwgV2cdVNBXLg5ghzeLQT0QisHTsDVDi7KHBwb9llY1QDq4G97gqn8P1UembXol8mdjsukGeB05KfDNvYJ+fOkEk+keOn+Id1p+RDfDXPrJHf4hD4mNRu7pQbRSUJh+idN5e54tR1hcIN8mxx2a5DUvG4LuMWhp0ZFQY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3851.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(366004)(39860400002)(956004)(2616005)(66476007)(316002)(5660300002)(66556008)(66946007)(4326008)(107886003)(44832011)(6486002)(53546011)(36916002)(8676002)(26005)(38100700002)(2906002)(186003)(8936002)(478600001)(31686004)(83380400001)(16576012)(54906003)(6666004)(86362001)(31696002)(16526019)(36756003)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c21MTDZaRXltS0RKWGJXMjNoSVhIVzVKN3I5UFVKd1BrS0xyNFUrMEZia0lq?=
- =?utf-8?B?U0Jja3NZTjI1VDhnK2lQUXNNYktSRWZKdVE2M2tBUWtlalNZMEhGOXNsMGd0?=
- =?utf-8?B?RURaSG5XVjRQaXdTM1krYW5TRVpndkR3NytSaHVpajMvUkVNNThFMFZlZ0VP?=
- =?utf-8?B?VGxUOTdvakU5d21yS3ZCaWF0Vk1zV2pvUlNFRTZRbkxqUFI0bjhMekMxL2hJ?=
- =?utf-8?B?YTIwODAvSGhRdjVEd3BHT0dJeGNDMFRPWW4rampxNjZYZEFyQWp3OGJKUWQw?=
- =?utf-8?B?aWxWcTdoODZwSHhTWFVhOC9OK0pjenJ1V2c1NUpmNW42QnEzQlh4blkxRUx6?=
- =?utf-8?B?ZkprN3YzRDJQT1h5Qk4vaFRsY2dwb1RJdmFWMlhBTXo2WE8rOTVkR1Z2VWxu?=
- =?utf-8?B?U0FFQ3BQOEFiZGRBRTIzQjk1ajg4eVBqaS81b3ZQS0JMSjkxYVYrWGk0ZTlj?=
- =?utf-8?B?TFR0QXEvcDRweURpTmsrbnN0cEJ3K3kzdm1XYXVWK3RHOGlHcnJ4c2xDWk9n?=
- =?utf-8?B?V1kxNWZPM0tRVXRzL0gyYi9xeitNcVRqcVZzVlBQT2R2TVJQeWhjU2R0bWha?=
- =?utf-8?B?ejJZdmRxNDNyRXNWRHBqbmlTaFFoTlhkRkl1ZVBwa3QrVlF4RkN2L0dSL25H?=
- =?utf-8?B?Rjl3WTZmRzJqbnhrWVRxUkVUTGY0L2Q4aXdJMlB3Y3VhTHJwQTJ0ZnRQVkZS?=
- =?utf-8?B?Uk9GbWJjcGppL3UxMkY0NE1lZlU5dEJnYXFTUGpZUFp1RHB5Tm9uK0s3VE54?=
- =?utf-8?B?YkpjSjJPOVF0SjBBRzc4M3oyOCt5ZWVWaEZKR3Q5dHJmSEZ1VUdUbHZuNzBL?=
- =?utf-8?B?U2FhMGVGYnRtSml2UTNXcTBRc3k3eDE1VTBUaG5hblV5Zi9veS9iT3FUYVM0?=
- =?utf-8?B?aDNPWjJkSWJ2QkdNMXlCbUZMUHYrdGhTSGVERzF0SlZxYnErZjl5aWRvVmNJ?=
- =?utf-8?B?V3dlS3VhV3hhMnNsM29wKzJjRkt6aHFUcmUwdTlvUVpRR0VRMzRoR1VvQzNk?=
- =?utf-8?B?eFIwN0s2WlN6aEZkdjNhMDZ6MjFaaFhMYmsyVnQ3a20vRE92dEpZWm9vTFln?=
- =?utf-8?B?cVlTay9FRTRSaDdWenAzVXlXTTkwZkM4cU9pUXp3Z3J5ZWtUNVFtVGZVTnVB?=
- =?utf-8?B?VHJLSERYRGYwaHVhTG50Wk96c2Q5dnp2OGZhcnVjTTRYd2Uza3FmNmRGaEVM?=
- =?utf-8?B?bmdmSTFWaVFpUTkraTBzcEQySkk4blFKQjUzRkFJeUJiRGh4M3JBR1E3SzF2?=
- =?utf-8?B?QWgrZWo2S01jT1p5MnRZdlZuTkJiTnZNRmJvbWJqaFhVRWRReXVCdmJWY09J?=
- =?utf-8?B?TVFtakFzWVcwbCtIQnZ1L014TENXaTBMeGIxNlN3S1lrbW43cHZBaVRWejAv?=
- =?utf-8?B?bmdYVjdEeDJVK0RWZkMxdXBHL3YxVjVEd0ZZR1pvc0lva2ZZVVBMcElIdzNU?=
- =?utf-8?B?cXZHdW51azJGazFHZDhDT1VkUm1ISUhYK3ZwRDM5VnVyWEtWdjE5Ti80NVNz?=
- =?utf-8?B?OFJwYWxXOW40ZkhOMUZHdmk3UUwyMndEMytORytSZ1ZQQXZzeGpxYW9tTGJt?=
- =?utf-8?B?Q05TMFNndWo0ZWxDd0dxVUJjZW9vMmd2T2ZyM0FlV3ljVVhQMVFGMkQxZFhs?=
- =?utf-8?B?S0JjWThBUjFiQ241ZXRRek9vWFQ1N0h3amhUYXZBUk1DMVNkVzFzNkMxMnV3?=
- =?utf-8?B?VE9WVllwSXY5cmw2NWM4bllhbGhrMVh6V1FJYjRObC9TbFVQNy94THZrUGE0?=
- =?utf-8?Q?cUZjqDBBR41hlGC6cDcKS//LA9Pkc7WNmFEAR6w?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 222eb53d-4a82-4b21-7d19-08d8fec310de
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3851.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 21:28:22.9198
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XaIw0xRrumRqXJS8O6XpTF6uEuKX9bsJn0pKAyKAQn3xMvgv83vBA/0EujuZZvoryKueFeDmykaIqiHQvvHNGC+E/xZ+5hgtT1v/T6rBTIw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3436
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130141
-X-Proofpoint-ORIG-GUID: DRl2Pr4kf_gkEowCSNBmmndjuo2D58xJ
-X-Proofpoint-GUID: DRl2Pr4kf_gkEowCSNBmmndjuo2D58xJ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130141
+In-Reply-To: <202104071158.B4FA1956@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lWQXS-003IaF-0m
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50198
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all!
 
+On 4/7/21 14:02, Kees Cook wrote:
+> On Wed, Mar 31, 2021 at 04:45:34PM -0500, Gustavo A. R. Silva wrote:
+>> Fix the following out-of-bounds warning by enclosing
+>> some structure members into new struct req:
+>>
+>> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
+>>
+>> Refactor the code, accordingly:
+>>
+>> $ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
+>> struct wl3501_join_req {
+>> 	u16                        next_blk;             /*     0     2 */
+>> 	u8                         sig_id;               /*     2     1 */
+>> 	u8                         reserved;             /*     3     1 */
+>> 	struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
+>> 	u16                        reserved2;            /*    14     2 */
+>> 	u16                        timeout;              /*    16     2 */
+>> 	u16                        probe_delay;          /*    18     2 */
+>> 	u8                         timestamp[8];         /*    20     8 */
+>> 	u8                         local_time[8];        /*    28     8 */
+>> 	struct {
+>> 		u16                beacon_period;        /*    36     2 */
+>> 		u16                dtim_period;          /*    38     2 */
+>> 		u16                cap_info;             /*    40     2 */
+>> 		u8                 bss_type;             /*    42     1 */
+>> 		u8                 bssid[6];             /*    43     6 */
+>> 		struct iw_mgmt_essid_pset ssid;          /*    49    34 */
+>> 		/* --- cacheline 1 boundary (64 bytes) was 19 bytes ago --- */
+>> 		struct iw_mgmt_ds_pset ds_pset;          /*    83     3 */
+>> 		struct iw_mgmt_cf_pset cf_pset;          /*    86     8 */
+>> 		struct iw_mgmt_ibss_pset ibss_pset;      /*    94     4 */
+>> 		struct iw_mgmt_data_rset bss_basic_rset; /*    98    10 */
+>> 	} req;                                           /*    36    72 */
+> 
+> This section is the same as a large portion of struct wl3501_scan_confirm:
+> 
+> struct wl3501_scan_confirm {
+>         u16                         next_blk;
+>         u8                          sig_id;
+>         u8                          reserved;
+>         u16                         status;
+>         char                        timestamp[8];
+>         char                        localtime[8];
+> 
+> from here
+>         u16                         beacon_period;
+>         u16                         dtim_period;
+>         u16                         cap_info;
+>         u8                          bss_type;
+>         u8                          bssid[ETH_ALEN];
+>         struct iw_mgmt_essid_pset   ssid;
+>         struct iw_mgmt_ds_pset      ds_pset;
+>         struct iw_mgmt_cf_pset      cf_pset;
+>         struct iw_mgmt_ibss_pset    ibss_pset;
+>         struct iw_mgmt_data_rset    bss_basic_rset;
+> through here
+> 
+>         u8                          rssi;
+> };
+> 
+> It seems like maybe extracting that and using it in both structures
+> would make more sense?
 
-On 4/13/2021 10:01 AM, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Commit 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by
-> ACPI tables") attempted to address an issue with reserving the memory
-> occupied by ACPI tables, but it broke the initrd-based table override
-> mechanism relied on by multiple users.
->
-> To restore the initrd-based ACPI table override functionality, move
-> the acpi_boot_table_init() invocation in setup_arch() on x86 after
-> the acpi_table_upgrade() one.
->
-> Fixes: 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by ACPI tables")
-> Reported-by: Hans de Goede <hdegoede@redhat.com>
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->
-> George, can you please check if this reintroduces the issue addressed by
-> the above commit for you?
+If I do this, I would therefore have to make a bunch of other changes,
+accordingly. I'm OK with that but I'd like to have the opinion of the
+maintainers on all this. So, I will go and ping them from the cover
+letter of this series with the hope that we can get some feedback from
+them. :) They have been silent for a couple of weeks now.
 
-Will do.
+> 
+>>
+>> 	/* size: 108, cachelines: 2, members: 10 */
+>> 	/* last cacheline: 44 bytes */
+>> };
+>>
+>> The problem is that the original code is trying to copy data into a
+>> bunch of struct members adjacent to each other in a single call to
+>> memcpy(). Now that a new struct _req_ enclosing all those adjacent
+>> members is introduced, memcpy() doesn't overrun the length of
+>> &sig.beacon_period, because the address of the new struct object
+>> _req_ is used as the destination, instead.
+>>
+>> Also, this helps with the ongoing efforts to enable -Warray-bounds and
+>> avoid confusing the compiler.
+>>
+>> Link: https://github.com/KSPP/linux/issues/109
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Build-tested-by: kernel test robot <lkp@intel.com>
+>> Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>> Changes in v2:
+>>  - None.
+>>
+>>  drivers/net/wireless/wl3501.h    | 22 ++++++++++++----------
+>>  drivers/net/wireless/wl3501_cs.c |  4 ++--
+>>  2 files changed, 14 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
+>> index ef9d605d8c88..774d8cac046d 100644
+>> --- a/drivers/net/wireless/wl3501.h
+>> +++ b/drivers/net/wireless/wl3501.h
+>> @@ -389,16 +389,18 @@ struct wl3501_join_req {
+>>  	u16			    probe_delay;
+>>  	u8			    timestamp[8];
+>>  	u8			    local_time[8];
+>> -	u16			    beacon_period;
+>> -	u16			    dtim_period;
+>> -	u16			    cap_info;
+>> -	u8			    bss_type;
+>> -	u8			    bssid[ETH_ALEN];
+>> -	struct iw_mgmt_essid_pset   ssid;
+>> -	struct iw_mgmt_ds_pset	    ds_pset;
+>> -	struct iw_mgmt_cf_pset	    cf_pset;
+>> -	struct iw_mgmt_ibss_pset    ibss_pset;
+>> -	struct iw_mgmt_data_rset    bss_basic_rset;
+>> +	struct {
+>> +		u16			    beacon_period;
+>> +		u16			    dtim_period;
+>> +		u16			    cap_info;
+>> +		u8			    bss_type;
+>> +		u8			    bssid[ETH_ALEN];
+>> +		struct iw_mgmt_essid_pset   ssid;
+>> +		struct iw_mgmt_ds_pset	    ds_pset;
+>> +		struct iw_mgmt_cf_pset	    cf_pset;
+>> +		struct iw_mgmt_ibss_pset    ibss_pset;
+>> +		struct iw_mgmt_data_rset    bss_basic_rset;
+>> +	} req;
+>>  };
+>>  
+>>  struct wl3501_join_confirm {
+>> diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
+>> index e149ef81d6cc..399d3bd2ae76 100644
+>> --- a/drivers/net/wireless/wl3501_cs.c
+>> +++ b/drivers/net/wireless/wl3501_cs.c
+>> @@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
+>>  	struct wl3501_join_req sig = {
+>>  		.sig_id		  = WL3501_SIG_JOIN_REQ,
+>>  		.timeout	  = 10,
+>> -		.ds_pset = {
+>> +		.req.ds_pset = {
+>>  			.el = {
+>>  				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
+>>  				.len = 1,
+>> @@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
+>>  		},
+>>  	};
+>>  
+>> -	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
+>> +	memcpy(&sig.req, &this->bss_set[stas].beacon_period, sizeof(sig.req));
+> 
+> If not, then probably something like this should be added to make sure
+> nothing unexpected happens to change structure sizes:
+> 
+> BUILD_BUG_ON(sizeof(sig.req) != 72);
 
-George
+Yep, this is sensible.
 
->
-> ---
->   arch/x86/kernel/setup.c |    5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> Index: linux-pm/arch/x86/kernel/setup.c
-> ===================================================================
-> --- linux-pm.orig/arch/x86/kernel/setup.c
-> +++ linux-pm/arch/x86/kernel/setup.c
-> @@ -1045,9 +1045,6 @@ void __init setup_arch(char **cmdline_p)
->   
->   	cleanup_highmap();
->   
-> -	/* Look for ACPI tables and reserve memory occupied by them. */
-> -	acpi_boot_table_init();
-> -
->   	memblock_set_current_limit(ISA_END_ADDRESS);
->   	e820__memblock_setup();
->   
-> @@ -1132,6 +1129,8 @@ void __init setup_arch(char **cmdline_p)
->   	reserve_initrd();
->   
->   	acpi_table_upgrade();
-> +	/* Look for ACPI tables and reserve memory occupied by them. */
-> +	acpi_boot_table_init();
->   
->   	vsmp_init();
->   
->
->
->
+Thanks for the feedback!
+--
+Gustavo
 
+> 
+>>  	return wl3501_esbq_exec(this, &sig, sizeof(sig));
+>>  }
+>>  
+>> -- 
+>> 2.27.0
+>>
+> 
