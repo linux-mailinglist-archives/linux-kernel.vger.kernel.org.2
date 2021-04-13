@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EF935DABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E2935DABC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245215AbhDMJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:10:28 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:58042 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245162AbhDMJK0 (ORCPT
+        id S244645AbhDMJKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:10:19 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53005 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244505AbhDMJKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:10:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1618305008; x=1649841008;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=6DqggFsGnhIjwKPT5yW4TYNKPxGBJ7RPW0npHrxtKjI=;
-  b=LRWBPWks2reCrZUZbBumoqf5ZBEw5tEHVCvslXUGaX4Bzl0DW0120rkZ
-   r33hzNqasH5h20WLxHo8N3sTHZRcr1tW8MK/HqCRjQj9/RBG8TSUi3yZg
-   ZtGvH813aPFQASbKhwvGi/aujRbUx/mupzwzbmy3I2z2MXMrdFZ0nfYMU
-   k=;
-X-IronPort-AV: E=Sophos;i="5.82,219,1613433600"; 
-   d="scan'208";a="101292551"
-Subject: Re: [PATCH v2 3/4] KVM: x86: kvm_hv_flush_tlb use inputs from XMM registers
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 13 Apr 2021 09:10:00 +0000
-Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 00B0FA248A;
-        Tue, 13 Apr 2021 09:09:53 +0000 (UTC)
-Received: from u366d62d47e3651.ant.amazon.com (10.43.161.102) by
- EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 13 Apr 2021 09:09:45 +0000
-Date:   Tue, 13 Apr 2021 11:09:41 +0200
-From:   Siddharth Chandrasekaran <sidcha@amazon.de>
-To:     Wei Liu <wei.liu@kernel.org>
-CC:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Alexander Graf" <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-Message-ID: <20210413090906.GA25751@u366d62d47e3651.ant.amazon.com>
-References: <cover.1618244920.git.sidcha@amazon.de>
- <da036c786700032b32e68ebece06fd1a6b6bf344.1618244920.git.sidcha@amazon.de>
- <20210412201319.lnohqg6r54p6embb@liuwe-devbox-debian-v2>
+        Tue, 13 Apr 2021 05:10:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-245-8IaK2en1PPGH7IkPhm3eng-1; Tue, 13 Apr 2021 10:09:54 +0100
+X-MC-Unique: 8IaK2en1PPGH7IkPhm3eng-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 10:09:53 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 10:09:53 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'crecklin@redhat.com'" <crecklin@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+CC:     Simo Sorce <simo@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Thread-Topic: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Thread-Index: AQHXL9VCCex4AsP57EiPuHRRJN/3haqyKSig
+Date:   Tue, 13 Apr 2021 09:09:53 +0000
+Message-ID: <493d2c11820a4fc8b66db381fc4e7904@AcuMS.aculab.com>
+References: <20210412140932.31162-1-crecklin@redhat.com>
+ <YHSHPIXLhHjOu0jw@gmail.com>
+ <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
+ <YHSdgV6LIqSVxk+i@gmail.com>
+ <CAMj1kXGZt8+5MVG-mNi67KsG8=4HCqEPs+RkrtzHusmCPFqSTg@mail.gmail.com>
+ <862c8208-5809-9726-7e22-7a16fcd30edd@redhat.com>
+In-Reply-To: <862c8208-5809-9726-7e22-7a16fcd30edd@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210412201319.lnohqg6r54p6embb@liuwe-devbox-debian-v2>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D36UWB003.ant.amazon.com (10.43.161.118) To
- EX13D28EUC003.ant.amazon.com (10.43.164.43)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 08:13:19PM +0000, Wei Liu wrote:
-> On Mon, Apr 12, 2021 at 07:00:16PM +0200, Siddharth Chandrasekaran wrote:
-> > +
-> > +static inline void kvm_hv_hypercall_read_xmm(struct kvm_hv_hcall *hc)
-> 
-> Do you really need inline here? The compiler should be smart enough to
-> inline this function if necessary.
-
-Removed.
-
-> > +{
-> > +     int reg;
-> > +
-> > +     kvm_fpu_get();
-> > +     for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
-> > +             _kvm_read_sse_reg(reg, &hc->xmm[reg]);
-> > +     kvm_fpu_put();
-> > +     hc->xmm_dirty = false;
-> 
-> There is no code that sets xmm_dirty to true? What am I missing? I guess
-> that's because you haven't implemented the hypercalls that need writing
-> back to guest?
-
-Yes, when a hypercall want to return data via XMM registers, it should
-update hc->xmm[] and set hc->dirty (I plan on using this in a future
-patch). The reason why I didn't differ this change to actual patch
-needs it is that it pairs nicely with the read/write xmm_reg() calls in
-kvm_hv_hypercall().
-
-~ Sid.
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+RnJvbTogQ2hyaXMgdm9uIFJlY2tsaW5naGF1c2VuDQo+IFNlbnQ6IDEyIEFwcmlsIDIwMjEgMjA6
+NTENCi4uLg0KPiA+IFRoaXMgaXMgbm90IGFib3V0IEJJT1MgYnVncy4gSGliZXJuYXRpb24gaXMg
+ZGVlcCBzdXNwZW5kL3Jlc3VtZQ0KPiA+IGdyYWZ0ZWQgb250byBjb2xkIGJvb3QsIGFuZCBpdCBp
+cyBwZXJmZWN0bHkgbGVnYWwgZm9yIHRoZSBmaXJtd2FyZSB0bw0KPiA+IHByZXNlbnQgYSBkaWZm
+ZXJlbnQgbWVtb3J5IG1hcCB0byB0aGUgT1MgYWZ0ZXIgYSBjb2xkIGJvb3QuIEl0IGlzDQo+ID4g
+TGludXggdGhhdCBkZWNpZGVzIHRoYXQgaXQgY2FuIHJlc3RvcmUgdGhlIGVudGlyZSBzeXN0ZW0g
+c3RhdGUgZnJvbSBhDQo+ID4gc3dhcCBmaWxlLCBhbmQgY2Fycnkgb24gYXMgaWYgdGhlIGNvbGQg
+Ym9vdCB3YXMganVzdCBhIFtmaXJtd2FyZQ0KPiA+IGFzc2lzdGVkXSBzdXNwZW5kL3Jlc3VtZS4N
+Cj4gPg0KPiA+IFNvIGZvcmdpbmcgY29sbGlzaW9ucyBpcyAqbm90KiBhIGNvbmNlcm4gaGVyZS4g
+TGV0J3MgYXZvaWQgYWNjaWRlbnRhbA0KPiA+IG9yIG1hbGljaW91cywgYXMgdGhvc2UgYWRqZWN0
+aXZlcyBzZWVtIHRvIGNvbmZ1c2Ugc29tZSBwZW9wbGUuIFRoZQ0KPiA+IGJvdHRvbSBsaW5lIGlz
+IHRoYXQgdGhlcmUgaXMgbm8gbmVlZCB0byBwcm90ZWN0IGFnYWluc3QgZGVsaWJlcmF0ZQ0KPiA+
+IGF0dGVtcHRzIHRvIGhpZGUgdGhlIGZhY3QgdGhhdCB0aGUgbWVtb3J5IG1hcCBoYXMgY2hhbmdl
+ZCwgYW5kIHNvDQo+ID4gdGhlcmUgaXMgbm8gcmVhc29uIHRvIHVzZSBjcnlwdG9ncmFwaGljIGhh
+c2hlcyBoZXJlLg0KPiA+DQo+IEhvdyBhYm91dCA6DQo+IA0KPiBUaGUgY2hlY2sgaXMgaW50ZW5k
+ZWQgdG8gZGlmZmVyZW50aWF0ZSBiZXR3ZWVuIGEgcmVzdW1lICh3aGljaCBleHBlY3RzDQo+IGFu
+IGlkZW50aWNhbCBlODIwIG1hcCB0byB0aGUgb25lIHNhdmVkIGluIHN1c3BlbmQpLCBhbmQgYSBj
+b2xkIGJvb3QNCj4gKHdoaWNoIG5lZWQgbm90IGhhdmUgYW4gaWRlbnRpY2FsIGU4MjAgbWFwIHRv
+IHRoYXQgc2F2ZWQgaW4gc3VzcGVuZCBpZg0KPiBhbnkgd2FzIGRvbmUgYXQgYWxsKS4gSXQgaXMg
+bm90IG5lY2Vzc2FyeSBoZXJlIHRvIHByb3RlY3QgYWdhaW5zdA0KPiBkZWxpYmVyYXRlIGF0dGVt
+cHRzIHRvIGhpZGUgdGhlIGZhY3QgdGhhdCB0aGUgbWVtb3J5IG1hcCBoYXMgY2hhbmdlZCwgc28N
+Cj4gY3JjMzIgaXMgc3VmZmljaWVudCBmb3IgZGV0ZWN0aW9uLg0KDQpUaGF0IHNvcnQgb2YgaW1w
+bGllcyB0aGF0IHRoZSAncmVzdW1lJyBhbmQgJ2NvbGQgYm9vdCcgYXJlDQpkaWZmZXJlbmNpYXRl
+ZC4NCg0KQnV0IHRoZSBwcmV2aW91cyBjb21tZW50IHJhdGhlciBpbXBsaWVzIHRoYXQgaXQgaXMg
+dGhlIHByZXNlbmNlDQpvZiBhIHZhbGlkIHNhdmVkIGltYWdlIHRoYXQgc2lnbmlmaWVzIGEgJ3Jl
+c3VtZScuDQoNCkFuIGludGVyZXN0aW5nIGZhaWx1cmUgY2FzZSB3b3VsZCBiZSBtb3ZpbmcgdGhl
+IGRpc2sgdG8gYQ0KZGlmZmVyZW50IHN5c3RlbS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
+QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
+LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
