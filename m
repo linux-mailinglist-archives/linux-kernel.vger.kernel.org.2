@@ -2,227 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C5E35E4C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980FD35E4C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhDMRO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:14:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60920 "EHLO mail.kernel.org"
+        id S232629AbhDMRPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:15:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:45234 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230074AbhDMROY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:14:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C40660238;
-        Tue, 13 Apr 2021 17:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618334044;
-        bh=rqLFAETdMtcHd3soeszwrQoHfidN3/5PuKLmFUn7IgM=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=fAAu0Zxm1A0LC1HcOX552YA/cEdtvPRiTjoUGZg02fJVlUUnmCsJZsPBXX5o7fPB9
-         ZUyrBBiZTfKqLiVaS6UbmqUHjQzLNbgT1to2p+bNqlpH1hX/L1Cu1ND+3lxPBd13Ol
-         zGWUVHC6NQJUZUFT32ZcFnd/95mF3EXU87AaydTk=
-Date:   Tue, 13 Apr 2021 19:14:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        linux-kernel@vger.kernel.org, mikael.beckius@windriver.com,
-        tglx@linutronix.de, Lorenzo Colitti <lorenzo@google.com>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after
- __hrtimer_get_next_event()
-Message-ID: <YHXRWoVIYLL4rYG9@kroah.com>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
+        id S230074AbhDMRPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:15:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C22D11B3;
+        Tue, 13 Apr 2021 10:14:48 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 67A713F73B;
+        Tue, 13 Apr 2021 10:14:46 -0700 (PDT)
+Subject: Re: [PATCH] sched: remove the redundant comments
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Hui Su <suhui@zeku.com>, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org
+References: <20210412073928.1120823-1-suhui@zeku.com>
+ <d9c447fd-d3f5-cb66-b3a9-7f7002594ccc@arm.com>
+ <20210413122804.2d69fca6@gandalf.local.home>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <c1bcedd9-a2d3-55db-1821-af2db27517de@arm.com>
+Date:   Tue, 13 Apr 2021 19:14:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210413122804.2d69fca6@gandalf.local.home>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:55:08AM -0700, Maciej Żenczykowski wrote:
-> This patch (or at least the version of it that showed up in 5.10.24
-> LTS when combined with Android Common Kernel and some arm phone
-> platform drivers) causes a roughly 60% regression (from ~5.3-6 gbps
-> down to ~2.2gbps) on running pktgen when egressing via ncm gadget on a
-> SuperSpeed+ 10gbps USB3 connection.
+On 13/04/2021 18:28, Steven Rostedt wrote:
+> On Tue, 13 Apr 2021 10:36:07 +0200
+> Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+
+[...]
+
+>> Add a
+>>
+>>   Fixes: 55627e3cd22c ("sched/core: Remove rq->cpu_load[]")
+>>
+>> line.
 > 
-> The regression is not there in 5.10.23, and is present in 5.10.24 and
-> 5.10.26.  Reverting just this one patch is confirmed to restore
-> performance (both on 5.10.24 and 5.10.26).
-> 
-> We don't know the cause, as we know nothing about hrtimers... but we
-> lightly suspect that the ncm->task_timer in f_ncm.c is perhaps not
-> firing as often as it should...
-> 
-> Unfortunately I have no idea how to replicate this on commonly
-> available hardware (or with a pure stable or 5.11/5.12 Linus tree)
-> since it requires a gadget capable usb3.1 10gbps controller (which I
-> only have access to in combination with a 5.10-based arm+dwc3 soc).
-> 
-> (the regression is visible with just usb3.0, but it's smaller due to
-> usb3.0 topping out at just under 4gbps, though it still drops to
-> 2.2gbps -- and this still doesn't help since usb3 gadget capable
-> controllers are nearly as rare)
->
+> It's just removing a comment. Should it really need a "Fixes" tag, which
+> will cause many people to look at it to determine if it should be
+> backported to stable?
 
-To give context, the commit is now 46eb1701c046 ("hrtimer: Update
-softirq_expires_next correctly after __hrtimer_get_next_event()") and is
-attached below.
-
-The f_ncm.c driver is doing a lot of calls to hrtimer_start() with mode
-HRTIMER_MODE_REL_SOFT for I think every packet it gets.  If that should
-not be happening, we can easily fix it but I guess no one has actually
-had fast USB devices that noticed this until now :)
-
-thanks,
-
-greg k-h
-
-----------
-
-commit 46eb1701c046cc18c032fa68f3c8ccbf24483ee4
-Author: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Date:   Tue Feb 23 17:02:40 2021 +0100
-
-    hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-    
-    hrtimer_force_reprogram() and hrtimer_interrupt() invokes
-    __hrtimer_get_next_event() to find the earliest expiry time of hrtimer
-    bases. __hrtimer_get_next_event() does not update
-    cpu_base::[softirq_]_expires_next to preserve reprogramming logic. That
-    needs to be done at the callsites.
-    
-    hrtimer_force_reprogram() updates cpu_base::softirq_expires_next only when
-    the first expiring timer is a softirq timer and the soft interrupt is not
-    activated. That's wrong because cpu_base::softirq_expires_next is left
-    stale when the first expiring timer of all bases is a timer which expires
-    in hard interrupt context. hrtimer_interrupt() does never update
-    cpu_base::softirq_expires_next which is wrong too.
-    
-    That becomes a problem when clock_settime() sets CLOCK_REALTIME forward and
-    the first soft expiring timer is in the CLOCK_REALTIME_SOFT base. Setting
-    CLOCK_REALTIME forward moves the clock MONOTONIC based expiry time of that
-    timer before the stale cpu_base::softirq_expires_next.
-    
-    cpu_base::softirq_expires_next is cached to make the check for raising the
-    soft interrupt fast. In the above case the soft interrupt won't be raised
-    until clock monotonic reaches the stale cpu_base::softirq_expires_next
-    value. That's incorrect, but what's worse it that if the softirq timer
-    becomes the first expiring timer of all clock bases after the hard expiry
-    timer has been handled the reprogramming of the clockevent from
-    hrtimer_interrupt() will result in an interrupt storm. That happens because
-    the reprogramming does not use cpu_base::softirq_expires_next, it uses
-    __hrtimer_get_next_event() which returns the actual expiry time. Once clock
-    MONOTONIC reaches cpu_base::softirq_expires_next the soft interrupt is
-    raised and the storm subsides.
-    
-    Change the logic in hrtimer_force_reprogram() to evaluate the soft and hard
-    bases seperately, update softirq_expires_next and handle the case when a
-    soft expiring timer is the first of all bases by comparing the expiry times
-    and updating the required cpu base fields. Split this functionality into a
-    separate function to be able to use it in hrtimer_interrupt() as well
-    without copy paste.
-    
-    Fixes: 5da70160462e ("hrtimer: Implement support for softirq based hrtimers")
-    Reported-by: Mikael Beckius <mikael.beckius@windriver.com>
-    Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-    Tested-by: Mikael Beckius <mikael.beckius@windriver.com>
-    Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-    Link: https://lore.kernel.org/r/20210223160240.27518-1-anna-maria@linutronix.de
-
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 743c852e10f2..788b9d137de4 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -546,8 +546,11 @@ static ktime_t __hrtimer_next_event_base(struct hrtimer_cpu_base *cpu_base,
- }
- 
- /*
-- * Recomputes cpu_base::*next_timer and returns the earliest expires_next but
-- * does not set cpu_base::*expires_next, that is done by hrtimer_reprogram.
-+ * Recomputes cpu_base::*next_timer and returns the earliest expires_next
-+ * but does not set cpu_base::*expires_next, that is done by
-+ * hrtimer[_force]_reprogram and hrtimer_interrupt only. When updating
-+ * cpu_base::*expires_next right away, reprogramming logic would no longer
-+ * work.
-  *
-  * When a softirq is pending, we can ignore the HRTIMER_ACTIVE_SOFT bases,
-  * those timers will get run whenever the softirq gets handled, at the end of
-@@ -588,6 +591,37 @@ __hrtimer_get_next_event(struct hrtimer_cpu_base *cpu_base, unsigned int active_
- 	return expires_next;
- }
- 
-+static ktime_t hrtimer_update_next_event(struct hrtimer_cpu_base *cpu_base)
-+{
-+	ktime_t expires_next, soft = KTIME_MAX;
-+
-+	/*
-+	 * If the soft interrupt has already been activated, ignore the
-+	 * soft bases. They will be handled in the already raised soft
-+	 * interrupt.
-+	 */
-+	if (!cpu_base->softirq_activated) {
-+		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
-+		/*
-+		 * Update the soft expiry time. clock_settime() might have
-+		 * affected it.
-+		 */
-+		cpu_base->softirq_expires_next = soft;
-+	}
-+
-+	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
-+	/*
-+	 * If a softirq timer is expiring first, update cpu_base->next_timer
-+	 * and program the hardware with the soft expiry time.
-+	 */
-+	if (expires_next > soft) {
-+		cpu_base->next_timer = cpu_base->softirq_next_timer;
-+		expires_next = soft;
-+	}
-+
-+	return expires_next;
-+}
-+
- static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
- {
- 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
-@@ -628,23 +662,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
- {
- 	ktime_t expires_next;
- 
--	/*
--	 * Find the current next expiration time.
--	 */
--	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
--
--	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
--		/*
--		 * When the softirq is activated, hrtimer has to be
--		 * programmed with the first hard hrtimer because soft
--		 * timer interrupt could occur too late.
--		 */
--		if (cpu_base->softirq_activated)
--			expires_next = __hrtimer_get_next_event(cpu_base,
--								HRTIMER_ACTIVE_HARD);
--		else
--			cpu_base->softirq_expires_next = expires_next;
--	}
-+	expires_next = hrtimer_update_next_event(cpu_base);
- 
- 	if (skip_equal && expires_next == cpu_base->expires_next)
- 		return;
-@@ -1644,8 +1662,8 @@ void hrtimer_interrupt(struct clock_event_device *dev)
- 
- 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
- 
--	/* Reevaluate the clock bases for the next expiry */
--	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
-+	/* Reevaluate the clock bases for the [soft] next expiry */
-+	expires_next = hrtimer_update_next_event(cpu_base);
- 	/*
- 	 * Store the new expiry value so the migration code can verify
- 	 * against it.
+I see, in this case let's skip it.
