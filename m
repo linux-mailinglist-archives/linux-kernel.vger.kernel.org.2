@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A46E35DC7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C98D635DC7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245177AbhDMKcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:32:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16554 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhDMKcO (ORCPT
+        id S245330AbhDMKca convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 06:32:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32643 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229784AbhDMKc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:32:14 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FKMK91jSSzNvQM;
-        Tue, 13 Apr 2021 18:29:01 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 18:31:51 +0800
-Subject: Re: [PATCH 5.4 000/111] 5.4.112-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210412084004.200986670@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <61600264-a091-3c0e-5387-93b2c45f642a@huawei.com>
-Date:   Tue, 13 Apr 2021 18:31:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 13 Apr 2021 06:32:28 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-111-z87EccfoNGWB0XIN9fdlag-1; Tue, 13 Apr 2021 11:32:06 +0100
+X-MC-Unique: z87EccfoNGWB0XIN9fdlag-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 11:32:05 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 11:32:05 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'sakari.ailus@linux.intel.com'" <sakari.ailus@linux.intel.com>
+CC:     'Mitali Borkar' <mitaliborkar810@gmail.com>,
+        "bingbu.cao@intel.com" <bingbu.cao@intel.com>,
+        "tian.shu.qiu@intel.com" <tian.shu.qiu@intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "outreachy-kernel@googlegroups.com" 
+        <outreachy-kernel@googlegroups.com>,
+        "mitali_s@me.iitr.ac.in" <mitali_s@me.iitr.ac.in>
+Subject: RE: [PATCH 2/6] staging: media: intel-ipu3: preferred __aligned(size)
+ over __attribute__aligned(size)
+Thread-Topic: [PATCH 2/6] staging: media: intel-ipu3: preferred
+ __aligned(size) over __attribute__aligned(size)
+Thread-Index: AQHXLyewN18t7A08NkSuo10kWluH2aqyET/AgAAWMYCAABkZMA==
+Date:   Tue, 13 Apr 2021 10:32:05 +0000
+Message-ID: <249c86809f374e13ac0be28c279eae7e@AcuMS.aculab.com>
+References: <cover.1618180659.git.mitaliborkar810@gmail.com>
+ <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
+ <277be5f4da82449aaf0a635b60ad0728@AcuMS.aculab.com>
+ <20210413095621.GQ3@paasikivi.fi.intel.com>
+In-Reply-To: <20210413095621.GQ3@paasikivi.fi.intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/4/12 16:39, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.112 release.
-> There are 111 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+From: sakari.ailus@linux.intel.com
+> Sent: 13 April 2021 10:56
 > 
-> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
-> Anything received after that time might be too late.
+> Hi David,
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.112-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
+> On Tue, Apr 13, 2021 at 07:40:12AM +0000, David Laight wrote:
+> > From: Mitali Borkar
+> > > Sent: 12 April 2021 00:09
+> > >
+> > > This patch fixes the warning identified by checkpatch.pl by replacing
+> > > __attribute__aligned(size) with __aligned(size)
+> > >
+> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > > ---
+> > >  .../staging/media/ipu3/include/intel-ipu3.h   | 74 +++++++++----------
+> > >  1 file changed, 37 insertions(+), 37 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > index 589d5ccee3a7..d95ca9ebfafb 100644
+> > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > @@ -84,7 +84,7 @@ struct ipu3_uapi_grid_config {
+> > >   */
+> > >  struct ipu3_uapi_awb_raw_buffer {
+> > >  	__u8 meta_data[IPU3_UAPI_AWB_MAX_BUFFER_SIZE]
+> > > -		__attribute__((aligned(32)));
+> > > +		__aligned(32);
+> > >  } __packed;
+> >
+> > WTF?
+> >
+> > It either has 1-byte alignment because it is just __u8,
+> > 32-byte because of the aligned(32),
+> > or 1 byte because of the outer packed.
+> >
+> > What alignment does this (and all the other) structures
+> > actually need?
 > 
-> thanks,
+> 32 as noted above. Here packed makes no difference though.
+
+Bollocks - it ought to override the __aligned(32);
+
+
+> Some of these structs are used embedded in other structs or alone. I
+> haven't checked this one.
 > 
-> greg k-h
+> It's also possible to have __packed and __aligned() conflict (in which case
+> a decent compiler would give you a warning) --- which does not happen
+> currently AFAIK.
+
+At least one compiler is objecting to some similar constructs.
+
+> >
+> > Specifying 'packed' isn't free.
 > 
+> It may be free if the packed alignment of the fields corresponds to
+> architecture's packing. Here __aligned() is used to satisfy
+> hardware alignment requirements and __packed is used to ensure the same
+> memory layout independently of ABI rules.
 
-Tested on arm64 and x86 for 5.4.112-rc1,
+No that isn't what packed is for.
+'packed' also tells the compiler that the structure may 'exist' at
+an unaligned address.
+On many architectures this requires the compiler use byte sized
+access and shifts for all members.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.112-rc1
-Commit: f9b2de2cddd4601c5d2f2947fc5cebb7dbecd266
-Compiler: gcc version 7.3.0 (GCC)
+If you are worried that the compiler/ABI might have inserted
+padding then add a compile-time assert on the structure size.
+But most kernel code assumes that structures where everything
+is on its natural boundary won't have any padding.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5264
-passed: 5264
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+	David
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5264
-passed: 5264
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
