@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE98A35E3A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5617135E3CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241324AbhDMQSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:18:24 -0400
-Received: from mail-pj1-f44.google.com ([209.85.216.44]:56009 "EHLO
-        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhDMQSW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:18:22 -0400
-Received: by mail-pj1-f44.google.com with SMTP id s14so3888152pjl.5;
-        Tue, 13 Apr 2021 09:18:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/LRwKo8dn0MljtPNm7dSpcMCQAuuph6Ku1LEOu1i+PA=;
-        b=YGdWaxTzvzCQAEx85NBOUHe02qM9ymzf0kD/Y1AsreHN+86XeHtkhxVeNzLRsuDP1p
-         x9B1/EeL2eijcSRg7BSVQLeHLb6MCM43R/NrjHdivEXd4q+qvZpkzZioE8cORjpYwLoN
-         WLn3lFdd2lHLGYrK6AFHM07CMcfEonfrOGzQRR8qV6eRQSVE5mXimU29npspqEluwaxP
-         oHFk7aRUvthnpjEDvFLOic0kv+wTPyv+bZX+4vUCmBYklU8xc37xwDkw+eLiln63L7h1
-         pgs1t3/jF1a+zxjwtg0uWt8ddJnZhL3YdN/6lZoDVivq1sNngToDD1r/d01FQhFAjoA8
-         3TjQ==
-X-Gm-Message-State: AOAM530A6DlQzqMJ2A3QQJFoIgdPZUUrBzAa92XXkLkCEJ3p9jv8ZetK
-        JbAD/KEIM4+zYukFU60jeNA=
-X-Google-Smtp-Source: ABdhPJw4Ytpvr9/UWgaEETaKL9ALSRBQgs94pxx62HFE9wxzMqQobQL5TSoDDLWFvbcK6JC51bj2HA==
-X-Received: by 2002:a17:90b:4a81:: with SMTP id lp1mr835205pjb.154.1618330682678;
-        Tue, 13 Apr 2021 09:18:02 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:345f:c70d:97e0:e2ef? ([2601:647:4000:d7:345f:c70d:97e0:e2ef])
-        by smtp.gmail.com with ESMTPSA id s13sm2607981pjl.48.2021.04.13.09.18.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 09:18:02 -0700 (PDT)
-Subject: Re: [PATCH v7 1/3] bio: limit bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>, damien.lemoal@wdc.com,
-        Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, gregkh@linuxfoundation.org, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <20210413025502.31579-1-nanich.lee@samsung.com>
- <CGME20210413031257epcas1p329f38effa71445de2464cee32002e618@epcas1p3.samsung.com>
- <20210413025502.31579-2-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <2e54f27a-ae4c-af65-34ba-18b43bd4815d@acm.org>
-Date:   Tue, 13 Apr 2021 09:18:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232291AbhDMQY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:24:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10663 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231969AbhDMQY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 12:24:57 -0400
+IronPort-SDR: RPZ/jslSmFUv/O/neq5BV1KVttHx1cgAvs7NegU9Z3YmsugUbG7aK0JenIDAy+w5X021NWrVdq
+ ZyZu5w/BC+xg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="214930983"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="214930983"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 09:18:14 -0700
+IronPort-SDR: Jzr+S+le5B4GUu2EQyxbXU3HDtawIzY+OyQ3xLADIAL2ivTY0OdI80xwzRmJf+X6sUAh0+Jpqv
+ lf+q961xqT/g==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="452023243"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.118.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 09:18:13 -0700
+Date:   Tue, 13 Apr 2021 09:18:12 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     kerneljasonxing@gmail.com
+Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv
+ mode
+Message-ID: <20210413091812.0000383d@intel.com>
+In-Reply-To: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
+        <20210413025011.1251-1-kerneljasonxing@gmail.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210413025502.31579-2-nanich.lee@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 7:55 PM, Changheun Lee wrote:
-> +unsigned int bio_max_size(struct bio *bio)
-> +{
-> +	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-> +
-> +	if (blk_queue_limit_bio_size(q))
-> +		return blk_queue_get_max_sectors(q, bio_op(bio))
-> +			<< SECTOR_SHIFT;
-> +
-> +	return UINT_MAX;
-> +}
+kerneljasonxing@gmail.com wrote:
 
-This patch adds an if-statement to the hot path and that may have a
-slight negative performance impact. I recommend to follow the approach
-of max_hw_sectors. That means removing QUEUE_FLAG_LIMIT_BIO_SIZE and to
-initialize the maximum bio size to UINT_MAX in blk_set_default_limits().
+> From: Jason Xing <xingwanli@kuaishou.com>
+
+Hi Jason,
+
+Sorry, I missed this on the first time: Added intel-wired-lan,
+please include on any future submissions for Intel drivers.
+get-maintainers script might help here?
+
+> 
+> Fix this panic by adding more rules to calculate the value of @rss_size_max
+> which could be used in allocating the queues when bpf is loaded, which,
+> however, could cause the failure and then trigger the NULL pointer of
+> vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> cpus are online and then allocates 256 queues on the machine with 32 cpus
+> online actually.
+> 
+> Once the load of bpf begins, the log will go like this "failed to get
+> tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> failed".
+> 
+> Thus, I attach the key information of the crash-log here.
+> 
+> BUG: unable to handle kernel NULL pointer dereference at
+> 0000000000000000
+> RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> Call Trace:
+> [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> [2160294.717666]  dev_xdp_install+0x4f/0x70
+> [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> [2160294.718705]  do_setlink+0xac7/0xe70
+> [2160294.719035]  ? __nla_parse+0xed/0x120
+> [2160294.719365]  rtnl_newlink+0x73b/0x860
+> 
+> Fixes: 41c445ff0f48 ("i40e: main driver core")
+> 
+
+This Fixes line should be connected to the Sign offs with
+no linefeeds between.
+
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+
+Did Shujin contribute to this patch? Why are they signing off? If
+they developed this patch with you, it should say:
+Co-developed-by: Shujin ....
+Signed-off-by: Shujin ...
+Signed-off-by: Jason ...
+
+Your signature should be last if you sent the patch. The sign-offs are
+like a chain of custody, please review 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
 
 Thanks,
-
-Bart.
+ Jesse
