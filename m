@@ -2,157 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A424935E55A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7539035E599
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347360AbhDMRt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347351AbhDMRt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:49:58 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6E0C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:49:37 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so9399879pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LR/kpiLYxcoerfHBg9UUUi//0uIfBkykKPg0p1xhzVI=;
-        b=z754KZYShk0DnqmpTLvEXFBoX0DbtHXAHmHbjtUCupA+saYRfG2GJ1Gz/gaEXxrc2x
-         ScsIoXJEfpADsyfId4tqgPeEtOOo6YoL/BonwEXnu6GVfM2u2fHMsoSVjXrOMWW1Mm7m
-         iawK5Z8H7LcbH2nWR2YTixqvHW3yGPSgSARxS8FTfNVeQWYTYcsvuhjZOf94zVGfsW1j
-         5FQpHfL1e0eIQYvOFVcgmN8mfTUDre6Wl8cyCH1iaRorc2tdrH9x9ffHhWBvm28E6x1q
-         AKkhqyddw7NiFT48seSctXU5LZXnkNaSEeinTs/ea+Vnm5nsIJ/GpEO6k/i9tO+2/lhk
-         Hl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LR/kpiLYxcoerfHBg9UUUi//0uIfBkykKPg0p1xhzVI=;
-        b=mgEvDkQHC1Jm9Fy8dMYgacmWF+8pXhstXiGoKCjZ44k+lWlsVjq1ZGKIeqqzGDBhlM
-         R88+iK/psOLO6O8o0V1H2RONMurNFbHJetwQWRYRs4zbiZzjMjdickuiyd63vUCPFY0l
-         QfpitNBi36Gub3NosDzMofLYNqdPC2BkXGGiFghWJAdqacURmu1jWSIb7Y2JwCRi60hW
-         6yJT6Xej1IL0Br+jEZ+ryHobi8heM0JqQ09Ce4EaNVEWWkfJSxWTvWgLPDeA5kFokcSs
-         YEwpU4n/QxUk6KBzVMlPrI/woYyLH4/Qn6D6Tpb4LVkqVqIPjM+WrJ7GqEkemUl738Ik
-         Y2nQ==
-X-Gm-Message-State: AOAM532RK94fnCWwHguhlbwTl+D4f8FSQi2zKTbkMBeN2Vjcyr0tbwco
-        nzKu7CYbwLDjalZNSF9gc6hJkw==
-X-Google-Smtp-Source: ABdhPJz91wIZtAKvaPoUmSMwbHZvTMRvzFH8IAjyjJKj/beXEoNWGKzQG/4yV8SCxH8D6vx/1Z4rUA==
-X-Received: by 2002:a17:90a:fa14:: with SMTP id cm20mr1244169pjb.125.1618336175085;
-        Tue, 13 Apr 2021 10:49:35 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id u7sm2785326pjx.8.2021.04.13.10.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 10:49:34 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 11:49:32 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V3 7/8] remoteproc: imx_rproc: support i.MX7ULP
-Message-ID: <20210413174932.GE750651@xps15>
-References: <1617846898-13662-1-git-send-email-peng.fan@oss.nxp.com>
- <1617846898-13662-8-git-send-email-peng.fan@oss.nxp.com>
+        id S1347486AbhDMRvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347459AbhDMRvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64704613BA;
+        Tue, 13 Apr 2021 17:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618336276;
+        bh=STlES+DYVBTDRSumr84y24f4P3BlwSVMYXdmjHd61QI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MJ9AUDisyzbLasohsX+S5wX378EXieWelcxAyTjjUgcZsHFX1kLYT/ahufc5MQg5q
+         DVpU/Vf7wBHA095rTxe2z8Hbxj5/dm/iGjFpMyPDZAqmgGzhgMU+6TwBM7c2FkqSoK
+         JE34CzGrl/SfKBNYu79xIICzDlciBvQaO+zs2jEmkuTm2CXmtJxdNpdOvCQSV4cbcZ
+         h+btmBjWoOWfnF1SFcsE9+WC8GkrcO0GT2HDaKO71oq8kb3FfyAiaAPQ7fxvUwusP3
+         P4pJ6UtsUzkyOVjH4PnHfnQFobXC6Xn1SchNtkelgYe2a1zUSay9sD8JTYaFENRlq3
+         u5gfr6PFsDQyA==
+Date:   Tue, 13 Apr 2021 10:51:14 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mike Snitzer <snitzer@redhat.com>, kernel-team@android.com,
+        agk@redhat.com, dm-devel@redhat.com
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] dm verity: fix not aligned logical block size of RS
+ roots IO
+Message-ID: <YHXaEiRt8QzX8h9m@google.com>
+References: <20210412181123.2550918-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617846898-13662-8-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210412181123.2550918-1-jaegeuk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:54:57AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 04/12, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
 > 
-> i.MX7ULP A7 core runs under control of M4 core, M4 core starts by ROM
-> and powers most serivces used by A7 core, so A7 core has no power to
-> start and stop M4 core.
+> commit df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
+> made dm_bufio->block_size 1024, if f->roots is 2. But, that gives the below EIO
+> if the logical block size of the device is 4096, given v->data_dev_block_bits=12.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
+> E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+> E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
+> 
+> Let's use f->roots for dm_bufio iff it's aligned to v->data_dev_block_bits.
+> 
+> Fixes: df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
 > ---
->  drivers/remoteproc/imx_rproc.c | 25 ++++++++++++++++++++++---
->  1 file changed, 22 insertions(+), 3 deletions(-)
+>  drivers/md/dm-verity-fec.c | 11 ++++++++---
+>  drivers/md/dm-verity-fec.h |  1 +
+>  2 files changed, 9 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index a7fa9d7fc2d1..b911a7539897 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -147,6 +147,14 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
->  	{ 0x40000000, 0x40000000, 0x80000000, 0 },
->  };
+> diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
+> index 66f4c6398f67..cea2b3789736 100644
+> --- a/drivers/md/dm-verity-fec.c
+> +++ b/drivers/md/dm-verity-fec.c
+> @@ -65,7 +65,7 @@ static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
+>  	u8 *res;
 >  
-> +static const struct imx_rproc_att imx_rproc_att_imx7ulp[] = {
-> +	{0x1FFD0000, 0x1FFD0000, 0x30000, ATT_OWN},
-> +	{0x20000000, 0x20000000, 0x10000, ATT_OWN},
-> +	{0x2F000000, 0x2F000000, 0x20000, ATT_OWN},
-> +	{0x2F020000, 0x2F020000, 0x20000, ATT_OWN},
-> +	{0x60000000, 0x60000000, 0x40000000, 0}
-> +};
-> +
->  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
->  	/* dev addr , sys addr  , size	    , flags */
->  	/* OCRAM_S (M4 Boot code) - alias */
-> @@ -207,6 +215,12 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
->  	.method		= IMX_RPROC_MMIO,
->  };
+>  	position = (index + rsb) * v->fec->roots;
+> -	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
+> +	block = div64_u64_rem(position, v->fec->io_size, &rem);
+>  	*offset = (unsigned)rem;
 >  
-> +static const struct imx_rproc_dcfg imx_rproc_cfg_imx7ulp = {
-> +	.att		= imx_rproc_att_imx7ulp,
-> +	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7ulp),
-> +	.method		= IMX_RPROC_NONE,
-> +};
-> +
->  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
->  	.src_reg	= IMX7D_SRC_SCR,
->  	.src_mask	= IMX7D_M4_RST_MASK,
-> @@ -598,12 +612,16 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
->  			return ret;
->  		}
+>  	res = dm_bufio_read(v->fec->bufio, block, buf);
+> @@ -154,7 +154,7 @@ static int fec_decode_bufs(struct dm_verity *v, struct dm_verity_fec_io *fio,
 >  
-> -		if (!(val & dcfg->src_stop)) {
-> -			priv->rproc->state = RPROC_DETACHED;
-> +		if (!(val & dcfg->src_stop))
->  			priv->mode = IMX_RPROC_EARLY_BOOT;
-> -		}
+>  		/* read the next block when we run out of parity bytes */
+>  		offset += v->fec->roots;
+> -		if (offset >= v->fec->roots << SECTOR_SHIFT) {
+> +		if (offset >= v->fec->io_size) {
+>  			dm_bufio_release(buf);
+>  
+>  			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
+> @@ -742,8 +742,13 @@ int verity_fec_ctr(struct dm_verity *v)
+>  		return -E2BIG;
 >  	}
 >  
-> +	if (dcfg->method == IMX_RPROC_NONE)
-> +		priv->mode = IMX_RPROC_EARLY_BOOT;
-
-As I pointed out there is no need for priv->mode.  Just declare a boolean
-variable that is local to this function and use it to determine the state of the
-remote processor:
-
-        if (dcfg->method == IMX_RPROC_NONE)
-                early_boot = true;
-
-        if (early_boot)
-                priv->rproc->state = RPROC_DETACHED;
-
+> +	if ((f->roots << SECTOR_SHIFT) & ((1 << v->data_dev_block_bits) - 1))
+> +		f->io_size = 1 << v->data_dev_block_bits;
+> +	else
+> +		f->io_size = v->fec->roots << SECTOR_SHIFT;
 > +
-> +	if (priv->mode == IMX_RPROC_EARLY_BOOT)
-> +		priv->rproc->state = RPROC_DETACHED;
-> +
->  	return 0;
->  }
->  
-> @@ -724,6 +742,7 @@ static int imx_rproc_remove(struct platform_device *pdev)
->  }
->  
->  static const struct of_device_id imx_rproc_of_match[] = {
-> +	{ .compatible = "fsl,imx7ulp-cm4", .data = &imx_rproc_cfg_imx7ulp },
->  	{ .compatible = "fsl,imx7d-cm4", .data = &imx_rproc_cfg_imx7d },
->  	{ .compatible = "fsl,imx6sx-cm4", .data = &imx_rproc_cfg_imx6sx },
->  	{ .compatible = "fsl,imx8mq-cm4", .data = &imx_rproc_cfg_imx8mq },
+>  	f->bufio = dm_bufio_client_create(f->dev->bdev,
+> -					  f->roots << SECTOR_SHIFT,
+> +					  f->io_size,
+>  					  1, 0, NULL, NULL);
+>  	if (IS_ERR(f->bufio)) {
+>  		ti->error = "Cannot initialize FEC bufio client";
+> diff --git a/drivers/md/dm-verity-fec.h b/drivers/md/dm-verity-fec.h
+> index 42fbd3a7fc9f..3c46c8d61883 100644
+> --- a/drivers/md/dm-verity-fec.h
+> +++ b/drivers/md/dm-verity-fec.h
+> @@ -36,6 +36,7 @@ struct dm_verity_fec {
+>  	struct dm_dev *dev;	/* parity data device */
+>  	struct dm_bufio_client *data_bufio;	/* for data dev access */
+>  	struct dm_bufio_client *bufio;		/* for parity data access */
+> +	size_t io_size;		/* IO size for roots */
+>  	sector_t start;		/* parity data start in blocks */
+>  	sector_t blocks;	/* number of blocks covered */
+>  	sector_t rounds;	/* number of interleaving rounds */
 > -- 
-> 2.30.0
-> 
+> 2.31.1.295.g9ea45b61b8-goog
