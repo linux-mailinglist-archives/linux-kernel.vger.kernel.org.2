@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AE035E81F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7729935E821
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348336AbhDMVTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:19:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31547 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231719AbhDMVTe (ORCPT
+        id S1348394AbhDMVTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348385AbhDMVTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:19:34 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-165-N8V1FVlIOV6ADD7YZPXsJw-1; Tue, 13 Apr 2021 22:19:11 +0100
-X-MC-Unique: N8V1FVlIOV6ADD7YZPXsJw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 22:19:10 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 22:19:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arjun Roy' <arjunroy@google.com>,
-        Eric Dumazet <edumazet@google.com>
-CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
- clear_rseq_cs()
-Thread-Topic: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
- clear_rseq_cs()
-Thread-Index: AQHXMJPVg104is/mZUKAIt7DMH9hRKqy8Q+g
-Date:   Tue, 13 Apr 2021 21:19:10 +0000
-Message-ID: <feed2c13dbe34279a03929a588c46c67@AcuMS.aculab.com>
-References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
- <20210413162240.3131033-4-eric.dumazet@gmail.com>
- <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
- <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
- <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
- <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
- <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
- <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
- <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
- <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
- <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
-In-Reply-To: <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 13 Apr 2021 17:19:44 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697DDC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:19:23 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id r22so10284767ljc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=enhHLE/5y2NdlKSskcLj+WinLbXmD8cGKb9xuV9HkB4=;
+        b=qm6O8dQlxP59p9QcAZiByLt63o4HMtrvUwK4K7w+mg/kjx1MDaUSkRFQxesDbVuqMv
+         1FamQg6A5/GAWF9nGEc3wYe+WOHEzmNmiV4cjGyfUB7IwDEUGfXxm8amD+4JiQKcpAQ8
+         +ZTnAwV2HMKiYn668R6ks1ipSrCz1f/q5DpYwzrXqJcxOgLxQzZ9KupwfpGqow0ubBMj
+         oltz1HVOgSo0QiIlYRR5fEafkO5Tn5JCFCVIJwefl5LuPJ7Poc9QQmftvwstzPs3tnpV
+         N5Szl4MgcCe8oLevRieOedY0ITVCRdeLg362XbXiA4MJWLHxcu8OhADgW8ndw7qQYDjg
+         guOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=enhHLE/5y2NdlKSskcLj+WinLbXmD8cGKb9xuV9HkB4=;
+        b=ppzRuPQA+5hnv/r+npapnLG0DNNUqHcpDZS6jGlFwyP+MY/YL7HkN1xs6uWJf9XRup
+         3oWL0QZqLxhcWSLj0ppQ5ylZVUcv433Z5deahYU5Rw16bagq7J7VYpE4UvzFY6bC/rKt
+         Rx+qH49hdb6OybSe4aHyy8GVyRjqUFdYYki5LTempvB0w+YssaVkPOwCfBG1aJpEgQc5
+         hxYeJJVfIsyIqsE3Fp39KiHt6AEJJqiPv/lkebDiFJtoCKG05tROSi8uAmF2A23ZcC+K
+         7rEWgvRziuB0ljMpdipTyeLHde7GEBoXvm1siJi0dXjjjgW4rZIO4ZUu/Xqwpef+fLDG
+         72YQ==
+X-Gm-Message-State: AOAM530Aha5sAMiP34iGo0XAYxIRll3D7oh8Foleg519S3Hsb/HHqFXk
+        v5pipSbj5VwOEF8eNn2mu3rZBRVrbUr9vlVUVSs=
+X-Google-Smtp-Source: ABdhPJwI9aKukGojq9kC2CBk6o4jWbmOxwHYprh8RiEyyePFzry2DSR3tbtouB3Vg1GcGTVEnF34BMeI7SJYF6LkkPk=
+X-Received: by 2002:a05:651c:312:: with SMTP id a18mr11403270ljp.52.1618348761852;
+ Tue, 13 Apr 2021 14:19:21 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <CABXGCsOifMk4+VHi4bnHCL2L_tT+Tm_Rz+KxD3ZQOowx1xms4g@mail.gmail.com>
+ <293189a2-3a6b-1e50-7607-33917743b9d8@amd.com>
+In-Reply-To: <293189a2-3a6b-1e50-7607-33917743b9d8@amd.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Wed, 14 Apr 2021 02:19:10 +0500
+Message-ID: <CABXGCsMMUa=0+GAHxfVdOOFO0Lx=tCa4+ongHN8rF4TAR9nVmg@mail.gmail.com>
+Subject: Re: [BUG] VAAPI encoder cause kernel panic if encoded video in 4K
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJZiB3ZSdyZSBzcGVjaWFsLWNhc2luZyA2NC1iaXQgYXJjaGl0ZWN0dXJlcyBhbnl3YXlzIC0g
-dW5yb2xsaW5nIHRoZQ0KPiAzMkIgY29weV9mcm9tX3VzZXIoKSBmb3Igc3RydWN0IHJzZXFfY3Mg
-YXBwZWFycyB0byBiZSByb3VnaGx5IDUtMTAlDQo+IHNhdmluZ3Mgb24geDg2LTY0IHdoZW4gSSBt
-ZWFzdXJlZCBpdCAod2VsbCwgaW4gYSBtaWNyb2JlbmNobWFyaywgbm90DQo+IGluIHJzZXFfZ2V0
-X3JzZXFfY3MoKSBkaXJlY3RseSkuIFBlcmhhcHMgdGhhdCBjb3VsZCBiZSBhbiBhZGRpdGlvbmFs
-DQo+IGF2ZW51ZSBmb3IgaW1wcm92ZW1lbnQgaGVyZS4NCg0KVGhlIGtpbGxlciBpcyB1c3VhbGx5
-ICd1c2VyIGNvcHkgaGFyZGVuaW5nJy4NCkl0IHNpZ25pZmljYW50bHkgc2xvd3MgZG93biBzZW5k
-bXNnKCkgYW5kIHJlY3Ztc2coKS4NCkkndmUgZ290IG1lYXN1cmFibGUgcGVyZm9ybWFuY2UgaW1w
-cm92ZW1lbnRzIGJ5DQp1c2luZyBfX2NvcHlfZnJvbV91c2VyKCkgd2hlbiB0aGUgYnVmZmVyIHNp
-bmNlIGhhcw0KYWxyZWFkeSBiZWVuIGNoZWNrZWQgLSBidXQgaXNuJ3QgYSBjb21waWxlLXRpbWUg
-Y29uc3RhbnQuDQoNClRoZXJlIGlzIGFsc28gc2NvcGUgZm9yIHVzaW5nIF9nZXRfdXNlcigpIHdo
-ZW4gcmVhZGluZw0KaW92ZWNbXSAoaW5zdGVhZCBvZiBjb3B5X2Zyb21fdXNlcigpKSBhbmQgZG9p
-bmcgYWxsIHRoZQ0KYm91bmQgY2hlY2tzIChldGMpIGluIHRoZSBsb29wLg0KVGhhdCBnaXZlcyBh
-IG1lYXN1cmFibGUgaW1wcm92ZW1lbnQgZm9yIHdyaXRldigiL2Rldi9udWxsIikuDQpJIG11c3Qg
-c29ydCB0aG9zZSBwYXRjaGVzIG91dCBhZ2Fpbi4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
-QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
-LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Tue, 13 Apr 2021 at 12:29, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+> Hi Mikhail,
+>
+> the crash is a known issue and should be fixed by:
+>
+> commit f63da9ae7584280582cbc834b20cc18bfb203b14
+> Author: Philip Yang <Philip.Yang@amd.com>
+> Date:   Thu Apr 1 00:22:23 2021 -0400
+>
+>      drm/amdgpu: reserve fence slot to update page table
+>
 
+Unfortunately, this commit couldn't fix the initial problem.
+1. Result video is jerky if it grabbed and encoded with ffmpeg
+(h264_vaapi codec).
+2. OBS still crashed if I try to record or stream video.
+3. In the kernel log still appears the message "amdgpu: [mmhub] page
+fault (src_id:0 ring:0 vmid:4 pasid:32770, for process obs" if I tried
+to record or stream video by OBS.
+
+--=20
+Best Regards,
+Mike Gavrilov.
