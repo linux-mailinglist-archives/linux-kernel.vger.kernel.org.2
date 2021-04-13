@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A5C35DA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F79635DA7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244689AbhDMI4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:56:10 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16541 "EHLO
+        id S244496AbhDMIz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:55:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16542 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243989AbhDMIzj (ORCPT
+        with ESMTP id S243998AbhDMIzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Apr 2021 04:55:39 -0400
 Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FKK9k0VVxzPqkd;
-        Tue, 13 Apr 2021 16:52:26 +0800 (CST)
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FKK9j6MznzPqgC;
+        Tue, 13 Apr 2021 16:52:25 +0800 (CST)
 Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.224) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 16:55:08 +0800
+ 14.3.498.0; Tue, 13 Apr 2021 16:55:09 +0800
 From:   Keqian Zhu <zhukeqian1@huawei.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -34,9 +34,9 @@ CC:     Alex Williamson <alex.williamson@redhat.com>,
         Kirti Wankhede <kwankhede@nvidia.com>,
         <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
         <yuzenghui@huawei.com>, <lushenming@huawei.com>
-Subject: [PATCH v3 03/12] iommu: Add iommu_merge_page interface
-Date:   Tue, 13 Apr 2021 16:54:48 +0800
-Message-ID: <20210413085457.25400-4-zhukeqian1@huawei.com>
+Subject: [PATCH v3 04/12] iommu/arm-smmu-v3: Add support for Hardware Translation Table Update
+Date:   Tue, 13 Apr 2021 16:54:49 +0800
+Message-ID: <20210413085457.25400-5-zhukeqian1@huawei.com>
 X-Mailer: git-send-email 2.8.4.windows.1
 In-Reply-To: <20210413085457.25400-1-zhukeqian1@huawei.com>
 References: <20210413085457.25400-1-zhukeqian1@huawei.com>
@@ -48,153 +48,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If block(largepage) mappings are split during start dirty log, then
-when stop dirty log, we need to recover them for better DMA performance.
+From: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-This adds a new interface named iommu_merge_page in IOMMU base layer.
-A specific IOMMU driver can invoke it during stop dirty log. If so, the
-driver also need to realize the merge_page iommu ops.
+If the SMMU supports it and the kernel was built with HTTU support,
+enable hardware update of access and dirty flags. This is essential for
+shared page tables, to reduce the number of access faults on the fault
+queue. Normal DMA with io-pgtables doesn't currently use the access or
+dirty flags.
 
-We flush all iotlbs after the whole procedure is completed to ease the
-pressure of iommu, as we will hanle a huge range of mapping in general.
+We can enable HTTU even if CPUs don't support it, because the kernel
+always checks for HW dirty bit and updates the PTE flags atomically.
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 ---
- drivers/iommu/iommu.c | 75 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/iommu.h | 12 +++++++
- 2 files changed, 87 insertions(+)
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  2 +
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 41 ++++++++++++++++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  8 ++++
+ 3 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index bb413a927870..8f0d71bafb3a 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2762,6 +2762,81 @@ int iommu_split_block(struct iommu_domain *domain, unsigned long iova,
- }
- EXPORT_SYMBOL_GPL(iommu_split_block);
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index bb251cab61f3..ae075e675892 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -121,10 +121,12 @@ static struct arm_smmu_ctx_desc *arm_smmu_alloc_shared_cd(struct mm_struct *mm)
+ 	if (err)
+ 		goto out_free_asid;
  
-+static int __iommu_merge_page(struct iommu_domain *domain,
-+			      unsigned long iova, phys_addr_t paddr,
-+			      size_t size, int prot)
++	/* HA and HD will be filtered out later if not supported by the SMMU */
+ 	tcr = FIELD_PREP(CTXDESC_CD_0_TCR_T0SZ, 64ULL - vabits_actual) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_IRGN0, ARM_LPAE_TCR_RGN_WBWA) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_ORGN0, ARM_LPAE_TCR_RGN_WBWA) |
+ 	      FIELD_PREP(CTXDESC_CD_0_TCR_SH0, ARM_LPAE_TCR_SH_IS) |
++	      CTXDESC_CD_0_TCR_HA | CTXDESC_CD_0_TCR_HD |
+ 	      CTXDESC_CD_0_TCR_EPD1 | CTXDESC_CD_0_AA64;
+ 
+ 	switch (PAGE_SIZE) {
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 8594b4a83043..b6d965504f44 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1012,10 +1012,17 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 		 * this substream's traffic
+ 		 */
+ 	} else { /* (1) and (2) */
++		u64 tcr = cd->tcr;
++
+ 		cdptr[1] = cpu_to_le64(cd->ttbr & CTXDESC_CD_1_TTB0_MASK);
+ 		cdptr[2] = 0;
+ 		cdptr[3] = cpu_to_le64(cd->mair);
+ 
++		if (!(smmu->features & ARM_SMMU_FEAT_HD))
++			tcr &= ~CTXDESC_CD_0_TCR_HD;
++		if (!(smmu->features & ARM_SMMU_FEAT_HA))
++			tcr &= ~CTXDESC_CD_0_TCR_HA;
++
+ 		/*
+ 		 * STE is live, and the SMMU might read dwords of this CD in any
+ 		 * order. Ensure that it observes valid values before reading
+@@ -1023,7 +1030,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 		 */
+ 		arm_smmu_sync_cd(smmu_domain, ssid, true);
+ 
+-		val = cd->tcr |
++		val = tcr |
+ #ifdef __BIG_ENDIAN
+ 			CTXDESC_CD_0_ENDI |
+ #endif
+@@ -3196,6 +3203,28 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+ 	return 0;
+ }
+ 
++static void arm_smmu_get_httu(struct arm_smmu_device *smmu, u32 reg)
 +{
-+	const struct iommu_ops *ops = domain->ops;
-+	unsigned int min_pagesz;
-+	size_t pgsize;
-+	int ret = 0;
++	u32 fw_features = smmu->features & (ARM_SMMU_FEAT_HA | ARM_SMMU_FEAT_HD);
++	u32 features = 0;
 +
-+	if (unlikely(!ops || !ops->merge_page))
-+		return -ENODEV;
-+
-+	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
-+	if (!IS_ALIGNED(iova | paddr | size, min_pagesz)) {
-+		pr_err("unaligned: iova 0x%lx pa %pa size 0x%zx min_pagesz 0x%x\n",
-+			iova, &paddr, size, min_pagesz);
-+		return -EINVAL;
++	switch (FIELD_GET(IDR0_HTTU, reg)) {
++	case IDR0_HTTU_ACCESS_DIRTY:
++		features |= ARM_SMMU_FEAT_HD;
++		fallthrough;
++	case IDR0_HTTU_ACCESS:
++		features |= ARM_SMMU_FEAT_HA;
 +	}
 +
-+	while (size) {
-+		pgsize = iommu_pgsize(domain, iova | paddr, size);
-+
-+		ret = ops->merge_page(domain, iova, paddr, pgsize, prot);
-+		if (ret)
-+			break;
-+
-+		pr_debug("merge handled: iova 0x%lx pa %pa size 0x%zx\n",
-+			 iova, &paddr, pgsize);
-+
-+		iova += pgsize;
-+		paddr += pgsize;
-+		size -= pgsize;
-+	}
-+
-+	return ret;
++	if (smmu->dev->of_node)
++		smmu->features |= features;
++	else if (features != fw_features)
++		/* ACPI IORT sets the HTTU bits */
++		dev_warn(smmu->dev,
++			 "IDR0.HTTU overridden by FW configuration (0x%x)\n",
++			 fw_features);
 +}
 +
-+int iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
-+		     size_t size, int prot)
-+{
-+	phys_addr_t phys;
-+	dma_addr_t p, i;
-+	size_t cont_size;
-+	bool flush = false;
-+	int ret = 0;
-+
-+	while (size) {
-+		flush = true;
-+
-+		phys = iommu_iova_to_phys(domain, iova);
-+		cont_size = PAGE_SIZE;
-+		p = phys + cont_size;
-+		i = iova + cont_size;
-+
-+		while (cont_size < size && p == iommu_iova_to_phys(domain, i)) {
-+			p += PAGE_SIZE;
-+			i += PAGE_SIZE;
-+			cont_size += PAGE_SIZE;
-+		}
-+
-+		ret = __iommu_merge_page(domain, iova, phys, cont_size, prot);
-+		if (ret)
-+			break;
-+
-+		iova += cont_size;
-+		size -= cont_size;
-+	}
-+
-+	if (flush)
-+		iommu_flush_iotlb_all(domain);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(iommu_merge_page);
-+
- int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
- 			   unsigned long iova, size_t size, int prot)
+ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
  {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index c6c90ac069e3..fea3ecabff3d 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -209,6 +209,7 @@ struct iommu_iotlb_gather {
-  * @domain_get_attr: Query domain attributes
-  * @domain_set_attr: Change domain attributes
-  * @split_block: Split block mapping into page mapping
-+ * @merge_page: Merge page mapping into block mapping
-  * @switch_dirty_log: Perform actions to start|stop dirty log tracking
-  * @sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
-  * @clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
-@@ -270,6 +271,8 @@ struct iommu_ops {
- 	/* Track dirty log */
- 	int (*split_block)(struct iommu_domain *domain, unsigned long iova,
- 			   size_t size);
-+	int (*merge_page)(struct iommu_domain *domain, unsigned long iova,
-+			  phys_addr_t phys, size_t size, int prot);
- 	int (*switch_dirty_log)(struct iommu_domain *domain, bool enable,
- 				unsigned long iova, size_t size, int prot);
- 	int (*sync_dirty_log)(struct iommu_domain *domain,
-@@ -534,6 +537,8 @@ extern int iommu_domain_set_attr(struct iommu_domain *domain, enum iommu_attr,
- 				 void *data);
- extern int iommu_split_block(struct iommu_domain *domain, unsigned long iova,
- 			     size_t size);
-+extern int iommu_merge_page(struct iommu_domain *domain, unsigned long iova,
-+			    size_t size, int prot);
- extern int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
- 				  unsigned long iova, size_t size, int prot);
- extern int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
-@@ -940,6 +945,13 @@ static inline int iommu_split_block(struct iommu_domain *domain,
- 	return -EINVAL;
- }
+ 	u32 reg;
+@@ -3256,6 +3285,8 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 			smmu->features |= ARM_SMMU_FEAT_E2H;
+ 	}
  
-+static inline int iommu_merge_page(struct iommu_domain *domain,
-+				   unsigned long iova, size_t size,
-+				   int prot)
-+{
-+	return -EINVAL;
-+}
++	arm_smmu_get_httu(smmu, reg);
 +
- static inline int iommu_switch_dirty_log(struct iommu_domain *domain,
- 					 bool enable, unsigned long iova,
- 					 size_t size, int prot)
+ 	/*
+ 	 * The coherency feature as set by FW is used in preference to the ID
+ 	 * register, but warn on mismatch.
+@@ -3441,6 +3472,14 @@ static int arm_smmu_device_acpi_probe(struct platform_device *pdev,
+ 	if (iort_smmu->flags & ACPI_IORT_SMMU_V3_COHACC_OVERRIDE)
+ 		smmu->features |= ARM_SMMU_FEAT_COHERENCY;
+ 
++	switch (FIELD_GET(ACPI_IORT_SMMU_V3_HTTU_OVERRIDE, iort_smmu->flags)) {
++	case IDR0_HTTU_ACCESS_DIRTY:
++		smmu->features |= ARM_SMMU_FEAT_HD;
++		fallthrough;
++	case IDR0_HTTU_ACCESS:
++		smmu->features |= ARM_SMMU_FEAT_HA;
++	}
++
+ 	return 0;
+ }
+ #else
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index f985817c967a..26d6b935b383 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -33,6 +33,9 @@
+ #define IDR0_ASID16			(1 << 12)
+ #define IDR0_ATS			(1 << 10)
+ #define IDR0_HYP			(1 << 9)
++#define IDR0_HTTU			GENMASK(7, 6)
++#define IDR0_HTTU_ACCESS		1
++#define IDR0_HTTU_ACCESS_DIRTY		2
+ #define IDR0_COHACC			(1 << 4)
+ #define IDR0_TTF			GENMASK(3, 2)
+ #define IDR0_TTF_AARCH64		2
+@@ -285,6 +288,9 @@
+ #define CTXDESC_CD_0_TCR_IPS		GENMASK_ULL(34, 32)
+ #define CTXDESC_CD_0_TCR_TBI0		(1ULL << 38)
+ 
++#define CTXDESC_CD_0_TCR_HA		(1UL << 43)
++#define CTXDESC_CD_0_TCR_HD		(1UL << 42)
++
+ #define CTXDESC_CD_0_AA64		(1UL << 41)
+ #define CTXDESC_CD_0_S			(1UL << 44)
+ #define CTXDESC_CD_0_R			(1UL << 45)
+@@ -607,6 +613,8 @@ struct arm_smmu_device {
+ #define ARM_SMMU_FEAT_BTM		(1 << 16)
+ #define ARM_SMMU_FEAT_SVA		(1 << 17)
+ #define ARM_SMMU_FEAT_E2H		(1 << 18)
++#define ARM_SMMU_FEAT_HA		(1 << 19)
++#define ARM_SMMU_FEAT_HD		(1 << 20)
+ 	u32				features;
+ 
+ #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
 -- 
 2.19.1
 
