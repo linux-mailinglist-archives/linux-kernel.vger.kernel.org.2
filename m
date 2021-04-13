@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B6135E38C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E7135E394
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhDMQNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:13:35 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:52115 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229688AbhDMQNc (ORCPT
+        id S236635AbhDMQOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:14:50 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:37540 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231778AbhDMQOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:13:32 -0400
-Received: (qmail 1460435 invoked by uid 1000); 13 Apr 2021 12:13:11 -0400
-Date:   Tue, 13 Apr 2021 12:13:11 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-Message-ID: <20210413161311.GC1454681@rowland.harvard.edu>
-References: <00000000000075c58405bfd6228c@google.com>
- <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
+        Tue, 13 Apr 2021 12:14:48 -0400
+Received: by mail-oi1-f177.google.com with SMTP id k25so17533331oic.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UG+HWfno+uWNfzLfwmGXq7s847iNKJuTbNirN6mdLfo=;
+        b=1b47Bs77Ch+fhFL/ZEz44NahmwXjxSeO5CxWr6+L3MldidicVQJ945Sw6r4qp8JLXP
+         0vK//RvqD+6D7nAbbuoAvEQPNpTlegBotGkt+IhXLtJ9Uxb7e+Kq532uWp/lDF/sr0BV
+         hoU3JgtIHZaX7ccEmLhBJ+oPLQTWRxFe+rjMRkucLAkRQ01QsHkTWgkk2gMDpZYwytUX
+         amOYMtC5e/JBmPfzCdNCwQpB8s/+jHzpVEd6U1Tp3J0YzyaB47xJ1KxKqxnBtetx1V3o
+         Ae99+hJbx32WgWPFY5mH8JXCPxd2B7J1Ib8RnGSavaqlKpGxYjm3AB8P9vfBXAHRzJhl
+         otWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UG+HWfno+uWNfzLfwmGXq7s847iNKJuTbNirN6mdLfo=;
+        b=m/wy6JrlI9rr/2tPqPqbQdbOyJmmh9+sz2c8M9Gs3oY2rNgROKxm8dmwqVsfRI9wKe
+         zIks82JAYnfo6MDIJOeirxM98mScFCkkPLTAmxeqpKBClhNk5xmMkEQHQa7OD1wcFfNW
+         GwZejaRwzitwiT6vIhGvBEHbWu2ieA9n8R5EDzFt/qGEno/NvY6mDTufgB1IQiDHZWHG
+         27VHhxaDzCM7CH4lX9bCXBZja74jBU9aiay4sunYR+cuBr9h+ZMtS2xX5ZHygrAZ6/rn
+         BrsIiSxRU9K+yg8YuLPVY9e6ypZHOfeTMKT3FcDiH8FZu6jwKU4i1EzjPHE2mWtavsID
+         FEfA==
+X-Gm-Message-State: AOAM533WUGJY8oL8pAIoHY0SoerFTFUMiEHhl/WqkSAEQ/ppO3KUHXA0
+        zo8ED8DvMaKuAWL95uFMXqU1SQ==
+X-Google-Smtp-Source: ABdhPJyyw8x5El+MPR+4gnGFYxL9nIulMdUn5LIW4KX0HQEYciHrA3Pq9ZAzCbNfi06lb2z98euuFQ==
+X-Received: by 2002:a05:6808:57b:: with SMTP id j27mr533532oig.161.1618330406647;
+        Tue, 13 Apr 2021 09:13:26 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id 3sm2926165ood.46.2021.04.13.09.13.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 09:13:25 -0700 (PDT)
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+To:     SeongJae Park <sj38.park@gmail.com>, Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Rik van Riel <riel@surriel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        page-reclaim@google.com
+References: <20210413075155.32652-1-sjpark@amazon.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+Date:   Tue, 13 Apr 2021 10:13:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210413075155.32652-1-sjpark@amazon.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:12:05AM +0200, Dmitry Vyukov wrote:
-> On Tue, Apr 13, 2021 at 10:08 AM syzbot
-> <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=124adbf6d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=eb4674092e6cc8d9e0bd
-> > userspace arch: i386
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com
+On 4/13/21 1:51 AM, SeongJae Park wrote:
+> From: SeongJae Park <sjpark@amazon.de>
 > 
-> I suspect that the raw gadget_unbind() can be called while the timer
-> is still active. gadget_unbind() sets gadget data to NULL.
-> But I am not sure which unbind call this is:
-> usb_gadget_remove_driver() or right in udc_bind_to_driver() due to a
-> start error.
+> Hello,
+> 
+> 
+> Very interesting work, thank you for sharing this :)
+> 
+> On Tue, 13 Apr 2021 00:56:17 -0600 Yu Zhao <yuzhao@google.com> wrote:
+> 
+>> What's new in v2
+>> ================
+>> Special thanks to Jens Axboe for reporting a regression in buffered
+>> I/O and helping test the fix.
+> 
+> Is the discussion open?  If so, could you please give me a link?
 
-This certainly looks like a race between gadget_unbind and gadget_setup 
-in raw_gadget.
+I wasn't on the initial post (or any of the lists it was posted to), but
+it's on the google page reclaim list. Not sure if that is public or not.
 
-In theory, this race shouldn't matter.  The gadget core is supposed to 
-guarantee that there won't be any more callbacks to the gadget driver 
-once the driver's unbind routine is called.  That guarantee is enforced 
-in usb_gadget_remove_driver as follows:
+tldr is that I was pretty excited about this work, as buffered IO tends
+to suck (a lot) for high throughput applications. My test case was
+pretty simple:
 
-	usb_gadget_disconnect(udc->gadget);
-	if (udc->gadget->irq)
-		synchronize_irq(udc->gadget->irq);
-	udc->driver->unbind(udc->gadget);
-	usb_gadget_udc_stop(udc);
+Randomly read a fast device, using 4k buffered IO, and watch what
+happens when the page cache gets filled up. For this particular test,
+we'll initially be doing 2.1GB/sec of IO, and then drop to 1.5-1.6GB/sec
+with kswapd using a lot of CPU trying to keep up. That's mainline
+behavior.
 
-usb_gadget_disconnect turns off the pullup resistor, telling the host 
-that the gadget is no longer connected and preventing the transmission 
-of any more USB packets.  Any packets that have already been received 
-are sure to processed by the UDC driver's interrupt handler by the time 
-synchronize_irq returns.
+The initial posting of this patchset did no better, in fact it did a bit
+worse. Performance dropped to the same levels and kswapd was using as
+much CPU as before, but on top of that we also got excessive swapping.
+Not at a high rate, but 5-10MB/sec continually.
 
-But this doesn't work with dummy_hcd, because dummy_hcd doesn't use 
-interrupts; it uses a timer instead.  It does have code to emulate the 
-effect of synchronize_irq, but that code doesn't get invoked at the 
-right time -- it currently runs in usb_gadget_udc_stop, after the unbind 
-callback instead of before.  Indeed, there's no way for 
-usb_gadget_remove_driver to invoke this code before the unbind 
-callback,.
+I had some back and forths with Yu Zhao and tested a few new revisions,
+and the current series does much better in this regard. Performance
+still dips a bit when page cache fills, but not nearly as much, and
+kswapd is using less CPU than before.
 
-I thought the synchronize_irq emulation problem had been completely 
-solved, but evidently it hasn't.  It looks like the best solution is to 
-add a call of the synchronize_irq emulation code in dummy_pullup.
+Hope that helps,
+-- 
+Jens Axboe
 
-Maybe we can test this reasoning by putting a delay just before the call 
-to dum->driver->setup.  That runs in the timer handler, so it's not a 
-good place to delay, but it may be okay just for testing purposes.
-
-Hopefully this patch will make the race a lot more likely to occur.  Is 
-there any way to tell syzkaller to test it, despite the fact that 
-syzkaller doesn't think it has a reproducer for this issue?
-
-Alan Stern
-
-
-Index: usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
-===================================================================
---- usb-devel.orig/drivers/usb/gadget/udc/dummy_hcd.c
-+++ usb-devel/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -1900,6 +1900,7 @@ restart:
- 			if (value > 0) {
- 				++dum->callback_usage;
- 				spin_unlock(&dum->lock);
-+				mdelay(5);
- 				value = dum->driver->setup(&dum->gadget,
- 						&setup);
- 				spin_lock(&dum->lock);
