@@ -2,172 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AD435DAE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC5735DAEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245536AbhDMJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:16:47 -0400
-Received: from smtp84.ord1c.emailsrvr.com ([108.166.43.84]:55182 "EHLO
-        smtp84.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245622AbhDMJQp (ORCPT
+        id S238725AbhDMJSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237787AbhDMJSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:16:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1618305384;
-        bh=QXGo3zNi/KJgYClnZP5yTyPQTb/XfbzL7t7ZBTImJ9U=;
-        h=Subject:To:From:Date:From;
-        b=VLAZMi3SCjUw+2opoShtg738e7WxEt+NYuLynoqp0ozC7Fb+qdushv/ChWcvw88Ow
-         tflGO9rfzLIf+ifNhVxq1G+h+QgMj3eibsFuBN5KfI97JC+ZiX30ZtTQZxNCQYWXGu
-         eDuBzaCMsikmNlnlCQPcbiId0hBkNBwBmOaOOFBY=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp27.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id EF079400F3;
-        Tue, 13 Apr 2021 05:16:22 -0400 (EDT)
-Subject: Re: mmotm 2021-04-11-20-47 uploaded (ni_routes_test.c)
-To:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
-        broonie@kernel.org, mhocko@suse.cz, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        mm-commits@vger.kernel.org, Spencer Olson <olsonse@umich.edu>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>
-References: <20210412034813.EK9k9%akpm@linux-foundation.org>
- <9ad69f10-ef0a-548a-0928-ddb9106e3311@infradead.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <f2201ff8-f61e-dda7-4165-61a344def0ce@mev.co.uk>
-Date:   Tue, 13 Apr 2021 10:16:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 13 Apr 2021 05:18:11 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B909C061574;
+        Tue, 13 Apr 2021 02:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6RTGtC27UlAcq0fr9UOGTdiAA9coaSDQ5gb68n6+EB8=; b=dAxsO3BQxiUv8/gpGGWsrbL11
+        kaed+tTvegZtlg3UTTklLT/C+Ip+DlXkpPjHZohY/Cg3Dy/LIL8j0uP+aMRuVAh/oYDEj+zT4Lo8B
+        b0tgoYYwdb5TQaOkdSPFz6Dc9+/HgtQ7bdmYOL2bHTgCV0hKBuQ7vHgTxnQ2lyYevXa6ueonNSPF+
+        6/5zkwtACHHkUNq2WUqQaR0EuO22zZWpjcnSeyC2jLEHFh43Dql4m19YYO7qZhULwBOaFgBDyAL78
+        mqtua1VoqmEDtPi+6y5ipMdJCAOWNpKqh7S/lodrUuHF2ZMrbKNaoMDkTaBTAOS0txTwCi7pEEmIz
+        ch1k2xT1Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52368)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lWFB2-0005Ri-5E; Tue, 13 Apr 2021 10:17:44 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lWFB0-000858-1Z; Tue, 13 Apr 2021 10:17:42 +0100
+Date:   Tue, 13 Apr 2021 10:17:42 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org, lironh@marvell.com,
+        danat@marvell.com
+Subject: Re: [PATCH net-next] net: mvpp2: Add parsing support for different
+ IPv4 IHL values
+Message-ID: <20210413091741.GL1463@shell.armlinux.org.uk>
+References: <1618303531-16050-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <9ad69f10-ef0a-548a-0928-ddb9106e3311@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 70b10d23-5d40-4148-8623-67b56555bf91-1-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618303531-16050-1-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2021 18:27, Randy Dunlap wrote:
-> On 4/11/21 8:48 PM, akpm@linux-foundation.org wrote:
->> The mm-of-the-moment snapshot 2021-04-11-20-47 has been uploaded to
->>
->>     https://www.ozlabs.org/~akpm/mmotm/
->>
->> mmotm-readme.txt says
->>
->> README for mm-of-the-moment:
->>
->> https://www.ozlabs.org/~akpm/mmotm/
->>
->> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
->> more than once a week.
->>
->> You will need quilt to apply these patches to the latest Linus release (5.x
->> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
->> https://ozlabs.org/~akpm/mmotm/series
->>
->> The file broken-out.tar.gz contains two datestamp files: .DATE and
->> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
->> followed by the base kernel version against which this patch series is to
->> be applied.
->>
->> This tree is partially included in linux-next.  To see which patches are
->> included in linux-next, consult the `series' file.  Only the patches
->> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
->> linux-next.
->>
->>
->> A full copy of the full kernel tree with the linux-next and mmotm patches
->> already applied is available through git within an hour of the mmotm
->> release.  Individual mmotm releases are tagged.  The master branch always
->> points to the latest release, so it's constantly rebasing.
->>
->> 	https://github.com/hnaz/linux-mm
->>
->> The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
->> contains daily snapshots of the -mm tree.  It is updated more frequently
->> than mmotm, and is untested.
->>
->> A git copy of this tree is also available at
->>
->> 	https://github.com/hnaz/linux-mm
+On Tue, Apr 13, 2021 at 11:45:31AM +0300, stefanc@marvell.com wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
 > 
-> on x86_64:
-> 
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_route_to_register':
-> ni_routes_test.c:(.text+0x103): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x13a): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x171): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x1a8): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x1df): undefined reference to `ni_route_to_register'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o:ni_routes_test.c:(.text+0x216): more undefined references to `ni_route_to_register' follow
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_find_route_source':
-> ni_routes_test.c:(.text+0x47d): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x4b2): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x4ec): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x526): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x560): undefined reference to `ni_find_route_source'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_get_valid_routes':
-> ni_routes_test.c:(.text+0x59f): undefined reference to `ni_get_valid_routes'
-> ld: ni_routes_test.c:(.text+0x5d5): undefined reference to `ni_get_valid_routes'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_is_cmd_dest':
-> ni_routes_test.c:(.text+0x659): undefined reference to `ni_is_cmd_dest'
-> ld: ni_routes_test.c:(.text+0x684): undefined reference to `ni_is_cmd_dest'
-> ld: ni_routes_test.c:(.text+0x6af): undefined reference to `ni_is_cmd_dest'
-> ld: ni_routes_test.c:(.text+0x6da): undefined reference to `ni_is_cmd_dest'
-> ld: ni_routes_test.c:(.text+0x705): undefined reference to `ni_is_cmd_dest'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o:ni_routes_test.c:(.text+0x730): more undefined references to `ni_is_cmd_dest' follow
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_lookup_route_register':
-> ni_routes_test.c:(.text+0x771): undefined reference to `ni_lookup_route_register'
-> ld: ni_routes_test.c:(.text+0x7a8): undefined reference to `ni_lookup_route_register'
-> ld: ni_routes_test.c:(.text+0x7df): undefined reference to `ni_lookup_route_register'
-> ld: ni_routes_test.c:(.text+0x816): undefined reference to `ni_lookup_route_register'
-> ld: ni_routes_test.c:(.text+0x84d): undefined reference to `ni_lookup_route_register'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o:ni_routes_test.c:(.text+0x884): more undefined references to `ni_lookup_route_register' follow
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_route_set_has_source':
-> ni_routes_test.c:(.text+0xa3c): undefined reference to `ni_route_set_has_source'
-> ld: ni_routes_test.c:(.text+0xa6e): undefined reference to `ni_route_set_has_source'
-> ld: ni_routes_test.c:(.text+0xaa0): undefined reference to `ni_route_set_has_source'
-> ld: ni_routes_test.c:(.text+0xad2): undefined reference to `ni_route_set_has_source'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_find_route_set':
-> ni_routes_test.c:(.text+0xb0a): undefined reference to `ni_find_route_set'
-> ld: ni_routes_test.c:(.text+0xb3d): undefined reference to `ni_find_route_set'
-> ld: ni_routes_test.c:(.text+0xb74): undefined reference to `ni_find_route_set'
-> ld: ni_routes_test.c:(.text+0xbb2): undefined reference to `ni_find_route_set'
-> ld: ni_routes_test.c:(.text+0xbfa): undefined reference to `ni_find_route_set'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_assign_device_routes':
-> ni_routes_test.c:(.text+0xc6c): undefined reference to `ni_assign_device_routes'
-> ld: ni_routes_test.c:(.text+0xeb6): undefined reference to `ni_assign_device_routes'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_count_valid_routes':
-> ni_routes_test.c:(.text+0xf9c): undefined reference to `ni_count_valid_routes'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `ni_get_reg_value_roffs.constprop.7':
-> ni_routes_test.c:(.text+0xfef): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x1015): undefined reference to `ni_route_to_register'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_route_is_valid':
-> ni_routes_test.c:(.text+0x1074): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x10ab): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x10e2): undefined reference to `ni_route_to_register'
-> ld: ni_routes_test.c:(.text+0x1119): undefined reference to `ni_route_to_register'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_route_register_is_valid':
-> ni_routes_test.c:(.text+0x115a): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x118e): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x11c5): undefined reference to `ni_find_route_source'
-> ld: ni_routes_test.c:(.text+0x11fc): undefined reference to `ni_find_route_source'
-> ld: drivers/staging/comedi/drivers/tests/ni_routes_test.o: in function `test_ni_sort_device_routes':
-> ni_routes_test.c:(.text+0x16ef): undefined reference to `ni_sort_device_routes'
-> 
-> 
-> Full randconfig file is attached.
+> Add parser entries for different IPv4 IHL values.
+> Each entry will set the L4 header offset according to the IPv4 IHL field.
+> L3 header offset will set during the parsing of the IPv4 protocol.
 
-Hi all,
+What is the impact of this commit? Is something broken at the moment,
+if so what? Does this need to be backported to stable kernels?
 
-That should be fixed by commit e7442ffe1cc5 ("staging: comedi: Kconfig: 
-Fix COMEDI_TESTS_NI_ROUTES selections") in linux-next master.
+These are key questions, of which the former two should be covered in
+every commit message so that the reason for the change can be known.
+It's no good just describing what is being changed in the commit without
+also describing why the change is being made.
 
-Sorry for the trouble!
+Thanks.
 
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
