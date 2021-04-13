@@ -2,253 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CBB35E264
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D207935E26D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242647AbhDMPMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:12:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232096AbhDMPMQ (ORCPT
+        id S243460AbhDMPNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhDMPNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618326716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n1L1Z0ygS3hd8ceMBwgVKNrSIJsloDDgfJpTVcphdbw=;
-        b=H9F/lZumkQhH88USy5xML13ua3H61Plb+nbcz0Gfdpae+S2Gn8lJ9x85AT05MIwo3lssT5
-        CMcs8n8ltAFAUhykHDmrPAmS98VgUJUdvJLbIqzr5WiExIleSj3fzvMuzKsEjmhP6A9OL/
-        6YExxNZUMdDWN6d5JxLkNqJtjlYpZYU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-Wf5oAXR-O_2gIx9CZkNfjQ-1; Tue, 13 Apr 2021 11:11:52 -0400
-X-MC-Unique: Wf5oAXR-O_2gIx9CZkNfjQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3BAE814336;
-        Tue, 13 Apr 2021 15:11:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DBC419D9F;
-        Tue, 13 Apr 2021 15:11:41 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210408145057.GN2531743@casper.infradead.org>
-References: <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7] mm: Add set/end/wait functions for PG_private_2
+        Tue, 13 Apr 2021 11:13:39 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930C3C061574;
+        Tue, 13 Apr 2021 08:13:18 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id m9so4100725wrx.3;
+        Tue, 13 Apr 2021 08:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v4sP12tnsOwGTJCFaEX43sowTzklNoHKRBUZavTEpfg=;
+        b=ZUc+ltzIGqeQuA1Kx8FE8BD9ga+OEu3LKRXVh4dPguVbh5xfSL/VPT+8Q0Op4cb8LU
+         HKTLh672yB4Kj1g9OY2t4EHfWDUwvP+Ki0DkaFPm6ai0Z2TbBLF5/bgR+vp6fzSppwdK
+         QQj15PBxpuoKRXnwO+YXn5losSmxyHnTHhopqfow6yCQKm7aeu98VAdjAKVST9ZF5yDt
+         lUryWm7oWWJUykKMNwRr/UD4/CAUlQXZPXmKawiOBGXiVdv/KiRGA3T3/sYbC1w+JE04
+         xyKhF3/CnS8ZkbsYAvazdc9ZDv+fQlVHIBmi0QZBhJMbKF6DVU7IRs/H6kDwlLPz6kaZ
+         5gPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v4sP12tnsOwGTJCFaEX43sowTzklNoHKRBUZavTEpfg=;
+        b=ZwVgPj134ecmSTz88rP+gPPXDzYB9597nYiU0HJivyUhv5NK4cp38KxTpcOOhq8+eE
+         5OnXNGaFLZn2jJZ6I/QDmvGm417l/ZRSsfNm5zZY6lawHM70C6A4kffWv4ItLF/46b1U
+         moUlCULY71M4fYa5q94+4eG3kaq8PD9R8ROSCSLs96roc3dymxnaT1YJ1CQetRK1NHgn
+         3Mht4pkk42HxqDRj546b1NPZWsdlcmkRqUrmhGB+98UvVpLYWAMj98SXk5qNqRwGhUbO
+         gooAPxrvAJDOSirB1I67Bu6Ptb/B4ZSiQGkl/fyfhVF1k3Vse09P83ZRqMXroBHoTn/r
+         9+TQ==
+X-Gm-Message-State: AOAM531Kyu1jU7dMHyCLY/p3OYQQP3SU36GkIMsOcHCXve7CCMMBhnti
+        e72iST6lRG+d0UbjhrrrT/Y=
+X-Google-Smtp-Source: ABdhPJzyk79kJ+3Bb3VIsZiJhoNXnQkwDC5S+7VweCcMC95vG7M22OfoOTZ7JNOSCvvT9O6pyYL9Uw==
+X-Received: by 2002:adf:8b45:: with SMTP id v5mr37006272wra.398.1618326797381;
+        Tue, 13 Apr 2021 08:13:17 -0700 (PDT)
+Received: from michael-VirtualBox.xsight.ent (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
+        by smtp.googlemail.com with ESMTPSA id l4sm18214808wrx.24.2021.04.13.08.13.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 08:13:16 -0700 (PDT)
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     dan.carpenter@oracle.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, wsa@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Subject: [PATCH] HID: ft260: check data size in ft260_smbus_write()
+Date:   Tue, 13 Apr 2021 18:12:00 +0300
+Message-Id: <20210413151200.2174-1-michael.zaidman@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1268563.1618326701.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 13 Apr 2021 16:11:41 +0100
-Message-ID: <1268564.1618326701@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add three functions to manipulate PG_private_2:
+Fixes: 98189a0adfa0 ("HID: ft260: add usb hid to i2c host bridge driver")
 
- (*) set_page_private_2() - Set the flag and take an appropriate reference
-     on the flagged page.
+The SMbus block transaction limits the number of bytes transferred to 32,
+but nothing prevents a user from specifying via ioctl a larger data size
+than the ft260 can handle in a single transfer.
 
- (*) end_page_private_2() - Clear the flag, drop the reference and wake up
-     any waiters, somewhat analogously with end_page_writeback().
+i2cdev_ioctl_smbus()
+   --> i2c_smbus_xfer
+       --> __i2c_smbus_xfer
+           --> ft260_smbus_xfer
+               --> ft260_smbus_write
 
- (*) wait_on_page_private_2() - Wait for the flag to be cleared.
+This patch adds data size checking in the ft260_smbus_write().
 
-Wrappers will need to be placed in the netfs lib header in the patch that
-adds that.
-
-[This implements a suggestion by Linus[1] to not mix the terminology of
- PG_private_2 and PG_fscache in the mm core function]
-
-Changes:
-v7:
-- Use compound_head() in all the functions to make them THP safe[6].
-
-v5:
-- Add set and end functions, calling the end function end rather than
-  unlock[3].
-- Keep a ref on the page when PG_private_2 is set[4][5].
-
-v4:
-- Remove extern from the declaration[2].
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Tested-by: Jeff Layton <jlayton@kernel.org>
-Tested-by: Dave Wysochanski <dwysocha@redhat.com>
-cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>
-cc: Christoph Hellwig <hch@lst.de>
-cc: linux-mm@kvack.org
-cc: linux-cachefs@redhat.com
-cc: linux-afs@lists.infradead.org
-cc: linux-nfs@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: v9fs-developer@lists.sourceforge.net
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/1330473.1612974547@warthog.procyon.org.uk/=
- # v1
-Link: https://lore.kernel.org/r/CAHk-=3DwjgA-74ddehziVk=3DXAEMTKswPu1Yw4ua=
-ro1R3ibs27ztw@mail.gmail.com/ [1]
-Link: https://lore.kernel.org/r/20210216102659.GA27714@lst.de/ [2]
-Link: https://lore.kernel.org/r/161340387944.1303470.7944159520278177652.s=
-tgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539528910.286939.1252328699383291173.st=
-git@warthog.procyon.org.uk # v4
-Link: https://lore.kernel.org/r/20210321105309.GG3420@casper.infradead.org=
- [3]
-Link: https://lore.kernel.org/r/CAHk-=3Dwh+2gbF7XEjYc=3DHV9w_2uVzVf7vs60BP=
-z0gFA=3D+pUm3ww@mail.gmail.com/ [4]
-Link: https://lore.kernel.org/r/CAHk-=3DwjSGsRj7xwhSMQ6dAQiz53xA39pOG+XA_W=
-eTgwBBu4uqg@mail.gmail.com/ [5]
-Link: https://lore.kernel.org/r/20210408145057.GN2531743@casper.infradead.=
-org/ [6]
-Link: https://lore.kernel.org/r/161653788200.2770958.9517755716374927208.s=
-tgit@warthog.procyon.org.uk/ # v5
-Link: https://lore.kernel.org/r/161789066013.6155.9816857201817288382.stgi=
-t@warthog.procyon.org.uk/ # v6
+Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- include/linux/pagemap.h |   20 +++++++++++++++
- mm/filemap.c            |   61 ++++++++++++++++++++++++++++++++++++++++++=
-++++++
- 2 files changed, 81 insertions(+)
+ drivers/hid/hid-ft260.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 8c9947fd62f3..bb4433c98d02 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -688,6 +688,26 @@ void wait_for_stable_page(struct page *page);
- =
-
- void page_endio(struct page *page, bool is_write, int err);
- =
-
-+/**
-+ * set_page_private_2 - Set PG_private_2 on a page and take a ref
-+ * @page: The page.
-+ *
-+ * Set the PG_private_2 flag on a page and take the reference needed for =
-the VM
-+ * to handle its lifetime correctly.  This sets the flag and takes the
-+ * reference unconditionally, so care must be taken not to set the flag a=
-gain
-+ * if it's already set.
-+ */
-+static inline void set_page_private_2(struct page *page)
-+{
-+	page =3D compound_head(page);
-+	get_page(page);
-+	SetPagePrivate2(page);
-+}
+diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
+index 047aa85a7c83..080623b3abbe 100644
+--- a/drivers/hid/hid-ft260.c
++++ b/drivers/hid/hid-ft260.c
+@@ -201,7 +201,7 @@ struct ft260_i2c_write_request_report {
+ 	u8 address;		/* 7-bit I2C address */
+ 	u8 flag;		/* I2C transaction condition */
+ 	u8 length;		/* data payload length */
+-	u8 data[60];		/* data payload */
++	u8 data[FT260_WR_DATA_MAX]; /* data payload */
+ } __packed;
+ 
+ struct ft260_i2c_read_request_report {
+@@ -429,6 +429,9 @@ static int ft260_smbus_write(struct ft260_device *dev, u8 addr, u8 cmd,
+ 	struct ft260_i2c_write_request_report *rep =
+ 		(struct ft260_i2c_write_request_report *)dev->write_buf;
+ 
++	if (data_len >= sizeof(rep->data))
++		return -EINVAL;
 +
-+void end_page_private_2(struct page *page);
-+void wait_on_page_private_2(struct page *page);
-+int wait_on_page_private_2_killable(struct page *page);
-+
- /*
-  * Add an arbitrary waiter to a page's wait queue
-  */
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 43700480d897..afe22f09960e 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1432,6 +1432,67 @@ void unlock_page(struct page *page)
- }
- EXPORT_SYMBOL(unlock_page);
- =
-
-+/**
-+ * end_page_private_2 - Clear PG_private_2 and release any waiters
-+ * @page: The page
-+ *
-+ * Clear the PG_private_2 bit on a page and wake up any sleepers waiting =
-for
-+ * this.  The page ref held for PG_private_2 being set is released.
-+ *
-+ * This is, for example, used when a netfs page is being written to a loc=
-al
-+ * disk cache, thereby allowing writes to the cache for the same page to =
-be
-+ * serialised.
-+ */
-+void end_page_private_2(struct page *page)
-+{
-+	page =3D compound_head(page);
-+	VM_BUG_ON_PAGE(!PagePrivate2(page), page);
-+	clear_bit_unlock(PG_private_2, &page->flags);
-+	wake_up_page_bit(page, PG_private_2);
-+	put_page(page);
-+}
-+EXPORT_SYMBOL(end_page_private_2);
-+
-+/**
-+ * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a page
-+ * @page: The page to wait on
-+ *
-+ * Wait for PG_private_2 (aka PG_fscache) to be cleared on a page.
-+ */
-+void wait_on_page_private_2(struct page *page)
-+{
-+	page =3D compound_head(page);
-+	while (PagePrivate2(page))
-+		wait_on_page_bit(page, PG_private_2);
-+}
-+EXPORT_SYMBOL(wait_on_page_private_2);
-+
-+/**
-+ * wait_on_page_private_2_killable - Wait for PG_private_2 to be cleared =
-on a page
-+ * @page: The page to wait on
-+ *
-+ * Wait for PG_private_2 (aka PG_fscache) to be cleared on a page or unti=
-l a
-+ * fatal signal is received by the calling task.
-+ *
-+ * Return:
-+ * - 0 if successful.
-+ * - -EINTR if a fatal signal was encountered.
-+ */
-+int wait_on_page_private_2_killable(struct page *page)
-+{
-+	int ret =3D 0;
-+
-+	page =3D compound_head(page);
-+	while (PagePrivate2(page)) {
-+		ret =3D wait_on_page_bit_killable(page, PG_private_2);
-+		if (ret < 0)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(wait_on_page_private_2_killable);
-+
- /**
-  * end_page_writeback - end writeback against a page
-  * @page: the page
+ 	rep->address = addr;
+ 	rep->data[0] = cmd;
+ 	rep->length = data_len + 1;
+-- 
+2.25.1
 
