@@ -2,205 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA6635D4BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1648B35D4C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241031AbhDMBWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:22:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28318 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235837AbhDMBWS (ORCPT
+        id S244953AbhDMBY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240522AbhDMBY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:22:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618276919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NEBjah6KfnPorZE8w92CEcFAPh+QAGov51+i+ByIFoM=;
-        b=Cz1P3TT46JJdZqreKS9C1BcSFp1FdVgkDteWZSR2GXifkP624MkGCegkavEev0jqv3bSOO
-        TtWajD2S2G4QWLyIx7Qs/Ir/b0C8DjK57/uMuLHGKGuhNgV163Oy/dF5BwXp6gKrc/q7NY
-        DwMwSVGxMNrueM0edf9G1FZ8GweRrTI=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-V1jB-rAdMRSDZ3xNc6iijA-1; Mon, 12 Apr 2021 21:21:57 -0400
-X-MC-Unique: V1jB-rAdMRSDZ3xNc6iijA-1
-Received: by mail-qk1-f198.google.com with SMTP id o4so1580041qkg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:21:57 -0700 (PDT)
+        Mon, 12 Apr 2021 21:24:28 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7DEC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:24:09 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id b17so12734257ilh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dUmp65OKga7Fa908vsiFesS/CNcu0CoSYOI2iJ8BVn0=;
+        b=mWH1jvzIIsqbQO0VCrMBUeKY1REO7QIAXg2Ahso0oMwbDF7Gp/0EjZvMLUqcQDz0OY
+         edT/vE9WE1yOEOP+MnkNV6U96gQeADW0Y36UOZ8YSwn3DWLcTsVAAvLQ7wNCiEiDOWuP
+         vt2ZUAPTA6IsVUYbuh6nNXJKBlhlCjXtE2fXPQ4bTnQdEIvJsUspi9n9R+6BYOd7aHnv
+         pw6AV6gg/8ldKbGsriPVIP2xtrb/udPEe0HHxfl20R38HhKSspQNeh+Z51rEk8A/hMgM
+         abU/0le3+VyFGs7gxcwTieM41JpAU5Me1SqhOZXuoU/Sp0po06Dn+lQlHzupvS+NEQti
+         IeUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NEBjah6KfnPorZE8w92CEcFAPh+QAGov51+i+ByIFoM=;
-        b=ek4fAgTxpXIlQHJm56DDJTNutaAQCu4qRW/RwogBVV/Gyj/CHMT0/+lQ6MAifSFYFJ
-         BwUNPfFalnnftt34N5VTJs2wLQWtOf1V5OdIBqgGda8ubc4bqBdjiWkBOxCHkmqQKXEd
-         M09rKFWsnT5PqUcrKNWb9NVgNf3uznL7F8K/QgHy5HaMmQvNH7IYOVQ8jy1ZrGkBmgcZ
-         SOedmUqwLQZM/WgikQxOjh6DH8Seh2TLp5RTSQVS3dQkTd3ENOp8n9xdA5LMz4KZYFGU
-         GV75TaQ3lUvrz/HRUiXSmYW14aiOhPK6SJhTQYu6vhW7myMxN0o0B9VqsLQeOw7zm1tT
-         /sZA==
-X-Gm-Message-State: AOAM532K3Td2mDFGiS1Gik/J5PPZlwUi/jaMOsWzqvMeG+pYka9aKNxe
-        wkPrZDjnfCVW6rbAWatpVGjt4lmurB8au6gMKHLgYEJxUMzJ193HJy6XO9KVP1QghT88cSc+gP4
-        Aeo1SVSdEN1MgOvealqauEHe+
-X-Received: by 2002:ac8:5996:: with SMTP id e22mr29052759qte.64.1618276916969;
-        Mon, 12 Apr 2021 18:21:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+67rQx0v+TacpKguZsqrrTReCrJzBFDPqLkJ0oEZn8JA/kzQvGaBMhEOyxp/AVVcMzR5Q6Q==
-X-Received: by 2002:ac8:5996:: with SMTP id e22mr29052737qte.64.1618276916674;
-        Mon, 12 Apr 2021 18:21:56 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id t4sm2659038qkg.75.2021.04.12.18.21.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 18:21:55 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 21:21:52 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTINUE behavior
-Message-ID: <20210413012152.GE1002612@xz-x1>
-References: <20210401183701.1774159-1-axelrasmussen@google.com>
- <alpine.LSU.2.11.2104062307110.14082@eggly.anvils>
- <20210412215437.GA1001332@xz-x1>
- <alpine.LSU.2.11.2104121657050.1097@eggly.anvils>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dUmp65OKga7Fa908vsiFesS/CNcu0CoSYOI2iJ8BVn0=;
+        b=AyxfvX+mM3vvS2jl851MmgDd28IIPXu8C7Qi2H32uW81R5iFbuHpSkC5BNpcSCqoYw
+         Y1FbM0gpYZJqxcZhZOxfM8hdYNUdaQbI1W/VswTTDGnBDGYh2XBXIKyoENVi7lWjj0QE
+         VebrGbD/xcYEHxIIo76dnNuU1ozlrz/sDMz+M9zLDYXvIXyJZnTRvnseInE7NRZTPT3o
+         PmHd9A/KNSQ1aCTnn4SfTg91gO0UU1QH2dt4eFUWbeEweMQBXX6rOqqeRTaLFrcc+6vE
+         7iL4dp8T6QpmJtyxHQMVwDEip+v8tbEpkGBYUeAk77YpjJpwy9VpCINo/IoxBgpu/YY0
+         GRSg==
+X-Gm-Message-State: AOAM532K1xzetSctaPmM+7ku5TD5hLNUw6C/6kxRa8KiK/yvT5UlDJ32
+        ijVybXf/KYg0lYTMQJhQgK3Q9bmwyCM7KN4Ol5nfVg==
+X-Google-Smtp-Source: ABdhPJzwDZOMOYmg6Afacdfp+S385yZo/J1B4fzYR1tYx3UW8QwSYc2S7e02Pwuu4lmET6uOaU/cikaq8jE1zZG5Eaw=
+X-Received: by 2002:a05:6e02:12b4:: with SMTP id f20mr24887556ilr.212.1618277048665;
+ Mon, 12 Apr 2021 18:24:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2104121657050.1097@eggly.anvils>
+References: <cover.1618254007.git.ashish.kalra@amd.com> <c349516d85d9e3fc7404d564ff81d7ebecc1162c.1618254007.git.ashish.kalra@amd.com>
+ <CABayD+cNLdoPHYvw0ZAXZS2wRg4cCFGTMvON0Ja2cWJ4juHNbA@mail.gmail.com>
+In-Reply-To: <CABayD+cNLdoPHYvw0ZAXZS2wRg4cCFGTMvON0Ja2cWJ4juHNbA@mail.gmail.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 12 Apr 2021 18:23:32 -0700
+Message-ID: <CABayD+c2P9miY2pKG=k1Ey3cj6RZG98WgssLCnBJgoW9Fng7gg@mail.gmail.com>
+Subject: Re: [PATCH v12 13/13] x86/kvm: Add kexec support for SEV Live Migration.
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 05:51:14PM -0700, Hugh Dickins wrote:
-> On Mon, 12 Apr 2021, Peter Xu wrote:
-> > On Tue, Apr 06, 2021 at 11:14:30PM -0700, Hugh Dickins wrote:
-> > > > +static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-> > > > +				     struct vm_area_struct *dst_vma,
-> > > > +				     unsigned long dst_addr, struct page *page,
-> > > > +				     enum mcopy_atomic_mode mode, bool wp_copy)
-> > > > +{
-> > 
-> > [...]
-> > 
-> > > > +	if (writable) {
-> > > > +		_dst_pte = pte_mkdirty(_dst_pte);
-> > > > +		if (wp_copy)
-> > > > +			_dst_pte = pte_mkuffd_wp(_dst_pte);
-> > > > +		else
-> > > > +			_dst_pte = pte_mkwrite(_dst_pte);
-> > > > +	} else if (vm_shared) {
-> > > > +		/*
-> > > > +		 * Since we didn't pte_mkdirty(), mark the page dirty or it
-> > > > +		 * could be freed from under us. We could do this
-> > > > +		 * unconditionally, but doing it only if !writable is faster.
-> > > > +		 */
-> > > > +		set_page_dirty(page);
-> > > 
-> > > I do not remember why Andrea or I preferred set_page_dirty() here to
-> > > pte_mkdirty(); but I suppose there might somewhere be a BUG_ON(pte_dirty)
-> > > which this would avoid.  Risky to change it, though it does look odd.
-> > 
-> > Is any of the possible BUG_ON(pte_dirty) going to trigger because the pte has
-> > write bit cleared?  That's one question I was not very sure, e.g., whether one
-> > pte is allowed to be "dirty" if it's not writable.
-> > 
-> > To me it's okay, it's actually very suitable for UFFDIO_COPY case, where it is
-> > definitely dirty data (so we must never drop it) even if it's installed as RO,
-> > however to achieve that we can still set the dirty on the page rather than the
-> > pte as what we do here.  It's just a bit awkward as you said.
-> > 
-> > Meanwhile today I just noticed this in arm64 code:
-> > 
-> > static inline pte_t pte_wrprotect(pte_t pte)
-> > {
-> > 	/*
-> > 	 * If hardware-dirty (PTE_WRITE/DBM bit set and PTE_RDONLY
-> > 	 * clear), set the PTE_DIRTY bit.
-> > 	 */
-> > 	if (pte_hw_dirty(pte))
-> > 		pte = pte_mkdirty(pte);
-> > 
-> > 	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
-> > 	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
-> > 	return pte;
-> > }
-> > 
-> > So arm64 will explicitly set the dirty bit (from the HW dirty bit) when
-> > wr-protect.  It seems to prove that at least for arm64 it's very valid to have
-> > !write && dirty pte.
-> 
-> I did not mean to imply that it's wrong to have pte_dirty without
-> pte_write: no, I agree with you, I believe that there are accepted
-> and generic ways in which we can have pte_dirty without pte_write
-> (and we could each probably add a warning somewhere which would
-> very quickly prove that - but those would not prove that there
-> are not BUG_ONs on some other path, which had been my fear).
-> 
-> I wanted now to demonstrate that by pointing to change_pte_range() in
-> mm/mprotect.c, showing that it does not clear pte_dirty when it clears
-> pte_write. But alarmingly found rather the reverse: that it appears to
-> set pte_write when it finds pte_dirty - if dirty_accountable.
-> 
-> That looks very wrong, but if I spent long enough following up
-> dirty_accountable in detail, I think I would be reassured to find that
-> it is only adding the pte_write there when it had removed it from the
-> prot passed down, for dirty accounting reasons (which apply !VM_SHARED
-> protections in the VM_SHARED case, so that page_mkwrite() is called
-> and dirty accounting done when necessary).
-> 
-> What I did mean to imply is that changing set_page_dirty to pte_mkdirty,
-> to make that userfaultfd code block look nicer, is not a change to be
-> done lightly: by all means try it out, test it, and send a patch after
-> Axel's series is in, but please do not ask Axel to make that change as
-> a part of his series - it would be taking a risk, just for a cleanup.
+On Mon, Apr 12, 2021 at 5:22 PM Steve Rutherford <srutherford@google.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 12:48 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+> >
+> > From: Ashish Kalra <ashish.kalra@amd.com>
+> >
+> > Reset the host's shared pages list related to kernel
+> > specific page encryption status settings before we load a
+> > new kernel by kexec. We cannot reset the complete
+> > shared pages list here as we need to retain the
+> > UEFI/OVMF firmware specific settings.
+> >
+> > The host's shared pages list is maintained for the
+> > guest to keep track of all unencrypted guest memory regions,
+> > therefore we need to explicitly mark all shared pages as
+> > encrypted again before rebooting into the new guest kernel.
+> >
+> > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > ---
+> >  arch/x86/kernel/kvm.c | 24 ++++++++++++++++++++++++
+> >  1 file changed, 24 insertions(+)
+> >
+> > diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> > index bcc82e0c9779..4ad3ed547ff1 100644
+> > --- a/arch/x86/kernel/kvm.c
+> > +++ b/arch/x86/kernel/kvm.c
+> > @@ -39,6 +39,7 @@
+> >  #include <asm/cpuidle_haltpoll.h>
+> >  #include <asm/ptrace.h>
+> >  #include <asm/svm.h>
+> > +#include <asm/e820/api.h>
+> >
+> >  DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
+> >
+> > @@ -384,6 +385,29 @@ static void kvm_pv_guest_cpu_reboot(void *unused)
+> >          */
+> >         if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
+> >                 wrmsrl(MSR_KVM_PV_EOI_EN, 0);
+> > +       /*
+> > +        * Reset the host's shared pages list related to kernel
+> > +        * specific page encryption status settings before we load a
+> > +        * new kernel by kexec. NOTE: We cannot reset the complete
+> > +        * shared pages list here as we need to retain the
+> > +        * UEFI/OVMF firmware specific settings.
+> > +        */
+> > +       if (sev_live_migration_enabled & (smp_processor_id() == 0)) {
+> What happens if the reboot of CPU0 races with another CPU servicing a
+> device request (while the reboot is pending for that CPU)?
+> Seems like you could run into a scenario where you have hypercalls racing.
+>
+> Calling this on every core isn't free, but it is an easy way to avoid this race.
+> You could also count cores, and have only last core do the job, but
+> that seems more complicated.
+On second thought, I think this may be insufficient as a fix, since my
+read of kernel/reboot.c seems to imply that devices aren't shutdown
+until after these notifiers occur. As such, a single thread might be
+able to race with itself. I could be wrong here though.
 
-Fair enough.  Sorry if I wasn't clear when asking, the reason to ask was that I
-wanted to be clear on these differences.  For example, in my uffd-wp shmem
-series I'll have to make sure dirty bit always there, I used pte_mkdirty()
-unconditionally but I wanted to make sure I'm not overlooking anything..
+The heavy hammer would be to disable migration through the MSR (which
+the subsequent boot will re-enable).
 
-Though this case is slightly special here, since if without the cleaning up the
-logic will definitely be harder to review (with the cleanup, it'll be as simple
-as one unconditional pte_mkdirty() and that's all).  However you're definitely
-right, it's not a reason to overload Axel with this patchset, especially if
-such a cleanup is seen to be risky.
+I'm curious if there is a less "blocking" way of handling kexecs (that
+strategy would block LM while the guest booted).
 
-> 
-> Now, I have also looked up the mail exchange with Andrea which led to
-> his dcf7fe9d8976 ("userfaultfd: shmem: UFFDIO_COPY: set the page dirty
-> if VM_WRITE is not set") - it had to be off-list at the time.  And he
-> was rather led to that set_page_dirty by following old patterns left
-> over in shmem_getpage_gfp(); but when I said "or it could be done with
-> pte_mkdirty without pte_mkwrite", he answered "I explicitly avoided
-> that because pte_dirty then has side effects on mprotect to decide
-> pte_write. It looks safer to do set_page_dirty and not set dirty bits
-> in not writable ptes unnecessarily".
-> 
-> Haha: I think Andrea is referring to exactly the dirty_accountable code
-> in change_pte_protection() which worried me above. Now, I think that
-> will turn out okay (shmem does not have a page_mkwrite(), and does not
-> participate in dirty accounting), but you will have to do some work to
-> assure us all of that, before sending in a cleanup patch.
+One option that comes to mind would be for the guest to "mute" the
+encryption status hypercall after the call to reset the encryption
+status. The problem would be that the encryption status for pages
+would be very temporarily inaccurate in the window between that call
+and the start of the next boot. That isn't ideal, but, on the other
+hand, the VM was about to reboot anyway, so a corrupted shared page
+for device communication probably isn't super important. Still, I'm
+not really a fan of that. This would avoid corrupting the next boot,
+which is clearly an improvement.
 
-OK. Maybe I can clean this after Axel's work.
+Each time the kernel boots it could also choose something like a
+generation ID, and pass that down each time it calls the hypercall.
+This would then let userspace identify which requests were coming from
+the subsequent boot.
 
-Thanks a lot for all these details, Hugh!
+Everything here (except, perhaps, disabling migration through the MSR)
+seems kind of complicated. I somewhat hope my interpretation of
+kernel/reboot.c is wrong and this race just is not possible in the
+first place.
 
--- 
-Peter Xu
-
+Steve
+> Steve
+> > +               int i;
+> > +               unsigned long nr_pages;
+> > +
+> > +               for (i = 0; i < e820_table->nr_entries; i++) {
+> > +                       struct e820_entry *entry = &e820_table->entries[i];
+> > +
+> > +                       if (entry->type != E820_TYPE_RAM)
+> > +                               continue;
+> > +
+> > +                       nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
+> > +
+> > +                       kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
+> > +                                          entry->addr, nr_pages, 1);
+> > +               }
+> > +       }
+> >         kvm_pv_disable_apf();
+> >         kvm_disable_steal_time();
+> >  }
+> > --
+> > 2.17.1
+> >
