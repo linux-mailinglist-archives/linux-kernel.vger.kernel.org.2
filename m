@@ -2,121 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB12F35E40B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE0B35E410
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238649AbhDMQej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:34:39 -0400
-Received: from mail-bn8nam11on2044.outbound.protection.outlook.com ([40.107.236.44]:51680
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346007AbhDMQeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:34:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HcGf85yVsKrgTuzVtZZJToNWnfdPjEP9NqDY1uEw6+ItdIvfHK3tsasTJCdRmc6XuEB1n6m4Nk0rwNk+K0Gcz046VkMAFZHVY8v2AuI+DwRYjjwOPNNTxQz1Fu+JIZ2i8t9uVIx/scWHLIju1RNqnlN4hNYqMENBTLVzZkTfFrjG3OQkcJOaKS7yAcAVYWxZoALNtnSltHgbZxWOTBqBuNd4I67FkMbF0RMy/n3rzldJLnBnRnmfHfmArO2m1hLlsJxFa8vBr+NsGg80+5OaM1YlkrMA4HLhL9OWzPMFtGpXxKw2iw9kgD+i2ketUAceNJU5s/uHYrCpWDThmsONGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4jt7SGaKuTQg/lEhlBBgjpklFH0XCnmrUUw0eUkUGZs=;
- b=mhpyUnDmQppLni50owXUU8BRUDDbHAStxlEYkKM01fiBPDTIJFbmfNWq+9tqVrldLjKqJ66juNSGIXQRTTSDE7uKZBHSe7JWwlAT3pICdXhhR/TdXetm4hRiZ90rKFiH7UTQn5IeOw84W3juXtJN4VSov7ku2I4LpkiRMZPOyedOdw7d9yttYGxLaX2YkN/n9i7CSRlY+pGZkIJV9zCjt/5qrHOZeEczMDGs709BmrCFOTolWA4CslMPBWsbLKvgYBFyoOkFozPT2O4N1mKdVpftYVQmZLaT6HxKFKGRpQzSevcF2QFPcOGy2yumoeEGSRV3hHXg6QQaHPtrbIpyFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4jt7SGaKuTQg/lEhlBBgjpklFH0XCnmrUUw0eUkUGZs=;
- b=InStdmH9Pg83mhRrFUaWyOIs7eGqLcZe+18LhkLhCt5efAGqR6IGI8tql0xQ++GgPGyLNRUwpDr7WIbJzJ698P9SlbZ6q977v0lgGJpd2VX3xz9gMqBIvgSN8qC8OguGu58kayVSvgMKGMf6tyi2EFBzMdbPHRHhXAL7gKszIR92htj5jrgi0vwUnyyKX+egXsqUvChXdgAvZbmWYcPY140dW2tdqNB0DLattyO/Yw9tVYLZG1snVJqHv4kVL+p5oXx3NBSWJKPF43bFPx8GZPd30X4qMiXAeH4fiJKfy/H69W1qmKP8BGb6K6P8+l17TKRMdk9S0Yrxtvq86JI9nA==
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1515.namprd12.prod.outlook.com (2603:10b6:4:6::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.18; Tue, 13 Apr 2021 16:34:15 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 16:34:15 +0000
-Date:   Tue, 13 Apr 2021 13:34:13 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/hw/qib/qib_iba7322: remove useless function
-Message-ID: <20210413163413.GB1318921@nvidia.com>
-References: <1618305063-29007-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S1345748AbhDMQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:34:51 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:43568 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345270AbhDMQes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 12:34:48 -0400
+Received: by mail-oi1-f174.google.com with SMTP id a21so4509136oib.10;
+        Tue, 13 Apr 2021 09:34:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3b8Z/9OKRORHY6YjV3qZPMI7BwgvqRGP23arTb9UMNk=;
+        b=C7MxYDLkauMMgLTVp+d/jsfnJFe7MhPxfel3tC8vTLyX2cdBuPzs6epd43JTty+a/e
+         y1LneozNM6Y3NaLykdxYFVJL+6opOgpUWnq79p8//OHoKkvIfM1swZF3xhh72WCb6mMf
+         pjVnE5MO2XLmjSDbXbk83DjjHz8qnxEspW6xXDifIez1dU5aEmBao1Ni9zvPotxqBXfH
+         vFUy5ty5ENp5FkYBWmvPewfSxG7FFe2BjFf33aewOGoYYzb6uJxEoBZ6y85fhiq4nvvk
+         3oia8foEU1HxKx3xLkgrjfgVYsd7tkU6NcE+6tQLYyKhYlVDBFu0ADcrM9Q5Hh4O2u53
+         eb1A==
+X-Gm-Message-State: AOAM531GEz1lwQGHQZWBReyy7i3BTmy/xnrQxd9/h6VPUvCr/AfxQv32
+        8qmo/pPt5Q8m3+jIKIctaw==
+X-Google-Smtp-Source: ABdhPJzuSEPUm2+DNDhylZ5DaM1ljMcgi8V0tBx1KY3fGWb1MC8/rcJcIssFP/trm7Kk4r8vKva5YQ==
+X-Received: by 2002:aca:3b88:: with SMTP id i130mr607502oia.26.1618331668422;
+        Tue, 13 Apr 2021 09:34:28 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p22sm3650602otf.25.2021.04.13.09.34.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 09:34:27 -0700 (PDT)
+Received: (nullmailer pid 1794363 invoked by uid 1000);
+        Tue, 13 Apr 2021 16:34:26 -0000
+Date:   Tue, 13 Apr 2021 11:34:26 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        jacopo@jmondi.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 30/33] dt-bindings: media: add microchip,xisc device
+ bindings
+Message-ID: <20210413163426.GA1791337@robh.at.kernel.org>
+References: <20210413105731.610028-1-eugen.hristev@microchip.com>
+ <20210413105731.610028-31-eugen.hristev@microchip.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618305063-29007-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR14CA0012.namprd14.prod.outlook.com
- (2603:10b6:208:23e::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR14CA0012.namprd14.prod.outlook.com (2603:10b6:208:23e::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 16:34:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lWLzR-005X8S-MI; Tue, 13 Apr 2021 13:34:13 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad585f3a-cf0f-4f90-a76c-08d8fe99f9e3
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1515:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1515AD23EFF24CCECCF5933BC24F9@DM5PR12MB1515.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qm9hVRAh0FfYAPRhaEW3lgNYBF4iw3ecoC3h3qJW/IAPZHZWk0FGa+9+Qun40/5AIlf61fFBrDX4cb1L2jRY8MXYhie8QIA6m14/hh/EeJd2a6h8fW8B3tocdc2tH5YOH4U3l5iDqCPKQghKg7WZzWOvS0jUwd49DCRdBKNkEwd/kc+Rorx/EKHQRorOW5J5Vwe4X5IITu+gdxXny8OjLY6U4yS3y+9GSEs0k127L2YOfiolgCO2ZlWvI7+4J7FZB5E6rc8poaXpY7//dhv16aJo8zS/cEYwrmULsv8kFhZCZ9UiEeppyJUSAAiOXiFujUxPBnBbfazUN+tPwmtBqXGGp7Ve3gnVtfA1wyQdUVr3bYkKV5qS2FwmY0/fy0JI/QqZBWnY3TtlWeSE3sZtXkEmFBxKysBvxASlW/nDfWVvSxa1EEdAVgLI0qr1W9g5qfBrQOWBc1cq7muSQc9P/nmc6weXtSV5oZulZ254qCcnQK4Zvr2Sv0ZCQ0V3nRc/QSOyqk1xdNDH9JmAQ8RcOmFNihUuO/7R2rsK5zEWiS4zan8xEEBz8GtULcFCS72YJRLOWr4t4QDZbIQbigZyPsO9RRk7Lvpy7p2qTqZ+Z/A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(396003)(366004)(376002)(9786002)(6916009)(8936002)(316002)(2906002)(9746002)(83380400001)(86362001)(8676002)(26005)(5660300002)(66556008)(66476007)(36756003)(2616005)(4744005)(1076003)(33656002)(478600001)(66946007)(4326008)(426003)(38100700002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Yd4rdnVDMCszy3uG2c2sL1IzMjuOnFvcBJ2JvzdEpTwJLlts0DH7Sqr8KPGx?=
- =?us-ascii?Q?mHuSdfQIP+P5MGU4cB58hlgcRipadwfcqgGYZzCzMKgQNTYnVv0wZTI00gA+?=
- =?us-ascii?Q?i7xNERfHI72lZIxJccycAmsZNZ4QaaUsXJbsaaWkqVskLjFJVdUGKooTnMT7?=
- =?us-ascii?Q?MYq8SUHIMnWtDnj1rKQs2CIfm8Ur44bz2yK05r4yTvY0cMDcfKfdoQfQ6ONR?=
- =?us-ascii?Q?XvYAdQnzZjTeQ5XngzZMlsriwIrP58Md/cIlzHHwawbawLAMCWV9zwBEIP01?=
- =?us-ascii?Q?2Q6nXunft/Gv6u3Q1QXIj4K8e8pnE9BzEFWue5g4P3OwxCuWxLjLc5JRrQkk?=
- =?us-ascii?Q?Aq/BdBBmsQe2vN7OqfDq6JzFHaTEKGqpNi3ytRCjm0kizUXKTWcP0BT60bSX?=
- =?us-ascii?Q?lsdnP2ysd0xxcWDcIFkKr6RRqYVUYzpLulRiUudY4NOAIGM1e/Tmimv8sUoQ?=
- =?us-ascii?Q?gSt5kYpCwLlcMGdJJkBjgxBHwjnV9VvvsQPHssdFVvgkZqXnHN28ntHx+3H8?=
- =?us-ascii?Q?/okEDoHHaIwzrzh4H9e6XfuzPkMeJSsrQn3PH4ihJJgz1YiRrxEqEUx/412a?=
- =?us-ascii?Q?Kl2FGY4jDSGgrnuMQUDHV9cUrq4UY5XHF4IeddfYczJVA8YgTdKRt9PXaOCw?=
- =?us-ascii?Q?kZhqiyHYjw7HpPDntVJTTf3ugS/g+R7ojF+SP9i0W0kMe3B0SFsB2EZ0cGGr?=
- =?us-ascii?Q?R/zMrp7hywyrM84dWiFGTsMKWSiOLg/clKXJu4yfmYVXggPDn6jHcTdODzb+?=
- =?us-ascii?Q?NYbzMGP3ZTxVtabcnrcHptitco7HsXygvGji3Elxs2g3BcZ+eb/kHWyGFj/Q?=
- =?us-ascii?Q?TYwVFXhqRfdctjiAb/dnE8OKDCgI6Xr9v5ij0cEMnEdKCWLnP/9fk5pSuAMA?=
- =?us-ascii?Q?OrCm+VI3a3E0NPwbBan7ZGHKBLDaWxsPa+xUmrvZYEUhj5RktvV06FJfc8aI?=
- =?us-ascii?Q?YMFrlxz0B989ukXT3WAJlLwjJFdOAeZAe0ni99gmhIztfX2e/ZhEzcKXDJ7H?=
- =?us-ascii?Q?nDRTsearYQ/vlx3U5YCmFgdwR4XZSoMZZJADjJwfHV2nyELpERftswj8RCct?=
- =?us-ascii?Q?On8G+isltKYr/dPJfDNDhs3GH6J6bbnurGUlXPEj1Fl45Nys9ChRXz5XrPbB?=
- =?us-ascii?Q?KNz+F2CFDQvauuAFoiRJJM/jeclZCggML//UijaQFuRrBpFF9h7z/kuVEPFq?=
- =?us-ascii?Q?oZq4QzEkiZqoP1F1bNyWNwotNV7FiBex4mwaYLhJy3bUaq+vsl0sKZ90JZQB?=
- =?us-ascii?Q?F7+PZ9FjiN2PM0oRkrJX2T5CFmFYj2g6nnTcCJDzXJejdVfST02NqMenFzQf?=
- =?us-ascii?Q?taHQMGHn684d03IhpJyQhLiwAoiwnYZras4W/Ei+S+5xhA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad585f3a-cf0f-4f90-a76c-08d8fe99f9e3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 16:34:15.2021
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e/4mm/x/158QwOqtE5bbarprGn6J1kLZ5YEmtJ453jvd4fnqxrVmrzTAm6zLKut3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1515
+In-Reply-To: <20210413105731.610028-31-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 05:11:03PM +0800, Jiapeng Chong wrote:
-> Fix the following clang warning:
+On Tue, Apr 13, 2021 at 01:57:28PM +0300, Eugen Hristev wrote:
+> Add bindings for the Microchip eXtended Image Sensor Controller.
+> Based on the atmel,isc.yaml binding.
 > 
-> drivers/infiniband/hw/qib/qib_iba7322.c:803:19: warning: unused function
-> 'qib_read_ureg' [-Wunused-function].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 > ---
->  drivers/infiniband/hw/qib/qib_iba7322.c | 22 ----------------------
->  1 file changed, 22 deletions(-)
+>  .../bindings/media/microchip,xisc.yaml        | 129 ++++++++++++++++++
+>  1 file changed, 129 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/microchip,xisc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/microchip,xisc.yaml b/Documentation/devicetree/bindings/media/microchip,xisc.yaml
+> new file mode 100644
+> index 000000000000..e3825c4e13f8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/microchip,xisc.yaml
+> @@ -0,0 +1,129 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 
-Applied to for-next, thanks
+Dual license new bindings:
 
-Jason
+GPL-2.0-only OR BSD-2-Clause
+
+> +# Copyright (C) 2021 Microchip Technology, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/microchip,xisc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip eXtended Image Sensor Controller (XISC)
+> +
+> +maintainers:
+> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> +
+> +description:
+
+You need '|' on the end if you want to preserve line breaks.
+
+> +  The eXtended Image Sensor Controller (XISC) device provides the video input capabilities for the
+> +  Microchip AT91 SAM family of devices.
+> +
+> +  The XISC has a single internal parallel input that supports RAW Bayer, RGB or YUV video.
+> +  The source can be either a demuxer from a CSI2 type of bus, or a simple direct bridge to a
+> +  parallel sensor.
+> +
+> +  The XISC provides one clock output that is used to clock the demuxer/bridge.
+> +
+> +properties:
+> +  compatible:
+> +    const: microchip,sama7g5-isc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: hclock
+> +
+> +  '#clock-cells':
+> +    const: 0
+> +
+> +  clock-output-names:
+> +    const: isc-mck
+> +
+> +  microchip,mipi-mode:
+> +    type: boolean
+> +    description:
+> +      As the XISC is usually connected to a demux/bridge, the XISC receives
+> +      the same type of input, however, it should be aware of the type of
+> +      signals received. The mipi-mode enables different internal handling
+> +      of the data and clock lines.
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description:
+> +      Input port node, single endpoint describing the input pad.
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: video-interfaces.yaml#
+> +
+> +        properties:
+> +          bus-type:
+> +            enum: [5, 6]
+> +
+> +          remote-endpoint: true
+> +
+> +          bus-width:
+> +            enum: [8, 9, 10, 11, 12]
+> +            default: 12
+> +
+> +          hsync-active:
+> +            enum: [0, 1]
+> +            default: 1
+> +
+> +          vsync-active:
+> +            enum: [0, 1]
+> +            default: 1
+> +
+> +          pclk-sample:
+> +            enum: [0, 1]
+> +            default: 1
+> +
+> +        required:
+> +          - remote-endpoint
+> +          - bus-type
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +  - clock-output-names
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/at91.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    xisc: xisc@e1408000 {
+> +        compatible = "microchip,sama7g5-isc";
+> +        reg = <0xe1408000 0x2000>;
+> +        interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&pmc PMC_TYPE_PERIPHERAL 56>;
+> +        clock-names = "hclock";
+> +        #clock-cells = <0>;
+> +        clock-output-names = "isc-mck";
+> +
+> +        port {
+> +                xisc_in: endpoint {
+> +                       bus-type = <5>; /* Parallel */
+> +                       remote-endpoint = <&csi2dc_out>;
+> +                       hsync-active = <1>;
+> +                       vsync-active = <1>;
+> +                       bus-width = <12>;
+> +                };
+> +        };
+> +    };
+> +
+> -- 
+> 2.25.1
+> 
