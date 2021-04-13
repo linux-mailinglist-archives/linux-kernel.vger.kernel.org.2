@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB7E35E1C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEFB35E1C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344505AbhDMOmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:42:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36729 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231917AbhDMOmF (ORCPT
+        id S244378AbhDMOom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:44:42 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:47843 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1345247AbhDMOoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:42:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618324905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TViGrSHXxRTqM3saQJnRZcxR43Mym++wZTJJ2EWtIto=;
-        b=Tqj5t9VZPG0pXNNmJs6DAbha3uQlHX7ipYINfA8TeQgalJFPIhsAAJDlSFQK+o/kmurLB7
-        kMzA29FcnV395jkr9EVNUtHL8T7rfFKlNZwhFrJg4I5r0GRUT8Udj4n1H4eR6IIDGFA5+C
-        xhaKg/SPnOMY1jxghaUPNX5a5qBCy2Q=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-BLDcVDKwMje2MXA5r9ZKyw-1; Tue, 13 Apr 2021 10:41:38 -0400
-X-MC-Unique: BLDcVDKwMje2MXA5r9ZKyw-1
-Received: by mail-qv1-f69.google.com with SMTP id u7so10192539qvf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:41:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=TViGrSHXxRTqM3saQJnRZcxR43Mym++wZTJJ2EWtIto=;
-        b=HRqk+0xyMsLL9/sABV2sOM/nH1Mth98+3xcEFsdxY09iQAl9d8ZO4UQV8etlDfjFRw
-         bs8HnuAuIh9BkB3BtPrw6HmsTgTnesDlP5nRIDWwEywuSiA6RtTngDivCzIL67LSb0qx
-         E+5D7UbZbTqjKm33HJM1+F7iDz9y4x7Lg8fBhyIpPGshJYQh7+8BrCGJg8L5yNGeWIQz
-         Zt2IFkImT1qLp7Gl83Vr5YUksWPq0AQ37SqfaL6pyy9qLe5FgSEkFir21Y8+9iQgpMmS
-         6+ey9IyvSCoE+0RaWZml0XNLGlAAiiMH37wwdWn2WeVPF6tXOcEvLYAUXTb/f/Atnww9
-         9ozg==
-X-Gm-Message-State: AOAM530Ck9nQgIFJQ3hyZQo4sRJ2TPR1KZ9Oo+f+aiWRcJ1u9OdVzQiV
-        h2dNVnvL3W4m0ufBpJXluDIYpKwvd7SSZ/BrHupfqiysYt7npMjV8e/Qhn6VPolfY2dmgp5USbZ
-        tFHihjX1wHmJOZUhI59mdmSwCS06khbv7nFOzxYbWcyVXtXsyi5nZlzCVa3/8pDr6TuEYwbQ=
-X-Received: by 2002:a37:ae86:: with SMTP id x128mr32631315qke.427.1618324898333;
-        Tue, 13 Apr 2021 07:41:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxV2RTDXFsn/MqdWIiA0uOrBI4PKyyvlH52vYsv5jFW+FN5kErFac+ntPs/2hsIVEymw4vR/Q==
-X-Received: by 2002:a37:ae86:: with SMTP id x128mr32631289qke.427.1618324898074;
-        Tue, 13 Apr 2021 07:41:38 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k17sm3577246qtp.26.2021.04.13.07.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 07:41:37 -0700 (PDT)
-Subject: Re: [PATCH] fpga: xilinx-pr-decoupler: remove useless function
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, mdf@kernel.org
-Cc:     michal.simek@xilinx.com, linux-fpga@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1618285894-111432-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <40a0449f-37c4-6b3a-5a34-d865db971f9f@redhat.com>
-Date:   Tue, 13 Apr 2021 07:41:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 13 Apr 2021 10:44:37 -0400
+Received: (qmail 1456110 invoked by uid 1000); 13 Apr 2021 10:44:16 -0400
+Date:   Tue, 13 Apr 2021 10:44:16 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Chris Chiu <chris.chiu@canonical.com>
+Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek
+ Hub
+Message-ID: <20210413144416.GB1454681@rowland.harvard.edu>
+References: <20210412150006.53909-1-chris.chiu@canonical.com>
+ <20210412151205.GB1420451@rowland.harvard.edu>
+ <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1618285894-111432-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 03:52:14PM +0800, Chris Chiu wrote:
+> On Mon, Apr 12, 2021 at 11:12 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Mon, Apr 12, 2021 at 11:00:06PM +0800, chris.chiu@canonical.com wrote:
+> > > The USB_PORT_FEAT_SUSPEND is not really necessary due to the
+> > > "global suspend" in USB 2.0 spec. It's only for many hub devices
+> > > which don't relay wakeup requests from the devices connected to
+> > > downstream ports. For this realtek hub, there's no problem waking
+> > > up the system from connected keyboard.
+> >
+> > What about runtime suspend?  That _does_ require USB_PORT_FEAT_SUSPEND.
+> 
+> It's hard to reproduce the same thing with runtime PM. I also don't
+> know the aggressive
+> way to trigger runtime suspend. So I'm assuming the same thing will happen in
+> runtime PM case because they both go the same usb_port_resume path. Could
+> you please suggest a better way to verify this for runtime PM?
 
-On 4/12/21 8:51 PM, Jiapeng Chong wrote:
-> Fix the following gcc warning:
->
-> drivers/fpga/xilinx-pr-decoupler.c:32:19: warning: unused function
-> 'xlnx_pr_decouple_read' [-Wunused-function].
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   drivers/fpga/xilinx-pr-decoupler.c | 6 ------
->   1 file changed, 6 deletions(-)
->
-> diff --git a/drivers/fpga/xilinx-pr-decoupler.c b/drivers/fpga/xilinx-pr-decoupler.c
-> index 7d69af2..f407cb2 100644
-> --- a/drivers/fpga/xilinx-pr-decoupler.c
-> +++ b/drivers/fpga/xilinx-pr-decoupler.c
-> @@ -29,12 +29,6 @@ static inline void xlnx_pr_decoupler_write(struct xlnx_pr_decoupler_data *d,
->   	writel(val, d->io_base + offset);
->   }
->   
-> -static inline u32 xlnx_pr_decouple_read(const struct xlnx_pr_decoupler_data *d,
-> -					u32 offset)
-> -{
-> -	return readl(d->io_base + offset);
-> -}
-> -
+To put a USB device into runtime suspend, do this:
 
-I am not in favor of removing this function.
+	echo 0 >/sys/bus/usb/devices/.../bConfigurationValue
+	echo auto >/sys/bus/usb/devices/.../power/control
 
-It should have been used in xlnx_pr_decoupler_enable_show() instead of 
-the bare readl().
+where ... is the pathname for the device you want to suspend.  (Note 
+that this will unbind the device from its driver, so make sure there's 
+no possibility of data loss before you do it.)
 
-So use it in this function, and for consistency rename to 
-xlnx_pr_decoupler_read()
+To resume the device, write "on" to the power/control file.  You can 
+verify the runtime-PM status by reading the files in the power/ 
+subdirectory.
 
-that is 'decouple' -> 'decoupler'
+> > > This commit bypasses the USB_PORT_FEAT_SUSPEND for the quirky hub.
+> > >
+> > > Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> > > ---
+> >
+> >
+> > > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> > > index 7f71218cc1e5..8478d49bba77 100644
+> > > --- a/drivers/usb/core/hub.c
+> > > +++ b/drivers/usb/core/hub.c
+> > > @@ -3329,8 +3329,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
+> > >        * descendants is enabled for remote wakeup.
+> > >        */
+> > >       else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
+> > > -             status = set_port_feature(hub->hdev, port1,
+> > > -                             USB_PORT_FEAT_SUSPEND);
+> > > +             if (udev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND)
+> >
+> > You should test hub->hdev->quirks, here, not udev->quirks.  The quirk
+> > belongs to the Realtek hub, not to the device that's plugged into the
+> > hub.
+> >
+> 
+> Thanks for pointing that out. I'll verify again and propose a V2 after
+> it's done.
 
-Tom
+Another thing to consider: You shouldn't return 0 from usb_port_suspend 
+if the port wasn't actually suspended.  We don't want to kernel to have 
+a false idea of the hardware's current state.
 
->   static int xlnx_pr_decoupler_enable_set(struct fpga_bridge *bridge, bool enable)
->   {
->   	int err;
-
+Alan Stern
