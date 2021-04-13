@@ -2,129 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D392635D4B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCEC35D4B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240443AbhDMBQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:16:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:38862 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240327AbhDMBQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:16:10 -0400
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr+_E8HRg7lwHAA--.84S3;
-        Tue, 13 Apr 2021 09:15:48 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
- <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
- <20210412142730.GA23146@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <2fd31420-1f96-9165-23ea-fdccac1b522a@loongson.cn>
-Date:   Tue, 13 Apr 2021 09:15:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S240805AbhDMBRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:17:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16904 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240327AbhDMBRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 21:17:48 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FK72f0g78zjZ2B;
+        Tue, 13 Apr 2021 09:15:38 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 13 Apr 2021 09:17:27 +0800
+Subject: Re: [RFC PATCH v3 0/3] vfio/hisilicon: add acc live migration driver
+To:     <alex.williamson@redhar.com>
+CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <1618217596-13621-1-git-send-email-liulongfang@huawei.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <6bab97f7-c7ed-5837-4b7c-e49770fb9029@huawei.com>
+Date:   Tue, 13 Apr 2021 09:17:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210412142730.GA23146@alpha.franken.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <1618217596-13621-1-git-send-email-liulongfang@huawei.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxr+_E8HRg7lwHAA--.84S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4rWFW8Zw1kJrWrtryxXwb_yoW5Wr1rpa
-        95AF1kKFsYgry3Aa42y3yxXF15Gws8Kr4Yg34qkr1UZr4qvr13trWS9r1F9348JrsrAas2
-        gFW8Zrs8Wr1Yv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-        v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xF
-        o4CEbIxvr21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbYFAPUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2021 10:27 PM, Thomas Bogendoerfer wrote:
-
-> On Mon, Apr 12, 2021 at 11:02:19AM +0800, Tiezhu Yang wrote:
->> On 04/11/2021 07:04 PM, Jinyang He wrote:
->>> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
->>> strnlen_user(). Jump out when checking access_ok() with condition that
->>> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
->>> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
->>> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
->>>
->>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
->>> ---
->>>    arch/mips/include/asm/uaccess.h | 11 +++++++++--
->>>    1 file changed, 9 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
->>> index 91bc7fb..85ba0c8 100644
->>> --- a/arch/mips/include/asm/uaccess.h
->>> +++ b/arch/mips/include/asm/uaccess.h
->>> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
->>>    {
->>>    	long res;
->>> -	if (!access_ok(s, n))
->>> -		return -0;
->>> +	if (unlikely(n <= 0))
->>> +		return 0;
->>> +
->>> +	if (!access_ok(s, n)) {
->>> +		if (!access_ok(s, 0))
->>> +			return 0;
->>> +
->>> +		n = __UA_LIMIT - (unsigned long)s - 1;
->>> +	}
->>>    	might_fault();
->>>    	__asm__ __volatile__(
->> The following simple changes are OK to fix this issue?
->>
->> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
->> index 91bc7fb..eafc99b 100644
->> --- a/arch/mips/include/asm/uaccess.h
->> +++ b/arch/mips/include/asm/uaccess.h
->> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user *s, long n)
->>   {
->>          long res;
->> -       if (!access_ok(s, n))
->> -               return -0;
->> +       if (!access_ok(s, 1))
->> +               return 0;
->>          might_fault();
->>          __asm__ __volatile__(
-> that's the fix I'd like to apply. Could someone send it as a formal
-> patch ? Thanks.
->
-> Thomas.
->
-Hi, Thomas,
-
-Thank you for bringing me more thinking.
-
-I always think it is better to use access_ok(s, 0) on MIPS. I have been
-curious about the difference between access_ok(s, 0) and access_ok(s, 1)
-until I saw __access_ok() on RISCV at arch/riscv/include/asm/uaccess.h
-
-The __access_ok() is noted with `Ensure that the range [addr, addr+size)
-is within the process's address space`. Does the range checked by
-__access_ok() on MIPS is [addr, addr+size]. So if we want to use
-access_ok(s, 1), should we modify __access_ok()? Or my misunderstanding?
-
-More importantly, the implementation of strnlen_user in lib/strnlen_user.c
-is noted `we hit the address space limit, and we still had more characters
-the caller would have wanted. That's 0.` Does it make sense? It is not
-achieved on MIPS when hit __ua_limit, if only access_ok(s, 1) is used.
-
-Thanks,
-Jinyang
-
+On 2021/4/12 16:53, Longfang Liu wrote:
+> The live migration solution relies on the vfio_device_migration_info protocol.
+> The structure vfio_device_migration_info is placed at the 0th offset of
+> the VFIO_REGION_SUBTYPE_MIGRATION region to get and set VFIO device related
+> migration information. Field accesses from this structure are only supported
+> at their native width and alignment. Otherwise, the result is undefined and
+> vendor drivers should return an error.
+> 
+> (1).The driver framework is based on vfio_pci_register_dev_region() of vfio-pci,
+> and then a new live migration region is added, and the live migration is
+> realized through the ops of this region.
+> 
+> (2).In order to ensure the compatibility of the devices before and after the
+> migration, the device compatibility information check will be performed in
+> the Pre-copy stage. If the check fails, an error will be returned and the
+> source VM will exit the migration function.
+> 
+> (3).After the compatibility check is passed, it will enter the Stop-and-copy
+> stage. At this time, all the live migration data will be copied, and then
+> saved to the VF device of the destination, and then the VF device of the
+> destination will be started and the VM of the source will be exited.
+> 
+> Longfang Liu (3):
+>   vfio/hisilicon: add acc live migration driver
+>   vfio/hisilicon: register the driver to vfio
+>   vfio/hisilicom: add debugfs for driver
+> 
+>  drivers/vfio/pci/Kconfig                      |    9 +
+>  drivers/vfio/pci/Makefile                     |    3 +-
+>  drivers/vfio/pci/hisilicon/acc_vf_migration.c | 1357 +++++++++++++++++++++++++
+>  drivers/vfio/pci/hisilicon/acc_vf_migration.h |  172 ++++
+>  drivers/vfio/pci/vfio_pci.c                   |   11 +
+>  drivers/vfio/pci/vfio_pci_private.h           |   10 +
+>  6 files changed, 1561 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.c
+>  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.h
+> 
+Sorry, Please ignore this patchset due to
+the wrong email address, I will resend it.
+Thanks
+Longfang
