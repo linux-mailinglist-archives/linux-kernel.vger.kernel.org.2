@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3998C35D513
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9794D35D50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241314AbhDMCCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:02:09 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46615 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237219AbhDMCCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:02:08 -0400
-IronPort-SDR: Nv9uB96KhQeXKrgYWINV//LekphOG3UScw1k24XyLb8OTNQl8SnhUVt89AWB/PpXJDc/aVh8id
- GM07jt4VBbpQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="191131410"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="asc'?scan'208";a="191131410"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:01:47 -0700
-IronPort-SDR: dpnk/tYDwYO3SVEi7HM2vnrFb6nowJMHhcesGzOnnSfRR6NRFYEwTf0/OwTmkwgzqynM+dJXTU
- cuhHkS5Ff9hg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="asc'?scan'208";a="443268676"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Apr 2021 19:01:46 -0700
-Date:   Tue, 13 Apr 2021 09:43:58 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        yan.y.zhao@intel.com
-Subject: Re: Regression: gvt: vgpu 1: MI_LOAD_REGISTER_MEM handler error
-Message-ID: <20210413014358.GB14309@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210412103214.337d521a@omen>
- <20210412192347.042fbc14@x1.home.shazbot.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
-Content-Disposition: inline
-In-Reply-To: <20210412192347.042fbc14@x1.home.shazbot.org>
+        id S244390AbhDMCA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:00:57 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:62544 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238374AbhDMCAt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 22:00:49 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 12 Apr 2021 19:00:29 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 12 Apr 2021 19:00:29 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id 278D61B19; Mon, 12 Apr 2021 19:00:29 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v3 0/3] Add Qualcomm Technologies, Inc. PM8008 MFD driver
+Date:   Mon, 12 Apr 2021 19:00:24 -0700
+Message-Id: <cover.1618278453.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes from v2:
+  - Collected Rob Herring's Acked-by for the IRQ listing patch
+  - Addressed Rob's comments for the dt-bindings patch
 
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes from v1:
+  - Removed errant Change-Id from dt-bindings IRQ patch and gathered Bjorn's
+    Reviewed-by
+  - Fixed up YAML errors using make dt_binding_check
 
-On 2021.04.12 19:23:47 -0600, Alex Williamson wrote:
-> On Mon, 12 Apr 2021 10:32:14 -0600
-> Alex Williamson <alex.williamson@redhat.com> wrote:
->=20
-> > Running a Windows guest on a i915-GVTg_V4_2 from an HD 5500 IGD on
-> > v5.12-rc6 results in host logs:
-> >=20
-> > gvt: vgpu 1: lrm access to register (20c0)
-> > gvt: vgpu 1: MI_LOAD_REGISTER_MEM handler error
-> > gvt: vgpu 1: cmd parser error
-> > 0x0=20
-> > 0x29=20
-> >=20
-> > gvt: vgpu 1: scan wa ctx error
-> > gvt: vgpu 1: failed to submit desc 0
-> > gvt: vgpu 1: fail submit workload on ring rcs0
-> > gvt: vgpu 1: fail to emulate MMIO write 00002230 len 4
-> >=20
-> > The guest goes into a boot loop triggering this error before reaching
-> > the desktop and rebooting.  Guest using Intel driver 20.19.15.5171
-> > dated 11/4/2020 (from driver file 15.40.5171).
-> >=20
-> > This VM works well with the same guest and userspace software stack on
-> > Fedora's kernel 5.11.11-200.fc33.x86_64.  Thanks,
->=20
-> Bisected to:
+This driver is dependent on changes that have been made to the regmap-irq
+framework that have currently been accepted [1][2] in regmap.git upstream by
+Mark Brown but haven't made it to Linus' tree yet. For this reason, this driver
+has been based on the tip of regmap.git and not mfd.git.
 
-Looks we didn't hit this one on Broadwell with recent testing. I'll double
-check, maybe Broadwell missed something after our cmd parser rework.
+Those changes, and this driver, are the result of a rewrite effort that was
+promised a long ago [3]. The framework changes and this driver have been tested
+and verified end-to-end on an internal platform.
 
-Thanks for reporting!
+[1] https://lore.kernel.org/lkml/20210318183607.gFxO2hoTO274vl3jUuxWbi19rq9wQELzN-y3B4jvO10@z/
+[2] https://lore.kernel.org/lkml/161726943419.2413.4844313396830856637.b4-ty@kernel.org/
+[3] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
 
->=20
-> commit f18d417a57438498e0de481d3a0bc900c2b0e057
-> Author: Yan Zhao <yan.y.zhao@intel.com>
-> Date:   Wed Dec 23 11:45:08 2020 +0800
->=20
->     drm/i915/gvt: filter cmds "srm" and "lrm" in cmd_handler
->    =20
->     do not allow "srm" and "lrm" except for GEN8_L3SQCREG4 and 0x21f0.
->    =20
->     Cc: Colin Xu <colin.xu@intel.com>
->     Cc: Kevin Tian <kevin.tian@intel.com>
->     Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
->     Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
->     Link: http://patchwork.freedesktop.org/patch/msgid/20201223034508.170=
-31-1-yan.y.zhao@intel.com
->     Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
->=20
 
---YiEDa0DAkWCtVeE4
-Content-Type: application/pgp-signature; name="signature.asc"
+Guru Das Srinagesh (3):
+  dt-bindings: mfd: pm8008: Add IRQ listing
+  dt-bindings: mfd: pm8008: Add bindings
+  mfd: pm8008: Add driver for QCOM PM8008 PMIC
 
------BEGIN PGP SIGNATURE-----
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 121 +++++++++
+ drivers/mfd/Kconfig                                |  15 ++
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/qcom-pm8008.c                          | 284 +++++++++++++++++++++
+ include/dt-bindings/mfd/qcom-pm8008.h              |  19 ++
+ 5 files changed, 440 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+ create mode 100644 drivers/mfd/qcom-pm8008.c
+ create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYHT3WgAKCRCxBBozTXgY
-JyIjAJ4qyEyXGFa1EIPUsVJohueGVLPmjQCeLZxe4LsLldAUVXy+DRZNan125N4=
-=mNfW
------END PGP SIGNATURE-----
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
---YiEDa0DAkWCtVeE4--
