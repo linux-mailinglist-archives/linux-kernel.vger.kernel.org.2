@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C66D35E804
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAD035E806
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346567AbhDMVHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:07:37 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50944 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344575AbhDMVHg (ORCPT
+        id S1346597AbhDMVHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344575AbhDMVHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:07:36 -0400
-Received: by mail-io1-f71.google.com with SMTP id a1so12157610iow.17
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:07:16 -0700 (PDT)
+        Tue, 13 Apr 2021 17:07:44 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ED4C061574;
+        Tue, 13 Apr 2021 14:07:24 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 12so9476031wmf.5;
+        Tue, 13 Apr 2021 14:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=+h9YEJvRri5MunnYFCNIxEPQwGH0MaRhmpl1ZOUzYuc=;
+        b=QLrvrJ9MZ7YQLbbwmC4On25zNCD1Dzr1A71vyEp5yZFnnXeMTRzIiZ0IZWH2MCKzHk
+         O+KA0EJTfbdCPxUi/EUqHFOd9VSjpYRIs7AeHhFu9fTyRXVpVwAiajt8J9/i1XsL2mIA
+         tPdbl8sYSHYYvyLcqaDEZ2TSYVVCX2UwWyZnYAwo2xCyWyeRrv3Po+NhDUVisRQToobd
+         oDmG+MtStwrO1H4ok65Ak/Ed44xT6uwvgSiE6jdU1LJRX/T6QAPamRW+rO2kZ6mRO8ZC
+         hlqXmRk/s5TPcx61aRBJowBOhPq2dPpNB7QeFx1EMAmXBt/i3+tI1pxC+C3fhyHioF1D
+         0Tng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gBB56l8B63o8JGJvBXflD8n3+2lDt1Rtdswdt5GflVQ=;
-        b=dnWVF7G0JVg96T4UVdvLmi4kcfePk3Fz3lcAKQ3AyDLuytv4zpidetifg7AietKP2o
-         o97Vmvf4khZxnkSrKehtpDMSN4xG4QdgHPJyAlI2NphrJ1HlSvhBOyKfsBvjjikqqNiT
-         2p7X9o6lVZflnLR/7wAo8kptKRuXgipNlz2HOtJG2nXk6m7MrVlQTo1PJNmJMrHcHT8l
-         9yhWK/MypOpqr9SQpGNx3wICz+eQ1McB6SlujzLXwSBe5y+pHAi03R28x+lplhe3PfvX
-         mgS+a5SfJmM+k56Hjes3AxufagGRv+4gcU7X5PY78sIOrcmztMtKkppw6CfQK2ShpaYV
-         nHIw==
-X-Gm-Message-State: AOAM5317Lrac7mOf8FTJjvVcuB/dbF8uW0jEZyBzb56PvyHzyBHraTe+
-        9hU7BmpPR9aowoGpml+L04N9Oe+ONIRAmHORKJf3J87j5Djt
-X-Google-Smtp-Source: ABdhPJy4S/Wn2LnO8XH5aRFz6TbtDBXu7JtnGDHPqPXclmhiG+hj4a8tgRASZhqc1tVTclgPM0WDm5wGnWyy0XuitQJ7xJGW9yBX
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+h9YEJvRri5MunnYFCNIxEPQwGH0MaRhmpl1ZOUzYuc=;
+        b=fA34Y7EjHK0jfXYoTZySt8BeYSGpxy55wyzrrh3xEW0ZIf5035YSW8Iz15KfHZj7/+
+         vggdgDToUWYAQECtBcod5GdJY/Khdwq3AtllmT1ATS46ANMty+jG2KRuHYDRMOwBbbpF
+         nuk7djwht4eEekqVIv8K7hTmZvV/NrO/oT9cJWD1QopWI3K+LlKFhFm9lCNLVpl3bdkk
+         Fb2rsOKQWO6u1YEb2Rf+4KpjroTcTlemcHtMYU711SBJxPySdKmZUTNYMMNrnaVKlijr
+         juYUpIzi564QdxpmWQLttqL+YAxX+ktpBA/xNncPYU678UuV2zlOm1hyZDs0QnAM6hw0
+         z3jA==
+X-Gm-Message-State: AOAM5307KrYg/HJ6I2Ktaa+q2BmKmHf2P2NZP9lgoDsmPy8Dm0WCtoUf
+        QL4AT9qAyAnan7tAzCj3ZzpKtEyETEcqDg==
+X-Google-Smtp-Source: ABdhPJzfn+xHHTrmxu827y62FEPvzLG8WSdpdoydcXf+QrSWNDukJBSBIv8cCXOoys7jBlSPfraWyg==
+X-Received: by 2002:a05:600c:4f55:: with SMTP id m21mr1745111wmq.11.1618348042932;
+        Tue, 13 Apr 2021 14:07:22 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f38:4600:858c:dcb8:c991:8e09? (p200300ea8f384600858cdcb8c9918e09.dip0.t-ipconnect.de. [2003:ea:8f38:4600:858c:dcb8:c991:8e09])
+        by smtp.googlemail.com with ESMTPSA id z15sm14933279wrv.39.2021.04.13.14.07.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 14:07:22 -0700 (PDT)
+Subject: Re: [BUG]: WARNING: CPU: 5 PID: 0 at net/sched/sch_generic.c:442
+ dev_watchdog+0x24d/0x260
+To:     Xose Vazquez Perez <xose.vazquez@gmail.com>,
+        Realtek NIC <nic_swsd@realtek.com>,
+        NETDEV ML <netdev@vger.kernel.org>,
+        KERNEL ML <linux-kernel@vger.kernel.org>
+References: <8ab3069a-734f-80ee-49a0-34e1399d44f1@gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <b828de51-3932-1264-dfd3-eb7af2a5c539@gmail.com>
+Date:   Tue, 13 Apr 2021 23:07:17 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:a56:: with SMTP id 22mr20638222jap.33.1618348036402;
- Tue, 13 Apr 2021 14:07:16 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 14:07:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d5358b05bfe10354@google.com>
-Subject: [syzbot] possible deadlock in io_poll_double_wake (3)
-From:   syzbot <syzbot+e654d4e15e6b3b9deb53@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8ab3069a-734f-80ee-49a0-34e1399d44f1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 13.04.2021 22:59, Xose Vazquez Perez wrote:
+> A non-recurring bug, on 5.11.12-300.fc34.x86_64 (Fedora kernel).
+> 
+> Thanks.
+> 
+> 
+> 0c:00.0 Ethernet controller [0200]: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller [10ec:8168] (rev 06)
+> 
+> [    2.968280] libphy: r8169: probed
+> [    2.968844] r8169 0000:0c:00.0 eth0: RTL8168e/8111e, 2c:41:38:9e:98:93, XID 2c2, IRQ 47
+> [    2.968849] r8169 0000:0c:00.0 eth0: jumbo features [frames: 9194 bytes, tx checksumming: ko]
+> [    4.071966] RTL8211DN Gigabit Ethernet r8169-c00:00: attached PHY driver (mii_bus:phy_addr=r8169-c00:00, irq=IGNORE)
+> [    4.323834] r8169 0000:0c:00.0 eth0: Link is Down
+> [    6.729111] r8169 0000:0c:00.0 eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+> 
+> [106378.638739] ------------[ cut here ]------------
+> [106378.638757] NETDEV WATCHDOG: eth0 (r8169): transmit queue 0 timed out
 
-syzbot found the following issue on:
+This is a standard tx timeout and can have very different reasons.
+Few questions:
 
-HEAD commit:    17e7124a Merge tag '5.12-rc6-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=102c3891d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9320464bf47598bd
-dashboard link: https://syzkaller.appspot.com/bug?extid=e654d4e15e6b3b9deb53
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fe3096d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147b9431d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e654d4e15e6b3b9deb53@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-5.12.0-rc6-syzkaller #0 Not tainted
---------------------------------------------
-swapper/0/0 is trying to acquire lock:
-ffff88802108c130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff88802108c130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4988
-
-but task is already holding lock:
-ffff888014fd8130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&runtime->sleep);
-  lock(&runtime->sleep);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by swapper/0/0:
- #0: ffff888020d18108 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
- #1: ffff888014fd8130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
- check_deadlock kernel/locking/lockdep.c:2872 [inline]
- validate_chain kernel/locking/lockdep.c:3661 [inline]
- __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4988
- __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
- __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
- snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
- snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
- snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
- dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:377
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1601
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:137 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:112 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
-Code: cd cb 6e f8 84 db 75 ac e8 14 c5 6e f8 e8 1f b4 74 f8 e9 0c 00 00 00 e8 05 c5 6e f8 0f 00 2d 0e 18 c8 00 e8 f9 c4 6e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 04 cd 6e f8 48 85 db
-RSP: 0018:ffffffff8bc07d60 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff8bcbc400 RSI: ffffffff89052c17 RDI: 0000000000000000
-RBP: ffff888015078064 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8179e058 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888015078000 R14: ffff888015078064 R15: ffff888143a48004
- acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:654
- cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x3e1/0x590 kernel/sched/idle.c:300
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+- Is this a regression? If yes, can you bisect?
+- Can you reproduce it? If yes, which type of activity triggers it?
