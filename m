@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E5635E508
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F39B35E504
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347178AbhDMR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:29:41 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:42951 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347168AbhDMR3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:29:39 -0400
-Received: by mail-pj1-f46.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so9369034pjv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v2QhzyojWbvybLlPtewmMNO5cATZp5zhGPpcdHGJXGg=;
-        b=BKlDaTeHzuJv+GEQuFg1n4srYnuQrdQZmp5Fdc4/vh9SPNKr6d0mCK8+K/n363EDR4
-         GfiqaR+iULjCzNK1G+mIwSzUbnujjFaVCnL3PWPY4UUGcBLL3+fKpxppIhqT1at8qII4
-         w86hiSsfwaiVoV/14NHwhE12RAmg0vGLJ8elj2dzlcR9gEv4hz7+j6fjHHVdxKU3rX98
-         Z6n7pCAC3gSgO7s66c1I/UoIwNzsSQrOAXXHn/YAnqn2k9ZrrMOkWObGYRTiA0CDDtbu
-         FGoXs223kiZ7/iv1MQsr3DT+S0tUPYp2i3iOJ7+RUATTJsDh72ct0zYnPMKZGd9rcfuR
-         QAKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v2QhzyojWbvybLlPtewmMNO5cATZp5zhGPpcdHGJXGg=;
-        b=EK5ADHl4HBpCbcuoPYstCZ2ShQ4qq0nV2Bdy7bpQyTG1mnqQb7c+jW3uiJJTzoP6CW
-         SQ9mmMATtyVo/C/YJd+q3WrOSz9CfpVAijPJJX7mEbsdXkFnMcXPXl2sV2XUhQ0smX5/
-         iROlk5lGh9Hs6nabv8x8vCuvxDicPelWE5UHQj6nIyvq4wdtA4ZC0//uHgbL9OPGXcUu
-         7XIDlSZCCVfuf3JVHSlmK1Ukfrcer8GWQgOMQAXf/WO8jBfurdKPhXQCaRPtuYfKsxHG
-         aWRwySrgGX5z+ChZo7Y+f39adi7f9MkZo9f8Nja3o/qf1Pxgqs6VEAGdSu1dTEkkEi7h
-         WWbg==
-X-Gm-Message-State: AOAM530getUCDRxRIDs4wUa2uThQo7rsnbFtl1DMcGRGToAG3TK94Hlq
-        mcp2mivu3ZSxWDvLy+GItT2Xew==
-X-Google-Smtp-Source: ABdhPJwTxPoyVSCF3F3SSBLBa01eeTFoMvtF4Ia5XzqeZQ/iVhPz30mD+ZynMqgzzxKnZC6z1Ry5wA==
-X-Received: by 2002:a17:90a:5217:: with SMTP id v23mr1092282pjh.161.1618334900010;
-        Tue, 13 Apr 2021 10:28:20 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id w1sm15075490pgh.26.2021.04.13.10.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 10:28:19 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 11:28:17 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V3 4/8] remoteproc: imx_rproc: make clk optional
-Message-ID: <20210413172817.GB750651@xps15>
-References: <1617846898-13662-1-git-send-email-peng.fan@oss.nxp.com>
- <1617846898-13662-5-git-send-email-peng.fan@oss.nxp.com>
+        id S1347146AbhDMR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:28:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54646 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241408AbhDMR2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:28:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AEF73B301;
+        Tue, 13 Apr 2021 17:28:30 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 19:28:27 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [thermal]  9223d0dccb:  stress-ng.msg.ops_per_sec -27.4%
+ regression
+Message-ID: <20210413172827.GC17097@zn.tnic>
+References: <20210413135800.GA10266@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1617846898-13662-5-git-send-email-peng.fan@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413135800.GA10266@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:54:54AM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Tue, Apr 13, 2021 at 09:58:01PM +0800, kernel test robot wrote:
+> Greeting,
 > 
-> To i.MX7ULP, M4 is the master to control everything, so it not need
-> clk from A7.
+> FYI, we noticed a -27.4% regression of stress-ng.msg.ops_per_sec due to commit:
 > 
-> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index d6338872c6db..ca17f520d904 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -635,7 +635,7 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_put_mbox;
->  
-> -	priv->clk = devm_clk_get(dev, NULL);
-> +	priv->clk = devm_clk_get_optional(dev, NULL);
+> commit: 9223d0dccb8f8523754122f68316dd1a4f39f7f8 ("thermal: Move therm_throt there from x86/mce")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-Overnight the clock becomes optional for all remote processors?  Why not call
-devm_clk_get() or devm_clk_get_optional() based on the remote processor type in
-a new function called imx_rproc_clk_get()?
+Hmm, so I went and ran your reproducer, but simplified (see end of
+mail), on a KBL box here. The kernel is tip:x86/urgent from last week:
 
->  	if (IS_ERR(priv->clk)) {
->  		dev_err(dev, "Failed to get clock\n");
->  		ret = PTR_ERR(priv->clk);
-> -- 
-> 2.30.0
-> 
+5.12.0-rc6+
+-----------
+stress-ng: info:  [1430] dispatching hogs: 9 msg
+stress-ng: info:  [1430] successful run completed in 60.01s (1 min, 0.01 secs)
+stress-ng: info:  [1430] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
+stress-ng: info:  [1430]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: info:  [1430] msg           237390147     60.01    104.03    255.85   3955872.56    659636.95
+stress-ng: info:  [1430] for a 60.01s run time:
+stress-ng: info:  [1430]     360.08s available CPU time
+stress-ng: info:  [1430]     104.11s user time   ( 28.91%)
+stress-ng: info:  [1430]     255.93s system time ( 71.08%)
+stress-ng: info:  [1430]     360.04s total time  ( 99.99%)
+stress-ng: info:  [1430] load average: 8.47 3.71 1.48
+
+Now the same kernel with
+
+>   4f432e8bb1 ("x86/mce: Get rid of mcheck_intel_therm_init()")
+>   9223d0dccb ("thermal: Move therm_throt there from x86/mce")
+
+reverted.
+
+5.12.0-rc6-rev+
+---------------
+stress-ng: info:  [1246] dispatching hogs: 9 msg
+stress-ng: info:  [1246] successful run completed in 60.02s (1 min, 0.02 secs)
+stress-ng: info:  [1246] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
+stress-ng: info:  [1246]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: info:  [1246] msg           215174467     60.01     99.64    260.24   3585438.79    597906.15
+stress-ng: info:  [1246] for a 60.02s run time:
+stress-ng: info:  [1246]     360.10s available CPU time
+stress-ng: info:  [1246]      99.72s user time   ( 27.69%)
+stress-ng: info:  [1246]     260.32s system time ( 72.29%)
+stress-ng: info:  [1246]     360.04s total time  ( 99.98%)
+stress-ng: info:  [1246] load average: 7.98 2.33 0.80
+
+so if I'm reading this correctly, reverting the patches here brings the
+*slow-down*.
+
+What's up?
+
+reproducer:
+----------
+
+#!/usr/bin/bash
+
+for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
+do
+        online_file="$cpu_dir"/online
+        [ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
+
+        file="$cpu_dir"/cpufreq/scaling_governor
+        [ -f "$file" ] && echo "performance" > "$file"
+done
+
+stress-ng --timeout 60 --times --verify --metrics-brief --msg 9
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
