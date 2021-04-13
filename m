@@ -2,202 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27BC35D726
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89C335D710
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344563AbhDMFSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
+        id S1344520AbhDMFSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344209AbhDMFR6 (ORCPT
+        with ESMTP id S244523AbhDMFRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:17:58 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D64C061345
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:31 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id n13so15071757ybp.14
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:31 -0700 (PDT)
+        Tue, 13 Apr 2021 01:17:49 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFD8C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:28 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id r9so23868628ejj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=70Kcx1xrATHIJtpEaJi28zNN7Ahs80HU8g90CQ0Hm2k=;
-        b=p6FuHDvYVTK5bDUeP68j1uSS/Re+ZZUG7I7RWQWNy6fgIqGdc+oiUSwx57YKj6p7re
-         ukIoNy2FmOnHeYhwuvPP8W/RrN+g1A+ayDY0f5qnvnavNp+tqlMVmtbZA1fQNp7LK1Pw
-         N2hCk+3pzS2Sn5O+urQ4M67oxJibQDR6BCYzrlMGTEW+IDKAZ0bpME5oHd3cT5Y5hmZk
-         CaH3MsXqRs1EdRECZS1ryXjb//rQxRekMYPW34tsZ7X26sNR4XrY0bp9zW9AS/OPl7RB
-         UHYDLhpBa67Ig+Jx+Cc4l7srWH/InyARcOwfrwuktxMppWCeHPLiCI3t6ijnPmTS6Ksm
-         rq/Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vqvkCmn4qTNxem2yPP8PNKHH0FnWCKcax3P32psm9Fs=;
+        b=PNHf+ajxBRipHWrpARq2/mX8j/K5u6ivps5+eX/eNGOPrD+YPrcoVmptCX4xb4YVkZ
+         ELT/VB0eQ7k5KMULR2gmqcQmBKoe2kl/pWHOtBphJ1zT3gCJkISEb+EfbbhrboNeffZE
+         lVwczOypSro3MfNcXbv0mY6kpGfgtf+w2bWiqQCj5h5FTX9kUXlVaf8WEJzR5ge2/qlj
+         RKaocxGdFNhueCpFEy9c/ar2ocSla6uLknRMCqUaK4OIWxCYRthceE6i6JAyISF4ole2
+         dIUpkyXRycfL1YLt7IJwdVD5hgi1JFPLM3gNcZfgXfJwwmRuGn+gQkKUuMTwk4x5IyBx
+         ADWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=70Kcx1xrATHIJtpEaJi28zNN7Ahs80HU8g90CQ0Hm2k=;
-        b=fwYOzSoNqUH860qj7IHKmRz/MCnV56Y2R82bVLxL4gGWlZr7qsGyfc1ZvJDEVit7DW
-         it2yVbLm+sTVwCmH3ar0IOZ3MNDBtLgRpqL0aDNr6uSQhl3lPQy3IsLiHbqy9kbvm2+9
-         YWjKpdN3QwuEb/6IkRL8ktYYsUvLOKraPm1kH57pD57IE0Lu2jegFBp9yEJemHcYP0+X
-         6R/bLm0P67aCQ2F3lNNwwWm+Y2EnuF1xVEnYyCwSRPtYRxba/qVH1tmE5978x3BkOFWQ
-         /bthZL5a/Bi1dJPVlz7H0F7QpDunbptfWlYfjjWfJEzFSPcp5JKM8f38isoaaj5Ft8it
-         Gdgg==
-X-Gm-Message-State: AOAM533+G8MgD+JEHkAphY38Evkq5uXms0O7pZXmO2+uoGhUTLvGROJ0
-        WhbEYxTjymyu5aIoly+MxzQjeQN+JbUU7tb8zeln
-X-Google-Smtp-Source: ABdhPJx3TQQai0X1de1IO+PrirTFU2uw3gtn/o605SZAaB8Oe1cnqX7iNxp+GKo6pSNFTt/+d73yxdn9vQ9lo8anYfqo
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:d508:eee5:2d57:3e32])
- (user=axelrasmussen job=sendgmr) by 2002:a5b:44e:: with SMTP id
- s14mr44730257ybp.11.1618291050652; Mon, 12 Apr 2021 22:17:30 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 22:17:15 -0700
-In-Reply-To: <20210413051721.2896915-1-axelrasmussen@google.com>
-Message-Id: <20210413051721.2896915-4-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210413051721.2896915-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2 3/9] userfaultfd/shmem: support minor fault registration
- for shmem
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vqvkCmn4qTNxem2yPP8PNKHH0FnWCKcax3P32psm9Fs=;
+        b=XCgKKmKPAVA3N/d6VGQ07tzkYS7piXeQmjEOskkf5XpXjIP+fhDZuUpD31kdXBUpin
+         cN/4wO5buQBjUQ5u+22gJc46qzQbsaDoNd8SyZEoZQfxWUEe9DxIL/aOqVVjg0z4NGH7
+         W0x4DCiyFdjpX7ajCM2TnriUVFvieSyjyM/LmCGrYNccUTZYu5AoDh0jBR0KMpjvOpDb
+         7UggOePSDPK3fGlt1a7bf6yvi+xNBUwv/D4G1DkM9FK5J1y8HNtgtZ114Iq/LIIJ1a0z
+         +0aY6pIzB4RKTPH8tjpIRc9AOnLudNU/vbrfZgHfEqhXBMPGofzPddGimjiyDU2EVlPV
+         JX8A==
+X-Gm-Message-State: AOAM531JcybcVsYF+Wtl+rijnW4qCnOcSdqWQlLstqthDHm08zdq8Rda
+        9XA5NNGqLkF5zOS5HugfTufTngcbdiiKuZMm+W9Fng==
+X-Google-Smtp-Source: ABdhPJwu2KbfHyyEi3zb5EPokT6yEWh/fqRnKJtQ8gjHvJ9j2wFLhE7vM88OcRoZlIpt6YJo9StgFZ7XHnziqOZHFPI=
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr29503659ejc.133.1618291047542;
+ Mon, 12 Apr 2021 22:17:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 13 Apr 2021 10:47:16 +0530
+Message-ID: <CA+G9fYsF3Q8SdRHHSCf+3B=HOGw9y=sThVy2RUGubgwWkLdnrA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/111] 5.4.112-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch allows shmem-backed VMAs to be registered for minor faults.
-Minor faults are appropriately relayed to userspace in the fault path,
-for VMAs with the relevant flag.
+On Mon, 12 Apr 2021 at 14:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.112 release.
+> There are 111 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.112-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
-minor faults, though, so userspace doesn't yet have a way to resolve
-such faults.
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- fs/userfaultfd.c                 |  6 +++---
- include/uapi/linux/userfaultfd.h |  7 ++++++-
- mm/memory.c                      |  8 +++++---
- mm/shmem.c                       | 10 +++++++++-
- 4 files changed, 23 insertions(+), 8 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 14f92285d04f..9f3b8684cf3c 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -1267,8 +1267,7 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
- 	}
- 
- 	if (vm_flags & VM_UFFD_MINOR) {
--		/* FIXME: Add minor fault interception for shmem. */
--		if (!is_vm_hugetlb_page(vma))
-+		if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
- 			return false;
- 	}
- 
-@@ -1941,7 +1940,8 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
- 	/* report all available features and ioctls to userland */
- 	uffdio_api.features = UFFD_API_FEATURES;
- #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
--	uffdio_api.features &= ~UFFD_FEATURE_MINOR_HUGETLBFS;
-+	uffdio_api.features &=
-+		~(UFFD_FEATURE_MINOR_HUGETLBFS | UFFD_FEATURE_MINOR_SHMEM);
- #endif
- 	uffdio_api.ioctls = UFFD_API_IOCTLS;
- 	ret = -EFAULT;
-diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-index bafbeb1a2624..159a74e9564f 100644
---- a/include/uapi/linux/userfaultfd.h
-+++ b/include/uapi/linux/userfaultfd.h
-@@ -31,7 +31,8 @@
- 			   UFFD_FEATURE_MISSING_SHMEM |		\
- 			   UFFD_FEATURE_SIGBUS |		\
- 			   UFFD_FEATURE_THREAD_ID |		\
--			   UFFD_FEATURE_MINOR_HUGETLBFS)
-+			   UFFD_FEATURE_MINOR_HUGETLBFS |	\
-+			   UFFD_FEATURE_MINOR_SHMEM)
- #define UFFD_API_IOCTLS				\
- 	((__u64)1 << _UFFDIO_REGISTER |		\
- 	 (__u64)1 << _UFFDIO_UNREGISTER |	\
-@@ -185,6 +186,9 @@ struct uffdio_api {
- 	 * UFFD_FEATURE_MINOR_HUGETLBFS indicates that minor faults
- 	 * can be intercepted (via REGISTER_MODE_MINOR) for
- 	 * hugetlbfs-backed pages.
-+	 *
-+	 * UFFD_FEATURE_MINOR_SHMEM indicates the same support as
-+	 * UFFD_FEATURE_MINOR_HUGETLBFS, but for shmem-backed pages instead.
- 	 */
- #define UFFD_FEATURE_PAGEFAULT_FLAG_WP		(1<<0)
- #define UFFD_FEATURE_EVENT_FORK			(1<<1)
-@@ -196,6 +200,7 @@ struct uffdio_api {
- #define UFFD_FEATURE_SIGBUS			(1<<7)
- #define UFFD_FEATURE_THREAD_ID			(1<<8)
- #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
-+#define UFFD_FEATURE_MINOR_SHMEM		(1<<10)
- 	__u64 features;
- 
- 	__u64 ioctls;
-diff --git a/mm/memory.c b/mm/memory.c
-index 4e358601c5d6..cc71a445c76c 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3972,9 +3972,11 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
- 	 * something).
- 	 */
- 	if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > 1) {
--		ret = do_fault_around(vmf);
--		if (ret)
--			return ret;
-+		if (likely(!userfaultfd_minor(vmf->vma))) {
-+			ret = do_fault_around(vmf);
-+			if (ret)
-+				return ret;
-+		}
- 	}
- 
- 	ret = __do_fault(vmf);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index b72c55aa07fc..3f48cb5e8404 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1785,7 +1785,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
-  * vm. If we swap it in we mark it dirty since we also free the swap
-  * entry since a page cannot live in both the swap and page cache.
-  *
-- * vmf and fault_type are only supplied by shmem_fault:
-+ * vma, vmf, and fault_type are only supplied by shmem_fault:
-  * otherwise they are NULL.
-  */
- static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
-@@ -1820,6 +1820,14 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 
- 	page = pagecache_get_page(mapping, index,
- 					FGP_ENTRY | FGP_HEAD | FGP_LOCK, 0);
-+
-+	if (page && vma && userfaultfd_minor(vma)) {
-+		unlock_page(page);
-+		put_page(page);
-+		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
-+		return 0;
-+	}
-+
- 	if (xa_is_value(page)) {
- 		error = shmem_swapin_page(inode, index, &page,
- 					  sgp, gfp, vma, fault_type);
--- 
-2.31.1.295.g9ea45b61b8-goog
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.4.112-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: f9b2de2cddd4601c5d2f2947fc5cebb7dbecd266
+* git describe: v5.4.111-112-gf9b2de2cddd4
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+11-112-gf9b2de2cddd4
+
+## No regressions (compared to v5.4.110-24-g9b00696cdc42)
+
+## No fixes (compared to v5.4.110-24-g9b00696cdc42)
+
+
+## Test result summary
+ total: 66568, pass: 55229, fail: 884, skip: 10210, xfail: 245,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 190 total, 190 passed, 0 failed
+* arm64: 25 total, 25 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 2 total, 1 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 25 total, 25 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
