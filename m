@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A964D35DED1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8822335DEEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345757AbhDMM2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345552AbhDMM1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16A4861242;
-        Tue, 13 Apr 2021 12:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618316830;
-        bh=LrHG7yWWxJ7CVbOapeBqNZcSxGkIqyGWXrYYV3Zsum4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YF5y7vvd6zdPNQM8Oq2BivXvN6BlhXdaVXGSocHiI4XLM8p3EuOs5g7QNtLT7Bp1x
-         lHeztUeavgcpuX7pcdSvRh8CA4g6La4n6LkQdfUNwwtpO7BWhfHDPpF70Sn3jXkMiR
-         rNI3sWcqQUT2smPQvpXayi9yTbi4iIHdGvw95Sq3R6jaHwH17lbG5vxDLAjCv7jHx4
-         nSblnvqFv462szepbv/ZP1hiNP03JXEjXOzxsAKS5OeQRehI8CaoiLuw0B9+6S6GlG
-         kfBiw+HIBWDXCjd+s6KVDKWCsjcctoSSLEnh7XwOczMWupgjvXnfnoXft4436/dBAq
-         3qHG2rXnGiodQ==
-Date:   Tue, 13 Apr 2021 14:27:07 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] i2c: mpc: Remove redundant NULL check
-Message-ID: <20210413122707.GD1553@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
- <20210413050956.23264-4-chris.packham@alliedtelesis.co.nz>
+        id S1345872AbhDMM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345689AbhDMM1v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:27:51 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B47C061344
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:27:27 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ed15:b7e9:afd7:f062])
+        by baptiste.telenet-ops.be with bizsmtp
+        id sCTR2400B1dBBzp01CTRAp; Tue, 13 Apr 2021 14:27:25 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI8a-00FJNA-Oz; Tue, 13 Apr 2021 14:27:24 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI8a-002kYK-AJ; Tue, 13 Apr 2021 14:27:24 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jay Fang <f.fangjian@huawei.com>, Wei Xu <xuwei5@hisilicon.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] spi: SPI_HISI_KUNPENG should depend on ARCH_HISI
+Date:   Tue, 13 Apr 2021 14:27:23 +0200
+Message-Id: <d93934dfdbb4d35e35371517de3b64c144aeb5ef.1618316782.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UfEAyuTBtIjiZzX6"
-Content-Disposition: inline
-In-Reply-To: <20210413050956.23264-4-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The HiSilicon Kunpeng SPI controller is only present on HiSilicon
+Kunpeng SoCs.  Hence add a dependency on ARCH_HISI, to prevent asking
+the user about this driver when configuring a kernel without Hisilicon
+platform support.
 
---UfEAyuTBtIjiZzX6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: c770d8631e1810d8 ("spi: Add HiSilicon SPI Controller Driver for Kunpeng SoCs")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/spi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, Apr 13, 2021 at 05:09:54PM +1200, Chris Packham wrote:
-> In mpc_i2c_get_fdr_8xxx div is assigned as we iterate through the
-> mpc_i2c_dividers_8xxx array. By the time we exit the loop div will
-> either have the value that matches the requested speed or be pointing at
-> the last entry in mpc_i2c_dividers_8xxx. Checking for div being NULL
-> after the loop is redundant so remove the check.
->=20
-> Reported-by: Wolfram Sang <wsa@kernel.org>
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 1ffcad19c0562a39..7d438ad343598bb8 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -334,7 +334,7 @@ config SPI_FSL_QUADSPI
+ 
+ config SPI_HISI_KUNPENG
+ 	tristate "HiSilicon SPI Controller for Kunpeng SoCs"
+-	depends on (ARM64 && ACPI) || COMPILE_TEST
++	depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
+ 	help
+ 	  This enables support for HiSilicon SPI controller found on
+ 	  Kunpeng SoCs.
+-- 
+2.25.1
 
-Applied to for-next, thanks!
-
-
---UfEAyuTBtIjiZzX6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jhsACgkQFA3kzBSg
-Kba1RhAAqv8eAzs6WOZXxZJAGVOJi6zZqCtK/M2vOaLi0AbcjT2/qbc6kaZbSWza
-udXO4HwRt4vEriR1GE0EZ0gUrTWOo8UD3SRtScVilJRamJJruYrwX8fFqbytnVKL
-md0armPeuziK8g7n3AL4u1gYpcbahS/R6NbUhEqDmMSHm7YDaAR3kHjWCWsUBx01
-/lB/M85tzLAlGbfuxPAhoKBUEVD5DLu/M4sV/1MzYcrvchfmmN/Ku1ONhVhVJNWS
-pjx5jsJsEu4HES9n1ujDEXCf73LnkgZCscJeK2GnSxLrJbJXzjmzL911WUbCbniu
-7UGMQRYEs9y0/L/bEbaTHdDEJMrSJutCi+NU1Vc3Ju/S+2S2OBKAP6Janf9wIrmW
-9XzdDCGcTLZIvzn7LX5WIH5IWXI7OZjlFnS5A5vrXh693MgV+j5JBOuvveVfPHW5
-RHI4EC04MI4D/g1EH3YfAA/o4Mr3wG9KoehBH17b2El3r0ErwlR+ZXbcSQRndKq9
-qNFDTyHVyP6c+3JHtG+ece+4p7GrosGybRgrauZ0YD9gtL/KhIUqXn0nxwWr92N5
-1RRkD9RG7KXJhtnq/HgDooaZo+336ep0V8O/Zr46NarIh4ayGUeJlmHEhbTXVXTj
-eSeopZGsPdesDhvguR0W0fM2tEETSVRmikeQZhdoWlsIsDQotEE=
-=NrIG
------END PGP SIGNATURE-----
-
---UfEAyuTBtIjiZzX6--
