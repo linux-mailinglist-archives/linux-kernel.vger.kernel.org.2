@@ -2,144 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3351535E00E
+	by mail.lfdr.de (Postfix) with ESMTP id CA1B935E010
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345953AbhDMN2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S229474AbhDMN2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242158AbhDMN2H (ORCPT
+        with ESMTP id S242158AbhDMN2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:28:07 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF60C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:27:46 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id x8so12979306ybx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:27:46 -0700 (PDT)
+        Tue, 13 Apr 2021 09:28:38 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C54C061574;
+        Tue, 13 Apr 2021 06:28:17 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id a21so3900061oib.10;
+        Tue, 13 Apr 2021 06:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CFpLB8DIBaYGwxlQWaPSNY6O41QeyPIXs1swuZ8gAsc=;
-        b=ki3+aqqGlvi7IPzprReKeRHALl45saSRifTnATBrV8quvF9zINoIHLeV8qPd+A6uDt
-         +dh/PXmEr2LL2ALb2eX0A5XDS6j3n6PhJAAnRs+WPuxQwr15QpLModi4QqC4bSIq0IA4
-         wkiiobqLlTEpvJvj2B0axX36KG85ZlqqgMxN2MlLQ49HPynhQSePOMUz+hvR7EzUe6AZ
-         zOx8RCh6eCncG8UNy6mZyryMVwQctO4XOOo6Dje5gwcjEDGb+X+e9qBSQvdMSHvtz4Od
-         S4/i/qBd5OXoRiEAc3+j+ClVkBvZTbu5JbUCogC/lknhQZj6EOiCGzfIoxHizVS0dROJ
-         CCSg==
+        bh=0Lrtdi2DI7A27HaQOLaKVNVRqExZOSDdh3hl4iMSUq0=;
+        b=TlLtDMtV+kjJh3l0KeAWuic2I0geqLbTTV8vxiRnhPVeQY9lm+H0e5hgM8Wc0529gy
+         s59Bnqx5H5iBSa7OnRFtudAp/7iPPIUC8NOLIOXUC3cj90HJaNIBIE39EsyXCNFctCEM
+         fOsovSL9wRKm+f9NYufB6qHki5m/MJ4GhJz44JjfBKg3AAHJGYmxRHzAzz44xpIJQ+7J
+         4tDpsARZeHajTXvyH3Kv6bNdFpe8nJ1NdedC2HAnkUTHDqhrpGoJCu5SzZ2rzqBaphCa
+         HpXjuormEcwWgmiE8x8R5590sel228M6e4cAOfDPzCYZ3L53LvvZihd+QIL1dKJg7NJz
+         q0pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CFpLB8DIBaYGwxlQWaPSNY6O41QeyPIXs1swuZ8gAsc=;
-        b=YqNGIgDRNZM5lX8XhyDWIaM7r4zfQHGFtItFDPkFoSUqT+JjcALlVaQym2vIDBqr+I
-         pMADMefYRchMKb0GF0DV15380pVcgu1a6kEIp1Dh/kAgo5sfyaI99CkHLv9ZDsq4R7gE
-         bMocTdJgQ0zH/4TgRcmWec0TX/BGXZGzNi5CvH3URVLQ1+N1FCp9039BJriNcA2ulKdG
-         VkTEYfiOjhXDMNfUZGZnVDzED4S6u4KmcWDJYSpkF0zmUvNy+Miw0Rb5qQ7vxu+xZOkD
-         +8z3LQpECqlY4hGPnb9ye9S+uiCa86hFZV1FARGO8wBX3uYs2JastvRMGl9WM/AtFhPW
-         TH8w==
-X-Gm-Message-State: AOAM532z1Y87re23ZxJlpQAo7A/ZPMHNO5avZvjWqaAsdlEf/4No8bIr
-        JBz9166r0ru7Ro8N+OBuS2AIbxgbM4HaX3qmzbdgixvA019wbw==
-X-Google-Smtp-Source: ABdhPJxQZPXL+J7Pw71LOKFZotyLZciqj3G9dLrB8M03xC7UnUbEcgv2LeMk4ByFuKLKewvaUHpH1Zqar6AC3+PSBxU=
-X-Received: by 2002:a5b:e90:: with SMTP id z16mr2404490ybr.303.1618320465203;
- Tue, 13 Apr 2021 06:27:45 -0700 (PDT)
+        bh=0Lrtdi2DI7A27HaQOLaKVNVRqExZOSDdh3hl4iMSUq0=;
+        b=PQqysRQvVPsq9+YhY/iQcKjnILjXoKUD1adXeg3va97g+D7PbIyZ8rHwpL7t32bCNx
+         /PSZl5juSe3SZojeDUUOegzveBIbWMcDiMfoL6199Bl91N7ZbFghl7tbAzjl5yDkwCZs
+         DhIdXV/9eOTwaH9dHM9xIL7rB5GQzGEXC+J5+v+VCPDmNEIoyz+QHLQ+gxs5VSVt+Xgw
+         YsCNs+kCVF4522XxoW2snAkdBiGDFj0IT6VQYU/FslBusfH1YVHovACvZzOBtIV4Cw+I
+         syZiA9XDoySwMl1bHGX+epmoJNz5zObiVHO41/JL6z/xcEpWnb52O65+ro+y1ftCfDrp
+         KLmg==
+X-Gm-Message-State: AOAM531rClAqbX9FDqIFpJqjCnzBSG5hpnx/4aoDlUtT9slhauptUbUs
+        XfaiMl4qPpRlkEJMhsp5gmdQL6gvI0X92EkpfDY=
+X-Google-Smtp-Source: ABdhPJxzy/1IHRMFUGjf5e3YSrD/uo+69w2cfoMFc0ZgcevQMQJDQe9Wf10uFmFFfA/ku85CVg27TIQC8iJUnkky0dM=
+X-Received: by 2002:aca:a84b:: with SMTP id r72mr12921oie.17.1618320496879;
+ Tue, 13 Apr 2021 06:28:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
- <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
- <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
- <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com> <20210413085538-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210413085538-mutt-send-email-mst@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 13 Apr 2021 15:27:33 +0200
-Message-ID: <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
-Subject: Re: Linux 5.12-rc7
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
+References: <20210413062146.389690-1-ilya.lipnitskiy@gmail.com> <20210413062146.389690-3-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210413062146.389690-3-ilya.lipnitskiy@gmail.com>
+From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Date:   Tue, 13 Apr 2021 16:28:06 +0300
+Message-ID: <CAHNKnsS5Kn86g2QkFJ0qYsGPf9htmF=n-imVQBWDKYn0C+qOSA@mail.gmail.com>
+Subject: Re: [PATCH 2/8] MIPS: pci-rt2880: remove unneeded locks
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 2:57 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Apr 12, 2021 at 06:47:07PM +0200, Eric Dumazet wrote:
-> > On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
-> > > <torvalds@linux-foundation.org> wrote:
-> > > >
-> > > > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > > >
-> > > > > Qemu test results:
-> > > > >         total: 460 pass: 459 fail: 1
-> > > > > Failed tests:
-> > > > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
-> > > > >
-> > > > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-> > > > > skb->head"). It is a spurious problem - the test passes roughly every other
-> > > > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
-> > > > > with SIGTERM. So far I have only seen this with the "sh" architecture.
-> > > >
-> > > > Hmm. Let's add in some more of the people involved in that commit, and
-> > > > also netdev.
-> > > >
-> > > > Nothing in there looks like it should have any interaction with
-> > > > architecture, so that "it happens on sh" sounds odd, but maybe it's
-> > > > some particular interaction with the qemu environment.
-> > >
-> > > Yes, maybe.
-> > >
-> > > I spent few hours on this, and suspect a buggy memcpy() implementation
-> > > on SH, but this was not conclusive.
-> > >
-> > > By pulling one extra byte, the problem goes away.
-> > >
-> > > Strange thing is that the udhcpc process does not go past sendto().
-> >
-> > This is the patch working around the issue. Unfortunately I was not
-> > able to root-cause it (I really suspect something on SH)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
-> > 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
-> > virtnet_info *vi,
-> >
-> >         /* Copy all frame if it fits skb->head, otherwise
-> >          * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-> > +        *
-> > +        * Apparently, pulling only the Ethernet Header triggers a bug
-> > on qemu-system-sh4.
-> > +        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
-> > +        * more to work around this bug : These 20 bytes can not belong
-> > +        * to UDP/TCP payload.
-> > +        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
-> >          */
->
-> Question: do we still want to do this for performance reasons?
-> We also have the hdr_len coming from the device which is
-> just skb_headlen on the host.
+Hello Ilya,
 
-Well, putting 20 bytes in skb->head will disable frag0 optimization.
-
-The change would only benefit to sh architecture :)
-
-About hdr_len, I suppose we could try it, with appropriate safety checks.
-
+On Tue, Apr 13, 2021 at 9:22 AM Ilya Lipnitskiy
+<ilya.lipnitskiy@gmail.com> wrote:
+> Mirror pci-rt3883 fix from commit e5067c718b3a ("MIPS: pci-rt3883:
+> Remove odd locking in PCI config space access code"). pci-rt2880 shares
+> the driver layout with pci-rt3883 and the same reasons apply.
 >
-> >         if (len <= skb_tailroom(skb))
-> >                 copy = len;
-> >         else
-> > -               copy = ETH_HLEN + metasize;
-> > +               copy = ETH_HLEN + sizeof(struct iphdr) + metasize;
-> >         skb_put_data(skb, p, copy);
-> >
-> >         if (metasize) {
+> Caller (generic PCI code) already does proper locking, so no need to add
+> another one here. Local PCI read/write functions are never called
+> simultaneously, also they do not require synchronization with the PCI
+> controller ops, since they are used before the controller registration.
 >
+> Suggested-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> ---
+>  arch/mips/pci/pci-rt2880.c | 13 -------------
+>  1 file changed, 13 deletions(-)
+>
+> diff --git a/arch/mips/pci/pci-rt2880.c b/arch/mips/pci/pci-rt2880.c
+> index 19f7860fb28b..b4ee07cbcf2a 100644
+> --- a/arch/mips/pci/pci-rt2880.c
+> +++ b/arch/mips/pci/pci-rt2880.c
+> @@ -41,7 +41,6 @@
+>  #define RT2880_PCI_REG_ARBCTL          0x80
+>
+>  static void __iomem *rt2880_pci_base;
+> -static DEFINE_SPINLOCK(rt2880_pci_lock);
+>
+>  static u32 rt2880_pci_reg_read(u32 reg)
+>  {
+> @@ -63,7 +62,6 @@ static inline u32 rt2880_pci_get_cfgaddr(unsigned int bus, unsigned int slot,
+>  static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+>                                   int where, int size, u32 *val)
+>  {
+> -       unsigned long flags;
+>         u32 address;
+>         u32 data;
+>         int busn = 0;
+> @@ -74,10 +72,8 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+>         address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
+>                                          where);
+>
+> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
+>         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+>         data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+>
+>         switch (size) {
+>         case 1:
+> @@ -97,7 +93,6 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+>  static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+>                                    int where, int size, u32 val)
+>  {
+> -       unsigned long flags;
+>         u32 address;
+>         u32 data;
+>         int busn = 0;
+> @@ -108,7 +103,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+>         address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
+>                                          where);
+>
+> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
+>         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+>         data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+>
+> @@ -127,7 +121,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+>         }
+>
+>         rt2880_pci_reg_write(data, RT2880_PCI_REG_CONFIG_DATA);
+> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+>
+>         return PCIBIOS_SUCCESSFUL;
+>  }
+> @@ -159,31 +152,25 @@ static struct pci_controller rt2880_pci_controller = {
+>
+>  static inline u32 rt2880_pci_read_u32(unsigned long reg)
+>  {
+> -       unsigned long flags;
+>         u32 address;
+>         u32 ret;
+>
+>         address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
+>
+> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
+>         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+>         ret = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+>
+>         return ret;
+>  }
+>
+>  static inline void rt2880_pci_write_u32(unsigned long reg, u32 val)
+>  {
+> -       unsigned long flags;
+>         u32 address;
+>
+>         address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
+>
+> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
+>         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+>         rt2880_pci_reg_write(val, RT2880_PCI_REG_CONFIG_DATA);
+> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+>  }
+>
+>  int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+
+RT2880 PCI driver calls rt2880_pci_write_u32()/rt2880_pci_read_u32()
+from pcibios_map_irq(), which is called outside the scope of the
+pci_lock spinlock that is defined in /drivers/pci/access.c. So it
+looks like this could lead to a race between
+rt2880_pci_write_u32()/rt2880_pci_read_u32() and
+rt2880_pci_config_read()/rt2880_pci_config_write() functions.
+
+The code that uses rt2880_pci_write_u32()/rt2880_pci_read_u32() in the
+pcibios_map_irq() duplicates a BAR initialization procedure, which is
+already performed by the rt288x_pci_probe().
+
+Maybe we should remove duplicated code in the pcibios_map_irq() to
+reduce duplication and to avoid possible race in configuration space
+access?
+
+If you fix this possible race, feel free to add in the next patch version my
+Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+
+-- 
+Sergey
