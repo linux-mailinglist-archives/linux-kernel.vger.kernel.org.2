@@ -2,180 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83CF35DFCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A9A35DFCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbhDMNLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:11:55 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37826 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231486AbhDMNLv (ORCPT
+        id S239239AbhDMNMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhDMNMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:11:51 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DD328w032076;
-        Tue, 13 Apr 2021 09:11:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qw/B9esAJ26jq7yxahNr8Pmb2V3EmQElYpeUAyWSuCo=;
- b=HzNtnzYy5WdPgZzfCfgGMdiEiAE7AnkmlcPb9WxVvB3nyK3ITopeJKNxKSU2LWEwicfF
- DAPcudq0xmDrulrjNuBuRqbqalHr0N88iDc8CfHGfU3AR50uDCiAMLCm0/RdDg8i08zj
- bo4J2DmILy8JlM5yiq6SfL7MW+1u6rCxHbgWSFIxi9jVx42VjJOiVFeKwcEoJkp+uGNU
- Y5t7fGsdyC2u4Eb/eJuxkIP0SExrU0wA0bUvofJhMBo6k7Gz0OcJAIoQd4ALE6/DGvxD
- nvRohljN/klNJW3rMDAwFqKpcP9NlkVBvSfAELRBqW4MxCFWVFHtJlMzU5o5w5b6xYUI Hg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37vtvyfwxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 09:11:27 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DD2l8l016028;
-        Tue, 13 Apr 2021 13:11:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04fra.de.ibm.com with ESMTP id 37u3n89dt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 13:11:25 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DDB0jl27591162
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 13:11:00 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 645AF11C06C;
-        Tue, 13 Apr 2021 13:11:22 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B79811C052;
-        Tue, 13 Apr 2021 13:11:22 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 13:11:21 +0000 (GMT)
-Subject: Re: [PATCH 3/4] kbuild: spilt cc-option and friends to
- scripts/Makefile.compiler
-To:     Janosch Frank <frankja@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <20210228061028.239459-1-masahiroy@kernel.org>
- <20210228061028.239459-3-masahiroy@kernel.org>
- <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <395d2db1-b860-0da2-a859-d1d840508a46@de.ibm.com>
-Date:   Tue, 13 Apr 2021 15:11:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 13 Apr 2021 09:12:06 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD855C061574;
+        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id l14so16384104ljb.1;
+        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
+        b=CT0d7ft2eGC496UOqY7CPcm/vmeacczS8kxYMJupYLVqzF5Luq7SXqOCLpEuTKmOxN
+         5Fk1G14n4rLcTt3un6okLXTUpQD3o8eBq613SLQ7heYQmcrYsg4NuKfNTPEcCnBQeO78
+         spsQ/GSiAZFtO5OwxUoJGdWzSres2mZMMSgyblCWt4g2JOStBk80hQ6rHXeJpp8h7mEV
+         BnzO8dFbzxclTyaMKr7jxP5K92E+SZcAyoU0FceBXtGx1IP6yp0Jr1DvRjMY5czhBiFX
+         /47pNOfhYRjaHoSz5ykS3t2MUr2RJrBvqHVXz6hp4fPwBoYBfGtUUMg0uCX6a5UWP1Kw
+         bdrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
+        b=Wvsp+SOTdwmToC3bm8SdpWgY8xRBB0b96TDFg4jyGc+x8SfR8VvQquQcVGIM6vkmz4
+         vpe78z3dLeOM776HXDMIV9aVmNJ3ZDKxcNz3D0AqitlZ5vGUPd/TL7snsur7jB0fLnmb
+         af0alny6Y2f6Sphde+23yEFVKJGnzc8J4bsGU6n3qCW368uQtwljVQJ2CiZ1GacXsBjc
+         JUUn3hOa6HpiG+QjlHa905MDSSsaiCrTSxJkgHRAr8RAp7eqmTMZOm2LDlGJQjy5H+QJ
+         K/FJGegSPEi6e9W2lAc9B2YnUBci18iOq4lR6Y25Bi8augZWnugG1FliHobWsUbZi8LO
+         5GPg==
+X-Gm-Message-State: AOAM532d8u66ZDcJO94t5qCfeSGNtBGlX6LQ4JBMxU86nSOxq6fdjRWr
+        8rb7gCHcMTvvX2o8KncfiVvYljhi5+8lAg==
+X-Google-Smtp-Source: ABdhPJzzEAnNBu3PaFSv/V5rMsWkYmo2d4Mf6z3k/+v/uK+a8Iym35+wofwnC1KxXTZNa8IEUmZo1Q==
+X-Received: by 2002:a2e:b555:: with SMTP id a21mr21162925ljn.69.1618319503380;
+        Tue, 13 Apr 2021 06:11:43 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.229.90])
+        by smtp.gmail.com with ESMTPSA id k2sm3344307lfg.107.2021.04.13.06.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 06:11:42 -0700 (PDT)
+Message-ID: <d37a412f244eaa0f1352b394fdf933ce75d9968c.camel@gmail.com>
+Subject: memory leak in ext4_multi_mount_protect
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>
+Date:   Tue, 13 Apr 2021 16:11:41 +0300
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-In-Reply-To: <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: JmFjsGkHnMSCqLBVrV6rsv5U0Cg1SgUv
-X-Proofpoint-GUID: JmFjsGkHnMSCqLBVrV6rsv5U0Cg1SgUv
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 clxscore=1011 adultscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104130091
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+
+I've done debugging on this issue
+https://syzkaller.appspot.com/bug?id=420258a304e5d92cfef6b0097f87b42506e1db08
+and I want to ask you about 
+proper way of fixing it. The problem was in case sbi->s_mmp_tsk hasn’t
+started at the time of kthread_stop() call. In that case allocated data
+won't be freed.
+
+I wrote fix patch, but I am confused about it, because I didn't find
+any kernel code like this. I don't think, that adding new members to
+struct super_block is good idea, that's why I came to that decision: 
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b9693680463a..9c33e97bd5c5 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct super_block
+*sb, void *data, int silent)
+ failed_mount3:
+ 	flush_work(&sbi->s_error_work);
+ 	del_timer_sync(&sbi->s_err_report);
+-	if (sbi->s_mmp_tsk)
+-		kthread_stop(sbi->s_mmp_tsk);
++	if (sbi->s_mmp_tsk) {
++		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
++			kfree(kthread_data(sbi->s_mmp_tsk));
++	}
+ failed_mount2:
+ 	rcu_read_lock();
+ 	group_desc = rcu_dereference(sbi->s_group_desc);
 
 
-On 13.04.21 14:51, Janosch Frank wrote:
-> On 2/28/21 7:10 AM, Masahiro Yamada wrote:
->> scripts/Kbuild.include is included everywhere, but macros such as
->> cc-option are needed by build targets only.
->>
->> For example, when 'make clean' traverses the tree, it does not need
->> to evaluate $(call cc-option,).
->>
->> Split cc-option, ld-option, etc. to scripts/Makefile.compiler, which
->> is only included from the top Makefile and scripts/Makefile.build.
->>
->> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> 
-> This commit broke the KVM selftest compilation under s390 in linux-next
-> for me. Funny enough the compilation is only broken on Ubuntu, under
-> Fedora the test fails with an assertion.
-> 
-> FEDORA:
-> [root@fedora kvm]# ./set_memory_region_test
-> Allowed number of memory slots: 32767
-> ==== Test Assertion Failure ====
->    lib/kvm_util.c:142: vm->fd >= 0
->    pid=1541645 tid=1541645 - Invalid argument
->       1	0x0000000001002f4b: vm_open at kvm_util.c:142
->       2	 (inlined by) vm_create at kvm_util.c:258
->       3	0x00000000010015ef: test_add_max_memory_regions at
-> set_memory_region_test.c:351
->       4	 (inlined by) main at set_memory_region_test.c:397
->       5	0x000003ffa3d2bb89: ?? ??:0
->       6	0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
->    KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
-> 
-> 
-> Ubuntu:
-> make[1]: Leaving directory '/mnt/dev/linux'
-> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> -fno-stack-protector -fno-PIE -I../../../../tools/include
-> -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/sparsebit.c -o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> -fno-stack-protector -fno-PIE -I../../../../tools/include
-> -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/kvm_util.c -o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> -fno-stack-protector -fno-PIE -I../../../../tools/include
-> -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> -Iinclude -Ilib/s390x -Iinclude/s390x -I..   -c
-> lib/s390x/diag318_test_handler.c -o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-> ar crs /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/assert.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/elf.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/io.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/test_util.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/guest_modes.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/perf_test_util.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/processor.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/ucall.o
-> /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-> gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> -fno-stack-protector -fno-PIE -I../../../../tools/include
-> -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> -Iinclude -Is390x -Iinclude/s390x -I..  -pthread    s390x/memop.c
-> /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a  -o
-> /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop
-> /usr/bin/ld: /tmp/ccFU8WYF.o: `stdout@@GLIBC_2.2' non-PLT reloc for
-> symbol defined in shared library and accessed from executable (rebuild
-> file with -fPIC ?)
-> /usr/bin/ld: final link failed: bad value
-> collect2: error: ld returned 1 exit status
-> make: *** [../lib.mk:139:
-> /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop] Error 1
-> 
+I look forward to hearing your perspective on this patch :)
 
+With regards,
+Pavel Skripkin
 
-
-It looks like that from tools/testing/selftests/kvm/Makefile
-additional linker flags are being ignored with this patch.
-
-no-pie-option := $(call try-run, echo 'int main() { return 0; }' | \
-         $(CC) -Werror -no-pie -x c - -o "$$TMP", -no-pie)
-
-# On s390, build the testcases KVM-enabled
-pgste-option = $(call try-run, echo 'int main() { return 0; }' | \
-         $(CC) -Werror -Wl$(comma)--s390-pgste -x c - -o "$$TMP",-Wl$(comma)--s390-pgste)
-
-
-LDFLAGS += -pthread $(no-pie-option) $(pgste-option)
 
