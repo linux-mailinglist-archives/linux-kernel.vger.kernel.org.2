@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9BD35D903
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A1E35D91B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240485AbhDMHhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:37:04 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:36484 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240511AbhDMHgy (ORCPT
+        id S230441AbhDMHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhDMHjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:36:54 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B925B4019F;
-        Tue, 13 Apr 2021 07:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618299393; bh=VCsfoeGdYNwNfiUJzuIJGTNPJtdO1Pi+it1NAEsAZQw=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=asyFKQh0snLnZDW6FTI6+w8MRcs7m78d7CqFo22W/yZ9Wb6rS6E4BT2/ZG+2kzKg2
-         x3ni4m5LRvMBoTh4adU1zwlJ6yYwPFHmAYerPaxjqHkpG+3R1+QptYWDfAdkJ2OQG+
-         tYSzPt1S0wf0e7v7n+fIr4n9Aye/Bht27QZngQL/09iuZwH0Ha7gtbVOya1IhOZliY
-         h2ws0FVtW60Mueafn7EDpEUGkJzmgvNQNdTtZM2fmNaZLWYrx27tXEn3GB4APxuhPn
-         OXjph4pZGmY9odpQjH+z/q0CCxIm29TbSBKWB70TZLDYNwds4zWOpxN0mB7a/18U7w
-         KShM7jkQ/weKQ==
-Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id EF2CEA0094;
-        Tue, 13 Apr 2021 07:36:30 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Tue, 13 Apr 2021 11:36:30 +0400
-Date:   Tue, 13 Apr 2021 11:36:30 +0400
-In-Reply-To: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
-References: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
-X-SNPS-Relay: synopsys.com
-From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH v2 04/12] usb: dwc2: Add exit clock gating from wakeup interrupt
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     John Youn <John.Youn@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Message-Id: <20210413073630.EF2CEA0094@mailhost.synopsys.com>
+        Tue, 13 Apr 2021 03:39:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D365C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qiMozfse1ylK7l2xDfgLoNIFT6bNFBlMbrxg4GooV1s=; b=UD2Y8PFbs0xVNGOqw1H3pLJCRv
+        wM10LfvBbRL/39M1Tyjp+W5Q+mR5BNpFWb7KXu6tZm+tnHEvSyk0C5w0fJtwR/UskSnCusTB3e0NU
+        EMP9ZcmBl6xwdPN9iT/s3Y6oZjklp4ypiOiure0d6oRT+SbRL4iavkFCy7q0G4+fLDo+uK/Bv5+Hn
+        UIo+fN58zb4+E01+fySJsDy2qxFujCk3xmTbkEIri1+0HZ7I0paj26LBh+HHZcz5eaAuGlhrDT0H+
+        XrotGzlHsbobL1ruJrjlTHn3+1bFMRI4Eb8ET0Sg2x/EGHSq1wHxZcqV4tHjVCXFJLjxetbZpAetf
+        MwHSazIA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWDb7-005PuV-Hl; Tue, 13 Apr 2021 07:37:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5B71A30022D;
+        Tue, 13 Apr 2021 09:36:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2DA2920224209; Tue, 13 Apr 2021 09:36:32 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 09:36:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, x86@kernel.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org, hch@lst.de
+Subject: Re: [PATCH 4/7] mm: Introduce verify_page_range()
+Message-ID: <YHVKACnVLAhbnt4j@hirez.programming.kicks-ass.net>
+References: <20210412080012.357146277@infradead.org>
+ <20210412080611.769864829@infradead.org>
+ <202104121302.57D7EF8@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202104121302.57D7EF8@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added exit from clock gating mode when wakeup interrupt
-is detected. To exit from the clock gating
-in device mode "dwc2_gadget_exit_clock_gating()"
-function is used with rem_wakeup parameter 0. To exit
-clock gating in host mode "dwc2_host_exit_clock_gating()"
-with rem_wakeup parameter 1.
+On Mon, Apr 12, 2021 at 01:05:09PM -0700, Kees Cook wrote:
+> On Mon, Apr 12, 2021 at 10:00:16AM +0200, Peter Zijlstra wrote:
+> > +struct vpr_data {
+> > +	int (*fn)(pte_t pte, unsigned long addr, void *data);
+> > +	void *data;
+> > +};
+> 
+> Eeerg. This is likely to become an attack target itself. Stored function
+> pointer with stored (3rd) argument.
+> 
+> This doesn't seem needed: only DRM uses it, and that's for error
+> reporting. I'd rather plumb back errors in a way to not have to add
+> another place in the kernel where we do func+arg stored calling.
 
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Is this any better? It does have the stored pointer, but not a stored
+argument, assuming you don't count returns as arguments I suppose.
+
+The alternative is refactoring apply_to_page_range() :-/
+
 ---
- drivers/usb/dwc2/core_intr.c | 33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index ab7fe303c0f9..c764407e7633 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -415,17 +415,24 @@ static void dwc2_handle_wakeup_detected_intr(struct dwc2_hsotg *hsotg)
- 	if (dwc2_is_device_mode(hsotg)) {
- 		dev_dbg(hsotg->dev, "DSTS=0x%0x\n",
- 			dwc2_readl(hsotg, DSTS));
--		if (hsotg->lx_state == DWC2_L2 && hsotg->in_ppd) {
--			u32 dctl = dwc2_readl(hsotg, DCTL);
--			/* Clear Remote Wakeup Signaling */
--			dctl &= ~DCTL_RMTWKUPSIG;
--			dwc2_writel(hsotg, dctl, DCTL);
--			ret = dwc2_exit_partial_power_down(hsotg, 1,
--							   true);
--			if (ret)
--				dev_err(hsotg->dev,
--					"exit partial_power_down failed\n");
--			call_gadget(hsotg, resume);
-+		if (hsotg->lx_state == DWC2_L2) {
-+			if (hsotg->in_ppd) {
-+				u32 dctl = dwc2_readl(hsotg, DCTL);
-+				/* Clear Remote Wakeup Signaling */
-+				dctl &= ~DCTL_RMTWKUPSIG;
-+				dwc2_writel(hsotg, dctl, DCTL);
-+				ret = dwc2_exit_partial_power_down(hsotg, 1,
-+								   true);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit partial_power_down failed\n");
-+				call_gadget(hsotg, resume);
-+			}
-+
-+			/* Exit gadget mode clock gating. */
-+			if (hsotg->params.power_down ==
-+			    DWC2_POWER_DOWN_PARAM_NONE && hsotg->bus_suspended)
-+				dwc2_gadget_exit_clock_gating(hsotg, 0);
- 		} else {
- 			/* Change to L0 state */
- 			hsotg->lx_state = DWC2_L0;
-@@ -440,6 +447,10 @@ static void dwc2_handle_wakeup_detected_intr(struct dwc2_hsotg *hsotg)
- 						"exit partial_power_down failed\n");
- 			}
- 
-+			if (hsotg->params.power_down ==
-+			    DWC2_POWER_DOWN_PARAM_NONE && hsotg->bus_suspended)
-+				dwc2_host_exit_clock_gating(hsotg, 1);
-+
- 			/*
- 			 * If we've got this quirk then the PHY is stuck upon
- 			 * wakeup.  Assert reset.  This will propagate out and
--- 
-2.25.1
+struct vpr_data {
+	bool (*fn)(pte_t pte, unsigned long addr);
+	unsigned long addr;
+};
 
+static int vpr_fn(pte_t *pte, unsigned long addr, void *data)
+{
+	struct vpr_data *vpr = data;
+	if (!vpr->fn(*pte, addr)) {
+		vpr->addr = addr;
+		return -EINVAL;
+	}
+	return 0;
+}
+
+/**
+ * verify_page_range() - Scan (and fill) a range of virtual memory and validate PTEs
+ * @mm: mm identifying the virtual memory map
+ * @addr: starting virtual address of the range
+ * @size: size of the range
+ * @fn: function that verifies the PTEs
+ *
+ * Scan a region of virtual memory, filling in page tables as necessary and
+ * calling a provided function on each leaf, providing a copy of the
+ * page-table-entry.
+ *
+ * Similar apply_to_page_range(), but does not provide direct access to the
+ * page-tables.
+ *
+ * NOTE! this function does not work correctly vs large pages.
+ *
+ * Return: the address that failed verification or 0 on success.
+ */
+unsigned long verify_page_range(struct mm_struct *mm,
+				unsigned long addr, unsigned long size,
+				bool (*fn)(pte_t pte, unsigned long addr))
+{
+	struct vpr_data vpr = {
+		.fn = fn,
+		.addr = 0,
+	};
+	apply_to_page_range(mm, addr, size, vpr_fn, &vpr);
+	return vpr.addr;
+}
+EXPORT_SYMBOL_GPL(verify_page_range);
