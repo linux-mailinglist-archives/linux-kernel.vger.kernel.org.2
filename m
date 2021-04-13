@@ -2,364 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F4A35D8CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CDE35D8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239091AbhDMH1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:27:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59800 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229838AbhDMH1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:27:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618298832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sbNlXmW4twHjiHjHaeXid9uU36Go38oRtJs3RsrBYfw=;
-        b=Ttuxwns2UxXUTtrSpdoybQJ99yvOYgc5L90LlOnXo0gZut8DNMVnm9Dht9gLzA+8Igp/wf
-        4tppvf/X6StdPrdAb9mZ17An2IcPzM8VF/Gnp3O0tWaieQdd8gy/54t2jPlbDoriHQyOss
-        ZrRw6IQjYGeBMt+Sng9oBoXKlyYzSnc=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-TCnXsz30Nn6l_DkDJiG-fg-1; Tue, 13 Apr 2021 03:27:11 -0400
-X-MC-Unique: TCnXsz30Nn6l_DkDJiG-fg-1
-Received: by mail-ej1-f69.google.com with SMTP id jt26so4741657ejc.18
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:27:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sbNlXmW4twHjiHjHaeXid9uU36Go38oRtJs3RsrBYfw=;
-        b=Z6Oxf0znWzI6FE6r+5FAHMe6k0rVGkBV/9F0apS/4KelHvoKi7rR1kmwpihNo6BSbq
-         2CiOnyY54Qo4y6zQ7FKMGyrMPMshVOSO9GeZtti5ENF0HR/K/hq6/atNO6glsV0A1M7c
-         el/s4/lJJsv41qIMKQ44vMwn7+YLxxBZPv5IEWCT6ZQF3zt5hstP3ecdXiD2t1l+nN6x
-         gU9ZHDevwpDQ8dtiHq7ZkhC6l9NBl1FmsmrKMHyAJH5CADp6olOqJw/1pxZjS77j+SnF
-         YuyFCSmSGREIwkQiJJ29kKIBKTFyB1NFnbBAIQKUmAlrBtfUijRf65d9pdFwNE5KYUWJ
-         /l6Q==
-X-Gm-Message-State: AOAM533kkTz6pLULKKLwvoBvNYvDl1YIDK/ceJq01XdwZwMy+pwxReTr
-        hlfIWG3uBfgQf+vWu+aHUKUxAuGpeRIReXDKjKlFna2Xn/+A9aev4LSed3BWB4ty2Nww5jEEB2x
-        XOR61SqvPtHQcxY/DKSjB8uXl
-X-Received: by 2002:a17:906:b202:: with SMTP id p2mr30733614ejz.244.1618298829696;
-        Tue, 13 Apr 2021 00:27:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZ+VkdAhIghxIna0GDqrGWN4W90YHkOrQc+JVIRmx8CO0Slp2tgYUlOwgV1IuZf+PPzcGzmw==
-X-Received: by 2002:a17:906:b202:: with SMTP id p2mr30733601ejz.244.1618298829477;
-        Tue, 13 Apr 2021 00:27:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e20sm2275247ejy.66.2021.04.13.00.27.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 00:27:08 -0700 (PDT)
-Subject: Re: [PATCH v6] platform/x86: intel_pmc_core: export platform global
- reset bits via etr3 sysfs file
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tamar Mashiah <tamar.mashiah@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20210411141532.3004893-1-tomas.winkler@intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <1ab9f53a-d33c-308a-bb1a-5aefcb6077cc@redhat.com>
-Date:   Tue, 13 Apr 2021 09:27:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239197AbhDMH2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:28:20 -0400
+Received: from mail-eopbgr1320105.outbound.protection.outlook.com ([40.107.132.105]:28353
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229762AbhDMH2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 03:28:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dB9JGS4YIHP08lNnm3ud7/52RY6e4eE0RjHIYq5ZzMeHkXrTDTMuCsbmuijhFbZsBDvVp05BfwbzVd6nxtqQWS78Wb3nNOYTHEUx+HpWXdY+CRD64o8NiMfojBEAc3aLMF+DzWAFwWvQWKnaJuy/fFuczMQdhe/X+VLYTLTgu7gtjP884Xwr1+xEAl1otQA4YyOLOrqmb78uLxBY42E7Udv9sIR5wAvHLP9DbDuPomKVryam0HpsXeKzs99OK4ANUZqZADC/e6h5Lca/QEyT2MOm8oZlEN7Q566jT8vbmFhTqJUYv2HLOeidXDwmJ4qoo5KU/tGnMrTGYZRAbX14jg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d3yRah5H8XiJYbstw4Y8mgFYyoO4ymXp3d+xbbKAfeY=;
+ b=DSS2A61cR9fXI+vKtrkMfqPV2/aRG9DnUPYAc7je92VswFev0KTrPYPZZshwthO5jkFIsUk3KcEXS8T+MpEzokUG9BwrFhRfqB0zBAUBhWL5Hdx+P0IpvLjGqmxhducL9/6m/5/gV44znVMKK27hZH9ICpbxjfdzx6h86M/Yj9hfrC+jmqsWnhrw+V+3I+9fkXSrPmcCKWitAuPL6ccxK4e5L/pcywHjfPubq8h1YbLinoXadCeCSHx1Bqt1LGLGE9NNsIs8ZO3Mmo1HUmz0xISig9yWmmHiL71pbB2CCqfm0a9DdrFshiWvln4prbmj1W7rijXUTCo8Q6EheTvHyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3362.apcprd06.prod.outlook.com (2603:1096:203:8b::10)
+ by HK0PR06MB2867.apcprd06.prod.outlook.com (2603:1096:203:5e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Tue, 13 Apr
+ 2021 07:27:51 +0000
+Received: from HK0PR06MB3362.apcprd06.prod.outlook.com
+ ([fe80::4d49:12fe:2d9a:b1bd]) by HK0PR06MB3362.apcprd06.prod.outlook.com
+ ([fe80::4d49:12fe:2d9a:b1bd%3]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
+ 07:27:51 +0000
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+Subject: Re: [PATCH 2/4] dt-bindings: Add bindings for aspeed pwm
+Thread-Topic: [PATCH 2/4] dt-bindings: Add bindings for aspeed pwm
+Thread-Index: AQHXL4Hjk3xux308SEWBeke+D0GoN6qw3hAAgAG2DAA=
+Date:   Tue, 13 Apr 2021 07:27:51 +0000
+Message-ID: <106D8276-51DF-4319-BDB4-68D1C0B2971A@aspeedtech.com>
+References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
+ <20210412095457.15095-3-billy_tsai@aspeedtech.com>
+ <1618233600.223110.3757979.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1618233600.223110.3757979.nullmailer@robh.at.kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2bd0c2a9-9dd6-49cb-2fdc-08d8fe4da571
+x-ms-traffictypediagnostic: HK0PR06MB2867:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0PR06MB2867307112E511BD4E81FCC38B4F9@HK0PR06MB2867.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RHlBqyR+a7yxzY1oFSplYvvk39FiRHLle/KZsqXvo21XPDF5E/J1Utd2W7Y+XMExvnvRDJ3A/+S+dky0gndwijvolWqj4z78jF9tq1WVMG8FcHHHRtnduz3a7Ugoa137pqqwfIyMNZdF8AgX1AsZppdQtq5wW4yX5gRU7gNi4/nxYKwGZa595ZePQI16PPqGn5AU6L6H5NT6vZzpLabdYRofNyzmZ7/F0lcxYpeWpaVVKB/xKKCSIWLfLT+hLVmI0zIwFCC5/zZNpXeStwrBpTK4tkT1Y/Zt+tJhKHLCrwDckpM0POkktfdR+20MX4qERa9QuXrRm6kpLfbfaPC1zPR39/gG1FGi+TJK5/Yas2Y6T1eAsBLnsDTCB3fsvE6yR1IvEcJKquMpgRz5LFQMIfV9/6hyiOMwJBo8kfleC1Y860wpYjycxbOfWbDvp8Ra4eDMY82uHYDFr2H5epLpRcEUNdyPgcsbuSeU92AanTvtnZp77ThkZ1ApyHdyTqpEKHTgjQUnHPeUi5RTxS2AegOy6mpZW3BNHX97vi83b454RlwqLoqndSuI1HR16XWTFdNe/T4ky7M5ltXmw/XCNn7b2db8OQH3y9B1I3/iEUlov7d9/zseW/WgdIWNvG5KHU+/lH82CV0fEwWdf6w4ZP0g1U9KIKSWaEi7Elz5jQTtG+7QdgaYaIGJ1tlOqJy16oj6OtkCp0R/wQlKgQrrfOvEujcnHmr1wMOtZaBVB1M=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3362.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(396003)(39830400003)(376002)(66446008)(478600001)(64756008)(66556008)(6486002)(66476007)(6506007)(5660300002)(2906002)(36756003)(122000001)(54906003)(66946007)(6916009)(38100700002)(86362001)(8676002)(33656002)(4326008)(83380400001)(76116006)(2616005)(55236004)(186003)(966005)(71200400001)(7416002)(8936002)(316002)(6512007)(26005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?N2swQ2lnVm9tbWEyaXhoM0YzR1NVRFk2TFZUekltRGJmQ3VEanN3MnRJa1Rx?=
+ =?utf-8?B?NzNXdDY1Y2dVZHBsbjQyYTN3NFhmTy8ra0k0dGhFRDBTY20xS05SRjNKTzdN?=
+ =?utf-8?B?ZXk3MmZ1Sm5NcGlmWitTQlFXMHVSVTNVQVZPRWI5VS91eVB3cDQ2Vit3VUp3?=
+ =?utf-8?B?elZzSmcrM0Q1ZG1MZXk2YlhvVGc3dUVUaERYam5DRUhhODJmOXdGVjFrMGJ1?=
+ =?utf-8?B?V2hjWHAra21EV1pSd2tRTFc4cWlWQjJpMnNvUmN5eDRkR0xtUnZCYkJQRm10?=
+ =?utf-8?B?bEZubktMcE5tdlBJUWFCanovRld6UllaZDZYa210RG1HNFltWnd4RmJmTHlD?=
+ =?utf-8?B?dUhEQlRxcGR2bVZJeTFUU3pRWjhVWmd4b3dFSUE5LzNZR2U5Y2RJbDMzZWIr?=
+ =?utf-8?B?bkdGRXhwMG1rQkQ1bDYydDNVOE1PSGNxZ2VsWm9FbmxjREROaXdEclMzWmFt?=
+ =?utf-8?B?R0hOeWIvaFpyTVhGaVFtS1hieFl5NTlRSlJtMUhwVUdQczZWMUE5WEJaeERp?=
+ =?utf-8?B?bmRCUkFDZHd5akxHNlBrdUhVMUZmZHNrL1F5aGxoZjcycTZrMDViLzljc0pR?=
+ =?utf-8?B?T0hPeGE5UmZxNEZVUnZaYkhybjM0UTJZUFhzelFwV3EzaXdXelRWRFVXc1FE?=
+ =?utf-8?B?VFdxaWl4WmtTU3RQdGdvOTZjbTdUZ3hGTmZRMllBeWVRZHdSMkxYRUxBRUcw?=
+ =?utf-8?B?WXF0ajVVVXVWOVJsU2MrMWVwVGdpWEVyaUZWTURTVjhBUlFlT2U2bHFXUjRK?=
+ =?utf-8?B?Ry9TY3RnU3M5YVRuYlJCNDczV2NreHNFWU85R2lPMGE5NlIzRzgyZGF2ZFJB?=
+ =?utf-8?B?bTUySFQxL3NMRXBzTU1lM3FkQk92NkY5L2RDZ0VtZkJEZkYrZnVOOG5BR0ho?=
+ =?utf-8?B?K1ZmZjU2Z1pmQUxMTUsxKzBQZWRyTkZmUlZaZ05tMThlU2JwcDF2VVM1VG1v?=
+ =?utf-8?B?R0pSU2NIZzJIS3k0c2ZRa3hBdGlkODN3TC9hci9VTklsYXI0aGhqMWtxcFk2?=
+ =?utf-8?B?QWhZQUFwYkY3VkZlOUlXRlFUZ3d0clIybllMSldGVjdPRy9NNzgzMFM3cUhI?=
+ =?utf-8?B?S3hwaWpSRnNuaDlTU3R6Ry9FK1Q0NDRDbVFNeTB5SFZUamlocktkMlVrampR?=
+ =?utf-8?B?b2lOaHZiaUpYMG5zUDFybS9Bck16L0hhODFyWmlrYWx1dWFnRUt0bnRNWVhU?=
+ =?utf-8?B?T3p2YzUzNE55VEJacXJ2WTJuUE54QXRIL3VUZkhLb2NEdGUyWWhrOEJ6aDJl?=
+ =?utf-8?B?NlJvdWRJY00wci9JTTVXMTk3RXByd2JlK0VUeENjb3RKWkl1VTdNZjdvbHpI?=
+ =?utf-8?B?eUxxUWhvU0h2S3ZBT3B5R1lPUUQwbmNiU00yTU9XWStrWHVQb0dYWkpwZEt6?=
+ =?utf-8?B?U2M5TzZhUkZkUUl4RktVSVcwNEZSdDFibXA3TmpTbjkwUmtQbTRXQlg0MEpi?=
+ =?utf-8?B?MDZUcGRDWjlhUXRZc3hwaExtbHF4cWowTzg1V0t4OWF2VFZVTGRnOU9jZ1c4?=
+ =?utf-8?B?VmRBL21EbFNZWGJycy9seWVxdU05Mi9jQkNrNFZQamZOMTMvNnZteHNUcExD?=
+ =?utf-8?B?MDN3VFJRdUJacE5PbkFuTkJJUUlmbkZOSGlyTTBUUm0vTHdzRlg5Q3lzSWFB?=
+ =?utf-8?B?UE5Md3pobk1MdXpHWmNVeC81cG9WN09UUnYxbUs1MzRldlVTOUJOaFhHcysz?=
+ =?utf-8?B?N2ZQcjJaZFdGMGd3QWFLWTd5a2RvdjZ1THdxVUEvZlhzdm5BRlR0aDVkcnk3?=
+ =?utf-8?Q?kbJA94PNiWN1fbVMfi8MY7339y22m99Sq2su+Va?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <31A5211A6E16CD479C4A23874841E7D1@apcprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210411141532.3004893-1-tomas.winkler@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3362.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bd0c2a9-9dd6-49cb-2fdc-08d8fe4da571
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2021 07:27:51.3151
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X2pIhbOzUM7z8uX55aPfcXBUo42aAkdh/bFCPVfB73DFfUJb4U+Oft1Y0/mrABe2P88NZ72Gbel4pQBtg+8zU2mN27p6EGmG6YAANXd3kGY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2867
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/11/21 4:15 PM, Tomas Winkler wrote:
-> From: Tamar Mashiah <tamar.mashiah@intel.com>
-> 
-> During PCH (platform/board) manufacturing process a global platform
-> reset has to be induced in order for the configuration changes take
-> the effect upon following platform reset. This is an internal platform
-> state and is not intended to be used in the regular platform resets.
-> The setting is exposed via ETR3 (Extended Test Mode Register 3).
-> After the manufacturing process is completed the register cannot be
-> written anymore and is hardware locked.
-> This setting was commonly done by accessing PMC registers via /dev/mem
-> but due to security concerns /dev/mem access is much more restricted,
-> hence the reason for exposing this setting via the dedicated sysfs
-> interface.
-> To prevent post manufacturing abuse the register is protected
-> by hardware locking and the file is set to read-only mode via is_visible
-> handler.
-> 
-> The register in MMIO space is defined for Cannon Lake and newer PCHs.
-> 
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Cc: David E Box <david.e.box@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-> ---
-> V2:
-> 1. Add locking for reading the ET3 register  (Andy)
-> 2. Fix few style issues (Andy)
-> V3:
-> 1. Resend
-> v4:
-> 1. Fix return statement (Andy)
-> 2. Specify manufacturing process (Enrico)
-> V5:
-> 1. Rename sysfs file to etr3 (Hans)
-> 2. Make file read only when register is locked (Hans)
-> 3. Add more info to sysfs ABI documentation
-> V5:
-> 1. Parentheses around arithmetic in operand of '|' [-Wparentheses] (lkp)
->    656 |  return reg & ETR3_CF9LOCK ? attr->mode & SYSFS_PREALLOC | 0444 : attr->mode
-> 
->  .../ABI/testing/sysfs-platform-intel-pmc      |  20 ++++
->  MAINTAINERS                                   |   1 +
->  drivers/platform/x86/intel_pmc_core.c         | 113 ++++++++++++++++++
->  drivers/platform/x86/intel_pmc_core.h         |   6 +
->  4 files changed, 140 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> new file mode 100644
-> index 000000000000..ef199af75ab0
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
-> @@ -0,0 +1,20 @@
-> +What:		/sys/devices/platform/<platform>/etr3
-> +Date:		Apr 2021
-> +KernelVersion:	5.13
-> +Contact:	"Tomas Winkler" <tomas.winkler@intel.com>
-> +Description:
-> +		The file exposes "Extended Test Mode Register 3" global
-> +		reset bits. The bits are used during an Intel platform
-> +		manufacturing process to indicate that consequent reset
-> +		of the platform is a "global reset". This type of reset
-> +		is required in order for manufacturing configurations
-> +		to take effect.
-> +
-> +		Display global reset setting bits for PMC.
-> +			* bit 31 - global reset is locked
-> +			* bit 20 - global reset is set
-> +		Writing bit 20 value to the etr3 will induce
-> +		a platform "global reset" upon consequent platform reset,
-> +		in case the register is not locked.
-> +		The "global reset bit" should be locked on a production
-> +		system and the file is in read-only mode.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7dd6b67f0f51..3e898660b5b4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9145,6 +9145,7 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
->  M:	David E Box <david.e.box@intel.com>
->  L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
->  F:	drivers/platform/x86/intel_pmc_core*
->  
->  INTEL PMIC GPIO DRIVERS
-> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-> index b5888aeb4bcf..8fb4e6d1d68d 100644
-> --- a/drivers/platform/x86/intel_pmc_core.c
-> +++ b/drivers/platform/x86/intel_pmc_core.c
-> @@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
->  	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
->  	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
->  	.ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
-> +	.etr3_offset = ETR3_OFFSET,
->  };
->  
->  static const struct pmc_reg_map icl_reg_map = {
-> @@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
->  	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
->  	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
->  	.ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
-> +	.etr3_offset = ETR3_OFFSET,
->  };
->  
->  static const struct pmc_bit_map tgl_clocksource_status_map[] = {
-> @@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
->  	.lpm_sts = tgl_lpm_maps,
->  	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
->  	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
-> +	.etr3_offset = ETR3_OFFSET,
->  };
->  
->  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
-> @@ -603,6 +606,115 @@ static inline u64 pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
->  	return (u64)value * pmcdev->map->slp_s0_res_counter_step;
->  }
->  
-> +static int set_etr3(struct pmc_dev *pmcdev)
-> +{
-> +	const struct pmc_reg_map *map = pmcdev->map;
-> +	u32 reg;
-> +	int err;
-> +
-> +	if (!map->etr3_offset)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(&pmcdev->lock);
-> +
-> +	/* check if CF9 is locked */
-> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +	if (reg & ETR3_CF9LOCK) {
-> +		err = -EACCES;
-> +		goto out_unlock;
-> +	}
-> +
-> +	/* write CF9 global reset bit */
-> +	reg |= ETR3_CF9GR;
-> +	pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
-> +
-> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +	if (!(reg & ETR3_CF9GR)) {
-> +		err = -EIO;
-> +		goto out_unlock;
-> +	}
-> +
-> +	err = 0;
-> +
-> +out_unlock:
-> +	mutex_unlock(&pmcdev->lock);
-> +	return err;
-> +}
-> +static umode_t etr3_is_visible(struct kobject *kobj,
-> +				struct attribute *attr,
-> +				int idx)
-> +{
-> +	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> +	const struct pmc_reg_map *map = pmcdev->map;
-> +	u32 reg;
-> +
-> +	mutex_lock(&pmcdev->lock);
-> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +	mutex_unlock(&pmcdev->lock);
-> +
-> +	return reg & ETR3_CF9LOCK ? attr->mode & (SYSFS_PREALLOC | 0444) : attr->mode;
-> +}
-> +
-> +static ssize_t etr3_show(struct device *dev,
-> +				 struct device_attribute *attr, char *buf)
-> +{
-> +	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> +	const struct pmc_reg_map *map = pmcdev->map;
-> +	u32 reg;
-> +
-> +	if (!map->etr3_offset)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(&pmcdev->lock);
-> +
-> +	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
-> +	reg &= ETR3_CF9GR | ETR3_CF9LOCK;
-> +
-> +	mutex_unlock(&pmcdev->lock);
-> +
-> +	return sysfs_emit(buf, "0x%08x", reg);
-> +}
-> +
-> +static ssize_t etr3_store(struct device *dev,
-> +				  struct device_attribute *attr,
-> +				  const char *buf, size_t len)
-> +{
-> +	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
-> +	int err;
-> +	u32 reg;
-> +
-> +	err = kstrtouint(buf, 16, &reg);
-> +	if (err)
-> +		return err;
-> +
-> +	/* allow only CF9 writes */
-> +	if (reg != ETR3_CF9GR)
-> +		return -EINVAL;
-> +
-> +	err = set_etr3(pmcdev);
-> +	if (err)
-> +		return err;
-> +
-> +	return len;
-> +}
-> +static DEVICE_ATTR_RW(etr3);
-> +
-> +static struct attribute *pmc_attrs[] = {
-> +	&dev_attr_etr3.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group pmc_attr_group = {
-> +	.attrs = pmc_attrs,
-> +	.is_visible = etr3_is_visible,
-> +};
-> +
-> +static const struct attribute_group *pmc_dev_groups[] = {
-> +	&pmc_attr_group,
-> +	NULL
-> +};
-> +
->  static int pmc_core_dev_state_get(void *data, u64 *val)
->  {
->  	struct pmc_dev *pmcdev = data;
-> @@ -1384,6 +1496,7 @@ static struct platform_driver pmc_core_driver = {
->  		.name = "intel_pmc_core",
->  		.acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
->  		.pm = &pmc_core_pm_ops,
-> +		.dev_groups = pmc_dev_groups,
->  	},
->  	.probe = pmc_core_probe,
->  	.remove = pmc_core_remove,
-> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-> index f33cd2c34835..98ebdfe57138 100644
-> --- a/drivers/platform/x86/intel_pmc_core.h
-> +++ b/drivers/platform/x86/intel_pmc_core.h
-> @@ -200,6 +200,11 @@ enum ppfear_regs {
->  #define TGL_LPM_STATUS_OFFSET			0x1C3C
->  #define TGL_LPM_LIVE_STATUS_OFFSET		0x1C5C
->  
-> +/* Extended Test Mode Register 3 (CNL and later) */
-> +#define ETR3_OFFSET				0x1048
-> +#define ETR3_CF9GR				BIT(20)
-> +#define ETR3_CF9LOCK				BIT(31)
-> +
->  const char *tgl_lpm_modes[] = {
->  	"S0i2.0",
->  	"S0i2.1",
-> @@ -263,6 +268,7 @@ struct pmc_reg_map {
->  	const u32 lpm_residency_offset;
->  	const u32 lpm_status_offset;
->  	const u32 lpm_live_status_offset;
-> +	const u32 etr3_offset;
->  };
->  
->  /**
-> 
-
+SGkgUm9iLA0KDQpCZXN0IFJlZ2FyZHMsDQpCaWxseSBUc2FpDQoNCk9uIDIwMjEvNC8xMiwgOToy
+MCBQTSxSb2IgSGVycmluZ3dyb3RlOg0KDQogICAgT24gTW9uLCAxMiBBcHIgMjAyMSAxNzo1NDo1
+NSArMDgwMCwgQmlsbHkgVHNhaSB3cm90ZToNCiAgICA+PiBUaGlzIHBhdGNoIGFkZHMgZGV2aWNl
+IGJpbmRpbmdzIGZvciBhc3BlZWQgcHdtIGRldmljZSB3aGljaCBzaG91bGQgYmUNCiAgICA+PiB0
+aGUgc3ViLW5vZGUgb2YgYXNwZWVkLGFzdDI2MDAtcHdtLXRhY2guDQogICAgPj4gDQogICAgPj4g
+U2lnbmVkLW9mZi1ieTogQmlsbHkgVHNhaSA8YmlsbHlfdHNhaUBhc3BlZWR0ZWNoLmNvbT4NCiAg
+ICA+PiAtLS0NCiAgICA+PiAgLi4uL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFt
+bCAgICAgIHwgNDcgKysrKysrKysrKysrKysrKysrKw0KICAgID4+ICAxIGZpbGUgY2hhbmdlZCwg
+NDcgaW5zZXJ0aW9ucygrKQ0KICAgID4+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFtbA0KICAgID4+
+IA0KDQogICAgPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgRFRfQ0hFQ0tFUl9G
+TEFHUz0tbSBkdF9iaW5kaW5nX2NoZWNrJw0KICAgID4gb24geW91ciBwYXRjaCAoRFRfQ0hFQ0tF
+Ul9GTEFHUyBpcyBuZXcgaW4gdjUuMTMpOg0KDQogICAgPiB5YW1sbGludCB3YXJuaW5ncy9lcnJv
+cnM6DQoNCiAgICA+IGR0c2NoZW1hL2R0YyB3YXJuaW5ncy9lcnJvcnM6DQogICAgPiAvYnVpbGRz
+L3JvYmhlcnJpbmcvbGludXgtZHQtcmV2aWV3L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9wd20vYXNwZWVkLGFzdDI2MDAtcHdtLnlhbWw6IEFkZGl0aW9uYWwgcHJvcGVydGllcyBh
+cmUgbm90IGFsbG93ZWQgKCdwd20tY2VsbHMnIHdhcyB1bmV4cGVjdGVkKQ0KICAgID4gL2J1aWxk
+cy9yb2JoZXJyaW5nL2xpbnV4LWR0LXJldmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAwLXB3bS55YW1sOiBBZGRpdGlvbmFsIHByb3BlcnRpZXMg
+YXJlIG5vdCBhbGxvd2VkICgncHdtLWNlbGxzJyB3YXMgdW5leHBlY3RlZCkNCiAgICA+IC9idWls
+ZHMvcm9iaGVycmluZy9saW51eC1kdC1yZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFtbDogaWdub3JpbmcsIGVycm9yIGluIHNj
+aGVtYTogDQogICAgPiB3YXJuaW5nOiBubyBzY2hlbWEgZm91bmQgaW4gZmlsZTogLi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAwLXB3bS55YW1sDQog
+ICAgPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAw
+LXB3bS5leGFtcGxlLmR0LnlhbWw6MDowOiAvZXhhbXBsZS0wL3B3bV90YWNoQDFlNjEwMDAwOiBm
+YWlsZWQgdG8gbWF0Y2ggYW55IHNjaGVtYSB3aXRoIGNvbXBhdGlibGU6IFsnYXNwZWVkLGFzdDI2
+MDAtcHdtLXRhY2gnLCAnc2ltcGxlLW1mZCcsICdzeXNjb24nXQ0KICAgID4gRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20uZXhhbXBsZS5kdC55
+YW1sOjA6MDogL2V4YW1wbGUtMC9wd21fdGFjaEAxZTYxMDAwMC9wd21AMDogZmFpbGVkIHRvIG1h
+dGNoIGFueSBzY2hlbWEgd2l0aCBjb21wYXRpYmxlOiBbJ2FzcGVlZCxhc3QyNjAwLXB3bSddDQoN
+ClRoZSB5YW1sIGZpbGUgaGF2ZSBkZXBlbmRlbmNpZXMgd2l0aCB0aGUgZmlyc3QgcGF0Y2ggaW4g
+dGhlc2Ugc2VyaWVzLiBJIHdpbGwgc3F1YXNoIHRoZW0uDQoNCiAgICA+IFNlZSBodHRwczovL3Bh
+dGNod29yay5vemxhYnMub3JnL3BhdGNoLzE0NjUxMTYNCg0KICAgID4gVGhpcyBjaGVjayBjYW4g
+ZmFpbCBpZiB0aGVyZSBhcmUgYW55IGRlcGVuZGVuY2llcy4gVGhlIGJhc2UgZm9yIGEgcGF0Y2gN
+CiAgICA+IHNlcmllcyBpcyBnZW5lcmFsbHkgdGhlIG1vc3QgcmVjZW50IHJjMS4NCg0KICAgID4g
+SWYgeW91IGFscmVhZHkgcmFuICdtYWtlIGR0X2JpbmRpbmdfY2hlY2snIGFuZCBkaWRuJ3Qgc2Vl
+IHRoZSBhYm92ZQ0KICAgID4gZXJyb3IocyksIHRoZW4gbWFrZSBzdXJlICd5YW1sbGludCcgaXMg
+aW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8NCiAgICA+IGRhdGU6DQoNCiAgICA+IHBp
+cDMgaW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUNCg0KICAgID4gUGxlYXNlIGNoZWNrIGFuZCBy
+ZS1zdWJtaXQuDQoNCg0K
