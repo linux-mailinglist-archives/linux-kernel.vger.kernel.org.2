@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A25835DB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B86C35DB80
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhDMJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229784AbhDMJnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:43:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85D5F6128E;
-        Tue, 13 Apr 2021 09:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618306974;
-        bh=VPjEbzIUQB+FM5ql6HWhHWQTcduq0dn9rEfvn/lG86E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LP202iCvhIZ/X9C8YYNO+W3L3dN7Elbb2lxUw5PqbrZDjIUpI7M434F5hPRtsAZfs
-         NmdMMkt7qO6rpS77QeWTtA3P1JmYkA0sL7efsAzgnnu4EbicOZEKNlnSuVe07wReKM
-         /WDBV28zog4Yb+WNNF83Ikorg7LJzI+9fQ76e13Q=
-Date:   Tue, 13 Apr 2021 11:42:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     joe@perches.com, julia.lawall@inria.fr,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: cocci script hints request
-Message-ID: <YHVnm+MFvUZ7PYRd@kroah.com>
-References: <20210413090400.GA5477@agape.jhs>
- <YHVgSuRCW1fdabrH@kroah.com>
- <20210413092455.GB5477@agape.jhs>
+        id S231283AbhDMJnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhDMJnb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:43:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69332C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:43:12 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lWFZa-0000ey-I8; Tue, 13 Apr 2021 11:43:06 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lWFZZ-0002qD-8B; Tue, 13 Apr 2021 11:43:05 +0200
+Date:   Tue, 13 Apr 2021 11:43:05 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: Re: [PATCH v2 0/7] remove different PHY fixups
+Message-ID: <20210413094305.kvjgaiseppg5hrzh@pengutronix.de>
+References: <20210309112615.625-1-o.rempel@pengutronix.de>
+ <CAOMZO5CYquzd4BBZBUM6ufWkPqfidctruWmaDROwHKVmi3NX2A@mail.gmail.com>
+ <YGM2AGfawEFTKOtE@lunn.ch>
+ <CAOMZO5CRFHh5vv3vQqaatDnq55ZMmO5DfJH1VtZ1n0DBgf5Whg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210413092455.GB5477@agape.jhs>
+In-Reply-To: <CAOMZO5CRFHh5vv3vQqaatDnq55ZMmO5DfJH1VtZ1n0DBgf5Whg@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 11:41:25 up 131 days, 23:47, 48 users,  load average: 0.14, 0.07,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:24:56AM +0200, Fabio Aiuto wrote:
-> On Tue, Apr 13, 2021 at 11:11:38AM +0200, Greg KH wrote:
-> > On Tue, Apr 13, 2021 at 11:04:01AM +0200, Fabio Aiuto wrote:
-> > > Hi,
-> > > 
-> > > I would like to improve the following coccinelle script:
-> > > 
-> > > @@
-> > > expression a, fmt;
-> > > expression list var_args;
-> > > @@
-> > > 
-> > > -       DBG_871X_LEVEL(a, fmt, var_args);
-> > > +       printk(fmt, var_args);
-> > > 
-> > > I would  replace the DBG_871X_LEVEL macro with printk,
-> > 
-> > No you really do not, you want to change that to a dev_*() call instead
-> > depending on the "level" of the message.
-> > 
-> > No "raw" printk() calls please, I will just reject them :)
-> > 
-> > thanks,
-> > 
-> > greg k-h
+Hello,
+
+On Tue, Mar 30, 2021 at 12:04:50PM -0300, Fabio Estevam wrote:
+> Hi Andrew,
 > 
-> but there are very few occurences of DBG_871X_LEVEL in module init functions:
-
-Then do those "by hand", if they really are needed.
-
-Drivers, when they are working properly, are totally quiet.
-
+> On Tue, Mar 30, 2021 at 11:30 AM Andrew Lunn <andrew@lunn.ch> wrote:
 > 
-> static int __init rtw_drv_entry(void)
-> {
->         int ret;
+> > Hi Fabio
+> >
+> > I think it should be merged, and we fixup anything which does break.
+> > We are probably at the point where more is broken by not merging it
+> > than merging it.
 > 
->         DBG_871X_LEVEL(_drv_always_, "module init start\n");
-
-Horrible, please remove.
-
->         dump_drv_version(RTW_DBGDUMP);
-> #ifdef BTCOEXVERSION
->         DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version = %s\n", BTCOEXVERSION);
-
-Not needed at all.
-
-> #endif /*  BTCOEXVERSION */
+> Thanks for your feedback. I agree.
 > 
->         sdio_drvpriv.drv_registered = true;
+> Shawn wants to collect some Acked-by for this series.
 > 
->         ret = sdio_register_driver(&sdio_drvpriv.r871xs_drv);
->         if (ret != 0) {
->                 sdio_drvpriv.drv_registered = false;
->                 rtw_ndev_notifier_unregister();
->         }
-> 
->         DBG_871X_LEVEL(_drv_always_, "module init ret =%d\n", ret);
+> Could you please give your Acked-by for this series?
 
-Again, not needed this is noise and if someone really needs to debug
-this, they can use the built-in kernel ftrace logic instead.
+Andrew, can you please add you ACK?
 
->         return ret;
-> }
-> 
-> where I don't have a device available... shall I pass NULL to
-> first argument?
+Shawn will it be enough or you need more ACKs?
 
-No, that would be a mess :)
-
-I bet almost all of these can be removed if they are like the above
-examples as we do not need a lot of "look, the code got here!" type of
-messages at all.
-
-> Another question: may I use netdev_dbg in case of rtl8723bs?
-
-Yes please, that is even better and recommended.
-
-thanks,
-
-greg k-h
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
