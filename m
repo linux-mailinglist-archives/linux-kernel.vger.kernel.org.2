@@ -2,487 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B683A35DF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EE335DF09
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhDMMhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhDMMhd (ORCPT
+        id S231352AbhDMMjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:39:02 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35230 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231489AbhDMMiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:37:33 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D593C061574;
-        Tue, 13 Apr 2021 05:37:13 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id s7so16172764wru.6;
-        Tue, 13 Apr 2021 05:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=blFLvImK+bSROOLy8mZl325gwVOmS0Z0lu82RsGW4cs=;
-        b=Bbg6tlEPXweaj0I2+dUnmqKpg81zXCZunQOZrbU11OW61jAaM+Mk2GLmaQBMgyZT2n
-         9UCkzEHoM0mOZinuNwz7QND35jC17qcw2pqkW647V4xFOWT9tb4q6GSyoBUI9EyhXRo7
-         NCy5/uCPCG1cErBcamnKy3N9qRwaUz6Jqongd4T/urvb1A+4jJLxfGCcpCQfmBkFVYI1
-         WtTxikhrYT/s/qywpWNc4nbExBgQ7EWavPm8/kETVId4ZJGPYoA7fJS5g/ZTivwCtkPd
-         GWnltJ3WNVA/XsTsw3I/haorcnK8Eq3XCOumQL0GBj0o9+Bb23rYzjfn25OTRAQV/pG0
-         qiMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=blFLvImK+bSROOLy8mZl325gwVOmS0Z0lu82RsGW4cs=;
-        b=rnTcZXIEglQoojV5ts6hQfWGSK2EtkqRI+z/oGyek+TekWgk3h5BeZJGQBwQ8FVX9f
-         mrN1oGZCMt4jrj/rEkc3aAjJRiHApqXtG8MmLNPw99P93Y+wxIviIp56Xu1N48zPJq/X
-         xr5If8/oBn2xMnR5QTWWwBFsRzNMmUK+KFeAl4bOYtsYQGdwK+t0rLll4TTeD5paWeiI
-         eDZ/QL4zOGrJpYSPS+rAWkh35LDxc2kzrTiwC/COMaFnhsfBLZzOMiJguW4baFAXnW5f
-         i7BfdtMD95fbwXnDrpi9lXdrcWBq0iKnSKr0YA4c9Dyq7LsIx26UcQEw9NZn11KmHXvR
-         Xr9w==
-X-Gm-Message-State: AOAM533DEe21tLT+Kzw0Zhj3klWtzaqWnZBhnCib7xJhxd/Vo7TdH54b
-        1RxxCb2/rkN82Up1C14Mt+c=
-X-Google-Smtp-Source: ABdhPJy31GHtr9UHyjKxA3aaq/hv/yIRQ3GHkU2Z+Z7Ac0rwZ41Y1iROygdfYzW/Hj0um1yz9uCb1A==
-X-Received: by 2002:a5d:444d:: with SMTP id x13mr12177164wrr.406.1618317431529;
-        Tue, 13 Apr 2021 05:37:11 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id x23sm2371064wmj.43.2021.04.13.05.37.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 05:37:10 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 14:37:50 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
-Message-ID: <YHWQnoYY6LLe4rej@orome.fritz.box>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
- <YHR3wP4Fk3jidnri@workstation.tuxnet>
- <20210412201019.vouxx4daumusrcvr@pengutronix.de>
- <YHWKehtYFSaHt1hC@workstation.tuxnet>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SQSJUN4hek2YcMBJ"
-Content-Disposition: inline
-In-Reply-To: <YHWKehtYFSaHt1hC@workstation.tuxnet>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+        Tue, 13 Apr 2021 08:38:51 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DCXw5h105879;
+        Tue, 13 Apr 2021 08:38:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Pw9M3G9Sv8NSb3H3DbqXrJ2HXCzyntpYRr6tMbE39FM=;
+ b=PiCAvy7v6K+BsoFEINcL53kfnC+XS5CRJSPH83A+3aFnDiEuCFp28xsgA/H6ZsTdXJSF
+ B54FboM0GBTWTxfVfE7n/cxB8eD05F/cl68cegKeLibAhAykgFdfDwZgJzuEYokYe7yr
+ j55iNcQyNISPR3BSYieisWEFR1nNjjtJQzpCkrC14HrjqGHmZ5vmjijR+904R4A/TBMQ
+ v64Pe9BbgZsULth7IBwY4xGQX0aOX3ifx6DJA3/MJyqUwU4zaqF0kHcAI35TJiq28f8t
+ lUBW+9NZuujfq2c5evQHhFKkLvq08HM+kBBNTWrF9epU2w5wf88GbvEId9cu74Xmixfm xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37wb4f8pcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 08:38:28 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13DCY4BH106532;
+        Tue, 13 Apr 2021 08:38:27 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37wb4f8pbw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 08:38:27 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DCX7wF004270;
+        Tue, 13 Apr 2021 12:38:26 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8ap0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 12:38:25 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DCc10827459898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 12:38:01 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AF038AE04D;
+        Tue, 13 Apr 2021 12:38:23 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4EE22AE045;
+        Tue, 13 Apr 2021 12:38:23 +0000 (GMT)
+Received: from sig-9-145-159-22.de.ibm.com (unknown [9.145.159.22])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 12:38:23 +0000 (GMT)
+Message-ID: <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
+Subject: Re: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Date:   Tue, 13 Apr 2021 14:38:22 +0200
+In-Reply-To: <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+         <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: EE0ZgieKHyKBFyYO1857tiAUAblL3cm0
+X-Proofpoint-GUID: c3jl4UEZNnDTMwPWeaTHrOxhamOfk3ta
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 impostorscore=0 bulkscore=0 phishscore=0
+ adultscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-04-13 at 14:26 +0200, Arnd Bergmann wrote:
+> On Tue, Apr 13, 2021 at 1:54 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+> > When PCI_IOBASE is not defined, it is set to 0 such that it is ignored
+> > in calls to the readX/writeX primitives. While mathematically obvious
+> > this triggers clang's -Wnull-pointer-arithmetic warning.
+> 
+> Indeed, this is an annoying warning.
+> 
+> > An additional complication is that PCI_IOBASE is explicitly typed as
+> > "void __iomem *" which causes the type conversion that converts the
+> > "unsigned long" port/addr parameters to the appropriate pointer type.
+> > As non pointer types are used by drivers at the callsite since these are
+> > dealing with I/O port numbers, changing the parameter type would cause
+> > further warnings in drivers. Instead use "uintptr_t" for PCI_IOBASE
+> > 0 and explicitly cast to "void __iomem *" when calling readX/writeX.
+> > 
+> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > ---
+> >  include/asm-generic/io.h | 26 +++++++++++++-------------
+> >  1 file changed, 13 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> > index c6af40ce03be..8eb00bdef7ad 100644
+> > --- a/include/asm-generic/io.h
+> > +++ b/include/asm-generic/io.h
+> > @@ -441,7 +441,7 @@ static inline void writesq(volatile void __iomem *addr, const void *buffer,
+> >  #endif /* CONFIG_64BIT */
+> > 
+> >  #ifndef PCI_IOBASE
+> > -#define PCI_IOBASE ((void __iomem *)0)
+> > +#define PCI_IOBASE ((uintptr_t)0)
+> >  #endif
+> > 
+> >  #ifndef IO_SPACE_LIMIT
+> 
+> Your patch looks wrong in the way it changes the type of one of the definitions,
+> but not the type of any of the architecture specific ones. It's also
+> awkward since
+> 'void __iomem *' is really the correct type, while 'uintptr_t' is not!
 
---SQSJUN4hek2YcMBJ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah I see your point. The way I justified it for myself is that the
+above define really only serves to ignore the PCI_IOBASE and the
+explicit cast in the function makes the actual type more clear since
+the parameters have the "wrong" type too. I do agree that this still
+leaves things somewhat awkward.
 
-On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
-> Hi Uwe,
->=20
-> On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > Hello Clemens,
-> >=20
-> > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
-> > > On Mon, Apr 12, 2021 at 06:18:08PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > > On Mon, Apr 12, 2021 at 03:27:38PM +0200, Clemens Gruber wrote:
-> > > > > The switch to the atomic API goes hand in hand with a few fixes to
-> > > > > previously experienced issues:
-> > > > > - The duty cycle is no longer lost after disable/enable (previous=
-ly the
-> > > > >   OFF registers were cleared in disable and the user was required=
- to
-> > > > >   call config to restore the duty cycle settings)
-> > > > > - If one sets a period resulting in the same prescale register va=
-lue,
-> > > > >   the sleep and write to the register is now skipped
-> > > > > - Previously, only the full ON bit was toggled in GPIO mode (and =
-full
-> > > > >   OFF cleared if set to high), which could result in both full OF=
-F and
-> > > > >   full ON not being set and on=3D0, off=3D0, which is not allowed=
- according
-> > > > >   to the datasheet
-> > > > > - The OFF registers were reset to 0 in probe, which could lead to=
- the
-> > > > >   forbidden on=3D0, off=3D0. Fixed by resetting to POR default (f=
-ull OFF)
-> > > > >=20
-> > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > > > ---
-> > > > > Changes since v7:
-> > > > > - Moved check for !state->enabled before prescaler configuration
-> > > > > - Removed unnecessary cast
-> > > > > - Use DIV_ROUND_DOWN in .apply
-> > > > >=20
-> > > > > Changes since v6:
-> > > > > - Order of a comparison switched for improved readability
-> > > > >=20
-> > > > > Changes since v5:
-> > > > > - Function documentation for set_duty
-> > > > > - Variable initializations
-> > > > > - Print warning if all LEDs channel
-> > > > > - Changed EOPNOTSUPP to EINVAL
-> > > > > - Improved error messages
-> > > > > - Register reset corrections moved to this patch
-> > > > >=20
-> > > > > Changes since v4:
-> > > > > - Patches split up
-> > > > > - Use a single set_duty function
-> > > > > - Improve readability / new macros
-> > > > > - Added a patch to restrict prescale changes to the first user
-> > > > >=20
-> > > > > Changes since v3:
-> > > > > - Refactoring: Extracted common functions
-> > > > > - Read prescale register value instead of caching it
-> > > > > - Return all zeros and disabled for "all LEDs" channel state
-> > > > > - Improved duty calculation / mapping to 0..4096
-> > > > >=20
-> > > > > Changes since v2:
-> > > > > - Always set default prescale value in probe
-> > > > > - Simplified probe code
-> > > > > - Inlined functions with one callsite
-> > > > >=20
-> > > > > Changes since v1:
-> > > > > - Fixed a logic error
-> > > > > - Impoved PM runtime handling and fixed !CONFIG_PM
-> > > > > - Write default prescale reg value if invalid in probe
-> > > > > - Reuse full_off/_on functions throughout driver
-> > > > > - Use cached prescale value whenever possible
-> > > > >=20
-> > > > >  drivers/pwm/pwm-pca9685.c | 259 +++++++++++++-------------------=
-------
-> > > > >  1 file changed, 89 insertions(+), 170 deletions(-)
-> > > > >=20
-> > > > > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > > > > index 4a55dc18656c..827b57ced3c2 100644
-> > > > > --- a/drivers/pwm/pwm-pca9685.c
-> > > > > +++ b/drivers/pwm/pwm-pca9685.c
-> > > > > @@ -51,7 +51,6 @@
-> > > > >  #define PCA9685_PRESCALE_MAX	0xFF	/* =3D> min. frequency of 24 H=
-z */
-> > > > > =20
-> > > > >  #define PCA9685_COUNTER_RANGE	4096
-> > > > > -#define PCA9685_DEFAULT_PERIOD	5000000	/* Default period_ns =3D =
-1/200 Hz */
-> > > > >  #define PCA9685_OSC_CLOCK_MHZ	25	/* Internal oscillator with 25 =
-MHz */
-> > > > > =20
-> > > > >  #define PCA9685_NUMREGS		0xFF
-> > > > > @@ -71,10 +70,14 @@
-> > > > >  #define LED_N_OFF_H(N)	(PCA9685_LEDX_OFF_H + (4 * (N)))
-> > > > >  #define LED_N_OFF_L(N)	(PCA9685_LEDX_OFF_L + (4 * (N)))
-> > > > > =20
-> > > > > +#define REG_ON_H(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_=
-ON_H : LED_N_ON_H((C)))
-> > > > > +#define REG_ON_L(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED_=
-ON_L : LED_N_ON_L((C)))
-> > > > > +#define REG_OFF_H(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED=
-_OFF_H : LED_N_OFF_H((C)))
-> > > > > +#define REG_OFF_L(C)	((C) >=3D PCA9685_MAXCHAN ? PCA9685_ALL_LED=
-_OFF_L : LED_N_OFF_L((C)))
-> > > >=20
-> > > > I'd like to see these named PCA9685_REG_ON_H etc.
-> > >=20
-> > > I did not use the prefix because the existing LED_N_ON/OFF_H/L also do
-> > > not have a prefix. If the prefix is mandatory, I think LED_N_.. should
-> > > also be prefixed, right?
-> >=20
-> > I'd like to seem the prefixed (and assume that Thierry doesn't agree).
-> > IMHO it's good style and even though it yields longer name usually it
-> > yields easier understandable code. (But this seems to be subjective.)
->=20
-> I am not sure I want to also rename the existing LED_N_OFF stuff in this
-> patch. Maybe we can discuss unifying the macros (either with or without
-> prefix) in a later patch and I keep the REG_ON_ stuff for now without to
-> match the LED_N_ stuff?
+> 
+> I think the real underlying problem is that '0' is a particularly bad
+> default value,
+> we should not have used this one in asm-generic, or maybe have left it as
+> mandatory to be defined by an architecture to a sane value. Note that
+> architectures that don't actually support I/O ports will cause a NULL
+> pointer dereference when loading a legacy driver, which is exactly what clang
+> is warning about here. Architectures that to support I/O ports in PCI typically
+> map them at a fixed location in the virtual address space and should put that
+> location here, rather than adding the pointer value to the port resources.
+> 
+> What we might do instead here would be move the definition into those
+> architectures that actually define the base to be at address zero, with a
+> comment explaining why this is a bad location, and then changing the
+> inb/outb style helpers to either an empty function or a WARN_ONCE().
+> 
+> On which architectures do you see the problem? How is the I/O port
+> actually mapped there?
+> 
+>       Arnd
 
-Uwe guessed right, I don't think these need the prefix. There's very
-little potential for name clashes and this driver is already called
-PCA9685, so adding the prefix everywhere can be annoying, especially
-if that then causes you to need line breaks, etc.
+I'm seeing this on s390 which indeed has no I/O port support at all.
+I'm not sure how many others there are but I feel like us having to
+define these functions as empty is also kind of awkward. Maybe we could
+put them into the asm-generic/io.h for the case that PCI_IOBASE is not
+defined? Then at least every platform not supporting I/O ports would
+share them.
 
-For things like function names I usually prefer having a consistent
-prefix because it makes it much easier to decipher stack traces. Not so
-with the defines here.
 
-But I also don't feel strongly, so either way is fine. If you decide to
-go with the prefix, making it consistent throughout the file in a
-separate patch would be preferable, though.
-
->=20
-> >=20
-> > > > > +	val =3D 0;
-> > > > > +	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-> > > >=20
-> > > > I asked in the last round why you initialize val. You answered "jus=
-t to
-> > > > have it set to 0 in case regmap_read fails / val was not set." I wo=
-nder
-> > > > if
-> > > >=20
-> > > > 	ret =3D regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-> > > > 	if (!ret)
-> > > > 		/*=20
-> >=20
-> > I intended to write something like
-> >=20
-> > 		/* initialize val in case reading LED_N_OFF failed */
-> >=20
-> > > > 		val =3D 0
-> > > >=20
-> > > > would be better then and also make the intention obvious.
->=20
-> Maybe a little bit better.. I can change it.
->=20
-> > >=20
-> > > I am not sure if that's more clear, but if others find it more obvious
-> > > like this, I can change it.
-> > >=20
-> > > >=20
-> > > > > +	return ((off_h & 0xf) << 8) | (val & 0xff);
-> > > > > +}
-> > > > > +
-> > > > >  #if IS_ENABLED(CONFIG_GPIOLIB)
-> > > > >  static bool pca9685_pwm_test_and_set_inuse(struct pca9685 *pca, =
-int pwm_idx)
-> > > > >  {
-> > > > > @@ -138,34 +186,23 @@ static int pca9685_pwm_gpio_request(struct =
-gpio_chip *gpio, unsigned int offset)
-> > > > >  static int pca9685_pwm_gpio_get(struct gpio_chip *gpio, unsigned=
- int offset)
-> > > > >  {
-> > > > >  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> > > > > -	struct pwm_device *pwm =3D &pca->chip.pwms[offset];
-> > > > > -	unsigned int value;
-> > > > > =20
-> > > > > -	regmap_read(pca->regmap, LED_N_ON_H(pwm->hwpwm), &value);
-> > > > > -
-> > > > > -	return value & LED_FULL;
-> > > > > +	return pca9685_pwm_get_duty(pca, offset) !=3D 0;
-> > > > >  }
-> > > > > =20
-> > > > >  static void pca9685_pwm_gpio_set(struct gpio_chip *gpio, unsigne=
-d int offset,
-> > > > >  				 int value)
-> > > > >  {
-> > > > >  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> > > > > -	struct pwm_device *pwm =3D &pca->chip.pwms[offset];
-> > > > > -	unsigned int on =3D value ? LED_FULL : 0;
-> > > > > -
-> > > > > -	/* Clear both OFF registers */
-> > > > > -	regmap_write(pca->regmap, LED_N_OFF_L(pwm->hwpwm), 0);
-> > > > > -	regmap_write(pca->regmap, LED_N_OFF_H(pwm->hwpwm), 0);
-> > > > > =20
-> > > > > -	/* Set the full ON bit */
-> > > > > -	regmap_write(pca->regmap, LED_N_ON_H(pwm->hwpwm), on);
-> > > > > +	pca9685_pwm_set_duty(pca, offset, value ? PCA9685_COUNTER_RANGE=
- : 0);
-> > > > >  }
-> > > > > =20
-> > > > >  static void pca9685_pwm_gpio_free(struct gpio_chip *gpio, unsign=
-ed int offset)
-> > > > >  {
-> > > > >  	struct pca9685 *pca =3D gpiochip_get_data(gpio);
-> > > > > =20
-> > > > > -	pca9685_pwm_gpio_set(gpio, offset, 0);
-> > > > > +	pca9685_pwm_set_duty(pca, offset, 0);
-> > > > >  	pm_runtime_put(pca->chip.dev);
-> > > > >  	pca9685_pwm_clear_inuse(pca, offset);
-> > > > >  }
-> > > > > @@ -246,167 +283,52 @@ static void pca9685_set_sleep_mode(struct =
-pca9685 *pca, bool enable)
-> > > > >  	}
-> > > > >  }
-> > > > > =20
-> > > > > -static int pca9685_pwm_config(struct pwm_chip *chip, struct pwm_=
-device *pwm,
-> > > > > -			      int duty_ns, int period_ns)
-> > > > > +static int pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_d=
-evice *pwm,
-> > > > > +			     const struct pwm_state *state)
-> > > > >  {
-> > > > > [...]
-> > > > > +	prescale =3D DIV_ROUND_CLOSEST_ULL(PCA9685_OSC_CLOCK_MHZ * stat=
-e->period,
-> > > > > +					 PCA9685_COUNTER_RANGE * 1000) - 1;
-> > > > > +	if (prescale < PCA9685_PRESCALE_MIN || prescale > PCA9685_PRESC=
-ALE_MAX) {
-> > > > > +		dev_err(chip->dev, "pwm not changed: period out of bounds!\n");
-> > > > > +		return -EINVAL;
-> > > > >  	}
-> > > > > =20
-> > > > > [...]
-> > > > > +	if (!state->enabled) {
-> > > > > +		pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-> > > > >  		return 0;
-> > > > >  	}
-> > > > > =20
-> > > > > [...]
-> > > > > +	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-> > > > > +	if (prescale !=3D val) {
-> > > > > +		/*
-> > > > > +		 * Putting the chip briefly into SLEEP mode
-> > > > > +		 * at this point won't interfere with the
-> > > > > +		 * pm_runtime framework, because the pm_runtime
-> > > > > +		 * state is guaranteed active here.
-> > > > > +		 */
-> > > > > +		/* Put chip into sleep mode */
-> > > > > +		pca9685_set_sleep_mode(pca, true);
-> > > > > =20
-> > > > > [...]
-> > > > > +		/* Change the chip-wide output frequency */
-> > > > > +		regmap_write(pca->regmap, PCA9685_PRESCALE, prescale);
-> > > > > =20
-> > > > > -	regmap_update_bits(pca->regmap, reg, LED_FULL, 0x0);
-> > > > > +		/* Wake the chip up */
-> > > > > +		pca9685_set_sleep_mode(pca, false);
-> > > > > +	}
-> > > > > =20
-> > > > > +	duty =3D PCA9685_COUNTER_RANGE * state->duty_cycle;
-> > > > > +	duty =3D DIV_ROUND_DOWN_ULL(duty, state->period);
-> > > >=20
-> > > > If you round down here you should probably also round down in the
-> > > > calculation of prescale. Also note that you're losing precision by =
-using
-> > > > state->period.
-> > > >=20
-> > > > Consider the following request: state->period =3D 4177921 [ns] +
-> > > > state->duty_cycle =3D 100000 [ns], then we get
-> > > > PRESCALE =3D round(25 * state->period / 4096000) - 1 =3D 25 and so =
-an actual
-> > > > period of 4096000 / 25 * (25 + 1) =3D 4259840 [ns]. If you now calc=
-ulate
-> > > > the duty using 4096 * 100000 / 4177920 =3D 98, this corresponds to =
-an
-> > > > actual duty cycle of 98 * 4259840 / 4096 =3D 101920 ns while you sh=
-ould
-> > > > actually configure 96 to get 99840 ns.
-> > > >=20
-> > > > So in the end I'd like to have the following:
-> > > >=20
-> > > > 	PRESCALE =3D round-down(25 * state->period / 4096000) - 1
-> > > >=20
-> > > > (to get the biggest period not bigger than state->period) and
-> > > >=20
-> > > > 	duty =3D round-down(state->duty_cycle * 25 / ((PRESCALE + 1) * 100=
-0))
-> > > >=20
-> > > > (to get the biggest duty cycle not bigger than state->duty_cycle). =
-With
-> > > > the example above this yields
-> > > >=20
-> > > > 	PRESCALE =3D 24
-> > > > 	duty =3D 100
-> > > >=20
-> > > > which results in
-> > > >=20
-> > > > 	.period =3D 4096000 / 25 * 25 =3D 4096000 [ns]
-> > > > 	.duty_cycle =3D 100000 [ns]
-> > > > =09
-> > > > Now you have a mixture of old and new with no consistent behaviour.=
- So
-> > > > please either stick to the old behaviour or do it right immediately.
-> > >=20
-> > > I avoided rounding down the prescale value because the datasheet has =
-an
-> > > example where a round-closest is used, see page 25.
-> >=20
-> > The hardware guy who wrote this data sheet wasn't aware of the rounding
-> > rules for Linux PWM drivers :-)
-> >=20
-> > > With your suggested round-down, the example with frequency of 200 Hz
-> > > would no longer result in 30 but 29 and that contradicts the datashee=
-t.
-> >=20
-> > Well, with PRESCALE =3D 30 we get a frequency of 196.88 Hz and with
-> > PRESCALE =3D 29 we get a frequency of 203.45 Hz. So no matter if you pi=
-ck
-> > 29 or 30, you don't get 200 Hz. And which of the two possible values is
-> > the better one depends on the consumer, no matter what rounding
-> > algorithm the data sheet suggests. Also note that the math here contains
-> > surprises you don't expect at first. For example, what PRESCALE value
-> > would you pick to get 284 Hz? [If my mail was a video, I'd suggest to
-> > press Space now to pause and let you think first :-)] The data sheet's
-> > formula suggests:
-> >=20
-> > 	round(25 MHz / (4096 * 284)) - 1 =3D 20
-> >=20
-> > The resulting frequency when picking PRESCALE =3D 20 is 290.644 Hz (so =
-an
-> > error of 6.644 Hz). If instead you pick PRESCALE =3D 21 you get 277.433=
- Hz
-> > (error =3D 6.567 Hz), so 21 is the better choice.
-> >=20
-> > Exercise for the reader:
-> >  What is the correct formula to really determine the PRESCALE value that
-> >  yields the best approximation (i.e. minimizing
-> >  abs(real_freq - target_freq)) for a given target_freq?
-> >=20
-> > These things don't happen when you round down only.
->=20
-> Sure, but it might also be counterintuitive that the Linux driver does
-> not use the same formula as the datasheet. And when using 200 Hz, 29 is
-> a little closer than 30.
-> I once measured the actual frequency and the internal oscillator is not
-> very accurate, so even if you think you should get 196.88 Hz, the actual
-> frequency measured with a decent scope is about 206 Hz and varies from
-> chip to chip (~=C2=A0205-207 Hz).
->=20
-> >=20
-> > > So would you rather have me keep the old duty rounding behaviour?
-> > >=20
-> > > Meaning: Keep rounding up the duty calculation in apply and use
-> > > round-down in the new .get_state function?
-> >=20
-> > There are two things I want:
-> >=20
-> >  a) To improve consistency among the PWM drivers (and to keep the math
-> >     simple and unsurprising), the pca9685 driver should use round-down
-> >     instead of round-nearest (or whatever mix it is currently using).
-> >=20
-> >  b) .get_state should be the inverse to .apply in the sense that
-> >     applying the result of .get_state is idempotent.
-> >=20
-> > I don't care much how you get there, so it's up to you if you do that in
-> > this patch that converts to .apply, or if you keep the math as is and
-> > then adapt the rounding behaviour in a separate change. But changing the
-> > algorithm in this patch and not getting to the "good" one is ugly, so
-> > please don't do that.
->=20
-> OK, then I think the best option is to keep the math as it was before
-> and if we want to change the rounding behaviour we do this in a separate
-> patch in the future. Then we can continue the discussion wether changing
-> the prescaler formula to round-down even though the datasheet does it
-> otherwise is the way to go.
-
-I agree, keeping the existing behaviour is preferable. The series
-already changes plenty as-is, and rolling the rounding change into it
-may make it more difficult to revert/fix later on.
-
-We can always consider a follow-up patch to change it.
-
-Thierry
-
---SQSJUN4hek2YcMBJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB1kJwACgkQ3SOs138+
-s6ErSg/7BxCJiw2nIRVibzrfjTKQZr9wRrBCWeJkTAdUdegWEC1Fs3kXTPhcn0o9
-WE3Kf0uCOF+ej/I82iq0RMwYdxfYKj2kMvRnFVevuQpy4+aPap0+kEKlGtUzkL+u
-hG1giljwaRQFY9CflQqpcSYl9JCAUc3oHacITKCWuJqhCTtck6PhZwoXYNPfjubV
-ytrtKiq4sB25lG2I7xX+sGAqfOmhUtGzjNMAU0RVQePvQpNpa+GedHaxakBq/ZwL
-M8aMSvBx+GDvtBhoT4k1zh6mF6sJfWsbMFbuM9MFRoEY1oxPleaJwS/ghmu5ibg5
-NZxe04g0anypj2hoGTPK/U+1rg3uYHqMiDcyOdQSfb/a3dZ2EkVOnMKYKkCTi67U
-Ep00SItdKLt/KIBIu0bQPDTtztn9Iqub97Y6XeGwqjaUCoWQtSSAsz/pxhBbno5X
-Gth0gd6lU45atAOdV3ZVyltCMie8qHDXOY4QkHBpe3dhPuaYasSfVDCr+AXBXJg7
-Mm1hoPVBFnSsyYpAKeyQjtfwd/yBJv6jJR2OojDrMUuIPg8FRDp9CXyCVly/cc70
-rb6NwolHbXPyssiVNQfP530hJICHVq9O1tJG2UYHulhJJJbLde2Fx9LwdXod9/Tr
-naDQhclatErIOSPYO3PhSoz1ymcu6LSd8I5eVd0J9HQ3JLUOIDk=
-=V3S9
------END PGP SIGNATURE-----
-
---SQSJUN4hek2YcMBJ--
