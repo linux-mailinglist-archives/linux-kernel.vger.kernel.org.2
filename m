@@ -2,514 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3580035E04F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216E435E057
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346044AbhDMNlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:41:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23330 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346038AbhDMNlX (ORCPT
+        id S242271AbhDMNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:42:52 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:45950 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhDMNmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:41:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618321261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mREcwwWGmj3B0DJ2fOYeWh4cZJDHnQx9n5SuD7IiKiA=;
-        b=b0EhbzCtsIIP/WHVGrutjC/phB9HJ4193I7QPPbsqOTitLhrozsitFQeBj8Qabh5p8593R
-        XIxwe8uFgZ61uQ62W4Ih2sAx+rKcW16rjOfx9pTHVt1/1ncZWfW/eSJKfTMF/5tzOQe/xX
-        AKlX+40lDtXeMfv0SJ2Z5HiMzRtx7W8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-pbqsN8xpP66altX8RXZEGA-1; Tue, 13 Apr 2021 09:40:59 -0400
-X-MC-Unique: pbqsN8xpP66altX8RXZEGA-1
-Received: by mail-ej1-f70.google.com with SMTP id di5so5064904ejc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:40:59 -0700 (PDT)
+        Tue, 13 Apr 2021 09:42:49 -0400
+Received: by mail-oi1-f182.google.com with SMTP id d12so16986355oiw.12;
+        Tue, 13 Apr 2021 06:42:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mREcwwWGmj3B0DJ2fOYeWh4cZJDHnQx9n5SuD7IiKiA=;
-        b=mE68H6Wj56kQl1arQvIAWxm5dZYk1jRmfDBUhpkFTpQrrMwm2WxItLQBSuXfhUAf3U
-         luUkNuCoBom9uxJna4y7TgLpHtvqNEbWloYN+JtdI9dACHriF3lchYETT3ck46AxkDkA
-         Wo3hPimR6iCQeskqUnHX3a2civ21YCYuqwKm5l4a3Ju7FK+Yszsc6WuwjplUBpBKHDd9
-         RP4PQe6y0pA+qMUAW7COHunMJDz+GrtN9tljhCnMPqoN/pz0PATfcATFnnw0yTPjn6Bj
-         Ty69tilFbdhM+6RQtFvsBizBpfW2kpCcQnAva5S0cESCrwTxdqLn7r9wic1KpKk+For8
-         Ut7Q==
-X-Gm-Message-State: AOAM530pLoCqznPRjfpIazqYH+r9m0h2b6HWsOyudOV52jTJqRzXDW2D
-        hSXf/aMaBdEifC5VQz4NbsYqCj00ziICX9/cDZlldUwSbmdLsLBVvQ7kYl51HjKFgoyos7HptdX
-        0scxZaoNVuh8g4PS5Iuv55cvG
-X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr35394136edr.289.1618321258398;
-        Tue, 13 Apr 2021 06:40:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwraNeeONyaAdKtB04kZNJccGpVYsOoRIpgmpQ1/OmYtS5rVF3Ch2rpYQubT5TpzP256rzrw==
-X-Received: by 2002:aa7:d3c8:: with SMTP id o8mr35394101edr.289.1618321258114;
-        Tue, 13 Apr 2021 06:40:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id b18sm3115900eju.22.2021.04.13.06.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 06:40:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 1/4] KVM: x86: Move FPU register accessors into fpu.h
-In-Reply-To: <5d2945df9dd807dca45ab256c88aeb4430ecf508.1618244920.git.sidcha@amazon.de>
-References: <cover.1618244920.git.sidcha@amazon.de>
- <5d2945df9dd807dca45ab256c88aeb4430ecf508.1618244920.git.sidcha@amazon.de>
-Date:   Tue, 13 Apr 2021 15:40:56 +0200
-Message-ID: <87y2dm5ml3.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o6pBRjCE6pRbY3vszk0ay9sUKDeG8wzW1EDOTJwQLjY=;
+        b=C+00Nni3BKH+SCPcfwDuefTCrueEdUAYBz00Ou9WgJGfP6Ij5/6e7VcPXuOQf6FB2X
+         deD3qP9s+Fbb5qG4U8/P7rsM+3R2iLUzw2iBOsFo+kAvnmNkbg7HQT3abJvCJqu2nuSs
+         ES2v8gt9hOQpxhZ0jP8H8S4yo1f4m9gpCDq79gFzn9aoCG865sF27l0zhc2mnfkrdKlL
+         BG+1OMW7e4S28Hi9nWuhoP8qItEMQpHg1TD7X3FHv/kdmuxkfIHGrVEVHirELEWk/abp
+         eNT5PwNaDdI+ryYFWWcxtwWXDCwSJLcIITqnCK1FUfnw7IEBfNhknpyai+rk+0MmQqfv
+         PVIA==
+X-Gm-Message-State: AOAM533A9xCc8KH2k2wFimfA7nJgiKA+nmKRNgeouafp5ZuX/vPibK8e
+        xWKuJyd1kL/DstIUcLSkV3JDQbhOd8Ovw4tJ5XM=
+X-Google-Smtp-Source: ABdhPJxA9HhnLEvziNv7yjuQ8k2crWMH7SVZJ0O4208XuVZ0tqLUA+h433baaWD4jGNtHLBMfjcjXWOaRUso36Hwygo=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr38061oil.157.1618321349988;
+ Tue, 13 Apr 2021 06:42:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210412222358.2078782-1-andy.shevchenko@gmail.com>
+In-Reply-To: <20210412222358.2078782-1-andy.shevchenko@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 13 Apr 2021 15:42:19 +0200
+Message-ID: <CAJZ5v0iHmpx3VQ431q17ePHqOrW2311hqNLsRUDyvARZGv_ipA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ACPI: bus: Introduce acpi_dev_get() and reuse it
+ in ACPI code
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-
-> Hyper-v XMM fast hypercalls use XMM registers to pass input/output
-> parameters. To access these, hyperv.c can reuse some FPU register
-> accessors defined in emulator.c. Move them to a common location so both
-> can access them.
+On Tue, Apr 13, 2021 at 12:24 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> While at it, reorder the parameters of these accessor methods to make
-> them more readable.
+> Introduce acpi_dev_get() to have a symmetrical API with acpi_dev_put()
+> and reuse both in ACPI code under drivers/acpi folder.
 >
-> Cc: Alexander Graf <graf@amazon.com>
-> Cc: Evgeny Iakovlev <eyakovl@amazon.de>
-> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> While at it, use acpi_bus_put_acpi_device() in one place rather than above.
+>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > ---
->  arch/x86/kvm/emulate.c | 138 ++++++----------------------------------
->  arch/x86/kvm/fpu.h     | 140 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 158 insertions(+), 120 deletions(-)
->  create mode 100644 arch/x86/kvm/fpu.h
+> v2: made acpi_dev_get() to return pointer as get_device() does (Rafael)
+>  drivers/acpi/device_sysfs.c | 4 ++--
+>  drivers/acpi/glue.c         | 8 ++++----
+>  drivers/acpi/scan.c         | 9 ++++-----
+>  include/acpi/acpi_bus.h     | 5 +++++
+>  4 files changed, 15 insertions(+), 11 deletions(-)
 >
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index f7970ba6219f..296f8f3ce988 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -22,7 +22,6 @@
->  #include "kvm_cache_regs.h"
->  #include "kvm_emulate.h"
->  #include <linux/stringify.h>
-> -#include <asm/fpu/api.h>
->  #include <asm/debugreg.h>
->  #include <asm/nospec-branch.h>
->  
-> @@ -30,6 +29,7 @@
->  #include "tss.h"
->  #include "mmu.h"
->  #include "pmu.h"
-> +#include "fpu.h"
->  
->  /*
->   * Operand types
-> @@ -1081,116 +1081,14 @@ static void fetch_register_operand(struct operand *op)
->  	}
+> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+> index a07d4ade5835..fa2c1c93072c 100644
+> --- a/drivers/acpi/device_sysfs.c
+> +++ b/drivers/acpi/device_sysfs.c
+> @@ -377,12 +377,12 @@ eject_store(struct device *d, struct device_attribute *attr,
+>         if (ACPI_FAILURE(status) || !acpi_device->flags.ejectable)
+>                 return -ENODEV;
+>
+> -       get_device(&acpi_device->dev);
+> +       acpi_dev_get(acpi_device);
+>         status = acpi_hotplug_schedule(acpi_device, ACPI_OST_EC_OSPM_EJECT);
+>         if (ACPI_SUCCESS(status))
+>                 return count;
+>
+> -       put_device(&acpi_device->dev);
+> +       acpi_dev_put(acpi_device);
+>         acpi_evaluate_ost(acpi_device->handle, ACPI_OST_EC_OSPM_EJECT,
+>                           ACPI_OST_SC_NON_SPECIFIC_FAILURE, NULL);
+>         return status == AE_NO_MEMORY ? -ENOMEM : -EAGAIN;
+> diff --git a/drivers/acpi/glue.c b/drivers/acpi/glue.c
+> index 36b24b0658cb..0715e3be99a0 100644
+> --- a/drivers/acpi/glue.c
+> +++ b/drivers/acpi/glue.c
+> @@ -190,7 +190,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+>         if (!acpi_dev)
+>                 return -EINVAL;
+>
+> -       get_device(&acpi_dev->dev);
+> +       acpi_dev_get(acpi_dev);
+>         get_device(dev);
+>         physical_node = kzalloc(sizeof(*physical_node), GFP_KERNEL);
+>         if (!physical_node) {
+> @@ -217,7 +217,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+>                                 goto err;
+>
+>                         put_device(dev);
+> -                       put_device(&acpi_dev->dev);
+> +                       acpi_dev_put(acpi_dev);
+>                         return 0;
+>                 }
+>                 if (pn->node_id == node_id) {
+> @@ -257,7 +257,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+>   err:
+>         ACPI_COMPANION_SET(dev, NULL);
+>         put_device(dev);
+> -       put_device(&acpi_dev->dev);
+> +       acpi_dev_put(acpi_dev);
+>         return retval;
 >  }
->  
-> -static void emulator_get_fpu(void)
-> -{
-> -	fpregs_lock();
-> -
-> -	fpregs_assert_state_consistent();
-> -	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> -		switch_fpu_return();
-> -}
-> -
-> -static void emulator_put_fpu(void)
-> -{
-> -	fpregs_unlock();
-> -}
-> -
-> -static void read_sse_reg(sse128_t *data, int reg)
-> -{
-> -	emulator_get_fpu();
-> -	switch (reg) {
-> -	case 0: asm("movdqa %%xmm0, %0" : "=m"(*data)); break;
-> -	case 1: asm("movdqa %%xmm1, %0" : "=m"(*data)); break;
-> -	case 2: asm("movdqa %%xmm2, %0" : "=m"(*data)); break;
-> -	case 3: asm("movdqa %%xmm3, %0" : "=m"(*data)); break;
-> -	case 4: asm("movdqa %%xmm4, %0" : "=m"(*data)); break;
-> -	case 5: asm("movdqa %%xmm5, %0" : "=m"(*data)); break;
-> -	case 6: asm("movdqa %%xmm6, %0" : "=m"(*data)); break;
-> -	case 7: asm("movdqa %%xmm7, %0" : "=m"(*data)); break;
-> -#ifdef CONFIG_X86_64
-> -	case 8: asm("movdqa %%xmm8, %0" : "=m"(*data)); break;
-> -	case 9: asm("movdqa %%xmm9, %0" : "=m"(*data)); break;
-> -	case 10: asm("movdqa %%xmm10, %0" : "=m"(*data)); break;
-> -	case 11: asm("movdqa %%xmm11, %0" : "=m"(*data)); break;
-> -	case 12: asm("movdqa %%xmm12, %0" : "=m"(*data)); break;
-> -	case 13: asm("movdqa %%xmm13, %0" : "=m"(*data)); break;
-> -	case 14: asm("movdqa %%xmm14, %0" : "=m"(*data)); break;
-> -	case 15: asm("movdqa %%xmm15, %0" : "=m"(*data)); break;
-> -#endif
-> -	default: BUG();
-> -	}
-> -	emulator_put_fpu();
-> -}
-> -
-> -static void write_sse_reg(sse128_t *data, int reg)
-> -{
-> -	emulator_get_fpu();
-> -	switch (reg) {
-> -	case 0: asm("movdqa %0, %%xmm0" : : "m"(*data)); break;
-> -	case 1: asm("movdqa %0, %%xmm1" : : "m"(*data)); break;
-> -	case 2: asm("movdqa %0, %%xmm2" : : "m"(*data)); break;
-> -	case 3: asm("movdqa %0, %%xmm3" : : "m"(*data)); break;
-> -	case 4: asm("movdqa %0, %%xmm4" : : "m"(*data)); break;
-> -	case 5: asm("movdqa %0, %%xmm5" : : "m"(*data)); break;
-> -	case 6: asm("movdqa %0, %%xmm6" : : "m"(*data)); break;
-> -	case 7: asm("movdqa %0, %%xmm7" : : "m"(*data)); break;
-> -#ifdef CONFIG_X86_64
-> -	case 8: asm("movdqa %0, %%xmm8" : : "m"(*data)); break;
-> -	case 9: asm("movdqa %0, %%xmm9" : : "m"(*data)); break;
-> -	case 10: asm("movdqa %0, %%xmm10" : : "m"(*data)); break;
-> -	case 11: asm("movdqa %0, %%xmm11" : : "m"(*data)); break;
-> -	case 12: asm("movdqa %0, %%xmm12" : : "m"(*data)); break;
-> -	case 13: asm("movdqa %0, %%xmm13" : : "m"(*data)); break;
-> -	case 14: asm("movdqa %0, %%xmm14" : : "m"(*data)); break;
-> -	case 15: asm("movdqa %0, %%xmm15" : : "m"(*data)); break;
-> -#endif
-> -	default: BUG();
-> -	}
-> -	emulator_put_fpu();
-> -}
-> -
-> -static void read_mmx_reg(u64 *data, int reg)
-> -{
-> -	emulator_get_fpu();
-> -	switch (reg) {
-> -	case 0: asm("movq %%mm0, %0" : "=m"(*data)); break;
-> -	case 1: asm("movq %%mm1, %0" : "=m"(*data)); break;
-> -	case 2: asm("movq %%mm2, %0" : "=m"(*data)); break;
-> -	case 3: asm("movq %%mm3, %0" : "=m"(*data)); break;
-> -	case 4: asm("movq %%mm4, %0" : "=m"(*data)); break;
-> -	case 5: asm("movq %%mm5, %0" : "=m"(*data)); break;
-> -	case 6: asm("movq %%mm6, %0" : "=m"(*data)); break;
-> -	case 7: asm("movq %%mm7, %0" : "=m"(*data)); break;
-> -	default: BUG();
-> -	}
-> -	emulator_put_fpu();
-> -}
-> -
-> -static void write_mmx_reg(u64 *data, int reg)
-> -{
-> -	emulator_get_fpu();
-> -	switch (reg) {
-> -	case 0: asm("movq %0, %%mm0" : : "m"(*data)); break;
-> -	case 1: asm("movq %0, %%mm1" : : "m"(*data)); break;
-> -	case 2: asm("movq %0, %%mm2" : : "m"(*data)); break;
-> -	case 3: asm("movq %0, %%mm3" : : "m"(*data)); break;
-> -	case 4: asm("movq %0, %%mm4" : : "m"(*data)); break;
-> -	case 5: asm("movq %0, %%mm5" : : "m"(*data)); break;
-> -	case 6: asm("movq %0, %%mm6" : : "m"(*data)); break;
-> -	case 7: asm("movq %0, %%mm7" : : "m"(*data)); break;
-> -	default: BUG();
-> -	}
-> -	emulator_put_fpu();
-> -}
-> -
->  static int em_fninit(struct x86_emulate_ctxt *ctxt)
+>  EXPORT_SYMBOL_GPL(acpi_bind_one);
+> @@ -285,7 +285,7 @@ int acpi_unbind_one(struct device *dev)
+>                         ACPI_COMPANION_SET(dev, NULL);
+>                         /* Drop references taken by acpi_bind_one(). */
+>                         put_device(dev);
+> -                       put_device(&acpi_dev->dev);
+> +                       acpi_dev_put(acpi_dev);
+>                         kfree(entry);
+>                         break;
+>                 }
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index d9e024fc6e70..bc973fbd70b2 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -530,7 +530,7 @@ static void acpi_device_del_work_fn(struct work_struct *work_not_used)
+>                  * used by the device.
+>                  */
+>                 acpi_power_transition(adev, ACPI_STATE_D3_COLD);
+> -               put_device(&adev->dev);
+> +               acpi_dev_put(adev);
+>         }
+>  }
+>
+> @@ -604,8 +604,7 @@ EXPORT_SYMBOL(acpi_bus_get_device);
+>
+>  static void get_acpi_device(void *dev)
 >  {
->  	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
->  		return emulate_nm(ctxt);
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  	asm volatile("fninit");
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  	return X86EMUL_CONTINUE;
+> -       if (dev)
+> -               get_device(&((struct acpi_device *)dev)->dev);
+> +       acpi_dev_get(dev);
 >  }
->  
-> @@ -1201,9 +1099,9 @@ static int em_fnstcw(struct x86_emulate_ctxt *ctxt)
->  	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
->  		return emulate_nm(ctxt);
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  	asm volatile("fnstcw %0": "+m"(fcw));
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  
->  	ctxt->dst.val = fcw;
->  
-> @@ -1217,9 +1115,9 @@ static int em_fnstsw(struct x86_emulate_ctxt *ctxt)
->  	if (ctxt->ops->get_cr(ctxt, 0) & (X86_CR0_TS | X86_CR0_EM))
->  		return emulate_nm(ctxt);
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  	asm volatile("fnstsw %0": "+m"(fsw));
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  
->  	ctxt->dst.val = fsw;
->  
-> @@ -1238,7 +1136,7 @@ static void decode_register_operand(struct x86_emulate_ctxt *ctxt,
->  		op->type = OP_XMM;
->  		op->bytes = 16;
->  		op->addr.xmm = reg;
-> -		read_sse_reg(&op->vec_val, reg);
-> +		kvm_read_sse_reg(reg, &op->vec_val);
->  		return;
->  	}
->  	if (ctxt->d & Mmx) {
-> @@ -1289,7 +1187,7 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
->  			op->type = OP_XMM;
->  			op->bytes = 16;
->  			op->addr.xmm = ctxt->modrm_rm;
-> -			read_sse_reg(&op->vec_val, ctxt->modrm_rm);
-> +			kvm_read_sse_reg(ctxt->modrm_rm, &op->vec_val);
->  			return rc;
->  		}
->  		if (ctxt->d & Mmx) {
-> @@ -1866,10 +1764,10 @@ static int writeback(struct x86_emulate_ctxt *ctxt, struct operand *op)
->  				       op->bytes * op->count);
->  		break;
->  	case OP_XMM:
-> -		write_sse_reg(&op->vec_val, op->addr.xmm);
-> +		kvm_write_sse_reg(op->addr.xmm, &op->vec_val);
->  		break;
->  	case OP_MM:
-> -		write_mmx_reg(&op->mm_val, op->addr.mm);
-> +		kvm_write_mmx_reg(op->addr.mm, &op->mm_val);
->  		break;
->  	case OP_NONE:
->  		/* no writeback */
-> @@ -4124,11 +4022,11 @@ static int em_fxsave(struct x86_emulate_ctxt *ctxt)
->  	if (rc != X86EMUL_CONTINUE)
->  		return rc;
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  
->  	rc = asm_safe("fxsave %[fx]", , [fx] "+m"(fx_state));
->  
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  
->  	if (rc != X86EMUL_CONTINUE)
->  		return rc;
-> @@ -4172,7 +4070,7 @@ static int em_fxrstor(struct x86_emulate_ctxt *ctxt)
->  	if (rc != X86EMUL_CONTINUE)
->  		return rc;
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  
->  	if (size < __fxstate_size(16)) {
->  		rc = fxregs_fixup(&fx_state, size);
-> @@ -4189,7 +4087,7 @@ static int em_fxrstor(struct x86_emulate_ctxt *ctxt)
->  		rc = asm_safe("fxrstor %[fx]", : [fx] "m"(fx_state));
->  
->  out:
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  
->  	return rc;
->  }
-> @@ -5510,9 +5408,9 @@ static int flush_pending_x87_faults(struct x86_emulate_ctxt *ctxt)
+>
+>  struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
+> @@ -615,7 +614,7 @@ struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
+>
+>  void acpi_bus_put_acpi_device(struct acpi_device *adev)
 >  {
->  	int rc;
->  
-> -	emulator_get_fpu();
-> +	kvm_fpu_get();
->  	rc = asm_safe("fwait");
-> -	emulator_put_fpu();
-> +	kvm_fpu_put();
->  
->  	if (unlikely(rc != X86EMUL_CONTINUE))
->  		return emulate_exception(ctxt, MF_VECTOR, 0, false);
-> @@ -5523,7 +5421,7 @@ static int flush_pending_x87_faults(struct x86_emulate_ctxt *ctxt)
->  static void fetch_possible_mmx_operand(struct operand *op)
->  {
->  	if (op->type == OP_MM)
-> -		read_mmx_reg(&op->mm_val, op->addr.mm);
-> +		kvm_read_mmx_reg(op->addr.mm, &op->mm_val);
+> -       put_device(&adev->dev);
+> +       acpi_dev_put(adev);
 >  }
->  
->  static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop)
-> diff --git a/arch/x86/kvm/fpu.h b/arch/x86/kvm/fpu.h
-> new file mode 100644
-> index 000000000000..3ba12888bf66
-> --- /dev/null
-> +++ b/arch/x86/kvm/fpu.h
-> @@ -0,0 +1,140 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+>
+>  static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+> @@ -2355,7 +2354,7 @@ int __init acpi_scan_init(void)
+>                         acpi_detach_data(acpi_root->handle,
+>                                          acpi_scan_drop_device);
+>                         acpi_device_del(acpi_root);
+> -                       put_device(&acpi_root->dev);
+> +                       acpi_bus_put_acpi_device(acpi_root);
+>                         goto out;
+>                 }
+>         }
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index d631cb52283e..d2f5afb04a0b 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -695,6 +695,11 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+>              adev;                                                      \
+>              adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
+>
+> +static inline struct acpi_device *acpi_dev_get(struct acpi_device *adev)
+> +{
+> +       return adev ? to_acpi_device(get_device(&adev->dev)) : NULL;
+> +}
 > +
-> +#ifndef __KVM_FPU_H_
-> +#define __KVM_FPU_H_
-> +
-> +#include <asm/fpu/api.h>
-> +
-> +typedef u32		__attribute__((vector_size(16))) sse128_t;
+>  static inline void acpi_dev_put(struct acpi_device *adev)
+>  {
+>         put_device(&adev->dev);
+> --
 
-Post-patch we seem to have two definitions of 'sse128_t':
-
-$ git grep sse128_t
-HEAD~3:arch/x86/kvm/fpu.h:typedef u32           __attribute__((vector_size(16))) sse128_t;
-HEAD~3:arch/x86/kvm/fpu.h:#define __sse128_u    union { sse128_t vec; u64 as_u64[2]; u32 as_u32[4]; }
-HEAD~3:arch/x86/kvm/fpu.h:static inline void _kvm_read_sse_reg(int reg, sse128_t *data)
-HEAD~3:arch/x86/kvm/fpu.h:static inline void _kvm_write_sse_reg(int reg, const sse128_t *data)
-HEAD~3:arch/x86/kvm/fpu.h:static inline void kvm_read_sse_reg(int reg, sse128_t *data)
-HEAD~3:arch/x86/kvm/fpu.h:static inline void kvm_write_sse_reg(int reg, const sse128_t *data)
-HEAD~3:arch/x86/kvm/kvm_emulate.h:typedef u32 __attribute__((vector_size(16))) sse128_t;
-HEAD~3:arch/x86/kvm/kvm_emulate.h:              char valptr[sizeof(sse128_t)];
-HEAD~3:arch/x86/kvm/kvm_emulate.h:              sse128_t vec_val;
-
-Should the one from kvm_emulate.h go away?
-
-> +#define __sse128_u	union { sse128_t vec; u64 as_u64[2]; u32 as_u32[4]; }
-> +#define sse128_lo(x)	({ __sse128_u t; t.vec = x; t.as_u64[0]; })
-> +#define sse128_hi(x)	({ __sse128_u t; t.vec = x; t.as_u64[1]; })
-> +#define sse128_l0(x)	({ __sse128_u t; t.vec = x; t.as_u32[0]; })
-> +#define sse128_l1(x)	({ __sse128_u t; t.vec = x; t.as_u32[1]; })
-> +#define sse128_l2(x)	({ __sse128_u t; t.vec = x; t.as_u32[2]; })
-> +#define sse128_l3(x)	({ __sse128_u t; t.vec = x; t.as_u32[3]; })
-> +#define sse128(lo, hi)	({ __sse128_u t; t.as_u64[0] = lo; t.as_u64[1] = hi; t.vec; })
-> +
-> +static inline void _kvm_read_sse_reg(int reg, sse128_t *data)
-> +{
-> +	switch (reg) {
-> +	case 0: asm("movdqa %%xmm0, %0" : "=m"(*data)); break;
-> +	case 1: asm("movdqa %%xmm1, %0" : "=m"(*data)); break;
-> +	case 2: asm("movdqa %%xmm2, %0" : "=m"(*data)); break;
-> +	case 3: asm("movdqa %%xmm3, %0" : "=m"(*data)); break;
-> +	case 4: asm("movdqa %%xmm4, %0" : "=m"(*data)); break;
-> +	case 5: asm("movdqa %%xmm5, %0" : "=m"(*data)); break;
-> +	case 6: asm("movdqa %%xmm6, %0" : "=m"(*data)); break;
-> +	case 7: asm("movdqa %%xmm7, %0" : "=m"(*data)); break;
-> +#ifdef CONFIG_X86_64
-> +	case 8: asm("movdqa %%xmm8, %0" : "=m"(*data)); break;
-> +	case 9: asm("movdqa %%xmm9, %0" : "=m"(*data)); break;
-> +	case 10: asm("movdqa %%xmm10, %0" : "=m"(*data)); break;
-> +	case 11: asm("movdqa %%xmm11, %0" : "=m"(*data)); break;
-> +	case 12: asm("movdqa %%xmm12, %0" : "=m"(*data)); break;
-> +	case 13: asm("movdqa %%xmm13, %0" : "=m"(*data)); break;
-> +	case 14: asm("movdqa %%xmm14, %0" : "=m"(*data)); break;
-> +	case 15: asm("movdqa %%xmm15, %0" : "=m"(*data)); break;
-> +#endif
-> +	default: BUG();
-> +	}
-> +}
-> +
-> +static inline void _kvm_write_sse_reg(int reg, const sse128_t *data)
-> +{
-> +	switch (reg) {
-> +	case 0: asm("movdqa %0, %%xmm0" : : "m"(*data)); break;
-> +	case 1: asm("movdqa %0, %%xmm1" : : "m"(*data)); break;
-> +	case 2: asm("movdqa %0, %%xmm2" : : "m"(*data)); break;
-> +	case 3: asm("movdqa %0, %%xmm3" : : "m"(*data)); break;
-> +	case 4: asm("movdqa %0, %%xmm4" : : "m"(*data)); break;
-> +	case 5: asm("movdqa %0, %%xmm5" : : "m"(*data)); break;
-> +	case 6: asm("movdqa %0, %%xmm6" : : "m"(*data)); break;
-> +	case 7: asm("movdqa %0, %%xmm7" : : "m"(*data)); break;
-> +#ifdef CONFIG_X86_64
-> +	case 8: asm("movdqa %0, %%xmm8" : : "m"(*data)); break;
-> +	case 9: asm("movdqa %0, %%xmm9" : : "m"(*data)); break;
-> +	case 10: asm("movdqa %0, %%xmm10" : : "m"(*data)); break;
-> +	case 11: asm("movdqa %0, %%xmm11" : : "m"(*data)); break;
-> +	case 12: asm("movdqa %0, %%xmm12" : : "m"(*data)); break;
-> +	case 13: asm("movdqa %0, %%xmm13" : : "m"(*data)); break;
-> +	case 14: asm("movdqa %0, %%xmm14" : : "m"(*data)); break;
-> +	case 15: asm("movdqa %0, %%xmm15" : : "m"(*data)); break;
-> +#endif
-> +	default: BUG();
-> +	}
-> +}
-> +
-> +static inline void _kvm_read_mmx_reg(int reg, u64 *data)
-> +{
-> +	switch (reg) {
-> +	case 0: asm("movq %%mm0, %0" : "=m"(*data)); break;
-> +	case 1: asm("movq %%mm1, %0" : "=m"(*data)); break;
-> +	case 2: asm("movq %%mm2, %0" : "=m"(*data)); break;
-> +	case 3: asm("movq %%mm3, %0" : "=m"(*data)); break;
-> +	case 4: asm("movq %%mm4, %0" : "=m"(*data)); break;
-> +	case 5: asm("movq %%mm5, %0" : "=m"(*data)); break;
-> +	case 6: asm("movq %%mm6, %0" : "=m"(*data)); break;
-> +	case 7: asm("movq %%mm7, %0" : "=m"(*data)); break;
-> +	default: BUG();
-> +	}
-> +}
-> +
-> +static inline void _kvm_write_mmx_reg(int reg, const u64 *data)
-> +{
-> +	switch (reg) {
-> +	case 0: asm("movq %0, %%mm0" : : "m"(*data)); break;
-> +	case 1: asm("movq %0, %%mm1" : : "m"(*data)); break;
-> +	case 2: asm("movq %0, %%mm2" : : "m"(*data)); break;
-> +	case 3: asm("movq %0, %%mm3" : : "m"(*data)); break;
-> +	case 4: asm("movq %0, %%mm4" : : "m"(*data)); break;
-> +	case 5: asm("movq %0, %%mm5" : : "m"(*data)); break;
-> +	case 6: asm("movq %0, %%mm6" : : "m"(*data)); break;
-> +	case 7: asm("movq %0, %%mm7" : : "m"(*data)); break;
-> +	default: BUG();
-> +	}
-> +}
-> +
-> +static inline void kvm_fpu_get(void)
-> +{
-> +	fpregs_lock();
-> +
-> +	fpregs_assert_state_consistent();
-> +	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> +		switch_fpu_return();
-> +}
-> +
-> +static inline void kvm_fpu_put(void)
-> +{
-> +	fpregs_unlock();
-> +}
-> +
-> +static inline void kvm_read_sse_reg(int reg, sse128_t *data)
-> +{
-> +	kvm_fpu_get();
-> +	_kvm_read_sse_reg(reg, data);
-> +	kvm_fpu_put();
-> +}
-> +
-> +static inline void kvm_write_sse_reg(int reg, const sse128_t *data)
-> +{
-> +	kvm_fpu_get();
-> +	_kvm_write_sse_reg(reg, data);
-> +	kvm_fpu_put();
-> +}
-> +
-> +static inline void kvm_read_mmx_reg(int reg, u64 *data)
-> +{
-> +	kvm_fpu_get();
-> +	_kvm_read_mmx_reg(reg, data);
-> +	kvm_fpu_put();
-> +}
-> +
-> +static inline void kvm_write_mmx_reg(int reg, const u64 *data)
-> +{
-> +	kvm_fpu_get();
-> +	_kvm_write_mmx_reg(reg, data);
-> +	kvm_fpu_put();
-> +}
-> +
-> +#endif
-
--- 
-Vitaly
-
+Applied as 5.13 material, thanks!
