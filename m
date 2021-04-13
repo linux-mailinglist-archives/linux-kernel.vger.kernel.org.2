@@ -2,108 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE1035DA9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAD535DA96
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244095AbhDMJDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240161AbhDMJDa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:03:30 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C58C06138C
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:03:09 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id u4so18534689ljo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:03:09 -0700 (PDT)
+        id S236562AbhDMJDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:03:13 -0400
+Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:44576
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230244AbhDMJDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:03:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X/zsr4UNjuZUx9BkRJxX6kQgqJSCI7U2hbY4gUffl+K3HuCKQe48Zqoylvs2JFdxPYuzR5Sdzrk/l+9laGvQiNdGwzPfJMHlRW3SSvKbWUieSsY9TYsOXd0UHaViUX1+CuoqoLoWDHy24wbZASRrk85YRZAWUpVxlO/fVYeCPWloMAX14UvsaPXjJcZME13O3OBaRAwEWI3wPbyXWsUhdAhPhocGxv6i3fK0x8aBlHvMZGe6TiOrckU4EWkXmXdk0G/5CWaQvbNdiI22wqXtCM9St7z3XrKnGgQXr42fJxN/5NsMBRJj0SyaNiUnUKHu1GapjA4YZYiRv3sfCbXjXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+yPWeme+xeeLdq4gXEumrWjRb/rqm6L+B7YFyQrAv7k=;
+ b=N6xw2EXt7LgxmpbbFGFvwibhnorrAdVK5mnmpCtVSfkgnaXA7EhzcUpONXrGNR7sD4OtELeKN1FQ1PldqustF3F2STCpud/w+k/3OjWyNQp8CBjIgimYVu6hhgClGZ61IVvKd50IYJdLHp4Z1FiEyQ1leYzV6bLXtomWvLbvmUsmzj3sPAdr3I3bhmpHJWWavls58SLNyzfhJWv25rR3gR/9EDkpVjs9T6dEKW08zFDYprX2mmiZE6Wj/VB2yqDdbd0Qvp6g+IjW0T+tS0NENEqJOwK57M4fO1rqKS/gOlLEoHGqmIitn80Jq7PTWmk+Lk1s2SAYFk4gRb9QOYwTXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SY4sqotEknC2i6pL+rlRoKqg/a1bJa4Vth62OIkfAoQ=;
-        b=uxWTujCWfNBeN/O4X+ntEhKXR936PgNw8iSl4QEH+vCqE24dWezDXJ5p7WmD0nifNV
-         13RPIgq8FCe5WiqzrGG9mYC+LTWfv854+V1guX2HA8czTlmwab74maIxGVos9YgK4qpp
-         x6NKH75ghp5ZDs2sadWAAR67QY73AS+aI80VF8xuQyio4XnAG/0R44OutaPx04sJttVd
-         Vu58VEnVDbO06/xTZsRk6fKVx2pZ7ZoQ/NjQct93M59xTtIK3naz7iG0+kuCVuIbv6nn
-         2l4dGWfbawnrcCHrKNIYRNTAMVc+CoyD3I27q7JqsED7dvLrA8hKdCdmdARfnDR1WS/e
-         kfeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SY4sqotEknC2i6pL+rlRoKqg/a1bJa4Vth62OIkfAoQ=;
-        b=qApRezuDcEzyM+6Km1dZZsjRylfjWrAKpKcqdW82a5ei3t4LxSo8RZ8BqIDPHdZCpp
-         O7AS0BjnOibH+jM/uG1FYY/UKE9QgQHzUOqyGbekm0iGEiimIsaC27K1kYGlgzwdcx+M
-         6kSQsdwLlak6621SnGesOtnTw5Ueia80+K/bVdgeyhCga0N6sJBqZDN8SXFgU7nInM0b
-         Hlq83wVL6T4dB5Gdq2VSS2Df4U0bQGMfLivEcx3kHCYbmWw2uciK57WW0OwiLBJdV444
-         kvq+OYZEmUMmxvC+o1BqKOD0khwMkkFxa036DIeTO1vmmeeO+EVA7AdUvG6EA7q6IFFM
-         4/5w==
-X-Gm-Message-State: AOAM530Ge0RZDJ5EQOiONN/YZm7+/OfAOijH3EeWgrVKFe3UDraevap2
-        SUV4hOWgwBgAufnheIYZc1Lg6w==
-X-Google-Smtp-Source: ABdhPJzfcDC1QmFeVBdVvPaUOSXsUyovVHa0wrWKVmzm0/16NQFzG7So3+md+TiskjTAEgulGecShg==
-X-Received: by 2002:a2e:9cc2:: with SMTP id g2mr3903189ljj.245.1618304588393;
-        Tue, 13 Apr 2021 02:03:08 -0700 (PDT)
-Received: from xps.wlan.ntnu.no ([2001:700:300:4008:3fb5:15ad:78ca:d9c1])
-        by smtp.gmail.com with ESMTPSA id o11sm3722912ljg.42.2021.04.13.02.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 02:03:08 -0700 (PDT)
-From:   Odin Ugedal <odin@uged.al>
-To:     tj@kernel.org, lizefan.x@bytedance.com
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Odin Ugedal <odin@uged.al>
-Subject: [PATCH 2/2] cgroup2: cpuset: Always allow setting empty cpuset
-Date:   Tue, 13 Apr 2021 11:02:35 +0200
-Message-Id: <20210413090235.1903026-3-odin@uged.al>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210413090235.1903026-1-odin@uged.al>
-References: <20210413090235.1903026-1-odin@uged.al>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+yPWeme+xeeLdq4gXEumrWjRb/rqm6L+B7YFyQrAv7k=;
+ b=k/b/qMOdGUCvboWJjgronG6eOCkKkJxdLQlW/+WW3FsNx7NsVPa95aMxN0sHhF7o4UzcwWPizKtP0Rq1PM2zM/6wbzESky3/L8axhMcJWCFugjXQpBLWXIcImMqVH9R1BJFoRUvKeUNmgGd2MwwSUmdSCmL2N4pB5dvTGQH/rHE=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BY5PR03MB5048.namprd03.prod.outlook.com (2603:10b6:a03:1e8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
+ 2021 09:02:51 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
+ 09:02:51 +0000
+Date:   Tue, 13 Apr 2021 17:02:40 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jon Bloomfield <jon.bloomfield@intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915: Fix "mitigations" parsing if i915 is builtin
+Message-ID: <20210413170240.0d4ffa38@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR04CA0005.namprd04.prod.outlook.com
+ (2603:10b6:a03:40::18) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR04CA0005.namprd04.prod.outlook.com (2603:10b6:a03:40::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Tue, 13 Apr 2021 09:02:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 35b9efab-da46-4724-fbeb-08d8fe5aeab3
+X-MS-TrafficTypeDiagnostic: BY5PR03MB5048:
+X-Microsoft-Antispam-PRVS: <BY5PR03MB5048EF8CF743B456888DA4D7ED4F9@BY5PR03MB5048.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G1iu8wAJO19rfWIc9wqVC34i4SudX7oyTz3RbV2B3JQeOShBz2mkVQ975yQjoCR2AOwnz6PSRcWOTLVSzihbZR5U4jgM7mCoe1ILJON5H66tHzfoICcZgjI1ERY+Vk8jlXB6XzaYiNC1fk/hy/rOv+ZRhdDpLpDE0IRsfTHLEZz3SIdGadzXLzz8ZReUqavr0G3JryCES8onazg0XSzMbCu+aM0oVifoTbf56QLFI5ldlHZUdn9FO/sFH+MmbvqsF81ehfKBEjdT6IJOA5TiASoB8X0vCmaHlkvzy1XwV15lCkoV5Rwnvw826+JwDVdMA8CHMFO8HPE2RUAwzc9Drk1klRGLunr62X/qRqG57I1b9/l2wokh7jLd0djqnUsQfSxOTBTSUw8uaI6Al4P3BKWomNi2MG59XveaDTGlYjKm00m4DzOsWbQlM9TI/N2878OrfEo1wrubXV2IJxM0TxmtOVSp6L/vlRxxHLf5ujj6fJfSnaJIhWG9PxVh9YlfAOCRVu+6rvLWfoaTrfVBM9lsN2yJM+2IO7Owvoa2YTjs/rAV0r+DwNbiA4tmdKTgKqt3ufjLC93KzCII91OdQJFDDjvFz3pnhIpFwRnaosd+OWwiPSVgXuCsqLNg7YHcxvqUvA6SmbS2wC85QQs4aY/Y9yUIE5GfgAR/4aRV2Qc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(396003)(346002)(136003)(956004)(66556008)(2906002)(52116002)(110136005)(83380400001)(55016002)(316002)(6506007)(186003)(4326008)(7696005)(38350700002)(38100700002)(8936002)(26005)(5660300002)(9686003)(478600001)(8676002)(1076003)(6666004)(66946007)(86362001)(16526019)(7416002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QwGNvOy33PtTW7Nijzp3mWd3LmsjXURgezYEtXJ/3KJ94HUtraXwNUHHvy1G?=
+ =?us-ascii?Q?Ttx2Ng6TlhlKek5++09pVhVwtDH47z3xG45qpAREUCdx7LbkvlBOapqXdSzs?=
+ =?us-ascii?Q?aCLaFS44RLqlCMaATjeGWxuWXREp/Udg7281zfi6xlj7TXUyhg+/8y8CfrK0?=
+ =?us-ascii?Q?9aDLOch9QqXaC6PacPfPLH9dIayXy0hlsa5JJgl5n/7QgMuvGKUxxKSiUPv0?=
+ =?us-ascii?Q?gZFqlkz43sC2titGYXx0bISh6qvM0CtTRf22o3VqKNBDGi3OKzoAczm9zUY4?=
+ =?us-ascii?Q?5ijsLNzm6KocNlrl6JFBr1sPF2Fbkix18yNvczQaGZLHSKB7wTs7che6YArM?=
+ =?us-ascii?Q?MLWqk1y3TwTbFJWm6Ldj2w5KpCOnDsxnDLy6a34hf2X1fwwaTmlskf48aUQP?=
+ =?us-ascii?Q?mv6uZd7eKZ9Ff4W6fzpmYL1hcOplOP0tIgZTx0JXfGMTbO+lm3/pNOLNXvN2?=
+ =?us-ascii?Q?1TG/crRvjOJ+DAoaPUbqVaCqwR6QqGfvYSl0+2klFahhygeD9Y0QLlC2Gx70?=
+ =?us-ascii?Q?uDD9na/wn3hwU7wi1mLGWV8tPeRBbSYs+cS/vp1joC6KSTkH9QXZLPQT3j1a?=
+ =?us-ascii?Q?zV2xQh5HLUzSXti4v+FbIN1h5kupGC9UzirSD+48tBZSndE9xe1b4fGY2DKS?=
+ =?us-ascii?Q?rOVE4LXoDSjQ4IItc3UEglB8Kc6oQcY6Ok4JlO6u2OPMrDStVCvAERTUAa1i?=
+ =?us-ascii?Q?Ik13d6wlppQdeDCh22mWbOauHSBFJXXI8ziRwk0ogTxpjuNnTH31jTHIVxns?=
+ =?us-ascii?Q?/8if8ikPFXA1K4sqtPRjtFSG93PeAenr6yH7TeTM6jcF8VWzE5xkasJO99c8?=
+ =?us-ascii?Q?5Ood8GMgdkJ5ZsjXCNjG1sHukWPiUhwYUN22UKIL6XIxoDBwiUCH7qpS40qH?=
+ =?us-ascii?Q?/9jA526I7XBf1dQ7hVU2+3p1l8BPNaBooAQlkIvG16Hzuh9xHGAaUpxw3vMI?=
+ =?us-ascii?Q?KTLjFDTg7PxX44ZWzsoh2mDFozW+hNJNOLPp6/ewZlmuQWibeRwGbR/QRyAQ?=
+ =?us-ascii?Q?ZFn/1BLodc8gXmNIDdkfd6KKx3ND1EQuCFzVV3nsHlY3AbA+ERUIidDbAFgK?=
+ =?us-ascii?Q?lBo3BLoQ62LDmQr9WvOQECrM5sIyMNiEgCRtHOATabJ8O21HHjYvYL0lyj0k?=
+ =?us-ascii?Q?el646MfbMeJYDG0kQzvCI16iCl1QGrP2SwqjYJry4N+BRUyIonXMArCue3T7?=
+ =?us-ascii?Q?pjncuTBxxdJtjyOW4ueS0eoZs2FtVtaXdjhT/rzOkuMQOJSfuRupBT09enZ1?=
+ =?us-ascii?Q?9mwa9oVuTMcBz5Ad1JQuZ2bj5gIW581GrZ2TK/xzNnSn8U/yKw40Wjdnws/B?=
+ =?us-ascii?Q?2+zcPupwR4NOzLBhjXBmMoet?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35b9efab-da46-4724-fbeb-08d8fe5aeab3
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 09:02:51.3261
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PldfhMBpt4oFZR3gmxAUYbxHeG3ziJYeUfLcDCWsJw/cObVDQfU/jm6hxE6LP8we/VDQn9KyppCw6Ylt91KAmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to how cpuset works in v2, there is no need to disallow setting an
-empty cpuset when tasks are attached. In v2, the effective cpuset of a
-cgroup is the intersection between the effective value of the parent and
-the cpuset.cpus value of the cgroup, with a fallback to the effective
-parent value in case the intersection is an empty set.
+I met below error during boot with i915 builtin if pass
+"i915.mitigations=off":
+[    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
 
-Allowing this will make it easier to move the cpuset of a nested cgroup
-hierarchy where multiple cgroup use the cpuset.cpus, since the current
-solution is to manually update the cpuset of each cgroup when doing this,
-causing it be quite complex to change. It also makes it possible to
-disable cpuset for a populated cgroup (or one of its ancestors), without
-having to manually write the effective value into cpuset.cpus.
+The reason is slab subsystem isn't ready at that time, so kstrdup()
+returns NULL. Fix this issue by using stack var instead of kstrdup().
 
-This also applies in a similar manner on cpuset.mems.
-
-Signed-off-by: Odin Ugedal <odin@uged.al>
+Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 ---
- kernel/cgroup/cpuset.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index f543c4c6084a..33a55d461ec3 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -609,11 +609,12 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
- 	}
+diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
+index 84f12598d145..7dadf41064e0 100644
+--- a/drivers/gpu/drm/i915/i915_mitigations.c
++++ b/drivers/gpu/drm/i915/i915_mitigations.c
+@@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
+ static int mitigations_set(const char *val, const struct kernel_param *kp)
+ {
+ 	unsigned long new = ~0UL;
+-	char *str, *sep, *tok;
++	char str[64], *sep, *tok;
+ 	bool first = true;
+ 	int err = 0;
  
- 	/*
--	 * Cpusets with tasks - existing or newly being attached - can't
--	 * be changed to have empty cpus_allowed or mems_allowed.
-+	 * On legacy hierarchy, cpusets with tasks - existing or newly being
-+	 * attached - can't be changed to have empty cpus_allowed or
-+	 * mems_allowed.
- 	 */
- 	ret = -ENOSPC;
--	if ((cgroup_is_populated(cur->css.cgroup) || cur->attach_in_progress)) {
-+	if (!is_in_v2_mode() && (cgroup_is_populated(cur->css.cgroup) || cur->attach_in_progress)) {
- 		if (!cpumask_empty(cur->cpus_allowed) &&
- 		    cpumask_empty(trial->cpus_allowed))
- 			goto out;
+ 	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
+ 
+-	str = kstrdup(val, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	strncpy(str, val, sizeof(str) - 1);
+ 
+ 	for (sep = str; (tok = strsep(&sep, ","));) {
+ 		bool enable = true;
+@@ -86,7 +84,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
+ 			break;
+ 		}
+ 	}
+-	kfree(str);
+ 	if (err)
+ 		return err;
+ 
 -- 
 2.31.0
 
