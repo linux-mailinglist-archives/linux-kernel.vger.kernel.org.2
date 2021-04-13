@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F200E35DEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF20A35DEFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhDMMhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:37:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229768AbhDMMhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:37:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618317401;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gwchUegte3W91Yxn1yo6UjhBF5UF9fS3pz33NiRws2U=;
-        b=QIOeRSLSNC1SpKCRSPPPjaX7vhGgZGTh16arqIxWSKJ4+zBtq8Vn9s5CAuXUyCJJDTQjz/
-        e7ZIotjWrhOrwN3xSVc/VA9ricRlW8IkJfCv/8SdsueiR0h8CjBlfHHutTSNmgl11bIE1R
-        Hg2NJGOku7Y/idsEt2p8ROYJrsmdQ84=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-252-UjME8ZgzM9WhkA2IppKoAg-1; Tue, 13 Apr 2021 08:36:37 -0400
-X-MC-Unique: UjME8ZgzM9WhkA2IppKoAg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1C67BBEE4;
-        Tue, 13 Apr 2021 12:36:35 +0000 (UTC)
-Received: from krava (unknown [10.40.196.16])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AD04D2BFF1;
-        Tue, 13 Apr 2021 12:36:33 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 14:36:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 12/27] perf parse-events: Support no alias assigned
- event inside hybrid PMU
-Message-ID: <YHWQUMmj/7MqCfcs@krava>
-References: <20210329070046.8815-1-yao.jin@linux.intel.com>
- <20210329070046.8815-13-yao.jin@linux.intel.com>
- <YHBa15BWne4zgv/A@krava>
- <6a7ba97c-29e7-bc4d-57aa-18bc92af9738@linux.intel.com>
+        id S229986AbhDMMh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:37:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33328 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhDMMhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:37:24 -0400
+IronPort-SDR: SCFi7eA8/LaUd+Q09PWJOle6/dCMfpmZtYCHO+X1MWSMXnnDiE7De89fhHo71VY/pIuUvn35l0
+ tjjP+v046gzw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="192275051"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="192275051"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:37:02 -0700
+IronPort-SDR: EftD6PGd6kRAx7iMLM+mfW7kd+FeJfLBMWizENmewb7XA3QgXhEGs5iYRxhMbqOFtbNGo3LpQO
+ BqRFct8SPUIw==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="398759106"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:37:00 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWIHp-003l5j-Or; Tue, 13 Apr 2021 15:36:57 +0300
+Date:   Tue, 13 Apr 2021 15:36:57 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+Message-ID: <YHWQaQaw53eZtYzn@smile.fi.intel.com>
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6a7ba97c-29e7-bc4d-57aa-18bc92af9738@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:51:14AM +0800, Jin, Yao wrote:
+On Tue, Apr 13, 2021 at 02:26:15PM +0200, Geert Uytterhoeven wrote:
+> The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+> Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+> Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+> about this driver when configuring a kernel without Hisilicon platform
+> or ACPI firmware support.
 
-SNIP
+I don't by the ACPI dependency, sorry.
 
+The driver is a pure platform driver that can be enumerated on ACPI enabled
+devices, but otherwise it can be used as a platform one.
+
+If you remove ACPI dependency, feel free to add my
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/i2c/busses/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Do you suggest we just use string comparison for doing the direct check?
-> 
-> e.g.
-> 
-> if (strstr(term->config, "L1-dcache"))
-> 	...
-> 
-> Of course, we can define a string array first and use a loop for string comparison.
-> 
-> > > +	if (!parse_state->fake_pmu && head_config && !found &&
-> > > +	    perf_pmu__is_hybrid(name)) {
-> > > +		struct parse_events_term *term;
-> > > +		int ret;
-> > > +
-> > > +		list_for_each_entry(term, head_config, list) {
-> > > +			if (!term->config)
-> > > +				continue;
-> > > +
-> > > +			ret = parse_events__with_hybrid_pmu(parse_state,
-> > > +							    term->config,
-> > > +							    name, &found,
-> > > +							    list);
-> > 
-> > do we need to call the parsing again? could we just call
-> > parse_events__add_cache_hybrid?
-> > 
-> > jirka
-> > 
-> > 
-> 
-> If we do the direct check for cache events, I think we don't need the parsing again.
-> 
-> As I mentioned above, we need to define a string array and compare with term->config one by one.
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index b5b4e0d0ff4dd0bc..3ead6d9e130b2ebc 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -647,7 +647,7 @@ config I2C_HIGHLANDER
+>  
+>  config I2C_HISI
+>  	tristate "HiSilicon I2C controller"
+> -	depends on ARM64 || COMPILE_TEST
+> +	depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
+>  	help
+>  	  Say Y here if you want to have Hisilicon I2C controller support
+>  	  available on the Kunpeng Server.
+> -- 
+> 2.25.1
 > 
 
-maybe another way is to find a way to run just the lexer (without
-parser) and check that it returns PE_NAME_CACHE_OP_RESULT
+-- 
+With Best Regards,
+Andy Shevchenko
 
-jirka
 
