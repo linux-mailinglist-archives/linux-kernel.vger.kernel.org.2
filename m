@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B25E35E24F
+	by mail.lfdr.de (Postfix) with ESMTP id E764E35E250
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346523AbhDMPJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54672 "EHLO mail.kernel.org"
+        id S1346516AbhDMPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:09:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232120AbhDMPJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:09:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417CF613B6;
-        Tue, 13 Apr 2021 15:09:20 +0000 (UTC)
+        id S230327AbhDMPJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 230DF613B7;
+        Tue, 13 Apr 2021 15:09:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618326560;
-        bh=2mrmh7KWeWnO3AgGPTiEPrsluOYYVwNB/gzeJ2AAmJc=;
+        s=k20201202; t=1618326563;
+        bh=At7aWxWurGsIOSo+8oSLGvP7YMSoNoS+cSZVclvAi+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bht0AWlKxDnXY7xXGf9zBminX8JaUxZmolH/VsR+q7RN72k80Z6js0ybi135ERVrk
-         XI3zkfLXZ1uoCCBDFBWkemj37ULTNeb2lqytJZqdoPYpQ8oiDAogk9Wkzjf/sHFvCR
-         U/qhJUdY4I8fHe3T9AOWSmxMgx1AKZj868Veh6Il5T1euBsklGTxXGQqZ94rbsfyYS
-         t4RzcicjkmiosXa9MA8G3UQ1OXSrGfqi2Wsx7lPTCatn5+tIeYdr950mj34Dd78N+s
-         ehI5+QfOQXBsMnMysXUDFr4wKylXzXy+wKaJu84MrR/4b8OLw9EFZFDg0FSKfoUrw/
-         kVFomZsah9Qbw==
+        b=sHezMDzyBYh2KZVH8LKon8RUa8rnvLNN7JlnLyo7aQIIzQvpQb17LcukbteGDujM5
+         jGuY836+pQOG/68bPAQ2nyI+7YHRvNKmoCJ4L6ylgb4pOQQ+1oXocCe+d3C2FzpFIq
+         ZyuiUvjk4xTVSoc3q6vLkf9UhQ9hnthnAARlpy91FZ5LDaOA5TBIs0ON9PUnV7igRv
+         lW57rhE2wvIke5sDRLE9VNuKiJ8XfwG0Pu75VyRM1qL2HGTTvlSOET5iTYzAdl3sb9
+         cstftTkhl7b1Bu3SKeGRYw0wDBMSZkqI0PB0TOag0dX2m9T7XD4jqCSDG76tPk9OjD
+         1bdVW3LPpUmRQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     david.rhodes@cirrus.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com,
-        james.schulman@cirrus.com
-Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: cs35l36: Fix an error handling path in 'cs35l36_i2c_probe()'
-Date:   Tue, 13 Apr 2021 16:08:53 +0100
-Message-Id: <161832446010.49152.18429371778012715101.b4-ty@kernel.org>
+To:     Chen Lifu <chenlifu@huawei.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: sti: sti_uniperif: add missing MODULE_DEVICE_TABLE
+Date:   Tue, 13 Apr 2021 16:08:54 +0100
+Message-Id: <161832446010.49152.17428685818110323930.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <9fec48e75bc1d3c92626e6f6aca2344bda223379.1618145790.git.christophe.jaillet@wanadoo.fr>
-References: <9fec48e75bc1d3c92626e6f6aca2344bda223379.1618145790.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20210409015953.259688-1-chenlifu@huawei.com>
+References: <20210409015953.259688-1-chenlifu@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,9 +44,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021 14:57:13 +0200, Christophe JAILLET wrote:
-> If 'devm_regmap_init_i2c()' fails, there is no need to goto err. We should
-> return directly as already done by the surrounding error handling paths.
+On Fri, 9 Apr 2021 09:59:53 +0800, Chen Lifu wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
 Applied to
 
@@ -54,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs35l36: Fix an error handling path in 'cs35l36_i2c_probe()'
-      commit: cdf20c3ef0e90b962e62ae7d835d7f46333285bc
+[1/1] ASoC: sti: sti_uniperif: add missing MODULE_DEVICE_TABLE
+      commit: 462c47c2fcc26d838c82646a31d6e3e8fc01ce68
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
