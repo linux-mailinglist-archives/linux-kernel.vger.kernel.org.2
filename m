@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082FE35E7A0
+	by mail.lfdr.de (Postfix) with ESMTP id 5457C35E7A1
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348228AbhDMUeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
+        id S1348235AbhDMUeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348208AbhDMUeS (ORCPT
+        with ESMTP id S1348222AbhDMUeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:34:18 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F880C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:33:58 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id l76so12783511pga.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:33:58 -0700 (PDT)
+        Tue, 13 Apr 2021 16:34:21 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B62FC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:34:00 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so5429848pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=myAv69MaFRKWn2I2SW1R2lECVQNHL7kM1EUxjGkHBlQ=;
-        b=mvmhxrtyWsGe9wdY6q/6VEGdr8j0Jr0G8sUVnZDRlJiI6qDUIhGWWZ1ITNlGgB6/6c
-         K4kEiPBa4hvb2NE1GnkEpGvgIZ+v1t8V9y6jjXWqgfD8sMDd7rKzqhxR8BxREf0oxY70
-         6QIrfAG88GvCIGgzNHUkdZG/hc/0QXfObTM7mbkGpZmjDw3i+MeGBKaJJV2bvmFEHW2K
-         MgS8c5u8vvV47bbfzGrIPLsxrbcu00TWjmrveWYRGEbEZkaEDBNQRqJrfSZNCjS4kHZm
-         3D2ORzENqKQcYUUdAV7WOCViuMbO9tdAHJEyipvaz4D1pSaKROiKx2BD4IBhsBnRDOki
-         vZXg==
+        bh=rIins1t6G3qvATuT/71pEz8vxAHrnk41wxK1CE65WVA=;
+        b=geAtD0LJYX39l2E4cr88oVxDEzv2ZGHSkz/qA3gw7fvD1eNkGzxBMjrvHXehj9tAHn
+         xyR66T5DLrkXg+LlAY8GxpalkTnkaoNVjS1a2bs//2UefBehFj6h55Xkxkxq7hHOP1DC
+         +35Cm0JoXKxrswupdkmK9AagSlklLAnEoLVXAz/OCGYEyPQq34qu1w6yQtjMlR6u+xeW
+         xbw9bKUJeyTJieQmqhF3jBxyvvDEsV2UlmZcryit5MsQAsZHRrrgjF5Jdzt4a01645ud
+         bSiIzn/yMfOTevAoebRJefC6j6S7G3leZbxq2yxUHl7vuZc+Kajs/4CSkHsHjgfOFRRM
+         1QHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=myAv69MaFRKWn2I2SW1R2lECVQNHL7kM1EUxjGkHBlQ=;
-        b=qjJyqFVrwpDkwH0qgHJTfJe2TbbCNYOck2aLdgAIDBWVKO/tkjl+ij/pa6z98cyNiW
-         MYYKanplxN40G85K315LioOgFd6KlScWM6i53OZJU+ScfG3dah9ozEa9SAESjkOh+8Nc
-         IaTm970tAqBf2siVB6Jy3O4TBi/OwUB+FvRM92iat1MyNmYbkh6EPPueoFFx09XWLWpR
-         NwO192MLRpBiz69efcYjzdMpPTBeSOehKzKIpS56V/Iee7GzUVuZWTMLqyd22ve1xfUi
-         7WfevYXmBssXpGbIjC4Wag61IoJEt9yjt5R9kk/bgvXGOBEV4X4ufx6AkIprI/Wd0Z6K
-         Wm8A==
-X-Gm-Message-State: AOAM531NeddN6nzJKMADDarCLxn+jChhyGap7BfBfh30ZN7NscJA3ALN
-        fECgeqw9YWxxWo7j+L3Fgqo=
-X-Google-Smtp-Source: ABdhPJwjfU1YdtM0M4g7+nwNxNu0XRXBxzO6Eqic+/P8yx7A/lcfX3NhB5Woqo6FyltLr3+o0hnNQw==
-X-Received: by 2002:a62:7e41:0:b029:249:287:3706 with SMTP id z62-20020a627e410000b029024902873706mr18160638pfc.76.1618346037893;
-        Tue, 13 Apr 2021 13:33:57 -0700 (PDT)
+        bh=rIins1t6G3qvATuT/71pEz8vxAHrnk41wxK1CE65WVA=;
+        b=ar1Ib+j56XdzVwBOQZqhNlgvultELpHdAryaDKU4mxpimR0ggBrxjs9lHDY7zVj0fn
+         Um3uwbsgtlLa/gGZNzJHjmTL9JLbKXYBxgKdFffrQuyPuqsfjXWJYVPr60+HuNy3gzDA
+         UU21AOIrlULAVEXZNKb6kOt/rn7OocHNmZYyGs3aooaCs4eiffsfeFVE4i0c3gMcxTOy
+         93Zt20CenfpuwJeb8IdWEVGPekxdo4M4Jaw9aePp2zYCrCAko7SvhgqGx5bBq1VSwvE0
+         0+4HPW6xnC2KXHK9HISH4B62wSoXb0p620FmlzE/1c9vt6qzItn1PI3fBSZk0ZS1deqY
+         dbEQ==
+X-Gm-Message-State: AOAM532XIRC87aKZyaS0DN54RVmfLnoyR8HKaEGZUo+/6by31WPWzo5S
+        1MA0a90x4v2Wdnu1N+sw1OY=
+X-Google-Smtp-Source: ABdhPJz+7HCEkslk4Q3WF5saPL70YBvye6bDA7kma53zxcn2HSyVyzqZ6egrHQz2EBoXJGtcmXgAAQ==
+X-Received: by 2002:a17:90a:f402:: with SMTP id ch2mr1852856pjb.171.1618346040122;
+        Tue, 13 Apr 2021 13:34:00 -0700 (PDT)
 Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:a476:17ee:13ea:2981])
-        by smtp.gmail.com with ESMTPSA id 20sm89970pfw.40.2021.04.13.13.33.57
+        by smtp.gmail.com with ESMTPSA id 20sm89970pfw.40.2021.04.13.13.33.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 13:33:57 -0700 (PDT)
+        Tue, 13 Apr 2021 13:33:59 -0700 (PDT)
 From:   Eric Dumazet <eric.dumazet@gmail.com>
 To:     Ingo Molnar <mingo@kernel.org>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
@@ -58,9 +58,9 @@ Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Eric Dumazet <eric.dumazet@gmail.com>
-Subject: [PATCH v3 1/3] rseq: optimize rseq_update_cpu_id()
-Date:   Tue, 13 Apr 2021 13:33:50 -0700
-Message-Id: <20210413203352.71350-2-eric.dumazet@gmail.com>
+Subject: [PATCH v3 2/3] rseq: remove redundant access_ok()
+Date:   Tue, 13 Apr 2021 13:33:51 -0700
+Message-Id: <20210413203352.71350-3-eric.dumazet@gmail.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 In-Reply-To: <20210413203352.71350-1-eric.dumazet@gmail.com>
 References: <20210413203352.71350-1-eric.dumazet@gmail.com>
@@ -72,10 +72,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-Two put_user() in rseq_update_cpu_id() are replaced
-by a pair of unsafe_put_user() with appropriate surroundings.
+After commit 8f2817701492 ("rseq: Use get_user/put_user rather
+than __get_user/__put_user") we no longer need
+an access_ok() call from __rseq_handle_notify_resume()
 
-This removes one stac/clac pair on x86 in fast path.
+Mathieu pointed out the same cleanup can be done
+in rseq_syscall().
 
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -85,38 +87,32 @@ Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: Arjun Roy <arjunroy@google.com>
 Cc: Ingo Molnar <mingo@kernel.org>
 ---
- kernel/rseq.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ kernel/rseq.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/kernel/rseq.c b/kernel/rseq.c
-index a4f86a9d6937cdfa2f13d1dcc9be863c1943d06f..f020f18f512a3f6241c3c9b104ce50e4d2c6188c 100644
+index f020f18f512a3f6241c3c9b104ce50e4d2c6188c..cfe01ab5253c1c424c0e8b25acbb6a8e1b41a5b6 100644
 --- a/kernel/rseq.c
 +++ b/kernel/rseq.c
-@@ -84,13 +84,20 @@
- static int rseq_update_cpu_id(struct task_struct *t)
- {
- 	u32 cpu_id = raw_smp_processor_id();
-+	struct rseq __user *rseq = t->rseq;
+@@ -273,8 +273,6 @@ void __rseq_handle_notify_resume(struct ksignal *ksig, struct pt_regs *regs)
  
--	if (put_user(cpu_id, &t->rseq->cpu_id_start))
--		return -EFAULT;
--	if (put_user(cpu_id, &t->rseq->cpu_id))
--		return -EFAULT;
-+	if (!user_write_access_begin(rseq, sizeof(*rseq)))
-+		goto efault;
-+	unsafe_put_user(cpu_id, &rseq->cpu_id_start, efault_end);
-+	unsafe_put_user(cpu_id, &rseq->cpu_id, efault_end);
-+	user_write_access_end();
- 	trace_rseq_update(t);
- 	return 0;
-+
-+efault_end:
-+	user_write_access_end();
-+efault:
-+	return -EFAULT;
+ 	if (unlikely(t->flags & PF_EXITING))
+ 		return;
+-	if (unlikely(!access_ok(t->rseq, sizeof(*t->rseq))))
+-		goto error;
+ 	ret = rseq_ip_fixup(regs);
+ 	if (unlikely(ret < 0))
+ 		goto error;
+@@ -301,8 +299,7 @@ void rseq_syscall(struct pt_regs *regs)
+ 
+ 	if (!t->rseq)
+ 		return;
+-	if (!access_ok(t->rseq, sizeof(*t->rseq)) ||
+-	    rseq_get_rseq_cs(t, &rseq_cs) || in_rseq_cs(ip, &rseq_cs))
++	if (rseq_get_rseq_cs(t, &rseq_cs) || in_rseq_cs(ip, &rseq_cs))
+ 		force_sig(SIGSEGV);
  }
  
- static int rseq_reset_rseq_cpu_id(struct task_struct *t)
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
