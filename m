@@ -2,142 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7E035E2C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC49535E2CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhDMPYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:24:44 -0400
-Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:53848 "EHLO
-        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346700AbhDMPXk (ORCPT
+        id S1343578AbhDMPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhDMPZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:23:40 -0400
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FKTrk6SWNzTyy;
-        Tue, 13 Apr 2021 17:23:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1618327398;
-        bh=iTcQ2sTcmn98QMi8qBpLVKqPeR8uHdri8V0nrWRW6sw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=aGbbXrE5Vgme8YKaV9wgm+Y+GOMiaszb1Y6J9Zo0sU4ym3QbV5MUA/WcwmaqCarOf
-         ivs7s+uXN27i38uqUiKwZVwTfhEdPgu8o6QvtgIRPLZYRLZa/LLzNSIxl+MZ7gj8xV
-         +8UQ4spa8F9nfP4T/ec8pGHrblpXBqgyaZMTAFt0=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FKTrk6G8FzTg2xf;
-        Tue, 13 Apr 2021 17:23:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dGgxBC9fHpe4; Tue, 13 Apr 2021 17:23:18 +0200 (CEST)
-Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Tue, 13 Apr 2021 17:22:47 +0200 (CEST)
-Message-ID: <e8726b52b576c04bf4dc41ccfd324ef8f29d17c9.camel@t-2.net>
-Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Date:   Tue, 13 Apr 2021 17:22:46 +0200
-In-Reply-To: <YHWrmuZ9tei0VTXN@alley>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-         <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
-         <YHVnQfQ4zDt09RFe@alley>
-         <157d81a5eb9e56e47e40c1cd652cdc7a915cb755.camel@t-2.net>
-         <YHWrmuZ9tei0VTXN@alley>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 13 Apr 2021 11:25:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A40C061574;
+        Tue, 13 Apr 2021 08:24:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+bjDZWt7VIMptiDm8AUPH0gC71TkNTerLWI8vmVplDw=; b=ZtRHIn2jRKd/7WzhfcChKhit2G
+        Pqtvb+9SDLPcrrrXT/UUacJkD74wMmQNpJ0AJWlp92PrvEmAAoE4IViXc3BPLGdAKvbbw4YmYN3RN
+        0rgoZXA7/xi+y1zEIEqq32+pE7vjjwjJFN2Z0DWk+BJtc/wKHHX9DcxxseCRuKygG2/qdye6XFRHT
+        Y5Q34affJetwAj2nMRHejIkSMLQh7TT4+kI6qsdJl9AQiSsYY9uSIsLASr/hcMEwFh38wjYdohQlG
+        EwxmRLrOxyGzCA6kDmCC6E+ZlTE8xJWvTixlGocl3iOR4fN9bMN9aMPPHpGC73MTCrUuZbqc2xmUt
+        SoiE4Jog==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWKsN-005uLz-Ka; Tue, 13 Apr 2021 15:23:13 +0000
+Date:   Tue, 13 Apr 2021 16:22:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7] mm: Add set/end/wait functions for PG_private_2
+Message-ID: <20210413152251.GQ2531743@casper.infradead.org>
+References: <20210408145057.GN2531743@casper.infradead.org>
+ <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
+ <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk>
+ <1268564.1618326701@warthog.procyon.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1268564.1618326701@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 13.04.2021 (tor) ob 16:32 +0200 je Petr Mladek napisal(a):
-> On Tue 2021-04-13 13:10:50, Samo Pogačnik wrote:
-> > Dne 13.04.2021 (tor) ob 11:41 +0200 je Petr Mladek napisal(a):
-> > > On Mon 2021-04-12 14:41:27, Samo Pogačnik wrote:
-> > > > Dne 12.04.2021 (pon) ob 19:39 +0900 je Tetsuo Handa napisal(a):
-> > > > > What is the intended usage of /dev/ttyprintk ?
-> > > > > 
-> > > > 
-> > > > The intended use of 'ttyprintk' is to redirect console to /dev/ttyprintk
-> > > > via the TIOCCONS ioctl. After successfull redirection, all console
-> > > > messages get "merged" with kernel messages and as such automatically
-> > > > processed
-> > > > (stored/transferred) by the syslog service for example.
-> > > 
-> > > The same can be achieved by /dev/kmsg that was created by systemd
-> > > developers.
-> > > 
-> > 
-> > 'kmsg' and 'ttyprintk' are different types of drivers and as such rather
-> > complementary than exclusive. The 'ttyprintk' being a tty driver allows 
-> > for a system wide automatic redirection of anything written to the
-> > console.
-> 
-> I might miss something. But how can one setup ttyprintk as the system
-> wide console? I do not see any code that would use ttyprintk
-> in struct console.
-> 
+On Tue, Apr 13, 2021 at 04:11:41PM +0100, David Howells wrote:
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Tested-by: Jeff Layton <jlayton@kernel.org>
+> Tested-by: Dave Wysochanski <dwysocha@redhat.com>
 
-You can compile this simple code below and call:
-
-# ./tioccons /dev/ttyprintk
-
-... from now on all console output interleaves the kernel log  (you can check
-dmesg or logs)
-
-# ./tioccons /dev/console
-
-... sets things back they were.
-
-You will be able to recognize console messages by preceding "[U]" tag (meaning
-User).
-
--------------------
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-
-int main(int argc, char **argv)
-{
-	int fd;
-
-	if (argc != 2) {
-		printf("Wrong usage!\n");
-		exit(1);
-	}
-
-	if ((fd = open(argv[1], O_WRONLY)) == -1) {
-		perror(argv[1]);
-		exit(1);
-	}
-
-	if (ioctl(fd, TIOCCONS, NULL) == -1) {
-		printf("ioctl: %s\n", strerror(errno));
-		exit(1);
-	}
-
-	exit(0);
-}
---------------------
-
-best regards, Samo
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
