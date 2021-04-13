@@ -2,63 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9280535DDDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FD635DDE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242431AbhDMLhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:37:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39340 "EHLO mail.kernel.org"
+        id S244451AbhDMLiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238148AbhDMLhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:37:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BE6161244;
-        Tue, 13 Apr 2021 11:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618313831;
-        bh=HPs/cyVTjjgPMGZKDl4psfL7z6Thd81yUjkA+JoeUAk=;
+        id S238148AbhDMLiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 07:38:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE12F61244;
+        Tue, 13 Apr 2021 11:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618313862;
+        bh=RGZNg9kftVpFHwueFM2mS//vQiDriFVB0rvxdE3Bj0M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vwlgYfesHJz2OcRmhIhj2KOtkf0Ym+DTZZnAM9yp0y7312niBbhbil3fdiwQMB5IY
-         w0Kxt23pa7YHuTMobnL93UzuRAWlzAmKw5vFGiEmblEVvy2QCtWyjah33C4PcUvpSw
-         x3Bdgj44qp34ADUSfU6c3w02Vu/iO97QahSPf/HM=
-Date:   Tue, 13 Apr 2021 13:37:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH v5 0/3] staging: rtl8192e: Cleanup patchset for style
- issues in rtl819x_HTProc.c
-Message-ID: <YHWCZALi323oaGA5@kroah.com>
-References: <cover.1618283232.git.mitaliborkar810@gmail.com>
- <YHVN0JRWqNDJYF3T@kroah.com>
- <YHV2LyXrJjVnMsyT@kali>
+        b=CYsm5jHBjyHTSfNLz5owb3ZJx/uyb9g0CMlSlExbjZfOpEHTuqX9AfdRGSZB88/IE
+         xDZ06U049Fhp93e3O0tjFrSdfHDN29lME/DZML2V7OVgdR46CqQ7xdNsepCOuPexbc
+         ztk8pwLWq99C4cHjvkqMB+zJYkceDFFLC97f+2NB8UAn3wRddNSwtTs1FdHRUcrZiJ
+         rS3tmYH0XmFL5wCtumSNJxwhkdBxx7ZpYeF2RJKBgKTaYQYvwPIgOR/FF6vRYfmzck
+         lGFJMdYwkqFFqcS76tzby4Ov9VQIokDFF6cIzS2qNh3DMV5oeYZvSxqNyD0iJJua96
+         SsOtTKaXBH56g==
+Date:   Tue, 13 Apr 2021 14:37:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
+ use it in RDS
+Message-ID: <YHWCgmq4gOmAczq6@unreal>
+References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
+ <20210412225847.GA1189461@nvidia.com>
+ <YHU6VXP6kZABXIYA@unreal>
+ <F450613D-9A52-4D21-A2D5-E27FA4EBDBBE@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YHV2LyXrJjVnMsyT@kali>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <F450613D-9A52-4D21-A2D5-E27FA4EBDBBE@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:15:03PM +0530, Mitali Borkar wrote:
-> On Tue, Apr 13, 2021 at 09:52:48AM +0200, Greg KH wrote:
-> > On Tue, Apr 13, 2021 at 08:55:03AM +0530, Mitali Borkar wrote:
-> > > Changes from v4:-
-> > > [PATCH v4 1/3]:- No changes.
-> > > [PATCH v4 2/3]:- No changes.
-> > > [PATCH V4 3/3]:- Removed casts and parentheses.
+On Tue, Apr 13, 2021 at 11:13:38AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 13 Apr 2021, at 08:29, Leon Romanovsky <leon@kernel.org> wrote:
 > > 
-> > This series does not apply cleanly, please rebase and resend.
-> >
-> Resend as v6? Does not apply cleanly as in? Were mails not threaded
-> properly?
+> > On Mon, Apr 12, 2021 at 07:58:47PM -0300, Jason Gunthorpe wrote:
+> >> On Wed, Mar 31, 2021 at 08:43:12PM +0200, Håkon Bugge wrote:
+> >>> ib_modify_qp() is an expensive operation on some HCAs running
+> >>> virtualized. This series removes two ib_modify_qp() calls from RDS.
+> >>> 
+> >>> I am sending this as a v3, even though it is the first sent to
+> >>> net. This because the IB Core commit has reach v3.
+> >>> 
+> >>> Håkon Bugge (2):
+> >>>  IB/cma: Introduce rdma_set_min_rnr_timer()
+> >>>  rds: ib: Remove two ib_modify_qp() calls
+> >> 
+> >> Applied to rdma for-next, thanks
+> > 
+> > Jason,
+> > 
+> > It should be 
+> > +	WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT);
+> 
+> With no return you will arm the setting of the timer and subsequently get an error from the modify_qp later.
 
-Yes, send a v6, after rebasing on my tree and the staging-testing branch
-and resend.
+The addition of WARN_ON() means that this is programmer error to get
+such input. Historically, in-kernel API doesn't need to have protection
+from other kernel developers.
 
-They were threaded properly, it looks like others have made changes to
-the same files that you were, which is quite common when doing small
-cleanup changes like this.
+Thanks
 
-thanks,
-
-greg k-h
+> 
+> 
+> Håkon
+> 
+> > 
+> > and not
+> > +	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT))
+> > +		return -EINVAL;
+> > 
+> > Thanks
+> > 
+> >> 
+> >> Jason
+> 
