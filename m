@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E1435E609
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDE335E613
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244853AbhDMSMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
+        id S229488AbhDMSMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237344AbhDMSMH (ORCPT
+        with ESMTP id S1345503AbhDMSMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:12:07 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FA0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:47 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id y12so13445093qtx.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:47 -0700 (PDT)
+        Tue, 13 Apr 2021 14:12:35 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:12:15 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id i9so8355016qvo.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=deASIC4Cs//Eazc/u/XWcQQJxVVHmY70qv8fjR7dmQ0=;
-        b=f1oafAJnlk3HZCVbI0WmGcC3aKmkh9peaQZDVKl45CBBmswOaiI4V6c7Ka8uuqMLa4
-         XslQvOVPZbjmWO8N/z6jOkQ5+orkVAC4peUGEL3OXZ7qNjnVNl7WSc5iUIkvfEyRtuNR
-         uNn5Uj0kxMvzkxM+VQHddlMqS6WluPgNK+d7M2cie+xZlyTmFKCIW5rPRvB6urO4iltq
-         /nL623iSTdzyRZ8f3NxveXCzL6UnQdKIw8Km8FGFQxKsUfp5rkOT+WeFOyET/pdqxaOJ
-         DybyZXRXuNoPNgfRBgDgFSlReLY2Zty6yfmbUdl0Qruyu3lW3qr+PVfMvezut/HZVvv+
-         UYxA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J8WTSsefZFW62T22lrlwArgXymqZlxvKILjzLWwjgyM=;
+        b=NeRrPp3a6n+7xCPvFIEAmJzlaYcK6H2Ep2acNBn2vO1lIoqyEkSFQZPyk844XLkUcC
+         CSJ4wdBUDzbf52DdcpLNnQGRK48SbUStn+UP8xsMDxcSeTFIgnZcN2MUl5BnoMKG9LQh
+         CRwrNuvqMypoArtY1NI2wEIBJjHMfzn/dEGYOtIVpVNSxQJfLvcXs/TniO/IVJSNSyhv
+         byjFIQyzbMN8CJA8WU/zWKL6p05/5EtXDY5NGxWsaT1OECgCIU7I48szlTUHA/rFdAHr
+         aVYht9tuKFMGOF6RKe+TsNrsN+bWZdKi44ptjqa39t4suR13LqINKXw2P70leVxBb/BX
+         7xGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=deASIC4Cs//Eazc/u/XWcQQJxVVHmY70qv8fjR7dmQ0=;
-        b=j1721jWpfCqE1azJfVxUxusGLPGHuORufNxsQ8wpzjimpl6OZZi/ybmcpgw4NDSJjU
-         1RpOkw9yN0+XnqjybCu4K1cqyOGHWyYhSkTR5GtKE/TFEg8csTB3f+DEt3SkbyrTGBNf
-         E00sVFIzJxwBMu/bRsb+q0/++X5d4KnAcQ7Q96cf+OL2Hj5ywzAIY2vdlpE8v3kSRp4Y
-         Pd+NfEXvilXuldcQWMDOMO9PqkRD3iv2nWsISsz+WIx89B8ilDhBftFDn5zn70qrRRdO
-         9fihzCF89YbxXi0Fw8Cp2gKOUOlVcWQZc+/TYdhMvDF8WOWnxtioZQH2efejNGBB5Q5u
-         HuQA==
-X-Gm-Message-State: AOAM5320tvyIGKUbjzwGc5QPEWDB+dhr3r4yj6IQpF2sewVqvrRM0W8O
-        8/knUV4LrZVuaRYijoSfF5kwsg==
-X-Google-Smtp-Source: ABdhPJxc/WYUSF8qA754oyGOrB1wFH7/ryz6Ffn54ZT6mPInMZOSPnB91vdqHhpQB16Ah5jGJw8ebw==
-X-Received: by 2002:ac8:4a82:: with SMTP id l2mr2591555qtq.311.1618337506928;
-        Tue, 13 Apr 2021 11:11:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id e3sm10340568qtj.28.2021.04.13.11.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 11:11:46 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lWNVp-005bD2-JG; Tue, 13 Apr 2021 15:11:45 -0300
-Date:   Tue, 13 Apr 2021 15:11:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        daniel.vetter@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        James Morris <jmorris@namei.org>,
-        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        m.szyprowski@samsung.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
-Message-ID: <20210413181145.GK227011@ziepe.ca>
-References: <000000000000ca9a6005bec29ebe@google.com>
- <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
- <20210331042922.GE2065@kadam>
- <20210401121933.GA2710221@ziepe.ca>
- <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J8WTSsefZFW62T22lrlwArgXymqZlxvKILjzLWwjgyM=;
+        b=txXkSovvTB4gwiBLkiJRCPTPozEPyD6e+63RD5Ol26vN9xTALyRq+hEYsRgl2I7vkO
+         Yfw7nzrNGy81o5+0xIIgcYXdvrETiIo2JM2QUHeVjGvTYp3L9csbC4GxWm5LUYTqlIYd
+         S7Svrxq3vpN4r+Y5b5nIqRaaZoMj6vMUYSxu74TG7f6i9WOdnC394VN/Poyn5dKKzLHR
+         Oc5axi2CpiA5YaXFxJA2bZgmi2WXES+gwzIQ2Z+dW0QnnVIyPV53TIaIEBcRSwkIsFRp
+         +NAxqamQikyLfbClHyfh/6A//0PlaS+FBn49V+/1IhoTy4VXb28KURQ/Xty/To6hGpNd
+         wWqw==
+X-Gm-Message-State: AOAM533itYOTsROOyLiPnSdw/DvA+cN8KHjHlekI3CawRUjaJS1tdxyN
+        /4CPIB4zrViN9VmKkVgAsMZF0hnqNj2GgjagS4m87A==
+X-Google-Smtp-Source: ABdhPJweJY/IhHFwcUYvXY9MEhVrrzrSZgJDFZPiTnwI0l+K32/ZohkHIF4ruWRCWlpbp9BjsCSuH+U2BMYtiLDb+SE=
+X-Received: by 2002:a05:6214:20e8:: with SMTP id 8mr33453976qvk.13.1618337534807;
+ Tue, 13 Apr 2021 11:12:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
+References: <00000000000028104905bf0822ce@google.com>
+In-Reply-To: <00000000000028104905bf0822ce@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 13 Apr 2021 20:12:03 +0200
+Message-ID: <CACT4Y+ZN6ue+qH_5AJ9nFmOaAnAw7tv-TdXxHyJ_TirnChURcw@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in find_inlist_lock
+To:     syzbot <syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com>
+Cc:     bridge@lists.linux-foundation.org, coreteam@netfilter.org,
+        David Miller <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>, nikolay@nvidia.com,
+        Pablo Neira Ayuso <pablo@netfilter.org>, roopa@nvidia.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 07:20:12PM +0200, Dmitry Vyukov wrote:
-> > > Plus users are going to be seeing this as well.  According to the commit
-> > > message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
-> > > there's some users where this is not fixable (like v4l userptr of iomem
-> > > mappings)".  It sort of seems crazy to dump this giant splat and then
-> > > tell users to ignore it forever because it can't be fixed...  0_0
-> >
-> > I think the discussion conclusion was that this interface should not
-> > be used by userspace anymore, it is obsolete by some new interface?
-> >
-> > It should be protected by some kconfig and the kconfig should be
-> > turned off for syzkaller runs.
-> 
-> If this is not a kernel bug, then it must not use WARN_ON[_ONCE]. It
-> makes the kernel untestable for both automated systems and humans:
+On Sat, Apr 3, 2021 at 4:22 AM syzbot
+<syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114cdd4ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b221933e5f9ad5b0e2fd
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com
 
-It is a kernel security bug triggerable by userspace.
+#syz dup: WARNING: suspicious RCU usage in getname_flags
 
-> And if it's a kernel bug reachable from user-space, then I think this
-> code should be removed entirely, not just on all testing systems. Or
-> otherwise if we are not removing it for some reason, then it needs to
-> be fixed.
-
-Legacy embedded systems apparently require it.
-
-It should be blocked by a kconfig. Distributions and syzkaller runs
-should not enable that kconfig. What else can we do for insane uapi?
-
-Jason
+> =============================
+> WARNING: suspicious RCU usage
+> 5.12.0-rc5-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 0
+> no locks held by syz-executor.1/8425.
+>
+> stack backtrace:
+> CPU: 1 PID: 8425 Comm: syz-executor.1 Not tainted 5.12.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
+>  __mutex_lock_common kernel/locking/mutex.c:928 [inline]
+>  __mutex_lock+0xa9/0x1120 kernel/locking/mutex.c:1096
+>  find_inlist_lock_noload net/bridge/netfilter/ebtables.c:316 [inline]
+>  find_inlist_lock.constprop.0+0x26/0x220 net/bridge/netfilter/ebtables.c:330
+>  find_table_lock net/bridge/netfilter/ebtables.c:339 [inline]
+>  do_ebt_get_ctl+0x208/0x790 net/bridge/netfilter/ebtables.c:2329
+>  nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
+>  ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
+>  ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
+>  tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
+>  __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
+>  __do_sys_getsockopt net/socket.c:2176 [inline]
+>  __se_sys_getsockopt net/socket.c:2173 [inline]
+>  __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x467a6a
+> Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe660d82f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000037
+> RAX: ffffffffffffffda RBX: 00000000005401a0 RCX: 0000000000467a6a
+> RDX: 0000000000000081 RSI: 0000000000000000 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 00007ffe660d831c R09: 00007ffe660d83a0
+> R10: 00007ffe660d8320 R11: 0000000000000202 R12: 0000000000000003
+> R13: 00007ffe660d8320 R14: 0000000000540128 R15: 00007ffe660d831c
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000028104905bf0822ce%40google.com.
