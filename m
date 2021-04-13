@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7BA35E48B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5BD35E490
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347020AbhDMRFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:05:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34529 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239106AbhDMRFi (ORCPT
+        id S1347033AbhDMRGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347022AbhDMRGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:05:38 -0400
-Received: from 1-171-231-81.dynamic-ip.hinet.net ([1.171.231.81] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lWMTS-0005T2-Fo; Tue, 13 Apr 2021 17:05:15 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     pjones@redhat.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-fbdev@vger.kernel.org (open list:EFIFB FRAMEBUFFER DRIVER),
-        dri-devel@lists.freedesktop.org (open list:FRAMEBUFFER LAYER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] efifb: Check efifb_pci_dev before using it
-Date:   Wed, 14 Apr 2021 01:05:08 +0800
-Message-Id: <20210413170508.968148-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 13 Apr 2021 13:06:17 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83117C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:05:57 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id j12so799798ils.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iOm07S/wajD7g23zOB3ZEcsrN/M8kl3CFdTNNyqjaLA=;
+        b=HyYkrLJ3u6Wz37Oo9YC1D0fFB2KhiFMUZU5uB3UmYoOdQxQqv0vPEt6dfo+vMfTW3R
+         1O8aCL2MXdSTOmpZ1MmeTP4dt0RfI30T3rDDJ/ejijX8CyWzyf5fwPynKBTjft+lm2j1
+         mYxxJkxM6VNhgVpvCUMCdeS0pPYt6D3geYItk/YJzJVEsO+Vwx+s8x3Z9KNBJ/mEsCCv
+         t6goAVF4a7us7Lap8+znNerqbthFVX2xqsn9A34gchBX+7Occzk2LAyXBy7CPnPN+w6X
+         VnxWeLXaHf8btbijG1bP+rW07/in+AobZUhgInlANxAvg6ra/BggCtDWJlv6XRRUQzMa
+         Xnqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iOm07S/wajD7g23zOB3ZEcsrN/M8kl3CFdTNNyqjaLA=;
+        b=OGBrWpBj+Q7VkQs2FBM0ckqwiZ2t7r8r4SV1C+OQXkKn54N8Z3/6n93yWK6xp4Rz59
+         wmhnszAO8TNUl/G3MXIQztC+dJ/aeBxKkPmPExCd7f21KHSe4AepolnNVJ/Rn0lPFE/g
+         2KNU7L7cWE1YuLk92mGWesiG+SSeXlysMQ7bVjOk2BoWo5+jU18wLgmoCpPC1DdF2aG+
+         ecvJaC1Oisr8kq+OXfOxBMkAylFK1t9eSIAW9mZZO1zzzyuBITTnkglaYSGRWm665eCA
+         9BPSvBW2bzucJM7XDo7fvZVd1Ua3Om2hoimWqACSGXgaV7AyCSQKG6CM/I9MFiS0zpwF
+         Atjw==
+X-Gm-Message-State: AOAM533W5S229a25NMkMbjl8toQUPlvRn67ed6rRoy3Zw4+Bi/Cp/Gxe
+        TIWNF+HlHZ1yxlEM2gLMNKOH6A==
+X-Google-Smtp-Source: ABdhPJzNpvW6BAS7H2u4IBytcTcEKMhsFD6VIG2z0ep74UXsy5loutKOJhBNg1sbCXiIrAMeZlDYLA==
+X-Received: by 2002:a92:a301:: with SMTP id a1mr7852842ili.41.1618333556943;
+        Tue, 13 Apr 2021 10:05:56 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id 23sm7495842iog.45.2021.04.13.10.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 10:05:56 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/2] arm64: dts: qcom: enable SM8350
+Date:   Tue, 13 Apr 2021 12:05:51 -0500
+Message-Id: <20210413170553.1778792-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some platforms like Hyper-V and RPi4 with UEFI firmware, efifb is not
-a PCI device.
+Add IPA-related information to "sm8350.dtsi", and enable IPA for the
+SM8350 MTP platform.
 
-So make sure efifb_pci_dev is found before using it.
+					-Alex
 
-Fixes: a6c0fd3d5a8b ("efifb: Ensure graphics device for efifb stays at PCI D0")
-BugLink: https://bugs.launchpad.net/bugs/1922403
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/video/fbdev/efifb.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Alex Elder (2):
+  arm64: dts: qcom: sm8350: add IPA information
+  arm64: dts: qcom: sm8350-mtp: enable IPA
 
-diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
-index f58a545b3bf3..8ea8f079cde2 100644
---- a/drivers/video/fbdev/efifb.c
-+++ b/drivers/video/fbdev/efifb.c
-@@ -575,7 +575,8 @@ static int efifb_probe(struct platform_device *dev)
- 		goto err_fb_dealoc;
- 	}
- 	fb_info(info, "%s frame buffer device\n", info->fix.id);
--	pm_runtime_get_sync(&efifb_pci_dev->dev);
-+	if (efifb_pci_dev)
-+		pm_runtime_get_sync(&efifb_pci_dev->dev);
- 	return 0;
- 
- err_fb_dealoc:
-@@ -602,7 +603,8 @@ static int efifb_remove(struct platform_device *pdev)
- 	unregister_framebuffer(info);
- 	sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
- 	framebuffer_release(info);
--	pm_runtime_put(&efifb_pci_dev->dev);
-+	if (efifb_pci_dev)
-+		pm_runtime_put(&efifb_pci_dev->dev);
- 
- 	return 0;
- }
+ arch/arm64/boot/dts/qcom/sm8350-mtp.dts |  6 +++
+ arch/arm64/boot/dts/qcom/sm8350.dtsi    | 51 +++++++++++++++++++++++++
+ 2 files changed, 57 insertions(+)
+
 -- 
-2.30.2
+2.27.0
 
