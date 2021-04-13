@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C3D35D93E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6188F35D94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240471AbhDMHqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240167AbhDMHqx (ORCPT
+        id S240389AbhDMHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:49:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28658 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239157AbhDMHtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:46:53 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AF4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:46:33 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so10245588pji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xeJKYAaXmn1gi4yGWdYjqmCbNI+I1WlGtaPB2x7C79c=;
-        b=jpgqYuVbk67rwjnMe8Eac/kQQNyfzkwtu2z1Gxi/qJMKfhSbWqjmJXw9JNUoX+7P3W
-         VuaU5x4kKqpRQd+gnykk3S1J8jX5L6cP2UxuakobP0+t/SIk2WIiSJfNNGKbVapsFgnQ
-         81+lOmMwv0JKtAXZqZrQ23PChX1WSvcK2HNieh7svueWFkN4yjONReNqi8UxZgyoqGS1
-         4eTMjFb4fQbI/FCqVAWf2NI+Sb4zKGbb8p1FSvH94s5B1JQdJmdn5oePh6g7vtu56NYB
-         gWUEsuZ7ScR3Z+54cGbeNR0hZvikCArQkBwl198a0OXxXy09x/NKBLN0LJtBiDTagn9B
-         zT0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xeJKYAaXmn1gi4yGWdYjqmCbNI+I1WlGtaPB2x7C79c=;
-        b=q8wbHnFa2DyP1irHbDRJkCrsweufu7uBqiusYRq/eBFL6hv4rP5HcXiVHT4O4MuoVd
-         kY0g/wZpmsReUpjTo2N7SmszSVERhQ+ZhGFfKb0T3nbiUwvq5SoFczs5gJxjApK2/sQ2
-         9gAeDjqCsOg0QHhPp7YZhqrqwrt78tXaHh5jXDQ5cXAruWXt2wv9LoreORh91+JDr/zi
-         3x7447HzztRX6F5ALMqJIvOEIgLHdTc4igBeFkAqxFiQ3RUKHNHcTGYU0fNC/kmd2qY0
-         sXQa4ofjZxmVfj9jjDl9TZjLOtGq4d1lXBi+ApxUWOm5HBZZeIe+dZMMaFQjIiGz59TG
-         j+aw==
-X-Gm-Message-State: AOAM531WVUv+jv2JZNyp+uztNOBkBdoszXfX/jKTG1w04BuQbUqLr5LK
-        UeGQFmLiPM19A4yzrLEHFzUPSg==
-X-Google-Smtp-Source: ABdhPJzeB8vHQ4uSgVXQVU13sSOcoDuXcoDMe5awRSIP1E/sIWZ6QRg9czacZdLMLRsGjVF4ZsvEFA==
-X-Received: by 2002:a17:902:da91:b029:e5:e7cf:d737 with SMTP id j17-20020a170902da91b02900e5e7cfd737mr30231555plx.24.1618299993274;
-        Tue, 13 Apr 2021 00:46:33 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id c12sm793373pfc.69.2021.04.13.00.46.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Apr 2021 00:46:32 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 15:46:26 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH 2/2] brcmfmac: support parse country code map from DT
-Message-ID: <20210413074625.GE15093@dragon>
-References: <20210408113022.18180-1-shawn.guo@linaro.org>
- <20210408113022.18180-3-shawn.guo@linaro.org>
- <82182ad8-c728-d313-047c-79478c9ee85f@broadcom.com>
+        Tue, 13 Apr 2021 03:49:39 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D7Y0gp060432;
+        Tue, 13 Apr 2021 03:48:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pRem/9ovijFsdIKVVvdI5Qpu47qJlfNIL1Gp5VLSCTQ=;
+ b=VFYz8VIO3GJlbff+3+cecWGt54nQEEeLXt/y5o2z0n4U4SnQpjOLXpCn2FhDhB3x42R0
+ WonrptR15GZOrQvk+m5g9QB1k8lTU8kNxP3Nv89gJWcset6P/UwyG+XbcubQap5XbIE6
+ tYljEMQNf2wzl/XPqBwoQlphDu+q5jNjYoxxzkYcn+DNWXHTtnBvLHtGRKU3CyC1tVnP
+ nkl3ag0Ty65jL3ILt8Sgfgfv+PDCNZAYZMutogWggDkCsTt9qG5Q7US/pbfEA51iptaK
+ PfiPXXuZPDQ5doGE+jD3klZcRKB0+HOjhqn340ZYiI3ZA3RcyIgyKB6FajsEXUvbfo2O BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37usjc3skc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 03:48:40 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13D7YP91061477;
+        Tue, 13 Apr 2021 03:48:40 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37usjc3shs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 03:48:39 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D7mFVv009766;
+        Tue, 13 Apr 2021 07:48:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 37u3n89acu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 07:48:37 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D7mZPb39059960
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 07:48:35 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0665C4C059;
+        Tue, 13 Apr 2021 07:48:35 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E6A5C4C04A;
+        Tue, 13 Apr 2021 07:48:33 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 07:48:33 +0000 (GMT)
+Subject: Re: [PATCH v2 1/3] context_tracking: Split guest_enter/exit_irqoff
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>
+References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
+ <1618298169-3831-2-git-send-email-wanpengli@tencent.com>
+ <81112cec-72fa-dd8c-21c8-b24f51021f43@de.ibm.com>
+ <CANRm+CwNxcKPKdV4Bxr-5sWJtg_SKZEN5atGJKRyLcVnWVSKSg@mail.gmail.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <4551632e-5584-29f6-68dd-d85fa968858b@de.ibm.com>
+Date:   Tue, 13 Apr 2021 09:48:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82182ad8-c728-d313-047c-79478c9ee85f@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CANRm+CwNxcKPKdV4Bxr-5sWJtg_SKZEN5atGJKRyLcVnWVSKSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _b_6jJ8GaLr3fNFIFcmuEqxr6TWgkCc3
+X-Proofpoint-GUID: nFa8FT1HIHdvd3pFJzq44Q_3GLcP7t4-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 bulkscore=0 adultscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:22:47AM +0200, Arend van Spriel wrote:
-> On 08-04-2021 13:30, Shawn Guo wrote:
-> > With any regulatory domain requests coming from either user space or
-> > 802.11 IE (Information Element), the country is coded in ISO3166
-> > standard.  It needs to be translated to firmware country code and
-> > revision with the mapping info in settings->country_codes table.
-> > Support populate country_codes table by parsing the mapping from DT.
-> 
-> one more thing though...
-> 
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> >   .../wireless/broadcom/brcm80211/brcmfmac/of.c | 53 +++++++++++++++++++
-> >   1 file changed, 53 insertions(+)
-> > 
-> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> > index a7554265f95f..ea5c7f434c2c 100644
-> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> > @@ -12,12 +12,61 @@
-> >   #include "common.h"
-> >   #include "of.h"
-> > +static int brcmf_of_get_country_codes(struct device *dev,
-> > +				      struct brcmf_mp_device *settings)
-> > +{
-> 
-> [...]
-> 
-> > +		/* String format e.g. US-Q2-86 */
-> > +		strncpy(cce->iso3166, map, 2);
-> > +		strncpy(cce->cc, map + 3, 2);
-> > +
-> > +		ret = kstrtos32(map + 6, 10, &cce->rev);
-> > +		if (ret < 0)
-> > +			dev_warn(dev, "failed to read rev of map %s: %d",
-> > +				 cce->iso3166, ret);
-> 
-> Do we need a stronger validation of the string format, eg. use sscanf or
-> strstr. Would also be nice to have brcmf_dbg(INFO, ...) here to print the
-> entry.
 
-Sounds good to me for both comments.
 
-Shawn
+On 13.04.21 09:38, Wanpeng Li wrote:
+> On Tue, 13 Apr 2021 at 15:35, Christian Borntraeger
+> <borntraeger@de.ibm.com> wrote:
+>>
+>>
+>>
+>> On 13.04.21 09:16, Wanpeng Li wrote:
+>> [...]
+>>
+>>> @@ -145,6 +155,13 @@ static __always_inline void guest_exit_irqoff(void)
+>>>    }
+>>>
+>>>    #else
+THis is the else part
+
+
+>>> +static __always_inline void context_guest_enter_irqoff(void)
+>>> +{
+>>> +     instrumentation_begin();
+
+2nd on
+>>> +     rcu_virt_note_context_switch(smp_processor_id());
+>>> +     instrumentation_end();
+2nd off
+>>> +}
+>>> +
+>>>    static __always_inline void guest_enter_irqoff(void)
+>>>    {
+>>>        /*
+>>> @@ -155,10 +172,13 @@ static __always_inline void guest_enter_irqoff(void)
+>>>        instrumentation_begin();
+
+first on
+>>>        vtime_account_kernel(current);
+>>>        current->flags |= PF_VCPU;
+>>> -     rcu_virt_note_context_switch(smp_processor_id());
+>>>        instrumentation_end();
+
+first off
+>>> +
+>>> +     context_guest_enter_irqoff();
+here we call the 2nd on and off.
+>>
+>> So we now do instrumentation_begin 2 times?
+> 
+> Similar to context_guest_enter_irqoff() ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN.
+
+For the
+ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN part
+context_guest_enter_irqoff()
+does not have instrumentation_begin/end.
+
+Or did I miss anything.
