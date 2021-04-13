@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B949435D853
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF3435D854
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345093AbhDMG5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
+        id S1345104AbhDMG5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237122AbhDMG5G (ORCPT
+        with ESMTP id S237169AbhDMG5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:57:06 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70228C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:56:47 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d1so15228352ybj.15
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:56:47 -0700 (PDT)
+        Tue, 13 Apr 2021 02:57:08 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AF4C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:56:49 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id j24so9889811qkg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=NPo7MPPcRQhwQwi0VkGJEhiUUoPZKpCjODwiJd36ReE=;
-        b=baGnCiioZTP9ADs7IVEB/mQcb3cvKmCKgg9drauUZQ+Tp4ZFhqV8SVk54iVXXC/g4a
-         cpq3VBdcxXnUKSenbwAnH9Jp0vcf5HUqcvm0/PItCUte5xo66HxROV5Obn4PGte89xi9
-         p+R4eomS1+PIS2MLxgShOMpnFvyxeBgpYJvBAHU3FKJ3dtUuQ8TMqtRRYgDLRETQtThQ
-         kFEKuP+qBTfl6NS1fHTb9BFTIgP5Z/N1DOBc07huBgFItja27dgr56dPRNvm09QqhgN8
-         KNYrM6tJs6Md4vWQFOufoHl576biAVAYjl1tmh0+nRa81An0lfEfinpclElVWZVJap6f
-         3K6Q==
+        bh=kZ40TZQJmz2zt6lYwCpeAnxVbOWM8KwFdCtsfH6CbQ4=;
+        b=Lo7XMOOHbyzBoRlK8b2GE15qCT4QqS9ijyXSl1ryGVj5Alkuv2mcfhY4vR1gU/ak5i
+         HPCaNU4SNyd/togq6z9pJeIcKdhVNoakHlBzalPajFLmRC9Qbai2K4MiOiC3w/4zVP3/
+         NtLrS3pnu6kRnE/1OF1NCyaMABOTJ1Ahmg/dZPqItxMI54CzXgYo6GdLYksK4AzjBKx6
+         3OPkxOXxP71Nm7Tjl273X7BKZEBEv2cYYpFtO65/dAM6wU+OCRnD0EkkgtX7e7+gTBso
+         oX16tOXHwiiZ6sLaMJLirvmeW9Lp7bXGjP63ZC1IEHuQFyVaxg7TzhpG+PXULs33Mwht
+         64KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=NPo7MPPcRQhwQwi0VkGJEhiUUoPZKpCjODwiJd36ReE=;
-        b=VQUPKq30uKeUAF6Ejq35xfekJF7nOdr7VngI/76uX8lOU1pIKoO4mC5aTAYeOIOrr8
-         d9hpCUWEcuxEWFU49K2HTzz6r9TRtei0Z3TR3n5CdNJqIigsBiTmuLGfOPgRfmTdf4p1
-         Gy4MP3Ln+GHBFflwKZ+f5OPcq+R/slU8HpAWd4KR6PshMeb/Uf/RnHWhIQ3qI8S3QLXv
-         K66JL1wL5gT1XsIvdtHxoLQ/CLC3QqmB2rSMp/tB7Orqc6DK48r53Kt037j1ALstA0O7
-         qY6CPZRsbCum+NhqDvT8/KN1dsIkOSEmKUt0TfQc8hUEIm0I2juU0HYZsBV7D9xioz8r
-         p45w==
-X-Gm-Message-State: AOAM533p7SYDUFBf9Ifm7vaTwGtjEO4CrlaCuZ4KoZ7jp3M6fMJFAFBH
-        4BBDhvIWmrjLJRxSeBVIWDYQXg1lPro=
-X-Google-Smtp-Source: ABdhPJyRALAhdJY/7MdeRvaPV8dMvbenEwa1GhqHOoi94XTiY8IwvBzrDPMpa5ltVLi8kkX49f0gbWJD/40=
+        bh=kZ40TZQJmz2zt6lYwCpeAnxVbOWM8KwFdCtsfH6CbQ4=;
+        b=m5HbExYCzmc21c5OLCzzHa8Xe8EdXvMRiTtiR09Dq8ChzNpcxJHIjjhpQyFMcUJWLj
+         +EmmgKiIE+uS4OHdEXmzNSv8MNhhEq7kUHf2SgjNDKlYLuCdTyrGG1MSWfK/msnX8s0I
+         ed03u8uPvY4i5nrXUPDSK0dSOilJdsKsbJ2GZF+UbwvHZb/bl7np8JUMFzrB2dYfV3GD
+         rJFKMpvlKiHjGv/usQSGWtLVDxlNl2ZH02SQETt2ZwtrhNj3g1Je8bALwt2ZVdzkZCGJ
+         ieq/RzKjaSqH69A9hehJuecmBRowdH3vtX4JtNR1N62OtoE92KN5JhRy7UIVzomglFHL
+         9n1A==
+X-Gm-Message-State: AOAM533DVaJizLoTWtX7Zoe1e9yCLp7H3odxXAoCcHrMJ9IzNh+lDvEB
+        F0NqK2LlktrIoIPLMrk68BAVCsE0tyc=
+X-Google-Smtp-Source: ABdhPJx0OFD8QshALbNm7ufdWhFpw5ctF+y/1hKbFM42Olw0k5XnLx6uQVu5On95xo6CAByxMQgtMhVbOBY=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:d02d:cccc:9ebe:9fe9])
- (user=yuzhao job=sendgmr) by 2002:a25:8b86:: with SMTP id j6mr39368340ybl.470.1618297006589;
- Mon, 12 Apr 2021 23:56:46 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 00:56:21 -0600
+ (user=yuzhao job=sendgmr) by 2002:a0c:fa12:: with SMTP id q18mr9972206qvn.2.1618297008125;
+ Mon, 12 Apr 2021 23:56:48 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 00:56:22 -0600
 In-Reply-To: <20210413065633.2782273-1-yuzhao@google.com>
-Message-Id: <20210413065633.2782273-5-yuzhao@google.com>
+Message-Id: <20210413065633.2782273-6-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210413065633.2782273-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2 04/16] include/linux/cgroup.h: export cgroup_mutex
+Subject: [PATCH v2 05/16] mm/swap.c: export activate_page()
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -84,53 +84,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cgroup_mutex is needed to synchronize with memcg creations.
+activate_page() is needed to activate pages that are already on lru or
+queued in lru_pvecs.lru_add. The exported function is a merger between
+the existing activate_page() and __lru_cache_activate_page().
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/cgroup.h | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ include/linux/swap.h |  1 +
+ mm/swap.c            | 28 +++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..bd5744360cfa 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -432,6 +432,18 @@ static inline void cgroup_put(struct cgroup *cgrp)
- 	css_put(&cgrp->self);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 4cc6ec3bf0ab..de2bbbf181ba 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -344,6 +344,7 @@ extern void lru_add_drain_cpu(int cpu);
+ extern void lru_add_drain_cpu_zone(struct zone *zone);
+ extern void lru_add_drain_all(void);
+ extern void rotate_reclaimable_page(struct page *page);
++extern void activate_page(struct page *page);
+ extern void deactivate_file_page(struct page *page);
+ extern void deactivate_page(struct page *page);
+ extern void mark_page_lazyfree(struct page *page);
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..f20ed56ebbbf 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -334,7 +334,7 @@ static bool need_activate_page_drain(int cpu)
+ 	return pagevec_count(&per_cpu(lru_pvecs.activate_page, cpu)) != 0;
  }
  
-+extern struct mutex cgroup_mutex;
+-static void activate_page(struct page *page)
++static void activate_page_on_lru(struct page *page)
+ {
+ 	page = compound_head(page);
+ 	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
+@@ -354,7 +354,7 @@ static inline void activate_page_drain(int cpu)
+ {
+ }
+ 
+-static void activate_page(struct page *page)
++static void activate_page_on_lru(struct page *page)
+ {
+ 	struct lruvec *lruvec;
+ 
+@@ -368,11 +368,22 @@ static void activate_page(struct page *page)
+ }
+ #endif
+ 
+-static void __lru_cache_activate_page(struct page *page)
++/*
++ * If the page is on the LRU, queue it for activation via
++ * lru_pvecs.activate_page. Otherwise, assume the page is on a
++ * pagevec, mark it active and it'll be moved to the active
++ * LRU on the next drain.
++ */
++void activate_page(struct page *page)
+ {
+ 	struct pagevec *pvec;
+ 	int i;
+ 
++	if (PageLRU(page)) {
++		activate_page_on_lru(page);
++		return;
++	}
 +
-+static inline void cgroup_lock(void)
-+{
-+	mutex_lock(&cgroup_mutex);
-+}
-+
-+static inline void cgroup_unlock(void)
-+{
-+	mutex_unlock(&cgroup_mutex);
-+}
-+
- /**
-  * task_css_set_check - obtain a task's css_set with extra access conditions
-  * @task: the task to obtain css_set for
-@@ -446,7 +458,6 @@ static inline void cgroup_put(struct cgroup *cgrp)
-  * as locks used during the cgroup_subsys::attach() methods.
-  */
- #ifdef CONFIG_PROVE_RCU
--extern struct mutex cgroup_mutex;
- extern spinlock_t css_set_lock;
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
-@@ -704,6 +715,8 @@ struct cgroup;
- static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
- static inline void css_get(struct cgroup_subsys_state *css) {}
- static inline void css_put(struct cgroup_subsys_state *css) {}
-+static inline void cgroup_lock(void) {}
-+static inline void cgroup_unlock(void) {}
- static inline int cgroup_attach_task_all(struct task_struct *from,
- 					 struct task_struct *t) { return 0; }
- static inline int cgroupstats_build(struct cgroupstats *stats,
+ 	local_lock(&lru_pvecs.lock);
+ 	pvec = this_cpu_ptr(&lru_pvecs.lru_add);
+ 
+@@ -421,16 +432,7 @@ void mark_page_accessed(struct page *page)
+ 		 * evictable page accessed has no effect.
+ 		 */
+ 	} else if (!PageActive(page)) {
+-		/*
+-		 * If the page is on the LRU, queue it for activation via
+-		 * lru_pvecs.activate_page. Otherwise, assume the page is on a
+-		 * pagevec, mark it active and it'll be moved to the active
+-		 * LRU on the next drain.
+-		 */
+-		if (PageLRU(page))
+-			activate_page(page);
+-		else
+-			__lru_cache_activate_page(page);
++		activate_page(page);
+ 		ClearPageReferenced(page);
+ 		workingset_activation(page);
+ 	}
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
