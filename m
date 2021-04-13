@@ -2,165 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F82335E476
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5AF35E478
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346971AbhDMQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:58:32 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:43700 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345673AbhDMQ6a (ORCPT
+        id S1346980AbhDMQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:58:42 -0400
+Received: from mail-yb1-f182.google.com ([209.85.219.182]:43545 "EHLO
+        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346974AbhDMQ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:58:30 -0400
-Received: by mail-lf1-f45.google.com with SMTP id r8so28335362lfp.10;
-        Tue, 13 Apr 2021 09:58:09 -0700 (PDT)
+        Tue, 13 Apr 2021 12:58:40 -0400
+Received: by mail-yb1-f182.google.com with SMTP id o10so18870952ybb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:58:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=v4TjHCXfhg5d3LryO0dAvVeknac0k2NZ/3RM2aA8938=;
-        b=f3UEPkvUinbjyZ+3ysqA1LgBZJfqb7CMeN8m/FHDsqK4+L/XHEHaZ9lLz2oK+ONlCS
-         HihjonPwPXsmjPs9sF1B7GXmgLb7H9+ZgiKLVKpDA4Jq0aZUu0BG24wBn0k0r9FggK65
-         13U7tx8DvcEQ9THUnUSo4RYy61bQiiVcpVlvL6SRIm+RRvlgQWacL9BfITPamvnGUTM3
-         KKMyncRsIzgx+LjrKGLZxecHzLxolt/Xovfj4Ky29b0AhKRYZc4Oqm6Yq1ze3CXorMS8
-         DoE6zWiCdVznpYeQQj+wWdwDbk4GlyEjThpGgIOWTXhbLYSvHAhVEI4pnUl6Ro0EbIAw
-         s9Kw==
+        bh=OZIb1ppB5Vw0K0ah9GL/sCPeLYwov/sRo9mNSJgD/ts=;
+        b=r2rebxpMV26LN+easkWpoOosTIX01D42v9Qy88wQexpW7daWyeeyE7RVOn3FCGpjPc
+         IxfwEQdGCQ1xYo9hsBVXCk//NafP1z9EUTJUOzePILV7q5O1U1qd/oVriCCX3qkbCgUH
+         Z3T7JWcXdQUOxaYxQKjfbUDAEiTt4zc5UfbShq1dZZVdkbcdYWG6IZVZiCZka2BlgAuc
+         cUEfGtODzJMuDzYUa2LblWkb4g84TOAGMmStIuI5EsRBX9ETYQ528gmq5ywuPxd7kBYc
+         NyklAgCb5ii1mnG6YySdYNloCGk5eRGP+VC+aC2qarfbeVCNlNqXiTKofUfrbMGTZISt
+         c4JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v4TjHCXfhg5d3LryO0dAvVeknac0k2NZ/3RM2aA8938=;
-        b=W3mqWip97jAffsfMkMgBGOJ4WfcgvqQTWSu/eRVLAM6JYkOU10aaKxVlrhyK8eyLE3
-         VqNjyFLegZC1mfu7e799II92zUib1qGuobTPhtGZbPVc8HP18o48t2RuC+x3NzlVHLPA
-         bXXFBSdq2SqW1SyPE//PE7jNafqCGBVDh761qMNgNsBFpNB+LV61S0lfwzs4yEzZQ8jP
-         4atWZ53cR60xFj4sstvrebJF+sgXzy1Va+gaAmG0F8v1Qh3MPQZB7R31p/DUQZ4/8Sgf
-         k1atsqs0ktKTgl5z0r4e3R7dax3gJy83xK1PmAVW4i+0P1tA/v3ub38wdHQdJfmvYBKa
-         tSLA==
-X-Gm-Message-State: AOAM530PapGckSdxd16NJeq84Z8Um2CQ+RqMQw5w4U2Xkf8AjJc88iW9
-        GG9XTnfztizi8k5MICvza3e5BG0R3s1HgikTigk=
-X-Google-Smtp-Source: ABdhPJz4ZYKeSz0KzfjB/w6RSk76BvVX4LTIVHLs0Vqhf8mOKgbueanMN6S743dv4qvskZUZH3vW/UCo3BRM1J/3xfM=
-X-Received: by 2002:a19:c1d4:: with SMTP id r203mr23420280lff.182.1618333028915;
- Tue, 13 Apr 2021 09:57:08 -0700 (PDT)
+        bh=OZIb1ppB5Vw0K0ah9GL/sCPeLYwov/sRo9mNSJgD/ts=;
+        b=feyKCC+HaV35yLbXJPpsYSajLlmK8ErYcbaSp6/O+kgqwCSUtnVUkDaT8zpuYiXPJP
+         65bvNCX8XpZSaJ4OkKXsNsEMofjjLOs3BFqNovTw4C9PAATwYMIz+ipGvK8PbLDiK8eD
+         d+UKxJcKvnVmKS1fdTNLyGsp8CtjKHtsBwLpg89ySFThHnwqz5+p0MkvhgKm4GCAtZrY
+         KWmfqWutfem0mh4XMhTanjnnq2eJy7DCWTb90Ln5TqvEyVNMs7nCcsayH+B3KRYQ1tl2
+         MN8Rwtn/TVLi40RUiO3VJkqG3R0ZaSSw0h4UbHifNbxbRCET3FezD5u8eHzN125p6IJ9
+         EuOA==
+X-Gm-Message-State: AOAM530kHsfEIrDkPch5Quj59t//sIPzrFpgddYprAy1wmTBErRsXzWw
+        7m8R01N0+/mk0HiV8RrtKpwCiT02VkB7o8cOHIk+JQ==
+X-Google-Smtp-Source: ABdhPJxCwgXkpZyBDTR8IDvkKx5iCJFF4GR2NQHQEdHWnx857r7TljcuILvxs+jevktZxaraPOii+jLdaJhgG0lvG5M=
+X-Received: by 2002:a25:7650:: with SMTP id r77mr18961159ybc.446.1618333040102;
+ Tue, 13 Apr 2021 09:57:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com>
- <CAADnVQJmsipci_ou6OOFGC6O9z935jFw4+pe7YQvvh2=eCoarQ@mail.gmail.com>
- <BN7PR13MB24996213858443821CA7E400FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
- <CAADnVQJJ03L5H11P0NYNC9kYy=YkQdWrbpytB2Jps8AuxgamFA@mail.gmail.com>
- <BN7PR13MB2499152182E86AD94A3B0E22FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
- <CAADnVQKjVDLBCLMzXoAQhJ5a+rZ1EKqc3dyYqpeG9M2KzGREMA@mail.gmail.com> <BN7PR13MB2499EF2A7B6F043FE4E62D51FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
-In-Reply-To: <BN7PR13MB2499EF2A7B6F043FE4E62D51FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 13 Apr 2021 09:56:57 -0700
-Message-ID: <CAADnVQJ1+EmGD3CAc4N8Jq7ACYZvbzkxZrhz8hVf4dJHGamoXw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: use !E instead of comparing with NULL
-To:     "Bird, Tim" <Tim.Bird@sony.com>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+In-Reply-To: <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 18:57:08 +0200
+Message-ID: <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 9:32 AM <Tim.Bird@sony.com> wrote:
+On Tue, Apr 13, 2021 at 6:54 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> > -----Original Message-----
-> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> >
-> > On Tue, Apr 13, 2021 at 9:19 AM <Tim.Bird@sony.com> wrote:
-> > >
-> > > > -----Original Message-----
-> > > > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > > >
-> > > > On Tue, Apr 13, 2021 at 9:10 AM <Tim.Bird@sony.com> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > > -----Original Message-----
-> > > > > > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > > > > >
-> > > > > > On Tue, Apr 13, 2021 at 2:52 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
-> > > > > > >
-> > > > > > > Fix the following coccicheck warnings:
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:189:7-11: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:361:7-11: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:386:14-18: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:402:14-18: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:433:7-11: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:534:14-18: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:625:7-11: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:767:7-11: WARNING
-> > > > > > > comparing pointer to 0, suggest !E
-> > > > > > >
-> > > > > > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > > > > > > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> > > > > > > ---
-> > > > > > >  tools/testing/selftests/bpf/progs/profiler.inc.h | 22 +++++++++++-----------
-> > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > > > > > index 4896fdf8..a33066c 100644
-> > > > > > > --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > > > > > +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > > > > > @@ -189,7 +189,7 @@ static INLINE void populate_ancestors(struct task_struct* task,
-> > > > > > >  #endif
-> > > > > > >         for (num_ancestors = 0; num_ancestors < MAX_ANCESTORS; num_ancestors++) {
-> > > > > > >                 parent = BPF_CORE_READ(parent, real_parent);
-> > > > > > > -               if (parent == NULL)
-> > > > > > > +               if (!parent)
-> > > > > >
-> > > > > > Sorry, but I'd like the progs to stay as close as possible to the way
-> > > > > > they were written.
-> > > > > Why?
-> > > > >
-> > > > > > They might not adhere to kernel coding style in some cases.
-> > > > > > The code could be grossly inefficient and even buggy.
-> > > > > There would have to be a really good reason to accept
-> > > > > grossly inefficient and even buggy code into the kernel.
-> > > > >
-> > > > > Can you please explain what that reason is?
-> > > >
-> > > > It's not the kernel. It's a test of bpf program.
-> > > That doesn't answer the question of why you don't want any changes.
-> > >
-> > > Why would we not use kernel coding style guidelines and quality thresholds for
-> > > testing code?  This *is* going into the kernel source tree, where it will be
-> > > maintained and used by other developers.
-> >
-> > because the way the C code is written makes llvm generate a particular
-> > code pattern that may not be seen otherwise.
-> > Like removing 'if' because it's useless to humans, but not to the compiler
-> > will change generated code which may or may not trigger the behavior
-> > the prog intends to cover.
-> > In particular this profiler.inc.h test is compiled three different ways to
-> > maximize code generation differences.
-> > It may not be checking error paths in some cases which can be considered
-> > a bug, but that's the intended behavior of the C code as it was written.
-> > So it has nothing to do with "quality of kernel code".
-> > and it should not be used by developers. It's neither sample nor example.
+> ----- On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
 >
-> Ok - in this case it looks like a program, but it is essentially test data (for testing
-> the compiler).  Thanks for the explanation.
+> > From: Eric Dumazet <edumazet@google.com>
+> >
+> > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+> > update includes") added regressions for our servers.
+> >
+> > Using copy_from_user() and clear_user() for 64bit values
+> > is suboptimal.
+> >
+> > We can use faster put_user() and get_user().
+> >
+> > 32bit arches can be changed to use the ptr32 field,
+> > since the padding field must always be zero.
+> >
+> > v2: added ideas from Peter and Mathieu about making this
+> >    generic, since my initial patch was only dealing with
+> >    64bit arches.
+>
+> Ah, now I remember the reason why reading and clearing the entire 64-bit
+> is important: it's because we don't want to allow user-space processes to
+> use this change in behavior to figure out whether they are running on a
+> 32-bit or in a 32-bit compat mode on a 64-bit kernel.
+>
+> So although I'm fine with making 64-bit kernels faster, we'll want to keep
+> updating the entire 64-bit ptr field on 32-bit kernels as well.
+>
+> Thanks,
+>
 
-yes. That's a good way of saying it.
-Of course not all tests are like this.
-Majority of bpf progs in selftests/bpf/progs/ are carefully written,
-short and designed
-as a unit test. While few are "test data" for llvm.
+So... back to V1 then ?
