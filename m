@@ -2,317 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1F635D4D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4652735D4D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240641AbhDMB3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:29:33 -0400
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:64147 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhDMB3c (ORCPT
+        id S240832AbhDMBat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:30:49 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:54353 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237080AbhDMBar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:29:32 -0400
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id 9EE011A347B;
-        Tue, 13 Apr 2021 09:28:38 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ACYAWwCDDlme9*z6WKVXCKra.3.1618277318643.Hmail.bernard@vivo.com>
-To:     "Wu X.C." <bobwxc@email.cn>
-Cc:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, opensource.kernel@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCB2Ml0gRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vZGV2LXRvb2xzLw==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.181
-In-Reply-To: <20210402035826.GA16473@mipc>
+        Mon, 12 Apr 2021 21:30:47 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 13D1Js6L080544;
+        Tue, 13 Apr 2021 09:19:54 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr
+ 2021 09:30:18 +0800
+Date:   Tue, 13 Apr 2021 09:30:10 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio
+ and power-switch-gpio
+Message-ID: <20210413013010.GA353@aspeedtech.com>
+References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
+ <20210408015218.20560-2-steven_lee@aspeedtech.com>
+ <20210409184118.GA3934798@robh.at.kernel.org>
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [36.152.145.181) ] by ajax-webmail ( [127.0.0.1] ) ; Tue, 13 Apr 2021 09:28:38 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Tue, 13 Apr 2021 09:28:38 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQxgeSlZMT00dS0MZGUJDSE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JTk5KTE1IT0xKN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6OCI6LAw4Pz8XFh5CUQFNLDAtIzgwCRpVSFVKTUpDSUxMSEpCS0JKVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSllXWQgBWUFJSEpCQjcG
-X-HM-Tid: 0a78c8d8400093b4kuws9ee011a347b
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210409184118.GA3934798@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 13D1Js6L080544
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV3UgWC5DIDoKClRoYW5rcyBmb3IgeW91ciByZXZpZXfvvIEKSSB3aWxsIGZpeCB0aGlzIGFu
-ZCByZXN1Ym1pdCB0aGlzIHBhdGNoLgoKQlIvL0Jlcm5hcmQKCkZyb206ICJXdSBYLkMuIiA8Ym9i
-d3hjQGVtYWlsLmNuPgpEYXRlOiAyMDIxLTA0LTAyIDExOjU4OjI3ClRvOiAgQmVybmFyZCBaaGFv
-IDxiZXJuYXJkQHZpdm8uY29tPgpDYzogIEhhcnJ5IFdlaSA8aGFycnl4aXlvdUBnbWFpbC5jb20+
-LEFsZXggU2hpIDxhbGV4LnNoaUBsaW51eC5hbGliYWJhLmNvbT4sQWxleCBTaGkgPGFsZXhzQGtl
-cm5lbC5vcmc+LEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3bi5uZXQ+LE5hdGhhbiBDaGFuY2Vs
-bG9yIDxuYXRoYW5Aa2VybmVsLm9yZz4sTmljayBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJzQGdv
-b2dsZS5jb20+LGxpbnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZyxjbGFuZy1idWlsdC1saW51eEBnb29nbGVncm91cHMuY29tLG9wZW5zb3VyY2Uua2Vy
-bmVsQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUEFUQ0ggdjJdIERvY3VtZW50YXRpb24vdHJhbnNs
-YXRpb25zL3poX0NOL2Rldi10b29scy8+SGkgQmVybmFyZCwKPgo+T24gVGh1LCBBcHIgMDEsIDIw
-MjEgYXQgMDY6Mjc6MTZBTSAtMDcwMCwgQmVybmFyZCBaaGFvIHdyb3RlOgo+Cj5XaHkgdGhlIGNo
-YXJzZXQgaW4geW91ciBlbWFpbCBoZWFkZXIgaXMgJ3knID8KPiAgICAiQ29udGVudC1UeXBlOiB0
-ZXh0L3BsYWluOyBjaGFyc2V0PXkiCj48aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtZG9j
-LzIwMjEwNDAxMTMyNzMyLjcwNjEyLTEtYmVybmFyZEB2aXZvLmNvbS9yYXc+Cj4KPj4gQWRkIHRy
-YW5zbGF0aW9ucyB0byBkZXYtdG9vbHMgZ2Nvdgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogQmVybmFy
-ZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgo+PiBSZXZpZXdlZC1ieTogV3UgWC5DIDxib2J3eGNA
-ZW1haWwuY24+Cj4gIF5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl4KPiAgVGhp
-cyByZXZpZXdlZC1ieSB0YWcgaXMgaW52YWxpZC4KPgo+UGxlYXNlIGRvIG5vdCBwaWNrIHJldmll
-dy1ieSB0YWcgYmVmb3JlIG9uZSBnaXZlIGl0Lgo+Cj4+IC0tLQo+PiBDaGFuZ2VzIHNpbmNlIFYx
-Ogo+PiAqIGFkZCBpbmRleC5yc3QgaW4gZGV2LXRvb2xzIGFuZCBsaW5rIHRvIHRvIHpoX0NOL2lu
-ZGV4LnJzdAo+PiAqIGZpeCBzb21lIGluYWNjdXJhdGUgdHJhbnNsYXRpb24KPj4gCj4+IExpbmsg
-Zm9yIFYxOgo+PiAqaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzE0MDU3
-NDAvCj4+IC0tLQo+PiAgLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvZ2Nvdi5yc3Qg
-ICAgIHwgMjc5ICsrKysrKysrKysrKysrKysrKwo+PiAgLi4uL3RyYW5zbGF0aW9ucy96aF9DTi9k
-ZXYtdG9vbHMvaW5kZXgucnN0ICAgIHwgIDM5ICsrKwo+PiAgRG9jdW1lbnRhdGlvbi90cmFuc2xh
-dGlvbnMvemhfQ04vaW5kZXgucnN0ICAgIHwgICAxICsKPj4gIDMgZmlsZXMgY2hhbmdlZCwgMzE5
-IGluc2VydGlvbnMoKykKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL3RyYW5z
-bGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvZ2Nvdi5yc3QKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBE
-b2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvaW5kZXgucnN0Cj4+IAo+
-PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vZGV2LXRvb2xz
-L2djb3YucnN0IGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vZGV2LXRvb2xzL2dj
-b3YucnN0Cj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uZThm
-ZmI5OWI1NjZkCj4KPldoeSByZXBsYWNlZCBhbGwgJ++8jCcgJ+OAgicgd2l0aCAnLCcgJy4nIGlu
-IHpoX0NOL2Rldi10b29scy9nY292LnJzdCDvvJ8KPkFuZCBhbHNvIHRoZSBjb2x1bW5zIGluIHRo
-ZSB2MiBhcmUgbXVjaCBzaG9ydGVyIHRoYW4gdjEuCj5QbGVhc2UgcmVjb3ZlciB0aGUgYWJvdmUg
-dHdvIHBvaW50cy4KPgo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vdHJh
-bnNsYXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdAo+PiBAQCAtMCwwICsxLDI3OSBAQAo+
-PiArLi4gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPj4gKwo+PiArLi4gaW5jbHVk
-ZTo6IC4uL2Rpc2NsYWltZXItemhfQ04ucnN0Cj4+ICsKPj4gKzpPcmlnaW5hbDogOnJlZjpgRG9j
-dW1lbnRhdGlvbi9kZXYtdG9vbHMvZ2Nvdi5yc3QgPGRldi10b29sc19nY292PmAKPgo+dGhlIG9y
-aWdpbmFsIHRleHQgaGF2ZSBubyBhcnRpY2xlIHRhZywgc2ltcGx5IHVzZSB0aGlzCj46T3JpZ2lu
-YWw6IERvY3VtZW50YXRpb24vZGV2LXRvb2xzL2djb3YucnN0Cj4KPj4gKzpUcmFuc2xhdG9yOiDo
-tbXlhpvlpY4gQmVybmFyZCBaaGFvIDxiZXJuYXJkQHZpdm8uY29tPgo+PiArCj4+ICsuLiBfZGV2
-LXRvb2xzX2djb3Y6Cj4KPlBsZWFzZSByZW1vdmUgYWJvdmUgbGluZSwgbm8gbmVlZAo+Cj4+ICsK
-Pj4gK+WcqExpbnV45YaF5qC46YeM5L2/55SoZ2NvduWBmuS7o+eggeimhueblueOh+ajgOafpQo+
-PiArPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4KPlN0aWxsIGdvdCBhIGxv
-dCBvZiB3YXJuaW5nLgo+UGxlYXNlIHVzaW5nIG1vbm9zcGFjZWQgZm9udCB0byBmaXggdGhpcy4K
-PkJ1aWxkIGxvZzoKPgo+L3Rlc3QvbGludXgvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhf
-Q04vZGV2LXRvb2xzL2djb3YucnN0OjExOiBXQVJOSU5HOiBUaXRsZSB1bmRlcmxpbmUgdG9vIHNo
-b3J0Lgo+Cj7lnKhMaW51eOWGheaguOmHjOS9v+eUqGdjb3blgZrku6PnoIHopobnm5bnjofmo4Dm
-n6UKPj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+L3Rlc3QvbGludXgvRG9j
-dW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vZGV2LXRvb2xzL2djb3YucnN0OjExMDogV0FS
-TklORzogVGl0bGUgdW5kZXJsaW5lIHRvbyBzaG9ydC4KPgo+6ZKI5a+55qih5Z2X55qE57uf6K6h
-Cj4tLS0tLS0tCj4vdGVzdC9saW51eC9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9k
-ZXYtdG9vbHMvZ2Nvdi5yc3Q6MTEwOiBXQVJOSU5HOiBUaXRsZSB1bmRlcmxpbmUgdG9vIHNob3J0
-Lgo+Cj7pkojlr7nmqKHlnZfnmoTnu5/orqEKPi0tLS0tLS0KPi90ZXN0L2xpbnV4L0RvY3VtZW50
-YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdDoxNTQ6IFdBUk5JTkc6
-IEJsb2NrIHF1b3RlIGVuZHMgd2l0aG91dCBhIGJsYW5rIGxpbmU7IHVuZXhwZWN0ZWQgdW5pbmRl
-bnQuCj4vdGVzdC9saW51eC9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9v
-bHMvZ2Nvdi5yc3Q6MTc5OiBXQVJOSU5HOiBUaXRsZSB1bmRlcmxpbmUgdG9vIHNob3J0Lgo+Cj7l
-hbPkuo7nvJbor5HlmajnmoTms6jmhI/kuovpobkKPi0tLS0tLS0tLS0tLS0tLS0tCj4vdGVzdC9s
-aW51eC9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvZ2Nvdi5yc3Q6
-MTc5OiBXQVJOSU5HOiBUaXRsZSB1bmRlcmxpbmUgdG9vIHNob3J0Lgo+Cj7lhbPkuo7nvJbor5Hl
-majnmoTms6jmhI/kuovpobkKPi0tLS0tLS0tLS0tLS0tLS0tCj4KPgo+PiArCj4+ICtnY2925piv
-bGludXjkuK3lt7Lnu4/pm4bmiJDnmoTkuIDkuKrliIbmnpDmqKHlnZcs6K+l5qih5Z2X5Zyo5YaF
-5qC45Lit5a+5Cj4+ICtHQ0PnmoTku6PnoIHopobnm5bnjofnu5/orqHmj5DkvpvkuobmlK/mjIEu
-Cj4+ICtsaW51eOWGheaguOi/kOihjOaXtueahOS7o+eggeimhueblueOh+aVsOaNruS8muS7pWdj
-b3blhbzlrrnnmoTmoLzlvI/lrZjlgqgKPj4gK+WcqGRlYnVnLWZz5LitLOWPr+S7pemAmui/h2dj
-b3bnmoTigJwtb+KAnemAiemhue+8iOWmguS4i+ekuuS+i++8ieiOt+W+lwo+PiAr5oyH5a6a5paH
-5Lu255qE5Luj56CB6L+Q6KGM6KaG55uW546H57uf6K6h5pWw5o2u77yI6ZyA6KaB6Lez6L2s5Yiw
-5YaF5qC457yWCj4+ICvor5Hot6/lvoTkuIvlubbkuJTopoHmnIlyb2905p2D6ZmQ77yJOjoKPj4g
-Kwo+PiArICAgICMgY2QgL3RtcC9saW51eC1vdXQKPj4gKyAgICAjIGdjb3YgLW8gL3N5cy9rZXJu
-ZWwvZGVidWcvZ2Nvdi90bXAvbGludXgtb3V0L2tlcm5lbCBzcGlubG9jay5jCj4+ICsKPj4gK+i/
-meWwhuWcqOW9k+WJjeebruW9leS4reWIm+W7uuW4puacieaJp+ihjOiuoeaVsOazqOmHiueahOa6
-kOS7o+eggeaWh+S7ti4KPj4gK+WcqOiOt+W+l+i/meS6m+e7n+iuoeaWh+S7tuWQjizlj6/ku6Xk
-vb/nlKjlm77lvaLljJbnmoRnY292WzFd5YmN56uv5belCj4+ICvlhbfvvIjmr5TlpoJsY292WzJd
-77yJLOadpeWunueOsOiHquWKqOWMluWkhOeQhmxpbnV4IOWGheaguOeahOimhgo+PiAr55uW546H
-6L+Q6KGM5pWw5o2uLOWQjOaXtueUn+aIkOaYk+S6jumYheivu+eahEhUTUzmoLzlvI/mlofku7Yu
-Cj4KPlNvcnJ5IGZvciB0aGUgaW5jb252ZW5pZW5jZSwKPkkgdGVzdCBhZ2FpbiwgZm91bmQgdGhl
-IHVybCB0YWdzIHNlZW1zIHdvdWxkIG5vdCBtYWtlIG5hbWVzcGFjZSBjb25mbGljdHMuCj5UaHVz
-LAo+Cj7lnKjojrflvpfov5nkupvnu5/orqHmlofku7blkI4s5Y+v5Lul5L2/55So5Zu+5b2i5YyW
-55qEIGdjb3ZfIOWJjeerr+W3pQo+5YW377yI5q+U5aaCIGxjb3ZfIO+8iSzmnaXlrp7njrDoh6rl
-iqjljJblpITnkIZsaW51eCDlhoXmoLjnmoTopoYKPgo+PiArCj4+ICvlj6/og73nmoTnlKjpgJQ6
-Cj4+ICsKPj4gKyog6LCD6K+V77yI55So5p2l5Yik5pat5q+P5LiA6KGM55qE5Luj56CB5piv5ZCm
-5bey57uP6L+Q6KGM6L+H77yJCj4+ICsqIOa1i+ivleaUuei/m++8iOWmguS9leS/ruaUuea1i+iv
-leS7o+eggSzlsL3lj6/og73lnLDopobnm5bliLDmsqHmnInov5AKPj4gKyAg6KGM6L+H55qE5Luj
-56CB77yJCj4+ICsqIOWGheaguOmFjee9ruS8mOWMlu+8iOWvueS6juafkOS4gOS4qumAiemhuemF
-jee9rizlpoLmnpzlhbPogZTnmoTku6PnoIEKPj4gKyAg5LuO5p2l5rKh5pyJ6L+Q6KGM6L+HLOaY
-r+WQpui/mOmcgOimgei/meS4qumFjee9ru+8iQo+PiArCj4+ICtbMV1fZ2NvdjogaHR0cHM6Ly9n
-Y2MuZ251Lm9yZy9vbmxpbmVkb2NzL2djYy9HY292Lmh0bWwKPj4gK1syXV9sY292OiBodHRwOi8v
-bHRwLnNvdXJjZWZvcmdlLm5ldC9jb3ZlcmFnZS9sY292LnBocAo+Cj4uLiBfZ2NvdjogaHR0cHM6
-Ly9nY2MuZ251Lm9yZy9vbmxpbmVkb2NzL2djYy9HY292Lmh0bWwKPi4uIF9sY292OiBodHRwOi8v
-bHRwLnNvdXJjZWZvcmdlLm5ldC9jb3ZlcmFnZS9sY292LnBocAo+Cj4+ICsKPj4gKwo+PiAr5YeG
-5aSHCj4+ICstLS0tLS0tLS0tLQo+PiArCj4+ICvlhoXmoLjmiZPlvIDlpoLkuIvphY3nva46Ogo+
-PiArCj4+ICsgICAgICAgIENPTkZJR19ERUJVR19GUz15Cj4+ICsgICAgICAgIENPTkZJR19HQ09W
-X0tFUk5FTD15Cj4+ICsKPj4gK+iOt+WPluaVtOS4quWGheaguOeahOimhueblueOh+aVsOaNrizo
-v5jpnIDopoHmiZPlvIA6Ogo+PiArCj4+ICsgICAgICAgIENPTkZJR19HQ09WX1BST0ZJTEVfQUxM
-PXkKPj4gKwo+PiAr6ZyA6KaB5rOo5oSP55qE5pivLOaVtOS4quWGheaguOW8gOWQr+imhueblueO
-h+e7n+iuoeS8mumAoOaIkOWGheaguOmVnOWDjwo+PiAr5paH5Lu25bC65a+455qE5aKe5aSnLOWQ
-jOaXtuWGheaguOi/kOihjOeahOS5n+S8muWPmOaFouS4gOS6my4KPj4gK+WPpuWklizlubbkuI3m
-mK/miYDmnInnmoTmnrbmnoTpg73mlK/mjIHmlbTkuKrlhoXmoLjlvIDlkK/opobnm5bnjofnu5/o
-rqEKPj4gKwo+PiAr5Luj56CB6L+Q6KGM6KaG55uW546H5pWw5o2u5Y+q5ZyoZGVidWdmc+aMgui9
-veWujOaIkOWQjuaJjeWPr+S7peiuv+mXrjo6Cj4+ICsKPj4gKyAgICAgICAgbW91bnQgLXQgZGVi
-dWdmcyBub25lIC9zeXMva2VybmVsL2RlYnVnCj4+ICsKPj4gKwo+PiAr5a6i5Yi25YyWCj4+ICst
-LS0tLS0tLS0tLS0tCj4+ICsKPj4gK+WmguaenOimgeWNleeLrOmSiOWvueafkOS4gOS4qui3r+W+
-hOaIluiAheaWh+S7tui/m+ihjOS7o+eggeimhueblueOh+e7n+iuoQo+PiAr5Y+v5Lul5Zyo5YaF
-5qC455u45bqU6Lev5b6E55qETWFrZWZpbGXkuK3lop7liqDlpoLkuIvnmoTphY3nva46Cj4+ICsK
-Pj4gKy0g5Y2V54us57uf6K6h5Y2V5Liq5paH5Lu277yI5L6L5aaCbWFpbi5v77yJOjoKPj4gKwo+
-PiArICAgIEdDT1ZfUFJPRklMRV9tYWluLm8gOj0geQo+PiArCj4+ICstIOWNleeLrOe7n+iuoeaf
-kOS4gOS4qui3r+W+hDo6Cj4+ICsKPj4gKyAgICBHQ09WX1BST0ZJTEUgOj0geQo+PiArCj4+ICvl
-poLmnpzopoHlnKjmlbTkuKrlhoXmoLjnmoTopobnm5bnjofnu5/orqHvvIhDT05GSUdfR0NPVl9Q
-Uk9GSUxFX0FMTO+8iQo+PiAr5Lit5Y2V54us5o6S6Zmk5p+Q5LiA5Liq5paH5Lu25oiW6ICF6Lev
-5b6ELOWPr+S7peS9v+eUqOWmguS4i+eahOaWueazlTo6Cj4+ICsKPj4gKyAgICBHQ09WX1BST0ZJ
-TEVfbWFpbi5vIDo9IG4KPj4gKwo+PiAr5ZKMOjoKPj4gKwo+PiArICAgIEdDT1ZfUFJPRklMRSA6
-PSBuCj4+ICsKPj4gK+atpOacuuWItuS7heaUr+aMgemTvuaOpeWIsOWGheaguOmVnOWDj+aIlue8
-luivkeS4uuWGheaguOaooeWdl+eahOaWh+S7ti4KPj4gKwo+PiArCj4+ICvnm7jlhbPmlofku7YK
-Pj4gKy0tLS0tLS0tLS0tLS0KPj4gKwo+PiArZ2NvduWKn+iDvemcgOimgeWcqGRlYnVnZnPkuK3l
-iJvlu7rlpoLkuIvmlofku7Y6Cj4+ICsKPj4gK2BgL3N5cy9rZXJuZWwvZGVidWcvZ2NvdmBgCj4+
-ICsgICAgZ2NvduebuOWFs+WKn+iDveeahOaguei3r+W+hAo+PiArCj4+ICtgYC9zeXMva2VybmVs
-L2RlYnVnL2djb3YvcmVzZXRgYAo+PiArICAgIOWFqOWxgOWkjeS9jeaWh+S7tjrlkJHor6Xmlofk
-u7blhpnlhaXmlbDmja7lkI7kvJrlsIbmiYDmnInnmoRnY29257uf6K6hCj4+ICsgICAg5pWw5o2u
-5riFMAo+PiArCj4+ICtgYC9zeXMva2VybmVsL2RlYnVnL2djb3YvcGF0aC90by9jb21waWxlL2Rp
-ci9maWxlLmdjZGFgYAo+PiArICAgIGdjb3blt6Xlhbflj6/ku6Xor4bliKvnmoTopobnm5bnjofn
-u5/orqHmlbDmja7mlofku7Ys5ZCR6K+l5paH5Lu25YaZ5YWlCj4+ICsgICAg5pWw5o2u5ZCO5Lya
-5bCG5pys5paH5Lu255qEZ2Nvdue7n+iuoeaVsOaNrua4hTAKPj4gKwo+PiArYGAvc3lzL2tlcm5l
-bC9kZWJ1Zy9nY292L3BhdGgvdG8vY29tcGlsZS9kaXIvZmlsZS5nY25vYGAKPj4gKyAgICBnY292
-5bel5YW36ZyA6KaB55qE6L2v6L+e5o6l5paH5Lu277yI5oyH5ZCR57yW6K+R5pe255Sf5oiQ55qE
-5L+h5oGv57ufCj4+ICsgICAg6K6h5paH5Lu277yJLOi/meS4quaWh+S7tuaYr+WcqGdjY+e8luiv
-keaXtuWmguaenOmFjee9ruS6humAiemhuQo+PiArICAgIOKAnC1mdGVzdC1jb3ZlcmFnZeKAneaX
-tueUn+aIkOeahC4KPgo+YGBzb21ldGhpbmdgYCBpcyBhIGNvZGUgc3R5bGUgbWFyaywgZG8gbm90
-IHJlcGxhY2UgaXQgd2l0aCDigJzigJ0KPgo+YGAtZnRlc3QtY292ZXJhZ2VgYAo+Cj4+ICsKPj4g
-Kwo+PiAr6ZKI5a+55qih5Z2X55qE57uf6K6hCj4+ICstLS0tLS0tCj4+ICsKPj4gK+WGheaguOS4
-reeahOaooeWdl+S8muWKqOaAgeeahOWKoOi9veWSjOWNuOi9vSzmqKHlnZfljbjovb3ml7blr7nl
-upTnmoQKPj4gK+aVsOaNruS8muiiq+a4hemZpOaOiS4KPj4gK2djb3bmj5DkvpvkuobkuIDnp43m
-nLrliLYs6YCa6L+H5L+d55WZ55u45YWz5pWw5o2u55qE5Ymv5pys5p2l5pS26ZuGCj4+ICvov5np
-g6jliIbljbjovb3mqKHlnZfnmoTopobnm5bnjofmlbDmja4uCj4+ICvmqKHlnZfljbjovb3lkI7o
-v5nkupvlpIfku73mlbDmja7lnKhkZWJ1Z2Zz5Lit5Lya57un57ut5a2Y5ZyoLgo+PiAr5LiA5pem
-6L+Z5Liq5qih5Z2X6YeN5paw5Yqg6L29LOaooeWdl+WFs+iBlOeahOi/kOihjOe7n+iuoeS8muii
-q+WIneWniwo+PiAr5YyW5oiQZGVidWdmc+S4reWkh+S7veeahOaVsOaNri4KPj4gKwo+PiAr5Y+v
-5Lul6YCa6L+H5a+55YaF5qC45Y+C5pWwZ2Nvdl9wZXJzaXN055qE5L+u5pS55p2l5YGc55SoZ2Nv
-dgo+PiAr5a+55qih5Z2X55qE5aSH5Lu95py65Yi2OjoKPj4gKwo+PiArICAgICAgICBnY292X3Bl
-cnNpc3QgPSAwCj4+ICsKPj4gK+WcqOi/kOihjOaXtiznlKjmiLfov5jlj6/ku6XpgJrov4flhpnl
-haXmqKHlnZfnmoTmlbDmja7mlofku7bmiJbogIXlhpnlhaUKPj4gK2djb3blpI3kvY3mlofku7bm
-naXkuKLlvIPlt7Lljbjovb3mqKHlnZfnmoTmlbDmja4uCj4+ICsKPj4gKwo+PiAr5YiG56a755qE
-57yW6K+R5ZKM6L+Q6KGM6K6+5aSHCj4+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KPj4gKwo+PiArZ2NvdueahOWGheaguOWIhuaekOaetuaehOaUr+aMgeWGheaguOeahOe8luiv
-keWSjOWIhuaekOaYr+WcqOWQjOS4gOWPsAo+PiAr6K6+5aSH5LiKLOS5n+WPr+S7pee8luivkeWS
-jOi/kOihjOaYr+WcqOS4jeWQjOeahOiuvuWkh+S4ii4KPj4gK+WmguaenOWGheaguOe8luivkeWS
-jOi/kOihjOaYr+S4jeWQjOeahOiuvuWkhyzpgqPkuYjpnIDopoHpop3lpJbnmoTlh4blpIcKPj4g
-K+W3peS9nCzov5nlj5blhrPkuo5nY2925bel5YW35piv5Zyo5ZOq6YeM5L2/55So55qEOgo+PiAr
-Cj4+ICthKSDoi6VnY2926L+Q6KGM5Zyo5rWL6K+V6K6+5aSH5LiKCj4+ICsKPj4gKyAgICDmtYvo
-r5Xorr7lpIfkuIrpnaJnY2925bel5YW355qE54mI5pys5b+F6aG76KaB6Lef6K6+5aSH5YaF5qC4
-57yWCj4+ICsgICAg6K+R5L2/55So55qEZ2Nj54mI5pys55u45YW85a65LOWQjOaXtuS4i+mdouea
-hOaWh+S7tuimgeS7jue8luivkQo+PiArICAgIOiuvuWkh+aLt+i0neWIsOa1i+ivleiuvuWkh+S4
-ijoKPj4gKwo+PiArICAgIOS7jua6kOS7o+eggeS4rToKPj4gKyAgICAgIC0g5omA5pyJ55qEQ+aW
-h+S7tuWSjOWktOaWh+S7tgo+PiArCj4+ICsgICAg5LuO57yW6K+R55uu5b2V5LitOgo+PiArICAg
-ICAgLSDmiYDmnInnmoRD5paH5Lu25ZKM5aS05paH5Lu2Cj4+ICsgICAgICAtIOaJgOacieeahC5n
-Y2Rh5paH5Lu25ZKMLmdjbm/mlofku7YKPj4gKyAgICAgIC0g5omA5pyJ55uu5b2V55qE6ZO+5o6l
-Cj4+ICsKPj4gKyAgICDnibnliKvpnIDopoHms6jmhI8s5rWL6K+V5py65Zmo5LiK6Z2i55qE55uu
-5b2V57uT5p6E6Lef57yW6K+R5py65ZmoCj4+ICsgICAg5LiK6Z2i55qE55uu5b2V5py65p6E5b+F
-6aG75a6M5YWo5LiA6Ie0Lgo+PiArICAgIOWmguaenOaWh+S7tuaYr+i9r+mTvuaOpSzpnIDopoHm
-m7/mjaLmiJDnnJ/mraPnmoTnm67lvZXmlofku7YKPj4gKyAgIO+8iOi/meaYr+eUsW1ha2XnmoTl
-vZPliY3lt6XkvZznm67lvZXlj5jph49DVVJESVLlvJXotbfnmoTvvIkKPj4gKwo+PiArYikg6Iul
-Z2Nvdui/kOihjOWcqOe8luivkeiuvuWkh+S4igo+PiArCj4+ICsgICAg5rWL6K+V55So5L6L6L+Q
-6KGM57uT5p2f5ZCOLOWmguS4i+eahOaWh+S7tumcgOimgeS7jua1i+ivleiuvuWkh+S4rQo+PiAr
-ICAgIOaLt+i0neWIsOe8luivkeiuvuWkh+S4ijoKPj4gKwo+PiArICAgIOS7jnN5c2Zz5Lit55qE
-Z2NvduebruW9leS4rToKPj4gKyAgICAgIC0g5omA5pyJ55qELmdjZGHmlofku7YKPj4gKyAgICAg
-IC0g5omA5pyJ55qELmdjbm/mlofku7bova/pk77mjqUKPj4gKwo+PiArICAgIOi/meS6m+aWh+S7
-tuWPr+S7peaLt+i0neWIsOe8luivkeiuvuWkh+eahOS7u+aEj+ebruW9leS4iyxnY2925L2/Cj4+
-ICsgICAg55SoLW/pgInpobnmjIflrprmi7fotJ3nmoTnm67lvZUuCj4+ICsKPj4gKyAgICDmr5Tl
-poLkuIDkuKrmmK/npLrkvovnmoTnm67lvZXnu5PmnoTlpoLkuIs6Ogo+PiArCj4+ICsgICAgICAv
-dG1wL2xpbnV4OiAgICDlhoXmoLjmupDnoIHnm67lvZUKPj4gKyAgICAgIC90bXAvb3V0OiAgICAg
-IOWGheaguOe8luivkeaWh+S7tui3r+W+hO+8iG1ha2UgTz3mjIflrprvvIkKPj4gKyAgICAgIC90
-bXAvY292ZXJhZ2U6IOS7jua1i+ivleacuuWZqOS4iumdouaLt+i0neeahOaVsOaNruaWh+S7tui3
-r+W+hAo+PiArCj4+ICsgICAgICBbdXNlckBidWlsZF0gY2QgL3RtcC9vdXQKPj4gKyAgICAgIFt1
-c2VyQGJ1aWxkXSBnY292IC1vIC90bXAvY292ZXJhZ2UvdG1wL291dC9pbml0IG1haW4uYwo+PiAr
-Cj4+ICsKPj4gK+WFs+S6jue8luivkeWZqOeahOazqOaEj+S6i+mhuQo+PiArLS0tLS0tLS0tLS0t
-LS0tLS0KPj4gKwo+PiArR0ND5ZKMTExWTSBnY2925bel5YW35LiN5LiA5a6a5YW85a65Lgo+PiAr
-5aaC5p6c57yW6K+R5Zmo5pivR0NDLOS9v+eUqGdjb3ZfWzNd5p2l5aSE55CGLmdjbm/lkowuZ2Nk
-YeaWh+S7tgo+PiAr5aaC5p6c5pivQ2xhbmfnvJbor5Hlmags5YiZ5L2/55SobGx2bS1jb3ZfWzRd
-Lgo+PiArCj4KPuWmguaenOe8luivkeWZqOaYr0dDQ++8jOS9v+eUqCBnY292XyDmnaXlpITnkIYu
-Z2Nub+WSjC5nY2Rh5paH5Lu2Cj7lpoLmnpzmmK9DbGFuZ+e8luivkeWZqO+8jOWImeS9v+eUqCBs
-bHZtLWNvdl8g44CCCj4KPj4gK1szXV9nY292OiBodHRwczovL2djYy5nbnUub3JnL29ubGluZWRv
-Y3MvZ2NjL0djb3YuaHRtbAo+PiArWzRdX2xsdm0tY292OiBodHRwczovL2xsdm0ub3JnL2RvY3Mv
-Q29tbWFuZEd1aWRlL2xsdm0tY292Lmh0bWwKPgo+Li4gX2djb3Y6IGh0dHBzOi8vZ2NjLmdudS5v
-cmcvb25saW5lZG9jcy9nY2MvR2Nvdi5odG1sCj4uLiBfbGx2bS1jb3Y6IGh0dHBzOi8vbGx2bS5v
-cmcvZG9jcy9Db21tYW5kR3VpZGUvbGx2bS1jb3YuaHRtbAo+Cj4+ICsKPj4gK0dDQ+WSjENsYW5n
-IGdjb3bkuYvpl7TnmoTniYjmnKzlt67lvILnlLFLY29uZmln5aSE55CG55qELgo+PiAra2NvbmZp
-Z+S8muagueaNrue8luivkeW3peWFt+mTvueahOajgOafpeiHquWKqOmAieaLqeWQiOmAgueahGdj
-b3bmoLzlvI8uCj4+ICsKPj4gK+mXrumimOWumuS9jQo+PiArLS0tLS0tLS0tLS0tLS0tCj4+ICsK
-Pj4gK+WPr+iDveWHuueOsOeahOmXrumimDEKPj4gKyAgICDnvJbor5HliLDpk77mjqXpmLbmrrXm
-iqXplJnnu4jmraIKPj4gKwo+PiAr6Zeu6aKY5Y6f5ZugCj4+ICsgICAg5YiG5p6Q5qCH5b+X5oyH
-5a6a5Zyo5LqG5rqQ5paH5Lu25L2G5piv5rKh5pyJ6ZO+5o6l5Yiw5Li75YaF5qC4Cj4+ICsgICAg
-5oiW6ICF5a6i5Yi25YyW5LqG6ZO+5o6l56iL5bqPCj4+ICsKPj4gK+ino+WGs+aWueazlQo+PiAr
-ICAgIOmAmui/h+WcqOebuOW6lOeahE1ha2VmaWxl5Lit5L2/55So4oCcR0NPVl9QUk9GSUxFIDo9
-IG7igJ0KPj4gKyAgICDmiJbogIXigJxHQ09WX1BST0ZJTEVfYmFzZW5hbWUubyA6PSBu4oCd5p2l
-5bCG6ZO+5o6l5oql6ZSZ55qE5paH5Lu2Cj4+ICsgICAg5o6S6Zmk5o6JCj4KPnNhbWUgYGAgcHJv
-YmxlbQo+Cj5gYEdDT1ZfUFJPRklMRSA6PSBuYGAKPmBgR0NPVl9QUk9GSUxFX2Jhc2VuYW1lLm8g
-Oj0gbmBgCj4KPj4gKwo+PiAr5Y+v6IO95Ye6546w55qE6Zeu6aKYMgo+PiArICAgIOS7jnN5c2Zz
-5aSN5Yi255qE5paH5Lu25pi+56S65Li656m65oiW5LiN5a6M5pW0Cj4+ICsKPj4gK+mXrumimOWO
-n+WboAo+PiArICAgIOeUseS6jnNlcV9maWxl55qE5bel5L2c5pa55byPLOafkOS6m+W3peWFt++8
-iOS+i+WmgmNw5oiWdGFy77yJCj4+ICsgICAg5Y+v6IO95peg5rOV5q2j56Gu5Zyw5LuOc3lzZnPl
-pI3liLbmlofku7YuCj4+ICsKPj4gK+ino+WGs+aWueazlQo+PiArICAgIOS9v+eUqOKAnGNhdOKA
-neivu+WPluKAnC5nY2Rh4oCd5paH5Lu2LOS9v+eUqOKAnGNwIC1k4oCd5aSN5Yi26ZO+5o6lCj4+
-ICsgICAg5oiW6ICF5L2/55So6ZmE5b2VQuS4reaJgOekuueahOacuuWIti4KPgo+c2FtZSBgYAo+
-Cj5gYGNhdGBgCj5gYC5nY2RhYGAKPmBgY3AgLWRgYAo+Cj4+ICsKPj4gKwo+PiAr6ZmE5b2VQTo6
-Y29sbGVjdF9vbl9idWlsZC5zaAo+PiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+
-ICsKPj4gK+eUqOS6juWcqOe8luivkeiuvuWkh+S4iuaUtumbhuimhueblueOh+e8luivkeS4remX
-tOaVsOaNruaWh+S7tgo+PiAr55qE56S65L6L6ISa5pysCj4+ICvvvIjlpoLkuIs2YeekuuS+i++8
-iQo+Cj5hY3R1YWxseSBpcyDkuIoKPgo+PiArCj4+ICsuLiBjb2RlLWJsb2NrOjogc2gKPj4gKwo+
-PiArICAgICMhL2Jpbi9iYXNoCj4+ICsKPj4gKyAgICBLU1JDPSQxCj4+ICsgICAgS09CSj0kMgo+
-PiArICAgIERFU1Q9JDMKPj4gKwo+PiArICAgIGlmIFsgLXogIiRLU1JDIiBdIHx8IFsgLXogIiRL
-T0JKIiBdIHx8IFsgLXogIiRERVNUIiBdOyB0aGVuCj4+ICsgICAgICBlY2hvICJVc2FnZTogJDAg
-PGtzcmMgZGlyZWN0b3J5PiA8a29iaiBkaXJlY3Rvcnk+IDxvdXRwdXQudGFyLmd6PiIgPiYyCj4+
-ICsgICAgICBleGl0IDEKPj4gKyAgICBmaQo+PiArCj4+ICsgICAgS1NSQz0kKGNkICRLU1JDOyBw
-cmludGYgImFsbDpcblx0QGVjaG8gXCR7Q1VSRElSfVxuIiB8IG1ha2UgLWYgLSkKPj4gKyAgICBL
-T0JKPSQoY2QgJEtPQko7IHByaW50ZiAiYWxsOlxuXHRAZWNobyBcJHtDVVJESVJ9XG4iIHwgbWFr
-ZSAtZiAtKQo+PiArCj4+ICsgICAgZmluZCAkS1NSQyAkS09CSiBcKCAtbmFtZSAnKi5nY25vJyAt
-byAtbmFtZSAnKi5bY2hdJyAtbyAtdHlwZSBsIFwpIC1hIFwKPj4gKyAgICAgICAgICAgICAgICAg
-ICAgIC1wZXJtIC91K3IsZytyIHwgdGFyIGNmeiAkREVTVCAtUCAtVCAtCj4+ICsKPj4gKyAgICBp
-ZiBbICQ/IC1lcSAwIF0gOyB0aGVuCj4+ICsgICAgICBlY2hvICIkREVTVCBzdWNjZXNzZnVsbHkg
-Y3JlYXRlZCwgY29weSB0byB0ZXN0IHN5c3RlbSBhbmQgdW5wYWNrIHdpdGg6Igo+PiArICAgICAg
-ZWNobyAiICB0YXIgeGZ6ICRERVNUIC1QIgo+PiArICAgIGVsc2UKPj4gKyAgICAgIGVjaG8gIkNv
-dWxkIG5vdCBjcmVhdGUgZmlsZSAkREVTVCIKPj4gKyAgICBmaQo+PiArCj4+ICsKPj4gK+mZhOW9
-lUI6OmNvbGxlY3Rfb25fdGVzdC5zaAo+PiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Pj4gKwo+PiAr55So5LqO5Zyo5rWL6K+V6K6+5aSH5LiK5pS26ZuG6KaG55uW6YeM57uf6K6h5pWw
-5o2u5pWw5o2u5paH5Lu255qE56S65L6L6ISa5pysCj4+ICvvvIjlpoLkuIs2YuekuuS+i++8iQo+
-Cj5hY3R1YWxseSBpcyDkuIoKPgo+PiArCj4+ICsuLiBjb2RlLWJsb2NrOjogc2gKPj4gKwo+PiAr
-ICAgICMhL2Jpbi9iYXNoIC1lCj4+ICsKPj4gKyAgICBERVNUPSQxCj4+ICsgICAgR0NEQT0vc3lz
-L2tlcm5lbC9kZWJ1Zy9nY292Cj4+ICsKPj4gKyAgICBpZiBbIC16ICIkREVTVCIgXSA7IHRoZW4K
-Pj4gKyAgICAgIGVjaG8gIlVzYWdlOiAkMCA8b3V0cHV0LnRhci5nej4iID4mMgo+PiArICAgICAg
-ZXhpdCAxCj4+ICsgICAgZmkKPj4gKwo+PiArICAgIFRFTVBESVI9JChta3RlbXAgLWQpCj4+ICsg
-ICAgZWNobyBDb2xsZWN0aW5nIGRhdGEuLgo+PiArICAgIGZpbmQgJEdDREEgLXR5cGUgZCAtZXhl
-YyBta2RpciAtcCAkVEVNUERJUi9ce1x9IFw7Cj4+ICsgICAgZmluZCAkR0NEQSAtbmFtZSAnKi5n
-Y2RhJyAtZXhlYyBzaCAtYyAnY2F0IDwgJDAgPiAnJFRFTVBESVInLyQwJyB7fSBcOwo+PiArICAg
-IGZpbmQgJEdDREEgLW5hbWUgJyouZ2NubycgLWV4ZWMgc2ggLWMgJ2NwIC1kICQwICckVEVNUERJ
-UicvJDAnIHt9IFw7Cj4+ICsgICAgdGFyIGN6ZiAkREVTVCAtQyAkVEVNUERJUiBzeXMKPj4gKyAg
-ICBybSAtcmYgJFRFTVBESVIKPj4gKwo+PiArICAgIGVjaG8gIiRERVNUIHN1Y2Nlc3NmdWxseSBj
-cmVhdGVkLCBjb3B5IHRvIGJ1aWxkIHN5c3RlbSBhbmQgdW5wYWNrIHdpdGg6Igo+PiArICAgIGVj
-aG8gIiAgdGFyIHhmeiAkREVTVCIKPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vdHJhbnNs
-YXRpb25zL3poX0NOL2Rldi10b29scy9pbmRleC5yc3QgYi9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0
-aW9ucy96aF9DTi9kZXYtdG9vbHMvaW5kZXgucnN0Cj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+
-IGluZGV4IDAwMDAwMDAwMDAwMC4uMGM2YjVjMmY0YTdmCj4+IC0tLSAvZGV2L251bGwKPj4gKysr
-IGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vZGV2LXRvb2xzL2luZGV4LnJzdAo+
-PiBAQCAtMCwwICsxLDM5IEBACj4+ICsuLiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIu
-MAo+PiArCj4+ICsuLiBpbmNsdWRlOjogLi4vZGlzY2xhaW1lci16aF9DTi5yc3QKPj4gKwo+PiAr
-Ok9yaWdpbmFsOiA6cmVmOmBEb2N1bWVudGF0aW9uL2Rldi10b29scy9nY292LnJzdCA8ZGV2ZWxv
-cG1lbnRfZGV2LXRvb2xzX2luZGV4PmAKPgo+Ok9yaWdpbmFsOiBEb2N1bWVudGF0aW9uL2Rldi10
-b29scy9nY292LnJzdAo+Cj4+ICs6VHJhbnNsYXRvcjog6LW15Yab5aWOIEJlcm5hcmQgWmhhbyA8
-YmVybmFyZEB2aXZvLmNvbT4KPj4gKwo+PiArLi4gX2RldmVsb3BtZW50X2Rldi10b29sc19pbmRl
-eDoKPgo+cmVtb3ZlIGFib3ZlIGxpbmUKPgo+PiArCj4+ICs9PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PQo+PiAr5YaF5qC45byA5Y+R5bel5YW3Cj4+ICs9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PQo+PiArCj4+ICvmnKzmlofmoaPmmK/mnInlhbPlhoXmoLjlvIDlj5Hlt6Xl
-hbfmlofmoaPnmoTlkIjpm4bjgIIKPj4gK+ebruWJjei/meS6m+aWh+aho+W3sue7j+aVtOeQhuWc
-qOS4gOi1t++8jOS4jemcgOimgeWGjeiKsei0uemineWklueahOeyvuWKm+OAggo+PiAr5qyi6L+O
-5Lu75L2V6KGl5LiB44CCCj4+ICsKPj4gKy4uIGNsYXNzOjogdG9jLXRpdGxlCj4+ICsKPj4gKyAg
-IOebruW9lQo+PiArCj4+ICsuLiB0b2N0cmVlOjoKPj4gKyAgIDptYXhkZXB0aDogMgo+PiArCj4+
-ICsgICBnY292Cj4+ICsKPj4gK1RvZG9saXN0Ogo+PiArCj4+ICsgICBjb2NjaW5lbGxlCj4+ICsg
-ICBzcGFyc2UKPj4gKyAgIGtjb3YKPj4gKyAgIGthc2FuCj4+ICsgICB1YnNhbgo+PiArICAga21l
-bWxlYWsKPj4gKyAgIGtjc2FuCj4+ICsgICBnZGIta2VybmVsLWRlYnVnZ2luZwo+PiArICAga2dk
-Ygo+PiArICAga3NlbGZ0ZXN0Cj4+ICsgICBrdW5pdC9pbmRleAo+PiBkaWZmIC0tZ2l0IGEvRG9j
-dW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0IGIvRG9jdW1lbnRhdGlvbi90
-cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgucnN0Cj4+IGluZGV4IGJlNmYxMTE3NjIwMC4uYTVlNDgz
-YjBjN2YyIDEwMDY0NAo+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9p
-bmRleC5yc3QKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlvbnMvemhfQ04vaW5kZXgu
-cnN0Cj4+IEBAIC0yMCw2ICsyMCw3IEBACj4+ICAgICBwcm9jZXNzL2luZGV4Cj4+ICAgICBmaWxl
-c3lzdGVtcy9pbmRleAo+PiAgICAgYXJtNjQvaW5kZXgKPj4gKyAgIGRldi10b29scy9pbmRleAo+
-PiAgCj4+ICDnm67lvZXlkozooajmoLwKPj4gIC0tLS0tLS0tLS0KPj4gLS0gCj4+IDIuMzEuMAo+
-Cj5UaGFua3MhCj4KPld1IFguQy4KPgoNCg0K
+The 04/10/2021 02:41, Rob Herring wrote:
+> On Thu, Apr 08, 2021 at 09:52:17AM +0800, Steven Lee wrote:
+> > AST2600-A2 EVB provides the reference design for enabling SD bus power
+> > and toggling SD bus signal voltage by GPIO pins.
+> > Add the definition and example for power-gpio and power-switch-gpio
+> > properties.
+> > 
+> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
+> > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
+> > a 1.8v and a 3.3v power load switch that providing signal voltage to
+> > SD1 bus.
+> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > disabled.
+> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
+> > voltage is 3.3v. Otherwise, 1.8v power load switch will be enabled, SD1
+> > signal voltage becomes 1.8v.
+> > 
+> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and GPIOV3
+> > as power-switch-gpio.
+> > 
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > index 987b287f3bff..515a74614f3c 100644
+> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> > @@ -37,6 +37,14 @@ properties:
+> >    clocks:
+> >      maxItems: 1
+> >      description: The SD/SDIO controller clock gate
+> > +  power-gpio:
+> 
+> '-gpios' is the preferred form even if just 1.
+> 
+
+Thanks for reviewing, I will change the name.
+
+> > +    description:
+> > +      The GPIO for enabling/disabling SD bus power.
+> > +    maxItems: 1
+> 
+> blank line
+> 
+
+I will remove the blank line.
+
+> > +  power-switch-gpio:
+> > +    description:
+> > +      The GPIO for toggling the signal voltage between 3.3v and 1.8v.
+> > +    maxItems: 1
+> >  
+> >  patternProperties:
+> >    "^sdhci@[0-9a-f]+$":
+> > @@ -61,6 +69,14 @@ patternProperties:
+> >        sdhci,auto-cmd12:
+> >          type: boolean
+> >          description: Specifies that controller should use auto CMD12
+> > +      power-gpio:
+> > +        description:
+> > +          The GPIO for enabling/disabling SD bus power.
+> > +        maxItems: 1
+> > +      power-switch-gpio:
+> > +        description:
+> > +          The GPIO for toggling the signal voltage between 3.3v and 1.8v.
+> > +        maxItems: 1
+> >      required:
+> >        - compatible
+> >        - reg
+> > @@ -80,6 +96,7 @@ required:
+> >  examples:
+> >    - |
+> >      #include <dt-bindings/clock/aspeed-clock.h>
+> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
+> >      sdc@1e740000 {
+> >              compatible = "aspeed,ast2500-sd-controller";
+> >              reg = <0x1e740000 0x100>;
+> > @@ -94,6 +111,10 @@ examples:
+> >                      interrupts = <26>;
+> >                      sdhci,auto-cmd12;
+> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 0)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 1)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> >              };
+> >  
+> >              sdhci1: sdhci@200 {
+> > @@ -102,5 +123,9 @@ examples:
+> >                      interrupts = <26>;
+> >                      sdhci,auto-cmd12;
+> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
+> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 2)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 3)
+> > +                                     GPIO_ACTIVE_HIGH>;
+> >              };
+> >      };
+> > -- 
+> > 2.17.1
+> > 
