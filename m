@@ -2,188 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1B935E010
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F5335E011
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229474AbhDMN2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        id S1345986AbhDMN3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242158AbhDMN2i (ORCPT
+        with ESMTP id S242158AbhDMN2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:28:38 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C54C061574;
-        Tue, 13 Apr 2021 06:28:17 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id a21so3900061oib.10;
-        Tue, 13 Apr 2021 06:28:17 -0700 (PDT)
+        Tue, 13 Apr 2021 09:28:43 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D977C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:28:23 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id r22so8629281ljc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:28:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0Lrtdi2DI7A27HaQOLaKVNVRqExZOSDdh3hl4iMSUq0=;
-        b=TlLtDMtV+kjJh3l0KeAWuic2I0geqLbTTV8vxiRnhPVeQY9lm+H0e5hgM8Wc0529gy
-         s59Bnqx5H5iBSa7OnRFtudAp/7iPPIUC8NOLIOXUC3cj90HJaNIBIE39EsyXCNFctCEM
-         fOsovSL9wRKm+f9NYufB6qHki5m/MJ4GhJz44JjfBKg3AAHJGYmxRHzAzz44xpIJQ+7J
-         4tDpsARZeHajTXvyH3Kv6bNdFpe8nJ1NdedC2HAnkUTHDqhrpGoJCu5SzZ2rzqBaphCa
-         HpXjuormEcwWgmiE8x8R5590sel228M6e4cAOfDPzCYZ3L53LvvZihd+QIL1dKJg7NJz
-         q0pg==
+        bh=Hj/SeZ1ZvvwY1xIzJooNaPGvpH3onFVxBgFQtfF6dKs=;
+        b=b5uJDNpPZbifglYYEysAar2xQtFPzsraSWEM4TDaO+4wZXQiLchll2ftbQN4OaTVoS
+         CVOXKoqUpICrWyhMIeJQya5LKJmA/im+tlRBCtBLgSpBDTOmaYCcdwHrRbkl7mBZPYxC
+         AbSC7cZNjgfZQlIfdWAtWvymvtrpX+ZiYbkydyhtR4XY93fFeV3l7KaCzG7PhLC/gMnA
+         dX83Q0DNRfUXDQTaISGbVrG5H2kP5Gr+VuUHY4sBpxld5+SzquxYs87K/xFh7kJFdjQf
+         sx0z7JLZkJbHa/DG2l7xo/dAznjYkEsrwivW16Dhhng4JSWR3rqpax9U7TP90BaGmAIc
+         HDVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0Lrtdi2DI7A27HaQOLaKVNVRqExZOSDdh3hl4iMSUq0=;
-        b=PQqysRQvVPsq9+YhY/iQcKjnILjXoKUD1adXeg3va97g+D7PbIyZ8rHwpL7t32bCNx
-         /PSZl5juSe3SZojeDUUOegzveBIbWMcDiMfoL6199Bl91N7ZbFghl7tbAzjl5yDkwCZs
-         DhIdXV/9eOTwaH9dHM9xIL7rB5GQzGEXC+J5+v+VCPDmNEIoyz+QHLQ+gxs5VSVt+Xgw
-         YsCNs+kCVF4522XxoW2snAkdBiGDFj0IT6VQYU/FslBusfH1YVHovACvZzOBtIV4Cw+I
-         syZiA9XDoySwMl1bHGX+epmoJNz5zObiVHO41/JL6z/xcEpWnb52O65+ro+y1ftCfDrp
-         KLmg==
-X-Gm-Message-State: AOAM531rClAqbX9FDqIFpJqjCnzBSG5hpnx/4aoDlUtT9slhauptUbUs
-        XfaiMl4qPpRlkEJMhsp5gmdQL6gvI0X92EkpfDY=
-X-Google-Smtp-Source: ABdhPJxzy/1IHRMFUGjf5e3YSrD/uo+69w2cfoMFc0ZgcevQMQJDQe9Wf10uFmFFfA/ku85CVg27TIQC8iJUnkky0dM=
-X-Received: by 2002:aca:a84b:: with SMTP id r72mr12921oie.17.1618320496879;
- Tue, 13 Apr 2021 06:28:16 -0700 (PDT)
+        bh=Hj/SeZ1ZvvwY1xIzJooNaPGvpH3onFVxBgFQtfF6dKs=;
+        b=DtUgWepKlIOhWomu4dYC/UFmFS3B6UziFWrq1twOf4Flk+feU0vRRUQGyOtXF62CV3
+         9uwtoVIM7NAucBd47vue1HgEoeKoB2iX+V1vr1y6UoH/2lDro2zDsiQX2G5P91iXdrfR
+         7OhBuQyp+vnepcSfEKomxfXz9iTNKZGVDyRuAnpnygEzz04F4U4w8DepZ1PX1DyOuldR
+         eWWgjHNV1zh7LliFU27DZf3mis8t9GPwalhrnTSfEqxQstgfc8krJeXK43TLI8aRsDc6
+         Jd9Ue3LnkPUq6M3GMm9aJK3b+czDqumRG0JdMWG0dTJSSyg5YVB9iH1ANV+tjE7Vbtjw
+         B9eg==
+X-Gm-Message-State: AOAM533reXChNPrVg76rC9TrYVfqw8lW8jI3cX60f78z/mMcUbpyuUQx
+        Qeksb1YTb0ZnY2SUa3+s75eQ4bG2z8R/Wr2AFBGjOQ==
+X-Google-Smtp-Source: ABdhPJxxakCZqZ1Ab2CgtoWpKw/Pji9vy4PUpSty494sfE4n1OebazycmnhmYDcpWpHnnzHE8VbrITfOH+HnUDVQvLo=
+X-Received: by 2002:a2e:8084:: with SMTP id i4mr21632742ljg.122.1618320501679;
+ Tue, 13 Apr 2021 06:28:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210413062146.389690-1-ilya.lipnitskiy@gmail.com> <20210413062146.389690-3-ilya.lipnitskiy@gmail.com>
-In-Reply-To: <20210413062146.389690-3-ilya.lipnitskiy@gmail.com>
-From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Date:   Tue, 13 Apr 2021 16:28:06 +0300
-Message-ID: <CAHNKnsS5Kn86g2QkFJ0qYsGPf9htmF=n-imVQBWDKYn0C+qOSA@mail.gmail.com>
-Subject: Re: [PATCH 2/8] MIPS: pci-rt2880: remove unneeded locks
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210413065153.63431-1-songmuchun@bytedance.com> <20210413065153.63431-5-songmuchun@bytedance.com>
+In-Reply-To: <20210413065153.63431-5-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 13 Apr 2021 06:28:09 -0700
+Message-ID: <CALvZod6P4O8JicK22=RfjLk205kTDNDV=WonO0yXE0Fx7ydsGg@mail.gmail.com>
+Subject: Re: [PATCH 4/7] mm: memcontrol: simplify lruvec_holds_page_lru_lock
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ilya,
+On Mon, Apr 12, 2021 at 11:57 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> We already have a helper lruvec_memcg() to get the memcg from lruvec, we
+> do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
+> lruvec_memcg() instead. And if mem_cgroup_disabled() returns false, the
+> page_memcg(page) (the LRU pages) cannot be NULL. So remove the odd logic
+> of "memcg = page_memcg(page) ? : root_mem_cgroup". And use lruvec_pgdat
+> to simplify the code. We can have a single definition for this function
+> that works for !CONFIG_MEMCG, CONFIG_MEMCG + mem_cgroup_disabled() and
+> CONFIG_MEMCG.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On Tue, Apr 13, 2021 at 9:22 AM Ilya Lipnitskiy
-<ilya.lipnitskiy@gmail.com> wrote:
-> Mirror pci-rt3883 fix from commit e5067c718b3a ("MIPS: pci-rt3883:
-> Remove odd locking in PCI config space access code"). pci-rt2880 shares
-> the driver layout with pci-rt3883 and the same reasons apply.
->
-> Caller (generic PCI code) already does proper locking, so no need to add
-> another one here. Local PCI read/write functions are never called
-> simultaneously, also they do not require synchronization with the PCI
-> controller ops, since they are used before the controller registration.
->
-> Suggested-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> ---
->  arch/mips/pci/pci-rt2880.c | 13 -------------
->  1 file changed, 13 deletions(-)
->
-> diff --git a/arch/mips/pci/pci-rt2880.c b/arch/mips/pci/pci-rt2880.c
-> index 19f7860fb28b..b4ee07cbcf2a 100644
-> --- a/arch/mips/pci/pci-rt2880.c
-> +++ b/arch/mips/pci/pci-rt2880.c
-> @@ -41,7 +41,6 @@
->  #define RT2880_PCI_REG_ARBCTL          0x80
->
->  static void __iomem *rt2880_pci_base;
-> -static DEFINE_SPINLOCK(rt2880_pci_lock);
->
->  static u32 rt2880_pci_reg_read(u32 reg)
->  {
-> @@ -63,7 +62,6 @@ static inline u32 rt2880_pci_get_cfgaddr(unsigned int bus, unsigned int slot,
->  static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
->                                   int where, int size, u32 *val)
->  {
-> -       unsigned long flags;
->         u32 address;
->         u32 data;
->         int busn = 0;
-> @@ -74,10 +72,8 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
->         address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
->                                          where);
->
-> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
->         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
->         data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
-> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
->
->         switch (size) {
->         case 1:
-> @@ -97,7 +93,6 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
->  static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
->                                    int where, int size, u32 val)
->  {
-> -       unsigned long flags;
->         u32 address;
->         u32 data;
->         int busn = 0;
-> @@ -108,7 +103,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
->         address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
->                                          where);
->
-> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
->         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
->         data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
->
-> @@ -127,7 +121,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
->         }
->
->         rt2880_pci_reg_write(data, RT2880_PCI_REG_CONFIG_DATA);
-> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
->
->         return PCIBIOS_SUCCESSFUL;
->  }
-> @@ -159,31 +152,25 @@ static struct pci_controller rt2880_pci_controller = {
->
->  static inline u32 rt2880_pci_read_u32(unsigned long reg)
->  {
-> -       unsigned long flags;
->         u32 address;
->         u32 ret;
->
->         address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
->
-> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
->         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
->         ret = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
-> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
->
->         return ret;
->  }
->
->  static inline void rt2880_pci_write_u32(unsigned long reg, u32 val)
->  {
-> -       unsigned long flags;
->         u32 address;
->
->         address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
->
-> -       spin_lock_irqsave(&rt2880_pci_lock, flags);
->         rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
->         rt2880_pci_reg_write(val, RT2880_PCI_REG_CONFIG_DATA);
-> -       spin_unlock_irqrestore(&rt2880_pci_lock, flags);
->  }
->
->  int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
-
-RT2880 PCI driver calls rt2880_pci_write_u32()/rt2880_pci_read_u32()
-from pcibios_map_irq(), which is called outside the scope of the
-pci_lock spinlock that is defined in /drivers/pci/access.c. So it
-looks like this could lead to a race between
-rt2880_pci_write_u32()/rt2880_pci_read_u32() and
-rt2880_pci_config_read()/rt2880_pci_config_write() functions.
-
-The code that uses rt2880_pci_write_u32()/rt2880_pci_read_u32() in the
-pcibios_map_irq() duplicates a BAR initialization procedure, which is
-already performed by the rt288x_pci_probe().
-
-Maybe we should remove duplicated code in the pcibios_map_irq() to
-reduce duplication and to avoid possible race in configuration space
-access?
-
-If you fix this possible race, feel free to add in the next patch version my
-Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-
--- 
-Sergey
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
