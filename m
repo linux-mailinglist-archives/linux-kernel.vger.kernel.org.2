@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4652735D4D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70D135D4BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240832AbhDMBat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:30:49 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:54353 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhDMBar (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:30:47 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 13D1Js6L080544;
-        Tue, 13 Apr 2021 09:19:54 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr
- 2021 09:30:18 +0800
-Date:   Tue, 13 Apr 2021 09:30:10 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio
- and power-switch-gpio
-Message-ID: <20210413013010.GA353@aspeedtech.com>
-References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
- <20210408015218.20560-2-steven_lee@aspeedtech.com>
- <20210409184118.GA3934798@robh.at.kernel.org>
+        id S243373AbhDMBWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:22:38 -0400
+Received: from mga07.intel.com ([134.134.136.100]:37026 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235837AbhDMBWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 21:22:36 -0400
+IronPort-SDR: M0qZKOUr+WRb++ck8ErLZIT2URnQ/yVs8zmyNz2+4C7iUKAYV50NmtlFlv05pgtneyuTzb+5NU
+ uRrsXDwwfpGw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258286504"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="258286504"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 18:22:16 -0700
+IronPort-SDR: WgKI/MS8CYjT9EOaRVP21ODABMPhTbLn5dBCj+QNV9HVq2OGrDGvG7FQxhumNKavry00KhFNST
+ TAS7RGfcfWvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="521403712"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Apr 2021 18:22:14 -0700
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+To:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>
+Cc:     "Gong, Richard" <richard.gong@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        russell.h.weight@intel.com
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <YF90y3Di4RbuJvr0@epycbox.lan>
+ <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+ <YGC619DmLM0AAQ5p@epycbox.lan>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <8c0fcdde-540b-2ae3-01f2-30cdb87ac037@linux.intel.com>
+Date:   Mon, 12 Apr 2021 20:41:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210409184118.GA3934798@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 13D1Js6L080544
+In-Reply-To: <YGC619DmLM0AAQ5p@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 04/10/2021 02:41, Rob Herring wrote:
-> On Thu, Apr 08, 2021 at 09:52:17AM +0800, Steven Lee wrote:
-> > AST2600-A2 EVB provides the reference design for enabling SD bus power
-> > and toggling SD bus signal voltage by GPIO pins.
-> > Add the definition and example for power-gpio and power-switch-gpio
-> > properties.
-> > 
-> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
-> > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
-> > a 1.8v and a 3.3v power load switch that providing signal voltage to
-> > SD1 bus.
-> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> > disabled.
-> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
-> > voltage is 3.3v. Otherwise, 1.8v power load switch will be enabled, SD1
-> > signal voltage becomes 1.8v.
-> > 
-> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and GPIOV3
-> > as power-switch-gpio.
-> > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25 +++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > index 987b287f3bff..515a74614f3c 100644
-> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > @@ -37,6 +37,14 @@ properties:
-> >    clocks:
-> >      maxItems: 1
-> >      description: The SD/SDIO controller clock gate
-> > +  power-gpio:
-> 
-> '-gpios' is the preferred form even if just 1.
-> 
 
-Thanks for reviewing, I will change the name.
+Hi Moritz,
 
-> > +    description:
-> > +      The GPIO for enabling/disabling SD bus power.
-> > +    maxItems: 1
+On 3/28/21 12:20 PM, Moritz Fischer wrote:
+> Tom,
 > 
-> blank line
+> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+>>
+>> On 3/27/21 11:09 AM, Moritz Fischer wrote:
+>>> Hi Richard, Russ,
+>>>
+>>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
+>>>> Hi Moritz,
+>>>>
+>>>> Sorry for asking.
+>>>>
+>>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+>>>>
+>>>> Regards,
+>>>> Richard
+>>>>
+>>>> -----Original Message-----
+>>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
+>>>> Sent: Tuesday, February 9, 2021 4:20 PM
+>>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>> Cc: Gong, Richard <richard.gong@intel.com>
+>>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+>>>>
+>>>> From: Richard Gong <richard.gong@intel.com>
+>>>>
+>>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+>>>>
+>>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+>>>>
+>>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
+>>>>
+>>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+>>>>
+>>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
+>>>>
+>>>> Richard Gong (7):
+>>>>    firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+>>>>    firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+>>>>    firmware: stratix10-svc: extend SVC driver to get the firmware version
+>>>>    fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+>>>>    fpga: of-fpga-region: add authenticate-fpga-config property
+>>>>    dt-bindings: fpga: add authenticate-fpga-config property
+>>>>    fpga: stratix10-soc: extend driver for bitstream authentication
+>>>>
+>>>>   .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+>>>>   drivers/firmware/stratix10-svc.c                   | 12 ++++-
+>>>>   drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+>>>>   drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+>>>>   include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+>>>>   .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+>>>>   include/linux/fpga/fpga-mgr.h                      |  3 ++
+>>>>   7 files changed, 125 insertions(+), 18 deletions(-)
+>>>>
+>>>> --
+>>>> 2.7.4
+>>>>
+>>> Apologies for the epic delay in getting back to this, I took another
+>>> look at this patchset and Russ' patchset.
+>>>
+>>> TL;DR I'm not really a fan of using device-tree overlays for this (and
+>>> again, apologies, I should've voiced this earlier ...).
+>>>
+>>> Anyways, let's find a common API for this and Russ' work, they're trying
+>>> to achieve the same / similar thing, they should use the same API.
+>>>
+>>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
+>>> 'secure update' ops that work for both these use-cases (and I susspect
+>>> hte XRT patchset will follow with a similar requirement, right after).
+>>
+>> The xrt patchset makes heavy use of device trees.
+>>
+>> What is the general guidance for device tree usage ?
 > 
+> I'm not generally against using device tree, it has its place. To
+> describe hardware (and hardware *changes* with overlays) :)
+> 
+> What I don't like about this particular implementation w.r.t device-tree
+> usage is that it uses DT overlays as a mechanism to program the flash --
+> in place of having an API to do so.
+> 
+> One could add device-nodes during the DT overlay application, while the
+> FPGA doesn't actually get programmed with a new runtime image -- meaning
+> live DT and actual hardware state diverged -- worst case it'd crash.
+> 
+> So when roughly at the same time (from the same company even) we have two
+> patchsets that do similar things with radically different APIs I think
+> we should pause, and reflect on whether we can come up with something
+> that works for both :)
+>
 
-I will remove the blank line.
+I discussed with Russ and studies his patches, came to realize that the 
+work we had to accomplish was not same or similar. What I want to 
+achieve is to verify the identity of the bitstream, which is like doing 
+a "dry-run" to FPGA configuration.
 
-> > +  power-switch-gpio:
-> > +    description:
-> > +      The GPIO for toggling the signal voltage between 3.3v and 1.8v.
-> > +    maxItems: 1
-> >  
-> >  patternProperties:
-> >    "^sdhci@[0-9a-f]+$":
-> > @@ -61,6 +69,14 @@ patternProperties:
-> >        sdhci,auto-cmd12:
-> >          type: boolean
-> >          description: Specifies that controller should use auto CMD12
-> > +      power-gpio:
-> > +        description:
-> > +          The GPIO for enabling/disabling SD bus power.
-> > +        maxItems: 1
-> > +      power-switch-gpio:
-> > +        description:
-> > +          The GPIO for toggling the signal voltage between 3.3v and 1.8v.
-> > +        maxItems: 1
-> >      required:
-> >        - compatible
-> >        - reg
-> > @@ -80,6 +96,7 @@ required:
-> >  examples:
-> >    - |
-> >      #include <dt-bindings/clock/aspeed-clock.h>
-> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
-> >      sdc@1e740000 {
-> >              compatible = "aspeed,ast2500-sd-controller";
-> >              reg = <0x1e740000 0x100>;
-> > @@ -94,6 +111,10 @@ examples:
-> >                      interrupts = <26>;
-> >                      sdhci,auto-cmd12;
-> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
-> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 0)
-> > +                                     GPIO_ACTIVE_HIGH>;
-> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 1)
-> > +                                     GPIO_ACTIVE_HIGH>;
-> >              };
-> >  
-> >              sdhci1: sdhci@200 {
-> > @@ -102,5 +123,9 @@ examples:
-> >                      interrupts = <26>;
-> >                      sdhci,auto-cmd12;
-> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
-> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 2)
-> > +                                     GPIO_ACTIVE_HIGH>;
-> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V, 3)
-> > +                                     GPIO_ACTIVE_HIGH>;
-> >              };
-> >      };
-> > -- 
-> > 2.17.1
-> > 
+Performing FPGA configuration (full or partial) through the device tree 
+overlay is a method widely used by our customers.
+
+Russ's approach utilizes a different user API which is a set of sysfs files.
+
+If we depart from device tree overlay, then the end-user must utilize 2 
+different mechanism or APIs (device tree overlay is used for 
+full/partial configuration, and sysfs is used for bitstream 
+authentication). Similarly low-level FPGA manager driver also needs to 
+add additional codes. For the end-user the single and simple mechanism 
+is always better choice, device tree overlay should be a better way to 
+achieve that goal.
+
+Regards,
+Richard
+
+> TL;DR the firmware parts to authenticate the bitstream look fine to me, the
+> way we tie it into the FPGA region I'm not a fan of.
+> 
+> - Moritz
+> 
