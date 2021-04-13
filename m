@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5049F35DBFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E60935DC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243324AbhDMJ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:57:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16907 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243128AbhDMJ5c (ORCPT
+        id S238634AbhDMJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:57:53 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52301 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243368AbhDMJ5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:57:32 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKLZH0QPdzlXjF;
-        Tue, 13 Apr 2021 17:55:19 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 17:57:01 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: document: add description about compressed space handling
-Date:   Tue, 13 Apr 2021 17:56:53 +0800
-Message-ID: <20210413095653.28231-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+        Tue, 13 Apr 2021 05:57:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVRjvNC_1618307836;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVRjvNC_1618307836)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 13 Apr 2021 17:57:22 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     steffen.klassert@secunet.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] esp6: Simplify the calculation of variables
+Date:   Tue, 13 Apr 2021 17:57:15 +0800
+Message-Id: <1618307835-83161-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User or developer may still be confused about why f2fs doesn't expose
-compressed space to userspace, add description about compressed space
-handling policy into f2fs documentation.
+Fix the following coccicheck warnings:
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+./net/ipv6/esp6_offload.c:321:32-34: WARNING !A || A && B is equivalent
+to !A || B.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- Documentation/filesystems/f2fs.rst | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/ipv6/esp6_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index 63c0c49b726d..992bf91eeec8 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -819,6 +819,14 @@ Compression implementation
-   * chattr +c file
-   * chattr +c dir; touch dir/file
-   * mount w/ -o compress_extension=ext; touch file.ext
-+  * mount w/ -o compress_extension=*; touch any_file
-+
-+- At this point, compression feature doesn't expose compressed space to user
-+  directly in order to guarantee potential data updates later to the space.
-+  Instead, the main goal is to reduce data writes to flash disk as much as
-+  possible, resulting in extending disk life time as well as relaxing IO
-+  congestion. Alternatively, we've added ioctl interface to reclaim compressed
-+  space and show it to user after putting the immutable bit.
+diff --git a/net/ipv6/esp6_offload.c b/net/ipv6/esp6_offload.c
+index 4af56af..40ed4fc 100644
+--- a/net/ipv6/esp6_offload.c
++++ b/net/ipv6/esp6_offload.c
+@@ -318,7 +318,7 @@ static int esp6_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features
+ 	esp.plen = esp.clen - skb->len - esp.tfclen;
+ 	esp.tailen = esp.tfclen + esp.plen + alen;
  
- Compress metadata layout::
- 
+-	if (!hw_offload || (hw_offload && !skb_is_gso(skb))) {
++	if (!hw_offload || !skb_is_gso(skb)) {
+ 		esp.nfrags = esp6_output_head(x, skb, &esp);
+ 		if (esp.nfrags < 0)
+ 			return esp.nfrags;
 -- 
-2.29.2
+1.8.3.1
 
