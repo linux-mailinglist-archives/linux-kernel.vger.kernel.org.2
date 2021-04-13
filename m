@@ -2,253 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CF935E87D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1DE35E84F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346774AbhDMVqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:46:22 -0400
-Received: from gateway20.websitewelcome.com ([192.185.61.9]:22416 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346297AbhDMVqU (ORCPT
+        id S231361AbhDMVcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229892AbhDMVcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:46:20 -0400
-X-Greylist: delayed 1218 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 17:46:20 EDT
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id F14D6400C8762
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 16:15:01 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id WQXVl7qLi1cHeWQXVlMHwj; Tue, 13 Apr 2021 16:25:41 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BeO8GkAjgrMdjfp0UoCjCPgX7wT/SJDYDrx5yHmB4jM=; b=GURnayccnGmttggv8tWi7/B6eW
-        cqI+AksMy4q8I8vZQHVTFoVIWyJEa0g5sakcJY1HlLOjz/5dEGBnzbGWe6J4NaE5WslpTIU3y2sui
-        7IKI/0vWhjrn2tmd3QLPxAIMcyRLklDUg/FBgidzssAYZrLQqKWzCIMQj/m9r1o04lWM1DF1UWc4c
-        /XwX2HMYIxHi9T2EjU4ak73eT4nF2ozmT7Qe6yO5D5G/cs1DlLKy5m+rrl7GDulOIWca0QlFJmp4B
-        +FSMOTZ6rVqhkVVA92rPLCEwGgnhgrQTDfeJ1jnRgQ5iwXuijapm1BG4Lmxi5gc/IQfoT3tarC5jU
-        6kT0+1Pw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:50198 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lWQXS-003IaF-0m; Tue, 13 Apr 2021 16:25:38 -0500
-Subject: Re: [PATCH v2 2/2][next] wl3501_cs: Fix out-of-bounds warning in
- wl3501_mgmt_join
-To:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <cover.1617226663.git.gustavoars@kernel.org>
- <83b0388403a61c01fad8d638db40b4245666ff53.1617226664.git.gustavoars@kernel.org>
- <202104071158.B4FA1956@keescook>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <2bc27d10-efa2-3ab7-fb58-556cfd252927@embeddedor.com>
-Date:   Tue, 13 Apr 2021 16:25:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 13 Apr 2021 17:32:22 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD680C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:32:00 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id x27so8909366qvd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nxMWXDBC0LJ7v4Qp9G3rcuNoE2Q8i3XYQtAcfovO3WM=;
+        b=Ob/iq8RG9ZSjzdcGJTQzrRCTZn1tZMkoVDkoP8US2yQlBAcp6RiRnPs9xV25DTVrIj
+         iWFQPN8RySzVmX6ikPjiKu1kyBOPdKluqb+PA/ryfKz+IapxCmxq5bZ7VYQ6Q8m9VzsE
+         4IqmLRTaRhZ/JXr/O+gLYodwG8ofd82yI14pNIDk/aYX9wCK4cBLSL1qptHDLX+ALZYW
+         t/NQ+bZjB6ZdZE0ER9lkhsw6AGRBzr+ap00BJyklIS0aAS015b7RQzrL2HQuoPUtVgcV
+         9DJ2xvo01xeDuXol2FNtcGTQU4/0OhM9KyV7bn+hp/XqPlO0+T6eFDHJAH1Cofa+/KtL
+         aJ1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nxMWXDBC0LJ7v4Qp9G3rcuNoE2Q8i3XYQtAcfovO3WM=;
+        b=IldGNjccXctquylxPnnYzZHWT+qLD6faFdv3KTMHaT1yF2kNFpRWoul30BUhNM2/fx
+         ADd6k0nT0HlKqAts72Tf2lDgGm/Tp48eX1H4QtO+0Vemju3BOXD3zbjyjn4jrnSi35ZI
+         Q7lkbPR4v98L1Rq85B/IvaQJ8d1tQHBQ7P5OKpN0dCYD51sSXUcqgs5ohjQJVunGOfDf
+         e0luH7eWDV3LA9H0tEPF3WSpKiQLNEc35ol6FlAb6Ot12gx15qk8O9HiGVHh5ODGMw8g
+         5zB+VL302UEAHspcKA1+8r9EVxn3BrNpU3IWdgcdt/5oAXMAhHz3T+3WUbEbJQnvcdmg
+         2+BQ==
+X-Gm-Message-State: AOAM531zYYFl8S2+qCQmnu8TE+2CI10ivYUSjzPIhPSMQ3VzVZVkgDiR
+        ZbwgeLYkJ0joYkXVM1gflfrmmRHfsE6BBw==
+X-Google-Smtp-Source: ABdhPJx6VAP68B7NzJ/anJobEMtL6nxwdN1p5o95ufsaXaACglPjr3QadKu8Mr3nB3ixLqzoueBkYQ==
+X-Received: by 2002:ad4:4625:: with SMTP id x5mr35498156qvv.55.1618349519319;
+        Tue, 13 Apr 2021 14:31:59 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id j30sm10742849qka.57.2021.04.13.14.31.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 14:31:58 -0700 (PDT)
+Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+ <20210225182716.1402449-7-thara.gopinath@linaro.org>
+ <20210405221848.GA904837@yoga>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
+Date:   Tue, 13 Apr 2021 17:31:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <202104071158.B4FA1956@keescook>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210405221848.GA904837@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lWQXS-003IaF-0m
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:50198
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all!
 
-On 4/7/21 14:02, Kees Cook wrote:
-> On Wed, Mar 31, 2021 at 04:45:34PM -0500, Gustavo A. R. Silva wrote:
->> Fix the following out-of-bounds warning by enclosing
->> some structure members into new struct req:
->>
->> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
->>
->> Refactor the code, accordingly:
->>
->> $ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
->> struct wl3501_join_req {
->> 	u16                        next_blk;             /*     0     2 */
->> 	u8                         sig_id;               /*     2     1 */
->> 	u8                         reserved;             /*     3     1 */
->> 	struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
->> 	u16                        reserved2;            /*    14     2 */
->> 	u16                        timeout;              /*    16     2 */
->> 	u16                        probe_delay;          /*    18     2 */
->> 	u8                         timestamp[8];         /*    20     8 */
->> 	u8                         local_time[8];        /*    28     8 */
->> 	struct {
->> 		u16                beacon_period;        /*    36     2 */
->> 		u16                dtim_period;          /*    38     2 */
->> 		u16                cap_info;             /*    40     2 */
->> 		u8                 bss_type;             /*    42     1 */
->> 		u8                 bssid[6];             /*    43     6 */
->> 		struct iw_mgmt_essid_pset ssid;          /*    49    34 */
->> 		/* --- cacheline 1 boundary (64 bytes) was 19 bytes ago --- */
->> 		struct iw_mgmt_ds_pset ds_pset;          /*    83     3 */
->> 		struct iw_mgmt_cf_pset cf_pset;          /*    86     8 */
->> 		struct iw_mgmt_ibss_pset ibss_pset;      /*    94     4 */
->> 		struct iw_mgmt_data_rset bss_basic_rset; /*    98    10 */
->> 	} req;                                           /*    36    72 */
-> 
-> This section is the same as a large portion of struct wl3501_scan_confirm:
-> 
-> struct wl3501_scan_confirm {
->         u16                         next_blk;
->         u8                          sig_id;
->         u8                          reserved;
->         u16                         status;
->         char                        timestamp[8];
->         char                        localtime[8];
-> 
-> from here
->         u16                         beacon_period;
->         u16                         dtim_period;
->         u16                         cap_info;
->         u8                          bss_type;
->         u8                          bssid[ETH_ALEN];
->         struct iw_mgmt_essid_pset   ssid;
->         struct iw_mgmt_ds_pset      ds_pset;
->         struct iw_mgmt_cf_pset      cf_pset;
->         struct iw_mgmt_ibss_pset    ibss_pset;
->         struct iw_mgmt_data_rset    bss_basic_rset;
-> through here
-> 
->         u8                          rssi;
-> };
-> 
-> It seems like maybe extracting that and using it in both structures
-> would make more sense?
+Hi Bjorn,
 
-If I do this, I would therefore have to make a bunch of other changes,
-accordingly. I'm OK with that but I'd like to have the opinion of the
-maintainers on all this. So, I will go and ping them from the cover
-letter of this series with the hope that we can get some feedback from
-them. :) They have been silent for a couple of weeks now.
-
+On 4/5/21 6:18 PM, Bjorn Andersson wrote:
+> On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
 > 
+>> Add register programming sequence for enabling AEAD
+>> algorithms on the Qualcomm crypto engine.
 >>
->> 	/* size: 108, cachelines: 2, members: 10 */
->> 	/* last cacheline: 44 bytes */
->> };
->>
->> The problem is that the original code is trying to copy data into a
->> bunch of struct members adjacent to each other in a single call to
->> memcpy(). Now that a new struct _req_ enclosing all those adjacent
->> members is introduced, memcpy() doesn't overrun the length of
->> &sig.beacon_period, because the address of the new struct object
->> _req_ is used as the destination, instead.
->>
->> Also, this helps with the ongoing efforts to enable -Warray-bounds and
->> avoid confusing the compiler.
->>
->> Link: https://github.com/KSPP/linux/issues/109
->> Reported-by: kernel test robot <lkp@intel.com>
->> Build-tested-by: kernel test robot <lkp@intel.com>
->> Link: https://lore.kernel.org/lkml/60641d9b.2eNLedOGSdcSoAV2%25lkp@intel.com/
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 >> ---
->> Changes in v2:
->>  - None.
+>>   drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 153 insertions(+), 2 deletions(-)
 >>
->>  drivers/net/wireless/wl3501.h    | 22 ++++++++++++----------
->>  drivers/net/wireless/wl3501_cs.c |  4 ++--
->>  2 files changed, 14 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
->> index ef9d605d8c88..774d8cac046d 100644
->> --- a/drivers/net/wireless/wl3501.h
->> +++ b/drivers/net/wireless/wl3501.h
->> @@ -389,16 +389,18 @@ struct wl3501_join_req {
->>  	u16			    probe_delay;
->>  	u8			    timestamp[8];
->>  	u8			    local_time[8];
->> -	u16			    beacon_period;
->> -	u16			    dtim_period;
->> -	u16			    cap_info;
->> -	u8			    bss_type;
->> -	u8			    bssid[ETH_ALEN];
->> -	struct iw_mgmt_essid_pset   ssid;
->> -	struct iw_mgmt_ds_pset	    ds_pset;
->> -	struct iw_mgmt_cf_pset	    cf_pset;
->> -	struct iw_mgmt_ibss_pset    ibss_pset;
->> -	struct iw_mgmt_data_rset    bss_basic_rset;
->> +	struct {
->> +		u16			    beacon_period;
->> +		u16			    dtim_period;
->> +		u16			    cap_info;
->> +		u8			    bss_type;
->> +		u8			    bssid[ETH_ALEN];
->> +		struct iw_mgmt_essid_pset   ssid;
->> +		struct iw_mgmt_ds_pset	    ds_pset;
->> +		struct iw_mgmt_cf_pset	    cf_pset;
->> +		struct iw_mgmt_ibss_pset    ibss_pset;
->> +		struct iw_mgmt_data_rset    bss_basic_rset;
->> +	} req;
->>  };
->>  
->>  struct wl3501_join_confirm {
->> diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
->> index e149ef81d6cc..399d3bd2ae76 100644
->> --- a/drivers/net/wireless/wl3501_cs.c
->> +++ b/drivers/net/wireless/wl3501_cs.c
->> @@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
->>  	struct wl3501_join_req sig = {
->>  		.sig_id		  = WL3501_SIG_JOIN_REQ,
->>  		.timeout	  = 10,
->> -		.ds_pset = {
->> +		.req.ds_pset = {
->>  			.el = {
->>  				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
->>  				.len = 1,
->> @@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
->>  		},
->>  	};
->>  
->> -	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
->> +	memcpy(&sig.req, &this->bss_set[stas].beacon_period, sizeof(sig.req));
+>> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
+>> index 05a71c5ecf61..54d209cb0525 100644
+>> --- a/drivers/crypto/qce/common.c
+>> +++ b/drivers/crypto/qce/common.c
+>> @@ -15,6 +15,16 @@
+>>   #include "core.h"
+>>   #include "regs-v5.h"
+>>   #include "sha.h"
+>> +#include "aead.h"
+>> +
+>> +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
+>> +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
+>> +};
+>> +
+>> +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
+>> +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
+>> +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
+>> +};
+>>   
+>>   static inline u32 qce_read(struct qce_device *qce, u32 offset)
+>>   {
+>> @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
+>>   		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
+>>   }
+>>   
+>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
+>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
+>>   static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
+>>   {
+>>   	u32 cfg = 0;
+>> @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
+>>   
+>>   	return cfg;
+>>   }
+>> +#endif
+>>   
+>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
+>>   static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
+>>   {
+>>   	struct ahash_request *req = ahash_request_cast(async_req);
+>> @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
+>>   }
+>>   #endif
+>>   
+>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
+>>   static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
+>>   {
+>>   	u32 cfg = 0;
+>> @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
+>>   
+>>   	return cfg;
+>>   }
+>> +#endif
+>>   
+>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
+>>   static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
+>>   {
+>>   	u8 swap[QCE_AES_IV_LENGTH];
+>> @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
+>>   }
+>>   #endif
+>>   
+>> +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
+>> +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
+>> +{
+>> +	struct aead_request *req = aead_request_cast(async_req);
+>> +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
+>> +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
+>> +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
+>> +	struct qce_device *qce = tmpl->qce;
+>> +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
+>> +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
+>> +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
+>> +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
+>> +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
+>> +	unsigned int enc_keylen = ctx->enc_keylen;
+>> +	unsigned int auth_keylen = ctx->auth_keylen;
+>> +	unsigned int enc_ivsize = rctx->ivsize;
+>> +	unsigned int auth_ivsize;
+>> +	unsigned int enckey_words, enciv_words;
+>> +	unsigned int authkey_words, authiv_words, authnonce_words;
+>> +	unsigned long flags = rctx->flags;
+>> +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
 > 
-> If not, then probably something like this should be added to make sure
-> nothing unexpected happens to change structure sizes:
-> 
-> BUILD_BUG_ON(sizeof(sig.req) != 72);
+> I don't see any reason to initialize encr_cfg or auth_cfg.
 
-Yep, this is sensible.
-
-Thanks for the feedback!
---
-Gustavo
+right.. I will remove it
 
 > 
->>  	return wl3501_esbq_exec(this, &sig, sizeof(sig));
->>  }
->>  
->> -- 
->> 2.27.0
->>
+>> +	u32 *iv_last_word;
+>> +
+>> +	qce_setup_config(qce);
+>> +
+>> +	/* Write encryption key */
+>> +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
+>> +	enckey_words = enc_keylen / sizeof(u32);
+>> +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
 > 
+> Afaict all "array registers" in this function are affected by the
+> CRYPTO_SETUP little endian bit, but you set this bit before launching
+> the operation dependent on IS_CCM(). So is this really working for the
+> !IS_CCM() case?
+
+I am not sure I understand you. Below ,
+	/* get little endianness */
+	config = qce_config_reg(qce, 1);
+	qce_write(qce, REG_CONFIG, config);
+
+is outside of any checks..
+
+> 
+>> +
+>> +	/* Write encryption iv */
+>> +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
+>> +	enciv_words = enc_ivsize / sizeof(u32);
+>> +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
+> 
+> It would be nice if this snippet was extracted to a helper function.
+> 
+>> +
+>> +	if (IS_CCM(rctx->flags)) {
+>> +		iv_last_word = (u32 *)&enciv[enciv_words - 1];
+>> +//		qce_write(qce, REG_CNTR3_IV3, enciv[enciv_words - 1] + 1);
+> 
+> I believe this is a remnant of the two surrounding lines.
+
+It indeed is.. I will remove it.
+
+> 
+>> +		qce_write(qce, REG_CNTR3_IV3, (*iv_last_word) + 1);
+> 
+> enciv is an array of big endian 32-bit integers, which you tell the
+> compiler to treat as cpu-native endian, and then you do math on it.
+> Afaict from the documentation the value of REG_CNTR3_IVn should be set
+> to rctx->iv + 1, but if the hardware expects these in big endian then I
+> think you added 16777216.
+
+So, the crypto engine documentation talks of writing to these registers 
+in little endian mode. The byte stream that you get for iv from the user
+is in big endian mode as in the MSB is byte 0. So we kind of invert this 
+and write  to these registers. This is what happens with declaring the 
+__be32 array and copying words to it from the byte stream. So now byte 0 
+is the LSB and a +1 will just add a 1 to it.
+
+I suspect from what I read in the documentation we could get away by 
+removing this and writing the big endian byte stream directly and never 
+setting the little endian in config register. Though I am not sure if 
+this has ever been tested out. If we change it, it will be across 
+algorithms and as a separate effort.
+
+> 
+> Perhaps I'm missing something here though?
+> 
+> PS. Based on how the documentation is written, shouldn't you write out
+> REG_CNTR_IV[012] as well?
+
+It is done on top, right ?
+qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
+
+> 
+>> +		qce_write_array(qce, REG_ENCR_CCM_INT_CNTR0, (u32 *)enciv, enciv_words);
+>> +		qce_write(qce, REG_CNTR_MASK, ~0);
+>> +		qce_write(qce, REG_CNTR_MASK0, ~0);
+>> +		qce_write(qce, REG_CNTR_MASK1, ~0);
+>> +		qce_write(qce, REG_CNTR_MASK2, ~0);
+>> +	}
+>> +
+>> +	/* Clear authentication IV and KEY registers of previous values */
+>> +	qce_clear_array(qce, REG_AUTH_IV0, 16);
+>> +	qce_clear_array(qce, REG_AUTH_KEY0, 16);
+>> +
+>> +	/* Clear byte count */
+>> +	qce_clear_array(qce, REG_AUTH_BYTECNT0, 4);
+>> +
+>> +	/* Write authentication key */
+>> +	qce_cpu_to_be32p_array(authkey, ctx->auth_key, auth_keylen);
+>> +	authkey_words = DIV_ROUND_UP(auth_keylen, sizeof(u32));
+>> +	qce_write_array(qce, REG_AUTH_KEY0, (u32 *)authkey, authkey_words);
+>> +
+>> +	if (IS_SHA_HMAC(rctx->flags)) {
+>> +		/* Write default authentication iv */
+>> +		if (IS_SHA1_HMAC(rctx->flags)) {
+>> +			auth_ivsize = SHA1_DIGEST_SIZE;
+>> +			memcpy(authiv, std_iv_sha1, auth_ivsize);
+>> +		} else if (IS_SHA256_HMAC(rctx->flags)) {
+>> +			auth_ivsize = SHA256_DIGEST_SIZE;
+>> +			memcpy(authiv, std_iv_sha256, auth_ivsize);
+>> +		}
+>> +		authiv_words = auth_ivsize / sizeof(u32);
+>> +		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
+> 
+> AUTH_IV0 is affected by the little endian configuration, does this imply
+> that IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags? If so
+> I think it would be nice if you grouped the conditionals in a way that
+> made that obvious when reading the function.
+
+So yes IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags. 
+AUTH_IVn is 0 for ccm and has initial value for HMAC algorithms. I don't 
+understand the confusion here.
+
+> 
+>> +	}
+>> +
+>> +	if (IS_CCM(rctx->flags)) {
+>> +		qce_cpu_to_be32p_array(authnonce, rctx->ccm_nonce, QCE_MAX_NONCE);
+>> +		authnonce_words = QCE_MAX_NONCE / sizeof(u32);
+>> +		qce_write_array(qce, REG_AUTH_INFO_NONCE0, (u32 *)authnonce, authnonce_words);
+>> +	}
+>> +
+>> +	/* Set up ENCR_SEG_CFG */
+>> +	encr_cfg = qce_encr_cfg(flags, enc_keylen);
+>> +	if (IS_ENCRYPT(flags))
+>> +		encr_cfg |= BIT(ENCODE_SHIFT);
+>> +	qce_write(qce, REG_ENCR_SEG_CFG, encr_cfg);
+>> +
+>> +	/* Set up AUTH_SEG_CFG */
+>> +	auth_cfg = qce_auth_cfg(rctx->flags, auth_keylen, ctx->authsize);
+>> +	auth_cfg |= BIT(AUTH_LAST_SHIFT);
+>> +	auth_cfg |= BIT(AUTH_FIRST_SHIFT);
+>> +	if (IS_ENCRYPT(flags)) {
+>> +		if (IS_CCM(rctx->flags))
+>> +			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
+>> +		else
+>> +			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
+>> +	} else {
+>> +		if (IS_CCM(rctx->flags))
+>> +			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
+>> +		else
+>> +			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
+>> +	}
+>> +	qce_write(qce, REG_AUTH_SEG_CFG, auth_cfg);
+>> +
+>> +	totallen = rctx->cryptlen + rctx->assoclen;
+>> +
+>> +	/* Set the encryption size and start offset */
+>> +	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
+>> +		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen + ctx->authsize);
+>> +	else
+>> +		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen);
+>> +	qce_write(qce, REG_ENCR_SEG_START, rctx->assoclen & 0xffff);
+>> +
+>> +	/* Set the authentication size and start offset */
+>> +	qce_write(qce, REG_AUTH_SEG_SIZE, totallen);
+>> +	qce_write(qce, REG_AUTH_SEG_START, 0);
+>> +
+>> +	/* Write total length */
+>> +	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
+>> +		qce_write(qce, REG_SEG_SIZE, totallen + ctx->authsize);
+>> +	else
+>> +		qce_write(qce, REG_SEG_SIZE, totallen);
+>> +
+>> +	/* get little endianness */
+>> +	config = qce_config_reg(qce, 1);
+>> +	qce_write(qce, REG_CONFIG, config);
+>> +
+>> +	/* Start the process */
+>> +	if (IS_CCM(flags))
+>> +		qce_crypto_go(qce, 0);
+> 
+> Second parameter is defined as "bool", please use "false" here (and true
+> below). Or
+> 
+> 	qce_crypto_go(qce, !IS_CCM(flags));
+
+will do... I like the one liner better.
+
+
+-- 
+Warm Regards
+Thara
