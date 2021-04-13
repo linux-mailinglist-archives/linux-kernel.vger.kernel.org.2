@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA7735DC73
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B965B35DC76
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244130AbhDMKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243397AbhDMKZc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:25:32 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4077C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:25:12 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id 2so8254332vsh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0lVf0nl5+qZIZ/jwfGQvy92YMy+Bwdb1xbccBw3TFn4=;
-        b=OQucTICyR/tvEMXOZVjDg+CuM65o1aglrPM1pxZwsPXp1hq20Ab1ovqvtWIGG24X+0
-         fa8WvN4zl0fWpYqVcXRaQSaRvwZP28mJyVG6tjv6u/oqP5CDONyT4OoUbgqf7iVrzPss
-         ZXxDcWSEUkdupAb3uez+3j+IAeZXETzsvlf+0nUM4oQk0RG+7GpkEYm2AiTNMWqQHwe7
-         oV079OC27O+PVqHKUUuni8LlJiYch4KoCaksdtWX8vWfpHUeoHDdCWyJp3223DAbe1Y+
-         dhuO3xPCWjkggaeGDmyiXboig1YavxvI5GAsv5rrBt5qJR/R6TvavU6R5RFR7hDYmqD+
-         NAGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0lVf0nl5+qZIZ/jwfGQvy92YMy+Bwdb1xbccBw3TFn4=;
-        b=cvmc4fHwBxKySZP263pThNIu8yxUuKVHW6sO1kof6oR+gCbj2Opqb3SVphFTY6jbmE
-         E+PEBy52P+Cqk5JzDTPR6RVlkFoFeGEoDKa0Pwz317KabejpxTYWHPRuUqLdQK7eKxrn
-         b/Sjwisle547VaEfBgJ+49v2xfHo+hLW+ODWSZbqc5ojUnH88Ba3LCN4cndjeoOXh0nR
-         5i8NQanU4FvbHDLIRcpPNT170l9a9abgGXP06rIL9qRde3U20QJu5uHfJB+yyHV+v4Ba
-         S7Dj1myibhS9wou2Hm1y9YrfCf3JZN15iQG/H43C+AEemwwmz6pddrZe1oqL8KVZu2Kb
-         ECZw==
-X-Gm-Message-State: AOAM530CjHEl2vq/3YkytO5I5b/JhIZVt5Qv4lC7mcoy5grNxW2K/TGS
-        uEphGwPMH7BipzjINCUAm+iwfFOqttEeWd9Ha78=
-X-Google-Smtp-Source: ABdhPJxnF09LZHIgut/aICnbMhcpqGlRpleSNRviOgql/+Uc9Wy5Lxs0pjY/bNLdVZZrBYZ78aDIZG9tURDVo9wKp1s=
-X-Received: by 2002:a67:e40b:: with SMTP id d11mr6143063vsf.23.1618309511657;
- Tue, 13 Apr 2021 03:25:11 -0700 (PDT)
+        id S245120AbhDMK0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:26:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230088AbhDMK0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:26:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB08613BC;
+        Tue, 13 Apr 2021 10:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618309574;
+        bh=eEvo19Vw5I5M464tlOBT1pZyU/kCLCVp40Q85+C3i3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJO+ZfUtXwYQgnUibEaGqWMTQzuiEDzZDpG2TAs0WLm7O9mgP94RXjnrm/lnxXJMU
+         viKXDaOMlWFKmyCSPYCl/Cttk6sLFKJbAsJenCag7MQxONIftmwSIKznBk6NoyUM4V
+         sJDl0wXhFSDi/JF14ix3Qt6+TpLXdlWvwPKObmj4=
+Date:   Tue, 13 Apr 2021 12:26:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Youn <John.Youn@synopsys.com>
+Subject: Re: [PATCH v2 00/12] usb: dwc2: Add clock gating support.
+Message-ID: <YHVxw26V2SPzpoQy@kroah.com>
+References: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
+ <20210413073600.57846A0094@mailhost.synopsys.com>
+ <9b21e84b-817d-df04-1eb1-78c7ca1c931e@synopsys.com>
 MIME-Version: 1.0
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <CAHB2gtTmGt=V4cUgbt3zGgi+y5h0f5ON0n+MdRC8P=su670qhQ@mail.gmail.com>
- <YHVl8fFfdQDn+QYW@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHVl8fFfdQDn+QYW@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>
-Date:   Tue, 13 Apr 2021 12:25:00 +0200
-Message-ID: <CAHB2gtTzEuD7j-+5ztui0eV6UNiEisBTgoK+2Sr=Z0b4PPXRyA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>, catalin.marinas@arm.com,
-        will.deacon@arm.com, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b21e84b-817d-df04-1eb1-78c7ca1c931e@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:37 AM Peter Zijlstra <peterz@infradead.org> wrot=
-e:
->
-> On Tue, Apr 13, 2021 at 11:22:40AM +0200, Christoph M=C3=BCllner wrote:
->
-> > > For ticket locks you really only needs atomic_fetch_add() and
-> > > smp_store_release() and an architectural guarantees that the
-> > > atomic_fetch_add() has fwd progress under contention and that a sub-w=
-ord
-> > > store (through smp_store_release()) will fail the SC.
-> > >
-> > > Then you can do something like:
-> > >
-> > > void lock(atomic_t *lock)
-> > > {
-> > >         u32 val =3D atomic_fetch_add(1<<16, lock); /* SC, gives us RC=
-sc */
-> > >         u16 ticket =3D val >> 16;
-> > >
-> > >         for (;;) {
-> > >                 if (ticket =3D=3D (u16)val)
-> > >                         break;
-> > >                 cpu_relax();
-> > >                 val =3D atomic_read_acquire(lock);
-> > >         }
-> > > }
-> > >
-> > > void unlock(atomic_t *lock)
-> > > {
-> > >         u16 *ptr =3D (u16 *)lock + (!!__BIG_ENDIAN__);
-> > >         u32 val =3D atomic_read(lock);
-> > >
-> > >         smp_store_release(ptr, (u16)val + 1);
-> > > }
-> > >
-> > > That's _almost_ as simple as a test-and-set :-) It isn't quite optima=
-l
-> > > on x86 for not being allowed to use a memop on unlock, since its bein=
-g
-> > > forced into a load-store because of all the volatile, but whatever.
-> >
-> > What about trylock()?
-> > I.e. one could implement trylock() without a loop, by letting
-> > trylock() fail if the SC fails.
-> > That looks safe on first view, but nobody does this right now.
->
-> Generic code has to use cmpxchg(), and then you get something like this:
->
-> bool trylock(atomic_t *lock)
-> {
->         u32 old =3D atomic_read(lock);
->
->         if ((old >> 16) !=3D (old & 0xffff))
->                 return false;
->
->         return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, for =
-RCsc */
-> }
+On Tue, Apr 13, 2021 at 08:03:23AM +0000, Artur Petrosyan wrote:
+> Hi Greg,
+> 
+> On 4/13/2021 11:35, Artur Petrosyan wrote:
+> > This patch set adds clock gating power saving support for
+> > dwc2 core.
+> > It adds support for the following cases described by programming guide.
+> >    1. Enter to clock gating from USB_SUSPEND interrupt.
+> >    2. Clock gating entering flow by system suspend.
+> >    3. Clock gating exiting flow by system resume.
+> >    4. Exit clock gating from wakeup interrupt.
+> >    5. Exit clock gating from session request interrupt.
+> >    6. Exit clock gating when port reset is asserted.
+> > 
+> > Additional cases to exit form clock gating were needed which are not
+> > described in clock gating programming guide.
+> >    1. Added clock gating exit flow before removing driver
+> >    2. Exit clock gating in urb enqueue.
+> > 
+> > It updates the implementation of dwc2 entering and exiting clock
+> > gating when a port is suspended or resumed.
+> > 
+> > The patch set also adds the implementation of function handlers
+> > for entering and exiting host or device clock gating.
+> > 
+> > NOTE: This is the third patch set in the power saving mode fixes
+> > series.
+> > This patch set is part of multiple series and is continuation
+> > of the "usb: dwc2: Fix and improve power saving modes" patch set.
+> > (Patch set link: https://marc.info/?l=linux-usb&m=160379622403975&w=2).
+> > The patches that were included in the "usb: dwc2:
+> > Fix and improve power saving modes" which was submitted
+> > earlier was too large and needed to be split up into
+> > smaller patch sets.
+> > 
+> > Changes since V1:
+> > Re sending the patch set as v1 because vger.kernel.org rejected
+> > the cover letter. With error code "550 5.7.1 Content-Policy"
+> > No changes in the patches or the source code.
+> > 
+> > 
+> > Artur Petrosyan (12):
+> >    usb: dwc2: Add device clock gating support functions
+> >    usb: dwc2: Add host clock gating support functions
+> >    usb: dwc2: Allow entering clock gating from USB_SUSPEND interrupt
+> >    usb: dwc2: Add exit clock gating from wakeup interrupt
+> >    usb: dwc2: Add exit clock gating from session request interrupt
+> >    usb: dwc2: Add exit clock gating when port reset is asserted
+> >    usb: dwc2: Update enter clock gating when port is suspended
+> >    usb: dwc2: Update exit clock gating when port is resumed
+> >    usb: dwc2: Allow exit clock gating in urb enqueue
+> >    usb: dwc2: Add clock gating entering flow by system suspend
+> >    usb: dwc2: Add clock gating exiting flow by system resume
+> >    usb: dwc2: Add exit clock gating before removing driver
+> > 
+> >   drivers/usb/dwc2/core.h      |  15 ++-
+> >   drivers/usb/dwc2/core_intr.c |  62 ++++++++----
+> >   drivers/usb/dwc2/gadget.c    |  71 ++++++++++++++
+> >   drivers/usb/dwc2/hcd.c       | 177 +++++++++++++++++++++++++++--------
+> >   drivers/usb/dwc2/platform.c  |   9 ++
+> >   5 files changed, 272 insertions(+), 62 deletions(-)
+> > 
+> > 
+> > base-commit: 9bc46a12c53d8268392774172742aa9e5dd6953d
+> > 
+> This cover letter for the clock gating patches is being rejected by 
+> "vger.kernel.org". I have tried to send one more time as v2 but again it 
+> is rejected.
+> The error message is "vger.kernel.org
+> Remote Server returned '554 5.7.1 <vger.kernel.org #5.7.1 smtp; 550 
+> 5.7.1 Content-Policy accept-into-freezer-1"
+> 
+> Could you please suggest any solution to this?
 
-This approach requires two loads (atomic_read() and cmpxchg()), which
-is not required.
-Detecting this pattern and optimizing it in a compiler is quite unlikely.
+No idea, sorry, vger is fickle when it comes to odd rules it has for
+things it has to deal with.  Looks like your patches came through just
+fine, so all is good.
 
-A bit less generic solution would be to wrap the LL/SC (would be
-mandatory in this case)
-instructions and do something like this:
+thanks,
 
-uint32_t __smp_load_acquire_reserved(void*);
-int __smp_store_release_conditional(void*, uint32_t);
-
-typedef union {
-    uint32_t v32;
-    struct {
-        uint16_t owner;
-        uint16_t next;
-    };
-} arch_spinlock_t;
-
-int trylock(arch_spinlock_t *lock)
-{
-    arch_spinlock_t l;
-    int success;
-    do {
-        l.v32 =3D __smp_load_acquire_reserved(lock);
-        if (l.owner !=3D l.next)
-            return 0;
-        l.next++;
-        success =3D __smp_store_release_conditional(lock, l.v32);
-    } while (!success);
-    return success;
-}
-
-But here we can't tell the compiler to optimize the code between LL and SC.=
-..
-
->
-> That will try and do the full LL/SC loop, because it wants to complete
-> the cmpxchg, but in generic code we have no other option.
->
-> (Is this what C11's weak cmpxchg is for?)
+greg k-h
