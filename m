@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A6335D4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC09C35D4EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244841AbhDMBhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242285AbhDMBhv (ORCPT
+        id S239543AbhDMBr0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Apr 2021 21:47:26 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5129 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237718AbhDMBrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:37:51 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CA4C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:37:30 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e14so1447556ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x4sP66olXyJtoIVJHUM1ZSa1rKe0qv26/GOEaIe1yKA=;
-        b=PTXV+CvBBb5vx2nwD1HE6SOQzc9amTt1MkP3hpJYJOkpDuiqBpO8e0VtQVBVicNN4T
-         aaDe3JfCBxlL1KfetAsF5fO2c6xsWdgLdWB2wzpUE6XC7zHTp6bcY93vDI2C9tnWK6q/
-         PbGECzWXZp5BLgZOIcjnF9z94ivlBgeJdMwY0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x4sP66olXyJtoIVJHUM1ZSa1rKe0qv26/GOEaIe1yKA=;
-        b=VOw71C08Ii03Tl47Y4gkSft/UbkfDRoPScniu9NCSJBKlmiRb+/Wf8INdULnj1PTFJ
-         UyPgRfVlZ2TXLbkHZBcZF9FVuEsgRiiyLtHjZAF9ALJR5K30mw7WteoM7lNFJTl+1h+F
-         1TwHO4PZY0kQCttMFhNhFyHke7MXLp4DPIEeUz6S3AV9EYx6SDqtkkMMswB0z0NBo1zO
-         w0D0cUFw0ErCGAecqyNeQserDrhXzGSz/7YFsVt6FAvlluAfB1y6hT6AKGw4H7xIR3SP
-         MdKkVyz9McPcxyf1WLvevFNg1RcLIGua0KLUTrl/L7YIQsKK+15XAcvMfk2kIoItsDlk
-         Tx9w==
-X-Gm-Message-State: AOAM5302AOUodbZkw4LV+pIaUigj8XfhMxAJbQdrToMMJakhpGYWLUUq
-        trPclm8FSf1DOqiGl8LKSWWXFA==
-X-Google-Smtp-Source: ABdhPJz9Q9mCvz6m/4W0EVzjSVm1xjIKX3L/ctdIpDmoCZx/D6YmcUJkI/Gpw1uVDf+KEatZx2KGSA==
-X-Received: by 2002:a05:6e02:1c42:: with SMTP id d2mr13554746ilg.287.1618277849818;
-        Mon, 12 Apr 2021 18:37:29 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i12sm6420328ilc.27.2021.04.12.18.37.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 18:37:29 -0700 (PDT)
-Subject: Re: [PATCH 4.19 00/66] 4.19.187-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2021d2fc-b1c7-ec53-c4d9-cf84171e60c8@linuxfoundation.org>
-Date:   Mon, 12 Apr 2021 19:37:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 12 Apr 2021 21:47:25 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FK7hW27DYzYVr4;
+        Tue, 13 Apr 2021 09:44:59 +0800 (CST)
+Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 13 Apr 2021 09:47:03 +0800
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500008.china.huawei.com (7.185.36.136) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 13 Apr 2021 09:47:03 +0800
+Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
+ dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
+ Tue, 13 Apr 2021 09:47:03 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "john.stultz@linaro.org" <john.stultz@linaro.org>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>
+Subject: Re: [PATCH] time: Fix overwrite err unexpected in clock_adjtime32
+Thread-Topic: [PATCH] time: Fix overwrite err unexpected in clock_adjtime32
+Thread-Index: AQHXL6blk8YXTY0RLUu2MVHj98u5SQ==
+Date:   Tue, 13 Apr 2021 01:47:03 +0000
+Message-ID: <c378f5bd04074751893ba582ba845e0e@huawei.com>
+References: <20210412124552.50213-1-chenjun102@huawei.com>
+ <20210412141950.GA18311@hoboy.vegasvil.org>
+ <0aacd0e17515458483653f570b1efd2d@huawei.com>
+ <20210412155830.GA19589@hoboy.vegasvil.org>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 2:40 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.187 release.
-> There are 66 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+在 2021/4/12 23:58, Richard Cochran 写道:
+> On Mon, Apr 12, 2021 at 02:52:11PM +0000, chenjun (AM) wrote:
+>> 在 2021/4/12 22:20, Richard Cochran 写道:
+>>> On Mon, Apr 12, 2021 at 12:45:51PM +0000, Chen Jun wrote:
+>>>> the correct error is covered by put_old_timex32.
+>>>
+>>> Well, the non-negative return code (TIME_OK, TIME_INS, etc) is
+>>> clobbered by put_old_timex32().
+>>>
+>>>> Fixes: f1f1d5ebd10f ("posix-timers: Introduce a syscall for clock tuning.")
+>>>
+>>> This is not the correct commit for the "Fixes" tag.  Please find the
+>>> actual commit that introduced the issue.
+>>>
+>>> In commit f1f1d5ebd10f the code looked like this...
+>>>
+>>> 	long compat_sys_clock_adjtime(clockid_t which_clock,
+>>> 			struct compat_timex __user *utp)
+>>> 	{
+>>> 		struct timex txc;
+>>> 		mm_segment_t oldfs;
+>>> 		int err, ret;
+>>> 	
+>>> 		err = compat_get_timex(&txc, utp);
+>>> 		if (err)
+>>> 			return err;
+>>> 	
+>>> 		oldfs = get_fs();
+>>> 		set_fs(KERNEL_DS);
+>>> 		ret = sys_clock_adjtime(which_clock, (struct timex __user *) &txc);
+>>> 		set_fs(oldfs);
+>>> 	
+>>> 		err = compat_put_timex(utp, &txc);
+>>> 		if (err)
+>>> 			return err;
+>>> 	
+>>> 		return ret;
+>>> 	}
 > 
-> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
-> Anything received after that time might be too late.
+> Look at the code ^^^
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.187-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
+>> The implement of clock_adjtime32 is similar to compat_sys_clock_adjtime.
+>> And I think f1f1d5ebd10 introduced the problem actually.
 > 
-> thanks,
+> See how 'ret' and 'err' are two separate variables?  It makes a difference.
 > 
-> greg k-h
+> Thanks,
+> Richard
 > 
 
-Compiled and booted on my test system. No dmesg regressions. No problems
-with wifi this time. I will be on the lookout for this in the future.
+Oh, yee.. Very thanks.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+3a4d44b616 ("ntp: Move adjtimex related compat syscalls to native 
+counterparts") made the change.
 
-thanks,
--- Shuah
-
+-- 
+Regards
+Chen Jun
