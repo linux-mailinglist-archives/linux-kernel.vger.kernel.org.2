@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716F735E1EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77AF35E1EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238492AbhDMOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhDMOxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:53:35 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B92C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:53:14 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id g20so8673482vst.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qpBExCiZQlQf9v/ukxaQqC4noDhKnFApocLLkZan05g=;
-        b=AE4Kwg+qjn9BXqj7AtlOnUMIVDmSIf4+8RPHjDrL+7Q4/2FPFk43jr0ryh2SJNewX1
-         gTbWtTgr39JeqZL/27PXabWcuKZJyrVbY0aSrg5d6oWcYZLOqgYfcGBA9GD3yE+24FEk
-         bJ524/31JiGvNYqcBZczVB8JHF8Sg+I/h6nMw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qpBExCiZQlQf9v/ukxaQqC4noDhKnFApocLLkZan05g=;
-        b=OtEQUhtFHLUkgvuZkBxEscxdf5BTQLnekRLKUvZhHLA51fdTGP6JKqeyhDa8fV3tcM
-         Y6AI+LP6laAbMmoQHaYQcPSa0gr3Yj8XXmWStDLk++o7Py6UjaYt7pK1czoqoyv62VRX
-         alYauFHEnYoQ/NMehuRj6Hrx0IN8fhp4OgXPt7x/il3x0P58bu9i/FOI0V6y2Vof7GJe
-         WeMDtHTux5ilcKKSGiK6wMW1MaaxIo8wZHzVlEuSLy5kboomXxmsZcPAzIzilhdiZzOu
-         z1Dp2+IrN9fAJJJCE3DFyRaq0+5f3lhFininlY1Oc8X/o3+GcI1ya6VJ7AUS4wKZiSmC
-         QA5A==
-X-Gm-Message-State: AOAM533p7yksQDNNJ4f0xBkLgkPCQeZI+eYYYhjdPNQ5/4iV4FJijd3s
-        8UKxRI9AViX3aVk55Y12txzgR+8xKbSNsux5uO3cXA==
-X-Google-Smtp-Source: ABdhPJyK2wmF7sCncs1jt4t34+HmKqjg4ZPOu8kXNhYBq0UbUb8sg4DuOIarkxF7MP9BTwZkLJ2j+MD8Qa99ScQ6+5M=
-X-Received: by 2002:a67:6647:: with SMTP id a68mr21372885vsc.21.1618325592663;
- Tue, 13 Apr 2021 07:53:12 -0700 (PDT)
+        id S243816AbhDMOx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:53:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35617 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239760AbhDMOxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:53:45 -0400
+IronPort-SDR: 4zbmDKmFO3HhIwpxU7FQ2HAiBAfVf0LEgoEyeWIOpw4Cd8Sew0ylVxFJXwlYr3LC+FGWOP0lgL
+ cgIyseZscN6g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="194456666"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="194456666"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 07:53:22 -0700
+IronPort-SDR: ThDZnDaLHvuc3kj4p9CLOj8eCMjDN7c9Gh2EuxNxgL6sIYP7mPiWT3hhP/eptiuAKNHHa6pZn0
+ geGfOVXQD4Gg==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="521623505"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 07:53:18 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 5D7352082C;
+        Tue, 13 Apr 2021 17:53:15 +0300 (EEST)
+Date:   Tue, 13 Apr 2021 17:53:15 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Mitali Borkar <mitaliborkar810@gmail.com>,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [PATCH 1/1] staging: ipu3-imgu: Move the UAPI header from
+ include under include/uapi
+Message-ID: <20210413145315.GW3@paasikivi.fi.intel.com>
+References: <20210412111120.31625-1-sakari.ailus@linux.intel.com>
+ <YHWgbZTDAWBX9EpR@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <20210325193755.294925-1-mszeredi@redhat.com> <20210325193755.294925-2-mszeredi@redhat.com>
- <20210413144502.GP2531743@casper.infradead.org>
-In-Reply-To: <20210413144502.GP2531743@casper.infradead.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 13 Apr 2021 16:53:01 +0200
-Message-ID: <CAJfpeguoKOpfCy1cJhKu1gWk53c=Od5Siyag=reT=KC1kqEuxQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/18] vfs: add fileattr ops
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Sterba <dsterba@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHWgbZTDAWBX9EpR@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 4:46 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Mar 25, 2021 at 08:37:38PM +0100, Miklos Szeredi wrote:
-> > @@ -107,6 +110,8 @@ fiemap:           no
-> >  update_time: no
-> >  atomic_open: shared (exclusive if O_CREAT is set in open flags)
-> >  tmpfile:     no
-> > +fileattr_get:        no or exclusive
-> > +fileattr_set:        exclusive
-> >  ============ =============================================
->
-> This introduces a warning to `make htmldocs`:
->
-> /home/willy/kernel/folio/Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
-> Text in column margin in table line 24.
->
-> You need to add an extra '=' to the first batch of '=' (on all three lines of
-> the table).  Like this:
+Hi Laurent,
 
-Yep, already fixed in #fileattr_v6, which I asked Al to pull.
+On Tue, Apr 13, 2021 at 04:45:17PM +0300, Laurent Pinchart wrote:
+> Hi Sakari,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Apr 12, 2021 at 02:11:20PM +0300, Sakari Ailus wrote:
+> > The header defines the user space interface but may be mistaken as
+> > kernel-only header due to its location. Add "uapi" directory under
+> > driver's include directory and move the header there.
+> > 
+> > Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  Documentation/admin-guide/media/ipu3.rst      | 35 ++++++++++---------
+> >  .../media/v4l/pixfmt-meta-intel-ipu3.rst      |  2 +-
+> >  .../ipu3/include/{ => uapi}/intel-ipu3.h      |  0
+> >  drivers/staging/media/ipu3/ipu3-abi.h         |  2 +-
+> >  4 files changed, 20 insertions(+), 19 deletions(-)
+> >  rename drivers/staging/media/ipu3/include/{ => uapi}/intel-ipu3.h (100%)
+> > 
+> > diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
+> > index f59697c7b374..d6454f637ff4 100644
+> > --- a/Documentation/admin-guide/media/ipu3.rst
+> > +++ b/Documentation/admin-guide/media/ipu3.rst
+> > @@ -234,22 +234,23 @@ The IPU3 ImgU pipelines can be configured using the Media Controller, defined at
+> >  Running mode and firmware binary selection
+> >  ------------------------------------------
+> >  
+> > -ImgU works based on firmware, currently the ImgU firmware support run 2 pipes in
+> > -time-sharing with single input frame data. Each pipe can run at certain mode -
+> > -"VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture, and
+> > -"STILL" is used for still frame capture. However, you can also select "VIDEO" to
+> > -capture still frames if you want to capture images with less system load and
+> > -power. For "STILL" mode, ImgU will try to use smaller BDS factor and output
+> > -larger bayer frame for further YUV processing than "VIDEO" mode to get high
+> > -quality images. Besides, "STILL" mode need XNR3 to do noise reduction, hence
+> > -"STILL" mode will need more power and memory bandwidth than "VIDEO" mode. TNR
+> > -will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is running at
+> > -“VIDEO” mode by default, the user can use v4l2 control V4L2_CID_INTEL_IPU3_MODE
+> > -(currently defined in drivers/staging/media/ipu3/include/intel-ipu3.h) to query
+> > -and set the running mode. For user, there is no difference for buffer queueing
+> > -between the "VIDEO" and "STILL" mode, mandatory input and main output node
+> > -should be enabled and buffers need be queued, the statistics and the view-finder
+> > -queues are optional.
+> > +ImgU works based on firmware, currently the ImgU firmware support run 2 pipes
+> > +in time-sharing with single input frame data. Each pipe can run at certain mode
+> > +- "VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture,
+> > +and "STILL" is used for still frame capture. However, you can also select
+> > +"VIDEO" to capture still frames if you want to capture images with less system
+> > +load and power. For "STILL" mode, ImgU will try to use smaller BDS factor and
+> > +output larger bayer frame for further YUV processing than "VIDEO" mode to get
+> > +high quality images. Besides, "STILL" mode need XNR3 to do noise reduction,
+> > +hence "STILL" mode will need more power and memory bandwidth than "VIDEO" mode.
+> > +TNR will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is
+> > +running at “VIDEO” mode by default, the user can use v4l2 control
+> > +V4L2_CID_INTEL_IPU3_MODE (currently defined in
+> > +drivers/staging/media/ipu3/include/uapi/intel-ipu3.h) to query and set the
+> > +running mode. For user, there is no difference for buffer queueing between the
+> > +"VIDEO" and "STILL" mode, mandatory input and main output node should be
+> > +enabled and buffers need be queued, the statistics and the view-finder queues
+> > +are optional.
+> 
+> The reflow of the whole paragraph is a bit painful to review.
 
-Thanks,
-Miklos
+Yes. The only difference there is still the addition of "/uapi". :-)
+
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Thank you!
+
+-- 
+Sakari Ailus
