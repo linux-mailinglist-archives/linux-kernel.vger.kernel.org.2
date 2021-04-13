@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB4935E11C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06235E11E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346397AbhDMOMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:12:00 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:48246 "EHLO vps-vb.mhejs.net"
+        id S1346412AbhDMOMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:12:05 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:48280 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346360AbhDMOLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:11:40 -0400
+        id S236867AbhDMOL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:11:56 -0400
 Received: from MUA
         by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.93.0.4)
         (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lWJkn-00040N-6x; Tue, 13 Apr 2021 16:10:57 +0200
+        id 1lWJks-00040d-GM; Tue, 13 Apr 2021 16:11:02 +0200
 From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>
@@ -37,9 +37,9 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         Claudio Imbrenda <imbrenda@linux.ibm.com>,
         Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/8] KVM: Optimize gfn lookup in kvm_zap_gfn_range()
-Date:   Tue, 13 Apr 2021 16:10:13 +0200
-Message-Id: <2e599cf1c3318207c13cad0a73c1b28b8419dcbe.1618322004.git.maciej.szmigiero@oracle.com>
+Subject: [PATCH v2 8/8] KVM: Optimize overlapping memslots check
+Date:   Tue, 13 Apr 2021 16:10:14 +0200
+Message-Id: <3df80b2e4cb3d598c951c9f1a715ee1022ca96be.1618322004.git.maciej.szmigiero@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1618322001.git.maciej.szmigiero@oracle.com>
 References: <cover.1618322001.git.maciej.szmigiero@oracle.com>
@@ -51,105 +51,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Introduce a memslots gfn upper bound operation and use it to optimize
-kvm_zap_gfn_range().
-This way this handler can do a quick lookup for intersecting gfns and won't
-have to do a linear scan of the whole memslot set.
+Do a quick lookup for possibly overlapping gfns when creating or moving
+a memslot instead of performing a linear scan of the whole memslot set.
 
 Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 ---
- arch/x86/kvm/mmu/mmu.c   | 41 ++++++++++++++++++++++++++++++++++++++--
- include/linux/kvm_host.h | 22 +++++++++++++++++++++
- 2 files changed, 61 insertions(+), 2 deletions(-)
+ virt/kvm/kvm_main.c | 65 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 56 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 74781c00a420..7e610d3bc819 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5498,14 +5498,51 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 	int i;
- 	bool flush = false;
- 
-+	if (gfn_end == gfn_start || WARN_ON(gfn_end < gfn_start))
-+		return;
-+
- 	write_lock(&kvm->mmu_lock);
- 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
--		int ctr;
-+		int idxactive;
-+		struct rb_node *node;
- 
- 		slots = __kvm_memslots(kvm, i);
--		kvm_for_each_memslot(memslot, ctr, slots) {
-+		idxactive = kvm_memslots_idx(slots);
-+
-+		/*
-+		 * Find the slot with the lowest gfn that can possibly intersect with
-+		 * the range, so we'll ideally have slot start <= range start
-+		 */
-+		node = kvm_memslots_gfn_upper_bound(slots, gfn_start);
-+		if (node) {
-+			struct rb_node *pnode;
-+
-+			/*
-+			 * A NULL previous node means that the very first slot
-+			 * already has a higher start gfn.
-+			 * In this case slot start > range start.
-+			 */
-+			pnode = rb_prev(node);
-+			if (pnode)
-+				node = pnode;
-+		} else {
-+			/* a NULL node below means no slots */
-+			node = rb_last(&slots->gfn_tree);
-+		}
-+
-+		for ( ; node; node = rb_next(node)) {
- 			gfn_t start, end;
- 
-+			memslot = container_of(node, struct kvm_memory_slot,
-+					       gfn_node[idxactive]);
-+
-+			/*
-+			 * If this slot starts beyond or at the end of the range so does
-+			 * every next one
-+			 */
-+			if (memslot->base_gfn >= gfn_start + gfn_end)
-+				break;
-+
- 			start = max(gfn_start, memslot->base_gfn);
- 			end = min(gfn_end, memslot->base_gfn + memslot->npages);
- 			if (start >= end)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index bb50776a5ebd..884cac86042a 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -703,6 +703,28 @@ struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
- 	return NULL;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index a027686657a6..448178f913fb 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1341,6 +1341,59 @@ static int kvm_delete_memslot(struct kvm *kvm,
+ 	return kvm_set_memslot(kvm, mem, old, &new, as_id, KVM_MR_DELETE);
  }
  
-+static inline
-+struct rb_node *kvm_memslots_gfn_upper_bound(struct kvm_memslots *slots,
-+					     gfn_t gfn)
++static bool kvm_check_memslot_overlap(struct kvm_memslots *slots,
++				      struct kvm_memory_slot *nslot)
 +{
 +	int idxactive = kvm_memslots_idx(slots);
-+	struct rb_node *node, *result = NULL;
++	struct rb_node *node;
 +
-+	for (node = slots->gfn_tree.rb_node; node; ) {
-+		struct kvm_memory_slot *slot;
++	/*
++	 * Find the slot with the lowest gfn that can possibly intersect with
++	 * the new slot, so we'll ideally have slot start <= nslot start
++	 */
++	node = kvm_memslots_gfn_upper_bound(slots, nslot->base_gfn);
++	if (node) {
++		struct rb_node *pnode;
 +
-+		slot = container_of(node, struct kvm_memory_slot,
-+				    gfn_node[idxactive]);
-+		if (gfn < slot->base_gfn) {
-+			result = node;
-+			node = node->rb_left;
-+		} else
-+			node = node->rb_right;
++		/*
++		 * A NULL previous node means that the very first slot
++		 * already has a higher start gfn.
++		 * In this case slot start > nslot start.
++		 */
++		pnode = rb_prev(node);
++		if (pnode)
++			node = pnode;
++	} else {
++		/* a NULL node below means no existing slots */
++		node = rb_last(&slots->gfn_tree);
 +	}
 +
-+	return result;
++	for ( ; node; node = rb_next(node)) {
++		struct kvm_memory_slot *cslot;
++
++		cslot = container_of(node, struct kvm_memory_slot,
++				     gfn_node[idxactive]);
++
++		/*
++		 * if this slot starts beyond or at the end of the new slot
++		 * so does every next one
++		 */
++		if (cslot->base_gfn >= nslot->base_gfn + nslot->npages)
++			break;
++
++		if (cslot->id == nslot->id)
++			continue;
++
++		if (cslot->base_gfn >= nslot->base_gfn)
++			return true;
++
++		if (cslot->base_gfn + cslot->npages > nslot->base_gfn)
++			return true;
++	}
++
++	return false;
 +}
 +
  /*
-  * KVM_SET_USER_MEMORY_REGION ioctl allows the following operations:
-  * - create a new memory slot
+  * Allocate some memory and give it an address in the guest physical address
+  * space.
+@@ -1426,16 +1479,10 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	}
+ 
+ 	if ((change == KVM_MR_CREATE) || (change == KVM_MR_MOVE)) {
+-		int ctr;
+-
+ 		/* Check for overlaps */
+-		kvm_for_each_memslot(tmp, ctr, __kvm_memslots(kvm, as_id)) {
+-			if (tmp->id == id)
+-				continue;
+-			if (!((new.base_gfn + new.npages <= tmp->base_gfn) ||
+-			      (new.base_gfn >= tmp->base_gfn + tmp->npages)))
+-				return -EEXIST;
+-		}
++		if (kvm_check_memslot_overlap(__kvm_memslots(kvm, as_id),
++					      &new))
++			return -EEXIST;
+ 	}
+ 
+ 	/* Allocate/free page dirty bitmap as needed */
