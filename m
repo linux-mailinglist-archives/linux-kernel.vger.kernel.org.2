@@ -2,160 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902CB35D682
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D816F35D685
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhDMEcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 00:32:31 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:58994 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhDMEc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 00:32:29 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D4U5Mb159499;
-        Tue, 13 Apr 2021 04:32:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=Hvtu1ScuhRL4xns2dIl1vrXLxNB1hmRCKSzJ9rwaPgw=;
- b=oSeVy0jYVa7VmDrTz1gHR6oxMMYgUOwEXi9Wcu4JbDqnZrao+VX9FErs1XDZOMFcK2nD
- NKXnL+2/fJQnzs9mhHKAxGmqz3V/KanqXOJL/J/esUtAIw0b/BkxM0XKWSTGZLiics/r
- oIfTKLqhNrECp4q49lNukWecYD/Z4IjMjyJYD2fdcsmPMQI7j1+iGVdUrdNzuLnbLMea
- NR/scQaoQlXwTTF1cxaTUHhGXAo3VCmv95kIuKoZt5eSD9wnJ0WqZ/QqyIlrxNEJGJaS
- GD1ejezG1ABZCy1f70F3j5kB9CRdvd3JIZAhkiKNk5wlls6QNeBeogZbFUA/CUeTYwpQ GQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 37u3erdrk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 04:32:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D4Vet8127134;
-        Tue, 13 Apr 2021 04:32:06 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by aserp3020.oracle.com with ESMTP id 37unwyaau1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 04:32:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IQ+se7fDCXNGxSy6l/aTY/bqQAllnQnGVZce3Q3W282v/30ktv2d3iv0S9/k5vAHAPJiLRE6GtudbLdr4O6EJvH/ck3WYypC4ENpRnDtjD7NvZbaBDybFEw88Y3Ux2MOwx7cSKirJzhETwLbvf2RmBA1F+z/tVVwJPeVwnIGWOilkoCJwecwPVjVjut1QVNRrW4rZ3LB5OZxWny5pQHBD5Z/xpg5f56WuMPPZ7a/xvH/80Ht3VuHrFfpXr7IvBiUpQbnD/QCrYONXXaJ9Wkz9oYTEM4hvAiw9Q+Qjci2kHzSXzNHlXTSiTaV8vJQqTRlE7USonXPhKM+9rGQOJWjmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hvtu1ScuhRL4xns2dIl1vrXLxNB1hmRCKSzJ9rwaPgw=;
- b=L2XTBce1Zo+/HaxlZRExabiXl0qH4A7/d0UMqGWEs/YE88dxKwlrmpSYxjuC0j2QNFlBQ/f7T4ts95pd3xVIPzkjP0azyLHhNhC1WYJ9lNhmizJwKfSmPY10+jx8g75mR2yHdovI1YdIdWZvzyXcE+ejByBpdKh7igQooK1JctZbvwspLy26WG18k7l/apYGqtXOXdKM75GsM8zS95y2ukq2tlnJLc2+v1XDy38zkeQfQMJNDpdBirmUf7EQJdoxgvBPlW9eJQk25jyknrLX6pl3xGf92D3+V+3CX+kUFry45LVAVRR5u/uJHxLi8EX/bJuqXqYMVPzMEy4FusjNKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hvtu1ScuhRL4xns2dIl1vrXLxNB1hmRCKSzJ9rwaPgw=;
- b=WLLibS2oA+TcWN4pysKBTIGXW2x8yt/2mAHd9gzGbI0IUC3kVIPz+2Jh2jM/488sWQa/U+7rcItpul36jI4AiZt+oDhEgEJmljK9RVQWJqL0g0Ti2xmpJDjppJmwtPVbPetDCwr6MNVMJfOpzTtDehwqVGE0IJd9zTGvM4nAr+s=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5449.namprd10.prod.outlook.com (2603:10b6:510:e7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Tue, 13 Apr
- 2021 04:32:02 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 04:32:02 +0000
+        id S229984AbhDMEdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 00:33:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:11962 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhDMEdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 00:33:05 -0400
+IronPort-SDR: DHYJ45qomMazsE7vOS6/+AYHeiDLTMFbn/AsAALrJUdmzcp72BqPX0ngjDvwfE3MuuHU2u+sg2
+ DkguTIxaUNcA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="255662151"
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="255662151"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 21:32:44 -0700
+IronPort-SDR: MPAa1ip/TpnRqcUQmVw20CD/GxhZqAJY/Ht4zo8mHJnYza9HUy1cVxstNZs1ngWgGazH4klXho
+ U7KHX1P8dFsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="521453140"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Apr 2021 21:32:42 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lWAjB-0000p1-Tv; Tue, 13 Apr 2021 04:32:41 +0000
+Date:   Tue, 13 Apr 2021 12:32:25 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] scsi: mpt3sas: Fix out-of-bounds warnings in
- _ctl_addnl_diag_query
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1mtu27qku.fsf@ca-mkp.ca.oracle.com>
-References: <20210401162054.GA397186@embeddedor>
-Date:   Tue, 13 Apr 2021 00:31:59 -0400
-In-Reply-To: <20210401162054.GA397186@embeddedor> (Gustavo A. R. Silva's
-        message of "Thu, 1 Apr 2021 11:20:54 -0500")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BYAPR03CA0026.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::39) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/warray-bounds] BUILD SUCCESS WITH
+ WARNING 8f00c4d955f8c343277181b46fac418101c521bf
+Message-ID: <60751ed9.6ayblkwNjP5Tysd/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR03CA0026.namprd03.prod.outlook.com (2603:10b6:a02:a8::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 04:32:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b017530-1312-4638-f933-08d8fe351577
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5449:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB544960937B2032B23E430CA78E4F9@PH0PR10MB5449.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l7nKwJHM7N+6k+yhef/Xtlx0I18ivL+VOKSACEdwNaAdV8swLWDzyI9Ch/XIW1IFaXSN7u+7bPM7frCw5Ecp/3c7K/NWY4Yo/Nw9XlLWhRCCfNfi2J4itN0PxKYzPPOCQjHxF1X0ZZNRSYYfLA6snPbVr3DLxN7MpK/XFExvJ3NTdmvIqFZkEX6q7orOteY8Vmbe9ULIn2Df2tiYTP2DTtTLMl2qWR3qUbn74DWqL8Qus5BKtL9cJtA1cziqSSdwavS2qsSDI0Yk2HdV/FLxO1I8y3fY9Fp3ep42/Hmkb9uygZf0DSS2TNaGeuBeU69JbF3Jpbls4VPEH+OZrJjt01Y1n5IwPqt+c3p8UCXWBWMwtwWG8EYzhPkTQoLxvbwCEJk+5SjBSKI7AGIKM2FypkTHsvE1fZE+M1sMxpIQC+AKa/r2YbYbMQhPVptLe3iGdwkdlDTYNR8T6PioYNxP6zGUTnaIIlaJJFxY0eTlBeCxKBdFIN56JcrEU03goh76K1PwZZhszcTCULCFL7EfGOFz10wR+yAHFL6wgZmOji1leRQI/dn1wH+PSmAIvqMEAtCP6rNM5jf97sqUs1/nBKxpKgUbkqSrkSxohddmTZaLsp9lTi4wq99KGe4l+NtUp7iOBjahovx2UO0Pgt3j/yS2IxPx3d50rR60v2d09g1PERVThlMg8LzLk79vYxPa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(136003)(39860400002)(376002)(86362001)(66946007)(8936002)(52116002)(2906002)(38350700002)(38100700002)(558084003)(66556008)(7696005)(6916009)(5660300002)(316002)(4326008)(55016002)(186003)(8676002)(66476007)(956004)(478600001)(16526019)(36916002)(26005)(54906003)(83380400001)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ICcN4q4Ok9bCDL4q+pBsGm0xxowEgwMiiWrwdNUKpvrVsrzrR5Mvm0D4sBZ7?=
- =?us-ascii?Q?2rNqHEL0hb3KLc5G3FbU2vaqjDKWTThxhRt845bvZvAMwG1TK4QZjmBAxvTf?=
- =?us-ascii?Q?taE2UavKDwDw7fqCbw3001oim50f0PA+bj+mCdtp71w+D2pXrZvuzf2I2k/L?=
- =?us-ascii?Q?wZHym51GwX8Jegl6vCjfBGDc4tMi77u2yE4Ng7qM41cNblllQeG9EWrPPamM?=
- =?us-ascii?Q?PmEqvNgFqyY9twZ7odqvlIPOmScgNS2x7Ury7EG9jhphXYTOo3ZiigPs6Rfq?=
- =?us-ascii?Q?KLyodBkwR/OQf2+Vo572wD/vsred/fTJaO4QTRGrR5VaimuUjLm3QZWytpI9?=
- =?us-ascii?Q?ONs6LjWAqRSaRb83XtN+rnrfuxBUFJ5iwHUwyxpp9rm/um3Zj2yuKszO7Q+d?=
- =?us-ascii?Q?MVQZIi3bvdz5Q6HuLtiFpoatIa3JdqZ4gdW+NUGwDmmXBzKUEKzrvvTLiA+8?=
- =?us-ascii?Q?zGk70YBwx+dJpFGUcRU6eXJYkYhoctRmYRhiWX4Vpv0vwl8UeOlfHc4GhggJ?=
- =?us-ascii?Q?2F3mAJM8vj/yam+kUeOOpyIqbtOZFpw+PjIDerM3JavH/V3DbrzZR0KgOXRg?=
- =?us-ascii?Q?jshajL5n3hp2zjmV82Fj9APcHIqxyCSHBrcZCQy3jkqvwGkt9Qm/RUomSixs?=
- =?us-ascii?Q?wXYqbpZAN5rf94sGcPm2aYAiUiQtYxzj0KPaZ4+xTu3ZGG7qRMsxFhRyxlyo?=
- =?us-ascii?Q?2Oo7vrBOMlfZ6d9yO4SchBe07YeM0I8phfv2pf0vAL7dhz8bLIz5nFEQd7lc?=
- =?us-ascii?Q?3hjEigPrnxC81RSTcJHIgV9xj/Nbvp+sU07E0ZjKE+DBO5s4HRJKshlizUW5?=
- =?us-ascii?Q?APUpcSnyw4V0TgHmukcKZr3n5htZAHhCiaHYC2eR941wFgtgw89dfXsNBoeB?=
- =?us-ascii?Q?W1pAto/wkEObBdgjFq3lXqB+w3Bfe7tCWHH3Mw4U89Ucy59uCDtdAVejdUmL?=
- =?us-ascii?Q?6zZ+tEdiwMxvPGdgZVm1LLPi6QNFmacITW6dIY67P24TjjWGsJ/SYFKcKO7o?=
- =?us-ascii?Q?BOGqUtaKoPEIb/kHIagJhbWzvezbfiLjihY9AVhRaURMzGMouJrK6P6N9WNR?=
- =?us-ascii?Q?cQ6PlN40S3DhYWXDCsVZzALKlNlYrOLkjPRW7S5IKPyqsN/v6f/acQOY1kTf?=
- =?us-ascii?Q?gqNXA3nf5Kb0q42SUv7UetRLKiguNw9b1i9qq7hidE6pIKsbPsIUk/xAbOTj?=
- =?us-ascii?Q?EstGxrdqcR1DWKP2pqjCCOw60ZQ3kbabK3Fb/sPtxDKg1u4PzR31R01AQNhO?=
- =?us-ascii?Q?iD9n0EZVJv1HIExyQxXCoirBqA7AjUxgTB61nqEpOVdA2QkuhyQbcolG+PKE?=
- =?us-ascii?Q?noGRewcC5iCmNCtSEiMiKoGK?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b017530-1312-4638-f933-08d8fe351577
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 04:32:02.0946
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dPc/s3yywIlZjo6ubra+BaLU+mCO9x6BwMVEUa8uV/7dPec+qxwEPEOxAdte5SGT3sEF1GE0Axl+HKx0zOQboTGspr6Nbjv3BEfGR06DW9s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5449
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130028
-X-Proofpoint-ORIG-GUID: c_fJFoDp5FrsSmeSmOoJTZwjjOI8WaS3
-X-Proofpoint-GUID: c_fJFoDp5FrsSmeSmOoJTZwjjOI8WaS3
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130028
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/warray-bounds
+branch HEAD: 8f00c4d955f8c343277181b46fac418101c521bf  ixgbe: Fix out-bounds warning in ixgbe_host_interface_command()
 
-Gustavo,
+possible Warning in current branch:
 
-> Fix the following out-of-bounds warnings by embedding existing struct
-> htb_rel_query into struct mpt3_addnl_diag_query, instead of
-> duplicating its members:
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [18, 23] from the object at 'sig' is out of the bounds of referenced subobject 'daddr' with type 'u8[6]' {aka 'unsigned char[6]'} at offset 11 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [25, 95] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 22 [-Warray-bounds]
+drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+drivers/iommu/intel/svm.c:1215:4: warning: 'memcpy' offset [25, 32] from the object at 'desc' is out of the bounds of referenced subobject 'qw2' with type 'long long unsigned int' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
 
-Applied to 5.13/scsi-staging, thanks!
+Warning ids grouped by kconfigs:
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+gcc_recent_errors
+|-- i386-randconfig-c021-20210412
+|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-sig-is-out-of-the-bounds-of-referenced-subobject-beacon_period-with-type-short-unsigned-int-at-offset
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-sig-is-out-of-the-bounds-of-referenced-subobject-daddr-with-type-u8-aka-unsigned-char-at-offset
+|-- ia64-allmodconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- ia64-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- parisc-allyesconfig
+|   `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- x86_64-randconfig-a016-20210412
+|   |-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|   `-- drivers-iommu-intel-svm.c:warning:memcpy-offset-from-the-object-at-desc-is-out-of-the-bounds-of-referenced-subobject-qw2-with-type-long-long-unsigned-int-at-offset
+|-- x86_64-randconfig-c002-20210412
+|   `-- drivers-iommu-intel-svm.c:warning:memcpy-offset-from-the-object-at-desc-is-out-of-the-bounds-of-referenced-subobject-qw2-with-type-long-long-unsigned-int-at-offset
+|-- x86_64-randconfig-m001-20210412
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+`-- x86_64-randconfig-s022-20210412
+    `-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+
+elapsed time: 720m
+
+configs tested: 97
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+powerpc                      pcm030_defconfig
+arm                         mv78xx0_defconfig
+arm                          exynos_defconfig
+arm                       multi_v4t_defconfig
+mips                           ip22_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                             espt_defconfig
+arm                        trizeps4_defconfig
+powerpc                     powernv_defconfig
+sh                          r7785rp_defconfig
+powerpc                      arches_defconfig
+powerpc                      makalu_defconfig
+arm                            zeus_defconfig
+sh                           se7750_defconfig
+arm                       omap2plus_defconfig
+sh                          rsk7203_defconfig
+sh                          urquell_defconfig
+arm                          ixp4xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210412
+i386                 randconfig-a001-20210412
+i386                 randconfig-a006-20210412
+i386                 randconfig-a005-20210412
+i386                 randconfig-a004-20210412
+i386                 randconfig-a002-20210412
+x86_64               randconfig-a014-20210412
+x86_64               randconfig-a015-20210412
+x86_64               randconfig-a011-20210412
+x86_64               randconfig-a013-20210412
+x86_64               randconfig-a012-20210412
+x86_64               randconfig-a016-20210412
+i386                 randconfig-a015-20210412
+i386                 randconfig-a014-20210412
+i386                 randconfig-a013-20210412
+i386                 randconfig-a012-20210412
+i386                 randconfig-a016-20210412
+i386                 randconfig-a011-20210412
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210412
+x86_64               randconfig-a002-20210412
+x86_64               randconfig-a001-20210412
+x86_64               randconfig-a005-20210412
+x86_64               randconfig-a006-20210412
+x86_64               randconfig-a004-20210412
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
