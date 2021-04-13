@@ -2,93 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF2035DE48
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2D635DE59
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhDMMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:10:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231238AbhDMMK2 (ORCPT
+        id S231506AbhDMMLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:11:32 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50531 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231134AbhDMMLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:10:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618315808;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IejbyFfCDRcQHvrp95I002DIsHzvqj1xPZXqmhdrA0w=;
-        b=KNNvM7UagoEEMvxSGPFVUVAx6iSRUBkSUeYKERY5AvpDzGzoPYm1sCsy/+umhKHm4LurtB
-        4y95VtjQbTkjNwqzH7Mb5QEFg+yYsxdFQ09Gc3OyRfFAxAxkk3rKp1eMsiyeOkmwVfsCnP
-        FWJbEbqP042UKZNh3dFot309eGZHelY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-k1zgSBSdNCe4_E_QkHM5wg-1; Tue, 13 Apr 2021 08:10:06 -0400
-X-MC-Unique: k1zgSBSdNCe4_E_QkHM5wg-1
-Received: by mail-ej1-f72.google.com with SMTP id d25so4501057ejb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:10:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IejbyFfCDRcQHvrp95I002DIsHzvqj1xPZXqmhdrA0w=;
-        b=WWXE4IhtpIefONYM0nZvv2G/LXZS8SK3+fu46ER2v1cRvEVujUe17YwciUJzxD9lVZ
-         eDApXbNvZZZPcACq7wn5cgcQKdpkT8QZ3aI08Xd/tsoR0TbGOIxrUnzdo6UEeb76VGH6
-         J19W2Zc8zvred6qY5LKvX+Of83psIIBzeNmCG5IQMh1j+KFHLf/0z9WE/eY9y5BDH6XB
-         k1jBmSZBQMfInBepJZTabmnqdP0bd2SkzvYykA+Nc+xXY1qzWyHCZMJX5umL710p8isF
-         HcFRbVEI8FAWtd1JcwWeESeXseiTvAIHdBocxkVuCo8QAxc/11URwANYCVOEZ/MYbXPA
-         gq4w==
-X-Gm-Message-State: AOAM531TBMhkua3OGdWR1pjO3VdbZyDaEw5iUN6Kqj6R7RSsceqiB6/W
-        coUBRRQcLfaGJh2Hbjnc3SSttkGYKy4+tK2ELiGG6CqOK92U6RagAEgi+CRMi7RFyNcx2z5+s2E
-        Ha5Ag274IcWCG7AEU8hLYF2cA
-X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr33763388edw.118.1618315805189;
-        Tue, 13 Apr 2021 05:10:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJycmV2QAbm9DlXfnBjiF9ZhAdQwdu4MVStSRMH+QxWL7LXWAF2rJqHbnqsSyAdHn0tU18Kjeg==
-X-Received: by 2002:a05:6402:4d1:: with SMTP id n17mr33763368edw.118.1618315805046;
-        Tue, 13 Apr 2021 05:10:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r17sm9327924edt.70.2021.04.13.05.10.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 05:10:03 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
- window request
-To:     Sean Christopherson <seanjc@google.com>,
-        Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Filippo Sironi <sironi@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "v4.7+" <stable@vger.kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20201127112114.3219360-1-pbonzini@redhat.com>
- <20201127112114.3219360-3-pbonzini@redhat.com>
- <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
- <YHS/BxMiO6I1VOEY@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4a9e11b1-9cd6-b9a4-d9ea-f2f4d0983084@redhat.com>
-Date:   Tue, 13 Apr 2021 14:10:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 13 Apr 2021 08:11:30 -0400
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 96B8B58037A;
+        Tue, 13 Apr 2021 08:11:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 13 Apr 2021 08:11:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=cbuXGXgLaupvjIq688HiNFaXJU
+        6ajc1vYG74Y5TUPqo=; b=tujpqvXWAeMSn+Iud1rrp39cxnmCwwMYPwb3bM6sfv
+        37aw84wL+3GvX9CuXK8+m46Xa0Dx4nhumPBFspq/ug8Wq67qpgyCQTLNUHbQq6n5
+        pZ8/6Ue40NZScCZ3Rn9kY70SOaDdWXLfi8abdPtkLGBZ+L7rzrMB16GxMQqrTibm
+        0AjDcQ5LTahPNYiUS1xplN1HtQ1IwcYso29V+C0p2LDsMMxlxmI7i/kHpedRXpA+
+        AvkobIQfhL4ezySB8D5Vwl5kBDaaeD4bYTUUHp/BsC580g85iOv8d/z6ezQC8SpY
+        53quJbjdJrjgroNRqe6k5C7hSQL180qPQpMfcE0grBKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=cbuXGXgLaupvjIq68
+        8HiNFaXJU6ajc1vYG74Y5TUPqo=; b=tvv5NuVq4iFFw/HyUJZtE8AzUUC0EfxAz
+        Sd3z4qSb6TXq5druZhtnmqLVUWcqvkHvPZJA0dGzjyv2kvYVnBrrcZnLyJVK5dVX
+        9+Q7sVV8fiMvRsHPVkess7E9KEAQmCWKODB4jZmnMaOVA+AvUg2cwGY5p3NsAUtD
+        oWRchrvoKiZ5+bLyYHYzPU/E6vyfKb4MRao8kwqbQpe6gToiSD9Ur0tlb6ZJ92ax
+        HMthUay6g2x0HaW93wh6T05LexrG9B2bsrjoZS+E0jeGA19yU4pw1BfKUZSaN0as
+        qA3R3EeAS2rI9MxPwi2d6hfKEMYlbHEqrjJHnqWBoUfDCmBzTHg8w==
+X-ME-Sender: <xms:W4p1YABo0yVadzZXjLw4BSySjTRDU-qjkjuDEEUHdQRuqgGS6bp2rA>
+    <xme:W4p1YCfJ6FJLy44n7G8l1dammo0XxBqmUb9ltx1xrIF03VadlIbwvK7FGj_ELmAW3
+    PcTh_mlshMY-iMYz6c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhmvgcu
+    tfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvg
+    hrnhepjeffheduvddvvdelhfegleelfffgieejvdehgfeijedtieeuteejteefueekjeeg
+    necukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:W4p1YAel71TL6qfdXAnxyQ7nyjc0NAsrXFNQQmuSFnKhpO8PTagDyA>
+    <xmx:W4p1YOh6bG4ktCX6o1FHHVpR7pI3ZWw9af6oTOx2_k9gkGGXw8AMqQ>
+    <xmx:W4p1YETOewf2IL2MIRMK-tOOZkgKkX1nQmAeaOcuTLxH__McGF6g4A>
+    <xmx:Xop1YHpOybSvxgqLY0oD_aNsO5vuftlYybUhxqY7r2Ex50L2h8kwMQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EDC6E24005A;
+        Tue, 13 Apr 2021 08:11:06 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Eric Anholt <eric@anholt.net>, Leo Li <sunpeng.li@amd.com>,
+        intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        amd-gfx@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v2 1/5] drm/connector: Create a helper to attach the hdr_output_metadata property
+Date:   Tue, 13 Apr 2021 14:11:00 +0200
+Message-Id: <20210413121104.375789-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YHS/BxMiO6I1VOEY@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/21 23:43, Sean Christopherson wrote:
-> where kvm_arch_interrupt_allowed() checks EFLAGS.IF (and an edge case related to
-> nested virtualization).  KVM also captures EFLAGS.IF in vcpu->run->if_flag.
-> For whatever reason, QEMU checks both vcpu->run flags before injecting an IRQ,
-> maybe to handle a case where QEMU itself clears EFLAGS.IF?
+All the drivers that implement HDR output call pretty much the same
+function to initialise the hdr_output_metadata property, and while the
+creation of that property is in a helper, every driver uses the same
+code to attach it.
 
-It's mostly obsolete code (that will be deprecated in the next version 
-and removed in about a year) so I wouldn't read much into it.  if_flag 
-itself is obsolete; it is not provided by SEV-ES, and a useless subset 
-of ready_for_interrupt_injection.
+Provide a helper for it as well
 
-Paolo
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+---
+
+Changes from v1:
+  - Rebased on latest drm-misc-next tag
+  - Added the tags
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 +---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |  3 +--
+ drivers/gpu/drm/drm_connector.c               | 21 +++++++++++++++++++
+ drivers/gpu/drm/i915/display/intel_hdmi.c     |  3 +--
+ include/drm/drm_connector.h                   |  1 +
+ 5 files changed, 25 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 55e39b462a5e..1e22ce718010 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -7078,9 +7078,7 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
+ 	if (connector_type == DRM_MODE_CONNECTOR_HDMIA ||
+ 	    connector_type == DRM_MODE_CONNECTOR_DisplayPort ||
+ 	    connector_type == DRM_MODE_CONNECTOR_eDP) {
+-		drm_object_attach_property(
+-			&aconnector->base.base,
+-			dm->ddev->mode_config.hdr_output_metadata_property, 0);
++		drm_connector_attach_hdr_output_metadata_property(&aconnector->base);
+ 
+ 		if (!aconnector->mst_port)
+ 			drm_connector_attach_vrr_capable_property(&aconnector->base);
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index dda4fa9a1a08..f24bbb840dbf 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -2492,8 +2492,7 @@ static int dw_hdmi_connector_create(struct dw_hdmi *hdmi)
+ 	drm_connector_attach_max_bpc_property(connector, 8, 16);
+ 
+ 	if (hdmi->version >= 0x200a && hdmi->plat_data->use_drm_infoframe)
+-		drm_object_attach_property(&connector->base,
+-			connector->dev->mode_config.hdr_output_metadata_property, 0);
++		drm_connector_attach_hdr_output_metadata_property(connector);
+ 
+ 	drm_connector_attach_encoder(connector, hdmi->bridge.encoder);
+ 
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 7631f76e7f34..a4aa2d87af35 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -2150,6 +2150,27 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+ }
+ EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+ 
++/**
++ * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
++ * @connector: connector to attach the property on.
++ *
++ * This is used to allow the userspace to send HDR Metadata to the
++ * driver.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
++ */
++int drm_connector_attach_hdr_output_metadata_property(struct drm_connector *connector)
++{
++	struct drm_device *dev = connector->dev;
++	struct drm_property *prop = dev->mode_config.hdr_output_metadata_property;
++
++	drm_object_attach_property(&connector->base, prop, 0);
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_connector_attach_hdr_output_metadata_property);
++
+ /**
+  * drm_connector_set_vrr_capable_property - sets the variable refresh rate
+  * capable property for a connector
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index 95919d325b0b..f2f1b025e6ba 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -2965,8 +2965,7 @@ intel_hdmi_add_properties(struct intel_hdmi *intel_hdmi, struct drm_connector *c
+ 	drm_connector_attach_content_type_property(connector);
+ 
+ 	if (INTEL_GEN(dev_priv) >= 10 || IS_GEMINILAKE(dev_priv))
+-		drm_object_attach_property(&connector->base,
+-			connector->dev->mode_config.hdr_output_metadata_property, 0);
++		drm_connector_attach_hdr_output_metadata_property(connector);
+ 
+ 	if (!HAS_GMCH(dev_priv))
+ 		drm_connector_attach_max_bpc_property(connector, 8, 12);
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 1922b278ffad..32172dab8427 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1671,6 +1671,7 @@ int drm_connector_attach_scaling_mode_property(struct drm_connector *connector,
+ 					       u32 scaling_mode_mask);
+ int drm_connector_attach_vrr_capable_property(
+ 		struct drm_connector *connector);
++int drm_connector_attach_hdr_output_metadata_property(struct drm_connector *connector);
+ int drm_mode_create_aspect_ratio_property(struct drm_device *dev);
+ int drm_mode_create_hdmi_colorspace_property(struct drm_connector *connector);
+ int drm_mode_create_dp_colorspace_property(struct drm_connector *connector);
+-- 
+2.30.2
 
