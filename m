@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3122235DF86
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297CE35DF7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhDMM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:56:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17326 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbhDMMzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:55:22 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FKQW106NHzB09P;
-        Tue, 13 Apr 2021 20:52:45 +0800 (CST)
-Received: from [10.174.177.246] (10.174.177.246) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 20:54:55 +0800
-Subject: Re:Re: [PATCH] x86: Accelerate copy_page with non-temporal in X86
-To:     Borislav Petkov <bp@alien8.de>
-CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, <linux-kernel@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>
-References: <3f28adee-8214-fa8e-b368-eaf8b193469e@huawei.com>
- <20210413110137.GD16519@zn.tnic>
-From:   Kemeng Shi <shikemeng@huawei.com>
-Message-ID: <bfa4fd38-0874-63b3-991a-1102af9f47a6@huawei.com>
-Date:   Tue, 13 Apr 2021 20:54:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        id S244492AbhDMMz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231493AbhDMMzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:55:50 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5674A613B3;
+        Tue, 13 Apr 2021 12:55:24 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 08:55:22 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        syzbot <syzbot+774c590240616eaa3423@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, masahiroy@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rafael.j.wysocki@intel.com,
+        Sean Christopherson <seanjc@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, vkuznets@redhat.com,
+        wanpengli@tencent.com, will@kernel.org, x86@kernel.org
+Subject: Re: [syzbot] WARNING in bpf_test_run
+Message-ID: <20210413085522.2caee809@gandalf.local.home>
+In-Reply-To: <CACT4Y+ZYEVsycyzDW9+tXYw-5feZS8otgMWGGZRUCLR=czWtqQ@mail.gmail.com>
+References: <000000000000d9fefa05bee78afd@google.com>
+        <97b5573f-9fcc-c195-f765-5b1ed84a95bd@fb.com>
+        <d947c28c-6ede-5950-87e7-f56b8403535a@fb.com>
+        <CACT4Y+ZYEVsycyzDW9+tXYw-5feZS8otgMWGGZRUCLR=czWtqQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210413110137.GD16519@zn.tnic>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.246]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 13 Apr 2021 09:56:40 +0200
+Dmitry Vyukov <dvyukov@google.com> wrote:
 
+> Thanks for looking into this.
+> If this is not a kernel bug, then it must not use WARN_ON[_ONCE]. It
+> makes the kernel untestable for both automated systems and humans:
+> 
+> https://lwn.net/Articles/769365/
+> 
+> <quote>
+> Greg Kroah-Hartman raised the problem of core kernel API code that
+> will use WARN_ON_ONCE() to complain about bad usage; that will not
+> generate the desired result if WARN_ON_ONCE() is configured to crash
+> the machine. He was told that the code should just call pr_warn()
+> instead, and that the called function should return an error in such
+> situations. It was generally agreed that any WARN_ON() or
+> WARN_ON_ONCE() calls that can be triggered from user space need to be
+> fixed.
+> </quote>
 
-on 2021/4/13 19:01, Borislav Petkov wrote:
-> + linux-nvdimm
-> 
-> Original mail at https://lkml.kernel.org/r/3f28adee-8214-fa8e-b368-eaf8b193469e@huawei.com
-> 
-> On Tue, Apr 13, 2021 at 02:25:58PM +0800, Kemeng Shi wrote:
->> I'm using AEP with dax_kmem drvier, and AEP is export as a NUMA node in
-> 
-> What is AEP?
-> 
-AEP is a type of persistent memory produced by Intel. It's slower than
-normal memory but is persistent.
->> my system. I will move cold pages from DRAM node to AEP node with
->> move_pages system call. With old "rep movsq', it costs 2030ms to move
->> 1 GB pages. With "movnti", it only cost about 890ms to move 1GB pages.
-> 
-> So there's __copy_user_nocache() which does NT stores.
-> 
->> -	ALTERNATIVE "jmp copy_page_regs", "", X86_FEATURE_REP_GOOD
->> +	ALTERNATIVE_2 "jmp copy_page_regs", "", X86_FEATURE_REP_GOOD, \
->> +                      "jmp copy_page_nt", X86_FEATURE_XMM2
-> 
-> This makes every machine which has sse2 do NT stores now. Which means
-> *every* machine practically.
-> 
-Yes. And NT stores should be better for copy_page especially copying a lot
-of pages as only partial memory of copied page will be access recently.
-> The folks on linux-nvdimm@ should be able to give you a better idea what
-> to do.
-> 
-> HTH.
-> 
-Thanks for response and help.
+I agree. WARN_ON(_ONCE) should be reserved for anomalies that should not
+happen ever. Anything that the user could trigger, should not trigger a
+WARN_ON.
+
+A WARN_ON is perfectly fine for detecting an accounting error inside the
+kernel. I have them scattered all over my code, but they should never be
+hit, even if something in user space tries to hit it. (with an exception of
+an interface I want to deprecate, where I want to know if it's still being
+used ;-) Of course, that wouldn't help bots testing the code. And I haven't
+done that in years)
+
+Any anomaly that can be triggered by user space doing something it should
+not be doing really needs a pr_warn().
+
+Thanks,
+
+-- Steve
