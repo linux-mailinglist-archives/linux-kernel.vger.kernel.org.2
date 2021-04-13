@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D0B35DB0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CB535DB0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239724AbhDMJYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S245667AbhDMJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237403AbhDMJYd (ORCPT
+        with ESMTP id S240373AbhDMJYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:24:33 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4345DC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:24:14 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id w7-20020a1cdf070000b0290125f388fb34so7730611wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:24:14 -0700 (PDT)
+        Tue, 13 Apr 2021 05:24:53 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C58C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:24:32 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id x76so7403474ybe.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q/ZG+pCcF9dWPEWXNf+sTrl+9ocn3tujNZhS/yVRHoY=;
-        b=WgtR6uJ2GYaDkNUBtlk1alYw407nGKyIKWQ6rNbBFEtGxPGXAaUvmJqds6RoKjsPYj
-         QjRDwyFAJNQA3cdmiuh6Xm0GbWSyR70m/80C7sccunne+PywBlKlTLsbxZJ41Fi4FA7N
-         ydTtKpbmmhs4xugElMGX3LsGxV44QaR7FpU0blEwOoc9S4IJu1ajipv7OH5D2A3FDa7I
-         loj16JPo8loeYCa/5Z4dlW/tvc5tJuXUl0gXeeXhvxE63KAZQ9N38lXQBFtN00kp2V1R
-         TliA3bTkJLflNq05v5qMRGkuvI86kXna1SHZc+8ZkIUgf4WTOYO9f/WLn0lHv55Ogp42
-         MdFQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eilsWJ436y5EpMfON6Wru7/wZHB3hyKVpK6txyWMaEk=;
+        b=U2AR7ZhsvlKFUL9UAI2j57eVY4R8TZJ57Rex9pkWTeCtEVT6wD9V2k0XQiFOio+ZSl
+         WrT9bj4HyAST2TmN2iAVLrOTZK1xBOqZCA1t5/p/RxgAzH67MfqXxLNxbORiqnzonhrl
+         fhPj8199fGlyld+3rlYneaGjU5AjMFjytQJb30bI5INbjkWUc47dXI8kW2KWQF41qTfy
+         pwanSzKipCKygspEAru7pzJTal7FO9htNYplaofaJjcyojbDR9BMuNIJYK1q/HOXrhmY
+         +ISjULw85tVhgI7ErWMduza7zTsZE1MRAcGFiGaVUjUJBgl048aa02JgXlJI3R3fgxa1
+         adOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q/ZG+pCcF9dWPEWXNf+sTrl+9ocn3tujNZhS/yVRHoY=;
-        b=OJStAVlX94ccLJaNbhK7V8/JUxRXbZKKgOeM9MF96YR2sASum5PUbK9XTLs15puclg
-         glBWogjHXnZ4TPQAaa1wStPhLSYIBBv28SS35d3QT1Ib6sRysp63yv0zjkPZzi7hAIWR
-         z0glWYH+CwNHFWzix4A/yWFOZi3cDbPLLIy6Xmv3EY7WdJQ4DhTf5g8v/GZTaYyB59LF
-         M0He1OG5G78H/Yo+zCAVRj49q3/dbXGob2BUnd6WuOr1YpQADNGNk3fixs7S60R0d9jb
-         9bQJFhjNWEzIJbBLuyz9tDQ0Wv0Jru6ugPdAI6rjEMQ3hp6UA3ODuc3hxDx9iHQ7T0EV
-         xBLA==
-X-Gm-Message-State: AOAM533VH96zSGzEjm3hRiVv+NmLJ2TNee5LIc/qowmnhIgOsKm5D/GS
-        nPdbHBdJxS4GnTZrM7C5n9zGJA==
-X-Google-Smtp-Source: ABdhPJzM0s6uitdjPDyGqTnxZF+cYb4kinVMj8YyWDY7q2hwt3JZKeacKfRXSr/WieOP3ypRTT4wXQ==
-X-Received: by 2002:a1c:6446:: with SMTP id y67mr3049107wmb.145.1618305852795;
-        Tue, 13 Apr 2021 02:24:12 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id a22sm11064362wrc.59.2021.04.13.02.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 02:24:12 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 09:24:09 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Peng Wu <wupeng58@huawei.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] sched/topology: Make some symbols static
-Message-ID: <YHVjOeSGT3xe2smj@google.com>
-References: <1617887537-38438-1-git-send-email-wupeng58@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eilsWJ436y5EpMfON6Wru7/wZHB3hyKVpK6txyWMaEk=;
+        b=hJU3HHlU3rexGlVcstdSdPeMJXJxvUlN0ykMOdxI8Tn7fthedG4HC7xGoAW6wvoErz
+         Q5oz6dAsiXbZPYMesc/+ahMiMtMLkoNRiPyRwovhv+6gGcTKZ8FbXCQsLxz5AQGSQxPt
+         V0nKVxV3yTcaCqGwWIGIgYxVh9ABIU/FfU2OtBnQS9Wu1H97idcz6K6+VJZtkRtbdzrL
+         1dIF1pXMHdS7HI58px9IjiFlVS+8BTqwNfqlQin1uWLlso0tPXS5DWzeIRxlmJTCTG0D
+         VrE+MN9PAuRcqXvHUbuBy3XGwcxqcbv0+mLSDGY6LHCyu3bpVCBio2tvMiF/Bkh7TPPu
+         hOFA==
+X-Gm-Message-State: AOAM530HKmoN1K4Al4yOWqW81wb26i5lGOpk5j0aes5fzvex4X+kBN+r
+        m8eCMYSXxYIKRUvxim9muL2BwTXNXvY5D3DQ48khLA==
+X-Google-Smtp-Source: ABdhPJwNxYSRQPQPqbHv6ObXbGvShQMUCY0Y74AJPbb0xgQNMVttsb9i97F8rFlNrlZWwreruBAxg9HW4gr5GrjDNAk=
+X-Received: by 2002:a25:b906:: with SMTP id x6mr41172495ybj.504.1618305871573;
+ Tue, 13 Apr 2021 02:24:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617887537-38438-1-git-send-email-wupeng58@huawei.com>
+References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
+ <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
+ <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
+ <78c858ba-a847-884f-80c3-cb1eb84d4113@roeck-us.net> <CANn89i+wQoaiFEe1Qi1k96d-ACLmAtJJQ36bs5Z5knYO1v+rOg@mail.gmail.com>
+ <ec5a2822-02b8-22e8-b2e2-23a942506a94@roeck-us.net>
+In-Reply-To: <ec5a2822-02b8-22e8-b2e2-23a942506a94@roeck-us.net>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 11:24:20 +0200
+Message-ID: <CANn89iKDytTucZfCPKLfiv8FdWYSvs4JzgkN452PrH7qDfPbkg@mail.gmail.com>
+Subject: Re: Linux 5.12-rc7
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 08 Apr 2021 at 21:12:17 (+0800), Peng Wu wrote:
-> The sparse tool complains as follows:
-> 
-> kernel/sched/topology.c:211:1: warning:
->  symbol 'sched_energy_mutex' was not declared. Should it be static?
-> kernel/sched/topology.c:212:6: warning:
->  symbol 'sched_energy_update' was not declared. Should it be static?
-> 
-> This symbol is not used outside of topology.c, so this
-> commit marks it static.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Peng Wu <wupeng58@huawei.com>
-> ---
->  kernel/sched/topology.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index d1aec244c027..25c3f88d43cd 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -208,8 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
->  #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
->  DEFINE_STATIC_KEY_FALSE(sched_energy_present);
->  unsigned int sysctl_sched_energy_aware = 1;
-> -DEFINE_MUTEX(sched_energy_mutex);
-> -bool sched_energy_update;
-> +static DEFINE_MUTEX(sched_energy_mutex);
-> +static bool sched_energy_update;
->  
->  void rebuild_sched_domains_energy(void)
->  {
+On Mon, Apr 12, 2021 at 10:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
+> On 4/12/21 10:38 AM, Eric Dumazet wrote:
+> [ ... ]
+>
+> > Yes, I think this is the real issue here. This smells like some memory
+> > corruption.
+> >
+> > In my traces, packet is correctly received in AF_PACKET queue.
+> >
+> > I have checked the skb is well formed.
+> >
+> > But the user space seems to never call poll() and recvmsg() on this
+> > af_packet socket.
+> >
+>
+> After sprinkling the kernel with debug messages:
+>
+> 424   00:01:33.674181 sendto(6, "E\0\1H\0\0\0\0@\21y\246\0\0\0\0\377\377\377\377\0D\0C\00148\346\1\1\6\0\246\336\333\v\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0RT\0\
+> 424   00:01:33.693873 close(6)          = 0
+> 424   00:01:33.694652 fcntl64(5, F_SETFD, FD_CLOEXEC) = 0
+> 424   00:01:33.695213 clock_gettime64(CLOCK_MONOTONIC, 0x7be18a18) = -1 EFAULT (Bad address)
+> 424   00:01:33.695889 write(2, "udhcpc: clock_gettime(MONOTONIC) failed\n", 40) = -1 EFAULT (Bad address)
+> 424   00:01:33.697311 exit_group(1)     = ?
+> 424   00:01:33.698346 +++ exited with 1 +++
+>
+> I only see that after adding debug messages in the kernel, so I guess there must be
+> a heisenbug somehere.
+>
+> Anyway, indeed, I see (another kernel debug message):
+>
+> __do_sys_clock_gettime: Returning -EFAULT on address 0x7bacc9a8
+>
+> So udhcpc doesn't even try to read the reply because it crashes after sendto()
+> when trying to read the current time. Unless I am missing something, that means
+> that the problem happens somewhere on the send side.
+>
+> To make things even more interesting, it looks like the failing system call
+> isn't always clock_gettime().
+>
+> Guenter
 
-FWIW, that has been reported some time ago:
 
-https://lore.kernel.org/lkml/1606218731-3999-1-git-send-email-zou_wei@huawei.com/
-https://lore.kernel.org/lkml/1606271447-74720-1-git-send-email-zou_wei@huawei.com/
+I think GRO fast path has never worked on SUPERH. Probably SUPERH has
+never used a fast NIC (10Gbit+)
 
-But otherwise, this looks OK to me.
+The following hack fixes the issue.
 
-Thanks,
-Quentin
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index af8c1ea040b9364b076e2d72f04dc3de2d7e2f11..91ba89a645ff91d4cd4f3d8dc8a009bcb67da344
+100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5916,13 +5916,16 @@ static struct list_head
+*gro_list_prepare(struct napi_struct *napi,
+
+ static void skb_gro_reset_offset(struct sk_buff *skb)
+ {
++#if !defined(CONFIG_SUPERH)
+        const struct skb_shared_info *pinfo = skb_shinfo(skb);
+        const skb_frag_t *frag0 = &pinfo->frags[0];
++#endif
+
+        NAPI_GRO_CB(skb)->data_offset = 0;
+        NAPI_GRO_CB(skb)->frag0 = NULL;
+        NAPI_GRO_CB(skb)->frag0_len = 0;
+
++#if !defined(CONFIG_SUPERH)
+        if (!skb_headlen(skb) && pinfo->nr_frags &&
+            !PageHighMem(skb_frag_page(frag0))) {
+                NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
+@@ -5930,6 +5933,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
+                                                    skb_frag_size(frag0),
+                                                    skb->end - skb->tail);
+        }
++#endif
+ }
+
+ static void gro_pull_from_frag0(struct sk_buff *skb, int grow)
