@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A7335D440
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C403B35D442
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344213AbhDMAEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
+        id S1344224AbhDMAFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243321AbhDMAEq (ORCPT
+        with ESMTP id S1344222AbhDMAE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:04:46 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DBCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:27 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id d2so12587613ilm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:27 -0700 (PDT)
+        Mon, 12 Apr 2021 20:04:59 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4B5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:40 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id c15so12632730ilj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=p6IckBE1LGhj5jhSwbz/B3sx7IuS+wP3iwwX3r/RBIg=;
-        b=ChGVRjJ3oj84fNCt9XfZvHM+RyXfZpASJkD9z9jHttGHl8MJEABhFABlaPcVNrrMyd
-         Sf8XoOua+W7c2rucsmFirCxeQxLNyJ0bXa4VjVy5Lro0ZOy95pPu5PFWw1g1OGt6rel/
-         bfGq4XOIxzwcCKntwf3iH44QImrfQLTQ9ubdzGrEbIzCw/TiEgPy3HlKP+2o3k+NnhfI
-         LI9EZ2ReFhC30sC91zQdg1SbVRAYdZ/Jg8SIzQ8Eqn25IsR4EozKwXvUjVduSoum34HH
-         sBqmqfubOc6A1zYV9qWKPEkhF4V/pgNuFidYb+74cacZDui0pl0HdJlVk/ITTvnR2RbT
-         kvpA==
+        bh=+OQdtZxsQyvO3nm0SGxHYUM1RYw+EQP6aqSBPHNZGl0=;
+        b=eDaQLfyq81OEGi82RdxLfq8BWq/m46x7z/phYKQJzVD8aAEsOqYW9b/chAWdXaNqVy
+         q60N8L2763d3RuzIMnSdERgep7oJPuUofXlCUiEZwzrl7eCL2yJPZmfB+qxPUuscisA9
+         6N5zXajDte3yIgV6Udih6TaKkDwjjGMBrPvSH6OZTK/LeGdVKsgco2uzdlUTzhTZkBRi
+         KDBCYUD2GMdfQk3IOwlLn37keA7LmBuyta+jDgbHNSdI/h0QDRGU5Pj+Z2OCZM+IatKP
+         OmR0wbUXdy+QGC3SlA55AZAKiTj/uLNdQt5uKfKMJLHNOJxlqHSkKkNEOpmFg13WXh0a
+         +BDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=p6IckBE1LGhj5jhSwbz/B3sx7IuS+wP3iwwX3r/RBIg=;
-        b=mMFs2lzMulYQ/JpME7qM7kOYgU/nyqIICc6xSFmpTVYbU+TJWpWKiA/Bn17EQQ6L8M
-         QYvuBvz0ZQNmUpNDDwKq7a/XJmHd0X7O6hEInjd2tXn5uPOIuqJP3G1+uIln40GNJhkJ
-         XLHmj9LJNbOVWFk2N12s/nbG+Eca7s5zGqJoOj0OeMVdxT2GOTU5MMBI32yV1EfegwYZ
-         fW6FPKcggwe2DAzjKcPGFJ1+hbzxvlRNpMCIO3OZmeVRbhauWrd6wn6JYCmw3r21PhVX
-         I+Xb2RPlbptRt2H5cYMPliaGQeC2FygjMcCuEOCdV3/0/qTYWHItFbEwd+BUVCs9fMrV
-         iuew==
-X-Gm-Message-State: AOAM531g5m2mrSmQRg5iE9COKJYg9VpTBc+HMYPaKj1C8QmFUCExT1Gs
-        rl8PAOzmAxfzQET1UmLA3Ob9ci20rnjQpBIOb7ZfsA==
-X-Google-Smtp-Source: ABdhPJzq8+0mgicwyIBGTk1RkAnUEipQNwjP8fPJkVNv0BJ6pvZKXvEIDKmNRd73Zj6wrrt4F0GqI56OVkCYC31K1Wg=
-X-Received: by 2002:a05:6e02:12c4:: with SMTP id i4mr1794471ilm.79.1618272267012;
- Mon, 12 Apr 2021 17:04:27 -0700 (PDT)
+        bh=+OQdtZxsQyvO3nm0SGxHYUM1RYw+EQP6aqSBPHNZGl0=;
+        b=BRYkgqbrc+N3UzS45EfjvY8uUpsI0BFNYbthw8dH+XrDhwVNrKMlKBUKh9HWBHPe8S
+         +kBk1DYgzvHIFH52xrC+IZnCKRvVtDfiGUkaKxu1fJKzmG90O6d2AJhNqOVIwxVY/HJB
+         2NA1haBtMWXVRqN4jQY3DUl2BA8oUR4DAs55BT+SS7LaIi17mNv0GAHRL/dXVK+dThqg
+         0dea6LjX2Y0DiR69988QomsgCkeCEGFbgozIxKnj0n2YaGre4MEvChO3BDVch9yxWY2Y
+         XYL4ygr3BLRHQ99DprbdXtgqaZC4nliHGAR+dz9u7qeR4mj7aj/hx8G1E6R324O4ug8J
+         UC4Q==
+X-Gm-Message-State: AOAM533AZWDF8hQgk/sVSihxPOra3WVUPNODs+/jw3QiYFuhThzWV0+9
+        ixZp3izACHcl0u+tBI7ZhqnpX33dB7WjDz/QL7dmCA==
+X-Google-Smtp-Source: ABdhPJxuABDyeM+gQOGSyy0PjjB/7iX/1lLquOIYANJLTcbwVTrfZAKTeKerZMsxQQI5jUjC5HMmVWfsO1mp5FYtkG0=
+X-Received: by 2002:a05:6e02:1c07:: with SMTP id l7mr18267543ilh.110.1618272279969;
+ Mon, 12 Apr 2021 17:04:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1618254007.git.ashish.kalra@amd.com> <c7400111ed7458eee01007c4d8d57cdf2cbb0fc2.1618254007.git.ashish.kalra@amd.com>
-In-Reply-To: <c7400111ed7458eee01007c4d8d57cdf2cbb0fc2.1618254007.git.ashish.kalra@amd.com>
+References: <cover.1618254007.git.ashish.kalra@amd.com> <c5d0e3e719db7bb37ea85d79ed4db52e9da06257.1618254007.git.ashish.kalra@amd.com>
+In-Reply-To: <c5d0e3e719db7bb37ea85d79ed4db52e9da06257.1618254007.git.ashish.kalra@amd.com>
 From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 12 Apr 2021 17:03:50 -0700
-Message-ID: <CABayD+e4Avc0D4oRANeW_GajvTrhLe2RQWnifYfQ1dm27=fV9w@mail.gmail.com>
-Subject: Re: [PATCH v12 04/13] KVM: SVM: Add support for KVM_SEV_RECEIVE_START command
+Date:   Mon, 12 Apr 2021 17:04:03 -0700
+Message-ID: <CABayD+dvmnZeE4FgKqYhCwc-eo0XgzyeaKwmGiB=XMUOO5VZDQ@mail.gmail.com>
+Subject: Re: [PATCH v12 05/13] KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command
 To:     Ashish Kalra <Ashish.Kalra@amd.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -72,9 +72,8 @@ On Mon, Apr 12, 2021 at 12:44 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 >
 > From: Brijesh Singh <brijesh.singh@amd.com>
 >
-> The command is used to create the encryption context for an incoming
-> SEV guest. The encryption context can be later used by the hypervisor
-> to import the incoming data into the SEV guest memory space.
+> The command is used for copying the incoming buffer into the
+> SEV guest memory space.
 >
 > Cc: Thomas Gleixner <tglx@linutronix.de>
 > Cc: Ingo Molnar <mingo@redhat.com>
@@ -89,133 +88,126 @@ On Mon, Apr 12, 2021 at 12:44 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 > Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 > ---
->  .../virt/kvm/amd-memory-encryption.rst        | 29 +++++++
->  arch/x86/kvm/svm/sev.c                        | 81 +++++++++++++++++++
+>  .../virt/kvm/amd-memory-encryption.rst        | 24 ++++++
+>  arch/x86/kvm/svm/sev.c                        | 79 +++++++++++++++++++
 >  include/uapi/linux/kvm.h                      |  9 +++
->  3 files changed, 119 insertions(+)
+>  3 files changed, 112 insertions(+)
 >
 > diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
-> index 26c4e6c83f62..c86c1ded8dd8 100644
+> index c86c1ded8dd8..c6ed5b26d841 100644
 > --- a/Documentation/virt/kvm/amd-memory-encryption.rst
 > +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
-> @@ -343,6 +343,35 @@ issued by the hypervisor to delete the encryption context.
+> @@ -372,6 +372,30 @@ On success, the 'handle' field contains a new handle and on error, a negative va
 >
->  Returns: 0 on success, -negative on error
+>  For more details, see SEV spec Section 6.12.
 >
-> +13. KVM_SEV_RECEIVE_START
-> +------------------------
+> +14. KVM_SEV_RECEIVE_UPDATE_DATA
+> +----------------------------
 > +
-> +The KVM_SEV_RECEIVE_START command is used for creating the memory encryption
-> +context for an incoming SEV guest. To create the encryption context, the user must
-> +provide a guest policy, the platform public Diffie-Hellman (PDH) key and session
-> +information.
+> +The KVM_SEV_RECEIVE_UPDATE_DATA command can be used by the hypervisor to copy
+> +the incoming buffers into the guest memory region with encryption context
+> +created during the KVM_SEV_RECEIVE_START.
 > +
-> +Parameters: struct  kvm_sev_receive_start (in/out)
+> +Parameters (in): struct kvm_sev_receive_update_data
 > +
 > +Returns: 0 on success, -negative on error
 > +
 > +::
 > +
-> +        struct kvm_sev_receive_start {
-> +                __u32 handle;           /* if zero then firmware creates a new handle */
-> +                __u32 policy;           /* guest's policy */
+> +        struct kvm_sev_launch_receive_update_data {
+> +                __u64 hdr_uaddr;        /* userspace address containing the packet header */
+> +                __u32 hdr_len;
 > +
-> +                __u64 pdh_uaddr;        /* userspace address pointing to the PDH key */
-> +                __u32 pdh_len;
+> +                __u64 guest_uaddr;      /* the destination guest memory region */
+> +                __u32 guest_len;
 > +
-> +                __u64 session_uaddr;    /* userspace address which points to the guest session information */
-> +                __u32 session_len;
+> +                __u64 trans_uaddr;      /* the incoming buffer memory region  */
+> +                __u32 trans_len;
 > +        };
-> +
-> +On success, the 'handle' field contains a new handle and on error, a negative value.
-> +
-> +For more details, see SEV spec Section 6.12.
 > +
 >  References
 >  ==========
 >
 > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 92325d9527ce..e530c2b34b5e 100644
+> index e530c2b34b5e..2c95657cc9bf 100644
 > --- a/arch/x86/kvm/svm/sev.c
 > +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1370,6 +1370,84 @@ static int sev_send_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> @@ -1448,6 +1448,82 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
 >         return ret;
 >  }
 >
-> +static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
 > +{
 > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +       struct sev_data_receive_start *start;
-> +       struct kvm_sev_receive_start params;
-> +       int *error = &argp->error;
-> +       void *session_data;
-> +       void *pdh_data;
-> +       int ret;
+> +       struct kvm_sev_receive_update_data params;
+> +       struct sev_data_receive_update_data *data;
+> +       void *hdr = NULL, *trans = NULL;
+> +       struct page **guest_page;
+> +       unsigned long n;
+> +       int ret, offset;
 > +
 > +       if (!sev_guest(kvm))
-> +               return -ENOTTY;
-> +
-> +       /* Get parameter from the userspace */
-> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
-> +                       sizeof(struct kvm_sev_receive_start)))
-> +               return -EFAULT;
-> +
-> +       /* some sanity checks */
-> +       if (!params.pdh_uaddr || !params.pdh_len ||
-> +           !params.session_uaddr || !params.session_len)
 > +               return -EINVAL;
 > +
-> +       pdh_data = psp_copy_user_blob(params.pdh_uaddr, params.pdh_len);
-> +       if (IS_ERR(pdh_data))
-> +               return PTR_ERR(pdh_data);
+> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
+> +                       sizeof(struct kvm_sev_receive_update_data)))
+> +               return -EFAULT;
 > +
-> +       session_data = psp_copy_user_blob(params.session_uaddr,
-> +                       params.session_len);
-> +       if (IS_ERR(session_data)) {
-> +               ret = PTR_ERR(session_data);
-> +               goto e_free_pdh;
+> +       if (!params.hdr_uaddr || !params.hdr_len ||
+> +           !params.guest_uaddr || !params.guest_len ||
+> +           !params.trans_uaddr || !params.trans_len)
+> +               return -EINVAL;
+> +
+> +       /* Check if we are crossing the page boundary */
+> +       offset = params.guest_uaddr & (PAGE_SIZE - 1);
+> +       if ((params.guest_len + offset > PAGE_SIZE))
+> +               return -EINVAL;
+> +
+> +       hdr = psp_copy_user_blob(params.hdr_uaddr, params.hdr_len);
+> +       if (IS_ERR(hdr))
+> +               return PTR_ERR(hdr);
+> +
+> +       trans = psp_copy_user_blob(params.trans_uaddr, params.trans_len);
+> +       if (IS_ERR(trans)) {
+> +               ret = PTR_ERR(trans);
+> +               goto e_free_hdr;
 > +       }
 > +
 > +       ret = -ENOMEM;
-> +       start = kzalloc(sizeof(*start), GFP_KERNEL);
-> +       if (!start)
-> +               goto e_free_session;
+> +       data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +       if (!data)
+> +               goto e_free_trans;
 > +
-> +       start->handle = params.handle;
-> +       start->policy = params.policy;
-> +       start->pdh_cert_address = __psp_pa(pdh_data);
-> +       start->pdh_cert_len = params.pdh_len;
-> +       start->session_address = __psp_pa(session_data);
-> +       start->session_len = params.session_len;
+> +       data->hdr_address = __psp_pa(hdr);
+> +       data->hdr_len = params.hdr_len;
+> +       data->trans_address = __psp_pa(trans);
+> +       data->trans_len = params.trans_len;
 > +
-> +       /* create memory encryption context */
-> +       ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_RECEIVE_START, start,
-> +                               error);
-> +       if (ret)
+> +       /* Pin guest memory */
+> +       ret = -EFAULT;
+> +       guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
+> +                                   PAGE_SIZE, &n, 0);
+> +       if (!guest_page)
 > +               goto e_free;
 > +
-> +       /* Bind ASID to this guest */
-> +       ret = sev_bind_asid(kvm, start->handle, error);
-> +       if (ret)
-> +               goto e_free;
+> +       /* The RECEIVE_UPDATE_DATA command requires C-bit to be always set. */
+> +       data->guest_address = (page_to_pfn(guest_page[0]) << PAGE_SHIFT) +
+> +                               offset;
+> +       data->guest_address |= sev_me_mask;
+> +       data->guest_len = params.guest_len;
+> +       data->handle = sev->handle;
 > +
-> +       params.handle = start->handle;
-> +       if (copy_to_user((void __user *)(uintptr_t)argp->data,
-> +                        &params, sizeof(struct kvm_sev_receive_start))) {
-> +               ret = -EFAULT;
-> +               sev_unbind_asid(kvm, start->handle);
-> +               goto e_free;
-> +       }
+> +       ret = sev_issue_cmd(kvm, SEV_CMD_RECEIVE_UPDATE_DATA, data,
+> +                               &argp->error);
 > +
-> +       sev->handle = start->handle;
-> +       sev->fd = argp->sev_fd;
+> +       sev_unpin_memory(kvm, guest_page, n);
 > +
 > +e_free:
-> +       kfree(start);
-> +e_free_session:
-> +       kfree(session_data);
-> +e_free_pdh:
-> +       kfree(pdh_data);
+> +       kfree(data);
+> +e_free_trans:
+> +       kfree(trans);
+> +e_free_hdr:
+> +       kfree(hdr);
 > +
 > +       return ret;
 > +}
@@ -223,31 +215,31 @@ On Mon, Apr 12, 2021 at 12:44 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 >  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
 >  {
 >         struct kvm_sev_cmd sev_cmd;
-> @@ -1432,6 +1510,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->         case KVM_SEV_SEND_FINISH:
->                 r = sev_send_finish(kvm, &sev_cmd);
+> @@ -1513,6 +1589,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         case KVM_SEV_RECEIVE_START:
+>                 r = sev_receive_start(kvm, &sev_cmd);
 >                 break;
-> +       case KVM_SEV_RECEIVE_START:
-> +               r = sev_receive_start(kvm, &sev_cmd);
+> +       case KVM_SEV_RECEIVE_UPDATE_DATA:
+> +               r = sev_receive_update_data(kvm, &sev_cmd);
 > +               break;
 >         default:
 >                 r = -EINVAL;
 >                 goto out;
 > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index d45af34c31be..29c25e641a0c 100644
+> index 29c25e641a0c..3a656d43fc6c 100644
 > --- a/include/uapi/linux/kvm.h
 > +++ b/include/uapi/linux/kvm.h
-> @@ -1750,6 +1750,15 @@ struct kvm_sev_send_update_data {
->         __u32 trans_len;
+> @@ -1759,6 +1759,15 @@ struct kvm_sev_receive_start {
+>         __u32 session_len;
 >  };
 >
-> +struct kvm_sev_receive_start {
-> +       __u32 handle;
-> +       __u32 policy;
-> +       __u64 pdh_uaddr;
-> +       __u32 pdh_len;
-> +       __u64 session_uaddr;
-> +       __u32 session_len;
+> +struct kvm_sev_receive_update_data {
+> +       __u64 hdr_uaddr;
+> +       __u32 hdr_len;
+> +       __u64 guest_uaddr;
+> +       __u32 guest_len;
+> +       __u64 trans_uaddr;
+> +       __u32 trans_len;
 > +};
 > +
 >  #define KVM_DEV_ASSIGN_ENABLE_IOMMU    (1 << 0)
