@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E24635E5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9F635E5B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhDMRyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:54:20 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35638 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhDMRyR (ORCPT
+        id S232523AbhDMRz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:55:27 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:46651 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231489AbhDMRzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:54:17 -0400
-Received: by mail-ot1-f44.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so16910202oto.2;
-        Tue, 13 Apr 2021 10:53:57 -0700 (PDT)
+        Tue, 13 Apr 2021 13:55:23 -0400
+Received: by mail-pg1-f173.google.com with SMTP id t140so12469166pgb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+4PyFE0Z63r4dwfjFWUfn+ZwYI5WhtCq0wza5SYUhT0=;
+        b=kFidD4BqxO16i5NDjlMk21z4/+O58HvveY9D/z9HTJtgK5j29TK/u2FQq8biPbYrVC
+         n4SQncXF96eXqonDFNOcG8RSZ1Mx/9hASAu1rXmQBB6CrLADOaoI2eBexHQBc4qnPij0
+         hkqOoqSua0sAvrdiTzwCxS95gNecLFS3dp/xqp+0cA+ZWRxeEkrTk5PEh34sugAJeHu9
+         ZwfOtOb2yWDQ1wJ1yvlPq7IvQpLzrdEP5rJRyYJLs7zaFKo3r7ZZ/9M11ZoSYvswv/sy
+         8ml4FEQ4UAvrQ3wK0D7aSv6oNMiBbD5HaPYSwVjnUDraCTXcwUWu7qBUC7TT1EbGwGvV
+         adzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4ZAoDkrR42DaMFPAXYSwp4F1d1CFF/3apQEZeTX5xO4=;
-        b=g+Ntzh3UyzcEe5T/BQF2HQxxCHV3LYelAICaRWuBWqBW5/b7bpFf4Ad+zmS6c7hIw6
-         K7uMQ5KsxQhVaPEYzhm/ZPRC37K7QoRAiUUUKe3CuqL5w5tlbm1iSD8m/ADjFRnV7yWu
-         jWsvR10jcHYk6bNlE/SecomXi7ZkuBNqiS/1OJtE6FfWEkS6aEvRR8tOHWLBCjLWciHZ
-         65WgOi3KO5+onS+0hSJLVMhYIJKPi+1VZ1TZP+iEC35rK7git0z+AQGsm4KwpAmvTpAP
-         01fUmx6dD8N1+iyTJR2p1FYUcXAzlJrLHrajtm4N9gdZy6h6vcYf6uCZmUAs8uy8gqm9
-         3D9A==
-X-Gm-Message-State: AOAM530vfijMVrcQcc7EI/ulRS7ZflIBbSmN3Pn7W9KPrzFd9aPDo6Q7
-        yBx9oyU5qjsNlpeaHSs4uEPxg+DHqp8mEq1QGng=
-X-Google-Smtp-Source: ABdhPJwWioBmb0kiRyTRIBrrGZrxVitvcdnynaqpvKueWlIFsIK2+hVxNJbd3BqNEE3WEQ0QYlmmb5GKr+9a04IMB1A=
-X-Received: by 2002:a9d:6951:: with SMTP id p17mr16507793oto.206.1618336437080;
- Tue, 13 Apr 2021 10:53:57 -0700 (PDT)
+        bh=+4PyFE0Z63r4dwfjFWUfn+ZwYI5WhtCq0wza5SYUhT0=;
+        b=uUGN5vyhQjogArqFkH7PhSOoEdW0SEcbruk4et3EkMktv7Lj2yG79A6LbHpDWneVZu
+         LBqZY+oQTDYvPmWWwPRy38isGLeXNAMcp5h7yGCF+aitvaSrgXkv+NQTZbRs8z8kwPri
+         USsPWfwQJmYocyzGTXQIrHRhpplx3ej+MhWuahkgyi2pqeMFmDtIy9q9tKAPcMZx6SY/
+         TJEWsC63GPjLYvBnvYniO4s7WZUcsubItQrkMFQit99YnXE53sg7SXJOqmyy/hpzO1WK
+         rVk8VyOTTFd9jaqDqPF0ak5TtqL6lD/TZ87BIq/5A1Ps4l47BKQ97l1l/wzzIhR7h5fY
+         /Afw==
+X-Gm-Message-State: AOAM532T0Kn21IjSnSVYqo85/SxC+5vHCEqrrvmUo9Cc9x1bfWLFqYvc
+        YWwFAPF8W31vzS5FPRqeN9U/srNrfQ3/l44w9w17eA==
+X-Google-Smtp-Source: ABdhPJxnIrnRes9OE/FCfsKMv3Tut65YdVv51sZZacX49GiILt4E8sd5eUm7EHV6B623gCj+pFr1rLZMC2J1IN2utb4=
+X-Received: by 2002:a63:7708:: with SMTP id s8mr33748780pgc.265.1618336443222;
+ Tue, 13 Apr 2021 10:54:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <11752259.O9o76ZdvQC@kreacher> <dea11d82-4fe5-ac23-585c-a1f74e076ca7@redhat.com>
-In-Reply-To: <dea11d82-4fe5-ac23-585c-a1f74e076ca7@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 13 Apr 2021 19:53:46 +0200
-Message-ID: <CAJZ5v0hHJYT6kSxoH-v7QQ7oOh=OgQXDpNB7BW7rPwrc0L3SOQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: x86: Call acpi_boot_table_init() after acpi_table_upgrade()
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        George Kennedy <george.kennedy@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        x86 Maintainers <x86@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
+References: <20210412154648.3719153-1-narmstrong@baylibre.com>
+ <20210412154648.3719153-4-narmstrong@baylibre.com> <bb9196e3-e2d0-e44b-0cf1-cb469ea2edd7@baylibre.com>
+In-Reply-To: <bb9196e3-e2d0-e44b-0cf1-cb469ea2edd7@baylibre.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 13 Apr 2021 19:53:52 +0200
+Message-ID: <CAG3jFysHBhj-mj_WAmHNaTDdmzkF2UwTmWc8Xnzb1zdcFFYN7A@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] MAINTAINERS: add it66121 HDMI bridge driver entry
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        paul@crapouillou.net, Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Phong LE <ple@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 7:43 PM David Hildenbrand <david@redhat.com> wrote:
+On Mon, 12 Apr 2021 at 17:47, Neil Armstrong <narmstrong@baylibre.com> wrote:
 >
-> On 13.04.21 16:01, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> On 12/04/2021 17:46, Neil Armstrong wrote:
+> > From: Phong LE <ple@baylibre.com>
 > >
-> > Commit 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by
-> > ACPI tables") attempted to address an issue with reserving the memory
-> > occupied by ACPI tables, but it broke the initrd-based table override
-> > mechanism relied on by multiple users.
+> > Add Neil Armstrong and myself as maintainers
 > >
-> > To restore the initrd-based ACPI table override functionality, move
-> > the acpi_boot_table_init() invocation in setup_arch() on x86 after
-> > the acpi_table_upgrade() one.
-> >
-> > Fixes: 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by ACPI tables")
-> > Reported-by: Hans de Goede <hdegoede@redhat.com>
-> > Tested-by: Hans de Goede <hdegoede@redhat.com>
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Signed-off-by: Phong LE <ple@baylibre.com>
+>
+> Obviously:
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>
 > > ---
+> >  MAINTAINERS | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
 > >
-> > George, can you please check if this reintroduces the issue addressed by
-> > the above commit for you?
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 9ae8444c96b4..ff6450c83049 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9515,6 +9515,14 @@ Q:     http://patchwork.linuxtv.org/project/linux-media/list/
+> >  T:   git git://linuxtv.org/anttip/media_tree.git
+> >  F:   drivers/media/tuners/it913x*
 > >
-> > ---
-> >   arch/x86/kernel/setup.c |    5 ++---
-> >   1 file changed, 2 insertions(+), 3 deletions(-)
+> > +ITE IT66121 HDMI BRIDGE DRIVER
+> > +M:   Phong LE <ple@baylibre.com>
+> > +M:   Neil Armstrong <narmstrong@baylibre.com>
+> > +S:   Maintained
+> > +F:   drivers/gpu/drm/bridge/ite-it66121.c
+> > +T:   git git://anongit.freedesktop.org/drm/drm-misc
+
+I'm getting a checkpatch --strict warning here. The two above lines
+should switch places.
+
+WARNING: Misordered MAINTAINERS entry - list 'T:' before 'F:'
+#27: FILE: MAINTAINERS:9537:
++F:    drivers/gpu/drm/bridge/ite-it66121.c
++T:    git git://anongit.freedesktop.org/drm/drm-misc
+
+
+With this warning silenced, feel free to add my r-b.
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+
+> > +F:   Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> > +
+> >  IVTV VIDEO4LINUX DRIVER
+> >  M:   Andy Walls <awalls@md.metrocast.net>
+> >  L:   linux-media@vger.kernel.org
 > >
-> > Index: linux-pm/arch/x86/kernel/setup.c
-> > ===================================================================
-> > --- linux-pm.orig/arch/x86/kernel/setup.c
-> > +++ linux-pm/arch/x86/kernel/setup.c
-> > @@ -1045,9 +1045,6 @@ void __init setup_arch(char **cmdline_p)
-> >
-> >       cleanup_highmap();
-> >
-> > -     /* Look for ACPI tables and reserve memory occupied by them. */
-> > -     acpi_boot_table_init();
-> > -
-> >       memblock_set_current_limit(ISA_END_ADDRESS);
-> >       e820__memblock_setup();
-> >
-> > @@ -1132,6 +1129,8 @@ void __init setup_arch(char **cmdline_p)
-> >       reserve_initrd();
-> >
-> >       acpi_table_upgrade();
-> > +     /* Look for ACPI tables and reserve memory occupied by them. */
-> > +     acpi_boot_table_init();
-> >
-> >       vsmp_init();
 >
-> This is fairly late; especially, it's after actual allocations -- see
-> e820__memblock_alloc_reserved_mpc_new().
->
-> Can't the table upgrade mechanism fix up when adjusting something?
-
-Not at this point of the cycle I'm afraid.
-
-> Some details on what actually breaks would be helpful.
-
-Generally speaking, the table overrides that come from the initrd are
-not taken into account if acpi_boot_table_init() runs before
-acpi_table_upgrade() and the latter cannot run before
-reserve_initrd().
-
-Honestly, I'm not sure how much effort it would take to untangle this ATM.
