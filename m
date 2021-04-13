@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C40935D9E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A79135D9EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbhDMIVe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 04:21:34 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27697 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242697AbhDMIVb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:21:31 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-153-fsM8gFBuPMKJZMZap9THCQ-1; Tue, 13 Apr 2021 09:21:08 +0100
-X-MC-Unique: fsM8gFBuPMKJZMZap9THCQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 09:21:07 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 09:21:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: RE: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Thread-Topic: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Thread-Index: AQHXL8kRwdfrgigLI0exh4xFUSZq9KqyF7dg
-Date:   Tue, 13 Apr 2021 08:21:07 +0000
-Message-ID: <e88c6b601ad644a88e3f758f53f1060c@AcuMS.aculab.com>
-References: <20210410205246.507048-1-willy@infradead.org>
- <20210410205246.507048-2-willy@infradead.org>
- <20210411114307.5087f958@carbon>
- <20210412182354.GN2531743@casper.infradead.org>
-In-Reply-To: <20210412182354.GN2531743@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S242854AbhDMIWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:22:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229446AbhDMIWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCEBC613BF;
+        Tue, 13 Apr 2021 08:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618302148;
+        bh=FCK+SMdbdUGO5PuqGh46hY625MCpqFUerFbVNWNJmsU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rbngbYahMGe4TQffxAdJtnqoA+4uAXIIzQstIvnXyycZn6yoYgbMTptGxkY1QwoCN
+         qaRj1wD0ufR2Z6BbaKA79azUIvCglPP1Q9d9Lkh7TDvzW9aq7byrS6HOAtEK604XId
+         TxIecErW1PFjgVRTpT/6hn9OUwz9c6l3XRtTUWJXAwV80As1OviKsH0xrI7tBnuYVB
+         3TnSL2TNKhzj/rw0+Ms+XlqmAcJSrUvQxex+CUOvd0VjfuLCV7Q6r0gA40TTX8fqce
+         PeJ50GXDTxHT4XTSgLiu9HSuHNFAX2bKVELWG8//h8siSyxG99z0Zic5Y9fDM0gcMp
+         59hXM3+4vWrCw==
+Received: by mail-wm1-f50.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso8280046wmi.0;
+        Tue, 13 Apr 2021 01:22:28 -0700 (PDT)
+X-Gm-Message-State: AOAM53057+E4/qw2+OZHuSihv/EsqLpSyyis1TXcHr2o8IYmrOL9N63c
+        cJ3IabUQ9Wfi1rsSvMHYNWKoszYksRxrhICo2BA=
+X-Google-Smtp-Source: ABdhPJx46kLBDXZba+CnxN/ZUNBoeLvXIwiYMUqu2i8IPMHM68OBFUpSsmGRmKG5BR+iCqeSFMqyDnLyPD7VzAFJe3M=
+X-Received: by 2002:a7b:c14a:: with SMTP id z10mr2831003wmi.75.1618302147230;
+ Tue, 13 Apr 2021 01:22:27 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-16-andrew@aj.id.au>
+ <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
+ <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com> <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+ <e2d7268b-bdaf-45bf-bb21-a5b9f7e985a4@www.fastmail.com>
+In-Reply-To: <e2d7268b-bdaf-45bf-bb21-a5b9f7e985a4@www.fastmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 13 Apr 2021 10:22:11 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
+Message-ID: <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
+Subject: Re: [PATCH v2 16/21] ipmi: kcs_bmc: Add a "raw" character device interface
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        openipmi-developer@lists.sourceforge.net,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>, Joel Stanley <joel@jms.id.au>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Fair <benjaminfair@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox <willy@infradead.org>
-> Sent: 12 April 2021 19:24
-> 
-> On Sun, Apr 11, 2021 at 11:43:07AM +0200, Jesper Dangaard Brouer wrote:
-> > Could you explain your intent here?
-> > I worry about @index.
+On Tue, Apr 13, 2021 at 1:45 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> On Mon, 12 Apr 2021, at 18:18, Arnd Bergmann wrote:
+> > On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
+> > > > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > > >
+> > > > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
+> > > > > However, KCS devices are useful beyond IPMI (or keyboards), as they
+> > > > > provide a means to generate IRQs and exchange arbitrary data between a
+> > > > > BMC and its host system.
+> > > >
+> > > > I only noticed the series after Joel asked about the DT changes on the arm
+> > > > side. One question though:
+> > > >
+> > > > How does this related to the drivers/input/serio/ framework that also talks
+> > > > to the keyboard controller for things that are not keyboards?
+> > >
+> > > I've taken a brief look and I feel they're somewhat closely related.
+> > >
+> > > It's plausible that we could wrangle the code so the Aspeed and Nuvoton
+> > > KCS drivers move under drivers/input/serio. If you squint, the i8042
+> > > serio device driver has similarities with what the Aspeed and Nuvoton
+> > > device drivers are providing to the KCS IPMI stack.
 > >
-> > As I mentioned in other thread[1] netstack use page_is_pfmemalloc()
-> > (code copy-pasted below signature) which imply that the member @index
-> > have to be kept intact. In above, I'm unsure @index is untouched.
-> 
-> Well, I tried three different approaches.  Here's the one I hated the least.
-> 
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Date: Sat, 10 Apr 2021 16:12:06 -0400
-> Subject: [PATCH] mm: Fix struct page layout on 32-bit systems
-> 
-> 32-bit architectures which expect 8-byte alignment for 8-byte integers
-> and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
-> page inadvertently expanded in 2019.  When the dma_addr_t was added,
-> it forced the alignment of the union to 8 bytes, which inserted a 4 byte
-> gap between 'flags' and the union.
-> 
-> We could fix this by telling the compiler to use a smaller alignment
-> for the dma_addr, but that seems a little fragile.  Instead, move the
-> 'flags' into the union.  That causes dma_addr to shift into the same
-> bits as 'mapping', which causes problems with page_mapping() called from
-> set_page_dirty() in the munmap path.  To avoid this, insert three words
-> of padding and use the same bits as ->index and ->private, neither of
-> which have to be cleared on free.
+> > After looking some more into it, I finally understood that the two are
+> > rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
+> > is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
+> > that the proposed kcs_bmc_cdev_raw.c interface would be
+> > what corresponds to the other side of
+> > drivers/input/serio/i8042.c+userio.c.
+>
+> Right. I guess the question is should we be splitting kernel subsystems
+> along host/bmc lines? Doesn't feel intuitive, it's all Linux, but maybe
+> we can consolidate in the future if it makes sense?
 
-This all looks horribly fragile and is bound to get broken again.
-Are there two problems?
-1) The 'folio' structure needs to match 'rcu' part of the page
-   so that it can use the same rcu list to free items.
-2) Various uses of 'struct page' need to overlay fields to save space.
+We actually have a number of subsystems with somewhat overlapping
+functionality. I brought up serio, because it has an abstraction for multiple
+things that communicate over the keyboard controller and I thought
+the problem you were trying to solve was also related to the keyboard
+controller.
+It is also one of multiple abstractions that allow you to connect a device
+to a uart (along with serdev and tty_ldisc, probably at least one more that
+you can nest above or below these).
 
-For (1) the rcu bit should probably be a named structure in an
-anonymous union - probably in both structures.
+Consolidating the kcs_bmc.c interface into something that already
+exists would obviously be best, but it's not clear which of these that
+should be, that depends on the fundamental properties of the hardware
+interface.
 
-For (2) is it worth explicitly defining the word number for each field?
-So you end up with something like:
-#define F(offset, member) struct { long _pad_##offset[offset]; member; }
-struct page [
-	union {
-		struct page_rcu;
-		unsigned long flags;
-		F(1, unsigned long xxx);
-		F(2, unsigned long yyy);
-	etc.
+> > Then again, these are also on
+> > separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
+> > KCS), so they would never actually talk to one another.
+>
+> Well, sort of I guess. On Power systems we don't use the keyboard
+> controller for IPMI or keyboards, so we're just kinda exploiting the
+> hardware for our own purposes.
 
+Can you describe in an abstract form what the hardware interface
+can do here and what you want from it? I wonder if it could be
+part of a higher-level interface such as drivers/mailbox/ instead.
 
-		
-...
->  		struct {	/* page_pool used by netstack */
-> -			/**
-> -			 * @dma_addr: might require a 64-bit value even on
-> -			 * 32-bit architectures.
-> -			 */
-> -			dma_addr_t dma_addr;
-> +			unsigned long _pp_flags;
-> +			unsigned long pp_magic;
-> +			unsigned long xmi;
-> +			unsigned long _pp_mapping_pad;
-> +			dma_addr_t dma_addr;	/* might be one or two words */
->  		};
-
-Isn't that 6 words?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+         Arnd
