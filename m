@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB58835E6F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1404035E6F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhDMTJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhDMTJl (ORCPT
+        id S231812AbhDMTN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:13:59 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45122 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhDMTN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:09:41 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718FEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:09:21 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id e13so9148802qkl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=7hlbKO+nfOBQ9jb/4q5zl38fZNJwCd9YNYudz1e6oJo=;
-        b=emUo/ODKrTSEKAjOumtSF4lr31MN8w+c7mJq9O7Q7bHXDLIN1y/Mo948Umq7rGdAzn
-         RAsuiyqIQg1+d9PTPO650M50ud8ZcaC2g7sergtqjR7zOzsTd8ejTAc64nV9boZuYb0R
-         wMtjB/t+VQm6Bxp8EDMh8xJ3Si2KMnLMSdIJ5bjoLjS7etD90jnj6bEwc/er0yPCUE+S
-         zfL4o7U/kdXBRouiQfAPxkXHQw7DZHH5F53lYhTpp0dHrF8/fL6G82OLqaERdYSNbl9c
-         4NqwqpOyw8JYcCMmEtDbojq2r1Y7c7i562IV4g+trYrjVi+1mPVa01z+EkkxnFJWtshj
-         wn5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=7hlbKO+nfOBQ9jb/4q5zl38fZNJwCd9YNYudz1e6oJo=;
-        b=OVaFMK6oXllXRUY1FC7yBcfMM+nXqAozjBq/0mqw+wYh2eUa41B9s6qdSoDZ8LefCo
-         9qM2yqhxsX10XFhJMajYt82Mk8/vtI8IOe81V07cYC8ibKvB9DOUtGgOoniJuZAkOrC/
-         JsuL5LxJ8nFAFsQUN8g16OgOsyheUT82rs9J6kyBy36jcmLo3ZIsclgWsPgctlpIOCXI
-         adxERRITyg/AA+doTrYbbIGcbJLK+s6wp+aUwVDwr90Vs49d7K9ZrgNOXk4P6TU/UC1d
-         XE/2aBqm3XOF/wlZjFtFiRZYxj3/pXPKScVUIxzUkYtm+MLKM2EKel9awavEmddEuMc9
-         NWhQ==
-X-Gm-Message-State: AOAM531PfnPlpKWcZx4KQI0/r4E0o10sLjV25kx8ZhSxSIIvUP247mJH
-        FW9HrvyQasp3h8vRq2nZ33fRcQ==
-X-Google-Smtp-Source: ABdhPJwRLs56//HXapWYHGi0JxUqlYObxwGV06Fj6/7/tUMiy6xQehOCqYGMtCNI7kvFvDd5f/SelQ==
-X-Received: by 2002:a37:2cc1:: with SMTP id s184mr14892831qkh.489.1618340960420;
-        Tue, 13 Apr 2021 12:09:20 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w1sm8833346qto.85.2021.04.13.12.09.18
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 13 Apr 2021 12:09:20 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 12:09:08 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Mike Rapoport <rppt@kernel.org>
-cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
-In-Reply-To: <YHXhhtCVf0RsgsDs@kernel.org>
-Message-ID: <alpine.LSU.2.11.2104131158350.1037@eggly.anvils>
-References: <20210409215103.03999588@canb.auug.org.au> <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org> <YHPlTifk6jST5auY@kernel.org> <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org> <YHR86T15BzETVHhk@kernel.org> <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
- <YHU03AIwrpHCUlU/@kernel.org> <7cec048d-26f0-104a-6bca-d9afc6a7d1e8@infradead.org> <YHXNyVVUwZbVDBrr@kernel.org> <7bc072c0-bf10-bd0f-95db-0f0a7db47b93@infradead.org> <YHXhhtCVf0RsgsDs@kernel.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Tue, 13 Apr 2021 15:13:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 202A633B5A0;
+        Tue, 13 Apr 2021 15:13:37 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 1jrIwwa5gEeN; Tue, 13 Apr 2021 15:13:36 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 598C233B416;
+        Tue, 13 Apr 2021 15:13:36 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 598C233B416
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618341216;
+        bh=LnwYjKW7sL7zD3ESlP5rxVzHGRgfTuHoEH4jd1qxduc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=KaZlU+9Pjpc1ai5zkcYhZEQnxOHS04U3qEsdYFBxzHolgp9vd/nNVpYSQyesB6OBV
+         5BY7XIVD9KqpCpWHI+PNb4I0zqra9Md5J0TkMjcYzA9rLUwDk9E3+Iazry6fvCCsGj
+         SYjUy/PRx4C8GsLuCPgdDgD/zZKW35MeIp34/lhBj4s1GWzYY8xcQCQoqR1QL9Kw+3
+         ShbKTMkmwDyTFnhRZbIM/yojSORR6i53qk4qSLkgcxsAhQbJ/KW+qA6K8ww88zuPlN
+         +o2oUwpWvCgSwMkG4drpQHiguwq2FO4MNaUeuWUDZIcnGpjAmjHIhGPHS45TjSB0ys
+         Zty9C9KYfs7YQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id foOJk3EHtdTA; Tue, 13 Apr 2021 15:13:36 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 4AAC833B415;
+        Tue, 13 Apr 2021 15:13:36 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 15:13:36 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <64670607.73039.1618341216196.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com> <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com> <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com> <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com> <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com> <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com> <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com> <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
+ clear_rseq_cs()
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+Thread-Index: cC6InJlBdTHf/5kUmfCSjYRTTL2VnQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021, Mike Rapoport wrote:
-> 
-> I think I've found the reason. trim_snb_memory() reserved the entire first
-> megabyte very early leaving no room for real mode trampoline allocation.
-> Since this reservation is needed only to make sure integrated gfx does not
-> access some memory, it can be safely done after memblock allocations are
-> possible.
-> 
-> I don't know if it can be fixed on the graphics device driver side, but
-> from the setup_arch() perspective I think this would be the proper fix:
-> 
-> From c05f6046137abbcbb700571ce1ac54e7abb56a7d Mon Sep 17 00:00:00 2001
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> Date: Tue, 13 Apr 2021 21:08:39 +0300
-> Subject: [PATCH] x86/setup: move trim_snb_memory() later in setup_arch to fix
->  boot hangs
-> 
-> Commit a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-> moved reservation of the memory inaccessible by Sandy Bride integrated
-> graphics very early and as the result on systems with such devices the
-> first 1M was reserved by trim_snb_memory() which prevented the allocation
-> of the real mode trampoline and made the boot hang very early.
-> 
-> Since the purpose of trim_snb_memory() is to prevent problematic pages ever
-> reaching the graphics device, it is safe to reserve these pages after
-> memblock allocations are possible.
-> 
-> Move trim_snb_memory later in boot so that it will be called after
-> reserve_real_mode() and make comments describing trim_snb_memory()
-> operation more elaborate.
-> 
-> Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Tested-by: Hugh Dickins <hughd@google.com>
 
-Thanks Mike and Randy. ThinkPad T420s here. I didn't notice this thread
-until this morning, but had been investigating bootup panic on mmotm
-yesterday. I was more fortunate than Randy, in getting some console
-output which soon led to a799c2bd29d1 without bisection. Expected
-to go through it line by line today, but you've saved me - thanks.
+----- On Apr 13, 2021, at 2:22 PM, Eric Dumazet edumazet@google.com wrote:
 
-> ---
->  arch/x86/kernel/setup.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
+> On Tue, Apr 13, 2021 at 8:00 PM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
 > 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 59e5e0903b0c..ccdcfb19df1e 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -633,11 +633,16 @@ static void __init trim_snb_memory(void)
->  	printk(KERN_DEBUG "reserving inaccessible SNB gfx pages\n");
->  
->  	/*
-> -	 * Reserve all memory below the 1 MB mark that has not
-> -	 * already been reserved.
-> +	 * SandyBridge integrated graphic devices have a bug that prevents
-> +	 * them from accessing certain memory ranges, namely anything below
-> +	 * 1M and in the pages listed in the bad_pages.
-> +	 *
-> +	 * To avoid these pages being ever accessed by SNB gfx device
-> +	 * reserve all memory below the 1 MB mark and bad_pages that have
-> +	 * not already been reserved at boot time.
->  	 */
->  	memblock_reserve(0, 1<<20);
-> -	
-> +
->  	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
->  		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
->  			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
-> @@ -746,8 +751,6 @@ static void __init early_reserve_memory(void)
->  
->  	reserve_ibft_region();
->  	reserve_bios_regions();
-> -
-> -	trim_snb_memory();
->  }
->  
->  /*
-> @@ -1083,6 +1086,13 @@ void __init setup_arch(char **cmdline_p)
->  
->  	reserve_real_mode();
->  
-> +	/*
-> +	 * Reserving memory causing GPU hangs on Sandy Bridge integrated
-> +	 * graphic devices should be done after we allocated memory under
-> +	 * 1M for the real mode trampoline
-> +	 */
-> +	trim_snb_memory();
-> +
->  	init_mem_mapping();
->  
->  	idt_setup_early_pf();
-> -- 
-> 2.28.0
+>> As long as the ifdefs are localized within clearly identified wrappers in the
+>> rseq code I don't mind doing the special-casing there.
+>>
+>> The point which remains is that I don't think we want to optimize for speed
+>> on 32-bit architectures when it adds special-casing and complexity to the 32-bit
+>> build. I suspect there is less and less testing performed on 32-bit
+>> architectures
+>> nowadays, and it's good that as much code as possible is shared between 32-bit
+>> and
+>> 64-bit builds to share the test coverage.
+>>
+> 
+> Quite frankly V1 was fine, I can't really make it looking better.
+
+Yes, I'm OK with V1 of that patch.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
