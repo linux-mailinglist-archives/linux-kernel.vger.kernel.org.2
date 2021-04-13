@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72E835DE8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0073E35DE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244646AbhDMMVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:21:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhDMMVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF88610C8;
-        Tue, 13 Apr 2021 12:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618316476;
-        bh=tbqVv8Jnr1JaAfHvLirC2gV+qobKlzu7qyT6j41ne1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AhfWJTgW5qvBi2q8OYRlKbe7GTJc4cSCkXZfqPZs82YapJJcBHyYQmxYNAtwfcfB2
-         NP+xPElEug73KFr1AW21D0rKMu2TpVnYGnnROxmy3/F8ibEAg3Em7UEKl+p8f8Fy80
-         XGKH8H31FHdpD3OzhcX1VBozLUOteKNuFzYWpTdQN9uYBNskl74hWsx/Z6A57bkyZv
-         DU+il5Si7i0mqVscuPHFaPIejY1rkVOpGSX0M6cb61Z6OXZgf/lkXkVd3D4iLVOCMy
-         /0lV6Bc53dKrrKoAd8sluHp2TjbgcUrQsLwRzXPasFHcmYbk6pISkYEOiDgoBfpvCw
-         QIcmznTbswWSg==
-Date:   Tue, 13 Apr 2021 14:21:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] i2c: mpc: use device managed APIs
-Message-ID: <20210413122113.GB1553@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
- <20210413050956.23264-2-chris.packham@alliedtelesis.co.nz>
+        id S1345466AbhDMMWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhDMMW2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:22:28 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AF8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:22:08 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ed15:b7e9:afd7:f062])
+        by xavier.telenet-ops.be with bizsmtp
+        id sCN42400F1dBBzp01CN4h7; Tue, 13 Apr 2021 14:22:06 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI3P-00FJHU-TZ; Tue, 13 Apr 2021 14:22:03 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI3P-002kNZ-EJ; Tue, 13 Apr 2021 14:22:03 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] irqchip: APPLE_AIC should depend on ARCH_APPLE
+Date:   Tue, 13 Apr 2021 14:21:58 +0200
+Message-Id: <f37e8daea37d50651d2164b0b3dad90780188548.1618316398.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
-Content-Disposition: inline
-In-Reply-To: <20210413050956.23264-2-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Apple Interrupt Controller is only present on Apple Silicon SoCs.
+Hence add a dependency on ARCH_APPLE, to prevent asking the user about
+this driver when configuring a kernel without Apple Silicon SoC support.
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Drop the default, as ARCH_APPLE already selects APPLE_AIC.
 
+Fixes: 76cde26394114f6a ("irqchip/apple-aic: Add support for the Apple Interrupt Controller")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/irqchip/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->       Yongjun[1] into the original patch. If Wei's patch is applied on top
->       of whats already in i2c/for-next then this patch can be ignored.
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index d3a14f304ec80caa..b165b3285d9b0555 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -580,7 +580,7 @@ config MST_IRQ
+ config APPLE_AIC
+ 	bool "Apple Interrupt Controller (AIC)"
+ 	depends on ARM64
+-	default ARCH_APPLE
++	depends on ARCH_APPLE || COMPILE_TEST
+ 	help
+ 	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
+ 	  such as the M1.
+-- 
+2.25.1
 
-I applied Wei's patch instead. It was easier.
-
-
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jLkACgkQFA3kzBSg
-KbZ1zA/9FEC1wzNTZzRPy2y3sj5tni8iTspeEAlMruTnCBYv/lcQ2D8kY04Fmk60
-7ErA+1R/RDIKE1DIqKNIlaM169wsKSCga6U2ZNBzGS79E1ri8ngFivDqHOc9Ef1f
-9o1QTI3UdjjTyd1Myk/rWfg0pH8BqJeBnGkjvQWMJ4Vijw/Dy3Y5DEOQOFZoOlCY
-k9u9jNhQPQqClIJDPqW3xsGEMh6uMCSsVAHlFvod4XGQ7aqdefkWoR5+2hrY5Eh0
-O8kvxKNc5QgpZ5JQ5fYJebWVFcTsmfvFYGncG/MSgBl8WjUuAVTN1VJAdwDMn4Bf
-un5Nni37UMQt+iimD5SY93UHcpPKY8f/nzDGm6aNqSrQZz81Va8JzpdMnMCxsj5l
-n1LDMokfyLQh0hPtlRrBTrsPAkbqA2ByAuTBdescBlWlRkCtWCnUZSuJheCsq/8A
-7xBENgtPhbpcJ4NxGdnt0YKM+bPOH8WECuTXnCT4EF9RKzetvvnS50UwsQ9DRb8i
-CkHVIrpW4BmY4skxyk2h3rzJrZuNjTPs3EWd24LBnHy4jiDBXtAawSfR7KYJpaIZ
-KXVW2SOA3Ouugu7hykWbAagjLp7yAueiG5V2ZKGy32clk9WC+HHIsXis/GfqIVIl
-mdSmsiHX0+6IEKRY4Dto0ofCkfY4yhByB0kfz8UYiwaWVpTSagg=
-=Y/zA
------END PGP SIGNATURE-----
-
---98e8jtXdkpgskNou--
