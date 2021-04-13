@@ -2,372 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D59E35DF70
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7533C35DF73
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238820AbhDMMwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:52:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63392 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244817AbhDMMwA (ORCPT
+        id S1345712AbhDMMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:52:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244817AbhDMMw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:52:00 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DCXuMj070877;
-        Tue, 13 Apr 2021 08:51:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=to : cc : references :
- from : subject : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7uwIiPvlBt4zo1jfnp6M/26Tg9kARnIyqG4TyzUIqrs=;
- b=QyagiB9ZTKM/dqr5f4tPeqk1FtpCkPr8xeHcUkH9zNMOefN21nghll6MLiilT8rY751e
- CmFy2WzKVXDKcDaLIsETOz8a73tEdWyEio0VtSczw0NwTU67B8ny5KC1R0zINmVnntJo
- lXoYVYXlHskNVlKxPPHg+mBtbaf1fPjyENj0bshIYerp33spuKld1LUVyMoEz0QGCKW3
- TiV3BGvVcKSadzc9BrYmBrAO1/zULSkeMXHW6LmRvTVz1jzT6Bu9FbBRXD3fbKfsRPai
- /NtmifkHU8qdLoBYxc7+qUZHaKg710NMlzdi97txDqlnCxkexlj/xAbZ+FSSwiBYJMKw nw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37w7sd73a7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 08:51:37 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DCX36Q013704;
-        Tue, 13 Apr 2021 12:51:35 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 37u39hjpfb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 12:51:35 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DCpAHc32637272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 12:51:10 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 702C94C050;
-        Tue, 13 Apr 2021 12:51:32 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBC984C040;
-        Tue, 13 Apr 2021 12:51:31 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.149.46])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 12:51:31 +0000 (GMT)
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <20210228061028.239459-1-masahiroy@kernel.org>
- <20210228061028.239459-3-masahiroy@kernel.org>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH 3/4] kbuild: spilt cc-option and friends to
- scripts/Makefile.compiler
-Message-ID: <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com>
-Date:   Tue, 13 Apr 2021 14:51:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 13 Apr 2021 08:52:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618318356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJrYhyCxKNE6YVpSStofrcu0tixZ6hbUvszUPwq1LtA=;
+        b=ijyCbK3/NsLJvXlCMrQ4FslWHkVccJlPc2KAiVRYSaI1a1lix0jA3XWK3GUT7CRvQ69Tta
+        pfDgquPJ9o+tkt2U/UXi2rZyhSpNpuzjs4Q7lpEnygrnt327/wSifoIkW/6+EtB5MB4OSu
+        h5YlN+9dypKX8xgkKGdh5FwbfSXPkx0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-J-f7kF18MvOfDEK0-_R0BQ-1; Tue, 13 Apr 2021 08:52:33 -0400
+X-MC-Unique: J-f7kF18MvOfDEK0-_R0BQ-1
+Received: by mail-wr1-f71.google.com with SMTP id h16so742216wrq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:52:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJrYhyCxKNE6YVpSStofrcu0tixZ6hbUvszUPwq1LtA=;
+        b=p1t6oVFsFnrD6f8Z9Mks/G9dNpEd1M3OlBjfPwCPfBvoaYW4iVh9Ya8+fxyZq9CzLl
+         goWPP1ks0HoSGr+5l659ETR56lHn+FCy08Mq2LHCSr6sMzOLKyl1Km1+7y0MBzAKtGk4
+         ABuWVbd+RQ8odkNFMc656+9Ba4l9QKtFezIkIX1lPFS6yCBCkIemt9tLmJpj4G8SykAS
+         lRkvN2jdsgAb3TMk08gWkt554kN4NU8Sc7bJ8BM+wzYDEfNdfQf3Y3CECKuV2fslYdNP
+         LgIh21O9WsXy29SfTOhsaqe3f3iVlPDAiXGvlYOgxAQKz5YDtOMCPUqiAcQIk1si6NYK
+         WGrA==
+X-Gm-Message-State: AOAM530s2P2a/XHLRHPYs0ONkz3JpVrBez5Zs+dGpsSi2PpHN/ubUFKm
+        vQVwqNzPkcV3XA2FjVq7SA5Ybcf0Z9N3bq5P0wCpGuTBZ2EKBNczStwJt8sLihSuOqBGXuMRy0C
+        wWINUb+g4SC+GsGjFXXKtR7F6
+X-Received: by 2002:a7b:c444:: with SMTP id l4mr4054545wmi.36.1618318351897;
+        Tue, 13 Apr 2021 05:52:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVYZtaY65PLQ7XNIMQ9ZY0cl6dIxye8A0uekOHbJOqakMf9yG4XOD9okCfxLu2QmD7ZfxIZg==
+X-Received: by 2002:a7b:c444:: with SMTP id l4mr4054531wmi.36.1618318351621;
+        Tue, 13 Apr 2021 05:52:31 -0700 (PDT)
+Received: from redhat.com ([2a10:8006:2281:0:1994:c627:9eac:1825])
+        by smtp.gmail.com with ESMTPSA id h17sm394077wru.67.2021.04.13.05.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 05:52:30 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 08:52:27 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: Linux 5.12-rc7
+Message-ID: <20210413085218-mutt-send-email-mst@kernel.org>
+References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
+ <20210412051445.GA47322@roeck-us.net>
+ <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
+ <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
+ <78c858ba-a847-884f-80c3-cb1eb84d4113@roeck-us.net>
+ <CANn89i+wQoaiFEe1Qi1k96d-ACLmAtJJQ36bs5Z5knYO1v+rOg@mail.gmail.com>
+ <ec5a2822-02b8-22e8-b2e2-23a942506a94@roeck-us.net>
+ <CANn89iKDytTucZfCPKLfiv8FdWYSvs4JzgkN452PrH7qDfPbkg@mail.gmail.com>
+ <CANn89iKDBFd=HK9j3mDZbKXCi3rpB4kgv_wJ5a2SZvTU-dDgyA@mail.gmail.com>
+ <CANn89i+X9w=nfE843_2cZzkdhwmcD3gaJmhYGEr_qp-_-Ar2hw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210228061028.239459-3-masahiroy@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: i-v6nS80wVWVJJuKyEyhkgSIpMzbdzNR
-X-Proofpoint-GUID: i-v6nS80wVWVJJuKyEyhkgSIpMzbdzNR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- phishscore=0 impostorscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130086
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89i+X9w=nfE843_2cZzkdhwmcD3gaJmhYGEr_qp-_-Ar2hw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/28/21 7:10 AM, Masahiro Yamada wrote:
-> scripts/Kbuild.include is included everywhere, but macros such as
-> cc-option are needed by build targets only.
+On Tue, Apr 13, 2021 at 02:45:46PM +0200, Eric Dumazet wrote:
+> On Tue, Apr 13, 2021 at 12:43 PM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Tue, Apr 13, 2021 at 11:24 AM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Mon, Apr 12, 2021 at 10:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > >
+> > > > On 4/12/21 10:38 AM, Eric Dumazet wrote:
+> > > > [ ... ]
+> > > >
+> > > > > Yes, I think this is the real issue here. This smells like some memory
+> > > > > corruption.
+> > > > >
+> > > > > In my traces, packet is correctly received in AF_PACKET queue.
+> > > > >
+> > > > > I have checked the skb is well formed.
+> > > > >
+> > > > > But the user space seems to never call poll() and recvmsg() on this
+> > > > > af_packet socket.
+> > > > >
+> > > >
+> > > > After sprinkling the kernel with debug messages:
+> > > >
+> > > > 424   00:01:33.674181 sendto(6, "E\0\1H\0\0\0\0@\21y\246\0\0\0\0\377\377\377\377\0D\0C\00148\346\1\1\6\0\246\336\333\v\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0RT\0\
+> > > > 424   00:01:33.693873 close(6)          = 0
+> > > > 424   00:01:33.694652 fcntl64(5, F_SETFD, FD_CLOEXEC) = 0
+> > > > 424   00:01:33.695213 clock_gettime64(CLOCK_MONOTONIC, 0x7be18a18) = -1 EFAULT (Bad address)
+> > > > 424   00:01:33.695889 write(2, "udhcpc: clock_gettime(MONOTONIC) failed\n", 40) = -1 EFAULT (Bad address)
+> > > > 424   00:01:33.697311 exit_group(1)     = ?
+> > > > 424   00:01:33.698346 +++ exited with 1 +++
+> > > >
+> > > > I only see that after adding debug messages in the kernel, so I guess there must be
+> > > > a heisenbug somehere.
+> > > >
+> > > > Anyway, indeed, I see (another kernel debug message):
+> > > >
+> > > > __do_sys_clock_gettime: Returning -EFAULT on address 0x7bacc9a8
+> > > >
+> > > > So udhcpc doesn't even try to read the reply because it crashes after sendto()
+> > > > when trying to read the current time. Unless I am missing something, that means
+> > > > that the problem happens somewhere on the send side.
+> > > >
+> > > > To make things even more interesting, it looks like the failing system call
+> > > > isn't always clock_gettime().
+> > > >
+> > > > Guenter
+> > >
+> > >
+> > > I think GRO fast path has never worked on SUPERH. Probably SUPERH has
+> > > never used a fast NIC (10Gbit+)
+> > >
+> > > The following hack fixes the issue.
+> > >
+> > >
+> > > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > index af8c1ea040b9364b076e2d72f04dc3de2d7e2f11..91ba89a645ff91d4cd4f3d8dc8a009bcb67da344
+> > > 100644
+> > > --- a/net/core/dev.c
+> > > +++ b/net/core/dev.c
+> > > @@ -5916,13 +5916,16 @@ static struct list_head
+> > > *gro_list_prepare(struct napi_struct *napi,
+> > >
+> > >  static void skb_gro_reset_offset(struct sk_buff *skb)
+> > >  {
+> > > +#if !defined(CONFIG_SUPERH)
+> > >         const struct skb_shared_info *pinfo = skb_shinfo(skb);
+> > >         const skb_frag_t *frag0 = &pinfo->frags[0];
+> > > +#endif
+> > >
+> > >         NAPI_GRO_CB(skb)->data_offset = 0;
+> > >         NAPI_GRO_CB(skb)->frag0 = NULL;
+> > >         NAPI_GRO_CB(skb)->frag0_len = 0;
+> > >
+> > > +#if !defined(CONFIG_SUPERH)
+> > >         if (!skb_headlen(skb) && pinfo->nr_frags &&
+> > >             !PageHighMem(skb_frag_page(frag0))) {
+> > >                 NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
+> > > @@ -5930,6 +5933,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
+> > >                                                     skb_frag_size(frag0),
+> > >                                                     skb->end - skb->tail);
+> > >         }
+> > > +#endif
+> > >  }
+> > >
+> > >  static void gro_pull_from_frag0(struct sk_buff *skb, int grow)
+> >
+> > OK ... more sh debugging :
+> >
+> > diff --git a/arch/sh/mm/alignment.c b/arch/sh/mm/alignment.c
+> > index fb517b82a87b1065cf38c06cb3c178ce86587b00..5d18f9f792991105a8aa05cc6231b7d4532d72c9
+> > 100644
+> > --- a/arch/sh/mm/alignment.c
+> > +++ b/arch/sh/mm/alignment.c
+> > @@ -27,7 +27,7 @@ static unsigned long se_multi;
+> >     valid! */
+> >  static int se_usermode = UM_WARN | UM_FIXUP;
+> >  /* 0: no warning 1: print a warning message, disabled by default */
+> > -static int se_kernmode_warn;
+> > +static int se_kernmode_warn = 1;
+> >
+> >  core_param(alignment, se_usermode, int, 0600);
+> >
+> > @@ -103,7 +103,7 @@ void unaligned_fixups_notify(struct task_struct
+> > *tsk, insn_size_t insn,
+> >                           (void *)instruction_pointer(regs), insn);
+> >         else if (se_kernmode_warn)
+> >                 pr_notice_ratelimited("Fixing up unaligned kernel access "
+> > -                         "in \"%s\" pid=%d pc=0x%p ins=0x%04hx\n",
+> > +                         "in \"%s\" pid=%d pc=%px ins=0x%04hx\n",
+> >                           tsk->comm, task_pid_nr(tsk),
+> >                           (void *)instruction_pointer(regs), insn);
+> >  }
+> >
+> > I now see something of interest :
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc2e ins=0x6236
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc2e ins=0x6236
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc30 ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc30 ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> > Fixing up unaligned kernel access in "udhcpc" pid=91 pc=8c43fc3a ins=0x6636
+> >
+> > So basically the frag0 idea only works if drivers respect NET_IP_ALIGN
+> > (So that IP header is 4-byte aligned)
+> >
+> > It seems either virtio_net or qemu does not respect the contract.
+> >
+> > A possible generic fix  would then be :
+> >
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index af8c1ea040b9364b076e2d72f04dc3de2d7e2f11..1f79b9aa9a3f2392fddd1401f95ad098b5e03204
+> > 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -5924,7 +5924,8 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
+> >         NAPI_GRO_CB(skb)->frag0_len = 0;
+> >
+> >         if (!skb_headlen(skb) && pinfo->nr_frags &&
+> > -           !PageHighMem(skb_frag_page(frag0))) {
+> > +           !PageHighMem(skb_frag_page(frag0)) &&
+> > +           (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
+> >                 NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
+> >                 NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
+> >                                                     skb_frag_size(frag0),
 > 
-> For example, when 'make clean' traverses the tree, it does not need
-> to evaluate $(call cc-option,).
 > 
-> Split cc-option, ld-option, etc. to scripts/Makefile.compiler, which
-> is only included from the top Makefile and scripts/Makefile.build.
+> Official submission :
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210413124136.2750358-1-eric.dumazet@gmail.com/
 
-This commit broke the KVM selftest compilation under s390 in linux-next
-for me. Funny enough the compilation is only broken on Ubuntu, under
-Fedora the test fails with an assertion.
+Thanks a lot Eric!
 
-FEDORA:
-[root@fedora kvm]# ./set_memory_region_test
-Allowed number of memory slots: 32767
-==== Test Assertion Failure ====
-  lib/kvm_util.c:142: vm->fd >= 0
-  pid=1541645 tid=1541645 - Invalid argument
-     1	0x0000000001002f4b: vm_open at kvm_util.c:142
-     2	 (inlined by) vm_create at kvm_util.c:258
-     3	0x00000000010015ef: test_add_max_memory_regions at
-set_memory_region_test.c:351
-     4	 (inlined by) main at set_memory_region_test.c:397
-     5	0x000003ffa3d2bb89: ?? ??:0
-     6	0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
-  KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
-
-
-Ubuntu:
-make[1]: Leaving directory '/mnt/dev/linux'
-gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
--fno-stack-protector -fno-PIE -I../../../../tools/include
--I../../../../tools/arch/s390/include -I../../../../usr/include/
--Iinclude -Ilib -Iinclude/s390x -I..   -c lib/sparsebit.c -o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
--fno-stack-protector -fno-PIE -I../../../../tools/include
--I../../../../tools/arch/s390/include -I../../../../usr/include/
--Iinclude -Ilib -Iinclude/s390x -I..   -c lib/kvm_util.c -o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
--fno-stack-protector -fno-PIE -I../../../../tools/include
--I../../../../tools/arch/s390/include -I../../../../usr/include/
--Iinclude -Ilib/s390x -Iinclude/s390x -I..   -c
-lib/s390x/diag318_test_handler.c -o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-ar crs /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/assert.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/elf.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/io.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/test_util.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/guest_modes.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/perf_test_util.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/processor.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/ucall.o
-/mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
--fno-stack-protector -fno-PIE -I../../../../tools/include
--I../../../../tools/arch/s390/include -I../../../../usr/include/
--Iinclude -Is390x -Iinclude/s390x -I..  -pthread    s390x/memop.c
-/mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a  -o
-/mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop
-/usr/bin/ld: /tmp/ccFU8WYF.o: `stdout@@GLIBC_2.2' non-PLT reloc for
-symbol defined in shared library and accessed from executable (rebuild
-file with -fPIC ?)
-/usr/bin/ld: final link failed: bad value
-collect2: error: ld returned 1 exit status
-make: *** [../lib.mk:139:
-/mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop] Error 1
-
-> ---
-> 
->  Makefile                  |  4 ++
->  scripts/Kbuild.include    | 80 ---------------------------------------
->  scripts/Makefile.build    |  1 +
->  scripts/Makefile.compiler | 77 +++++++++++++++++++++++++++++++++++++
->  4 files changed, 82 insertions(+), 80 deletions(-)
->  create mode 100644 scripts/Makefile.compiler
-> 
-> diff --git a/Makefile b/Makefile
-> index 2253e31a6bcf..eec7a94f5c33 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -582,6 +582,10 @@ KBUILD_AFLAGS	+= $(CLANG_FLAGS)
->  export CLANG_FLAGS
->  endif
-> 
-> +# Include this also for config targets because some architectures need
-> +# cc-cross-prefix to determine CROSS_COMPILE.
-> +include $(srctree)/scripts/Makefile.compiler
-> +
->  ifdef config-build
->  # ===========================================================================
->  # *config targets only - make sure prerequisites are updated, and descend
-> diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-> index 509e0856d653..82dd1b65b7a8 100644
-> --- a/scripts/Kbuild.include
-> +++ b/scripts/Kbuild.include
-> @@ -67,86 +67,6 @@ define filechk
->  	fi
->  endef
-> 
-> -######
-> -# gcc support functions
-> -# See documentation in Documentation/kbuild/makefiles.rst
-> -
-> -# cc-cross-prefix
-> -# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
-> -# Return first <prefix> where a <prefix>gcc is found in PATH.
-> -# If no gcc found in PATH with listed prefixes return nothing
-> -#
-> -# Note: '2>/dev/null' is here to force Make to invoke a shell. Otherwise, it
-> -# would try to directly execute the shell builtin 'command'. This workaround
-> -# should be kept for a long time since this issue was fixed only after the
-> -# GNU Make 4.2.1 release.
-> -cc-cross-prefix = $(firstword $(foreach c, $(1), \
-> -			$(if $(shell command -v -- $(c)gcc 2>/dev/null), $(c))))
-> -
-> -# output directory for tests below
-> -TMPOUT = $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/).tmp_$$$$
-> -
-> -# try-run
-> -# Usage: option = $(call try-run, $(CC)...-o "$$TMP",option-ok,otherwise)
-> -# Exit code chooses option. "$$TMP" serves as a temporary file and is
-> -# automatically cleaned up.
-> -try-run = $(shell set -e;		\
-> -	TMP=$(TMPOUT)/tmp;		\
-> -	TMPO=$(TMPOUT)/tmp.o;		\
-> -	mkdir -p $(TMPOUT);		\
-> -	trap "rm -rf $(TMPOUT)" EXIT;	\
-> -	if ($(1)) >/dev/null 2>&1;	\
-> -	then echo "$(2)";		\
-> -	else echo "$(3)";		\
-> -	fi)
-> -
-> -# as-option
-> -# Usage: cflags-y += $(call as-option,-Wa$(comma)-isa=foo,)
-> -
-> -as-option = $(call try-run,\
-> -	$(CC) $(KBUILD_CFLAGS) $(1) -c -x assembler /dev/null -o "$$TMP",$(1),$(2))
-> -
-> -# as-instr
-> -# Usage: cflags-y += $(call as-instr,instr,option1,option2)
-> -
-> -as-instr = $(call try-run,\
-> -	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
-> -
-> -# __cc-option
-> -# Usage: MY_CFLAGS += $(call __cc-option,$(CC),$(MY_CFLAGS),-march=winchip-c6,-march=i586)
-> -__cc-option = $(call try-run,\
-> -	$(1) -Werror $(2) $(3) -c -x c /dev/null -o "$$TMP",$(3),$(4))
-> -
-> -# cc-option
-> -# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
-> -
-> -cc-option = $(call __cc-option, $(CC),\
-> -	$(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS),$(1),$(2))
-> -
-> -# cc-option-yn
-> -# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
-> -cc-option-yn = $(call try-run,\
-> -	$(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
-> -
-> -# cc-disable-warning
-> -# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
-> -cc-disable-warning = $(call try-run,\
-> -	$(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
-> -
-> -# cc-ifversion
-> -# Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
-> -cc-ifversion = $(shell [ $(CONFIG_GCC_VERSION)0 $(1) $(2)000 ] && echo $(3) || echo $(4))
-> -
-> -# ld-option
-> -# Usage: KBUILD_LDFLAGS += $(call ld-option, -X, -Y)
-> -ld-option = $(call try-run, $(LD) $(KBUILD_LDFLAGS) $(1) -v,$(1),$(2),$(3))
-> -
-> -# ld-ifversion
-> -# Usage:  $(call ld-ifversion, -ge, 22252, y)
-> -ld-ifversion = $(shell [ $(CONFIG_LD_VERSION)0 $(1) $(2)0 ] && echo $(3) || echo $(4))
-> -
-> -######
-> -
->  ###
->  # Shorthand for $(Q)$(MAKE) -f scripts/Makefile.build obj=
->  # Usage:
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index 750d6d5225af..d74d3383666e 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -36,6 +36,7 @@ subdir-ccflags-y :=
->  -include include/config/auto.conf
-> 
->  include $(srctree)/scripts/Kbuild.include
-> +include $(srctree)/scripts/Makefile.compiler
-> 
->  # The filename Kbuild has precedence over Makefile
->  kbuild-dir := $(if $(filter /%,$(src)),$(src),$(srctree)/$(src))
-> diff --git a/scripts/Makefile.compiler b/scripts/Makefile.compiler
-> new file mode 100644
-> index 000000000000..5f759ecc4f04
-> --- /dev/null
-> +++ b/scripts/Makefile.compiler
-> @@ -0,0 +1,77 @@
-> +######
-> +# gcc support functions
-> +# See documentation in Documentation/kbuild/makefiles.rst
-> +
-> +# cc-cross-prefix
-> +# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
-> +# Return first <prefix> where a <prefix>gcc is found in PATH.
-> +# If no gcc found in PATH with listed prefixes return nothing
-> +#
-> +# Note: '2>/dev/null' is here to force Make to invoke a shell. Otherwise, it
-> +# would try to directly execute the shell builtin 'command'. This workaround
-> +# should be kept for a long time since this issue was fixed only after the
-> +# GNU Make 4.2.1 release.
-> +cc-cross-prefix = $(firstword $(foreach c, $(1), \
-> +			$(if $(shell command -v -- $(c)gcc 2>/dev/null), $(c))))
-> +
-> +# output directory for tests below
-> +TMPOUT = $(if $(KBUILD_EXTMOD),$(firstword $(KBUILD_EXTMOD))/).tmp_$$$$
-> +
-> +# try-run
-> +# Usage: option = $(call try-run, $(CC)...-o "$$TMP",option-ok,otherwise)
-> +# Exit code chooses option. "$$TMP" serves as a temporary file and is
-> +# automatically cleaned up.
-> +try-run = $(shell set -e;		\
-> +	TMP=$(TMPOUT)/tmp;		\
-> +	TMPO=$(TMPOUT)/tmp.o;		\
-> +	mkdir -p $(TMPOUT);		\
-> +	trap "rm -rf $(TMPOUT)" EXIT;	\
-> +	if ($(1)) >/dev/null 2>&1;	\
-> +	then echo "$(2)";		\
-> +	else echo "$(3)";		\
-> +	fi)
-> +
-> +# as-option
-> +# Usage: cflags-y += $(call as-option,-Wa$(comma)-isa=foo,)
-> +
-> +as-option = $(call try-run,\
-> +	$(CC) $(KBUILD_CFLAGS) $(1) -c -x assembler /dev/null -o "$$TMP",$(1),$(2))
-> +
-> +# as-instr
-> +# Usage: cflags-y += $(call as-instr,instr,option1,option2)
-> +
-> +as-instr = $(call try-run,\
-> +	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
-> +
-> +# __cc-option
-> +# Usage: MY_CFLAGS += $(call __cc-option,$(CC),$(MY_CFLAGS),-march=winchip-c6,-march=i586)
-> +__cc-option = $(call try-run,\
-> +	$(1) -Werror $(2) $(3) -c -x c /dev/null -o "$$TMP",$(3),$(4))
-> +
-> +# cc-option
-> +# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
-> +
-> +cc-option = $(call __cc-option, $(CC),\
-> +	$(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS),$(1),$(2))
-> +
-> +# cc-option-yn
-> +# Usage: flag := $(call cc-option-yn,-march=winchip-c6)
-> +cc-option-yn = $(call try-run,\
-> +	$(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
-> +
-> +# cc-disable-warning
-> +# Usage: cflags-y += $(call cc-disable-warning,unused-but-set-variable)
-> +cc-disable-warning = $(call try-run,\
-> +	$(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
-> +
-> +# cc-ifversion
-> +# Usage:  EXTRA_CFLAGS += $(call cc-ifversion, -lt, 0402, -O1)
-> +cc-ifversion = $(shell [ $(CONFIG_GCC_VERSION)0 $(1) $(2)000 ] && echo $(3) || echo $(4))
-> +
-> +# ld-option
-> +# Usage: KBUILD_LDFLAGS += $(call ld-option, -X, -Y)
-> +ld-option = $(call try-run, $(LD) $(KBUILD_LDFLAGS) $(1) -v,$(1),$(2),$(3))
-> +
-> +# ld-ifversion
-> +# Usage:  $(call ld-ifversion, -ge, 22252, y)
-> +ld-ifversion = $(shell [ $(CONFIG_LD_VERSION)0 $(1) $(2)0 ] && echo $(3) || echo $(4))
-> 
+-- 
+MST
 
