@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE56535E0E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DD335E0E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345114AbhDMOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:05:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15870 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231741AbhDMOE4 (ORCPT
+        id S1346227AbhDMOFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:05:06 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56462 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241172AbhDMOFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:04:56 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DE3ETf001980;
-        Tue, 13 Apr 2021 10:04:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=0TCW3Wq3rrOuY996NsEGn4PZRWFdDjYxricsSie+yX8=;
- b=bbSc6yXy7iBXWM0Mf6eEOk8zocFFTv+a5tlCZ4E/j1eLtitfhr7u9IYAJkXQGbmOwh7Z
- C1TqBUhfIv+5sSuGcxWhvfKOpz8820bjUxtBr2J6bo0lSVE9gODChWgTU4dXDUsoRTBv
- eC5GL3X53ZsMjY+G8o0QU7mLEzCWp3ozqePoe8wpbe4v9mw2PjlJhirxr4KszfQoAVp9
- o/Ae0X0sC3M6C/EJdAuTQ5dLtYH7pxF/oomDxS2qmoOlYxTt0gzAq13q72pctedHlVNX
- iZItkDIm7f/ocXpjqY1k0SqIshlvIAqMt7xnTkEj9x0k42+KJZEBFZ81NIQxTHzHvVBV ig== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtuc8b0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 10:04:18 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DDwCfG031110;
-        Tue, 13 Apr 2021 14:04:17 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 37u3n9qfkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 14:04:16 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DE4FUb28115412
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:04:15 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7CA8578060;
-        Tue, 13 Apr 2021 14:04:15 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 697ED7805E;
-        Tue, 13 Apr 2021 14:04:13 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.203.222])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 14:04:13 +0000 (GMT)
-Message-ID: <94bff1bedd0dfa957822a6a303b48eca787f9a21.camel@linux.ibm.com>
-Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
- flexible-array member
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Date:   Tue, 13 Apr 2021 07:04:11 -0700
-In-Reply-To: <aba7d5cb-79be-088d-d1f8-9309109e9afc@embeddedor.com>
-References: <20210304203822.GA102218@embeddedor>
-         <202104071216.5BEA350@keescook> <yq1h7ka7q68.fsf@ca-mkp.ca.oracle.com>
-         <aba7d5cb-79be-088d-d1f8-9309109e9afc@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m4eW0zKaL4oCMKfm2lypRtMb5Z_eUbje
-X-Proofpoint-ORIG-GUID: m4eW0zKaL4oCMKfm2lypRtMb5Z_eUbje
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 13 Apr 2021 10:05:03 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lWJel-0001R5-0l
+        for linux-kernel@vger.kernel.org; Tue, 13 Apr 2021 14:04:43 +0000
+Received: by mail-ed1-f71.google.com with SMTP id o4-20020a0564024384b0290378d45ecf57so1337171edc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:04:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1zoVtByllhosC8xnCO3YIKw2vthWTwQhfS+DihX0pa4=;
+        b=ulesEH/Pb3aPZZQfiTqdclFu/cBl4ftjyyGl5k/t/r8flzMIhgzdIXIzWlJ7Wm/RWn
+         xcnlUGfMN4yc/Bz0kr2/yYepOcxCaFdH/RbjtbsVoYbGnCywy6AJQTZAq2fq6oIOsRem
+         GoioO5aNqzk4u68tTLwBO5ssYG4hLt2FqFgho//P5/o0zVSobWM9rteKSWwKW845H9mp
+         N6TYdS9M+fH6wf6qkm/fvG9CMhTa0N5YnPiWhsViSx1iW4GiBfjn7StaV1n+kwSa42tP
+         ickbn/YBd8623qyDyiS0LGQbmW3kc6rTxF5ciODAM8yRFhCQZeGgg3CLT0US68CM49Xz
+         Uw2A==
+X-Gm-Message-State: AOAM533013bfIqXOwSgOqqYFDdNWWyN1YinxJo2T5o2miirrFkQ1wtlq
+        fLrVkXybLILdnaacUgjjDv8IrjAmsxqRJFnd/o1ebaUQLb2gDgOzpWqGZlDoW/jN9QrsGa3WadQ
+        s9a70iix46ZZYi/AZESRm6S+Xi4ouTAD4ZyF+pYLpoA==
+X-Received: by 2002:a05:6402:142:: with SMTP id s2mr34982246edu.2.1618322671987;
+        Tue, 13 Apr 2021 07:04:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJytwQzQE5BkozQ2VOreQSdkoAGEAaqvJ0FgXGTACKHn/MAUy6h5uirgVHlAcudl2n8kdm1F6w==
+X-Received: by 2002:a05:6402:142:: with SMTP id s2mr34982231edu.2.1618322671878;
+        Tue, 13 Apr 2021 07:04:31 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id n17sm9379838edq.32.2021.04.13.07.04.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 07:04:31 -0700 (PDT)
+Subject: Re: [PATCH v5 14/16] memory: mtk-smi: Get rid of mtk_smi_larb_get/put
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, eizan@chromium.org, acourbot@chromium.org
+References: <20210410091128.31823-1-yong.wu@mediatek.com>
+ <20210410091128.31823-15-yong.wu@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <b015fd4a-f05b-5dc7-f23e-e517d40aeb21@canonical.com>
+Date:   Tue, 13 Apr 2021 16:04:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
- mlxscore=0 mlxlogscore=853 clxscore=1011 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130100
+In-Reply-To: <20210410091128.31823-15-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-04-13 at 00:45 -0500, Gustavo A. R. Silva wrote:
-> Hi Martin,
+On 10/04/2021 11:11, Yong Wu wrote:
+> After adding device_link between the iommu consumer and smi-larb,
+> the pm_runtime_get(_sync) of smi-larb and smi-common will be called
+> automatically. we can get rid of mtk_smi_larb_get/put.
 > 
-> On 4/12/21 23:52, Martin K. Petersen wrote:
+> CC: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> Reviewed-by: Evan Green <evgreen@chromium.org>
+> ---
+>  drivers/memory/mtk-smi.c   | 14 --------------
+>  include/soc/mediatek/smi.h | 20 --------------------
+>  2 files changed, 34 deletions(-)
 > 
-> > Silencing analyzer warnings shouldn't be done at the expense of
-> > human
-> > readers. If it is imperative to switch to flex_array_size() to
-> > quiesce
-> > checker warnings, please add a comment in the code explaining that
-> > the
-> > size evaluates to nseg_new-1 sge_ieee1212 structs.
-> 
-> Done:
-> 	
-> https://lore.kernel.org/lkml/20210413054032.GA276102@embeddedor/
-
-I think the reason everyone gets confused is that they think the first
-argument should do something.  If flex_array_size had been defined
-
-#define flex_array_size(p, count)			\
-	array_size(count,				\
-		    sizeof(*(p)) + __must_be_array(p))
-
-Then we could have used
-
-flex_array_size(sge, nseg_new - 1)
-
-or
-
-flex_array_size(rio->sge, nseg_new - 1)
-
-and everyone would have understood either expression.  This would also
-have been useful, as the first example demonstrates, when we have a
-pointer rather than a flexible member ... although that means the macro
-likely needs a new name.
-
-However, perhaps just do
-
-array_size(nseg_new - 1, sizeof(*sge));
-
-And lose the comment?
-
-James
 
 
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+
+Best regards,
+Krzysztof
