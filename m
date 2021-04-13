@@ -2,164 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CDE35D8D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDCE35D8D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239197AbhDMH2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:28:20 -0400
-Received: from mail-eopbgr1320105.outbound.protection.outlook.com ([40.107.132.105]:28353
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229762AbhDMH2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:28:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dB9JGS4YIHP08lNnm3ud7/52RY6e4eE0RjHIYq5ZzMeHkXrTDTMuCsbmuijhFbZsBDvVp05BfwbzVd6nxtqQWS78Wb3nNOYTHEUx+HpWXdY+CRD64o8NiMfojBEAc3aLMF+DzWAFwWvQWKnaJuy/fFuczMQdhe/X+VLYTLTgu7gtjP884Xwr1+xEAl1otQA4YyOLOrqmb78uLxBY42E7Udv9sIR5wAvHLP9DbDuPomKVryam0HpsXeKzs99OK4ANUZqZADC/e6h5Lca/QEyT2MOm8oZlEN7Q566jT8vbmFhTqJUYv2HLOeidXDwmJ4qoo5KU/tGnMrTGYZRAbX14jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d3yRah5H8XiJYbstw4Y8mgFYyoO4ymXp3d+xbbKAfeY=;
- b=DSS2A61cR9fXI+vKtrkMfqPV2/aRG9DnUPYAc7je92VswFev0KTrPYPZZshwthO5jkFIsUk3KcEXS8T+MpEzokUG9BwrFhRfqB0zBAUBhWL5Hdx+P0IpvLjGqmxhducL9/6m/5/gV44znVMKK27hZH9ICpbxjfdzx6h86M/Yj9hfrC+jmqsWnhrw+V+3I+9fkXSrPmcCKWitAuPL6ccxK4e5L/pcywHjfPubq8h1YbLinoXadCeCSHx1Bqt1LGLGE9NNsIs8ZO3Mmo1HUmz0xISig9yWmmHiL71pbB2CCqfm0a9DdrFshiWvln4prbmj1W7rijXUTCo8Q6EheTvHyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3362.apcprd06.prod.outlook.com (2603:1096:203:8b::10)
- by HK0PR06MB2867.apcprd06.prod.outlook.com (2603:1096:203:5e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Tue, 13 Apr
- 2021 07:27:51 +0000
-Received: from HK0PR06MB3362.apcprd06.prod.outlook.com
- ([fe80::4d49:12fe:2d9a:b1bd]) by HK0PR06MB3362.apcprd06.prod.outlook.com
- ([fe80::4d49:12fe:2d9a:b1bd%3]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 07:27:51 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-Subject: Re: [PATCH 2/4] dt-bindings: Add bindings for aspeed pwm
-Thread-Topic: [PATCH 2/4] dt-bindings: Add bindings for aspeed pwm
-Thread-Index: AQHXL4Hjk3xux308SEWBeke+D0GoN6qw3hAAgAG2DAA=
-Date:   Tue, 13 Apr 2021 07:27:51 +0000
-Message-ID: <106D8276-51DF-4319-BDB4-68D1C0B2971A@aspeedtech.com>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
- <20210412095457.15095-3-billy_tsai@aspeedtech.com>
- <1618233600.223110.3757979.nullmailer@robh.at.kernel.org>
-In-Reply-To: <1618233600.223110.3757979.nullmailer@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2bd0c2a9-9dd6-49cb-2fdc-08d8fe4da571
-x-ms-traffictypediagnostic: HK0PR06MB2867:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB2867307112E511BD4E81FCC38B4F9@HK0PR06MB2867.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RHlBqyR+a7yxzY1oFSplYvvk39FiRHLle/KZsqXvo21XPDF5E/J1Utd2W7Y+XMExvnvRDJ3A/+S+dky0gndwijvolWqj4z78jF9tq1WVMG8FcHHHRtnduz3a7Ugoa137pqqwfIyMNZdF8AgX1AsZppdQtq5wW4yX5gRU7gNi4/nxYKwGZa595ZePQI16PPqGn5AU6L6H5NT6vZzpLabdYRofNyzmZ7/F0lcxYpeWpaVVKB/xKKCSIWLfLT+hLVmI0zIwFCC5/zZNpXeStwrBpTK4tkT1Y/Zt+tJhKHLCrwDckpM0POkktfdR+20MX4qERa9QuXrRm6kpLfbfaPC1zPR39/gG1FGi+TJK5/Yas2Y6T1eAsBLnsDTCB3fsvE6yR1IvEcJKquMpgRz5LFQMIfV9/6hyiOMwJBo8kfleC1Y860wpYjycxbOfWbDvp8Ra4eDMY82uHYDFr2H5epLpRcEUNdyPgcsbuSeU92AanTvtnZp77ThkZ1ApyHdyTqpEKHTgjQUnHPeUi5RTxS2AegOy6mpZW3BNHX97vi83b454RlwqLoqndSuI1HR16XWTFdNe/T4ky7M5ltXmw/XCNn7b2db8OQH3y9B1I3/iEUlov7d9/zseW/WgdIWNvG5KHU+/lH82CV0fEwWdf6w4ZP0g1U9KIKSWaEi7Elz5jQTtG+7QdgaYaIGJ1tlOqJy16oj6OtkCp0R/wQlKgQrrfOvEujcnHmr1wMOtZaBVB1M=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3362.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(396003)(39830400003)(376002)(66446008)(478600001)(64756008)(66556008)(6486002)(66476007)(6506007)(5660300002)(2906002)(36756003)(122000001)(54906003)(66946007)(6916009)(38100700002)(86362001)(8676002)(33656002)(4326008)(83380400001)(76116006)(2616005)(55236004)(186003)(966005)(71200400001)(7416002)(8936002)(316002)(6512007)(26005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?N2swQ2lnVm9tbWEyaXhoM0YzR1NVRFk2TFZUekltRGJmQ3VEanN3MnRJa1Rx?=
- =?utf-8?B?NzNXdDY1Y2dVZHBsbjQyYTN3NFhmTy8ra0k0dGhFRDBTY20xS05SRjNKTzdN?=
- =?utf-8?B?ZXk3MmZ1Sm5NcGlmWitTQlFXMHVSVTNVQVZPRWI5VS91eVB3cDQ2Vit3VUp3?=
- =?utf-8?B?elZzSmcrM0Q1ZG1MZXk2YlhvVGc3dUVUaERYam5DRUhhODJmOXdGVjFrMGJ1?=
- =?utf-8?B?V2hjWHAra21EV1pSd2tRTFc4cWlWQjJpMnNvUmN5eDRkR0xtUnZCYkJQRm10?=
- =?utf-8?B?bEZubktMcE5tdlBJUWFCanovRld6UllaZDZYa210RG1HNFltWnd4RmJmTHlD?=
- =?utf-8?B?dUhEQlRxcGR2bVZJeTFUU3pRWjhVWmd4b3dFSUE5LzNZR2U5Y2RJbDMzZWIr?=
- =?utf-8?B?bkdGRXhwMG1rQkQ1bDYydDNVOE1PSGNxZ2VsWm9FbmxjREROaXdEclMzWmFt?=
- =?utf-8?B?R0hOeWIvaFpyTVhGaVFtS1hieFl5NTlRSlJtMUhwVUdQczZWMUE5WEJaeERp?=
- =?utf-8?B?bmRCUkFDZHd5akxHNlBrdUhVMUZmZHNrL1F5aGxoZjcycTZrMDViLzljc0pR?=
- =?utf-8?B?T0hPeGE5UmZxNEZVUnZaYkhybjM0UTJZUFhzelFwV3EzaXdXelRWRFVXc1FE?=
- =?utf-8?B?VFdxaWl4WmtTU3RQdGdvOTZjbTdUZ3hGTmZRMllBeWVRZHdSMkxYRUxBRUcw?=
- =?utf-8?B?WXF0ajVVVXVWOVJsU2MrMWVwVGdpWEVyaUZWTURTVjhBUlFlT2U2bHFXUjRK?=
- =?utf-8?B?Ry9TY3RnU3M5YVRuYlJCNDczV2NreHNFWU85R2lPMGE5NlIzRzgyZGF2ZFJB?=
- =?utf-8?B?bTUySFQxL3NMRXBzTU1lM3FkQk92NkY5L2RDZ0VtZkJEZkYrZnVOOG5BR0ho?=
- =?utf-8?B?K1ZmZjU2Z1pmQUxMTUsxKzBQZWRyTkZmUlZaZ05tMThlU2JwcDF2VVM1VG1v?=
- =?utf-8?B?R0pSU2NIZzJIS3k0c2ZRa3hBdGlkODN3TC9hci9VTklsYXI0aGhqMWtxcFk2?=
- =?utf-8?B?QWhZQUFwYkY3VkZlOUlXRlFUZ3d0clIybllMSldGVjdPRy9NNzgzMFM3cUhI?=
- =?utf-8?B?S3hwaWpSRnNuaDlTU3R6Ry9FK1Q0NDRDbVFNeTB5SFZUamlocktkMlVrampR?=
- =?utf-8?B?b2lOaHZiaUpYMG5zUDFybS9Bck16L0hhODFyWmlrYWx1dWFnRUt0bnRNWVhU?=
- =?utf-8?B?T3p2YzUzNE55VEJacXJ2WTJuUE54QXRIL3VUZkhLb2NEdGUyWWhrOEJ6aDJl?=
- =?utf-8?B?NlJvdWRJY00wci9JTTVXMTk3RXByd2JlK0VUeENjb3RKWkl1VTdNZjdvbHpI?=
- =?utf-8?B?eUxxUWhvU0h2S3ZBT3B5R1lPUUQwbmNiU00yTU9XWStrWHVQb0dYWkpwZEt6?=
- =?utf-8?B?U2M5TzZhUkZkUUl4RktVSVcwNEZSdDFibXA3TmpTbjkwUmtQbTRXQlg0MEpi?=
- =?utf-8?B?MDZUcGRDWjlhUXRZc3hwaExtbHF4cWowTzg1V0t4OWF2VFZVTGRnOU9jZ1c4?=
- =?utf-8?B?VmRBL21EbFNZWGJycy9seWVxdU05Mi9jQkNrNFZQamZOMTMvNnZteHNUcExD?=
- =?utf-8?B?MDN3VFJRdUJacE5PbkFuTkJJUUlmbkZOSGlyTTBUUm0vTHdzRlg5Q3lzSWFB?=
- =?utf-8?B?UE5Md3pobk1MdXpHWmNVeC81cG9WN09UUnYxbUs1MzRldlVTOUJOaFhHcysz?=
- =?utf-8?B?N2ZQcjJaZFdGMGd3QWFLWTd5a2RvdjZ1THdxVUEvZlhzdm5BRlR0aDVkcnk3?=
- =?utf-8?Q?kbJA94PNiWN1fbVMfi8MY7339y22m99Sq2su+Va?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <31A5211A6E16CD479C4A23874841E7D1@apcprd06.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S239531AbhDMH24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239294AbhDMH2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 03:28:48 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427A7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:28:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i190so10853193pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Th8DLSdO2vvzDGZNvM1EiNQqBiiC+GmcxeXMizucGzE=;
+        b=a02KKelz8nmBQ6Q/ZySI9iRYnHg4uPjz1jdtG/Xp+FCAd23bAAOpqIp/6DgFkPlhSq
+         prNDwyKTQfxM9SP/k28AdVMDlpz1zCuHF64xyWZpCb1qlH0pRWLZrz4wgLrdnj0u1Sl1
+         1/m4Zqc4kZwgo5mBNlyWn0kd67R5A4DCAnTZpYCMbM00aKQLKeafXAF2yY0VDAMv2NkU
+         2AHbc1lJ4xvZkmUtGyF5viQAdrork6huoW8zmSwQDUcCJYzFBlwKv3caoaggI71n05Wq
+         gB4+e8UxMaJ8sgylOh7jcfe10qmm1SNTE7bizE1n+I8WY5q2wQcgZUQhjIy0+urvRmwP
+         5IEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=Th8DLSdO2vvzDGZNvM1EiNQqBiiC+GmcxeXMizucGzE=;
+        b=lzgWiPphyYqQJ1ibve5oU4+OuuO4GpDD4sm6OQ4/+S8u29LdzZatfiHjIn4ZUF+7vS
+         +vIjLfs6/rQGvxzBYUrekF+5Nv2IibPMu+SlFfbsPYixvcchAIKhPW3Mf+OkmVV40z1e
+         Nsl+UCnG0qQpkk9ftsoAEe8eKJGgMHDSJMvII4cgnorjNzlE6QGEu3SpX3fr8RsqHoc6
+         Qjd5fge1Kh2PmtVGO9ukBGZF2zl+GcVhrrDg6jAyTkcxeGc8cwkF53nxk8J0bhQK10nz
+         VRqSvH/ejOTtN8ClHvPr+DpKgDLn1qQrXWKSZQTY1r90SO0NIM6MTWfA9yxarQ4wvSL9
+         clWA==
+X-Gm-Message-State: AOAM532TTt/CyPDLGXz+orI1qdYm2ZyRzIJfJfgPT/r+Ur5nuqnIZnRG
+        Euw9dVkY+8Iqh+K3u/nstwkn5g==
+X-Google-Smtp-Source: ABdhPJyemRNGKQj8Nqb3ZOMz+T1cHVd7ePowMYtFCGLiIg9aIdqYrYZQUwiIkhN0ojT1b9rbJkH2+w==
+X-Received: by 2002:a63:2507:: with SMTP id l7mr30951603pgl.198.1618298907404;
+        Tue, 13 Apr 2021 00:28:27 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id n21sm1422205pjo.25.2021.04.13.00.28.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 13 Apr 2021 00:28:26 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 15:28:19 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com
+Subject: Re: [PATCH 1/2] dt-binding: bcm43xx-fmac: add optional brcm,ccode-map
+Message-ID: <20210413072818.GC15093@dragon>
+References: <20210408113022.18180-1-shawn.guo@linaro.org>
+ <20210408113022.18180-2-shawn.guo@linaro.org>
+ <87k0p9mewt.fsf@codeaurora.org>
+ <20210412012528.GB15093@dragon>
+ <87im4rlnuh.fsf@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3362.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bd0c2a9-9dd6-49cb-2fdc-08d8fe4da571
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2021 07:27:51.3151
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: X2pIhbOzUM7z8uX55aPfcXBUo42aAkdh/bFCPVfB73DFfUJb4U+Oft1Y0/mrABe2P88NZ72Gbel4pQBtg+8zU2mN27p6EGmG6YAANXd3kGY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2867
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87im4rlnuh.fsf@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQpCZXN0IFJlZ2FyZHMsDQpCaWxseSBUc2FpDQoNCk9uIDIwMjEvNC8xMiwgOToy
-MCBQTSxSb2IgSGVycmluZ3dyb3RlOg0KDQogICAgT24gTW9uLCAxMiBBcHIgMjAyMSAxNzo1NDo1
-NSArMDgwMCwgQmlsbHkgVHNhaSB3cm90ZToNCiAgICA+PiBUaGlzIHBhdGNoIGFkZHMgZGV2aWNl
-IGJpbmRpbmdzIGZvciBhc3BlZWQgcHdtIGRldmljZSB3aGljaCBzaG91bGQgYmUNCiAgICA+PiB0
-aGUgc3ViLW5vZGUgb2YgYXNwZWVkLGFzdDI2MDAtcHdtLXRhY2guDQogICAgPj4gDQogICAgPj4g
-U2lnbmVkLW9mZi1ieTogQmlsbHkgVHNhaSA8YmlsbHlfdHNhaUBhc3BlZWR0ZWNoLmNvbT4NCiAg
-ICA+PiAtLS0NCiAgICA+PiAgLi4uL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFt
-bCAgICAgIHwgNDcgKysrKysrKysrKysrKysrKysrKw0KICAgID4+ICAxIGZpbGUgY2hhbmdlZCwg
-NDcgaW5zZXJ0aW9ucygrKQ0KICAgID4+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFtbA0KICAgID4+
-IA0KDQogICAgPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgRFRfQ0hFQ0tFUl9G
-TEFHUz0tbSBkdF9iaW5kaW5nX2NoZWNrJw0KICAgID4gb24geW91ciBwYXRjaCAoRFRfQ0hFQ0tF
-Ul9GTEFHUyBpcyBuZXcgaW4gdjUuMTMpOg0KDQogICAgPiB5YW1sbGludCB3YXJuaW5ncy9lcnJv
-cnM6DQoNCiAgICA+IGR0c2NoZW1hL2R0YyB3YXJuaW5ncy9lcnJvcnM6DQogICAgPiAvYnVpbGRz
-L3JvYmhlcnJpbmcvbGludXgtZHQtcmV2aWV3L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9wd20vYXNwZWVkLGFzdDI2MDAtcHdtLnlhbWw6IEFkZGl0aW9uYWwgcHJvcGVydGllcyBh
-cmUgbm90IGFsbG93ZWQgKCdwd20tY2VsbHMnIHdhcyB1bmV4cGVjdGVkKQ0KICAgID4gL2J1aWxk
-cy9yb2JoZXJyaW5nL2xpbnV4LWR0LXJldmlldy9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAwLXB3bS55YW1sOiBBZGRpdGlvbmFsIHByb3BlcnRpZXMg
-YXJlIG5vdCBhbGxvd2VkICgncHdtLWNlbGxzJyB3YXMgdW5leHBlY3RlZCkNCiAgICA+IC9idWls
-ZHMvcm9iaGVycmluZy9saW51eC1kdC1yZXZpZXcvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20ueWFtbDogaWdub3JpbmcsIGVycm9yIGluIHNj
-aGVtYTogDQogICAgPiB3YXJuaW5nOiBubyBzY2hlbWEgZm91bmQgaW4gZmlsZTogLi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAwLXB3bS55YW1sDQog
-ICAgPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2FzcGVlZCxhc3QyNjAw
-LXB3bS5leGFtcGxlLmR0LnlhbWw6MDowOiAvZXhhbXBsZS0wL3B3bV90YWNoQDFlNjEwMDAwOiBm
-YWlsZWQgdG8gbWF0Y2ggYW55IHNjaGVtYSB3aXRoIGNvbXBhdGlibGU6IFsnYXNwZWVkLGFzdDI2
-MDAtcHdtLXRhY2gnLCAnc2ltcGxlLW1mZCcsICdzeXNjb24nXQ0KICAgID4gRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hc3BlZWQsYXN0MjYwMC1wd20uZXhhbXBsZS5kdC55
-YW1sOjA6MDogL2V4YW1wbGUtMC9wd21fdGFjaEAxZTYxMDAwMC9wd21AMDogZmFpbGVkIHRvIG1h
-dGNoIGFueSBzY2hlbWEgd2l0aCBjb21wYXRpYmxlOiBbJ2FzcGVlZCxhc3QyNjAwLXB3bSddDQoN
-ClRoZSB5YW1sIGZpbGUgaGF2ZSBkZXBlbmRlbmNpZXMgd2l0aCB0aGUgZmlyc3QgcGF0Y2ggaW4g
-dGhlc2Ugc2VyaWVzLiBJIHdpbGwgc3F1YXNoIHRoZW0uDQoNCiAgICA+IFNlZSBodHRwczovL3Bh
-dGNod29yay5vemxhYnMub3JnL3BhdGNoLzE0NjUxMTYNCg0KICAgID4gVGhpcyBjaGVjayBjYW4g
-ZmFpbCBpZiB0aGVyZSBhcmUgYW55IGRlcGVuZGVuY2llcy4gVGhlIGJhc2UgZm9yIGEgcGF0Y2gN
-CiAgICA+IHNlcmllcyBpcyBnZW5lcmFsbHkgdGhlIG1vc3QgcmVjZW50IHJjMS4NCg0KICAgID4g
-SWYgeW91IGFscmVhZHkgcmFuICdtYWtlIGR0X2JpbmRpbmdfY2hlY2snIGFuZCBkaWRuJ3Qgc2Vl
-IHRoZSBhYm92ZQ0KICAgID4gZXJyb3IocyksIHRoZW4gbWFrZSBzdXJlICd5YW1sbGludCcgaXMg
-aW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8NCiAgICA+IGRhdGU6DQoNCiAgICA+IHBp
-cDMgaW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUNCg0KICAgID4gUGxlYXNlIGNoZWNrIGFuZCBy
-ZS1zdWJtaXQuDQoNCg0K
+On Mon, Apr 12, 2021 at 02:54:46PM +0300, Kalle Valo wrote:
+> Shawn Guo <shawn.guo@linaro.org> writes:
+> 
+> > On Sun, Apr 11, 2021 at 10:57:54AM +0300, Kalle Valo wrote:
+> >> Shawn Guo <shawn.guo@linaro.org> writes:
+> >> 
+> >> > Add optional brcm,ccode-map property to support translation from ISO3166
+> >> > country code to brcmfmac firmware country code and revision.
+> >> >
+> >> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> >> > ---
+> >> >  .../devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt | 7 +++++++
+> >> >  1 file changed, 7 insertions(+)
+> >> >
+> >> > diff --git a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
+> >> > index cffb2d6876e3..a65ac4384c04 100644
+> >> > --- a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
+> >> > +++ b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
+> >> > @@ -15,6 +15,12 @@ Optional properties:
+> >> >  	When not specified the device will use in-band SDIO interrupts.
+> >> >   - interrupt-names : name of the out-of-band interrupt, which must be set
+> >> >  	to "host-wake".
+> >> > + - brcm,ccode-map : multiple strings for translating ISO3166 country code to
+> >> > +	brcmfmac firmware country code and revision.  Each string must be in
+> >> > +	format "AA-BB-num" where:
+> >> > +	  AA is the ISO3166 country code which must be 2 characters.
+> >> > +	  BB is the firmware country code which must be 2 characters.
+> >> > +	  num is the revision number which must fit into signed integer.
+> >> >  
+> >> >  Example:
+> >> >  
+> >> > @@ -34,5 +40,6 @@ mmc3: mmc@1c12000 {
+> >> >  		interrupt-parent = <&pio>;
+> >> >  		interrupts = <10 8>; /* PH10 / EINT10 */
+> >> >  		interrupt-names = "host-wake";
+> >> > +		brcm,ccode-map = "JP-JP-78", "US-Q2-86";
+> >> 
+> >> The commit log does not answer "Why?". Why this needs to be in device
+> >> tree and, for example, not hard coded in the driver?
+> >
+> > Thanks for the comment, Kalle.  Actually, this is something I need some
+> > input from driver maintainers.  I can see this country code mapping
+> > table is chipset specific, and can be hard coded in driver per chip id
+> > and revision.  But on the other hand, it makes some sense to have this
+> > table in device tree, as the country code that need to be supported
+> > could be a device specific configuration.
+> 
+> Could be? Does such a use case exist at the moment or are just guessing
+> future needs?
+
+I hope that the patch [1] from Rafał (copied) is one use case.  And
+also, the device I'm working on only needs to support some of the
+countries in the mapping table. 
+
+> 
+> From what I have learned so far I think this kind of data should be in
+> the driver, but of course I might be missing something.
+
+I agree with you that such data are chipset specific and should ideally
+be in the driver.  However, the brcmfmac driver implementation has been
+taking the mapping table from platform_data [2][3], which is a logical
+equivalent of DT data in case of booting with device tree.
+
+Shawn
+
+[1] https://gitlab.dai-labor.de/nadim/powquty-coap/-/blob/563b2bd658822375dcfa8e87707304b94de9901c/kernel/mac80211/patches/863-brcmfmac-add-in-driver-tables-with-country-codes.patch
+[2] https://elixir.bootlin.com/linux/v5.12-rc7/source/include/linux/platform_data/brcmfmac.h#L154
+[3] https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c#L433
