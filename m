@@ -2,121 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37D635E94F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF0E35E95F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhDMW4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        id S1348718AbhDMW6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhDMW4t (ORCPT
+        with ESMTP id S232798AbhDMW6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:56:49 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B6EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:56:29 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso7028842oto.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:56:28 -0700 (PDT)
+        Tue, 13 Apr 2021 18:58:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6A1C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:57:52 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id p12so13021425pgj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=05tcFWzhbtWsvn6Zxp27oA5RVQLTs+bfFK4lyYf+pGM=;
-        b=pliwmgsovw+yFwa/mMH2LoycsBcfgDmUzhL8qi3LrJW1iZ1dXo7trilveY0UtSAeAp
-         Ns2c3I4NsTX1p7Di1gVj3Pcnr/tjmJpLZ3DcdKJc9MQRNSPfuS6SkV9X5epK5hNlBLN9
-         sOA9SogmpP9duN0eCahKttyQlp8IeUlN6BL95KXwY19ioK2V+WSnhN3eKxHeBc17fIgK
-         NeFAeMYqhPPZwnq9t1W+Qoeem2w/P1Q1N5B29b8KJ/zEicUULJk+6MZegH9SaFMBnihF
-         eIe6XX6CiCM8Cs/EG6uiRHjdYuBZuAdApuMHuaLYMw8rv8K85vB3ED26/JgELsIvevOf
-         X6Tw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=6sqdcuryxsdrCZB//EKTroEdj394HnrdQW5wO/Kusf8=;
+        b=P+qx3+ElK9fqp8beAocKGE8SgPJiXuTLPTr0aQ/xz1k4vh4+2yrHlHR7vpi9Q0cznk
+         kQknvUC6WpvMK5/2n5iH/WUhLNWpB+j8fOvoUK+tmPQbz3KX/QHsVO0gZXT+h1IJWHg8
+         fTnwZwS0XsYxm7MI5ujdnoGA6ZIdEAS01Fb0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=05tcFWzhbtWsvn6Zxp27oA5RVQLTs+bfFK4lyYf+pGM=;
-        b=QO+bhw7zYEWrumuvF8Ay+Q1EB/y2UjlsVF+slGwuJeX04XhLjqFBszxyvIRzgNBBxB
-         bJhPDkpI5zbCL5V7e4uvPqVk81FM2Vs07a7tK9uVHDU3RYzo24jrzZcGFiGa3BTIhop4
-         EuCiSXO5Mfx/fJ03jzMQdx5zQMsSJu01URjr/jMwBhEeaDahM6pWPHTCM1eniIQANQd4
-         aJ5IFY+SkPrRU8sEiiyw2nFH/ES7Bhun4t5/gvafCmSb1eTNqQWNkCObTlfs65/jQKdE
-         Iz6wPsM/R4myn/SyYp6hds1VwZAmR0CWsPccf+x5JpI5Hub1i22hezA06VH6PO2ejFlO
-         GzQQ==
-X-Gm-Message-State: AOAM532NQTedytpXRex8DqlEILIFGqVBjOTMG5X5ebwTyriHptbSYC+O
-        qop9dzQUJdTsDfKX+Z5YmVC9Pw==
-X-Google-Smtp-Source: ABdhPJxKzFDMgJaO10usW8e30+Jpx744w03sBogKaKo+QDQnMzyczHj74g+S3A/O77a/Y2s7cNyr7g==
-X-Received: by 2002:a05:6830:2117:: with SMTP id i23mr2174974otc.170.1618354588449;
-        Tue, 13 Apr 2021 15:56:28 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g5sm3113575oiy.24.2021.04.13.15.56.27
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=6sqdcuryxsdrCZB//EKTroEdj394HnrdQW5wO/Kusf8=;
+        b=M0U8x1p5nLS1wKP/dBGLyuezut08D4MrkJcuMNvRbr/xGY72WHfltc5Y6OiAHdJfMl
+         mvbw6eaEE0Y8EHLkD0F3rkH9b81zPGWHTYTi+i6Q3JWoo48coYqp+J847fqlUfGbJ129
+         mOGTz08eIvAqbv7qpEpU1sc9Dek/DCjxrwvcc4effMTPvJa1BqSSc9FIB6yj02LNICMJ
+         RvQTf4Zm7VlVCFwLfMsoUe73/FUwnflazTdPEGMAUTetjCi9yEp+zlNQgAT+bncPMnpQ
+         Q0PIAg7K15QXIOWAEWs7xodLNZ9SELeWSpWXAHOdBTlu2MsnBO/JrPXeQqV4PlwNB2+G
+         cpQA==
+X-Gm-Message-State: AOAM531vh6WbhMQp9Ac+zYiRK/7UyqBiWv3KkY9GZzbw8JDzks41SjeB
+        iDiKjhph03johzNukzXFdxyGJHpU/RQvDQ==
+X-Google-Smtp-Source: ABdhPJz3Cupzqfs4XSmtfJO/mdGNl79Euq/LKJdkMxPcHsb/vAL8g/5JiXAiwb/MWOcm9tkJbS9jJw==
+X-Received: by 2002:a63:d70f:: with SMTP id d15mr35400288pgg.397.1618354671737;
+        Tue, 13 Apr 2021 15:57:51 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
+        by smtp.gmail.com with ESMTPSA id r10sm3378727pjf.5.2021.04.13.15.57.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 15:56:28 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 17:56:26 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: Add "dmic_clk_en" for
- sc7180-trogdor-coachz
-Message-ID: <YHYhmlniOVKkwy96@builder.lan>
-References: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
- <CAD=FV=ViWgXzudGAiVLakaKuGK_gEnUxQ8nOkZjCrxQHjdGx9w@mail.gmail.com>
+        Tue, 13 Apr 2021 15:57:51 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=ViWgXzudGAiVLakaKuGK_gEnUxQ8nOkZjCrxQHjdGx9w@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YHWyOhYZuLsbt2gB@alley>
+References: <20210410015300.3764485-1-swboyd@chromium.org> <20210410015300.3764485-6-swboyd@chromium.org> <YHWyOhYZuLsbt2gB@alley>
+Subject: Re: [PATCH v4 05/13] module: Add printk formats to add module build ID to stacktraces
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Date:   Tue, 13 Apr 2021 15:57:49 -0700
+Message-ID: <161835466995.3764895.13268854960596303989@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Apr 18:16 CDT 2021, Doug Anderson wrote:
+Quoting Petr Mladek (2021-04-13 08:01:14)
+> On Fri 2021-04-09 18:52:52, Stephen Boyd wrote:
+> > Let's make kernel stacktraces easier to identify by including the build
+> > ID[1] of a module if the stacktrace is printing a symbol from a module.
+> > This makes it simpler for developers to locate a kernel module's full
+> > debuginfo for a particular stacktrace. Combined with
+> > scripts/decode_stracktrace.sh, a developer can download the matching
+> > debuginfo from a debuginfod[2] server and find the exact file and line
+> > number for the functions plus offsets in a stacktrace that match the
+> > module. This is especially useful for pstore crash debugging where the
+> > kernel crashes are recorded in something like console-ramoops and the
+> > recovery kernel/modules are different or the debuginfo doesn't exist on
+> > the device due to space concerns (the debuginfo can be too large for
+> > space limited devices).
+> >=20
+> > diff --git a/include/linux/module.h b/include/linux/module.h
+> > index 59f094fa6f74..4bf869f6c944 100644
+> > --- a/include/linux/module.h
+> > +++ b/include/linux/module.h
+> > @@ -11,6 +11,7 @@
+> > =20
+> >  #include <linux/list.h>
+> >  #include <linux/stat.h>
+> > +#include <linux/buildid.h>
+> >  #include <linux/compiler.h>
+> >  #include <linux/cache.h>
+> >  #include <linux/kmod.h>
+> > @@ -367,6 +368,9 @@ struct module {
+> >       /* Unique handle for this module */
+> >       char name[MODULE_NAME_LEN];
+> > =20
+> > +     /* Module build ID */
+> > +     unsigned char build_id[BUILD_ID_SIZE_MAX];
+>=20
+> Do we want to initialize/store the ID even when
+> CONFIG_STACKTRACE_BUILD_ID is disabled and nobody would
+> use it?
+>=20
+> Most struct module members are added only when the related feature
+> is enabled.
+>=20
+> I am not sure how it would complicate the code. It is possible
+> that it is not worth it. Well, I could imagine that the API
+> will always pass the buildid parameter and
+> module_address_lookup() might do something like
+>=20
+> #ifndef CONFIG_STACKTRACE_BUILD_ID
+> static char empty_build_id[BUILD_ID_SIZE_MAX];
+> #endif
+>=20
+>                 if (modbuildid) {
+>                         if (IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID))
+>                                 *modbuildid =3D mod->build_id;
+>                         else
+>                                 *modbuildid =3D empty_build_id;
+>=20
+> IMHO, this is primary a call for Jessica as the module code maintainer.
+>=20
+> Otherwise, I am fine with this patch. And it works as expected.
+>=20
 
-> Bjorn,
-> 
-> On Mon, Mar 15, 2021 at 1:39 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > This was present downstream. Add upstream too. NOTE: upstream I
-> > managed to get some sort of halfway state and got one pinctrl entry in
-> > the coachz-r1 device tree. Remove that as part of this since it's now
-> > in the dtsi.
-> >
-> > Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> > Cc: Ajit Pandey <ajitp@codeaurora.org>
-> > Cc: Judy Hsiao <judyhsiao@chromium.org>
-> > Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> > Cc: Stephen Boyd <swboyd@chromium.org>
-> > Cc: Matthias Kaehlcke <mka@chromium.org>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > This applies atop the patch ("arm64: dts: qcom: Add sound node for
-> > sc7180-trogdor-coachz") [1].
-> >
-> > NOTE: downstream this property was present in each of the board
-> > revisions. There's actually no longer any reason for this and I'll
-> > shortly post a downstream patch to fix this.
-> >
-> > [1] https://lore.kernel.org/r/20210313054654.11693-3-srivasam@codeaurora.org/
-> >
-> > Changes in v2:
-> > - Remove the pinctrl from the -r1
-> >
-> >  .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts   | 13 -------------
-> >  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi     | 16 ++++++++++++++++
-> >  2 files changed, 16 insertions(+), 13 deletions(-)
-> 
-> I guess this patch missed the boat for 5.13? Can it get queued up for
-> 5.14 whenever that happens?
-> 
+Does declaring mod->build_id as zero length work well enough?
 
-Meh, I scraped the inbox and thought I got everything that was ready
-picked up. I'll check with Arnd, otherwise it's staged for v5.14 now.
-
-Regards,
-Bjorn
+----8<----
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 4bf869f6c944..03b2f6af093a 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -359,6 +359,12 @@ struct klp_modinfo {
+ };
+ #endif
+=20
++#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
++#define MODULE_BUILD_ID_LEN BUILD_ID_SIZE_MAX
++#else
++#define MODULE_BUILD_ID_LEN 0
++#endif
++
+ struct module {
+ 	enum module_state state;
+=20
+@@ -369,7 +375,7 @@ struct module {
+ 	char name[MODULE_NAME_LEN];
+=20
+ 	/* Module build ID */
+-	unsigned char build_id[BUILD_ID_SIZE_MAX];
++	unsigned char build_id[MODULE_BUILD_ID_LEN];
+=20
+ 	/* Sysfs stuff. */
+ 	struct module_kobject mkobj;
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index b835992e76c2..ebd5b30c3039 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -25,7 +25,10 @@
+ #include <linux/filter.h>
+ #include <linux/ftrace.h>
+ #include <linux/kprobes.h>
++#include <linux/build_bug.h>
+ #include <linux/compiler.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
+=20
+ /*
+  * These will be re-linked against their real values
+@@ -393,10 +396,13 @@ static int __sprint_symbol(char *buffer, unsigned lon=
+g address,
+=20
+ 	if (modname) {
+ 		len +=3D sprintf(buffer + len, " [%s", modname);
+-		/* build ID should match length of sprintf below */
+-		BUILD_BUG_ON(BUILD_ID_SIZE_MAX !=3D 20);
+-		if (IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && add_buildid && buildid)
++#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
++		if (add_buildid && buildid) {
++			/* build ID should match length of sprintf */
++			static_assert(MODULE_BUILD_ID_LEN =3D=3D 20);
+ 			len +=3D sprintf(buffer + len, " %20phN", buildid);
++		}
++#endif
+ 		len +=3D sprintf(buffer + len, "]");
+ 	}
+=20
+diff --git a/kernel/module.c b/kernel/module.c
+index 6f5bc1b046a5..a0d222fbd281 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2771,7 +2771,17 @@ static void add_kallsyms(struct module *mod, const s=
+truct load_info *info)
+ 	}
+ 	mod->core_kallsyms.num_symtab =3D ndst;
+ }
++#else
++static inline void layout_symtab(struct module *mod, struct load_info *inf=
+o)
++{
++}
++
++static void add_kallsyms(struct module *mod, const struct load_info *info)
++{
++}
++#endif /* CONFIG_KALLSYMS */
+=20
++#if IS_ENABLED(CONFIG_KALLSYMS) && IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+ static void init_build_id(struct module *mod, const struct load_info *info)
+ {
+ 	const Elf_Shdr *sechdr;
+@@ -2786,18 +2796,10 @@ static void init_build_id(struct module *mod, const=
+ struct load_info *info)
+ 	}
+ }
+ #else
+-static inline void layout_symtab(struct module *mod, struct load_info *inf=
+o)
+-{
+-}
+-
+-static void add_kallsyms(struct module *mod, const struct load_info *info)
+-{
+-}
+-
+ static void init_build_id(struct module *mod, const struct load_info *info)
+ {
+ }
+-#endif /* CONFIG_KALLSYMS */
++#endif
+=20
+ static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug,=
+ unsigned int num)
+ {
