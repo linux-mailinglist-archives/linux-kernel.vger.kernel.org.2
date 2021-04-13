@@ -2,147 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0471235D439
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC935D43E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239709AbhDLX6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:58:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40362 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238263AbhDLX6Q (ORCPT
+        id S239114AbhDMAEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhDMAEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:58:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618271877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fk8f62xjqnl3mv3ljyxxc5ev3FlVYq11HMKlMY+I2mI=;
-        b=bKMDXmtQUNLwEAPA+/Iw8zheAt0uvZRDnTX/sIbCVDPuh8U4KUWlL/VcaHpxW+UBw8wpIm
-        IrEmpiat3SlzrUj8KxljfurZbZetD/jDX5p4D0xhaW4d6uCeFB9Io/WAlYwbh6wzCjDh+l
-        DNYbIKDH4AAnJgxZVJIBvZYQ2eWtpYg=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-eJyiahxuOPesDHetXcU52A-1; Mon, 12 Apr 2021 19:57:55 -0400
-X-MC-Unique: eJyiahxuOPesDHetXcU52A-1
-Received: by mail-qt1-f198.google.com with SMTP id h26so209117qtm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
+        Mon, 12 Apr 2021 20:04:35 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E70C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:16 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id c18so12592685iln.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:04:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ea18y28l3YX2gvgE5E4K39NKsgQumVKltpE9KYNGCIE=;
+        b=Kwi9jiYocCoKchje8t4n/zzcIXXo/8pmVfsqrneIt4rKPMc+OY87Wy66oiaJeQvoz0
+         kBhA93tkpBuGRV7RiI4Y+2vqec5e2XYI2J/LVzIXPMO/xosQ8jTjjBD5LPlF6WY4cZ63
+         qxK5XDSNS8oG+NWoU26cRn/V16ipbXZ88rZ4EgFnzVB0mWuDYp9E5gqqE2zSip+H1UkF
+         6UiiQaiw1GRu6QjC4gxsABIzouNHqb2lKcgNWbg/AJ8aA0WblV2FFpttk+WuCpMuZDlS
+         +/5/6pokHIevBzJhjEy0BzWr47vwpAq/h3frHiR4DES4kj/lkIBgoSZYl2kxjvSd61We
+         ea8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fk8f62xjqnl3mv3ljyxxc5ev3FlVYq11HMKlMY+I2mI=;
-        b=AZlgiP3iiIDwl5B+AdVqHTPWbaj8vTEI8CJEz5RZ8dnT+vMDjnyJS4KrsSbTE3RPmu
-         //D9oO7novIuqQIYOrRM44OXAsOdwhx6JfKCUTjsiFAYOysKjY0X6BdObEEv02McSHqq
-         0aWsfRknWVUvmYIEzDypKJ8sbS8WyNKO4BRsVYZfRKDqlOt20VH7PWckUDwQXjVFqWsI
-         ASFREHIkc4aYiGtdKrG1I1wQhgaSimRbtPeh/6j7DFurmL0ByXZTHAIzjpGfDKiBEqxg
-         rfLS6tm/IVGVWTe9+310tDk5GageXjwgPOhdRNOogweGQO/x2t5KqnJRZYg8Q1rbQbzu
-         a5Ig==
-X-Gm-Message-State: AOAM5319EG8VbUtBH15JNZufGZT9M7NrQV7Ji90raED+7dMcqIihw2r0
-        T68QJdOCASkMP0OruZ5+v+arJyJXygc/JBFtEyY+hjAMYF0eWhY/ckQIPqva5yPjlFLeI7uhaAk
-        DM9Ufeeuz64c+G4Osubwxee/q
-X-Received: by 2002:ac8:5bd0:: with SMTP id b16mr27256746qtb.265.1618271875253;
-        Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyINLu5vRRG0SiDZ5ReSE5VIP4sHwe9BnqH3/WUUNCWDJZ4MX4YNqZ5FmXfacMqWYulpB87ZQ==
-X-Received: by 2002:ac8:5bd0:: with SMTP id b16mr27256724qtb.265.1618271875002;
-        Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id n6sm8421251qtx.22.2021.04.12.16.57.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 16:57:54 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 19:57:52 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Colascione <dancol@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH 2/9] userfaultfd/shmem: combine
- shmem_{mcopy_atomic,mfill_zeropage}_pte
-Message-ID: <20210412235752.GC1002612@xz-x1>
-References: <20210408234327.624367-1-axelrasmussen@google.com>
- <20210408234327.624367-3-axelrasmussen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ea18y28l3YX2gvgE5E4K39NKsgQumVKltpE9KYNGCIE=;
+        b=KRdzhWNbMssuAKSQ86ofF0movceULxju+JgAFdbCCblJw+xVizBIDdCpw4oI1xNwqs
+         8dfFEbF+B3ilxHGVw00oNAr53Qnw+VNA58ip19jvj1f2MZjR+4t+ApUjTJGM//y649Ws
+         zwpsGzIvXJ8tj91xf62MX300wVylC9eUq64/lBAFOVgqkNapRQhqXDfhrNo6wsGSZsiR
+         zHah/3XfSUIudJKwJZdPtd+g2MMLnVG2GG3Om2YAMgfI82rQocbXwK0tuK5nTQw1yjqL
+         iGxMPJO//8mo3n/XmSZ+CilAM0oyrsEcd7Rct9PgmsabaXgnbfND4HQ2RZ0aZslnpSP3
+         ObpA==
+X-Gm-Message-State: AOAM533ERlTh6eU3NhezKbpmBe3My2MsDiE8+PTve2chEGctY612CKqH
+        VOvkBi6G0JI8RvWocoARBhNDn/7qr60xG1CEQIWzqw==
+X-Google-Smtp-Source: ABdhPJyDHmARxXJCeffxa4G4n1laMz0jLdBqSwm/RdTbjspbGcqb/HNhx5e5ZReu+TrU0qgRIIheAX4bXSv77Ayvugo=
+X-Received: by 2002:a05:6e02:1e08:: with SMTP id g8mr25426604ila.176.1618272255769;
+ Mon, 12 Apr 2021 17:04:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210408234327.624367-3-axelrasmussen@google.com>
+References: <cover.1618254007.git.ashish.kalra@amd.com> <5082bd6a8539d24bc55a1dd63a1b341245bb168f.1618254007.git.ashish.kalra@amd.com>
+In-Reply-To: <5082bd6a8539d24bc55a1dd63a1b341245bb168f.1618254007.git.ashish.kalra@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 12 Apr 2021 17:03:39 -0700
+Message-ID: <CABayD+eTGXL+EcTF0vm2-ORhZxbELqZo27b6HrMjnrmyY8DrZw@mail.gmail.com>
+Subject: Re: [PATCH v12 03/13] KVM: SVM: Add KVM_SEV_SEND_FINISH command
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 04:43:20PM -0700, Axel Rasmussen wrote:
-> Previously, we did a dance where we had one calling path in
-> userfaultfd.c (mfill_atomic_pte), but then we split it into two in
-> shmem_fs.h (shmem_{mcopy_atomic,mfill_zeropage}_pte), and then rejoined
-> into a single shared function in shmem.c (shmem_mfill_atomic_pte).
-> 
-> This is all a bit overly complex. Just call the single combined shmem
-> function directly, allowing us to clean up various branches,
-> boilerplate, etc.
-> 
-> While we're touching this function, two other small cleanup changes:
-> - offset is equivalent to pgoff, so we can get rid of offset entirely.
-> - Split two VM_BUG_ON cases into two statements. This means the line
->   number reported when the BUG is hit specifies exactly which condition
->   was true.
-
-(For my own preference, I'll avoid touching the latter one)
-
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Mon, Apr 12, 2021 at 12:44 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+>
+> From: Brijesh Singh <brijesh.singh@amd.com>
+>
+> The command is used to finailize the encryption context created with
+> KVM_SEV_SEND_START command.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 > ---
->  include/linux/shmem_fs.h | 15 +++++-------
->  mm/shmem.c               | 52 +++++++++++++---------------------------
->  mm/userfaultfd.c         | 10 +++-----
->  3 files changed, 25 insertions(+), 52 deletions(-)
-> 
-> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-> index d82b6f396588..919e36671fe6 100644
-> --- a/include/linux/shmem_fs.h
-> +++ b/include/linux/shmem_fs.h
-> @@ -122,21 +122,18 @@ static inline bool shmem_file(struct file *file)
->  extern bool shmem_charge(struct inode *inode, long pages);
->  extern void shmem_uncharge(struct inode *inode, long pages);
->  
-> +#ifdef CONFIG_USERFAULTFD
->  #ifdef CONFIG_SHMEM
->  extern int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  				  struct vm_area_struct *dst_vma,
->  				  unsigned long dst_addr,
->  				  unsigned long src_addr,
-
-Not a problem of your patch, but it's just that we passed in odd src_addr
-values into mfill_atomic_pte() for zeropage case because we loop on src_addr in
-__mcopy_atomic()...  Then it'll further passed into shmem_mcopy_atomic_pte()
-now after this patch (as shmem_mfill_zeropage_pte() probably only did one thing
-good which is to clear src_addr).  Not a big deal, though.
-
-All the rest looks sane to me.
-
-Reviewed-by: Peter Xu <peterx@redhat.com>
-
-I'll wait to look at the selftests since in all cases they should be prone to
-rebase (either based on the v2 cleanup I posted, or you'd need to post without
-err() - then I can rebase again), so I figured maybe I just read the new
-version.
-
-Thanks,
-
--- 
-Peter Xu
-
+>  .../virt/kvm/amd-memory-encryption.rst        |  8 +++++++
+>  arch/x86/kvm/svm/sev.c                        | 23 +++++++++++++++++++
+>  2 files changed, 31 insertions(+)
+>
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 3c5456e0268a..26c4e6c83f62 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -335,6 +335,14 @@ Returns: 0 on success, -negative on error
+>                  __u32 trans_len;
+>          };
+>
+> +12. KVM_SEV_SEND_FINISH
+> +------------------------
+> +
+> +After completion of the migration flow, the KVM_SEV_SEND_FINISH command can be
+> +issued by the hypervisor to delete the encryption context.
+> +
+> +Returns: 0 on success, -negative on error
+> +
+>  References
+>  ==========
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 30527285a39a..92325d9527ce 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1350,6 +1350,26 @@ static int sev_send_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         return ret;
+>  }
+>
+> +static int sev_send_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +       struct sev_data_send_finish *data;
+> +       int ret;
+> +
+> +       if (!sev_guest(kvm))
+> +               return -ENOTTY;
+> +
+> +       data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +       if (!data)
+> +               return -ENOMEM;
+> +
+> +       data->handle = sev->handle;
+> +       ret = sev_issue_cmd(kvm, SEV_CMD_SEND_FINISH, data, &argp->error);
+> +
+> +       kfree(data);
+> +       return ret;
+> +}
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>         struct kvm_sev_cmd sev_cmd;
+> @@ -1409,6 +1429,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         case KVM_SEV_SEND_UPDATE_DATA:
+>                 r = sev_send_update_data(kvm, &sev_cmd);
+>                 break;
+> +       case KVM_SEV_SEND_FINISH:
+> +               r = sev_send_finish(kvm, &sev_cmd);
+> +               break;
+>         default:
+>                 r = -EINVAL;
+>                 goto out;
+> --
+> 2.17.1
+>
+Reviewed-by: Steve Rutherford <srutherford@google.com>
