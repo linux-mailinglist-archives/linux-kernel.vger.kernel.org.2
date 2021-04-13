@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAEA35E780
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C9835E785
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348164AbhDMURP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:17:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229590AbhDMURO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:17:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618345014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iFBhLR1Gx0aeiV6J1eM1yEOIsjeKpw+FknvPJH209wU=;
-        b=OfwZdNZ7FEpdjwMMGE82ZG6+x5WYimn5GoBeFLZGxp7bWBZiP6v0PMRmdKlIxMXq1vm4HM
-        7JEP/uGOY+ZTlh3obQKqCRKMflgJci9vLHh+RU47Xqm1qNV3MM/SNVw2yEkUbvDXi9rcv2
-        Bt+MIw8otm1uAd3RjJk3RCDvonQf0gw=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-HN5anrSkMoyO_NPIhMZ-PA-1; Tue, 13 Apr 2021 16:16:52 -0400
-X-MC-Unique: HN5anrSkMoyO_NPIhMZ-PA-1
-Received: by mail-qv1-f69.google.com with SMTP id u7so10774720qvf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iFBhLR1Gx0aeiV6J1eM1yEOIsjeKpw+FknvPJH209wU=;
-        b=AlNTPpeebxAC0tNksXiwdimG+iKDQLDNbCFUylfQhGDx161mH2BW1juPkx2UcRLWEE
-         jE/jD2vlM9e6mh6qTP4Qdyat7lbO6AadPbJriu7iZzDuG5FKmVvSENfx7T7jRbsZE6QJ
-         E1jpD0B6rJ33DwS1D3LODZqefZUxyXfpaRWk8rqVu9vYK6zitNffmoZid5rx2tbRr1+p
-         2CFtLuSP5Gg+zLaMH46+/ZLPwL2z2Q21y0Yf/QZxXxRa58dtKR/141i0Mbgzk8JvfS1I
-         LRFD59e/Qm4Vhl58LxzTT1t48m6ix8bl9FSftK1n5CNXR5G+sgUvk+5fb74KdR9ztKoy
-         6CYw==
-X-Gm-Message-State: AOAM531WFG4i7LJxxOnyqhNSpZRdLgsK/DBlQ6ZUAtBUQfwwpAoSWD4g
-        Gbjcmf66MFB6tkxCUFnBdYj64Q3bpB8ixHOgm5d6qF0dn9GKf66tsce2JUB/8JXZ9IUvQW5VdBH
-        I9Hb+my1LckFrGIcJXAkmiW3p
-X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr33673816qki.27.1618345012351;
-        Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3IttBM2aAsbOlGIkYA5j8AtGXTYyXS8sJV22svEAsTrySp6idSonzYhdMsJWvU4N7vhjqHw==
-X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr33673803qki.27.1618345012160;
-        Tue, 13 Apr 2021 13:16:52 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id t4sm4362370qkg.75.2021.04.13.13.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 13:16:51 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 16:16:49 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v2 5/9] userfaultfd/selftests: use memfd_create for shmem
- test type
-Message-ID: <20210413201649.GE4440@xz-x1>
-References: <20210413051721.2896915-1-axelrasmussen@google.com>
- <20210413051721.2896915-6-axelrasmussen@google.com>
+        id S1348179AbhDMUSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:18:05 -0400
+Received: from sauhun.de ([88.99.104.3]:39832 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231886AbhDMUSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 16:18:03 -0400
+Received: from localhost (p54b33d59.dip0.t-ipconnect.de [84.179.61.89])
+        by pokefinder.org (Postfix) with ESMTPSA id E9D332C0570;
+        Tue, 13 Apr 2021 22:17:40 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 22:17:40 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Qii Wang <qii.wang@mediatek.com>
+Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com
+Subject: Re: [RESEND] i2c: mediatek: Get device clock-stretch time via dts
+Message-ID: <20210413201740.GC2751@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Qii Wang <qii.wang@mediatek.com>, matthias.bgg@gmail.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com, leilk.liu@mediatek.com
+References: <1615622664-15032-1-git-send-email-qii.wang@mediatek.com>
+ <20210406194856.GF3122@kunai>
+ <1617797706.32076.1.camel@mhfsdcap03>
+ <20210407181936.GA1614@kunai>
+ <1618228994.32225.3.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
 Content-Disposition: inline
-In-Reply-To: <20210413051721.2896915-6-axelrasmussen@google.com>
+In-Reply-To: <1618228994.32225.3.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:17:17PM -0700, Axel Rasmussen wrote:
-> This is a preparatory commit. In the future, we want to be able to setup
-> alias mappings for area_src and area_dst in the shmem test, like we do
-> in the hugetlb_shared test. With a VMA obtained via
-> mmap(MAP_ANONYMOUS | MAP_SHARED), it isn't clear how to do this.
-> 
-> So, mmap() with an fd, so we can create alias mappings. Use memfd_create
-> instead of actually passing in a tmpfs path like hugetlb does, since
-> it's more convenient / simpler to run, and works just as well.
-> 
-> Future commits will:
-> 
-> 1. Setup the alias mappings.
-> 2. Extend our tests to actually take advantage of this, to test new
->    userfaultfd behavior being introduced in this series.
-> 
-> Also, a small fix in the area we're changing: when the hugetlb setup
-> fails in main(), pass in the right argv[] so we actually print out the
-> hugetlb file path.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+--dkEUBIird37B8yKS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Peter Xu
+On Mon, Apr 12, 2021 at 08:03:14PM +0800, Qii Wang wrote:
+> On Wed, 2021-04-07 at 20:19 +0200, Wolfram Sang wrote:
+> > > Due to clock stretch, our HW IP cannot meet the ac-timing
+> > > spec(tSU;STA,tSU;STO).=20
+> > > There isn't a same delay for clock stretching, so we need pass a
+> > > parameter which can be found through measurement to meet most
+> > > conditions.
+> >=20
+> > What about using this existing binding?
+> >=20
+> > - i2c-scl-internal-delay-ns
+> >         Number of nanoseconds the IP core additionally needs to setup S=
+CL.
+> >=20
+>=20
+> I can't see the relationship between "i2c-scl-falling-time-ns" and clock
+> stretching, is there a parameter related to clock stretching?
 
+( you wrote "i2c-scl-falling-time-ns" above, didn't you mean
+"i2c-scl-internal-delay-ns" instead? )
+
+Not yet, and I wonder if there can be one. In I2C (not SMBus), devices
+are allowed to stretch the clock as long as they want, so what should be
+specified here?
+
+I suggesteed "internal-delay" because AFAIU your hardware needs this
+delay to be able to cope with clock stretching.
+
+> If you think both of them will affect the ac-timing of SCL, at this
+> point, "i2c-scl-falling-time-ns" maybe a good choice.
+
+Do you mean "i2c-scl-falling-time-ns" or "i2c-scl-internal-delay-ns"?
+
+
+--dkEUBIird37B8yKS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1/GQACgkQFA3kzBSg
+KbaUfw//WWDtCLJl71HVdmHWvPxYnsr5Q4WBAWP/wumIKyK7zaRS3r65zjoNv2d5
+ozx5g3tlGjdfZWqa46V/y4M6V+7/UyREfhO+SEbz8UGE4Ch81+pDhLuc4lZMa5B7
+tmt+mrZi1aHk0YsVxSXlPzTCfjbz4FbKDvNeOIsOyMj05Ar42RPBGnpeEKII9iJR
+MmU9CpYv9y2kdejX/GiLwCwOihra71aahOwpR9iBsMTbC3ffFr4Xp6mhkWQaX7nG
+8hhZbSomeBvgfQuLbVrzMbX0MzCh8W7Jy42xmLjJeJALt7EziJl6la+ANy16XqM0
+azhtH6wLzPJnmrqN80EfEU43zENk3A1wpgEhz4iacoj/06sPinN8SXl10Ofeknzq
+iFBK/kBcI9gtUsfs6q05uqS4sWvkZz6xZeRRAkSDRr7WKIt3np+o8tVQXX9tHBWz
+/YnXwrbx4Vph5LO7dAF1RX3bfoBql9ElBPNsFexuEmNG54f6gBH5HEUoVfN9Vy2R
+qxAcXgYPmZe5c9JpgASu9ehRYDCa2iVPTiSaxfYfbv+cZEtP40PaLrKnrnycOIi9
+wMl4Dzr1llwrPqsCQpk5PvmZk4z5mEtCEKkTMn1lKTUF7xBVf9RPJbj588M8wLem
+YrcqHgG4fmYb45AwlZEq4P66P9cuUowM1WVndjEBLPJO9pIM9hs=
+=RODH
+-----END PGP SIGNATURE-----
+
+--dkEUBIird37B8yKS--
