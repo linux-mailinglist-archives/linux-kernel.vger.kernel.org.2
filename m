@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F7D35DCE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F278135DCE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344078AbhDMKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:55:00 -0400
-Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:55327 "EHLO
-        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344006AbhDMKx5 (ORCPT
+        id S245261AbhDMKym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:54:42 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:48090 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhDMKyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:53:57 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailforward.nyi.internal (Postfix) with ESMTP id BFD401940918;
-        Tue, 13 Apr 2021 06:53:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 13 Apr 2021 06:53:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LU2r2V
-        aAOHQrDcDegAXkrCbLQ5rLC3ELxpAY5KMD34k=; b=Urrm1paw1rJuxWjNLyJb8B
-        8ysGi72VT4VwnBe+cqoWS6UK7J00L53pmGPeN2XXCtFDb52Cc0rONk8VuVbxWaLN
-        PkjaavzYRLWkNZPC9evUu9KVszgP7/YPaoOtP4EWbEMTs4+oVsE0v91OD9eo5mkm
-        xRSP1kOcaWvNRXkTYBEQsODv3hpSaDhz3h19MqqnpIVhiIt1rdE3pONkczF7YRsT
-        amIhg32PhgY8yzngsgihsTYxuPXzh6TEa2bmw2cvyNg5ysPrPwADoM7ykH2OvwaA
-        ZufsEKz/Nj+FTY7yD3ZSDkIp5/fYuBERqdoDkJ6oAZ7q5srdqZH4rZJ5Vwcte1pQ
-        ==
-X-ME-Sender: <xms:LXh1YKav4TO8_USeLg1vL3DkKR1ko3310XjPD319Sl0sW1JDWgX4QA>
-    <xme:LXh1YNYJ5QNYRVE7u526JvWRUL4W01w2J2oAUvJUmnK6PljzJ2KpBVZrd0QdOwsGS
-    uL_z0ziHxCUd3w8ZOc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
-    gfgumhhonhgushhonhcuoegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtg
-    homheqnecuggftrfgrthhtvghrnhepheelfeefudeiudegudelgfetgeetkeelveeuieet
-    udelheejkeeileekveeukedtnecukfhppeekuddrudekjedrvdeirddvfeeknecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiugdrvggu
-    mhhonhgushhonhesohhrrggtlhgvrdgtohhm
-X-ME-Proxy: <xmx:LXh1YE_MAwxcY7uEKWMQcv0XPS-UdGgGm9OPoo5DYMo7DW2PmRyqAw>
-    <xmx:LXh1YMpj5KZrfnqsgJhBJ1FIl1n6_1feVRERAGBxqnM8pDDu6MB-jg>
-    <xmx:LXh1YFq9YaeU5nifU2ihFbdsKTM6JKMWbK9DPD3uHhJqCR6Y-Os5YQ>
-    <xmx:L3h1YEe10TRBeAFAfCSlt6Bvs7XvKoxXi3AtDBflLj09wvTdmYKvZ2I4CFs>
-Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EFF4C24005C;
-        Tue, 13 Apr 2021 06:53:31 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id a8eaf34e;
-        Tue, 13 Apr 2021 10:53:30 +0000 (UTC)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH 5/6] KVM: SVM: pass a proper reason in
- kvm_emulate_instruction()
-In-Reply-To: <YHRvchkUSIeU8tRR@google.com>
-References: <20210412130938.68178-1-david.edmondson@oracle.com>
- <20210412130938.68178-6-david.edmondson@oracle.com>
- <YHRvchkUSIeU8tRR@google.com>
-X-HGTTG: zarquon
-From:   David Edmondson <david.edmondson@oracle.com>
-X-Now-Playing: Dido - Life for Rent: Stoned
-Date:   Tue, 13 Apr 2021 11:53:30 +0100
-Message-ID: <cuno8eisbf9.fsf@oracle.com>
+        Tue, 13 Apr 2021 06:54:40 -0400
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 9D88040006C;
+        Tue, 13 Apr 2021 12:54:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1618311258;
+        bh=eOy3kxJGgC5rLUKtKBYN3qBf0SMVG8cMtK8TpSSyUlw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=OgPGQEy445mScUqD6w6lPsspEXJQNSPoFmuJu0NUaYBbmwuJsKys6411SnE40oKsG
+         nIYhMxKe/mT5ZM3Cu6UbrfTMKPFz1XmLa41Ar2BdDns/gj3xwJv8yXSSp+vQFjJ/cH
+         zsF4jc+5zz/lzQ/hMVNKRJ6zBS4d4eSDrpQYX/F3OdUkqfpiex/+6NtPvqRpmnen7F
+         EqwqUXh36+OPOcCulWQ8VVgjtN5vHAA9vSErp9gVaLzmj38AZQl8FnJ5JVYb7A+qJS
+         KsZTtXKgvpb7pQzAvwPwFqfBWU862eOMtAoZwj1tzvGbS/pm/gsQ3P08FV8hv5OD5o
+         fVtEKh3J7Mqfw==
+Received: by mail-pg1-f173.google.com with SMTP id j7so2223004pgi.3;
+        Tue, 13 Apr 2021 03:54:18 -0700 (PDT)
+X-Gm-Message-State: AOAM532ZkHVjZsIhzG1FG18lVr+J+43G3y3G6ZKuJgKhtCQ8uffRb7aT
+        s3zRQp5E4Ixhao6wePuGTbi2YenYxgyaJ/nFDAs=
+X-Google-Smtp-Source: ABdhPJyOuxyizuIyVvcEsfGU8UVvF3KbzJcbhfBCEPOtF4uvFJMZzGkm4tNE3UYYYLVzLfazR30B2CLPg61qxorbtfg=
+X-Received: by 2002:a63:5f0c:: with SMTP id t12mr31315464pgb.381.1618311257278;
+ Tue, 13 Apr 2021 03:54:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210329143833.1047539-1-kubernat@cesnet.cz> <20210409012754.743045-1-kubernat@cesnet.cz>
+ <1839a7df-7ceb-8d2b-b618-6d85b0b63a4c@roeck-us.net> <CABKa3npa9vra9jRrrG--3gtun7HtsAVxQvfzsV5rYTQDoDNN9g@mail.gmail.com>
+ <78016097-21df-8321-8b8b-33d15a6e6ff2@roeck-us.net>
+In-Reply-To: <78016097-21df-8321-8b8b-33d15a6e6ff2@roeck-us.net>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Tue, 13 Apr 2021 12:54:05 +0200
+X-Gmail-Original-Message-ID: <CABKa3nqhbnDTsSQc4xgo0gvGR3xeiznJPt_nK-wA_U9aoYXg+w@mail.gmail.com>
+Message-ID: <CABKa3nqhbnDTsSQc4xgo0gvGR3xeiznJPt_nK-wA_U9aoYXg+w@mail.gmail.com>
+Subject: Re: [PATCH v3] hwmon: Add driver for fsp-3y PSUs and PDUs
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 2021-04-12 at 16:04:02 GMT, Sean Christopherson wrote:
-
-> +Aaron
+=C3=BAt 13. 4. 2021 v 7:36 odes=C3=ADlatel Guenter Roeck <linux@roeck-us.ne=
+t> napsal:
 >
-> On Mon, Apr 12, 2021, David Edmondson wrote:
->> From: Joao Martins <joao.m.martins@oracle.com>
->> 
->> Declare various causes of emulation and use them as appropriate.
->> 
->> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
->> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
->> ---
->>  arch/x86/include/asm/kvm_host.h |  6 ++++++
->>  arch/x86/kvm/svm/avic.c         |  3 ++-
->>  arch/x86/kvm/svm/svm.c          | 26 +++++++++++++++-----------
->>  3 files changed, 23 insertions(+), 12 deletions(-)
->> 
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 79e9ca756742..e1284680cbdc 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -1535,6 +1535,12 @@ enum {
->>  	EMULREASON_IO_COMPLETE,
->>  	EMULREASON_UD,
->>  	EMULREASON_PF,
->> +	EMULREASON_SVM_NOASSIST,
->> +	EMULREASON_SVM_RSM,
->> +	EMULREASON_SVM_RDPMC,
->> +	EMULREASON_SVM_CR,
->> +	EMULREASON_SVM_DR,
->> +	EMULREASON_SVM_AVIC_UNACCEL,
+> On 4/12/21 9:31 PM, V=C3=A1clav Kubern=C3=A1t wrote:
+> [ ... ]
+> > Okay, I have made some additional testing. Some of the registers
+> > return 0xFFFF, some don't. These are the ones that pmbus_core queries
+> > when the driver is loading (with values I got from
+> > i2c_smbus_read_word_data):
+> > PMBUS_POUT_MAX 0xFFFF
+> > PMBUS_FAN_COMMAND_1 0x0
+> > PMBUS_VOUT_OV_FAULT_LIMIT 0xFFFF
+> > PMBUS_VOUT_OV_WARN_LIMIT 0xFFFF
+> > PMBUS_VOUT_UV_WARN_LIMIT 0xFFFF
+> > PMBUS_VOUT_UV_FAULT_LIMIT 0xFFFF
+> > PMBUS_IOUT_OC_FAULT_LIMIT 0xFFFF
+> > PMBUS_IOUT_OC_WARN_LIMIT 0x10
+> > PMBUS_IOUT_UC_FAULT_LIMIT 0xFFFF
+> > PMBUS_OT_FAULT_LIMIT 0xFFFF
+> > PMBUS_OT_WARN_LIMIT 0xFFFFFFB6
+> > PMBUS_UT_WARN_LIMIT 0xFFFF
+> > PMBUS_UT_FAULT_LIMIT 0xFFFF
+> > PMBUS_VIN_OV_FAULT_LIMIT 0xFFFF
+> > PMBUS_VIN_OV_WARN_LIMIT 0xFFFF
+> > PMBUS_VIN_UV_WARN_LIMIT 0xFFFF
+> > PMBUS_VIN_UV_FAULT_LIMIT 0xFFFF
+> > PMBUS_IIN_OC_FAULT_LIMIT 0xFFFF
+> > PMBUS_IIN_OC_WARN_LIMIT 0x0
+> > PMBUS_POUT_OP_FAULT_LIMIT 0xFFFF
+> > PMBUS_POUT_OP_WARN_LIMIT 0xFFFFFFB6
+> > PMBUS_PIN_OP_WARN_LIMIT 0x0
+> > PMBUS_READ_FAN_SPEED_2 0x0
+> > PMBUS_MFR_VIN_MIN 0x5A
+> > PMBUS_MFR_VIN_MAX 0x108
+> > PMBUS_MFR_IIN_MAX 0x3
+> > PMBUS_MFR_PIN_MAX 0xC8
+> > PMBUS_MFR_VOUT_MIN 0x1748
+> > PMBUS_MFR_VOUT_MAX 0x18B0
+> > PMBUS_MFR_IOUT_MAX 0xF
+> > PMBUS_MFR_POUT_MAX 0x96
+> > PMBUS_MFR_MAX_TEMP_1 0xFFFF
+> > PMBUS_MFR_MAX_TEMP_2 0xFFFF
+> >
 >
-> Passing these to userspace arguably makes them ABI, i.e. they need to go into
-> uapi/kvm.h somewhere.  That said, I don't like passing arbitrary values for what
-> is effectively the VM-Exit reason.  Why not simply pass the exit reason, assuming
-> we do indeed want to dump this info to userspace?
+> The question is really what the status register reports for those.
+> I bet that PMBUS_STATUS_CML will set the "invalid command" bit
+> for many if not all registers returning 0xffff. Those will
+> be filtered out by the PMBus core automatically. That leaves the
+> ones returning some data. Of course it would be desirable
+> to have those supported, but I can understand if you don't know
+> the encoding. The reason for masking those needs to be explained.
+>
 
-That would suffice, yes.
+I thought I sent the v4 patch before, but it seems that I only sent it
+to myself. Also, I realized I've sent some of the emails only to you.
+That wasn't my intention. Sorry. I'm bad at emailing.
 
-> What is the intended end usage of this information?  Actual emulation?  Debug?
-> Logging?
+Anyway, I have posted the v4 patch right now and it includes a comment
+about the masking.
 
-Debug (which implies logging, given that I want this to happen on
-systems that are in service).
+V=C3=A1clav
 
-> Depending on what you're trying to do with the info, maybe there's a better
-> option.  E.g. Aaron is working on a series that includes passing pass the code
-> stream (instruction bytes) to userspace on emulation failure, though I'm not
-> sure if he's planning on providing the VM-Exit reason.
-
-Having the instruction stream will be good.
-
-Aaron: do you have anything to share now? In what time frame do you
-think you might submit patches?
-
-I'm happy to re-work this to make the exit reason available, if that's
-the appropriate direction.
-
-dme.
--- 
-And you're standing here beside me, I love the passing of time.
+> Thanks,
+> Guenter
