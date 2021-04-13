@@ -2,341 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C85735E929
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB86A35E92D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347529AbhDMWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
+        id S1348648AbhDMWp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244005AbhDMWor (ORCPT
+        with ESMTP id S239254AbhDMWp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:44:47 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56B0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:44:25 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id er3so473992qvb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fRv1VLSmNT5c1ESBt9iq7OX+vEe0OiwZ74hunxukn24=;
-        b=cIW1F8yAX/DJdnbvmy7FYBM6joZgTHbxealIFNS5keGvWV0ZXXjx2QAyhBkcFhjOx/
-         /H/CsWClsPRnd6cU//zQ8EypwmIWhyqYct/KTKfa4EtVQytC1Akekp9FQyEzUx6C95je
-         lCK5++r6GG1ZLMq+MvvYOiUX3sxB195v5BoShlL+8uDr8ZtPj/63YTJdWpytqkjh2SFa
-         ecY2KsqkD82kQplQXEGw3019RcgNcbJajy5u7L6HIpywtJVl1bg2vfoICdDpo9hHgGQ0
-         huWwH5AhvmYqzhPFC1vr7S9sQWKxsRcFUcU66qNUhTop731JlesnTRB/BEKR2xhBPLYK
-         B7CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fRv1VLSmNT5c1ESBt9iq7OX+vEe0OiwZ74hunxukn24=;
-        b=WxEQCWJgWySphFLKj5LONt3qu+uy6cIwJs5hlwQrx7NsZYLYwnARswnOr/++/mXOQm
-         ocM3bn5vR1jqQmcfAtEap7iFB6QhxkoqFutXEkeDPocqenzxDiBeJ0PdJ7zT523cXU7F
-         9ddk+Mct+bxnpjX5tdcSyffRKJlqlgcK6au5FCikislFpdNcumP1n5AvJ5DEVOB3wnwU
-         T6k0WHjdABjlZYAPFuuRYRfI3nwd2mnZ+sU/h645KW23L2gVd21JZkW/z/7qbY6xdK+f
-         IiYBnu63K3e8qLiouWguPd3OCxOjaxSE2bLslUq7tk0ADy6VL6yXQAfvsB0enN35wsmg
-         ITfA==
-X-Gm-Message-State: AOAM530+uzhLCdsRlezROrvms2knpl9tjjm1PRkw/VUl+GJG0g11Ovpl
-        G+IJI7UH6X37BPOYumxVv/rWNkqYdPgupQ==
-X-Google-Smtp-Source: ABdhPJzbp8mb/fUdcl29XGm7Kr96tZ5fAUfspG7oB+Blo4Ncn9B7VeFuuQE1CIx0XkrVf3xQHsDI5g==
-X-Received: by 2002:a05:6214:1381:: with SMTP id g1mr13193821qvz.21.1618353864371;
-        Tue, 13 Apr 2021 15:44:24 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id q67sm9065716qkb.89.2021.04.13.15.44.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 15:44:23 -0700 (PDT)
-Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210225182716.1402449-7-thara.gopinath@linaro.org>
- <20210405221848.GA904837@yoga>
- <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
- <20210413222014.GS1538589@yoga>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <4c4a9df6-7ad5-85ab-bfcd-2c123bd86ca0@linaro.org>
-Date:   Tue, 13 Apr 2021 18:44:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 13 Apr 2021 18:45:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F612C061574;
+        Tue, 13 Apr 2021 15:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=RAw2qFQbXd7DiL7NeB24qBmFpk5WEU6Gl+fX1sTMH9Q=; b=goaoSHSeWGsUmwrE7A5ZucTAPe
+        I3m7d4EPs1uSCkvSX3pXTK86WTdllKHtVjvzeWJB6Cj2q4Q2dMPWr4PTbm+MKvVq9indhVry3Uxqk
+        z0dz6iZjc9esbXxMbYdzkl8AXQvs17JCkgToIQ5bsf4PQMEMPDIx9FUj7fXrauQWVihGlM3PmQDjC
+        RVBItRJnOiuVAS4Fkrew5UZKqwv7DSIxORHxHoxM88qWrsGF1NFJSttbsO2WuGRHRJDfCYCKuR6D3
+        puA9vpSK1KhL4pXB+Hs0GmUHQFpszZ1Ea7dWDaqaAx9sIGX4fljKf/4/wvIBfTm13UWiMHt/N5cCn
+        Xz0iBUVg==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWRln-006LQJ-UH; Tue, 13 Apr 2021 22:44:39 +0000
+Subject: Re: mmotm 2021-04-11-20-47 uploaded (bpf: xsk.c)
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        mhocko@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        mm-commits@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20210412034813.EK9k9%akpm@linux-foundation.org>
+ <7208c4e4-8ff1-7e0d-50ad-6b0aae872a6d@infradead.org>
+ <CAEf4BzZBHUX=8=FYwq0bp6GFkOTxCbtiJN31SSoWCsMyh7_hMg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <034959c7-c70f-4d1b-0fe2-dcc00075807f@infradead.org>
+Date:   Tue, 13 Apr 2021 15:44:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210413222014.GS1538589@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAEf4BzZBHUX=8=FYwq0bp6GFkOTxCbtiJN31SSoWCsMyh7_hMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/13/21 6:20 PM, Bjorn Andersson wrote:
-> On Tue 13 Apr 16:31 CDT 2021, Thara Gopinath wrote:
+On 4/13/21 3:18 PM, Andrii Nakryiko wrote:
+> On Mon, Apr 12, 2021 at 9:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 4/11/21 8:48 PM, akpm@linux-foundation.org wrote:
+>>> The mm-of-the-moment snapshot 2021-04-11-20-47 has been uploaded to
+>>>
+>>>    https://www.ozlabs.org/~akpm/mmotm/
+>>>
+>>> mmotm-readme.txt says
+>>>
+>>> README for mm-of-the-moment:
+>>>
+>>> https://www.ozlabs.org/~akpm/mmotm/
+>>>
+>>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>>> more than once a week.
+>>>
+>>> You will need quilt to apply these patches to the latest Linus release (5.x
+>>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>>> https://ozlabs.org/~akpm/mmotm/series
+>>>
+>>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>>> followed by the base kernel version against which this patch series is to
+>>> be applied.
+>>>
+>>> This tree is partially included in linux-next.  To see which patches are
+>>> included in linux-next, consult the `series' file.  Only the patches
+>>> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+>>> linux-next.
+>>>
+>>>
+>>> A full copy of the full kernel tree with the linux-next and mmotm patches
+>>> already applied is available through git within an hour of the mmotm
+>>> release.  Individual mmotm releases are tagged.  The master branch always
+>>> points to the latest release, so it's constantly rebasing.
+>>>
+>>>       https://github.com/hnaz/linux-mm
+>>>
+>>> The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+>>> contains daily snapshots of the -mm tree.  It is updated more frequently
+>>> than mmotm, and is untested.
+>>>
+>>> A git copy of this tree is also available at
+>>>
+>>>       https://github.com/hnaz/linux-mm
+>>
+>> on x86_64:
+>>
+>> xsk.c: In function ‘xsk_socket__create_shared’:
+>> xsk.c:1027:7: error: redeclaration of ‘unmap’ with no linkage
+>>   bool unmap = umem->fill_save != fill;
+>>        ^~~~~
+>> xsk.c:1020:7: note: previous declaration of ‘unmap’ was here
+>>   bool unmap, rx_setup_done = false, tx_setup_done = false;
+>>        ^~~~~
+>> xsk.c:1028:7: error: redefinition of ‘rx_setup_done’
+>>   bool rx_setup_done = false, tx_setup_done = false;
+>>        ^~~~~~~~~~~~~
+>> xsk.c:1020:14: note: previous definition of ‘rx_setup_done’ was here
+>>   bool unmap, rx_setup_done = false, tx_setup_done = false;
+>>               ^~~~~~~~~~~~~
+>> xsk.c:1028:30: error: redefinition of ‘tx_setup_done’
+>>   bool rx_setup_done = false, tx_setup_done = false;
+>>                               ^~~~~~~~~~~~~
+>> xsk.c:1020:37: note: previous definition of ‘tx_setup_done’ was here
+>>   bool unmap, rx_setup_done = false, tx_setup_done = false;
+>>                                      ^~~~~~~~~~~~~
+>>
+>>
+>> Full randconfig file is attached.
 > 
->>
->> Hi Bjorn,
->>
->> On 4/5/21 6:18 PM, Bjorn Andersson wrote:
->>> On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
->>>
->>>> Add register programming sequence for enabling AEAD
->>>> algorithms on the Qualcomm crypto engine.
->>>>
->>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->>>> ---
->>>>    drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
->>>>    1 file changed, 153 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
->>>> index 05a71c5ecf61..54d209cb0525 100644
->>>> --- a/drivers/crypto/qce/common.c
->>>> +++ b/drivers/crypto/qce/common.c
->>>> @@ -15,6 +15,16 @@
->>>>    #include "core.h"
->>>>    #include "regs-v5.h"
->>>>    #include "sha.h"
->>>> +#include "aead.h"
->>>> +
->>>> +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->>>> +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
->>>> +};
->>>> +
->>>> +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->>>> +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
->>>> +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
->>>> +};
->>>>    static inline u32 qce_read(struct qce_device *qce, u32 offset)
->>>>    {
->>>> @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
->>>>    		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
->>>>    }
->>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>>>    static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>>>    {
->>>>    	u32 cfg = 0;
->>>> @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>>>    	return cfg;
->>>>    }
->>>> +#endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->>>>    static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>>>    {
->>>>    	struct ahash_request *req = ahash_request_cast(async_req);
->>>> @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>>>    }
->>>>    #endif
->>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>>>    static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>>>    {
->>>>    	u32 cfg = 0;
->>>> @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>>>    	return cfg;
->>>>    }
->>>> +#endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->>>>    static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
->>>>    {
->>>>    	u8 swap[QCE_AES_IV_LENGTH];
->>>> @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
->>>>    }
->>>>    #endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
->>>> +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
->>>> +{
->>>> +	struct aead_request *req = aead_request_cast(async_req);
->>>> +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
->>>> +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
->>>> +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
->>>> +	struct qce_device *qce = tmpl->qce;
->>>> +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
->>>> +	unsigned int enc_keylen = ctx->enc_keylen;
->>>> +	unsigned int auth_keylen = ctx->auth_keylen;
->>>> +	unsigned int enc_ivsize = rctx->ivsize;
->>>> +	unsigned int auth_ivsize;
->>>> +	unsigned int enckey_words, enciv_words;
->>>> +	unsigned int authkey_words, authiv_words, authnonce_words;
->>>> +	unsigned long flags = rctx->flags;
->>>> +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
->>>
->>> I don't see any reason to initialize encr_cfg or auth_cfg.
->>
->> right.. I will remove it
->>
->>>
->>>> +	u32 *iv_last_word;
->>>> +
->>>> +	qce_setup_config(qce);
->>>> +
->>>> +	/* Write encryption key */
->>>> +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
->>>> +	enckey_words = enc_keylen / sizeof(u32);
->>>> +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
->>>
->>> Afaict all "array registers" in this function are affected by the
->>> CRYPTO_SETUP little endian bit, but you set this bit before launching
->>> the operation dependent on IS_CCM(). So is this really working for the
->>> !IS_CCM() case?
->>
->> I am not sure I understand you. Below ,
->> 	/* get little endianness */
->> 	config = qce_config_reg(qce, 1);
->> 	qce_write(qce, REG_CONFIG, config);
->>
->> is outside of any checks..
->>
-> 
-> You're right, I misread that snippet as I was jumping through the
-> function. So we're unconditionally running the hardware in little endian
-> mode.
-> 
->>>
->>>> +
->>>> +	/* Write encryption iv */
->>>> +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
->>>> +	enciv_words = enc_ivsize / sizeof(u32);
->>>> +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
->>>
->>> It would be nice if this snippet was extracted to a helper function.
->>>
->>>> +
->>>> +	if (IS_CCM(rctx->flags)) {
->>>> +		iv_last_word = (u32 *)&enciv[enciv_words - 1];
->>>> +//		qce_write(qce, REG_CNTR3_IV3, enciv[enciv_words - 1] + 1);
->>>
->>> I believe this is a remnant of the two surrounding lines.
->>
->> It indeed is.. I will remove it.
->>
->>>
->>>> +		qce_write(qce, REG_CNTR3_IV3, (*iv_last_word) + 1);
->>>
->>> enciv is an array of big endian 32-bit integers, which you tell the
->>> compiler to treat as cpu-native endian, and then you do math on it.
->>> Afaict from the documentation the value of REG_CNTR3_IVn should be set
->>> to rctx->iv + 1, but if the hardware expects these in big endian then I
->>> think you added 16777216.
->>
->> So, the crypto engine documentation talks of writing to these registers in
->> little endian mode. The byte stream that you get for iv from the user
->> is in big endian mode as in the MSB is byte 0. So we kind of invert this and
->> write  to these registers. This is what happens with declaring the __be32
->> array and copying words to it from the byte stream. So now byte 0 is the LSB
->> and a +1 will just add a 1 to it.
->>
-> 
-> But if the data come in big endian and after qce_cpu_to_be32p_array()
-> you're able to do math on them with expected result and you're finally
-> passing the data to writel() then I think that qce_cpu_to_be32p_array()
-> is actually be32_to_cpu() and after the conversion you should carry the
-> results in CPU-native u32 arrays - and thereby skip the typecasting.
+> What SHA are you on? I checked that github tree, the source code there
+> doesn't correspond to the errors here (i.e., there is no unmap
+> redefinition on lines 1020 and 1027). Could it be some local merge
+> conflict?
 
-you mean I can replace __be32 arrays with u32 arrays ?? yes I probably 
-can. I will try this out and if it works do the change.
+Yes, it seems to have been a merge problem in mmotm 2021-04-11.
+It is fixed/OK in today's mmotm 2021-04013.
 
-> 
->> I suspect from what I read in the documentation we could get away by
->> removing this and writing the big endian byte stream directly and never
->> setting the little endian in config register. Though I am not sure if this
->> has ever been tested out. If we change it, it will be across algorithms and
->> as a separate effort.
-> 
-> writel() will, at least on arm64, convert the CPU native value to little
-> endian before writing it out, so I think the current setting make sense.
-
-hmm.. ok.
-
-> 
->>
->>>
->>> Perhaps I'm missing something here though?
->>>
->>> PS. Based on how the documentation is written, shouldn't you write out
->>> REG_CNTR_IV[012] as well?
->>
->> It is done on top, right ?
->> qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
->>
-> 
-> You're right, depending on enciv_words you write the 4 registers, then
-> increment the last word and write that out again.
-> 
->>>
->>>> +		qce_write_array(qce, REG_ENCR_CCM_INT_CNTR0, (u32 *)enciv, enciv_words);
->>>> +		qce_write(qce, REG_CNTR_MASK, ~0);
->>>> +		qce_write(qce, REG_CNTR_MASK0, ~0);
->>>> +		qce_write(qce, REG_CNTR_MASK1, ~0);
->>>> +		qce_write(qce, REG_CNTR_MASK2, ~0);
->>>> +	}
->>>> +
->>>> +	/* Clear authentication IV and KEY registers of previous values */
->>>> +	qce_clear_array(qce, REG_AUTH_IV0, 16);
->>>> +	qce_clear_array(qce, REG_AUTH_KEY0, 16);
->>>> +
->>>> +	/* Clear byte count */
->>>> +	qce_clear_array(qce, REG_AUTH_BYTECNT0, 4);
->>>> +
->>>> +	/* Write authentication key */
->>>> +	qce_cpu_to_be32p_array(authkey, ctx->auth_key, auth_keylen);
->>>> +	authkey_words = DIV_ROUND_UP(auth_keylen, sizeof(u32));
->>>> +	qce_write_array(qce, REG_AUTH_KEY0, (u32 *)authkey, authkey_words);
->>>> +
->>>> +	if (IS_SHA_HMAC(rctx->flags)) {
->>>> +		/* Write default authentication iv */
->>>> +		if (IS_SHA1_HMAC(rctx->flags)) {
->>>> +			auth_ivsize = SHA1_DIGEST_SIZE;
->>>> +			memcpy(authiv, std_iv_sha1, auth_ivsize);
->>>> +		} else if (IS_SHA256_HMAC(rctx->flags)) {
->>>> +			auth_ivsize = SHA256_DIGEST_SIZE;
->>>> +			memcpy(authiv, std_iv_sha256, auth_ivsize);
->>>> +		}
->>>> +		authiv_words = auth_ivsize / sizeof(u32);
->>>> +		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
->>>
->>> AUTH_IV0 is affected by the little endian configuration, does this imply
->>> that IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags? If so
->>> I think it would be nice if you grouped the conditionals in a way that
->>> made that obvious when reading the function.
->>
->> So yes IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags.
->> AUTH_IVn is 0 for ccm and has initial value for HMAC algorithms. I don't
->> understand the confusion here.
->>
-> 
-> I'm just saying that writing is as below would have made it obvious to
-> me that IS_SHA_HMAC() and IS_CCM() are exclusive:
-
-So regardless of the mode, it is a good idea  to clear the IV  registers 
-which happens above in
-
-	qce_clear_array(qce, REG_AUTH_IV0, 16);
-
-
-This is important becasue the size of IV varies between HMAC(SHA1) and 
-HMAC(SHA256) and we don't want any previous bits sticking around.
-For CCM after the above step we don't do anything with AUTH_IV where as 
-for SHA_HMAC we have to go and program the registers. I can split it into
-if (IS_SHA_HMAC(flags)) {
-	...
-} else {
-	...
-}
-
-but both snippets will have the above line code clearing the IV register 
-and the if part will have more stuff actually programming these 
-registers.. Is that what you are looking for ?
-
+thanks.
 
 -- 
-Warm Regards
-Thara
+~Randy
+
