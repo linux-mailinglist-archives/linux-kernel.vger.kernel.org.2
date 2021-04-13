@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B5735DAF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F281C35DAE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238238AbhDMJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhDMJVG (ORCPT
+        id S245563AbhDMJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:16:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56398 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245435AbhDMJQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:21:06 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039AAC061574;
-        Tue, 13 Apr 2021 02:20:47 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d8so7872430plh.11;
-        Tue, 13 Apr 2021 02:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yxv+W5Wy6TsnwXCzdMCOFEotN7zXApShJqhmV4+mIq0=;
-        b=ohFH+/YCt9wTZmSwx+HqMUzJ0sYKgLByyeFn3GZdswLcoGCGXudV8r/mMZYUVfcKRP
-         KNajmOg2tbXpipVVlc1BbnJwjS4c4neIu7kY8E1BEvq06u0AUlSYIBIVnNMZu++fDglJ
-         Yq6G7mzxrHfeK0QuAJ+6NsHM68MFoZvpDlkvsvvepG2DBl3zwff1eeWEQxJdFVyG26/+
-         RZiJpgKTh+tGCqItQpGYMgAboehdG0LI+29Gjki1ObQRQ2HRCmLy5jMN+3xhucJ7MvwT
-         mMUdYhhgZoCBMOo3dPbw+q0v4+myURzJGpQgDJNJoD+lbGi5YAvMk14bwgzg6jaXabCE
-         6mjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yxv+W5Wy6TsnwXCzdMCOFEotN7zXApShJqhmV4+mIq0=;
-        b=MNFgZZPT3+4oladHw29hnKB68EVtLIZ2K2y+e9H6bJGOYg8rsFIVqUz8Gst6+gN2+m
-         MunVoAoyiq0k+fTs8o1sKP/lfBX+u7mElOoNQd1PKAtXEpYmPQ4dmvdsdtEoYA3xplOE
-         wL/JtVoxU6boQzx5BH5cEPE14wYNMAwa6KwJLXIuZa/9eOFYS719RX+JeQEMoIKm7sHS
-         ytuoQgDIgOmlzRLCnvBDxdu4GJqK+w2bnJaYiWTScVDkeJsThYGFNpX++xGGzXPmrfAE
-         P8yCoM7/2cyuJnNWTac4wtDSyTaeFhbhRMFyKCXqHpWfmsh09+FFzz4oU+v9VD7qCztN
-         0NNQ==
-X-Gm-Message-State: AOAM530nzNf4J+TAJJGKJNHcgbqA7wE5Baf9Klc/CVde3w0XECCtiLO8
-        b/Zn9fztJPhED+s3CXUt+zmr2rjkyKk=
-X-Google-Smtp-Source: ABdhPJzTuaYu3hPOPpMqcStKDDJxVN7QSf9avxZd504RoaFKbO9KSZbg/5hEcT4EU6DzPAkqaTehhA==
-X-Received: by 2002:a17:90a:a78c:: with SMTP id f12mr3851977pjq.219.1618305646463;
-        Tue, 13 Apr 2021 02:20:46 -0700 (PDT)
-Received: from varodek.localdomain ([171.61.181.173])
-        by smtp.gmail.com with ESMTPSA id x194sm13388570pfc.18.2021.04.13.02.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 02:20:45 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     vaibhavgupta40@gmail.com, Kishon Vijay Abraham <kishon@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] Update dt-bindings and sa2ul driver for AM64x SoCs
-Date:   Tue, 13 Apr 2021 14:45:56 +0530
-Message-Id: <20210413091559.154169-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210316220558.GA3754419@robh.at.kernel.org>
-References: <20210316220558.GA3754419@robh.at.kernel.org>
+        Tue, 13 Apr 2021 05:16:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618305368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Nsxd662d4i8x3VCivCNK0fCVgM6UOW8+ULBoukCe2ZU=;
+        b=HIcJFErnYgx4eitlrlzasNDzEHQAoI806ImiejChWXfBVcAH9NTQXP1pU3a+w1JmphZ7dy
+        6OU+73C5hO94IbJW8Nj5b8+mFm+WqKBd4bkF2+zS0wDB9mEzQNauhycjboiOjIZuLP/ECm
+        F/YAKSalD0xZnaqS0F6LZV467d8Yhiw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-71-x88dCRRUMHWcrN8rL8uRAw-1; Tue, 13 Apr 2021 05:16:07 -0400
+X-MC-Unique: x88dCRRUMHWcrN8rL8uRAw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD9BD107ACCA;
+        Tue, 13 Apr 2021 09:16:05 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-128.pek2.redhat.com [10.72.13.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 55CC360C04;
+        Tue, 13 Apr 2021 09:15:59 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] vhost-vdpa: fix vm_flags for virtqueue doorbell mapping
+Date:   Tue, 13 Apr 2021 17:15:57 +0800
+Message-Id: <20210413091557.29008-1-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Gupta <v_gupta@ti.com>
+The virtqueue doorbell is usually implemented via registeres but we
+don't provide the necessary vma->flags like VM_PFNMAP. This may cause
+several issues e.g when userspace tries to map the doorbell via vhost
+IOTLB, kernel may panic due to the page is not backed by page
+structure. This patch fixes this by setting the necessary
+vm_flags. With this patch, try to map doorbell via IOTLB will fail
+with bad address.
 
-This patch series aims to modify necessary files before an entry for sa2ul
-can be made in the respective am64 device tree.
+Cc: stable@vger.kernel.org
+Fixes: ddd89d0a059d ("vhost_vdpa: support doorbell mapping via mmap")
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/vhost/vdpa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2?
-  - Simplify the dt-binding changes.
-
-Peter Ujfalusi (3):
-  dt-bindings: crypto: ti,sa2ul: Add new compatible for AM64
-  crypto: sa2ul: Support for per channel coherency
-  crypto: sa2ul: Add support for AM64
-
- .../devicetree/bindings/crypto/ti,sa2ul.yaml  |  24 +++-
- drivers/crypto/sa2ul.c                        | 133 ++++++++++++------
- drivers/crypto/sa2ul.h                        |   4 +
- 3 files changed, 120 insertions(+), 41 deletions(-)
-
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index e0a27e336293..865eab69cb71 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -989,6 +989,7 @@ static int vhost_vdpa_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (vma->vm_end - vma->vm_start != notify.size)
+ 		return -ENOTSUPP;
+ 
++	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
+ 	vma->vm_ops = &vhost_vdpa_vm_ops;
+ 	return 0;
+ }
 -- 
-2.31.0
+2.25.1
 
