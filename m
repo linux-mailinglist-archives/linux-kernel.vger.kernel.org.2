@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A67235DA00
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BC635DA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhDMI0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:26:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2839 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhDMI00 (ORCPT
+        id S230006AbhDMIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhDMI3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:26:26 -0400
-Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FKJQw67r3z688K3;
-        Tue, 13 Apr 2021 16:18:48 +0800 (CST)
-Received: from lhreml707-chm.china.huawei.com (10.201.108.56) by
- fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Tue, 13 Apr 2021 10:26:01 +0200
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- lhreml707-chm.china.huawei.com (10.201.108.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 13 Apr 2021 09:25:58 +0100
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.2106.013;
- Tue, 13 Apr 2021 09:25:58 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "Tieman, Henry W" <henry.w.tieman@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH net] ice: Re-organizes reqstd/avail {R,T}XQ check/code for
- efficiency+readability
-Thread-Topic: [PATCH net] ice: Re-organizes reqstd/avail {R,T}XQ check/code
- for efficiency+readability
-Thread-Index: AQHXLnSYr3LSh1DDV0C/ZapTpipD6KqxbBIAgACyFoA=
-Date:   Tue, 13 Apr 2021 08:25:58 +0000
-Message-ID: <8fd160b556fc4d45bff2d607918aad33@huawei.com>
-References: <20210411014530.25060-1-salil.mehta@huawei.com>
- <03655fb6faa595a20a1143fb3b01561042cd317f.camel@intel.com>
-In-Reply-To: <03655fb6faa595a20a1143fb3b01561042cd317f.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.73.132]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 13 Apr 2021 04:29:47 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB44C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:29:24 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id y32so11388441pga.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xIRFgbgJI0avBUCCEiD/4GGK39mTH+z4x0E9i17yICc=;
+        b=KsBqPwIzxEERTMv9YbFd5DK4k0IWdG0zYg0AIOD4ramDWOwjjpaHMRZ8r7zqtOFu1s
+         BtpuA4jMX0CSOeND9H2+crkj/+ItRiqlX5zbhUDKXkdyq9ZFThfTsn0zP7EE1UceUrcD
+         d4RhTQvq94uqOOjbomw03G5EfrdHMSiA71QlEkCQUEHtp7n1GMzobwUgldpFRkGQkQ5E
+         8580Xc1hVk30MPPmo7/wKS7bDWKYsKKvB6q7ZyEaV2XuL4KQ4pFP48BGjYWq3z1Pu5gC
+         Vy4cRb2zlrH7ll92cBfmvNT5t3Fmc52ha6/LQGxCwbKLWOqnWoGFcXbLXgW0JkF8bxLB
+         VsCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xIRFgbgJI0avBUCCEiD/4GGK39mTH+z4x0E9i17yICc=;
+        b=Dgp2rZqNu7gIaRPuC59mQUbbQ24tNw7aCqKQXGLCPAVOh3ZXnl/hJPUscrNjGSqvtD
+         +G+a9ZoyUF6M5jq8gW+IDVleB04JjnhvIb4xm1xdhAP4crkQF6jXBF6WSyvl/XilYwdA
+         lHpFiSMbL+yE6+r0vW+SagQ63EaFhNdpLoxN3m2/k1PSkffjJB0V2+8Tc65V5/erEMG9
+         0eqs2sI4EuCc6NpldFlxiGmlJnsPak8rpyuo6ZBtKDfuVvmjB+4RdsQW+O48yg6FSbzH
+         K1AzTr8SzQ8QMi/2fyqFaD44FPbTHTrM0vLCSDyNAESJlzj2cuxUUum4g6GZg0wyZYTg
+         moqQ==
+X-Gm-Message-State: AOAM5324hQpCQjLVj37hehL4JSHES0v3JUiLPQEeqKDN/M6KodV7JrmW
+        LGFOWcBPxoyNmfRpgUYZSp1QZvLCA2ubJwFYTB8/bPAWAlw+bg==
+X-Google-Smtp-Source: ABdhPJxxTx2mlrpT069JMOM2uSKY6V/riYaDus0gsTM/kV5aEQplb2gd+Rt0HMWsBG207SNvmNAcit1GAlrzw56DCnM=
+X-Received: by 2002:a65:5c42:: with SMTP id v2mr31548252pgr.339.1618302564473;
+ Tue, 13 Apr 2021 01:29:24 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <1618078449-28495-1-git-send-email-pthombar@cadence.com>
+In-Reply-To: <1618078449-28495-1-git-send-email-pthombar@cadence.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 13 Apr 2021 10:29:13 +0200
+Message-ID: <CAG3jFyufvN8j9seSETnbrq9vkoZY7Xw_b7Lm7gUZhPd5LifH+Q@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] enable HDCP in Cadence MHDP bridge driver
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>, nikhil.nd@ti.com,
+        kishon@ti.com, sjakhade@cadence.com, mparab@cadence.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW50aG9ueSwNClRoYW5rcyBmb3IgcmV2aWV3aW5nIQ0KDQo+IEZyb206IE5ndXllbiwgQW50
-aG9ueSBMIFttYWlsdG86YW50aG9ueS5sLm5ndXllbkBpbnRlbC5jb21dDQo+IFNlbnQ6IE1vbmRh
-eSwgQXByaWwgMTIsIDIwMjEgMTE6NDEgUE0NCj4gVG86IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1
-YmFAa2VybmVsLm9yZzsgU2FsaWwgTWVodGEgPHNhbGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IENj
-OiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBC
-cmFuZGVidXJnLCBKZXNzZQ0KPiA8amVzc2UuYnJhbmRlYnVyZ0BpbnRlbC5jb20+OyBsaW51eGFy
-bUBvcGVuZXVsZXIub3JnOyBUaWVtYW4sIEhlbnJ5IFcNCj4gPGhlbnJ5LncudGllbWFuQGludGVs
-LmNvbT47IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BB
-VENIIG5ldF0gaWNlOiBSZS1vcmdhbml6ZXMgcmVxc3RkL2F2YWlsIHtSLFR9WFEgY2hlY2svY29k
-ZSBmb3INCj4gZWZmaWNpZW5jeStyZWFkYWJpbGl0eQ0KPiANCj4gT24gU3VuLCAyMDIxLTA0LTEx
-IGF0IDAyOjQ1ICswMTAwLCBTYWxpbCBNZWh0YSB3cm90ZToNCj4gPiBJZiB1c2VyIGhhcyBleHBs
-aWNpdGx5IHJlcXVlc3RlZCB0aGUgbnVtYmVyIG9mIHtSLFR9WFFzLCB0aGVuIGl0IGlzDQo+ID4g
-dW5uZWNlc3NhcnkNCj4gPiB0byBnZXQgdGhlIGNvdW50IG9mIGFscmVhZHkgYXZhaWxhYmxlIHtS
-LFR9WFFzIGZyb20gdGhlIFBGDQo+ID4gYXZhaWxfe3IsdH14cXMNCj4gPiBiaXRtYXAuIFRoaXMg
-dmFsdWUgd2lsbCBnZXQgb3ZlcnJpZGVuIGJ5IHVzZXIgc3BlY2lmaWVkIHZhbHVlIGluIGFueQ0K
-PiANCj4gcy9vdmVycmlkZW4vb3ZlcnJpZGRlbg0KDQpPay4NCg0KPiANCj4gPiBjYXNlLg0KPiA+
-DQo+ID4gVGhpcyBwYXRjaCBkb2VzIG1pbm9yIHJlLW9yZ2FuaXphdGlvbiBvZiB0aGUgY29kZSBm
-b3IgaW1wcm92aW5nIHRoZQ0KPiA+IGZsb3cgYW5kDQo+ID4gcmVhZGFiaWx0aXkuIFRoaXMgc2Nv
-cGUgb2YgaW1wcm92ZW1lbnQgd2FzIGZvdW5kIGR1cmluZyB0aGUgcmV2aWV3IG9mDQo+ID4gdGhl
-IElDRQ0KPiA+IGRyaXZlciBjb2RlLg0KPiANCj4gVGhlIGNoYW5nZXMgdGhlbXNlbHZlcyBsb29r
-IG9rLCBidXQgdGhlcmUgYXJlIHNvbWUgY2hlY2twYXRjaCBpc3N1ZXMuDQo+IEFsc28sIGNvdWxk
-IHlvdSBpbmNsdWRlIGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnDQoNClN1cmUuIHdp
-bGwgZml4IHRoZW0uDQoNCj4gDQo+ID4gRllJLCBJIGNvdWxkIG5vdCB0ZXN0IHRoaXMgY2hhbmdl
-IGR1ZSB0byB1bmF2YWlsYWJpbGl0eSBvZiB0aGUNCj4gPiBoYXJkd2FyZS4gSXQNCj4gPiB3b3Vs
-ZCBoZWxwZnVsIGlmIHNvbWVib2R5IGNhbiB0ZXN0IHRoaXMgYW5kIHByb3ZpZGUgVGVzdGVkLWJ5
-IFRhZy4NCj4gPiBNYW55IHRoYW5rcyENCj4gPg0KPiA+IEZpeGVzOiAxMWI3NTUxZTA5NmQgKCJp
-Y2U6IEltcGxlbWVudCBldGh0b29sIG9wcyBmb3IgY2hhbm5lbHMiKQ0KPiANCj4gVGhpcyBjb21t
-aXQgaWQgZG9lc24ndCBleGlzdC4NCg0KV2lsbCBmaXguIFNvcnJ5IGFib3V0IHRoaXMuDQoNCj4g
-DQo+ID4gU2lnbmVkLW9mZi1ieTogU2FsaWwgTWVodGEgPHNhbGlsLm1laHRhQGh1YXdlaS5jb20+
-DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2VfbGliLmMg
-fCAxNCArKysrKysrKy0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCsp
-LCA2IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVy
-bmV0L2ludGVsL2ljZS9pY2VfbGliLmMNCj4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVs
-L2ljZS9pY2VfbGliLmMNCj4gPiBpbmRleCBkMTNjN2ZjOGZiMGEuLjE2MWU4ZGZlNTQ4YyAxMDA2
-NDQNCj4gPiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX2xpYi5jDQo+
-ID4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWNlL2ljZV9saWIuYw0KPiA+IEBA
-IC0xNjEsMTIgKzE2MSwxMyBAQCBzdGF0aWMgdm9pZCBpY2VfdnNpX3NldF9udW1fcXMoc3RydWN0
-IGljZV92c2kNCj4gPiAqdnNpLCB1MTYgdmZfaWQpDQo+ID4NCj4gPiAgCXN3aXRjaCAodnNpLT50
-eXBlKSB7DQo+ID4gIAljYXNlIElDRV9WU0lfUEY6DQo+ID4gLQkJdnNpLT5hbGxvY190eHEgPSBt
-aW4zKHBmLT5udW1fbGFuX21zaXgsDQo+ID4gLQkJCQkgICAgICBpY2VfZ2V0X2F2YWlsX3R4cV9j
-b3VudChwZiksDQo+ID4gLQkJCQkgICAgICAodTE2KW51bV9vbmxpbmVfY3B1cygpKTsNCj4gPiAg
-CQlpZiAodnNpLT5yZXFfdHhxKSB7DQo+ID4gIAkJCXZzaS0+YWxsb2NfdHhxID0gdnNpLT5yZXFf
-dHhxOw0KPiA+ICAJCQl2c2ktPm51bV90eHEgPSB2c2ktPnJlcV90eHE7DQo+ID4gKwkJfSBlbHNl
-IHsNCj4gPiArCQkJdnNpLT5hbGxvY190eHEgPSBtaW4zKHBmLT5udW1fbGFuX21zaXgsDQo+ID4g
-KwkJCQkJIGljZV9nZXRfYXZhaWxfdHhxX2NvdW50KHBmKSwNCj4gPiArCQkJCQkgKHUxNiludW1f
-b25saW5lX2NwdXMoKSk7DQo+IA0KPiBBbGlnbm1lbnQgaXMgaW5jb3JyZWN0Lg0KDQpPay4gV2ls
-bCBjaGVjaywgcGVyaGFwcyB0aGUgY2F1c2Ugb2YgdGhlIGNoZWNrcGF0Y2gucGwgZXJyb3JzLg0K
-DQo+IA0KPiA+ICAJCX0NCj4gPg0KPiA+ICAJCXBmLT5udW1fbGFuX3R4ID0gdnNpLT5hbGxvY190
-eHE7DQo+ID4gQEAgLTE3NSwxMiArMTc2LDEzIEBAIHN0YXRpYyB2b2lkIGljZV92c2lfc2V0X251
-bV9xcyhzdHJ1Y3QgaWNlX3ZzaQ0KPiA+ICp2c2ksIHUxNiB2Zl9pZCkNCj4gPiAgCQlpZiAoIXRl
-c3RfYml0KElDRV9GTEFHX1JTU19FTkEsIHBmLT5mbGFncykpIHsNCj4gPiAgCQkJdnNpLT5hbGxv
-Y19yeHEgPSAxOw0KPiA+ICAJCX0gZWxzZSB7DQo+ID4gLQkJCXZzaS0+YWxsb2NfcnhxID0gbWlu
-MyhwZi0+bnVtX2xhbl9tc2l4LA0KPiA+IC0JCQkJCSAgICAgIGljZV9nZXRfYXZhaWxfcnhxX2Nv
-dW50KHANCj4gPiBmKSwNCj4gPiAtCQkJCQkgICAgICAodTE2KW51bV9vbmxpbmVfY3B1cygpKTsN
-Cj4gPiAgCQkJaWYgKHZzaS0+cmVxX3J4cSkgew0KPiA+ICAJCQkJdnNpLT5hbGxvY19yeHEgPSB2
-c2ktPnJlcV9yeHE7DQo+ID4gIAkJCQl2c2ktPm51bV9yeHEgPSB2c2ktPnJlcV9yeHE7DQo+ID4g
-KwkJCX0gZWxzZSB7DQo+ID4gKwkJCQl2c2ktPmFsbG9jX3J4cSA9IG1pbjMocGYtPm51bV9sYW5f
-bXNpeCwNCj4gPiArCQkJCQkJIGljZV9nZXRfYXZhaWxfcnhxX2NvdW4NCj4gPiB0KHBmKSwNCj4g
-PiArCQkJCQkJICh1MTYpbnVtX29ubGluZV9jcHVzKCkNCj4gDQo+IFNhbWUsIGFsaWdubWVudCBp
-cyBpbmNvcnJlY3QuDQoNCk9rLiBXaWxsIGZpeC4NCg0KVGhhbmtzDQpTYWxpbC4NCg==
+Merged series.
+
+https://cgit.freedesktop.org/drm/drm-misc/commit/?id=6a3608eae6d33a478a29348eb5e9ca330a528ae6
+
+On Sat, 10 Apr 2021 at 20:14, Parshuram Thombare <pthombar@cadence.com> wrote:
+>
+> This patch series enables HDCP in Cadence MHDP DPI/DP bridge driver.
+>
+> Changes since v1:
+> - Move sapb reg block right after apb reg block
+> - Corresponding changes in binding and example
+>
+> Changes since v2:
+> - Revert reg resource sequence in binding and
+>   use resource mapping by name
+> - Remove hdcp_config from binding and use
+>   DRM HDCP Content Type property to select
+>   HDCP version
+>
+> Changes since v3:
+> - Fix kernel test robot warning
+>
+> Changes since v4:
+> - Fix binding issue
+>
+> Changes since v5:
+> - Maintain backward compatibility of driver on platforms
+>   without SAPB port by allowing driver to continue without
+>   HDCP feature instead of returning error
+>
+>
+> Parshuram Thombare (2):
+>   dt-bindings: drm/bridge: MHDP8546 bridge binding changes for HDCP
+>   drm: bridge: cdns-mhdp8546: Enable HDCP
+>
+>  .../display/bridge/cdns,mhdp8546.yaml         |  15 +-
+>  drivers/gpu/drm/bridge/cadence/Makefile       |   2 +-
+>  .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 128 +++-
+>  .../drm/bridge/cadence/cdns-mhdp8546-core.h   |  22 +
+>  .../drm/bridge/cadence/cdns-mhdp8546-hdcp.c   | 570 ++++++++++++++++++
+>  .../drm/bridge/cadence/cdns-mhdp8546-hdcp.h   |  92 +++
+>  6 files changed, 812 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-hdcp.c
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-hdcp.h
+>
+> --
+> 2.25.1
+>
