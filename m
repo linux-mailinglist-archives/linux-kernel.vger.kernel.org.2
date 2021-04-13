@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A7735E022
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1EA35E024
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhDMNeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S239468AbhDMNe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239771AbhDMNeM (ORCPT
+        with ESMTP id S237619AbhDMNeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:34:12 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED35C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:33:52 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id x8so13000604ybx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:33:52 -0700 (PDT)
+        Tue, 13 Apr 2021 09:34:22 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF1C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:34:01 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id e13so7939768qkl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/mG+7TE16wzw/LGXUKa6TF83xtW+W10dYBi8pyRFa14=;
-        b=OLTBZP0bcHIYA1nkyTqCRAIuZVEnm4coraIOfgxBfh4T1U1N2PkRjWVQp+2VHcR2q8
-         o2cTUSinxfLr9SiIURiqhAvFLW4S6cp1sLyAz3k+WteVb9i6e9I0NY9W2nj+IGx4YvEf
-         XhJ6fQg6AQn49w4tB61crL797RMM6oV0/eVjzEHUG5yZPeBhFX4tt2J8EL+UfZFc53VR
-         JtqR3i0/EqEwUZkXVMQTR4ra1qzmEcjn+/B+WVgtJonHPuaz34K8zwnrDzyntC3zrbDT
-         j7CmUNa1bQOzwjfN1APM5kcqBvHMltadOJN0GJy9BGDUhU9j2gYwJ00uPaQe9QzJ5VkR
-         OrVA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ol3ASvhAwQOu79uFL+Cy6tkommWA1lm3vNzN2JnAzJc=;
+        b=e9CUIIhOApot2KLCBo+HYoUWX+WACmZyv1z97wr869RkKYYDHdc6awKRq8dZfADSyz
+         Q2YyoYQQI86xw+8Mn8OMbRTOQl8k2W2tdFmUeDMBL3/sn656PIBIjwJ5t+Tkpx9prxsq
+         k7UvWnHfgjb68Ig7RlM7HuQlnz5FyPgFXAvWZJO7oPC4v1PJf7wnmkrXCoSM2fV+rGEe
+         0PA6l0WALi4DyTvIcz7Zia6FHmhTcsAdB/qN+/sdLsjIR/tvstC0B1dVTsRm1IlxLsYI
+         ZgQXzMlXUoO84jw3SKTlUBM3pe76/LHavWSc+LKJhwVfbX6EZzdlJjoZM2bcm7cza1bl
+         2K2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/mG+7TE16wzw/LGXUKa6TF83xtW+W10dYBi8pyRFa14=;
-        b=dsa/8+z3tAOb69YV2MQx+gihgfN+ny04zlY5kDEkzhps7RdvVV7r4O9UGCPimqwECm
-         tDhvJTYqGsaAZDR2aa7fg3pRqZbD3Joi7NtJjh2nWSAYEJ5n9swLzlcPz7UqKIkT9Jzt
-         NLnM/M+T4Vq7/yDGPzCVbnJApxVZBncY3HUujAyt6peFgTVgO45XPkPVF/ln7k1zNwHH
-         uU5hbf4jGxWH9V90qnBm3D747mt32XXfoshePFx6aYcau5utT4x7LRwDV5qE6DpCMDF8
-         QYtCo5VBm2HEwmtulIsxai7yWd6aSBXgvWlCqfXnClOpeZDpbnsAhEfvoTNdS32JK1Kn
-         /p6A==
-X-Gm-Message-State: AOAM532evp5VYaEV7kg5PQ0hKc+mf1hUiS4mMpnCniHh8DGh8e99ycwK
-        UPuce0lkMpPs/7/lpu/lL+QdnIXFb22FFpt/mt888g==
-X-Google-Smtp-Source: ABdhPJx+a/0Kjw/SH+spYnpjGIWsUIuP/HVEQCrjziPZiNBlpIDz5PkXdNyxAVg4Mtpd9ItQ4u+6gRdjjbbfwrlMa0Y=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr45509205ybk.518.1618320831671;
- Tue, 13 Apr 2021 06:33:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ol3ASvhAwQOu79uFL+Cy6tkommWA1lm3vNzN2JnAzJc=;
+        b=RZUbi48zPWkvTw4H5txOk1WmTOOifiZlks2P9nGmvZCWY2ojU8E84v+FpYD1JqhXU2
+         GPgLQXBzCBZ85RFDu9HhPq5DvT6HFX95CGbM6RUyQZ9QD0dU0/xzXKZ7Z7Md9EJiHmJ/
+         GlEZhW2wsPjeyfsVwV7Jh+Z0ayQ2X/E2v3z2WIxDy4urw+6PyR8PNq2+h+faQco3dHtT
+         iM9Y7Q/8vFlZSqZHZOKn3ttoutcJZu4PwhjDocrYBWszPQDFy+K11JluCSfzM1gI+Feq
+         YOQIOQhl+blCNeSo6egIgO1SKTUbzDwtaDYQiVIYN+dOfX6ZvwXuvNliLV3GONq0i6af
+         ryDg==
+X-Gm-Message-State: AOAM53304xsTyEbLKsEF1y7uwkuKdOMplnTI3mU1cd8j4bdC9vgnLQL+
+        DkF7r6alf1aruGq5EZ/xkfNiPw==
+X-Google-Smtp-Source: ABdhPJwsdUB/vtuwLwYWU+BiznBk1o/0xd62inXkEnmDLWfy9FwdkckHUotkubjHJYa3Aa5p1KI9ww==
+X-Received: by 2002:a05:620a:1107:: with SMTP id o7mr32711676qkk.188.1618320840976;
+        Tue, 13 Apr 2021 06:34:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id y15sm860640qkp.17.2021.04.13.06.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 06:34:00 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lWJB1-005HHV-Eg; Tue, 13 Apr 2021 10:33:59 -0300
+Date:   Tue, 13 Apr 2021 10:33:59 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
+Message-ID: <20210413133359.GG227011@ziepe.ca>
+References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
- <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
- <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
- <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com>
- <20210413085538-mutt-send-email-mst@kernel.org> <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
-In-Reply-To: <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 13 Apr 2021 15:33:40 +0200
-Message-ID: <CANn89iKrSDL9usw18uvVfarWRUBv=V4xTHOMEgS48jhNmzR5_A@mail.gmail.com>
-Subject: Re: Linux 5.12-rc7
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 3:27 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Tue, Apr 13, 2021 at 2:57 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Apr 12, 2021 at 06:47:07PM +0200, Eric Dumazet wrote:
-> > > On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
-> > > >
-> > > > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
-> > > > <torvalds@linux-foundation.org> wrote:
-> > > > >
-> > > > > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > > > >
-> > > > > > Qemu test results:
-> > > > > >         total: 460 pass: 459 fail: 1
-> > > > > > Failed tests:
-> > > > > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
-> > > > > >
-> > > > > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-> > > > > > skb->head"). It is a spurious problem - the test passes roughly every other
-> > > > > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
-> > > > > > with SIGTERM. So far I have only seen this with the "sh" architecture.
-> > > > >
-> > > > > Hmm. Let's add in some more of the people involved in that commit, and
-> > > > > also netdev.
-> > > > >
-> > > > > Nothing in there looks like it should have any interaction with
-> > > > > architecture, so that "it happens on sh" sounds odd, but maybe it's
-> > > > > some particular interaction with the qemu environment.
-> > > >
-> > > > Yes, maybe.
-> > > >
-> > > > I spent few hours on this, and suspect a buggy memcpy() implementation
-> > > > on SH, but this was not conclusive.
-> > > >
-> > > > By pulling one extra byte, the problem goes away.
-> > > >
-> > > > Strange thing is that the udhcpc process does not go past sendto().
-> > >
-> > > This is the patch working around the issue. Unfortunately I was not
-> > > able to root-cause it (I really suspect something on SH)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
-> > > 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
-> > > virtnet_info *vi,
-> > >
-> > >         /* Copy all frame if it fits skb->head, otherwise
-> > >          * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-> > > +        *
-> > > +        * Apparently, pulling only the Ethernet Header triggers a bug
-> > > on qemu-system-sh4.
-> > > +        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
-> > > +        * more to work around this bug : These 20 bytes can not belong
-> > > +        * to UDP/TCP payload.
-> > > +        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
-> > >          */
-> >
-> > Question: do we still want to do this for performance reasons?
-> > We also have the hdr_len coming from the device which is
-> > just skb_headlen on the host.
->
-> Well, putting 20 bytes in skb->head will disable frag0 optimization.
->
-> The change would only benefit to sh architecture :)
->
-> About hdr_len, I suppose we could try it, with appropriate safety checks.
+On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
+> Hi
+> 
+> When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
+> the Linux kernel, I found two use-after-free bugs which have been
+> reported a long time ago by Syzbot.
+> Although the corresponding patches have been merged into upstream,
+> these two bugs can still be triggered easily.
+> The original information about Syzbot report can be found here:
+> https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
+> https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
 
-I have added traces, hdr_len seems to be 0 with the qemu-system-sh4 I am using.
+Then why hasn't syzbot seen this in a year's time? Seems strange
+ 
+> Current report Information:
+> commit:   89698becf06d341a700913c3d89ce2a914af69a2
 
-Have I understood you correctly ?
+What commit is this?
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 0824e6999e49957f7aaf7c990f6259792d42f32b..f024860f7dc260d4efbc35a3b8ffd358bd0da894
-100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -399,9 +399,10 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-                hdr_padded_len = sizeof(struct padded_vnet_hdr);
-
-        /* hdr_valid means no XDP, so we can copy the vnet header */
--       if (hdr_valid)
-+       if (hdr_valid) {
-                memcpy(hdr, p, hdr_len);
--
-+               pr_err("hdr->hdr_len=%u\n", hdr->hdr.hdr_len);
-+       }
-        len -= hdr_len;
-        offset += hdr_padded_len;
-        p += hdr_padded_len;
+Jason
