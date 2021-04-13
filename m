@@ -2,75 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B1335D4B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D392635D4B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239318AbhDMBP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhDMBPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:15:24 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1007BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:15:06 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id h19-20020a9d64130000b02902875a567768so3647240otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=P7da0pve3GTeg7tfaJoPJsQHXIE7bpHZW1MbGPf2/4s=;
-        b=pHFC7D+LtL2XY9iqB1BDhy8JA5ESozYYbNqjl72BFCj/2vzRs+LeInqyc65Ba7LpD1
-         BfXV3ncJDfmv/A8RKnxInMhmTXFt6BQSTN7xCZNckWLTGSjD13h7a239lMBw6F4aFhGW
-         D2Ls7sabfuTbCad/DqsA7Z1Dl3nTOzCupvHDaj76u4Ch5qzC9UEL6nj4U4kgtADwd9Nl
-         GpZKnjjjr43S4Sqw/ibkW9nh0oREy9Sh7b4rVoLtplzNQ/D5EmQQnlIjVKnLDtZk8bVl
-         /POWuxQELGUUsMyOvAhUGLUl90KNuohE0NlSiMzh/RGDjlmSXa3sNZBNfU0esyc3L+lC
-         S7FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=P7da0pve3GTeg7tfaJoPJsQHXIE7bpHZW1MbGPf2/4s=;
-        b=BpXWiWIcqNaX0DcLjRQlv30vm+9aN3LxnNXlfhSQoaWWtRWFGoI9IfEUtT4JqRYzL3
-         nduygeEp8OJaYE//D05V/58u3JVrNEh/e9T/t3BIro0VZnMuxD8fte4zl23u3VS1FzNX
-         YCAN0b18DThvn1Agi+AAMqzY6Ra3/lUoL1k15JxVl+wzQiwrwf6rFlGKc4qB1BJGOblg
-         cZ2vct/4z2mPdS+0gp+dDs35Q7o5Fhc7dFcxA3yjkzFtIaXrM7Wf/6wKWWVkMaNjN6xJ
-         ziHOdInXTQxVlI+J6Hzneqi0X2f/I2Wxacd3XYAAzlTu73Fik1yvmdmLuE240RFBMxCv
-         WaZQ==
-X-Gm-Message-State: AOAM532p1fDR+HTYhSB0Fq2CaE9j8ZICCSzCJq2Xf7i0ORX5DWvx58kz
-        n+/O+BKmjtpaIzLhQBKELIWwe1x46LLWNcGo42Q=
-X-Google-Smtp-Source: ABdhPJzHYpVdjDgoifNgn9QwSOjbgVsyAU79a089J0XfDyGZiHZk7sPu37mjS2MvsB54czg55U1KCd0Cv/DwfnARjQs=
-X-Received: by 2002:a05:6830:1d74:: with SMTP id l20mr6843433oti.211.1618276505396;
- Mon, 12 Apr 2021 18:15:05 -0700 (PDT)
+        id S240443AbhDMBQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:16:11 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38862 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240327AbhDMBQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 21:16:10 -0400
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr+_E8HRg7lwHAA--.84S3;
+        Tue, 13 Apr 2021 09:15:48 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
+ <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
+ <20210412142730.GA23146@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <2fd31420-1f96-9165-23ea-fdccac1b522a@loongson.cn>
+Date:   Tue, 13 Apr 2021 09:15:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Received: by 2002:ac9:2365:0:0:0:0:0 with HTTP; Mon, 12 Apr 2021 18:15:04
- -0700 (PDT)
-Reply-To: alahmedhassan5602@gmail.com
-From:   Ahmed Hassan <sherffusni2020@gmail.com>
-Date:   Tue, 13 Apr 2021 01:15:04 +0000
-Message-ID: <CANuFybJ_nVjnFWamKFKs+Dn+6HKPHFDRVEWGMiq0QSxJf7Nv6A@mail.gmail.com>
-Subject: Please respond urgently
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210412142730.GA23146@alpha.franken.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxr+_E8HRg7lwHAA--.84S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw4rWFW8Zw1kJrWrtryxXwb_yoW5Wr1rpa
+        95AF1kKFsYgry3Aa42y3yxXF15Gws8Kr4Yg34qkr1UZr4qvr13trWS9r1F9348JrsrAas2
+        gFW8Zrs8Wr1Yv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        W8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
+        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
+        v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xF
+        o4CEbIxvr21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbYFAPUUUUU==
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+On 04/12/2021 10:27 PM, Thomas Bogendoerfer wrote:
 
-With due respect to your person, I make this contact with you as I
-believe that you can be of great assistance to me. I need your urgent
-assistance in transferring the sum of $11.3 million USD to your
-private account Where this money can be shared between us.
+> On Mon, Apr 12, 2021 at 11:02:19AM +0800, Tiezhu Yang wrote:
+>> On 04/11/2021 07:04 PM, Jinyang He wrote:
+>>> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
+>>> strnlen_user(). Jump out when checking access_ok() with condition that
+>>> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
+>>> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
+>>> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+>>>
+>>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+>>> ---
+>>>    arch/mips/include/asm/uaccess.h | 11 +++++++++--
+>>>    1 file changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+>>> index 91bc7fb..85ba0c8 100644
+>>> --- a/arch/mips/include/asm/uaccess.h
+>>> +++ b/arch/mips/include/asm/uaccess.h
+>>> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
+>>>    {
+>>>    	long res;
+>>> -	if (!access_ok(s, n))
+>>> -		return -0;
+>>> +	if (unlikely(n <= 0))
+>>> +		return 0;
+>>> +
+>>> +	if (!access_ok(s, n)) {
+>>> +		if (!access_ok(s, 0))
+>>> +			return 0;
+>>> +
+>>> +		n = __UA_LIMIT - (unsigned long)s - 1;
+>>> +	}
+>>>    	might_fault();
+>>>    	__asm__ __volatile__(
+>> The following simple changes are OK to fix this issue?
+>>
+>> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+>> index 91bc7fb..eafc99b 100644
+>> --- a/arch/mips/include/asm/uaccess.h
+>> +++ b/arch/mips/include/asm/uaccess.h
+>> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user *s, long n)
+>>   {
+>>          long res;
+>> -       if (!access_ok(s, n))
+>> -               return -0;
+>> +       if (!access_ok(s, 1))
+>> +               return 0;
+>>          might_fault();
+>>          __asm__ __volatile__(
+> that's the fix I'd like to apply. Could someone send it as a formal
+> patch ? Thanks.
+>
+> Thomas.
+>
+Hi, Thomas,
 
-The money has been here in our Bank lying dormant for years now
-without anybody coming for the claim. I want to release the money to
-you as the relative to our deceased customer (the account owner) who
-died in a plane crash with his family on 16th October 2005.
+Thank you for bringing me more thinking.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+I always think it is better to use access_ok(s, 0) on MIPS. I have been
+curious about the difference between access_ok(s, 0) and access_ok(s, 1)
+until I saw __access_ok() on RISCV at arch/riscv/include/asm/uaccess.h
 
-Best Regards,
-Ahmed Hassan
+The __access_ok() is noted with `Ensure that the range [addr, addr+size)
+is within the process's address space`. Does the range checked by
+__access_ok() on MIPS is [addr, addr+size]. So if we want to use
+access_ok(s, 1), should we modify __access_ok()? Or my misunderstanding?
+
+More importantly, the implementation of strnlen_user in lib/strnlen_user.c
+is noted `we hit the address space limit, and we still had more characters
+the caller would have wanted. That's 0.` Does it make sense? It is not
+achieved on MIPS when hit __ua_limit, if only access_ok(s, 1) is used.
+
+Thanks,
+Jinyang
+
