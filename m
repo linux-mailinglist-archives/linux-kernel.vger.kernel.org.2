@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9F635E5B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E2A35E5AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhDMRz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:55:27 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:46651 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhDMRzX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:55:23 -0400
-Received: by mail-pg1-f173.google.com with SMTP id t140so12469166pgb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+4PyFE0Z63r4dwfjFWUfn+ZwYI5WhtCq0wza5SYUhT0=;
-        b=kFidD4BqxO16i5NDjlMk21z4/+O58HvveY9D/z9HTJtgK5j29TK/u2FQq8biPbYrVC
-         n4SQncXF96eXqonDFNOcG8RSZ1Mx/9hASAu1rXmQBB6CrLADOaoI2eBexHQBc4qnPij0
-         hkqOoqSua0sAvrdiTzwCxS95gNecLFS3dp/xqp+0cA+ZWRxeEkrTk5PEh34sugAJeHu9
-         ZwfOtOb2yWDQ1wJ1yvlPq7IvQpLzrdEP5rJRyYJLs7zaFKo3r7ZZ/9M11ZoSYvswv/sy
-         8ml4FEQ4UAvrQ3wK0D7aSv6oNMiBbD5HaPYSwVjnUDraCTXcwUWu7qBUC7TT1EbGwGvV
-         adzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+4PyFE0Z63r4dwfjFWUfn+ZwYI5WhtCq0wza5SYUhT0=;
-        b=uUGN5vyhQjogArqFkH7PhSOoEdW0SEcbruk4et3EkMktv7Lj2yG79A6LbHpDWneVZu
-         LBqZY+oQTDYvPmWWwPRy38isGLeXNAMcp5h7yGCF+aitvaSrgXkv+NQTZbRs8z8kwPri
-         USsPWfwQJmYocyzGTXQIrHRhpplx3ej+MhWuahkgyi2pqeMFmDtIy9q9tKAPcMZx6SY/
-         TJEWsC63GPjLYvBnvYniO4s7WZUcsubItQrkMFQit99YnXE53sg7SXJOqmyy/hpzO1WK
-         rVk8VyOTTFd9jaqDqPF0ak5TtqL6lD/TZ87BIq/5A1Ps4l47BKQ97l1l/wzzIhR7h5fY
-         /Afw==
-X-Gm-Message-State: AOAM532T0Kn21IjSnSVYqo85/SxC+5vHCEqrrvmUo9Cc9x1bfWLFqYvc
-        YWwFAPF8W31vzS5FPRqeN9U/srNrfQ3/l44w9w17eA==
-X-Google-Smtp-Source: ABdhPJxnIrnRes9OE/FCfsKMv3Tut65YdVv51sZZacX49GiILt4E8sd5eUm7EHV6B623gCj+pFr1rLZMC2J1IN2utb4=
-X-Received: by 2002:a63:7708:: with SMTP id s8mr33748780pgc.265.1618336443222;
- Tue, 13 Apr 2021 10:54:03 -0700 (PDT)
+        id S230179AbhDMRyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345824AbhDMRyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:54:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B65461249;
+        Tue, 13 Apr 2021 17:53:58 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 19:53:55 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        Sargun Dhillon <sargun@sargun.me>,
+        Mauricio =?utf-8?Q?V=C3=A1squez?= Bernal <mauricio@kinvolk.io>,
+        Alban Crequy <alban@kinvolk.io>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] seccomp: Always "goto wait" if the list is empty
+Message-ID: <20210413175355.kttgdouoyiykug5i@wittgenstein>
+References: <20210413160151.3301-1-rodrigo@kinvolk.io>
+ <20210413160151.3301-2-rodrigo@kinvolk.io>
 MIME-Version: 1.0
-References: <20210412154648.3719153-1-narmstrong@baylibre.com>
- <20210412154648.3719153-4-narmstrong@baylibre.com> <bb9196e3-e2d0-e44b-0cf1-cb469ea2edd7@baylibre.com>
-In-Reply-To: <bb9196e3-e2d0-e44b-0cf1-cb469ea2edd7@baylibre.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 13 Apr 2021 19:53:52 +0200
-Message-ID: <CAG3jFysHBhj-mj_WAmHNaTDdmzkF2UwTmWc8Xnzb1zdcFFYN7A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: add it66121 HDMI bridge driver entry
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        paul@crapouillou.net, Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Phong LE <ple@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210413160151.3301-2-rodrigo@kinvolk.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 17:47, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 12/04/2021 17:46, Neil Armstrong wrote:
-> > From: Phong LE <ple@baylibre.com>
-> >
-> > Add Neil Armstrong and myself as maintainers
-> >
-> > Signed-off-by: Phong LE <ple@baylibre.com>
->
-> Obviously:
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->
-> > ---
-> >  MAINTAINERS | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 9ae8444c96b4..ff6450c83049 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -9515,6 +9515,14 @@ Q:     http://patchwork.linuxtv.org/project/linux-media/list/
-> >  T:   git git://linuxtv.org/anttip/media_tree.git
-> >  F:   drivers/media/tuners/it913x*
-> >
-> > +ITE IT66121 HDMI BRIDGE DRIVER
-> > +M:   Phong LE <ple@baylibre.com>
-> > +M:   Neil Armstrong <narmstrong@baylibre.com>
-> > +S:   Maintained
-> > +F:   drivers/gpu/drm/bridge/ite-it66121.c
-> > +T:   git git://anongit.freedesktop.org/drm/drm-misc
+On Tue, Apr 13, 2021 at 06:01:51PM +0200, Rodrigo Campos wrote:
+> It is possible for the thread with the seccomp filter attached (target)
+> to be waken up by an addfd message, but the list be empty. This happens
+> when the addfd ioctl on the other side (seccomp agent) is interrupted by
+> a signal such as SIGURG. In that case, the target erroneously and
+> prematurely returns from the syscall to userspace even though the
+> seccomp agent didn't ask for it.
+> 
+> This happens in the following scenario:
+> 
+> seccomp_notify_addfd()                                           | seccomp_do_user_notification()
+>                                                                  |
+>                                                                  |  err = wait_for_completion_interruptible(&n.ready);
+>  complete(&knotif->ready);                                       |
+>  ret = wait_for_completion_interruptible(&kaddfd.completion);    |
+>  // interrupted                                                  |
+>                                                                  |
+>  mutex_lock(&filter->notify_lock);                               |
+>  list_del(&kaddfd.list);                                         |
+>  mutex_unlock(&filter->notify_lock);                             |
+>                                                                  |  mutex_lock(&match->notify_lock);
+>                                                                  |  // This is false, addfd is false
+>                                                                  |  if (addfd && n.state != SECCOMP_NOTIFY_REPLIED)
+>                                                                  |
+>                                                                  |  ret = n.val;
+>                                                                  |  err = n.error;
+>                                                                  |  flags = n.flags;
+> 
+> So, the process blocked in seccomp_do_user_notification() will see a
+> response. As n is 0 initialized and wasn't set, it will see a 0 as
+> return value from the syscall.
+> 
+> The seccomp agent, when retrying the interrupted syscall, will see an
+> ENOENT error as the notification no longer exists (it was already
+> answered by this bug).
+> 
+> This patch fixes the issue by splitting the if in two parts: if we were
+> woken up and the state is not replied, we will always do a "goto wait".
+> And if that happens and there is an addfd element on the list, we will
+> add the fd before "goto wait".
+> 
+> This issue is present since 5.9, when addfd was added.
+> 
+> Fixes: 7cf97b1254550
+> Cc: stable@vger.kernel.org # 5.9+
+> Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
+> ---
 
-I'm getting a checkpatch --strict warning here. The two above lines
-should switch places.
+So the agent will see the return value from
+wait_for_completion_interruptible() and know that the addfd wasn't
+successful and the target will notice that no addfd request has actually
+been added and essentially try again. Seems like a decent fix and can be
+backported cleanly. I assume seccomp testsuite passes.
 
-WARNING: Misordered MAINTAINERS entry - list 'T:' before 'F:'
-#27: FILE: MAINTAINERS:9537:
-+F:    drivers/gpu/drm/bridge/ite-it66121.c
-+T:    git git://anongit.freedesktop.org/drm/drm-misc
-
-
-With this warning silenced, feel free to add my r-b.
-
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-
-> > +F:   Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
-> > +
-> >  IVTV VIDEO4LINUX DRIVER
-> >  M:   Andy Walls <awalls@md.metrocast.net>
-> >  L:   linux-media@vger.kernel.org
-> >
->
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
