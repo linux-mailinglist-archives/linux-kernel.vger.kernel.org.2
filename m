@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F70F35E3EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0535E3F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344988AbhDMQ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:28:37 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:34583 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343767AbhDMQ2f (ORCPT
+        id S1346817AbhDMQ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245746AbhDMQ3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:28:35 -0400
-Received: by mail-ot1-f54.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so16649397otn.1;
-        Tue, 13 Apr 2021 09:28:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kTyqwHKevP2lNEtSd5dIRQCfq7ju4vpN7xE34QdHfaQ=;
-        b=seSZYFyfFLWujo2QOzJIbQwIEX3+svdKkARkCNgQKEIpP3pc8emtWI9QWqCEwbRehw
-         9dOKCIxgKUA/8mstVapD7W4WtBNSTMSzicIINserq9ofW9xtTpa17xr7IWI/GoZpjVMr
-         nXo2hFwDqj68KdI9wbT+PXbn9aIOVluS4hcglx7t1SXd2HwkFiNri5F8cwie4jtxtPzI
-         q16FXPQzeteTsbpQToTHLb14Z545AHlZzcp8wcD7k4mgTHt6js7ADN7H+7W5a/tv5yYs
-         BHS0fvKmCGaM41BsQ+nyYP+U70CMattwQFmh5ZS8Xw0jd6kpEaFdmwpOFG1X8Hc2wOsT
-         mKAA==
-X-Gm-Message-State: AOAM53058QapnY6p7KdbnjKvdGlEcPboeJj986SgynFotqHdSazNyt4m
-        Bp/5Z1stc0rPRYoGXgdT6w==
-X-Google-Smtp-Source: ABdhPJyuhSbIJv4mUx+VH8jFty9shbSGOZfCO+oWHjTzq9L1UnUytrV0gle+6BF73Pu8io7WqR9vsg==
-X-Received: by 2002:a05:6830:309d:: with SMTP id f29mr28655901ots.225.1618331295206;
-        Tue, 13 Apr 2021 09:28:15 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y10sm3469681oto.18.2021.04.13.09.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 09:28:13 -0700 (PDT)
-Received: (nullmailer pid 1785793 invoked by uid 1000);
-        Tue, 13 Apr 2021 16:28:12 -0000
-Date:   Tue, 13 Apr 2021 11:28:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     sean.wang@mediatek.com, sean.wang@kernel.org, hui.liu@mediatek.com,
-        mark.rutland@arm.com, eddie.huang@mediatek.com,
-        linux-mediatek@lists.infradead.org, linus.walleij@linaro.org,
-        biao.huang@mediatek.com, hongzhou.yang@mediatek.com,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        seiya.wang@mediatek.com, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, jg_poxu@mediatek.com,
-        matthias.bgg@gmail.com
-Subject: Re: [PATCH v4 1/4] dt-bindings: pinctrl: mt8195: add pinctrl file
- and binding document
-Message-ID: <20210413162812.GA1785746@robh.at.kernel.org>
-References: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
- <20210413055702.27535-2-zhiyong.tao@mediatek.com>
+        Tue, 13 Apr 2021 12:29:48 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A8ABC061574;
+        Tue, 13 Apr 2021 09:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=Mw+RGqsEZUSTb3FQQbLXK46lGn+VzcVuLTFL
+        CzvUBmY=; b=PN8nK4DgCYrifypPZZ5q+bqdkoo/wqpfLKCYdTz4VdAXJ2TnYTr/
+        uCQ4QYlRSLskOhqK2XwnRzIDTmIpl1ptLAwvb5v50sb9T4sx7MD2oWyPq3EWQt9M
+        7Hc/dHct3wBqaXtXMqJRje/FXqDKbbbNFrMungIsMsSYbXaIB/828fc=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Wed, 14 Apr
+ 2021 00:29:21 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Wed, 14 Apr 2021 00:29:21 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>
+Cc:     luciano.coelho@intel.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        mordechay.goodstein@intel.com, johannes.berg@intel.com,
+        emmanuel.grumbach@intel.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wireless: iwlwifi: Fix a double free in
+ iwl_txq_dyn_alloc_dma
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <20210403054755.4781-1-lyl2019@mail.ustc.edu.cn>
+References: <20210403054755.4781-1-lyl2019@mail.ustc.edu.cn>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413055702.27535-2-zhiyong.tao@mediatek.com>
+Message-ID: <58a46153.42cc9.178cc10e136.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygDX3krhxnVg76LSAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoKBlQhn5-zhgACsF
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 13:56:59 +0800, Zhiyong Tao wrote:
-> 1. This patch adds pinctrl file for mt8195.
-> 2. This patch adds mt8195 compatible node in binding document.
-> 
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> ---
->  .../bindings/pinctrl/pinctrl-mt8195.yaml      | 151 +++
->  include/dt-bindings/pinctrl/mt8195-pinfunc.h  | 962 ++++++++++++++++++
->  2 files changed, 1113 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
->  create mode 100644 include/dt-bindings/pinctrl/mt8195-pinfunc.h
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+DQpIaSwgbXkgZGVhciBtYWludGFpbmVycy4NCg0KICAgICBJJ20gdmVyeSBzb3JyeSB0byBkaXN0
+dXJiIHlvdSwgdGhhdCBiZWFjdXNlIHRoaXMgcGF0Y2ggaGFzIGJlZW4gbm90IHJldmlld2VkIGZv
+ciBvbmUgd2Vla3MuDQogICAgIENvdWxkIHlvdSBoZWxwIHRvIHJldmlldyB0aGlzIHBhdGNoPyBJ
+dCB3aWxsIG5vdCBjb3N0IHlvdSBtdWNoIHRpbWUuDQoNClNpbmNlcmVseS4NCiAgDQoNCj4gLS0t
+LS3ljp/lp4vpgq7ku7YtLS0tLQ0KPiDlj5Hku7bkuro6ICJMdiBZdW5sb25nIiA8bHlsMjAxOUBt
+YWlsLnVzdGMuZWR1LmNuPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDQtMDMgMTM6NDc6NTUgKOaY
+n+acn+WFrSkNCj4g5pS25Lu25Lq6OiBsdWNpYW5vLmNvZWxob0BpbnRlbC5jb20sIGt2YWxvQGNv
+ZGVhdXJvcmEub3JnLCBkYXZlbUBkYXZlbWxvZnQubmV0LCBrdWJhQGtlcm5lbC5vcmcsIG1vcmRl
+Y2hheS5nb29kc3RlaW5AaW50ZWwuY29tLCBqb2hhbm5lcy5iZXJnQGludGVsLmNvbSwgZW1tYW51
+ZWwuZ3J1bWJhY2hAaW50ZWwuY29tDQo+IOaKhOmAgTogbGludXgtd2lyZWxlc3NAdmdlci5rZXJu
+ZWwub3JnLCBuZXRkZXZAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
+b3JnLCAiTHYgWXVubG9uZyIgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4g5Li76aKYOiBb
+UEFUQ0hdIHdpcmVsZXNzOiBpd2x3aWZpOiBGaXggYSBkb3VibGUgZnJlZSBpbiBpd2xfdHhxX2R5
+bl9hbGxvY19kbWENCj4gDQo+IEluIGl3bF90eHFfZHluX2FsbG9jX2RtYSwgdHhxLT50ZmRzIGlz
+IGZyZWVkIGF0IGZpcnN0IHRpbWUgYnk6DQo+IGl3bF90eHFfYWxsb2MoKS0+Z290byBlcnJfZnJl
+ZV90ZmRzLT5kbWFfZnJlZV9jb2hlcmVudCgpLiBCdXQNCj4gaXQgZm9yZ290IHRvIHNldCB0eHEt
+PnRmZHMgdG8gTlVMTC4NCj4gDQo+IFRoZW4gdGhlIHR4cS0+dGZkcyBpcyBmcmVlZCBhZ2FpbiBp
+biBpd2xfdHhxX2R5bl9hbGxvY19kbWEgYnk6DQo+IGdvdG8gZXJyb3ItPml3bF90eHFfZ2VuMl9m
+cmVlX21lbW9yeSgpLT5kbWFfZnJlZV9jb2hlcmVudCgpLg0KPiANCj4gTXkgcGF0Y2ggc2V0cyB0
+eHEtPnRmZHMgdG8gTlVMTCBhZnRlciB0aGUgZmlyc3QgZnJlZSB0byBhdm9pZCB0aGUNCj4gZG91
+YmxlIGZyZWUuDQo+IA0KPiBGaXhlczogMGNkMWFkMmQ3ZmQ0MSAoIml3bHdpZmk6IG1vdmUgYWxs
+IGJ1cy1pbmRlcGVuZGVudCBUWCBmdW5jdGlvbnMgdG8gY29tbW9uIGNvZGUiKQ0KPiBTaWduZWQt
+b2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwyMDE5QG1haWwudXN0Yy5lZHUuY24+DQo+IC0tLQ0KPiAg
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvaW50ZWwvaXdsd2lmaS9xdWV1ZS90eC5jIHwgMSArDQo+ICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L25ldC93aXJlbGVzcy9pbnRlbC9pd2x3aWZpL3F1ZXVlL3R4LmMgYi9kcml2ZXJzL25ldC93aXJl
+bGVzcy9pbnRlbC9pd2x3aWZpL3F1ZXVlL3R4LmMNCj4gaW5kZXggODMzZjQzZDFjYTdhLi45OWM4
+ZTQ3MzAzMWEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2ludGVsL2l3bHdp
+ZmkvcXVldWUvdHguYw0KPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9pbnRlbC9pd2x3aWZp
+L3F1ZXVlL3R4LmMNCj4gQEAgLTExMDEsNiArMTEwMSw3IEBAIGludCBpd2xfdHhxX2FsbG9jKHN0
+cnVjdCBpd2xfdHJhbnMgKnRyYW5zLCBzdHJ1Y3QgaXdsX3R4cSAqdHhxLCBpbnQgc2xvdHNfbnVt
+LA0KPiAgCXJldHVybiAwOw0KPiAgZXJyX2ZyZWVfdGZkczoNCj4gIAlkbWFfZnJlZV9jb2hlcmVu
+dCh0cmFucy0+ZGV2LCB0ZmRfc3osIHR4cS0+dGZkcywgdHhxLT5kbWFfYWRkcik7DQo+ICsJdHhx
+LT50ZmRzID0gTlVMTDsNCj4gIGVycm9yOg0KPiAgCWlmICh0eHEtPmVudHJpZXMgJiYgY21kX3F1
+ZXVlKQ0KPiAgCQlmb3IgKGkgPSAwOyBpIDwgc2xvdHNfbnVtOyBpKyspDQo+IC0tIA0KPiAyLjI1
+LjENCj4gDQo=
