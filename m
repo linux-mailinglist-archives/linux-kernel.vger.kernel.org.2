@@ -2,113 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F3035DEBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7454C35DEA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345661AbhDMM1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:27:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345513AbhDMM1Q (ORCPT
+        id S231585AbhDMM0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231337AbhDMM0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:27:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618316816;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vCx4IZ39Nb4y8oc16CqkD3jG4/D7DhB39RA7N814hEs=;
-        b=PLhX9E7rwkZ3xbkLVaQrIUhJUOUEuXf/+xb/ZklGw2++wjtvdjNLP3TufHO8CiiJVySeS3
-        nFwl548xgsj0DoSWMpUci4XXVOLdGsgHc8ffZVeRruhUk+bGeuROujNX6c6SlL/erzwuNs
-        lFnU7fxKoO8OF1GWD/bDysiT0HAH29w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-V7tOLyuvMlGP-uwmeJ0ExA-1; Tue, 13 Apr 2021 08:26:52 -0400
-X-MC-Unique: V7tOLyuvMlGP-uwmeJ0ExA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 954FE19611A1;
-        Tue, 13 Apr 2021 12:26:51 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AA4260C04;
-        Tue, 13 Apr 2021 12:26:47 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: [PATCH RFC 05/22] KVM: x86: hyper-v: Honor HV_MSR_HYPERCALL_AVAILABLE privilege bit
-Date:   Tue, 13 Apr 2021 14:26:13 +0200
-Message-Id: <20210413122630.975617-6-vkuznets@redhat.com>
-In-Reply-To: <20210413122630.975617-1-vkuznets@redhat.com>
-References: <20210413122630.975617-1-vkuznets@redhat.com>
+        Tue, 13 Apr 2021 08:26:39 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D5AC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:26:19 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ed15:b7e9:afd7:f062])
+        by xavier.telenet-ops.be with bizsmtp
+        id sCSH2400E1dBBzp01CSHQK; Tue, 13 Apr 2021 14:26:18 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI7V-00FJMe-1a; Tue, 13 Apr 2021 14:26:17 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lWI7U-002kW9-HP; Tue, 13 Apr 2021 14:26:16 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+Date:   Tue, 13 Apr 2021 14:26:15 +0200
+Message-Id: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HV_X64_MSR_GUEST_OS_ID/HV_X64_MSR_HYPERCALL are only available to guest
-when HV_MSR_HYPERCALL_AVAILABLE bit is exposed.
+The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+about this driver when configuring a kernel without Hisilicon platform
+or ACPI firmware support.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/x86/kvm/hyperv.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/i2c/busses/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index efb3d69c98fd..7fdd9b9c50d6 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1198,9 +1198,14 @@ static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
- {
- 	struct kvm *kvm = vcpu->kvm;
- 	struct kvm_hv *hv = to_kvm_hv(kvm);
-+	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index b5b4e0d0ff4dd0bc..3ead6d9e130b2ebc 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -647,7 +647,7 @@ config I2C_HIGHLANDER
  
- 	switch (msr) {
- 	case HV_X64_MSR_GUEST_OS_ID:
-+		if (unlikely(!host && !(hv_vcpu->cpuid_cache.features_eax &
-+					HV_MSR_HYPERCALL_AVAILABLE)))
-+			return 1;
-+
- 		hv->hv_guest_os_id = data;
- 		/* setting guest os id to zero disables hypercall page */
- 		if (!hv->hv_guest_os_id)
-@@ -1211,6 +1216,10 @@ static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
- 		int i = 0;
- 		u64 addr;
- 
-+		if (unlikely(!host && !(hv_vcpu->cpuid_cache.features_eax &
-+					HV_MSR_HYPERCALL_AVAILABLE)))
-+			return 1;
-+
- 		/* if guest os id is not set hypercall should remain disabled */
- 		if (!hv->hv_guest_os_id)
- 			break;
-@@ -1444,9 +1453,17 @@ static int kvm_hv_get_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 *pdata,
- 
- 	switch (msr) {
- 	case HV_X64_MSR_GUEST_OS_ID:
-+		if (unlikely(!host && !(hv_vcpu->cpuid_cache.features_eax &
-+					HV_MSR_HYPERCALL_AVAILABLE)))
-+			return 1;
-+
- 		data = hv->hv_guest_os_id;
- 		break;
- 	case HV_X64_MSR_HYPERCALL:
-+		if (unlikely(!host && !(hv_vcpu->cpuid_cache.features_eax &
-+					HV_MSR_HYPERCALL_AVAILABLE)))
-+			return 1;
-+
- 		data = hv->hv_hypercall;
- 		break;
- 	case HV_X64_MSR_TIME_REF_COUNT:
+ config I2C_HISI
+ 	tristate "HiSilicon I2C controller"
+-	depends on ARM64 || COMPILE_TEST
++	depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
+ 	help
+ 	  Say Y here if you want to have Hisilicon I2C controller support
+ 	  available on the Kunpeng Server.
 -- 
-2.30.2
+2.25.1
 
