@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD7435DDED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F6335DDF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhDMLlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbhDMLlC (ORCPT
+        id S245068AbhDMLnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:43:22 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:19239 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238852AbhDMLnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:41:02 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A68C061574;
-        Tue, 13 Apr 2021 04:40:43 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id s10-20020a05600c318ab029012d7c83637bso25129wmp.0;
-        Tue, 13 Apr 2021 04:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MkaJsdRxcT7X9SeJC6tmjhb8Lb+kbsYW+1qTzC0vHSg=;
-        b=NbbEjj+8QyG7yInSEnyfAVZV6f6bHqYIPq95qqf0KoINEPGw0i3ulBOFhROAIWORdQ
-         g+s8tG8VHqKqpxZsAnX/0KCumHKedofe0vc7poTggkp1+dOm1Fa8pOTF/lseWzDzcIq1
-         alicTMoZ8XNxDCY06jnaNIiwdHP1cyj/zuKUqlPk674rX6W1Qw/yQDT/41o71/HjAFIJ
-         UizZOzTRJNAPbh9ZtRmnXFMJJ2u5NTnQPov9XN1iCBECoSF95psRq38s4cHxIMgj7aGj
-         msPPuytaklTeVc1vv2mgdIUgozwZVj08eCsvD1NliWMziUep0Fni0JPvfFnRs1fcebX4
-         AdYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MkaJsdRxcT7X9SeJC6tmjhb8Lb+kbsYW+1qTzC0vHSg=;
-        b=IeHuel2DMqne24nSt+u1NR0w9xmUvzv5EjeQViv1ncoJukbfjcbQGpAwz58Yp6Kwrd
-         V/QAgSFWbOrOl+pt3B+Bvc305X9ovV4UsZXGrJ3Z7fXLqUQZLO13+yKmLYYA8YMoIuB5
-         tgGma1o2p+uVxI9VGlzzDtg0YAhlqAUiJQaUwBjr0MfVmXUccgrcwQrUsAeLjMSK+PSK
-         Grd5TQ6Kl/+SMVDv3Z6v498zmbx5wNYIRpVNvsTscmmlHzU7wdf9ZQRc3NBLSd8I4mSk
-         CVzI/SSPqdpufYOQXfvgWLc82dF43I+t0XL7PmymO2ph+xHDD2Y0io1LscadKLfIIVGl
-         1s3Q==
-X-Gm-Message-State: AOAM532wpeWueSKC2I3nGGs2sp8oczNcmxQ+LCD3O9GPTuk5S13Ldzz+
-        VW3gFAMn/21k2T8SHd0Rte+VrdCS4+4=
-X-Google-Smtp-Source: ABdhPJxOAUE/BxJoRtiCqbQFHbbi/VfFLPUrutL9mYtMCQ9Eg2HJvT1cDY7t0WOv6pvny2LQphBirw==
-X-Received: by 2002:a1c:6887:: with SMTP id d129mr3770013wmc.114.1618314041846;
-        Tue, 13 Apr 2021 04:40:41 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id z8sm20198827wrh.37.2021.04.13.04.40.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:40:40 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 13:41:20 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
-Message-ID: <YHWDYOPKGylFKQvl@orome.fritz.box>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412132745.76609-4-clemens.gruber@pqgruber.com>
- <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
- <YHR5eyLPqiwhTGrr@workstation.tuxnet>
- <20210413113805.mjft5jxt3qhsxg6e@pengutronix.de>
+        Tue, 13 Apr 2021 07:43:20 -0400
+Received: from tomoyo.flets-east.jp ([153.202.107.157])
+        by mwinf5d89 with ME
+        id sBio2400A3PnFJp03Biwal; Tue, 13 Apr 2021 13:43:00 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 13 Apr 2021 13:43:00 +0200
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH] can: etas_es58x: fix null pointer dereference when handling error frames
+Date:   Tue, 13 Apr 2021 20:42:42 +0900
+Message-Id: <20210413114242.2760-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1vkEgIoTkhyBIpER"
-Content-Disposition: inline
-In-Reply-To: <20210413113805.mjft5jxt3qhsxg6e@pengutronix.de>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+During the handling of CAN bus errors, a CAN error SKB is allocated
+using alloc_can_err_skb(). Even if the allocation of the SKB fails,
+the function continues in order to do the stats handling.
 
---1vkEgIoTkhyBIpER
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All access to the can_frame pointer (cf) should be guarded by an if
+statement:
+	if (cf)
 
-On Tue, Apr 13, 2021 at 01:38:05PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> Hello,
->=20
-> On Mon, Apr 12, 2021 at 06:46:51PM +0200, Clemens Gruber wrote:
-> > On Mon, Apr 12, 2021 at 06:27:23PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
-> > > > Add the flag and corresponding documentation for PWM_USAGE_POWER.
-> > >=20
-> > > My concern here in the previous round was that PWM_USAGE_POWER isn't a
-> > > name that intuitively suggests its semantic. Do you disagree?
-> >=20
-> > No. It is more abstract and requires documentation. But I also didn't
-> > want to waste too much time on discussing names, so I used Thierry's
-> > suggestion.
->=20
-> If you introduce API thinking about the name before actually introducing
-> it is a good idea in general. (OK, the name doesn't become part of the
-> (binary) dt API, but we don't even agree about its semantic here.)
->=20
-> And IMHO a bad name with a good documentation isn't good enough.
-> Otherwise we can better just agree on using plain numbers in the .dts
-> files.
+However, the increment of the rx_bytes stats:
+	netdev->stats.rx_bytes += cf->can_dlc;
+dereferences the cf pointer and was not guarded by an if condition
+leading to a NULL pointer dereference if the can_err_skb() function
+failed.
 
-Plain numbers or not doesn't change anything. The meaning of the bit has
-to be defined. This has nothing to do with the symbolic name at all.
+Replacing the cf->can_dlc by the macro CAN_ERR_DLC (which is the
+length of any CAN error frames) solves this NULL pointer dereference.
 
-Thierry
+Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
+Reported-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+Hi Marc,
 
---1vkEgIoTkhyBIpER
-Content-Type: application/pgp-signature; name="signature.asc"
+I am really sorry, but I was just notified about this issue litteraly
+a few minutes after you send the pull request to net-next.
 
------BEGIN PGP SIGNATURE-----
+I am not sure how to proceed. You might either cancel the pull request
+and squash this to 8537257874e9 ("can: etas_es58x: add core support
+for ETAS ES58X CAN USB interfaces") or send it as a separate patch.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB1g2AACgkQ3SOs138+
-s6GFIhAAsJVQtvNUbdNjFIrlooVmgFsgZDdz6nvRDINjq5wAXhr9VC25lzKFUu2y
-M3obnsBkTZ54FR4GGbtMFmQnrQcDj+E8xpxqNMaupLBmTwWpgZgsSCqxag1quVFL
-NNZvyIrnYKDaRRfxvWVVPI8GXWlzceEuCpStmggjjp8qv2isqlvPGq+VxW9AURLR
-zuGWp7a7DIgO5i5bbhJ7gPAI48V0QIqN0c1Oq4jkPsQm0x5L8+qoTlD/4o1smhxE
-HKBqgKyLtcnT2FJKvcbVsVhCQK+ZtWBYiTM/NIQ2Ym/70jD9Ktz6a3w5EDMu5Rfl
-S0iUTFQ0tAZUGlDs3aLl0EH95/bdvlu5eEp8r7HzTh/vrvcv+fSI5Fj1Isek37+c
-NEDuJb0LP7CChm7KiN6WCtpxeBQSJ9t7MUk0/1EEqR++PD/iFQ04X6I66gxBBJLf
-Su6ho/Pet3SgjkridToUUDmxZqTrfZ4fzxG1Jf4yIAO9ePfwPxTnLSrayZDVFl6M
-IymcjlBuel15E5rXIhUIBKQjNamZQUG11LEviQtvmF3YWddsaOQcFyoc27lM508h
-nLjyFhxSGa+AXSM3GB/eR8ZRHt8XfQ76JFdSK4MKT+VwJKZnWClH03IRo+XnqsKM
-xWmvvP3aT9+/sInV4Fl5FyKCcdmEw0oSCSWGbSQx2+AbFWbAk7M=
-=GeVW
------END PGP SIGNATURE-----
+Please let me know if you need me to do anything.
 
---1vkEgIoTkhyBIpER--
+Yours sincerely,
+Vincent Mailhol
+---
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 7222b3b6ca46..57e5f94468e9 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -856,7 +856,7 @@ int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
+ 	 * consistency.
+ 	 */
+ 	netdev->stats.rx_packets++;
+-	netdev->stats.rx_bytes += cf->can_dlc;
++	netdev->stats.rx_bytes += CAN_ERR_DLC;
+ 
+ 	if (cf) {
+ 		if (cf->data[1])
+-- 
+2.26.3
+
