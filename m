@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B01035DD7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD1735DD1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244207AbhDMLL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:11:28 -0400
-Received: from bosmailout09.eigbox.net ([66.96.189.9]:43501 "EHLO
-        bosmailout09.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243281AbhDMLLQ (ORCPT
+        id S1344430AbhDMLBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:01:31 -0400
+Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:33815 "EHLO
+        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344356AbhDMLB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:11:16 -0400
-X-Greylist: delayed 1810 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 07:11:16 EDT
-Received: from bosmailscan09.eigbox.net ([10.20.15.9])
-        by bosmailout09.eigbox.net with esmtp (Exim)
-        id 1lWGTK-00009O-Ty
-        for linux-kernel@vger.kernel.org; Tue, 13 Apr 2021 06:40:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=allas32u.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=j/2w54k6QiND+xCmDlhOZ4FhmnEVovmAfHp4mNSvZpw=; b=ybO7BF+jbOoL3ah65l3DL4hQU9
-        5y38DZP1uj/nsbjGmfMe5rPff949nuW092SgmaRpwwRyFX5dY31P2qg3jld3QfcdewYdbbNMU2Hno
-        6qIcL7hW2J0+dc/K0fR+oHenvch2+TCopC/LgT97ztkIWhouiKmhvzXslh17naUQx9z7LLF/2zk4D
-        95Y5J5KCLiEAjrbxekTWc47kWR2JOW1HLFm7P919iwChCsqg6b3phMOEyibKwl8G/ksJF7ZyafgQa
-        fAydw+O8zsHqtgI0RSzmJlXAhnQrDbB2nHOb0CYDP9Upid4ZCNFVvzc4QST6GTF2/Je35LNyybMp2
-        u8pyNi3w==;
-Received: from [10.115.3.34] (helo=bosimpout04)
-        by bosmailscan09.eigbox.net with esmtp (Exim)
-        id 1lWGTG-0002DN-4j; Tue, 13 Apr 2021 06:40:38 -0400
-Received: from boswebmail08.eigbox.net ([10.20.16.8])
-        by bosimpout04 with 
-        id sAg22400B0ASFPu01AgPto; Tue, 13 Apr 2021 06:40:38 -0400
-X-EN-SP-DIR: OUT
-X-EN-SP-SQ: 1
-Received: from [127.0.0.1] (helo=homestead)
-        by boswebmail08.eigbox.net with esmtp (Exim)
-        id 1lWGT0-0002i8-Iw; Tue, 13 Apr 2021 06:40:22 -0400
-Received: from [41.138.102.229]
- by emailmg.homestead.com
- with HTTP (HTTP/1.1 POST); Tue, 13 Apr 2021 06:40:22 -0400
+        Tue, 13 Apr 2021 07:01:28 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 07:01:28 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailforward.nyi.internal (Postfix) with ESMTP id CC3531940903;
+        Tue, 13 Apr 2021 06:54:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 13 Apr 2021 06:54:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nYS1mA
+        zCp2YtcTMjHCRKhhzeV2J92kIDnXr4neGXktk=; b=TDTBsTdxMzg6bBVi7TqYer
+        0DiW0XQ2lPr8gTYCfUJmjHyh0G3/IbFZ/iSMs5glMUidDD3jiTtwFN0cEFzUiyI2
+        mNuGR5Tg00icmUi3YBF7868ldmf4e9OLD2cAfqe184fp5Q2b39Q4yxeENAs36qKe
+        DuVmwcgHjExF1pk9n4votO+qu4bCMAKy94p+XHe4lm87KQbmFKTwVyImTRzR0lKp
+        yV1onAkLx9vKf0xgG4TBhb2vyDAxnWek5Y6jnZDX1pVkXJDgslsMNyzeS+JocR7K
+        IyRLWgq/3aBNF5tweavqcOfbzX0xjLn0mQF+71QRD3m3paFOni7NOFlO+eVtKbTQ
+        ==
+X-ME-Sender: <xms:ZHh1YE-Z6ytB5OV209cw4IVpfPhJgTRlfspWa6MxdpLvlhAu7AoAfA>
+    <xme:ZHh1YMtc132ApvaPGAFJaoKFx4gpDIKdbMrT1-gcE1BQm39mTVPVB1KzUecLmngu9
+    _vg33hsKQeSa3jEuew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
+    gfgumhhonhgushhonhcuoegumhgvsegumhgvrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    fhkeeguedtvdegffffteehjedvjeeitefgfefgffdugeffffegudehgeetgeelkeenucfk
+    phepkedurddukeejrddviedrvdefkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegumhgvsegumhgvrdhorhhg
+X-ME-Proxy: <xmx:ZHh1YKA8lZ6spgRuGqhDQSUCaD3V7bc4ZEYJ2YeufmqPbtz7CVy4BA>
+    <xmx:ZHh1YEf8ZYKV-RhV0l_2Kfws_e_3L0pzwmgdXxIDE047Ou0s5JDjSg>
+    <xmx:ZHh1YJP4y4UNPwX24gNMMziYr59XEZFUw0WaYwEFzpnvGa2DdntQIw>
+    <xmx:ZXh1YPs0p-YqVbYmr5UcLO4ftZ6ifb0IKHF17qrPbAvDjHBpepgnT_YsmwE>
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D7575108005C;
+        Tue, 13 Apr 2021 06:54:26 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id bf0b8dca;
+        Tue, 13 Apr 2021 10:54:25 +0000 (UTC)
+To:     Jim Mattson <jmattson@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [PATCH 0/6] KVM: x86: Make the cause of instruction emulation
+ available to user-space
+In-Reply-To: <CALMp9eRTy-m6DkXRSGNU=r7xmrzFFQU60DB2asUDZLCgw93wRQ@mail.gmail.com>
+References: <20210412130938.68178-1-david.edmondson@oracle.com>
+ <CALMp9eRTy-m6DkXRSGNU=r7xmrzFFQU60DB2asUDZLCgw93wRQ@mail.gmail.com>
+X-HGTTG: zarquon
+From:   David Edmondson <dme@dme.org>
+X-Now-Playing: Dido - Life for Rent: Stoned
+Date:   Tue, 13 Apr 2021 11:54:25 +0100
+Message-ID: <cunk0p6sbdq.fsf@dme.org>
 MIME-Version: 1.0
-Date:   Tue, 13 Apr 2021 12:40:22 +0200
-From:   janete Moon <jush3@allas32u.com>
-To:     undisclosed-recipients:;
-Subject: an Orphan needs your help
-Organization: financial institution
-Reply-To: janete.moon20@gmail.com
-Mail-Reply-To: janete.moon20@gmail.com
-Message-ID: <389933b95cba706e1267fc0c55516d54@allas32u.com>
-X-Sender: jush3@allas32u.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: jush3@allas32u.com
-Sender:  janete Moon <jush3@allas32u.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday, 2021-04-12 at 11:34:33 -07, Jim Mattson wrote:
 
+> On Mon, Apr 12, 2021 at 6:09 AM David Edmondson
+> <david.edmondson@oracle.com> wrote:
+>>
+>> Instruction emulation happens for a variety of reasons, yet on error
+>> we have no idea exactly what triggered it. Add a cause of emulation to
+>> the various originators and pass it upstream when emulation fails.
+>
+> What is userspace going to do with this information? It's hard to say
+> whether or not this is the right ABI without more context.
 
-Hello Friend,
+Logging for debug purposes, see reply to Sean.
 
-Greetings and thanks for your reply.
-
-I am Janete moon but unfortunately, I 'm now an orphan,the only child 
-and
-Daughter of late Mr and Mrs Joseph moon, from Ivory Coast  Abidjan.
-I know it may have sounded very strange to you on why I contact you as
-you are a complete stranger to me and I must tell you this,
-
-It will be very difficult for me to get in touch with someone here
-who knows me because of the ugly circumstance that surrounds
-the demise of my lovely parents with whom my future ws looking
-very bright from all looks.
-
-My uncle conspired with my father's business rivals and poisoned my
-parents during a business lunch hour and their motive for eliminating
-them was to take over their businesses and inherit their wealth. In one 
-of
-their letter's that I stumbled into, they were asking my uncle to give
-them their own part of the deal so While reading that letter,
-I fainted and my uncle came in and caught me with the letter.
-I'm afraid that they might decide to kill me or poison me as they did
-to my parents in order to keep me silent for the evil they did to my
-beloved late parents. For safety, I decided to run away from the house.
-I'm now hiding in a neigbouring country called Burkina Faso.
-
-My purpose of contacting you is because I need to come to your country
-secretly so that my uncle will not know my where about. I got 
-information
-from my father before he died in the hospital about the secret fund
-(15.5 Million US Dollars only) he kept in a finance house here in
-Burkina Faso  West Africa.
-
-I have verified this with them before contacting you. I shall require 
-your help
-in transfering this money to your country for investment purpose like 
-buying of
-company shares,Real Estate Investment Trust funds,Jewels or Diamond,
-and to continue my studies from where I stopped as Immediately after the
-transfer I will come to live in your country.
-
-I will give you more information once I hear from you as I am in
-sincere desire of your humble assistance in this regard. Your
-suggestions and ideas will be highly welcomed and I am willing to
-offer you 15% of the total fund once it is transferred to your account
-.
-
-Now permit me to ask these few questions
-
-1. Can you honestly help me from your heart?
-2. Can I completely trust you?
-
-
-Thank you and God bless.
-Yours affectionately
-Miss. Janete moon.
+dme.
+-- 
+You make me feel like a natural woman.
