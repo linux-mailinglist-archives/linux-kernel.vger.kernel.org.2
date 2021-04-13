@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B531D35E60A
+	by mail.lfdr.de (Postfix) with ESMTP id 69E1435E609
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347550AbhDMSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
+        id S244853AbhDMSMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347547AbhDMSML (ORCPT
+        with ESMTP id S237344AbhDMSMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:12:11 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B7AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:50 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id b139so13400324qkc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:50 -0700 (PDT)
+        Tue, 13 Apr 2021 14:12:07 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FA0C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:47 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id y12so13445093qtx.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=10O+jPL+OEccKqpj/hH+I4ElPmWsuuh1UAUW2Q6XaMc=;
-        b=peihZeIdAVSH5KcQpZhcxJydUFf5486sTu9ZesihRIbDtWtEQYyF7Am/Rz+3v6wp7/
-         Vyz+eoXTtfF+eM7sx5K32zas5MclrOGalteAvd5OCOsmOKEglqH1A5HmdArw1D6Rf3H4
-         F55+MPxPMCn4esziaFyVfLhTOJJcoxt+0FlMmSmDNpv7FUlUBla+ajavFeZNhSskhLuO
-         +46JZGequ3FKkV8vBx3BedjEguv/Qa7NwdEPgw2xvQ8pMBgM+vQGTaC2D8aXINDLXv0O
-         yRhHBo9ekIKjaSwRciHTCWnPYS4QPvACtx26pSSU1Wtax9I62T2OjzyVGMo9fjDLNzhu
-         GCpQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=deASIC4Cs//Eazc/u/XWcQQJxVVHmY70qv8fjR7dmQ0=;
+        b=f1oafAJnlk3HZCVbI0WmGcC3aKmkh9peaQZDVKl45CBBmswOaiI4V6c7Ka8uuqMLa4
+         XslQvOVPZbjmWO8N/z6jOkQ5+orkVAC4peUGEL3OXZ7qNjnVNl7WSc5iUIkvfEyRtuNR
+         uNn5Uj0kxMvzkxM+VQHddlMqS6WluPgNK+d7M2cie+xZlyTmFKCIW5rPRvB6urO4iltq
+         /nL623iSTdzyRZ8f3NxveXCzL6UnQdKIw8Km8FGFQxKsUfp5rkOT+WeFOyET/pdqxaOJ
+         DybyZXRXuNoPNgfRBgDgFSlReLY2Zty6yfmbUdl0Qruyu3lW3qr+PVfMvezut/HZVvv+
+         UYxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=10O+jPL+OEccKqpj/hH+I4ElPmWsuuh1UAUW2Q6XaMc=;
-        b=S4n1s6w974qDGoKnEaz2xARxMTnAf+YeRZY1jzwRl2fUO9/MpDvXfwnuWRNbUdg2fK
-         z4Zm5dbosziYHA1QROMr7v4eXram6lIebypAMTGdDs1RAS2lD+CBJ58oUi5Ks4zyINoe
-         bzb5gFiAMbzQBUdzarIcIZl/h7BWZRiac4OtrHPjpr7gZkNHSLY1wBM7Lkp+V4iqRYhH
-         rIk57z6DZ17Z3HDcMOj9JvP3T47bDn97mUwJUrJSDDXc0KcWUra41USQxWEzOZyxrmri
-         BpVGNZ7HWasfV6St/O7XGeZR2RDVhGViPN6EDp0VVxSEX9DN9m03+EFhx5B+vkYpLpnw
-         uIcA==
-X-Gm-Message-State: AOAM5305/EKAE+jrXr37FIo9E3PKZx+k47tVo8ldfdmA5XL8L8ylXu1D
-        E+Py9528yqymuqZ1lExoU2fHbz9vInf7pRAKj1k4ug==
-X-Google-Smtp-Source: ABdhPJxTzart4cK+GierPgt6a6wC8/NNabJskhlHhlZTyQiQyE41giAZRYB0NYcQosS5+v5vst1pc9CimxrTgi1J7dE=
-X-Received: by 2002:a05:620a:146e:: with SMTP id j14mr10312294qkl.424.1618337509665;
- Tue, 13 Apr 2021 11:11:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <00000000000066b6f405bf0d0660@google.com>
-In-Reply-To: <00000000000066b6f405bf0d0660@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 20:11:38 +0200
-Message-ID: <CACT4Y+a7m9_hGjb0f8r_ZELSGqs=NvpocST9pXex23y57RLGug@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in __schedule
-To:     syzbot <syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=deASIC4Cs//Eazc/u/XWcQQJxVVHmY70qv8fjR7dmQ0=;
+        b=j1721jWpfCqE1azJfVxUxusGLPGHuORufNxsQ8wpzjimpl6OZZi/ybmcpgw4NDSJjU
+         1RpOkw9yN0+XnqjybCu4K1cqyOGHWyYhSkTR5GtKE/TFEg8csTB3f+DEt3SkbyrTGBNf
+         E00sVFIzJxwBMu/bRsb+q0/++X5d4KnAcQ7Q96cf+OL2Hj5ywzAIY2vdlpE8v3kSRp4Y
+         Pd+NfEXvilXuldcQWMDOMO9PqkRD3iv2nWsISsz+WIx89B8ilDhBftFDn5zn70qrRRdO
+         9fihzCF89YbxXi0Fw8Cp2gKOUOlVcWQZc+/TYdhMvDF8WOWnxtioZQH2efejNGBB5Q5u
+         HuQA==
+X-Gm-Message-State: AOAM5320tvyIGKUbjzwGc5QPEWDB+dhr3r4yj6IQpF2sewVqvrRM0W8O
+        8/knUV4LrZVuaRYijoSfF5kwsg==
+X-Google-Smtp-Source: ABdhPJxc/WYUSF8qA754oyGOrB1wFH7/ryz6Ffn54ZT6mPInMZOSPnB91vdqHhpQB16Ah5jGJw8ebw==
+X-Received: by 2002:ac8:4a82:: with SMTP id l2mr2591555qtq.311.1618337506928;
+        Tue, 13 Apr 2021 11:11:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id e3sm10340568qtj.28.2021.04.13.11.11.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 11:11:46 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lWNVp-005bD2-JG; Tue, 13 Apr 2021 15:11:45 -0300
+Date:   Tue, 13 Apr 2021 15:11:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+015dd7cdbbbc2c180c65@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        daniel.vetter@intel.com, "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morris <jmorris@namei.org>,
+        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        m.szyprowski@samsung.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
         syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tomasz Figa <tfiga@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [syzbot] WARNING in unsafe_follow_pfn
+Message-ID: <20210413181145.GK227011@ziepe.ca>
+References: <000000000000ca9a6005bec29ebe@google.com>
+ <2db3c803-6a94-9345-261a-a2bb74370c02@redhat.com>
+ <20210331042922.GE2065@kadam>
+ <20210401121933.GA2710221@ziepe.ca>
+ <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+ZG9Dhv1UTvotsTimVrzaojPN91Lu1CsPqm4kd1j5yNkQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 10:12 AM syzbot
-<syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1432bd1ad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=78a83786814e7724
-> dashboard link: https://syzkaller.appspot.com/bug?extid=be81a058b10931003a4a
-> userspace arch: arm
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+be81a058b10931003a4a@syzkaller.appspotmail.com
+On Tue, Apr 13, 2021 at 07:20:12PM +0200, Dmitry Vyukov wrote:
+> > > Plus users are going to be seeing this as well.  According to the commit
+> > > message for 69bacee7f9ad ("mm: Add unsafe_follow_pfn") "Unfortunately
+> > > there's some users where this is not fixable (like v4l userptr of iomem
+> > > mappings)".  It sort of seems crazy to dump this giant splat and then
+> > > tell users to ignore it forever because it can't be fixed...  0_0
+> >
+> > I think the discussion conclusion was that this interface should not
+> > be used by userspace anymore, it is obsolete by some new interface?
+> >
+> > It should be protected by some kconfig and the kconfig should be
+> > turned off for syzkaller runs.
+> 
+> If this is not a kernel bug, then it must not use WARN_ON[_ONCE]. It
+> makes the kernel untestable for both automated systems and humans:
 
-#syz dup: WARNING: suspicious RCU usage in getname_flags
+It is a kernel security bug triggerable by userspace.
 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0 Not tainted
-> -----------------------------
-> kernel/sched/core.c:4841 Illegal context switch in RCU-sched read-side critical section!
->
-> other info that might help us debug this:
->
->
-> rcu_scheduler_active = 2, debug_locks = 0
-> no locks held by migration/1/17.
->
-> stack backtrace:
-> CPU: 1 PID: 17 Comm: migration/1 Not tainted 5.12.0-rc5-syzkaller-00003-g1e43c377a79f #0
-> Hardware name: linux,dummy-virt (DT)
-> Stopper: 0x0 <- 0x0
-> Call trace:
->  dump_backtrace+0x0/0x3e0 arch/arm64/include/asm/pointer_auth.h:76
->  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:191
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x120/0x1a8 lib/dump_stack.c:120
->  lockdep_rcu_suspicious+0x130/0x148 kernel/locking/lockdep.c:6428
->  schedule_debug kernel/sched/core.c:4841 [inline]
->  __schedule+0x1244/0x1bc4 kernel/sched/core.c:4967
->  schedule+0xac/0x22c kernel/sched/core.c:5152
->  smpboot_thread_fn+0x278/0x7f4 kernel/smpboot.c:161
->  kthread+0x320/0x3bc kernel/kthread.c:292
->  ret_from_fork+0x10/0x3c arch/arm64/kernel/entry.S:958
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000066b6f405bf0d0660%40google.com.
+> And if it's a kernel bug reachable from user-space, then I think this
+> code should be removed entirely, not just on all testing systems. Or
+> otherwise if we are not removing it for some reason, then it needs to
+> be fixed.
+
+Legacy embedded systems apparently require it.
+
+It should be blocked by a kconfig. Distributions and syzkaller runs
+should not enable that kconfig. What else can we do for insane uapi?
+
+Jason
