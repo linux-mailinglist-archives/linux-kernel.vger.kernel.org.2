@@ -2,178 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62A135E05B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F4B35E05E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244819AbhDMNm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S1344442AbhDMNnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243766AbhDMNm5 (ORCPT
+        with ESMTP id S236765AbhDMNnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:42:57 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43F1C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:42:37 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id x8so13030691ybx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:42:37 -0700 (PDT)
+        Tue, 13 Apr 2021 09:43:14 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABBEC061574;
+        Tue, 13 Apr 2021 06:42:54 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id w10so11959852pgh.5;
+        Tue, 13 Apr 2021 06:42:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LW3dM/PsWPmPpGTo4++4+Jcuo0fGVz6Qa1xCvzsVRgc=;
-        b=G1yv8U44nKYDufHfBo+TkQDivfgcV4vOYA3FiYvbUuLSpY4E8046CrnOHpgboRvMc9
-         PZxhL6WKrEI1y5o5sQWiKPYMm+7I2G/HWmioliFdm0wPwB38/miz1DmR8wvpRykkShDi
-         WbfJxfJLREBD9sgPWzdGD9ac0n8PG0qApDoeQu5Nidxhomii8Iih1MhRay/Sdn6ByFni
-         7e55/aRw3i5XlYj55ZFVHySYIy6LtRRp0F8LZOHXe8hNsonQs1g8grKCdC0pli66+KaJ
-         XHBR4X1F2ImeGNAUnaC7tA7FVO8MEEZE2ejMJ966DxldvgJDBPbfF6a0xV9uafXoTMVJ
-         zvFw==
+         :cc:content-transfer-encoding;
+        bh=1DLw43rm7rrtnsd7xeB6oJxIf0vuC8BRRHLBczry9Zc=;
+        b=XBw1SnKtlH/nY/NSd8lv+UTtZIYT22fK1g+iq3vMFWv+AH/MpKYwjhZlq2KTZV/K3c
+         SfjE785zPofXoND9v8ZRuLhGGbbzPrxhVNN7Zsz9aIaVi8yx0rRoGp4j6Wv6gOILQQoi
+         Y1pMuolHJt/QBG0KUctaw3Fl93DhvbPYmrbGptwE5PsQgI9bFRxNtheQiQYfyzTkfUDh
+         ooAElLYg2sjOcYLM0FJJnY2/Ikx/1LGBdZLi3dX3mGePQf6/L3wp2ul/MBuxNCq90Oei
+         7s7K8DIT8NjNYIZ2vyQcvcnIqNfiU5iQ3OSo9GhoccaMyVI0qg+t70VzjjQokVCc9xKT
+         njqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LW3dM/PsWPmPpGTo4++4+Jcuo0fGVz6Qa1xCvzsVRgc=;
-        b=D7kJhrk/7cGofj8q52m8txI+mYkxyl6VNW4o6agmn1yeT0xIfAsJ69u0utsuJ6ZaL+
-         2QM2br2Z9ru7DHmAfV3IvR8LViV+x9y3Xi1RlfE8xdF+J9mnIDYj9qgb220mYZCNOjcw
-         ZojuufJ8B6cfMAyQNI4nA2kokhKkqIIDoAg2pshU11ATnDpGSQ+c4jNtuKsV/AhhMFxW
-         l9YRz3e20i8lxnqazjTBOWdMb+aGKAyark82i972Wz2qd9pqAkZlJO8U19l9nVh+399t
-         BzYt3npyIhLADUzLFgsk3idYehNj4E4+YiXez34yCY4PzRAdzerAztMzedub7EHikfS4
-         GyoA==
-X-Gm-Message-State: AOAM531zEbVfh9oOMxiBpW89z8vsEOZAThu3c0UWHsALI72P/coHuHXx
-        Mih5wTOkMgSBul9eFBEeDSllWrC5UVuFYNPHXci/pA==
-X-Google-Smtp-Source: ABdhPJxulQTBZ3zUs9igHP3kin8lIKME+0y372d30gSCnpjACVEOT/PqvuHGKVTV0q335sGqDGNqyWKLcpjh/nPkjRg=
-X-Received: by 2002:a25:6a88:: with SMTP id f130mr44944615ybc.234.1618321355721;
- Tue, 13 Apr 2021 06:42:35 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1DLw43rm7rrtnsd7xeB6oJxIf0vuC8BRRHLBczry9Zc=;
+        b=Csfj1HIHNgTCjcn3M/9WrmX73X8vj7OwsEOCcMmeB/6Cyh4Hshex60Yu82NT2iQXeR
+         h2N15Tx4rREHpNqw8Tyk4KJD44UHzAGDpKL947OVMKrylK6mm/isw5BNsXv9uG8yZZGK
+         D8IKeICUYFnOHlXBDJvEYCz1moAq9PaOD2UvyZCoSI45D3lKcEOumXCZkCTFRHnTWiRy
+         d0LTStgoV702BNe+GS0ABshsvYtGTw5jcpKM5YFnHBwOnUbErQYcIxjuSv3skmtyRSqy
+         7eOn70HJ2McFuYzL87xBmQqf08XVLcr7pc+oMLOYO9645l6xp8r6LehAueamUhdqa1om
+         DAqQ==
+X-Gm-Message-State: AOAM5319PdkFLVm7Bukw0I2ZBmIXjaCU2R0i86ghrwzBUMVNG/5mc0We
+        5aTyvtMQf8MLaJKeD/nxaBJa/QlQRumtgazeYT7OYVomPRG8JMs=
+X-Google-Smtp-Source: ABdhPJzTVa6KlpBwT37FoxqE+zx2hutEJio46lArlk4uAKSiJykOT1TU9ZdwRqvJGvhi/uF7b7XgKt8xz1EqCAC6RJI=
+X-Received: by 2002:aa7:88c6:0:b029:250:bf78:a4a3 with SMTP id
+ k6-20020aa788c60000b0290250bf78a4a3mr2799678pff.70.1618321374154; Tue, 13 Apr
+ 2021 06:42:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
- <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
- <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
- <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com>
- <20210413085538-mutt-send-email-mst@kernel.org> <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
- <CANn89iKrSDL9usw18uvVfarWRUBv=V4xTHOMEgS48jhNmzR5_A@mail.gmail.com> <20210413093606-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210413093606-mutt-send-email-mst@kernel.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 13 Apr 2021 15:42:24 +0200
-Message-ID: <CANn89iKB3x2T=8j5qBVVtStdQBASD-P6B1+yLKwLh+Y+PggB0A@mail.gmail.com>
-Subject: Re: Linux 5.12-rc7
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
+References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
+ <20210413133359.GG227011@ziepe.ca>
+In-Reply-To: <20210413133359.GG227011@ziepe.ca>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 13 Apr 2021 21:42:43 +0800
+Message-ID: <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=E6=97=A5=
+=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:34=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Tue, Apr 13, 2021 at 03:33:40PM +0200, Eric Dumazet wrote:
-> > On Tue, Apr 13, 2021 at 3:27 PM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Tue, Apr 13, 2021 at 2:57 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Mon, Apr 12, 2021 at 06:47:07PM +0200, Eric Dumazet wrote:
-> > > > > On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
-> > > > > >
-> > > > > > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
-> > > > > > <torvalds@linux-foundation.org> wrote:
-> > > > > > >
-> > > > > > > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > > > > > >
-> > > > > > > > Qemu test results:
-> > > > > > > >         total: 460 pass: 459 fail: 1
-> > > > > > > > Failed tests:
-> > > > > > > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
-> > > > > > > >
-> > > > > > > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-> > > > > > > > skb->head"). It is a spurious problem - the test passes roughly every other
-> > > > > > > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
-> > > > > > > > with SIGTERM. So far I have only seen this with the "sh" architecture.
-> > > > > > >
-> > > > > > > Hmm. Let's add in some more of the people involved in that commit, and
-> > > > > > > also netdev.
-> > > > > > >
-> > > > > > > Nothing in there looks like it should have any interaction with
-> > > > > > > architecture, so that "it happens on sh" sounds odd, but maybe it's
-> > > > > > > some particular interaction with the qemu environment.
-> > > > > >
-> > > > > > Yes, maybe.
-> > > > > >
-> > > > > > I spent few hours on this, and suspect a buggy memcpy() implementation
-> > > > > > on SH, but this was not conclusive.
-> > > > > >
-> > > > > > By pulling one extra byte, the problem goes away.
-> > > > > >
-> > > > > > Strange thing is that the udhcpc process does not go past sendto().
-> > > > >
-> > > > > This is the patch working around the issue. Unfortunately I was not
-> > > > > able to root-cause it (I really suspect something on SH)
-> > > > >
-> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > > index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
-> > > > > 100644
-> > > > > --- a/drivers/net/virtio_net.c
-> > > > > +++ b/drivers/net/virtio_net.c
-> > > > > @@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
-> > > > > virtnet_info *vi,
-> > > > >
-> > > > >         /* Copy all frame if it fits skb->head, otherwise
-> > > > >          * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-> > > > > +        *
-> > > > > +        * Apparently, pulling only the Ethernet Header triggers a bug
-> > > > > on qemu-system-sh4.
-> > > > > +        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
-> > > > > +        * more to work around this bug : These 20 bytes can not belong
-> > > > > +        * to UDP/TCP payload.
-> > > > > +        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
-> > > > >          */
-> > > >
-> > > > Question: do we still want to do this for performance reasons?
-> > > > We also have the hdr_len coming from the device which is
-> > > > just skb_headlen on the host.
-> > >
-> > > Well, putting 20 bytes in skb->head will disable frag0 optimization.
-> > >
-> > > The change would only benefit to sh architecture :)
-> > >
-> > > About hdr_len, I suppose we could try it, with appropriate safety checks.
+> On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
+> > Hi
 > >
-> > I have added traces, hdr_len seems to be 0 with the qemu-system-sh4 I am using.
-> >
-> > Have I understood you correctly ?
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 0824e6999e49957f7aaf7c990f6259792d42f32b..f024860f7dc260d4efbc35a3b8ffd358bd0da894
-> > 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -399,9 +399,10 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >                 hdr_padded_len = sizeof(struct padded_vnet_hdr);
-> >
-> >         /* hdr_valid means no XDP, so we can copy the vnet header */
-> > -       if (hdr_valid)
-> > +       if (hdr_valid) {
-> >                 memcpy(hdr, p, hdr_len);
-> > -
-> > +               pr_err("hdr->hdr_len=%u\n", hdr->hdr.hdr_len);
-> > +       }
-> >         len -= hdr_len;
-> >         offset += hdr_padded_len;
-> >         p += hdr_padded_len;
+> > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
+> > the Linux kernel, I found two use-after-free bugs which have been
+> > reported a long time ago by Syzbot.
+> > Although the corresponding patches have been merged into upstream,
+> > these two bugs can still be triggered easily.
+> > The original information about Syzbot report can be found here:
+> > https://syzkaller.appspot.com/bug?id=3D8dc0bcd9dd6ec915ba10b3354740eb42=
+0884acaa
+> > https://syzkaller.appspot.com/bug?id=3D95f89b8fb9fdc42e28ad586e657fea07=
+4e4e719b
 >
+> Then why hasn't syzbot seen this in a year's time? Seems strange
 >
-> Depends on how you connect qemu on the host. It's filled by host tap,
-> see virtio_net_hdr_from_skb. If you are using slirp that just zero-fills
-> it.
 
-Guenter provided :
+Seems strange to me too, but the fact is that the reproduction program
+in attachment can trigger these two bugs quickly.
 
-qemu-system-sh4 -M r2d -kernel ./arch/sh/boot/zImage -no-reboot \
-        -snapshot \
-        -drive file=rootfs.ext2,format=raw,if=ide \
-        -device virtio-net,netdev=net0 -netdev user,id=net0 \
-        -append "root=/dev/sda console=ttySC1,115200
-earlycon=scif,mmio16,0xffe80000 noiotrap" \
-        -serial null -serial stdio -nographic -monitor null
+> > Current report Information:
+> > commit:   89698becf06d341a700913c3d89ce2a914af69a2
+>
+> What commit is this?
+
+The latest commit in the master branch,
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
