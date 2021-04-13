@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86F335DB71
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A25835DB7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhDMJln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:41:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37882 "EHLO mx2.suse.de"
+        id S231166AbhDMJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhDMJlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:41:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618306882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZbiWEY1ZGa88fflkVy9Zsq5S0LAQAGZzATGFIfnvo24=;
-        b=r01TZ0Gyikr6o0kpHPaxvRi7/n4JWcOw4PzjCrp0O65q9AtvYJaYcaN0TVyDZ/GKzRV3H1
-        knnOWELXJ7/7G42jVdXZmWabufuoNUAnjulGNfIGHQK8yIH4AeLAoLyZgPSAjI39fvoXk1
-        c7gwGpf9p5jnZmCeCIdTaSzWTiVWy2E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 530B3B130;
-        Tue, 13 Apr 2021 09:41:22 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 11:41:21 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Samo =?utf-8?B?UG9nYcSNbmlr?= <samo_pogacnik@t-2.net>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
-Message-ID: <YHVnQfQ4zDt09RFe@alley>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <YGx59PEq2Y015YdK@alley>
- <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
- <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
- <YG24F9Kx+tjxhh8G@kroah.com>
- <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
- <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
- <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
+        id S229784AbhDMJnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:43:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85D5F6128E;
+        Tue, 13 Apr 2021 09:42:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618306974;
+        bh=VPjEbzIUQB+FM5ql6HWhHWQTcduq0dn9rEfvn/lG86E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LP202iCvhIZ/X9C8YYNO+W3L3dN7Elbb2lxUw5PqbrZDjIUpI7M434F5hPRtsAZfs
+         NmdMMkt7qO6rpS77QeWTtA3P1JmYkA0sL7efsAzgnnu4EbicOZEKNlnSuVe07wReKM
+         /WDBV28zog4Yb+WNNF83Ikorg7LJzI+9fQ76e13Q=
+Date:   Tue, 13 Apr 2021 11:42:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     joe@perches.com, julia.lawall@inria.fr,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: cocci script hints request
+Message-ID: <YHVnm+MFvUZ7PYRd@kroah.com>
+References: <20210413090400.GA5477@agape.jhs>
+ <YHVgSuRCW1fdabrH@kroah.com>
+ <20210413092455.GB5477@agape.jhs>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
+In-Reply-To: <20210413092455.GB5477@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-04-12 14:41:27, Samo Pogačnik wrote:
-> Dne 12.04.2021 (pon) ob 19:39 +0900 je Tetsuo Handa napisal(a):
-> > What is the intended usage of /dev/ttyprintk ?
+On Tue, Apr 13, 2021 at 11:24:56AM +0200, Fabio Aiuto wrote:
+> On Tue, Apr 13, 2021 at 11:11:38AM +0200, Greg KH wrote:
+> > On Tue, Apr 13, 2021 at 11:04:01AM +0200, Fabio Aiuto wrote:
+> > > Hi,
+> > > 
+> > > I would like to improve the following coccinelle script:
+> > > 
+> > > @@
+> > > expression a, fmt;
+> > > expression list var_args;
+> > > @@
+> > > 
+> > > -       DBG_871X_LEVEL(a, fmt, var_args);
+> > > +       printk(fmt, var_args);
+> > > 
+> > > I would  replace the DBG_871X_LEVEL macro with printk,
 > > 
+> > No you really do not, you want to change that to a dev_*() call instead
+> > depending on the "level" of the message.
+> > 
+> > No "raw" printk() calls please, I will just reject them :)
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> The intended use of 'ttyprintk' is to redirect console to /dev/ttyprintk
-> via the TIOCCONS ioctl. After successfull redirection, all console
-> messages get "merged" with kernel messages and as such automatically processed
-> (stored/transferred) by the syslog service for example.
+> but there are very few occurences of DBG_871X_LEVEL in module init functions:
 
-The same can be achieved by /dev/kmsg that was created by systemd
-developers.
+Then do those "by hand", if they really are needed.
 
-systemd is able to flood the kernel buffer and consoles.
-It can be protected by ratelimiting, see the commit
-750afe7babd117daabebf ("printk: add kernel parameter
-to control writes to /dev/kmsg").
+Drivers, when they are working properly, are totally quiet.
 
-/dev/kmsg ratelimit is a "must-to-have". systemd enables debug
-messages using the same "debug" parameter passed on the kernel
-commandline. The ratelimit allows to see the kernel messages.
+> 
+> static int __init rtw_drv_entry(void)
+> {
+>         int ret;
+> 
+>         DBG_871X_LEVEL(_drv_always_, "module init start\n");
 
-Note that the ratelimit is enabled by default by kernel. But it
-it disabled by default by systemd. So, it is effectively disabled
-by default.
+Horrible, please remove.
 
-It might be possible to add retalimiting also for /dev/ttyprintk.
-But does it make sense just because of an artifical test case?
+>         dump_drv_version(RTW_DBGDUMP);
+> #ifdef BTCOEXVERSION
+>         DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version = %s\n", BTCOEXVERSION);
 
+Not needed at all.
 
-History:
+> #endif /*  BTCOEXVERSION */
+> 
+>         sdio_drvpriv.drv_registered = true;
+> 
+>         ret = sdio_register_driver(&sdio_drvpriv.r871xs_drv);
+>         if (ret != 0) {
+>                 sdio_drvpriv.drv_registered = false;
+>                 rtw_ndev_notifier_unregister();
+>         }
+> 
+>         DBG_871X_LEVEL(_drv_always_, "module init ret =%d\n", ret);
 
-/dev/ttyprintk has been added in v2.6.37 (2010)  by commit 24b4b67d17c308aaa956b
-("add ttyprintk driver")
+Again, not needed this is noise and if someone really needs to debug
+this, they can use the built-in kernel ftrace logic instead.
 
-/dev/kmsg has been add in v3.5-rc1 (2012) by commit e11fea92e13fb91c50ba
-("kmsg: export printk records to the /dev/kmsg interface")
+>         return ret;
+> }
+> 
+> where I don't have a device available... shall I pass NULL to
+> first argument?
 
-Another solution might be to obsolete /dev/ttyprintk by /dev/kmsg.
-We have to preserve /dev/kmsg because of systemd.
-Is anyone really using /dev/ttyprintk these days?
+No, that would be a mess :)
 
-Best Regards,
-Petr
+I bet almost all of these can be removed if they are like the above
+examples as we do not need a lot of "look, the code got here!" type of
+messages at all.
+
+> Another question: may I use netdev_dbg in case of rtl8723bs?
+
+Yes please, that is even better and recommended.
+
+thanks,
+
+greg k-h
