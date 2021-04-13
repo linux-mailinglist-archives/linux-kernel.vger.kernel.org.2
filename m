@@ -2,381 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFB835E8F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C8835E8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347315AbhDMWUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347286AbhDMWUh (ORCPT
+        id S1347354AbhDMWVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:21:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46605 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347318AbhDMWVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:20:37 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC66C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:20:17 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c16so18603791oib.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RNPcI7vFWTr2BQ3i4KmAcP1/zMzeiWgG4knZlIOpiBQ=;
-        b=gT1Rg2lZcYDDGo1MoX3zJTMtgdQXKPNjDnwkG1rASZXTQX21WA1DYyBnLl4B+VoIVb
-         DwnTE01H/SEIGpcsG7LEwYD/hCf+JyAXBkE+tuYXAqC/RtJaMfOSuvPNuuggAT67lirU
-         zOHkUITjaGUTAfXcyXD+sDK7BB55QpHzV4M7FqtKnfnHPLTv94x/dObvqEhlBK+DF4AU
-         eG0g2dYn9WdgPwXBqlqpe+D/36uTamEcgq/7bbFAL2mamsD9yc5tI4pyI7kNYc6BkaHM
-         1oXt/vu7EQCvuB3+b9qVM0fCrH+LhDj6WBWUCzvsSo4FMvLiSZvPDt5ztcmNG8Osmf4i
-         EVcw==
+        Tue, 13 Apr 2021 18:21:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618352470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LmLvNrQZ8GZG6K7YchE+VPwW6vJz8AHYPWGljjVg6Kw=;
+        b=HRle509l6G1m1ie3cukWIZ8T+fw1hjr/2J6oHdRJiTTS6OByWbICY3JcAk3KJsnew2ygMu
+        Ta/uNPfafTuLQ3u0wodvNi4GGlwh9XrnKDDYEpEGhDjW/2BtgZobgmJQMn8lY0MF7lQNKu
+        khuZLscJkLTlQlySWMO1IBI87Hd/nG4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-9zFi28HCMbuMx_tEhBiFZg-1; Tue, 13 Apr 2021 18:21:08 -0400
+X-MC-Unique: 9zFi28HCMbuMx_tEhBiFZg-1
+Received: by mail-ed1-f72.google.com with SMTP id t11-20020aa7d4cb0000b0290382e868be07so2072427edr.20
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:21:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RNPcI7vFWTr2BQ3i4KmAcP1/zMzeiWgG4knZlIOpiBQ=;
-        b=fmSDLw30pxDoPW2bJ/5EJO5XIk4aQaMrSNJOK9VCaN2sw29QCVBsshhaaEIxaBCm8A
-         TZAlYiuL0efe1tuoqMhgbjO9X0VUyuY8XiD2AI2T5Fu3WhQYtPROq5iJ2yKQnY3A2Lbi
-         cw5TRDDQEv/9UAbEvioNWwo5DhPME+raQOT/zEK95GckNeMkND5FRprsbrg0KYXsQWzN
-         0Wtj569at0nl8ByBSi9lKWUbfLKbf33WtjeDvtn31z/YvHwM8NKm6nlSgfbXdU3FQJ7Y
-         DRVttcMvXF8Bm/gx9uLNaSWfnnD+y6BUXwdAIXahq06gv7iUuGl4NQ/Rnx7ghIZEZ0BT
-         NKeA==
-X-Gm-Message-State: AOAM530Qws38RzCGK+UOcXOSHh42mw8jvYJru4wd7QLhEa3PsekwnqVQ
-        eTvuEGdAfDWylBU+uXamC2hC3Q==
-X-Google-Smtp-Source: ABdhPJyoMjhMjLLf8f9KFo2hU4T8epoCfKFJhsdJgqMakAhuSaOEF8NEZxVt8dOuXGSHQF9wIta5Sg==
-X-Received: by 2002:a05:6808:10c5:: with SMTP id s5mr22446ois.58.1618352416341;
-        Tue, 13 Apr 2021 15:20:16 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o18sm3715541ota.31.2021.04.13.15.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 15:20:15 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 17:20:14 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
-Message-ID: <20210413222014.GS1538589@yoga>
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210225182716.1402449-7-thara.gopinath@linaro.org>
- <20210405221848.GA904837@yoga>
- <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LmLvNrQZ8GZG6K7YchE+VPwW6vJz8AHYPWGljjVg6Kw=;
+        b=TnnbO9SUJps8eVBlsUMeTmTgMtMoHCW9ew0wqj99kLUUO253MB71LSqLT6afHgb/Rf
+         6c1x7TdnLbq2s10oHH44I9DTDzRj2e3X9/+ceodqmy6BsOnkUyOjqr6uvLOhxbWOBOnB
+         izwObXtTyl3oUzSuXnBRUlPAfQHL64u7Fh0D0fNTKJ3hzUjk6sJvPGCB1No22BYq9azF
+         wZDaFPEJobhn76puvWQneZN1zdgbgqrnKIOH9Orjz+rCTvebRgWUMSDzn7ggTpMjdzBf
+         sGPk19shA3Bl6nxwkRvFUkXx8EOWIqXBtwLk4mFMOajvPK1ocwOTB82MYKjGM9G/0apN
+         LNcg==
+X-Gm-Message-State: AOAM533W3IPX+n7Ok7x1fopqcdt9RP1vl4jGBpNig50IjDq2/U5lxrqx
+        e3B9zj9xhz2Tc/cA2m6MxDQ84wh+jdrLWJi3GJbinB/0l7lP6OKAmlxlQXZ689sbyHUJ93JrrqJ
+        d49V3uX7hgwwZEKoyKHcBHrre9hae0K1JMzBPGA3l4U1TrAGiVZ8q45P8OeF1B90bQ7SmrtnxgR
+        O+
+X-Received: by 2002:a17:906:2808:: with SMTP id r8mr25993286ejc.140.1618352467018;
+        Tue, 13 Apr 2021 15:21:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweb6irLKjE2l7eiBtQPYc8fM3YXyt0Iw1UtOdvpJRu+d+KfeTlsGKirqaRu3/BrB0tlRN3oQ==
+X-Received: by 2002:a17:906:2808:: with SMTP id r8mr25993256ejc.140.1618352466601;
+        Tue, 13 Apr 2021 15:21:06 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y21sm10123887edv.31.2021.04.13.15.21.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 15:21:06 -0700 (PDT)
+Subject: Re: [PATCH] doc/virt/kvm: move KVM_X86_SET_MSR_FILTER in section 8
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        linux-doc@vger.kernel.org
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210316170814.64286-1-eesposit@redhat.com>
+ <87v98priev.fsf@meer.lwn.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d908ef69-72a0-80ea-4073-448f72a61560@redhat.com>
+Date:   Wed, 14 Apr 2021 00:21:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
+In-Reply-To: <87v98priev.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13 Apr 16:31 CDT 2021, Thara Gopinath wrote:
+On 13/04/21 23:20, Jonathan Corbet wrote:
+> Emanuele Giuseppe Esposito <eesposit@redhat.com> writes:
+> 
+>> KVM_X86_SET_MSR_FILTER is a capability, not an ioctl.
+>> Therefore move it from section 4.97 to the new 8.31 (other capabilities).
+>>
+>> To fill the gap, move KVM_X86_SET_MSR_FILTER (was 4.126) to
+>> 4.97, and shifted Xen-related ioctl (were 4.127 - 4.130) by
+>> one place (4.126 - 4.129).
+>>
+>> Also fixed minor typo in KVM_GET_MSR_INDEX_LIST ioctl description
+>> (section 4.3).
+>>
+>> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+>> ---
+>>   Documentation/virt/kvm/api.rst | 250 ++++++++++++++++-----------------
+>>   1 file changed, 125 insertions(+), 125 deletions(-)
+> 
+> Paolo, what's your thought on this one?  If it's OK should I pick it up?
 
+I missed the patch, I'll queue it up for 5.13.
+
+Paolo
+
+> Thanks,
 > 
-> Hi Bjorn,
+> jon
 > 
-> On 4/5/21 6:18 PM, Bjorn Andersson wrote:
-> > On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
-> > 
-> > > Add register programming sequence for enabling AEAD
-> > > algorithms on the Qualcomm crypto engine.
-> > > 
-> > > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> > > ---
-> > >   drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
-> > >   1 file changed, 153 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
-> > > index 05a71c5ecf61..54d209cb0525 100644
-> > > --- a/drivers/crypto/qce/common.c
-> > > +++ b/drivers/crypto/qce/common.c
-> > > @@ -15,6 +15,16 @@
-> > >   #include "core.h"
-> > >   #include "regs-v5.h"
-> > >   #include "sha.h"
-> > > +#include "aead.h"
-> > > +
-> > > +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
-> > > +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
-> > > +};
-> > > +
-> > > +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
-> > > +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
-> > > +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
-> > > +};
-> > >   static inline u32 qce_read(struct qce_device *qce, u32 offset)
-> > >   {
-> > > @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
-> > >   		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
-> > >   }
-> > > -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
-> > > +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
-> > >   static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
-> > >   {
-> > >   	u32 cfg = 0;
-> > > @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
-> > >   	return cfg;
-> > >   }
-> > > +#endif
-> > > +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
-> > >   static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
-> > >   {
-> > >   	struct ahash_request *req = ahash_request_cast(async_req);
-> > > @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
-> > >   }
-> > >   #endif
-> > > -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
-> > > +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
-> > >   static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
-> > >   {
-> > >   	u32 cfg = 0;
-> > > @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
-> > >   	return cfg;
-> > >   }
-> > > +#endif
-> > > +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
-> > >   static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
-> > >   {
-> > >   	u8 swap[QCE_AES_IV_LENGTH];
-> > > @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
-> > >   }
-> > >   #endif
-> > > +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
-> > > +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
-> > > +{
-> > > +	struct aead_request *req = aead_request_cast(async_req);
-> > > +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
-> > > +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
-> > > +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
-> > > +	struct qce_device *qce = tmpl->qce;
-> > > +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
-> > > +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
-> > > +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
-> > > +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
-> > > +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
-> > > +	unsigned int enc_keylen = ctx->enc_keylen;
-> > > +	unsigned int auth_keylen = ctx->auth_keylen;
-> > > +	unsigned int enc_ivsize = rctx->ivsize;
-> > > +	unsigned int auth_ivsize;
-> > > +	unsigned int enckey_words, enciv_words;
-> > > +	unsigned int authkey_words, authiv_words, authnonce_words;
-> > > +	unsigned long flags = rctx->flags;
-> > > +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
-> > 
-> > I don't see any reason to initialize encr_cfg or auth_cfg.
-> 
-> right.. I will remove it
-> 
-> > 
-> > > +	u32 *iv_last_word;
-> > > +
-> > > +	qce_setup_config(qce);
-> > > +
-> > > +	/* Write encryption key */
-> > > +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
-> > > +	enckey_words = enc_keylen / sizeof(u32);
-> > > +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
-> > 
-> > Afaict all "array registers" in this function are affected by the
-> > CRYPTO_SETUP little endian bit, but you set this bit before launching
-> > the operation dependent on IS_CCM(). So is this really working for the
-> > !IS_CCM() case?
-> 
-> I am not sure I understand you. Below ,
-> 	/* get little endianness */
-> 	config = qce_config_reg(qce, 1);
-> 	qce_write(qce, REG_CONFIG, config);
-> 
-> is outside of any checks..
+>>
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 1a2b5210cdbf..a230140d6a7f 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -201,7 +201,7 @@ Errors:
+>>   
+>>     ======     ============================================================
+>>     EFAULT     the msr index list cannot be read from or written to
+>> -  E2BIG      the msr index list is to be to fit in the array specified by
+>> +  E2BIG      the msr index list is too big to fit in the array specified by
+>>                the user.
+>>     ======     ============================================================
+>>   
+>> @@ -3686,31 +3686,105 @@ which is the maximum number of possibly pending cpu-local interrupts.
+>>   
+>>   Queues an SMI on the thread's vcpu.
+>>   
+>> -4.97 KVM_CAP_PPC_MULTITCE
+>> --------------------------
+>> +4.97 KVM_X86_SET_MSR_FILTER
+>> +----------------------------
+>>   
+>> -:Capability: KVM_CAP_PPC_MULTITCE
+>> -:Architectures: ppc
+>> -:Type: vm
+>> +:Capability: KVM_X86_SET_MSR_FILTER
+>> +:Architectures: x86
+>> +:Type: vm ioctl
+>> +:Parameters: struct kvm_msr_filter
+>> +:Returns: 0 on success, < 0 on error
+>>   
+>> -This capability means the kernel is capable of handling hypercalls
+>> -H_PUT_TCE_INDIRECT and H_STUFF_TCE without passing those into the user
+>> -space. This significantly accelerates DMA operations for PPC KVM guests.
+>> -User space should expect that its handlers for these hypercalls
+>> -are not going to be called if user space previously registered LIOBN
+>> -in KVM (via KVM_CREATE_SPAPR_TCE or similar calls).
+>> +::
+>>   
+>> -In order to enable H_PUT_TCE_INDIRECT and H_STUFF_TCE use in the guest,
+>> -user space might have to advertise it for the guest. For example,
+>> -IBM pSeries (sPAPR) guest starts using them if "hcall-multi-tce" is
+>> -present in the "ibm,hypertas-functions" device-tree property.
+>> +  struct kvm_msr_filter_range {
+>> +  #define KVM_MSR_FILTER_READ  (1 << 0)
+>> +  #define KVM_MSR_FILTER_WRITE (1 << 1)
+>> +	__u32 flags;
+>> +	__u32 nmsrs; /* number of msrs in bitmap */
+>> +	__u32 base;  /* MSR index the bitmap starts at */
+>> +	__u8 *bitmap; /* a 1 bit allows the operations in flags, 0 denies */
+>> +  };
+>>   
+>> -The hypercalls mentioned above may or may not be processed successfully
+>> -in the kernel based fast path. If they can not be handled by the kernel,
+>> -they will get passed on to user space. So user space still has to have
+>> -an implementation for these despite the in kernel acceleration.
+>> +  #define KVM_MSR_FILTER_MAX_RANGES 16
+>> +  struct kvm_msr_filter {
+>> +  #define KVM_MSR_FILTER_DEFAULT_ALLOW (0 << 0)
+>> +  #define KVM_MSR_FILTER_DEFAULT_DENY  (1 << 0)
+>> +	__u32 flags;
+>> +	struct kvm_msr_filter_range ranges[KVM_MSR_FILTER_MAX_RANGES];
+>> +  };
+>>   
+>> -This capability is always enabled.
+>> +flags values for ``struct kvm_msr_filter_range``:
+>> +
+>> +``KVM_MSR_FILTER_READ``
+>> +
+>> +  Filter read accesses to MSRs using the given bitmap. A 0 in the bitmap
+>> +  indicates that a read should immediately fail, while a 1 indicates that
+>> +  a read for a particular MSR should be handled regardless of the default
+>> +  filter action.
+>> +
+>> +``KVM_MSR_FILTER_WRITE``
+>> +
+>> +  Filter write accesses to MSRs using the given bitmap. A 0 in the bitmap
+>> +  indicates that a write should immediately fail, while a 1 indicates that
+>> +  a write for a particular MSR should be handled regardless of the default
+>> +  filter action.
+>> +
+>> +``KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE``
+>> +
+>> +  Filter both read and write accesses to MSRs using the given bitmap. A 0
+>> +  in the bitmap indicates that both reads and writes should immediately fail,
+>> +  while a 1 indicates that reads and writes for a particular MSR are not
+>> +  filtered by this range.
+>> +
+>> +flags values for ``struct kvm_msr_filter``:
+>> +
+>> +``KVM_MSR_FILTER_DEFAULT_ALLOW``
+>> +
+>> +  If no filter range matches an MSR index that is getting accessed, KVM will
+>> +  fall back to allowing access to the MSR.
+>> +
+>> +``KVM_MSR_FILTER_DEFAULT_DENY``
+>> +
+>> +  If no filter range matches an MSR index that is getting accessed, KVM will
+>> +  fall back to rejecting access to the MSR. In this mode, all MSRs that should
+>> +  be processed by KVM need to explicitly be marked as allowed in the bitmaps.
+>> +
+>> +This ioctl allows user space to define up to 16 bitmaps of MSR ranges to
+>> +specify whether a certain MSR access should be explicitly filtered for or not.
+>> +
+>> +If this ioctl has never been invoked, MSR accesses are not guarded and the
+>> +default KVM in-kernel emulation behavior is fully preserved.
+>> +
+>> +Calling this ioctl with an empty set of ranges (all nmsrs == 0) disables MSR
+>> +filtering. In that mode, ``KVM_MSR_FILTER_DEFAULT_DENY`` is invalid and causes
+>> +an error.
+>> +
+>> +As soon as the filtering is in place, every MSR access is processed through
+>> +the filtering except for accesses to the x2APIC MSRs (from 0x800 to 0x8ff);
+>> +x2APIC MSRs are always allowed, independent of the ``default_allow`` setting,
+>> +and their behavior depends on the ``X2APIC_ENABLE`` bit of the APIC base
+>> +register.
+>> +
+>> +If a bit is within one of the defined ranges, read and write accesses are
+>> +guarded by the bitmap's value for the MSR index if the kind of access
+>> +is included in the ``struct kvm_msr_filter_range`` flags.  If no range
+>> +cover this particular access, the behavior is determined by the flags
+>> +field in the kvm_msr_filter struct: ``KVM_MSR_FILTER_DEFAULT_ALLOW``
+>> +and ``KVM_MSR_FILTER_DEFAULT_DENY``.
+>> +
+>> +Each bitmap range specifies a range of MSRs to potentially allow access on.
+>> +The range goes from MSR index [base .. base+nmsrs]. The flags field
+>> +indicates whether reads, writes or both reads and writes are filtered
+>> +by setting a 1 bit in the bitmap for the corresponding MSR index.
+>> +
+>> +If an MSR access is not permitted through the filtering, it generates a
+>> +#GP inside the guest. When combined with KVM_CAP_X86_USER_SPACE_MSR, that
+>> +allows user space to deflect and potentially handle various MSR accesses
+>> +into user space.
+>> +
+>> +If a vCPU is in running state while this ioctl is invoked, the vCPU may
+>> +experience inconsistent filtering behavior on MSR accesses.
+>>   
+>>   4.98 KVM_CREATE_SPAPR_TCE_64
+>>   ----------------------------
+>> @@ -4706,107 +4780,7 @@ KVM_PV_VM_VERIFY
+>>     Verify the integrity of the unpacked image. Only if this succeeds,
+>>     KVM is allowed to start protected VCPUs.
+>>   
+>> -4.126 KVM_X86_SET_MSR_FILTER
+>> -----------------------------
+>> -
+>> -:Capability: KVM_X86_SET_MSR_FILTER
+>> -:Architectures: x86
+>> -:Type: vm ioctl
+>> -:Parameters: struct kvm_msr_filter
+>> -:Returns: 0 on success, < 0 on error
+>> -
+>> -::
+>> -
+>> -  struct kvm_msr_filter_range {
+>> -  #define KVM_MSR_FILTER_READ  (1 << 0)
+>> -  #define KVM_MSR_FILTER_WRITE (1 << 1)
+>> -	__u32 flags;
+>> -	__u32 nmsrs; /* number of msrs in bitmap */
+>> -	__u32 base;  /* MSR index the bitmap starts at */
+>> -	__u8 *bitmap; /* a 1 bit allows the operations in flags, 0 denies */
+>> -  };
+>> -
+>> -  #define KVM_MSR_FILTER_MAX_RANGES 16
+>> -  struct kvm_msr_filter {
+>> -  #define KVM_MSR_FILTER_DEFAULT_ALLOW (0 << 0)
+>> -  #define KVM_MSR_FILTER_DEFAULT_DENY  (1 << 0)
+>> -	__u32 flags;
+>> -	struct kvm_msr_filter_range ranges[KVM_MSR_FILTER_MAX_RANGES];
+>> -  };
+>> -
+>> -flags values for ``struct kvm_msr_filter_range``:
+>> -
+>> -``KVM_MSR_FILTER_READ``
+>> -
+>> -  Filter read accesses to MSRs using the given bitmap. A 0 in the bitmap
+>> -  indicates that a read should immediately fail, while a 1 indicates that
+>> -  a read for a particular MSR should be handled regardless of the default
+>> -  filter action.
+>> -
+>> -``KVM_MSR_FILTER_WRITE``
+>> -
+>> -  Filter write accesses to MSRs using the given bitmap. A 0 in the bitmap
+>> -  indicates that a write should immediately fail, while a 1 indicates that
+>> -  a write for a particular MSR should be handled regardless of the default
+>> -  filter action.
+>> -
+>> -``KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE``
+>> -
+>> -  Filter both read and write accesses to MSRs using the given bitmap. A 0
+>> -  in the bitmap indicates that both reads and writes should immediately fail,
+>> -  while a 1 indicates that reads and writes for a particular MSR are not
+>> -  filtered by this range.
+>> -
+>> -flags values for ``struct kvm_msr_filter``:
+>> -
+>> -``KVM_MSR_FILTER_DEFAULT_ALLOW``
+>> -
+>> -  If no filter range matches an MSR index that is getting accessed, KVM will
+>> -  fall back to allowing access to the MSR.
+>> -
+>> -``KVM_MSR_FILTER_DEFAULT_DENY``
+>> -
+>> -  If no filter range matches an MSR index that is getting accessed, KVM will
+>> -  fall back to rejecting access to the MSR. In this mode, all MSRs that should
+>> -  be processed by KVM need to explicitly be marked as allowed in the bitmaps.
+>> -
+>> -This ioctl allows user space to define up to 16 bitmaps of MSR ranges to
+>> -specify whether a certain MSR access should be explicitly filtered for or not.
+>> -
+>> -If this ioctl has never been invoked, MSR accesses are not guarded and the
+>> -default KVM in-kernel emulation behavior is fully preserved.
+>> -
+>> -Calling this ioctl with an empty set of ranges (all nmsrs == 0) disables MSR
+>> -filtering. In that mode, ``KVM_MSR_FILTER_DEFAULT_DENY`` is invalid and causes
+>> -an error.
+>> -
+>> -As soon as the filtering is in place, every MSR access is processed through
+>> -the filtering except for accesses to the x2APIC MSRs (from 0x800 to 0x8ff);
+>> -x2APIC MSRs are always allowed, independent of the ``default_allow`` setting,
+>> -and their behavior depends on the ``X2APIC_ENABLE`` bit of the APIC base
+>> -register.
+>> -
+>> -If a bit is within one of the defined ranges, read and write accesses are
+>> -guarded by the bitmap's value for the MSR index if the kind of access
+>> -is included in the ``struct kvm_msr_filter_range`` flags.  If no range
+>> -cover this particular access, the behavior is determined by the flags
+>> -field in the kvm_msr_filter struct: ``KVM_MSR_FILTER_DEFAULT_ALLOW``
+>> -and ``KVM_MSR_FILTER_DEFAULT_DENY``.
+>> -
+>> -Each bitmap range specifies a range of MSRs to potentially allow access on.
+>> -The range goes from MSR index [base .. base+nmsrs]. The flags field
+>> -indicates whether reads, writes or both reads and writes are filtered
+>> -by setting a 1 bit in the bitmap for the corresponding MSR index.
+>> -
+>> -If an MSR access is not permitted through the filtering, it generates a
+>> -#GP inside the guest. When combined with KVM_CAP_X86_USER_SPACE_MSR, that
+>> -allows user space to deflect and potentially handle various MSR accesses
+>> -into user space.
+>> -
+>> -If a vCPU is in running state while this ioctl is invoked, the vCPU may
+>> -experience inconsistent filtering behavior on MSR accesses.
+>> -
+>> -4.127 KVM_XEN_HVM_SET_ATTR
+>> +4.126 KVM_XEN_HVM_SET_ATTR
+>>   --------------------------
+>>   
+>>   :Capability: KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO
+>> @@ -4849,7 +4823,7 @@ KVM_XEN_ATTR_TYPE_SHARED_INFO
+>>   KVM_XEN_ATTR_TYPE_UPCALL_VECTOR
+>>     Sets the exception vector used to deliver Xen event channel upcalls.
+>>   
+>> -4.128 KVM_XEN_HVM_GET_ATTR
+>> +4.127 KVM_XEN_HVM_GET_ATTR
+>>   --------------------------
+>>   
+>>   :Capability: KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO
+>> @@ -4861,7 +4835,7 @@ KVM_XEN_ATTR_TYPE_UPCALL_VECTOR
+>>   Allows Xen VM attributes to be read. For the structure and types,
+>>   see KVM_XEN_HVM_SET_ATTR above.
+>>   
+>> -4.129 KVM_XEN_VCPU_SET_ATTR
+>> +4.128 KVM_XEN_VCPU_SET_ATTR
+>>   ---------------------------
+>>   
+>>   :Capability: KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO
+>> @@ -4923,7 +4897,7 @@ KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST
+>>     or RUNSTATE_offline) to set the current accounted state as of the
+>>     adjusted state_entry_time.
+>>   
+>> -4.130 KVM_XEN_VCPU_GET_ATTR
+>> +4.129 KVM_XEN_VCPU_GET_ATTR
+>>   ---------------------------
+>>   
+>>   :Capability: KVM_CAP_XEN_HVM / KVM_XEN_HVM_CONFIG_SHARED_INFO
+>> @@ -6721,3 +6695,29 @@ vcpu_info is set.
+>>   The KVM_XEN_HVM_CONFIG_RUNSTATE flag indicates that the runstate-related
+>>   features KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADDR/_CURRENT/_DATA/_ADJUST are
+>>   supported by the KVM_XEN_VCPU_SET_ATTR/KVM_XEN_VCPU_GET_ATTR ioctls.
+>> +
+>> +8.31 KVM_CAP_PPC_MULTITCE
+>> +-------------------------
+>> +
+>> +:Capability: KVM_CAP_PPC_MULTITCE
+>> +:Architectures: ppc
+>> +:Type: vm
+>> +
+>> +This capability means the kernel is capable of handling hypercalls
+>> +H_PUT_TCE_INDIRECT and H_STUFF_TCE without passing those into the user
+>> +space. This significantly accelerates DMA operations for PPC KVM guests.
+>> +User space should expect that its handlers for these hypercalls
+>> +are not going to be called if user space previously registered LIOBN
+>> +in KVM (via KVM_CREATE_SPAPR_TCE or similar calls).
+>> +
+>> +In order to enable H_PUT_TCE_INDIRECT and H_STUFF_TCE use in the guest,
+>> +user space might have to advertise it for the guest. For example,
+>> +IBM pSeries (sPAPR) guest starts using them if "hcall-multi-tce" is
+>> +present in the "ibm,hypertas-functions" device-tree property.
+>> +
+>> +The hypercalls mentioned above may or may not be processed successfully
+>> +in the kernel based fast path. If they can not be handled by the kernel,
+>> +they will get passed on to user space. So user space still has to have
+>> +an implementation for these despite the in kernel acceleration.
+>> +
+>> +This capability is always enabled.
+>> \ No newline at end of file
+>> -- 
+>> 2.29.2
 > 
 
-You're right, I misread that snippet as I was jumping through the
-function. So we're unconditionally running the hardware in little endian
-mode.
-
-> > 
-> > > +
-> > > +	/* Write encryption iv */
-> > > +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
-> > > +	enciv_words = enc_ivsize / sizeof(u32);
-> > > +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
-> > 
-> > It would be nice if this snippet was extracted to a helper function.
-> > 
-> > > +
-> > > +	if (IS_CCM(rctx->flags)) {
-> > > +		iv_last_word = (u32 *)&enciv[enciv_words - 1];
-> > > +//		qce_write(qce, REG_CNTR3_IV3, enciv[enciv_words - 1] + 1);
-> > 
-> > I believe this is a remnant of the two surrounding lines.
-> 
-> It indeed is.. I will remove it.
-> 
-> > 
-> > > +		qce_write(qce, REG_CNTR3_IV3, (*iv_last_word) + 1);
-> > 
-> > enciv is an array of big endian 32-bit integers, which you tell the
-> > compiler to treat as cpu-native endian, and then you do math on it.
-> > Afaict from the documentation the value of REG_CNTR3_IVn should be set
-> > to rctx->iv + 1, but if the hardware expects these in big endian then I
-> > think you added 16777216.
-> 
-> So, the crypto engine documentation talks of writing to these registers in
-> little endian mode. The byte stream that you get for iv from the user
-> is in big endian mode as in the MSB is byte 0. So we kind of invert this and
-> write  to these registers. This is what happens with declaring the __be32
-> array and copying words to it from the byte stream. So now byte 0 is the LSB
-> and a +1 will just add a 1 to it.
-> 
-
-But if the data come in big endian and after qce_cpu_to_be32p_array()
-you're able to do math on them with expected result and you're finally
-passing the data to writel() then I think that qce_cpu_to_be32p_array()
-is actually be32_to_cpu() and after the conversion you should carry the
-results in CPU-native u32 arrays - and thereby skip the typecasting.
-
-> I suspect from what I read in the documentation we could get away by
-> removing this and writing the big endian byte stream directly and never
-> setting the little endian in config register. Though I am not sure if this
-> has ever been tested out. If we change it, it will be across algorithms and
-> as a separate effort.
-
-writel() will, at least on arm64, convert the CPU native value to little
-endian before writing it out, so I think the current setting make sense.
-
-> 
-> > 
-> > Perhaps I'm missing something here though?
-> > 
-> > PS. Based on how the documentation is written, shouldn't you write out
-> > REG_CNTR_IV[012] as well?
-> 
-> It is done on top, right ?
-> qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
-> 
-
-You're right, depending on enciv_words you write the 4 registers, then
-increment the last word and write that out again.
-
-> > 
-> > > +		qce_write_array(qce, REG_ENCR_CCM_INT_CNTR0, (u32 *)enciv, enciv_words);
-> > > +		qce_write(qce, REG_CNTR_MASK, ~0);
-> > > +		qce_write(qce, REG_CNTR_MASK0, ~0);
-> > > +		qce_write(qce, REG_CNTR_MASK1, ~0);
-> > > +		qce_write(qce, REG_CNTR_MASK2, ~0);
-> > > +	}
-> > > +
-> > > +	/* Clear authentication IV and KEY registers of previous values */
-> > > +	qce_clear_array(qce, REG_AUTH_IV0, 16);
-> > > +	qce_clear_array(qce, REG_AUTH_KEY0, 16);
-> > > +
-> > > +	/* Clear byte count */
-> > > +	qce_clear_array(qce, REG_AUTH_BYTECNT0, 4);
-> > > +
-> > > +	/* Write authentication key */
-> > > +	qce_cpu_to_be32p_array(authkey, ctx->auth_key, auth_keylen);
-> > > +	authkey_words = DIV_ROUND_UP(auth_keylen, sizeof(u32));
-> > > +	qce_write_array(qce, REG_AUTH_KEY0, (u32 *)authkey, authkey_words);
-> > > +
-> > > +	if (IS_SHA_HMAC(rctx->flags)) {
-> > > +		/* Write default authentication iv */
-> > > +		if (IS_SHA1_HMAC(rctx->flags)) {
-> > > +			auth_ivsize = SHA1_DIGEST_SIZE;
-> > > +			memcpy(authiv, std_iv_sha1, auth_ivsize);
-> > > +		} else if (IS_SHA256_HMAC(rctx->flags)) {
-> > > +			auth_ivsize = SHA256_DIGEST_SIZE;
-> > > +			memcpy(authiv, std_iv_sha256, auth_ivsize);
-> > > +		}
-> > > +		authiv_words = auth_ivsize / sizeof(u32);
-> > > +		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
-> > 
-> > AUTH_IV0 is affected by the little endian configuration, does this imply
-> > that IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags? If so
-> > I think it would be nice if you grouped the conditionals in a way that
-> > made that obvious when reading the function.
-> 
-> So yes IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags.
-> AUTH_IVn is 0 for ccm and has initial value for HMAC algorithms. I don't
-> understand the confusion here.
-> 
-
-I'm just saying that writing is as below would have made it obvious to
-me that IS_SHA_HMAC() and IS_CCM() are exclusive:
-
-if (IS_SHA_HMAC(flags)) {
-  ...
-} else if (IS_CCM(flags)) {
-  ....
-}
-
-Regards,
-Bjorn
-
-> > 
-> > > +	}
-> > > +
-> > > +	if (IS_CCM(rctx->flags)) {
-> > > +		qce_cpu_to_be32p_array(authnonce, rctx->ccm_nonce, QCE_MAX_NONCE);
-> > > +		authnonce_words = QCE_MAX_NONCE / sizeof(u32);
-> > > +		qce_write_array(qce, REG_AUTH_INFO_NONCE0, (u32 *)authnonce, authnonce_words);
-> > > +	}
-> > > +
-> > > +	/* Set up ENCR_SEG_CFG */
-> > > +	encr_cfg = qce_encr_cfg(flags, enc_keylen);
-> > > +	if (IS_ENCRYPT(flags))
-> > > +		encr_cfg |= BIT(ENCODE_SHIFT);
-> > > +	qce_write(qce, REG_ENCR_SEG_CFG, encr_cfg);
-> > > +
-> > > +	/* Set up AUTH_SEG_CFG */
-> > > +	auth_cfg = qce_auth_cfg(rctx->flags, auth_keylen, ctx->authsize);
-> > > +	auth_cfg |= BIT(AUTH_LAST_SHIFT);
-> > > +	auth_cfg |= BIT(AUTH_FIRST_SHIFT);
-> > > +	if (IS_ENCRYPT(flags)) {
-> > > +		if (IS_CCM(rctx->flags))
-> > > +			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
-> > > +		else
-> > > +			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
-> > > +	} else {
-> > > +		if (IS_CCM(rctx->flags))
-> > > +			auth_cfg |= AUTH_POS_AFTER << AUTH_POS_SHIFT;
-> > > +		else
-> > > +			auth_cfg |= AUTH_POS_BEFORE << AUTH_POS_SHIFT;
-> > > +	}
-> > > +	qce_write(qce, REG_AUTH_SEG_CFG, auth_cfg);
-> > > +
-> > > +	totallen = rctx->cryptlen + rctx->assoclen;
-> > > +
-> > > +	/* Set the encryption size and start offset */
-> > > +	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
-> > > +		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen + ctx->authsize);
-> > > +	else
-> > > +		qce_write(qce, REG_ENCR_SEG_SIZE, rctx->cryptlen);
-> > > +	qce_write(qce, REG_ENCR_SEG_START, rctx->assoclen & 0xffff);
-> > > +
-> > > +	/* Set the authentication size and start offset */
-> > > +	qce_write(qce, REG_AUTH_SEG_SIZE, totallen);
-> > > +	qce_write(qce, REG_AUTH_SEG_START, 0);
-> > > +
-> > > +	/* Write total length */
-> > > +	if (IS_CCM(rctx->flags) && IS_DECRYPT(rctx->flags))
-> > > +		qce_write(qce, REG_SEG_SIZE, totallen + ctx->authsize);
-> > > +	else
-> > > +		qce_write(qce, REG_SEG_SIZE, totallen);
-> > > +
-> > > +	/* get little endianness */
-> > > +	config = qce_config_reg(qce, 1);
-> > > +	qce_write(qce, REG_CONFIG, config);
-> > > +
-> > > +	/* Start the process */
-> > > +	if (IS_CCM(flags))
-> > > +		qce_crypto_go(qce, 0);
-> > 
-> > Second parameter is defined as "bool", please use "false" here (and true
-> > below). Or
-> > 
-> > 	qce_crypto_go(qce, !IS_CCM(flags));
-> 
-> will do... I like the one liner better.
-> 
-> 
-> -- 
-> Warm Regards
-> Thara
