@@ -2,163 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F4F35D44D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A42035D44F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344237AbhDMAGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S1344252AbhDMAHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237762AbhDMAGc (ORCPT
+        with ESMTP id S238214AbhDMAHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:06:32 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7396C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id c6-20020a4aacc60000b02901e6260b12e2so947905oon.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
+        Mon, 12 Apr 2021 20:07:17 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94C3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e14so1302991ils.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8fxzT0uDrVTZBSQzxnvbCG//UD0EW3zTDTfE8VxsHrc=;
-        b=hjwYNlWWZKfcv2jU4VNMOZ60EHaQpSYRZYAmnsiyFrZuBjUnjHeJSL0nOJ2VKUmjUl
-         Z8riG/xcb9KBQVHI6N2Ego7tvElHpe6Njq2rgxKUS3RqOgOgjzAW4vtNRrbsimTpbkxI
-         j24++xNm0Yh6dXBGNdT1lNynHNA+juSm6Jb0lO/7gxQ8cHogdfas6Sy3sL/egZ6MRJ/Y
-         5aXsKHoVhwR8S5EJceL7EPQe0sEU0YsYMp5D2S0PbsbiTLn2TBmQXzUDSVTp01BaUn90
-         TLeJOGVhACbUl9T7uipnvddSGQ6ym4ttDHgrRaHBfAoQlT3BNRbPqCYuOa67DQB0pizH
-         fIgg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wi5y58NXhaqWJqCu7rykbp59hRwnukVU5T9tEJRybe8=;
+        b=iFgUEbfkuYGLYjek/vn6OyGcvRT0ASn89ADFGms+ENBK1UIlXIktEm3dG3Ak1YWvre
+         wM+rCeo2ePfcJJ2APzALUB//X/vSC0ytlevnrHT6ojYCQiLUujeUvujyCXAbky+hZnZH
+         0DUwx5fDjSzBvVhAAJWnhISC+XMFM8fUuL3xvqRd5v6jQ/UxU2O2FBc2ok2gKhMKKaaC
+         CtcnjJNQjtBQrJJppmgTrU4nf6Wy3bf3AvK1s4ZRP/+gqEE1ishwESM+4lSu4ufXbw3I
+         rRy9TW+e0jg0fKQV87RWUfztjyaGtIUKUVhd4fEpI4pBL81KnTy83nRlRiayZA2pvWlI
+         S/UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8fxzT0uDrVTZBSQzxnvbCG//UD0EW3zTDTfE8VxsHrc=;
-        b=jKKYrTaKf/QlwmXhPtWpKFr4FsmwJ//enoNRTklgM0dfr0HPdaRJqC2TghSH8TVhyl
-         0mKWncVRFADCY/6V7zi0f9HgKzV+viAC0fWBMtXUNcA4NY04EFdIHOlBpnkcNaJxjZBq
-         PVA7UIxsuFNOrmQfipOPtwG1a54nSZ4PT7rpD8O9ExqbEV+PDKF2SMRJTajaRyOBmTK7
-         PSCIK8NtbKXJaqKQf+08QPvMjr6/Rkxq1eUIaPoPubsG9qdXU9w2Vb5EanAVsZtQzdH+
-         V6hd/UnxX6FeCgBuQtIPHQiYCcS1HidWUtcbzniiK9oQRplF69kx5XP/HIbWivt5lx1X
-         dkZA==
-X-Gm-Message-State: AOAM530w/kFdne+ycqjJ1jAi5AKVT3p+jZsVY/xbRZnvqAXYeSx1zKZj
-        cJgXwBnQZSzClcrYrf5Nsxqasg==
-X-Google-Smtp-Source: ABdhPJxttMmrIFUBQ2/jJF76W75whagEnk4Y+SUZP3EtUsqpzT+YH+C6AAjdM/AtBBZ+j8G+HV9u6Q==
-X-Received: by 2002:a4a:bc92:: with SMTP id m18mr1826918oop.55.1618272372130;
-        Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s3sm2513396ool.36.2021.04.12.17.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 17:06:11 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 19:06:09 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1 1/2] soc: qcom: aoss: Expose send for generic usecase
-Message-ID: <20210413000609.GG1538589@yoga>
-References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
- <1617344238-12137-2-git-send-email-deesin@codeaurora.org>
- <YGn0wBkOOILgaq5w@builder.lan>
- <20210409073153.GE4376@work>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wi5y58NXhaqWJqCu7rykbp59hRwnukVU5T9tEJRybe8=;
+        b=qeQo7d1wkHq0RuOWvDXVWLZkGB1a/BWZyBaJYglVupfX04/Sacex+wWct8B84q0Zcv
+         kn05AV8VirK3wwznGKH5mJhHdFIHcWDTmWyLfXbawg6eAMdaFE1LcOEwvRanuIg/UHdp
+         hQKTpRpFi0x+rgonv2K4WwD4V+fpKPsAZJ4TGzhMX8JFVb5fU3ZwF+ddd+TG/0P5zD/D
+         WWMdyqK9K6Z2tzRWeGvlr9HYIc1pNN0m6VNWiXEaZdFLPFMHUWr4twvYrF7fXFNlisb3
+         oo+AwsKXNYw49WQkg9AjNklufBVWWfMkoRLbMfu/R2mpb8UO2vD8V3bjwUJM1spzIupQ
+         HOeg==
+X-Gm-Message-State: AOAM533sMOAD7EuL17qYzwZngFoKMh4lFFEs6Pugg62/yrN9OxY2c1yq
+        XO+3IUbt9dP3T6OcL7fiRK45ZhMDcHuIj6ZjbV6Q3g==
+X-Google-Smtp-Source: ABdhPJzL9b49ItYd+mw5mgINWsaHfu+pNeOHloM1N2RQWofppr7WxvE+6yes6Vca5KNe0SZCkoDOdWf8ui7+d+uwO8A=
+X-Received: by 2002:a05:6e02:1e08:: with SMTP id g8mr25434450ila.176.1618272418171;
+ Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409073153.GE4376@work>
+References: <cover.1618254007.git.ashish.kalra@amd.com> <f2340642c5b8d597a099285194fca8d05c9843bd.1618254007.git.ashish.kalra@amd.com>
+In-Reply-To: <f2340642c5b8d597a099285194fca8d05c9843bd.1618254007.git.ashish.kalra@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 12 Apr 2021 17:06:21 -0700
+Message-ID: <CABayD+cofJ4FA-ZVmMpFLAA4MnDPOoAyg5=hAT=vtsfZXbYb1Q@mail.gmail.com>
+Subject: Re: [PATCH v12 09/13] mm: x86: Invoke hypercall when page encryption
+ status is changed
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Apr 02:31 CDT 2021, Manivannan Sadhasivam wrote:
-
-> On Sun, Apr 04, 2021 at 12:17:52PM -0500, Bjorn Andersson wrote:
-> > On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
-> > 
-> > > Not all upcoming usecases will have an interface to allow the aoss
-> > > driver to hook onto. Expose the send api and create a get function to
-> > > enable drivers to send their own messages to aoss.
-> > > 
-> > > Signed-off-by: Chris Lew <clew@codeaurora.org>
-> > > Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> > > ---
-> > >  drivers/soc/qcom/qcom_aoss.c | 36 +++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 35 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> > > index 53acb94..5c643f0 100644
-> > > --- a/drivers/soc/qcom/qcom_aoss.c
-> > > +++ b/drivers/soc/qcom/qcom_aoss.c
-> > > @@ -8,10 +8,12 @@
-> 
-> [...]
-> 
-> > > +	pdev = of_find_device_by_node(np);
-> > 
-> > of_find_device_by_node() will increment the refcount of the underlying
-> > struct device of pdev, so you need to platform_device_put() once you're
-> > done with it.
-> > 
-> > As a side effect of not putting the struct device, the devm_kzalloc'ed
-> > qmp pointer will remain valid. So care is needed to make sure that the
-> > client doesn't end up with a dangling pointer if the qmp device is
-> > removed.
-> > 
-> > My suggestion is that you add a "qmp_put()" function, which invokes
-> > platform_device_put() and that you add some sort of tracking ("bool
-> > orphan"?) to the struct qmp and make qmp_send() fail if this is set.
-> > 
-> 
-> I think this is a duplication of what the struct device offers. Why
-> can't we use the generic infrastructure for this usecase?
-> 
-> Like using device_initialize() in qmp_probe() along with a release
-> callback for "struct device", then using get_device() in qmp_get().
-> Then there should also be a qmp_put() API which calls put_device() to
-> decrease the refcount.
-> 
-> Ideally, the final refcount should be dropped in qmp_remove() and then
-> the release callback will be called automatically to free "struct qmp".
-> 
-> > That way if someone unbinds the aoss device, the client will still have
-> > a "valid" pointer, but won't be able to qmp_send() after qmp_close() has
-> > been called in the aoss remove function.
-> > 
-> 
-> How can someone remove the qmp device if a client is holding its reference?
-> 
-
-The device could be unbound using sysfs, in which case remove() is
-called and I assumed that devres wouldn't be released until the struct
-device's refcount hit 0.
-
-Apparently this does not seems to be how it works, following the unbind
-path I see that devres is shot down regardless of the struct device's
-refcount.
-
-So we would need to ensure that struct qmp is refcounted on its own.
-For this we don't need a separate struct device, we can simply add a
-kref to the struct and avoid using devres to keep track of its lifetime.
-
-Regards,
-Bjorn
-
-> Thanks,
-> Mani
-> 
-> > Regards,
-> > Bjorn
-> > 
-> > > +	if (!pdev)
-> > > +		return ERR_PTR(-EINVAL);
-> > > +
-> > > +	qmp = platform_get_drvdata(pdev);
-> > > +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
-> > > +}
-> > > +EXPORT_SYMBOL(qmp_get);
-> > > +
-> > >  static int qmp_probe(struct platform_device *pdev)
-> > >  {
-> > >  	struct resource *res;
-> > > -- 
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
+On Mon, Apr 12, 2021 at 12:45 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+>
+> From: Brijesh Singh <brijesh.singh@amd.com>
+>
+> Invoke a hypercall when a memory region is changed from encrypted ->
+> decrypted and vice versa. Hypervisor needs to know the page encryption
+> status during the guest migration.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/include/asm/paravirt.h       | 10 +++++
+>  arch/x86/include/asm/paravirt_types.h |  2 +
+>  arch/x86/kernel/paravirt.c            |  1 +
+>  arch/x86/mm/mem_encrypt.c             | 57 ++++++++++++++++++++++++++-
+>  arch/x86/mm/pat/set_memory.c          |  7 ++++
+>  5 files changed, 76 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> index 4abf110e2243..efaa3e628967 100644
+> --- a/arch/x86/include/asm/paravirt.h
+> +++ b/arch/x86/include/asm/paravirt.h
+> @@ -84,6 +84,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+>         PVOP_VCALL1(mmu.exit_mmap, mm);
+>  }
+>
+> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
+> +                                               bool enc)
+> +{
+> +       PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
+> +}
+> +
+>  #ifdef CONFIG_PARAVIRT_XXL
+>  static inline void load_sp0(unsigned long sp0)
+>  {
+> @@ -799,6 +805,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
+>  static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
+>  {
+>  }
+> +
+> +static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
+> +{
+> +}
+>  #endif
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* _ASM_X86_PARAVIRT_H */
+> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+> index de87087d3bde..69ef9c207b38 100644
+> --- a/arch/x86/include/asm/paravirt_types.h
+> +++ b/arch/x86/include/asm/paravirt_types.h
+> @@ -195,6 +195,8 @@ struct pv_mmu_ops {
+>
+>         /* Hook for intercepting the destruction of an mm_struct. */
+>         void (*exit_mmap)(struct mm_struct *mm);
+> +       void (*page_encryption_changed)(unsigned long vaddr, int npages,
+> +                                       bool enc);
+>
+>  #ifdef CONFIG_PARAVIRT_XXL
+>         struct paravirt_callee_save read_cr2;
+> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+> index c60222ab8ab9..9f206e192f6b 100644
+> --- a/arch/x86/kernel/paravirt.c
+> +++ b/arch/x86/kernel/paravirt.c
+> @@ -335,6 +335,7 @@ struct paravirt_patch_template pv_ops = {
+>                         (void (*)(struct mmu_gather *, void *))tlb_remove_page,
+>
+>         .mmu.exit_mmap          = paravirt_nop,
+> +       .mmu.page_encryption_changed    = paravirt_nop,
+>
+>  #ifdef CONFIG_PARAVIRT_XXL
+>         .mmu.read_cr2           = __PV_IS_CALLEE_SAVE(native_read_cr2),
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index ae78cef79980..fae9ccbd0da7 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/bitops.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/kvm_para.h>
+>
+>  #include <asm/tlbflush.h>
+>  #include <asm/fixmap.h>
+> @@ -29,6 +30,7 @@
+>  #include <asm/processor-flags.h>
+>  #include <asm/msr.h>
+>  #include <asm/cmdline.h>
+> +#include <asm/kvm_para.h>
+>
+>  #include "mm_internal.h"
+>
+> @@ -229,6 +231,47 @@ void __init sev_setup_arch(void)
+>         swiotlb_adjust_size(size);
+>  }
+>
+> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
+> +                                       bool enc)
+> +{
+> +       unsigned long sz = npages << PAGE_SHIFT;
+> +       unsigned long vaddr_end, vaddr_next;
+> +
+> +       vaddr_end = vaddr + sz;
+> +
+> +       for (; vaddr < vaddr_end; vaddr = vaddr_next) {
+> +               int psize, pmask, level;
+> +               unsigned long pfn;
+> +               pte_t *kpte;
+> +
+> +               kpte = lookup_address(vaddr, &level);
+> +               if (!kpte || pte_none(*kpte))
+> +                       return;
+> +
+> +               switch (level) {
+> +               case PG_LEVEL_4K:
+> +                       pfn = pte_pfn(*kpte);
+> +                       break;
+> +               case PG_LEVEL_2M:
+> +                       pfn = pmd_pfn(*(pmd_t *)kpte);
+> +                       break;
+> +               case PG_LEVEL_1G:
+> +                       pfn = pud_pfn(*(pud_t *)kpte);
+> +                       break;
+> +               default:
+> +                       return;
+> +               }
+> +
+> +               psize = page_level_size(level);
+> +               pmask = page_level_mask(level);
+> +
+> +               kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
+> +                                  pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
+> +
+> +               vaddr_next = (vaddr & pmask) + psize;
+> +       }
+> +}
+> +
+>  static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+>  {
+>         pgprot_t old_prot, new_prot;
+> @@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+>  static int __init early_set_memory_enc_dec(unsigned long vaddr,
+>                                            unsigned long size, bool enc)
+>  {
+> -       unsigned long vaddr_end, vaddr_next;
+> +       unsigned long vaddr_end, vaddr_next, start;
+>         unsigned long psize, pmask;
+>         int split_page_size_mask;
+>         int level, ret;
+>         pte_t *kpte;
+>
+> +       start = vaddr;
+>         vaddr_next = vaddr;
+>         vaddr_end = vaddr + size;
+>
+> @@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
+>
+>         ret = 0;
+>
+> +       set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
+> +                                       enc);
+>  out:
+>         __flush_tlb_all();
+>         return ret;
+> @@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
+>         if (sev_active() && !sev_es_active())
+>                 static_branch_enable(&sev_enable_key);
+>
+> +#ifdef CONFIG_PARAVIRT
+> +       /*
+> +        * With SEV, we need to make a hypercall when page encryption state is
+> +        * changed.
+> +        */
+> +       if (sev_active())
+> +               pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
+> +#endif
+> +
+>         print_mem_encrypt_feature_info();
+>  }
+>
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index 16f878c26667..3576b583ac65 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -27,6 +27,7 @@
+>  #include <asm/proto.h>
+>  #include <asm/memtype.h>
+>  #include <asm/set_memory.h>
+> +#include <asm/paravirt.h>
+>
+>  #include "../mm_internal.h"
+>
+> @@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+>          */
+>         cpa_flush(&cpa, 0);
+>
+> +       /* Notify hypervisor that a given memory range is mapped encrypted
+> +        * or decrypted. The hypervisor will use this information during the
+> +        * VM migration.
+> +        */
+> +       page_encryption_changed(addr, numpages, enc);
+> +
+>         return ret;
+>  }
+>
+> --
+> 2.17.1
+>
+Reviewed-by: Steve Rutherford <srutherford@google.com>
