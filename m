@@ -2,145 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDE335E613
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BA035E610
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbhDMSMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345503AbhDMSMf (ORCPT
+        id S1347554AbhDMSMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:12:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31335 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243282AbhDMSMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Apr 2021 14:12:35 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1B0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:12:15 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id i9so8355016qvo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J8WTSsefZFW62T22lrlwArgXymqZlxvKILjzLWwjgyM=;
-        b=NeRrPp3a6n+7xCPvFIEAmJzlaYcK6H2Ep2acNBn2vO1lIoqyEkSFQZPyk844XLkUcC
-         CSJ4wdBUDzbf52DdcpLNnQGRK48SbUStn+UP8xsMDxcSeTFIgnZcN2MUl5BnoMKG9LQh
-         CRwrNuvqMypoArtY1NI2wEIBJjHMfzn/dEGYOtIVpVNSxQJfLvcXs/TniO/IVJSNSyhv
-         byjFIQyzbMN8CJA8WU/zWKL6p05/5EtXDY5NGxWsaT1OECgCIU7I48szlTUHA/rFdAHr
-         aVYht9tuKFMGOF6RKe+TsNrsN+bWZdKi44ptjqa39t4suR13LqINKXw2P70leVxBb/BX
-         7xGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618337534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jyp6jh8T+sCDXl4adlhM7pZTyyIF+l/vtyYfobfKH7E=;
+        b=Ii7A13Ts8rhCein6mqKXoshnj513MSyNVFrC2URNRxolBTeKQ9b2kigfbLEwvr5fPllZ/7
+        o5XWJzODKYfzNv6h70dSN6kyreuxxPvrS08aNMLRZ2/BrdN/kZkNt+DleKp89uXsYKP44L
+        2ZNQ7m0JUL2xxH5rjhk3BQ4i7JzFEEo=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-CdZoyihqNNSJKoazm4aIhQ-1; Tue, 13 Apr 2021 14:12:13 -0400
+X-MC-Unique: CdZoyihqNNSJKoazm4aIhQ-1
+Received: by mail-qk1-f199.google.com with SMTP id x10so3541746qkm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:12:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J8WTSsefZFW62T22lrlwArgXymqZlxvKILjzLWwjgyM=;
-        b=txXkSovvTB4gwiBLkiJRCPTPozEPyD6e+63RD5Ol26vN9xTALyRq+hEYsRgl2I7vkO
-         Yfw7nzrNGy81o5+0xIIgcYXdvrETiIo2JM2QUHeVjGvTYp3L9csbC4GxWm5LUYTqlIYd
-         S7Svrxq3vpN4r+Y5b5nIqRaaZoMj6vMUYSxu74TG7f6i9WOdnC394VN/Poyn5dKKzLHR
-         Oc5axi2CpiA5YaXFxJA2bZgmi2WXES+gwzIQ2Z+dW0QnnVIyPV53TIaIEBcRSwkIsFRp
-         +NAxqamQikyLfbClHyfh/6A//0PlaS+FBn49V+/1IhoTy4VXb28KURQ/Xty/To6hGpNd
-         wWqw==
-X-Gm-Message-State: AOAM533itYOTsROOyLiPnSdw/DvA+cN8KHjHlekI3CawRUjaJS1tdxyN
-        /4CPIB4zrViN9VmKkVgAsMZF0hnqNj2GgjagS4m87A==
-X-Google-Smtp-Source: ABdhPJweJY/IhHFwcUYvXY9MEhVrrzrSZgJDFZPiTnwI0l+K32/ZohkHIF4ruWRCWlpbp9BjsCSuH+U2BMYtiLDb+SE=
-X-Received: by 2002:a05:6214:20e8:: with SMTP id 8mr33453976qvk.13.1618337534807;
- Tue, 13 Apr 2021 11:12:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jyp6jh8T+sCDXl4adlhM7pZTyyIF+l/vtyYfobfKH7E=;
+        b=cADUCxPJvgzoyY4q9nmPeAGatk+HNzb0OLkgYhw+wRA0BvKiwBXOkMSKBvZchb7xVL
+         ouQEGs0Rw82ccuasmGNJBYFTJRNse9FyvXs1K3HODU35EkBlFnT4RKuI/tqFtG3lfuW0
+         sJs2e4T+Dm30f8PWgVtLBbxg/IAUACZt3xeBVzxd2VgBjIrod12CYFvhsa8XphMQh88r
+         7o4m8VtfnyiEydorgdnMdxW/fv5drWERGokYbvGSLdf+uXtOez7IxmZv3hpkWNYVu+k3
+         CAjHv+GTlswgr8VquyLYQM/sGXO0h3AybTltIn0TNIf0hcBXy5VDffK76TynzilFy8RW
+         2PiA==
+X-Gm-Message-State: AOAM531tB2Di0eEZpNyBJ2uVyOGvr7Bm0t60KPYdw6C5US5kL2/ce9mN
+        YLUXwmpZxohP2dSEOy8Pxav8ZY/dJ5oxLgoumzRtZbmDsGI7VIKuD6jmp4wSqVyfAUn6bVTHXgx
+        j0KfLLXlz0lPPVC4Sv949E2BC
+X-Received: by 2002:a37:7ec6:: with SMTP id z189mr13740384qkc.295.1618337532452;
+        Tue, 13 Apr 2021 11:12:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxrybZjVnaoltKooNFbmo1kR2lUnevlvR+cUcoq7ZdeJnwd69eDOHqllwuYYX9vsUmyv8qvHg==
+X-Received: by 2002:a37:7ec6:: with SMTP id z189mr13740351qkc.295.1618337532022;
+        Tue, 13 Apr 2021 11:12:12 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id v65sm9847883qkc.125.2021.04.13.11.12.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 11:12:11 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 14:12:09 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 4/9] userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
+Message-ID: <20210413181209.GB4440@xz-x1>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+ <20210408234327.624367-5-axelrasmussen@google.com>
+ <20210412231736.GA1002612@xz-x1>
+ <CAJHvVcirn08ad64pTdxTRDRRXF16QnFwC-3GOT8bXMp2E2UYhg@mail.gmail.com>
 MIME-Version: 1.0
-References: <00000000000028104905bf0822ce@google.com>
-In-Reply-To: <00000000000028104905bf0822ce@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 20:12:03 +0200
-Message-ID: <CACT4Y+ZN6ue+qH_5AJ9nFmOaAnAw7tv-TdXxHyJ_TirnChURcw@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in find_inlist_lock
-To:     syzbot <syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com>
-Cc:     bridge@lists.linux-foundation.org, coreteam@netfilter.org,
-        David Miller <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>, nikolay@nvidia.com,
-        Pablo Neira Ayuso <pablo@netfilter.org>, roopa@nvidia.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJHvVcirn08ad64pTdxTRDRRXF16QnFwC-3GOT8bXMp2E2UYhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 4:22 AM syzbot
-<syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    1e43c377 Merge tag 'xtensa-20210329' of git://github.com/j..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=114cdd4ad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=78ef1d159159890
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b221933e5f9ad5b0e2fd
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b221933e5f9ad5b0e2fd@syzkaller.appspotmail.com
+On Mon, Apr 12, 2021 at 09:40:22PM -0700, Axel Rasmussen wrote:
+> On Mon, Apr 12, 2021 at 4:17 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Thu, Apr 08, 2021 at 04:43:22PM -0700, Axel Rasmussen wrote:
+> > > +/*
+> > > + * Install PTEs, to map dst_addr (within dst_vma) to page.
+> > > + *
+> > > + * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
+> > > + * whether or not dst_vma is VM_SHARED. It also handles the more general
+> > > + * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
+> > > + * backed, or not).
+> > > + *
+> > > + * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
+> > > + * shmem_mcopy_atomic_pte instead.
+> > > + */
+> > > +static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> > > +                                  struct vm_area_struct *dst_vma,
+> > > +                                  unsigned long dst_addr, struct page *page,
+> > > +                                  bool newly_allocated, bool wp_copy)
+> > > +{
+> > > +     int ret;
+> > > +     pte_t _dst_pte, *dst_pte;
+> > > +     int writable;
+> > > +     bool vm_shared = dst_vma->vm_flags & VM_SHARED;
+> > > +     spinlock_t *ptl;
+> > > +     struct inode *inode;
+> > > +     pgoff_t offset, max_off;
+> > > +
+> > > +     _dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+> > > +     writable = dst_vma->vm_flags & VM_WRITE;
+> > > +     /* For private, non-anon we need CoW (don't write to page cache!) */
+> > > +     if (!vma_is_anonymous(dst_vma) && !vm_shared)
+> > > +             writable = 0;
+> > > +
+> > > +     if (writable || vma_is_anonymous(dst_vma))
+> > > +             _dst_pte = pte_mkdirty(_dst_pte);
+> > > +     if (writable) {
+> > > +             if (wp_copy)
+> > > +                     _dst_pte = pte_mkuffd_wp(_dst_pte);
+> > > +             else
+> > > +                     _dst_pte = pte_mkwrite(_dst_pte);
+> > > +     } else if (vm_shared) {
+> > > +             /*
+> > > +              * Since we didn't pte_mkdirty(), mark the page dirty or it
+> > > +              * could be freed from under us. We could do this
+> > > +              * unconditionally, but doing it only if !writable is faster.
+> > > +              */
+> > > +             set_page_dirty(page);
+> > > +     }
+> > > +
+> > > +     dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+> > > +
+> > > +     if (vma_is_shmem(dst_vma)) {
+> > > +             /* The shmem MAP_PRIVATE case requires checking the i_size */
+> >
+> > When you start to use this function in the last patch it'll be needed too even
+> > if MAP_SHARED?
+> >
+> > How about directly state the reason of doing this ("serialize against truncate
+> > with the PT lock") instead of commenting about "who will need it"?
+> >
+> > > +             inode = dst_vma->vm_file->f_inode;
+> > > +             offset = linear_page_index(dst_vma, dst_addr);
+> > > +             max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> > > +             ret = -EFAULT;
+> > > +             if (unlikely(offset >= max_off))
+> > > +                     goto out_unlock;
+> > > +     }
+> >
+> > [...]
+> >
+> > > +/* Handles UFFDIO_CONTINUE for all shmem VMAs (shared or private). */
+> > > +static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
+> > > +                             pmd_t *dst_pmd,
+> > > +                             struct vm_area_struct *dst_vma,
+> > > +                             unsigned long dst_addr,
+> > > +                             bool wp_copy)
+> > > +{
+> > > +     struct inode *inode = file_inode(dst_vma->vm_file);
+> > > +     pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
+> > > +     struct page *page;
+> > > +     int ret;
+> > > +
+> > > +     ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
+> >
+> > SGP_READ looks right, as we don't want page allocation.  However I noticed
+> > there's very slight difference when the page was just fallocated:
+> >
+> >         /* fallocated page? */
+> >         if (page && !PageUptodate(page)) {
+> >                 if (sgp != SGP_READ)
+> >                         goto clear;
 
-#syz dup: WARNING: suspicious RCU usage in getname_flags
+[1]
 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.12.0-rc5-syzkaller #0 Not tainted
-> -----------------------------
-> kernel/sched/core.c:8294 Illegal context switch in RCU-sched read-side critical section!
->
-> other info that might help us debug this:
->
->
-> rcu_scheduler_active = 2, debug_locks = 0
-> no locks held by syz-executor.1/8425.
->
-> stack backtrace:
-> CPU: 1 PID: 8425 Comm: syz-executor.1 Not tainted 5.12.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8294
->  __mutex_lock_common kernel/locking/mutex.c:928 [inline]
->  __mutex_lock+0xa9/0x1120 kernel/locking/mutex.c:1096
->  find_inlist_lock_noload net/bridge/netfilter/ebtables.c:316 [inline]
->  find_inlist_lock.constprop.0+0x26/0x220 net/bridge/netfilter/ebtables.c:330
->  find_table_lock net/bridge/netfilter/ebtables.c:339 [inline]
->  do_ebt_get_ctl+0x208/0x790 net/bridge/netfilter/ebtables.c:2329
->  nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
->  ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
->  ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
->  tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
->  __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
->  __do_sys_getsockopt net/socket.c:2176 [inline]
->  __se_sys_getsockopt net/socket.c:2173 [inline]
->  __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x467a6a
-> Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe660d82f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000037
-> RAX: ffffffffffffffda RBX: 00000000005401a0 RCX: 0000000000467a6a
-> RDX: 0000000000000081 RSI: 0000000000000000 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: 00007ffe660d831c R09: 00007ffe660d83a0
-> R10: 00007ffe660d8320 R11: 0000000000000202 R12: 0000000000000003
-> R13: 00007ffe660d8320 R14: 0000000000540128 R15: 00007ffe660d831c
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000028104905bf0822ce%40google.com.
+> >                 unlock_page(page);
+> >                 put_page(page);
+> >                 page = NULL;
+> >                 hindex = index;
+> >         }
+> >
+> > I think it won't happen for your case since the page should be uptodate already
+> > (the other thread should check and modify the page before CONTINUE), but still
+> > raise this up, since if the page was allocated it smells better to still
+> > install the fallocated page (do we need to clear the page and SetUptodate)?
+> 
+> Sorry for the somewhat rambling thought process:
+> 
+> My first thought is, I don't really know what PageUptodate means for
+> shmem pages. If I understand correctly, normally we say PageUptodate()
+> if the in memory data is more recent or equivalent to the on-disk
+> data. But, shmem pages are entirely in memory - they are file backed
+> in name only, in some sense.
+> 
+> fallocate() does all sorts of things so the comment to me seems a bit
+> ambiguous, but it seems the implication is that we're worried
+> specifically about the case where the shmem page was recently
+> allocated with fallocate(mode=0)? In that case, do we use
+> !PageUptodate() to denote that the page has been allocated, but its
+> contents are undefined?
+> 
+> I suppose that would make sense, as the action "goto clear;" generally
+> memset()-s the page to zero it, and then calls SetPageUptodate().
+> 
+> Okay so let's say the following sequence of events happens:
+> 
+> 1. Userspace calls fallocate(mode=0) to allocate some shmem pages.
+> 2. Another thread, via a UFFD-registered mapping, manages to trigger a
+> minor fault on one such page, while we still have !PageUptodate().
+> (I'm not 100% sure this can happen, but let's say it can.)
+> 3. UFFD handler thread gets the minor fault event, and for whatever
+> (buggy?) reason does nothing - it doesn't modify the page, it just
+> calls CONTINUE.
+
+[2]
+
+> 
+> I think if we get to this point, zeroing the page, returning it, and
+> setting up the PTEs seems somewhat reasonable to me. I suppose
+> alternatively we could notice that this happened and return an error
+> to the caller? I'm hesitant to mess with the behavior of
+> shmem_getpage_gfp() to make such a thing happen though. I do think if
+> we're going to set up the PTEs instead of returning an error, we
+> definitely do need to clear and SetPageUptodate() the page first.
+> 
+> In conclusion, I think this behavior is correct.
+
+I agree with you (mostly :), but except one thing: you passed in SGP_READ, so
+IMHO it won't do what you explained (see [1] above: "goto clear" is with "sgp
+!= SGP_READ" only); instead of doing what you said, I think it'll reset page
+pointer to NULL..  Then quickly in the latter block:
+
+	if (page || sgp == SGP_READ)
+		goto out;
+
+So I think at last shmem_getpage_gfp(SGP_READ) will return NULL.
+
+I do think I've got some confusion here regarding SGP_READ, since from the
+comment in shmem_fs.h it says:
+
+	SGP_READ,	/* don't exceed i_size, don't allocate page */
+
+It's natural to think it as "return the fallocated page" in this case.  However
+it seems not the case?  My gut feeling is the comment for SGP_READ needs a
+touch up, so as to state that for newly fallocated (and not used) pages it'll
+return NULL even if cache hit.
+
+So I think you're right, for all cases this may be a trivial case.  However
+I've got a lesson somewhere else that we should never overlook zero pages,
+which is also related to this case - although fallocated page is still
+!Uptodate so clear page happens even latter, however from userspace pov, the
+user could assume it's a zero page even if the page is not accessed at all
+(since any access will cause clear page).  Then the user program could avoid
+modifying this page if it knows this page keeps to be zero page somehow (e.g.,
+a zero page bitmap?). Then your example above [2] seems indeed a valid one
+worth thinking, at least not fully paranoid.
+
+-- 
+Peter Xu
+
