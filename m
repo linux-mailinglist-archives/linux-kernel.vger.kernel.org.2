@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE93E35E41B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B5A35E416
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345913AbhDMQhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:37:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8358 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345371AbhDMQhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:37:01 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FKWTL3l94z9v4hC;
-        Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id DydKvha3r-0P; Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FKWTL1dSsz9v4h8;
-        Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B63518B7AA;
-        Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id l6EiQIyyQ9dS; Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5627A8B75F;
-        Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
-Subject: Re: [PATCH v1 2/2] powerpc/atomics: Use immediate operand when
- possible
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
- <9f50b5fadeb090553e5c2fae025052d04d52f3c7.1617896018.git.christophe.leroy@csgroup.eu>
- <20210412220821.GN26583@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <063ca819-1276-8deb-0d9b-ea6ec33f9a98@csgroup.eu>
-Date:   Tue, 13 Apr 2021 18:36:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S1345788AbhDMQgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:36:42 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:40770 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345371AbhDMQgk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 12:36:40 -0400
+Received: by mail-oi1-f176.google.com with SMTP id u16so286642oiu.7;
+        Tue, 13 Apr 2021 09:36:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Su+smkv+Ue5t563FZXIHYLjuhV5cHzGEDiXfivp9QAk=;
+        b=Rmvvjbd2soR0Iu3/3oBgEZsEiuBqWJRLTEEVJkU2PhaybNrHddlVwBAX5MSib19v3w
+         6ry4r8DtJdrQTpWrEyPYlTo/GVti+euK10EjKGNZIB5I6Rm1xVRQ/LefrKICb50zLQwM
+         grNtpxWfz7hCwpIYuflULCO9pPO+6scVgELpZk8EKn3MDm/V7Pe/b5NtSc/xwFyQQ2+U
+         2SIazObPSQGBbzxFEbd752zEYE6IclKaLKeeiQ0wWPe9cacRxoZCihOFNscMMjJ5muPg
+         0eKgyM1iub6fAcW9CgN7KK/b6HX3B2xZiKZT8uRPfY0+KAG67AHsq6mCyY1zuBKqcG/+
+         PQjg==
+X-Gm-Message-State: AOAM530c8+T8KjONXIJPS5rys6zHu7XXSD+neKm1LXK3x3mWgX9EF8eu
+        j72J4atvw2V25A/9m4zpBw==
+X-Google-Smtp-Source: ABdhPJyUkQidP41T7W71kLGQaTKNSiCw6vq26O4+vOFl9Siq1PhaG+cA01QgG7+kJsvUJZpfLzoPpg==
+X-Received: by 2002:aca:3788:: with SMTP id e130mr571269oia.45.1618331775925;
+        Tue, 13 Apr 2021 09:36:15 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r136sm2973190oor.28.2021.04.13.09.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 09:36:14 -0700 (PDT)
+Received: (nullmailer pid 1797270 invoked by uid 1000);
+        Tue, 13 Apr 2021 16:36:13 -0000
+Date:   Tue, 13 Apr 2021 11:36:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+Message-ID: <20210413163613.GA1797136@robh.at.kernel.org>
+References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+ <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
+ <20210413144446.2277817-3-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-In-Reply-To: <20210412220821.GN26583@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413144446.2277817-3-giulio.benetti@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 13/04/2021 Ã  00:08, Segher Boessenkool a Ã©critÂ :
-> Hi!
+On Tue, 13 Apr 2021 16:44:45 +0200, Giulio Benetti wrote:
+> This adds device tree bindings for the Hycon HY46XX touchscreen series.
 > 
-> On Thu, Apr 08, 2021 at 03:33:45PM +0000, Christophe Leroy wrote:
->> +#define ATOMIC_OP(op, asm_op, dot, sign)				\
->>   static __inline__ void atomic_##op(int a, atomic_t *v)			\
->>   {									\
->>   	int t;								\
->>   									\
->>   	__asm__ __volatile__(						\
->>   "1:	lwarx	%0,0,%3		# atomic_" #op "\n"			\
->> -	#asm_op " %0,%2,%0\n"						\
->> +	#asm_op "%I2" dot " %0,%0,%2\n"					\
->>   "	stwcx.	%0,0,%3 \n"						\
->>   "	bne-	1b\n"							\
->> -	: "=&r" (t), "+m" (v->counter)					\
->> -	: "r" (a), "r" (&v->counter)					\
->> +	: "=&b" (t), "+m" (v->counter)					\
->> +	: "r"#sign (a), "r" (&v->counter)				\
->>   	: "cc");							\
->>   }									\
-> 
-> You need "b" (instead of "r") only for "addi".  You can use "addic"
-> instead, which clobbers XER[CA], but *all* inline asm does, so that is
-> not a downside here (it is also not slower on any CPU that matters).
-> 
->> @@ -238,14 +238,14 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
->>   "1:	lwarx	%0,0,%1		# atomic_fetch_add_unless\n\
->>   	cmpw	0,%0,%3 \n\
->>   	beq	2f \n\
->> -	add	%0,%2,%0 \n"
->> +	add%I2	%0,%0,%2 \n"
->>   "	stwcx.	%0,0,%1 \n\
->>   	bne-	1b \n"
->>   	PPC_ATOMIC_EXIT_BARRIER
->> -"	subf	%0,%2,%0 \n\
->> +"	sub%I2	%0,%0,%2 \n\
->>   2:"
->> -	: "=&r" (t)
->> -	: "r" (&v->counter), "r" (a), "r" (u)
->> +	: "=&b" (t)
->> +	: "r" (&v->counter), "rI" (a), "r" (u)
->>   	: "cc", "memory");
-> 
-> Same here.
-
-Yes, I thought about addic, I didn't find an early solution because I forgot the matching 'addc'.
-
-Now with the couple addc/addic it works well.
-
-Thanks
-
-> 
-> Nice patches!
-> 
-> Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+> V1->V2:
+> As suggested by Rob Herring:
+> * fixed $id: address
+> * added "hycon," in front of every custom property
+> * changed all possible property to boolean type
+> * removed proximity-sensor-switch property since it's not handled in driver
+> V2->V3:
+> As suggested by Jonathan Neuschäfer:
+> * fixed some typo
+> * fixed description indentation
+> * improved boolean properties descriptions
+> * improved hycon,report-speed description
+> V3->V4:
+> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
+> V4->V5:
+> As suggested by Rob Herring:
+> * drop hycon- prefix from compatible
+> * use Hertz unit suffix for hycon,report-speed instead of u32
+> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do nothing
+> * change hycon,power-noise-enable property name to hycon,noise-filter-enable
+> * improve hycon,filter-data property description
+> * use generic touchscreen node name in example
+> V5->V6:
+> * changed report-speed property name into report-speed-hz according to
+> Rob Herring's suggestion
+> ---
+>  .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
 > 
 
-Christophe
+Reviewed-by: Rob Herring <robh@kernel.org>
