@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C802435E218
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4450535E219
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346453AbhDMO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:58:21 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54164 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344246AbhDMO5u (ORCPT
+        id S231469AbhDMO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:58:29 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:35541 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345397AbhDMO5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:57:50 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEnqpS083632;
-        Tue, 13 Apr 2021 14:57:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=JhYvFNCfR6OJZkqyPEmIIrheY8Abto4HIXOl1+WX9Yk=;
- b=nzuYWBCQULQgWpSYibSU9p+FkqZZB0da5CoRLgY/ySzFZZB9d0h+7ijCyahHVBGKS5tS
- HPSHYn/2FLPGIqfOfruWpNReP65tmCUJqI3JEs4PE13S6f8kIRiUcR7Og/kgCyROYoL2
- kdbEdZtraQENUBqsQ/gunWtyv18ET3h6H68aHg9IPYGVTB7pFt0pAoWuBEiFg5kQpxB0
- mA0H/YXxc8OSfdbL3WrJjwTDphfPlvsoRndNgAcIu1AmMuoe4EBdTp69bLLQ7XRDLzw0
- dd0bysKPiRIHoojq+ZCS4LItKlFyMPGqnvhVEH+gXuhSs7yIWVfOC/8yYn/u9nowBi40 jg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 37u3erfd0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:57:22 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEkU5B172594;
-        Tue, 13 Apr 2021 14:57:20 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 37unkpmn00-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:57:20 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13DEvJJM031967;
-        Tue, 13 Apr 2021 14:57:19 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Apr 2021 07:57:18 -0700
-Date:   Tue, 13 Apr 2021 17:57:12 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 18/19] staging: rtl8723bs: split long lines
-Message-ID: <20210413145712.GH6021@kadam>
-References: <cover.1617802415.git.fabioaiuto83@gmail.com>
- <814139162ef516bb07bb50876578b032573271ac.1617802415.git.fabioaiuto83@gmail.com>
+        Tue, 13 Apr 2021 10:57:52 -0400
+Received: by mail-ot1-f46.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so16372813oto.2;
+        Tue, 13 Apr 2021 07:57:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y28J5P3915Fjgg5N0/u5jZ49Kq2YIVbhsw1yas2D+lE=;
+        b=ZkNouwYdW8SKZ3dhhbEdFHGBNkYapIdeGWEFoOgiXD9LfIsUvvROtIuKOEvZYLvJL/
+         CGueyvVnhVrnAgYiNzmlHXbFomtj9y5gs8RKvQIEfvXIJXUq6C4OlFvJJlWKcgGn+xOu
+         U6JO1ekQQIPkaM7M3/IzHYqE1MSy0cuQwPenZQj9TkedWJ4zVojhqYCiKBHSI8Fu3Z6I
+         jG0LkGlGDMy2Jk670C56sT3ZXoU9vEsU41xYJC2V/5R2vMInJlpj6EIlIy+F2uTb1HgU
+         ypj/9jEwGxuXHL1FwMIKyVKXoP6b0CaaUMdTTyContNmhQqYIy0oTiPLC6qnQPB/CQPA
+         G/1Q==
+X-Gm-Message-State: AOAM533E3zzdSHSmkU7bP0zhv5xW/QWhVvJpSffGUwc3T+Fzi2b5hcGP
+        l1KtatGYtivvXvry6JSDPQ==
+X-Google-Smtp-Source: ABdhPJxv4dnCfFBvqlcpVTYMsz0yIgIONuFjvatAYBflcXXtcLXQOtNIMscMfavB39pSE4iPDGikfQ==
+X-Received: by 2002:a05:6830:210e:: with SMTP id i14mr28634759otc.229.1618325852331;
+        Tue, 13 Apr 2021 07:57:32 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 62sm3465329oto.60.2021.04.13.07.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 07:57:31 -0700 (PDT)
+Received: (nullmailer pid 1670638 invoked by uid 1000);
+        Tue, 13 Apr 2021 14:57:30 -0000
+Date:   Tue, 13 Apr 2021 09:57:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] mfd: google,cros-ec: add DT bindings for a
+ baseboard's switch device
+Message-ID: <20210413145730.GA1667299@robh.at.kernel.org>
+References: <20210412113020.2724134-1-ikjn@chromium.org>
+ <20210412113020.2724134-2-ikjn@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <814139162ef516bb07bb50876578b032573271ac.1617802415.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130106
-X-Proofpoint-ORIG-GUID: JeMP_k2CRd6nUYCcSEAl50kNil_TxiON
-X-Proofpoint-GUID: JeMP_k2CRd6nUYCcSEAl50kNil_TxiON
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130106
+In-Reply-To: <20210412113020.2724134-2-ikjn@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 03:49:42PM +0200, Fabio Aiuto wrote:
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 7f998a2f8001..a1e27ba4707e 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -619,8 +619,9 @@ unsigned int OnProbeReq(struct adapter *padapter, union recv_frame *precv_frame)
->  			return _SUCCESS;
+On Mon, Apr 12, 2021 at 07:30:19PM +0800, Ikjoon Jang wrote:
+> This is for ChromeOS tablets which have a 'cros_cbas' switch device
+> in the "Whiskers" base board. This device can be instantiated only by
+> device tree on ARM platforms. ChromeOS EC doesn't provide a way to
+> probe the device.
+> 
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> 
+> ---
+> 
+> Changes in v4:
+> Define cros-cbase bindings inside google,cros-ec.yaml instead of
+> a seperated binding document.
+> 
+>  .../devicetree/bindings/mfd/google,cros-ec.yaml  | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> index 76bf16ee27ec..c76809cd9f7f 100644
+> --- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> @@ -127,6 +127,18 @@ patternProperties:
+>      type: object
+>      $ref: "/schemas/extcon/extcon-usbc-cros-ec.yaml#"
 >  
->  _issue_probersp:
-> -		if ((check_fwstate(pmlmepriv, _FW_LINKED)  &&
-> -			pmlmepriv->cur_network.join_res) || check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE))
-> +		if ((check_fwstate(pmlmepriv, _FW_LINKED) &&
-> +		     pmlmepriv->cur_network.join_res) ||
-> +		     check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE))
+> +  "^cbas$":
 
-The last line is indented one space character too much.  It should be:
+Not a pattern, put under 'properties'.
 
-		if ((check_fwstate(pmlmepriv, _FW_LINKED) &&
-		     pmlmepriv->cur_network.join_res) ||
-		    check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE))
+> +    type: object
+> +    properties:
+> +      compatible:
+> +        const: google,cros-cbas
 
-regards,
-dan carpenter
+Blank line
 
+> +    required:
+> +      - compatible
+
+Blank line
+
+> +    additionalProperties: false
+> +    description:
+
+Make this 1st or at least before 'properties'.
+
+> +      This device is used to signal when a detachable base is attached
+> +      to a Chrome OS tablet.
+
+This can't happen at runtime?
+
+> +
+>  required:
+>    - compatible
+>  
+> @@ -180,6 +192,10 @@ examples:
+>              interrupts = <99 0>;
+>              interrupt-parent = <&gpio7>;
+>              spi-max-frequency = <5000000>;
+> +
+> +            base_detection: cbas {
+> +                compatible = "google,cros-cbas";
+> +            };
+>          };
+>      };
+>  
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
+> 
