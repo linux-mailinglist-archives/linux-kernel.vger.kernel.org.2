@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DD935E4BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9314335E4BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhDMRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhDMRLo (ORCPT
+        id S232480AbhDMRMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:12:09 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:57515 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhDMRMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:11:44 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5750EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:11:24 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id m16so12648576qtx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PHNYLL/AP+nvXt8y93Dpx6n3WojKntO9M4nJQwVI9ko=;
-        b=MFe8FAZa7F8uS3oz4b8eTkn3d5Z24Q7Nwtt6zblSCGquDnOpo5YuHBapOf2paZJNEr
-         g2l8g2+FYCAy+AOe2GDCLOer5VKn8tPzf297omQkwO2OJBrBszcWjDCfy/XuDpHy7Sef
-         8r1Ext8tYoFb1v51zGOljsQ2fRQvGRGQMPsUtd4MQ/bJIeN+GD/+4SIdu2Cc09KTpcwP
-         +c3k/kEcwlDPcxs5gea1qiJmDsB3GQv1+iZPxdr9mO948jMyRGOuZ91MBUIvlILhRjkp
-         7SMF1WMgAgylPG8lnFdEtuc36Fmruf4ckmjzPnT9tjDFn4eiv2WcsySE5NXe7Bn8OIl2
-         sG+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PHNYLL/AP+nvXt8y93Dpx6n3WojKntO9M4nJQwVI9ko=;
-        b=ETOGTvG92TbY2YFZ5KxF21CwHAarbw0yeW5Z7TO2MlzCVblXTXibbXDfySqSKVjYVI
-         munWr2aUdv328YYrPMGVOYQY8iFbpzJqQbmkzCHJtrKVTJAxd3u9bGxS5A2NiQpiPSkO
-         2gy3ngvQOqXMzIV8GZPH9tUgk7zhXr/lFrSsv5DdoW1zxawbNVghDaSw7zkMUZ0mGuBh
-         9WLRMi4EhROhDw1k28D9Hms31zGDL4Y0apjGMNAWryET5lRu4xUjnnm7iI9JAbOnaC8v
-         Mr0t6m5A9NsKwLTdqn3nAdVUBLC/0JW/fR+4IObKdE8yA8zPDC71wpu9TupSqCnBYTPD
-         yDKg==
-X-Gm-Message-State: AOAM531Vq68AP3JqAl4EojmLZPQhkxuVTWTjJFma0Skcrv8uFHXRvsdR
-        vI8AuCSROWOxnK7vBK5g7mZn8dN0weymrp/WsmhTCg==
-X-Google-Smtp-Source: ABdhPJwARlvDp0sQgoLf8NIWF3sgdl5kkgdDWdHOSjVTgnyvOWxFG26fGmWEoYwpbcifdV7j0tyoxLgN9kfoDr45n4Q=
-X-Received: by 2002:ac8:768c:: with SMTP id g12mr15974368qtr.67.1618333882981;
- Tue, 13 Apr 2021 10:11:22 -0700 (PDT)
+        Tue, 13 Apr 2021 13:12:08 -0400
+Date:   Tue, 13 Apr 2021 17:11:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618333905;
+        bh=JRgenIaLUI4xNF3fT6/o+CfeGgQ3ycbu2skgPulPjiI=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=el1X2abuLZXwA3e5DlDZ4teIaFcaAL7MIJTMwOlKmD9MiVRFaxtH0VvUE/DxjVnb0
+         wxON/ImnI9/nMl8lDQjVIc7AFD8nQIz2cCh5XgYiGCAlO2rLAewBWHK25fzi5V7cCQ
+         DjQ1AKX44wYKg6CcSSaNixgn7bLYhx+eUH+ctkJ1624VQbzqS1Iy0Ve9Rjzhgq/Rmd
+         ezY96vOYsRTNUquaitSQx5GQLg6AWC8vW38+2J64ELPl3pbEs3OlmII3jgjU1BTM9h
+         zac+ia0bQoPWSS5cK65xlMl1xGF6XIvZl/oAYYLvfuCL7MX556/fOhkuSpd2is8Eq2
+         Tc4lFeZ577fnQ==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH] staging: rtl8723bs: remove sdio_drv_priv structure
+Message-ID: <20210413171124.174008-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-References: <00000000000075c58405bfd6228c@google.com> <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
- <20210413161311.GC1454681@rowland.harvard.edu> <CACT4Y+YEw4iJPxY4b6LPXrU91TODfu09dG=53exvQkwjPBg23w@mail.gmail.com>
- <20210413165724.GD1454681@rowland.harvard.edu>
-In-Reply-To: <20210413165724.GD1454681@rowland.harvard.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 19:11:11 +0200
-Message-ID: <CACT4Y+aX-cMJxMYmWms3MG-4=Rb9eG_N+pOjorRHoV1MGQXtkA@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 6:57 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Tue, Apr 13, 2021 at 06:47:47PM +0200, Dmitry Vyukov wrote:
-> > On Tue, Apr 13, 2021 at 6:13 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > Hopefully this patch will make the race a lot more likely to occur.  Is
-> > > there any way to tell syzkaller to test it, despite the fact that
-> > > syzkaller doesn't think it has a reproducer for this issue?
-> >
-> > If there is no reproducer the only way syzbot can test it is if it's
-> > in linux-next under CONFIG_DEBUG_AID_FOR_SYZBOT:
-> > http://bit.do/syzbot#no-custom-patches
->
-> There _is_ a theoretical reproducer: the test that provoked syzkaller's
-> original bug report.  But syzkaller doesn't realize that it is (or may
-> be) a reproducer.
->
-> It ought to be possible to ask syzkaller to run a particular test that
-> it has done before, with a patch applied -- and without having to add
-> anything to linux-next.
+The sdio_drv_priv structure is a small wrapper around sdio_driver in
+linux/mmc/sdio_func.h with an added drv_registered integer.
 
-Yes, this is possible:
-http://bit.do/syzbot#syzkaller-reproducers
+drv_registered is never used anywhere in the driver and only assigned to
+during the sdio registering and unregistering process. We can safely
+remove sdio_drv_priv and use the sdio_driver structure directly.
 
-The log of tests executed before the crash is available under the
-"console output" link:
-console output: https://syzkaller.appspot.com/x/log.txt?x=124adbf6d00000
-And this log can be replayed using syz-execprog utility.
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 32 ++++++--------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
+/rtl8723bs/os_dep/sdio_intf.c
+index a8ef95ab14da..816b5bf6e3ed 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -36,17 +36,12 @@ static const struct dev_pm_ops rtw_sdio_pm_ops =3D {
+ =09.resume=09=3D rtw_sdio_resume,
+ };
+=20
+-struct sdio_drv_priv {
+-=09struct sdio_driver r871xs_drv;
+-=09int drv_registered;
+-};
+-
+-static struct sdio_drv_priv sdio_drvpriv =3D {
+-=09.r871xs_drv.probe =3D rtw_drv_init,
+-=09.r871xs_drv.remove =3D rtw_dev_remove,
+-=09.r871xs_drv.name =3D "rtl8723bs",
+-=09.r871xs_drv.id_table =3D sdio_ids,
+-=09.r871xs_drv.drv =3D {
++static struct sdio_driver rtl8723bs_sdio_driver =3D {
++=09.probe =3D rtw_drv_init,
++=09.remove =3D rtw_dev_remove,
++=09.name =3D "rtl8723bs",
++=09.id_table =3D sdio_ids,
++=09.drv =3D {
+ =09=09.pm =3D &rtw_sdio_pm_ops,
+ =09}
+ };
+@@ -498,18 +493,11 @@ static int __init rtw_drv_entry(void)
+ =09DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version =3D %s\n", BTCO=
+EXVERSION);
+ #endif /*  BTCOEXVERSION */
+=20
+-=09sdio_drvpriv.drv_registered =3D true;
+=20
+-=09ret =3D sdio_register_driver(&sdio_drvpriv.r871xs_drv);
+-=09if (ret !=3D 0) {
+-=09=09sdio_drvpriv.drv_registered =3D false;
++=09ret =3D sdio_register_driver(&rtl8723bs_sdio_driver);
++=09if (ret !=3D 0)
+ =09=09rtw_ndev_notifier_unregister();
+-=09=09goto exit;
+-=09}
+=20
+-=09goto exit;
+-
+-exit:
+ =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
+ =09return ret;
+ }
+@@ -518,9 +506,7 @@ static void __exit rtw_drv_halt(void)
+ {
+ =09DBG_871X_LEVEL(_drv_always_, "module exit start\n");
+=20
+-=09sdio_drvpriv.drv_registered =3D false;
+-
+-=09sdio_unregister_driver(&sdio_drvpriv.r871xs_drv);
++=09sdio_unregister_driver(&rtl8723bs_sdio_driver);
+=20
+ =09rtw_ndev_notifier_unregister();
+=20
+--=20
+2.27.0
+
+
