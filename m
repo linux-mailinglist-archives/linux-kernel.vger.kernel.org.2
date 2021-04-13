@@ -2,118 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5E335E789
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F0535E78D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348191AbhDMUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:18:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34364 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232025AbhDMUSQ (ORCPT
+        id S239354AbhDMUTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348198AbhDMUTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:18:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618345075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F+gpcGbjpJnW75HsT83fn38nMLIN2HNyr9uneAl6PwM=;
-        b=PFTzUEe7naAwv1tg/lw2jI+nZ29tD1Qv8kH/WNLzROftHVzCaQM3n/mg8j+3B3oIfJTiSH
-        4tC9Ys090lFi25UN6GBpeuiqKIS+J0IyWbzKPraFlRb7/hJpaRGyxofSNGOn90AcI5SEov
-        vhKGnGGXgqRPWYEykvJpx2teM8wBRyk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-zbflZkNRNpGONayBcGhnVg-1; Tue, 13 Apr 2021 16:17:53 -0400
-X-MC-Unique: zbflZkNRNpGONayBcGhnVg-1
-Received: by mail-qv1-f70.google.com with SMTP id m17so3911050qvk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:17:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F+gpcGbjpJnW75HsT83fn38nMLIN2HNyr9uneAl6PwM=;
-        b=SLFF21xOpe58o/cyuoHOnRvX4y1ORfUQBFh1YHo07PWpyXQtIv+FYnw8WJGfBzXQvY
-         tWcN/+SGYQWE2H1ZSk+wRl6JaHByA14AdO+g0hdtghtmRI43zXHtWNtK2cNib16/pAG+
-         H5TovlTreEwM3IrVejEgRIQDoYMWKFk6RlM3QAUA0v7Zmb3UQlDt/haLxLtRNgEsw7uH
-         JcvMh4Ivyfnin/v1RvIt+ul/XNkXe8GZq4RU1PcDW/M7hLmiqQJHSJImmya2933EkEOS
-         XbWEhtZcpkFPWCnfJ4VBMNSCuMqS1kvMm35YKoYFJCbQ7GyUPVXBzYoCctx7+NiFbVJI
-         yREA==
-X-Gm-Message-State: AOAM533CIEvZ3WQuzgt36Lw2TtMa8IkREgwcXytZLS5CTMNmZAit7PLc
-        2/k6X4o2Xi3z3eqy4nwwJqs/cyxwDYOUOd99/E02vcDKBpzRzKagWh351UaE4ZUZgYJvgpTeFyd
-        MnHRbLtPMtEHQ0wsEi2Oak86c
-X-Received: by 2002:ac8:7fcd:: with SMTP id b13mr31785948qtk.68.1618345072906;
-        Tue, 13 Apr 2021 13:17:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzm8QhI4YsPfqqtubp6A3TgshHmvxjOKTuerTRIoNikR75RHHmVPZbkbKxWJoODRS6zRKCi6Q==
-X-Received: by 2002:ac8:7fcd:: with SMTP id b13mr31785923qtk.68.1618345072692;
-        Tue, 13 Apr 2021 13:17:52 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id q67sm8814016qkb.89.2021.04.13.13.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 13:17:52 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 16:17:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v2 6/9] userfaultfd/selftests: create alias mappings in
- the shmem test
-Message-ID: <20210413201750.GF4440@xz-x1>
-References: <20210413051721.2896915-1-axelrasmussen@google.com>
- <20210413051721.2896915-7-axelrasmussen@google.com>
+        Tue, 13 Apr 2021 16:19:06 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5F6C061574;
+        Tue, 13 Apr 2021 13:18:46 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF0AD9F0;
+        Tue, 13 Apr 2021 22:18:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618345123;
+        bh=c4e7lBPFa0mIb5bY8GUL6gHcossp3SJOZrfVo9bPbVI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WDok0GxmhA3PJhBkvHJn7ugok9gHr6pMIeiXp6eQqhgfByRezUHzPak5M9J3srQm4
+         6kf80uTeKGpqlfBkrd2LyvzcWViYuAmDnypE+wG1xnDEwe/S9mKN6n/RjMcYFKbKWU
+         k2Ar5VN6iTlPabrn1B8FppMU2Ff5DO5y9YfQCZlo=
+Date:   Tue, 13 Apr 2021 23:17:52 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>, a.hajda@samsung.com,
+        robert.foss@linaro.org, devicetree@vger.kernel.org,
+        jonas@kwiboo.se, jernej.skrabec@siol.net,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Phong LE <ple@baylibre.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: display: bridge: add it66121 bindings
+Message-ID: <YHX8cLQyt+LbzqT8@pendragon.ideasonboard.com>
+References: <20210412154648.3719153-1-narmstrong@baylibre.com>
+ <20210412154648.3719153-2-narmstrong@baylibre.com>
+ <H3LIRQ.7IT4EUNNTEBX1@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210413051721.2896915-7-axelrasmussen@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <H3LIRQ.7IT4EUNNTEBX1@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:17:18PM -0700, Axel Rasmussen wrote:
->  static void shmem_allocate_area(void **alloc_area)
->  {
-> -	unsigned long offset =
-> -		alloc_area == (void **)&area_src ? 0 : nr_pages * page_size;
-> +	void *area_alias = NULL;
-> +	bool is_src = alloc_area == (void **)&area_src;
-> +	unsigned long offset = is_src ? 0 : nr_pages * page_size;
->  
->  	*alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
->  			   MAP_SHARED, shm_fd, offset);
->  	if (*alloc_area == MAP_FAILED)
->  		err("mmap of memfd failed");
-> +
-> +	area_alias = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
-> +			  MAP_SHARED, shm_fd, offset);
-> +	if (area_alias == MAP_FAILED)
-> +		err("mmap of memfd alias failed");
-> +
-> +	if (is_src)
-> +		area_src_alias = area_alias;
-> +	else
-> +		area_dst_alias = area_alias;
-> +}
+Hi Paul,
 
-It would be nice if shmem_allocate_area() could merge with
-hugetlb_allocate_area() somehow, but not that urgent.
+On Tue, Apr 13, 2021 at 07:09:17PM +0100, Paul Cercueil wrote:
+> Le lun. 12 avril 2021 à 17:46, Neil Armstrong a écrit :
+> > From: Phong LE <ple@baylibre.com>
+> > 
+> > Add the ITE bridge HDMI it66121 bindings.
+> > 
+> > Signed-off-by: Phong LE <ple@baylibre.com>
+> > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> > ---
+> >  .../bindings/display/bridge/ite,it66121.yaml  | 123 ++++++++++++++++++
+> >  1 file changed, 123 insertions(+)
+> >  create mode 100644 
+> > Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> > 
+> > diff --git 
+> > a/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml 
+> > b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> > new file mode 100644
+> > index 000000000000..61ed6dc7740b
+> > --- /dev/null
+> > +++ 
+> > b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> > @@ -0,0 +1,123 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/bridge/ite,it66121.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ITE it66121 HDMI bridge Device Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Phong LE <ple@baylibre.com>
+> > +  - Neil Armstrong <narmstrong@baylibre.com>
+> > +
+> > +description: |
+> > +  The IT66121 is a high-performance and low-power single channel HDMI
+> > +  transmitter, fully compliant with HDMI 1.3a, HDCP 1.2 and backward 
+> > compatible
+> > +  to DVI 1.0 specifications.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: ite,it66121
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: base I2C address of the device
+> > +
+> > +  reset-gpios:
+> > +    maxItems: 1
+> > +    description: GPIO connected to active low reset
+> > +
+> > +  vrf12-supply:
+> > +    description: Regulator for 1.2V analog core power.
+> > +
+> > +  vcn33-supply:
+> > +    description: Regulator for 3.3V digital core power.
+> > +
+> > +  vcn18-supply:
+> > +    description: Regulator for 1.8V IO core power.
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  ports:
+> > +    $ref: /schemas/graph.yaml#/properties/ports
+> > +
+> > +    properties:
+> > +      port@0:
+> > +        $ref: /schemas/graph.yaml#/$defs/port-base
+> > +        unevaluatedProperties: false
+> > +        description: DPI input port.
+> > +
+> > +        properties:
+> > +          endpoint:
+> > +            $ref: /schemas/graph.yaml#/$defs/endpoint-base
+> > +            unevaluatedProperties: false
+> > +
+> > +            properties:
+> > +              bus-width:
+> > +                description:
+> > +                  Endpoint bus width.
+> > +                enum:
+> > +                  - 12  # 12 data lines connected and dual-edge mode
+> > +                  - 24  # 24 data lines connected and single-edge 
+> > mode
+> > +                default: 24
+> > +
+> > +      port@1:
+> > +        $ref: /schemas/graph.yaml#/properties/port
+> > +        description: HDMI Connector port.
+> > +
+> > +    required:
+> > +      - port@0
+> > +      - port@1
+> 
+> Should port@1 really be required? Since the chip itself handles the 
+> hotplug detection and stuff like DCC, I'm not sure what to connect here.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+It should be connected to a DT node that models the connector
+(Documentation/devicetree/bindings/display/connector/*).
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reset-gpios
+> > +  - vrf12-supply
+> > +  - vcn33-supply
+> > +  - vcn18-supply
+> > +  - interrupts
+> > +  - ports
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +
+> > +      it66121hdmitx: it66121hdmitx@4c {
+> > +        compatible = "ite,it66121";
+> > +        pinctrl-names = "default";
+> > +        pinctrl-0 = <&ite_pins_default>;
+> > +        vcn33-supply = <&mt6358_vcn33_wifi_reg>;
+> > +        vcn18-supply = <&mt6358_vcn18_reg>;
+> > +        vrf12-supply = <&mt6358_vrf12_reg>;
+> > +        reset-gpios = <&pio 160 1 /* GPIO_ACTIVE_LOW */>;
+> > +        interrupt-parent = <&pio>;
+> > +        interrupts = <4 8 /* IRQ_TYPE_LEVEL_LOW */>;
+> > +        reg = <0x4c>;
+> > +
+> > +        ports {
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +
+> > +          port@0 {
+> > +            reg = <0>;
+> > +            it66121_in: endpoint {
+> > +              bus-width = <12>;
+> > +              remote-endpoint = <&display_out>;
+> > +            };
+> > +          };
+> > +
+> > +          port@1 {
+> > +            reg = <1>;
+> > +            hdmi_conn_out: endpoint {
+> > +              remote-endpoint = <&hdmi_conn_in>;
+> > +            };
+> > +          };
+> > +        };
+> > +      };
+> > +    };
 
 -- 
-Peter Xu
+Regards,
 
+Laurent Pinchart
