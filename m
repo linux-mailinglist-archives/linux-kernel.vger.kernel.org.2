@@ -2,78 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D027835E629
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A091535E62C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238297AbhDMSSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:18:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50136 "EHLO mail.kernel.org"
+        id S1343756AbhDMSTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhDMSSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:18:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CF0F613B1;
-        Tue, 13 Apr 2021 18:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1618337909;
-        bh=lnhhbqIc2W4LnVDiQzj8jL+mMwuaFEZs0tlPsrc89xs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KFTlFkPUKo8X091jFtxiYypMGba/b0J+tgufnl0B8BHVtqHnXJ1V3TuJxjye2Ojew
-         eJ+ol4wZlfARl80mkeuJIC87q5ZpBbQv1Q3hHaztNAXhgv5sDLV7hr6dcJxPXNsHuQ
-         KQ7oBQxDxZZ+1kRK58catB2fWQ5j1t6D8FQr9wHA=
-Date:   Tue, 13 Apr 2021 11:18:28 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        drbd-dev@tron.linbit.com, Jiri Pirko <jiri@nvidia.com>,
-        netdev@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] lib: remove "expecting prototype" kernel-doc warnings
-Message-Id: <20210413111828.365dcbcb2e24bfaa91e855ff@linux-foundation.org>
-In-Reply-To: <20210411221756.15461-1-rdunlap@infradead.org>
-References: <20210411221756.15461-1-rdunlap@infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S240260AbhDMSTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:19:47 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BAD2613BA;
+        Tue, 13 Apr 2021 18:19:26 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 14:19:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Subject: Re: [PATCH v3 1/5] tracing: Define new ftrace event "func_repeats"
+Message-ID: <20210413141925.0ab7cd91@gandalf.local.home>
+In-Reply-To: <20210409181031.26772-2-y.karadz@gmail.com>
+References: <20210409181031.26772-1-y.karadz@gmail.com>
+        <20210409181031.26772-2-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021 15:17:56 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+On Fri,  9 Apr 2021 21:10:27 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-> Fix various kernel-doc warnings in lib/ due to missing or
-> erroneous function names.
-> Add kernel-doc for some function parameters that was missing.
-> Use kernel-doc "Return:" notation in earlycpio.c.
+> The event aims to consolidate the function tracing record in the cases
+> when a single function is called number of times consecutively.
 > 
-> Quietens the following warnings:
+> 	while (cond)
+> 		do_func();
 > 
-> ../lib/earlycpio.c:61: warning: expecting prototype for cpio_data find_cpio_data(). Prototype was for find_cpio_data() instead
+> This may happen in various scenarios (busy waiting for example).
+> The new ftrace event can be used to show repeated function events with
+> a single event and save space on the ring buffer
 > 
-> ../lib/lru_cache.c:640: warning: expecting prototype for lc_dump(). Prototype was for lc_seq_dump_details() instead
-> lru_cache.c:90: warning: Function parameter or member 'cache' not described in 'lc_create'
+> Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+> ---
+>  kernel/trace/trace.h         |  3 +++
+>  kernel/trace/trace_entries.h | 22 +++++++++++++++++
+>  kernel/trace/trace_output.c  | 47 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 72 insertions(+)
+> 
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index 5506424eae2a..6a5b4c2a0fa7 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -45,6 +45,7 @@ enum trace_type {
+>  	TRACE_BPUTS,
+>  	TRACE_HWLAT,
+>  	TRACE_RAW_DATA,
+> +	TRACE_FUNC_REPEATS,
+>  
+>  	__TRACE_LAST_TYPE,
+>  };
+> @@ -442,6 +443,8 @@ extern void __ftrace_bad_type(void);
+>  			  TRACE_GRAPH_ENT);		\
+>  		IF_ASSIGN(var, ent, struct ftrace_graph_ret_entry,	\
+>  			  TRACE_GRAPH_RET);		\
+> +		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
+> +			  TRACE_FUNC_REPEATS);				\
+>  		__ftrace_bad_type();					\
+>  	} while (0)
+>  
+> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> index 4547ac59da61..fdd022a7aecf 100644
+> --- a/kernel/trace/trace_entries.h
+> +++ b/kernel/trace/trace_entries.h
+> @@ -338,3 +338,25 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
+>  		 __entry->nmi_total_ts,
+>  		 __entry->nmi_count)
+>  );
+> +
+> +#define FUNC_REPEATS_GET_DELTA_TS(entry)			\
+> +(((u64)entry->top_delta_ts << 32) | entry->bottom_delta_ts)	\
 
-I'm still seeing this.
+Have macros have side effects by their parameters, it is always recommended
+to wrap them around parenthesis:
 
-> lru_cache.c:90: warning: Function parameter or member 'cache' not described in 'lc_create'
+#define FUNC_REPEATS_GET_DELTA_TS(entry)			\
+	(((u64)(entry)->top_delta_ts << 32) | (entry)->bottom_delta_ts)	\
 
-But it looks OK:
+And have the next line start with at tab after the #define.
 
-/**
- * lc_create - prepares to track objects in an active set
- * @name: descriptive name only used in lc_seq_printf_stats and lc_seq_dump_details
- * @cache: cache root pointer
- * @max_pending_changes: maximum changes to accumulate until a transaction is required
- * @e_count: number of elements allowed to be active simultaneously
- * @e_size: size of the tracked objects
- * @e_off: offset to the &struct lc_element member in a tracked object
- *
- * Returns a pointer to a newly initialized struct lru_cache on success,
- * or NULL on (allocation) failure.
- */
-struct lru_cache *lc_create(const char *name, struct kmem_cache *cache,
-		unsigned max_pending_changes,
-		unsigned e_count, size_t e_size, size_t e_off)
-{
+I would normally ignore this issue if it was just used in this header file,
+because tracing macros are "special", but it's used in actual code as well.
+
+-- Steve
+
+
+> +
+> +FTRACE_ENTRY(func_repeats, func_repeats_entry,
+> +
+> +	TRACE_FUNC_REPEATS,
+> +
+> +	F_STRUCT(
+> +		__field(	unsigned long,	ip		)
+> +		__field(	unsigned long,	parent_ip	)
+> +		__field(	u16	,	count		)
+> +		__field(	u16	,	top_delta_ts	)
+> +		__field(	u32	,	bottom_delta_ts	)
+> +	),
+> +
+> +	F_printk(" %ps <-%ps\t(repeats:%u  delta_ts: -%llu)",
+> +		 (void *)__entry->ip,
+> +		 (void *)__entry->parent_ip,
+> +		 __entry->count,
+> +		 FUNC_REPEATS_GET_DELTA_TS(__entry))
+> +);
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index a0146e1fffdf..55b08e146afc 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -1373,6 +1373,52 @@ static struct trace_event trace_raw_data_event = {
+>  	.funcs		= &trace_raw_data_funcs,
+>  };
+>  
+> +static enum print_line_t
+> +trace_func_repeats_raw(struct trace_iterator *iter, int flags,
+> +			 struct trace_event *event)
+> +{
+> +	struct func_repeats_entry *field;
+> +	struct trace_seq *s = &iter->seq;
+> +
+> +	trace_assign_type(field, iter->ent);
+> +
+> +	trace_seq_printf(s, "%lu %lu %u %llu\n",
+> +			 field->ip,
+> +			 field->parent_ip,
+> +			 field->count,
+> +			 FUNC_REPEATS_GET_DELTA_TS(field));
+> +
+> +	return trace_handle_return(s);
+> +}
+> +
+> +static enum print_line_t
+> +trace_func_repeats_print(struct trace_iterator *iter, int flags,
+> +			 struct trace_event *event)
+> +{
+> +	struct func_repeats_entry *field;
+> +	struct trace_seq *s = &iter->seq;
+> +
+> +	trace_assign_type(field, iter->ent);
+> +
+> +	seq_print_ip_sym(s, field->ip, flags);
+> +	trace_seq_puts(s, " <-");
+> +	seq_print_ip_sym(s, field->parent_ip, flags);
+> +	trace_seq_printf(s, " (repeats: %u, delta_ts: -%llu)\n",
+> +			 field->count,
+> +			 FUNC_REPEATS_GET_DELTA_TS(field));
+> +
+> +	return trace_handle_return(s);
+> +}
+> +
+> +static struct trace_event_functions trace_func_repeats_funcs = {
+> +	.trace		= trace_func_repeats_print,
+> +	.raw		= trace_func_repeats_raw,
+> +};
+> +
+> +static struct trace_event trace_func_repeats_event = {
+> +	.type	 	= TRACE_FUNC_REPEATS,
+> +	.funcs		= &trace_func_repeats_funcs,
+> +};
+>  
+>  static struct trace_event *events[] __initdata = {
+>  	&trace_fn_event,
+> @@ -1385,6 +1431,7 @@ static struct trace_event *events[] __initdata = {
+>  	&trace_print_event,
+>  	&trace_hwlat_event,
+>  	&trace_raw_data_event,
+> +	&trace_func_repeats_event,
+>  	NULL
+>  };
+>  
 
