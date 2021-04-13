@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BB735D7B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F387535D7BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344855AbhDMGGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:06:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15671 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343930AbhDMGGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:06:25 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKFQP1sdyznWcp;
-        Tue, 13 Apr 2021 14:03:09 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 13 Apr 2021 14:05:58 +0800
-Subject: Re: [PATCH] KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <maz@kernel.org>,
-        <alexandru.elisei@arm.com>, <suzuki.poulose@arm.com>,
-        <james.morse@arm.com>
-References: <20210412150034.29185-1-eric.auger@redhat.com>
-CC:     <drjones@redhat.com>, <gshan@redhat.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <d458c821-75a3-a22a-67b0-19b6201cd6ca@huawei.com>
-Date:   Tue, 13 Apr 2021 14:05:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1344858AbhDMGG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:06:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343930AbhDMGGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 02:06:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1469D613AB;
+        Tue, 13 Apr 2021 06:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618293992;
+        bh=a9llW2UJuHJzVBmVMgkCnV/iRToBVGCYdqDaOF3NDPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DS9VY+qbEmJGvRUp+dANg3X5kJeTOCODIX52AJsIwg1Z5sgp/5f8xxiq/ARfHZdJM
+         eIDF4GJKo/0HMWxavHFzsijjmUrzH7QYglrXbaA8LWazOc/+vNmpDrOJQYv7t+TyRB
+         iQUHAFtc0hgkprjlOgcbBSlFtkVbXIBZ+XFEyghHndMSjKP+L2e/P3+zKZNSOtQwW5
+         iUWlUYyL0N2KmzJMYfsA6fUI2riZFQB31GhiZALpgNuaAm4icAMEMXXvHhVanmZAAc
+         50g2mTCThMXLVEL6RnjAmOnUGCOyLUguoHVSOn/WovVR6QjaY7/tVIswyg8xXtxQ3t
+         wL+8sYlgUG9Qg==
+Date:   Tue, 13 Apr 2021 09:06:20 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
+Message-ID: <YHU03AIwrpHCUlU/@kernel.org>
+References: <20210409215103.03999588@canb.auug.org.au>
+ <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
+ <YHPlTifk6jST5auY@kernel.org>
+ <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org>
+ <YHR86T15BzETVHhk@kernel.org>
+ <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210412150034.29185-1-eric.auger@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Randy,
 
-On 2021/4/12 23:00, Eric Auger wrote:
-> When reading the base address of the a REDIST region
-> through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
-> redistributor region list to be populated with a single
-> element.
+On Mon, Apr 12, 2021 at 01:53:34PM -0700, Randy Dunlap wrote:
+> On 4/12/21 10:01 AM, Mike Rapoport wrote:
+> > On Mon, Apr 12, 2021 at 08:49:49AM -0700, Randy Dunlap wrote:
+> >  
+> > I thought about adding some prints to see what's causing the hang, the
+> > reservations or their absence. Can you replace the debug patch with this
+> > one:
+> > 
+> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > index 776fc9b3fafe..a10ac252dbcc 100644
+> > --- a/arch/x86/kernel/setup.c
+> > +++ b/arch/x86/kernel/setup.c
+> > @@ -600,10 +600,13 @@ static bool __init snb_gfx_workaround_needed(void)
+> >  		return false;
+> >  
+> >  	vendor = read_pci_config_16(0, 2, 0, PCI_VENDOR_ID);
+> > +	devid = read_pci_config_16(0, 2, 0, PCI_DEVICE_ID);
+> > +
+> > +	pr_info("%s: vendor: %x, device: %x\n", __func__, vendor, device);
 > 
-> However list_first_entry() expects the list to be non empty.
-Indeed, list_first_entry() always return a non-null ptr. If the list
-is empty, it will mistake the list head as the first element.
+> s/device)/devid)/
+ 
+Oh, sorry.
 
-> Instead we should use list_first_entry_or_null which effectively
-> returns NULL if the list is empty.
+> > +
+> >  	if (vendor != 0x8086)
+> >  		return false;
+> >  
+> > -	devid = read_pci_config_16(0, 2, 0, PCI_DEVICE_ID);
+> >  	for (i = 0; i < ARRAY_SIZE(snb_ids); i++)
+> >  		if (devid == snb_ids[i])
+> >  			return true;
 > 
-> Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
-> Cc: <Stable@vger.kernel.org> # v4.18+
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> Reported-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-kvm-device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> That prints:
 > 
-> diff --git a/arch/arm64/kvm/vgic/vgic-kvm-device.c b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> index 44419679f91a..5eaede3e3b5a 100644
-> --- a/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> +++ b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> @@ -87,8 +87,8 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
->  			r = vgic_v3_set_redist_base(kvm, 0, *addr, 0);
->  			goto out;
->  		}
-> -		rdreg = list_first_entry(&vgic->rd_regions,
-> -					 struct vgic_redist_region, list);
-> +		rdreg = list_first_entry_or_null(&vgic->rd_regions,
-> +						 struct vgic_redist_region, list);
->  		if (!rdreg)
->  			addr_ptr = &undef_value;
->  		else
+> [    0.000000] snb_gfx_workaround_needed: vendor: 8086, device: 126
+> [    0.000000] early_reserve_memory: snb_gfx: 1
+> ...
+> [    0.014061] snb_gfx_workaround_needed: vendor: 8086, device: 126
+> [    0.014064] reserving inaccessible SNB gfx pages
 > 
+> 
+> The full boot log is attached.
+ 
+Can you please send the log with memblock=debug added to the kernel command
+line?
+
+Probably should have started from this...
+
+-- 
+Sincerely yours,
+Mike.
