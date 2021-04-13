@@ -2,192 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E6935E703
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AF135E705
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344821AbhDMTZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:25:29 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:63664
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229458AbhDMTZ1 (ORCPT
+        id S1345295AbhDMTZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344831AbhDMTZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:25:27 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ap3aApKz3tXQBjwHPZozKKrPwzb1zdoIgy1kn?=
- =?us-ascii?q?xilNYDZSddGVkN3roeQD2XbP+VIscVwphNzoAsK9aFzG85od2+MsFJekGDLroW?=
- =?us-ascii?q?65aLxlhLGC/xTFOwnTstFQzr1hda8WMqyUMXFfgdzh6Ae1V/YMqePmzImSie3T?=
- =?us-ascii?q?z2hgQGhRAsldxjx0BQqBHkp9SBMuP+tbKLOn+sFFqzC8EE54Uu2HABA+M9Trm8?=
- =?us-ascii?q?fGj9bPbxIAGnccmWuzpALt2frBHx+U0gx2aV5y6L0pmFKrrzDE?=
-X-IronPort-AV: E=Sophos;i="5.82,220,1613430000"; 
-   d="scan'208";a="378574042"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 21:25:06 +0200
-Date:   Tue, 13 Apr 2021 21:25:05 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] :staging: rtl8723bs: Remove useless
- led_blink_hdl()
-In-Reply-To: <2400087.QbMOWSuNhY@linux.local>
-Message-ID: <alpine.DEB.2.22.394.2104132123180.14108@hadrien>
-References: <20210413155908.8691-1-fmdefrancesco@gmail.com> <4666345.5ezhEZ0rgB@linux.local> <alpine.DEB.2.22.394.2104132056470.14108@hadrien> <2400087.QbMOWSuNhY@linux.local>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 13 Apr 2021 15:25:39 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ED4C061574;
+        Tue, 13 Apr 2021 12:25:19 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id s15so20731322edd.4;
+        Tue, 13 Apr 2021 12:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MCOU/nejpwv7NDugm0TZ1/T9s9gQ2ZIv4K11HpLSrPA=;
+        b=JEyOEXxPtkTZ1o8WSc+hVafkw92M+ZXhItshX+Mr+6bfDmh0RIDUx7G7/M+e/IMS9o
+         XhGTmiW4EYsKLjN2rnfXVE6Z/S/XyVhNlZnzi/vK0yKYLzqOOiBPKn1dSddU/gFzRP06
+         yGRIg4vB0QIX7QT+nQpou4caHRwUooKLG0t3g7hhvKQGp8WX9V6sLNVTTIddAEFGTeYi
+         UNe+NpyUIGk4cjJyAKG83YJBxsPQ8yLPPgSjpn2u5zpwY9I0dxPTDTTUAdwSNM2y+Kl/
+         AlXfz4tHNmZyW9Ob8InFYwPJnzWlQh/09YaH/lmsJwzD9RwF/+pf/J5vw815eaj71I95
+         pqQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MCOU/nejpwv7NDugm0TZ1/T9s9gQ2ZIv4K11HpLSrPA=;
+        b=EZIH+ZsFVY+TSzOEBScaPhxQaCwQ8Le6I7vISJgJjThVcCr7+fkcUHyXODH6+h/5VG
+         UdIjUTCqDGglNy7hrwhj8y2iWIhzzI+ndJ2aOAtmPZWgUBvw1m0MsuUgz3A5HERV/AGs
+         ClfrDp8b+P6bTRyLblfV0RPkJ+shosfc9J9O1NBis0VyNyFAsTbhwuO7oaqCSlSN+gum
+         z7/m+si00ia91ocojTz5N5qDkvmn3ZJopteZI0JyINxElga30+t6US65iI/5JJx5VMM2
+         afntqi4ZUv8KuaqIzMa5p/kFBGuOzkHFS8PrnwDAYFkzvynSu2EqBfxADMilx8N7MbkY
+         a4ew==
+X-Gm-Message-State: AOAM531mjuuQkjQmy1f1YIryg3VT7bpnvF0IY1TH0dgkyTebAwnqaEqP
+        ALSiB/qGprfta8tXrWPHKhtB9lzqbc6IQok+J5k=
+X-Google-Smtp-Source: ABdhPJwe6chIr78Ru8fjzwPsIXJ0W5CCMZtZhid5Tdj1QhJQUPgMS4zk+5Snli2NF+67hCv59XKZBS6pHnVY85smjzY=
+X-Received: by 2002:aa7:d843:: with SMTP id f3mr30941494eds.52.1618341918127;
+ Tue, 13 Apr 2021 12:25:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210411205511.417085-1-martin.blumenstingl@googlemail.com>
+ <YHODYWgHQOuwoTf4@lunn.ch> <CAFBinCD9TV3F_AEMwH8WvqH=g2vw+1YAwGBr4M9_mnNwVuhwBw@mail.gmail.com>
+ <YHTbk3g2rM8zZZ5h@lunn.ch>
+In-Reply-To: <YHTbk3g2rM8zZZ5h@lunn.ch>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 13 Apr 2021 21:25:07 +0200
+Message-ID: <CAFBinCDvQNhyxdPo4=q7b5E6oe3_wVGG0g-QFvNRz2BQ41S-Lg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: dsa: lantiq_gswip: Add support for dumping
+ the registers
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, olteanv@gmail.com,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        Hauke Mehrtens <hauke@hauke-m.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 1:45 AM Andrew Lunn <andrew@lunn.ch> wrote:
+[...]
+> > > and a few people have forked it and modified it for other DSA
+> > > switches. At some point we might want to try to merge the forks back
+> > > together so we have one tool to dump any switch.
+> > actually I was wondering if there is some way to make the registers
+> > "easier to read" in userspace.
+>
+> You can add decoding to ethtool. The marvell chips have this, to some
+> extent. But the ethtool API is limited to just port registers, and
+> there can be a lot more registers which are not associated to a
+> port. devlink gives you access to these additional registers.
+oh, then that's actually also a problem with my patch:
+the .get_regs implementation currently also uses five registers which
+are not related to the specific port.
+noted in case I re-send this as .get_regs patch instead of moving over
+to devlink.
+
+Thanks for the hints as always!
 
 
-On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-
-> On Tuesday, April 13, 2021 8:57:20 PM CEST Julia Lawall wrote:
-> > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-> > > On Tuesday, April 13, 2021 8:20:50 PM CEST Dan Carpenter wrote:
-> > > > On Tue, Apr 13, 2021 at 06:47:06PM +0200, Fabio M. De Francesco
-> wrote:
-> > > > > On Tuesday, April 13, 2021 6:27:17 PM CEST Julia Lawall wrote:
-> > > > > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > > > On Tuesday, April 13, 2021 6:04:16 PM CEST Julia Lawall wrote:
-> > > > > > > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > > > > > Removed the led_blink_hdl() function (declaration,
-> > > > > > > > > definition,
-> > > > > > > > > and
-> > > > > > > > > caller code) because it's useless. It only seems to check
-> > > > > > > > > whether
-> > > > > > > > > or
-> > > > > > > > > not a given pointer is NULL. There are other (simpler)
-> > > > > > > > > means
-> > > > > > > > > for
-> > > > > > > > > that
-> > > > > > > > > purpose.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Fabio M. De Francesco
-> > > > > > > > > <fmdefrancesco@gmail.com>
-> > > > > > > > > ---
-> > > > > > > > >
-> > > > > > > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 1 -
-> > > > > > > > >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9
-> > > > > > > > >  ---------
-> > > > > > > > >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
-> > > > > > > > >  3 files changed, 11 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > > > > > > > > 0297fbad7bce..4c44dfd21514 100644
-> > > > > > > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > > > @@ -150,7 +150,6 @@ static struct cmd_hdl wlancmds[] = {
-> > > > > > > > >
-> > > > > > > > >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
-> > > > > > > > >  	GEN_MLME_EXT_HANDLER(sizeof(struct
-> SetChannelPlan_param),
-> > > > > > > > >  	set_chplan_hdl) /*59*/>
-> > > > > > > > >
-> > > > > > > > > -	GEN_MLME_EXT_HANDLER(sizeof(struct
-> LedBlink_param),
-> > > > > > >
-> > > > > > > led_blink_hdl)
-> > > > > > >
-> > > > > > > > > /*60*/
-> > > > > > > >
-> > > > > > > > This is worrisome.  Doyou fully understand the impact of
-> > > > > > > > this?
-> > > > > > > > If
-> > > > > > > > not,
-> > > > > > > > the change is probably not a good idea.
-> > > > > > >
-> > > > > > > This is that macro definition:
-> > > > > > >
-> > > > > > > #define GEN_MLME_EXT_HANDLER(size, cmd) {size, cmd},
-> > > > > > >
-> > > > > > > struct C2HEvent_Header {
-> > > > > > >
-> > > > > > > #ifdef __LITTLE_ENDIAN
-> > > > > > >
-> > > > > > >         unsigned int len:16;
-> > > > > > >         unsigned int ID:8;
-> > > > > > >         unsigned int seq:8;
-> > > > > > >
-> > > > > > > #else
-> > > > > > >
-> > > > > > >         unsigned int seq:8;
-> > > > > > >         unsigned int ID:8;
-> > > > > > >         unsigned int len:16;
-> > > > > > >
-> > > > > > > #endif
-> > > > > > >
-> > > > > > >         unsigned int rsvd;
-> > > > > > >
-> > > > > > > };
-> > > > > > >
-> > > > > > > It's a bit convoluted with regard to my experience. Probably I
-> > > > > > > don't
-> > > > > > > understand it fully, but it seems to me to not having effects
-> > > > > > > to
-> > > > > > > the
-> > > > > > > code where I removed its use within core/rtw_cmd.c.
-> > > > > > >
-> > > > > > > What am I missing?
-> > > > > >
-> > > > > > It seems that the function is being put into an array.  Probably
-> > > > > > someone
-> > > > > > expects to find it there.  Probably you have shifted all of the
-> > > > > > functions that come afterwards back one slot so that they are all
-> > > > > > in
-> > > > > > the wrong places.
-> > > > > >
-> > > > > > julia
-> > > > >
-> > > > > Thanks for your explanation. Obviously this implies that the
-> > > > > function
-> > > > > cannot be removed, unless one fill the slot that is deleted by to
-> > > > > not
-> > > > > calling this macro at the right moment.
-> > > > >
-> > > > > I also suppose that providing a function pointer with a NULL value
-> > > > > wouldn't work either.
-> > > >
-> > > > It would work.  That array is full of NULL function pointers.
-> > >
-> > > Interesting, thanks.
-> > >
-> > > I'm going to remove that function and replace its name in the macro
-> > > with a NULL function pointer.
-> > >
-> > > I couldn't believe it would work when I wrote about that.
-> >
-> > Have you checked that a value of NULL in that place is going to have the
-> > same effect as the function?
-> >
-> No, I have not, but perhaps is not relevant.
->
-> I want to give to the macro the name of an empty function that I define in
-> the same header where there the prototype of led_blink_hdl() is defined
-> now: something like "u8 empty_function { return 0; }"
->
-> Can it work
-> What do you think about it?
-
-The previous function didn't return 0.  It returned something else.
-
-To do anything this, you have to find where it is called and what result
-the call site expects.  If you don't have that information, it does not
-seem safe to modify the function.
-
-julia
-
-
->
-> Fabio
-> >
-> > julia
->
->
->
->
->
+Martin
