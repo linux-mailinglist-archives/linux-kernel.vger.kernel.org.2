@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D1335DEEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE9835DEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhDMM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:29:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345619AbhDMM2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:28:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 602E361242;
-        Tue, 13 Apr 2021 12:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618316861;
-        bh=vCZyjTt1cdqeNu3ZiSxkPSLpR0G0BLUELRPXqa1t/+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r+wMNERUVpg0zw6Czc/D1mQ1v3tFTlFWymJnGVkTwPi/ZSmzS/OgGkXHf/niSdLb5
-         gBjHoFWq9yrwW99YVGXOOv84KPCbVNvRdehOBPTi3QYshvtjyZ6u1le0waEDfvXPGy
-         KU6wI4jB3goMFlVg3L9QbZN4H/hxxHuglFASg3Ikfx4XH1LLsQyNLL7VQAC9IxV2HY
-         uy0y1uxWAagwjvCnAE5E0eQutSsja1scH6/E5H2iRAs+yJaRgg9ZUxrH0tZ6UlAthl
-         dqr66U3gGz82HLKwBUanlHBCjTfGlnxFaT8QQAJwkBs2CXbKglsuh1+gBTznhQ1JE6
-         APuvL+wUCQEAw==
-Date:   Tue, 13 Apr 2021 14:27:38 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] MAINTAINERS: Add Chris Packham as FREESCALE MPC
- I2C maintainer
-Message-ID: <20210413122738.GE1553@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
- <20210413050956.23264-6-chris.packham@alliedtelesis.co.nz>
+        id S242404AbhDMMcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241422AbhDMMbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:31:06 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25918C061348
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:30:47 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u21so25599830ejo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:30:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pAgxhBv5/NtB+cWLkX3BpIezGlDEtSC6ik2muIVW1Gc=;
+        b=CxyDwaoJqNN/OwD7hAXxGSPuhJmXJM48x6CShyhYyO+l76LLtt8YRUsBDWgcCALiyR
+         rO54kBHPYbvfVh7ohrqZD0xVFPDcNgfn7P86G/txg+UOmxlMRXisdxIsFHHXA1NCHvQA
+         qmTm5tiEjL7F5dStR7q20BjNwsoQUGJJOEjqQahu84Snf6aqCP9RPi0C8q8YjhqsjjZ/
+         AGRDtvpGaEByPOLwXAeFduUkkzXiPcnRzvori0VT57wE4v+FUQ0VBUpD7SjBW7MOD9QD
+         U+RxaeaE62jBJ/OQV4clfralWwhWz2+wLXpsJ+2zhRJf/KXwGZaFh4KpuV+KIyL4Wx7Z
+         KKGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pAgxhBv5/NtB+cWLkX3BpIezGlDEtSC6ik2muIVW1Gc=;
+        b=j49QhRqYYizahzYH6LqH9YQXsJd8A5U+kg2bBN3FETbhGV14TgA6CtWJyCggwu/3Er
+         6lSPVn13Pklv7TP75B7YuzwmPW3eb+cCQGtI0B1Te4vRF03U06tck0yebHbo69viUaSg
+         0RuWg6ZfidQDQFHTVqdKRLlJgI3h4V9PVIBtGfC9zQojT5nKLFDBq7fcfhGeKJ/MPQAH
+         PhfDxaGCVcn7Z+6CNLPp9y+Z0bOpEMz+D9CUFD2eWGrz/3KywOhvc655VdnQ8ZMZhyqA
+         PEVXh9w2QaNdM/D0NIrlA65wv5K5FbMFIG/Od4vKWH0XmILa9SB5s/Obj3gqiGNBjt/D
+         DRxQ==
+X-Gm-Message-State: AOAM530Jd07gcUVZSKSM1kY3Wk/N6pNugdAuCCG0Pt4pSBwJUJtGxg/O
+        bsVLelOjKQaI9Z343jW8G6w=
+X-Google-Smtp-Source: ABdhPJy3RUm5199KNZFcG3FHQV8zoLwzVvCxYhlXgazrCE7Jv9Oxy5BfBiNl7OdKuv4V91V9cuGGog==
+X-Received: by 2002:a17:906:1444:: with SMTP id q4mr32001626ejc.343.1618317045883;
+        Tue, 13 Apr 2021 05:30:45 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id d22sm687391ejz.79.2021.04.13.05.30.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 05:30:45 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH] staging: rtl8192u: ieee80211: Replaced strncpy() with strscpy()
+Date:   Tue, 13 Apr 2021 14:30:41 +0200
+Message-Id: <20210413123041.24260-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jKBxcB1XkHIR0Eqt"
-Content-Disposition: inline
-In-Reply-To: <20210413050956.23264-6-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replaced strncpy() with strscpy() because of compilation time warnings
+about possible truncation of output [-Wstringop-truncation].
+Furthermore, according to the Linux official documentation, strscpy() is
+preferred to strncpy.
 
---jKBxcB1XkHIR0Eqt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, Apr 13, 2021 at 05:09:56PM +1200, Chris Packham wrote:
-> Add Chris Packham as FREESCALE MPC I2C maintainer.
->=20
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+index 25ea8e1b6b65..aa58eedf5e86 100644
+--- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
++++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+@@ -1385,12 +1385,12 @@ inline void ieee80211_softmac_new_net(struct ieee80211_device *ieee, struct ieee
+ 			 * essid provided by the user.
+ 			 */
+ 			if (!ssidbroad) {
+-				strncpy(tmp_ssid, ieee->current_network.ssid, IW_ESSID_MAX_SIZE);
++				strscpy(tmp_ssid, ieee->current_network.ssid, IW_ESSID_MAX_SIZE);
+ 				tmp_ssid_len = ieee->current_network.ssid_len;
+ 			}
+ 			memcpy(&ieee->current_network, net, sizeof(struct ieee80211_network));
+ 
+-			strncpy(ieee->current_network.ssid, tmp_ssid, IW_ESSID_MAX_SIZE);
++			strscpy(ieee->current_network.ssid, tmp_ssid, IW_ESSID_MAX_SIZE);
+ 			ieee->current_network.ssid_len = tmp_ssid_len;
+ 			netdev_info(ieee->dev,
+ 				    "Linking with %s,channel:%d, qos:%d, myHT:%d, networkHT:%d\n",
+-- 
+2.31.1
 
-Applied to for-next, thanks for stepping up, much appreciated!
-
-
---jKBxcB1XkHIR0Eqt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jjoACgkQFA3kzBSg
-KbaAoxAAnYI1d93HxQLyIk/yqx/SFyBv82sHg4k3YVxKlpafvKfh34OMs06doqtx
-7wTkkznOx+sWJfEwWr0+pXZGwxuw3GiFc8Kd3SVCqj3MReeXEbqNpwQEr+CWBpzk
-jV8j0s/hZ32cYJzrsXJTM0qB6koL2kxdR89cOnFyuwQJuWmj67q06eZUA0fVoIJI
-i8/cMLtM3flZmmxPeRvek1LaoB0qHCcbNMsxEEAyFiVmRhNG2uobwLP47ytpzQMe
-ws64ucSYhlPGxU2wSYaIeWEi1yq2/pjzvndSJ3XKWotRFsRHTKhZb7k6ZI+kCc7v
-gp/ocmd0QUWkRCvJw0vKubO1DG/tLeNfizi4mQQzYnsKz0rAJEOeZhwSiTy1xZ+a
-B2ZxGt52KxvxU2hdtSn6px/GL8wX0rfF3PnyBxUohd2Ph3UE+Ah/04mFCALdABEP
-vwwh5gs+B+jRknqTvf9xP9jiwpbdogZGHtRNNJekxL9ZYm73k0gHPXcOeCVizfSC
-ZRw1jGTP2oZc+WlcRmM86sR/Z1+xaoEtOjg3+J35IX4SoAgmZoTHPqEvXsoBH2mR
-MXxaZ2DrydVByzqSFACYrsyHFqxtkaMeGurxyCSJEuFI4ORgtYSDgqwPmuQHsRis
-J+LN1t/sUqFY4YE3QzojYK1a3sZXi4o05X01uDet6SKKaAHh2UQ=
-=+HEg
------END PGP SIGNATURE-----
-
---jKBxcB1XkHIR0Eqt--
