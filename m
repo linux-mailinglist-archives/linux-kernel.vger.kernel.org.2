@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25F335DFC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E29835DFC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344582AbhDMNHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:07:45 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48234 "EHLO vps0.lunn.ch"
+        id S231607AbhDMNK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237114AbhDMNHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:07:37 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lWIl2-00GTdC-Mi; Tue, 13 Apr 2021 15:07:08 +0200
-Date:   Tue, 13 Apr 2021 15:07:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        system@metrotek.ru, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: phy: marvell-88x2222: check that link
- is operational
-Message-ID: <YHWXfFEnOZvpqxWM@lunn.ch>
-References: <cover.1618227910.git.i.bornyakov@metrotek.ru>
- <614b534f1661ecf1fff419e2f36eddfb0e6f066d.1618227910.git.i.bornyakov@metrotek.ru>
- <20210413013122.7fa0195f@thinkpad>
- <20210413071349.r374hxctgboj7l5a@dhcp-179.ddg>
+        id S231483AbhDMNKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:10:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA6B60FED;
+        Tue, 13 Apr 2021 13:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618319401;
+        bh=vvY4tuETc+Xa/tBMGoEIqFLIZ+8YzeuypXqR4OfLAyg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ELxWVDoMBrAD202t2nHfsmaQKjmghiJ2yY4IgObjsoxp4A/wUUzSx9dT5+6fHgPxN
+         P2fmbn5LchzAHvl1R7+nH31yLzzFckwydkiRhPXrtyClsoN6Z8oYl96lh9Cq+9XWEd
+         q2oOVYJEnlFkqrE1yuLJf8qCLxhkozXoS6C9w9xQ0mEtUkRPBaP6p3I+oQUOTi98nA
+         yFW/zflfLUl8axi6YLMWWUTvcKwr3p4orVIARvXsDnbFrPqU8YQEOOo3ESyZ7cmEeZ
+         qVGJ7asAxD1kmOOU0Mpx53SYAsvY5NudwMEtpPeFqVyaZeViiF8QI1bfUyen6U66ad
+         3f7t4lu/c4ynA==
+Date:   Tue, 13 Apr 2021 14:09:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jay Fang <f.fangjian@huawei.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-spi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huangdaode@huawei.com
+Subject: Re: [PATCH] spi: SPI_HISI_KUNPENG should depend on ARCH_HISI
+Message-ID: <20210413130939.GF5586@sirena.org.uk>
+References: <d93934dfdbb4d35e35371517de3b64c144aeb5ef.1618316782.git.geert+renesas@glider.be>
+ <20210413124715.GE5586@sirena.org.uk>
+ <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aPdhxNJGSeOG9wFI"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210413071349.r374hxctgboj7l5a@dhcp-179.ddg>
+In-Reply-To: <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
+X-Cookie: Shake well before using.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:13:49AM +0300, Ivan Bornyakov wrote:
-> On Tue, Apr 13, 2021 at 01:32:12AM +0200, Marek Behún wrote:
-> > On Mon, 12 Apr 2021 15:16:59 +0300
-> > Ivan Bornyakov <i.bornyakov@metrotek.ru> wrote:
-> > 
-> > > Some SFP modules uses RX_LOS for link indication. In such cases link
-> > > will be always up, even without cable connected. RX_LOS changes will
-> > > trigger link_up()/link_down() upstream operations. Thus, check that SFP
-> > > link is operational before actual read link status.
-> > > 
-> > > Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
-> > > ---
-> > >  drivers/net/phy/marvell-88x2222.c | 26 ++++++++++++++++++++++++++
-> > >  1 file changed, 26 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
-> > > index eca8c2f20684..fb285ac741b2 100644
-> > > --- a/drivers/net/phy/marvell-88x2222.c
-> > > +++ b/drivers/net/phy/marvell-88x2222.c
-> > > @@ -51,6 +51,7 @@
-> > >  struct mv2222_data {
-> > >  	phy_interface_t line_interface;
-> > >  	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
-> > > +	bool sfp_link;
-> > >  };
-> > >  
-> > >  /* SFI PMA transmit enable */
-> > > @@ -148,6 +149,9 @@ static int mv2222_read_status(struct phy_device *phydev)
-> > >  	phydev->speed = SPEED_UNKNOWN;
-> > >  	phydev->duplex = DUPLEX_UNKNOWN;
-> > >  
-> > > +	if (!priv->sfp_link)
-> > > +		return 0;
-> > > +
-> > 
-> > So if SFP is not used at all, if this PHY is used in a different
-> > usecase, this function will always return 0? Is this correct?
-> > 
-> 
-> Yes, probably. The thing is that I only have hardware with SFP cages, so
-> I realy don't know if this driver work in other usecases.
 
-It is O.K, to say you don't know if this will work for other setups,
-but it is different thing to do something which could potentially
-break those other setup. Somebody trying to use this without an SFP is
-going to have a bad experience because of this change. And then they
-are going to have to try to fix this, potentially breaking your setup.
+--aPdhxNJGSeOG9wFI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-if you truly need this, make it conditional on that you know you have
-an SFP cage connected.
+On Tue, Apr 13, 2021 at 08:59:02PM +0800, Jay Fang wrote:
+> On 2021/4/13 20:47, Mark Brown wrote:
+> > On Tue, Apr 13, 2021 at 02:27:23PM +0200, Geert Uytterhoeven wrote:
 
-> > > +static void mv2222_sfp_link_down(void *upstream)
-> > > +{
-> > > +	struct phy_device *phydev = upstream;
-> > > +	struct mv2222_data *priv;
-> > > +
-> > > +	priv = (struct mv2222_data *)phydev->priv;
-> > 
-> > This cast is redundant since the phydev->priv is (void*). You can cast
-> > (void*) to (struct ... *).
-> > 
-> > You can also just use
-> > 	struct mv2222_data *priv = phydev->priv;
-> >
-> 
-> Yeah, I know, but reverse XMAS tree wouldn't line up.
+> >> The HiSilicon Kunpeng SPI controller is only present on HiSilicon
+> >> Kunpeng SoCs.  Hence add a dependency on ARCH_HISI, to prevent asking
+> >> the user about this driver when configuring a kernel without Hisilicon
+> >> platform support.
 
-Please move the assignment into the body of the function.
+> > Are you *sure* about this?  HiSilicon produce a wide range of SoCs with
+> > very diverse target markets, this driver looks like it's for enterprise
+> > stuff while most things guarded by that config option look like they're
+> > for embedded applications.
 
-       Andrew
+> SPI_HISI_KUNPENG does not depend on ARCH_HISI.
+
+Right, but that's what Geert is proposing to change - the question is
+does it make sense to do so or not?
+
+--aPdhxNJGSeOG9wFI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB1mBMACgkQJNaLcl1U
+h9BibAf/UGsOeW1w9mT9jPqivXHv0DUWhbNDh4VWXrThIYf7eiLUwjPWWH6fT9hL
+XhjtAPDoZyknZByoC3IUCWsOSHFLhcZquBM+10Pto0auYaOvhKwfi0d+KyX9wu2e
+IwsgxZ0tlRssUroxZaVyLFjcEW6ExmHmibzCAyD4iM4bUt5NXSsIycmBfO8MnIma
+IO0pUYAljaAmlU96cZONUJW6RvD0RDIJbV2RZ52Kof+J5HtPoNeiBTl9uq+mqEpF
+jalNdK2F3XyrUjt1McgSSTqs0pVA76fgwDSnGqpaKuL9+ESOMv5EFbIQzmz7FohT
+QUFwsNBJf+60ufEcL8KF+uw30Ie7EQ==
+=pm6V
+-----END PGP SIGNATURE-----
+
+--aPdhxNJGSeOG9wFI--
