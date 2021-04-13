@@ -2,153 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9382135D956
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1942E35D958
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239858AbhDMHw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238805AbhDMHwZ (ORCPT
+        id S240550AbhDMHwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:52:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45310 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236897AbhDMHwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:52:25 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBFCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:52:04 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id c123so12140174qke.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=bZdhpnprCwHd3jMiHPqHn5OaB0UoYsuLnDKhRtGCdMU=;
-        b=RiEu2nLioxXM96nsAA3ew5lKyZj+pU5TOo70G4yBiZRdIBQkF5IZ6sEn87ENSCWR2r
-         GdYs55uCxiAAyyRi21cKhVtljaP5ZNLmsWWAWPf8Nk+4rNqqwF61Nlw2C8THeD+YWtfy
-         i8LwLgCwhfe2x0DH3SK69crtq0G/W4qzplgbxeD7x9NBA3y9frMPWDrh79sMve6R1vtw
-         u1/cmLWslp//Eesy18CVk7yXtvzVxsgOVjV9eLXi6MHs7eBTQAxi4UT9R9SJoI+Z03ig
-         q9y1qPRAYnatVyKjKHsQPdNhEbrMYtpYMYtADqze4/2DG7NMFwWk6WPT6UaQOli9+uNa
-         N5Zg==
+        Tue, 13 Apr 2021 03:52:49 -0400
+Received: from mail-ot1-f71.google.com ([209.85.210.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lWDqU-0001Ob-LZ
+        for linux-kernel@vger.kernel.org; Tue, 13 Apr 2021 07:52:26 +0000
+Received: by mail-ot1-f71.google.com with SMTP id c15so553203ots.14
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:52:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=bZdhpnprCwHd3jMiHPqHn5OaB0UoYsuLnDKhRtGCdMU=;
-        b=rkRZisMoV4X0GWB3grg904LJYAocNkevkPzXRwm/De/gN/ii+tC1ghPiRBLaksKX2f
-         WopjYfTtyDFdaw+6sdmTcYZ8vljF9HIO429mgSjeM2wcDrvulGuHAHg9HpvMbLG4bgFM
-         uOmYx6d7oBkOqKp5DLYe64R0an877URtTEJp6Ccrcft4S19BrHwYxLEZXY/f+I4o7q/O
-         tvcaWCbh0g0FDfpjlul+uymeuJeQlBmLC71jOci5FO0JjvvJLpzWHqTnlXf9dex5HSnB
-         Qwh6ru6mc74Wy8JlmAxRi4WD1+aHZC0Hpk5/9T69IOVw5+nFVvmFkxDGbQrn6UgSFm5N
-         1uJg==
-X-Gm-Message-State: AOAM530OWbwq7JHNV/JyTMkpBo6fbQ3ZdF4TbmC18cRugm8w7/8cuYrE
-        UsJxGJEIZc/reuzXJ6M9mPc=
-X-Google-Smtp-Source: ABdhPJyDTONZeCMedx5IRHCIfoYu5+9XDkPpScol3SG+KkgqYEBioeDmE6yjfC6+IqPyf7h14e9F/A==
-X-Received: by 2002:a37:2c41:: with SMTP id s62mr30872541qkh.205.1618300323847;
-        Tue, 13 Apr 2021 00:52:03 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id c26sm9243271qtj.92.2021.04.13.00.52.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 00:52:03 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        page-reclaim@google.com
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-Date:   Tue, 13 Apr 2021 07:51:55 +0000
-Message-Id: <20210413075155.32652-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210413065633.2782273-1-yuzhao@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ljXjuvz4Jv8aBpfldr3T9n0q0usWQY26/7yRTXdXMI4=;
+        b=knWVjSS6TZP0upVy2TISnVN1dgYjuOsDh4sxjHuqNqMVLHgAtZdo4Lm5cGeTs/B9dl
+         YECnoC15B2VtYup43XrC9NUZdpM/cM0i6Oyv0TNqDVng9GpnagxwHHG0orqZKemeqm7P
+         T5OGW+aSkQRyA47lyRdV7xJGNA0NRirqR5uH18brKo5SK3CzTqztgBg3dD1RHuNUL3wc
+         XK58cIfKv2BBTmTpURCkgW8u3EEUg4XmGZX75gA30wwrWKwQ5k/pbLyZuH5BDSfvws4a
+         Z3oXpUhROyAJ5mEhmLkU3kJ9pqZkR0ePGhjmWx4HzrpIc7Q+W9E5XyELcN6yJM1/Rz5d
+         N5wA==
+X-Gm-Message-State: AOAM530xcB7c09f/LFjNWjHHTYmaxchU871smMPYfgBL+4zaA2WyENTu
+        1VP6kg5zMypYr1eQWxnv6hMGppIktT8YeWZJFA7+drnLOvi6b3vUN8Hn/7uJ0QCAp6TmpII6VU8
+        SiVpMhT4e0iDxOmYl2NpPgcBdbgvZUppRnNVN+sU8AG/ovCKgNpdNiH55hQ==
+X-Received: by 2002:a9d:5ae:: with SMTP id 43mr32425otd.347.1618300345626;
+        Tue, 13 Apr 2021 00:52:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvtuobHhuc2wAPav117FZE6k7twCbistMjAw4zmdtHFNN8Vym1ZUHk8KLXKmnnNCzmhjvoCQNdJjhUEcMbRro=
+X-Received: by 2002:a9d:5ae:: with SMTP id 43mr32408otd.347.1618300345387;
+ Tue, 13 Apr 2021 00:52:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210412150006.53909-1-chris.chiu@canonical.com> <20210412151205.GB1420451@rowland.harvard.edu>
+In-Reply-To: <20210412151205.GB1420451@rowland.harvard.edu>
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Tue, 13 Apr 2021 15:52:14 +0800
+Message-ID: <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
+Subject: Re: [PATCH] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek Hub
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Mon, Apr 12, 2021 at 11:12 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Mon, Apr 12, 2021 at 11:00:06PM +0800, chris.chiu@canonical.com wrote:
+> > From: Chris Chiu <chris.chiu@canonical.com>
+> >
+> > Realtek Hub (0bda:5413) in Dell Dock WD19 sometimes fails to work
+> > after the system resumes from suspend with remote wakeup enabled
+> > device connected:
+> > [ 1947.640907] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> > [ 1947.641208] usb 5-2.3-port5: cannot disable (err = -71)
+> > [ 1947.641401] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> > [ 1947.641450] usb 5-2.3-port4: cannot reset (err = -71)
+> >
+> > Information of this hub:
+> > T:  Bus=01 Lev=02 Prnt=02 Port=02 Cnt=01 Dev#=  9 Spd=480  MxCh= 6
+> > D:  Ver= 2.10 Cls=09(hub  ) Sub=00 Prot=02 MxPS=64 #Cfgs=  1
+> > P:  Vendor=0bda ProdID=5413 Rev= 1.21
+> > S:  Manufacturer=Dell Inc.
+> > S:  Product=Dell dock
+> > C:* #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=  0mA
+> > I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=01 Driver=hub
+> > E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> > I:* If#= 0 Alt= 1 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=02 Driver=hub
+> > E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> >
+> > The failure results from the ETIMEDOUT by chance when turning on
+> > the suspend feature of the hub. The usb_resume_device will not be
+> > invoked since the device state is not set to suspended, then the
+> > hub fails to activate subsequently.
+> >
+> > The USB_PORT_FEAT_SUSPEND is not really necessary due to the
+> > "global suspend" in USB 2.0 spec. It's only for many hub devices
+> > which don't relay wakeup requests from the devices connected to
+> > downstream ports. For this realtek hub, there's no problem waking
+> > up the system from connected keyboard.
+>
+> What about runtime suspend?  That _does_ require USB_PORT_FEAT_SUSPEND.
 
-Hello,
+It's hard to reproduce the same thing with runtime PM. I also don't
+know the aggressive
+way to trigger runtime suspend. So I'm assuming the same thing will happen in
+runtime PM case because they both go the same usb_port_resume path. Could
+you please suggest a better way to verify this for runtime PM?
 
+>
+> > This commit bypasses the USB_PORT_FEAT_SUSPEND for the quirky hub.
+> >
+> > Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> > ---
+>
+>
+> > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> > index 7f71218cc1e5..8478d49bba77 100644
+> > --- a/drivers/usb/core/hub.c
+> > +++ b/drivers/usb/core/hub.c
+> > @@ -3329,8 +3329,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
+> >        * descendants is enabled for remote wakeup.
+> >        */
+> >       else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
+> > -             status = set_port_feature(hub->hdev, port1,
+> > -                             USB_PORT_FEAT_SUSPEND);
+> > +             if (udev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND)
+>
+> You should test hub->hdev->quirks, here, not udev->quirks.  The quirk
+> belongs to the Realtek hub, not to the device that's plugged into the
+> hub.
+>
 
-Very interesting work, thank you for sharing this :)
+Thanks for pointing that out. I'll verify again and propose a V2 after
+it's done.
 
-On Tue, 13 Apr 2021 00:56:17 -0600 Yu Zhao <yuzhao@google.com> wrote:
-
-> What's new in v2
-> ================
-> Special thanks to Jens Axboe for reporting a regression in buffered
-> I/O and helping test the fix.
-
-Is the discussion open?  If so, could you please give me a link?
-
-> 
-> This version includes the support of tiers, which represent levels of
-> usage from file descriptors only. Pages accessed N times via file
-> descriptors belong to tier order_base_2(N). Each generation contains
-> at most MAX_NR_TIERS tiers, and they require additional MAX_NR_TIERS-2
-> bits in page->flags. In contrast to moving across generations which
-> requires the lru lock, moving across tiers only involves an atomic
-> operation on page->flags and therefore has a negligible cost. A
-> feedback loop modeled after the well-known PID controller monitors the
-> refault rates across all tiers and decides when to activate pages from
-> which tiers, on the reclaim path.
-> 
-> This feedback model has a few advantages over the current feedforward
-> model:
-> 1) It has a negligible overhead in the buffered I/O access path
->    because activations are done in the reclaim path.
-> 2) It takes mapped pages into account and avoids overprotecting pages
->    accessed multiple times via file descriptors.
-> 3) More tiers offer better protection to pages accessed more than
->    twice when buffered-I/O-intensive workloads are under memory
->    pressure.
-> 
-> The fio/io_uring benchmark shows 14% improvement in IOPS when randomly
-> accessing Samsung PM981a in the buffered I/O mode.
-
-Improvement under memory pressure, right?  How much pressure?
-
-[...]
-> 
-> Differential scans via page tables
-> ----------------------------------
-> Each differential scan discovers all pages that have been referenced
-> since the last scan. Specifically, it walks the mm_struct list
-> associated with an lruvec to scan page tables of processes that have
-> been scheduled since the last scan.
-
-Does this means it scans only virtual address spaces of processes and therefore
-pages in the page cache that are not mmap()-ed will not be scanned?
-
-> The cost of each differential scan
-> is roughly proportional to the number of referenced pages it
-> discovers. Unless address spaces are extremely sparse, page tables
-> usually have better memory locality than the rmap. The end result is
-> generally a significant reduction in CPU usage, for workloads using a
-> large amount of anon memory.
-
-When and how frequently it scans?
-
-
-Thanks,
-SeongJae Park
-
-[...]
+> Alan Stern
