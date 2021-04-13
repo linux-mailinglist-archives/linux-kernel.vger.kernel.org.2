@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458E935DE2B
+	by mail.lfdr.de (Postfix) with ESMTP id 918AA35DE2C
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345176AbhDMMBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240873AbhDMMBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:01:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA216C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:00:50 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lWHin-0003AO-AL; Tue, 13 Apr 2021 14:00:45 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:d93:7b32:b325:ef5e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 08F7F60DCD2;
-        Tue, 13 Apr 2021 12:00:42 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 14:00:42 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH] can: etas_es58x: fix null pointer dereference when
- handling error frames
-Message-ID: <20210413120042.27sfrb4hgrr4ua7x@pengutronix.de>
-References: <20210413114242.2760-1-mailhol.vincent@wanadoo.fr>
+        id S1345392AbhDMMBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:01:21 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46892 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240873AbhDMMBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:01:17 -0400
+IronPort-SDR: SUzVxof2TkpIbHR+xh5rfLjxGOrjTxPA6e9tOwmflE+huJINzhT4/HIKaStng861fj2X6/pCF/
+ f10BI4dGzH1Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="255718302"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="255718302"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:00:57 -0700
+IronPort-SDR: YWugUactZdN64YNoV7u9Q9QEpGcgoiHGZD59BbP8wbGDO5wQ/BpBYooK4mkFoR8PpB6+z63109
+ waUHMLw9BoiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="521575683"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 13 Apr 2021 05:00:53 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Apr 2021 15:00:52 +0300
+Date:   Tue, 13 Apr 2021 15:00:52 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 1/1] devres: Enable trace events
+Message-ID: <YHWH9KWrh2kkoAvU@kuha.fi.intel.com>
+References: <20210413113801.18245-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7vvsamthpjzsb2d4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413114242.2760-1-mailhol.vincent@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210413113801.18245-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---7vvsamthpjzsb2d4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 13.04.2021 20:42:42, Vincent Mailhol wrote:
-> During the handling of CAN bus errors, a CAN error SKB is allocated
-> using alloc_can_err_skb(). Even if the allocation of the SKB fails,
-> the function continues in order to do the stats handling.
->=20
-> All access to the can_frame pointer (cf) should be guarded by an if
-> statement:
-> 	if (cf)
->=20
-> However, the increment of the rx_bytes stats:
-> 	netdev->stats.rx_bytes +=3D cf->can_dlc;
-> dereferences the cf pointer and was not guarded by an if condition
-> leading to a NULL pointer dereference if the can_err_skb() function
-> failed.
->=20
-> Replacing the cf->can_dlc by the macro CAN_ERR_DLC (which is the
-> length of any CAN error frames) solves this NULL pointer dereference.
->=20
-> Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CA=
-N USB interfaces")
-> Reported-by: Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
-> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+On Tue, Apr 13, 2021 at 02:38:01PM +0300, Andy Shevchenko wrote:
+> In some cases the printf() mechanism is too heavy and can't be used.
+> For example, when debugging a race condition involving devres API.
+> When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
+> otherwise it's quite visible with a useful information being collected.
+> 
+> Enable trace events for devres part of the driver core.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> Hi Marc,
->=20
-> I am really sorry, but I was just notified about this issue litteraly
-> a few minutes after you send the pull request to net-next.
+> v2: fixed compilation error (lkp), elaborate commit message (Greg)
+>  drivers/base/Makefile |  3 +++
+>  drivers/base/devres.c | 23 +++++++++++-------
+>  drivers/base/trace.c  | 10 ++++++++
+>  drivers/base/trace.h  | 56 +++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 83 insertions(+), 9 deletions(-)
+>  create mode 100644 drivers/base/trace.c
+>  create mode 100644 drivers/base/trace.h
+> 
+> diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+> index 8b93a7f291ec..ef8e44a7d288 100644
+> --- a/drivers/base/Makefile
+> +++ b/drivers/base/Makefile
+> @@ -30,3 +30,6 @@ obj-y			+= test/
+>  
+>  ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
+>  
+> +# define_trace.h needs to know how to find our header
+> +CFLAGS_trace.o		:= -I$(src)
+> +obj-$(CONFIG_TRACING)	+= trace.o
+> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+> index db1f3137fc81..a0850bd1eab7 100644
+> --- a/drivers/base/devres.c
+> +++ b/drivers/base/devres.c
+> @@ -14,14 +14,13 @@
+>  #include <asm/sections.h>
+>  
+>  #include "base.h"
+> +#include "trace.h"
+>  
+>  struct devres_node {
+>  	struct list_head		entry;
+>  	dr_release_t			release;
+> -#ifdef CONFIG_DEBUG_DEVRES
+>  	const char			*name;
+>  	size_t				size;
+> -#endif
 
-:D
+Those ifdefs are still required.
 
-> I am not sure how to proceed. You might either cancel the pull request
-> and squash this to 8537257874e9 ("can: etas_es58x: add core support
-> for ETAS ES58X CAN USB interfaces") or send it as a separate patch.
->=20
-> Please let me know if you need me to do anything.
+>  };
 
-I'll send a follow-up pull request tomorrow.
+thanks,
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---7vvsamthpjzsb2d4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB1h+cACgkQqclaivrt
-76lw3wf8C32JuHk0dtao8qjHSHf9MLq8zaBkN4GxmtHvBMRajZUMxi3VgpXQcxon
-Mqu3zDFb57e+WD/7M0bbO2V3Blx6aH34uGKt+loMrZjDspJqo60Ut3yz4qT3sIzN
-mMIWYypg0Debofg4c9XKeKsTK5uq/5O7u24nhsGqRH6sw009mNVLB7T2ERaZmW9N
-cqpgkG4AzAaPvtgm89EmGSNWd7DsGJFtSZpyRFAu/86nxfx1w8+/qoNSvYs+HdXH
-Kn/X+lg3Znzd0GaSUa2YdIjveTZ7OFVw+ZfiTy8/AWcxEzfwrunTGJ7AJJIDR5oU
-xwLBtNNKnTvWuNUROuEADqozeiwNuA==
-=ILb7
------END PGP SIGNATURE-----
-
---7vvsamthpjzsb2d4--
+-- 
+heikki
