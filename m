@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27A835E11D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D0435E123
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346404AbhDMOMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244947AbhDMOLy (ORCPT
+        id S1346426AbhDMOMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:12:31 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:24835 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346388AbhDMOM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:11:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355FAC061574;
-        Tue, 13 Apr 2021 07:11:32 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso10740570pji.3;
-        Tue, 13 Apr 2021 07:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=29Kz76z7ZOP2iBx6/3DXnAWj3+GXDiiIznMC8bIFGsc=;
-        b=HCWAtwaBVQdx3DeevYRszuLqOubsNmDDTOTU+FUgQJHr5WOPHzKY87DtFvsPI+S/81
-         QR2Gk6DnFiU7zXEedpL+oq4LOUtxyg/lImKv8ezFR7EdoMoVQSNQLHIRLdjVv7XqWJws
-         YGI9DeOoohjqarltgk4Fx+sy2IJ3LcRCnH4OII2+i/AKfoulTZHV2ZsmzrWG968gDgD1
-         mcyiN/l+u3pl6Kh3xjmOZuaFH/61ucMxERgSLrl2UZaLj66WFwAb4fvHbJog9pkbE7mU
-         AH2yjEx19AvArSSuSmm6RoOsDYo7gsx1mHjrND7Q5oFIW2/VIk3+gaRsKRHNyarn1rmy
-         TrRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=29Kz76z7ZOP2iBx6/3DXnAWj3+GXDiiIznMC8bIFGsc=;
-        b=fGheaZxjCJL62v3f66pwWJaf+ahitmSZNtxlm8DQBdmYOG9C+pK2zTegpYPI0G9S8l
-         hZxUSfsdhq5UfzNNmVnFFGzrBmLC2qfPkbxXiQNkblpKzbG6uWI9tjzkSh9364ygeCwC
-         b8zUj8qmiNAOkCIuoTrVzCGUw/LY/K0NOkcEKKnwD0SC20UOoR/r+KFdjWAXlkdz5Fnb
-         GNII3MwOkh2nWnSsji5DKpX3oyQANryZRE1lPsPLaVpPbaKVayDPOri4Cj8jcC4dDhGz
-         E/tusQ30IEBbG2qGFnf4K6Jg9uBKnfCqTaWMSpBO/zUmDI5nYhsLjcFdRJlGBcl1i9Th
-         p2oQ==
-X-Gm-Message-State: AOAM533QXUiCEBz8y+V3JN4S3JJ4gMhturIpkg3EWy4pK/VZxztobh+j
-        /AnmMVc2zqTJvZtDOEPtHyo=
-X-Google-Smtp-Source: ABdhPJxc6+6O8gxrJL3OrEMe9mC+xOVJwaNQrJLDCo+F68glOIdvGxDa5YlD1mPqJsydBllGi86BYA==
-X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr244765pjb.100.1618323091571;
-        Tue, 13 Apr 2021 07:11:31 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id ms8sm2519954pjb.57.2021.04.13.07.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:11:31 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 19:41:20 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     narmstrong@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        linux-amlogic@lists.infradead.org, mitali_s@me.iitr.ac.in
-Subject: [PATCH v3] staging: media: meson: vdec: declare u32 as static const
-Message-ID: <YHWmiBYAbOUw5YrY@kali>
+        Tue, 13 Apr 2021 10:12:27 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-278-AvhJ3iXtMyqzl2W9G4PAMw-1; Tue, 13 Apr 2021 15:12:05 +0100
+X-MC-Unique: AvhJ3iXtMyqzl2W9G4PAMw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 15:12:04 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 15:12:03 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>
+CC:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        "Guo Ren" <guoren@kernel.org>
+Subject: RE: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+Thread-Topic: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+Thread-Index: AQHXMGSVFmL3q8InjEiRDqC8qAyY5Kqyacdg///5xgCAABWwYA==
+Date:   Tue, 13 Apr 2021 14:12:03 +0000
+Message-ID: <40d4114fa34043d0841b81d09457c415@AcuMS.aculab.com>
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+ <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+ <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
+ <CAK8P3a2NR2nhEffFQJdMq2Do_g2ji-7p3+iWyzw+aXD6gov05w@mail.gmail.com>
+ <11ead5c2c73c42cbbeef32966bc7e5c2@AcuMS.aculab.com>
+ <CAK8P3a3PK9zyeP4ymELtc2ZYnymECoACiigw9Za+pvSJpCk5=g@mail.gmail.com>
+In-Reply-To: <CAK8P3a3PK9zyeP4ymELtc2ZYnymECoACiigw9Za+pvSJpCk5=g@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Declared 32 bit unsigned int as static constant inside a function and
-replaced u32[] {x,y} as canvas3, canvas4 in codec_h264.c
-This indicates the value of canvas indexes will remain constant throughout execution.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
-Changes from v2:- Rebased this patch and made changes against mainline code
-Changes from v1:- Rectified mistake by declaring u32 as static const
-properly as static const u32 canvas'x'[]
-
- drivers/staging/media/meson/vdec/codec_h264.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/media/meson/vdec/codec_h264.c b/drivers/staging/media/meson/vdec/codec_h264.c
-index c61128fc4bb9..80141b89a9f6 100644
---- a/drivers/staging/media/meson/vdec/codec_h264.c
-+++ b/drivers/staging/media/meson/vdec/codec_h264.c
-@@ -287,10 +287,10 @@ static void codec_h264_resume(struct amvdec_session *sess)
- 	struct amvdec_core *core = sess->core;
- 	struct codec_h264 *h264 = sess->priv;
- 	u32 mb_width, mb_height, mb_total;
-+	static const u32 canvas3[] = { ANCO_CANVAS_ADDR, 0 };
-+	static const u32 canvas4[] = { 24, 0 };
- 
--	amvdec_set_canvases(sess,
--			    (u32[]){ ANC0_CANVAS_ADDR, 0 },
--			    (u32[]){ 24, 0 });
-+	amvdec_set_canvases(sess, canvas3, canvas4);
- 
- 	dev_dbg(core->dev, "max_refs = %u; actual_dpb_size = %u\n",
- 		h264->max_refs, sess->num_dst_bufs);
--- 
-2.30.2
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxMyBBcHJpbCAyMDIxIDE0OjQwDQo+IA0KPiBP
+biBUdWUsIEFwciAxMywgMjAyMSBhdCAzOjA2IFBNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0
+QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogQXJuZCBCZXJnbWFubg0KPiA+ID4g
+U2VudDogMTMgQXByaWwgMjAyMSAxMzo1OA0KPiA+IC4uLg0KPiA+ID4gVGhlIHJlbWFpbmluZyBv
+bmVzIChjc2t5LCBtNjhrLCBzcGFyYzMyKSBuZWVkIHRvIGJlIGluc3BlY3RlZA0KPiA+ID4gbWFu
+dWFsbHkgdG8gc2VlIGlmIHRoZXkgY3VycmVudGx5IHN1cHBvcnQgUENJIEkvTyBzcGFjZSBidXQg
+aW4NCj4gPiA+IGZhY3QgdXNlIGFkZHJlc3MgemVybyBhcyB0aGUgYmFzZSAod2l0aCBsYXJnZSBy
+ZXNvdXJjZXMpIG9yIHRoZXkNCj4gPiA+IHNob3VsZCBhbHNvIHR1cm4gdGhlIG9wZXJhdGlvbnMg
+aW50byBhIE5PUC4NCj4gPg0KPiA+IEknZCBleHBlY3Qgc3BhcmMzMiB0byB1c2UgYW4gQVNJIHRv
+IGFjY2VzcyBQQ0kgSU8gc3BhY2UuDQo+ID4gSSBjYW4ndCBxdWl0ZSByZW1lbWJlciB3aGV0aGVy
+IElPIHNwYWNlIHdhcyBzdXBwb3J0ZWQgYXQgYWxsLg0KPiANCj4gSSBzZWUgdGhpcyBiaXQgaW4g
+YXJjaC9zcGFyYy9rZXJuZWwvbGVvbl9wY2kuYw0KPiANCj4gICogUENJIE1lbW9yeSBhbmQgUHJl
+ZmV0Y2hhYmxlIE1lbW9yeSBpcyBkaXJlY3QtbWFwcGVkLiBIb3dldmVyIEkvTyBTcGFjZSBpcw0K
+PiAgKiBhY2Nlc3NlZCB0aHJvdWdoIGEgV2luZG93IHdoaWNoIGlzIHRyYW5zbGF0ZWQgdG8gbG93
+IDY0S0IgaW4gUENJIHNwYWNlLCB0aGUNCj4gICogZmlyc3QgNEtCIGlzIG5vdCB1c2VkIHNvIDYw
+S0IgaXMgYXZhaWxhYmxlLg0KPiAuLi4NCj4gICAgICAgICBwY2lfYWRkX3Jlc291cmNlX29mZnNl
+dCgmcmVzb3VyY2VzLCAmaW5mby0+aW9fc3BhY2UsDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgaW5mby0+aW9fc3BhY2Uuc3RhcnQgLSAweDEwMDApOw0KPiANCj4gd2hpY2ggbWVh
+bnMgdGhhdCB0aGVyZSBpcyBJL08gc3BhY2UsIHdoaWNoIGdldHMgYWNjZXNzZWQgdGhyb3VnaCB3
+aGljaGV2ZXINCj4gbWV0aG9kIHJlYWRiKCkgdXNlcy4gSGF2aW5nIHRoZSBvZmZzZXQgZXF1YWwg
+dG8gdGhlIHJlc291cmNlIG1lYW5zIHRoYXQNCj4gdGhlICcodm9pZCAqKTAnIHN0YXJ0IGlzIGNv
+cnJlY3QuDQoNCkl0IG11c3QgaGF2ZSBiZWVuIHRoZSBWTUVidXMgKGFuZCBtYXliZSBzQnVzKSBz
+cGFyYyB0aGF0IHVzZWQgYW4gQVNJLg0KDQpJIGRvIHJlbWVtYmVyIGlzc3VlcyB3aXRoIFNvbGFy
+aXMgb2Ygc29tZSBQQ0kgY2FyZHMgbm90IGxpa2luZw0KYmVpbmcgYXNzaWduZWQgYSBCQVIgYWRk
+cmVzcyBvZiB6ZXJvLg0KVGhhdCBtYXkgYmUgd2h5IHRoZSBsb3cgNGsgSU8gc3BhY2UgaXNuJ3Qg
+YXNzaWduZWQgaGVyZS4NCihJJ3ZlIG5ldmVyIHJ1biBMaW51eCBvbiBzcGFyYywganVzdCBTVlI0
+IGFuZCBTb2xhcmlzLikNCg0KSSBndWVzcyBzZXR0aW5nIFBDSV9JT0JBU0UgdG8gemVybyBpcyBz
+YWZlciB3aGVuIHlvdSBjYW4ndCB0cnVzdA0KZHJpdmVycyBub3QgdG8gdXNlIGluYigpIGluc3Rl
+YWQgb2YgcmVhZGIoKS4NCk9yIHdoYXRldmVyIGlvX3JlYWQoKSBlbmRzIHVwIGJlaW5nLg0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
