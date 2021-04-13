@@ -2,130 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1AE35D78F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A5035D79C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245613AbhDMFzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:55:44 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55003 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhDMFzm (ORCPT
+        id S1344761AbhDMF5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:57:54 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33887 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1344729AbhDMF5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:55:42 -0400
-Received: by mail-io1-f72.google.com with SMTP id s6so10347354iom.21
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:55:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3UvEYXwfzE96WskXPc41XH3OXkDOqDJ6GKvKrcqu/Uw=;
-        b=MswPrO5YNMF1iEXMxoy4E7kshF4cF6qxLDFh2f9O7f+MPoFHCgHSNMPcAZkIv+2d4G
-         NinJjWGAjy6qPa/t/7bzMQPdNJMsLI/cefdxFlPzKr0jg5NZ5nZAExsryfYyzuO+0KIr
-         RRtTCW8TsegC+iD5FbAtvkz2crEg4D8gsZSYPLu3fye2/e2rNUBbchSd1WRAP3E9eStb
-         yie6+vZGaW+3NNrY5KL0tBkPC9RQ6Z6mODGT2VyDWIUa3X/8MyBOx2KN5mU6/JNHtj9B
-         YZl0wwRyJV03/mAwtNnVDJmb8Hn9F7j34rt5cfPsLCUWFPKlmayrpzIvsS4eBu+ZzShN
-         ++tw==
-X-Gm-Message-State: AOAM5320K4TDmM8Q72PfA2M+/ShjGsl90mZh99OF7Kgy24uySbYgG7v9
-        Pbr9VuQAFU0Ch8CXnHmlNUDh5IibEJTDJigeE5hwIBkvuh1U
-X-Google-Smtp-Source: ABdhPJzkvywe8nghQGlyW4KyrKYQ+oCi7WuYn+97neCZjGlZhKBc5vJmJINRUieCiGsObIsYjsCptSjzWm0fekO8ZFO+5MzzIyRX
+        Tue, 13 Apr 2021 01:57:47 -0400
+X-UUID: b57493c1f124473fac98af8b917b5d03-20210413
+X-UUID: b57493c1f124473fac98af8b917b5d03-20210413
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 786562493; Tue, 13 Apr 2021 13:57:26 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 13 Apr 2021 13:57:24 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 13 Apr 2021 13:57:17 +0800
+From:   Zhiyong Tao <zhiyong.tao@mediatek.com>
+To:     <robh+dt@kernel.org>, <linus.walleij@linaro.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>
+CC:     <srv_heupstream@mediatek.com>, <zhiyong.tao@mediatek.com>,
+        <hui.liu@mediatek.com>, <eddie.huang@mediatek.com>,
+        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
+        <hongzhou.yang@mediatek.com>, <sean.wang@mediatek.com>,
+        <seiya.wang@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>
+Subject: [PATCH v4 0/4] Mediatek pinctrl patch on mt8195 
+Date:   Tue, 13 Apr 2021 13:56:58 +0800
+Message-ID: <20210413055702.27535-1-zhiyong.tao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:73c:: with SMTP id g28mr14502869iox.47.1618293322621;
- Mon, 12 Apr 2021 22:55:22 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 22:55:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a324c305bfd446c0@google.com>
-Subject: [syzbot] BUG: unable to handle kernel NULL pointer dereference in
- __lookup_slow (2)
-From:   syzbot <syzbot+11c49ce9d4e7896f3406@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 21E050DD13335117A7EE9990F0D01491D1407F993EF8BB83AEC83DF0538430662000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series includes 4 patches:
+1.add pinctrl file and inding document on mt8195.
+2.add pinctrl driver on MT8195.
+3.add pinctrl drive for I2C related pins on MT8195.
+4.add pinctrl rsel setting on MT8195.
 
-syzbot found the following issue on:
+Changes in patch v4:
+1)fix pinctrl-mt8195.yaml warning error.
+2)remove pinctrl device node patch which is based on "mt8195.dtsi".
 
-HEAD commit:    d93a0d43 Merge tag 'block-5.12-2021-04-02' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16519431d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=71a75beb62b62a34
-dashboard link: https://syzkaller.appspot.com/bug?extid=11c49ce9d4e7896f3406
-compiler:       Debian clang version 11.0.1-2
+Changes in patch v3:
+1)change '^pins' to '-pins$'.
+2)change 'state_0_node_a' to 'gpio_pin' which is defined in dts.
+3)change 'state_0_node_b' to 'i2c0_pin' which is defined in dts.
+4)reorder this series patches. change pinctrl file and binding document
+together in one patch.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+There are no changes in v1 & v2.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+11c49ce9d4e7896f3406@syzkaller.appspotmail.com
+Zhiyong Tao (4):
+  dt-bindings: pinctrl: mt8195: add pinctrl file and binding document
+  pinctrl: add pinctrl driver on mt8195
+  pinctrl: add drive for I2C related pins on MT8195
+  pinctrl: add rsel setting on MT8195
 
-REISERFS (device loop4): Using r5 hash to sort names
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 6bb82067 P4D 6bb82067 PUD 6bb81067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 11072 Comm: syz-executor.4 Not tainted 5.12.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90008f8fa20 EFLAGS: 00010246
-RAX: 1ffffffff13872e8 RBX: dffffc0000000000 RCX: 0000000000040000
-RDX: 0000000000000000 RSI: ffff88802e9d9490 RDI: ffff88807f140190
-RBP: ffffffff89c39740 R08: ffffffff81c9d4de R09: fffffbfff200a946
-R10: fffffbfff200a946 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88807f140190 R14: 1ffff11005d3b292 R15: ffff88802e9d9490
-FS:  00007f894af88700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006bb83000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __lookup_slow+0x240/0x370 fs/namei.c:1626
- lookup_one_len+0x10e/0x200 fs/namei.c:2649
- reiserfs_lookup_privroot+0x85/0x1e0 fs/reiserfs/xattr.c:980
- reiserfs_fill_super+0x2a69/0x3160 fs/reiserfs/super.c:2176
- mount_bdev+0x26c/0x3a0 fs/super.c:1367
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x86/0x270 fs/super.c:1497
- do_new_mount fs/namespace.c:2903 [inline]
- path_mount+0x188a/0x29a0 fs/namespace.c:3233
- do_mount fs/namespace.c:3246 [inline]
- __do_sys_mount fs/namespace.c:3454 [inline]
- __se_sys_mount+0x28c/0x320 fs/namespace.c:3431
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46797a
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f894af87fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f894af88000
-RBP: 00007f894af88040 R08: 00007f894af88040 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000000
-R13: 0000000020000100 R14: 00007f894af88000 R15: 0000000020011500
-Modules linked in:
-CR2: 0000000000000000
----[ end trace a1b8dbb111baf993 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90008f8fa20 EFLAGS: 00010246
-RAX: 1ffffffff13872e8 RBX: dffffc0000000000 RCX: 0000000000040000
-RDX: 0000000000000000 RSI: ffff88802e9d9490 RDI: ffff88807f140190
-RBP: ffffffff89c39740 R08: ffffffff81c9d4de R09: fffffbfff200a946
-R10: fffffbfff200a946 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88807f140190 R14: 1ffff11005d3b292 R15: ffff88802e9d9490
-FS:  00007f894af88700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006bb83000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ .../bindings/pinctrl/pinctrl-mt8195.yaml      |  151 ++
+ drivers/pinctrl/mediatek/Kconfig              |    6 +
+ drivers/pinctrl/mediatek/Makefile             |    1 +
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     |  872 +++++++++
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  |   28 +
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |   15 +
+ drivers/pinctrl/mediatek/pinctrl-mtk-mt8195.h | 1669 +++++++++++++++++
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |   16 +
+ include/dt-bindings/pinctrl/mt8195-pinfunc.h  |  962 ++++++++++
+ 9 files changed, 3720 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8195.yaml
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mt8195.c
+ create mode 100644 drivers/pinctrl/mediatek/pinctrl-mtk-mt8195.h
+ create mode 100644 include/dt-bindings/pinctrl/mt8195-pinfunc.h
+
+--
+2.18.0
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
