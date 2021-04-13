@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F26335E755
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C523F35E757
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhDMTyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
+        id S232657AbhDMTzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:55:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231802AbhDMTyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59B5D613B1;
-        Tue, 13 Apr 2021 19:54:00 +0000 (UTC)
+        id S231802AbhDMTzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:55:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67865613C6;
+        Tue, 13 Apr 2021 19:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618343641;
-        bh=aQ0sL/CtSIpmqSH+Y8uXo9Dlmv+4Dn7h4gts/aYLS0Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ashQWDCNaUuDS2zXVNRMUkGpM6HVQrcbYTKAcRIaXm1Fh4slwpuvuPPvTyq8Hwugv
-         7b0Io+RETbDsjMb0pCxmWVfgBsqmvsO/xvlpd4OJMBzi3DpHnSWlZttNzMswUO7n4g
-         LIpdvvuRQdqvPH1PL8FLBrwOK89XjDvLe5wYC2FYuTQpe4NCWudhEkmlKLND+4dmX6
-         bkX033gOCyuxs3uXecqylb8jWB0hglDS32HeN4dW0CA56YTro6jjEdej/sURztlzJL
-         O9V9lin5B1Y2qamg9MJywPUmDpRn7i4+X59RpfeMgI24tO5Pq7rlRn0v9vU2GYmJa0
-         XfVkUHQJymfjg==
-Date:   Tue, 13 Apr 2021 14:54:09 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] iommu/vt-d: Fix out-bounds-warning in
- intel_svm_page_response()
-Message-ID: <20210413195409.GA322376@embeddedor>
+        s=k20201202; t=1618343727;
+        bh=jcDBFMxs7e2ByQlDmJU/xrTyUFGMSJkzOGBGyVot8FQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NolWkkk7ZZ4xRyuQD3bH5utbBSW9l+JWZYhy3YnwovMkTm4nelhEe0TmEBkWEQ5gH
+         RoymIhVPbdpFIvoAIzXH6r4y3nhu8DR2B8J5Z16z1+hg3dgu0P3qpJUEhWsE9erjgz
+         SLY33/DPDU24JDv4E2kMkOKlk8JFtF2C7XuWVrZNZIQ4MqpkSYDgAKcvG9kQ97OA3E
+         ciJvcD6KkUo51/RhlnQFZs9wh/2onyTKFs8WBeQ/v4IpXSMK/OercBvEl4LxzPEBl0
+         cKfWCGWQxFyZqo3onjulIAH5av6oWWEpZgATvOgVckXc81fEGlPHhrJOa0KpX56oYU
+         H3sPppM6UhktA==
+Date:   Tue, 13 Apr 2021 21:55:21 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     kdasu.kdev@gmail.com, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: busses: remove unused including <linux/version.h>
+Message-ID: <20210413195521.GA2751@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Yang Li <yang.lee@linux.alibaba.com>, kdasu.kdev@gmail.com,
+        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <1618307301-72925-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Content-Disposition: inline
+In-Reply-To: <1618307301-72925-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace call to memcpy() with just a couple of simple assignments in
-order to fix the following out-of-bounds warning:
 
-drivers/iommu/intel/svm.c:1198:4: warning: 'memcpy' offset [25, 32] from the object at 'desc' is out of the bounds of referenced subobject 'qw2' with type 'long long unsigned int' at offset 16 [-Warray-bounds]
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy(). This causes a legitimate compiler warning because memcpy()
-overruns the length of &desc.qw2.
+On Tue, Apr 13, 2021 at 05:48:21PM +0800, Yang Li wrote:
+> Fix the following versioncheck warnings:
+> ./drivers/i2c/busses/i2c-xgene-slimpro.c: 22 linux/version.h not needed.
+> ./drivers/i2c/busses/i2c-brcmstb.c: 25 linux/version.h not needed.
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
+Thanks, but a similar patch is already in -next.
 
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/iommu/intel/svm.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=3Di=
+2c/for-next&id=3D660f58b6d290417828680f417f43d7b810fa9138
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 5165cea90421..65909f504c50 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1194,9 +1194,10 @@ int intel_svm_page_response(struct device *dev,
- 		desc.qw1 = QI_PGRP_IDX(prm->grpid) | QI_PGRP_LPIG(last_page);
- 		desc.qw2 = 0;
- 		desc.qw3 = 0;
--		if (private_present)
--			memcpy(&desc.qw2, prm->private_data,
--			       sizeof(prm->private_data));
-+		if (private_present) {
-+			desc.qw2 = prm->private_data[0];
-+			desc.qw3 = prm->private_data[1];
-+		}
- 
- 		qi_submit_sync(iommu, &desc, 1, 0);
- 	}
--- 
-2.27.0
 
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB19yUACgkQFA3kzBSg
+KbYycBAArL2OPVVu8CURLWz4tmmSl+zhLf/qBNv50++VK/bGgsN4/EaxlT3tAFCa
+p9F3jzCM3fZTpWdxty6MGiYulLb6limWqoFRycK7CnIerwdKmd83lIL5elmlaGNP
+gmkD+McwFiEgChuu+c8FEQq17nzjmxlekeYPCRb7IyWWPxhOdiLgLOW7gMmewLeK
+nRag/VnRrwSnxLdBy6Z3AYebLbrP7HfWhn1DxtV2paKfogwXcQCSfwi9NY0IWw7t
+XhhXYVJTsPUhciwrFour/OFodP74hqZ7SDosz9vBo97l6Nr/PCBzKBbe7HgvX2lf
+4RTositNbk4u7ROIQGgmsPpaS8uADKKruaNQAKL/h+ZJNRcEvKH/DveEB8nTLLex
+gnFacmF1dLQXUB6P+NWPMAvawPxzk/L4XHqPILdRKRDNK8bBfWZGbjDM/PFVvmAo
+e5J1GBr0bG7YJuoUoK9NFUgcR5s5gJWQDrznctdudSbsXNoqOLm4QLmPs6osvAQa
+jfDI0nefCWiN0I2rMlLddD4lPVTrYeHd3QIzmC/gXRHVU0J1rk9x5EFnP9CviwMg
+EIw4y3lX4ilF/DA5g5txMdGtehpGJUy+Ww5e/jXkgrXlVQskKP5YPTaqINfgDuMW
+uIanPkXMQhOfJz3KCcnc3U6W/aip/Wvl5/ItOibPxk1lwJj8pEk=
+=/zqh
+-----END PGP SIGNATURE-----
+
+--PEIAKu/WMn1b1Hv9--
