@@ -2,282 +2,511 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89B735D5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EC835D5A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241159AbhDMDGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:06:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:19479 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238495AbhDMDG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:06:29 -0400
-IronPort-SDR: gLeN+dUBQw4t2ku2Sn3yqgLGkom07Jf9BbM1wJW8lUUV5EnB5/Z7tC63j70yq3VaIBwrDET6Xt
- B63wbr8ATh2A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="255650491"
-X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
-   d="scan'208";a="255650491"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 20:06:09 -0700
-IronPort-SDR: kpOlp1sn/TlKLMSJfuLVPXkm2wpq42Jttc8OFc0yvGZ+hi9wRkCCbm/SwIYxpvFmmpAZQqQh8N
- BipNiQIs+AsA==
-X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
-   d="scan'208";a="450230493"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 20:06:05 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Rong Chen <rong.a.chen@intel.com>, Rik van Riel <riel@surriel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
-References: <20210313075747.3781593-1-yuzhao@google.com>
-        <20210313075747.3781593-10-yuzhao@google.com>
-        <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
-        <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFAsjP7NIZM5Ld+m@google.com>
-        <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFBktbCH9JFcT0rL@google.com>
-        <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFHeFslZ85/h3o/q@google.com>
-        <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YFhQbvSq2Px25Ub5@google.com>
-        <87ft0lhwbm.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <CAOUHufYCVDz5=6iLgWhiNSGDVxVj2gz7MqyrFVNbAXtjW8W1GQ@mail.gmail.com>
-Date:   Tue, 13 Apr 2021 11:06:03 +0800
-In-Reply-To: <CAOUHufYCVDz5=6iLgWhiNSGDVxVj2gz7MqyrFVNbAXtjW8W1GQ@mail.gmail.com>
-        (Yu Zhao's message of "Sat, 10 Apr 2021 12:48:03 -0600")
-Message-ID: <87v98qubms.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S241628AbhDMDKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:10:41 -0400
+Received: from office2.cesnet.cz ([195.113.144.244]:41058 "EHLO
+        office2.cesnet.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238495AbhDMDKk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:10:40 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id 222EC40006E
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:10:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1618283417;
+        bh=Xz9fql98jHeYw4yi83czzXIXxODxe9R7YJUvclimJRM=;
+        h=References:In-Reply-To:From:Date:Subject:Cc;
+        b=NUgPbIyTycJ7m0ddKZjgkl4AdDeI9t8OJWX2Hz9P6iqv0uujh8HjtRIbChIKCqdc8
+         9uSDjJwqiGGZ3FvzmH583/LAAPBtMZLh3thTciQ0jT8521kf1M0FqdTl2LWhgTS7EB
+         zp5rYDe66S+BsYz2JeLbAewX5b2iPcMuHt3XN194T93L9b9Dbt+9UI6AD3muCSAHHU
+         5Kiy9mf720Eh5KgDiMHcTJT8ycEwVlxqeFSbRtWq1CpgI6r952VDFlr039mLBmbMns
+         u5l4xZx94/YZMutKzuHNGyPxDPxs4+TqrGkClUnoX24kTDF/wAXgOgBmBee+5Pb6Ar
+         yMKHWWpEXcxEw==
+Received: by mail-pf1-f171.google.com with SMTP id b26so5357875pfr.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:10:16 -0700 (PDT)
+X-Gm-Message-State: AOAM532u2HdY7xyJ+PER6BYJO1+x2XVSvfjFPGXseeGYH8g+RI/TubFP
+        3Ior2jLsAjPgXuqZxgbKNAVzBCECRO9/pAyLyhE=
+X-Received: by 2002:aa7:8e0d:0:b029:214:a511:d88b with SMTP id
+ c13-20020aa78e0d0000b0290214a511d88bmt23028563pfr.2.1618283415079; Mon, 12
+ Apr 2021 20:10:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20210413025948.901867-1-kubernat@cesnet.cz>
+In-Reply-To: <20210413025948.901867-1-kubernat@cesnet.cz>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Tue, 13 Apr 2021 05:10:03 +0200
+X-Gmail-Original-Message-ID: <CABKa3nqFzs4fCnrJ-ackq33B0uvXWp9dF0f-JBmhKhm2S9W85A@mail.gmail.com>
+Message-ID: <CABKa3nqFzs4fCnrJ-ackq33B0uvXWp9dF0f-JBmhKhm2S9W85A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+Hello,
 
-> On Wed, Mar 24, 2021 at 12:58 AM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Yu Zhao <yuzhao@google.com> writes:
->>
->> > On Mon, Mar 22, 2021 at 11:13:19AM +0800, Huang, Ying wrote:
->> >> Yu Zhao <yuzhao@google.com> writes:
->> >>
->> >> > On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
->> >> >> Yu Zhao <yuzhao@google.com> writes:
->> >> >>
->> >> >> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
->> >> >> > The scanning overhead is only one of the two major problems of the
->> >> >> > current page reclaim. The other problem is the granularity of the
->> >> >> > active/inactive (sizes). We stopped using them in making job
->> >> >> > scheduling decision a long time ago. I know another large internet
->> >> >> > company adopted a similar approach as ours, and I'm wondering how
->> >> >> > everybody else is coping with the discrepancy from those counters.
->> >> >>
->> >> >> From intuition, the scanning overhead of the full page table scanning
->> >> >> appears higher than that of the rmap scanning for a small portion of
->> >> >> system memory.  But form your words, you think the reality is the
->> >> >> reverse?  If others concern about the overhead too, finally, I think you
->> >> >> need to prove the overhead of the page table scanning isn't too higher,
->> >> >> or even lower with more data and theory.
->> >> >
->> >> > There is a misunderstanding here. I never said anything about full
->> >> > page table scanning. And this is not how it's done in this series
->> >> > either. I guess the misunderstanding has something to do with the cold
->> >> > memory tracking you are thinking about?
->> >>
->> >> If my understanding were correct, from the following code path in your
->> >> patch 10/14,
->> >>
->> >> age_active_anon
->> >>   age_lru_gens
->> >>     try_walk_mm_list
->> >>       walk_mm_list
->> >>         walk_mm
->> >>
->> >> So, in kswapd(), the page tables of many processes may be scanned
->> >> fully.  If the number of processes that are active are high, the
->> >> overhead may be high too.
->> >
->> > That's correct. Just in case we have different definitions of what we
->> > call "full":
->> >
->> >   I understand it as the full range of the address space of a process
->> >   that was loaded by switch_mm() at least once since the last scan.
->> >   This is not the case because we don't scan the full range -- we skip
->> >   holes and VMAs that are unevictable, as well as PTE tables that have
->> >   no accessed entries on x86_64, by should_skip_vma() and
->> >   CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG.
->> >
->> >   If you are referring to the full range of PTE tables that have at
->> >   least one accessed entry, i.e., other 511 are not none  but have not
->> >   been accessed either since the last scan on x86_64, then yes, you
->> >   are right again :) This is the worse case scenario.
->>
->> OK.  So there's no fundamental difference between us on this.
->>
->> >> > This series uses page tables to discover page accesses when a system
->> >> > has run out of inactive pages. Under such a situation, the system is
->> >> > very likely to have a lot of page accesses, and using the rmap is
->> >> > likely to cost a lot more because its poor memory locality compared
->> >> > with page tables.
->> >>
->> >> This is the theory.  Can you verify this with more data?  Including the
->> >> CPU cycles or time spent scanning page tables?
->> >
->> > Yes, I'll be happy to do so as I should, because page table scanning
->> > is counterintuitive. Let me add more theory in case it's still unclear
->> > to others.
->> >
->> > From my understanding, the two fundamental questions we need to
->> > consider in terms of page reclaim are:
->> >
->> >   What are the sizes of hot clusters (spatial locality) should we
->> >   expect under memory pressure?
->> >
->> >   On smaller systems with 4GB memory, our observations are that the
->> >   average size of hot clusters found during each scan is 32KB. On
->> >   larger systems with hundreds of gigabytes of memory, it's well
->> >   above this value -- 512KB or larger. These values vary under
->> >   different workloads and with different memory allocators. Unless
->> >   done deliberately by memory allocators, e.g., Scudo as I've
->> >   mentioned earlier, it's safe to say if a PTE entry has been
->> >   accessed, its neighbors are likely to have been accessed too.
->> >
->> >   What's hot memory footprint (total size of hot clusters) should we
->> >   expect when we have run out of inactive pages?
->> >
->> >   Some numbers first: on large and heavily overcommitted systems, we
->> >   have observed close to 90% during a scan. Those systems have
->> >   millions of pages and using the rmap to find out which pages to
->> >   reclaim will just blow kswapd. On smaller systems with less memory
->> >   pressure (due to their weaker CPUs), this number is more reasonable,
->> >   ~50%. Here is some kswapd profiles from a smaller systems running
->> >   5.11:
->> >
->> >    the rmap                                 page table scan
->> >    ---------------------------------------------------------------------
->> >    31.03%  page_vma_mapped_walk             49.36%  lzo1x_1_do_compress
->> >    25.59%  lzo1x_1_do_compress               4.54%  page_vma_mapped_walk
->> >     4.63%  do_raw_spin_lock                  4.45%  memset_erms
->> >     3.89%  vma_interval_tree_iter_next       3.47%  walk_pte_range
->> >     3.33%  vma_interval_tree_subtree_search  2.88%  zram_bvec_rw
->> >
->> >   The page table scan is only twice as fast. Only larger systems,
->> >   it's usually more than 4 times, without THP. With THP, both are
->> >   negligible (<1% CPU usage). I can grab profiles from our servers
->> >   too if you are interested in seeing them on 4.15 kernel.
->>
->> Yes.  On a heavily overcommitted systems with high-percent hot pages,
->> the page table scanning works much better.  Because almost all pages
->> (and their mappings) will be scanned finally.
->>
->> But on a not-so-heavily overcommitted system with low-percent hot pages,
->> it's possible that rmap scanning works better.  That is, only a small
->> fraction of the pages need to be scanned.  I know that the page table
->> scanning may still work better in many cases.
->>
->> And another possibility, on a system with cool instead of completely
->> cold pages, that is, some pages are accessed at quite low frequency, but
->> not 0, there will be always some low-bandwidth memory reclaiming.  That
->> is, it's impossible to find a perfect solution with one or two full
->> scanning.  But we need to reclaim some pages periodically.  And I guess
->> there are no perfect (or very good) page reclaiming solutions for some
->> other situations too. Where what we can do are,
->>
->> - Avoid OOM, that is, reclaim some pages if possible.
->>
->> - Control the overhead of the page reclaiming.
->>
->> But this is theory only.  If anyone can point out that they are not
->> realistic at all, it's good too :-)
->>
->> >> > But, page tables can be sparse too, in terms of hot memory tracking.
->> >> > Dave has asked me to test the worst case scenario, which I'll do.
->> >> > And I'd be happy to share more data. Any specific workload you are
->> >> > interested in?
->> >>
->> >> We can start with some simple workloads that are easier to be reasoned.
->> >> For example,
->> >>
->> >> 1. Run the workload with hot and cold pages, when the free memory
->> >> becomes lower than the low watermark, kswapd will be waken up to scan
->> >> and reclaim some cold pages.  How long will it take to do that?  It's
->> >> expected that almost all pages need to be scanned, so that page table
->> >
->> > A typical scenario. Otherwise why would we have run out of cold pages
->> > and still be under memory? Because what's in memory is hot and
->> > therefore most of the them need to be scanned :)
->> >
->> >> scanning is expected to have less overhead.  We can measure how well it
->> >> is.
->> >
->> > Sounds good to me.
->> >
->> >> 2. Run the workload with hot and cold pages, if the whole working-set
->> >> cannot fit in DRAM, that is, the cold pages will be reclaimed and
->> >> swapped in regularly (for example tens MB/s).  It's expected that less
->> >> pages may be scanned with rmap, but the speed of page table scanning is
->> >> faster.
->> >
->> > So IIUC, this is a sustained memory pressure, i.e., servers constantly
->> > running under memory pressure?
->>
->> Yes.  The system can accommodate more workloads at the cost of
->> performance, as long as the end-user latency isn't unacceptable.  Or we
->> need some time to schedule more computing resources, so we need to run
->> in this condition for some while.
->>
->> But again, this is theory only.  I am glad if people can tell me that
->> this is unrealistic.
->>
->> >> 3. Run the workload with hot and cold pages, the system is
->> >> overcommitted, that is, some cold pages will be placed in swap.  But the
->> >> cold pages are cold enough, so there's almost no thrashing.  Then the
->> >> hot working-set of the workload changes, that is, some hot pages become
->> >> cold, while some cold pages becomes hot, so page reclaiming and swapin
->> >> will be triggered.
->> >
->> > This is usually what we see on clients, i.e., bursty workloads when
->> > switching from an active app to an inactive one.
->>
->> Thanks for your information.  Now I know a typical realistic use case :-)
->>
->> >> For each cases, we can use some different parameters.  And we can
->> >> measure something like the number of pages scanned, the time taken to
->> >> scan them, the number of page reclaimed and swapped in, etc.
->> >
->> > Thanks, I appreciate these -- very well thought test cases. I'll look
->> > into them and probably write some synthetic test cases. If you have
->> > some already, I'd love to get my hands one them.
->>
->> Sorry.  I have no test cases in hand.  Maybe we can add some into
->> Fengguang's vm-scalability test suite as follows.
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
+I'm uploading a new version of my patches on max31790. This is a "v3"
+patch, but I have mistakenly tagged it as "v2". Hopefully, this is not
+a big issue.
+
+Changes:
+- I have reintroduced locking. However, I'm not sure if it's enough, I
+think, locking needs to happen even when reading, but I'm not sure
+- fan_config and fan_dynamics are now saved locally
+- I have fixed formatting issues
+
+V=C3=A1clav
+
+=C3=BAt 13. 4. 2021 v 5:02 odes=C3=ADlatel V=C3=A1clav Kubern=C3=A1t <kuber=
+nat@cesnet.cz> napsal:
 >
-> Hi Ying,
+> Converting the driver to use regmap makes it more generic. It also makes
+> it a lot easier to debug through debugfs.
 >
-> I'm still investigating the test cases you suggested. I'm also
-> wondering if it's possible to test the next version, which I'll post
-> soon, with Intel's 0-Day infra.
-
-Sure.  But now 0-Day has only quite limited coverage for swap testing.
-Including the swap test in vm-scalability.git, and several test cases
-with pmbench.  I think it's good to improve the coverage of 0-Day for
-swap.  But it needs some time.
-
-Best Regards,
-Huang, Ying
+> Signed-off-by: V=C3=A1clav Kubern=C3=A1t <kubernat@cesnet.cz>
+> ---
+>  drivers/hwmon/Kconfig    |   1 +
+>  drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
+>  2 files changed, 133 insertions(+), 122 deletions(-)
+>
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 1ecf697d8d99..9f11d036c316 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1095,6 +1095,7 @@ config SENSORS_MAX6697
+>  config SENSORS_MAX31790
+>         tristate "Maxim MAX31790 sensor chip"
+>         depends on I2C
+> +       select REGMAP_I2C
+>         help
+>           If you say yes here you get support for 6-Channel PWM-Output
+>           Fan RPM Controller.
+> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> index 2c6b333a28e9..e3765ce4444a 100644
+> --- a/drivers/hwmon/max31790.c
+> +++ b/drivers/hwmon/max31790.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/init.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/module.h>
+> +#include <linux/regmap.h>
+>  #include <linux/slab.h>
+>
+>  /* MAX31790 registers */
+> @@ -46,92 +47,53 @@
+>
+>  #define NR_CHANNEL                     6
+>
+> +#define MAX31790_REG_USER_BYTE_67      0x67
+> +
+> +#define BULK_TO_U16(msb, lsb)          (((msb) << 8) + (lsb))
+> +#define U16_MSB(num)                   (((num) & 0xFF00) >> 8)
+> +#define U16_LSB(num)                   ((num) & 0x00FF)
+> +
+> +static const struct regmap_range max31790_ro_range =3D {
+> +       .range_min =3D MAX31790_REG_TACH_COUNT(0),
+> +       .range_max =3D MAX31790_REG_PWMOUT(0) - 1,
+> +};
+> +
+> +static const struct regmap_access_table max31790_wr_table =3D {
+> +       .no_ranges =3D &max31790_ro_range,
+> +       .n_no_ranges =3D 1,
+> +};
+> +
+> +static const struct regmap_range max31790_volatile_ranges[] =3D {
+> +       regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_CO=
+UNT(12)),
+> +       regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN=
+_FAULT_STATUS1),
+> +};
+> +
+> +static const struct regmap_access_table max31790_volatile_table =3D {
+> +       .no_ranges =3D max31790_volatile_ranges,
+> +       .n_no_ranges =3D 2,
+> +       .n_yes_ranges =3D 0
+> +};
+> +
+> +static const struct regmap_config max31790_regmap_config =3D {
+> +       .reg_bits =3D 8,
+> +       .val_bits =3D 8,
+> +       .reg_stride =3D 1,
+> +       .max_register =3D MAX31790_REG_USER_BYTE_67,
+> +       .wr_table =3D &max31790_wr_table,
+> +       .volatile_table =3D &max31790_volatile_table
+> +};
+> +
+>  /*
+>   * Client data (each client gets its own)
+>   */
+>  struct max31790_data {
+> -       struct i2c_client *client;
+> +       struct regmap *regmap;
+> +
+>         struct mutex update_lock;
+> -       bool valid; /* zero until following fields are valid */
+> -       unsigned long last_updated; /* in jiffies */
+> -
+> -       /* register values */
+>         u8 fan_config[NR_CHANNEL];
+>         u8 fan_dynamics[NR_CHANNEL];
+> -       u16 fault_status;
+> -       u16 tach[NR_CHANNEL * 2];
+> -       u16 pwm[NR_CHANNEL];
+> -       u16 target_count[NR_CHANNEL];
+>  };
+>
+> -static struct max31790_data *max31790_update_device(struct device *dev)
+> -{
+> -       struct max31790_data *data =3D dev_get_drvdata(dev);
+> -       struct i2c_client *client =3D data->client;
+> -       struct max31790_data *ret =3D data;
+> -       int i;
+> -       int rv;
+> -
+> -       mutex_lock(&data->update_lock);
+> -
+> -       if (time_after(jiffies, data->last_updated + HZ) || !data->valid)=
+ {
+> -               rv =3D i2c_smbus_read_byte_data(client,
+> -                               MAX31790_REG_FAN_FAULT_STATUS1);
+> -               if (rv < 0)
+> -                       goto abort;
+> -               data->fault_status =3D rv & 0x3F;
+> -
+> -               rv =3D i2c_smbus_read_byte_data(client,
+> -                               MAX31790_REG_FAN_FAULT_STATUS2);
+> -               if (rv < 0)
+> -                       goto abort;
+> -               data->fault_status |=3D (rv & 0x3F) << 6;
+> -
+> -               for (i =3D 0; i < NR_CHANNEL; i++) {
+> -                       rv =3D i2c_smbus_read_word_swapped(client,
+> -                                       MAX31790_REG_TACH_COUNT(i));
+> -                       if (rv < 0)
+> -                               goto abort;
+> -                       data->tach[i] =3D rv;
+> -
+> -                       if (data->fan_config[i]
+> -                           & MAX31790_FAN_CFG_TACH_INPUT) {
+> -                               rv =3D i2c_smbus_read_word_swapped(client=
+,
+> -                                       MAX31790_REG_TACH_COUNT(NR_CHANNE=
+L
+> -                                                               + i));
+> -                               if (rv < 0)
+> -                                       goto abort;
+> -                               data->tach[NR_CHANNEL + i] =3D rv;
+> -                       } else {
+> -                               rv =3D i2c_smbus_read_word_swapped(client=
+,
+> -                                               MAX31790_REG_PWMOUT(i));
+> -                               if (rv < 0)
+> -                                       goto abort;
+> -                               data->pwm[i] =3D rv;
+> -
+> -                               rv =3D i2c_smbus_read_word_swapped(client=
+,
+> -                                               MAX31790_REG_TARGET_COUNT=
+(i));
+> -                               if (rv < 0)
+> -                                       goto abort;
+> -                               data->target_count[i] =3D rv;
+> -                       }
+> -               }
+> -
+> -               data->last_updated =3D jiffies;
+> -               data->valid =3D true;
+> -       }
+> -       goto done;
+> -
+> -abort:
+> -       data->valid =3D false;
+> -       ret =3D ERR_PTR(rv);
+> -
+> -done:
+> -       mutex_unlock(&data->update_lock);
+> -
+> -       return ret;
+> -}
+> -
+>  static const u8 tach_period[8] =3D { 1, 2, 4, 8, 16, 32, 32, 32 };
+>
+>  static u8 get_tach_period(u8 fan_dynamics)
+> @@ -159,28 +121,75 @@ static u8 bits_for_tach_period(int rpm)
+>         return bits;
+>  }
+>
+> +static int read_reg_byte(struct regmap *regmap, u8 reg)
+> +{
+> +       int rv;
+> +       int val;
+> +
+> +       rv =3D regmap_read(regmap, reg, &val);
+> +       if (rv < 0)
+> +               return rv;
+> +
+> +       return val;
+> +}
+> +
+> +static int read_reg_word(struct regmap *regmap, u8 reg)
+> +{
+> +       int rv;
+> +       u8 val_bulk[2];
+> +
+> +       rv =3D regmap_bulk_read(regmap, reg, val_bulk, 2);
+> +       if (rv < 0)
+> +               return rv;
+> +
+> +       return BULK_TO_U16(val_bulk[0], val_bulk[1]);
+> +}
+> +
+> +static int write_reg_word(struct regmap *regmap, u8 reg, u16 val)
+> +{
+> +       u8 bulk_val[2];
+> +
+> +       bulk_val[0] =3D U16_MSB(val);
+> +       bulk_val[1] =3D U16_LSB(val);
+> +
+> +       return regmap_bulk_write(regmap, reg, bulk_val, 2);
+> +}
+> +
+>  static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+>                              long *val)
+>  {
+> -       struct max31790_data *data =3D max31790_update_device(dev);
+> -       int sr, rpm;
+> -
+> -       if (IS_ERR(data))
+> -               return PTR_ERR(data);
+> +       struct max31790_data *data =3D dev_get_drvdata(dev);
+> +       struct regmap *regmap =3D data->regmap;
+> +       int tach, fault;
+>
+>         switch (attr) {
+>         case hwmon_fan_input:
+> -               sr =3D get_tach_period(data->fan_dynamics[channel]);
+> -               rpm =3D RPM_FROM_REG(data->tach[channel], sr);
+> -               *val =3D rpm;
+> +               tach =3D read_reg_word(regmap, MAX31790_REG_TACH_COUNT(ch=
+annel));
+> +               if (tach < 0)
+> +                       return tach;
+> +
+> +               *val =3D RPM_FROM_REG(tach, get_tach_period(data->fan_dyn=
+amics[channel]));
+>                 return 0;
+>         case hwmon_fan_target:
+> -               sr =3D get_tach_period(data->fan_dynamics[channel]);
+> -               rpm =3D RPM_FROM_REG(data->target_count[channel], sr);
+> -               *val =3D rpm;
+> +               tach =3D read_reg_word(regmap, MAX31790_REG_TARGET_COUNT(=
+channel));
+> +               if (tach < 0)
+> +                       return tach;
+> +
+> +               *val =3D RPM_FROM_REG(tach, get_tach_period(data->fan_dyn=
+amics[channel]));
+>                 return 0;
+>         case hwmon_fan_fault:
+> -               *val =3D !!(data->fault_status & (1 << channel));
+> +               if (channel > 6)
+> +                       fault =3D read_reg_byte(regmap, MAX31790_REG_FAN_=
+FAULT_STATUS2);
+> +               else
+> +                       fault =3D read_reg_byte(regmap, MAX31790_REG_FAN_=
+FAULT_STATUS1);
+> +
+> +               if (fault < 0)
+> +                       return fault;
+> +
+> +               if (channel > 6)
+> +                       *val =3D !!(fault & (1 << (channel - 6)));
+> +               else
+> +                       *val =3D !!(fault & (1 << channel));
+>                 return 0;
+>         default:
+>                 return -EOPNOTSUPP;
+> @@ -191,7 +200,7 @@ static int max31790_write_fan(struct device *dev, u32=
+ attr, int channel,
+>                               long val)
+>  {
+>         struct max31790_data *data =3D dev_get_drvdata(dev);
+> -       struct i2c_client *client =3D data->client;
+> +       struct regmap *regmap =3D data->regmap;
+>         int target_count;
+>         int err =3D 0;
+>         u8 bits;
+> @@ -207,9 +216,10 @@ static int max31790_write_fan(struct device *dev, u3=
+2 attr, int channel,
+>                         ((data->fan_dynamics[channel] &
+>                           ~MAX31790_FAN_DYN_SR_MASK) |
+>                          (bits << MAX31790_FAN_DYN_SR_SHIFT));
+> -               err =3D i2c_smbus_write_byte_data(client,
+> -                                       MAX31790_REG_FAN_DYNAMICS(channel=
+),
+> -                                       data->fan_dynamics[channel]);
+> +
+> +               err =3D regmap_write(regmap,
+> +                                  MAX31790_REG_FAN_DYNAMICS(channel),
+> +                                  data->fan_dynamics[channel]);
+>                 if (err < 0)
+>                         break;
+>
+> @@ -217,11 +227,11 @@ static int max31790_write_fan(struct device *dev, u=
+32 attr, int channel,
+>                 target_count =3D RPM_TO_REG(val, sr);
+>                 target_count =3D clamp_val(target_count, 0x1, 0x7FF);
+>
+> -               data->target_count[channel] =3D target_count << 5;
+> +               target_count =3D target_count << 5;
+>
+> -               err =3D i2c_smbus_write_word_swapped(client,
+> -                                       MAX31790_REG_TARGET_COUNT(channel=
+),
+> -                                       data->target_count[channel]);
+> +               err =3D write_reg_word(regmap,
+> +                                    MAX31790_REG_TARGET_COUNT(channel),
+> +                                    target_count);
+>                 break;
+>         default:
+>                 err =3D -EOPNOTSUPP;
+> @@ -258,22 +268,22 @@ static umode_t max31790_fan_is_visible(const void *=
+_data, u32 attr, int channel)
+>  static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
+>                              long *val)
+>  {
+> -       struct max31790_data *data =3D max31790_update_device(dev);
+> -       u8 fan_config;
+> -
+> -       if (IS_ERR(data))
+> -               return PTR_ERR(data);
+> -
+> -       fan_config =3D data->fan_config[channel];
+> +       struct max31790_data *data =3D dev_get_drvdata(dev);
+> +       struct regmap *regmap =3D data->regmap;
+> +       int read;
+>
+>         switch (attr) {
+>         case hwmon_pwm_input:
+> -               *val =3D data->pwm[channel] >> 8;
+> +               read =3D read_reg_word(regmap, MAX31790_REG_PWMOUT(channe=
+l));
+> +               if (read < 0)
+> +                       return read;
+> +
+> +               *val =3D read >> 8;
+>                 return 0;
+>         case hwmon_pwm_enable:
+> -               if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
+> +               if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE=
+)
+>                         *val =3D 2;
+> -               else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
+> +               else if (data->fan_config[channel] & MAX31790_FAN_CFG_TAC=
+H_INPUT_EN)
+>                         *val =3D 1;
+>                 else
+>                         *val =3D 0;
+> @@ -287,7 +297,7 @@ static int max31790_write_pwm(struct device *dev, u32=
+ attr, int channel,
+>                               long val)
+>  {
+>         struct max31790_data *data =3D dev_get_drvdata(dev);
+> -       struct i2c_client *client =3D data->client;
+> +       struct regmap *regmap =3D data->regmap;
+>         u8 fan_config;
+>         int err =3D 0;
+>
+> @@ -299,10 +309,7 @@ static int max31790_write_pwm(struct device *dev, u3=
+2 attr, int channel,
+>                         err =3D -EINVAL;
+>                         break;
+>                 }
+> -               data->pwm[channel] =3D val << 8;
+> -               err =3D i2c_smbus_write_word_swapped(client,
+> -                                                  MAX31790_REG_PWMOUT(ch=
+annel),
+> -                                                  data->pwm[channel]);
+> +               err =3D write_reg_word(regmap, MAX31790_REG_PWMOUT(channe=
+l), val << 8);
+>                 break;
+>         case hwmon_pwm_enable:
+>                 fan_config =3D data->fan_config[channel];
+> @@ -321,9 +328,9 @@ static int max31790_write_pwm(struct device *dev, u32=
+ attr, int channel,
+>                         break;
+>                 }
+>                 data->fan_config[channel] =3D fan_config;
+> -               err =3D i2c_smbus_write_byte_data(client,
+> -                                       MAX31790_REG_FAN_CONFIG(channel),
+> -                                       fan_config);
+> +               err =3D regmap_write(regmap,
+> +                                  MAX31790_REG_FAN_CONFIG(channel),
+> +                                  fan_config);
+>                 break;
+>         default:
+>                 err =3D -EOPNOTSUPP;
+> @@ -426,20 +433,18 @@ static const struct hwmon_chip_info max31790_chip_i=
+nfo =3D {
+>         .info =3D max31790_info,
+>  };
+>
+> -static int max31790_init_client(struct i2c_client *client,
+> +static int max31790_init_client(struct regmap *regmap,
+>                                 struct max31790_data *data)
+>  {
+>         int i, rv;
+>
+>         for (i =3D 0; i < NR_CHANNEL; i++) {
+> -               rv =3D i2c_smbus_read_byte_data(client,
+> -                               MAX31790_REG_FAN_CONFIG(i));
+> +               rv =3D read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(i % =
+NR_CHANNEL));
+>                 if (rv < 0)
+>                         return rv;
+>                 data->fan_config[i] =3D rv;
+>
+> -               rv =3D i2c_smbus_read_byte_data(client,
+> -                               MAX31790_REG_FAN_DYNAMICS(i));
+> +               rv =3D read_reg_byte(regmap, MAX31790_REG_FAN_DYNAMICS(i)=
+);
+>                 if (rv < 0)
+>                         return rv;
+>                 data->fan_dynamics[i] =3D rv;
+> @@ -464,13 +469,18 @@ static int max31790_probe(struct i2c_client *client=
+)
+>         if (!data)
+>                 return -ENOMEM;
+>
+> -       data->client =3D client;
+>         mutex_init(&data->update_lock);
+>
+> +       data->regmap =3D devm_regmap_init_i2c(client, &max31790_regmap_co=
+nfig);
+> +       if (IS_ERR(data->regmap)) {
+> +               dev_err(dev, "failed to allocate register map\n");
+> +               return PTR_ERR(data->regmap);
+> +       }
+> +
+>         /*
+>          * Initialize the max31790 chip
+>          */
+> -       err =3D max31790_init_client(client, data);
+> +       err =3D max31790_init_client(data->regmap, data);
+>         if (err)
+>                 return err;
+>
+> --
+> 2.31.1
+>
