@@ -2,180 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D6835D75C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A8835D75F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245584AbhDMFmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:42:39 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2914 "EHLO mga04.intel.com"
+        id S245700AbhDMFnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:43:51 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38463 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244605AbhDMFmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:42:37 -0400
-IronPort-SDR: qsVY+7nl9HQxBQ1PM/njLKxl+65RzMqpja4UM0DVbbczoKuKDYbf/VkOYW0u0Bubwmy0GpG4QJ
- pcE/hrz3gEkA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="192211495"
-X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
-   d="scan'208";a="192211495"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 22:42:17 -0700
-IronPort-SDR: UKRwfh2efy9jyGOy3A/hqjQ90jNbvPNZik/Ndpr1hzPHZ9Os5pcCQIu5xABnmnMeADDjmQtAIv
- 771eerl2mxhQ==
-X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
-   d="scan'208";a="417713417"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 22:42:13 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [RFC] mm: activate access-more-than-once page via NUMA balancing
-References: <20210324083209.527427-1-ying.huang@intel.com>
-        <20210324103104.GN15768@suse.de>
-        <87a6qrj1hy.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <20210325115721.GS15768@suse.de>
-        <87o8f6h1ve.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <CAOUHufbJg-OGnpZrb_EzQmiqXCwPHDU+hgTvYWtb72OiXy6CDg@mail.gmail.com>
-Date:   Tue, 13 Apr 2021 13:42:10 +0800
-In-Reply-To: <CAOUHufbJg-OGnpZrb_EzQmiqXCwPHDU+hgTvYWtb72OiXy6CDg@mail.gmail.com>
-        (Yu Zhao's message of "Sat, 10 Apr 2021 16:25:49 -0600")
-Message-ID: <87k0p6u4el.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S243542AbhDMFnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 01:43:49 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FKDzb2SRVz9sVw;
+        Tue, 13 Apr 2021 15:43:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618292604;
+        bh=tZ54/3ocfBoA6RPTXMtP3NOOQVJJEGcVSh2zdlv211k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f/1b9EERvihAO9fwjPRzur+F9rIKgJVjdZ8p9ozFuqNlzCSQvfv0ZKgzRMIWCGIfX
+         /qzYp5aRq4pmbhZHlQO9d9DS+Y95CAu+wmCdTCuIDSP93VNU8+VD982yrrebhJY7J7
+         /q4vtx6aREa6UgaKx/oL4ks8Qzns18OwTxeQICFbcCjCAbxzzYrrfaWwBxY2XhmaQ3
+         gdICCUcSbjdvZKxgSvjW1BWbUyuUN/yhu/84EGLE6bfmRAO6dGGw+bwB1S3OeI+kU4
+         Ro6pKBqc/FwDR8kDKUZ1x7XBxuixQMvKcFMzzwBrqGathOkFn3y22xOB/eWoqq4714
+         vnILVX0bj8WNQ==
+Date:   Tue, 13 Apr 2021 15:43:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoffer Dall <cdall@cs.columbia.edu>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>
+Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
+Message-ID: <20210413154305.49442969@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: multipart/signed; boundary="Sig_/tvzh469tZ3+W4GMju+tgZ+i";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+--Sig_/tvzh469tZ3+W4GMju+tgZ+i
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, Mar 26, 2021 at 12:21 AM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Mel Gorman <mgorman@suse.de> writes:
->>
->> > On Thu, Mar 25, 2021 at 12:33:45PM +0800, Huang, Ying wrote:
->> >> > I caution against this patch.
->> >> >
->> >> > It's non-deterministic for a number of reasons. As it requires NUMA
->> >> > balancing to be enabled, the pageout behaviour of a system changes when
->> >> > NUMA balancing is active. If this led to pages being artificially and
->> >> > inappropriately preserved, NUMA balancing could be disabled for the
->> >> > wrong reasons.  It only applies to pages that have no target node so
->> >> > memory policies affect which pages are activated differently. Similarly,
->> >> > NUMA balancing does not scan all VMAs and some pages may never trap a
->> >> > NUMA fault as a result. The timing of when an address space gets scanned
->> >> > is driven by the locality of pages and so the timing of page activation
->> >> > potentially becomes linked to whether pages are local or need to migrate
->> >> > (although not right now for this patch as it only affects pages with a
->> >> > target nid of NUMA_NO_NODE). In other words, changes in NUMA balancing
->> >> > that affect migration potentially affect the aging rate.  Similarly,
->> >> > the activate rate of a process with a single thread and multiple threads
->> >> > potentially have different activation rates.
->> >> >
->> >> > Finally, the NUMA balancing scan algorithm is sub-optimal. It potentially
->> >> > scans the entire address space even though only a small number of pages
->> >> > are scanned. This is particularly problematic when a process has a lot
->> >> > of threads because threads are redundantly scanning the same regions. If
->> >> > NUMA balancing ever introduced range tracking of faulted pages to limit
->> >> > how much scanning it has to do, it would inadvertently cause a change in
->> >> > page activation rate.
->> >> >
->> >> > NUMA balancing is about page locality, it should not get conflated with
->> >> > page aging.
->> >>
->> >> I understand your concerns about binding the NUMA balancing and page
->> >> reclaiming.  The requirement of the page locality and page aging is
->> >> different, so the policies need to be different.  This is the wrong part
->> >> of the patch.
->> >>
->> >> From another point of view, it's still possible to share some underlying
->> >> mechanisms (and code) between them.  That is, scanning the page tables
->> >> to make pages unaccessible and capture the page accesses via the page
->> >> fault.
->> >
->> > Potentially yes but not necessarily recommended for page aging. NUMA
->> > balancing has to be careful about the rate it scans pages to avoid
->> > excessive overhead so it's driven by locality. The scanning happens
->> > within a tasks context so during that time, the task is not executing
->> > its normal work and it incurs the overhead for faults. Generally, this
->> > is not too much overhead because pages get migrated locally, the scan
->> > rate drops and so does the overhead.
->> >
->> > However, if you want to drive page aging, that is constant so the rate
->> > could not be easily adapted in a way that would be deterministic.
->> >
->> >> Now these page accessing information is used for the page
->> >> locality.  Do you think it's a good idea to use these information for
->> >> the page aging too (but with a different policy as you pointed out)?
->> >>
->> >
->> > I'm not completely opposed to it but I think the overhead it would
->> > introduce could be severe. Worse, if a workload fits in memory and there
->> > is limited to no memory pressure, it's all overhead for no gain. Early
->> > generations of NUMA balancing had to find a balance to sure the gains
->> > from locality exceeded the cost of measuring locality and doing the same
->> > for page aging in some ways is even more challenging.
->>
->> Yes.  I will think more about it from the overhead vs. gain point of
->> view.  Thanks a lot for your sharing on that.
->>
->> >> From yet another point of view :-), in current NUMA balancing
->> >> implementation, it's assumed that the node private pages can fit in the
->> >> accessing node.  But this may be not always true.  Is it a valid
->> >> optimization to migrate the hot private pages first?
->> >>
->> >
->> > I'm not sure how the hotness of pages could be ranked. At the time of a
->> > hinting fault, the page is by definition active now because it was been
->> > accessed. Prioritising what pages to migrate based on the number of faults
->> > that have been trapped would have to be stored somewhere.
->>
->> Yes.  We need to store some information about that.  In an old version
->> of the patchset which uses NUMA balancing to promote hot pages from the
->> PMEM to DRAM, we have designed a method to measure the hotness of the
->> pages.  The basic idea is as follows,
->>
->> - When the page table of a process is scanned, the latest N scanning
->>   address ranges and scan times are recorded in a ring buffer of
->>   mm_struct.
->>
->> - In hint page fault handler, the ring buffer is search with the fault
->>   address, to get the scan time.
->>
->> Then the hint page fault latency of the page is defined as,
->>
->>   hint page fault latency = fault time - scan time
->>
->> The shorter the hint page fault latency, the hotter the page.
->>
->> Then we need a way to determine the hot/cold threshold.  We used a rate
->> limit based threshold adjustment method.  If the number of pages that
->> pass the threshold is much more than the rate limit, then we will lower
->> the threshold (more stricter), or vice versa.
->
-> Sorry for the late reply. I do see where you are coming from and I
-> agree in principle. The aging and the NUMA balancing should be talking
-> to each other, and IMO, it is easier for the aging to help the numa
-> balancing because it has to do the legwork anway.
->
-> My idea is to make the page table scanning in the multigenerational
-> LRU NUMA policy aware -- I don't have any concrete plan yet. But in
-> general, it can range from mildly skewing the aging of pages from
-> wrong nodes so they become preferable during eviction to aggressively
-> working against those pages like queue_pages_pte_range() does.
+Hi all,
 
-As Mel has pointed out, the policy of the page aging and locality is
-different.  So it's not easy to combine them simply.  And it appears
-that we can get some page hotness estimation from NUMA balancing hint
-page fault latency already.
+Today's linux-next merge of the kvm-arm tree got a conflict in:
 
-Best Regards,
-Huang, Ying
+  arch/arm64/include/asm/assembler.h
+
+between commits:
+
+  27248fe1abb2 ("arm64: assembler: remove conditional NEON yield macros")
+  13150149aa6d ("arm64: fpsimd: run kernel mode NEON with softirqs disabled=
+")
+
+from the arm64 tree and commits:
+
+  8f4de66e247b ("arm64: asm: Provide set_sctlr_el2 macro")
+  755db23420a1 ("KVM: arm64: Generate final CTR_EL0 value when running in P=
+rotected mode")
+
+from the kvm-arm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/include/asm/assembler.h
+index ab569b0b45fc,34ddd8a0f3dd..000000000000
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@@ -15,7 -15,7 +15,8 @@@
+  #include <asm-generic/export.h>
+ =20
+  #include <asm/asm-offsets.h>
+ +#include <asm/alternative.h>
++ #include <asm/asm-bug.h>
+  #include <asm/cpufeature.h>
+  #include <asm/cputype.h>
+  #include <asm/debug-monitors.h>
+@@@ -701,25 -705,95 +714,33 @@@ USER(\label, ic	ivau, \tmp2)			// inval
+  	isb
+  .endm
+ =20
++ .macro set_sctlr_el1, reg
++ 	set_sctlr sctlr_el1, \reg
++ .endm
++=20
++ .macro set_sctlr_el2, reg
++ 	set_sctlr sctlr_el2, \reg
++ .endm
++=20
+ -/*
+ - * Check whether to yield to another runnable task from kernel mode NEON =
+code
+ - * (which runs with preemption disabled).
+ - *
+ - * if_will_cond_yield_neon
+ - *        // pre-yield patchup code
+ - * do_cond_yield_neon
+ - *        // post-yield patchup code
+ - * endif_yield_neon    <label>
+ - *
+ - * where <label> is optional, and marks the point where execution will re=
+sume
+ - * after a yield has been performed. If omitted, execution resumes right =
+after
+ - * the endif_yield_neon invocation. Note that the entire sequence, includ=
+ing
+ - * the provided patchup code, will be omitted from the image if
+ - * CONFIG_PREEMPTION is not defined.
+ - *
+ - * As a convenience, in the case where no patchup code is required, the a=
+bove
+ - * sequence may be abbreviated to
+ - *
+ - * cond_yield_neon <label>
+ - *
+ - * Note that the patchup code does not support assembler directives that =
+change
+ - * the output section, any use of such directives is undefined.
+ - *
+ - * The yield itself consists of the following:
+ - * - Check whether the preempt count is exactly 1 and a reschedule is also
+ - *   needed. If so, calling of preempt_enable() in kernel_neon_end() will
+ - *   trigger a reschedule. If it is not the case, yielding is pointless.
+ - * - Disable and re-enable kernel mode NEON, and branch to the yield fixup
+ - *   code.
+ - *
+ - * This macro sequence may clobber all CPU state that is not guaranteed b=
+y the
+ - * AAPCS to be preserved across an ordinary function call.
+ - */
+ -
+ -	.macro		cond_yield_neon, lbl
+ -	if_will_cond_yield_neon
+ -	do_cond_yield_neon
+ -	endif_yield_neon	\lbl
+ -	.endm
+ -
+ -	.macro		if_will_cond_yield_neon
+ -#ifdef CONFIG_PREEMPTION
+ -	get_current_task	x0
+ -	ldr		x0, [x0, #TSK_TI_PREEMPT]
+ -	sub		x0, x0, #PREEMPT_DISABLE_OFFSET
+ -	cbz		x0, .Lyield_\@
+ -	/* fall through to endif_yield_neon */
+ -	.subsection	1
+ -.Lyield_\@ :
+ -#else
+ -	.section	".discard.cond_yield_neon", "ax"
+ -#endif
+ -	.endm
+ -
+ -	.macro		do_cond_yield_neon
+ -	bl		kernel_neon_end
+ -	bl		kernel_neon_begin
+ -	.endm
+ -
+ -	.macro		endif_yield_neon, lbl
+ -	.ifnb		\lbl
+ -	b		\lbl
+ -	.else
+ -	b		.Lyield_out_\@
+ -	.endif
+ -	.previous
+ -.Lyield_out_\@ :
+ -	.endm
+ -
+  	/*
+ -	 * Check whether preempt-disabled code should yield as soon as it
+ -	 * is able. This is the case if re-enabling preemption a single
+ -	 * time results in a preempt count of zero, and the TIF_NEED_RESCHED
+ -	 * flag is set. (Note that the latter is stored negated in the
+ -	 * top word of the thread_info::preempt_count field)
+ +	 * Check whether preempt/bh-disabled asm code should yield as soon as
+ +	 * it is able. This is the case if we are currently running in task
+ +	 * context, and either a softirq is pending, or the TIF_NEED_RESCHED
+ +	 * flag is set and re-enabling preemption a single time would result in
+ +	 * a preempt count of zero. (Note that the TIF_NEED_RESCHED flag is
+ +	 * stored negated in the top word of the thread_info::preempt_count
+ +	 * field)
+  	 */
+ -	.macro		cond_yield, lbl:req, tmp:req
+ -#ifdef CONFIG_PREEMPTION
+ +	.macro		cond_yield, lbl:req, tmp:req, tmp2:req
+  	get_current_task \tmp
+  	ldr		\tmp, [\tmp, #TSK_TI_PREEMPT]
+ +	/*
+ +	 * If we are serving a softirq, there is no point in yielding: the
+ +	 * softirq will not be preempted no matter what we do, so we should
+ +	 * run to completion as quickly as we can.
+ +	 */
+ +	tbnz		\tmp, #SOFTIRQ_SHIFT, .Lnoyield_\@
+ +#ifdef CONFIG_PREEMPTION
+  	sub		\tmp, \tmp, #PREEMPT_DISABLE_OFFSET
+  	cbz		\tmp, \lbl
+  #endif
+
+--Sig_/tvzh469tZ3+W4GMju+tgZ+i
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB1L2kACgkQAVBC80lX
+0Gwqwwf/VcC5dvJMgVwBZc0E4rcV5kMwuUP+3uRdtbnY0DLeSvbx5mmIK2DKJSSr
+EXRv7XoJK73v+QdIKUSXkyBZg+FE6qgeBpPekp6BsWvxGExuvG57GqTnLLtvNFln
+Xb0LrCg4MkNpGGDCOrKI51iDdBM4+DpmArA8L7JA5qlQBPFKhfiallPi9uh4+jIs
+8lVKgPUJGSUuAkgCqTwPd2gknRDFI1TwoGYl4hLiwsG0JtMttWO4dP92lm9weuMH
+R+OhqCWU5/mTX75plsSRo1GG6uTCJCsJxjDuBvNyRhPTs05dOF3VkXw6pnAY9Srp
+TjRjQWE7KSEOeIABHDdpzVeYnJjK6Q==
+=56TC
+-----END PGP SIGNATURE-----
+
+--Sig_/tvzh469tZ3+W4GMju+tgZ+i--
