@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443B635E321
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61B735E328
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345966AbhDMPsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:48:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16036 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237575AbhDMPss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:48:48 -0400
-IronPort-SDR: NJZepWQAXnR/X7nL+dAu9jGEYVdU9ZRRa/qrbwC9liX7+9bHem9xtU0Fi+7F2jntAxX1jOOiDM
- 2eqjKs6AlZhA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="194005229"
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="194005229"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 08:47:53 -0700
-IronPort-SDR: LK2OLSsjsiHBU0LfKcBf95yfTe7ynkpXltGI5HC8lHIdPRgGwScwZSvvZRZcDAObJXvgdxBJx8
- GAizSA1uYd1A==
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="460627823"
-Received: from kmartin1-mobl1.amr.corp.intel.com (HELO [10.212.30.204]) ([10.212.30.204])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 08:47:52 -0700
-Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
- API
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
- <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
- <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
- <39e2ab87-3b70-8659-6282-5b03d30f901b@linux.intel.com>
- <YHWMmR5gBvlpd7rl@kuha.fi.intel.com> <YHWlQooPtrTjyq+i@kuha.fi.intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <4c7aa8d0-8660-b545-4b40-c6965e667a93@linux.intel.com>
-Date:   Tue, 13 Apr 2021 10:47:49 -0500
+        id S1346060AbhDMPtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345974AbhDMPtk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:49:40 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B1DC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 08:49:19 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id s7so16827779wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 08:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PsW0LpLJ+OHoCMT5QibDiVjIFRIsSTW5mUVz9ROm9Ek=;
+        b=kO13z57w7JxN4GJv+mAA/cd9x7MNhDzUXMzD4qzANlHEYMc81/IARR+XeaIMbrbuBw
+         5VPrPQnEfsOwSQ1I4beRTSvSPSTBB7XZHiCZqzTpRDu2734ZpnUgBuEzgBJJ1/mYet5x
+         tTt7YhjEDC3+VxMOLCQCqZ1n98+pQh3NqWUcPAj8Pgb1rjUREYZ5UjSDo57/H5dT4ZGq
+         TMc+1Mn1sdHjeToyr6SdHc1XhWqx29JuBC+y0t2l9tTeBmdXfn8GqHTAbsXqmJSUkEZA
+         1EDFsXz7IhL09ZrRFadDBSNc6shVf8K8mZal1V5Su0BBQ4gbPMVV2LKyvKu99bXIvB3u
+         wzgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PsW0LpLJ+OHoCMT5QibDiVjIFRIsSTW5mUVz9ROm9Ek=;
+        b=nSjS3YTDf0mag5XPMqqKbJLpVgIEMKggOMj02hox+uerv6VkfJwSTEMQ0uwYefCKnT
+         qC7waoUdu0PG09N/aj7zn/SjYsmll7ejldn0J1X3S5yaYTubh4990EbHme57WPeklMJI
+         4HLWY6WkY/76+zreeLt+Pm3FW0VoF7QD2xTd2DkmajxNJ4fyLxzl3p4kyNhfa3Fr0KS1
+         awv60zfzBT7Q1QR0L0UmxPflMu02mmkzfdyOvu8xkQdJAr/iUuyhJ74uUx207lQwpIcM
+         QD6B0DAY23zYe+a8c4Fpssz3mjys1Y0dcU0d5YD+afjZUAUsZsjtgSpM9RlAHykOq7Fs
+         aviA==
+X-Gm-Message-State: AOAM530F/EYDihlg/2gzPY2yyLcu/Y6+c4TVEQOFjYGE/42jnKfzlB5N
+        SomdAHq+McRKYvCvmQH5ErFMkw==
+X-Google-Smtp-Source: ABdhPJyF+9Nmae2A35E+099haCMQJXZr77AKTKeOy+sI2cM34f6b049fZ7TlZg95yExarpjoJJZSpQ==
+X-Received: by 2002:adf:db52:: with SMTP id f18mr31877255wrj.225.1618328958600;
+        Tue, 13 Apr 2021 08:49:18 -0700 (PDT)
+Received: from [192.168.1.14] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id w7sm20814515wrt.15.2021.04.13.08.49.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 08:49:17 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] Intra-refresh period control
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        nicolas.dufresne@collabora.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+References: <20210302095340.3584204-1-stanimir.varbanov@linaro.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <3480b6ee-f442-57be-473f-c90966584d40@linaro.org>
+Date:   Tue, 13 Apr 2021 18:49:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YHWlQooPtrTjyq+i@kuha.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210302095340.3584204-1-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans,
 
+Any comments?
 
-On 4/13/21 9:05 AM, Heikki Krogerus wrote:
-> On Tue, Apr 13, 2021 at 03:20:45PM +0300, Heikki Krogerus wrote:
->> On Mon, Apr 12, 2021 at 03:36:20PM -0500, Pierre-Louis Bossart wrote:
->>> I took the code and split it in two for BYT/CHT (modified to remove devm_)
->>> and SoundWire parts (added as is).
->>>
->>> https://github.com/thesofproject/linux/pull/2810
->>>
->>> Both cases result in a refcount error on device_remove_sof when removing the
->>> platform device. I don't understand the code well enough to figure out what
->>> happens, but it's likely a case of the software node being removed twice?
->>
->> Right. Because you are injecting the node to an already existing
->> device, the node does not get linked with the device in sysfs. That
->> would increment the reference count in a normal case. It all happens
->> in the function software_node_notify(). Driver core calls it when a
->> device is added and also when it's removed. In this case it is only
->> called when it's removed.
->>
->> I think the best way to handle this now is to simply not decrementing
->> the ref count when you add the properties, so don't call
->> fwnode_handle_put() there (but add a comment explaining why you are
->> not calling it).
+On 3/2/21 11:53 AM, Stanimir Varbanov wrote:
+> Hi,
 > 
-> No, sorry... That's just too hacky. Let's not do that after all.
+> This series add a new intra-refresh period control for encoders. The
+> series is a continuation of [1]. Comments addressed:
+>  * A typo in .rst (Hans)
+>  * Clarified the relationship with CYCLIC_INTRA_REFRESH_MB (Hans)
 > 
-> We can also fix this in the software node code. I'm attaching a patch
-> that should make it possible to inject the software nodes also
-> afterwards safely. This is definitely also not without its problems,
-> but we can go with that if it works. Let me know.
+> Comments are welcome!
+> 
+> regards,
+> Stan
+> 
+> [1] https://www.spinics.net/lists/linux-media/msg183019.html
+> 
+> Stanimir Varbanov (2):
+>   media: v4l2-ctrls: Add intra-refresh period control
+>   venus: venc: Add support for intra-refresh period
+> 
+>  .../media/v4l/ext-ctrls-codec.rst             | 12 ++++++++
+>  drivers/media/platform/qcom/venus/core.h      |  1 +
+>  drivers/media/platform/qcom/venus/venc.c      | 28 +++++++++++++++++++
+>  .../media/platform/qcom/venus/venc_ctrls.c    | 13 ++++-----
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  2 ++
+>  include/uapi/linux/v4l2-controls.h            |  1 +
+>  6 files changed, 50 insertions(+), 7 deletions(-)
+> 
 
-I tested manually on bytcr w/ RT5640 and used the SOF CI farm to test 
-the SoundWire cases, I don't see any issues with your patch. The 
-refcount issue is gone and the module load/unload cycles don't report 
-any problems.
-
-Would you queue it for 5.13-rc1, or is this too late already?
-
->> For a better solution you would call device_reprobe() after you have
->> injected the software node, but before that you need to modify
->> device_reprobe() so it calls device_platform_notify() (which it really
->> should call in any case). But this should probable be done later,
->> separately.
->>
->> thanks,
->>
->> P.S.
->>
->> Have you guys considered the possibility of describing the connections
->> between all these components by using one of the methods that we now
->> have for that in kernel, for example device graph? It can now be
->> used also with software nodes (OF graph and ACPI device graph are of
->> course already fully supported).
-
-I must admit I've never heard of a 'device graph'. Any pointers or APIs 
-you can think of?
-It's a good comment since we are planning to rework the SOF clients and 
-machine driver handling.
+-- 
+regards,
+Stan
