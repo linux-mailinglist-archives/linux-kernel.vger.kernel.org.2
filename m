@@ -2,152 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC59135DE11
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C4A35DE1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343806AbhDMLvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343506AbhDMLu6 (ORCPT
+        id S231289AbhDMLzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:55:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2472 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230411AbhDMLzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:50:58 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235DAC061574;
-        Tue, 13 Apr 2021 04:50:37 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id j5so15170555wrn.4;
-        Tue, 13 Apr 2021 04:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zrBQReSgCMY+OanYzHXGQEOPpNoJlLuJMLlJaEtW1GU=;
-        b=CsRT1I3hZPY9u/p2FbsnDSev8v2QMEjS3cJqBgCLCg6lodkHQzSP5vp6ZcaY0o+GhG
-         9N5JfcuRwViPByhzv35X/kFQ6ebe2QWP96cjrTAf6/Hdqt5anv0UMFUC/CpJPTRT16KK
-         2uweAE4wqyLvq5V+qYLVmhd5UFEMPn2cRTZijnzkx7U4bUH6qvgnK74jam8WfDRS/StP
-         BPlzEAAKE9I0TTjX7Lf0Hi0GFJMMys/+dGI0770muxYKN4SHyeOakbkM3hGwsy7BJuO/
-         8+LZZ+UOETw4oHPyrhesEs33Pzn9B71PTln3/PvNaj3clpoEvRYdfqz71Y+F3HTKzv/i
-         NRJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zrBQReSgCMY+OanYzHXGQEOPpNoJlLuJMLlJaEtW1GU=;
-        b=mwGoN1Icyr9LOY12ogxolFc88rJjrklhUxGNsQAiq8x5rMfH4eoiJX63FdjiPkzwEo
-         E682Nu9n1IkA1+vB+jV+a7ZmZXAyvuI4G4cq5DCWtxTFwA6bErqxSNg07bnSegXJk5I/
-         DNistydEHkhX7sWCN1F748iUrGI34i3lHAu6w/2DRGu34sDoKRojgM1cBE/8TJGMUWx5
-         4JJnAa3ZdQAHF+yVnOPc7PGelbI8C5b8RqH3p8qFWb3y12veFtnYt+vReo7ipXGg3eK5
-         qhywm77L5b5qgSJkkZS7bZesoNloRMyIEe3UC/cXbTBJO0rxvmv2ZnFYtKVAZHY4IVW0
-         BiSg==
-X-Gm-Message-State: AOAM533ueMT+pmOsiE5YEwzu8+EQ8HxGiu2VEYbNsEF79pWKsR/ybb1N
-        U1FE+85r+hlZ/IPyWWZBaaMCZAvAuRM=
-X-Google-Smtp-Source: ABdhPJyt+FUGCR4EoaJA2Km+HzTa59IB9H8Kfio//rf4dR28tjz9KfRPxIa5rvfDSR+QmLODHnQlsg==
-X-Received: by 2002:a5d:5914:: with SMTP id v20mr11125063wrd.402.1618314635917;
-        Tue, 13 Apr 2021 04:50:35 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id v185sm2339354wmb.25.2021.04.13.04.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:50:34 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 13:51:15 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
-Message-ID: <YHWFs1f0XHkqbddp@orome.fritz.box>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412132745.76609-4-clemens.gruber@pqgruber.com>
- <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
+        Tue, 13 Apr 2021 07:55:08 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DBYGJK093276;
+        Tue, 13 Apr 2021 07:54:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=K1D0TefXvbQcZQJhHF0HWva11X2Hy1Uc9SEtL0kx9ZY=;
+ b=LqqG02oIz4nVoq2QcRWPVdZ/tsng5DNt0qxqrgIgap+2bz7i+zB6A4NVsXUvp9SDcy1a
+ bFYftbfNcwdB3jYVI/M2RZBEr91ZtDV53tE9eSTkcXwWbj0R6Z3Uu2q/Uyy3p0KRXsBM
+ uhqjkr2xt3xrrmrlGtDubIPjB4Be0VeQrzOGAuMf7+zdtSKwbfGudx1WvmcT9BQuvzSu
+ jEPKeAuCh+AVEblyk4ZPMtUUZVtCoTrumiGUvNbMZaAa6D5+78liNt3NDpr5Q5IFclXX
+ 8IU/AZqm6xEguwg+jNps+ilklnS6vO5m+coP9f25lxm+UszTD//rGBljCIYYkoEKS6Ax Zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vkpjqh1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 07:54:45 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13DBYrMg094933;
+        Tue, 13 Apr 2021 07:54:44 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vkpjqh1b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 07:54:44 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DBr8Rg018615;
+        Tue, 13 Apr 2021 11:54:42 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 37u3n89d68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 11:54:41 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DBsdrL27001124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 11:54:39 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7520D52052;
+        Tue, 13 Apr 2021 11:54:39 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 2DD725204E;
+        Tue, 13 Apr 2021 11:54:39 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic warning on PCI_IOBASE
+Date:   Tue, 13 Apr 2021 13:54:39 +0200
+Message-Id: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="CeMXB2IKKXvrsAIH"
-Content-Disposition: inline
-In-Reply-To: <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Svov5rAQw-nSijM3JuZ1icP9P81uchPp
+X-Proofpoint-ORIG-GUID: Yp3UWpatE9sMn0DVXWk63CSU3xVUGLub
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_04:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1011 adultscore=0 phishscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104130081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When PCI_IOBASE is not defined, it is set to 0 such that it is ignored
+in calls to the readX/writeX primitives. While mathematically obvious
+this triggers clang's -Wnull-pointer-arithmetic warning.
 
---CeMXB2IKKXvrsAIH
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+An additional complication is that PCI_IOBASE is explicitly typed as
+"void __iomem *" which causes the type conversion that converts the
+"unsigned long" port/addr parameters to the appropriate pointer type.
+As non pointer types are used by drivers at the callsite since these are
+dealing with I/O port numbers, changing the parameter type would cause
+further warnings in drivers. Instead use "uintptr_t" for PCI_IOBASE
+0 and explicitly cast to "void __iomem *" when calling readX/writeX.
 
-On Mon, Apr 12, 2021 at 06:27:23PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
-> > Add the flag and corresponding documentation for PWM_USAGE_POWER.
->=20
-> My concern here in the previous round was that PWM_USAGE_POWER isn't a
-> name that intuitively suggests its semantic. Do you disagree?
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+ include/asm-generic/io.h | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-I suggested PWM_USAGE_POWER because I think it accurately captures what
-we want here.
+diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+index c6af40ce03be..8eb00bdef7ad 100644
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -441,7 +441,7 @@ static inline void writesq(volatile void __iomem *addr, const void *buffer,
+ #endif /* CONFIG_64BIT */
+ 
+ #ifndef PCI_IOBASE
+-#define PCI_IOBASE ((void __iomem *)0)
++#define PCI_IOBASE ((uintptr_t)0)
+ #endif
+ 
+ #ifndef IO_SPACE_LIMIT
+@@ -461,7 +461,7 @@ static inline u8 _inb(unsigned long addr)
+ 	u8 val;
+ 
+ 	__io_pbr();
+-	val = __raw_readb(PCI_IOBASE + addr);
++	val = __raw_readb((void __iomem *)(PCI_IOBASE + addr));
+ 	__io_par(val);
+ 	return val;
+ }
+@@ -474,7 +474,7 @@ static inline u16 _inw(unsigned long addr)
+ 	u16 val;
+ 
+ 	__io_pbr();
+-	val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
++	val = __le16_to_cpu((__le16 __force)__raw_readw((void __iomem *)(PCI_IOBASE + addr)));
+ 	__io_par(val);
+ 	return val;
+ }
+@@ -487,7 +487,7 @@ static inline u32 _inl(unsigned long addr)
+ 	u32 val;
+ 
+ 	__io_pbr();
+-	val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
++	val = __le32_to_cpu((__le32 __force)__raw_readl((void __iomem *)(PCI_IOBASE + addr)));
+ 	__io_par(val);
+ 	return val;
+ }
+@@ -498,7 +498,7 @@ static inline u32 _inl(unsigned long addr)
+ static inline void _outb(u8 value, unsigned long addr)
+ {
+ 	__io_pbw();
+-	__raw_writeb(value, PCI_IOBASE + addr);
++	__raw_writeb(value, (void __iomem *)(PCI_IOBASE + addr));
+ 	__io_paw();
+ }
+ #endif
+@@ -508,7 +508,7 @@ static inline void _outb(u8 value, unsigned long addr)
+ static inline void _outw(u16 value, unsigned long addr)
+ {
+ 	__io_pbw();
+-	__raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
++	__raw_writew((u16 __force)cpu_to_le16(value), (void __iomem *)(PCI_IOBASE + addr));
+ 	__io_paw();
+ }
+ #endif
+@@ -518,7 +518,7 @@ static inline void _outw(u16 value, unsigned long addr)
+ static inline void _outl(u32 value, unsigned long addr)
+ {
+ 	__io_pbw();
+-	__raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
++	__raw_writel((u32 __force)cpu_to_le32(value), (void __iomem *)(PCI_IOBASE + addr));
+ 	__io_paw();
+ }
+ #endif
+@@ -606,7 +606,7 @@ static inline void outl_p(u32 value, unsigned long addr)
+ #define insb insb
+ static inline void insb(unsigned long addr, void *buffer, unsigned int count)
+ {
+-	readsb(PCI_IOBASE + addr, buffer, count);
++	readsb((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+@@ -614,7 +614,7 @@ static inline void insb(unsigned long addr, void *buffer, unsigned int count)
+ #define insw insw
+ static inline void insw(unsigned long addr, void *buffer, unsigned int count)
+ {
+-	readsw(PCI_IOBASE + addr, buffer, count);
++	readsw((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+@@ -622,7 +622,7 @@ static inline void insw(unsigned long addr, void *buffer, unsigned int count)
+ #define insl insl
+ static inline void insl(unsigned long addr, void *buffer, unsigned int count)
+ {
+-	readsl(PCI_IOBASE + addr, buffer, count);
++	readsl((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+@@ -631,7 +631,7 @@ static inline void insl(unsigned long addr, void *buffer, unsigned int count)
+ static inline void outsb(unsigned long addr, const void *buffer,
+ 			 unsigned int count)
+ {
+-	writesb(PCI_IOBASE + addr, buffer, count);
++	writesb((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+@@ -640,7 +640,7 @@ static inline void outsb(unsigned long addr, const void *buffer,
+ static inline void outsw(unsigned long addr, const void *buffer,
+ 			 unsigned int count)
+ {
+-	writesw(PCI_IOBASE + addr, buffer, count);
++	writesw((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+@@ -649,7 +649,7 @@ static inline void outsw(unsigned long addr, const void *buffer,
+ static inline void outsl(unsigned long addr, const void *buffer,
+ 			 unsigned int count)
+ {
+-	writesl(PCI_IOBASE + addr, buffer, count);
++	writesl((void __iomem *)(PCI_IOBASE + addr), buffer, count);
+ }
+ #endif
+ 
+-- 
+2.25.1
 
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > ---
-> >  Documentation/devicetree/bindings/pwm/pwm.txt | 3 +++
-> >  include/dt-bindings/pwm/pwm.h                 | 1 +
-> >  2 files changed, 4 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/pwm/pwm.txt b/Documentat=
-ion/devicetree/bindings/pwm/pwm.txt
-> > index 084886bd721e..fe3a28f887c0 100644
-> > --- a/Documentation/devicetree/bindings/pwm/pwm.txt
-> > +++ b/Documentation/devicetree/bindings/pwm/pwm.txt
-> > @@ -46,6 +46,9 @@ period in nanoseconds.
-> >  Optionally, the pwm-specifier can encode a number of flags (defined in
-> >  <dt-bindings/pwm/pwm.h>) in a third cell:
-> >  - PWM_POLARITY_INVERTED: invert the PWM signal polarity
-> > +- PWM_USAGE_POWER: Only care about the power output of the signal. This
-> > +  allows drivers (if supported) to optimize the signals, for example to
-> > +  improve EMI and reduce current spikes.
->=20
-> IMHO there are too many open questions about which freedom this gives to
-> the lowlevel driver. If the consumer requests .duty_cycle =3D 25ns +
-> .period =3D 100ns, can the driver provide .duty_cycle =3D 25s + .period =
-=3D
-> 100s which nominally has the same power output? Let's not introduce more
-> ambiguity than there already is.
-
-The freedom given to the driver should be to adjust the signal within
-reasonable bounds. Changing the time unit by a factor of 1000000000 is
-not within reason, and I doubt anyone would interpret it that way, even
-if we didn't document this at all.
-
-To be frank I think that quest of yours to try and rid the PWM API of
-all ambiguity is futile. I've been trying to be lenient because you seem
-motivated, but I think you're taking this too far. There are always
-going to be cases that aren't completely clear-cut and where drivers
-need the flexibility to cheat in order to be useful at all. If we get to
-a point where everything needs to be 100% accurate, the majority of the
-PWM controllers won't be usable at all.
-
-Don't let perfect be the enemy of good.
-
-Thierry
-
---CeMXB2IKKXvrsAIH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB1hbMACgkQ3SOs138+
-s6HYLhAAhdf86s3re5qOKds5oPjtXld/X7JkGE4TVl5uSJ57Lft2n3oVTuXtIbMJ
-j07WfvLgEDG2B2dX7LcSoCd6VH1A3f4iop/VbkyLe5xT0NZ4AtEA2rZBRuUs5gvw
-K3GrPOtQeU2V1WX2rRcVGZDBqlv+Hrwy0AF09MrZw8XW4YIYnkXPDmp5OD/oBzKv
-Jk9ZPWZngieA3y5KGaA25sWOSoz5owkEBcHlw0FDr0y3lGljl8yVXxVs0fbXio9V
-IgFL1mU6cFz3Xh71H6qBy0aql/I+tnB3Q/cKVFk5N3pnh5j3K0nxYuNG2NXnNkd2
-9lMt/5rk8SRwa0UWbarxGBK1bZAEUpFAfVaWmKB2uzp1iixyNxvDJOKuYnmpIrE3
-kBMKguVf7Xj8OJKcBkk6R3RRgORPdEKTKE890wqRx/NISsp5gNnqRTdWNfrmnIzS
-zPJK1vqmymqggapL2/xuvdIFfntTaR6THH1R5i5tRS7RrVb+jswLwk7fBn1F7St0
-6dh/fJ0qR0uqtq4Pw2TQVmBc/ku+/dxae41YAcM+tLM20JWECQOUerVTWB6F9Hfm
-bw6M8AQYZIkUCGbImBNJlqC7kSiqfyGH0gss82y4nNvk6hmfeBX0cs6glX6WPOLd
-tXrTwTktfGcS+xfBVUo2qqt5P4qmBH7HzCxP1TRlaTu9BQG1jAQ=
-=nXbs
------END PGP SIGNATURE-----
-
---CeMXB2IKKXvrsAIH--
