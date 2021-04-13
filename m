@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E2935DABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D08E35DAC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244645AbhDMJKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:10:19 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53005 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244505AbhDMJKR (ORCPT
+        id S245253AbhDMJKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245225AbhDMJKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:10:17 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-245-8IaK2en1PPGH7IkPhm3eng-1; Tue, 13 Apr 2021 10:09:54 +0100
-X-MC-Unique: 8IaK2en1PPGH7IkPhm3eng-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 10:09:53 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 10:09:53 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'crecklin@redhat.com'" <crecklin@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-CC:     Simo Sorce <simo@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Linux Crypto Mailing List" <linux-crypto@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Thread-Topic: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Thread-Index: AQHXL9VCCex4AsP57EiPuHRRJN/3haqyKSig
-Date:   Tue, 13 Apr 2021 09:09:53 +0000
-Message-ID: <493d2c11820a4fc8b66db381fc4e7904@AcuMS.aculab.com>
-References: <20210412140932.31162-1-crecklin@redhat.com>
- <YHSHPIXLhHjOu0jw@gmail.com>
- <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
- <YHSdgV6LIqSVxk+i@gmail.com>
- <CAMj1kXGZt8+5MVG-mNi67KsG8=4HCqEPs+RkrtzHusmCPFqSTg@mail.gmail.com>
- <862c8208-5809-9726-7e22-7a16fcd30edd@redhat.com>
-In-Reply-To: <862c8208-5809-9726-7e22-7a16fcd30edd@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 13 Apr 2021 05:10:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA703C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TpSegu5ukV9h/7OusCI/ddyVjJ+hBkJODpF1DL5nw+E=; b=qlidBnat5haGVHnoazCvaY1G9u
+        ikK2WuM83R5BKZiRBMtPDF7K8S9QEk1K69xSZTvlCnl45pu38BwfYxUnkwx9z3gInFdCIkoda230z
+        Ny0YlvOM2T6okfzdSixI5lNKvLM9uCu+SoA5nC1f6FQjZcPX3nbwev4fYIiwrPQMC10bzzm1qH43E
+        mylLOYBWFe6Y4g1Q6cm7hu/mWdCua1TrHyQyNt2/o8d9VsFK9D0nSUc3nIj5Boy/wu022HmsuBSYb
+        SHMo7BjvTHSGLviPGUYQ+Eut780QO77CMMA3Y+UgZCxbPqgQNYWATPRwK6KSMxBJGKbgXAJ9VRK6k
+        VeHclMQQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWF3p-008f7v-LG; Tue, 13 Apr 2021 09:10:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C09A3001F6;
+        Tue, 13 Apr 2021 11:10:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D9022C4C6406; Tue, 13 Apr 2021 11:10:16 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 11:10:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH 3/3] rseq: optimise for 64bit arches
+Message-ID: <YHVf+F3sKlWyZags@hirez.programming.kicks-ass.net>
+References: <20210413073657.2308450-1-eric.dumazet@gmail.com>
+ <20210413073657.2308450-4-eric.dumazet@gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413073657.2308450-4-eric.dumazet@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXMgdm9uIFJlY2tsaW5naGF1c2VuDQo+IFNlbnQ6IDEyIEFwcmlsIDIwMjEgMjA6
-NTENCi4uLg0KPiA+IFRoaXMgaXMgbm90IGFib3V0IEJJT1MgYnVncy4gSGliZXJuYXRpb24gaXMg
-ZGVlcCBzdXNwZW5kL3Jlc3VtZQ0KPiA+IGdyYWZ0ZWQgb250byBjb2xkIGJvb3QsIGFuZCBpdCBp
-cyBwZXJmZWN0bHkgbGVnYWwgZm9yIHRoZSBmaXJtd2FyZSB0bw0KPiA+IHByZXNlbnQgYSBkaWZm
-ZXJlbnQgbWVtb3J5IG1hcCB0byB0aGUgT1MgYWZ0ZXIgYSBjb2xkIGJvb3QuIEl0IGlzDQo+ID4g
-TGludXggdGhhdCBkZWNpZGVzIHRoYXQgaXQgY2FuIHJlc3RvcmUgdGhlIGVudGlyZSBzeXN0ZW0g
-c3RhdGUgZnJvbSBhDQo+ID4gc3dhcCBmaWxlLCBhbmQgY2Fycnkgb24gYXMgaWYgdGhlIGNvbGQg
-Ym9vdCB3YXMganVzdCBhIFtmaXJtd2FyZQ0KPiA+IGFzc2lzdGVkXSBzdXNwZW5kL3Jlc3VtZS4N
-Cj4gPg0KPiA+IFNvIGZvcmdpbmcgY29sbGlzaW9ucyBpcyAqbm90KiBhIGNvbmNlcm4gaGVyZS4g
-TGV0J3MgYXZvaWQgYWNjaWRlbnRhbA0KPiA+IG9yIG1hbGljaW91cywgYXMgdGhvc2UgYWRqZWN0
-aXZlcyBzZWVtIHRvIGNvbmZ1c2Ugc29tZSBwZW9wbGUuIFRoZQ0KPiA+IGJvdHRvbSBsaW5lIGlz
-IHRoYXQgdGhlcmUgaXMgbm8gbmVlZCB0byBwcm90ZWN0IGFnYWluc3QgZGVsaWJlcmF0ZQ0KPiA+
-IGF0dGVtcHRzIHRvIGhpZGUgdGhlIGZhY3QgdGhhdCB0aGUgbWVtb3J5IG1hcCBoYXMgY2hhbmdl
-ZCwgYW5kIHNvDQo+ID4gdGhlcmUgaXMgbm8gcmVhc29uIHRvIHVzZSBjcnlwdG9ncmFwaGljIGhh
-c2hlcyBoZXJlLg0KPiA+DQo+IEhvdyBhYm91dCA6DQo+IA0KPiBUaGUgY2hlY2sgaXMgaW50ZW5k
-ZWQgdG8gZGlmZmVyZW50aWF0ZSBiZXR3ZWVuIGEgcmVzdW1lICh3aGljaCBleHBlY3RzDQo+IGFu
-IGlkZW50aWNhbCBlODIwIG1hcCB0byB0aGUgb25lIHNhdmVkIGluIHN1c3BlbmQpLCBhbmQgYSBj
-b2xkIGJvb3QNCj4gKHdoaWNoIG5lZWQgbm90IGhhdmUgYW4gaWRlbnRpY2FsIGU4MjAgbWFwIHRv
-IHRoYXQgc2F2ZWQgaW4gc3VzcGVuZCBpZg0KPiBhbnkgd2FzIGRvbmUgYXQgYWxsKS4gSXQgaXMg
-bm90IG5lY2Vzc2FyeSBoZXJlIHRvIHByb3RlY3QgYWdhaW5zdA0KPiBkZWxpYmVyYXRlIGF0dGVt
-cHRzIHRvIGhpZGUgdGhlIGZhY3QgdGhhdCB0aGUgbWVtb3J5IG1hcCBoYXMgY2hhbmdlZCwgc28N
-Cj4gY3JjMzIgaXMgc3VmZmljaWVudCBmb3IgZGV0ZWN0aW9uLg0KDQpUaGF0IHNvcnQgb2YgaW1w
-bGllcyB0aGF0IHRoZSAncmVzdW1lJyBhbmQgJ2NvbGQgYm9vdCcgYXJlDQpkaWZmZXJlbmNpYXRl
-ZC4NCg0KQnV0IHRoZSBwcmV2aW91cyBjb21tZW50IHJhdGhlciBpbXBsaWVzIHRoYXQgaXQgaXMg
-dGhlIHByZXNlbmNlDQpvZiBhIHZhbGlkIHNhdmVkIGltYWdlIHRoYXQgc2lnbmlmaWVzIGEgJ3Jl
-c3VtZScuDQoNCkFuIGludGVyZXN0aW5nIGZhaWx1cmUgY2FzZSB3b3VsZCBiZSBtb3ZpbmcgdGhl
-IGRpc2sgdG8gYQ0KZGlmZmVyZW50IHN5c3RlbS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
-QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
-LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Tue, Apr 13, 2021 at 12:36:57AM -0700, Eric Dumazet wrote:
+> From: Eric Dumazet <edumazet@google.com>
+> 
+> Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+> update includes") added regressions for our servers.
+> 
+> Using copy_from_user() and clear_user() for 64bit values
+> on 64bit arches is suboptimal.
+> 
+> We might revisit this patch once all 32bit arches support
+> get_user() and/or put_user() for 8 bytes values.
 
+Argh, what a mess :/ afaict only nios32 lacks put_user_8, but get_user_8
+is missing in a fair number of archs.
+
+That said; 32bit archs never have to actually set the top bits in that
+word, so they _could_ only set the low 32 bits. That works provided
+userspace itself keeps the high bits clear.
+
+So I suppose that if we're going to #ifdef this, we might as well do the
+whole thing.
+
+Mathieu; did I forget a reason why this cannot work?
+
+diff --git a/kernel/rseq.c b/kernel/rseq.c
+index a4f86a9d6937..94006190b8eb 100644
+--- a/kernel/rseq.c
++++ b/kernel/rseq.c
+@@ -115,20 +115,25 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
+ static int rseq_get_rseq_cs(struct task_struct *t, struct rseq_cs *rseq_cs)
+ {
+ 	struct rseq_cs __user *urseq_cs;
+-	u64 ptr;
++	unsigned long ptr;
+ 	u32 __user *usig;
+ 	u32 sig;
+ 	int ret;
+ 
+-	if (copy_from_user(&ptr, &t->rseq->rseq_cs.ptr64, sizeof(ptr)))
++#ifdef CONFIG_64BIT
++	if (get_user(ptr, &t->rseq->rseq_cs.ptr64))
+ 		return -EFAULT;
++#else
++	if (get_user(ptr, &t->rseq->rseq_cs.ptr32))
++		return -EFAULT;
++#endif
+ 	if (!ptr) {
+ 		memset(rseq_cs, 0, sizeof(*rseq_cs));
+ 		return 0;
+ 	}
+ 	if (ptr >= TASK_SIZE)
+ 		return -EINVAL;
+-	urseq_cs = (struct rseq_cs __user *)(unsigned long)ptr;
++	urseq_cs = (struct rseq_cs __user *)ptr;
+ 	if (copy_from_user(rseq_cs, urseq_cs, sizeof(*rseq_cs)))
+ 		return -EFAULT;
+ 
