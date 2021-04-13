@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C7F35D50A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3998C35D513
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241260AbhDMCAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:00:50 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:1890 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239134AbhDMCAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:00:49 -0400
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 12 Apr 2021 19:00:30 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 12 Apr 2021 19:00:29 -0700
-Received: by gurus-linux.localdomain (Postfix, from userid 383780)
-        id 4304918C5; Mon, 12 Apr 2021 19:00:29 -0700 (PDT)
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Guru Das Srinagesh <gurus@codeaurora.org>
-Subject: [PATCH v3 1/3] dt-bindings: mfd: pm8008: Add IRQ listing
-Date:   Mon, 12 Apr 2021 19:00:25 -0700
-Message-Id: <38a00f502140a5844bea2abaf2d586991d290c64.1618278453.git.gurus@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1618278453.git.gurus@codeaurora.org>
-References: <cover.1618278453.git.gurus@codeaurora.org>
-In-Reply-To: <cover.1618278453.git.gurus@codeaurora.org>
-References: <cover.1618278453.git.gurus@codeaurora.org>
+        id S241314AbhDMCCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:02:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46615 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237219AbhDMCCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 22:02:08 -0400
+IronPort-SDR: Nv9uB96KhQeXKrgYWINV//LekphOG3UScw1k24XyLb8OTNQl8SnhUVt89AWB/PpXJDc/aVh8id
+ GM07jt4VBbpQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="191131410"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="asc'?scan'208";a="191131410"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:01:47 -0700
+IronPort-SDR: dpnk/tYDwYO3SVEi7HM2vnrFb6nowJMHhcesGzOnnSfRR6NRFYEwTf0/OwTmkwgzqynM+dJXTU
+ cuhHkS5Ff9hg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="asc'?scan'208";a="443268676"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Apr 2021 19:01:46 -0700
+Date:   Tue, 13 Apr 2021 09:43:58 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     zhenyuw@linux.intel.com, zhi.a.wang@intel.com,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        yan.y.zhao@intel.com
+Subject: Re: Regression: gvt: vgpu 1: MI_LOAD_REGISTER_MEM handler error
+Message-ID: <20210413014358.GB14309@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20210412103214.337d521a@omen>
+ <20210412192347.042fbc14@x1.home.shazbot.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <20210412192347.042fbc14@x1.home.shazbot.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a header file listing all of the IRQs that Qualcomm Technologies,
-Inc. PM8008 supports. The constants defined in this file may be used in
-the client device tree node to specify interrupts.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
----
- include/dt-bindings/mfd/qcom-pm8008.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/dt-bindings/mfd/qcom-pm8008.h b/include/dt-bindings/mfd/qcom-pm8008.h
-new file mode 100644
-index 0000000..eca9448
---- /dev/null
-+++ b/include/dt-bindings/mfd/qcom-pm8008.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2021 The Linux Foundation. All rights reserved.
-+ */
-+
-+#ifndef __DT_BINDINGS_MFD_QCOM_PM8008_H
-+#define __DT_BINDINGS_MFD_QCOM_PM8008_H
-+
-+/* PM8008 IRQ numbers */
-+#define PM8008_IRQ_MISC_UVLO	0
-+#define PM8008_IRQ_MISC_OVLO	1
-+#define PM8008_IRQ_MISC_OTST2	2
-+#define PM8008_IRQ_MISC_OTST3	3
-+#define PM8008_IRQ_MISC_LDO_OCP	4
-+#define PM8008_IRQ_TEMP_ALARM	5
-+#define PM8008_IRQ_GPIO1	6
-+#define PM8008_IRQ_GPIO2	7
-+
-+#endif
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On 2021.04.12 19:23:47 -0600, Alex Williamson wrote:
+> On Mon, 12 Apr 2021 10:32:14 -0600
+> Alex Williamson <alex.williamson@redhat.com> wrote:
+>=20
+> > Running a Windows guest on a i915-GVTg_V4_2 from an HD 5500 IGD on
+> > v5.12-rc6 results in host logs:
+> >=20
+> > gvt: vgpu 1: lrm access to register (20c0)
+> > gvt: vgpu 1: MI_LOAD_REGISTER_MEM handler error
+> > gvt: vgpu 1: cmd parser error
+> > 0x0=20
+> > 0x29=20
+> >=20
+> > gvt: vgpu 1: scan wa ctx error
+> > gvt: vgpu 1: failed to submit desc 0
+> > gvt: vgpu 1: fail submit workload on ring rcs0
+> > gvt: vgpu 1: fail to emulate MMIO write 00002230 len 4
+> >=20
+> > The guest goes into a boot loop triggering this error before reaching
+> > the desktop and rebooting.  Guest using Intel driver 20.19.15.5171
+> > dated 11/4/2020 (from driver file 15.40.5171).
+> >=20
+> > This VM works well with the same guest and userspace software stack on
+> > Fedora's kernel 5.11.11-200.fc33.x86_64.  Thanks,
+>=20
+> Bisected to:
 
+Looks we didn't hit this one on Broadwell with recent testing. I'll double
+check, maybe Broadwell missed something after our cmd parser rework.
+
+Thanks for reporting!
+
+>=20
+> commit f18d417a57438498e0de481d3a0bc900c2b0e057
+> Author: Yan Zhao <yan.y.zhao@intel.com>
+> Date:   Wed Dec 23 11:45:08 2020 +0800
+>=20
+>     drm/i915/gvt: filter cmds "srm" and "lrm" in cmd_handler
+>    =20
+>     do not allow "srm" and "lrm" except for GEN8_L3SQCREG4 and 0x21f0.
+>    =20
+>     Cc: Colin Xu <colin.xu@intel.com>
+>     Cc: Kevin Tian <kevin.tian@intel.com>
+>     Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+>     Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+>     Link: http://patchwork.freedesktop.org/patch/msgid/20201223034508.170=
+31-1-yan.y.zhao@intel.com
+>     Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+>=20
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYHT3WgAKCRCxBBozTXgY
+JyIjAJ4qyEyXGFa1EIPUsVJohueGVLPmjQCeLZxe4LsLldAUVXy+DRZNan125N4=
+=mNfW
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
