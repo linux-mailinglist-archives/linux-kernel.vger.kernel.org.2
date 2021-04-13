@@ -2,97 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5AF35E478
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5856A35E471
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346980AbhDMQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:58:42 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:43545 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346974AbhDMQ6k (ORCPT
+        id S1346956AbhDMQ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:57:58 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33503 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1346946AbhDMQ5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:58:40 -0400
-Received: by mail-yb1-f182.google.com with SMTP id o10so18870952ybb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OZIb1ppB5Vw0K0ah9GL/sCPeLYwov/sRo9mNSJgD/ts=;
-        b=r2rebxpMV26LN+easkWpoOosTIX01D42v9Qy88wQexpW7daWyeeyE7RVOn3FCGpjPc
-         IxfwEQdGCQ1xYo9hsBVXCk//NafP1z9EUTJUOzePILV7q5O1U1qd/oVriCCX3qkbCgUH
-         Z3T7JWcXdQUOxaYxQKjfbUDAEiTt4zc5UfbShq1dZZVdkbcdYWG6IZVZiCZka2BlgAuc
-         cUEfGtODzJMuDzYUa2LblWkb4g84TOAGMmStIuI5EsRBX9ETYQ528gmq5ywuPxd7kBYc
-         NyklAgCb5ii1mnG6YySdYNloCGk5eRGP+VC+aC2qarfbeVCNlNqXiTKofUfrbMGTZISt
-         c4JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OZIb1ppB5Vw0K0ah9GL/sCPeLYwov/sRo9mNSJgD/ts=;
-        b=feyKCC+HaV35yLbXJPpsYSajLlmK8ErYcbaSp6/O+kgqwCSUtnVUkDaT8zpuYiXPJP
-         65bvNCX8XpZSaJ4OkKXsNsEMofjjLOs3BFqNovTw4C9PAATwYMIz+ipGvK8PbLDiK8eD
-         d+UKxJcKvnVmKS1fdTNLyGsp8CtjKHtsBwLpg89ySFThHnwqz5+p0MkvhgKm4GCAtZrY
-         KWmfqWutfem0mh4XMhTanjnnq2eJy7DCWTb90Ln5TqvEyVNMs7nCcsayH+B3KRYQ1tl2
-         MN8Rwtn/TVLi40RUiO3VJkqG3R0ZaSSw0h4UbHifNbxbRCET3FezD5u8eHzN125p6IJ9
-         EuOA==
-X-Gm-Message-State: AOAM530kHsfEIrDkPch5Quj59t//sIPzrFpgddYprAy1wmTBErRsXzWw
-        7m8R01N0+/mk0HiV8RrtKpwCiT02VkB7o8cOHIk+JQ==
-X-Google-Smtp-Source: ABdhPJxCwgXkpZyBDTR8IDvkKx5iCJFF4GR2NQHQEdHWnx857r7TljcuILvxs+jevktZxaraPOii+jLdaJhgG0lvG5M=
-X-Received: by 2002:a25:7650:: with SMTP id r77mr18961159ybc.446.1618333040102;
- Tue, 13 Apr 2021 09:57:20 -0700 (PDT)
+        Tue, 13 Apr 2021 12:57:45 -0400
+Received: (qmail 1462034 invoked by uid 1000); 13 Apr 2021 12:57:25 -0400
+Date:   Tue, 13 Apr 2021 12:57:24 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] general protection fault in gadget_setup
+Message-ID: <20210413165724.GD1454681@rowland.harvard.edu>
+References: <00000000000075c58405bfd6228c@google.com>
+ <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
+ <20210413161311.GC1454681@rowland.harvard.edu>
+ <CACT4Y+YEw4iJPxY4b6LPXrU91TODfu09dG=53exvQkwjPBg23w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
- <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
-In-Reply-To: <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 13 Apr 2021 18:57:08 +0200
-Message-ID: <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YEw4iJPxY4b6LPXrU91TODfu09dG=53exvQkwjPBg23w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 6:54 PM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
->
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
-> > update includes") added regressions for our servers.
-> >
-> > Using copy_from_user() and clear_user() for 64bit values
-> > is suboptimal.
-> >
-> > We can use faster put_user() and get_user().
-> >
-> > 32bit arches can be changed to use the ptr32 field,
-> > since the padding field must always be zero.
-> >
-> > v2: added ideas from Peter and Mathieu about making this
-> >    generic, since my initial patch was only dealing with
-> >    64bit arches.
->
-> Ah, now I remember the reason why reading and clearing the entire 64-bit
-> is important: it's because we don't want to allow user-space processes to
-> use this change in behavior to figure out whether they are running on a
-> 32-bit or in a 32-bit compat mode on a 64-bit kernel.
->
-> So although I'm fine with making 64-bit kernels faster, we'll want to keep
-> updating the entire 64-bit ptr field on 32-bit kernels as well.
->
-> Thanks,
->
+On Tue, Apr 13, 2021 at 06:47:47PM +0200, Dmitry Vyukov wrote:
+> On Tue, Apr 13, 2021 at 6:13 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> > Hopefully this patch will make the race a lot more likely to occur.  Is
+> > there any way to tell syzkaller to test it, despite the fact that
+> > syzkaller doesn't think it has a reproducer for this issue?
+> 
+> If there is no reproducer the only way syzbot can test it is if it's
+> in linux-next under CONFIG_DEBUG_AID_FOR_SYZBOT:
+> http://bit.do/syzbot#no-custom-patches
 
-So... back to V1 then ?
+There _is_ a theoretical reproducer: the test that provoked syzkaller's 
+original bug report.  But syzkaller doesn't realize that it is (or may 
+be) a reproducer.
+
+It ought to be possible to ask syzkaller to run a particular test that 
+it has done before, with a patch applied -- and without having to add 
+anything to linux-next.
+
+Alan Stern
