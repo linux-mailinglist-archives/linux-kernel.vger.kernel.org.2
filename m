@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE9835DEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C79335DEFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242404AbhDMMcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241422AbhDMMbG (ORCPT
+        id S229682AbhDMMfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:35:17 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:54519 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhDMMfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:31:06 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25918C061348
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:30:47 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u21so25599830ejo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pAgxhBv5/NtB+cWLkX3BpIezGlDEtSC6ik2muIVW1Gc=;
-        b=CxyDwaoJqNN/OwD7hAXxGSPuhJmXJM48x6CShyhYyO+l76LLtt8YRUsBDWgcCALiyR
-         rO54kBHPYbvfVh7ohrqZD0xVFPDcNgfn7P86G/txg+UOmxlMRXisdxIsFHHXA1NCHvQA
-         qmTm5tiEjL7F5dStR7q20BjNwsoQUGJJOEjqQahu84Snf6aqCP9RPi0C8q8YjhqsjjZ/
-         AGRDtvpGaEByPOLwXAeFduUkkzXiPcnRzvori0VT57wE4v+FUQ0VBUpD7SjBW7MOD9QD
-         U+RxaeaE62jBJ/OQV4clfralWwhWz2+wLXpsJ+2zhRJf/KXwGZaFh4KpuV+KIyL4Wx7Z
-         KKGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pAgxhBv5/NtB+cWLkX3BpIezGlDEtSC6ik2muIVW1Gc=;
-        b=j49QhRqYYizahzYH6LqH9YQXsJd8A5U+kg2bBN3FETbhGV14TgA6CtWJyCggwu/3Er
-         6lSPVn13Pklv7TP75B7YuzwmPW3eb+cCQGtI0B1Te4vRF03U06tck0yebHbo69viUaSg
-         0RuWg6ZfidQDQFHTVqdKRLlJgI3h4V9PVIBtGfC9zQojT5nKLFDBq7fcfhGeKJ/MPQAH
-         PhfDxaGCVcn7Z+6CNLPp9y+Z0bOpEMz+D9CUFD2eWGrz/3KywOhvc655VdnQ8ZMZhyqA
-         PEVXh9w2QaNdM/D0NIrlA65wv5K5FbMFIG/Od4vKWH0XmILa9SB5s/Obj3gqiGNBjt/D
-         DRxQ==
-X-Gm-Message-State: AOAM530Jd07gcUVZSKSM1kY3Wk/N6pNugdAuCCG0Pt4pSBwJUJtGxg/O
-        bsVLelOjKQaI9Z343jW8G6w=
-X-Google-Smtp-Source: ABdhPJy3RUm5199KNZFcG3FHQV8zoLwzVvCxYhlXgazrCE7Jv9Oxy5BfBiNl7OdKuv4V91V9cuGGog==
-X-Received: by 2002:a17:906:1444:: with SMTP id q4mr32001626ejc.343.1618317045883;
-        Tue, 13 Apr 2021 05:30:45 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id d22sm687391ejz.79.2021.04.13.05.30.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 05:30:45 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH] staging: rtl8192u: ieee80211: Replaced strncpy() with strscpy()
-Date:   Tue, 13 Apr 2021 14:30:41 +0200
-Message-Id: <20210413123041.24260-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 13 Apr 2021 08:35:16 -0400
+Received: from [192.168.1.150] (unknown [78.199.60.242])
+        (Authenticated sender: hadess@hadess.net)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6415B20000E;
+        Tue, 13 Apr 2021 12:34:52 +0000 (UTC)
+Message-ID: <a2be79bcf1ce93096d6843a0856927cda65d4842.camel@hadess.net>
+Subject: Re: [PATCH] [v4] Input: Add "Select" button to Microsoft Xbox One
+ controller.
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Chris Ye <lzye@google.com>,
+        =?UTF-8?Q?=C5=81ukasz?= Patron <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Olivier =?ISO-8859-1?Q?Cr=EAte?= <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trivial@kernel.org, kernel-team@android.com
+Date:   Tue, 13 Apr 2021 14:34:51 +0200
+In-Reply-To: <20210413010252.2255812-1-lzye@google.com>
+References: <20210413010252.2255812-1-lzye@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaced strncpy() with strscpy() because of compilation time warnings
-about possible truncation of output [-Wstringop-truncation].
-Furthermore, according to the Linux official documentation, strscpy() is
-preferred to strncpy.
+On Tue, 2021-04-13 at 01:02 +0000, Chris Ye wrote:
+> Add "Select" button input capability and input event mapping for
+> Microsoft Xbox One controller. From product site this is also
+> referred as
+> "Share" button.
+> Fixed Microsoft Xbox One controller select button not working under
+> USB
+> connection.
+> 
+> Signed-off-by: Chris Ye <lzye@google.com>
+> ---
+>  drivers/input/joystick/xpad.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/joystick/xpad.c
+> b/drivers/input/joystick/xpad.c
+> index 9f0d07dcbf06..99cb8bb78570 100644
+> --- a/drivers/input/joystick/xpad.c
+> +++ b/drivers/input/joystick/xpad.c
+> @@ -79,6 +79,7 @@
+>  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
+>  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
+>  #define MAP_STICKS_TO_NULL             (1 << 2)
+> +#define MAP_SELECT_BUTTON              (1 << 3)
+>  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
+> |                  \
+>                                 MAP_TRIGGERS_TO_BUTTONS |
+> MAP_STICKS_TO_NULL)
+>  
+> @@ -130,6 +131,7 @@ static const struct xpad_device {
+>         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
+> XTYPE_XBOXONE },
+>         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0,
+> XTYPE_XBOXONE },
+>         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
+> MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
+> +       { 0x045e, 0x0b12, "Microsoft Xbox One X pad",
+> MAP_SELECT_BUTTON, XTYPE_XBOXONE },
+>         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360
+> },
+>         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360
+> },
+>         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360
+> },
+> @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct
+> usb_xpad *xpad, u16 cmd, unsigned char
+>         /* menu/view buttons */
+>         input_report_key(dev, BTN_START,  data[4] & 0x04);
+>         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
+> +       if (xpad->mapping & MAP_SELECT_BUTTON)
+> +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
+>  
+>         /* buttons A,B,X,Y */
+>         input_report_key(dev, BTN_A,    data[4] & 0x10);
+> @@ -1669,9 +1673,11 @@ static int xpad_init_input(struct usb_xpad
+> *xpad)
+>  
+>         /* set up model-specific ones */
+>         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
+> XTYPE_XBOX360W ||
+> -           xpad->xtype == XTYPE_XBOXONE) {
+> +               xpad->xtype == XTYPE_XBOXONE) {
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Why the indentation change here?
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-index 25ea8e1b6b65..aa58eedf5e86 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
-@@ -1385,12 +1385,12 @@ inline void ieee80211_softmac_new_net(struct ieee80211_device *ieee, struct ieee
- 			 * essid provided by the user.
- 			 */
- 			if (!ssidbroad) {
--				strncpy(tmp_ssid, ieee->current_network.ssid, IW_ESSID_MAX_SIZE);
-+				strscpy(tmp_ssid, ieee->current_network.ssid, IW_ESSID_MAX_SIZE);
- 				tmp_ssid_len = ieee->current_network.ssid_len;
- 			}
- 			memcpy(&ieee->current_network, net, sizeof(struct ieee80211_network));
- 
--			strncpy(ieee->current_network.ssid, tmp_ssid, IW_ESSID_MAX_SIZE);
-+			strscpy(ieee->current_network.ssid, tmp_ssid, IW_ESSID_MAX_SIZE);
- 			ieee->current_network.ssid_len = tmp_ssid_len;
- 			netdev_info(ieee->dev,
- 				    "Linking with %s,channel:%d, qos:%d, myHT:%d, networkHT:%d\n",
--- 
-2.31.1
+>                 for (i = 0; xpad360_btn[i] >= 0; i++)
+>                         input_set_capability(input_dev, EV_KEY,
+> xpad360_btn[i]);
+> +               if (xpad->mapping & MAP_SELECT_BUTTON)
+> +                       input_set_capability(input_dev, EV_KEY,
+> KEY_RECORD);
+>         } else {
+>                 for (i = 0; xpad_btn[i] >= 0; i++)
+>                         input_set_capability(input_dev, EV_KEY,
+> xpad_btn[i]);
+
 
