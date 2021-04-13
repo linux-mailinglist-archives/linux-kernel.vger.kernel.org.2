@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B7735E134
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569BA35E142
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhDMORg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        id S230028AbhDMOTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhDMORe (ORCPT
+        with ESMTP id S229558AbhDMOT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:17:34 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451A0C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:17:14 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r8so27501995lfp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:17:14 -0700 (PDT)
+        Tue, 13 Apr 2021 10:19:28 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E081C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:19:08 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id f41so4244121lfv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cZ6kidUHRj7ZJtI2NPkmgGxB5X5ZhGWZ4M1kxQQ4MYE=;
-        b=BbdoH85aPSywvPs8poem3KXLPuVQZ0Kud5h/cKfVLSvTpb3s3WRCjKaOnzd7UiQ0yq
-         4lA/nQdnm3zKkexJFCHsP8B/J5xwoqKyvfvcAaqxC9Ghrwk7DfHu5Cwy+dDZsN7on+ww
-         UZYSmg69HMoOxDD2sujKtzM1tl72CX+LfmA482OIMXPEx9ZfaDCNcfmDQHGXu4seq4Z9
-         5MJLRToL1Bxvp7riJ4qerWQwAFlDWg0LwOppAtmUM/JdKapyoDW1zmI18gbeHiBYZVq9
-         iIvfcN8Ura4CX2Y4SgtdZV0b2q9ADUWn5FUULh2bUhR+aZD1vQbsw7TH3+2WZyKXbUKc
-         4fcA==
+        bh=Z8E4aJWY8S1UewlX1deTBL/TSfNjGfLKOGHhOfD8DdQ=;
+        b=wNEgu565JVChQOzqfu7VI4YMq9rsnsx91xg5exzQG4fW8BhPE9txEfAZNQXtJ6eguF
+         QcePnkqE22FvS6FaytPrXYAvwp+kIPYuMuVwkzo1GEHTG0Mt4xLqwioGDVoAZtl/i/pr
+         NgAjV893s9/nqObtXpgFP4Sv0Qdp1kMqwhW/mtN6B94EEWGF4NBz13U+VkDE4HjwnTGM
+         jbLe73Brwf75Jqml/0fYWnXJ1AXfBALl/98zgVDvMrrXTC0DKS22seqxXgqd+sb3Ydma
+         vT6OKSqnzY25RF9UmXy2rH2rymrl/4D+WPiTzf8M4SH1Q0bbr6THv5ALayWkD+XCzjzV
+         oZyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cZ6kidUHRj7ZJtI2NPkmgGxB5X5ZhGWZ4M1kxQQ4MYE=;
-        b=rzyvlLL/KefBaSjsfyn4Db+uhbm315sgZaoTl5f2K9IuGTKkxYxYHt6eRAs35ojVbE
-         izl2kgaGXCn3kpVtLF24KRlkDCDnJ6uazDtJa+ttWo8+B49cGIzoBpRmxOnzbxs7sUyM
-         YaNW+XEsnRozFSl9taaAqmbhSt4LR2CkMPxycYT1AIkqJnIKYJX6yz/8s/SG0nTvvcet
-         ywMYBx+XNUBE3d0EO16A1iloXJDI70XZ5iF7LA2KRDV8LRgPxwU7Y6Get1FivZyoa8Dq
-         4kZBtLVPV27UhpCYS/1Xqt4ILOXrF2B34lyYs7Bn4F52ZwVFYSGjZ+/ExAN5xubIbzwg
-         dkXg==
-X-Gm-Message-State: AOAM533ABMjSHgxTXnBAk/e0kOiwkrXCimONWpcYFynO8byBH/MyVFe0
-        KfUs8yALVy3WKUgQDREQo+4jeBYiqvALZoaU0Pgh3Q==
-X-Google-Smtp-Source: ABdhPJxUo28t6OhONsKty8BOllgQA7NRCoDBCUDBTN+rZWjQ8O6BwzZERctqfq+bNN0cfipLBWKK93kZVz6RjRMm398=
-X-Received: by 2002:a05:6512:3703:: with SMTP id z3mr22508451lfr.358.1618323431274;
- Tue, 13 Apr 2021 07:17:11 -0700 (PDT)
+        bh=Z8E4aJWY8S1UewlX1deTBL/TSfNjGfLKOGHhOfD8DdQ=;
+        b=cTV9vorF0TBgXsFh5gsnJLIe9y3LRdqo7Xk8BXNXpQ3qpo/wmM6e8gunQX8/goBwaj
+         GKyuucFqUyQ/T45DBRD58N94/Tk7Arc5UOL+zYEPde/V98RAlk7pkMHWb9i2ie7Ny6DG
+         ugpgsIjU9tztrmNaEv5t2P44Tf6NC1iqet2rADYvU1b6IfzFMNKprCcSIvkc9fPKFCEr
+         qy93brESMZYg0OxCyCn7ddLSCMREt9GN7pHU1BgSQ6bZ457IrN6jF1UzLRfYXbFPR0m5
+         RvBE3p8LGIeD4GKzOpCwqJkS75XF77uPapvPl0y4mf4bwStkU6f80Sqb5Wi1iWGl1aaG
+         /8Rw==
+X-Gm-Message-State: AOAM532N6zoUGjmv9T5qqCWblWRK1Gmh/OViN28vRbnq6awc4Xe9DKiK
+        76wC6ZwevdtW4I4dBbjTSio1T0F6hrKqzRjYTCUP5w==
+X-Google-Smtp-Source: ABdhPJwxZXtINdMaf/cXfQkq4pbXsql3edDM43KiHd6FR2T4DmVGitIeVDELJNQp3WMnFtH1pMN1ymZ7b5Rc0vq4I5Y=
+X-Received: by 2002:ac2:546c:: with SMTP id e12mr8204910lfn.299.1618323545033;
+ Tue, 13 Apr 2021 07:19:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210413065153.63431-1-songmuchun@bytedance.com> <20210413065153.63431-6-songmuchun@bytedance.com>
-In-Reply-To: <20210413065153.63431-6-songmuchun@bytedance.com>
+References: <20210413065153.63431-1-songmuchun@bytedance.com> <20210413065153.63431-7-songmuchun@bytedance.com>
+In-Reply-To: <20210413065153.63431-7-songmuchun@bytedance.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 13 Apr 2021 07:16:58 -0700
-Message-ID: <CALvZod4B3-OREkm2ZVGyueUcJRE2igTjhNHTE3nVDSzTVRDs6Q@mail.gmail.com>
-Subject: Re: [PATCH 5/7] mm: memcontrol: simplify the logic of objcg pinning memcg
+Date:   Tue, 13 Apr 2021 07:18:52 -0700
+Message-ID: <CALvZod4RawjDccyoRFW2NqggYqQaY1p2jj5zzvwLZsYq2pWjZA@mail.gmail.com>
+Subject: Re: [PATCH 6/7] mm: memcontrol: move obj_cgroup_uncharge_pages() out
+ of css_set_lock
 To:     Muchun Song <songmuchun@bytedance.com>
 Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -67,19 +68,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Apr 12, 2021 at 11:58 PM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> The obj_cgroup_release() and memcg_reparent_objcgs() are serialized by
-> the css_set_lock. We do not need to care about objcg->memcg being
-> released in the process of obj_cgroup_release(). So there is no need
-> to pin memcg before releasing objcg. Remove those pinning logic to
-> simplfy the code.
->
-> There are only two places that modifies the objcg->memcg. One is the
-> initialization to objcg->memcg in the memcg_online_kmem(), another
-> is objcgs reparenting in the memcg_reparent_objcgs(). It is also
-> impossible for the two to run in parallel. So xchg() is unnecessary
-> and it is enough to use WRITE_ONCE().
+> The css_set_lock is used to guard the list of inherited objcgs. So there
+> is no need to uncharge kernel memory under css_set_lock. Just move it
+> out of the lock.
 >
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
