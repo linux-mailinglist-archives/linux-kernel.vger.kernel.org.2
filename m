@@ -2,180 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A0435E0FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8813935E101
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346261AbhDMOJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:09:59 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41628 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbhDMOJ6 (ORCPT
+        id S1346271AbhDMOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:10:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24591 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346262AbhDMOKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:09:58 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DE7njG014980;
-        Tue, 13 Apr 2021 14:09:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=5Zwkrt0QGGzt1KWEi9J6GwwYCU4Ru2uoSx3wf8xeQN8=;
- b=oUwCPRFhl8djXXPr3wOt0CX7wq48a1Fs1y8Hx82Zp07UdoJJn8DMqVH+bUEB3Ho8VAGg
- UhV/On6RfK9BNqPiTXjkZROlCLRjXQfvLKfSuuj5SyULrAyr/YDuccscyd12Ury9F+on
- 9PDX9XGfn0axoyVZPaJWm6maI9YItEV9oC94XAajf2H3mmjHKDTp3QuXzYDrTlNNfOfn
- Mks/doX9X7jtaVM9/owZyDHIBPz0TUq9Ml43/A8F+dhzkUAGPyGcDVTxBQghzeXUiIot
- gWeEqeYHHaj/LrpBdZQTI9eRnEH67tQ1GQrJTGWw/132GDGC+BOz7Uih9FA7OZFhV7dj 4g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 37u3erf7fj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:09:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DE7lK3023251;
-        Tue, 13 Apr 2021 14:09:32 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2043.outbound.protection.outlook.com [104.47.56.43])
-        by aserp3020.oracle.com with ESMTP id 37unwyu71x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:09:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bqeB4vjXs6mwUcyKfNxo9ujQKMLyohGUH1zbT/Zcx4/dez78Dj/hOTaOPZ983HXevstHUjOPuebT85hXA2ON/B8uWGC0zSbamgGUkj1wlhJXnizmB88kjF1RxG0H2EfSXbfAAp6H6IJm84RJxFCoJvbbD2lvSMjzoNmJLBTVggvjIsDYCO+mUVwncGVmDn1GLDJylTgoSRFYiMs+u97XKgSb0wNbGq3CyDGKN5509RP3VpDu5HaIc9OAlDwiRfY2J9Wgm1XKL+MZLBK5zyxVR30ZYu8C/UYnpjm31qIguTC5H5OiHE/rCXUV04ldR2CUy+IwPehF9AAmvt4uSZMpDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5Zwkrt0QGGzt1KWEi9J6GwwYCU4Ru2uoSx3wf8xeQN8=;
- b=EzzLBG560gBMqUFuCpY9xIDD0eFdYc1ZeraLv6KbpKfUWiXmHUIef/K5oAmMIaMpUkaHonFEVVWkgi80mE2AuZIogZOvFvfsAd6Khn7FGz6hXdJKX9FNFXvrJ1yF445S+cC4WYqL85nEEgKhKf6NmGPdlbNnx0q672nwFXpVjVadMqD4RfYLYErRiwt1RZYrJEbsw1VLFNkIP38jObnP+eU53CMP8K22J5CJK14lGDz16m1aDljbsuX8wicLf2ip4TwJdjxxea/ofC6GmN+ghb6CvUfLyMBsJ8mw64Zvv7tNXGbDrIBbvkTso7e4tKwCt2Y0FeiboJ29JrPM+vnBXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5Zwkrt0QGGzt1KWEi9J6GwwYCU4Ru2uoSx3wf8xeQN8=;
- b=UcYL1HpNCJEb25AmdClSw+LBFxAbFEIUkI8bLe8Jn8ePstycQT+AftnZX2pUNB5lBA+zk9o8rtUiDnb4AZl+pFuKJRrIpaqOtfVPmMMQcs8sOatQB7BgKHmy4bNkXaMhTB18wfrwhGL04tEOx6vdx5F5dPK71UxI53AvCt8Alug=
-Received: from CY4PR10MB1989.namprd10.prod.outlook.com (2603:10b6:903:11a::12)
- by CY4PR1001MB2215.namprd10.prod.outlook.com (2603:10b6:910:49::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Tue, 13 Apr
- 2021 14:09:29 +0000
-Received: from CY4PR10MB1989.namprd10.prod.outlook.com
- ([fe80::ad28:97d2:76cf:3fa5]) by CY4PR10MB1989.namprd10.prod.outlook.com
- ([fe80::ad28:97d2:76cf:3fa5%11]) with mapi id 15.20.4020.022; Tue, 13 Apr
- 2021 14:09:29 +0000
-From:   Haakon Bugge <haakon.bugge@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Hao Sun <sunhao.th@gmail.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-Thread-Topic: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-Thread-Index: AQHXMBZIafaMKw9Gbk+37nMf6bUO+aqycySAgAACcYCAAAChAIAABtgA
-Date:   Tue, 13 Apr 2021 14:09:29 +0000
-Message-ID: <FD5C91B5-8E07-4CB0-A08B-5E0D1E2A3B04@oracle.com>
-References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
- <20210413133359.GG227011@ziepe.ca>
- <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
- <20210413134458.GI227011@ziepe.ca>
-In-Reply-To: <20210413134458.GI227011@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.60.0.2.21)
-authentication-results: ziepe.ca; dkim=none (message not signed)
- header.d=none;ziepe.ca; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [51.175.204.144]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6bed59fc-0556-4f14-6278-08d8fe85c0c4
-x-ms-traffictypediagnostic: CY4PR1001MB2215:
-x-microsoft-antispam-prvs: <CY4PR1001MB2215A33BB472EDB72B0A0BE0FD4F9@CY4PR1001MB2215.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:655;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: E8zEVqqTmJu0AXfxCfmnstnzcItzsA1stVzquJ5yd9wasQjUSeWyT0wD3VeZIEXz+6A/TmK5AcEyo0MpzfBic+M8IBPsykDIF8VbZI/jny6hHDERccaJXEn1H8x0CaA78OpFzOWyDHAj10uVzIpVkBE5tuO4/hgM8xxcV7wKRZO3v6j041pgslDQPTWDoYcDGlGnqS8jFw2zgSXDh5Mg7dVgt7MQpmj9caeEHA/HRNVffwx/LypTjA0VVwXR5YyrIqT4qe0DyZLoxGoKT/MzDNS5OrX45qT4L+8aGpXskLeLb2cKVnBCnkNWCCyL1ZrYMwj/ZCzKQSmlJIeUKstIjhVI+mq2rI39h7MZ7oUsQ2mWZpGW1Zva3z5/aBqGXcPuKJIbwwE3C2Y1MN+ORkGrOLCKFp3HiroKRSpvV7SFi1daIlJqMDOUEg+y375v2r3KStklGlb0J04QZfZUbbeXHwyWaG2cw1qYgeByM26CbOhBqczFdgwmt5gxySKW3YEO3jhXZHzgPGWXbmnlizZZ/URddveIvJbMX4qypr2e4/MLX8GVQG9Ky1tTFzJWViK08fdyiqDbTtAIfaa7rHHssrXLROPN6DnYYRj83xk0FIVsRFWUDoSamUzEzwhFEhTHLNE9rFyaTNJ5VvU84d2SK/gOzd0LuQ1ELZ22+NBcpPDyojWh12tsqaSkAalPIGr1tQHBDULtI+hyZdwEOU19rHshBLeNol2aI7ZShyiTwZf6zSEPJAeaLEBnfW8iw3AK/ijlbApr7MGk4Qrhf2+5Og==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1989.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(396003)(346002)(366004)(26005)(83380400001)(966005)(186003)(478600001)(2616005)(8936002)(66446008)(38100700002)(66556008)(44832011)(66946007)(66476007)(53546011)(4326008)(2906002)(6512007)(64756008)(6506007)(91956017)(71200400001)(8676002)(6916009)(5660300002)(36756003)(76116006)(316002)(54906003)(6486002)(86362001)(122000001)(33656002)(99710200001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?dHcrQUJjUTFEUkFnaDZ0K2YwektzYVdtd3oxWEk2OHRGSlcwQUpKbWJWRmZy?=
- =?utf-8?B?NmdpaWpwWXNqZFdzajBwNTcrQVJMblBoNmFtdXgzWkVVcmpkRnY5eEdjRnZr?=
- =?utf-8?B?cFVwY3hzYnByYXJCeGM4SVJ2aGZUL2lzUGpmQWs3V1hJdmlKdjRYME5ZTTlJ?=
- =?utf-8?B?OWM2dHFSTDlickl2aHd2MWQ0SUdvcGZUOGt4ZFBPQ3FPK1ZKV09LREl6eFlJ?=
- =?utf-8?B?RXBqT21NOHRoS0xvd2E4UldqNFlQaEV4VG14cy9TTFNBbGdKUVBtUmNDMHY2?=
- =?utf-8?B?Vjk1Q09xMWJ6Z3NVTHdiaHFyaEdHYzcwaWdsTnFxK0Rhdmw0bmxtNU9JUDNm?=
- =?utf-8?B?QnpaUjYrMkpuRTFBaW9LeDF1Q2RmSk85NjJ4cWVwUkhkOG5YUm9CbC8zcDA0?=
- =?utf-8?B?Sm9acWlJMkNENkFFMXd4K3g4Yi9WdlNtN2VUWEtlSktnSU8yUFozOWs1NVd6?=
- =?utf-8?B?TTVTdm1FOHFwUXlEUG5MTGhLVnNxZmUrVko3dU1PS0ttY0hJV1JLb2ExVVA0?=
- =?utf-8?B?VU9UZTZ3RnRQclRHK0dwYW5TWE1sNzNsdmhtNWx1a1ZxYWFNb3lsSDVJUHBy?=
- =?utf-8?B?eEl0SWJ1TzgyQitqTUtwemhGVXBjejdwUkdtZVZvRWtIelZQYXVkbzhDaGQ4?=
- =?utf-8?B?ZVBzbTY0c3N3dDJsNUZhbUdiNkpMY2pZZTdsa1FhT2Q4b3RlQVl0RExSWlc2?=
- =?utf-8?B?NmFEdlNuQ1JMam5qbUNKbXEvUnR1SlBvT3RSTHJYaEhMZmxuYTNFdG9hdk1B?=
- =?utf-8?B?ckR3MTBLdjYvTmV2VUwvSVR6YWtjbVdoK2FJam16cWJtLzUzT3dNNTdiUEZk?=
- =?utf-8?B?VGQwOE1pc3UwMzgrOVhFK2gzYXN4cS9nQ1RxR3lvRThXMFJkOVZYZmNvL2wr?=
- =?utf-8?B?bXZzZXF4QVFiRHFxRGRwWE82WWFQOWhJVWZjWnBtdjlnTXJkeHhJcFZNK0VE?=
- =?utf-8?B?Z2hlL0FuanlRVjErMVR2S2Y0UnIwK2lONXA3ZG5UVGZJSUJicDQ4dmVYV2hx?=
- =?utf-8?B?YmZyV3ZiTHBCUlJMTEYyU1l3RzJMN1g5NDB6NVlMZGNJR0gzcEp5UURPYnFH?=
- =?utf-8?B?TmxDeGVGMDc4OVRLTnpTTjh2WENBQWJvOFpmdVJkSzk2VzRIRyswL1dVempM?=
- =?utf-8?B?WFhpSzZxV1YwM3ZyVThwblQ5UjhhTFAzajgzVGVTYzhIK1czS3NCekNzWGtV?=
- =?utf-8?B?aHpCbzczZEwyUVgySUpCUHFhWEp2ei96SFphYWNrVVZacVJuNmZJMTlPbmhh?=
- =?utf-8?B?dDVTQ2ZKM090UW5hYjc2OEFXMWd5TjVEV2Q3Z2Z1YmtUOHF3UWl5SFk4MGFl?=
- =?utf-8?B?S0RyelRuNFlzTW9waGNJbEFQT1FlZXl2UzVOT3F1Y3RsUlgxSXlqSkNKbElx?=
- =?utf-8?B?eUdnamhoRDMzclJVdm9kL2ltb1ROck5HSVRxZXhZWTk5Q3NmcTdEUHl1MXg2?=
- =?utf-8?B?YWx5NDIvVXBmVXRHUEdldm1HUlBBUTliYk1ZSGtWQ1NnUGFSY0lPWUpYNWEv?=
- =?utf-8?B?cGJ4U0xUdVE1dVRZSG45K3NPUXFVUEhDOC9xMEdTMzY3aEJyQm1iTFRXRWVM?=
- =?utf-8?B?dm0xK1Zza1VTVkprZ3lBMWh2bzI2NFArR1kyQjdaTUxlVFFRYjlmMG91TlZ0?=
- =?utf-8?B?cFF5bzhFQ2xraVBUd3B5VGVCOGp5cnpVTWhNWDhYVXhQZW1mMlMvQ05BNmpF?=
- =?utf-8?B?VThFNVlBQXhmQXZ5bnQvUVpSQ0pxbDhRQUFLN2VLWjR0WDRVN0VjM052M3Fu?=
- =?utf-8?B?TDBuUUV3anBSbmR2MVpYcVdZZG9aTXRXanYrZ1FBcjdoLzd3T0FVS1FQNGxI?=
- =?utf-8?B?VDhFU1pBN21HbE8xdVhEdz09?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C41A0D9D99D8264C9CBAE9DCED1F0201@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 13 Apr 2021 10:10:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618322994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l1tsPKvk9cyMrjFqY00fCJRrMWcEEfacpS/IxrFGbrA=;
+        b=gxWo263604U4Mq6RZDOjmANzPMIgUVxp1tK97XuYR54+EQq8w1LTdlfyUaEniE1DV84YeH
+        BqC4mJS5fPWinOHvPOjrFKPS+bhrv7wfsdG4XsoEY2690Ufgu+/nLdNdm8bTgHvHtVWA4t
+        r74YOPj0EarlF0wBUz0UB9ZY/oYFMJw=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-ohlGeBegPemKTzXdzILS8Q-1; Tue, 13 Apr 2021 10:09:51 -0400
+X-MC-Unique: ohlGeBegPemKTzXdzILS8Q-1
+Received: by mail-ej1-f69.google.com with SMTP id d6so5080834ejd.15
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:09:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=l1tsPKvk9cyMrjFqY00fCJRrMWcEEfacpS/IxrFGbrA=;
+        b=Gvng/h/CxTBph5m1aTK3Q08GrxY4qUmSGwZpAH0YgD9f3Li5AxhEEfownyT9519fWL
+         /xaQYk5LToiTnX+vu6gPJLH0nyTGBTIBcpNWmzJxd1toHW8Gijycc810zU6ZiWsxFRD2
+         ly1WaA175o1fbS78jfBGhdxNETwB1WT3eCHGxKllqRZ2+U5aPSnIazzcP0cD4b3ClnhM
+         9fPz4tcIZqD/6P1hxFIaeVt2dV3BhhY/ycUYEnTOZgkXjJ/nJo9ALM31v49i7WTpvRIC
+         SCR2wKfqlwghQ9421TIOHeHstiX5acfx39m90YKyz6dVdYap/64GlixLgtbFoU6Ocgw2
+         yeMg==
+X-Gm-Message-State: AOAM533dNPXT2aejowdnaWIcF9Tckibo5puZCauFWLwAseSVZ6nYcU4h
+        4wbVlr9rkmGGEveG2wlA67yJ9g85qnqBmIPHUEom6AgSCdoCPEHZL0GdrE1rFa9IBnN8LNrUUv/
+        zB4pjY/6qoPWWxMMy1QTJnxUl
+X-Received: by 2002:a17:906:cb88:: with SMTP id mf8mr13912495ejb.541.1618322990370;
+        Tue, 13 Apr 2021 07:09:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSShJHcNjA5YQ01sjEtgoQm5P14692y1VzemFeZnsv4VJQyxJLgRwTJFH2n7G3ihWQSQm9bw==
+X-Received: by 2002:a17:906:cb88:: with SMTP id mf8mr13912466ejb.541.1618322990130;
+        Tue, 13 Apr 2021 07:09:50 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c2sm9618972edr.57.2021.04.13.07.09.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 07:09:49 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 3/4] KVM: x86: kvm_hv_flush_tlb use inputs from XMM
+ registers
+In-Reply-To: <da036c786700032b32e68ebece06fd1a6b6bf344.1618244920.git.sidcha@amazon.de>
+References: <cover.1618244920.git.sidcha@amazon.de>
+ <da036c786700032b32e68ebece06fd1a6b6bf344.1618244920.git.sidcha@amazon.de>
+Date:   Tue, 13 Apr 2021 16:09:48 +0200
+Message-ID: <87sg3u5l8z.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1989.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bed59fc-0556-4f14-6278-08d8fe85c0c4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2021 14:09:29.0436
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Uy8TML+Q4KJjBGKkDogWYtMj3fooWyLKdIb+lPfvn42nr3XfiKDUs0NsChf0XxbPAgfYFgFNcerkLLsgVyydwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2215
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130099
-X-Proofpoint-ORIG-GUID: JDI4sh8U2xgdNMA5GM7m8arjxKyLiCY5
-X-Proofpoint-GUID: JDI4sh8U2xgdNMA5GM7m8arjxKyLiCY5
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1011
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130100
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gMTMgQXByIDIwMjEsIGF0IDE1OjQ0LCBKYXNvbiBHdW50aG9ycGUgPGpnZ0B6aWVw
-ZS5jYT4gd3JvdGU6DQo+IA0KPiBPbiBUdWUsIEFwciAxMywgMjAyMSBhdCAwOTo0Mjo0M1BNICsw
-ODAwLCBIYW8gU3VuIHdyb3RlOg0KPj4gSmFzb24gR3VudGhvcnBlIDxqZ2dAemllcGUuY2E+IOS6
-jjIwMjHlubQ05pyIMTPml6Xlkajkuowg5LiL5Y2IOTozNOWGmemBk++8mg0KPj4+IA0KPj4+IE9u
-IFR1ZSwgQXByIDEzLCAyMDIxIGF0IDExOjM2OjQxQU0gKzA4MDAsIEhhbyBTdW4gd3JvdGU6DQo+
-Pj4+IEhpDQo+Pj4+IA0KPj4+PiBXaGVuIHVzaW5nIEhlYWxlcihodHRwczovL2dpdGh1Yi5jb20v
-U3VuSGFvLTAvaGVhbGVyL3RyZWUvZGV2KSB0byBmdXp6DQo+Pj4+IHRoZSBMaW51eCBrZXJuZWws
-IEkgZm91bmQgdHdvIHVzZS1hZnRlci1mcmVlIGJ1Z3Mgd2hpY2ggaGF2ZSBiZWVuDQo+Pj4+IHJl
-cG9ydGVkIGEgbG9uZyB0aW1lIGFnbyBieSBTeXpib3QuDQo+Pj4+IEFsdGhvdWdoIHRoZSBjb3Jy
-ZXNwb25kaW5nIHBhdGNoZXMgaGF2ZSBiZWVuIG1lcmdlZCBpbnRvIHVwc3RyZWFtLA0KPj4+PiB0
-aGVzZSB0d28gYnVncyBjYW4gc3RpbGwgYmUgdHJpZ2dlcmVkIGVhc2lseS4NCj4+Pj4gVGhlIG9y
-aWdpbmFsIGluZm9ybWF0aW9uIGFib3V0IFN5emJvdCByZXBvcnQgY2FuIGJlIGZvdW5kIGhlcmU6
-DQo+Pj4+IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9pZD04ZGMwYmNkOWRkNmVj
-OTE1YmExMGIzMzU0NzQwZWI0MjA4ODRhY2FhDQo+Pj4+IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNw
-b3QuY29tL2J1Zz9pZD05NWY4OWI4ZmI5ZmRjNDJlMjhhZDU4NmU2NTdmZWEwNzRlNGU3MTliDQo+
-Pj4gDQo+Pj4gVGhlbiB3aHkgaGFzbid0IHN5emJvdCBzZWVuIHRoaXMgaW4gYSB5ZWFyJ3MgdGlt
-ZT8gU2VlbXMgc3RyYW5nZQ0KPj4+IA0KPj4gDQo+PiBTZWVtcyBzdHJhbmdlIHRvIG1lIHRvbywg
-YnV0IHRoZSBmYWN0IGlzIHRoYXQgdGhlIHJlcHJvZHVjdGlvbiBwcm9ncmFtDQo+PiBpbiBhdHRh
-Y2htZW50IGNhbiB0cmlnZ2VyIHRoZXNlIHR3byBidWdzIHF1aWNrbHkuDQo+IA0KPiBEbyB5b3Ug
-aGF2ZSB0aGlzIGluIHRoZSBDIGZvcm1hdD8NCg0KSG93IGNhbiBhIGNvbW1pdCBjaGFuZ2luZyBh
-cmNoIG02OGsgcHJvdm9rZSBhIGJ1ZyB3aGVuIHJ1bm5pbmcgb24geDg2XzY0Pw0KDQoNCkjDpWtv
-bg0KDQo+IA0KPiBKYXNvbg0KDQo=
+Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+
+> Hyper-V supports the use of XMM registers to perform fast hypercalls.
+> This allows guests to take advantage of the improved performance of the
+> fast hypercall interface even though a hypercall may require more than
+> (the current maximum of) two input registers.
+>
+> The XMM fast hypercall interface uses six additional XMM registers (XMM0
+> to XMM5) to allow the guest to pass an input parameter block of up to
+> 112 bytes. Hyper-V can also return data back to the guest in the
+> remaining XMM registers that are not used by the current hypercall.
+>
+> Add framework to read/write to XMM registers in kvm_hv_hypercall() and
+> use the additional hypercall inputs from XMM registers in
+> kvm_hv_flush_tlb() when possible.
+>
+> Cc: Alexander Graf <graf@amazon.com>
+> Co-developed-by: Evgeny Iakovlev <eyakovl@amazon.de>
+> Signed-off-by: Evgeny Iakovlev <eyakovl@amazon.de>
+> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> ---
+>  arch/x86/kvm/hyperv.c | 109 ++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 90 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 8f6babd1ea0d..1f9959aba70d 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -36,6 +36,7 @@
+>  
+>  #include "trace.h"
+>  #include "irq.h"
+> +#include "fpu.h"
+>  
+>  /* "Hv#1" signature */
+>  #define HYPERV_CPUID_SIGNATURE_EAX 0x31237648
+> @@ -1623,6 +1624,8 @@ static __always_inline unsigned long *sparse_set_to_vcpu_mask(
+>  	return vcpu_bitmap;
+>  }
+>  
+> +#define KVM_HV_HYPERCALL_MAX_XMM_REGISTERS  6
+
+Nitpick: this is not KVM-specific so could probably go to arch/x86/include/asm/hyperv-tlfs.h
+
+> +
+>  struct kvm_hv_hcall {
+>  	u64 param;
+>  	u64 ingpa;
+> @@ -1632,10 +1635,14 @@ struct kvm_hv_hcall {
+>  	u16 rep_idx;
+>  	bool fast;
+>  	bool rep;
+> +	sse128_t xmm[KVM_HV_HYPERCALL_MAX_XMM_REGISTERS];
+> +	bool xmm_dirty;
+>  };
+>  
+>  static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
+>  {
+> +	int i, j;
+> +	gpa_t gpa;
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+>  	struct hv_tlb_flush_ex flush_ex;
+> @@ -1649,8 +1656,15 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  	bool all_cpus;
+>  
+>  	if (!ex) {
+> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush, sizeof(flush))))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (hc->fast) {
+> +			flush.address_space = hc->ingpa;
+> +			flush.flags = hc->outgpa;
+> +			flush.processor_mask = sse128_lo(hc->xmm[0]);
+> +		} else {
+> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa,
+> +						    &flush, sizeof(flush))))
+> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		}
+>  
+>  		trace_kvm_hv_flush_tlb(flush.processor_mask,
+>  				       flush.address_space, flush.flags);
+> @@ -1668,9 +1682,16 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		all_cpus = (flush.flags & HV_FLUSH_ALL_PROCESSORS) ||
+>  			flush.processor_mask == 0;
+>  	} else {
+> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
+> -					    sizeof(flush_ex))))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (hc->fast) {
+> +			flush_ex.address_space = hc->ingpa;
+> +			flush_ex.flags = hc->outgpa;
+> +			memcpy(&flush_ex.hv_vp_set,
+> +			       &hc->xmm[0], sizeof(hc->xmm[0]));
+> +		} else {
+> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
+> +						    sizeof(flush_ex))))
+> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		}
+>  
+>  		trace_kvm_hv_flush_tlb_ex(flush_ex.hv_vp_set.valid_bank_mask,
+>  					  flush_ex.hv_vp_set.format,
+> @@ -1681,20 +1702,29 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		all_cpus = flush_ex.hv_vp_set.format !=
+>  			HV_GENERIC_SET_SPARSE_4K;
+>  
+> -		sparse_banks_len =
+> -			bitmap_weight((unsigned long *)&valid_bank_mask, 64) *
+> -			sizeof(sparse_banks[0]);
+> +		sparse_banks_len = bitmap_weight((unsigned long *)&valid_bank_mask, 64);
+>  
+>  		if (!sparse_banks_len && !all_cpus)
+>  			goto ret_success;
+>  
+> -		if (!all_cpus &&
+> -		    kvm_read_guest(kvm,
+> -				   hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+> -							hv_vp_set.bank_contents),
+> -				   sparse_banks,
+> -				   sparse_banks_len))
+> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +		if (!all_cpus) {
+> +			if (hc->fast) {
+> +				if (sparse_banks_len > KVM_HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
+> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +				for (i = 0, j = 1; i < sparse_banks_len; i += 2, j++) {
+
+Nitpick: you don't really need 'j' here as 'j == i/2 + 1', right?
+
+> +					sparse_banks[i + 0] = sse128_lo(hc->xmm[j]);
+
+Using ' + 0' for identation is ... unusual :-) I'm not opposed to it
+here though.
+
+> +					sparse_banks[i + 1] = sse128_hi(hc->xmm[j]);
+> +				}
+> +			} else {
+> +				gpa = hc->ingpa;
+> +				gpa += offsetof(struct hv_tlb_flush_ex,
+> +						hv_vp_set.bank_contents);
+
+Nitpick: if splitting these into two lines is only done to fit into 80
+chars then I'd the requirement is no more so we can be a bit wider.
+
+ gpa = hc->ingpa + offsetof(...) 
+
+> +				if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
+> +							    sparse_banks_len *
+> +							    sizeof(sparse_banks[0]))))
+> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> +			}
+> +		}
+>  	}
+>  
+>  	cpumask_clear(&hv_vcpu->tlb_flush);
+> @@ -1890,6 +1920,41 @@ static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *h
+>  	return HV_STATUS_SUCCESS;
+>  }
+>  
+> +static bool is_xmm_fast_hypercall(struct kvm_hv_hcall *hc)
+> +{
+> +	switch (hc->code) {
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static inline void kvm_hv_hypercall_read_xmm(struct kvm_hv_hcall *hc)
+> +{
+> +	int reg;
+> +
+> +	kvm_fpu_get();
+> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
+> +		_kvm_read_sse_reg(reg, &hc->xmm[reg]);
+> +	kvm_fpu_put();
+> +	hc->xmm_dirty = false;
+> +}
+> +
+> +static inline void kvm_hv_hypercall_write_xmm(struct kvm_hv_hcall *hc)
+> +{
+> +	int reg;
+> +
+> +	kvm_fpu_get();
+> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
+> +		_kvm_write_sse_reg(reg, &hc->xmm[reg]);
+> +	kvm_fpu_put();
+> +	hc->xmm_dirty = false;
+> +}
+> +
+>  int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_hv_hcall hc;
+> @@ -1926,6 +1991,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+>  	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
+>  
+> +	if (hc.fast && is_xmm_fast_hypercall(&hc))
+> +		kvm_hv_hypercall_read_xmm(&hc);
+> +
+>  	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
+>  			       hc.ingpa, hc.outgpa);
+>  
+> @@ -1961,28 +2029,28 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  				kvm_hv_hypercall_complete_userspace;
+>  		return 0;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
+> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
+> -		if (unlikely(hc.fast || hc.rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> -		if (unlikely(hc.fast || hc.rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> @@ -2035,6 +2103,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  		break;
+>  	}
+>  
+> +	if (hc.xmm_dirty)
+> +		kvm_hv_hypercall_write_xmm(&hc);
+> +
+
+Wei already mention that but as 'xmm_dirty' is not being used in this
+patch I'd suggest we move it out too.
+
+>  	return kvm_hv_hypercall_complete(vcpu, ret);
+>  }
+
+-- 
+Vitaly
+
