@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1975A35DD7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266AF35DD7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344039AbhDMLLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243781AbhDMLLQ (ORCPT
+        id S1345274AbhDMLLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:11:45 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:41730 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237094AbhDMLLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:11:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E95C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:10:56 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lWGwU-0005NZ-1e; Tue, 13 Apr 2021 13:10:50 +0200
-Message-ID: <5277e89e497be121aa7d371a434a3f510fa00e4b.camel@pengutronix.de>
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 13 Apr 2021 13:10:47 +0200
-In-Reply-To: <20210413105144.GN1463@shell.armlinux.org.uk>
-References: <20210309112615.625-1-o.rempel@pengutronix.de>
-         <c03053f59a89ef6ea4a4f2ce15aee4b4f4892745.camel@pengutronix.de>
-         <20210413105144.GN1463@shell.armlinux.org.uk>
+        Tue, 13 Apr 2021 07:11:43 -0400
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [84.255.208.30])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FKNG22kGVz24lX;
+        Tue, 13 Apr 2021 13:11:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1618312282;
+        bh=X6WxLRtSRDcr+IOn7tANZ9XKF17UlUnxUdkTe92hqM4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=SRF8yDMDIaY19ZzZ02DgtoVzqGcf6dbOKpV0+FGjPzJfb5m0YqdyU3GbLbkpHWe7R
+         xfO0U891SR+HTGAQhP/4T6qoA54QfU/MhHZ6jjE3uK+GzGPaMqk9rsophVb9mrkObK
+         WUw8wHDu6iYwAl5/zKnoDQnheRUXy9R/zuAT4PwU=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FKNG22YWXzTcsPj;
+        Tue, 13 Apr 2021 13:11:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Z9peypk7IhMd; Tue, 13 Apr 2021 13:11:22 +0200 (CEST)
+Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Tue, 13 Apr 2021 13:10:50 +0200 (CEST)
+Message-ID: <157d81a5eb9e56e47e40c1cd652cdc7a915cb755.camel@t-2.net>
+Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Tue, 13 Apr 2021 13:10:50 +0200
+In-Reply-To: <YHVnQfQ4zDt09RFe@alley>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+         <YGx59PEq2Y015YdK@alley>
+         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+         <YG24F9Kx+tjxhh8G@kroah.com>
+         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+         <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
+         <YHVnQfQ4zDt09RFe@alley>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
-
-sorry for the noise of this arriving in your inbox twice. Apparently I
-messed up and replied in private in my last mail.
-
-Am Dienstag, dem 13.04.2021 um 11:51 +0100 schrieb Russell King - ARM Linux admin:
-> On Tue, Apr 13, 2021 at 12:00:45PM +0200, Lucas Stach wrote:
-> > I agree with the opinion that those PHY fixups introduce more harm than
-> > good. Essentially they are pushing board specific configuration values
-> > into the PHY, without any checks that the fixup is even running on the
-> > specific board it was targeted at.
+Dne 13.04.2021 (tor) ob 11:41 +0200 je Petr Mladek napisal(a):
+> On Mon 2021-04-12 14:41:27, Samo Pogačnik wrote:
+> > Dne 12.04.2021 (pon) ob 19:39 +0900 je Tetsuo Handa napisal(a):
+> > > What is the intended usage of /dev/ttyprintk ?
+> > > 
+> > 
+> > The intended use of 'ttyprintk' is to redirect console to /dev/ttyprintk
+> > via the TIOCCONS ioctl. After successfull redirection, all console
+> > messages get "merged" with kernel messages and as such automatically
+> > processed
+> > (stored/transferred) by the syslog service for example.
 > 
-> Yes and no. The problem is, that's an easy statement to make when one
-> doesn't understand what they're all doing.
+> The same can be achieved by /dev/kmsg that was created by systemd
+> developers.
 > 
-> Some are "board specific" in that the normal setup for e.g. iMX6 would
-> be to enable clock output from the AR8035 PHY and feed that into the
-> iMX6 - as far as I'm aware, that's the only working configuration for
-> that SoC and PHY. However, it's also true that this fixup should not
-> be applied unconditionally.
-> 
-> Then there's SmartEEE - it has been found that the PHY defaults for
-> this lead to link drops independent of the board and SoC that it is
-> connected to. It seems that the PHY is essentially broken - it powers
-> up with SmartEEE enabled, and when connected to another SmartEEE
-> supporting device, it seems guaranteed that it will result in link
-> drops in its default configuration.
-> 
-> Freescale's approach has apparently been to unconditionally disable
-> SmartEEE for all their platforms because of this. With a bit of
-> research however (as has been done by Jon and myself) we've found
-> that increasing the Tw parameter for 1G connections results in a
-> much more stable link.
-> 
-> So, just saying that these are bad without actually understanding what
-> they are doing is _also_ bad.
+'kmsg' and 'ttyprintk' are different types of drivers and as such rather
+complementary than exclusive. The 'ttyprintk' being a tty driver allows 
+for a system wide automatic redirection of anything written to the console.
+On the other hand 'kmsg' is probably better suited for a per process
+output redirection/injection of its output into kernel messages.
 
-I'm not saying the fixups are bad per se. What I'm saying is that they
-are inherently board specific and the right way to apply them is either
-via DT properties, or if absolutely necessary via a fixup that at least
-checks that it is running on the specific board it was targeted at.
+Maybe i am wrong, but 'systemd' could also find 'ttyprintk' usefull?
 
-While SmartEEE disabling will cause no big harm, aside from a bit more
-power consumption, a wrong clock configuration can cause major
-confusion. Especially if the configuration in DT and values put into
-the PHY via fixups differ from each other.
+best regards, Samo
 
-Regards,
-Lucas
 
 
