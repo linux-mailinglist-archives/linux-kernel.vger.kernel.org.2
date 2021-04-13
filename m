@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F6C35DD75
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EA735DD79
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345521AbhDMLKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S244235AbhDMLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345414AbhDMLJw (ORCPT
+        with ESMTP id S231200AbhDMLLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:09:52 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9C2C061574;
-        Tue, 13 Apr 2021 04:09:31 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id a85so10761846pfa.0;
-        Tue, 13 Apr 2021 04:09:31 -0700 (PDT)
+        Tue, 13 Apr 2021 07:11:06 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B17BC061574;
+        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q189so6933385qka.8;
+        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wkMmVdaqiVi3xtXd845LmjsnmFo5YjLpPek7JkQnFh0=;
-        b=Sq/7PrdMcKFFjvPyCPXpPvIwEqJsyzG21kJVszuBec1vwYduaw3CTQDQNFW2dn/von
-         hXiaXtbOcrfryJR5KRclOSaBkpmesm+siY/qMKbndGvQiOiez5w+x0iLl+MPZRJqIo5m
-         Wg+7BaycfkT2sywTDkrN3KLNj3ZsHxGQB0PomK76DahTDiiUF/C7FATDLlE5mz+qL4lm
-         WytzfJXmLD8yPDOjW7giSiYGkF3r31/Yd93ztWMNbAHlRqzaE6y9uS+vo1Ng9Etri3qH
-         rUKEWqPzoKTRX+8q3R7cmQF0vIkZabRLM2NsF3/jqbgujRod278rEfz8IbApupVk9U2X
-         K2qg==
+        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
+        b=q1ERVVWAx8ubOeUPgRemTV8yO1ywDCn6T6+7Fpn0bEZLD/ykqlxQa4cx5qhKoLFWah
+         9jEY39DodaVFGzguLL6/qtozNbo0KhNSiAzuofUrRZdUoTEHN0MRBxc+1b07Fsq8Atf7
+         Bx7V1si+Tv0Z7WPHcxv64OOElRaYVNjapC0p2hFSYerXzPcOm/bkiW+kqa8LOQR43wqp
+         MZa7lCiDECwiedicR8vDlu5bv/9M/4/dAR6m0Ww/bGGzSw2hEKw7K7pKszV+ToyAmGzL
+         QgEbkKpswzBAQxAJDbnPpBXl2fQnNq5nwV19Y/CURlwAvu6l2pmR/Sau81u+5vqd5N1v
+         sMcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wkMmVdaqiVi3xtXd845LmjsnmFo5YjLpPek7JkQnFh0=;
-        b=DdnmPBG5In0X8PeS89NKWg+5ESIHSGu9EgdZX5RXWROSF61wh+nhfB/D1EiqZqRZxZ
-         06X3T1yKgXuy0AwovzIspRKth8WgiO/GeqIvY3+nOTAbvfXR25zrF/ClAddopkgnmJDK
-         IXLeMaWUtnBbqJzuAv5EhdeNpQGT9LD7riGkxrR3Utw9g6eP2XRpyv3puPtPLxQxhaJf
-         6ppq1sz6AK9C0L3Kz8ybiAZtHSaS5kE1wy5LGw4/JLSuHIahrL5+oGqtKV2zdPZXbiCI
-         dHmJSrmXYYdYOKsMMEGb+oYmELPLeDjTJUYCc9KgqH+pFq4ke+GYTw241Ry5N8VdZ1OY
-         R0qg==
-X-Gm-Message-State: AOAM533M2Z8UV45lcVqfnaMa/P2m6vtO/pmJwgpovslVjSaA86gt06U5
-        tyCTqK63T7k0f1KZ+cvsRw4=
-X-Google-Smtp-Source: ABdhPJwqAi/RC3MV9+EDD8mzB8jn12KdybM+is+fifKL0Y/Q22IUaJL6Y2nDOKb9zpuqzyfM+FAKKw==
-X-Received: by 2002:a65:5c88:: with SMTP id a8mr30376055pgt.130.1618312170656;
-        Tue, 13 Apr 2021 04:09:30 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id s20sm10295296pfh.144.2021.04.13.04.09.23
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
+        b=UERrNXvyZVG5EdYvh6r3/Qas9CRYSJldqNHXDgaf43gVR3PxEEghB6MkjwhPi/PZ3U
+         Z0IKBJ8GNbASjM51GhZFjWHs/fFoA0gtVpBcV/kYu0jFwXCFzyEqKo2rgZVNemdz7lLy
+         FtDTLpWi2bEQn+r6lUigI3qqC0i1qzu4So6iOu+/uacYKm5u+5RHgOFLo/i1S1VRucy+
+         wsISbBGd/cXeYAobprBWHaHh/oZLxYbv0+BXp34kEPQcJL4zp4eZ4NYhPX4xgQJlZONJ
+         FYDTqQ8NkeYUjk6CS6awCD1VrP6Jq1KbhppQ691PqlbbURVqlx64vP47b1xA31JdBL4P
+         jIOg==
+X-Gm-Message-State: AOAM530GQlqP4UKrJznyb3nD4B5b8ybEZgIY4T+e9yLZoPSWh53tSl/z
+        koqvkQVdQ5RluXYC/F/jwM0=
+X-Google-Smtp-Source: ABdhPJxu7+yZw6bHJMJFvSl+K9081V0Oowi4TJZ8e4CVVlGiX7vdVfdTHbF2G84NCSlVJ0LfjquoIw==
+X-Received: by 2002:a37:71c3:: with SMTP id m186mr24873153qkc.453.1618312246533;
+        Tue, 13 Apr 2021 04:10:46 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id p185sm1861834qke.10.2021.04.13.04.10.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:09:30 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 16:39:19 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        martin.blumenstingl@googlemail.com, narmstrong@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        khilman@baylibre.com
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        linux-amlogic@lists.infradead.org, mitali_s@me.iitr.ac.in
-Subject: Re: Subject: [PATCH v2] staging: media: meson: vdec: declare u32 as
- static const appropriately
-Message-ID: <YHV734NB4flpFjbF@kali>
-References: <YHU56OM+C2zY34VP@kali>
- <00c8a239-49d3-fedb-ec67-076e8b823efa@xs4all.nl>
+        Tue, 13 Apr 2021 04:10:45 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 13 Apr 2021 07:10:44 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Relax cpuset validation for cgroup v2
+Message-ID: <YHV8NGTQ480UM+Yh@slm.duckdns.org>
+References: <20210413090235.1903026-1-odin@uged.al>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00c8a239-49d3-fedb-ec67-076e8b823efa@xs4all.nl>
+In-Reply-To: <20210413090235.1903026-1-odin@uged.al>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:26:01AM +0200, Hans Verkuil wrote:
-> On 13/04/2021 08:27, Mitali Borkar wrote:
-> > Declared 32 bit unsigned int as static constant inside a function
-> > appropriately.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > ---
-> > 
-> > Changes from v1:- Rectified the mistake by declaring u32 as static const
-> > properly.
-> > 
-> >  drivers/staging/media/meson/vdec/codec_h264.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/meson/vdec/codec_h264.c b/drivers/staging/media/meson/vdec/codec_h264.c
-> > index ea86e9e1c447..80141b89a9f6 100644
-> > --- a/drivers/staging/media/meson/vdec/codec_h264.c
-> > +++ b/drivers/staging/media/meson/vdec/codec_h264.c
-> > @@ -287,8 +287,8 @@ static void codec_h264_resume(struct amvdec_session *sess)
-> >  	struct amvdec_core *core = sess->core;
-> >  	struct codec_h264 *h264 = sess->priv;
-> >  	u32 mb_width, mb_height, mb_total;
-> > -	static const u32[] canvas3 = { ANCO_CANVAS_ADDR, 0 };
-> > -	static const u32[] canvas4 = { 24, 0 };
-> > +	static const u32 canvas3[] = { ANCO_CANVAS_ADDR, 0 };
-> > +	static const u32 canvas4[] = { 24, 0 };
+On Tue, Apr 13, 2021 at 11:02:33AM +0200, Odin Ugedal wrote:
+> Two small validation relaxations for cgroup v2, making it easier to
+> manage the hierarchy without the current pain points. Both changes
+> work for both mems and cpus (but I have no NUMA machine to test mems).
 > 
-> This is a patch on top of your previous (v1) patch. That won't work
-> since the v1 is not merged, you need to make a patch against the current
-> mainline code.
->
-But Sir, since I have made changes in the code, and committed them, now,
-if I open that file, it will contain those changes. Then should I
-rewrite the patch body more accurately? 
+> Hopefully the patches has an ok description about what change they
+> provide, and why they are helpful.
 
-> Regards,
-> 
-> 	Hans
-> 
-> >  
-> >  	amvdec_set_canvases(sess, canvas3, canvas4);
-> >  
-> > 
-> 
+I'm generally in favor of removing configuration constraints but let's hear
+what Li thinks.
+
+Thanks.
+
+-- 
+tejun
