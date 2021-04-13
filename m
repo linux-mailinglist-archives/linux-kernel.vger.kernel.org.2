@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAB035DCA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6835C35DCA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343695AbhDMKoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S1343783AbhDMKo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343609AbhDMKoS (ORCPT
+        with ESMTP id S1343609AbhDMKo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:44:18 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A83EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:43:59 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id c195so17599351ybf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:43:59 -0700 (PDT)
+        Tue, 13 Apr 2021 06:44:26 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813DEC061756;
+        Tue, 13 Apr 2021 03:44:06 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w186so3928962wmg.3;
+        Tue, 13 Apr 2021 03:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ofMEg8rv+pKPXoMYWJfZuMSoaHQfPurW7rv78Elym1g=;
-        b=T4ehIf9EYTEgcw6LNW7hIhfOrIYn21tK4+JDzP8gY0zjqewX2yID8aWTpK6Fw+gsIK
-         YgpWOAdmzlajJxemylLiZaHR+eUGjC5DUvFFn2pHTAInVlUVBMl/Q0YaOcUc/ku4Jwtf
-         8ikiLmqHVecKPhTDqJXsD0VntQXoQyJUFdL6iMK7i2i8YxavNj1hjyA2ra/hCI6IeLOI
-         BiLLbvTnQuGOXDvTyf6VrSlZtON6DhL5GifvpOZc4mi68htOtc4nKk2byBO0W11OuP4t
-         kX7D2IomWQoOg1D9aIUWK96L1lg1BwXA6Nv01GnltBy8wNorb8HZApmwP3P9EErPVksQ
-         Lr4g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DUjjvJhOnAVNzZJRBjh3ALmadkWsbvwrLZD7acnS8NQ=;
+        b=kk2enuTHW1YvyaZwZsX3xyzvFbvCyj0DdpxomMDWT35Rp/NeWTqjqxMAq8HzPqzYJ/
+         bZMm2X+MbQw/OP3vpN6oliAa2r614756zT/1gohFbtH0VeYQtdDOMUjkoIAxiUJ8Otjb
+         3VbymZBx+bRyvbSlWXQGhoXWg5k3jQ1ug8jG0qjhIMIx0mpU4jKLWheU2shiYqhvrEyD
+         OEsgKO2Hi8xsgsGfGk3X8oz8RP1E0lERn2rN9zSeu21dKA3dq41rAqRdeDd8lLIzXzv8
+         OVeYgx0J1GavrIJRzo/xkShLVN/rCxlMEK/Gdr2sxBZy1LbRVlTQdjMrDdRk72UYL4EV
+         8tJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ofMEg8rv+pKPXoMYWJfZuMSoaHQfPurW7rv78Elym1g=;
-        b=i++ZChZnKoQHFT21Z2nNel81R8z5uL+TImBbWhTTWAaTEvKpE3IlGisGYQYuCU+Ro4
-         ZxwktCSFECz0vfj+uajl2OjxtMMpFILeqTQxryo6F1zlYC6ZxhZYa/2QMwh759rRhFC+
-         PORaQF0p16YKqFxtgeqa8cNpwFdb8UaCHP5IBEcucGkX/Rg2f20pqdvq0/XSvn9j7tfz
-         9M+0eJOxuJk6RKSzSZjxvkLONQUVcw10f8bYvTUl2P0ZP1iPagIV+hUTpa/GlfTKrkQD
-         Cm8Z3G+/g+yT+Kvlmylm7shmOY4R2s1SwP85CRGSqtgIDg8U01hkkh3boVBItEFd8R5k
-         IRMg==
-X-Gm-Message-State: AOAM531DpezpA9rp2lOs2/dwVlQN7MVMEKzGBy2aZk5B8/mcvQEcwGG8
-        PstbOcdkvDKCA5TY41hsgomvJhnZCn+qOdq5/FQD5g==
-X-Google-Smtp-Source: ABdhPJwxTRPFSADOuvrXeqzsYv1i7IsnlryBCVMraRG7Gf38jktjIDWGtBxokWM80IHU/g/5E3+ChsgR596COR7mFHk=
-X-Received: by 2002:a25:ac52:: with SMTP id r18mr41442127ybd.25.1618310638808;
- Tue, 13 Apr 2021 03:43:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DUjjvJhOnAVNzZJRBjh3ALmadkWsbvwrLZD7acnS8NQ=;
+        b=UO6WZELr3uUaz1cyk2hZPwFZ4tW3EPihUbGrtcKnTQxNp55y9rOzQfO4BzkGJ0+Ju7
+         8Y8bpNBg34lelYeBlbjoVGd3t1hyFCZYFdoiP3N02R7tVGPKbKJ/qY7IiXv7Nl9RwVmK
+         /JWZ/Z9rxtd/sbxtkIwkNn88l15hasoXUMTKxyjmjhbf8FnU8P495JdRQsPrB/EsJkm5
+         cK5JT9IYE224gIe6rDEwW9IP5MFCIV6IGH2R1jVIx5rrMfzPv5MVb8UVts/1sR8QBy7r
+         l0nMiDMTUVgT+v7pD5NiQISy9SqjMF8/1J8fUkJQcHdwy9LkQqx2aEut269U8bzHi8EL
+         UC6Q==
+X-Gm-Message-State: AOAM530mxXNMgkz1cU8ph8LDvIA6lv3A/KEOGgFO2CA4fUVVGT8iKcVs
+        aQb+ugIrnLsDzU5bxvc5lPk=
+X-Google-Smtp-Source: ABdhPJw90OLCtGg1Cl0CXxDsinTIKaoR3GyXwqGjqBSB8Fz6WiYJR9hLzUf8KZMSXsCtxoXG0Tlv6Q==
+X-Received: by 2002:a05:600c:35c8:: with SMTP id r8mr3544257wmq.130.1618310645285;
+        Tue, 13 Apr 2021 03:44:05 -0700 (PDT)
+Received: from debian ([78.40.148.180])
+        by smtp.gmail.com with ESMTPSA id n6sm20484934wrt.22.2021.04.13.03.44.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 03:44:05 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 11:44:03 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/188] 5.10.30-rc1 review
+Message-ID: <YHV184FJ+RPo1UVs@debian>
+References: <20210412084013.643370347@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210409140806.31824-1-srinivas.neeli@xilinx.com>
- <20210409140806.31824-2-srinivas.neeli@xilinx.com> <CAHp75Vddd6ygr4mJ9Z+SuGZmfLcgDLWLZaxby2XE2mX8War-qQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vddd6ygr4mJ9Z+SuGZmfLcgDLWLZaxby2XE2mX8War-qQ@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 13 Apr 2021 12:43:48 +0200
-Message-ID: <CAMpxmJW=HWf_NxGpfBkX=utgOTs4+6RtypxnKGtpuYnX=t8rGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: zynq: use module_platform_driver to simplify
- the code
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "shubhrajyoti.datta@xilinx.com" <shubhrajyoti.datta@xilinx.com>,
-        "sgoud@xilinx.com" <sgoud@xilinx.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "git@xilinx.com" <git@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 12:08 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Friday, April 9, 2021, Srinivas Neeli <srinivas.neeli@xilinx.com> wrot=
-e:
->>
->> module_platform_driver() makes the code simpler by eliminating
->> boilerplate code.
->>
->> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
->> ---
->>  drivers/gpio/gpio-zynq.c | 17 +----------------
->>  1 file changed, 1 insertion(+), 16 deletions(-)
->>
->> diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
->> index 3521c1dc3ac0..bb1ac0c5cf26 100644
->> --- a/drivers/gpio/gpio-zynq.c
->> +++ b/drivers/gpio/gpio-zynq.c
->> @@ -1020,22 +1020,7 @@ static struct platform_driver zynq_gpio_driver =
-=3D {
->>         .remove =3D zynq_gpio_remove,
->>  };
->>
->> -/**
->> - * zynq_gpio_init - Initial driver registration call
->> - *
->> - * Return: value from platform_driver_register
->> - */
->> -static int __init zynq_gpio_init(void)
->> -{
->> -       return platform_driver_register(&zynq_gpio_driver);
->> -}
->> -postcore_initcall(zynq_gpio_init);
->
->
->
-> It=E2=80=99s not an equivalent. Have you tested on actual hardware? If no=
-, there is no go for this change.
->
+Hi Greg,
 
-Yep, this has been like this since the initial introduction of this
-driver. Unfortunately there's no documented reason so unless we can
-test it, it has to stay this way.
+On Mon, Apr 12, 2021 at 10:38:34AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.30 release.
+> There are 188 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
 
-Bartosz
+Build test: (gcc version 10.2.1 20210406)
+mips: 63 configs -> no new failure
+arm: 105 configs -> no new failure
+x86_64: 2 configs -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
