@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB8A35D9CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F7C35D9D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242328AbhDMIPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:15:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46020 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241668AbhDMIPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:15:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618301726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nTFiVrT0GgD5PF9g9cQQkkjhncBa1KbZqSegCvRQvn4=;
-        b=ar0ktMVuWpiwvxzushO6MIOaH7s1FVMoTyfagDo7+VVnpBRZ7ColTNPR0MFwpCYubhP8Sm
-        guSvdHTgDvp6SmaOMf7n2I+FvtUz+19901m9dY+MnJ7opkF3sj4GLEfUYqifX84A0hZ7Wn
-        gDa4NUuiI8g6zLrwix12nl8LYThWxaM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-zlIbAxJLNhe2uNz80O9ISA-1; Tue, 13 Apr 2021 04:15:24 -0400
-X-MC-Unique: zlIbAxJLNhe2uNz80O9ISA-1
-Received: by mail-ed1-f71.google.com with SMTP id ay2-20020a0564022022b02903824b52f2d8so864147edb.22
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:15:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nTFiVrT0GgD5PF9g9cQQkkjhncBa1KbZqSegCvRQvn4=;
-        b=oD4aBZPSH21Pnkpxf2WTaX4YjKcwJQcjNMDU+mHIP6qsFz6THLndLGOTMebyjK+HZ+
-         XxZsMzu7Co2XP/TDoCK/+G/8jlzYDrRQorI0z1EnQJhLZgUgZ0YKzcznZpt6blns+OZ1
-         TpU9fAP6AwUfGGPz7hHrynuo2Zuh5K01FHa7pX5CjbHn2foIVXXcD1DpT18ranxerDYi
-         tZ8eVrHT5AO/6YOyfLcY/gd2ww9VhJd03JSo/Weqw5vjOt99ci7OekWqzXd0AJBKp8nb
-         MXhIoQSSEHHGr+FgJcdfudbicZsKaNUzWOeD0fYfXMv1ymYayDFIoT9XTX32v6iVdAn1
-         3gzQ==
-X-Gm-Message-State: AOAM533mLlNp3oiUu+PgQ6s5NMnlBDw852WSsPaYf66AJlOMZm+rAFOI
-        +DTyS1cZbMKxS+I6ybqfmbzktQfzI7JkfKg6JkJoIchBheumkn7B5HCXYzxjWfwxA6lwuuXm15X
-        +EXiasUUT20ikuWTmP30uTv1Q
-X-Received: by 2002:a05:6402:397:: with SMTP id o23mr19472034edv.337.1618301723432;
-        Tue, 13 Apr 2021 01:15:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbPHudOXUmsNugaD59P5i3wwKB0R8vC8IfvhLAFrMijrE1tBnQX1luZYokPoXHvmhSv5ej6Q==
-X-Received: by 2002:a05:6402:397:: with SMTP id o23mr19472018edv.337.1618301723306;
-        Tue, 13 Apr 2021 01:15:23 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id a24sm5082808ejr.58.2021.04.13.01.15.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 01:15:22 -0700 (PDT)
-Subject: Re: [PATCH v2] platform/x86: pmc_atom: Match all Beckhoff Automation
- baytrail boards with critclk_systems DMI table
-To:     Steffen Dirkwinkel <linux-kernel-dev@beckhoff.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
-References: <CAHp75VeTK9TstuRCqOkVit9U7sV7TA_xcTQ1yZPGfLdZSt7_Gg@mail.gmail.com>
- <20210412133006.397679-1-linux-kernel-dev@beckhoff.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <99cf068d-1ead-e3a2-124e-1db4025afdc4@redhat.com>
-Date:   Tue, 13 Apr 2021 10:15:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S242539AbhDMIRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:17:11 -0400
+Received: from mail-oln040092073034.outbound.protection.outlook.com ([40.92.73.34]:49742
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241675AbhDMIRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:17:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nqvk1m+g8HSYN/nSz2HXCWjecI3ztf7Fhmohh3SICQwPCnUHCjRbvuMAneNEP7MQDO+W8W1hBFwwKHB8hAd3cGhLBikfnTPuri6F4irRbv2cXfbg1hJyWGtzJcKsixvwytJLMGd6gd5A6BjZPT15j5FDm6jO1cm+n9vnvGOPDsUXgWACbLduVDq36pqtAHPNAwqa3H4+b32jIekgqPVixhAqQ0WTpEsoU6+NDBaj2lphxk4UQiutzKMR1V0KjLkWCy7R8H3PVhWQw329WAG3njG7NbJR2HL5+1750atU6QqSiaN5OD9npIrA6THTIEAplcx8+SWi24vjf/h3bGNGHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z4AWzqTzAG2rdZpscGGBKR9wvYLK3+R5Gv6kXYJeSKU=;
+ b=Nh6XBF3VCSEUrGpE0OTtqo7TB4qYU1DxLGNQaRa/lEb+gFVBJYNr1JC2TDiIC8IAvdzzO+/Y+vpz0ifRW0BkWUUJXoYwzx+aDieF+SDr/v6aTxHSSElc0K3n825Q9RuIXhpcReMRrGqwhfWULIPQfNtUL5O9H038zmm2iEKjIUKag2/XH2I3OKl0BhUATvpdkujPtK3HSbgPROh91mE3JlgFt3PUcOSF4nMou4h5TCZfQLECN6gWkui8DwsjT+Taa32BaAPGnceABNyqqj0fV2aT0LLFuWsMr9mLKNEX+VRSZzHAkc5RhUCsJoncRRvqALV9p5FGa46cyzzWExfU1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z4AWzqTzAG2rdZpscGGBKR9wvYLK3+R5Gv6kXYJeSKU=;
+ b=dYXQYjtHNshrTJiee3aa0Vnh6G+o4yJUmGeqKkmK97guJE9C8ftch6mOvKeUkhEyhGXuyeQRHn5kSb0Wc378BpRfsZPiKbt2C2ffWk+wseh5LxbTcapsuHaRuuUYXW8wFhcfEJ64hxyxxZesOt800pIdpOxnyZuZSmA/oVEn2LXhI/4XMIz0FgmQx6+AWfu3BVvhGx+wmWq+Ge3fkz/trGKoG6GVHOz5NVDHCyKkCacca7hqXreSJ9FfSE/cdbc40bekcMLTogbRRm9j7HhImI86fvYoVw8td3eW4SpxMBDhdbuJfYjfstDlOjQuAQ2D03aqRxZIFQR+4ruIMltVYg==
+Received: from VI1EUR04FT048.eop-eur04.prod.protection.outlook.com
+ (2a01:111:e400:7e0e::4c) by
+ VI1EUR04HT172.eop-eur04.prod.protection.outlook.com (2a01:111:e400:7e0e::161)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Tue, 13 Apr
+ 2021 08:16:48 +0000
+Received: from AM0PR01MB4259.eurprd01.prod.exchangelabs.com
+ (2a01:111:e400:7e0e::42) by VI1EUR04FT048.mail.protection.outlook.com
+ (2a01:111:e400:7e0e::259) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
+ Transport; Tue, 13 Apr 2021 08:16:48 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:B23A13BA061885BDCE1480CA385425818C984A31AE2FF9521B59CF3408CDE234;UpperCasedChecksum:70D87F1691DAC5600AEA4C6E5B8EC8E6B6842D7315D8752C560680AE24E9DEB7;SizeAsReceived:7354;Count:44
+Received: from AM0PR01MB4259.eurprd01.prod.exchangelabs.com
+ ([fe80::18c2:36c1:2595:c74d]) by AM0PR01MB4259.eurprd01.prod.exchangelabs.com
+ ([fe80::18c2:36c1:2595:c74d%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
+ 08:16:48 +0000
+Date:   Tue, 13 Apr 2021 10:16:37 +0200
+From:   Mikko Talikka <mikko.talikka@live.com>
+To:     gregkh@linuxfoundation.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: comedi: adv_pci_dio: remove whitespace
+Message-ID: <AM0PR01MB42597C4CAA1B9E51D4AE3D5E974F9@AM0PR01MB4259.eurprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TMN:  [O2lj88HIoQl/6mJFuY0h/mQi1ZD8XrGS]
+X-ClientProxiedBy: PR0P264CA0218.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1e::14) To AM0PR01MB4259.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:6f::27)
+X-Microsoft-Original-Message-ID: <YHVTZcSChScebk1j@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210412133006.397679-1-linux-kernel-dev@beckhoff.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (89.172.40.255) by PR0P264CA0218.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 08:16:47 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 44
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 5e0fdc2e-39ce-4687-4de1-08d8fe547bb0
+X-MS-TrafficTypeDiagnostic: VI1EUR04HT172:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DP87mcKzggo4HtEbX0V4gQ5XQc1IYPrahceaYhLt7gFP+fa/bCRjKqdJd3dGO2Jap1xtHHjWD2R/4ogeTbs/gcK9hnBdpLrVYmKMOtXX2qoxXBI3Rd964tXhh2vEogBLx3Nkwxb+rbkYobE/jsm9rg5J278fmDSmRbulLnk1CL8SRde+fATEuW01h7KbGtOseVFDUZkWBTL86q2ZTGaww7Z3QqShNUPH/1P3YGTmFmsW4uOgyS+z2SDTDGmdn4KG47YhFBFFPsCgo7Ew6tjxnX3uwjf20VtF4A2APAtxGQrZZTRS38L5Rg9apovvzJQSHtUgKSHJq42cczoQi8XCSHcE2aflU1Ja/DnSNjM7VoYRQ65to48ASaoGV5luQBOvbOPzrU5a5CC7QhEiEWNq3g==
+X-MS-Exchange-AntiSpam-MessageData: W1fMrc6GxpHm48epRelJ2o2NjecJIXZJdC212jRYuK2xaeuaWWNne2QaPuz9WLLXaV7Yplk6LWPcEj54Epo83wiybY0xJ8jt+++88Hg55c/thdR+NWcl6Zg91ESznP9nwUJkRyai5D9MWg5gqkU3bg==
+X-OriginatorOrg: live.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e0fdc2e-39ce-4687-4de1-08d8fe547bb0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 08:16:48.3632
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT048.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR04HT172
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fixed checkpatch.pl warning:
 
-On 4/12/21 3:30 PM, Steffen Dirkwinkel wrote:
-> From: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
-> 
-> pmc_plt_clk* clocks are used for ethernet controllers, so need to stay
-> turned on. This adds the affected board family to critclk_systems DMI
-> table, so the clocks are marked as CLK_CRITICAL and not turned off.
-> 
-> This replaces the previously listed boards with a match for the whole
-> device family CBxx63. CBxx63 matches only baytrail devices.
-> There are new affected boards that would otherwise need to be listed.
-> There are unaffected boards in the family, but having the clocks
-> turned on is not an issue.
-> 
-> Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
+CHECK: Blank lines aren't necessary before a close brace '}'
++
++               }
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Signed-off-by: Mikko Talikka <mikko.talikka@live.com>
+---
+ drivers/staging/comedi/drivers/adv_pci_dio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->  drivers/platform/x86/pmc_atom.c | 28 ++--------------------------
->  1 file changed, 2 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-> index ca684ed760d1..a9d2a4b98e57 100644
-> --- a/drivers/platform/x86/pmc_atom.c
-> +++ b/drivers/platform/x86/pmc_atom.c
-> @@ -393,34 +393,10 @@ static const struct dmi_system_id critclk_systems[] = {
->  	},
->  	{
->  		/* pmc_plt_clk* - are used for ethernet controllers */
-> -		.ident = "Beckhoff CB3163",
-> +		.ident = "Beckhoff Baytrail",
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
-> -			DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
-> -		},
-> -	},
-> -	{
-> -		/* pmc_plt_clk* - are used for ethernet controllers */
-> -		.ident = "Beckhoff CB4063",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
-> -			DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
-> -		},
-> -	},
-> -	{
-> -		/* pmc_plt_clk* - are used for ethernet controllers */
-> -		.ident = "Beckhoff CB6263",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
-> -			DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
-> -		},
-> -	},
-> -	{
-> -		/* pmc_plt_clk* - are used for ethernet controllers */
-> -		.ident = "Beckhoff CB6363",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
-> -			DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
-> +			DMI_MATCH(DMI_PRODUCT_FAMILY, "CBxx63"),
->  		},
->  	},
->  	{
-> 
+diff --git a/drivers/staging/comedi/drivers/adv_pci_dio.c b/drivers/staging/comedi/drivers/adv_pci_dio.c
+index 8e222b6ff2b4..54c7419c8ca6 100644
+--- a/drivers/staging/comedi/drivers/adv_pci_dio.c
++++ b/drivers/staging/comedi/drivers/adv_pci_dio.c
+@@ -604,7 +604,6 @@ static int pci_dio_auto_attach(struct comedi_device *dev,
+ 						? pci_dio_insn_bits_di_w
+ 						: pci_dio_insn_bits_di_b;
+ 			s->private	= (void *)d->addr;
+-
+ 		}
+ 	}
+ 
+-- 
+2.30.2
 
