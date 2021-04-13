@@ -2,393 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6673E35E20F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B507435E206
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345462AbhDMO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:58:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345303AbhDMO5h (ORCPT
+        id S1344016AbhDMO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244206AbhDMO5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:57:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618325837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vWaEu/y/7gJryNgKvp163ZI0N2MpS2xprnPY6FVT5Vg=;
-        b=B8ttD8uKzKb8Yj5PLJwwvhX2zErv6axqza5Mxmf4kFRGYSHAt1Msh2ViVmQcFsLYgLD79d
-        +52DIZeGH4DRx2/4QBZGYi2knVlrA42nUrW9hGlbfOJ3Gr8O35ocvePep4t1q5lm0Fzq+6
-        rIzjZLV/2QZBu9tv9glndBESO2Eu1Bk=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-eQmO1InPN-eYKHoghhcejA-1; Tue, 13 Apr 2021 10:57:16 -0400
-X-MC-Unique: eQmO1InPN-eYKHoghhcejA-1
-Received: by mail-yb1-f198.google.com with SMTP id v2so14295527ybc.17
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:57:10 -0700 (PDT)
+        Tue, 13 Apr 2021 10:57:04 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95032C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:44 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id 12so16799199wrz.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9xHbUn+6nA5aWQMgRTj+6WPQpoAcJfTsZbTMGfC/Df0=;
+        b=WQKj+yXYyNcCoDmbDpa2vPpSvXmA+tyJAfsYCMMsGCTeMO5Ef9se8wqam1CbwRCIgP
+         bATr6sDVqnZxwuEDHvmcJhX5C2PQ2N37L6PIW55TMGWN9KuWHSu8kbrIybr7sT5SdRMl
+         wMvce7S3eNZax51eoXlNTiAFL48tuN/7pvS+PBu1eBLLkOe9O+hXlEODeG7mm0Dac0Uj
+         JKrGyq35cPQ38OEXMomVCW3kykt53b+w0NObA/0gkT9Q90/WU+3pe9TWfQJPHLQH7BIA
+         V0jKw0zQgUCYwkWMOS8M8RZK71JpWZpAhKLXS1w3mLDoll+Vgd6GvPOfyqkLAdQPpeTU
+         erQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vWaEu/y/7gJryNgKvp163ZI0N2MpS2xprnPY6FVT5Vg=;
-        b=Y7Yq2TbnYza6fCVxefpWpjsUgJzDXVkia8f73nLWPqbdMWbB3nQD/vE0s10jHVVAAd
-         7+27VhTXd0Vv0CyC4tsnYfeOUptdtgn4BYQQcdtViV5SAD5dfXaU7bomLFTqWbcD7mzP
-         lGw7i6HVVp+iTOYTVL3WBqtLYBWQ3799lZpBv6XHuI8OUQhBImztSV+eQlQ3bFBVfRlp
-         pMap6knGMT66TeC2Rdb72+uPA4x+DyeZ8KiXjoKxQSMdakh4v/HaTkHNzfpuwRxT0nlN
-         9nYkC0YFeimlyHoxBn8eQ2vyvfbBlNODQauZKljFD85xuO408Cx3S5zpkMARAHM60Y1E
-         xkRQ==
-X-Gm-Message-State: AOAM532D2rwaIdo/9Ix32LMPe2Z5odVl5FSh4hwoHhn2hspprqBOKsmz
-        qL5brGdCdq7fGkzGgotU1jkfyCoC8l58zQeLyk09QjLfa3D1qyx+CetLVCAm2AfvTgSRjKiqb1y
-        4DI0nYNzvFEksbdmu6X6LQDPQt7k71J9Hk5+tFwwr
-X-Received: by 2002:a25:af49:: with SMTP id c9mr48053917ybj.335.1618325828118;
-        Tue, 13 Apr 2021 07:57:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhyVSVwab0tYUm9BMScmyXa+Im9xBMw56VozmOvVKoI7JApvtpXAgO3x7dgrKT1MfIssp5KxwfkiH9YMe3Ax8=
-X-Received: by 2002:a25:af49:: with SMTP id c9mr48053879ybj.335.1618325827768;
- Tue, 13 Apr 2021 07:57:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9xHbUn+6nA5aWQMgRTj+6WPQpoAcJfTsZbTMGfC/Df0=;
+        b=F1P2MIeZlsKQbhT1G0ZfCWow0SnPkEZnVH+YilzID2aPx85zHma3ZWhRedUI1cj4uh
+         l9p/v66vPCxUT2jzUUAx5b48BDmsQf0GpOQZLBwC7TMVHQVmHzcTgQ0jgsYcCKvl/FnZ
+         qrKDKz3weBT3v9MlMKHh9FEk2UkgJAy4mRR+pdfr1CmVlbQQxTz9TfJaAAdbHv7TSutf
+         EQly327o67YpwJ353nCMwRbgVrrFtOXx7AO+Yihvi0Uludp8wew/HTIWoKc44Qn/p7bf
+         v2GUy/Dh0W7b28/GWDoy7YlBGS2HtACH8HVNzCw/0ym01Tmn+qadfmrBKlmTfV/Hw0Ud
+         2llQ==
+X-Gm-Message-State: AOAM532XAaCPyLLrtmgtxA5FWy9z8SvaaFTnrUGQ6sTyXVupAiECMoU/
+        ketAgeOXJCAqvaTw4IcnbNYLU4x0rT5ILg==
+X-Google-Smtp-Source: ABdhPJwEO0ivVaBxkrxKJ2EGguXIg16dW+8xDI0M2Voke42m5QWQ3hztUX7ObPCHiY+aqiY2WB1LXQ==
+X-Received: by 2002:adf:ce90:: with SMTP id r16mr16166310wrn.354.1618325803033;
+        Tue, 13 Apr 2021 07:56:43 -0700 (PDT)
+Received: from agape ([5.171.81.171])
+        by smtp.gmail.com with ESMTPSA id i21sm2760654wmh.21.2021.04.13.07.56.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 07:56:42 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     julia.lawall@inria.fr, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 4/7] staging: rtl8723bs: replace DBG_871X_SEL_NL with netdev_dbg()
+Date:   Tue, 13 Apr 2021 16:56:32 +0200
+Message-Id: <a798262b8e1dacf225dd42f2863243c543667d5f.1618325614.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1618325614.git.fabioaiuto83@gmail.com>
+References: <cover.1618325614.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-References: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
- <CALF+zO=AV-uqUi9kwyGhGQU3jNpE8TEk_BS8z73z68cexGPz_w@mail.gmail.com>
-In-Reply-To: <CALF+zO=AV-uqUi9kwyGhGQU3jNpE8TEk_BS8z73z68cexGPz_w@mail.gmail.com>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Tue, 13 Apr 2021 10:56:32 -0400
-Message-ID: <CALF+zOk37eFPb3Wns1GmDr99QU4KShHiupr6Wq+N9RN5pXiEOA@mail.gmail.com>
-Subject: Re: [PATCH v6 00/30] Network fs helper library & fscache kiocb API
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Marshall <hubcap@omnibond.com>,
-        linux-afs@lists.infradead.org,
-        v9fs-developer@lists.sourceforge.net,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@redhat.com>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        linux-cachefs <linux-cachefs@redhat.com>,
-        ceph-devel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 8:04 AM David Wysochanski <dwysocha@redhat.com> wrote:
->
-> On Thu, Apr 8, 2021 at 10:04 AM David Howells <dhowells@redhat.com> wrote:
-> >
-> >
-> > Here's a set of patches to do two things:
-> >
-> >  (1) Add a helper library to handle the new VM readahead interface.  This
-> >      is intended to be used unconditionally by the filesystem (whether or
-> >      not caching is enabled) and provides a common framework for doing
-> >      caching, transparent huge pages and, in the future, possibly fscrypt
-> >      and read bandwidth maximisation.  It also allows the netfs and the
-> >      cache to align, expand and slice up a read request from the VM in
-> >      various ways; the netfs need only provide a function to read a stretch
-> >      of data to the pagecache and the helper takes care of the rest.
-> >
-> >  (2) Add an alternative fscache/cachfiles I/O API that uses the kiocb
-> >      facility to do async DIO to transfer data to/from the netfs's pages,
-> >      rather than using readpage with wait queue snooping on one side and
-> >      vfs_write() on the other.  It also uses less memory, since it doesn't
-> >      do buffered I/O on the backing file.
-> >
-> >      Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
-> >      to be read from the cache.  Whilst this is an improvement from the
-> >      bmap interface, it still has a problem with regard to a modern
-> >      extent-based filesystem inserting or removing bridging blocks of
-> >      zeros.  Fixing that requires a much greater overhaul.
-> >
-> > This is a step towards overhauling the fscache API.  The change is opt-in
-> > on the part of the network filesystem.  A netfs should not try to mix the
-> > old and the new API because of conflicting ways of handling pages and the
-> > PG_fscache page flag and because it would be mixing DIO with buffered I/O.
-> > Further, the helper library can't be used with the old API.
-> >
-> > This does not change any of the fscache cookie handling APIs or the way
-> > invalidation is done.
-> >
-> > In the near term, I intend to deprecate and remove the old I/O API
-> > (fscache_allocate_page{,s}(), fscache_read_or_alloc_page{,s}(),
-> > fscache_write_page() and fscache_uncache_page()) and eventually replace
-> > most of fscache/cachefiles with something simpler and easier to follow.
-> >
-> > The patchset contains the following parts:
-> >
-> >  (1) Some helper patches, including provision of an ITER_XARRAY iov
-> >      iterator and a function to do readahead expansion.
-> >
-> >  (2) Patches to add the netfs helper library.
-> >
-> >  (3) A patch to add the fscache/cachefiles kiocb API.
-> >
-> >  (4) Patches to add support in AFS for this.
-> >
-> > Jeff Layton has patches to add support in Ceph for this.
-> >
-> > With this, AFS without a cache passes all expected xfstests; with a cache,
-> > there's an extra failure, but that's also there before these patches.
-> > Fixing that probably requires a greater overhaul.  Ceph also passes the
-> > expected tests.
-> >
-> > The netfs lib and fscache/cachefiles patches can be found also on:
-> >
-> >         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=netfs-lib
-> >
-> > The afs patches can be found on:
-> >
-> >         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-netfs-lib
-> >
-> >
-> > Changes
-> > =======
-> >
-> > ver #6:
-> >       Merged in some fixes and added an additional tracepoint[8], including
-> >       fixing the amalgamation of contiguous subrequests that are to be
-> >       written to the cache.
-> >
-> >       Added/merged some patches from Matthew Wilcox to make
-> >       readahead_expand() appropriately adjust the trigger for the next
-> >       readahead[9].  Also included is a patch to kerneldocify the
-> >       file_ra_state struct.
-> >
-> >       Altered netfs_write_begin() to use DEFINE_READAHEAD()[10].
-> >
-> >       Split the afs patches out into their own branch.
-> >
-> > ver #5:
-> >       Fixed some review comments from Matthew Wilcox:
-> >
-> >       - Put a comment into netfs_readahead() to indicate why there's a loop
-> >         that puts, but doesn't unlock, "unconsumed" pages at the end when
-> >         it could just return said pages to the caller to dispose of[6].
-> >         (This is because where those pages are marked consumed).
-> >
-> >       - Use the page_file_mapping() and page_index() helper functions
-> >         rather than accessing the page struct directly[6].
-> >
-> >       - Better names for wrangling functions for PG_private_2 and
-> >         PG_fscache wrangling functions[7].  Came up with
-> >         {set,end,wait_for}_page_private_2() and aliased these for fscache.
-> >
-> >       Moved the taking of/dropping a page ref for the PG_private_2 flag
-> >       into the set and end functions.
-> >
-> > ver #4:
-> >       Fixed some review comments from Christoph Hellwig, including dropping
-> >       the export of rw_verify_area()[3] and some minor stuff[4].
-> >
-> >       Moved the declaration of readahead_expand() to a better location[5].
-> >
-> >       Rebased to v5.12-rc2 and added a bunch of references into individual
-> >       commits.
-> >
-> >       Dropped Ceph support - that will go through the maintainer's tree.
-> >
-> >       Added interface documentation for the netfs helper library.
-> >
-> > ver #3:
-> >       Rolled in the bug fixes.
-> >
-> >       Adjusted the functions that unlock and wait for PG_fscache according
-> >       to Linus's suggestion[1].
-> >
-> >       Hold a ref on a page when PG_fscache is set as per Linus's
-> >       suggestion[2].
-> >
-> >       Dropped NFS support and added Ceph support.
-> >
-> > ver #2:
-> >       Fixed some bugs and added NFS support.
-> >
-> > Link: https://lore.kernel.org/r/CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com/ [1]
-> > Link: https://lore.kernel.org/r/CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com/ [2]
-> > Link: https://lore.kernel.org/r/20210216102614.GA27555@lst.de/ [3]
-> > Link: https://lore.kernel.org/r/20210216084230.GA23669@lst.de/ [4]
-> > Link: https://lore.kernel.org/r/20210217161358.GM2858050@casper.infradead.org/ [5]
-> > Link: https://lore.kernel.org/r/20210321014202.GF3420@casper.infradead.org/ [6]
-> > Link: https://lore.kernel.org/r/20210321105309.GG3420@casper.infradead.org/ [7]
-> > Link: https://lore.kernel.org/r/161781041339.463527.18139104281901492882.stgit@warthog.procyon.org.uk/ [8]
-> > Link: https://lore.kernel.org/r/20210407201857.3582797-1-willy@infradead.org/ [9]
-> > Link: https://lore.kernel.org/r/1234933.1617886271@warthog.procyon.org.uk/ [10]
-> >
-> > References
-> > ==========
-> >
-> > These patches have been published for review before, firstly as part of a
-> > larger set:
-> >
-> > Link: https://lore.kernel.org/r/158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk/
-> >
-> > Link: https://lore.kernel.org/r/159465766378.1376105.11619976251039287525.stgit@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk/
-> >
-> > Link: https://lore.kernel.org/r/160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk/
-> >
-> > Then as a cut-down set:
-> >
-> > Link: https://lore.kernel.org/r/161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk/ # v1
-> >
-> > Link: https://lore.kernel.org/r/161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk/ # v2
-> >
-> > Link: https://lore.kernel.org/r/161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk/ # v3
-> >
-> > Link: https://lore.kernel.org/r/161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk/ # v4
-> >
-> > Link: https://lore.kernel.org/r/161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk/ # v5
-> >
-> > Proposals/information about the design has been published here:
-> >
-> > Link: https://lore.kernel.org/r/24942.1573667720@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/2758811.1610621106@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/1441311.1598547738@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/160655.1611012999@warthog.procyon.org.uk/
-> >
-> > And requests for information:
-> >
-> > Link: https://lore.kernel.org/r/3326.1579019665@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/4467.1579020509@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/3577430.1579705075@warthog.procyon.org.uk/
-> >
-> > I've posted partial patches to try and help 9p and cifs along:
-> >
-> > Link: https://lore.kernel.org/r/1514086.1605697347@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/1794123.1605713481@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/241017.1612263863@warthog.procyon.org.uk/
-> > Link: https://lore.kernel.org/r/270998.1612265397@warthog.procyon.org.uk/
-> >
-> > David
-> > ---
-> > David Howells (28):
-> >       iov_iter: Add ITER_XARRAY
-> >       mm: Add set/end/wait functions for PG_private_2
-> >       mm: Implement readahead_control pageset expansion
-> >       netfs: Make a netfs helper module
-> >       netfs: Documentation for helper library
-> >       netfs, mm: Move PG_fscache helper funcs to linux/netfs.h
-> >       netfs, mm: Add set/end/wait_on_page_fscache() aliases
-> >       netfs: Provide readahead and readpage netfs helpers
-> >       netfs: Add tracepoints
-> >       netfs: Gather stats
-> >       netfs: Add write_begin helper
-> >       netfs: Define an interface to talk to a cache
-> >       netfs: Add a tracepoint to log failures that would be otherwise unseen
-> >       fscache, cachefiles: Add alternate API to use kiocb for read/write to cache
-> >       afs: Disable use of the fscache I/O routines
-> >       afs: Pass page into dirty region helpers to provide THP size
-> >       afs: Print the operation debug_id when logging an unexpected data version
-> >       afs: Move key to afs_read struct
-> >       afs: Don't truncate iter during data fetch
-> >       afs: Log remote unmarshalling errors
-> >       afs: Set up the iov_iter before calling afs_extract_data()
-> >       afs: Use ITER_XARRAY for writing
-> >       afs: Wait on PG_fscache before modifying/releasing a page
-> >       afs: Extract writeback extension into its own function
-> >       afs: Prepare for use of THPs
-> >       afs: Use the fs operation ops to handle FetchData completion
-> >       afs: Use new netfs lib read helper API
-> >       afs: Use the netfs_write_begin() helper
-> >
-> > Matthew Wilcox (Oracle) (2):
-> >       mm/filemap: Pass the file_ra_state in the ractl
-> >       fs: Document file_ra_state
-> >
-> >
-> >  Documentation/filesystems/index.rst         |    1 +
-> >  Documentation/filesystems/netfs_library.rst |  526 ++++++++
-> >  fs/Kconfig                                  |    1 +
-> >  fs/Makefile                                 |    1 +
-> >  fs/afs/Kconfig                              |    1 +
-> >  fs/afs/dir.c                                |  225 ++--
-> >  fs/afs/file.c                               |  483 ++------
-> >  fs/afs/fs_operation.c                       |    4 +-
-> >  fs/afs/fsclient.c                           |  108 +-
-> >  fs/afs/inode.c                              |    7 +-
-> >  fs/afs/internal.h                           |   59 +-
-> >  fs/afs/rxrpc.c                              |  150 +--
-> >  fs/afs/write.c                              |  657 +++++-----
-> >  fs/afs/yfsclient.c                          |   82 +-
-> >  fs/cachefiles/Makefile                      |    1 +
-> >  fs/cachefiles/interface.c                   |    5 +-
-> >  fs/cachefiles/internal.h                    |    9 +
-> >  fs/cachefiles/io.c                          |  420 +++++++
-> >  fs/ext4/verity.c                            |    2 +-
-> >  fs/f2fs/file.c                              |    2 +-
-> >  fs/f2fs/verity.c                            |    2 +-
-> >  fs/fscache/Kconfig                          |    1 +
-> >  fs/fscache/Makefile                         |    1 +
-> >  fs/fscache/internal.h                       |    4 +
-> >  fs/fscache/io.c                             |  116 ++
-> >  fs/fscache/page.c                           |    2 +-
-> >  fs/fscache/stats.c                          |    1 +
-> >  fs/netfs/Kconfig                            |   23 +
-> >  fs/netfs/Makefile                           |    5 +
-> >  fs/netfs/internal.h                         |   97 ++
-> >  fs/netfs/read_helper.c                      | 1185 +++++++++++++++++++
-> >  fs/netfs/stats.c                            |   59 +
-> >  include/linux/fs.h                          |   24 +-
-> >  include/linux/fscache-cache.h               |    4 +
-> >  include/linux/fscache.h                     |   50 +-
-> >  include/linux/netfs.h                       |  234 ++++
-> >  include/linux/pagemap.h                     |   41 +-
-> >  include/net/af_rxrpc.h                      |    2 +-
-> >  include/trace/events/afs.h                  |   74 +-
-> >  include/trace/events/netfs.h                |  261 ++++
-> >  mm/filemap.c                                |   63 +-
-> >  mm/internal.h                               |    7 +-
-> >  mm/readahead.c                              |   97 +-
-> >  net/rxrpc/recvmsg.c                         |    9 +-
-> >  44 files changed, 3998 insertions(+), 1108 deletions(-)
-> >  create mode 100644 Documentation/filesystems/netfs_library.rst
-> >  create mode 100644 fs/cachefiles/io.c
-> >  create mode 100644 fs/fscache/io.c
-> >  create mode 100644 fs/netfs/Kconfig
-> >  create mode 100644 fs/netfs/Makefile
-> >  create mode 100644 fs/netfs/internal.h
-> >  create mode 100644 fs/netfs/read_helper.c
-> >  create mode 100644 fs/netfs/stats.c
-> >  create mode 100644 include/linux/netfs.h
-> >  create mode 100644 include/trace/events/netfs.h
-> >
-> >
->
-> Similar to Jeff, for most of first 16 patches (except patch 1 and 13)
-> you can add
-> Tested-by: Dave Wysochanski <dwysocha@redhat.com>
->
+replace DGB_871X_SEL_NL macro with netdev_dbg().
 
-Clarification on patch 1.  You can include my "Tested-by" on that as well.
-As you pointed out, the NFS patches used the new netfs API code paths
-in read_helper.c which in turn use the iter-xarray patch, so my NFS
-testing also covered patch 1.
+DBG_871X_SEL_NL macro expands to a raw prink call or a
+seq_printf if selected stream _is not_ a local
+debug symbol set to null.
+This second scenario never occurs so replace
+all macro usages with netdev_dbg().
 
-My apologies for not looking more carefully.
+This is done with the following coccinelle script:
 
-> I rebased my latest NFS patches on top of your netfs-lib branch at the
-> below commit (the 16th patch here)
-> fce8d8a1ae46 fscache, cachefiles: Add alternate API to use kiocb for
-> read/write to cache
->
-> With netfs and fscache enabled mount, I ran the following tests, and
-> found the series to be very solid, with no obvious failures (hangs,
-> oopses, etc), and results matched tests run on vanilla 5.12-rc6:
-> * unit tests: NFSv3, 4.0, 4.1, 4.2; localhost server; with/without all
-> tracepoints enabled (fscache, cachefiles, netfs)
-> * NFS connectathon: NFSv3, 4.0, 4.1, 4.2; rhel7 server; with/without
-> all tracepoints enabled (fscache, cachefiles, netfs)
-> * xfstests generic: NFSv3, 4.0, 4.1, 4.2; rhel7, rhel8 server
-> Notes
-> 1. I still have not resolved the pNFS issues so I did not run fscache
-> enabled pNFS tests.
-> 2. Current NFS patches do not use ITER_XARRAY (patch 1/30) or
-> write_begin helper (patch 13/30)
+@@
+expression sel;
+expression list args;
+identifier padapter;
+identifier func;
+@@
+
+func(..., struct adapter *padapter, ...) {
+	<...
+-	DBG_871X_SEL_NL(sel, args);
++	netdev_dbg(padapter->pnetdev, args);
+	...>
+}
+
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_debug.c | 16 +++----
+ drivers/staging/rtl8723bs/core/rtw_odm.c   | 49 +++++++++++-----------
+ drivers/staging/rtl8723bs/hal/hal_com.c    | 31 ++++++--------
+ 3 files changed, 46 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
+index 324c7e5248f8..79fd968bb147 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_debug.c
++++ b/drivers/staging/rtl8723bs/core/rtw_debug.c
+@@ -20,7 +20,7 @@ void sd_f0_reg_dump(void *sel, struct adapter *adapter)
+ 
+ 	for (i = 0x0; i <= 0xff; i++) {
+ 		if (i%16 == 0)
+-			DBG_871X_SEL_NL(sel, "0x%02x ", i);
++			netdev_dbg(adapter->pnetdev, "0x%02x ", i);
+ 
+ 		DBG_871X_SEL(sel, "%02x ", rtw_sd_f0_read8(adapter, i));
+ 
+@@ -35,11 +35,11 @@ void mac_reg_dump(void *sel, struct adapter *adapter)
+ {
+ 	int i, j = 1;
+ 
+-	DBG_871X_SEL_NL(sel, "======= MAC REG =======\n");
++	netdev_dbg(adapter->pnetdev, "======= MAC REG =======\n");
+ 
+ 	for (i = 0x0; i < 0x800; i += 4) {
+ 		if (j%4 == 1)
+-			DBG_871X_SEL_NL(sel, "0x%03x", i);
++			netdev_dbg(adapter->pnetdev, "0x%03x", i);
+ 		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
+ 		if ((j++)%4 == 0)
+ 			DBG_871X_SEL(sel, "\n");
+@@ -50,10 +50,10 @@ void bb_reg_dump(void *sel, struct adapter *adapter)
+ {
+ 	int i, j = 1;
+ 
+-	DBG_871X_SEL_NL(sel, "======= BB REG =======\n");
++	netdev_dbg(adapter->pnetdev, "======= BB REG =======\n");
+ 	for (i = 0x800; i < 0x1000 ; i += 4) {
+ 		if (j%4 == 1)
+-			DBG_871X_SEL_NL(sel, "0x%03x", i);
++			netdev_dbg(adapter->pnetdev, "0x%03x", i);
+ 		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
+ 		if ((j++)%4 == 0)
+ 			DBG_871X_SEL(sel, "\n");
+@@ -73,14 +73,14 @@ void rf_reg_dump(void *sel, struct adapter *adapter)
+ 	else
+ 		path_nums = 2;
+ 
+-	DBG_871X_SEL_NL(sel, "======= RF REG =======\n");
++	netdev_dbg(adapter->pnetdev, "======= RF REG =======\n");
+ 
+ 	for (path = 0; path < path_nums; path++) {
+-		DBG_871X_SEL_NL(sel, "RF_Path(%x)\n", path);
++		netdev_dbg(adapter->pnetdev, "RF_Path(%x)\n", path);
+ 		for (i = 0; i < 0x100; i++) {
+ 			value = rtw_hal_read_rfreg(adapter, path, i, 0xffffffff);
+ 			if (j%4 == 1)
+-				DBG_871X_SEL_NL(sel, "0x%02x ", i);
++				netdev_dbg(adapter->pnetdev, "0x%02x ", i);
+ 			DBG_871X_SEL(sel, " 0x%08x ", value);
+ 			if ((j++)%4 == 0)
+ 				DBG_871X_SEL(sel, "\n");
+diff --git a/drivers/staging/rtl8723bs/core/rtw_odm.c b/drivers/staging/rtl8723bs/core/rtw_odm.c
+index 53f7cc0444ba..084f6ae040ee 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_odm.c
++++ b/drivers/staging/rtl8723bs/core/rtw_odm.c
+@@ -96,12 +96,13 @@ void rtw_odm_dbg_comp_msg(void *sel, struct adapter *adapter)
+ 	int i;
+ 
+ 	rtw_hal_get_def_var(adapter, HW_DEF_ODM_DBG_FLAG, &dbg_comp);
+-	DBG_871X_SEL_NL(sel, "odm.DebugComponents = 0x%016llx\n", dbg_comp);
++	netdev_dbg(adapter->pnetdev, "odm.DebugComponents = 0x%016llx\n",
++		   dbg_comp);
+ 	for (i = 0; i < RTW_ODM_COMP_MAX; i++) {
+ 		if (odm_comp_str[i])
+-			DBG_871X_SEL_NL(sel, "%cBIT%-2d %s\n",
+-					(BIT0 << i) & dbg_comp ? '+' : ' ',
+-					i, odm_comp_str[i]);
++			netdev_dbg(adapter->pnetdev, "%cBIT%-2d %s\n",
++				   (BIT0 << i) & dbg_comp ? '+' : ' ', i,
++				   odm_comp_str[i]);
+ 	}
+ }
+ 
+@@ -116,11 +117,11 @@ void rtw_odm_dbg_level_msg(void *sel, struct adapter *adapter)
+ 	int i;
+ 
+ 	rtw_hal_get_def_var(adapter, HW_DEF_ODM_DBG_LEVEL, &dbg_level);
+-	DBG_871X_SEL_NL(sel, "odm.DebugLevel = %u\n", dbg_level);
++	netdev_dbg(adapter->pnetdev, "odm.DebugLevel = %u\n", dbg_level);
+ 	for (i = 0; i < RTW_ODM_DBG_LEVEL_NUM; i++) {
+ 		if (odm_dbg_level_str[i])
+-			DBG_871X_SEL_NL(sel, "%u %s\n",
+-					i, odm_dbg_level_str[i]);
++			netdev_dbg(adapter->pnetdev, "%u %s\n", i,
++				   odm_dbg_level_str[i]);
+ 	}
+ }
+ 
+@@ -135,12 +136,12 @@ void rtw_odm_ability_msg(void *sel, struct adapter *adapter)
+ 	int i;
+ 
+ 	rtw_hal_get_hwreg(adapter, HW_VAR_DM_FLAG, (u8 *)&ability);
+-	DBG_871X_SEL_NL(sel, "odm.SupportAbility = 0x%08x\n", ability);
++	netdev_dbg(adapter->pnetdev, "odm.SupportAbility = 0x%08x\n", ability);
+ 	for (i = 0; i < RTW_ODM_ABILITY_MAX; i++) {
+ 		if (odm_ability_str[i])
+-			DBG_871X_SEL_NL(sel, "%cBIT%-2d %s\n",
+-					(BIT0 << i) & ability ? '+' : ' ', i,
+-					odm_ability_str[i]);
++			netdev_dbg(adapter->pnetdev, "%cBIT%-2d %s\n",
++				   (BIT0 << i) & ability ? '+' : ' ', i,
++				   odm_ability_str[i]);
+ 	}
+ }
+ 
+@@ -154,17 +155,16 @@ void rtw_odm_adaptivity_parm_msg(void *sel, struct adapter *adapter)
+ 	struct hal_com_data *pHalData = GET_HAL_DATA(adapter);
+ 	struct dm_odm_t *odm = &pHalData->odmpriv;
+ 
+-	DBG_871X_SEL_NL(sel, "%10s %16s %8s %10s %11s %14s\n",
+-			"TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base",
+-			"ForceEDCCA", "AdapEn_RSSI", "IGI_LowerBound");
+-	DBG_871X_SEL_NL(sel, "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
+-			(u8)odm->TH_L2H_ini,
+-			odm->TH_EDCCA_HL_diff,
+-			odm->IGI_Base,
+-			odm->ForceEDCCA,
+-			odm->AdapEn_RSSI,
+-			odm->IGI_LowerBound
+-	);
++	netdev_dbg(adapter->pnetdev, "%10s %16s %8s %10s %11s %14s\n",
++		   "TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base", "ForceEDCCA",
++		   "AdapEn_RSSI", "IGI_LowerBound");netdev_dbg(adapter->pnetdev,
++							       "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
++							       (u8)odm->TH_L2H_ini,
++							       odm->TH_EDCCA_HL_diff,
++							       odm->IGI_Base,
++							       odm->ForceEDCCA,
++							       odm->AdapEn_RSSI,
++							       odm->IGI_LowerBound);
+ }
+ 
+ void rtw_odm_adaptivity_parm_set(struct adapter *adapter, s8 TH_L2H_ini,
+@@ -188,6 +188,7 @@ void rtw_odm_get_perpkt_rssi(void *sel, struct adapter *adapter)
+ 	struct hal_com_data *hal_data = GET_HAL_DATA(adapter);
+ 	struct dm_odm_t *odm = &hal_data->odmpriv;
+ 
+-	DBG_871X_SEL_NL(sel, "RxRate = %s, RSSI_A = %d(%%), RSSI_B = %d(%%)\n",
+-			HDATA_RATE(odm->RxRate), odm->RSSI_A, odm->RSSI_B);
++	netdev_dbg(adapter->pnetdev,
++		   "RxRate = %s, RSSI_A = %d(%%), RSSI_B = %d(%%)\n",
++		   HDATA_RATE(odm->RxRate), odm->RSSI_A, odm->RSSI_B);
+ }
+diff --git a/drivers/staging/rtl8723bs/hal/hal_com.c b/drivers/staging/rtl8723bs/hal/hal_com.c
+index 4cceb3a969a8..2e2d40469a83 100644
+--- a/drivers/staging/rtl8723bs/hal/hal_com.c
++++ b/drivers/staging/rtl8723bs/hal/hal_com.c
+@@ -1522,12 +1522,10 @@ void rtw_get_raw_rssi_info(void *sel, struct adapter *padapter)
+ 	struct hal_com_data *pHalData = GET_HAL_DATA(padapter);
+ 	struct rx_raw_rssi *psample_pkt_rssi = &padapter->recvpriv.raw_rssi_info;
+ 
+-	DBG_871X_SEL_NL(
+-		sel,
+-		"RxRate = %s, PWDBALL = %d(%%), rx_pwr_all = %d(dBm)\n",
+-		HDATA_RATE(psample_pkt_rssi->data_rate),
+-		psample_pkt_rssi->pwdball, psample_pkt_rssi->pwr_all
+-	);
++	netdev_dbg(padapter->pnetdev,
++		   "RxRate = %s, PWDBALL = %d(%%), rx_pwr_all = %d(dBm)\n",
++		   HDATA_RATE(psample_pkt_rssi->data_rate),
++		   psample_pkt_rssi->pwdball, psample_pkt_rssi->pwr_all);
+ 
+ 	isCCKrate = psample_pkt_rssi->data_rate <= DESC_RATE11M;
+ 
+@@ -1535,20 +1533,17 @@ void rtw_get_raw_rssi_info(void *sel, struct adapter *padapter)
+ 		psample_pkt_rssi->mimo_signal_strength[0] = psample_pkt_rssi->pwdball;
+ 
+ 	for (rf_path = 0; rf_path < pHalData->NumTotalRFPath; rf_path++) {
+-		DBG_871X_SEL_NL(
+-			sel,
+-			"RF_PATH_%d =>signal_strength:%d(%%), signal_quality:%d(%%)\n",
+-			rf_path, psample_pkt_rssi->mimo_signal_strength[rf_path],
+-			psample_pkt_rssi->mimo_signal_quality[rf_path]
+-		);
++		netdev_dbg(padapter->pnetdev,
++			   "RF_PATH_%d =>signal_strength:%d(%%), signal_quality:%d(%%)\n",
++			   rf_path,
++			   psample_pkt_rssi->mimo_signal_strength[rf_path],
++			   psample_pkt_rssi->mimo_signal_quality[rf_path]);
+ 
+ 		if (!isCCKrate) {
+-			DBG_871X_SEL_NL(
+-				sel,
+-				"\trx_ofdm_pwr:%d(dBm), rx_ofdm_snr:%d(dB)\n",
+-				psample_pkt_rssi->ofdm_pwr[rf_path],
+-				psample_pkt_rssi->ofdm_snr[rf_path]
+-			);
++			netdev_dbg(padapter->pnetdev,
++				   "\trx_ofdm_pwr:%d(dBm), rx_ofdm_snr:%d(dB)\n",
++				   psample_pkt_rssi->ofdm_pwr[rf_path],
++				   psample_pkt_rssi->ofdm_snr[rf_path]);
+ 		}
+ 	}
+ }
+-- 
+2.20.1
 
