@@ -2,162 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D4635E0EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E5E35E0F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346252AbhDMOGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:06:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37931 "EHLO mga17.intel.com"
+        id S1346254AbhDMOH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:07:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237475AbhDMOGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:06:18 -0400
-IronPort-SDR: 5hGLPxg0ULmLlKlZFHXDaVod2LvboQtB44VXw0e8VuKgZDq1zXfb3P00kDMWTGMEhTKQTZxDI2
- ynjXqkFwLgpw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="174519350"
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208,223";a="174519350"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 07:05:58 -0700
-IronPort-SDR: N+KLgbEaZusAYcnSRnNcuKaMQLVZZC5/EZi0G40w4tBopFJl4wQPdrd0zrjapa/iR3qDM4GbIC
- TlJf1h/o/utw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208,223";a="521609415"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 13 Apr 2021 07:05:55 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 13 Apr 2021 17:05:54 +0300
-Date:   Tue, 13 Apr 2021 17:05:54 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
- API
-Message-ID: <YHWlQooPtrTjyq+i@kuha.fi.intel.com>
-References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
- <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
- <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
- <39e2ab87-3b70-8659-6282-5b03d30f901b@linux.intel.com>
- <YHWMmR5gBvlpd7rl@kuha.fi.intel.com>
+        id S230435AbhDMOH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C576128C;
+        Tue, 13 Apr 2021 14:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618322856;
+        bh=/rQtgFZmv2p/wc/NfFyEt515Ew2Rh/no+mxrEu1oqmg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uyopM934FkXBH2o0na6lnTj15QMpy3jDjv4D1988Wk8lzD3hoD6qpl9fomxNBbMJw
+         XabrMFhqxKz5vaW1ui5t91yGD0jWYaPhbDPA/qjesuIqeJqGdgjO0hJ8sCQ9ldUiDc
+         Bkcgtm+ZgG9SyczgMCT8asyvqGeDU5GChj78OLeqVC2O/Rf9LANiYBRZPzXzdHIOzu
+         SoNrSwJF8KFszXzJ+k3nLQm0eTbSEM6xaQtMW9aHDJI20NrZLL6jt8Idztu9euyn5n
+         HeKSYEebArN4XMZqhnXdnDhjQLQHb3tA18XqT8EZL99gqDHEAJcEA5AwzTtZckpjK4
+         zIpVVoTUF+qCA==
+Received: by mail-oi1-f176.google.com with SMTP id d12so17069837oiw.12;
+        Tue, 13 Apr 2021 07:07:36 -0700 (PDT)
+X-Gm-Message-State: AOAM5332wV4A6D3b3y6IZa68ng1/nFN7t1HeqbUI4kzYzRKhc6fp3E0S
+        Isr0ihVATQGnpiitRwyNY1PabODNwhl9aT4imZc=
+X-Google-Smtp-Source: ABdhPJzez6cFFrm7KA5oVrV1D6W2CEu4be89gYpgJtrS3Na7zboRdC7VXyYr4Ul1q/el5Sty6633joh79LViIc3vqBg=
+X-Received: by 2002:aca:4284:: with SMTP id p126mr142280oia.178.1618322856211;
+ Tue, 13 Apr 2021 07:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="fBYxI++DDE8HNukO"
-Content-Disposition: inline
-In-Reply-To: <YHWMmR5gBvlpd7rl@kuha.fi.intel.com>
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+ <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+ <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
+ <CAK8P3a2NR2nhEffFQJdMq2Do_g2ji-7p3+iWyzw+aXD6gov05w@mail.gmail.com>
+ <11ead5c2c73c42cbbeef32966bc7e5c2@AcuMS.aculab.com> <CAK8P3a3PK9zyeP4ymELtc2ZYnymECoACiigw9Za+pvSJpCk5=g@mail.gmail.com>
+In-Reply-To: <CAK8P3a3PK9zyeP4ymELtc2ZYnymECoACiigw9Za+pvSJpCk5=g@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 13 Apr 2021 22:07:24 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT53uXXF7aU8+Sr6KZ-+OYDrtESQi8G-tcFZ2c0QnJ+bw@mail.gmail.com>
+Message-ID: <CAJF2gTT53uXXF7aU8+Sr6KZ-+OYDrtESQi8G-tcFZ2c0QnJ+bw@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 9:40 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Apr 13, 2021 at 3:06 PM David Laight <David.Laight@aculab.com> wrote:
+> >
+> > From: Arnd Bergmann
+> > > Sent: 13 April 2021 13:58
+> > ...
+> > > The remaining ones (csky, m68k, sparc32) need to be inspected
+> > > manually to see if they currently support PCI I/O space but in
+> > > fact use address zero as the base (with large resources) or they
+> > > should also turn the operations into a NOP.
+> >
+> > I'd expect sparc32 to use an ASI to access PCI IO space.
+> > I can't quite remember whether IO space was supported at all.
+>
+> I see this bit in arch/sparc/kernel/leon_pci.c
+>
+>  * PCI Memory and Prefetchable Memory is direct-mapped. However I/O Space is
+>  * accessed through a Window which is translated to low 64KB in PCI space, the
+>  * first 4KB is not used so 60KB is available.
+> ...
+>         pci_add_resource_offset(&resources, &info->io_space,
+>                                 info->io_space.start - 0x1000);
+>
+> which means that there is I/O space, which gets accessed through whichever
+> method readb() uses. Having the offset equal to the resource means that
+> the '(void *)0' start is correct.
+>
+> As this leaves only two others, I checked those as well:
+>
+> csky does not actually have a PCI host bridge driver at the moment, so
+> we don't care about breaking port access on it it, and I would suggest
+> leaving I/O port access disabled. (Added Guo Ren to Cc for confirmation).
+Yes, we haven't reserved the PCI_IO region in the VM layout.
 
---fBYxI++DDE8HNukO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 13, 2021 at 03:20:45PM +0300, Heikki Krogerus wrote:
-> On Mon, Apr 12, 2021 at 03:36:20PM -0500, Pierre-Louis Bossart wrote:
-> > I took the code and split it in two for BYT/CHT (modified to remove devm_)
-> > and SoundWire parts (added as is).
-> > 
-> > https://github.com/thesofproject/linux/pull/2810
-> > 
-> > Both cases result in a refcount error on device_remove_sof when removing the
-> > platform device. I don't understand the code well enough to figure out what
-> > happens, but it's likely a case of the software node being removed twice?
-> 
-> Right. Because you are injecting the node to an already existing
-> device, the node does not get linked with the device in sysfs. That
-> would increment the reference count in a normal case. It all happens
-> in the function software_node_notify(). Driver core calls it when a
-> device is added and also when it's removed. In this case it is only
-> called when it's removed.
-> 
-> I think the best way to handle this now is to simply not decrementing
-> the ref count when you add the properties, so don't call
-> fwnode_handle_put() there (but add a comment explaining why you are
-> not calling it).
-
-No, sorry... That's just too hacky. Let's not do that after all.
-
-We can also fix this in the software node code. I'm attaching a patch
-that should make it possible to inject the software nodes also
-afterwards safely. This is definitely also not without its problems,
-but we can go with that if it works. Let me know.
+>
+> m68k only supports PCI on coldfire M54xx, and this variant does set
+> a PCI_IOBASE after all. The normal MMU based m68k have no PCI
+> and do define their out inb/outb/..., so nothing changes for them.
+>
+> To summarize: only sparc32 needs to set PCI_IOBASE to zero, everyone
+> else should just WARN_ONCE() or return 0xff/0xffff/0xffffffff.
+>
+>         Arnd
 
 
-> For a better solution you would call device_reprobe() after you have
-> injected the software node, but before that you need to modify
-> device_reprobe() so it calls device_platform_notify() (which it really
-> should call in any case). But this should probable be done later,
-> separately.
-> 
-> thanks,
-> 
-> P.S.
-> 
-> Have you guys considered the possibility of describing the connections
-> between all these components by using one of the methods that we now
-> have for that in kernel, for example device graph? It can now be
-> used also with software nodes (OF graph and ACPI device graph are of
-> course already fully supported).
-
-Br,
 
 -- 
-heikki
+Best Regards
+ Guo Ren
 
---fBYxI++DDE8HNukO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-software-node-Allow-node-addition-to-already-existin.patch"
-
-From 3d3dca1f80941f8975390bc8f488176d00acef22 Mon Sep 17 00:00:00 2001
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Date: Tue, 13 Apr 2021 16:28:34 +0300
-Subject: [PATCH] software node: Allow node addition to already existing device
-
-If the node is added to an already exiting device, the node
-needs to be also linked to the device separately.
-
-This will make sure the reference count is kept in balance
-also when the node is injected to a device afterwards.
-
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Fixes: e68d0119e328 ("software node: Introduce device_add_software_node()")
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/swnode.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index fa3719ef80e4d..88310ac9ce906 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1032,6 +1032,7 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
- 	}
- 
- 	set_secondary_fwnode(dev, &swnode->fwnode);
-+	software_node_notify(dev, KOBJ_ADD);
- 
- 	return 0;
- }
-@@ -1105,8 +1106,8 @@ int software_node_notify(struct device *dev, unsigned long action)
- 
- 	switch (action) {
- 	case KOBJ_ADD:
--		ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
--					"software_node");
-+		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
-+					       "software_node");
- 		if (ret)
- 			break;
- 
--- 
-2.30.2
-
-
---fBYxI++DDE8HNukO--
+ML: https://lore.kernel.org/linux-csky/
