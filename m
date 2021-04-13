@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFC235DCD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F7D35DCE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343996AbhDMKwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236800AbhDMKwM (ORCPT
+        id S1344078AbhDMKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:55:00 -0400
+Received: from forward4-smtp.messagingengine.com ([66.111.4.238]:55327 "EHLO
+        forward4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344006AbhDMKx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:52:12 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC43C061574;
-        Tue, 13 Apr 2021 03:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=AyA21hCwDZr44tPRW26rnzyhYZ7wNBvoep8VeScz3VQ=; b=KW64bWZPv7mAcY0rtoikq5GWu
-        ZwntBdejvJO8lY/s7jHil3J4Iy4whTvPkfqiHdkhaxvWQmu0wOkY7T8Dy+8HFVhqAqfq9lQWdSN40
-        aJqawPMaZ5lNIQWk0qOUkd0G7JtNvGrEMqpK0JXyNZahhQ1Z6/1i8amynpR5UvVxqP4Skk1g8YSNY
-        y990OmrYXF4OsnCjiJKqAMYNfQTjOAF92Mar/e81f/PVqz7PKHqEpz0IXwqVrrITNDkxOk1WCCA61
-        GqYJiG4UnrsNAgNvdLXLaf5MdPkKoXUkS2tut7LAozWehylPoGFtKwKvw7vHbWCt5Hn1ebzCLWGS9
-        vGntaCmUA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52372)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lWGe2-0005Xz-Bj; Tue, 13 Apr 2021 11:51:46 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lWGe0-00088B-CB; Tue, 13 Apr 2021 11:51:44 +0100
-Date:   Tue, 13 Apr 2021 11:51:44 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 0/7] remove different PHY fixups
-Message-ID: <20210413105144.GN1463@shell.armlinux.org.uk>
-References: <20210309112615.625-1-o.rempel@pengutronix.de>
- <c03053f59a89ef6ea4a4f2ce15aee4b4f4892745.camel@pengutronix.de>
+        Tue, 13 Apr 2021 06:53:57 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.nyi.internal (Postfix) with ESMTP id BFD401940918;
+        Tue, 13 Apr 2021 06:53:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 13 Apr 2021 06:53:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LU2r2V
+        aAOHQrDcDegAXkrCbLQ5rLC3ELxpAY5KMD34k=; b=Urrm1paw1rJuxWjNLyJb8B
+        8ysGi72VT4VwnBe+cqoWS6UK7J00L53pmGPeN2XXCtFDb52Cc0rONk8VuVbxWaLN
+        PkjaavzYRLWkNZPC9evUu9KVszgP7/YPaoOtP4EWbEMTs4+oVsE0v91OD9eo5mkm
+        xRSP1kOcaWvNRXkTYBEQsODv3hpSaDhz3h19MqqnpIVhiIt1rdE3pONkczF7YRsT
+        amIhg32PhgY8yzngsgihsTYxuPXzh6TEa2bmw2cvyNg5ysPrPwADoM7ykH2OvwaA
+        ZufsEKz/Nj+FTY7yD3ZSDkIp5/fYuBERqdoDkJ6oAZ7q5srdqZH4rZJ5Vwcte1pQ
+        ==
+X-ME-Sender: <xms:LXh1YKav4TO8_USeLg1vL3DkKR1ko3310XjPD319Sl0sW1JDWgX4QA>
+    <xme:LXh1YNYJ5QNYRVE7u526JvWRUL4W01w2J2oAUvJUmnK6PljzJ2KpBVZrd0QdOwsGS
+    uL_z0ziHxCUd3w8ZOc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
+    gfgumhhonhgushhonhcuoegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtg
+    homheqnecuggftrfgrthhtvghrnhepheelfeefudeiudegudelgfetgeetkeelveeuieet
+    udelheejkeeileekveeukedtnecukfhppeekuddrudekjedrvdeirddvfeeknecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiugdrvggu
+    mhhonhgushhonhesohhrrggtlhgvrdgtohhm
+X-ME-Proxy: <xmx:LXh1YE_MAwxcY7uEKWMQcv0XPS-UdGgGm9OPoo5DYMo7DW2PmRyqAw>
+    <xmx:LXh1YMpj5KZrfnqsgJhBJ1FIl1n6_1feVRERAGBxqnM8pDDu6MB-jg>
+    <xmx:LXh1YFq9YaeU5nifU2ihFbdsKTM6JKMWbK9DPD3uHhJqCR6Y-Os5YQ>
+    <xmx:L3h1YEe10TRBeAFAfCSlt6Bvs7XvKoxXi3AtDBflLj09wvTdmYKvZ2I4CFs>
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EFF4C24005C;
+        Tue, 13 Apr 2021 06:53:31 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id a8eaf34e;
+        Tue, 13 Apr 2021 10:53:30 +0000 (UTC)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [PATCH 5/6] KVM: SVM: pass a proper reason in
+ kvm_emulate_instruction()
+In-Reply-To: <YHRvchkUSIeU8tRR@google.com>
+References: <20210412130938.68178-1-david.edmondson@oracle.com>
+ <20210412130938.68178-6-david.edmondson@oracle.com>
+ <YHRvchkUSIeU8tRR@google.com>
+X-HGTTG: zarquon
+From:   David Edmondson <david.edmondson@oracle.com>
+X-Now-Playing: Dido - Life for Rent: Stoned
+Date:   Tue, 13 Apr 2021 11:53:30 +0100
+Message-ID: <cuno8eisbf9.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c03053f59a89ef6ea4a4f2ce15aee4b4f4892745.camel@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:00:45PM +0200, Lucas Stach wrote:
-> I agree with the opinion that those PHY fixups introduce more harm than
-> good. Essentially they are pushing board specific configuration values
-> into the PHY, without any checks that the fixup is even running on the
-> specific board it was targeted at.
+On Monday, 2021-04-12 at 16:04:02 GMT, Sean Christopherson wrote:
 
-Yes and no. The problem is, that's an easy statement to make when one
-doesn't understand what they're all doing.
+> +Aaron
+>
+> On Mon, Apr 12, 2021, David Edmondson wrote:
+>> From: Joao Martins <joao.m.martins@oracle.com>
+>> 
+>> Declare various causes of emulation and use them as appropriate.
+>> 
+>> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>> ---
+>>  arch/x86/include/asm/kvm_host.h |  6 ++++++
+>>  arch/x86/kvm/svm/avic.c         |  3 ++-
+>>  arch/x86/kvm/svm/svm.c          | 26 +++++++++++++++-----------
+>>  3 files changed, 23 insertions(+), 12 deletions(-)
+>> 
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index 79e9ca756742..e1284680cbdc 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1535,6 +1535,12 @@ enum {
+>>  	EMULREASON_IO_COMPLETE,
+>>  	EMULREASON_UD,
+>>  	EMULREASON_PF,
+>> +	EMULREASON_SVM_NOASSIST,
+>> +	EMULREASON_SVM_RSM,
+>> +	EMULREASON_SVM_RDPMC,
+>> +	EMULREASON_SVM_CR,
+>> +	EMULREASON_SVM_DR,
+>> +	EMULREASON_SVM_AVIC_UNACCEL,
+>
+> Passing these to userspace arguably makes them ABI, i.e. they need to go into
+> uapi/kvm.h somewhere.  That said, I don't like passing arbitrary values for what
+> is effectively the VM-Exit reason.  Why not simply pass the exit reason, assuming
+> we do indeed want to dump this info to userspace?
 
-Some are "board specific" in that the normal setup for e.g. iMX6 would
-be to enable clock output from the AR8035 PHY and feed that into the
-iMX6 - as far as I'm aware, that's the only working configuration for
-that SoC and PHY. However, it's also true that this fixup should not
-be applied unconditionally.
+That would suffice, yes.
 
-Then there's SmartEEE - it has been found that the PHY defaults for
-this lead to link drops independent of the board and SoC that it is
-connected to. It seems that the PHY is essentially broken - it powers
-up with SmartEEE enabled, and when connected to another SmartEEE
-supporting device, it seems guaranteed that it will result in link
-drops in its default configuration.
+> What is the intended end usage of this information?  Actual emulation?  Debug?
+> Logging?
 
-Freescale's approach has apparently been to unconditionally disable
-SmartEEE for all their platforms because of this. With a bit of
-research however (as has been done by Jon and myself) we've found
-that increasing the Tw parameter for 1G connections results in a
-much more stable link.
+Debug (which implies logging, given that I want this to happen on
+systems that are in service).
 
-So, just saying that these are bad without actually understanding what
-they are doing is _also_ bad.
+> Depending on what you're trying to do with the info, maybe there's a better
+> option.  E.g. Aaron is working on a series that includes passing pass the code
+> stream (instruction bytes) to userspace on emulation failure, though I'm not
+> sure if he's planning on providing the VM-Exit reason.
 
+Having the instruction stream will be good.
+
+Aaron: do you have anything to share now? In what time frame do you
+think you might submit patches?
+
+I'm happy to re-work this to make the exit reason available, if that's
+the appropriate direction.
+
+dme.
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+And you're standing here beside me, I love the passing of time.
