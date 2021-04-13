@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B965B35DC76
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A46E35DC7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245120AbhDMK0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:26:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhDMK0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:26:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAB08613BC;
-        Tue, 13 Apr 2021 10:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618309574;
-        bh=eEvo19Vw5I5M464tlOBT1pZyU/kCLCVp40Q85+C3i3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jJO+ZfUtXwYQgnUibEaGqWMTQzuiEDzZDpG2TAs0WLm7O9mgP94RXjnrm/lnxXJMU
-         viKXDaOMlWFKmyCSPYCl/Cttk6sLFKJbAsJenCag7MQxONIftmwSIKznBk6NoyUM4V
-         sJDl0wXhFSDi/JF14ix3Qt6+TpLXdlWvwPKObmj4=
-Date:   Tue, 13 Apr 2021 12:26:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        John Youn <John.Youn@synopsys.com>
-Subject: Re: [PATCH v2 00/12] usb: dwc2: Add clock gating support.
-Message-ID: <YHVxw26V2SPzpoQy@kroah.com>
-References: <cover.1618297800.git.Arthur.Petrosyan@synopsys.com>
- <20210413073600.57846A0094@mailhost.synopsys.com>
- <9b21e84b-817d-df04-1eb1-78c7ca1c931e@synopsys.com>
+        id S245177AbhDMKcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:32:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16554 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhDMKcO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:32:14 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FKMK91jSSzNvQM;
+        Tue, 13 Apr 2021 18:29:01 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 13 Apr 2021 18:31:51 +0800
+Subject: Re: [PATCH 5.4 000/111] 5.4.112-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210412084004.200986670@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <61600264-a091-3c0e-5387-93b2c45f642a@huawei.com>
+Date:   Tue, 13 Apr 2021 18:31:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b21e84b-817d-df04-1eb1-78c7ca1c931e@synopsys.com>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 08:03:23AM +0000, Artur Petrosyan wrote:
-> Hi Greg,
+
+
+On 2021/4/12 16:39, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.112 release.
+> There are 111 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 4/13/2021 11:35, Artur Petrosyan wrote:
-> > This patch set adds clock gating power saving support for
-> > dwc2 core.
-> > It adds support for the following cases described by programming guide.
-> >    1. Enter to clock gating from USB_SUSPEND interrupt.
-> >    2. Clock gating entering flow by system suspend.
-> >    3. Clock gating exiting flow by system resume.
-> >    4. Exit clock gating from wakeup interrupt.
-> >    5. Exit clock gating from session request interrupt.
-> >    6. Exit clock gating when port reset is asserted.
-> > 
-> > Additional cases to exit form clock gating were needed which are not
-> > described in clock gating programming guide.
-> >    1. Added clock gating exit flow before removing driver
-> >    2. Exit clock gating in urb enqueue.
-> > 
-> > It updates the implementation of dwc2 entering and exiting clock
-> > gating when a port is suspended or resumed.
-> > 
-> > The patch set also adds the implementation of function handlers
-> > for entering and exiting host or device clock gating.
-> > 
-> > NOTE: This is the third patch set in the power saving mode fixes
-> > series.
-> > This patch set is part of multiple series and is continuation
-> > of the "usb: dwc2: Fix and improve power saving modes" patch set.
-> > (Patch set link: https://marc.info/?l=linux-usb&m=160379622403975&w=2).
-> > The patches that were included in the "usb: dwc2:
-> > Fix and improve power saving modes" which was submitted
-> > earlier was too large and needed to be split up into
-> > smaller patch sets.
-> > 
-> > Changes since V1:
-> > Re sending the patch set as v1 because vger.kernel.org rejected
-> > the cover letter. With error code "550 5.7.1 Content-Policy"
-> > No changes in the patches or the source code.
-> > 
-> > 
-> > Artur Petrosyan (12):
-> >    usb: dwc2: Add device clock gating support functions
-> >    usb: dwc2: Add host clock gating support functions
-> >    usb: dwc2: Allow entering clock gating from USB_SUSPEND interrupt
-> >    usb: dwc2: Add exit clock gating from wakeup interrupt
-> >    usb: dwc2: Add exit clock gating from session request interrupt
-> >    usb: dwc2: Add exit clock gating when port reset is asserted
-> >    usb: dwc2: Update enter clock gating when port is suspended
-> >    usb: dwc2: Update exit clock gating when port is resumed
-> >    usb: dwc2: Allow exit clock gating in urb enqueue
-> >    usb: dwc2: Add clock gating entering flow by system suspend
-> >    usb: dwc2: Add clock gating exiting flow by system resume
-> >    usb: dwc2: Add exit clock gating before removing driver
-> > 
-> >   drivers/usb/dwc2/core.h      |  15 ++-
-> >   drivers/usb/dwc2/core_intr.c |  62 ++++++++----
-> >   drivers/usb/dwc2/gadget.c    |  71 ++++++++++++++
-> >   drivers/usb/dwc2/hcd.c       | 177 +++++++++++++++++++++++++++--------
-> >   drivers/usb/dwc2/platform.c  |   9 ++
-> >   5 files changed, 272 insertions(+), 62 deletions(-)
-> > 
-> > 
-> > base-commit: 9bc46a12c53d8268392774172742aa9e5dd6953d
-> > 
-> This cover letter for the clock gating patches is being rejected by 
-> "vger.kernel.org". I have tried to send one more time as v2 but again it 
-> is rejected.
-> The error message is "vger.kernel.org
-> Remote Server returned '554 5.7.1 <vger.kernel.org #5.7.1 smtp; 550 
-> 5.7.1 Content-Policy accept-into-freezer-1"
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
 > 
-> Could you please suggest any solution to this?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.112-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-No idea, sorry, vger is fickle when it comes to odd rules it has for
-things it has to deal with.  Looks like your patches came through just
-fine, so all is good.
+Tested on arm64 and x86 for 5.4.112-rc1,
 
-thanks,
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.112-rc1
+Commit: f9b2de2cddd4601c5d2f2947fc5cebb7dbecd266
+Compiler: gcc version 7.3.0 (GCC)
 
-greg k-h
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5264
+passed: 5264
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 5264
+passed: 5264
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
+
