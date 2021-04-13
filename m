@@ -2,162 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A5B35E7BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7519835E7CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348283AbhDMUsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348277AbhDMUsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:48:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C327C61139;
-        Tue, 13 Apr 2021 20:48:26 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 16:48:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [PATCH v3 1/5] tracing: Define new ftrace event "func_repeats"
-Message-ID: <20210413164825.79c583f4@gandalf.local.home>
-In-Reply-To: <20210413151736.36ec77eb@gandalf.local.home>
-References: <20210409181031.26772-1-y.karadz@gmail.com>
-        <20210409181031.26772-2-y.karadz@gmail.com>
-        <20210413151736.36ec77eb@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1343803AbhDMUuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:50:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48412 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348385AbhDMUtg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 16:49:36 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618346951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=LMJfQ64xQK5PmMvGbUFqr8WBkiPMOxrFg/EOkPfyD9g=;
+        b=Q+uPYMEQv4F6jfWckp8WGdvgNaS5NIoCYcV/K3O0swMERDMCSBMKdof7mX8X59EKiWq3xE
+        rby2YBXLx3aV7LLjxzrwc4EQLFXOfUtc1EflWpZ6bEi5DcvgzdURzUCfQNTRtuxtNMbuwc
+        IMZOEm6PcJgnK5HRlWPlUZArARVWT96yAY+IspB7Pbok/Dl7UN1jbf3Sqd82vj2AfS2uuM
+        ZsXq5Y/va12+kdqXc1gP2Vx715F7NEFON9NAyZvl8zSVZf/G37l8pkKfxXQCAweBiZwFbV
+        4chB/+pUN7OGe93lQ7Xcc9VV6GXsIQvVnRxQlDWso0FvbWjVo3wpALHhBgRGKQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618346951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=LMJfQ64xQK5PmMvGbUFqr8WBkiPMOxrFg/EOkPfyD9g=;
+        b=mKnWVWNOq0/BMDcFKtKqOQUB03HPXSBYquic8HUequf52gOTr9++/jRaHLRWY7C4t5dtzo
+        LwKWlkCoKNNBiGAw==
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: Re: [PATCH v7 clocksource 3/5] clocksource: Check per-CPU clock synchronization when marked unstable
+In-Reply-To: <20210412231809.GI4510@paulmck-ThinkPad-P17-Gen-1>
+Date:   Tue, 13 Apr 2021 22:49:11 +0200
+Message-ID: <87r1jdykoo.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 15:17:36 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Paul,
 
-> Running this with trace-cmd record, this displays:
-> 
->           <idle>-0     [001]   261.848848: function:                            next_zone
->           <idle>-0     [001]   261.848849: func_repeats:          next_zone <-need_update       (repeats:3  delta_ts: -189)
-> 
-> Which is confusing in a number of ways.
-> 
-> 1. It would be better to have it be the actual timestamp of the last repeat.
->    But that can be done in a trace-cmd plugin (like the function trace has).
-> 
-> 2. It should be "delta_ns:" because it is not -189 from the timestamp, as
->    the above time stamp is truncated to microseconds and this is not
->    obvious to the user.
+On Mon, Apr 12 2021 at 16:18, Paul E. McKenney wrote:
+> On Mon, Apr 12, 2021 at 10:37:10PM +0200, Thomas Gleixner wrote:
+>> On Mon, Apr 12 2021 at 12:57, Paul E. McKenney wrote:
+>> > On Mon, Apr 12, 2021 at 08:54:03PM +0200, Thomas Gleixner wrote:
+>> >> > I will send a new series out later today, Pacific Time.
+>> >> 
+>> >> Can you do me a favour and send it standalone and not as yet another
+>> >> reply to this existing thread maze. A trivial lore link to the previous
+>> >> version gives enough context.
+>> >
+>> > Will do!
+>> >
+>> > Of course, it turns out that lockdep also doesn't like waited-on
+>> > smp_call_function_single() invocations from timer handlers,
+>> > so I am currently looking at other options for dealing with that
+>> > potential use-after-free.  I am starting to like the looks of "only set
+>> > CLOCK_SOURCE_VERIFY_PERCPU on statically allocated clocksource structures
+>> > and let KASAN enforce this restriction", but I have not quite given up
+>> > on making it more general.
+>> 
+>> The simplest point is in the thread under the clocksource_mutex which
+>> prevents anything from vanishing under your feet.
+>
+> And lockdep is -much- happier with the setup shown below, so thank
+> you again!
 
-With the below patch to libtraceevent, I now see this:
+But it is too simple now :) ...
 
-          <idle>-0     [001]   261.848847: function:                      quiet_vmstat
-          <idle>-0     [001]   261.848847: function:                         need_update
-          <idle>-0     [001]   261.848848: function:                            first_online_pgdat
-          <idle>-0     [001]   261.848848: function:                            next_zone
-          <idle>-0     [001]   261.848849: func_repeats:                        next_zone (count: 3  last_ts:   261.848849)
-          <idle>-0     [001]   261.848849: function:                   hrtimer_start_range_ns
-          <idle>-0     [001]   261.848849: function:                      _raw_spin_lock_irqsave
-          <idle>-0     [001]   261.848849: function:                         preempt_count_add
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index f047c6cb056c..34dc38b6b923 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -519,6 +515,13 @@ static int __clocksource_watchdog_kthread(void)
+>  	unsigned long flags;
+>  	int select = 0;
+>  
+> +	/* Do any required per-CPU skew verification. */
+> +	list_for_each_entry(cs, &watchdog_list, wd_list) {
+> +		if ((cs->flags & (CLOCK_SOURCE_UNSTABLE | CLOCK_SOURCE_VERIFY_PERCPU)) ==
+> +		    (CLOCK_SOURCE_UNSTABLE | CLOCK_SOURCE_VERIFY_PERCPU))
+> +			clocksource_verify_percpu(cs);
+> +	}
 
-And because I made the format used weak, it can be overwritten by the
-application, in which I had trace-cmd update it with the format it uses to
-produce the timestamp:
+because that list is _NOT_ protected by the clocksource_mutex as you
+noticed yourself already.
 
-	if (tracecmd_get_flags(handle) & TRACECMD_FL_RAW_TS) {
-		tep_func_repeat_format = "%d";
-	} else if (tracecmd_get_flags(handle) & TRACECMD_FL_IN_USECS) {
-		if (tep_test_flag(tracecmd_get_tep(handle), TEP_NSEC_OUTPUT))
-			tep_func_repeat_format = "%9.1d";
-		else
-			tep_func_repeat_format = "%6.1000d";
-	} else {
-		tep_func_repeat_format = "%12d";
-	}
+But you don't have to walk that list at all because the only interesting
+thing is the currently active clocksource, which is about to be changed
+in case the watchdog marked it unstable and cannot be changed by any
+other code concurrently because clocksource_mutex is held.
 
-Which produces this when I add "-t" (to see the full timestamp)
+So all you need is:
 
-          <idle>-0     [001]   261.848847195: function:                      quiet_vmstat
-          <idle>-0     [001]   261.848847431: function:                         need_update
-          <idle>-0     [001]   261.848847654: function:                            first_online_pgdat
-          <idle>-0     [001]   261.848848109: function:                            next_zone
-          <idle>-0     [001]   261.848848740: func_repeats:                        next_zone (count: 3  last_ts:   261.848848551)
-          <idle>-0     [001]   261.848849014: function:                   hrtimer_start_range_ns
-          <idle>-0     [001]   261.848849254: function:                      _raw_spin_lock_irqsave
-          <idle>-0     [001]   261.848849481: function:                         preempt_count_add
+	if (curr_clocksource &&
+	    curr_clocksource->flags & CLOCK_SOURCE_UNSTABLE &&
+	    curr_clocksource->flags & CLOCK_SOURCE_VERIFY_PERCPU)
+		clocksource_verify_percpu_wreckage(curr_clocksource);
 
-I was able to reuse the function code thanks to you for having the same
-fields as the function event ;-)
+Hmm?
 
-And because it only requires updating a weak variable, new code can set
-that variable without requiring the library to support it, and we do not
-need to change the patch version of the library!
+Thanks,
 
--- Steve
+        tglx
+        
 
-diff --git a/plugins/plugin_function.c b/plugins/plugin_function.c
-index 93bdcc2..7777569 100644
---- a/plugins/plugin_function.c
-+++ b/plugins/plugin_function.c
-@@ -10,6 +10,11 @@
- #include "event-utils.h"
- #include "trace-seq.h"
- 
-+#define __weak __attribute__((weak))
-+
-+/* Export this for applications to override it */
-+__weak const char *tep_func_repeat_format = "%6.1000d";
-+
- static struct func_stack {
- 	int size;
- 	char **stack;
-@@ -169,6 +174,36 @@ static int function_handler(struct trace_seq *s, struct tep_record *record,
- 	return 0;
- }
- 
-+static int trace_func_repeat_handler(struct trace_seq *s, struct tep_record *record,
-+				    struct tep_event *event, void *context)
-+{
-+	struct tep_handle *tep = event->tep;
-+	unsigned long long count, top_delta, bottom_delta;
-+	struct tep_record dummy;
-+
-+	function_handler(s, record, event, context);
-+
-+	if (tep_get_field_val(s, event, "count", record, &count, 1))
-+		return trace_seq_putc(s, '!');
-+
-+	if (tep_get_field_val(s, event, "top_delta_ts", record, &top_delta, 1))
-+		return trace_seq_putc(s, '!');
-+
-+	if (tep_get_field_val(s, event, "bottom_delta_ts", record, &bottom_delta, 1))
-+		return trace_seq_putc(s, '!');
-+
-+	trace_seq_printf(s, " (count: %lld  last_ts: ", count);
-+
-+	memcpy(&dummy, record, sizeof(dummy));
-+	dummy.ts -= (top_delta << 32) | bottom_delta;
-+
-+	tep_print_event(tep, s, &dummy, tep_func_repeat_format, TEP_PRINT_TIME);
-+
-+	trace_seq_puts(s, ")");
-+
-+	return 0;
-+}
-+
- static int
- trace_stack_handler(struct trace_seq *s, struct tep_record *record,
- 		    struct tep_event *event, void *context)
-@@ -256,6 +291,9 @@ int TEP_PLUGIN_LOADER(struct tep_handle *tep)
- 	tep_register_event_handler(tep, -1, "ftrace", "raw_data",
- 				      trace_raw_data_handler, NULL);
- 
-+	tep_register_event_handler(tep, -1, "ftrace", "func_repeats",
-+				      trace_func_repeat_handler, NULL);
-+
- 	tep_plugin_add_options("ftrace", plugin_options);
- 
- 	return 0;
