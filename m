@@ -2,104 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49B735D91A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716D935D91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhDMHj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhDMHjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:39:12 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C04C061574;
-        Tue, 13 Apr 2021 00:38:52 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id m13so16117187oiw.13;
-        Tue, 13 Apr 2021 00:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=024Rs0XBJGzrTJn9+SBx5vZymj7Q4VHq/rycY6e4Vb0=;
-        b=ephV7M1m8HfGJjwd9N/jSEFLIbOPBP4VJhYq5xXWxoPPVz0CY3kLlY/fPx4TDiToEl
-         64fQrLLSxnqeIr2b7yqaxTHVNBTvutOr0R5rGbQTpySYhfwkJ3ryxzSpiKoX2pR6LYYe
-         jfyO2I/PiGMbht0zVI5OpnUSv4KA61j91msJEeujFyeiFFHlcIJvX5kKclKp8MaCuWrn
-         c/Crhqa0pvOm2/ivUMypglTNCKCp+z03hlUGPbD3+0ONk4SFf8/DE26TMu+r0v2sII2S
-         eIAkVi3rYxx0iDkA4xIDd+5tKSXgz4Blb2HxoDz9sNMPatT2XC8yf/EHvpvMSljiLbZT
-         2cPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=024Rs0XBJGzrTJn9+SBx5vZymj7Q4VHq/rycY6e4Vb0=;
-        b=RzrmQHhkP+Tf7R86jmbXb1WwgzHAwnPWvdM+dtEFcSN2mEZuuA1EyYvF5jVXqwNTLz
-         oG7xwCYw1wZQNYlC0JZw8+3xe+U2ngu+LT45HDy5FrtVc0greIA/kfu4sxHo/1OGye+/
-         hUY7397o5yHvEk3slM+zsMv8zaJGy218123bFa74Oj4u3JrLtgd65dgkz6ezj4Wyao63
-         whEN6WRAFOBi/jM6UNtdi6he7iZN3A1IWdDiSXGYu1Q7PyvhfFxd3sCndY8ahLlh7WLG
-         5QaQ3U+lxJMvdkucocAnL3FJNW53cQn3+bFEYN2wKuqK6E+EGIbSjNAyDv53g7QKjoZk
-         NRLA==
-X-Gm-Message-State: AOAM533D3ubG4XSKsmkYs7rUVHmXSDQ5LjcBe2/snSszF5MdoG9zaQRl
-        TYIY2sEL4BDzqCsIciklX25q8tONOJoX0invyLc=
-X-Google-Smtp-Source: ABdhPJwS/KzITtWY+54lBIYyhhWhopJAycSWbf9Reux6PL2xwBofkeoFdKxHpQumHhSmu9XcOCFXbxA02s1b+W/MjYs=
-X-Received: by 2002:a54:408a:: with SMTP id i10mr2351312oii.141.1618299532351;
- Tue, 13 Apr 2021 00:38:52 -0700 (PDT)
+        id S238912AbhDMHkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:40:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238673AbhDMHkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 03:40:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8B54613B8;
+        Tue, 13 Apr 2021 07:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618299587;
+        bh=UKLi8N7PpyoP0aTw1Rc06CM25uT52l0anJPWfPBcGOA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jQNwowknv7OnO5LeSWNcWfwmUf3l+pPLdAutNHoLNXy2Zf6aIBOSWhPi7kW15lYXd
+         olyoch2ThrKxUlw853xBL6h+Z06xtJCNPfQzi2ZSQ/zjqae1CyYIIU/x3AqlpcvliM
+         MlLtGG0VH6MoPms7iKfJAKl/frNSs1GcMU0sS5sw=
+Date:   Tue, 13 Apr 2021 09:39:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Remove
+ camelcase
+Message-ID: <YHVKwEX8CvV7brRg@kroah.com>
+References: <20210412210258.8061-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
- <1618298169-3831-2-git-send-email-wanpengli@tencent.com> <81112cec-72fa-dd8c-21c8-b24f51021f43@de.ibm.com>
-In-Reply-To: <81112cec-72fa-dd8c-21c8-b24f51021f43@de.ibm.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 13 Apr 2021 15:38:40 +0800
-Message-ID: <CANRm+CwNxcKPKdV4Bxr-5sWJtg_SKZEN5atGJKRyLcVnWVSKSg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] context_tracking: Split guest_enter/exit_irqoff
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412210258.8061-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 at 15:35, Christian Borntraeger
-<borntraeger@de.ibm.com> wrote:
->
->
->
-> On 13.04.21 09:16, Wanpeng Li wrote:
-> [...]
->
-> > @@ -145,6 +155,13 @@ static __always_inline void guest_exit_irqoff(void)
-> >   }
-> >
-> >   #else
-> > +static __always_inline void context_guest_enter_irqoff(void)
-> > +{
-> > +     instrumentation_begin();
-> > +     rcu_virt_note_context_switch(smp_processor_id());
-> > +     instrumentation_end();
-> > +}
-> > +
-> >   static __always_inline void guest_enter_irqoff(void)
-> >   {
-> >       /*
-> > @@ -155,10 +172,13 @@ static __always_inline void guest_enter_irqoff(void)
-> >       instrumentation_begin();
-> >       vtime_account_kernel(current);
-> >       current->flags |= PF_VCPU;
-> > -     rcu_virt_note_context_switch(smp_processor_id());
-> >       instrumentation_end();
-> > +
-> > +     context_guest_enter_irqoff();
->
-> So we now do instrumentation_begin 2 times?
+On Mon, Apr 12, 2021 at 11:02:58PM +0200, Fabio M. De Francesco wrote:
+> Removed camelcase in (some) symbols. Further work is needed.
 
-Similar to context_guest_enter_irqoff() ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN.
+What symbols did you do this for?  What did you change them from and to?
 
-    Wanpeng
+Be specific, and try to do only one structure at a time at the most,
+trying to review 1000 lines of changes at once is hard, would you want
+to do that?  :)
+
+thanks,
+
+greg k-h
