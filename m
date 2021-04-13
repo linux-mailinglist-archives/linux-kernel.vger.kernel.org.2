@@ -2,135 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B66B35DA28
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5DE35DA26
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243002AbhDMIek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:34:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53070 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229656AbhDMIei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:34:38 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D8XDB4071495;
-        Tue, 13 Apr 2021 04:33:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=H1Y2/bGYlV5wOp/OT6q1ivbSoZaewBAhlcce0EfVJDw=;
- b=hF6Tcce0q1E8/JsKwPEi11yovP5JnZmCCT6MhTHguCXtZ7HFAcCci66mCzkEHBJ98TPS
- 1bL0ovKXyId2H4sT8as6eqBZ4gFngfZDlgFRALMyIpkeE5LM1fNNGOo+PydFIEukU7Kb
- iUkzkLzHvkhviArbfORPEBAfqWk49tYahF3Ss2zq/ECsY3f4b9SodN+f961TpwOouEK5
- gk4L/PFOGaP8Omu3GOacpHPg9zwvleL+qm9LZKeZKVpAPX/h3K3+H/PgOfp5+E9Xh9wf
- cDKMOcx/+TKYTkTzNIau20xuPdnVVCnvcRMxjJmgAGVpjDTCt8bk8xGGpsk5UILue+JO pQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37w76qsawv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 04:33:15 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13D8XEpW071703;
-        Tue, 13 Apr 2021 04:33:14 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37w76qsat3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 04:33:14 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D8X28V004312;
-        Tue, 13 Apr 2021 08:33:03 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 37u39h9b0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 08:33:02 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D8WcuQ34865494
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 08:32:38 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 822D0A4053;
-        Tue, 13 Apr 2021 08:33:00 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A7E1A404D;
-        Tue, 13 Apr 2021 08:32:59 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 08:32:59 +0000 (GMT)
-Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <76aa7dcc-ba57-f12d-bf19-880fa71f429f@de.ibm.com>
-Date:   Tue, 13 Apr 2021 10:32:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5hr-l3q1hOV6VZnSkK6fZ5ICd8UFpN4g
-X-Proofpoint-ORIG-GUID: gr05uOpjtFFEiy3n2Ir3Us5sLnazPonJ
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S243119AbhDMId6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:33:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37656 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243002AbhDMIdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:33:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618302811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xqtPjR7YPu3QtWRhej9VtvpTC9wUcZOleE8LJV9ZstU=;
+        b=gW6C57kRMYh9tnigP4Yod/k2tcJ22/aMy7THV74MfzMBT9OXrTXUYhLOLjyoxJAeYbBTzC
+        ktScc275SZcMd1IxnU5F2nBI3e72PAIoWqNLVXVrRF4tJcuKDnx2R9OC4d2TBrbub8S4fB
+        +8LuK7iOS1fkZgxxxWrF+QdgiW40fKA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D83DB125;
+        Tue, 13 Apr 2021 08:33:31 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 10:33:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+Message-ID: <YHVXWu4aG/X+W7q2@dhcp22.suse.cz>
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
+ <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
+ <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+ <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- malwarescore=0 adultscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130058
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 09-04-21 16:26:53, Tim Chen wrote:
+> 
+> On 4/8/21 4:52 AM, Michal Hocko wrote:
+> 
+> >> The top tier memory used is reported in
+> >>
+> >> memory.toptier_usage_in_bytes
+> >>
+> >> The amount of top tier memory usable by each cgroup without
+> >> triggering page reclaim is controlled by the
+> >>
+> >> memory.toptier_soft_limit_in_bytes 
+> > 
+> 
+> Michal,
+> 
+> Thanks for your comments.  I will like to take a step back and
+> look at the eventual goal we envision: a mechanism to partition the 
+> tiered memory between the cgroups. 
 
+OK, this is goot mission statemet to start with. I would expect a follow
+up to say what kind of granularity of control you want to achieve here.
+Pressumably you want more than all or nothing because that is where
+cpusets can be used for.
 
-On 13.04.21 09:16, Wanpeng Li wrote:
-> The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
-> reported that the guest time remains 0 when running a while true
-> loop in the guest.
-> 
-> The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
-> belongs") moves guest_exit_irqoff() close to vmexit breaks the
-> tick-based time accouting when the ticks that happen after IRQs are
-> disabled are incorrectly accounted to the host/system time. This is
-> because we exit the guest state too early.
-> 
-> This patchset splits both context tracking logic and the time accounting
-> logic from guest_enter/exit_irqoff(), keep context tracking around the
-> actual vmentry/exit code, have the virt time specific helpers which
-> can be placed at the proper spots in kvm. In addition, it will not
-> break the world outside of x86.
-> 
-> v1 -> v2:
->   * split context_tracking from guest_enter/exit_irqoff
->   * provide separate vtime accounting functions for consistent
->   * place the virt time specific helpers at the proper splot
-> 
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Michael Tokarev <mjt@tls.msk.ru>
-> 
-> Wanpeng Li (3):
->    context_tracking: Split guest_enter/exit_irqoff
->    context_tracking: Provide separate vtime accounting functions
->    x86/kvm: Fix vtime accounting
-> 
->   arch/x86/kvm/svm/svm.c           |  6 ++-
->   arch/x86/kvm/vmx/vmx.c           |  6 ++-
->   arch/x86/kvm/x86.c               |  1 +
->   include/linux/context_tracking.h | 84 +++++++++++++++++++++++++++++++---------
->   4 files changed, 74 insertions(+), 23 deletions(-)
-> 
+> A typical use case may be a system with two set of tasks.
+> One set of task is very latency sensitive and we desire instantaneous
+> response from them. Another set of tasks will be running batch jobs
+> were latency and performance is not critical.   In this case,
+> we want to carve out enough top tier memory such that the working set
+> of the latency sensitive tasks can fit entirely in the top tier memory.
+> The rest of the top tier memory can be assigned to the background tasks.  
 
-The non CONFIG_VIRT_CPU_ACCOUNTING_GEN look good.
+While from a very high level this makes sense I would be interested in
+more details though. Your high letency sensitive applications very likely
+want to be bound to high performance node, right? Can they tolerate
+memory reclaim? Can they consume more memory than the node size? What do
+you expect to happen then?
+ 
+> To achieve such cgroup based tiered memory management, we probably want
+> something like the following.
+> 
+> For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
+> where tier t_0 sits at the top and demotes to the lower tier. 
+
+How is each tear defined? Is this an admin define set of NUMA nodes or
+is this platform specific?
+
+[...]
+
+> Will such an interface looks sane and acceptable with everyone?
+
+Let's talk more about usecases first before we even start talking about
+the interface or which controller is the best fit for implementing it.
+ 
+> The patch set I posted is meant to be a straw man cgroup v1 implementation
+> and I readily admits that it falls short of the eventual functionality 
+> we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
+> memory management should work.
+
+OK, fair enough. Let me then just state that I strongly believe that
+Soft limit based approach is a dead end and it would be better to focus
+on the actual usecases and try to understand what you want to achieve
+first.
+
+[...]
+
+> > What I am trying to say (and I have brought that up when demotion has been
+> > discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
+> > The specific technology shouldn't be imprinted into the interface.
+> > Fundamentally you are trying to balance memory among NUMA nodes as we do
+> > not have other abstraction to use. So rather than talking about top,
+> > secondary, nth tier we have different NUMA nodes with different
+> > characteristics and you want to express your "priorities" for them.
+> 
+> With node priorities, how would the system reserve enough
+> high performance memory for those performance critical task cgroup? 
+> 
+> By priority, do you mean the order of allocation of nodes for a cgroup?
+> Or you mean that all the similar performing memory node will be grouped in
+> the same priority?
+
+I have to say I do not yet have a clear idea on what those priorities
+would look like. I just wanted to outline that usecases you are
+interested about likely want to implement some form of (application
+transparent) control for memory distribution over several nodes. There
+is a long way to land on something more specific I am afraid.
+-- 
+Michal Hocko
+SUSE Labs
