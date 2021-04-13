@@ -2,181 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3356935D776
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C8E35D76B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344693AbhDMFsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:48:31 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:56724 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344641AbhDMFsT (ORCPT
+        id S1344606AbhDMFsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:48:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59781 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243542AbhDMFsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:48:19 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D5k3W8010128;
-        Tue, 13 Apr 2021 05:47:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=JQ35FG6n6qBmmqFlY7T3pKOBN8f6THpsDrZS69sAcJo=;
- b=DlJt0ckLEOCmGpOaz0ViThu4ftpQrG9aKt5Tyz5tg00aX/sKnRwGO6O/u/ieCN6gPgfX
- 4ReVfEC1Uw4F3Y0cg047gFInYs/Tl+MZjmjKNm4TisY9wZP9wbQj6pGsefREm2m4Oi/H
- Tz1hwc5HWfLdyxrc+R9AO8QikmL1xYGHyBz1K0/POAIudkHCnqLSmzPewKYGtNpHEKoY
- 7Q6ZeMK7JcE5pERcy1R5D80SPKQT8TMyG2wcPtLCim7RSFm2UoruhyrXGyiOY7E/sNdk
- hO8gb7F9uCiKUf3b+Doij0U0yZQztMEhmY5Okgu3IXfaKuUoPskU4b1+1VNS423qEi9U 8Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 37u1hbdxfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 05:47:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D5jcXa125402;
-        Tue, 13 Apr 2021 05:47:33 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by aserp3020.oracle.com with ESMTP id 37unwybx1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 05:47:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nIaEnIFSvnYKoTBO1HXIW6OnS+OE8LGgif4NuJ+STmpXCazw3ijq6Au17AZ3h48wdfOkAjVfFjFk/yBNdP4267IPMra8JKNqRloWRBgiK0DkjnhMA0MFOwBpg1B3Sz8Eq9fJ2V22XGyw4zdfe95N42DxLms4T7VE2/xwv+Z3+Qaa7mHYFYyRbgRJ/5OlWcPAYulaLCQTlEby1hIGjyDt7HJ6KjLVg2ttnZX4o9ajzezVGkqQe4alu5r0GHT9fLmOXxpbaV1/b1kyD402czNJVa5D3hKLEdTG2XBncPjUWWgO4BlRKKHgE6JOOoQn3nuGm/bjo91I5f+SVk6tH+FBfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JQ35FG6n6qBmmqFlY7T3pKOBN8f6THpsDrZS69sAcJo=;
- b=h/EJajdkbEwxZa2QC8SYjTGV5vdrfvWFkLOU2eL2zBkpMM/VLzaC9zqjOgB23k8IscVIq5coxL8CeECGEu0gHf9OJyorouepomTsj8MGX/ZEIO9WuJGMPPts1UioQz/XGZVtYZljmqUQbEG2Va3o0tnGa+ZZC2vEdv0ppwnv22USvkCZnJWbTja45835vr6ObsEnigOxRy2Rm0a0vB5U3q7EMba6P3/YNYfW9jhnTQ7re+LMM7m2JdZwgvczqxIKkOKDPJxKWT+gtFQNnT/XZvoK0uUzehVePfb2KpXLlURlsTskKGxpqntdq/+P3y8yjM3R1IFyT4eEJwBt9gjy2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JQ35FG6n6qBmmqFlY7T3pKOBN8f6THpsDrZS69sAcJo=;
- b=nyaJma5X/S0FdL7baikPjFIgl3vl4Pd7unlbjx6k2B1zSB8btCL7GNH7+5zyO8pI1usw8K5qW15jN6xQJcUvvWvAr5yeCc1ZQSF+WVaAx6NnQ7bVovW7WBx+huy7Gz45syaQsF+WFKucEWBG2qvcavNe7Ea0vyIbq5cyR7gm2tA=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4614.namprd10.prod.outlook.com (2603:10b6:510:42::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Tue, 13 Apr
- 2021 05:47:31 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 05:47:31 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     jejb@linux.ibm.com, yanaijie@huawei.com, luojiaxing@huawei.com,
-        a.darwish@linutronix.de, b.zolnierkie@samsung.com,
-        Jolly Shah <jollys@google.com>, dan.carpenter@oracle.com,
-        john.garry@huawei.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-Date:   Tue, 13 Apr 2021 01:47:26 -0400
-Message-Id: <161828335261.26699.11136369175308184553.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210318225632.2481291-1-jollys@google.com>
-References: <20210318225632.2481291-1-jollys@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [138.3.201.9]
-X-ClientProxiedBy: BY3PR05CA0042.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::17) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Tue, 13 Apr 2021 01:48:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618292870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=NoGLR1VJ5gNLYdaNxmqjFzT6An+veHXT72XxxlzyW7A=;
+        b=LqGNea/evVgwZkDAOqvivMIXeUppJv7L4x7yOogPxdkuLSujkgG3VlGPxH3aRuH5b1MbzV
+        iCwBc6qL0y51WjSqxAF2ieq/frnZ/grR8Tzy5PXn5xkGXwMELHiXu05IZKMhq2oCBZUdDM
+        M10L0MfnfbQLv324lpQpDyyX3N+wfiM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-lLB182VnNTyGGjK4jUAURQ-1; Tue, 13 Apr 2021 01:47:49 -0400
+X-MC-Unique: lLB182VnNTyGGjK4jUAURQ-1
+Received: by mail-wm1-f71.google.com with SMTP id n67-20020a1c59460000b0290114d1a03f5bso2946424wmb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:47:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=NoGLR1VJ5gNLYdaNxmqjFzT6An+veHXT72XxxlzyW7A=;
+        b=axPmAt84BGtp3K5XFjhuaRqZCZthGZkfl0LlVjVepYXZIDbXOIy86fxNBxlwbat4KQ
+         g9QRWkIWqcj50yp+Bb3M2+v2CMuzIzpBIb4fT6u3oC5m/x+ZtZWBAxTkG4JOBDLNaahg
+         2StX/UC8Vwy1U20+4yNixc97kDQRGCX3eSdo9D1nzqhH4WWUQaCU0Vzpeksq6fE3Fk57
+         UDQsrpNjugchJZMf6w9UNwtEWlw/OilGYVkoyg51ynv0iGTT9lbeYpttbook6Qs3SGMa
+         abkr6im2wzO7Zuh9vW91gcfo91v+ywAVoI8L0JtKXmcfVmIXmQKvFmARL4oI+uDH3m9u
+         M+zw==
+X-Gm-Message-State: AOAM530xnmiK/bfp+MF3xBXoasy6Udaw7VupQ/F36G1IBgrqkgGMNOic
+        F5eV2C/3ZrdW/nkEvbPjVHQ27N9Hv4zozT553dor8HDo1OJ1X86dBIIX6BaVL/zlqvunKM9WwlO
+        8T1qokBt0YAH/enRiOsbgbZaMIZtE5Vfx73hN/5FibHdJZinAUtmccpf9Jk4YA0TotwPqcg==
+X-Received: by 2002:adf:dc4f:: with SMTP id m15mr35092257wrj.420.1618292867534;
+        Mon, 12 Apr 2021 22:47:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxHY/ypRcjTg5TsZRaoQK31psb9y/vV26Xnbj/l6lE6PeheJEYSaDyTSaGX+fe0fFMMvdRZw==
+X-Received: by 2002:adf:dc4f:: with SMTP id m15mr35092229wrj.420.1618292867318;
+        Mon, 12 Apr 2021 22:47:47 -0700 (PDT)
+Received: from redhat.com ([2a10:8006:2281:0:1994:c627:9eac:1825])
+        by smtp.gmail.com with ESMTPSA id u9sm1326079wmc.38.2021.04.12.22.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 22:47:46 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 01:47:44 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jason Wang <jasowang@redhat.com>,
+        Wei Wang <weiwan@google.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH RFC v2 0/4] virtio net: spurious interrupt related fixes
+Message-ID: <20210413054733.36363-1-mst@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.mkp.ca.oracle.com (138.3.201.9) by BY3PR05CA0042.namprd05.prod.outlook.com (2603:10b6:a03:39b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.8 via Frontend Transport; Tue, 13 Apr 2021 05:47:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2a78537d-af3f-4758-8422-08d8fe3fa138
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4614:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB46141644CB59DB161F231D478E4F9@PH0PR10MB4614.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jyEYyzNUZRfEy1lbXrxc/p4fk3HND13cpJVY0iCQ6yX7Dv5Hd5NiG82500kL8GdsU2XJPU6HwVLGPlP/Tp1Qy7UqFLENFzD9hjFXJ+rkho6jo32Qxy9LeysjbMhmHsJwiUjJc8JG4rsxSTWKOOurslOe7v3ZuhOMFQmUShAOKXCr02D08x5arG0G77uZ5HKG2gcbnUodU0s3lFiAzz523JK5wd2zi4ig1q/TgqLL1WBIPVQ8Nvwg15nA9Es6guAHd6LsC6eOko8aFlR+m+AUTKoE74a5usZDO1h5KUcW2YLwdzMeSj6p0ujzBgKPv5Ve6axARrZEnhCqDJlfO3ifjd/p+bxmpqKGA/PIdSyAiBVU5h6wtJH+BMoPVxS7z2UDCHplp4zPzUidbNIh60fnUmfmEDv2AItVEWCft9WBRCCcSKTQqyNn67KRXQkT0cUFnhm27ebQie4G5KOEFt0wORrWURnnDP3R3SWKDp1UGZdEsbO3kjPiYteaDV9+TPdNr5UBDh7pV0cCFfSIE0jdnkDfo6s1rIRizi6/HzujuHgBENss1rpmoAhNCU7FFSINMLljEkbLt061CAlT14JMyRd7iYumzqmShyKB2Oflr8k3hs5lUsmeflhtF8CZc5ppUDgqlZUZ9lX3VAgFSMVykQyK5BVM8o8qefaIfkt1vQASRgSpAHX4ZfN1elZcqBqZd67a2Nh7isCuxTm6fYayTE6PWGRGkLkdTFVyBf73S7E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(346002)(396003)(39860400002)(966005)(2906002)(6486002)(4326008)(316002)(478600001)(66946007)(8936002)(38350700002)(83380400001)(66476007)(16526019)(38100700002)(186003)(5660300002)(6666004)(66556008)(26005)(7696005)(956004)(36756003)(86362001)(52116002)(2616005)(103116003)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NWF2UU0yMlBKNUoreUkwSUw3SGdUOTJidk42QTZGTlR1L1p0YW4xMEFZMldi?=
- =?utf-8?B?aS9NWjRFNUpmVVBESHZWbi92Z0Z1WFZLZ2hOV1NyZXFnUVNrUUFHdDVoY2hM?=
- =?utf-8?B?ZkpOKzY2ZUR2LzAxZDRZenY3MVkyeGxBdjdIWFJqMUJCbEwvalgwaTllMXRV?=
- =?utf-8?B?aUozcFVnZ000WFRwb0diS3YwN0ttcWN0T3lDalptS0RDcllUMndhWkJ0c1Zi?=
- =?utf-8?B?MVcxMmhVLzN5Qk8xRjF5OGlJTGJWbkpQMGYvZGlFeTRSU21RbFhWR1NKNVlt?=
- =?utf-8?B?M1FTKzIxSjJtTkhxMVFmbUM3eSsrTEFPbUswRzdTRUF3ZHBya0Vzc2Y5SlU2?=
- =?utf-8?B?SjM4V0oweHV2ZHQ0dnVqZDNDM21JdGlIV3dJOS9uSlpwdFZjK25qNWdlU3l3?=
- =?utf-8?B?TDRDSm0wMCsrV2pSQmk5ajV6UkFybkRFT3RwV2dOOE1Td3BCZmJBc016TTB6?=
- =?utf-8?B?Z2o0THBKbkh2NXJhbnF4dU53MGl5WUxMU0JNVFJnSElmMUlwQmp2RFN3N244?=
- =?utf-8?B?UElpNkEreWd2aENCYWFOZzA0VStraWRQK055VUFsSEpqLzZsWFo2Skc3Sk9i?=
- =?utf-8?B?MHA3T2RnWW1EV1FJV1U3U1NvQTdZOU14NXRRQ2JmNFdjNVp6KzZpVzNNK2FR?=
- =?utf-8?B?b2F6YUZuSDZXZ2MyNE15MVliREtocnpYSHlOdU9mWEd6MXJ3cTdIWjNBZU9J?=
- =?utf-8?B?b0hwU1Z2WlBKeGEvb1VvS1FrTzB0QVVHVVA4VjBQWTdZRDFFY0YxTmltUE9Z?=
- =?utf-8?B?M3Rna2ovNzJDMkF5WTBTc01BVWlnTmtka1dqVTJWUmhRVDZUa3JqTnZnbkZ6?=
- =?utf-8?B?WGFiMTZrNTFmaS83cXp0bVEzM1NiNkdFdWZHeDE2dzRMczF6dlVKWmJhRlJz?=
- =?utf-8?B?SjhXNEg0eGk1L2xETFN6RjdQMlVNR1d5TFkvcVduL0JodHVBc1NGV3RVeXN3?=
- =?utf-8?B?dlRZRE1kMWZVenpOYXBpZGNFUGpjeCtZZk96TlNKby92dHFsUFRXSXRYM2s1?=
- =?utf-8?B?TnhCZmoyYjd0MXlnMXFMY0k1RXNQWlZUNStqSWgvRUY4SFVmZ2RtSHV5Zlh4?=
- =?utf-8?B?ZW5xN3J0cXcrU2tSeTZZbkJmWHNpV1N5WEhFczdxbitIT1JqcGZWOVdDQmdZ?=
- =?utf-8?B?TWZZeWdQTlZhQmVKR09ON2lsWlo0d0lKMk1QeGpqRmVOTlZNV3NvckU4VGJn?=
- =?utf-8?B?S0lCdzRESSt0dG9SOUpqaVBPR2JiK2l0eTk4ZXNnOFI1b0U3RG1JQzFzK2lH?=
- =?utf-8?B?eVpFS1Q3QnNzby9UTmRCU1hHWFpFb21laUhxb3l1OTR4dWlsZ1JBeXRkL2M0?=
- =?utf-8?B?cE5LVUJ4SE5vTWM4VkdwZDZSNm9CNCtVL28yZ3NKUUExR2t2aEtlRThpdlBN?=
- =?utf-8?B?dnZvMWVuVjMwdjN3TTJrRjFwNkhvZ0h2ZGNkMTBSVDRKaHRvVWxOTlF1RW1p?=
- =?utf-8?B?SnN5bTN1OVRQbkJsYTNGMXp6dUhmbG80R2IyMEdHdmxCM0h2NEN6dGhmeEVv?=
- =?utf-8?B?MVJVdHArUWNoVi8raWoxeU1SNXIrbUMzWExBRm5GUHVoQy9kcGg1bTNaTi9B?=
- =?utf-8?B?UjR1MUsxa0lNb1BieFpIVnlYa29CZXVveERiY0pkTjNJaUZUWlUyUVpPWWxm?=
- =?utf-8?B?cW8vM2UvMkN3MHZURit6SnJvYjI5YmZscjFNenUvT3MxOWdhUDQvb001dmo5?=
- =?utf-8?B?cjcrRXVJVHVlb01OQVRscU04V3RzTnRyaVNBTEZaWGhEUWxZd2RjY0t3S2d1?=
- =?utf-8?Q?T1bItyNZy9XgdYhy5GJi3NycAGyI4Vw7lJ8RGQx?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a78537d-af3f-4758-8422-08d8fe3fa138
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 05:47:31.5887
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LqFiHA9TZL0r4rWuOok5hzdAwlsrG2MvDgF1ho9/72jF/cVUTUp9xJXNF4wewt66shA7dYP0xEn7gemM9XQwZQKXfI18FonwRpbN2Sq3CD8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4614
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130039
-X-Proofpoint-GUID: sSseysTNBwaZhtj3Fj9jEu87TMHpfSeO
-X-Proofpoint-ORIG-GUID: sSseysTNBwaZhtj3Fj9jEu87TMHpfSeO
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- clxscore=1011 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130039
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Mar 2021 15:56:32 -0700, Jolly Shah wrote:
+With the implementation of napi-tx in virtio driver, we clean tx
+descriptors from rx napi handler, for the purpose of reducing tx
+complete interrupts. But this introduces a race where tx complete
+interrupt has been raised, but the handler finds there is no work to do
+because we have done the work in the previous rx interrupt handler.
+A similar issue exists with polling from start_xmit, it is however
+less common because of the delayed cb optimization of the split ring -
+but will likely affect the packed ring once that is more common.
 
-> When the cache_type for the scsi device is changed, the scsi layer
-> issues a MODE_SELECT command. The caching mode details are communicated
-> via a request buffer associated with the scsi command with data
-> direction set as DMA_TO_DEVICE (scsi_mode_select). When this command
-> reaches the libata layer, as a part of generic initial setup, libata
-> layer sets up the scatterlist for the command using the scsi command
-> (ata_scsi_qc_new). This command is then translated by the libata layer
-> into ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat). The libata layer
-> treats this as a non data command (ata_mselect_caching), since it only
-> needs an ata taskfile to pass the caching on/off information to the
-> device. It does not need the scatterlist that has been setup, so it does
-> not perform dma_map_sg on the scatterlist (ata_qc_issue). Unfortunately,
-> when this command reaches the libsas layer(sas_ata_qc_issue), libsas
-> layer sees it as a non data command with a scatterlist. It cannot
-> extract the correct dma length, since the scatterlist has not been
-> mapped with dma_map_sg for a DMA operation. When this partially
-> constructed SAS task reaches pm80xx LLDD, it results in below warning.
-> 
-> [...]
+In particular, this was reported to lead to the following warning msg:
+[ 3588.010778] irq 38: nobody cared (try booting with the
+"irqpoll" option)
+[ 3588.017938] CPU: 4 PID: 0 Comm: swapper/4 Not tainted
+5.3.0-19-generic #20~18.04.2-Ubuntu
+[ 3588.017940] Call Trace:
+[ 3588.017942]  <IRQ>
+[ 3588.017951]  dump_stack+0x63/0x85
+[ 3588.017953]  __report_bad_irq+0x35/0xc0
+[ 3588.017955]  note_interrupt+0x24b/0x2a0
+[ 3588.017956]  handle_irq_event_percpu+0x54/0x80
+[ 3588.017957]  handle_irq_event+0x3b/0x60
+[ 3588.017958]  handle_edge_irq+0x83/0x1a0
+[ 3588.017961]  handle_irq+0x20/0x30
+[ 3588.017964]  do_IRQ+0x50/0xe0
+[ 3588.017966]  common_interrupt+0xf/0xf
+[ 3588.017966]  </IRQ>
+[ 3588.017989] handlers:
+[ 3588.020374] [<000000001b9f1da8>] vring_interrupt
+[ 3588.025099] Disabling IRQ #38
 
-Applied to 5.12/scsi-fixes, thanks!
+This patchset attempts to fix this by cleaning up a bunch of races
+related to the handling of sq callbacks (aka tx interrupts).
+Very lightly tested, sending out for help with testing, early feedback
+and flames. Thanks!
 
-[1/1] scsi: libsas: Reset num_scatter if libata mark qc as NODATA
-      https://git.kernel.org/mkp/scsi/c/176ddd89171d
+Michael S. Tsirkin (4):
+  virtio: fix up virtio_disable_cb
+  virtio_net: disable cb aggressively
+  virtio_net: move tx vq operation under tx queue lock
+  virtio_net: move txq wakeups under tx q lock
+
+ drivers/net/virtio_net.c     | 35 +++++++++++++++++++++++++++++------
+ drivers/virtio/virtio_ring.c | 26 +++++++++++++++++++++++++-
+ 2 files changed, 54 insertions(+), 7 deletions(-)
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+MST
+
