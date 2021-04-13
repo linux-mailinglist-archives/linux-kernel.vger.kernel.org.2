@@ -2,209 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D72435E6FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F0A35E6FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243845AbhDMTSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:18:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhDMTR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:17:58 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48ADC613C4;
-        Tue, 13 Apr 2021 19:17:38 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 15:17:36 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org
-Subject: Re: [PATCH v3 1/5] tracing: Define new ftrace event "func_repeats"
-Message-ID: <20210413151736.36ec77eb@gandalf.local.home>
-In-Reply-To: <20210409181031.26772-2-y.karadz@gmail.com>
-References: <20210409181031.26772-1-y.karadz@gmail.com>
-        <20210409181031.26772-2-y.karadz@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1343498AbhDMTUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229458AbhDMTUe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:20:34 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FAAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:20:14 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id x16so18240499iob.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qUYPcj8zrA5dCXV+Qd7SV6lPwqpZcDSVkNd2rz1KGP4=;
+        b=Gzs3YBuQdikVGHOQ0Jpqli7GUxYflzrfBuLoFvlAAy3NqLjZ2PRBtB8+1VwIE6isCY
+         kIZAfWUdKN6XC8NSnk1z6P3jdfds4l2PBFqOb2ggsMHN1YV0iDxAKcwWfxh5PWfXJo8F
+         0UwJe6JNkq1vB5bMA+8S15rDSFnHzbSWvArJTsdlqGKNkiUkcgifJjjdc5+msvxn1KIs
+         RQvX4ifvcr1Etk9Ogernfx6NjX1pQZLdYRT4sc9HxLtJs5OgBf2lu9Urc21zEe4/cPgY
+         2+eTltF7ldJ79SwjjCjExpTTN29ZmNlkyNVl36xG0zRcS0M+/otq98h6Cp0o0FnwXwEf
+         kW3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qUYPcj8zrA5dCXV+Qd7SV6lPwqpZcDSVkNd2rz1KGP4=;
+        b=t0kRLAKhZPRcsqHlsUckprBPgpR+1+EkPXw5JmVX6DzWPCxiE2CME4V9Np1XEhD2iJ
+         uvJfavrzy9QgqFpmS1EwhFGSkTM2vRbWn7sHOVCgnmzc7+Br0yJXouhEsIbbv+hA9cPd
+         wU0njhF0vGa/xgzGz3WnIA33W9xJwiuD23/fAdKh8K6et45OfEqRaF0V9UsYbSbLh9HX
+         ef1fqaJD4QMvLY/CayDB2t1QDsr1I5+hgGpzCeGtkx2VNBWJO+YhG546EgEC0xZBrpxY
+         UgqffMHss0KCgp3Ryu5zuXcFBVfqXobtXlOr246NBf3uaOMpy7iKK4NiAhl0/Lk/W5zV
+         7QVQ==
+X-Gm-Message-State: AOAM532z4OVsnp8Q03chE21UCBQ4xEzIYOG4FMEAKe1aUzMG6nPTcVUd
+        aNfamrTkDQwA+RnxMWzaOOA6O8rMHcgwANLQWFqHkg==
+X-Google-Smtp-Source: ABdhPJwSwBukOLXixI0WMfs2vnVZ5rnPEXzOUNbTKi4Duil4sVjTdcPyLwsKfy79OAMMKO+qB+v38GYYF6GQf0GUMig=
+X-Received: by 2002:a5d:83cf:: with SMTP id u15mr27662714ior.34.1618341613707;
+ Tue, 13 Apr 2021 12:20:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1618254007.git.ashish.kalra@amd.com> <c349516d85d9e3fc7404d564ff81d7ebecc1162c.1618254007.git.ashish.kalra@amd.com>
+ <CABayD+cNLdoPHYvw0ZAXZS2wRg4cCFGTMvON0Ja2cWJ4juHNbA@mail.gmail.com>
+ <CABayD+c2P9miY2pKG=k1Ey3cj6RZG98WgssLCnBJgoW9Fng7gg@mail.gmail.com>
+ <20210413014821.GA3276@ashkalra_ubuntu_server> <CABayD+dqg+CYm4hAc6gRY6ygpbgpm-a7jo6ZGotbcA3arq9yQg@mail.gmail.com>
+ <20210413114712.GA3996@ashkalra_ubuntu_server>
+In-Reply-To: <20210413114712.GA3996@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Tue, 13 Apr 2021 12:19:37 -0700
+Message-ID: <CABayD+fx5++vD0LHEysvQ4Wj9VDa_spUo2dUouCds5EiYFyHMg@mail.gmail.com>
+Subject: Re: [PATCH v12 13/13] x86/kvm: Add kexec support for SEV Live Migration.
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Venu Busireddy <venu.busireddy@oracle.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Apr 2021 21:10:27 +0300
-"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
+On Tue, Apr 13, 2021 at 4:47 AM Ashish Kalra <ashish.kalra@amd.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 07:25:03PM -0700, Steve Rutherford wrote:
+> > On Mon, Apr 12, 2021 at 6:48 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+> > >
+> > > On Mon, Apr 12, 2021 at 06:23:32PM -0700, Steve Rutherford wrote:
+> > > > On Mon, Apr 12, 2021 at 5:22 PM Steve Rutherford <srutherford@google.com> wrote:
+> > > > >
+> > > > > On Mon, Apr 12, 2021 at 12:48 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+> > > > > >
+> > > > > > From: Ashish Kalra <ashish.kalra@amd.com>
+> > > > > >
+> > > > > > Reset the host's shared pages list related to kernel
+> > > > > > specific page encryption status settings before we load a
+> > > > > > new kernel by kexec. We cannot reset the complete
+> > > > > > shared pages list here as we need to retain the
+> > > > > > UEFI/OVMF firmware specific settings.
+> > > > > >
+> > > > > > The host's shared pages list is maintained for the
+> > > > > > guest to keep track of all unencrypted guest memory regions,
+> > > > > > therefore we need to explicitly mark all shared pages as
+> > > > > > encrypted again before rebooting into the new guest kernel.
+> > > > > >
+> > > > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > > > > ---
+> > > > > >  arch/x86/kernel/kvm.c | 24 ++++++++++++++++++++++++
+> > > > > >  1 file changed, 24 insertions(+)
+> > > > > >
+> > > > > > diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> > > > > > index bcc82e0c9779..4ad3ed547ff1 100644
+> > > > > > --- a/arch/x86/kernel/kvm.c
+> > > > > > +++ b/arch/x86/kernel/kvm.c
+> > > > > > @@ -39,6 +39,7 @@
+> > > > > >  #include <asm/cpuidle_haltpoll.h>
+> > > > > >  #include <asm/ptrace.h>
+> > > > > >  #include <asm/svm.h>
+> > > > > > +#include <asm/e820/api.h>
+> > > > > >
+> > > > > >  DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
+> > > > > >
+> > > > > > @@ -384,6 +385,29 @@ static void kvm_pv_guest_cpu_reboot(void *unused)
+> > > > > >          */
+> > > > > >         if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
+> > > > > >                 wrmsrl(MSR_KVM_PV_EOI_EN, 0);
+> > > > > > +       /*
+> > > > > > +        * Reset the host's shared pages list related to kernel
+> > > > > > +        * specific page encryption status settings before we load a
+> > > > > > +        * new kernel by kexec. NOTE: We cannot reset the complete
+> > > > > > +        * shared pages list here as we need to retain the
+> > > > > > +        * UEFI/OVMF firmware specific settings.
+> > > > > > +        */
+> > > > > > +       if (sev_live_migration_enabled & (smp_processor_id() == 0)) {
+> > > > > What happens if the reboot of CPU0 races with another CPU servicing a
+> > > > > device request (while the reboot is pending for that CPU)?
+> > > > > Seems like you could run into a scenario where you have hypercalls racing.
+> > > > >
+> > > > > Calling this on every core isn't free, but it is an easy way to avoid this race.
+> > > > > You could also count cores, and have only last core do the job, but
+> > > > > that seems more complicated.
+> > > > On second thought, I think this may be insufficient as a fix, since my
+> > > > read of kernel/reboot.c seems to imply that devices aren't shutdown
+> > > > until after these notifiers occur. As such, a single thread might be
+> > > > able to race with itself. I could be wrong here though.
+> > > >
+> > > > The heavy hammer would be to disable migration through the MSR (which
+> > > > the subsequent boot will re-enable).
+> > > >
+> > > > I'm curious if there is a less "blocking" way of handling kexecs (that
+> > > > strategy would block LM while the guest booted).
+> > > >
+> > > > One option that comes to mind would be for the guest to "mute" the
+> > > > encryption status hypercall after the call to reset the encryption
+> > > > status. The problem would be that the encryption status for pages
+> > > > would be very temporarily inaccurate in the window between that call
+> > > > and the start of the next boot. That isn't ideal, but, on the other
+> > > > hand, the VM was about to reboot anyway, so a corrupted shared page
+> > > > for device communication probably isn't super important. Still, I'm
+> > > > not really a fan of that. This would avoid corrupting the next boot,
+> > > > which is clearly an improvement.
+> > > >
+> > > > Each time the kernel boots it could also choose something like a
+> > > > generation ID, and pass that down each time it calls the hypercall.
+> > > > This would then let userspace identify which requests were coming from
+> > > > the subsequent boot.
+> > > >
+> > > > Everything here (except, perhaps, disabling migration through the MSR)
+> > > > seems kind of complicated. I somewhat hope my interpretation of
+> > > > kernel/reboot.c is wrong and this race just is not possible in the
+> > > > first place.
+> > > >
+> > >
+> > > Disabling migration through the MSR after resetting the page encryption
+> > > status is a reasonable approach. There is a similar window existing for
+> > > normal VM boot during which LM is disabled, from the point where OVMF
+> > > checks and adds support for SEV LM and the kernel boot checks for the
+> > > same and enables LM using the MSR.
+> >
+> > I'm not totally confident that disabling LM through the MSR is
+> > sufficient. I also think the newly booted kernel needs to reset the
+> > state itself, since nothing stops the hypercalls after the disable
+> > goes through. The host won't know the difference between early boot
+> > (pre-enablement) hypercalls and racy just-before-restart hypercalls.
+> > You might disable migration through the hypercall, get a late status
+> > change hypercall, reboot, then re-enable migration, but still have
+> > stale state.
+> >
+> > I _believe_ that the kernel doesn't mark it's RAM as private on boot
+> > as an optimization (might be wrong about this), since it would have
+> > been expensive to mark all of ram as encrypted previously. I believe
+> > that is no longer a limitation given the KVM_EXIT, so we can reset
+> > this during early boot instead of just before the kexec.
+> >
+>
+> I was wondering if disabling both migration (via the MSR) and "muting"
+> the hypercall using the "sev_live_migration_enabled" variable after the
+> page encryption status has been reset, will reset the page encryption
+> status of the guest to the (last known/good) configuration available to
+> the guest at boot time (i.e, all RAM pages marked as private and UEFI
+> setup shared MMIO/device regions, etc).
+>
+> But disabling migration and muting hypercalls after page encryption
+> status reset is still "racy" with hypercalls on other vCPUS, and that
+> can potentially mess-up the page encryption status available to guest
+> after kexec.
+>
+> So probably, as you mentioned above, resetting the page encryption
+> status during early boot (immediately after detecting host support for
+> migration and enabling the hypercalls) instead of just before the kexec
+> is a good fix.
+That strategy sounds good to me.
 
-> ---
->  kernel/trace/trace.h         |  3 +++
->  kernel/trace/trace_entries.h | 22 +++++++++++++++++
->  kernel/trace/trace_output.c  | 47 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 72 insertions(+)
-> 
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index 5506424eae2a..6a5b4c2a0fa7 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -45,6 +45,7 @@ enum trace_type {
->  	TRACE_BPUTS,
->  	TRACE_HWLAT,
->  	TRACE_RAW_DATA,
-> +	TRACE_FUNC_REPEATS,
->  
->  	__TRACE_LAST_TYPE,
->  };
-> @@ -442,6 +443,8 @@ extern void __ftrace_bad_type(void);
->  			  TRACE_GRAPH_ENT);		\
->  		IF_ASSIGN(var, ent, struct ftrace_graph_ret_entry,	\
->  			  TRACE_GRAPH_RET);		\
-> +		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
-> +			  TRACE_FUNC_REPEATS);				\
->  		__ftrace_bad_type();					\
->  	} while (0)
->  
-> diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
-> index 4547ac59da61..fdd022a7aecf 100644
-> --- a/kernel/trace/trace_entries.h
-> +++ b/kernel/trace/trace_entries.h
-> @@ -338,3 +338,25 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
->  		 __entry->nmi_total_ts,
->  		 __entry->nmi_count)
->  );
-> +
-> +#define FUNC_REPEATS_GET_DELTA_TS(entry)			\
-> +(((u64)entry->top_delta_ts << 32) | entry->bottom_delta_ts)	\
-> +
-> +FTRACE_ENTRY(func_repeats, func_repeats_entry,
-> +
-> +	TRACE_FUNC_REPEATS,
-> +
-> +	F_STRUCT(
-> +		__field(	unsigned long,	ip		)
-> +		__field(	unsigned long,	parent_ip	)
-> +		__field(	u16	,	count		)
-> +		__field(	u16	,	top_delta_ts	)
-> +		__field(	u32	,	bottom_delta_ts	)
-> +	),
-> +
-> +	F_printk(" %ps <-%ps\t(repeats:%u  delta_ts: -%llu)",
-> +		 (void *)__entry->ip,
-> +		 (void *)__entry->parent_ip,
-> +		 __entry->count,
-> +		 FUNC_REPEATS_GET_DELTA_TS(__entry))
-> +);
-
-Running this with trace-cmd record, this displays:
-
-          <idle>-0     [001]   261.848848: function:                            next_zone
-          <idle>-0     [001]   261.848849: func_repeats:          next_zone <-need_update       (repeats:3  delta_ts: -189)
-
-Which is confusing in a number of ways.
-
-1. It would be better to have it be the actual timestamp of the last repeat.
-   But that can be done in a trace-cmd plugin (like the function trace has).
-
-2. It should be "delta_ns:" because it is not -189 from the timestamp, as
-   the above time stamp is truncated to microseconds and this is not
-   obvious to the user.
-
-
-> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-> index a0146e1fffdf..55b08e146afc 100644
-> --- a/kernel/trace/trace_output.c
-> +++ b/kernel/trace/trace_output.c
-> @@ -1373,6 +1373,52 @@ static struct trace_event trace_raw_data_event = {
->  	.funcs		= &trace_raw_data_funcs,
->  };
->  
-> +static enum print_line_t
-> +trace_func_repeats_raw(struct trace_iterator *iter, int flags,
-> +			 struct trace_event *event)
-> +{
-> +	struct func_repeats_entry *field;
-> +	struct trace_seq *s = &iter->seq;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +
-> +	trace_seq_printf(s, "%lu %lu %u %llu\n",
-> +			 field->ip,
-> +			 field->parent_ip,
-> +			 field->count,
-> +			 FUNC_REPEATS_GET_DELTA_TS(field));
-> +
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static enum print_line_t
-> +trace_func_repeats_print(struct trace_iterator *iter, int flags,
-> +			 struct trace_event *event)
-> +{
-> +	struct func_repeats_entry *field;
-> +	struct trace_seq *s = &iter->seq;
-> +
-> +	trace_assign_type(field, iter->ent);
-> +
-> +	seq_print_ip_sym(s, field->ip, flags);
-> +	trace_seq_puts(s, " <-");
-> +	seq_print_ip_sym(s, field->parent_ip, flags);
-> +	trace_seq_printf(s, " (repeats: %u, delta_ts: -%llu)\n",
-> +			 field->count,
-> +			 FUNC_REPEATS_GET_DELTA_TS(field));
-
-Here there's no reason to have either of the above issues.
-We should show the timestamp of the last event.
-
-	trace_seq_printf(s, " (repeats: %u, last_ts:", field->count);
-	trace_print_time(s, iter,
-			 iter->ts - FUNC_REPEATS_GET_DELTA_TS(field));
-	trace_seq_puts(s, ")\n");
-
-Where we can add another patch to create the trace_print_time() that
-uses the code from trace_print_context().
-
-static void trace_print_time(struct trace_seq *s, struct trace_iterator *iter,
-			     unsigned long long ts)
-{
-	unsigned long secs, usec_rem;
-	unsigned long long t;
-
-	if (iter->iter_flags & TRACE_FILE_TIME_IN_NS) {
-		t = ns2usecs(iter->ts);
-		usec_rem = do_div(t, USEC_PER_SEC);
-		secs = (unsigned long)t;
-		trace_seq_printf(s, " %5lu.%06lu: ", secs, usec_rem);
-	} else
-		trace_seq_printf(s, " %12llu: ", iter->ts);
-}
-
-And we may need to do something interesting if this is a latency format as
-well. But we can add that another day.
-
--- Steve
-
-> +
-> +	return trace_handle_return(s);
-> +}
-> +
-> +static struct trace_event_functions trace_func_repeats_funcs = {
-> +	.trace		= trace_func_repeats_print,
-> +	.raw		= trace_func_repeats_raw,
-> +};
-> +
-> +static struct trace_event trace_func_repeats_event = {
-> +	.type	 	= TRACE_FUNC_REPEATS,
-> +	.funcs		= &trace_func_repeats_funcs,
-> +};
->  
->  static struct trace_event *events[] __initdata = {
->  	&trace_fn_event,
-> @@ -1385,6 +1431,7 @@ static struct trace_event *events[] __initdata = {
->  	&trace_print_event,
->  	&trace_hwlat_event,
->  	&trace_raw_data_event,
-> +	&trace_func_repeats_event,
->  	NULL
->  };
->  
-
+Thanks,
+Steve
+>
+> Thanks,
+> Ashish
+>
+> > > > > > +               int i;
+> > > > > > +               unsigned long nr_pages;
+> > > > > > +
+> > > > > > +               for (i = 0; i < e820_table->nr_entries; i++) {
+> > > > > > +                       struct e820_entry *entry = &e820_table->entries[i];
+> > > > > > +
+> > > > > > +                       if (entry->type != E820_TYPE_RAM)
+> > > > > > +                               continue;
+> > > > > > +
+> > > > > > +                       nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
+> > > > > > +
+> > > > > > +                       kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
+> > > > > > +                                          entry->addr, nr_pages, 1);
+> > > > > > +               }
+> > > > > > +       }
+> > > > > >         kvm_pv_disable_apf();
+> > > > > >         kvm_disable_steal_time();
+> > > > > >  }
+> > > > > > --
+> > > > > > 2.17.1
+> > > > > >
