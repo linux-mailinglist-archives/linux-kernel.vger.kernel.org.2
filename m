@@ -2,153 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FE035E087
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD635E08D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346173AbhDMNqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:46:36 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:44718 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346151AbhDMNq3 (ORCPT
+        id S1345175AbhDMNsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:48:03 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:34854 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346168AbhDMNrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:46:29 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A3D1D8AF;
-        Tue, 13 Apr 2021 15:46:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618321567;
-        bh=ERzFPHfwcC1rsN/DqiEKlswPknAmFAYpH+SlZCHO53s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M+mVpGANMD7po+3PLGrcQK+tltANs7uEpInW1c0IEonhQ3Rd/h5sawXyi0/08uqdD
-         1gf6EPhyF5ypqxn0ylQFS1KOOI+/qhlfpEJNlZTSMMjSlhM6QwW0qoCmmoQr37FJFF
-         bcfl9eWNSPHvuHH9tlsMlpoxghqi1IWm/oJdwLxs=
-Date:   Tue, 13 Apr 2021 16:45:17 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        Mitali Borkar <mitaliborkar810@gmail.com>,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH 1/1] staging: ipu3-imgu: Move the UAPI header from
- include under include/uapi
-Message-ID: <YHWgbZTDAWBX9EpR@pendragon.ideasonboard.com>
-References: <20210412111120.31625-1-sakari.ailus@linux.intel.com>
+        Tue, 13 Apr 2021 09:47:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1618321621; x=1649857621;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=zPB0tcxm7VsQe0IrZ2J3oFyEAOuY/wCfEhpeW5QXJ74=;
+  b=UZRUI+YfbzlLhSbSasJSCIbjveL0IQAHhjTdQAAxBnjlxWEzyLr+tzjN
+   OFLYiliwxgXYZYwQ9d4W+5HYzd+totio6F5z+sEQHE88qAheZNq4zn0CM
+   0kXWLpptMbGb54AgP504Poh9UHnlyW/WpStb/8CZFSdri6wFzpDVQm4+H
+   M=;
+X-IronPort-AV: E=Sophos;i="5.82,219,1613433600"; 
+   d="scan'208";a="105754919"
+Subject: Re: [PATCH v2 1/4] KVM: x86: Move FPU register accessors into fpu.h
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 13 Apr 2021 13:46:54 +0000
+Received: from EX13D28EUC003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 58567A1CEA;
+        Tue, 13 Apr 2021 13:46:47 +0000 (UTC)
+Received: from uc8bbc9586ea454.ant.amazon.com (10.43.162.93) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 13 Apr 2021 13:46:38 +0000
+Date:   Tue, 13 Apr 2021 15:46:34 +0200
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+CC:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Sean Christopherson" <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "Jim Mattson" <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>
+Message-ID: <20210413134634.GA27585@uc8bbc9586ea454.ant.amazon.com>
+References: <cover.1618244920.git.sidcha@amazon.de>
+ <5d2945df9dd807dca45ab256c88aeb4430ecf508.1618244920.git.sidcha@amazon.de>
+ <87y2dm5ml3.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210412111120.31625-1-sakari.ailus@linux.intel.com>
+In-Reply-To: <87y2dm5ml3.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.43.162.93]
+X-ClientProxiedBy: EX13D44UWB001.ant.amazon.com (10.43.161.32) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-
-Thank you for the patch.
-
-On Mon, Apr 12, 2021 at 02:11:20PM +0300, Sakari Ailus wrote:
-> The header defines the user space interface but may be mistaken as
-> kernel-only header due to its location. Add "uapi" directory under
-> driver's include directory and move the header there.
+On Tue, Apr 13, 2021 at 03:40:56PM +0200, Vitaly Kuznetsov wrote:
+> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+> > @@ -0,0 +1,140 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +#ifndef __KVM_FPU_H_
+> > +#define __KVM_FPU_H_
+> > +
+> > +#include <asm/fpu/api.h>
+> > +
+> > +typedef u32          __attribute__((vector_size(16))) sse128_t;
 > 
-> Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> ---
->  Documentation/admin-guide/media/ipu3.rst      | 35 ++++++++++---------
->  .../media/v4l/pixfmt-meta-intel-ipu3.rst      |  2 +-
->  .../ipu3/include/{ => uapi}/intel-ipu3.h      |  0
->  drivers/staging/media/ipu3/ipu3-abi.h         |  2 +-
->  4 files changed, 20 insertions(+), 19 deletions(-)
->  rename drivers/staging/media/ipu3/include/{ => uapi}/intel-ipu3.h (100%)
+> Post-patch we seem to have two definitions of 'sse128_t':
 > 
-> diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
-> index f59697c7b374..d6454f637ff4 100644
-> --- a/Documentation/admin-guide/media/ipu3.rst
-> +++ b/Documentation/admin-guide/media/ipu3.rst
-> @@ -234,22 +234,23 @@ The IPU3 ImgU pipelines can be configured using the Media Controller, defined at
->  Running mode and firmware binary selection
->  ------------------------------------------
->  
-> -ImgU works based on firmware, currently the ImgU firmware support run 2 pipes in
-> -time-sharing with single input frame data. Each pipe can run at certain mode -
-> -"VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture, and
-> -"STILL" is used for still frame capture. However, you can also select "VIDEO" to
-> -capture still frames if you want to capture images with less system load and
-> -power. For "STILL" mode, ImgU will try to use smaller BDS factor and output
-> -larger bayer frame for further YUV processing than "VIDEO" mode to get high
-> -quality images. Besides, "STILL" mode need XNR3 to do noise reduction, hence
-> -"STILL" mode will need more power and memory bandwidth than "VIDEO" mode. TNR
-> -will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is running at
-> -“VIDEO” mode by default, the user can use v4l2 control V4L2_CID_INTEL_IPU3_MODE
-> -(currently defined in drivers/staging/media/ipu3/include/intel-ipu3.h) to query
-> -and set the running mode. For user, there is no difference for buffer queueing
-> -between the "VIDEO" and "STILL" mode, mandatory input and main output node
-> -should be enabled and buffers need be queued, the statistics and the view-finder
-> -queues are optional.
-> +ImgU works based on firmware, currently the ImgU firmware support run 2 pipes
-> +in time-sharing with single input frame data. Each pipe can run at certain mode
-> +- "VIDEO" or "STILL", "VIDEO" mode is commonly used for video frames capture,
-> +and "STILL" is used for still frame capture. However, you can also select
-> +"VIDEO" to capture still frames if you want to capture images with less system
-> +load and power. For "STILL" mode, ImgU will try to use smaller BDS factor and
-> +output larger bayer frame for further YUV processing than "VIDEO" mode to get
-> +high quality images. Besides, "STILL" mode need XNR3 to do noise reduction,
-> +hence "STILL" mode will need more power and memory bandwidth than "VIDEO" mode.
-> +TNR will be enabled in "VIDEO" mode and bypassed by "STILL" mode. ImgU is
-> +running at “VIDEO” mode by default, the user can use v4l2 control
-> +V4L2_CID_INTEL_IPU3_MODE (currently defined in
-> +drivers/staging/media/ipu3/include/uapi/intel-ipu3.h) to query and set the
-> +running mode. For user, there is no difference for buffer queueing between the
-> +"VIDEO" and "STILL" mode, mandatory input and main output node should be
-> +enabled and buffers need be queued, the statistics and the view-finder queues
-> +are optional.
+> $ git grep sse128_t
+> HEAD~3:arch/x86/kvm/fpu.h:typedef u32           __attribute__((vector_size(16))) sse128_t;
+> HEAD~3:arch/x86/kvm/fpu.h:#define __sse128_u    union { sse128_t vec; u64 as_u64[2]; u32 as_u32[4]; }
+> HEAD~3:arch/x86/kvm/fpu.h:static inline void _kvm_read_sse_reg(int reg, sse128_t *data)
+> HEAD~3:arch/x86/kvm/fpu.h:static inline void _kvm_write_sse_reg(int reg, const sse128_t *data)
+> HEAD~3:arch/x86/kvm/fpu.h:static inline void kvm_read_sse_reg(int reg, sse128_t *data)
+> HEAD~3:arch/x86/kvm/fpu.h:static inline void kvm_write_sse_reg(int reg, const sse128_t *data)
+> HEAD~3:arch/x86/kvm/kvm_emulate.h:typedef u32 __attribute__((vector_size(16))) sse128_t;
+> HEAD~3:arch/x86/kvm/kvm_emulate.h:              char valptr[sizeof(sse128_t)];
+> HEAD~3:arch/x86/kvm/kvm_emulate.h:              sse128_t vec_val;
+> 
+> Should the one from kvm_emulate.h go away?
 
-The reflow of the whole paragraph is a bit painful to review.
+Yes, removed.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+~ Sid.
 
->  
->  The firmware binary will be selected according to current running mode, such log
->  "using binary if_to_osys_striped " or "using binary if_to_osys_primary_striped"
-> @@ -586,7 +587,7 @@ preserved.
->  References
->  ==========
->  
-> -.. [#f5] drivers/staging/media/ipu3/include/intel-ipu3.h
-> +.. [#f5] drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
->  
->  .. [#f1] https://github.com/intel/nvt
->  
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst b/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
-> index 5f33d35532ef..84d81dd7a7b5 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
-> @@ -78,4 +78,4 @@ hardware and algorithm details.
->  Intel IPU3 ImgU uAPI data types
->  ===============================
->  
-> -.. kernel-doc:: drivers/staging/media/ipu3/include/intel-ipu3.h
-> +.. kernel-doc:: drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> similarity index 100%
-> rename from drivers/staging/media/ipu3/include/intel-ipu3.h
-> rename to drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-> diff --git a/drivers/staging/media/ipu3/ipu3-abi.h b/drivers/staging/media/ipu3/ipu3-abi.h
-> index e1185602c7fd..c76935b436d7 100644
-> --- a/drivers/staging/media/ipu3/ipu3-abi.h
-> +++ b/drivers/staging/media/ipu3/ipu3-abi.h
-> @@ -4,7 +4,7 @@
->  #ifndef __IPU3_ABI_H
->  #define __IPU3_ABI_H
->  
-> -#include "include/intel-ipu3.h"
-> +#include "include/uapi/intel-ipu3.h"
->  
->  /******************* IMGU Hardware information *******************/
->  
 
--- 
-Regards,
 
-Laurent Pinchart
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
