@@ -2,59 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB0A35E543
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36A435E545
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347271AbhDMRni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:43:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231512AbhDMRnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:43:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E74760FEA;
-        Tue, 13 Apr 2021 17:43:15 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 13:43:14 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     syzbot <syzbot+61e04e51b7ac86930589@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, axboe@kernel.dk, bp@alien8.de,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        masahiroy@kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        seanjc@google.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org
-Subject: Re: [syzbot] possible deadlock in del_gendisk
-Message-ID: <20210413134314.16068eeb@gandalf.local.home>
-In-Reply-To: <20210413134147.54556d9d@gandalf.local.home>
-References: <000000000000ae236f05bfde0678@google.com>
-        <20210413134147.54556d9d@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1347285AbhDMRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:43:54 -0400
+Received: from smtprelay0201.hostedemail.com ([216.40.44.201]:54674 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1347275AbhDMRnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:43:50 -0400
+Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0065F100E7B46;
+        Tue, 13 Apr 2021 17:43:27 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 87B871E04D8;
+        Tue, 13 Apr 2021 17:43:25 +0000 (UTC)
+Message-ID: <84b4db0f2c82adbd82e2b93f5b1511730cb0678e.camel@perches.com>
+Subject: Re: [PATCH] staging: media: tegra-vde: Align line break to match
+ with the open parenthesis in file trace.h
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        outreachy-kernel@googlegroups.com
+Date:   Tue, 13 Apr 2021 10:43:24 -0700
+In-Reply-To: <CABJPP5AEtg+615Q2d-d9aZf=CE7EFPKEbc7tr=gKo_H-XL+M5Q@mail.gmail.com>
+References: <20210412222040.GA13659@focaruja>
+         <YHW5Fwl55c7NJAeo@orome.fritz.box>
+         <CABJPP5AEtg+615Q2d-d9aZf=CE7EFPKEbc7tr=gKo_H-XL+M5Q@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: 9aydssrki5wx43zq6s8qzajxi8wuht6h
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 87B871E04D8
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/QF9YzwubwiFOs9EBwe/ADGp4cP1fI5cc=
+X-HE-Tag: 1618335805-903163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 13:41:47 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> As the below splats look like it has nothing to do with this patch, and
-> this patch will add a WARN() if there's broken logic somewhere, I bet the
-> bisect got confused (if it is automated and does a panic_on_warning),
-> because it will panic for broken code that his patch detects.
+On Tue, 2021-04-13 at 21:35 +0530, Dwaipayan Ray wrote:
+> On Tue, Apr 13, 2021 at 8:59 PM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > 
+> > On Mon, Apr 12, 2021 at 07:20:40PM -0300, Aline Santana Cordeiro wrote:
+> > > Align line break to match with the open parenthesis.
+> > > Issue detected by checkpatch.pl.
+> > > It consequently solved a few end lines with a '(',
+> > > issue also detected by checkpatch.pl
+> > > 
+> > > Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+> > > ---
+> > >  drivers/staging/media/tegra-vde/trace.h | 111 ++++++++++++++------------------
+> > >  1 file changed, 50 insertions(+), 61 deletions(-)
+> > 
+> > Ugh... I'd say this is one case where checkpatch.pl really shouldn't be
+> > complaining since this isn't a function call or declaration. It's more
+> > like a code snippet written with macros, so I don't think the same rules
+> > should apply.
+> > 
+> > Adding checkpatch folks (hence quoting in full): is there anything we
+> > can do about this without too much effort? Or should we just accept this
+> > the way it is?
+> > 
 > 
-> That is, the bisect was confused because it was triggering on two different
-> issues. One that triggered the reported splat below, and another that this
-> commit detects and warns on.
+> While it may be possible to add exceptions for trace headers on the
+> alignment rules, I don't know how many more such exceptions we will
+> end up adding. Such fine grained checks might be unnecessarily complex.
+> So I think we should just accept the way it is for now.
+> 
+> Joe might have a different opinion?
 
-Is it possible to update the the bisect to make sure that if it is failing
-on warnings, to make sure the warnings are somewhat related, before decided
-that its the same bug?
+Tracing uses a different style.
 
--- Steve
+Maybe just suppress various messages for complete code blocks
+of DECLARE_EVENT_CLASS, DEFINE_EVENT, and TRACE_EVENT
+
+
