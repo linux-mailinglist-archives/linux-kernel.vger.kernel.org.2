@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A53735E77C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4437D35E77D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 22:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348155AbhDMUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 16:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        id S1348161AbhDMURB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 16:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229590AbhDMUQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 16:16:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2921661206;
-        Tue, 13 Apr 2021 20:15:51 +0000 (UTC)
+        id S229590AbhDMURA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 16:17:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F316161242
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618344951;
-        bh=7k0AMOZwiZ1cm8Txz5rxv/cB0NXxA/r/+Svrk6c3PTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VpfeGaFxLS60vw0qzf/2jzWhd29D+8AHd3+zO6OedGr2bXPVIkL3EjXlS45Xlvhuk
-         EBWDg82IbOh4hl05phzhISnql3Th5JkkDS4gTOujHAze8sBUarvgHVEIQ28HbTl5bL
-         8+ykT+pUL56sxg9EOjbELkqwtjmaJS/qyQ+8jqHDZKAb3PUf8gTM2eT5e3o5aRStXe
-         ulFNXx040tOK40Pw/V/5iZkg1AvOZk9zoPaG+z2nbIxlejIWXNvvjQRPkApUZ1jsoX
-         J56calxDj8/wWxbDADkxK0u/RlCqhnY9YvpTNVFMHoi6QSkScwk8xU3I7ppe9S3ihY
-         9hOlvWjTVNGbQ==
-Date:   Tue, 13 Apr 2021 13:15:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Message-ID: <YHX79XWnwaAGFtxq@sol.localdomain>
-References: <20210413161330.20024-1-crecklin@redhat.com>
+        s=k20201202; t=1618345000;
+        bh=018/wT7YNp41Opa/wOlmQasGzutY4YJko3lMFOUYFkU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uFTx73jL2VN8tGeX/xS4VRQQEnRCaJMsw+8u4HZa2mlUUgFPXWNvef27/irWxa38o
+         oXuYsjbNHVxp/mdgNSFtZbmRRlsVUms/ULYQsQIwyRNDVloi5PGrQEeOEyp04wVxdM
+         yw5ZyTNQlZCPppcmp1f+5QI40eAq3mydIZZLIpsmo/4S9nB9dvkn3yANO54pmA81n+
+         itSuME8eZYjKe2dRFcAQChPsuWRUyK60CCxB7iQF7PrtudQ9rM20m6FNjpDBxnHiNX
+         etlD+IcrURJKi2o7VUaEN0Xm+wUdCQ2wA6ke1athykkb2kgWJh7gj/ZDcp1Hk9Zg0O
+         DhVUAMpsqp8Wg==
+Received: by mail-ed1-f54.google.com with SMTP id 18so20925459edx.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 13:16:39 -0700 (PDT)
+X-Gm-Message-State: AOAM530Py8j/kzdMTHLgBkE1sZcCcVXhGRvfuVBXVttJ5LD/ojmvXVkY
+        c2qoeS/k/6QNXYWQGGpuON3/2XJQzaCL3BNz2F0boQ==
+X-Google-Smtp-Source: ABdhPJz7z2X87zi2gHmfkAhv+g3fXHvwguoTjKVadVygUMK05U6oCXWxRpoCYKJtJ7EbRn8B3ifu6UmLIDXROcSXykE=
+X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr36407363edb.97.1618344998640;
+ Tue, 13 Apr 2021 13:16:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413161330.20024-1-crecklin@redhat.com>
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
+ <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+In-Reply-To: <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 13 Apr 2021 13:16:27 -0700
+X-Gmail-Original-Message-ID: <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
+Message-ID: <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Len Brown <lenb@kernel.org>, Willy Tarreau <w@1wt.eu>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:13:30PM -0400, Chris von Recklinghausen wrote:
-> +static inline void get_e820_crc32(struct e820_table *table, void *buf)
->  {
+On Mon, Apr 12, 2021 at 4:46 PM Len Brown <lenb@kernel.org> wrote:
+>
+> On Mon, Apr 12, 2021 at 11:21 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> > AMX: Multiplying a 4x4 matrix probably looks *great* in a
+> > microbenchmark.  Do it once and you permanently allocate 8kB (is that
+> > even a constant?  can it grow in newer parts?), potentially hurts all
+> > future context switches, and does who-knows-what to Turbo licenses and
+> > such.
+>
+> Intel expects that AMX will be extremely valuable to key workloads.
+> It is true that you may never run that kind of workload on the machine
+> in front of you,
+> and so you have every right to be doubtful about the value of AMX.
 
-This should just return the CRC-32 value as a u32.  There's no need for the
-'void *buf' argument.
+I fully believe that AMX will be amazing when used for the right
+workload.  The problem is that a library may have no way to tell
+whether a workload is the type of computationally intensive workload
+for which it makes sense.  Imagine you have a little function:
 
-Also like I said, compute_e820_crc32() would be a more logical name.
+int matrix_times_vector(int dim, float *out, const float *matrix,
+const float *vector);
 
-> @@ -179,7 +133,8 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
->  	 */
->  	rdr->cr3 = restore_cr3 & ~CR3_PCID_MASK;
->  
-> -	return hibernation_e820_save(rdr->e820_digest);
-> +	hibernation_e820_save(&rdr->e820_digest);
-> +	return 0;
+A clever library might use AMX for this.  If dim == 4 and the caller
+is planning to call it in a long, tight loop, maybe this even makes
+sense.  If dim == 4 and it's being called once, AMX is probably a
+losing proposition.  With previous technologies, at least the impact
+was limited to the function itself and maybe once per call to the
+caller.  But now, with AMX, the program that invoked this takes a
+performance and memory hit *forever* if it uses AMX once.
 
-Like I said, hibernation_e820_save() should just be inlined into here:
+Beyond that, we have the signal handling issue.  One solution, going
+off of what WIlly mentioned, is:
 
-	rdr->e820_digest = compute_e820_crc32(e820_table_firmware)
+bool amx_begin(void *signal_save_buffer);
+void amx_end();
 
-Having the helper function doesn't add anything.
+In the amx_begin() region, if you get a signal, the AMX state is saved
+in the buffer.  Outside the region, if you get a signal and AMX is in
+use, the kernel will either unceremoniously kill the task or will
+deliver SIGYOUBLEWIT. [0]
 
->  /**
-> @@ -200,7 +155,7 @@ int arch_hibernation_header_restore(void *addr)
->  	jump_address_phys = rdr->jump_address_phys;
->  	restore_cr3 = rdr->cr3;
->  
-> -	if (hibernation_e820_mismatch(rdr->e820_digest)) {
-> +	if (hibernation_e820_mismatch(&rdr->e820_digest)) {
+I'm really hoping some userspace people can chime in.
 
-Likewise, this should be just
 
-	if (rdr->e820_digest != compute_e820_crc32(e820_table_firmware)) {
-
-- Eric
+[0] We really ought to have a SIGSIGNALFAILURE or something for the
+case where normal signal delivery fails.  This is the userspace
+equivalent of #DF.  SIGYOUBLEWIT could be folded in.  There would be a
+flag in the signal frame saying "don't even try to sigreturn".
