@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF3235E1E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716F735E1EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbhDMOx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:53:26 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:43868 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhDMOxW (ORCPT
+        id S238492AbhDMOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhDMOxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:53:22 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEnYa3036778;
-        Tue, 13 Apr 2021 14:52:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=XlmNGq/1+E4+j5kYmK7x5/m8LnmtU0Ndl1MhNnKYffw=;
- b=BAlV+9aQn2uvlp+oY1x6eG6BdK8q5jawmxxEhaRqVG0LLkcOpVQPdMnhvG89CuxK4Pjj
- X6b7oatlzJiMcak5gExyMzQH+w5GVB2cVYMr3XFPpRXMZegJRIfybGn+0eL8WMIxWLqz
- YfSt9NLfEd+AVQSWrQ4erA7sugClm7ZvG9oUdFfj7tNnITWH6TMVtcqSeY/Zg5ZZp7z1
- YCvT+YmCN6V+/zAitttIbP7CUsvxsNeQFsXFIRb0NNmM1KXYCiXpGS2sWFvE2Izw7HW7
- yrRz7PtZL90yK5+cj5bl22yBektnLW8e7t4MFmOKsIjT1Al0YGjlIrwynQrjGhB/f7x3 Zw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 37u1hbffj9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:52:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DEjeu8161362;
-        Tue, 13 Apr 2021 14:52:52 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 37unwyvv2g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 14:52:52 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13DEqpq6014908;
-        Tue, 13 Apr 2021 14:52:51 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Apr 2021 07:52:51 -0700
-Date:   Tue, 13 Apr 2021 17:52:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/19] staging: rtl8723bs: remove unnecessary bracks on
- DBG_871X removal sites
-Message-ID: <20210413145245.GG6021@kadam>
-References: <cover.1617802415.git.fabioaiuto83@gmail.com>
- <35f5edf0f39b717b3de3ad7861cbaa5f4ba60576.1617802415.git.fabioaiuto83@gmail.com>
+        Tue, 13 Apr 2021 10:53:35 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B92C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:53:14 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id g20so8673482vst.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qpBExCiZQlQf9v/ukxaQqC4noDhKnFApocLLkZan05g=;
+        b=AE4Kwg+qjn9BXqj7AtlOnUMIVDmSIf4+8RPHjDrL+7Q4/2FPFk43jr0ryh2SJNewX1
+         gTbWtTgr39JeqZL/27PXabWcuKZJyrVbY0aSrg5d6oWcYZLOqgYfcGBA9GD3yE+24FEk
+         bJ524/31JiGvNYqcBZczVB8JHF8Sg+I/h6nMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qpBExCiZQlQf9v/ukxaQqC4noDhKnFApocLLkZan05g=;
+        b=OtEQUhtFHLUkgvuZkBxEscxdf5BTQLnekRLKUvZhHLA51fdTGP6JKqeyhDa8fV3tcM
+         Y6AI+LP6laAbMmoQHaYQcPSa0gr3Yj8XXmWStDLk++o7Py6UjaYt7pK1czoqoyv62VRX
+         alYauFHEnYoQ/NMehuRj6Hrx0IN8fhp4OgXPt7x/il3x0P58bu9i/FOI0V6y2Vof7GJe
+         WeMDtHTux5ilcKKSGiK6wMW1MaaxIo8wZHzVlEuSLy5kboomXxmsZcPAzIzilhdiZzOu
+         z1Dp2+IrN9fAJJJCE3DFyRaq0+5f3lhFininlY1Oc8X/o3+GcI1ya6VJ7AUS4wKZiSmC
+         QA5A==
+X-Gm-Message-State: AOAM533p7yksQDNNJ4f0xBkLgkPCQeZI+eYYYhjdPNQ5/4iV4FJijd3s
+        8UKxRI9AViX3aVk55Y12txzgR+8xKbSNsux5uO3cXA==
+X-Google-Smtp-Source: ABdhPJyK2wmF7sCncs1jt4t34+HmKqjg4ZPOu8kXNhYBq0UbUb8sg4DuOIarkxF7MP9BTwZkLJ2j+MD8Qa99ScQ6+5M=
+X-Received: by 2002:a67:6647:: with SMTP id a68mr21372885vsc.21.1618325592663;
+ Tue, 13 Apr 2021 07:53:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35f5edf0f39b717b3de3ad7861cbaa5f4ba60576.1617802415.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130106
-X-Proofpoint-GUID: 5WBQ4qNszvuj1d5rr6ONVqtYsYaBpGu4
-X-Proofpoint-ORIG-GUID: 5WBQ4qNszvuj1d5rr6ONVqtYsYaBpGu4
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130106
+References: <20210325193755.294925-1-mszeredi@redhat.com> <20210325193755.294925-2-mszeredi@redhat.com>
+ <20210413144502.GP2531743@casper.infradead.org>
+In-Reply-To: <20210413144502.GP2531743@casper.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 13 Apr 2021 16:53:01 +0200
+Message-ID: <CAJfpeguoKOpfCy1cJhKu1gWk53c=Od5Siyag=reT=KC1kqEuxQ@mail.gmail.com>
+Subject: Re: [PATCH v3 01/18] vfs: add fileattr ops
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Sterba <dsterba@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 03:49:36PM +0200, Fabio Aiuto wrote:
-> @@ -2586,11 +2583,9 @@ static int rtw_dbg_port(struct net_device *dev,
->  
->  								plist = get_next(plist);
->  
-> -								if (extra_arg == psta->aid) {
-> -									for (j = 0; j < 16; j++) {
-> +								if (extra_arg == psta->aid)
-> +									for (j = 0; j < 16; j++)
->  										preorder_ctrl = &psta->recvreorder_ctrl[j];
-> -									}
-> -								}
+On Tue, Apr 13, 2021 at 4:46 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Mar 25, 2021 at 08:37:38PM +0100, Miklos Szeredi wrote:
+> > @@ -107,6 +110,8 @@ fiemap:           no
+> >  update_time: no
+> >  atomic_open: shared (exclusive if O_CREAT is set in open flags)
+> >  tmpfile:     no
+> > +fileattr_get:        no or exclusive
+> > +fileattr_set:        exclusive
+> >  ============ =============================================
+>
+> This introduces a warning to `make htmldocs`:
+>
+> /home/willy/kernel/folio/Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
+> Text in column margin in table line 24.
+>
+> You need to add an extra '=' to the first batch of '=' (on all three lines of
+> the table).  Like this:
 
-I think Greg already applied this so no stress (don't bother fixing),
-but you removed a bit too much on this one.  Multi-line indents normally
-get curly braces for readability.  In other words:
+Yep, already fixed in #fileattr_v6, which I asked Al to pull.
 
-				if (extra_arg == psta->aid) {
-					for (j = 0; j < 16; j++)
-						preorder_ctrl = &psta->recvreorder_ctrl[j];
-				}
-
-regards,
-dan carpenter
-
+Thanks,
+Miklos
