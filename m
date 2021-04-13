@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389B335E6CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F91835E6D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348006AbhDMTEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:04:41 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21280 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1347972AbhDMTEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:04:39 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DJ3eOZ161635;
-        Tue, 13 Apr 2021 15:04:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Vf/cF5FC1kOSwf8zl1ouMavV5ViZPqPX/Q6h46xeuaM=;
- b=L4O7BYu8IkzWo8eVPRSlCDfB9qei00iT+RWDPKhMR+fGwaW4Ll7wUbZY0toPbotgU/0p
- ghqbl1UAnHzotFx9ABFnepqt0znj/boGKk/y2su7o9Nub20Qm1SrHpQVpkCzvaTrXvJE
- E1U2TpybykBXEvnPA9UM3qrfGfKQhTSmJTFQMrZ7wRdc//WqZlLS77NXrhmaJVxPBJsR
- i1IezfgjLxPXhyR9IVQ57K1JcFV6Kkg5by4sTHOC2YE1JkB4Q8qbF4O54DBVAB0JC3ZP
- NWYMJccrJwM9j7zZZ1P+Y+UXsAbW0cInNQR8A8LOSAoijSa0i79ArgaIR+fW4FfNugUA zA== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37vtnthn9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 15:04:07 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DIr3lL021020;
-        Tue, 13 Apr 2021 19:04:07 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma03dal.us.ibm.com with ESMTP id 37u3n99vp2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 19:04:07 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DJ46Fr24772952
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 19:04:06 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BFBF2805A;
-        Tue, 13 Apr 2021 19:04:06 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6AE828059;
-        Tue, 13 Apr 2021 19:04:05 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.117.75])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 19:04:05 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/pseries: extract host bridge from pci_bus prior
- to bus removal
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210211182435.47968-1-tyreld@linux.ibm.com>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <e36a28a8-12ff-5816-bf90-87fab97933ad@linux.ibm.com>
-Date:   Tue, 13 Apr 2021 12:04:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S1348015AbhDMTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231734AbhDMTFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:05:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7AFD613CA;
+        Tue, 13 Apr 2021 19:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618340705;
+        bh=adPubgfpOrI6A9TuJBDs8NDXHEvW3E+ZI2frnmYzgaM=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=gUREuKWiLE9Bq+o/j58E6XCRWi5cFvHI0oGGS5LjGmUsAtF6mR6lFZXwkpJpVNdcC
+         HRCsQVs8ovmUhm9rVONpaoBV9xk2UfMC6zAHhtrSC6ylO+yMQuFvLn+LVwArG314bk
+         FYveLJw6UeDOthVe/Dy3NRNdtC9KfuNeQ5z+f+Uj+kaVT5m+zg36b/1ik5W2YixD5g
+         oW0j32qRPtoCOVoYTFlno8VAVMFBCHjflBROwJWUBukPn7/BUHjMy1NALWSaVmEPiH
+         ZYt5MEZ2EBzGV8Fyiub/ODlmZqrXKsMqoGBQt96bpGKUVwVddDGF8kt0vIuzQQLORV
+         HRqsp9Sr1JNfQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210211182435.47968-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: gZm65Vb7GLTfZqO-Y6sqmUdJae8CUD0Q
-X-Proofpoint-ORIG-GUID: gZm65Vb7GLTfZqO-Y6sqmUdJae8CUD0Q
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_12:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- mlxscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130126
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210410055059.13518-2-sergio.paracuellos@gmail.com>
+References: <20210410055059.13518-1-sergio.paracuellos@gmail.com> <20210410055059.13518-2-sergio.paracuellos@gmail.com>
+Subject: Re: [PATCH v13 1/4] clk: ralink: add clock driver for mt7621 SoC
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
+        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        devel@driverdev.osuosl.org, neil@brown.name,
+        linux-kernel@vger.kernel.org
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 13 Apr 2021 12:05:03 -0700
+Message-ID: <161834070385.3764895.8150982536236653732@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 10:24 AM, Tyrel Datwyler wrote:
-> The pci_bus->bridge reference may no longer be valid after
-> pci_bus_remove() resulting in passing a bad value to device_unregister()
-> for the associated bridge device.
-> 
-> Store the host_bridge reference in a separate variable prior to
-> pci_bus_remove().
-> 
-> Fixes: 7340056567e3 ("powerpc/pci: Reorder pci bus/bridge unregistration during PHB removal")
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Quoting Sergio Paracuellos (2021-04-09 22:50:56)
+> The documentation for this SOC only talks about two
+> registers regarding to the clocks:
+> * SYSC_REG_CPLL_CLKCFG0 - provides some information about
+> boostrapped refclock. PLL and dividers used for CPU and some
+> sort of BUS.
+> * SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable
+> clocks for all or some ip cores.
+>=20
+> Looking into driver code, and some openWRT patched there are
+> another frequencies which are used in some drivers (uart, sd...).
+> According to all of this information the clock plan for this
+> SoC is set as follows:
+> - Main top clock "xtal" from where all the rest of the world is
+> derived.
+> - CPU clock "cpu" derived from "xtal" frequencies and a bunch of
+> register reads and predividers.
+> - BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
+> - Fixed clocks from "xtal":
+>     * "50m": 50 MHz.
+>     * "125m": 125 MHz.
+>     * "150m": 150 MHz.
+>     * "250m": 250 MHz.
+>     * "270m": 270 MHz.
+>=20
+> We also have a buch of gate clocks with their parents:
+>   * "hsdma": "150m"
+>   * "fe": "250m"
+>   * "sp_divtx": "270m"
+>   * "timer": "50m"
+>   * "pcm": "270m"
+>   * "pio": "50m"
+>   * "gdma": "bus"
+>   * "nand": "125m"
+>   * "i2c": "50m"
+>   * "i2s": "270m"
+>   * "spi": "bus"
+>   * "uart1": "50m"
+>   * "uart2": "50m"
+>   * "uart3": "50m"
+>   * "eth": "50m"
+>   * "pcie0": "125m"
+>   * "pcie1": "125m"
+>   * "pcie2": "125m"
+>   * "crypto": "250m"
+>   * "shxc": "50m"
+>=20
+> With this information the clk driver will provide clock and gates
+> functionality from a a set of hardcoded clocks allowing to define
+> a nice device tree without fixed clocks.
+>=20
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
 
-Ping?
+Applied to clk-next
