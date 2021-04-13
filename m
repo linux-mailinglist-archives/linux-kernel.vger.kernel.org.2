@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEB735E9B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 01:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFB435E9C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 01:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346495AbhDMXfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 19:35:07 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40520 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhDMXfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 19:35:06 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id DA262891AE;
-        Wed, 14 Apr 2021 11:34:43 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1618356883;
-        bh=yMLGMeN8aetNeb0sqPR1s+za2Wn36Ej/0WA/rd7dOGs=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=X8jYB31jPdqx46XGaWLy2GpGuw835J0iwcxnpk+APq8CG8dHDW9VM5dp/00gc+u0I
-         wqWx1lCFe8g0A/oWNTNljvS83kwm5utASnKE29ecSqk47QCfDeEC5A5UHqyZehTuG4
-         JtyxWXb613WCDtQQXgHbuDMeNLM3DD4+YeAH2GzYVdvHUQluzNe23nP38pQ6FEYcnJ
-         cPm1WAw1gT8FWRzYw5X7x/O0Q+Dlik7/TOlCWu0LBNpl7+RIpVuO7EQX70+hPYYF+g
-         rn+niYXM05eCq5oZ4ZysEb91OcC/9OBA0+ybPQFyReAjG+iOqSi2GgoC1tmJSO1/px
-         15RyXFQCmiXAA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60762a930002>; Wed, 14 Apr 2021 11:34:43 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 11:34:43 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Wed, 14 Apr 2021 11:34:43 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "wsa@kernel.org" <wsa@kernel.org>
-Subject: Re: [PATCH v1 1/4] i2c: mpc: Use devm_clk_get_optional()
-Thread-Topic: [PATCH v1 1/4] i2c: mpc: Use devm_clk_get_optional()
-Thread-Index: AQHXMHKat1FSTMvRwES1YZkQECI/uqqyURmA
-Date:   Tue, 13 Apr 2021 23:34:43 +0000
-Message-ID: <f6a11495-b015-d86d-76fe-ed0db8635e2b@alliedtelesis.co.nz>
-References: <20210413143756.60138-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210413143756.60138-1-andriy.shevchenko@linux.intel.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C3912B2EF2F774FAA7CAF0352E0A53A@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S1346069AbhDMXis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 19:38:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230123AbhDMXiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 19:38:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E262961220;
+        Tue, 13 Apr 2021 23:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618357105;
+        bh=i/SPq4DqaHJFgtAIJjeY4ErFuPgoVxrSMsgumddGdOI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=p/ZkOYkP5byOWa0qOE2JGfTFVH4PM71iq5H5DAGzh3a/Y86liNh2DTfR8OzjueNDq
+         z3ZWn5liyA3bOxSjxEHvNW1zI8oSxHSfSLNV2fiLUS42jmWFp463oIJDoqAh2ivZxv
+         z9WTnWahgYPlhgMfCY5SMvZcsvLgXD4LY1cpavmTMLZRHwK1m6nUNvvVjIx/DgNTAG
+         g//TbWfruhbfeo8Y0QVzGnORKzorJSXS0DOJt41LmuCgelTaZY6mD2qyXonqkdfu7Y
+         Xq6CxiwVSSUK0VEBHip4UA6y9XuCFEbKO1rfb+g9lyVerw7aaRGOr0HGHbDGz8qbRu
+         DU2bE5voEV6Xg==
+Received: by mail-ej1-f47.google.com with SMTP id mh2so7010851ejb.8;
+        Tue, 13 Apr 2021 16:38:25 -0700 (PDT)
+X-Gm-Message-State: AOAM530JAbJK2Dw42tKXmW8I2E1Fi1t4t7uHSY+0QyTTe9u5XSjTLkY5
+        IgDHArosbaMJdAHrZL65mpccqRNNIcCBrhS/cw==
+X-Google-Smtp-Source: ABdhPJzpH5eOS77fuaMMC1TeLT9DWDR87PI5sxoQLhq7SEPIPoVBozS6J7PZv1i/qiEEVXTWa8fAM544xi4x8RQkXWM=
+X-Received: by 2002:a17:906:b01:: with SMTP id u1mr8479963ejg.310.1618357104520;
+ Tue, 13 Apr 2021 16:38:24 -0700 (PDT)
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=QyXUC8HyAAAA:8 a=WhraH14GnagzVs7hiTcA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+References: <1618226325-31927-1-git-send-email-yongqiang.niu@mediatek.com> <1618226325-31927-4-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1618226325-31927-4-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 14 Apr 2021 07:38:13 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__zcdjA-tu4kNtWjy=37_HZV1U2fS6=k4OBAbjfNwC9Ow@mail.gmail.com>
+Message-ID: <CAAOTY__zcdjA-tu4kNtWjy=37_HZV1U2fS6=k4OBAbjfNwC9Ow@mail.gmail.com>
+Subject: Re: [PATCH v2, 3/5] Revert "dt-bindings: mailbox: mtk-gce: fix
+ incorrect mbox-cells value"
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxNC8wNC8yMSAyOjM3IGFtLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6DQo+IFRoZSBwZXJp
-cGhlcmFsIGNsb2NrIGlzIG9wdGlvbmFsIGFuZCB3ZSBtYXkgZ2V0IGFuIC1FUFJPQkVfREVGRVIg
-ZXJyb3IgY29kZQ0KPiB3aGljaCB3b3VsZCBub3QgYmUgcHJvcGFnYXRlZCBjb3JyZWN0bHksIGZp
-eCB0aGlzIGJ5IHVzaW5nDQo+IGRldm1fY2xrX2dldF9vcHRpb25hbCgpLg0KPg0KPiBTaWduZWQt
-b2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNv
-bT4NCg0KUmV2aWV3ZWQtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVs
-ZXNpcy5jby5uej4NCg0KTm9uZSBvZiB0aGUgc3lzdGVtcyBJIGhhdmUgYWNjZXNzIHRvIG1ha2Ug
-dXNlIG9mIHRoZSBjbG9ja3MgcHJvcGVydHkgc28gDQpJIGNhbid0IGRvIG11Y2ggdGVzdGluZy4g
-SSBjYW4gc2F5IGl0IHN0aWxsIGhhbmRsZXMgdGhlIGFic2VuY2Ugb2YgYSANCmNsb2NrcyBwcm9w
-ZXJ0eSBjb3JyZWN0bHkuDQoNCj4gLS0tDQo+ICAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tcGMu
-YyB8IDI1ICsrKysrKysrKysrKy0tLS0tLS0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMTIg
-aW5zZXJ0aW9ucygrKSwgMTMgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L2kyYy9idXNzZXMvaTJjLW1wYy5jIGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tcGMuYw0KPiBp
-bmRleCAzYzhiY2RmZmY3ZTcuLjZkYzAyOWEzMWQzNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9p
-MmMvYnVzc2VzL2kyYy1tcGMuYw0KPiArKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1wYy5j
-DQo+IEBAIC02OTAsMTcgKzY5MCwxOCBAQCBzdGF0aWMgaW50IGZzbF9pMmNfcHJvYmUoc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqb3ApDQo+ICAgCSAqIGVuYWJsZSBjbG9jayBmb3IgdGhlIEkyQyBw
-ZXJpcGhlcmFsIChub24gZmF0YWwpLA0KPiAgIAkgKiBrZWVwIGEgcmVmZXJlbmNlIHVwb24gc3Vj
-Y2Vzc2Z1bCBhbGxvY2F0aW9uDQo+ICAgCSAqLw0KPiAtCWNsayA9IGRldm1fY2xrX2dldCgmb3At
-PmRldiwgTlVMTCk7DQo+IC0JaWYgKCFJU19FUlIoY2xrKSkgew0KPiAtCQllcnIgPSBjbGtfcHJl
-cGFyZV9lbmFibGUoY2xrKTsNCj4gLQkJaWYgKGVycikgew0KPiAtCQkJZGV2X2Vycigmb3AtPmRl
-diwgImZhaWxlZCB0byBlbmFibGUgY2xvY2tcbiIpOw0KPiAtCQkJcmV0dXJuIGVycjsNCj4gLQkJ
-fSBlbHNlIHsNCj4gLQkJCWkyYy0+Y2xrX3BlciA9IGNsazsNCj4gLQkJfQ0KPiArCWNsayA9IGRl
-dm1fY2xrX2dldF9vcHRpb25hbCgmb3AtPmRldiwgTlVMTCk7DQo+ICsJaWYgKElTX0VSUihjbGsp
-KQ0KPiArCQlyZXR1cm4gUFRSX0VSUihjbGspOw0KPiArDQo+ICsJZXJyID0gY2xrX3ByZXBhcmVf
-ZW5hYmxlKGNsayk7DQo+ICsJaWYgKGVycikgew0KPiArCQlkZXZfZXJyKCZvcC0+ZGV2LCAiZmFp
-bGVkIHRvIGVuYWJsZSBjbG9ja1xuIik7DQo+ICsJCXJldHVybiBlcnI7DQo+ICAgCX0NCj4gICAN
-Cj4gKwlpMmMtPmNsa19wZXIgPSBjbGs7DQo+ICsNCj4gICAJaWYgKG9mX3Byb3BlcnR5X3JlYWRf
-Ym9vbChvcC0+ZGV2Lm9mX25vZGUsICJmc2wscHJlc2VydmUtY2xvY2tpbmciKSkgew0KPiAgIAkJ
-Y2xvY2sgPSBNUENfSTJDX0NMT0NLX1BSRVNFUlZFOw0KPiAgIAl9IGVsc2Ugew0KPiBAQCAtNzQ0
-LDggKzc0NSw3IEBAIHN0YXRpYyBpbnQgZnNsX2kyY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
-aWNlICpvcCkNCj4gICAJcmV0dXJuIDA7DQo+ICAgDQo+ICAgIGZhaWxfYWRkOg0KPiAtCWlmIChp
-MmMtPmNsa19wZXIpDQo+IC0JCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19wZXIpOw0K
-PiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19wZXIpOw0KPiAgIA0KPiAgIAlyZXR1
-cm4gcmVzdWx0Ow0KPiAgIH07DQo+IEBAIC03NTYsOCArNzU2LDcgQEAgc3RhdGljIGludCBmc2xf
-aTJjX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpvcCkNCj4gICANCj4gICAJaTJjX2Rl
-bF9hZGFwdGVyKCZpMmMtPmFkYXApOw0KPiAgIA0KPiAtCWlmIChpMmMtPmNsa19wZXIpDQo+IC0J
-CWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19wZXIpOw0KPiArCWNsa19kaXNhYmxlX3Vu
-cHJlcGFyZShpMmMtPmNsa19wZXIpOw0KPiAgIA0KPiAgIAlyZXR1cm4gMDsNCj4gICB9Ow==
+Hi, Yongqiang:
+
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=
+=8812=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:19=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> This reverts commit f83b03fc727ab56a77e68713d6e40299698f3c9f.
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/mailbox/mtk-gce.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt b/Docu=
+mentation/devicetree/bindings/mailbox/mtk-gce.txt
+> index 7771eca..cf48cd8 100644
+> --- a/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+> +++ b/Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+> @@ -47,7 +47,7 @@ Example:
+>                 interrupts =3D <GIC_SPI 135 IRQ_TYPE_LEVEL_LOW>;
+>                 clocks =3D <&infracfg CLK_INFRA_GCE>;
+>                 clock-names =3D "gce";
+> -               #mbox-cells =3D <2>;
+> +               #mbox-cells =3D <3>;
+
+I think we should not change the binding just to fix software bug.
+I think there are many temporary solution to fix drm bug. If drm bug
+is caused by cursor plane, you could temporarily let drm not support
+cursor plane to fix it (in [1], do not return DRM_PLANE_TYPE_CURSOR).
+But I would like you to find out the correct solution rather than a
+temporary solution because this bug is not so urgent. (For me, bug of
+build fail, boot fail, black screen is urgent).
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/gpu/drm/mediatek/mtk_drm_crtc.c?h=3Dv5.12-rc7#n699
+
+Regards,
+Chun-Kuang.
+
+>         };
+>
+>  Example for a client device:
+> --
+> 1.8.1.1.dirty
+>
