@@ -2,125 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A152435D930
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6359635D937
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhDMHpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S239037AbhDMHqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237080AbhDMHph (ORCPT
+        with ESMTP id S238143AbhDMHqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:45:37 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5802C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:45:16 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id n38so10910279pfv.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:45:16 -0700 (PDT)
+        Tue, 13 Apr 2021 03:46:02 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9EBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:45:41 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso8541449pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QARXMbXYkHRFs98oMdNLg8h+WFH6ZlQGms74fZMVOkQ=;
-        b=repmRSmvMl/bvfpmMoyAkDWLo9vhTDm8lUUzc4GCn366TLIpG4a2qO/UM9qD1r1DI+
-         mx8LBF9x7XLsGuyWjbc8tjA3DY2SwbjiU2sxBFSZGQm9EixikJFNhpET/jQ0099S3ejK
-         SFVHAR0ni/NIu2dC/xVWN0Y4lmEFWBDU3YgciCftYlXY3RRYFIIRQx+DaRqyyX6tg5W+
-         JfMTolNSQRoScMZ94dRKkSK5HvdUYfNgpBo/tXAc832geGin+NMsq07vKfJeczfX+R+f
-         3ZdvyV1ziRo/Un2YYSE8tAKFbcxuFmwZbKZ10OyTixEz7WPvNHfOi0SysrrASvSahcOn
-         ksiA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIsFlcxBEjrAiws3WPWoHPSSG5tDzZbLZDssyc8WUio=;
+        b=lS8pjGmIkKaQsmlZ2W4hxjDZ7mN5vgbOyfnAkby8Ppaue95//xVilrdxJVESwIXhy5
+         4Wf4FhR+I+qrJJiOjP5cSbXn/vbrGj/XoSmpTGrEJ7AOp1pJZRwNwqvElii2ISxV4kcj
+         qkvxlwFAoQQ6k7NAvCwRX1rnybn1IQRmsGXOw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QARXMbXYkHRFs98oMdNLg8h+WFH6ZlQGms74fZMVOkQ=;
-        b=VX38BZ0PPIXSLEYRLyOcc9gfv/wIWRmoqeqyKRgl5Ka8j2IElglA4BFPN7WpiUmqUs
-         ZATrTY9fLc9TMHe6AxL1p+Oi6yUR6MPBBwX76Ye1MFiWlZAgk7nmAkeRMdJ2jWwGP+ZF
-         +LcjgTowUs8Lm479tGDLrJ4/wNOwVPxd87kfkLjJpMgJYijUvlABobP3Vx2UVKzTdpNM
-         6/P6P2ACQujscEg5wi808qfJBFIn0ET6grTOQ7Aj4vbbShSl49eIqYWkllTaPe8pGoky
-         6UCjoZPnSwlF0TznhZOqf9CfpqjH2m8zVskWTSeqL2hLDAFkDrkCiLEsxDpkWrrAQTe+
-         wCFA==
-X-Gm-Message-State: AOAM5301zAnsF8M1MMuzrOsL0aUoAUIr96aUu8UHarKKax4ASYsEOFKH
-        RU4j2buQQgV9he3aMVqNucdKeg==
-X-Google-Smtp-Source: ABdhPJyjRQTjpRuCwjYQYXkq36SzIUgnE7pTkacJBg1IsA6ULGM5LIg1fUqjDRH8fRYq47xVc0U++w==
-X-Received: by 2002:a63:1203:: with SMTP id h3mr31126771pgl.223.1618299916375;
-        Tue, 13 Apr 2021 00:45:16 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id 23sm13612618pgo.53.2021.04.13.00.45.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Apr 2021 00:45:16 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 15:45:09 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH 2/2] brcmfmac: support parse country code map from DT
-Message-ID: <20210413074509.GD15093@dragon>
-References: <20210408113022.18180-1-shawn.guo@linaro.org>
- <20210408113022.18180-3-shawn.guo@linaro.org>
- <b2e07b41-a83e-5b5d-be1d-7a3e8493abd6@broadcom.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIsFlcxBEjrAiws3WPWoHPSSG5tDzZbLZDssyc8WUio=;
+        b=XXHUcB3avNiI+3ClvPyUrRLJnm+MZ5zZJpH8wtvHlQxKXd66oRiEEfeVV5Ci2lwF3m
+         worVUJ5iRc76tkITQIv0+e31yAeXOYZngZKDa1YB/T779drUiR0+sXaAQQ60LYxWBd1o
+         JSnp+btCdyYN1/+bXzaPGDDdboM5gtIuL6ic0DWm8oIdThk8BqkrlFbg9UDsXDVEwews
+         USim82aYagGBAuSNN1hmdcb6Jvvfv/cKrUwMbV2VwjHWF+uW0ELV9/H24MZX61tkISSb
+         znve1D4y5fuA+ENbAYGE0bxwzDbGPJd6iqrcXYFiEHY16XmGyhGp4EGPNK9kb5QNS2nN
+         MOhA==
+X-Gm-Message-State: AOAM533CDjPL8FoDNtNSBWB8hKsMLzhL2KyXDXLd2ZOop74Nlhs4ZcxX
+        ayqDIMYGXc4BZLY3xqkHGRx4oA==
+X-Google-Smtp-Source: ABdhPJzS/dKShWMV/NaGsPiYHLqZYeORdK7Rha1Ax9t6NNJQ+9WARF7kFx/fWXdGUxYd73ltELGMhw==
+X-Received: by 2002:a17:90a:c781:: with SMTP id gn1mr3520922pjb.205.1618299941280;
+        Tue, 13 Apr 2021 00:45:41 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:b:99d4:3dd9:e3a7:45cf])
+        by smtp.gmail.com with ESMTPSA id c2sm11566360pfo.53.2021.04.13.00.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 00:45:40 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org
+Cc:     josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Kiran K <kiran.k@intel.com>,
+        Joseph Hwang <josephsih@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] Bluetooth: btusb: support link statistics telemetry events
+Date:   Tue, 13 Apr 2021 15:45:20 +0800
+Message-Id: <20210413074521.264802-1-josephsih@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2e07b41-a83e-5b5d-be1d-7a3e8493abd6@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:09:38AM +0200, Arend van Spriel wrote:
-> On 08-04-2021 13:30, Shawn Guo wrote:
-> > With any regulatory domain requests coming from either user space or
-> > 802.11 IE (Information Element), the country is coded in ISO3166
-> > standard.  It needs to be translated to firmware country code and
-> > revision with the mapping info in settings->country_codes table.
-> > Support populate country_codes table by parsing the mapping from DT.
-> 
-> comment below, but you may add...
-> 
-> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+From: Chethan T N <chethan.tumkur.narayan@intel.com>
 
-Thanks for reviewing, Arend.
+This patch supports the link statistics telemetry events for
+Intel controllers
 
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> >   .../wireless/broadcom/brcm80211/brcmfmac/of.c | 53 +++++++++++++++++++
-> >   1 file changed, 53 insertions(+)
-> > 
-> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> > index a7554265f95f..ea5c7f434c2c 100644
-> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> 
-> [...]
-> 
-> > @@ -47,6 +96,10 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
-> >   	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-> >   		return;
-> > +	ret = brcmf_of_get_country_codes(dev, settings);
-> > +	if (ret)
-> > +		dev_warn(dev, "failed to get OF country code map\n");
-> 
-> First of all I prefer to use brcmf_err and add ret value to the print
-> message " (err=%d)\n".
+To avoid the overhead, this debug feature is disabled by default.
 
-Okay.
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Chethan T N <chethan.tumkur.narayan@intel.com>
+Signed-off-by: Kiran K <kiran.k@intel.com>
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+---
 
-> Another thing is that this mapping is not only
-> applicable for SDIO devices so you may consider doing this for other bus
-> types as well which requires a bit more rework here.
+Changes in v2:
+- take care of intel_newgen as well as intel_new
+- fix the long-line issue
 
-Right. I will take care of it, if we can convince Kalle that having
-this data in DT is not such a bad idea.
+ drivers/bluetooth/btintel.c | 20 +++++++++++++++++++-
+ drivers/bluetooth/btusb.c   | 18 ------------------
+ 2 files changed, 19 insertions(+), 19 deletions(-)
 
-Shawn
+diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
+index e44b6993cf91..de1dbdc01e5a 100644
+--- a/drivers/bluetooth/btintel.c
++++ b/drivers/bluetooth/btintel.c
+@@ -1248,8 +1248,10 @@ EXPORT_SYMBOL_GPL(btintel_read_debug_features);
+ int btintel_set_debug_features(struct hci_dev *hdev,
+ 			       const struct intel_debug_features *features)
+ {
+-	u8 mask[11] = { 0x0a, 0x92, 0x02, 0x07, 0x00, 0x00, 0x00, 0x00,
++	u8 mask[11] = { 0x0a, 0x92, 0x02, 0x7f, 0x00, 0x00, 0x00, 0x00,
+ 			0x00, 0x00, 0x00 };
++	u8 period[5] = { 0x04, 0x91, 0x02, 0x01, 0x00 };
++	u8 trace_enable = 0x02;
+ 	struct sk_buff *skb;
+ 
+ 	if (!features)
+@@ -1266,8 +1268,24 @@ int btintel_set_debug_features(struct hci_dev *hdev,
+ 			   PTR_ERR(skb));
+ 		return PTR_ERR(skb);
+ 	}
++	kfree_skb(skb);
++
++	skb = __hci_cmd_sync(hdev, 0xfc8b, 5, period, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		bt_dev_err(hdev, "Setting periodicity for link statistics traces failed (%ld)",
++			   PTR_ERR(skb));
++		return PTR_ERR(skb);
++	}
++	kfree_skb(skb);
+ 
++	skb = __hci_cmd_sync(hdev, 0xfca1, 1, &trace_enable, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		bt_dev_err(hdev, "Enable tracing of link statistics events failed (%ld)",
++			   PTR_ERR(skb));
++		return PTR_ERR(skb);
++	}
+ 	kfree_skb(skb);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(btintel_set_debug_features);
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 192cb8c191bc..f29946f15f59 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2811,7 +2811,6 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 	u32 boot_param;
+ 	char ddcname[64];
+ 	int err;
+-	struct intel_debug_features features;
+ 
+ 	BT_DBG("%s", hdev->name);
+ 
+@@ -2865,14 +2864,6 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 		btintel_load_ddc_config(hdev, ddcname);
+ 	}
+ 
+-	/* Read the Intel supported features and if new exception formats
+-	 * supported, need to load the additional DDC config to enable.
+-	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
+-
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version(hdev, &ver);
+ 	if (err)
+@@ -2911,7 +2902,6 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	u32 boot_param;
+ 	char ddcname[64];
+ 	int err;
+-	struct intel_debug_features features;
+ 	struct intel_version_tlv version;
+ 
+ 	bt_dev_dbg(hdev, "");
+@@ -2961,14 +2951,6 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	 */
+ 	btintel_load_ddc_config(hdev, ddcname);
+ 
+-	/* Read the Intel supported features and if new exception formats
+-	 * supported, need to load the additional DDC config to enable.
+-	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
+-
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version_tlv(hdev, &version);
+ 	if (err)
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
