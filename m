@@ -2,175 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E904A35E946
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9B435E948
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348686AbhDMWxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:53:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:43784 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhDMWxd (ORCPT
+        id S1348695AbhDMWxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:53:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348688AbhDMWxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:53:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DMicH8120883;
-        Tue, 13 Apr 2021 22:53:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=/q98wGjVQpqx5q3bQ0/wkBk35cRDh3GommmhG1Czp3k=;
- b=avTSyS4WqS9GaNtNwFp6r0+6iqQ7lJmxP1PMOgxqwXJVkMtsF1QEHnbkWWR4osJoIoFT
- KfPSoRfm9P8JE9oy4D9hwAi3LkZKy5356+GO7rg4TDLc/MtAdtoTimtzHkch5avHL6FB
- gA23fG9bd/vwds8rO8vtasXlrhXyn9/iV/asuTUa9NOW9eXRWbcYwk0sBn/B6nhfqCCB
- QSsVnzg60mQhyUWJgr7MdzKBx+p5+z/GDcSRl02z4Q6Dz6O+sjmKAR1gdaLYNIchB0/0
- l2AODp1Bzx9FSBBhxuAI5119GDiE9J5VhU8I3yLsK8z/4rpt65enF0Oo9d8t7r3IcAGX Dw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37u3ymgmkr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 22:53:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DMjgW5142786;
-        Tue, 13 Apr 2021 22:53:06 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by aserp3020.oracle.com with ESMTP id 37unx0dh6g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 22:53:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWNdx6TZRnJdJ+6yFVa5uuc23VZIiRhHCz/Iv/fQ19scShOkDcyZj+NOazE5W0LKT1o1bxa+pehgnwTYHYmNt2jR1te7zOYHEIitbXBaVrpvb7Hb51krgUXI0qjE/Tj03aqQx8kh1XEfgslvkK9P7PPeE9TzPWmOBK0PVzxTR+uc2I23+rV0M61cLSM/ZTJ/vCF/f6nxMM6gYAEkkglXKqd6xejf2Qr9cGszMS82hS4//YUQegwt9447AZUjpgpHxM/z66s4ZpJ8V3t/SwbZiXkO4owwpStbPP1XzCNXZGY5wYL5YuAJr6ut3NORxLItq0OhRQropgkbfMyHcg74jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/q98wGjVQpqx5q3bQ0/wkBk35cRDh3GommmhG1Czp3k=;
- b=KoPDbt2uRAFKSZMe6b5QNPl3KX+lmtCzbMrBCy+jOdV16NLFvsFsN4zcdEp2skD5ZQWvty8NRt1MEtaQQMNVEUOYav4gUeEI8yLBd/H30IUTyNfHVk3/OetQ5EB7Lz3bYWFTgjtcneAkwf8nZJgRe8/KU9WTzKYzp0mRcd7oL2TdhvtYlYDpm8goamFXZGUk2Cz+S398PgYMY+kYaYE152GGLxZTyorpiyD9SlSybzwCBHi5g7Y2gEynzVXFj0zeueREm0+TZmh3wn6FVMZZWBKaba5adnhI3WWu4F0q1mdiI/KITutcU2vnhlY18eWz4dg9BxVYNS4/7kTkUeJQEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/q98wGjVQpqx5q3bQ0/wkBk35cRDh3GommmhG1Czp3k=;
- b=uIWVSvbwQwcmR9lStiTt1RIXU2a3PNHLqbploYgDd3AgwmwNT5r+GQC6mEZzxcUXoN+FQdDvQm0IFRZWdGtUrxYU7DdoNER4HyWcK1rTMLi6aA4wPrnkps2GaYvBbAnqnPnWb/YwhyNQcyKlWEouh3C1RQotxRUoXPKh9W41oss=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB2456.namprd10.prod.outlook.com (2603:10b6:a02:b3::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
- 2021 22:53:02 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 22:53:02 +0000
-Subject: Re: [PATCH v7 7/7] mm,page_alloc: Drop unnecessary checks from
- pfn_range_valid_contig
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210413104747.12177-1-osalvador@suse.de>
- <20210413104747.12177-8-osalvador@suse.de>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <7d21c92a-396b-9684-803d-7c5347ed6927@oracle.com>
-Date:   Tue, 13 Apr 2021 15:53:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210413104747.12177-8-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0318.namprd03.prod.outlook.com
- (2603:10b6:303:dd::23) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        Tue, 13 Apr 2021 18:53:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618354401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i1oL1MJeIJ7O55P7VKTMm7clEqM06bfVb251ZTxzvCU=;
+        b=GHbpqJEf+OoC2BI4nXh+wC7DYqYAC1MsTBT2nv88IGPYXln3BsPHjwCgPILx2AxyIDMQDh
+        BgcNKILmatuxE74YLVEEZifmT6qER672Cswp45psoyYgyG631QVfHeWCoVNWCfULOgJDtb
+        GoPiY7r9yVXocrzF7VDDDTa3GXxi4Iw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-asdE7gCMMLaWHCi3p1Vj5w-1; Tue, 13 Apr 2021 18:53:19 -0400
+X-MC-Unique: asdE7gCMMLaWHCi3p1Vj5w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1428107ACE3;
+        Tue, 13 Apr 2021 22:53:17 +0000 (UTC)
+Received: from treble (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 682FC62665;
+        Tue, 13 Apr 2021 22:53:12 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 17:53:10 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
+ checks
+Message-ID: <20210413225310.k64wqjnst7cia4ft@treble>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210409120859.GA51636@C02TD0UTHF1T.local>
+ <20210409213741.kqmwyajoppuqrkge@treble>
+ <8c30ec5f-b51e-494f-5f6c-d2f012135f69@linux.microsoft.com>
+ <20210409223227.rvf6tfhvgnpzmabn@treble>
+ <20210412165933.GD5379@sirena.org.uk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0318.namprd03.prod.outlook.com (2603:10b6:303:dd::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 22:53:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 200b644b-7723-47ac-1d35-08d8fecee496
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2456:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB24561E0BE0204838411E79E4E24F9@BYAPR10MB2456.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nXn07xTz+mL+nPrTYQbIwEmz65oLzMwBfngjNI5hvXiKSrwgVwAMf3aO8kwt8yIjvFy8/IwtWW74vCwSlgZtUE1+AB19YFiATBra1JG0W0EtrzuZ0ZhDfouss0GKEXy+Inbk51aFqqSa7RvtqQHnPfBeM844J6lnf2I1yc3polgFExnCuXftdCfh93SEcUON6hLa4rnoszyyvGjWoN8EOdBSyUa9zWjCZ23mLNWLtVasSJD82vtTSgWUHAqfaNZGE2JkKOyMT7luB5eK/iZDkh2fMovPz56bOL6Zoem2nwTKdgZ+wg+V7qjJPDcM/cgLHr+hsRPiBXE0KXyXg23kRecs4/bt6vlZPCPxm7z3Gb5By4evzc6ukn3/FTuK10vrN9H6AMG8EvsNdtXeDm5jWuyasBs229GunklSlR3EC5JPBEWyhtPyB7tGfs+zrAFO7GC4tdAp1nyzzwURIM0bxMS14lE0hifbAnEXWWNGSRRMFHlT+JtWs2bghThzC4vIJEkFnr5a1i9GD9LvksCWZ6vJHgMfbk/qhUpj6vq73dH5I+m7IogfmZGOYqlCEudQN+ooPubprtWuQDg4Qb9bT9B+hP4dB54haQuicnHL6GiI5sdoi3ZIIZeJ2fFWJAyZFvalTa/CrWabsrlZJqs7FNRbzbmU9Cd1Xjw94R4S3XlWhcH6UQre139o8U1/ceUKKLHHFy2E+DTClJnrQISfOS6ahcqLju9hJbbNYBzEKZU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(136003)(346002)(39860400002)(66556008)(66946007)(66476007)(31696002)(86362001)(31686004)(83380400001)(16526019)(186003)(44832011)(26005)(478600001)(53546011)(52116002)(2616005)(6486002)(54906003)(956004)(16576012)(8676002)(316002)(110136005)(8936002)(2906002)(38350700002)(5660300002)(38100700002)(36756003)(4744005)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TEZjMkdBTzJFQzJaOGR2RmdYdlhqcmJDejArdUtTbGF1dm1kdWFVa0ZzREd0?=
- =?utf-8?B?SHcyajBkdjZPN05tUmZUZTEyQ1crQnZOTXZUR2lkSjR2SHhpcE9RRkRHMVk4?=
- =?utf-8?B?U2dJWHlBeFhJdTk5SE5hYWRRNFc5R0FBK3BIYnk0L1lhdmZhR29rcXJVUGJE?=
- =?utf-8?B?NlVITGVpMWNRSzFyc0l1YzVhRlBJY3ZvQ1NLRHEzYnVmR2s1MGlQc2pMVzJS?=
- =?utf-8?B?RURFMGxsdEgzZUFIZitCdDMzZXZmNFBSOXI4N3MvRTRDd1R1Z1pMMHB0Q095?=
- =?utf-8?B?dXJLaDcvd3dpcVNSbHZpLzc1VkZPTkpYcDZwbC95Z2YyZi9pT2RxREdhekhW?=
- =?utf-8?B?RlNYYjhpZlRRY3BRQlVLU0ZRdHY3QStYN091dXAwR1hXbXlmZ1B5TDJpQWJM?=
- =?utf-8?B?VzZnRHRLdldLWVcwNjVBYUZyWE0ydmFOZGpvVHRPNEFsRkRTQllhdmdndldF?=
- =?utf-8?B?aGRLd3BqYlp4ejZhVFJyaXRFTlFRWC96R2tsOHBRV0s2aERVam1MTHFtNWVy?=
- =?utf-8?B?TFYvNDZVdFlpTlIrUC93Z0VQSDFMZytvL1gxWm9VNDhUcHR5bnZMQmFYS0J2?=
- =?utf-8?B?MG5pYmU2UjlrV2lpbnNHM3J5NnhZVXFMOG9yQWVWZjZPV3h1ckptTEU3cGJE?=
- =?utf-8?B?dHlhbHpUMkV1aXQ4Z2htZmlNL1JndVAxdmd0MDd5T0hJcHUyZXg2amp3K1NY?=
- =?utf-8?B?OURnL3JoMWVQdGhtVnhZOGNyZXFjS3RvVmxXTUNDckZQbWsvTWh1cVRFZkxT?=
- =?utf-8?B?RGwrbThoRmZtT3FhdGtpOVlRNnpqaVdhTnIvZXdydE56S2U2OGhiS0ZPNmxF?=
- =?utf-8?B?M1ZBMEpJcjZ2Vm9aUnNHcERFcjVkc2VuYmdDc0NoOUN3bDltS1g2Q2Q4SVBM?=
- =?utf-8?B?dDkyOEhsUVY4SFNpRnZpSzMzSnlMemFMejIzRHN4TVNNeHhzSlBkMmV2UktX?=
- =?utf-8?B?SWJWaUxGdlRWL2ZLTGFodjdsNUNSL255YmxXWnpoRFVLL0J5R25GUlA4QzVR?=
- =?utf-8?B?SnN2T2NiY2NIakpyTHFVVVBLRVpkN28zY0UzT2ZkM1QvUzRJbW1RY3ZaV0pF?=
- =?utf-8?B?UzF1MUZxeHlSWEl3ZzM0UmpBaUtPelMvMGplbUlwSXR0RFpvSTUrMXBQRXJW?=
- =?utf-8?B?MmpBbnpaMVBmZHozaEpwMHg5REFrU0FoZ2Ftb0ZReG5BVU1SSXBHZ1kyOUFo?=
- =?utf-8?B?R1pwd1o4eXlzUVNlNmI2TXN4cC83TEprZmRFMHR5MnRiWjVUd1JzcVU1QnBq?=
- =?utf-8?B?elJPYXJKaDQ1czlWMCtWMU43VlQyZ1Nienh6VU1rVXhnQytqbFZSMXVSMGR4?=
- =?utf-8?B?MHVyV0Vjci95VDVFRkRUbS81d3dzeWxIOURkUkFYZHliSnBCeFJudk9JZ1Nm?=
- =?utf-8?B?a21mUG5wc1dNSloyYXlkek50eU9TUjIycFlYazZpZTZWWFV0M3Ivb1RWR0hH?=
- =?utf-8?B?QjUwK0VkUERzUTVEZnZVYTBNZDRwQitGV1NrcHQxM1RqR0UrR1c1SUR4b1B0?=
- =?utf-8?B?TWozSnBUSUkrQVZKS3JLL00yZEFIYjhtSFRkaS8zb0x2S2I1MzVOb3ozN1JG?=
- =?utf-8?B?TkZXOW1ma3hpTHdMaDBuYkhvQVgzbjZVU3hUcGZRSmp5T2FCM0xjbUFtV3RZ?=
- =?utf-8?B?MVZRQWM2NzJ6M2NocHBuVjByWXJwRis0ZC9kRUU2dCtMYkZTaHFXL2J0YmJM?=
- =?utf-8?B?b3FkdXNLZzQ4V3JLa2NueE9FN1E0YVpUQ3ZIOVlLeXZ6eXdML3JwQmJlVjV2?=
- =?utf-8?Q?onH9j4xSme02LjNbElw7RDJYliLbc/vADi3pvqb?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 200b644b-7723-47ac-1d35-08d8fecee496
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 22:53:02.6314
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E0D6Lfo2y++/U1GDyaZikiOxSd1mOI14Rz7CA6w0ZGtUfaEsChVEDMm+TZsCeK8KoJ9wxSG/1xIeH1027yD0Mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2456
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130148
-X-Proofpoint-GUID: V0oKaryN-rEleJpG5WzOcPn2Y4lkcCvt
-X-Proofpoint-ORIG-GUID: V0oKaryN-rEleJpG5WzOcPn2Y4lkcCvt
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130148
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210412165933.GD5379@sirena.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 3:47 AM, Oscar Salvador wrote:
-> pfn_range_valid_contig() bails out when it finds an in-use page or a
-> hugetlb page, among other things.
-> We can drop the in-use page check since __alloc_contig_pages can migrate
-> away those pages, and the hugetlb page check can go too since
-> isolate_migratepages_range is now capable of dealing with hugetlb pages.
-> Either way, those checks are racy so let the end function handle it
-> when the time comes.
+On Mon, Apr 12, 2021 at 05:59:33PM +0100, Mark Brown wrote:
+> On Fri, Apr 09, 2021 at 05:32:27PM -0500, Josh Poimboeuf wrote:
 > 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/page_alloc.c | 6 ------
->  1 file changed, 6 deletions(-)
+> > Hm, for that matter, even without renaming things, a comment above
+> > stack_trace_save_tsk_reliable() describing the meaning of "reliable"
+> > would be a good idea.
+> 
+> Might be better to place something at the prototype for
+> arch_stack_walk_reliable() or cross link the two since that's where any
+> new architectures should be starting, or perhaps even better to extend
+> the document that Mark wrote further and point to that from both places.  
+> 
+> Some more explict pointer to live patching as the only user would
+> definitely be good but I think the more important thing would be writing
+> down any assumptions in the API that aren't already written down and
+> we're supposed to be relying on.  Mark's document captured a lot of it
+> but it sounds like there's more here, and even with knowing that this
+> interface is only used by live patch and digging into what it does it's
+> not always clear what happens to work with the code right now and what's
+> something that's suitable to be relied on.
 
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+Something like so?
+
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] livepatch: Clarify the meaning of 'reliable'
+
+Update the comments and documentation to reflect what 'reliable'
+unwinding actually means, in the context of live patching.
+
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ .../livepatch/reliable-stacktrace.rst         | 26 +++++++++++++----
+ arch/x86/kernel/stacktrace.c                  |  6 ----
+ include/linux/stacktrace.h                    | 29 +++++++++++++++++--
+ kernel/stacktrace.c                           |  7 ++++-
+ 4 files changed, 53 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/livepatch/reliable-stacktrace.rst b/Documentation/livepatch/reliable-stacktrace.rst
+index 67459d2ca2af..e325efc7e952 100644
+--- a/Documentation/livepatch/reliable-stacktrace.rst
++++ b/Documentation/livepatch/reliable-stacktrace.rst
+@@ -72,7 +72,21 @@ The unwinding process varies across architectures, their respective procedure
+ call standards, and kernel configurations. This section describes common
+ details that architectures should consider.
+ 
+-4.1 Identifying successful termination
++4.1 Only preemptible code needs reliability detection
++-----------------------------------------------------
++
++The only current user of reliable stacktracing is livepatch, which only
++calls it for a) inactive tasks; or b) the current task in task context.
++
++Therefore, the unwinder only needs to detect the reliability of stacks
++involving *preemptible* code.
++
++Practically speaking, reliability of stacks involving *non-preemptible*
++code is a "don't-care".  It may help to return a wrong reliability
++result for such cases, if it results in reduced complexity, since such
++cases will not happen in practice.
++
++4.2 Identifying successful termination
+ --------------------------------------
+ 
+ Unwinding may terminate early for a number of reasons, including:
+@@ -95,7 +109,7 @@ architectures verify that a stacktrace ends at an expected location, e.g.
+ * On a specific stack expected for a kernel entry point (e.g. if the
+   architecture has separate task and IRQ stacks).
+ 
+-4.2 Identifying unwindable code
++4.3 Identifying unwindable code
+ -------------------------------
+ 
+ Unwinding typically relies on code following specific conventions (e.g.
+@@ -129,7 +143,7 @@ unreliable to unwind from, e.g.
+ 
+ * Identifying specific portions of code using bounds information.
+ 
+-4.3 Unwinding across interrupts and exceptions
++4.4 Unwinding across interrupts and exceptions
+ ----------------------------------------------
+ 
+ At function call boundaries the stack and other unwind state is expected to be
+@@ -156,7 +170,7 @@ have no such cases) should attempt to unwind across exception boundaries, as
+ doing so can prevent unnecessarily stalling livepatch consistency checks and
+ permits livepatch transitions to complete more quickly.
+ 
+-4.4 Rewriting of return addresses
++4.5 Rewriting of return addresses
+ ---------------------------------
+ 
+ Some trampolines temporarily modify the return address of a function in order
+@@ -222,7 +236,7 @@ middle of return_to_handler and can report this as unreliable. Architectures
+ are not required to unwind from other trampolines which modify the return
+ address.
+ 
+-4.5 Obscuring of return addresses
++4.6 Obscuring of return addresses
+ ---------------------------------
+ 
+ Some trampolines do not rewrite the return address in order to intercept
+@@ -249,7 +263,7 @@ than the link register as would usually be the case.
+ Architectures must either ensure that unwinders either reliably unwind
+ such cases, or report the unwinding as unreliable.
+ 
+-4.6 Link register unreliability
++4.7 Link register unreliability
+ -------------------------------
+ 
+ On some other architectures, 'call' instructions place the return address into a
+diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
+index 8627fda8d993..15b058eefc4e 100644
+--- a/arch/x86/kernel/stacktrace.c
++++ b/arch/x86/kernel/stacktrace.c
+@@ -29,12 +29,6 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+ 	}
+ }
+ 
+-/*
+- * This function returns an error if it detects any unreliable features of the
+- * stack.  Otherwise it guarantees that the stack trace is reliable.
+- *
+- * If the task is not 'current', the caller *must* ensure the task is inactive.
+- */
+ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
+ 			     void *cookie, struct task_struct *task)
+ {
+diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
+index 50e2df30b0aa..1b6a65a0ad22 100644
+--- a/include/linux/stacktrace.h
++++ b/include/linux/stacktrace.h
+@@ -26,7 +26,7 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+ #ifdef CONFIG_ARCH_STACKWALK
+ 
+ /**
+- * stack_trace_consume_fn - Callback for arch_stack_walk()
++ * stack_trace_consume_fn() - Callback for arch_stack_walk()
+  * @cookie:	Caller supplied pointer handed back by arch_stack_walk()
+  * @addr:	The stack entry address to consume
+  *
+@@ -35,7 +35,7 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
+  */
+ typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr);
+ /**
+- * arch_stack_walk - Architecture specific function to walk the stack
++ * arch_stack_walk() - Architecture specific function to walk the stack
+  * @consume_entry:	Callback which is invoked by the architecture code for
+  *			each entry.
+  * @cookie:		Caller supplied pointer which is handed back to
+@@ -52,8 +52,33 @@ typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr);
+  */
+ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+ 		     struct task_struct *task, struct pt_regs *regs);
++
++/**
++ * arch_stack_walk_reliable() - Architecture specific function to walk the
++ *				stack, with stack reliability check
++ * @consume_entry:	Callback which is invoked by the architecture code for
++ *			each entry.
++ * @cookie:		Caller supplied pointer which is handed back to
++ *			@consume_entry
++ * @task:		Pointer to a task struct, can be NULL for current
++ *
++ * Return: 0 if the stack trace is considered reliable for livepatch; else < 0.
++ *
++ * NOTE: This interface is only used by livepatch.  The caller must ensure that
++ *	 it's only called in one of the following two scenarios:
++ *
++ *	 a) the task is inactive (and guaranteed to remain so); or
++ *
++ *	 b) the task is 'current', running in task context.
++ *
++ * Effectively, this means the arch unwinder doesn't need to detect the
++ * reliability of stacks involving non-preemptible code.
++ *
++ * For more details, see Documentation/livepatch/reliable-stacktrace.rst.
++ */
+ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry, void *cookie,
+ 			     struct task_struct *task);
++
+ void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
+ 			  const struct pt_regs *regs);
+ 
+diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
+index 9f8117c7cfdd..a198fd194fed 100644
+--- a/kernel/stacktrace.c
++++ b/kernel/stacktrace.c
+@@ -185,7 +185,12 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
+  *		stack. Otherwise it guarantees that the stack trace is
+  *		reliable and returns the number of entries stored.
+  *
+- * If the task is not 'current', the caller *must* ensure the task is inactive.
++ * NOTE: This interface is only used by livepatch.  The caller must ensure that
++ *	 it's only called in one of the following two scenarios:
++ *
++ *	 a) the task is inactive (and guaranteed to remain so); or
++ *
++ *	 b) the task is 'current', running in task context.
+  */
+ int stack_trace_save_tsk_reliable(struct task_struct *tsk, unsigned long *store,
+ 				  unsigned int size)
 -- 
-Mike Kravetz
+2.30.2
+
