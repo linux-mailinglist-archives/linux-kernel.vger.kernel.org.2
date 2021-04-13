@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D193C35D861
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4AE35D862
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345185AbhDMG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        id S244503AbhDMG6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345121AbhDMG5X (ORCPT
+        with ESMTP id S1345123AbhDMG5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:57:23 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90316C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id c4so2057580ybp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:03 -0700 (PDT)
+        Tue, 13 Apr 2021 02:57:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C06C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:05 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id p75so9209574ybc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=OWomzY5O6nIPdL3TO8CK9fbu3idsDsiJdhlQbcNCNmk=;
-        b=hLHfxFzp5QFiDV0NCweRKZIoXrgJbYlQcW+yuS+vLMPcNKKc255Fg3tjNqfooV/OLd
-         U6CQ3iwK8H6zMls3pFdMBN0NLbmWj6RWEYNi/DCM+PrHNrSzMnt6S2Lg4zq0wvg3486H
-         +sx4x6j4kxGh5x9L9qgA+TxXylPtgpu5ds2+dsX0pD8ntrVyPxV7AvsnWB6UiW1V9ZVk
-         /LsyUFz5OtLMbBTake9P8xyrPjX9eTcGBEel6+oOeQ/dZObXKYPRK8qTg6fk2FWETrnD
-         Zbg2sgYJYwkCg4UC1pmuVjLWdyS1iObkTDP9YTfrBRXxxrrkE/8ced456rnZvUMSg1he
-         l4YQ==
+        bh=fZsS4S+ppDN6vse6LQilTb+995ZpejDyoXEkWEzhPiI=;
+        b=JPzEmLg8IXqkikE/b+k7FNKSdKIPd2lLmXlP9sfI87JvOkw09qdZ+KRrlaAD+a9Dhn
+         005sbjcbFZ0lFEPYPSKaDUzlN3hBr3DSo7pYAg76+SLl3Ga5vXEbxhKRzSwelQO0SjpX
+         rhHL0KytAzNOPmRXNi0zkAQkCW4EAqyrBAkMJuC7dTB6jIRG6ER1dzInKps5oaOL1wQs
+         HLIiBt2/Ahnea89fcjAFJPIS7nNG2lwTqqUVTkoanckNkavhBDYk0VsP07i7LdiYi9zN
+         +LOuJNV+snejmLdfr2/3+aMXbxqjF2clhWnkNv/9X/ng5LI35tZxiwJOcncdT6c0vONU
+         rPQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=OWomzY5O6nIPdL3TO8CK9fbu3idsDsiJdhlQbcNCNmk=;
-        b=V7wMyHi072dce6ZnPpEv7/vgyxfGH4iYzC8xiwylgcN9u4SyLFR8AsWrgIpv2mVFrC
-         H9+fkRd2whFAERf06443LAgIA7SIiztKoG2b9INedj5rird9Kes1pDEafZP04/dNwIll
-         hJeAUb9N1qmeVv6vZIZsKpWDp0D/wa5gCBze6PfyzFRL82n1sUxPv6wP/l9ClegByA3J
-         8il8uC4X+iRjk3XACwZG+JrS7i4d2Q+qkj3ANVNNGNcDhaHbgsucUpMzpVDJleKoVoBL
-         Luvyo5PCSA38KyflkQS+SzfwNoU60rrlTa6oBMVzyUgoPqp3RNtFIp4yyJUcill3qvqi
-         5ymw==
-X-Gm-Message-State: AOAM532nNDpt3iSLmHBos2xzSSPUScQwSS+AZ2hM1blhHygr52zHuQkq
-        triAdzH/rSQIePQ4klFd5q1eM3rRWnU=
-X-Google-Smtp-Source: ABdhPJzyLPRGqf29+Ytj/xVq/duL5XVOMgJinIYyL+dmRy0rCrFAsDcush6F7fQT1oukQxSVakciHbYtiFU=
+        bh=fZsS4S+ppDN6vse6LQilTb+995ZpejDyoXEkWEzhPiI=;
+        b=Mmy7jkv8AlhXjPNjblEwvM3ZtDGk7NKvJ6rsLmF6f0BWgbZq1tIB6pdyHgFU312oCj
+         y4lT+2OfaNXkHdc1m9GGWuWIiWBODWDms6SOZyoSt3DzZKzcdOzZvjUSS2YPZRhtMBP8
+         dB9FKMTZmwSiNzB4tdOneaAVzDRY5bshb8bACVfCaWFqtKUYRJ7IUedFh3omjJHSY8FV
+         6STGtMN3VWQZjRvtH7TufrAvCfWEWJ4oYHPhHmGG2DIS+7aQ6CbYgjel6Xiw7E9VkAg2
+         JoiFRDcRNv+ByQW+uYw+Z96cYJm5wf4hkkC+/iCib2vWT1vXRgZ7CRYsjyRwZmHJd2Jy
+         fKJA==
+X-Gm-Message-State: AOAM532ohDzhQEIUgvNgG4R8COEdtptVwp/WFnYFKQYURGql6xBpawoF
+        Y2GA+8fymXJP5OJ1UDw0RBDHBeXkM1Q=
+X-Google-Smtp-Source: ABdhPJzHOTHYLMuXC88wBZEF39dm7Sun3+0TVIBRLg85pDR3z2FX1I51OcfzuM68n03ioC4rVU3FQw4etPM=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:d02d:cccc:9ebe:9fe9])
- (user=yuzhao job=sendgmr) by 2002:a25:cc90:: with SMTP id l138mr2006126ybf.150.1618297022801;
- Mon, 12 Apr 2021 23:57:02 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 00:56:32 -0600
+ (user=yuzhao job=sendgmr) by 2002:a25:e00f:: with SMTP id x15mr25695207ybg.85.1618297024186;
+ Mon, 12 Apr 2021 23:57:04 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 00:56:33 -0600
 In-Reply-To: <20210413065633.2782273-1-yuzhao@google.com>
-Message-Id: <20210413065633.2782273-16-yuzhao@google.com>
+Message-Id: <20210413065633.2782273-17-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210413065633.2782273-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2 15/16] mm: multigenerational lru: Kconfig
+Subject: [PATCH v2 16/16] mm: multigenerational lru: documentation
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -84,77 +84,225 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configuration options for the multigenerational lru.
+Add Documentation/vm/multigen_lru.rst.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- mm/Kconfig | 55 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+ Documentation/vm/index.rst        |   1 +
+ Documentation/vm/multigen_lru.rst | 192 ++++++++++++++++++++++++++++++
+ 2 files changed, 193 insertions(+)
+ create mode 100644 Documentation/vm/multigen_lru.rst
 
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..0be1c6c90cc0 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -872,4 +872,59 @@ config MAPPING_DIRTY_HELPERS
- config KMAP_LOCAL
- 	bool
+diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
+index eff5fbd492d0..c353b3f55924 100644
+--- a/Documentation/vm/index.rst
++++ b/Documentation/vm/index.rst
+@@ -17,6 +17,7 @@ various features of the Linux memory management
  
-+config LRU_GEN
-+	bool "Multigenerational LRU"
-+	depends on MMU
-+	help
-+	  A high performance LRU implementation to heavily overcommit workloads
-+	  that are not IO bound. See Documentation/vm/multigen_lru.rst for
-+	  details.
+    swap_numa
+    zswap
++   multigen_lru
+ 
+ Kernel developers MM documentation
+ ==================================
+diff --git a/Documentation/vm/multigen_lru.rst b/Documentation/vm/multigen_lru.rst
+new file mode 100644
+index 000000000000..cf772aeca317
+--- /dev/null
++++ b/Documentation/vm/multigen_lru.rst
+@@ -0,0 +1,192 @@
++=====================
++Multigenerational LRU
++=====================
 +
-+	  Warning: do not enable this option unless you plan to use it because
-+	  it introduces a small per-process and per-memcg and per-node memory
-+	  overhead.
++Quick Start
++===========
++Build Options
++-------------
++:Required: Set ``CONFIG_LRU_GEN=y``.
 +
-+config NR_LRU_GENS
-+	int "Max number of generations"
-+	depends on LRU_GEN
-+	range 4 31
-+	default 7
-+	help
-+	  This will use order_base_2(N+1) spare bits from page flags.
++:Optional: Change ``CONFIG_NR_LRU_GENS`` to a number ``X`` to support
++ a maximum of ``X`` generations.
 +
-+	  Warning: do not use numbers larger than necessary because each
-+	  generation introduces a small per-node and per-memcg memory overhead.
++:Optional: Change ``CONFIG_TIERS_PER_GEN`` to a number ``Y`` to support
++ a maximum of ``Y`` tiers per generation.
 +
-+config TIERS_PER_GEN
-+	int "Number of tiers per generation"
-+	depends on LRU_GEN
-+	range 2 5
-+	default 4
-+	help
-+	  This will use N-2 spare bits from page flags.
++:Optional: Set ``CONFIG_LRU_GEN_ENABLED=y`` to turn the feature on by
++ default.
 +
-+	  Higher values generally offer better protection to active pages under
-+	  heavy buffered I/O workloads.
++Runtime Options
++---------------
++:Required: Write ``1`` to ``/sys/kernel/mm/lru_gen/enable`` if the
++ feature was not turned on by default.
 +
-+config LRU_GEN_ENABLED
-+	bool "Turn on by default"
-+	depends on LRU_GEN
-+	help
-+	  The default value of /sys/kernel/mm/lru_gen/enabled is 0. This option
-+	  changes it to 1.
++:Optional: Change ``/sys/kernel/mm/lru_gen/spread`` to a number ``N``
++ to spread pages out across ``N+1`` generations. ``N`` should be less
++ than ``X``. Larger values make the background aging more aggressive.
 +
-+	  Warning: the default value is the fast path. See
-+	  Documentation/static-keys.txt for details.
++:Optional: Read ``/sys/kernel/debug/lru_gen`` to verify the feature.
++ This file has the following output:
 +
-+config LRU_GEN_STATS
-+	bool "Full stats for debugging"
-+	depends on LRU_GEN
-+	help
-+	  This option keeps full stats for each generation, which can be read
-+	  from /sys/kernel/debug/lru_gen_full.
++::
 +
-+	  Warning: do not enable this option unless you plan to use it because
-+	  it introduces an additional small per-process and per-memcg and
-+	  per-node memory overhead.
++  memcg  memcg_id  memcg_path
++    node  node_id
++      min_gen  birth_time  anon_size  file_size
++      ...
++      max_gen  birth_time  anon_size  file_size
 +
- endmenu
++Given a memcg and a node, ``min_gen`` is the oldest generation
++(number) and ``max_gen`` is the youngest. Birth time is in
++milliseconds. The sizes of anon and file types are in pages.
++
++Recipes
++-------
++:Android on ARMv8.1+: ``X=4``, ``N=0``
++
++:Android on pre-ARMv8.1 CPUs: Not recommended due to the lack of
++ ``ARM64_HW_AFDBM``
++
++:Laptops running Chrome on x86_64: ``X=7``, ``N=2``
++
++:Working set estimation: Write ``+ memcg_id node_id gen [swappiness]``
++ to ``/sys/kernel/debug/lru_gen`` to account referenced pages to
++ generation ``max_gen`` and create the next generation ``max_gen+1``.
++ ``gen`` should be equal to ``max_gen``. A swap file and a non-zero
++ ``swappiness`` are required to scan anon type. If swapping is not
++ desired, set ``vm.swappiness`` to ``0``.
++
++:Proactive reclaim: Write ``- memcg_id node_id gen [swappiness]
++ [nr_to_reclaim]`` to ``/sys/kernel/debug/lru_gen`` to evict
++ generations less than or equal to ``gen``. ``gen`` should be less
++ than ``max_gen-1`` as ``max_gen`` and ``max_gen-1`` are active
++ generations and therefore protected from the eviction. Use
++ ``nr_to_reclaim`` to limit the number of pages to be evicted.
++ Multiple command lines are supported, so does concatenation with
++ delimiters ``,`` and ``;``.
++
++Framework
++=========
++For each ``lruvec``, evictable pages are divided into multiple
++generations. The youngest generation number is stored in ``max_seq``
++for both anon and file types as they are aged on an equal footing. The
++oldest generation numbers are stored in ``min_seq[2]`` separately for
++anon and file types as clean file pages can be evicted regardless of
++swap and write-back constraints. Generation numbers are truncated into
++``order_base_2(CONFIG_NR_LRU_GENS+1)`` bits in order to fit into
++``page->flags``. The sliding window technique is used to prevent
++truncated generation numbers from overlapping. Each truncated
++generation number is an index to an array of per-type and per-zone
++lists. Evictable pages are added to the per-zone lists indexed by
++``max_seq`` or ``min_seq[2]`` (modulo ``CONFIG_NR_LRU_GENS``),
++depending on whether they are being faulted in.
++
++Each generation is then divided into multiple tiers. Tiers represent
++levels of usage from file descriptors only. Pages accessed N times via
++file descriptors belong to tier order_base_2(N). In contrast to moving
++across generations which requires the lru lock, moving across tiers
++only involves an atomic operation on ``page->flags`` and therefore has
++a negligible cost.
++
++The workflow comprises two conceptually independent functions: the
++aging and the eviction.
++
++Aging
++-----
++The aging produces young generations. Given an ``lruvec``, the aging
++scans page tables for referenced pages of this ``lruvec``. Upon
++finding one, the aging updates its generation number to ``max_seq``.
++After each round of scan, the aging increments ``max_seq``.
++
++The aging maintains either a system-wide ``mm_struct`` list or
++per-memcg ``mm_struct`` lists, and it only scans page tables of
++processes that have been scheduled since the last scan. Since scans
++are differential with respect to referenced pages, the cost is roughly
++proportional to their number.
++
++The aging is due when both of ``min_seq[2]`` reaches ``max_seq-1``,
++assuming both anon and file types are reclaimable.
++
++Eviction
++--------
++The eviction consumes old generations. Given an ``lruvec``, the
++eviction scans the pages on the per-zone lists indexed by either of
++``min_seq[2]``. It first tries to select a type based on the values of
++``min_seq[2]``. When anon and file types are both available from the
++same generation, it selects the one that has a lower refault rate.
++
++During a scan, the eviction sorts pages according to their generation
++numbers, if the aging has found them referenced.  It also moves pages
++from the tiers that have higher refault rates than tier 0 to the next
++generation.
++
++When it finds all the per-zone lists of a selected type are empty, the
++eviction increments ``min_seq[2]`` indexed by this selected type.
++
++Rationale
++=========
++Limitations of Current Implementation
++-------------------------------------
++Notion of Active/Inactive
++~~~~~~~~~~~~~~~~~~~~~~~~~
++For servers equipped with hundreds of gigabytes of memory, the
++granularity of the active/inactive is too coarse to be useful for job
++scheduling. False active/inactive rates are relatively high, and thus
++the assumed savings may not materialize.
++
++For phones and laptops, executable pages are frequently evicted
++despite the fact that there are many less recently used anon pages.
++Major faults on executable pages cause ``janks`` (slow UI renderings)
++and negatively impact user experience.
++
++For ``lruvec``\s from different memcgs or nodes, comparisons are
++impossible due to the lack of a common frame of reference.
++
++Incremental Scans via ``rmap``
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++Each incremental scan picks up at where the last scan left off and
++stops after it has found a handful of unreferenced pages. For
++workloads using a large amount of anon memory, incremental scans lose
++the advantage under sustained memory pressure due to high ratios of
++the number of scanned pages to the number of reclaimed pages. On top
++of that, the ``rmap`` has poor memory locality due to its complex data
++structures. The combined effects typically result in a high amount of
++CPU usage in the reclaim path.
++
++Benefits of Multigenerational LRU
++---------------------------------
++Notion of Generation Numbers
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++The notion of generation numbers introduces a quantitative approach to
++memory overcommit. A larger number of pages can be spread out across
++configurable generations, and thus they have relatively low false
++active/inactive rates. Each generation includes all pages that have
++been referenced since the last generation.
++
++Given an ``lruvec``, scans and the selections between anon and file
++types are all based on generation numbers, which are simple and yet
++effective. For different ``lruvec``\s, comparisons are still possible
++based on birth times of generations.
++
++Differential Scans via Page Tables
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++Each differential scan discovers all pages that have been referenced
++since the last scan. Specifically, it walks the ``mm_struct`` list
++associated with an ``lruvec`` to scan page tables of processes that
++have been scheduled since the last scan. The cost of each differential
++scan is roughly proportional to the number of referenced pages it
++discovers. Unless address spaces are extremely sparse, page tables
++usually have better memory locality than the ``rmap``. The end result
++is generally a significant reduction in CPU usage, for workloads
++using a large amount of anon memory.
++
++To-do List
++==========
++KVM Optimization
++----------------
++Support shadow page table scanning.
++
++NUMA Optimization
++-----------------
++Support NUMA policies and per-node RSS counters.
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
