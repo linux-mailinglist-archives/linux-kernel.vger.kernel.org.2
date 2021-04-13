@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26CB35E2D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A0335E2D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbhDMP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:27:32 -0400
-Received: from smtpcmd15177.aruba.it ([62.149.156.177]:52516 "EHLO
-        smtpcmd15177.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhDMP12 (ORCPT
+        id S231916AbhDMP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230218AbhDMP2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:27:28 -0400
-Received: from [192.168.126.129] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id WKwUlnaxTLwkNWKwUlK0tu; Tue, 13 Apr 2021 17:27:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1618327627; bh=eHQ7oMwhKAzY0bMH6NRyd7uaxv2qIxO2vq5jkgp4Xa4=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=nOcZ7PfCmRMBgVsJBIO2K5lc/aQtdZINMsPM4IzWiZzKNckxxNXM/mzfoTQ/qr7f1
-         RDM7CC21WlsX3GL0CJ3ovBMXSVoABD0pwwj8Q47SrWcx4O0QMBF0g4mpYrtTs9sSRX
-         KwJZ3opbTE9t/FV59dnegsogVzkh2W37IMLxKHtrxY7w+KEOfpJ923n7bHOaNCplkK
-         lsjTAteYNw2ClF6f2F+lH3gXG81Fz9byK67kmSGDetO30xG+A7qbv7XS4xq6pTwIjm
-         t2ydYZOZLvu9G57VKKcvi0JOm0fFWzTnOtStETf23XHQ3mKvm/lSCt5jdySxsmwTT/
-         gNHvFmnFmfPBA==
-Subject: Re: [PATCH v6 1/2] dt-bindings: touchscreen: Add HY46XX bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org
-References: <20210412144624.GA3868831@robh.at.kernel.org>
- <20210412152400.1587623-1-giulio.benetti@benettiengineering.com>
- <20210412152400.1587623-2-giulio.benetti@benettiengineering.com>
- <20210413150710.GA1683048@robh.at.kernel.org>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <3bf86aaf-bfad-0615-44c7-3a89417af56a@benettiengineering.com>
-Date:   Tue, 13 Apr 2021 17:27:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 13 Apr 2021 11:28:48 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505A1C061574;
+        Tue, 13 Apr 2021 08:28:27 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so11651336pfn.6;
+        Tue, 13 Apr 2021 08:28:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=txv1fgolWcizMYehBcvnnggRxVWanXigizl1Xf+Dky8=;
+        b=MWezdm9avdfWuu/HZ27c6zuKllOS6Pl1/9SXUAcMD4YEPcyYZOPuEoJb5wsCLXOggi
+         EykZ1z/CAiQTJ9FtPqD/3I6yYyf1VGMGl7lZN9U2zR9S13tV2piPddKNQa5SmOCL3VJx
+         XppanDypKGNPDoZyommH1o2N6z32RC3GfWMkxA7cAsaAXw/z/S/xinlxDFDfhw977Cmm
+         P/9mdU4A2MhkBgmByF4DwiNfKF2LnVJiHPNynXwTUVxVuXK0Wr+rPg0bgLEdwA+kAJGK
+         NDAuXjtOfNNVyY6NP5rZ8TyXG5Uq2iVUk+jdL00LQvIfLzWQ4+fRyEws/Af2C5EXOp0l
+         /5Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=txv1fgolWcizMYehBcvnnggRxVWanXigizl1Xf+Dky8=;
+        b=Gk3brpIiftLfhQ5KLb66nYv4aiUPvbTapgrGlvPghsDaumYuNkrtGe/tJ1okrod5Dm
+         dO71ysahq0pO/sURgzugr+Eu4MdYvxl/58tiBvRRbbMjv97iCaDcZbP5qXZGUs9nylGJ
+         bvBdx6+Bid0XUlzeBdHh388/WCJxaAGzE/YYI7ACcIdwGeJERDZCDzMg1nwzlZedSc5l
+         g76YERRJXmPPKLj1ERD0GjJWncMZygB/9IsUTNwNHJlFN8wgKwn+GKpUZ1Ro/89izOHp
+         6PX0csfxZvmRITkyKcfDbwp5vpvsTyURsaCWomPcegQshM4wSaa6CcQxD/gVTgTuLpt4
+         xJjQ==
+X-Gm-Message-State: AOAM530/KEkjA4XV+1oL6bI8r91X56NPBsgo12fm8ShAitxfbh+yaDbZ
+        45MGXsmTtVO0vESf/V0oU68=
+X-Google-Smtp-Source: ABdhPJx2TJvmWt+Ug1whmzVfYhptY4K5aGt4mzyisLIAcUDt4GI6t1GQwNRJ2GAjc0ufcedIkPh8XA==
+X-Received: by 2002:a63:d58:: with SMTP id 24mr32958444pgn.171.1618327706735;
+        Tue, 13 Apr 2021 08:28:26 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id w75sm13360149pfc.135.2021.04.13.08.28.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 08:28:26 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 20:58:19 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH v3 0/4] staging: media: intel-ipu3: Cleanup patchset for
+ style issues
+Message-ID: <cover.1618326535.git.mitaliborkar810@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210413150710.GA1683048@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLKEA42qwuNUsmqgoxEOl28wb9B9Iz58/E9S+weKlL7saASpLU98VdRGhOBsgnZ+Q+B6KesynCwfAL0aenbumu1qiNP0+tVWViJtpx7KxnZm1G/raSFc
- cBHqMoQpAA0BOzDV7tNvQdhoKalhd2mUN+TxkFvYxmKxousjC/kWr3n6agMz1fBWmNumU7Ww2ND8Pu1EdYUuHzOmY47zNf/7lCMW2iDjDXsHplahJ9NgtVlD
- s95Gx/1mgQGOkpwLkDTu+tioCv20NA4JqZR/NlQ6Cd1slcKYn+n1LwoCt3uZK0Rgw0NYHBr8UmumZLdZACaBw3K3c1preN3r8kTnsI+o68stnsP2N+kHyTjs
- pYc2qbWElWcthZbETqKfCQ+GjUPbpfK5cJwDiEJNwQlprnNFPUddpNhm+T/Id6PbK0ITw35r2s5Th0VABUE7e687Ep6BLw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 5:07 PM, Rob Herring wrote:
-> On Mon, 12 Apr 2021 17:23:59 +0200, Giulio Benetti wrote:
->> This adds device tree bindings for the Hycon HY46XX touchscreen series.
->>
->> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->> ---
->> V1->V2:
->> As suggested by Rob Herring:
->> * fixed $id: address
->> * added "hycon," in front of every custom property
->> * changed all possible property to boolean type
->> * removed proximity-sensor-switch property since it's not handled in driver
->> V2->V3:
->> As suggested by Jonathan Neuschäfer:
->> * fixed some typo
->> * fixed description indentation
->> * improved boolean properties descriptions
->> * improved hycon,report-speed description
->> V3->V4:
->> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
->> V4->V5:
->> As suggested by Rob Herring:
->> * drop hycon- prefix from compatible
->> * use Hertz unit suffix for hycon,report-speed instead of u32
->> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do nothing
->> * change hycon,power-noise-enable property name to hycon,noise-filter-enable
->> * improve hycon,filter-data property description
->> * use generic touchscreen node name in example
->> V5->V6:
->> * changed report-speed property name into report-speed-hz according to
->> Rob Herring's suggestion
->> ---
->>   .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++
->>   MAINTAINERS                                   |   6 +
->>   2 files changed, 125 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
->>
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Changes from v2:- Rebased these four patces and made changes against
+mailine code
 
-I've sent v7[1] before receiving your Reviewed-by.
-Do I have to re-submit it once and if I receive a Reviewed-by from you 
-as a v8 with all your Reviewed-by's?
+Changes from v1:-
+Dropped patches 1/6 and 2/6 and compiled this as a patchset of 4
+patches.
+[PATCH 1/4]:- No changes.
+[PATCH 2/4]:- No changes.
+[PATCH 3/4]:- Reduced length of a line under 80 characters. This was
+patch 5/6 previously.
+[PATCH 4/4]:- No changes.
 
-Sorry for the noise.
+Mitali Borkar (4):
+  staging: media: intel-ipu3: remove unnecessary blank line
+  staging: media: intel-ipu3: reduce length of line
+  staging: media: intel-ipu3: line should not end with '['
+  staging: media: intel-ipu3: remove space before tabs
 
-[1]: https://patchwork.kernel.org/project/linux-input/list/?series=466405
+ drivers/staging/media/ipu3/include/intel-ipu3.h | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
 -- 
-Giulio Benetti
-Benetti Engineering sas
+2.30.2
+
