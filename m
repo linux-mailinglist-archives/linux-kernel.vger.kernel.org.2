@@ -2,114 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9800D35E5C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBA735E5C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346075AbhDMR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237095AbhDMR6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 264F261220;
-        Tue, 13 Apr 2021 17:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618336694;
-        bh=FfzIve3xPN9IGoioW4OJdSXAM3DQmxDEqCa3p8D9AQs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fuTGoumBPOYp4ArzUzEzdtlyVFhT4Do+2QkKOnSoMzO3NZlWlBXD0q66z+sDwPcJ1
-         yxhKOHl1nZJ/2FixiygQwO5y750qFPTJkaUTOmjfpYZ/tgSQIQkdSghWpmQSkR5DID
-         Gfj2KX1wOJDCTQxpnyojeXn90x6ATvGCYsSLyUFDjX2Ls9JUCqn5H7JQIeY3NWbLbA
-         W3+THEQzbKjWN2giFRICNYtQT1NkcUp/TuRTNDL3zrH+0vxtF3Ldx4KojaFtP3N7VV
-         +u08G/3IVOMTRHpR+s0eMohmvnbCvHekhiEqXdTNGMj0af0/iAByqrM9Oaf/IQeMDa
-         zHYWkXPSQqSOA==
-Received: by mail-qv1-f46.google.com with SMTP id h3so7746858qve.13;
-        Tue, 13 Apr 2021 10:58:14 -0700 (PDT)
-X-Gm-Message-State: AOAM533BEHKeaEOz4VYIDZLfaBd7q5AP6oRyjuixd+fKRGdt7HeKEurl
-        7x71+bThhXKsx/xOimX/MbX1DMPaAITtvWNR9A==
-X-Google-Smtp-Source: ABdhPJws1NfHPs84htGhmYHcyxv9pk+tCN0kYfaOX/vqo8HvO6tvcqeuum4MKIVrerz1ncj2JDFbf+S/ztoUdH6yMjc=
-X-Received: by 2002:a05:6214:8c4:: with SMTP id da4mr34787401qvb.57.1618336693305;
- Tue, 13 Apr 2021 10:58:13 -0700 (PDT)
+        id S1347394AbhDMSAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:00:35 -0400
+Received: from mail.efficios.com ([167.114.26.124]:60258 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344809AbhDMSAd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:00:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 67DC933A705;
+        Tue, 13 Apr 2021 14:00:13 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wBu2Bu9ckltM; Tue, 13 Apr 2021 14:00:12 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E02BA33A65B;
+        Tue, 13 Apr 2021 14:00:12 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E02BA33A65B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618336812;
+        bh=ppQsVv5paFBbIn8S2Rd9slDAXUoSOc74hiquz433ogY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=KVoTrLpl6aWOEZgfuyp+meqwSksqJIefK1sz8N7lacYWWNmDV4L5/WWxsnMwN0D0/
+         rGnpryRb3PxQT24k2yTYiYSRD4ENRsdmXRW08lRYINy80OXFSuoGnk4kFSFTh86iFT
+         ceWL92+G1sPgvRWV1RDhQwCh3A/yuaiTX6I+1sF+LLQ7Aw+0s2YATKBoEOa6eZ0Kfs
+         ea8OKyXqRfSxyHc7gfHynLZvMjvfEnZh7dEYcOcF+BFgvEU4aEaiDgJXayyDjCi4Uq
+         DAR5/sfMmPXI/hvswPmnrI+wauAUaNC4GXslZ9Nb6SzU0Shx02UCS6DkC7H7Za8VcF
+         xwY99bHy8iMsQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MU-KprJaiEoH; Tue, 13 Apr 2021 14:00:12 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id CF87933A658;
+        Tue, 13 Apr 2021 14:00:12 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 14:00:12 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com> <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com> <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com> <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com> <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com> <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com> <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and
+ clear_rseq_cs()
 MIME-Version: 1.0
-References: <20210412144624.GA3868831@robh.at.kernel.org> <20210412152400.1587623-1-giulio.benetti@benettiengineering.com>
- <20210412152400.1587623-2-giulio.benetti@benettiengineering.com>
- <20210413150710.GA1683048@robh.at.kernel.org> <3bf86aaf-bfad-0615-44c7-3a89417af56a@benettiengineering.com>
-In-Reply-To: <3bf86aaf-bfad-0615-44c7-3a89417af56a@benettiengineering.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 13 Apr 2021 12:58:01 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLZo45pY+mB+vvsAaGaE8N-P=4ojOMGSra4=6y1ESTJBw@mail.gmail.com>
-Message-ID: <CAL_JsqLZo45pY+mB+vvsAaGaE8N-P=4ojOMGSra4=6y1ESTJBw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: touchscreen: Add HY46XX bindings
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+Thread-Index: MRaVC0QM54TNLJ/HT7ucQNe7vY+fgA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:27 AM Giulio Benetti
-<giulio.benetti@benettiengineering.com> wrote:
->
-> On 4/13/21 5:07 PM, Rob Herring wrote:
-> > On Mon, 12 Apr 2021 17:23:59 +0200, Giulio Benetti wrote:
-> >> This adds device tree bindings for the Hycon HY46XX touchscreen series=
-.
-> >>
-> >> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> >> ---
-> >> V1->V2:
-> >> As suggested by Rob Herring:
-> >> * fixed $id: address
-> >> * added "hycon," in front of every custom property
-> >> * changed all possible property to boolean type
-> >> * removed proximity-sensor-switch property since it's not handled in d=
-river
-> >> V2->V3:
-> >> As suggested by Jonathan Neusch=C3=A4fer:
-> >> * fixed some typo
-> >> * fixed description indentation
-> >> * improved boolean properties descriptions
-> >> * improved hycon,report-speed description
-> >> V3->V4:
-> >> * fixed binding compatible string in example as suggested by Jonathan =
-Neusch=C3=A4fer
-> >> V4->V5:
-> >> As suggested by Rob Herring:
-> >> * drop hycon- prefix from compatible
-> >> * use Hertz unit suffix for hycon,report-speed instead of u32
-> >> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do not=
-hing
-> >> * change hycon,power-noise-enable property name to hycon,noise-filter-=
-enable
-> >> * improve hycon,filter-data property description
-> >> * use generic touchscreen node name in example
-> >> V5->V6:
-> >> * changed report-speed property name into report-speed-hz according to
-> >> Rob Herring's suggestion
-> >> ---
-> >>   .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++=
-++
-> >>   MAINTAINERS                                   |   6 +
-> >>   2 files changed, 125 insertions(+)
-> >>   create mode 100644 Documentation/devicetree/bindings/input/touchscre=
-en/hycon,hy46xx.yaml
-> >>
-> >
-> > Reviewed-by: Rob Herring <robh@kernel.org>
->
-> I've sent v7[1] before receiving your Reviewed-by.
-> Do I have to re-submit it once and if I receive a Reviewed-by from you
-> as a v8 with all your Reviewed-by's?
+----- On Apr 13, 2021, at 1:33 PM, Eric Dumazet edumazet@google.com wrote:
 
-I gave it on v7 too, so only if there are other changes on any of the
-patches. The tools will generally pick up any tags on the version
-applied. You just can't expect maintainers to go rummage thru old
-versions to find any tags.
+> On Tue, Apr 13, 2021 at 7:20 PM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> ----- On Apr 13, 2021, at 1:07 PM, Eric Dumazet edumazet@google.com wrote:
+>>
+>> > On Tue, Apr 13, 2021 at 7:01 PM Eric Dumazet <edumazet@google.com> wrote:
+>> >>
+>> >> On Tue, Apr 13, 2021 at 6:57 PM Eric Dumazet <edumazet@google.com> wrote:
+>> >> >
+>> >> > On Tue, Apr 13, 2021 at 6:54 PM Mathieu Desnoyers
+>> >> > <mathieu.desnoyers@efficios.com> wrote:
+>> >> > >
+>> >> > > ----- On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
+>> >> > >
+>> >> > > > From: Eric Dumazet <edumazet@google.com>
+>> >> > > >
+>> >> > > > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+>> >> > > > update includes") added regressions for our servers.
+>> >> > > >
+>> >> > > > Using copy_from_user() and clear_user() for 64bit values
+>> >> > > > is suboptimal.
+>> >> > > >
+>> >> > > > We can use faster put_user() and get_user().
+>> >> > > >
+>> >> > > > 32bit arches can be changed to use the ptr32 field,
+>> >> > > > since the padding field must always be zero.
+>> >> > > >
+>> >> > > > v2: added ideas from Peter and Mathieu about making this
+>> >> > > >    generic, since my initial patch was only dealing with
+>> >> > > >    64bit arches.
+>> >> > >
+>> >> > > Ah, now I remember the reason why reading and clearing the entire 64-bit
+>> >> > > is important: it's because we don't want to allow user-space processes to
+>> >> > > use this change in behavior to figure out whether they are running on a
+>> >> > > 32-bit or in a 32-bit compat mode on a 64-bit kernel.
+>> >> > >
+>> >> > > So although I'm fine with making 64-bit kernels faster, we'll want to keep
+>> >> > > updating the entire 64-bit ptr field on 32-bit kernels as well.
+>> >> > >
+>> >> > > Thanks,
+>> >> > >
+>> >> >
+>> >> > So... back to V1 then ?
+>> >>
+>> >> Or add more stuff as in :
+>> >
+>> > diff against v2, WDYT ?
+>>
+>> I like this approach slightly better, because it moves the preprocessor ifdefs
+>> into
+>> rseq_get_rseq_cs and clear_rseq_cs, while keeping the same behavior for a 32-bit
+>> process running on native 32-bit kernel and as compat task on a 64-bit kernel.
+>>
+>> That being said, I don't expect anyone to care much about performance of 32-bit
+>> kernels, so we could use copy_from_user() on 32-bit kernels to remove
+>> special-cases
+>> in 32-bit specific code. This would eliminate the 32-bit specific "padding"
+>> read, and
+>> let the TASK_SIZE comparison handle the check for both 32-bit and 64-bit
+>> kernels.
+>>
+>> As for clear_user(), I wonder whether we could simply keep using it, but change
+>> the
+>> clear_user() macro to figure out that it can use a faster 8-byte put_user ? I
+>> find it
+>> odd that performance optimizations which would be relevant elsewhere creep into
+>> the
+>> rseq code.
+> 
+> 
+> clear_user() is a maze of arch-dependent macros/functions/assembly
+> 
+> I guess the same could be said from  copy_in_user(), but apparently we removed
+> special-casing, like in commit a41e0d754240fe8ca9c4f2070bf67e3b0228aa22
+> 
+> Definitely it seems odd having to carefully choose between multiple methods.
 
-Rob
+As long as the ifdefs are localized within clearly identified wrappers in the
+rseq code I don't mind doing the special-casing there.
+
+The point which remains is that I don't think we want to optimize for speed
+on 32-bit architectures when it adds special-casing and complexity to the 32-bit
+build. I suspect there is less and less testing performed on 32-bit architectures
+nowadays, and it's good that as much code as possible is shared between 32-bit and
+64-bit builds to share the test coverage.
+
+Thanks,
+
+Mathieu
+
+> 
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>> >
+>> > diff --git a/kernel/rseq.c b/kernel/rseq.c
+>> > index
+>> > f2eee3f7f5d330688c81cb2e57d47ca6b843873e..537b1f684efa11069990018ffa3642c209993011
+>> > 100644
+>> > --- a/kernel/rseq.c
+>> > +++ b/kernel/rseq.c
+>> > @@ -136,6 +136,10 @@ static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
+>> > {
+>> >        u32 ptr;
+>> >
+>> > +       if (get_user(ptr, &rseq->rseq_cs.ptr.padding))
+>> > +               return -EFAULT;
+>> > +       if (ptr)
+>> > +               return -EINVAL;
+>> >        if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
+>> >                return -EFAULT;
+>> >        *uptrp = (struct rseq_cs __user *)ptr;
+>> > @@ -150,8 +154,9 @@ static int rseq_get_rseq_cs(struct task_struct *t,
+>> > struct rseq_cs *rseq_cs)
+>> >        u32 sig;
+>> >        int ret;
+>> >
+>> > -       if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
+>> > -               return -EFAULT;
+>> > +       ret = rseq_get_cs_ptr(&urseq_cs, t->rseq);
+>> > +       if (ret)
+>> > +               return ret;
+>> >        if (!urseq_cs) {
+>> >                memset(rseq_cs, 0, sizeof(*rseq_cs));
+>> >                return 0;
+>> > @@ -237,7 +242,8 @@ static int clear_rseq_cs(struct task_struct *t)
+>> > #ifdef CONFIG_64BIT
+>> >        return put_user(0UL, &t->rseq->rseq_cs.ptr64);
+>> > #else
+>> > -       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
+>> > +       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32) |
+>> > +              put_user(0UL, &t->rseq->rseq_cs.ptr.padding);
+>> > #endif
+>> >  }
+>>
+>> --
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+> > http://www.efficios.com
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
