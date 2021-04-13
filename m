@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAFA35DA33
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5F035DA35
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhDMIjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:39:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhDMIjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2344613AE;
-        Tue, 13 Apr 2021 08:39:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618303159;
-        bh=ItkAoNGP8VQxfvgpcLGmydidw9Yk9P26P+iVUwyLXZ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJq/g+fxD+xIXZSH6dR1ZG3oa/RGRhg7nXGsjW8Hs/p3pb4khEtfF7CgcY5BnY9cf
-         nnMYeDnw626HtOGoVh0/8FZb51ViSdw4hKqH1rAfztryZAcCf3c8+/Dq1kGKMU6K13
-         ITD4owpp9nv+3I7hIqU9Pfn0NHLNodMZuPbkxkYCSp6IPAf5TmMtlZrvAB4VZlUCSz
-         ZbIJY3Swnvjf1RUpaq6rwRhCsdyHdg4nEM3fY87k7LzL+UXinuYwzUFpuiOAAMdlQg
-         fRbdu6XBuA1P9LGCoCTETFyoaMy87qTlwQ81aKAOY9wQBK/rhA8Nlg+amVTBYcz6nC
-         CZKPJh+EpUbcA==
-Received: by pali.im (Postfix)
-        id 996C9860; Tue, 13 Apr 2021 10:39:16 +0200 (CEST)
-Date:   Tue, 13 Apr 2021 10:39:16 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
-Message-ID: <20210413083916.5wwe6lsl65jix3gc@pali>
-References: <20210412124602.25762-1-pali@kernel.org>
- <20210412192740.GA2151026@bjorn-Precision-5520>
+        id S229652AbhDMIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229891AbhDMIkB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:40:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F34C061574;
+        Tue, 13 Apr 2021 01:39:42 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618303179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jH35UaKzKxFZTz+38gYIJANUU3Yo7Uur7vXQ1BzIgEk=;
+        b=37o11+IJE6Kv3tz9VF5qjnqquXxAfDHUO2RR9dU9Xpmux/tJ1Ya0O/6QW6CUKYlUmUuki1
+        yk6x5sCVYp2RE1qlZcIWXcXGqQDfqE6b9rofrEF1l4W9Bu0lQYPIOfrpp5EWCLyhuzoDKR
+        noJFMLkdFwDHrZWh28dwY/D+ZLSb1kOl99Kr6aho0kZM/kJh+fV7SUV11cUs7VJmthm7UL
+        AKwn9TvznInOZS8mMQW5TSE32SUcLDuiqiTY/lb3bdlnpMtoo3M4f5FisV70sLN19VaPqS
+        CVZfdO4qHaiQJkI5PACVS5nXdWpseYGJ/CwRFLo7HhhKZaZyKXUfOXeYwTSDOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618303179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jH35UaKzKxFZTz+38gYIJANUU3Yo7Uur7vXQ1BzIgEk=;
+        b=011t0SOknZVZ53KQHSyhMVFCxDt2tni3dqjnWNlIRFKqqHWC7xqzL5Cma/5WgHzAiCEXjC
+        0oTt35aK0c0TSTBg==
+To:     Song Chen <chensong_2000@189.cn>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, maz@kernel.org, joe@perches.com,
+        romain.perier@gmail.com, john.garry@huawei.com
+Subject: Re: [PATCH] kernel:irq:manage: request threaded irq with a specified priority
+In-Reply-To: <1618294774-24370-1-git-send-email-chensong_2000@189.cn>
+References: <1618294774-24370-1-git-send-email-chensong_2000@189.cn>
+Date:   Tue, 13 Apr 2021 10:39:39 +0200
+Message-ID: <875z0qzigk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210412192740.GA2151026@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 12 April 2021 14:27:40 Bjorn Helgaas wrote:
-> On Mon, Apr 12, 2021 at 02:46:02PM +0200, Pali Rohár wrote:
-> > Define new PCI_EXP_DEVCTL_PAYLOAD_* macros in linux/pci_regs.h header file
-> > for Max Payload Size. Macros are defined in the same style as existing
-> > macros PCI_EXP_DEVCTL_READRQ_* macros.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > ---
-> >  include/uapi/linux/pci_regs.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> > index e709ae8235e7..8f1b15eea53e 100644
-> > --- a/include/uapi/linux/pci_regs.h
-> > +++ b/include/uapi/linux/pci_regs.h
-> > @@ -504,6 +504,12 @@
-> >  #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
-> >  #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
-> >  #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-> > +#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00A0 /* 4096 Bytes */
-> 
-> This is fine if we're going to use them, but we generally don't add
-> definitions purely for documentation.
-> 
-> 5929b8a38ce0 ("PCI: Add defines for PCIe Max_Read_Request_Size") added
-> the PCI_EXP_DEVCTL_READRQ_* definitions and we do have a few (very
-> few) uses in drivers.
+On Tue, Apr 13 2021 at 14:19, Song Chen wrote:
+> In general, irq handler thread will be assigned a default priority which
+> is MAX_RT_PRIO/2, as a result, no one can preempt others.
+>
+> Here is the case I found in a real project, an interrupt int_a is
+> coming, wakes up its handler handler_a and handler_a wakes up a
+> userspace RT process task_a.
+>
+> However, if another irq handler handler_b which has nothing to do
+> with any RT tasks is running when int_a is coming, handler_a can't
+> preempt handler_b, as a result, task_a can't be waken up immediately
+> as expected until handler_b gives up cpu voluntarily. In this case,
+> determinism breaks.
 
-I'm planning to use this constant to fix pci-aardvark.c driver. Aardvark
-changes are not ready yet, but I'm preparing them in my git tree
-https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=pci-aardvark
-(commit PCI: aardvark: Fix PCIe Max Payload Size setting)
+It breaks because the system designer failed to assign proper priorities
+to the irq threads int_a, int_b and to the user space process task_a.
 
-But as this is not change in aardvark driver, I sent it separately and
-earlier. As it would be dependency for aardvark changes.
+That's not solvable at the kernel level.
 
-> If we do need to add these, please follow the local use of lower-case
-> in the hex bitmasks.  The file is a mixture, but the closest examples
-> are lower-case.
+Thanks,
 
-Ok, therefore I will change 0x00A0 to 0x00a0.
+        tglx
 
-> >  #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
-> >  #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
-> >  #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
-> > -- 
-> > 2.20.1
-> > 
