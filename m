@@ -2,118 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0A235E61A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE5D35E61C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238635AbhDMSNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:13:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244280AbhDMSNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:13:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81921613C4;
-        Tue, 13 Apr 2021 18:13:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618337606;
-        bh=xGOm6sfcvV/xbsRxqQLrriUeRevtMO454HWufQdgJME=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iTYhpLB8MNVs/qyJP8F5o4oz9a09rZl0Bi2Gf+KdFMST6OF4FMOP4lN93912JOQtb
-         RSXnWiIHgdAThw4dCKUTNT4TOGas34MQ0Q6DGoNNasXIjtkElkaUbOB86LC4JBd7bq
-         NoO9pHcdLZtuccriWfIqtlPqxebSLsnGyQc7P64ZhJCiOlztv92HThHN6jCCW21EFa
-         NIrBqSoF4cyS4y0ktSH6+6SmLUiDvRwUl3rRY+zONqJ5xZpA/yLY+Pek0NvyE2oVL2
-         oisYuqZ6RxDsFySDO2PB0eU/unlP5L1ytKdMOVuubW0myVsKNRxwuNExflAuCF28CB
-         MqzX6nrvc7xLg==
-Received: by mail-ed1-f45.google.com with SMTP id bx20so19337379edb.12;
-        Tue, 13 Apr 2021 11:13:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531krwsbifqc3Oh0p23j8QHF+dqXLoR99CFtV3Szp88tkfQMKio2
-        UtiuiCNrf0bNop7VxJD3/DaLc3++z+6syHC0Sw==
-X-Google-Smtp-Source: ABdhPJzhN4/MeaIm5HqmdBdro7MpnNTQ9h58ymxpWFCaKDyNV4VU5185jVvkmgLAi0iKphtHU8gJjEbf3ABQ07p87Us=
-X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr37161577edd.258.1618337605094;
- Tue, 13 Apr 2021 11:13:25 -0700 (PDT)
+        id S1345883AbhDMSQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238322AbhDMSQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:16:53 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AEFC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:16:28 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id j18so28874148lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:16:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=/NRxwC56E+MI3F93yElfCXf/3hj5Z06is2uycZkM0qQ=;
+        b=DvJDXp/d6RVgY9b8RzGDfa4v7bb80kHLSf6aVUTdCUGASXQijU9fey+HkK22mjfMmP
+         Zaw+pH/pdj3l4ftbWEbHMzM/SJic7CkowmqoVf1JbOsKpg5Vx3ODW/XbbiUQg8j0q8Gn
+         7uczMoJP5hsoj6crQbcJtd1Sg6yQ2CT6uuQ1DHeY3f491MsXleeoanzBwaQtkwqDdCcN
+         hiUXX8ySa8zM4KvxXdmrAfUBEStcXDhvOEjSr+HN3HDAHDvAGQBmqsoMQkO90jNPrxsv
+         CQJySlTXy2HN1FLJCkjF6c5G/5OhNaPrGuQNGRTecrenASSgzpUX5EpIa6MNdUdbZdCK
+         pzYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=/NRxwC56E+MI3F93yElfCXf/3hj5Z06is2uycZkM0qQ=;
+        b=p0SWHq9U7+afruiM9m00TKPjF0Pn2thVEB0GlHSbBfXX5PUej3G1vOwLG4CPddEJiT
+         vABEvWmEpUs7Xb/TfdDHzKC10llQUJ6TaDsGWp1TV8BcMLgYoZZJc/uH6dQTUWsbtcfs
+         QOI7CysBLmR9VB2RieQJS294o6n5Gq9yaL0PaILHrE+CO2AIpldZN1BMhcLsk+iNmkzH
+         PMYRe0dFec74rD7SNK0hD99Cbuxa1UV60aKbBYWuyZJtEOpnHtYQJgnnRIryIt8GQwYM
+         y+cxVoxm3/sBL3vquojd39HNWWpz7MbQV1lljoJ7u4R8N2Wr6Kj0esxKwcpt9g26UGJr
+         IuYw==
+X-Gm-Message-State: AOAM5313sZjlX0xgPNsjpuw1q/vjbVaOaDKi0wC94t1qn3wYfUvV4yJj
+        vixPsKIGXbkt32ZpYDm5o5WX50QEIaUW+LoE
+X-Google-Smtp-Source: ABdhPJxGcyzZDO/gtjy3O8QplokV8Ru3RCNy02FMyuq/NhsrG7A5qqWuSRiXcZg/cSyET00Wi4U/VA==
+X-Received: by 2002:ac2:58c9:: with SMTP id u9mr11384189lfo.103.1618337786726;
+        Tue, 13 Apr 2021 11:16:26 -0700 (PDT)
+Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
+        by smtp.gmail.com with ESMTPSA id v4sm2263993lfe.18.2021.04.13.11.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 11:16:25 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+In-Reply-To: <20210413171443.1b2b2f88@thinkpad>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412235054.73754df9@thinkpad> <87wnt7jgzk.fsf@waldekranz.com> <20210413005518.2f9b9cef@thinkpad> <87r1jfje26.fsf@waldekranz.com> <87o8ejjdu6.fsf@waldekranz.com> <20210413015450.1ae597da@thinkpad> <20210413022730.2a51c083@thinkpad> <87im4qjl87.fsf@waldekranz.com> <20210413171443.1b2b2f88@thinkpad>
+Date:   Tue, 13 Apr 2021 20:16:24 +0200
+Message-ID: <87fszujbif.fsf@waldekranz.com>
 MIME-Version: 1.0
-References: <d840687e-bfd7-71b4-e8f0-37c971d3d414@nvidia.com>
-In-Reply-To: <d840687e-bfd7-71b4-e8f0-37c971d3d414@nvidia.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 13 Apr 2021 13:13:13 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLJn+6affnTbF7qS3QUe=trACwKm7rPfJNLL0fF2aMydg@mail.gmail.com>
-Message-ID: <CAL_JsqLJn+6affnTbF7qS3QUe=trACwKm7rPfJNLL0fF2aMydg@mail.gmail.com>
-Subject: Re: Device driver location for the PCIe root port's DMA engine
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Krishna Thota <kthota@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:01 PM Vidya Sagar <vidyas@nvidia.com> wrote:
+On Tue, Apr 13, 2021 at 17:14, Marek Behun <marek.behun@nic.cz> wrote:
+> On Tue, 13 Apr 2021 16:46:32 +0200
+> Tobias Waldekranz <tobias@waldekranz.com> wrote:
 >
-> Hi
-> I'm starting this mail to seek advice on the best approach to be taken
-> to add support for the driver of the PCIe root port's DMA engine.
-> To give some background, Tegra194's PCIe IPs are dual-mode PCIe IPs i.e.
-> they work either in the root port mode or in the endpoint mode based on
-> the boot time configuration.
-> Since the PCIe hardware IP as such is the same for both (RP and EP)
-> modes, the DMA engine sub-system of the PCIe IP is also made available
-> to both modes of operation.
-> Typically, the DMA engine is seen only in the endpoint mode, and that
-> DMA engine=E2=80=99s configuration registers are made available to the ho=
-st
-> through one of its BARs.
-> In the situation that we have here, where there is a DMA engine present
-> as part of the root port, the DMA engine isn=E2=80=99t a typical general-=
-purpose
-> DMA engine in the sense that it can=E2=80=99t have both source and destin=
-ation
-> addresses targeting external memory addresses.
-> RP=E2=80=99s DMA engine, while doing a write operation,
-> would always fetch data (i.e. source) from local memory and write it to
-> the remote memory over PCIe link (i.e. destination would be the BAR of
-> an endpoint)
-> whereas while doing a read operation,
-> would always fetch/read data (i.e. source) from a remote memory over the
-> PCIe link and write it to the local memory.
+>> On Tue, Apr 13, 2021 at 02:27, Marek Behun <marek.behun@nic.cz> wrote:
+>> > On Tue, 13 Apr 2021 01:54:50 +0200
+>> > Marek Behun <marek.behun@nic.cz> wrote:
+>> >  
+>> >> I will look into this, maybe ask some follow-up questions.  
+>> >
+>> > Tobias,
+>> >
+>> > it seems that currently the LAGs in mv88e6xxx driver do not use the
+>> > HashTrunk feature (which can be enabled via bit 11 of the
+>> > MV88E6XXX_G2_TRUNK_MAPPING register).  
+>> 
+>> This should be set at the bottom of mv88e6xxx_lag_sync_masks.
+>> 
+>> > If we used this feature and if we knew what hash function it uses, we
+>> > could write a userspace tool that could recompute new MAC
+>> > addresses for the CPU ports in order to avoid the problem I explained
+>> > previously...
+>> >
+>> > Or the tool can simply inject frames into the switch and try different
+>> > MAC addresses for the CPU ports until desired load-balancing is reached.
+>> >
+>> > What do you think?  
+>> 
+>> As you concluded in your followup, not being able to have a fixed MAC
+>> for the CPU seems weird.
+>> 
+>> Maybe you could do the inverse? Allow userspace to set the masks for an
+>> individual bond/team port in a hash-based LAG, then you can offload that
+>> to DSA. 
 >
-> I see that there are at least two ways we can have a driver for this DMA
-> engine.
-> a) DMA engine driver as one of the port service drivers
->         Since the DMA engine is a part of the root port hardware itself
-> (although it is not part of the standard capabilities of the root port),
-> it is one of the options to have the driver for the DMA engine go as one
-> of the port service drivers (along with AER, PME, hot-plug, etc...).
-> Based on Vendor-ID and Device-ID matching runtime, either it gets
-> binded/enabled (like in the case of Tegra194) or it doesn't.
-> b) DMA engine driver as a platform driver
->         The DMA engine hardware can be described as a sub-node under the =
-PCIe
-> controller's node in the device tree and a separate platform driver can
-> be written to work with it.
+> What masks?
 
-DT expects PCI bridge child nodes to be a PCI device. We've already
-broken that with the interrupt controller child nodes, but I don't
-really want to add more.
+The table defined in Global2/Register7.
 
-> I=E2=80=99m inclined to have the DMA engine driver as a port service driv=
-er as
-> it makes it cleaner and also in line with the design philosophy (the way
-> I understood it) of the port service drivers.
-> Please let me know your thoughts on this.
+When a frame is mapped to a LAG (e.g. by an ATU lookup), all member
+ports will added to the frame's destination vector. The mask table is
+the block that then filters the vector to only include a single
+member.
 
-What is the actual usecase and benefit for using the DMA engine with
-the RP? The only one I've come up with is the hardware designers think
-having DMA is better than not having DMA so they include that option
-on the DWC controller.
+By modifying that table, you can choose which buckets are assigned to
+which member ports. This includes assigning 7 buckets to one member and
+1 to the other for example.
 
-Rob
+At the moment, mv88e6xxx will statically determine this mapping (in
+mv88e6xxx_lag_set_port_mask), by trying to spread the buckets as evenly
+as possible. It will also rebalance the assignments whenever a link goes
+down, or is "detached" in LACP terms.
+
+You could imagine a different mode in which the DSA driver would receive
+the bucket allocation from the bond/team driver (which in turn could
+come all the way from userspace). Userspace could then implement
+whatever strategy it wants to maximize utilization, though still bound
+by the limitations of the hardware in terms of fields considered during
+hashing of course.
