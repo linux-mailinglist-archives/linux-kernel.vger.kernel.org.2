@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525A435E028
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0F035E02B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240576AbhDMNfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237619AbhDMNff (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:35:35 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A95C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:35:14 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id d15so4818843qkc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zfbw9gRsTtELynvxyNAEvq2nBbfpo0wqll31vRo4UIY=;
-        b=b0oYKHlwg3DVnNlrX19vgF08ocSUeXKRplR4zI9kNg/+QFmHOkEaQ45C+Bka4BGtRU
-         nS6j+oD0IZR2wNBP5Kl7ZbNf5ysHGe2Om74gIlnFlifoW+qNgf4GirF1CX0gdKirRE15
-         F07N2G043zt6/RHcPv1YPdrDadvJyv6gZwTA71WTCbNfZwRxTP8TjGIcyFSlrhux2d8w
-         q08ekYVYdLjq0TZkpUpZksRMyFWmwNI7GKQ0P6tgb0RCx0ZGkB0kBniSZOd1Yu3udTjW
-         Je5SAn0sjRPf+DWtZ5BPChvwVUo0SQWOVNdOlzDTIG458DJhG8wqQ+nm85VmTR3Lwwna
-         793Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zfbw9gRsTtELynvxyNAEvq2nBbfpo0wqll31vRo4UIY=;
-        b=DkKTSJa2pBQlHDctAW7pY6oMMPXnj0PFkiLgOOvA9ifV17i3ds4hRH/d62yJmU6z2d
-         0vtRGI2fJCYvfOzDd81T5kx42S20r6sRucgcST9oqvfoz3+IoEePd8OCIfDRDRA6dYeb
-         KkhOXjVQKXOOyjmkOddPDJld8JteZVdz24HQIbz2b0mQ/hSkaRcGjE6aSnMVHnZQ+yj2
-         vyBhfIQ5bcpStnDBXpJFxjsh/YxD278CPw3ibaBneJatJJ3gW9FnEZe5Ii20qvCjoNv4
-         gEgcjkU9koSP4JDA6n0f3pKHrnMGRCfPq0Fvp1KZHZFDqje+193sDvWotB92JERvC+Ve
-         YhAA==
-X-Gm-Message-State: AOAM532LqHfpUpEEhyxKzSBOHUsXUczeVS9LjIXY3kjI/aajv7Wat3iN
-        HiotlmGgiV2etHBPCJJFkcTn0Q==
-X-Google-Smtp-Source: ABdhPJzDi2mBhgIzlclzCM/9ug0hJZy9iB8qu8lhsne5b1NzQuskLTgGU2S9RKNz3qvq4jdQwxWauw==
-X-Received: by 2002:a05:620a:1650:: with SMTP id c16mr32116871qko.477.1618320913824;
-        Tue, 13 Apr 2021 06:35:13 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id 14sm10064746qkf.119.2021.04.13.06.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 06:35:12 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lWJCC-005HJi-1A; Tue, 13 Apr 2021 10:35:12 -0300
-Date:   Tue, 13 Apr 2021 10:35:12 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Steve Wise <swise@opengridcomputing.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>
-Subject: Re: [PATCH] nvme: Drop WQ_MEM_RECLAIM flag from core workqueues
-Message-ID: <20210413133512.GH227011@ziepe.ca>
-References: <20210412122330.5166-1-dwagner@suse.de>
- <20210412123149.GE227011@ziepe.ca>
- <20210412124909.olui5hfhceakt4u4@beryllium.lan>
- <20210412130402.GF227011@ziepe.ca>
- <20210413085404.tzam5lprtspwcek4@beryllium.lan>
+        id S242369AbhDMNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237619AbhDMNgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:36:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29AA46128C;
+        Tue, 13 Apr 2021 13:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618320946;
+        bh=VZQV9Opjy86FewZMAhYePFDcd5qXgMbf260PrkOeNnQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iEBP3eVQDtkMO4DxAf+v0sdWwnqL0IGJE2SwFHIsc/UAdvyNXLNRrv/cD49zU7+gB
+         1TerQCaoVZcHqGrbYfGNzH9ckYnMglfiC3NBYBcVh2CpVrDtP2kRLWYld914hyk6ek
+         GZP7rRrzcQVUZOG87uLUZijCi6U9FRNTu0I/03QS5RXXGlzFnqXGeJTPwZdY81ztfs
+         H3NvrVX/cqeqXzYrjTtF/tH306OCZ9nKVDTO6mCM2XYYHrTw9KzSBpl01pss2WRVVj
+         NQGv9QQuHJrZDcM/A2i+4Z8ZJbHY6TfLYsG8KqsTCHs7uco0NPnB9skS7+DPbQ0yAK
+         PocrAolh71QNA==
+Received: by mail-ej1-f46.google.com with SMTP id sd23so17315009ejb.12;
+        Tue, 13 Apr 2021 06:35:46 -0700 (PDT)
+X-Gm-Message-State: AOAM531YdXHeDyRoFKdIdyAvBJs49d9XuEhPaoWOj6iA5XgYq3KwnUFj
+        B+4gO4mHNyD8E8nqZpj1hRw0vUj9JUESxvnKag==
+X-Google-Smtp-Source: ABdhPJzARnbJQG3HiMaabtpq3OZPCNjGKEjJAbrhn3GvTlOBImId00g/2D+na3HVG+mIDw7JkKQKWOHRHQRClEFvuO8=
+X-Received: by 2002:a17:906:9ac5:: with SMTP id ah5mr6764815ejc.360.1618320944742;
+ Tue, 13 Apr 2021 06:35:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413085404.tzam5lprtspwcek4@beryllium.lan>
+References: <20210408202137.GA1890401@robh.at.kernel.org> <20210411114804.151754-1-giulio.benetti@benettiengineering.com>
+ <20210411114804.151754-2-giulio.benetti@benettiengineering.com>
+ <20210412150527.GA3897939@robh.at.kernel.org> <5ca45a6b-2cf0-cbb5-1f0d-3bf780052951@benettiengineering.com>
+In-Reply-To: <5ca45a6b-2cf0-cbb5-1f0d-3bf780052951@benettiengineering.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 13 Apr 2021 08:35:33 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+Message-ID: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] dt-bindings: Add Hycon Technology vendor prefix
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     devicetree@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:54:04AM +0200, Daniel Wagner wrote:
+On Mon, Apr 12, 2021 at 10:12 AM Giulio Benetti
+<giulio.benetti@benettiengineering.com> wrote:
+>
+> On 4/12/21 5:05 PM, Rob Herring wrote:
+> > On Sun, 11 Apr 2021 13:48:02 +0200, Giulio Benetti wrote:
+> >> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
+> >> include "hycon" as a vendor prefix for "Hycon Technology".
+> >> Company website: https://www.hycontek.com/
+> >>
+> >> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> >> Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> >> ---
+> >>   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+> >>   1 file changed, 2 insertions(+)
+> >>
+> >
+> >
+> > Please add Acked-by/Reviewed-by tags when posting new versions. However=
+,
+> > there's no need to repost patches *only* to add the tags. The upstream
+> > maintainer will do that for acks received on the version they apply.
+> >
+> > If a tag was not added on purpose, please state why and what changed.
+> >
+>
+> Ok, so on V6 series I'll send only patches 2 and 3 without this one.
 
-> Hmm, I am struggling with your last statement. If a worker does an
-> allocation it might block. I understand this is something which a worker
-> in a WQ_MEM_RECLAIM context is not allowed to do.
-> 
-> My aim is still to get rid of the warning triggered by the rdma
-> code.
+No, send the whole series and add any tags. Just don't resend a series
+for the sole purpose of adding tags.
 
-The WQ_MEM_RECLAIM is placed on a workqueue not because of what is
-*inside* the work, but because of what is *waiting* on the work.
-
-Jason
+Rob
