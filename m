@@ -2,128 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DC535E684
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A99D35E687
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347927AbhDMSe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:34:57 -0400
-Received: from smtpcmd12131.aruba.it ([62.149.156.131]:42557 "EHLO
-        smtpcmd12131.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346365AbhDMSey (ORCPT
+        id S1347940AbhDMSf1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 14:35:27 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:48454 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347929AbhDMSfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:34:54 -0400
-Received: from [192.168.50.29] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id WNrqlufXNik8wWNrqlQ05W; Tue, 13 Apr 2021 20:34:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1618338870; bh=CspUVgxdSBvuBUguzxzfALnyZe40v7DECVkGTOkCOQc=;
-        h=Content-Type:From:Mime-Version:Subject:Date:To;
-        b=mNG0zmzOKSTpnLQiwfP6Oj7E0zHrmnSbXEXPkg9SpPiPtrFi+zH0l6aMLYIbEnIjN
-         sc5LLvTKP8mG9M4gz/4/fBrxwrhxAj1yofDnWBWBthVfzlToEzwNwJGnmMXiuWa+Te
-         zI9wxiblS3Kd91goxJcN6VZvkTFjQdUi5R4A/DGwUCS4ea8HfzsCWVPSFuV6YAU6PO
-         u+fgbiB/e2fJiyeDJm8NXhNuiYAVNg9d3z2VvJMQ+uw2UAL5aS5KSsLFCKZJAC2mYZ
-         mnFsRVFqk9t6Zb8uC+5c87vkuNur3aTmMhFNHW85h6udi+DtVJN+Q8DuJvI0dE2YHW
-         USg/l7RiQAAdA==
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v6 1/2] dt-bindings: touchscreen: Add HY46XX bindings
-Date:   Tue, 13 Apr 2021 20:34:29 +0200
-Message-Id: <4B3FA892-C04C-49C7-B306-4105759C7157@benettiengineering.com>
-References: <CAL_JsqLZo45pY+mB+vvsAaGaE8N-P=4ojOMGSra4=6y1ESTJBw@mail.gmail.com>
-Cc:     Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        devicetree@vger.kernel.org,
-        =?utf-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <CAL_JsqLZo45pY+mB+vvsAaGaE8N-P=4ojOMGSra4=6y1ESTJBw@mail.gmail.com>
-To:     Rob Herring <robh@kernel.org>
-X-Mailer: iPhone Mail (18D70)
-X-CMAE-Envelope: MS4wfGnaV/O6FR29lYzhROo0xYBVWKV2SBBABAwe7HdHfP8EvfH9RBC9uZKToFhzly0ITNnh7wYtaWGG8BE17YcK5tt/Orn/t4u38EMLvBtNNQoIFIKZD26Z
- m3wxL4pHTssPYSMIE3D4FlPzuNvOQG8K++qU498WT/jh/AW6ACfmzKea8lf4CuY9Q04uaD7Ovul7yL+w9fy4+NIDgPiQ7k18mogwHTz25/opn6UoQn9smdCI
- 1NorJgb922VAsmWLFlojJxkRa8izZvjzJMJXmIhA8IV1sZMhWMdXpN1J6+BQ++lcwU/AzQb31fVgTjqQIJ7+Pl2Nq3X9fiI2a7AECj7zaUk6SeKv8jGBBpiI
- xzIdNBJLhovE5Xfh6rOcnqIff2nFT6gZ2FB+4KqXiGH9kAKD0pqmLZSi27OWaSe/OFzaMQPP
+        Tue, 13 Apr 2021 14:35:24 -0400
+Received: from marcel-macbook.holtmann.net (p5b3d235a.dip0.t-ipconnect.de [91.61.35.90])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 84989CECCC;
+        Tue, 13 Apr 2021 20:42:47 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] Bluetooth: btusb: fix memory leak
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210413175208.GA560049@LEGION>
+Date:   Tue, 13 Apr 2021 20:35:02 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "mark-yw.chen" <mark-yw.chen@mediatek.com>,
+        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, dan.carpenter@oracle.com,
+        colin.king@canonical.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <E4C40E0D-4D06-4E3C-BEA3-079FACEE1A06@holtmann.org>
+References: <20210413175208.GA560049@LEGION>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Muhammad,
 
-> Il giorno 13 apr 2021, alle ore 19:58, Rob Herring <robh@kernel.org> ha sc=
-ritto:
->=20
-> =EF=BB=BFOn Tue, Apr 13, 2021 at 10:27 AM Giulio Benetti
-> <giulio.benetti@benettiengineering.com> wrote:
->>=20
->>> On 4/13/21 5:07 PM, Rob Herring wrote:
->>> On Mon, 12 Apr 2021 17:23:59 +0200, Giulio Benetti wrote:
->>>> This adds device tree bindings for the Hycon HY46XX touchscreen series.=
+> If btusb_mtk_submit_wmt_recv_urb returns error, wc should be freed and
+> then error should be returned to prevent memory leak.
+> 
+> Addresses-Coverity: ("Prevent memory leak")
+> Fixes: 4cbb375e997d ("Bluetooth: btusb: Fixed too many in-token issue for Mediatek Chip.")
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> ---
+> drivers/bluetooth/btusb.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>>>=20
->>>> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
->>>> ---
->>>> V1->V2:
->>>> As suggested by Rob Herring:
->>>> * fixed $id: address
->>>> * added "hycon," in front of every custom property
->>>> * changed all possible property to boolean type
->>>> * removed proximity-sensor-switch property since it's not handled in dr=
-iver
->>>> V2->V3:
->>>> As suggested by Jonathan Neusch=C3=A4fer:
->>>> * fixed some typo
->>>> * fixed description indentation
->>>> * improved boolean properties descriptions
->>>> * improved hycon,report-speed description
->>>> V3->V4:
->>>> * fixed binding compatible string in example as suggested by Jonathan N=
-eusch=C3=A4fer
->>>> V4->V5:
->>>> As suggested by Rob Herring:
->>>> * drop hycon- prefix from compatible
->>>> * use Hertz unit suffix for hycon,report-speed instead of u32
->>>> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do noth=
-ing
->>>> * change hycon,power-noise-enable property name to hycon,noise-filter-e=
-nable
->>>> * improve hycon,filter-data property description
->>>> * use generic touchscreen node name in example
->>>> V5->V6:
->>>> * changed report-speed property name into report-speed-hz according to
->>>> Rob Herring's suggestion
->>>> ---
->>>>  .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++=
+patch has been applied to bluetooth-next tree.
 
->>>>  MAINTAINERS                                   |   6 +
->>>>  2 files changed, 125 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen=
-/hycon,hy46xx.yaml
->>>>=20
->>>=20
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>=20
->> I've sent v7[1] before receiving your Reviewed-by.
->> Do I have to re-submit it once and if I receive a Reviewed-by from you
->> as a v8 with all your Reviewed-by's?
->=20
-> I gave it on v7 too, so only if there are other changes on any of the
-> patches.
+Regards
 
-Ah ok, thank you.
-
-> The tools will generally pick up any tags on the version
-> applied. You just can't expect maintainers to go rummage thru old
-> versions to find any tags.
-
-Sure not, this is the reason why I=E2=80=99ve asked, I=E2=80=99ve forgotten t=
-o add some tag to my commits that I usually do, that=E2=80=99s why I=E2=80=99=
-ve messed things up.
-
-Thank you again for reviewing and explaining me.
-Best regards
-Giulio Benetti
-
->=20
-> Rob
+Marcel
 
