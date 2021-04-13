@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7454C35DEA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1561035DEB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhDMM0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
+        id S1345547AbhDMM1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhDMM0j (ORCPT
+        with ESMTP id S1345513AbhDMM1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:26:39 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D5AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:26:19 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:ed15:b7e9:afd7:f062])
-        by xavier.telenet-ops.be with bizsmtp
-        id sCSH2400E1dBBzp01CSHQK; Tue, 13 Apr 2021 14:26:18 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lWI7V-00FJMe-1a; Tue, 13 Apr 2021 14:26:17 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lWI7U-002kW9-HP; Tue, 13 Apr 2021 14:26:16 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-Date:   Tue, 13 Apr 2021 14:26:15 +0200
-Message-Id: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 13 Apr 2021 08:27:04 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996B6C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:26:42 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 507C322234;
+        Tue, 13 Apr 2021 14:26:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1618316796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SWjqpxaDjBEgNZflrVYP73ahhMwX1Hw7GOz/1ERNy/U=;
+        b=gtUln0MEqe5mYsb0ajXauJ4K9EeO/Nn020Z8jGHw+gadnSzP9DaBTsdDui/Q82OiW8r5PF
+        U6Xz+LOKcPdVVWQoewfuQp3tX9lIQuGUserWkvxV0qgfcQrXxRcRdwpO0G7pZETseNFyDo
+        6vb5TsrwEDtPaR08p6rmJcw9yNraXNM=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 13 Apr 2021 14:26:36 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: macronix: Add block protection support to
+ mx25u6435f
+In-Reply-To: <20210413120210.3671536-1-ikjn@chromium.org>
+References: <20210413120210.3671536-1-ikjn@chromium.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <51761f1db840c51bad17f5f275b4ce1a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HiSilicon Kunpeng I2C controller is only present on HiSilicon
-Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
-Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
-about this driver when configuring a kernel without Hisilicon platform
-or ACPI firmware support.
+Hi Ikjoon,
 
-Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/i2c/busses/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Am 2021-04-13 14:02, schrieb Ikjoon Jang:
+> This patch adds block protection support to Macronix mx25u6432f and
+> mx25u6435f. Two different chips share the same JEDEC ID while only
+> mx25u6423f support section protections. And two chips have slightly
+> different definitions of BP bits than generic (ST Micro) 
+> implementation.
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index b5b4e0d0ff4dd0bc..3ead6d9e130b2ebc 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -647,7 +647,7 @@ config I2C_HIGHLANDER
- 
- config I2C_HISI
- 	tristate "HiSilicon I2C controller"
--	depends on ARM64 || COMPILE_TEST
-+	depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
- 	help
- 	  Say Y here if you want to have Hisilicon I2C controller support
- 	  available on the Kunpeng Server.
--- 
-2.25.1
+What is different compared to the current implementation? Could you give
+an example?
 
+> So this patch defines a new spi_nor_locking_ops only for macronix
+> until this could be merged into a generic swp implementation.
+
+TBH, I don't really like the code duplication and I'd presume that it
+won't ever be merged with the generic code.
+
+You also assume that both the WPSEL and T/B bit are 0, which might not
+be true. Please note that both are write-once, thus should only be read.
+
+See also:
+https://lore.kernel.org/linux-mtd/346332bf6ab0dd92b9ffd9e126b6b97c@walle.cc/
+
+-michael
