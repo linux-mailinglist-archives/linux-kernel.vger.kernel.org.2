@@ -2,170 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37C735E3C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B84835E3C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344340AbhDMQYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:24:19 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:34350 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238682AbhDMQYK (ORCPT
+        id S1344687AbhDMQYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:24:22 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:44921 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343579AbhDMQYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:24:10 -0400
-Received: by mail-pg1-f173.google.com with SMTP id z16so12298218pga.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:23:50 -0700 (PDT)
+        Tue, 13 Apr 2021 12:24:12 -0400
+Received: by mail-pl1-f175.google.com with SMTP id d8so8495810plh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:23:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b0NH091hlOEGo2k1LU5ohgxNdrJbRmnGLPhBDFB+CKg=;
-        b=VfiO1Okw9IvrIfiX2ZwfXq/v62Njw/OjMUVCtg4KGkISVrnxMn0FKeJkqiBDfN2TRR
-         JRfNbdDslcOGJ+nVbqlnwQlaAanw8tqOwoXn+OPMNOeWpc3TL/fXfZynAO6YyemKYLM2
-         rVYjz02Ci/SeE9dTx9Vlw6O8jkaOb5DeN7iFXyST3fS+K+FoKnpxIdIBUOM98HVmK3JX
-         q/0cn2IaAjT9uDYEKhxSgrBpQOiFJ3/boEH3EK0AjPvs67SsKgxrmA4WvAXe8LM0kVhH
-         i/0FaGJTsFj/lhsGBisDZ3JcdCyzDtWKhwPuGW43e1PUpKsfQk2BvDQOrL1uW5Sp8T4Z
-         Z1Hw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nIl7E1TX/AmjEPOYNmcXuzmbZMqP3dlvzU0KBMbKOp8=;
+        b=nSzO0TfsAWG7iNgIdwtsAmUq/KQC/DsxJOS3lEsyXoGzuDRa+1Twzq2OGvh0ORC4Pf
+         lThDb65mpeKuUxaBA4rV0iOYbKPc02HnnHV0wpbswaeTQ0pnXGo+uqvE8PnfjFCxVqK5
+         zLhT5B7Zf9WHyhiCFme93bh0kILdQQqsJb8x5itcawnECE89Kd7mviwZzJc22hLAkR1V
+         i/AKIiAQDqUObtsRVLLVmYDdyG1F3M3wNmfkJzRfmzwsPwUUSYnDRwDbWn9fRYrTg45x
+         toR2J7tbEiH8McjqjvAYoBVy+yeD8iF71ZVjjXxRklO/Us5B1FiceybdOYAAo6ql26yC
+         Ma0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b0NH091hlOEGo2k1LU5ohgxNdrJbRmnGLPhBDFB+CKg=;
-        b=QqIUsPZWgtBU6F4sNoHIaKj2rdHItrOe6jmVuNlH4IMMrTPMAoNRL3oX/1icZq4rPa
-         +jCHjmPGjxq49c2ZYK7F5Yrvsh9uFuELqV7Ut8xlIZdAaKVimIMsDvyqCzAX18CJr39T
-         rFUYdOFsoZhTlBOaqLq+3u1xLqCeHqTkkFvCZJvkseDi0ba1eI3ZiqJ/ZfDH6RvgiBAA
-         e7e/9GQ7/caWCHy2kvb7q6RkQqnpyvYCF7fFZu7Y+0skUPTq/nEr3Ocg0E1/8tYUb4S7
-         YWGnr9MibNaUHk0v/LeJZKO3DQ1bx3wB4YFtMBdZJhVm3di3F1i6tZaxqe45PlypMYB0
-         32xw==
-X-Gm-Message-State: AOAM533Z2NYhK9HyVrw/3V8SzFKezgIHgfCvrnj7jfwKF0EQEP7t/2XN
-        TZABwpEn4nfYwdFQBuGAhtk=
-X-Google-Smtp-Source: ABdhPJyJm4FnCbHXtYlooY+QR1QLo4IlPJV/pyF79KsxfXAbS9uj9JkzyRZaJnpWfO6v9KojT8Y3hw==
-X-Received: by 2002:a63:4f0a:: with SMTP id d10mr33383231pgb.418.1618330970580;
-        Tue, 13 Apr 2021 09:22:50 -0700 (PDT)
-Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:485b:46b2:8be1:2cdd])
-        by smtp.gmail.com with ESMTPSA id l25sm15897591pgu.72.2021.04.13.09.22.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nIl7E1TX/AmjEPOYNmcXuzmbZMqP3dlvzU0KBMbKOp8=;
+        b=ENIFwHadjpKtbx9kzLlwuOz0BxPhsodZGEKECNnhgTGUQbDLBPiXwTGTKHueWK3WPt
+         GF1BNBFpuRs8imeGupHKieERKusI8PqHLeLvBRA/3Can9c27i5kVdLoCZc4+katUOjYd
+         spwHSZMkquK20vxla2KmtoK3Sb86nyZqh/WQY+7yewDOs/Ut5rW/ltYpPrA0nGBQJ1Jw
+         PmnWW9zfOWaJE8p4mYRZ/GBBBfqFpFM2NwS6V29Vj0Wc/JHb+jPkInkQJMQiUsL5PTgY
+         9zAp/5wPReZYvt1kjglowB5VqWFYhfgS46KUJlVjD76MlAMT2iq39kkMYxty/ByC5C6Y
+         MqxA==
+X-Gm-Message-State: AOAM532c9AxunhII8UJGpQ4kQ6wp3vHdJQIY8SxcuntHjyWt8ttHzL6w
+        O3q2Nbgi/oLuZkBSHyYJXNrjYA==
+X-Google-Smtp-Source: ABdhPJxlb6v8B6i2jVK3dUKFBjpwHKXt/PKepGp1gb73a7/jwKnFGhz6KNw7qGNer2xolloWLTPHJw==
+X-Received: by 2002:a17:90a:d3c6:: with SMTP id d6mr838920pjw.25.1618330972307;
+        Tue, 13 Apr 2021 09:22:52 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id k1sm12329200pff.160.2021.04.13.09.22.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 09:22:50 -0700 (PDT)
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Subject: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
-Date:   Tue, 13 Apr 2021 09:22:39 -0700
-Message-Id: <20210413162240.3131033-4-eric.dumazet@gmail.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-In-Reply-To: <20210413162240.3131033-1-eric.dumazet@gmail.com>
-References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+        Tue, 13 Apr 2021 09:22:51 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 10:22:49 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next v2] coresight: trbe: Fix return value check in
+ arm_trbe_register_coresight_cpu()
+Message-ID: <20210413162249.GA690529@xps15>
+References: <20210409094901.1903622-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409094901.1903622-1-weiyongjun1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+On Fri, Apr 09, 2021 at 09:49:01AM +0000, Wei Yongjun wrote:
+> In case of error, the function devm_kasprintf() returns NULL
+> pointer not ERR_PTR(). The IS_ERR() test in the return value
+> check should be replaced with NULL test.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+> v1 -> v2: remove fixes tag.
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
-update includes") added regressions for our servers.
+I have picked up both patches.
 
-Using copy_from_user() and clear_user() for 64bit values
-is suboptimal.
-
-We can use faster put_user() and get_user().
-
-32bit arches can be changed to use the ptr32 field,
-since the padding field must always be zero.
-
-v2: added ideas from Peter and Mathieu about making this
-    generic, since my initial patch was only dealing with
-    64bit arches.
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Arjun Roy <arjunroy@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
----
- kernel/rseq.c | 41 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 33 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/rseq.c b/kernel/rseq.c
-index cfe01ab5253c1c424c0e8b25acbb6a8e1b41a5b6..f2eee3f7f5d330688c81cb2e57d47ca6b843873e 100644
---- a/kernel/rseq.c
-+++ b/kernel/rseq.c
-@@ -119,23 +119,46 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
- 	return 0;
- }
+Thanks,
+Mathieu
  
-+#ifdef CONFIG_64BIT
-+static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
-+			   const struct rseq __user *rseq)
-+{
-+	u64 ptr;
-+
-+	if (get_user(ptr, &rseq->rseq_cs.ptr64))
-+		return -EFAULT;
-+	*uptrp = (struct rseq_cs __user *)ptr;
-+	return 0;
-+}
-+#else
-+static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
-+			   const struct rseq __user *rseq)
-+{
-+	u32 ptr;
-+
-+	if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
-+		return -EFAULT;
-+	*uptrp = (struct rseq_cs __user *)ptr;
-+	return 0;
-+}
-+#endif
-+
- static int rseq_get_rseq_cs(struct task_struct *t, struct rseq_cs *rseq_cs)
- {
- 	struct rseq_cs __user *urseq_cs;
--	u64 ptr;
- 	u32 __user *usig;
- 	u32 sig;
- 	int ret;
- 
--	if (copy_from_user(&ptr, &t->rseq->rseq_cs.ptr64, sizeof(ptr)))
-+	if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
- 		return -EFAULT;
--	if (!ptr) {
-+	if (!urseq_cs) {
- 		memset(rseq_cs, 0, sizeof(*rseq_cs));
- 		return 0;
- 	}
--	if (ptr >= TASK_SIZE)
-+	if ((unsigned long)urseq_cs >= TASK_SIZE)
- 		return -EINVAL;
--	urseq_cs = (struct rseq_cs __user *)(unsigned long)ptr;
-+
- 	if (copy_from_user(rseq_cs, urseq_cs, sizeof(*rseq_cs)))
- 		return -EFAULT;
- 
-@@ -211,9 +234,11 @@ static int clear_rseq_cs(struct task_struct *t)
- 	 *
- 	 * Set rseq_cs to NULL.
- 	 */
--	if (clear_user(&t->rseq->rseq_cs.ptr64, sizeof(t->rseq->rseq_cs.ptr64)))
--		return -EFAULT;
--	return 0;
-+#ifdef CONFIG_64BIT
-+	return put_user(0UL, &t->rseq->rseq_cs.ptr64);
-+#else
-+	return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
-+#endif
- }
- 
- /*
--- 
-2.31.1.295.g9ea45b61b8-goog
-
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 5ce239875c98..176868496879 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -871,7 +871,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+>  
+>  	dev = &cpudata->drvdata->pdev->dev;
+>  	desc.name = devm_kasprintf(dev, GFP_KERNEL, "trbe%d", cpu);
+> -	if (IS_ERR(desc.name))
+> +	if (!desc.name)
+>  		goto cpu_clear;
+>  
+>  	desc.type = CORESIGHT_DEV_TYPE_SINK;
+> 
