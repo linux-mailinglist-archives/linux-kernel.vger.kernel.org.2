@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7F535E4FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40D335E4FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhDMRZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:25:27 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47281 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232521AbhDMRZZ (ORCPT
+        id S1347159AbhDMR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232521AbhDMR0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:25:25 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1F7CC5C0085;
-        Tue, 13 Apr 2021 13:25:05 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 13 Apr 2021 13:25:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=FAxzhQis+VzV9EuRK6sBuAnym9g
-        l5bJPLVFhKy7PrYc=; b=szxYHLzcBwBq9zApoa9+sFTJqxzBP/McWn5QbFp8NNE
-        IRbzbidDyUzfVqgag70t527ZiyL0vrzWvKhodYD/rH8kBBaJ8aYTo6SCPD6mmam1
-        RrbQ52b9mFh1swiFMAya7WupYbp5nS3J62T32XWsFJFucoNWtjYsQmI68E/VjV/u
-        mgWPzIiZvwzYFh2hmGxXRZHBFHk4ZLS5Om7BDWaFUmJXud6tQIXhCo2H3sGMEWki
-        iauHVjV0i0Re3pUU4kL5sERZ1Npxzm1xbxase+qHlTXM4PY/I21++t2Ztw8HtmjS
-        VEKqI7U4h5/jmRFpcMSg6lj2pFrKHJ+0fNhQLm0VBMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=FAxzhQ
-        is+VzV9EuRK6sBuAnym9gl5bJPLVFhKy7PrYc=; b=LRDXE0WyZzif/OQ6WPaLAp
-        AXMgVS5bzs1FJ3jek4+RPhcVCf/dMyleQXzrrhd18FJ1j0ukzvINWPLk4xBvmH6d
-        sb72/nZrPpBhegYzl6mL17GmHfl5bRkufKBmWTGWiLBAp7sBpUBATaH1kUF6DvWq
-        PURKmlGw8fSTPAc4Sao6FyITLy2xjWv0t9/TqI9EM0EnLpESHObEr08VN4Q7sd3V
-        RFWRbvOk2LNNnvXXmlq+SeRKnXfs6/h3ynmMXmhamMggvPHD4DoqNZ8cBOzWvyc7
-        68Ky7Nk8k/XXc1DRrICrFqqCcVjjqMG29vdTlZVB2ivCgPQf7iz9JZokwBRzMT7Q
-        ==
-X-ME-Sender: <xms:8NN1YC834B6lDKJcC-nbz3LTi8osr_McQCv6Juerkm-8K7l7ZjZrFQ>
-    <xme:8NN1YCvVVYBgnqO5MsOb1c36_ndznz8Odd9ifdMtw0ZEVwa5C2t4BOUYLRcqWB2ez
-    wkeWAniz9uKmtjM4wk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekledguddufecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
-    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:8NN1YIC9FIciUHrazurDGJoNeSNA-iOkHlT9fAUXL7fLpD03HY7uOA>
-    <xmx:8NN1YKcb-RzT3C9F4PTpV1mnFmGfibMY7aaMzf3_rMQ0pv_oIhi4JA>
-    <xmx:8NN1YHOUILFqBzOIf69P27WoVjC7fmzT4txw7yDIyxpeitpv3qwgdQ>
-    <xmx:8dN1YMq08gAWupX5dEC6DREyOnanSFhBeDs0C9kHD-TNXsuuLf9G6A>
-Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EEEDE1080066;
-        Tue, 13 Apr 2021 13:25:02 -0400 (EDT)
-Date:   Tue, 13 Apr 2021 10:25:01 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
-Message-ID: <YHXT4kIrs28daRER@zen>
-References: <20210413130604.11487-1-khaledromdhani216@gmail.com>
+        Tue, 13 Apr 2021 13:26:06 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1388EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:25:46 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id f29so12433043pgm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5vr3PwJeGNJ+ARdvZPnoqmm3/dVq98uqA1dFm+w77rA=;
+        b=B7qaXV9ZpUN50AEatDo+ijkDYDeSfHKMdIVqdGTVHitzoOJT0zvMuxU0B0u4QWCCAP
+         CLuhYic90AuWUMGifY2q4J/m7AQK/VOUK0iZCrLvVxXh8/46dOYWPDzBMMSbBxTmT7K0
+         FK2MbSTKqRvsXRCvu4Bgwmn5TqPkPFTYeXDk0D5Nleqk9FP+XL4BHB43oCPN6xWdgrPK
+         vl7s2pml4EQajThYGfZyiWPUnlLAdYrcKoJfrQrKaSIzKf7L1JkqXk3zCP1S2L3bzjJN
+         g2RV2sXQNFhhjWlsvct+CwERTwCLjBWpimrjQQFn4zAgOlncRNGg2oKBIO9O/4u40b0a
+         NxvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5vr3PwJeGNJ+ARdvZPnoqmm3/dVq98uqA1dFm+w77rA=;
+        b=pqSglIPsFgd59DXvq/U1NmuyjnC4FEN0covczEf/Erz2l4CdzUD2p32uEU//m4ilUW
+         f3awc7E1A8P/EY8ArG0PrYGYg8rgMfM16FHV9gi4AfFIOayysjG8sm6wtPMkHnUdjc5p
+         G2RLrrs1A9GKsYJaOGhtqkZjkatYMSjXceH6+fVj8NA+PZJp+/Gi6IDn+FK5wsTw+QVH
+         kFYbL/tz6vcwZei4rwzTd4as+VtN4uhout+VDyYaM4FQ5sODPiEYwZOspOa3P3//YTnw
+         tzf05M+7Kdux1JR6hIu6cTL05cQZ3g9ran/+3Nk/Dn7hp1/yqzerwtM0R6FcumsNBBK9
+         7jGQ==
+X-Gm-Message-State: AOAM531+KUqtlqtMf7oH+5O3RkSqsMlLDkZStgjF5x+qR2wlhqgt8okv
+        b1C6TXjmL1sr/Z8hdRIUjP4Qlg==
+X-Google-Smtp-Source: ABdhPJzOEwhO/ZQZjBRucPtwUXd+BgP4ag+EUzaOeZrRo+QYusDeHN+kT7aq911ZWked1Moq/CiKuw==
+X-Received: by 2002:a62:4e96:0:b029:248:effc:9a4d with SMTP id c144-20020a624e960000b0290248effc9a4dmr1498365pfb.71.1618334744252;
+        Tue, 13 Apr 2021 10:25:44 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b7sm15201183pgs.62.2021.04.13.10.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 10:25:43 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 17:25:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>
+Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
+Message-ID: <YHXUFJuLXY8VZw3B@google.com>
+References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413130604.11487-1-khaledromdhani216@gmail.com>
+In-Reply-To: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:06:04PM +0100, Khaled ROMDHANI wrote:
-> The variable zone is not initialized. It
-> may causes a failed assertion.
+On Tue, Apr 13, 2021, Wanpeng Li wrote:
+> The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
+> reported that the guest time remains 0 when running a while true
+> loop in the guest.
 > 
-> Addresses-Coverity: ("Uninitialized variables")
+> The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
+> belongs") moves guest_exit_irqoff() close to vmexit breaks the
+> tick-based time accouting when the ticks that happen after IRQs are
+> disabled are incorrectly accounted to the host/system time. This is
+> because we exit the guest state too early.
 > 
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> This patchset splits both context tracking logic and the time accounting 
+> logic from guest_enter/exit_irqoff(), keep context tracking around the 
+> actual vmentry/exit code, have the virt time specific helpers which 
+> can be placed at the proper spots in kvm. In addition, it will not 
+> break the world outside of x86.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+IMO, this is going in the wrong direction.  Rather than separate context tracking,
+vtime accounting, and KVM logic, this further intertwines the three.  E.g. the
+context tracking code has even more vtime accounting NATIVE vs. GEN vs. TICK
+logic baked into it.
 
-> ---
->  fs/btrfs/zoned.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Rather than smush everything into context_tracking.h, I think we can cleanly
+split the context tracking and vtime accounting code into separate pieces, which
+will in turn allow moving the wrapping logic to linux/kvm_host.h.  Once that is
+done, splitting the context tracking and time accounting logic for KVM x86
+becomes a KVM detail as opposed to requiring dedicated logic in the context
+tracking code.
+
+I have untested code that compiles on x86, I'll send an RFC shortly.
+
+> v1 -> v2:
+>  * split context_tracking from guest_enter/exit_irqoff
+>  * provide separate vtime accounting functions for consistent
+>  * place the virt time specific helpers at the proper splot 
 > 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index eeb3ebe11d7a..ee15ab8dccb5 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -136,7 +136,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
->   */
->  static inline u32 sb_zone_number(int shift, int mirror)
->  {
-> -	u64 zone;
-> +	u64 zone = 0;
->  
->  	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
-
-Thanks for the fix.
-
-I assume this was dug up by coverity static analysis rather than hitting
-it in a live system?
-
-Since there is already an assert for the pre-condition 'mirror < max',
-I feel like it would make sense to also add one for mirror > 0.
-
->  	switch (mirror) {
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Michael Tokarev <mjt@tls.msk.ru>
+> 
+> Wanpeng Li (3):
+>   context_tracking: Split guest_enter/exit_irqoff
+>   context_tracking: Provide separate vtime accounting functions
+>   x86/kvm: Fix vtime accounting
+> 
+>  arch/x86/kvm/svm/svm.c           |  6 ++-
+>  arch/x86/kvm/vmx/vmx.c           |  6 ++-
+>  arch/x86/kvm/x86.c               |  1 +
+>  include/linux/context_tracking.h | 84 +++++++++++++++++++++++++++++++---------
+>  4 files changed, 74 insertions(+), 23 deletions(-)
+> 
 > -- 
-> 2.17.1
+> 2.7.4
 > 
