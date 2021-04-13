@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F6435DA30
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAFA35DA33
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242803AbhDMIgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:36:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:38464 "EHLO foss.arm.com"
+        id S229823AbhDMIjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229680AbhDMIgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:36:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FF5431B;
-        Tue, 13 Apr 2021 01:36:11 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8949F3F73B;
-        Tue, 13 Apr 2021 01:36:09 -0700 (PDT)
-Subject: Re: [PATCH] sched: remove the redundant comments
-To:     Hui Su <suhui@zeku.com>, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-References: <20210412073928.1120823-1-suhui@zeku.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <d9c447fd-d3f5-cb66-b3a9-7f7002594ccc@arm.com>
-Date:   Tue, 13 Apr 2021 10:36:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229652AbhDMIjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2344613AE;
+        Tue, 13 Apr 2021 08:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618303159;
+        bh=ItkAoNGP8VQxfvgpcLGmydidw9Yk9P26P+iVUwyLXZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rJq/g+fxD+xIXZSH6dR1ZG3oa/RGRhg7nXGsjW8Hs/p3pb4khEtfF7CgcY5BnY9cf
+         nnMYeDnw626HtOGoVh0/8FZb51ViSdw4hKqH1rAfztryZAcCf3c8+/Dq1kGKMU6K13
+         ITD4owpp9nv+3I7hIqU9Pfn0NHLNodMZuPbkxkYCSp6IPAf5TmMtlZrvAB4VZlUCSz
+         ZbIJY3Swnvjf1RUpaq6rwRhCsdyHdg4nEM3fY87k7LzL+UXinuYwzUFpuiOAAMdlQg
+         fRbdu6XBuA1P9LGCoCTETFyoaMy87qTlwQ81aKAOY9wQBK/rhA8Nlg+amVTBYcz6nC
+         CZKPJh+EpUbcA==
+Received: by pali.im (Postfix)
+        id 996C9860; Tue, 13 Apr 2021 10:39:16 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 10:39:16 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+Message-ID: <20210413083916.5wwe6lsl65jix3gc@pali>
+References: <20210412124602.25762-1-pali@kernel.org>
+ <20210412192740.GA2151026@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210412073928.1120823-1-suhui@zeku.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210412192740.GA2151026@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2021 09:39, Hui Su wrote:
-> Since the commit 55627e3cd22c ("sched/core: Remove rq->cpu_load[]"),
-> we don't need this any more.
+On Monday 12 April 2021 14:27:40 Bjorn Helgaas wrote:
+> On Mon, Apr 12, 2021 at 02:46:02PM +0200, Pali Rohár wrote:
+> > Define new PCI_EXP_DEVCTL_PAYLOAD_* macros in linux/pci_regs.h header file
+> > for Max Payload Size. Macros are defined in the same style as existing
+> > macros PCI_EXP_DEVCTL_READRQ_* macros.
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > ---
+> >  include/uapi/linux/pci_regs.h | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> > index e709ae8235e7..8f1b15eea53e 100644
+> > --- a/include/uapi/linux/pci_regs.h
+> > +++ b/include/uapi/linux/pci_regs.h
+> > @@ -504,6 +504,12 @@
+> >  #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
+> >  #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
+> >  #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
+> > +#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00A0 /* 4096 Bytes */
 > 
-> Signed-off-by: Hui Su <suhui@zeku.com>
-> ---
->  kernel/sched/sched.h | 5 -----
->  1 file changed, 5 deletions(-)
+> This is fine if we're going to use them, but we generally don't add
+> definitions purely for documentation.
 > 
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 10a1522b1e30..2232022d8561 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -897,11 +897,6 @@ DECLARE_STATIC_KEY_FALSE(sched_uclamp_used);
->  struct rq {
->  	/* runqueue lock: */
->  	raw_spinlock_t		lock;
-> -
-> -	/*
-> -	 * nr_running and cpu_load should be in the same cacheline because
-> -	 * remote CPUs use both these fields when doing load calculation.
-> -	 */
->  	unsigned int		nr_running;
->  #ifdef CONFIG_NUMA_BALANCING
->  	unsigned int		nr_numa_running;
+> 5929b8a38ce0 ("PCI: Add defines for PCIe Max_Read_Request_Size") added
+> the PCI_EXP_DEVCTL_READRQ_* definitions and we do have a few (very
+> few) uses in drivers.
 
-I forgot to remove this snippet back then. LGTM.
+I'm planning to use this constant to fix pci-aardvark.c driver. Aardvark
+changes are not ready yet, but I'm preparing them in my git tree
+https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=pci-aardvark
+(commit PCI: aardvark: Fix PCIe Max Payload Size setting)
 
-Add a
+But as this is not change in aardvark driver, I sent it separately and
+earlier. As it would be dependency for aardvark changes.
 
-  Fixes: 55627e3cd22c ("sched/core: Remove rq->cpu_load[]")
+> If we do need to add these, please follow the local use of lower-case
+> in the hex bitmasks.  The file is a mixture, but the closest examples
+> are lower-case.
 
-line.
+Ok, therefore I will change 0x00A0 to 0x00a0.
 
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> >  #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
+> >  #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
+> >  #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
+> > -- 
+> > 2.20.1
+> > 
