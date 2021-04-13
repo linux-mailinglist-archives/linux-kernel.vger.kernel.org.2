@@ -2,98 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FD635DDE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D30335DDE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244451AbhDMLiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39432 "EHLO mail.kernel.org"
+        id S244569AbhDMLiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:38:17 -0400
+Received: from mga06.intel.com ([134.134.136.31]:45394 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238148AbhDMLiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:38:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE12F61244;
-        Tue, 13 Apr 2021 11:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618313862;
-        bh=RGZNg9kftVpFHwueFM2mS//vQiDriFVB0rvxdE3Bj0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CYsm5jHBjyHTSfNLz5owb3ZJx/uyb9g0CMlSlExbjZfOpEHTuqX9AfdRGSZB88/IE
-         xDZ06U049Fhp93e3O0tjFrSdfHDN29lME/DZML2V7OVgdR46CqQ7xdNsepCOuPexbc
-         ztk8pwLWq99C4cHjvkqMB+zJYkceDFFLC97f+2NB8UAn3wRddNSwtTs1FdHRUcrZiJ
-         rS3tmYH0XmFL5wCtumSNJxwhkdBxx7ZpYeF2RJKBgKTaYQYvwPIgOR/FF6vRYfmzck
-         lGFJMdYwkqFFqcS76tzby4Ov9VQIokDFF6cIzS2qNh3DMV5oeYZvSxqNyD0iJJua96
-         SsOtTKaXBH56g==
-Date:   Tue, 13 Apr 2021 14:37:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Doug Ledford <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Linux-Net <netdev@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH for-next v3 0/2] Introduce rdma_set_min_rnr_timer() and
- use it in RDS
-Message-ID: <YHWCgmq4gOmAczq6@unreal>
-References: <1617216194-12890-1-git-send-email-haakon.bugge@oracle.com>
- <20210412225847.GA1189461@nvidia.com>
- <YHU6VXP6kZABXIYA@unreal>
- <F450613D-9A52-4D21-A2D5-E27FA4EBDBBE@oracle.com>
+        id S238148AbhDMLiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 07:38:11 -0400
+IronPort-SDR: Lsvs5WTbYXNAhKYi1pcFmfuJWD8j+wuerZr9dhPL09XEg67ud0LN61u/IKK5SqI7vmjkj0hp/A
+ ltXh5skctJyA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="255715414"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="255715414"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 04:37:48 -0700
+IronPort-SDR: WUDXVAjnYm+B1ecFGtpppaNKuzcV2biJo1yIFWrUrFVOFZFEWLIGHEyQZbZIByl6UKbMfHXUqM
+ BJUS6XU+Z4ZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="420768039"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 13 Apr 2021 04:37:46 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 855B417E; Tue, 13 Apr 2021 14:38:03 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2 1/1] devres: Enable trace events
+Date:   Tue, 13 Apr 2021 14:38:01 +0300
+Message-Id: <20210413113801.18245-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <F450613D-9A52-4D21-A2D5-E27FA4EBDBBE@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:13:38AM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 13 Apr 2021, at 08:29, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > On Mon, Apr 12, 2021 at 07:58:47PM -0300, Jason Gunthorpe wrote:
-> >> On Wed, Mar 31, 2021 at 08:43:12PM +0200, Håkon Bugge wrote:
-> >>> ib_modify_qp() is an expensive operation on some HCAs running
-> >>> virtualized. This series removes two ib_modify_qp() calls from RDS.
-> >>> 
-> >>> I am sending this as a v3, even though it is the first sent to
-> >>> net. This because the IB Core commit has reach v3.
-> >>> 
-> >>> Håkon Bugge (2):
-> >>>  IB/cma: Introduce rdma_set_min_rnr_timer()
-> >>>  rds: ib: Remove two ib_modify_qp() calls
-> >> 
-> >> Applied to rdma for-next, thanks
-> > 
-> > Jason,
-> > 
-> > It should be 
-> > +	WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT);
-> 
-> With no return you will arm the setting of the timer and subsequently get an error from the modify_qp later.
+In some cases the printf() mechanism is too heavy and can't be used.
+For example, when debugging a race condition involving devres API.
+When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
+otherwise it's quite visible with a useful information being collected.
 
-The addition of WARN_ON() means that this is programmer error to get
-such input. Historically, in-kernel API doesn't need to have protection
-from other kernel developers.
+Enable trace events for devres part of the driver core.
 
-Thanks
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: fixed compilation error (lkp), elaborate commit message (Greg)
+ drivers/base/Makefile |  3 +++
+ drivers/base/devres.c | 23 +++++++++++-------
+ drivers/base/trace.c  | 10 ++++++++
+ drivers/base/trace.h  | 56 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 83 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/base/trace.c
+ create mode 100644 drivers/base/trace.h
 
-> 
-> 
-> Håkon
-> 
-> > 
-> > and not
-> > +	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_TGT))
-> > +		return -EINVAL;
-> > 
-> > Thanks
-> > 
-> >> 
-> >> Jason
-> 
+diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+index 8b93a7f291ec..ef8e44a7d288 100644
+--- a/drivers/base/Makefile
++++ b/drivers/base/Makefile
+@@ -30,3 +30,6 @@ obj-y			+= test/
+ 
+ ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
+ 
++# define_trace.h needs to know how to find our header
++CFLAGS_trace.o		:= -I$(src)
++obj-$(CONFIG_TRACING)	+= trace.o
+diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+index db1f3137fc81..a0850bd1eab7 100644
+--- a/drivers/base/devres.c
++++ b/drivers/base/devres.c
+@@ -14,14 +14,13 @@
+ #include <asm/sections.h>
+ 
+ #include "base.h"
++#include "trace.h"
+ 
+ struct devres_node {
+ 	struct list_head		entry;
+ 	dr_release_t			release;
+-#ifdef CONFIG_DEBUG_DEVRES
+ 	const char			*name;
+ 	size_t				size;
+-#endif
+ };
+ 
+ struct devres {
+@@ -43,10 +42,6 @@ struct devres_group {
+ 	/* -- 8 pointers */
+ };
+ 
+-#ifdef CONFIG_DEBUG_DEVRES
+-static int log_devres = 0;
+-module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
+-
+ static void set_node_dbginfo(struct devres_node *node, const char *name,
+ 			     size_t size)
+ {
+@@ -54,7 +49,11 @@ static void set_node_dbginfo(struct devres_node *node, const char *name,
+ 	node->size = size;
+ }
+ 
+-static void devres_log(struct device *dev, struct devres_node *node,
++#ifdef CONFIG_DEBUG_DEVRES
++static int log_devres = 0;
++module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
++
++static void devres_dbg(struct device *dev, struct devres_node *node,
+ 		       const char *op)
+ {
+ 	if (unlikely(log_devres))
+@@ -62,10 +61,16 @@ static void devres_log(struct device *dev, struct devres_node *node,
+ 			op, node, node->name, node->size);
+ }
+ #else /* CONFIG_DEBUG_DEVRES */
+-#define set_node_dbginfo(node, n, s)	do {} while (0)
+-#define devres_log(dev, node, op)	do {} while (0)
++#define devres_dbg(dev, node, op)	do {} while (0)
+ #endif /* CONFIG_DEBUG_DEVRES */
+ 
++static void devres_log(struct device *dev, struct devres_node *node,
++		       const char *op)
++{
++	trace_devres_log(dev, op, node, node->name, node->size);
++	devres_dbg(dev, node, op);
++}
++
+ /*
+  * Release functions for devres group.  These callbacks are used only
+  * for identification.
+diff --git a/drivers/base/trace.c b/drivers/base/trace.c
+new file mode 100644
+index 000000000000..b24b0a309c4a
+--- /dev/null
++++ b/drivers/base/trace.c
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Device core Trace Support
++ * Copyright (C) 2021, Intel Corporation
++ *
++ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++ */
++
++#define CREATE_TRACE_POINTS
++#include "trace.h"
+diff --git a/drivers/base/trace.h b/drivers/base/trace.h
+new file mode 100644
+index 000000000000..3192e18f877e
+--- /dev/null
++++ b/drivers/base/trace.h
+@@ -0,0 +1,56 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Device core Trace Support
++ * Copyright (C) 2021, Intel Corporation
++ *
++ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM dev
++
++#if !defined(__DEV_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define __DEV_TRACE_H
++
++#include <linux/device.h>
++#include <linux/tracepoint.h>
++#include <linux/types.h>
++
++DECLARE_EVENT_CLASS(devres,
++	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
++	TP_ARGS(dev, op, node, name, size),
++	TP_STRUCT__entry(
++		__string(devname, dev_name(dev))
++		__field(struct device *, dev)
++		__field(const char *, op)
++		__field(void *, node)
++		__field(const char *, name)
++		__field(size_t, size)
++	),
++	TP_fast_assign(
++		__assign_str(devname, dev_name(dev));
++		__entry->op = op;
++		__entry->node = node;
++		__entry->name = name;
++		__entry->size = size;
++	),
++	TP_printk("%s %3s %p %s (%zu bytes)", __get_str(devname),
++		  __entry->op, __entry->node, __entry->name, __entry->size)
++);
++
++DEFINE_EVENT(devres, devres_log,
++	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
++	TP_ARGS(dev, op, node, name, size)
++);
++
++#endif /* __DEV_TRACE_H */
++
++/* this part has to be here */
++
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE trace
++
++#include <trace/define_trace.h>
+-- 
+2.30.2
+
