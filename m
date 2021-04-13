@@ -2,88 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353A935E1D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16B235E1F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbhDMOqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhDMOq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:46:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B3C061574;
-        Tue, 13 Apr 2021 07:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dUP0mmYc5PS53JTmGtYQ/UoruFkNut8DqFGyPA4/gAQ=; b=HJgxHZ/JL///I5K5iiFNwZboW8
-        4em50NAFunOC0gXIhElilt+ak46BHJjXM3OXhm27crqL1OOWiNxoxtMRNQaRtZnia7/V0+46DU52v
-        2yWmjbd5YfcUwnfnyiwUBfClz3ptH96NUqzW53PmMRx7CR/LXiGfDEeeSwoLSqG/tpAeMvesqQXgL
-        I2HYrOFXT8ergZI1nTtVDp1I5ZopAXyNh8ixU29VSOeQ/apuzui2m+GQ9fWtTL1WrbZ/UErQpXOuP
-        ngolUfu/4pKaoCITCCJJns/JEgxAFYz/qFuDBtfr5KvYKjZSdy/OricpfYEVf7UnoJg/RPCWdD6GB
-        zxo7+t4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWKHm-005s4L-Vd; Tue, 13 Apr 2021 14:45:19 +0000
-Date:   Tue, 13 Apr 2021 15:45:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Sterba <dsterba@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 01/18] vfs: add fileattr ops
-Message-ID: <20210413144502.GP2531743@casper.infradead.org>
-References: <20210325193755.294925-1-mszeredi@redhat.com>
- <20210325193755.294925-2-mszeredi@redhat.com>
+        id S240651AbhDMOys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:54:48 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:43235 "EHLO uho.ysoft.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231378AbhDMOyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:54:46 -0400
+X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 10:54:45 EDT
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+        by uho.ysoft.cz (Postfix) with ESMTP id 25F8BA0955;
+        Tue, 13 Apr 2021 16:46:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1618325177;
+        bh=wwzfajTFuzGrwTVqLjvmY4IObt01LM6Qma789rJ6+z0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=K4PeXCgoASZwFKLuKYj73GmMq8WZxhTtE+O/B17VLvV9d1kKUoosu6C+pwOuTiLWD
+         Td+J9Ado69q4XacHCkrrrQ2qjBVn6Slm8XkOpz6YQuvOTJlV86S86wLkwV4e8CpaTY
+         Yexm6ioOAeT9ZkjqGkWpFN2ht31c51Hyd5U5XfT0=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] ARM: dts: imx6dl-yapp4: Fix RGMII connection to QCA8334 switch
+Date:   Tue, 13 Apr 2021 16:45:57 +0200
+Message-Id: <1618325157-5774-1-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325193755.294925-2-mszeredi@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:37:38PM +0100, Miklos Szeredi wrote:
-> @@ -107,6 +110,8 @@ fiemap:		no
->  update_time:	no
->  atomic_open:	shared (exclusive if O_CREAT is set in open flags)
->  tmpfile:	no
-> +fileattr_get:	no or exclusive
-> +fileattr_set:	exclusive
->  ============	=============================================
+The FEC does not have a PHY so it should not have a phy-handle. It is
+connected to the switch at RGMII level so we need a fixed-link sub-node
+on both ends.
 
-This introduces a warning to `make htmldocs`:
+This was not a problem until the qca8k.c driver was converted to PHYLINK
+by commit b3591c2a3661 ("net: dsa: qca8k: Switch to PHYLINK instead of
+PHYLIB"). That commit revealed the FEC configuration was not correct.
 
-/home/willy/kernel/folio/Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
-Text in column margin in table line 24.
+Fixes: 87489ec3a77f ("ARM: dts: imx: Add Y Soft IOTA Draco, Hydra and Ursa boards")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+---
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-You need to add an extra '=' to the first batch of '=' (on all three lines of
-the table).  Like this:
-
-@@ -87,9 +87,9 @@ prototypes::
- locking rules:
-        all may block
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+index 111d4d331f98..686dab57a1e4 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -121,9 +121,13 @@
+ 	phy-reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+ 	phy-reset-duration = <20>;
+ 	phy-supply = <&sw2_reg>;
+-	phy-handle = <&ethphy0>;
+ 	status = "okay";
  
--============   =============================================
-+=============  =============================================
- ops            i_rwsem(inode)
--============   =============================================
-+=============  =============================================
- lookup:                shared
- create:                exclusive
- link:          exclusive (both)
-@@ -112,7 +112,7 @@ atomic_open:        shared (exclusive if O_CREAT is set in open flags)
- tmpfile:       no
- fileattr_get:  no or exclusive
- fileattr_set:  exclusive
--============   =============================================
-+=============  =============================================
-
-(whitespace damaged)
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++
+ 	mdio {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-- 
+2.1.4
 
