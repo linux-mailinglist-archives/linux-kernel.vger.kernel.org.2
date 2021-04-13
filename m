@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E7235D58E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F4D35D593
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343758AbhDMDC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:02:27 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:45952 "EHLO
+        id S1343936AbhDMDCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:02:30 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:41644 "EHLO
         mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238998AbhDMDCX (ORCPT
+        with ESMTP id S238998AbhDMDC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:02:23 -0400
-Received: by mail-wr1-f47.google.com with SMTP id h4so5846692wrt.12;
-        Mon, 12 Apr 2021 20:02:02 -0700 (PDT)
+        Mon, 12 Apr 2021 23:02:29 -0400
+Received: by mail-wr1-f47.google.com with SMTP id a6so14891056wrw.8;
+        Mon, 12 Apr 2021 20:02:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xJtD2g6E2a/RAWT0KbhvcFd7CsE7s8up6RxV9och6oM=;
-        b=iUaw8YCPlWxehtq+FbCFtNJNpBdfHnWMZA7lC51w9iwPy7pluzp+FLjbscyMt8fjRV
-         Cb9g9YG0EfdRVALJ/zhigS597Mibani7YOhfKONj3buaB1kFsJbQ4xOLWmHH6+miP3SO
-         GC2/cu3tWVnGHfD0rW5r33+/IXb0dnK4sxdWVoetGXsvi3M4vAYgTeWtUWWORcp8/01V
-         mov/PZ9/IFgwNclWTNxYUvPVuPyJ/3lL3qWvgiAM/o4wg2ZGS3IvjSbZFkSsxNVaFAw6
-         WmwypaYS4gXJLZihjTS4iai4sUIjEQnPAy4D12ySb5epTRhaABerBfYfLEKR1tohyShP
-         t3MQ==
-X-Gm-Message-State: AOAM532XuttENOVAaZUZy8tyutu1sbwX4i0171aQjjkj0yWxdlNUO6Bo
-        n6vVImyiNdMvCU3S+kBHv20=
-X-Google-Smtp-Source: ABdhPJw6LQ3ivEBjbJEbGCifRBpzdmFMh0kLsi2bgd/TNi7Cv3D1hSvpzQ7HfJRMqv2RGgKKy6c+TQ==
-X-Received: by 2002:adf:cd82:: with SMTP id q2mr19622739wrj.255.1618282922025;
-        Mon, 12 Apr 2021 20:02:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4O0qPwgrZJCnrS19darU0kP67ZKtnjW53XhCsAkkDHc=;
+        b=fOVan54tXpVtbO4mI4D01+tVLWMsz6YQqo0VSHtMl7hIVekIcvcv70kqRWKvpOYb51
+         +GOEaw52L3XGCsn0g62U1XEv62bFTNxMi1Hx5boTAEG2M46dZAQ4+F/HmAaYCuVgJc+/
+         uFvJ9GFzgdWrhCqhDgj2zM/kZCcDwVazbgf4FywhgEJxRPfFV8hQyeqT90sj9J/XdoeX
+         M2uyc1EIji2RCTqJ41+1qk5YoEk4KOOaK4cLZAGlMDKVfGYkfd2EwCZZzrRbL2/tp3eo
+         3q9jHJqVAm8P5+XmEAsy7pIlMY6PoDHZVIuD06OvZbsckdAE1C0XdiPnz3Ll8H55E9H6
+         ekJg==
+X-Gm-Message-State: AOAM5332952SA7Ik4fkXv4No6yM7N+zWCyg+7BJn/dZ1PBr+OiM7pujF
+        fD0OtC7jmDRRkLY2m9A/IKQ=
+X-Google-Smtp-Source: ABdhPJzsehkaHcxhLuxDZexwGjvlylYfPWFZP+Swen+EgyuvhWvE+/E9FURL/g1bFsEh3ptHFXD0jw==
+X-Received: by 2002:adf:84e6:: with SMTP id 93mr32449060wrg.376.1618282927815;
+        Mon, 12 Apr 2021 20:02:07 -0700 (PDT)
 Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
-        by smtp.gmail.com with ESMTPSA id o15sm18693207wra.93.2021.04.12.20.02.00
+        by smtp.gmail.com with ESMTPSA id k16sm18612424wro.11.2021.04.12.20.02.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 20:02:01 -0700 (PDT)
+        Mon, 12 Apr 2021 20:02:07 -0700 (PDT)
 From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
 Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
         Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
         Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/5] hwmon: (max31790) Rework to use regmap
-Date:   Tue, 13 Apr 2021 04:59:44 +0200
-Message-Id: <20210413025948.901867-1-kubernat@cesnet.cz>
+Subject: [PATCH v2 2/5] hwmon: (max31790) Fix and split pwm*_enable
+Date:   Tue, 13 Apr 2021 04:59:45 +0200
+Message-Id: <20210413025948.901867-2-kubernat@cesnet.cz>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210413025948.901867-1-kubernat@cesnet.cz>
+References: <20210413025948.901867-1-kubernat@cesnet.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -52,409 +54,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converting the driver to use regmap makes it more generic. It also makes
-it a lot easier to debug through debugfs.
+In the old code, pwm*_enable does two things. Firstly, it sets whether
+the chip should run in PWM or RPM mode. Secondly, it tells the chip
+whether it should monitor fan RPM. However, these two settings aren't
+tied together, so they shouldn't be set with a single value. In the new
+code, fan*_enable now controls fan RPM monitoring (pwm*_enable no longer
+controls that).
+
+According to the sysfs hwmon documentation, pwm*_enable has three
+possible values, 0 for "no control / full-speed", 1 for manual mode, and
+2+ for automatic. The old code works fine for 1 and 2, but 0 only
+differs from 1 in that it just turns off fan speed monitoring. The chip
+actually does have a way to turn off fan controls (and only monitor),
+but what that does is that it sets PWM to 0% duty cycle (which is the
+opposite to full-speed) AND it also turns off fan speed monitoring.
+Because of this, I implemented the 0 value by setting PWM mode to 100%.
+This method does come with a problem: it is impossible to differentiate
+between full-speed and PWM mode just from the values on the chip. The
+new code solves this by saving a value indicating whether we're in
+full-speed mode. This value is initialized to 0, so full-speed mode
+won't persist across reboots.
+
+These two changes are closely connected together, mainly because the
+detection of the pwm*_enable value depended on whether fan speed
+monitoring is enabled (which is now controlled as written in the first
+paragraph).
 
 Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
 ---
- drivers/hwmon/Kconfig    |   1 +
- drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
- 2 files changed, 133 insertions(+), 122 deletions(-)
+ Documentation/hwmon/max31790.rst |  8 +--
+ drivers/hwmon/max31790.c         | 87 ++++++++++++++++++++++----------
+ 2 files changed, 66 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 1ecf697d8d99..9f11d036c316 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1095,6 +1095,7 @@ config SENSORS_MAX6697
- config SENSORS_MAX31790
- 	tristate "Maxim MAX31790 sensor chip"
- 	depends on I2C
-+	select REGMAP_I2C
- 	help
- 	  If you say yes here you get support for 6-Channel PWM-Output
- 	  Fan RPM Controller.
+diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
+index f301385d8cef..8979c8a02cd1 100644
+--- a/Documentation/hwmon/max31790.rst
++++ b/Documentation/hwmon/max31790.rst
+@@ -34,10 +34,12 @@ also be configured to serve as tachometer inputs.
+ Sysfs entries
+ -------------
+ 
+-================== === =======================================================
++================== === =============================================================
++fan[1-12]_enable   RW  enable fan speed monitoring
+ fan[1-12]_input    RO  fan tachometer speed in RPM
+ fan[1-12]_fault    RO  fan experienced fault
+ fan[1-6]_target    RW  desired fan speed in RPM
+-pwm[1-6]_enable    RW  regulator mode, 0=disabled, 1=manual mode, 2=rpm mode
++pwm[1-6]_enable    RW  regulator mode, 0=full speed, 1=manual (pwm) mode, 2=rpm mode
++                       setting rpm mode sets fan*_enable to 1
+ pwm[1-6]           RW  fan target duty cycle (0-255)
+-================== === =======================================================
++================== === =============================================================
 diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-index 2c6b333a28e9..e3765ce4444a 100644
+index e3765ce4444a..ecdd55e12ffe 100644
 --- a/drivers/hwmon/max31790.c
 +++ b/drivers/hwmon/max31790.c
-@@ -12,6 +12,7 @@
- #include <linux/init.h>
- #include <linux/jiffies.h>
- #include <linux/module.h>
-+#include <linux/regmap.h>
- #include <linux/slab.h>
+@@ -39,6 +39,7 @@
  
- /* MAX31790 registers */
-@@ -46,92 +47,53 @@
+ #define FAN_RPM_MIN			120
+ #define FAN_RPM_MAX			7864320
++#define MAX_PWM				0XFF80
  
- #define NR_CHANNEL			6
+ #define RPM_FROM_REG(reg, sr)		(((reg) >> 4) ? \
+ 					 ((60 * (sr) * 8192) / ((reg) >> 4)) : \
+@@ -90,6 +91,7 @@ struct max31790_data {
+ 	struct regmap *regmap;
  
-+#define MAX31790_REG_USER_BYTE_67	0x67
-+
-+#define BULK_TO_U16(msb, lsb)		(((msb) << 8) + (lsb))
-+#define U16_MSB(num)			(((num) & 0xFF00) >> 8)
-+#define U16_LSB(num)			((num) & 0x00FF)
-+
-+static const struct regmap_range max31790_ro_range = {
-+	.range_min = MAX31790_REG_TACH_COUNT(0),
-+	.range_max = MAX31790_REG_PWMOUT(0) - 1,
-+};
-+
-+static const struct regmap_access_table max31790_wr_table = {
-+	.no_ranges = &max31790_ro_range,
-+	.n_no_ranges = 1,
-+};
-+
-+static const struct regmap_range max31790_volatile_ranges[] = {
-+	regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_COUNT(12)),
-+	regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN_FAULT_STATUS1),
-+};
-+
-+static const struct regmap_access_table max31790_volatile_table = {
-+	.no_ranges = max31790_volatile_ranges,
-+	.n_no_ranges = 2,
-+	.n_yes_ranges = 0
-+};
-+
-+static const struct regmap_config max31790_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.reg_stride = 1,
-+	.max_register = MAX31790_REG_USER_BYTE_67,
-+	.wr_table = &max31790_wr_table,
-+	.volatile_table = &max31790_volatile_table
-+};
-+
- /*
-  * Client data (each client gets its own)
-  */
- struct max31790_data {
--	struct i2c_client *client;
-+	struct regmap *regmap;
-+
  	struct mutex update_lock;
--	bool valid; /* zero until following fields are valid */
--	unsigned long last_updated; /* in jiffies */
--
--	/* register values */
++	bool full_speed[NR_CHANNEL];
  	u8 fan_config[NR_CHANNEL];
  	u8 fan_dynamics[NR_CHANNEL];
--	u16 fault_status;
--	u16 tach[NR_CHANNEL * 2];
--	u16 pwm[NR_CHANNEL];
--	u16 target_count[NR_CHANNEL];
  };
- 
--static struct max31790_data *max31790_update_device(struct device *dev)
--{
--	struct max31790_data *data = dev_get_drvdata(dev);
--	struct i2c_client *client = data->client;
--	struct max31790_data *ret = data;
--	int i;
--	int rv;
--
--	mutex_lock(&data->update_lock);
--
--	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
--		rv = i2c_smbus_read_byte_data(client,
--				MAX31790_REG_FAN_FAULT_STATUS1);
--		if (rv < 0)
--			goto abort;
--		data->fault_status = rv & 0x3F;
--
--		rv = i2c_smbus_read_byte_data(client,
--				MAX31790_REG_FAN_FAULT_STATUS2);
--		if (rv < 0)
--			goto abort;
--		data->fault_status |= (rv & 0x3F) << 6;
--
--		for (i = 0; i < NR_CHANNEL; i++) {
--			rv = i2c_smbus_read_word_swapped(client,
--					MAX31790_REG_TACH_COUNT(i));
--			if (rv < 0)
--				goto abort;
--			data->tach[i] = rv;
--
--			if (data->fan_config[i]
--			    & MAX31790_FAN_CFG_TACH_INPUT) {
--				rv = i2c_smbus_read_word_swapped(client,
--					MAX31790_REG_TACH_COUNT(NR_CHANNEL
--								+ i));
--				if (rv < 0)
--					goto abort;
--				data->tach[NR_CHANNEL + i] = rv;
--			} else {
--				rv = i2c_smbus_read_word_swapped(client,
--						MAX31790_REG_PWMOUT(i));
--				if (rv < 0)
--					goto abort;
--				data->pwm[i] = rv;
--
--				rv = i2c_smbus_read_word_swapped(client,
--						MAX31790_REG_TARGET_COUNT(i));
--				if (rv < 0)
--					goto abort;
--				data->target_count[i] = rv;
--			}
--		}
--
--		data->last_updated = jiffies;
--		data->valid = true;
--	}
--	goto done;
--
--abort:
--	data->valid = false;
--	ret = ERR_PTR(rv);
--
--done:
--	mutex_unlock(&data->update_lock);
--
--	return ret;
--}
--
- static const u8 tach_period[8] = { 1, 2, 4, 8, 16, 32, 32, 32 };
- 
- static u8 get_tach_period(u8 fan_dynamics)
-@@ -159,28 +121,75 @@ static u8 bits_for_tach_period(int rpm)
- 	return bits;
- }
- 
-+static int read_reg_byte(struct regmap *regmap, u8 reg)
-+{
-+	int rv;
-+	int val;
-+
-+	rv = regmap_read(regmap, reg, &val);
-+	if (rv < 0)
-+		return rv;
-+
-+	return val;
-+}
-+
-+static int read_reg_word(struct regmap *regmap, u8 reg)
-+{
-+	int rv;
-+	u8 val_bulk[2];
-+
-+	rv = regmap_bulk_read(regmap, reg, val_bulk, 2);
-+	if (rv < 0)
-+		return rv;
-+
-+	return BULK_TO_U16(val_bulk[0], val_bulk[1]);
-+}
-+
-+static int write_reg_word(struct regmap *regmap, u8 reg, u16 val)
-+{
-+	u8 bulk_val[2];
-+
-+	bulk_val[0] = U16_MSB(val);
-+	bulk_val[1] = U16_LSB(val);
-+
-+	return regmap_bulk_write(regmap, reg, bulk_val, 2);
-+}
-+
- static int max31790_read_fan(struct device *dev, u32 attr, int channel,
- 			     long *val)
- {
--	struct max31790_data *data = max31790_update_device(dev);
--	int sr, rpm;
--
--	if (IS_ERR(data))
--		return PTR_ERR(data);
-+	struct max31790_data *data = dev_get_drvdata(dev);
-+	struct regmap *regmap = data->regmap;
-+	int tach, fault;
- 
- 	switch (attr) {
- 	case hwmon_fan_input:
--		sr = get_tach_period(data->fan_dynamics[channel]);
--		rpm = RPM_FROM_REG(data->tach[channel], sr);
--		*val = rpm;
-+		tach = read_reg_word(regmap, MAX31790_REG_TACH_COUNT(channel));
-+		if (tach < 0)
-+			return tach;
-+
-+		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
+@@ -191,6 +193,9 @@ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+ 		else
+ 			*val = !!(fault & (1 << channel));
  		return 0;
- 	case hwmon_fan_target:
--		sr = get_tach_period(data->fan_dynamics[channel]);
--		rpm = RPM_FROM_REG(data->target_count[channel], sr);
--		*val = rpm;
-+		tach = read_reg_word(regmap, MAX31790_REG_TARGET_COUNT(channel));
-+		if (tach < 0)
-+			return tach;
-+
-+		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
++	case hwmon_fan_enable:
++		*val = !!(data->fan_config[channel] & MAX31790_FAN_CFG_TACH_INPUT_EN);
++		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -233,6 +238,15 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
+ 				     MAX31790_REG_TARGET_COUNT(channel),
+ 				     target_count);
+ 		break;
++	case hwmon_fan_enable:
++		if (val == 0)
++			data->fan_config[channel] &= ~MAX31790_FAN_CFG_TACH_INPUT_EN;
++		else
++			data->fan_config[channel] |= MAX31790_FAN_CFG_TACH_INPUT_EN;
++		err = regmap_write(regmap,
++				   MAX31790_REG_FAN_CONFIG(channel),
++				   data->fan_config[channel]);
++		break;
+ 	default:
+ 		err = -EOPNOTSUPP;
+ 		break;
+@@ -260,6 +274,11 @@ static umode_t max31790_fan_is_visible(const void *_data, u32 attr, int channel)
+ 		    !(fan_config & MAX31790_FAN_CFG_TACH_INPUT))
+ 			return 0644;
  		return 0;
- 	case hwmon_fan_fault:
--		*val = !!(data->fault_status & (1 << channel));
-+		if (channel > 6)
-+			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS2);
++	case hwmon_fan_enable:
++		if (channel < NR_CHANNEL ||
++		    (fan_config & MAX31790_FAN_CFG_TACH_INPUT))
++			return 0644;
++		return 0;
+ 	default:
+ 		return 0;
+ 	}
+@@ -281,12 +300,12 @@ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
+ 		*val = read >> 8;
+ 		return 0;
+ 	case hwmon_pwm_enable:
+-		if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE)
++		if (data->full_speed[channel])
++			*val = 0;
++		else if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE)
+ 			*val = 2;
+-		else if (data->fan_config[channel] & MAX31790_FAN_CFG_TACH_INPUT_EN)
 +		else
-+			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS1);
-+
-+		if (fault < 0)
-+			return fault;
-+
-+		if (channel > 6)
-+			*val = !!(fault & (1 << (channel - 6)));
-+		else
-+			*val = !!(fault & (1 << channel));
+ 			*val = 1;
+-		else
+-			*val = 0;
  		return 0;
  	default:
  		return -EOPNOTSUPP;
-@@ -191,7 +200,7 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
- 			      long val)
- {
- 	struct max31790_data *data = dev_get_drvdata(dev);
--	struct i2c_client *client = data->client;
-+	struct regmap *regmap = data->regmap;
- 	int target_count;
- 	int err = 0;
- 	u8 bits;
-@@ -207,9 +216,10 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
- 			((data->fan_dynamics[channel] &
- 			  ~MAX31790_FAN_DYN_SR_MASK) |
- 			 (bits << MAX31790_FAN_DYN_SR_SHIFT));
--		err = i2c_smbus_write_byte_data(client,
--					MAX31790_REG_FAN_DYNAMICS(channel),
--					data->fan_dynamics[channel]);
-+
-+		err = regmap_write(regmap,
-+				   MAX31790_REG_FAN_DYNAMICS(channel),
-+				   data->fan_dynamics[channel]);
- 		if (err < 0)
- 			break;
- 
-@@ -217,11 +227,11 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
- 		target_count = RPM_TO_REG(val, sr);
- 		target_count = clamp_val(target_count, 0x1, 0x7FF);
- 
--		data->target_count[channel] = target_count << 5;
-+		target_count = target_count << 5;
- 
--		err = i2c_smbus_write_word_swapped(client,
--					MAX31790_REG_TARGET_COUNT(channel),
--					data->target_count[channel]);
-+		err = write_reg_word(regmap,
-+				     MAX31790_REG_TARGET_COUNT(channel),
-+				     target_count);
- 		break;
- 	default:
- 		err = -EOPNOTSUPP;
-@@ -258,22 +268,22 @@ static umode_t max31790_fan_is_visible(const void *_data, u32 attr, int channel)
- static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
- 			     long *val)
- {
--	struct max31790_data *data = max31790_update_device(dev);
--	u8 fan_config;
--
--	if (IS_ERR(data))
--		return PTR_ERR(data);
--
--	fan_config = data->fan_config[channel];
-+	struct max31790_data *data = dev_get_drvdata(dev);
-+	struct regmap *regmap = data->regmap;
-+	int read;
+@@ -305,28 +324,42 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
  
  	switch (attr) {
  	case hwmon_pwm_input:
--		*val = data->pwm[channel] >> 8;
-+		read = read_reg_word(regmap, MAX31790_REG_PWMOUT(channel));
-+		if (read < 0)
-+			return read;
-+
-+		*val = read >> 8;
- 		return 0;
- 	case hwmon_pwm_enable:
--		if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
-+		if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE)
- 			*val = 2;
--		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
-+		else if (data->fan_config[channel] & MAX31790_FAN_CFG_TACH_INPUT_EN)
- 			*val = 1;
- 		else
- 			*val = 0;
-@@ -287,7 +297,7 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
- 			      long val)
- {
- 	struct max31790_data *data = dev_get_drvdata(dev);
--	struct i2c_client *client = data->client;
-+	struct regmap *regmap = data->regmap;
- 	u8 fan_config;
- 	int err = 0;
- 
-@@ -299,10 +309,7 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+-		if (val < 0 || val > 255) {
++		if (data->full_speed[channel] || val < 0 || val > 255) {
  			err = -EINVAL;
  			break;
  		}
--		data->pwm[channel] = val << 8;
--		err = i2c_smbus_write_word_swapped(client,
--						   MAX31790_REG_PWMOUT(channel),
--						   data->pwm[channel]);
-+		err = write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), val << 8);
++
+ 		err = write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), val << 8);
  		break;
  	case hwmon_pwm_enable:
  		fan_config = data->fan_config[channel];
-@@ -321,9 +328,9 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+-		if (val == 0) {
+-			fan_config &= ~(MAX31790_FAN_CFG_TACH_INPUT_EN |
+-					MAX31790_FAN_CFG_RPM_MODE);
+-		} else if (val == 1) {
+-			fan_config = (fan_config |
+-				      MAX31790_FAN_CFG_TACH_INPUT_EN) &
+-				     ~MAX31790_FAN_CFG_RPM_MODE;
++		if (val == 0 || val == 1) {
++			fan_config &= ~MAX31790_FAN_CFG_RPM_MODE;
+ 		} else if (val == 2) {
+-			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN |
+-				      MAX31790_FAN_CFG_RPM_MODE;
++			fan_config |= MAX31790_FAN_CFG_RPM_MODE;
+ 		} else {
+ 			err = -EINVAL;
  			break;
  		}
++
++		/*
++		 * The chip sets PWM to zero when using its "monitor only" mode
++		 * and 0 means full speed.
++		 */
++		if (val == 0) {
++			data->full_speed[channel] = true;
++			err = write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), MAX_PWM);
++		} else {
++			data->full_speed[channel] = false;
++		}
++
++		/*
++		 * RPM mode implies enabled TACH input, so enable it in RPM
++		 * mode.
++		 */
++		if (val == 2)
++			fan_config |= MAX31790_FAN_CFG_TACH_INPUT_EN;
++
  		data->fan_config[channel] = fan_config;
--		err = i2c_smbus_write_byte_data(client,
--					MAX31790_REG_FAN_CONFIG(channel),
--					fan_config);
-+		err = regmap_write(regmap,
-+				   MAX31790_REG_FAN_CONFIG(channel),
-+				   fan_config);
- 		break;
- 	default:
- 		err = -EOPNOTSUPP;
-@@ -426,20 +433,18 @@ static const struct hwmon_chip_info max31790_chip_info = {
- 	.info = max31790_info,
- };
+ 		err = regmap_write(regmap,
+ 				   MAX31790_REG_FAN_CONFIG(channel),
+@@ -400,18 +433,18 @@ static umode_t max31790_is_visible(const void *data,
  
--static int max31790_init_client(struct i2c_client *client,
-+static int max31790_init_client(struct regmap *regmap,
- 				struct max31790_data *data)
- {
- 	int i, rv;
- 
- 	for (i = 0; i < NR_CHANNEL; i++) {
--		rv = i2c_smbus_read_byte_data(client,
--				MAX31790_REG_FAN_CONFIG(i));
-+		rv = read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(i % NR_CHANNEL));
- 		if (rv < 0)
- 			return rv;
- 		data->fan_config[i] = rv;
- 
--		rv = i2c_smbus_read_byte_data(client,
--				MAX31790_REG_FAN_DYNAMICS(i));
-+		rv = read_reg_byte(regmap, MAX31790_REG_FAN_DYNAMICS(i));
+ static const struct hwmon_channel_info *max31790_info[] = {
+ 	HWMON_CHANNEL_INFO(fan,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT,
+-			   HWMON_F_INPUT | HWMON_F_FAULT),
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_TARGET | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT,
++			   HWMON_F_ENABLE | HWMON_F_INPUT | HWMON_F_FAULT),
+ 	HWMON_CHANNEL_INFO(pwm,
+ 			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
+ 			   HWMON_PWM_INPUT | HWMON_PWM_ENABLE,
+@@ -448,6 +481,8 @@ static int max31790_init_client(struct regmap *regmap,
  		if (rv < 0)
  			return rv;
  		data->fan_dynamics[i] = rv;
-@@ -464,13 +469,18 @@ static int max31790_probe(struct i2c_client *client)
- 	if (!data)
- 		return -ENOMEM;
- 
--	data->client = client;
- 	mutex_init(&data->update_lock);
- 
-+	data->regmap = devm_regmap_init_i2c(client, &max31790_regmap_config);
-+	if (IS_ERR(data->regmap)) {
-+		dev_err(dev, "failed to allocate register map\n");
-+		return PTR_ERR(data->regmap);
-+	}
 +
- 	/*
- 	 * Initialize the max31790 chip
- 	 */
--	err = max31790_init_client(client, data);
-+	err = max31790_init_client(data->regmap, data);
- 	if (err)
- 		return err;
++		data->full_speed[i] = false;
+ 	}
  
+ 	return 0;
 -- 
 2.31.1
 
