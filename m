@@ -2,130 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FE035E634
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CF035E635
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347609AbhDMSWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        id S1347615AbhDMSWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 14:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbhDMSV7 (ORCPT
+        with ESMTP id S236781AbhDMSWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:21:59 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA6CC061574;
-        Tue, 13 Apr 2021 11:21:39 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id dp18so3920864qvb.5;
-        Tue, 13 Apr 2021 11:21:39 -0700 (PDT)
+        Tue, 13 Apr 2021 14:22:40 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855B2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:22:20 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id l14so12929650ybf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:22:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=25gNIOG2c1hWR+uLY9hp/OskIyE7B6zmWTWkW5GFvMo=;
-        b=VC9MmTbS9UfJzu0FekAhcs7mlPCYm98IVB2VcoWDjGP0y2cKlEKa+MezLqxmqgA9uM
-         kCJKFbpfyJVS58HTngHby906J5tjd66qIEKfoC5U05uWqQ1XI1hutChJtXE1TNofrKq3
-         xMZRr/le0avcpFTLPi+qEo2VF19yyllsWVQgGyh8JirL9OlsIntOLU88F/ezSyMr+W08
-         A13bcYNtrNAh13w35qqayzHo1VdIIKCKeT2Qd+/8Fec022BoLn/zE4AkGHFf/hawmuNn
-         d0osnyCz0/9LIcsJobW0TkA8X6IXKxuW1S7EquQnU8Sasj+zPWYDgKUZVk43fCMN0Nv1
-         QaQA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ERFw0utuuehNFClqfoBAzxZARE8u8aLh9Pi0EYsnt8I=;
+        b=a1Z5h/6rJ1YxfVLfRrF8+HebhBVApzVEnK0UOMqH/KlNnocPXK9w0Rv3VWjm6dzhG7
+         sZExpXKXyyOmPKB/U5ULNYzOpdRtU6/TgwGtIWz9okiTtC7Ju2VxurW0jpFJQE+e+7pY
+         iP0zsX4dCViLMZZxDNvd9bjrWVne6kTl5tQjV9ku8tXHrz4+Q2InDkj7JidB/gVOIu53
+         5MMNdg1P1oLHkiy8fBO1IBserBSpJKC0f0h0oqjk4ghJD+mztq4uLg3b72N5mvoLDY2/
+         e/qhbR589jg2Zsslwtr/YgMREFe6IFzkv8Pt6/y74FEXB2J7ORTHC6VWHeTGm/rWTvkL
+         bEtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=25gNIOG2c1hWR+uLY9hp/OskIyE7B6zmWTWkW5GFvMo=;
-        b=Dc4Gga4wA8zp5U7XaHkULXNHgnY5JyOgeNc7j6iRDekCFogqSXPcxE5g7SMOVzVds2
-         9COByNSz7nQG3FXFZ7suXufrOj+Qtf7Q9nAHavnHUGkEwQG2fhSHED2ZPerZeKnUs1qJ
-         c5l37ru2vW7t1bwe1B7uJiQLqAHd3fnaniZRotr2fsyDW9x9vFQQJql5/XV5cRfoDHLj
-         MwZEieewH0NuU5IxJjk/AdU1LlP9q2wR1CxQdoTqNZVKb5+sl+ttajHmS9p2O5hIC8YX
-         VKmbl6dBY5sImMjlsitmagxPuwDdfOKAgWmg9eaCJ4fmzt/QMq2mXVYioR+4umt0J7LV
-         k+tQ==
-X-Gm-Message-State: AOAM532n+q04fiFmEQBippZiee7QcOy6B4X8oKjus/8ARH+QtWRTzfLV
-        Xx/mckkd2ZcsXVahIt0PKc4=
-X-Google-Smtp-Source: ABdhPJw5qNta9vUPvuv/qS/Km7aFg6OU2gnJgBElSwcOeY0I+B1jwYCWi3NzxrecW0jMmBi6k1TWMQ==
-X-Received: by 2002:a0c:dc04:: with SMTP id s4mr4580782qvk.1.1618338098917;
-        Tue, 13 Apr 2021 11:21:38 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:83a0:18ef:c76d:6086? ([2001:1284:f016:a037:83a0:18ef:c76d:6086])
-        by smtp.gmail.com with ESMTPSA id q67sm8596124qkb.89.2021.04.13.11.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 11:21:38 -0700 (PDT)
-Message-ID: <4e2f52124b29b3ed6c3f7f645f067c503c7cf4cf.camel@gmail.com>
-Subject: Re: [PATCH] staging: media: omap4iss: Remove unused macro functions
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Tue, 13 Apr 2021 15:21:35 -0300
-In-Reply-To: <03549d0e-04d9-6d37-93e3-c09b29ce53aa@xs4all.nl>
-References: <20210412134253.GA19402@focaruja>
-         <03549d0e-04d9-6d37-93e3-c09b29ce53aa@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ERFw0utuuehNFClqfoBAzxZARE8u8aLh9Pi0EYsnt8I=;
+        b=NlUMqVQvGXm0Gk/34ZiBkUjC5W4talKk32ZIEHHtBT7RaeGbUadR4PnIjWnkGfZe81
+         uNcXhjWGkCuTKOcE0vTPTbOVZ0dPmddDuLsx2ZE1gib1qzLsLbZqa15KnENM5tM+lhAi
+         V/dStjfeuhg46Ct1xHSO8wU4l3XzCC51BAriljeyr8ficaRgvXo/VbzuPQj8TgnPUuHP
+         Wd8O0G56yFynEK/CWaFX31BggLbwj5/IZciciRpJ7wnxKak0z9dFfkVnNUrTj44hvC+C
+         IPAONnhZGL40ZL5lFhNzJB3CzvfhvXxPGiDSFoUThkDLVlcwcGqL1dYcFC5qvZuqXtXe
+         Bysg==
+X-Gm-Message-State: AOAM532r+lYVsxLFuU62xgWUIhIFCty+chLqJ7Se4170GQhidDNli5cA
+        K3GBD/Y2mrPRbgJ552FI148k2G5Dku56r0XQJRDSIQ==
+X-Google-Smtp-Source: ABdhPJwDBVtxIjsY5ZjljxtyWe2q1/1E7G+/XTkrozTo3vXOlinDCQBsIMP9r5axsWNxgac2KW1wKZzi40z0JEpduBk=
+X-Received: by 2002:a25:4244:: with SMTP id p65mr18202220yba.452.1618338139467;
+ Tue, 13 Apr 2021 11:22:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+ <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+ <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
+ <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+ <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+ <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com> <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 20:22:08 +0200
+Message-ID: <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em ter, 2021-04-13 às 17:06 +0200, Hans Verkuil escreveu:
-> On 12/04/2021 15:42, Aline Santana Cordeiro wrote:
-> > Remove unused macro functions "to_iss_device()", "to_device()",
-> > and "v4l2_dev_to_iss_device(dev)".
-> 
-> 'git grep to_iss_device drivers/staging/omap4iss' gives me lots of
-> hits!
-> Same for to_device. Only v4l2_dev_to_iss_device appears to be unused.
-> 
-> Regards,
-> 
->         Hans
-> 
-This command is really helpful, I didin't know. 
-Thank you for the tip.
+On Tue, Apr 13, 2021 at 8:00 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
 
-May I send a v2 removing just v4l2_dev_to_iss_device?
+> As long as the ifdefs are localized within clearly identified wrappers in the
+> rseq code I don't mind doing the special-casing there.
+>
+> The point which remains is that I don't think we want to optimize for speed
+> on 32-bit architectures when it adds special-casing and complexity to the 32-bit
+> build. I suspect there is less and less testing performed on 32-bit architectures
+> nowadays, and it's good that as much code as possible is shared between 32-bit and
+> 64-bit builds to share the test coverage.
+>
 
-Thank you in advance,
-Aline
+Quite frankly V1 was fine, I can't really make it looking better.
 
-> > 
-> > Signed-off-by: Aline Santana Cordeiro <
-> > alinesantanacordeiro@gmail.com>
-> > ---
-> >  drivers/staging/media/omap4iss/iss.h | 8 --------
-> >  1 file changed, 8 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/omap4iss/iss.h
-> > b/drivers/staging/media/omap4iss/iss.h
-> > index b88f952..a354d5f 100644
-> > --- a/drivers/staging/media/omap4iss/iss.h
-> > +++ b/drivers/staging/media/omap4iss/iss.h
-> > @@ -29,11 +29,6 @@
-> >  
-> >  struct regmap;
-> >  
-> > -#define to_iss_device(ptr_module)                              \
-> > -       container_of(ptr_module, struct iss_device, ptr_module)
-> > -#define
-> > to_device(ptr_module)                                          \
-> > -       (to_iss_device(ptr_module)->dev)
-> > -
-> >  enum iss_mem_resources {
-> >         OMAP4_ISS_MEM_TOP,
-> >         OMAP4_ISS_MEM_CSI2_A_REGS1,
-> > @@ -119,9 +114,6 @@ struct iss_device {
-> >         unsigned int isp_subclk_resources;
-> >  };
-> >  
-> > -#define v4l2_dev_to_iss_device(dev) \
-> > -       container_of(dev, struct iss_device, v4l2_dev)
-> > -
-> >  int omap4iss_get_external_info(struct iss_pipeline *pipe,
-> >                                struct media_link *link);
-> >  
-> > 
-> 
-
-
+> Thanks,
+>
+> Mathieu
+>
+> >
+> >
+> >>
+> >> Thanks,
+> >>
+> >> Mathieu
+> >>
+> >> >
+> >> > diff --git a/kernel/rseq.c b/kernel/rseq.c
+> >> > index
+> >> > f2eee3f7f5d330688c81cb2e57d47ca6b843873e..537b1f684efa11069990018ffa3642c209993011
+> >> > 100644
+> >> > --- a/kernel/rseq.c
+> >> > +++ b/kernel/rseq.c
+> >> > @@ -136,6 +136,10 @@ static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
+> >> > {
+> >> >        u32 ptr;
+> >> >
+> >> > +       if (get_user(ptr, &rseq->rseq_cs.ptr.padding))
+> >> > +               return -EFAULT;
+> >> > +       if (ptr)
+> >> > +               return -EINVAL;
+> >> >        if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
+> >> >                return -EFAULT;
+> >> >        *uptrp = (struct rseq_cs __user *)ptr;
+> >> > @@ -150,8 +154,9 @@ static int rseq_get_rseq_cs(struct task_struct *t,
+> >> > struct rseq_cs *rseq_cs)
+> >> >        u32 sig;
+> >> >        int ret;
+> >> >
+> >> > -       if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
+> >> > -               return -EFAULT;
+> >> > +       ret = rseq_get_cs_ptr(&urseq_cs, t->rseq);
+> >> > +       if (ret)
+> >> > +               return ret;
+> >> >        if (!urseq_cs) {
+> >> >                memset(rseq_cs, 0, sizeof(*rseq_cs));
+> >> >                return 0;
+> >> > @@ -237,7 +242,8 @@ static int clear_rseq_cs(struct task_struct *t)
+> >> > #ifdef CONFIG_64BIT
+> >> >        return put_user(0UL, &t->rseq->rseq_cs.ptr64);
+> >> > #else
+> >> > -       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
+> >> > +       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32) |
+> >> > +              put_user(0UL, &t->rseq->rseq_cs.ptr.padding);
+> >> > #endif
+> >> >  }
+> >>
+> >> --
+> >> Mathieu Desnoyers
+> >> EfficiOS Inc.
+> > > http://www.efficios.com
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
