@@ -2,289 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A42035D44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE3A35D452
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344252AbhDMAHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238214AbhDMAHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:07:17 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94C3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e14so1302991ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wi5y58NXhaqWJqCu7rykbp59hRwnukVU5T9tEJRybe8=;
-        b=iFgUEbfkuYGLYjek/vn6OyGcvRT0ASn89ADFGms+ENBK1UIlXIktEm3dG3Ak1YWvre
-         wM+rCeo2ePfcJJ2APzALUB//X/vSC0ytlevnrHT6ojYCQiLUujeUvujyCXAbky+hZnZH
-         0DUwx5fDjSzBvVhAAJWnhISC+XMFM8fUuL3xvqRd5v6jQ/UxU2O2FBc2ok2gKhMKKaaC
-         CtcnjJNQjtBQrJJppmgTrU4nf6Wy3bf3AvK1s4ZRP/+gqEE1ishwESM+4lSu4ufXbw3I
-         rRy9TW+e0jg0fKQV87RWUfztjyaGtIUKUVhd4fEpI4pBL81KnTy83nRlRiayZA2pvWlI
-         S/UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wi5y58NXhaqWJqCu7rykbp59hRwnukVU5T9tEJRybe8=;
-        b=qeQo7d1wkHq0RuOWvDXVWLZkGB1a/BWZyBaJYglVupfX04/Sacex+wWct8B84q0Zcv
-         kn05AV8VirK3wwznGKH5mJhHdFIHcWDTmWyLfXbawg6eAMdaFE1LcOEwvRanuIg/UHdp
-         hQKTpRpFi0x+rgonv2K4WwD4V+fpKPsAZJ4TGzhMX8JFVb5fU3ZwF+ddd+TG/0P5zD/D
-         WWMdyqK9K6Z2tzRWeGvlr9HYIc1pNN0m6VNWiXEaZdFLPFMHUWr4twvYrF7fXFNlisb3
-         oo+AwsKXNYw49WQkg9AjNklufBVWWfMkoRLbMfu/R2mpb8UO2vD8V3bjwUJM1spzIupQ
-         HOeg==
-X-Gm-Message-State: AOAM533sMOAD7EuL17qYzwZngFoKMh4lFFEs6Pugg62/yrN9OxY2c1yq
-        XO+3IUbt9dP3T6OcL7fiRK45ZhMDcHuIj6ZjbV6Q3g==
-X-Google-Smtp-Source: ABdhPJzL9b49ItYd+mw5mgINWsaHfu+pNeOHloM1N2RQWofppr7WxvE+6yes6Vca5KNe0SZCkoDOdWf8ui7+d+uwO8A=
-X-Received: by 2002:a05:6e02:1e08:: with SMTP id g8mr25434450ila.176.1618272418171;
- Mon, 12 Apr 2021 17:06:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1618254007.git.ashish.kalra@amd.com> <f2340642c5b8d597a099285194fca8d05c9843bd.1618254007.git.ashish.kalra@amd.com>
-In-Reply-To: <f2340642c5b8d597a099285194fca8d05c9843bd.1618254007.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 12 Apr 2021 17:06:21 -0700
-Message-ID: <CABayD+cofJ4FA-ZVmMpFLAA4MnDPOoAyg5=hAT=vtsfZXbYb1Q@mail.gmail.com>
-Subject: Re: [PATCH v12 09/13] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        id S1344268AbhDMAHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:07:50 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46964 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238214AbhDMAHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 20:07:49 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lW6aR-00GNup-Cv; Tue, 13 Apr 2021 02:07:23 +0200
+Date:   Tue, 13 Apr 2021 02:07:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Greg Ungerer <gerg@kernel.org>
+Subject: Re: [RFC v4 net-next 2/4] net: dsa: mt7530: add interrupt support
+Message-ID: <YHTgu1+6GZFdFgWJ@lunn.ch>
+References: <20210412034237.2473017-1-dqfext@gmail.com>
+ <20210412034237.2473017-3-dqfext@gmail.com>
+ <87fszvoqvb.wl-maz@kernel.org>
+ <20210412152210.929733-1-dqfext@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412152210.929733-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:45 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Brijesh Singh <brijesh.singh@amd.com>
->
-> Invoke a hypercall when a memory region is changed from encrypted ->
-> decrypted and vice versa. Hypervisor needs to know the page encryption
-> status during the guest migration.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/include/asm/paravirt.h       | 10 +++++
->  arch/x86/include/asm/paravirt_types.h |  2 +
->  arch/x86/kernel/paravirt.c            |  1 +
->  arch/x86/mm/mem_encrypt.c             | 57 ++++++++++++++++++++++++++-
->  arch/x86/mm/pat/set_memory.c          |  7 ++++
->  5 files changed, 76 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-> index 4abf110e2243..efaa3e628967 100644
-> --- a/arch/x86/include/asm/paravirt.h
-> +++ b/arch/x86/include/asm/paravirt.h
-> @@ -84,6 +84,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->         PVOP_VCALL1(mmu.exit_mmap, mm);
->  }
->
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
-> +                                               bool enc)
-> +{
-> +       PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
-> +}
-> +
->  #ifdef CONFIG_PARAVIRT_XXL
->  static inline void load_sp0(unsigned long sp0)
->  {
-> @@ -799,6 +805,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
->  static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->  {
->  }
-> +
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
-> +{
-> +}
->  #endif
->  #endif /* __ASSEMBLY__ */
->  #endif /* _ASM_X86_PARAVIRT_H */
-> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-> index de87087d3bde..69ef9c207b38 100644
-> --- a/arch/x86/include/asm/paravirt_types.h
-> +++ b/arch/x86/include/asm/paravirt_types.h
-> @@ -195,6 +195,8 @@ struct pv_mmu_ops {
->
->         /* Hook for intercepting the destruction of an mm_struct. */
->         void (*exit_mmap)(struct mm_struct *mm);
-> +       void (*page_encryption_changed)(unsigned long vaddr, int npages,
-> +                                       bool enc);
->
->  #ifdef CONFIG_PARAVIRT_XXL
->         struct paravirt_callee_save read_cr2;
-> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-> index c60222ab8ab9..9f206e192f6b 100644
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -335,6 +335,7 @@ struct paravirt_patch_template pv_ops = {
->                         (void (*)(struct mmu_gather *, void *))tlb_remove_page,
->
->         .mmu.exit_mmap          = paravirt_nop,
-> +       .mmu.page_encryption_changed    = paravirt_nop,
->
->  #ifdef CONFIG_PARAVIRT_XXL
->         .mmu.read_cr2           = __PV_IS_CALLEE_SAVE(native_read_cr2),
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index ae78cef79980..fae9ccbd0da7 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -19,6 +19,7 @@
->  #include <linux/kernel.h>
->  #include <linux/bitops.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/kvm_para.h>
->
->  #include <asm/tlbflush.h>
->  #include <asm/fixmap.h>
-> @@ -29,6 +30,7 @@
->  #include <asm/processor-flags.h>
->  #include <asm/msr.h>
->  #include <asm/cmdline.h>
-> +#include <asm/kvm_para.h>
->
->  #include "mm_internal.h"
->
-> @@ -229,6 +231,47 @@ void __init sev_setup_arch(void)
->         swiotlb_adjust_size(size);
->  }
->
-> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +                                       bool enc)
-> +{
-> +       unsigned long sz = npages << PAGE_SHIFT;
-> +       unsigned long vaddr_end, vaddr_next;
-> +
-> +       vaddr_end = vaddr + sz;
-> +
-> +       for (; vaddr < vaddr_end; vaddr = vaddr_next) {
-> +               int psize, pmask, level;
-> +               unsigned long pfn;
-> +               pte_t *kpte;
-> +
-> +               kpte = lookup_address(vaddr, &level);
-> +               if (!kpte || pte_none(*kpte))
-> +                       return;
-> +
-> +               switch (level) {
-> +               case PG_LEVEL_4K:
-> +                       pfn = pte_pfn(*kpte);
-> +                       break;
-> +               case PG_LEVEL_2M:
-> +                       pfn = pmd_pfn(*(pmd_t *)kpte);
-> +                       break;
-> +               case PG_LEVEL_1G:
-> +                       pfn = pud_pfn(*(pud_t *)kpte);
-> +                       break;
-> +               default:
-> +                       return;
-> +               }
-> +
-> +               psize = page_level_size(level);
-> +               pmask = page_level_mask(level);
-> +
-> +               kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
-> +                                  pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
-> +
-> +               vaddr_next = (vaddr & pmask) + psize;
-> +       }
-> +}
-> +
->  static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->  {
->         pgprot_t old_prot, new_prot;
-> @@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->  static int __init early_set_memory_enc_dec(unsigned long vaddr,
->                                            unsigned long size, bool enc)
->  {
-> -       unsigned long vaddr_end, vaddr_next;
-> +       unsigned long vaddr_end, vaddr_next, start;
->         unsigned long psize, pmask;
->         int split_page_size_mask;
->         int level, ret;
->         pte_t *kpte;
->
-> +       start = vaddr;
->         vaddr_next = vaddr;
->         vaddr_end = vaddr + size;
->
-> @@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
->
->         ret = 0;
->
-> +       set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
-> +                                       enc);
->  out:
->         __flush_tlb_all();
->         return ret;
-> @@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
->         if (sev_active() && !sev_es_active())
->                 static_branch_enable(&sev_enable_key);
->
-> +#ifdef CONFIG_PARAVIRT
-> +       /*
-> +        * With SEV, we need to make a hypercall when page encryption state is
-> +        * changed.
-> +        */
-> +       if (sev_active())
-> +               pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
-> +#endif
-> +
->         print_mem_encrypt_feature_info();
->  }
->
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 16f878c26667..3576b583ac65 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -27,6 +27,7 @@
->  #include <asm/proto.h>
->  #include <asm/memtype.h>
->  #include <asm/set_memory.h>
-> +#include <asm/paravirt.h>
->
->  #include "../mm_internal.h"
->
-> @@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->          */
->         cpa_flush(&cpa, 0);
->
-> +       /* Notify hypervisor that a given memory range is mapped encrypted
-> +        * or decrypted. The hypervisor will use this information during the
-> +        * VM migration.
-> +        */
-> +       page_encryption_changed(addr, numpages, enc);
-> +
->         return ret;
->  }
->
-> --
-> 2.17.1
->
-Reviewed-by: Steve Rutherford <srutherford@google.com>
+> > > +static void
+> > > +mt7530_setup_mdio_irq(struct mt7530_priv *priv)
+> > > +{
+> > > +	struct dsa_switch *ds = priv->ds;
+> > > +	int p;
+> > > +
+> > > +	for (p = 0; p < MT7530_NUM_PHYS; p++) {
+> > > +		if (BIT(p) & ds->phys_mii_mask) {
+> > > +			unsigned int irq;
+> > > +
+> > > +			irq = irq_create_mapping(priv->irq_domain, p);
+> > 
+> > This seems odd. Why aren't the MDIO IRQs allocated on demand as
+> > endpoint attached to this interrupt controller are being probed
+> > individually? In general, doing this allocation upfront is an
+> > indication that there is some missing information in the DT to perform
+> > the discovery.
+> 
+> This is what Andrew's mv88e6xxx does, actually. In addition, I also check
+> the phys_mii_mask to avoid creating mappings for unused ports.
+
+It can be done via DT, using the standard interrupt property, so long
+as you use of_mdiobus_register(np).
+
+But when you have an 7 port switch, and a nice simple mapping, port 0
+PHY using interrupt 0, you can save a lot of device tree boilerplate
+by doing it in code. And when you have 4 of these switches, it gets
+very boring adding all the DT to just wire up the interrupts 28
+interrupts.
+
+> Andrew, perhaps this can be done in DSA core?
+
+Not easily. It is not always a simple mapping like this. Two of the
+switches supported by mv88exxx offset the PHYs by 0x10. You really
+need the switch driver involved, with its detailed knowledge of the
+hardware.
+
+	Andrew
