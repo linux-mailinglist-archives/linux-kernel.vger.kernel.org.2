@@ -2,238 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E406E35D49E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7375235D49F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240074AbhDMBCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:02:44 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:36823 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbhDMBCo (ORCPT
+        id S240168AbhDMBDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237739AbhDMBDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:02:44 -0400
-Received: by mail-lj1-f172.google.com with SMTP id o16so17530684ljp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:02:23 -0700 (PDT)
+        Mon, 12 Apr 2021 21:03:17 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAFAC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:02:59 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id f4-20020a1709026844b02900e90242e95eso4079083pln.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=va+loHmaPIg1VXR1YY66HryM0coYFUb4xNRZHwADPtk=;
+        b=I6XNHF5opU/D6EF/855/PG+DEcxVqiS4iyz+mBiT7Mtj2nPEJcIjuoIV3/k9w8lrXp
+         GvIO/UC9AEYUHe+xhNK6Hwulvwc9c9wGStcI3A/KLnk6OJ1Nz8JUVE1S6wPof17VSaJ0
+         vYzTwR3O/JtZPM3egpNspK7BdFscqOm8+o5eg9Z4G5k7FNEFnSf4WgOZbUwrRyccpok5
+         5pD4VcB10BnXK+8g3QvjhX6g7TjhhRbUYIjQs8ZcSrwDn+sS3wbwZ0lldtPVCLh4M6+6
+         vFrr3BvgLG2AXokXI0sUULJJMWNhdTzkLMAeVIESN/3fxJTAb0VZu4p8KeokokNKVWbu
+         eiRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b4dp7xOMc4c2heF4t/jIIUIdGVbACrCiWh88O24hLWE=;
-        b=VsTlQU/Rymt3m11uFj5iwuyt0/qtQVvLKwvrXVzOLEpHW8wcoQevS1eCqo4EOL/IQa
-         k4vh2ljusRB15ckr6eUs9725mZvsqf8AY2uNzqP83AL0S7YafSCb5AQAbbrcgvaR6wKp
-         CGrtPUslCqJH+HPvT3cpR1TVnAY7CQ3crGqb5iEGcbATAoMqcc3Xd8LoSu2tBJ6SQwka
-         dQ5qpmsdeCRGgw9bnbV4TrmQWntr03tPawLEE4klbn3t8DMWdBt8aEUOKc3U1Zo5n29N
-         rKmepp0wdY8gIBTvqR7ZeHB5c7P2gT+G9bdyr2dIvOxIWJbcczrIKbwzf//4eCF+tzIY
-         7wAw==
-X-Gm-Message-State: AOAM531doZQMV7X1A9DrJGHG/18/EtHMKK9EMzGoowckUGhlq3rNivjW
-        KuQxzMKaAbyRYVJO5YVCRpqUOKUMWgK8ZeaQJRk=
-X-Google-Smtp-Source: ABdhPJw5cM4+2rH+cERUmqi8u65g+YLqMA3XU8S1UmONjjTAu6XnqgIkbXm9BWznC+6xtK/guEUQEeaa7lcPeUjmVJI=
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr18847727ljk.233.1618275743085;
- Mon, 12 Apr 2021 18:02:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com> <ad2c112c-d6ae-c7cf-4fa7-a07279df4388@linux.intel.com>
-In-Reply-To: <ad2c112c-d6ae-c7cf-4fa7-a07279df4388@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 13 Apr 2021 10:02:11 +0900
-Message-ID: <CAM9d7chAgocCfA-m8YzeYtb31N53OPiqvzTU9kstts=c2EDCBg@mail.gmail.com>
-Subject: Re: [PATCH v4 08/12] perf record: introduce --threads=<spec> command
- line option
-To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=va+loHmaPIg1VXR1YY66HryM0coYFUb4xNRZHwADPtk=;
+        b=SfD0aXEugEORjEULTgENgfXo+yjSE848gQgCU6RcnMPIJOdnMsVzx/fXEFIdBA0Xz5
+         mJ/b6UxCr8F/GT6qKeZbo1KW4tsaZ9cssMermm+Sz6258LQUq43Itme/i8k+otYGVnl7
+         E9tXx7Ni9zjqjssp6GlLQYL956Cd4Tsy1S4vo/enqfbJ7Wsoum54OQVbktU1CJgatPAV
+         BBgkzbIup+pYAadoaZ5Fx+Sd7DWbOWJipVygFpKLiB8yc8ot3AuYgxeCEqBEgpTcXV8q
+         AIddD8AyzaCEWy9OX0VCxb/bCS6PlNygh99pMy6Zco+T7iUHRpRfSDxTvuDgwDoRl+Pv
+         KBtw==
+X-Gm-Message-State: AOAM532aKYU2DMF0SsCtQYEJf1WFeF/XzZXG/+4dOd5JajN3OwKJvajh
+        kL36KTPehsJsg7aI1IgOHwrarjm8
+X-Google-Smtp-Source: ABdhPJyYziSdcyjLySHqZc1ZCTFFULAVs3dcPk8nVHJj6SBIdbSgGP50TNGs7nhSuuJYiHHwgMIN4E0L
+X-Received: from lzye2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:6713])
+ (user=lzye job=sendgmr) by 2002:a17:902:7203:b029:e6:a8b1:8d37 with SMTP id
+ ba3-20020a1709027203b02900e6a8b18d37mr29132267plb.44.1618275778426; Mon, 12
+ Apr 2021 18:02:58 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 01:02:52 +0000
+Message-Id: <20210413010252.2255812-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH] [v4] Input: Add "Select" button to Microsoft Xbox One controller.
+From:   Chris Ye <lzye@google.com>
+To:     "=?UTF-8?q?=C5=81ukasz=20Patron?=" <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Chris Ye <lzye@google.com>, Lee Jones <lee.jones@linaro.org>,
+        "=?UTF-8?q?Olivier=20Cr=C3=AAte?=" <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trivial@kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add "Select" button input capability and input event mapping for
+Microsoft Xbox One controller. From product site this is also referred as
+"Share" button.
+Fixed Microsoft Xbox One controller select button not working under USB
+connection.
 
-On Tue, Apr 6, 2021 at 5:49 PM Bayduraev, Alexey V
-<alexey.v.bayduraev@linux.intel.com> wrote:
->
->
-> Provide --threads option in perf record command line interface.
-> The option can have a value in the form of masks that specify
-> cpus to be monitored with data streaming threads and its layout
-> in system topology. The masks can be filtered using cpu mask
-> provided via -C option.
->
-> The specification value can be user defined list of masks. Masks
-> separated by colon define cpus to be monitored by one thread and
-> affinity mask of that thread is separated by slash. For example:
-> <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
-> specifies parallel threads layout that consists of two threads
-> with corresponding assigned cpus to be monitored.
->
-> The specification value can be a string e.g. "cpu", "core" or
-> "socket" meaning creation of data streaming thread for every
-> cpu or core or socket to monitor distinct cpus or cpus grouped
-> by core or socket.
->
-> The option provided with no or empty value defaults to per-cpu
-> parallel threads layout creating data streaming thread for every
-> cpu being monitored.
->
-> Feature design and implementation are based on prototypes [1], [2].
->
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
-> Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-> ---
-[SNIP]
-> +static int record__init_thread_masks_spec(struct record *rec, struct perf_cpu_map *cpus,
-> +                                         char **maps_spec, char **affinity_spec, u32 nr_spec)
-> +{
-> +       u32 s;
-> +       int ret, nr_threads = 0;
-> +       struct mmap_cpu_mask cpus_mask;
-> +       struct thread_mask thread_mask, full_mask;
-> +
-> +       ret = record__mmap_cpu_mask_alloc(&cpus_mask, cpu__max_cpu());
-> +       if (ret)
-> +               return ret;
-> +       record__mmap_cpu_mask_init(&cpus_mask, cpus);
-> +       ret = record__thread_mask_alloc(&thread_mask, cpu__max_cpu());
-> +       if (ret)
-> +               goto out_free_cpu_mask;
-> +       ret = record__thread_mask_alloc(&full_mask, cpu__max_cpu());
-> +       if (ret)
-> +               goto out_free_thread_mask;
-> +       record__thread_mask_clear(&full_mask);
-> +
-> +       for (s = 0; s < nr_spec; s++) {
-> +               record__thread_mask_clear(&thread_mask);
-> +
-> +               record__mmap_cpu_mask_init_spec(&thread_mask.maps, maps_spec[s]);
-> +               record__mmap_cpu_mask_init_spec(&thread_mask.affinity, affinity_spec[s]);
-> +
-> +               if (!bitmap_and(thread_mask.maps.bits, thread_mask.maps.bits,
-> +                               cpus_mask.bits, thread_mask.maps.nbits) ||
-> +                   !bitmap_and(thread_mask.affinity.bits, thread_mask.affinity.bits,
-> +                               cpus_mask.bits, thread_mask.affinity.nbits))
-> +                       continue;
-> +
-> +               ret = record__thread_mask_intersects(&thread_mask, &full_mask);
-> +               if (ret)
-> +                       return ret;
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/input/joystick/xpad.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-I think you should free other masks.
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 9f0d07dcbf06..99cb8bb78570 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -79,6 +79,7 @@
+ #define MAP_DPAD_TO_BUTTONS		(1 << 0)
+ #define MAP_TRIGGERS_TO_BUTTONS		(1 << 1)
+ #define MAP_STICKS_TO_NULL		(1 << 2)
++#define MAP_SELECT_BUTTON		(1 << 3)
+ #define DANCEPAD_MAP_CONFIG	(MAP_DPAD_TO_BUTTONS |			\
+ 				MAP_TRIGGERS_TO_BUTTONS | MAP_STICKS_TO_NULL)
+ 
+@@ -130,6 +131,7 @@ static const struct xpad_device {
+ 	{ 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0, XTYPE_XBOXONE },
+ 	{ 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE },
+ 	{ 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
++	{ 0x045e, 0x0b12, "Microsoft Xbox One X pad", MAP_SELECT_BUTTON, XTYPE_XBOXONE },
+ 	{ 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
+ 	{ 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
+ 	{ 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
+@@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
+ 	/* menu/view buttons */
+ 	input_report_key(dev, BTN_START,  data[4] & 0x04);
+ 	input_report_key(dev, BTN_SELECT, data[4] & 0x08);
++	if (xpad->mapping & MAP_SELECT_BUTTON)
++		input_report_key(dev, KEY_RECORD, data[22] & 0x01);
+ 
+ 	/* buttons A,B,X,Y */
+ 	input_report_key(dev, BTN_A,	data[4] & 0x10);
+@@ -1669,9 +1673,11 @@ static int xpad_init_input(struct usb_xpad *xpad)
+ 
+ 	/* set up model-specific ones */
+ 	if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype == XTYPE_XBOX360W ||
+-	    xpad->xtype == XTYPE_XBOXONE) {
++		xpad->xtype == XTYPE_XBOXONE) {
+ 		for (i = 0; xpad360_btn[i] >= 0; i++)
+ 			input_set_capability(input_dev, EV_KEY, xpad360_btn[i]);
++		if (xpad->mapping & MAP_SELECT_BUTTON)
++			input_set_capability(input_dev, EV_KEY, KEY_RECORD);
+ 	} else {
+ 		for (i = 0; xpad_btn[i] >= 0; i++)
+ 			input_set_capability(input_dev, EV_KEY, xpad_btn[i]);
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
-> +               record__thread_mask_or(&full_mask, &full_mask, &thread_mask);
-> +
-> +               rec->thread_masks = realloc(rec->thread_masks,
-> +                                           (nr_threads + 1) * sizeof(struct thread_mask));
-> +               if (!rec->thread_masks) {
-> +                       pr_err("Failed to allocate thread masks\n");
-> +                       ret = -ENOMEM;
-> +                       goto out_free_full_mask;
-
-But this will leak rec->thread_masks as it's overwritten.
-
-
-> +               }
-> +               rec->thread_masks[nr_threads] = thread_mask;
-> +               pr_debug("thread_masks[%d]: addr=", nr_threads);
-> +               mmap_cpu_mask__scnprintf(&rec->thread_masks[nr_threads].maps, "maps");
-> +               pr_debug("thread_masks[%d]: addr=", nr_threads);
-> +               mmap_cpu_mask__scnprintf(&rec->thread_masks[nr_threads].affinity, "affinity");
-> +               nr_threads++;
-> +               ret = record__thread_mask_alloc(&thread_mask, cpu__max_cpu());
-> +               if (ret)
-> +                       return ret;
-
-Ditto, use goto.
-
-> +       }
-> +
-> +       rec->nr_threads = nr_threads;
-> +       pr_debug("threads: nr_threads=%d\n", rec->nr_threads);
-> +
-> +out_free_full_mask:
-> +       record__thread_mask_free(&full_mask);
-> +out_free_thread_mask:
-> +       record__thread_mask_free(&thread_mask);
-> +out_free_cpu_mask:
-> +       record__mmap_cpu_mask_free(&cpus_mask);
-> +
-> +       return 0;
-> +}
-
-[SNIP]
-> +
-> +static int record__init_thread_user_masks(struct record *rec, struct perf_cpu_map *cpus)
-> +{
-> +       int t, ret;
-> +       u32 s, nr_spec = 0;
-> +       char **maps_spec = NULL, **affinity_spec = NULL;
-> +       char *spec, *spec_ptr, *user_spec, *mask, *mask_ptr;
-> +
-> +       for (t = 0, user_spec = (char *)rec->opts.threads_user_spec; ; t++, user_spec = NULL) {
-> +               spec = strtok_r(user_spec, ":", &spec_ptr);
-> +               if (spec == NULL)
-> +                       break;
-> +               pr_debug(" spec[%d]: %s\n", t, spec);
-> +               mask = strtok_r(spec, "/", &mask_ptr);
-> +               if (mask == NULL)
-> +                       break;
-> +               pr_debug("  maps mask: %s\n", mask);
-> +               maps_spec = realloc(maps_spec, (nr_spec + 1) * sizeof(char *));
-> +               if (!maps_spec) {
-> +                       pr_err("Failed to realloc maps_spec\n");
-> +                       ret = -ENOMEM;
-> +                       goto out_free_all_specs;
-
-It'd crash as maps_spec is NULL now.
-
-> +               }
-> +               maps_spec[nr_spec] = strdup(mask);
-
-You'd better check the return value.
-
-> +               mask = strtok_r(NULL, "/", &mask_ptr);
-> +               if (mask == NULL)
-> +                       break;
-> +               pr_debug("  affinity mask: %s\n", mask);
-> +               affinity_spec = realloc(affinity_spec, (nr_spec + 1) * sizeof(char *));
-> +               if (!maps_spec) {
-
-s/maps/affinity/ and it has the same problem.
-
-> +                       pr_err("Failed to realloc affinity_spec\n");
-> +                       ret = -ENOMEM;
-> +                       goto out_free_all_specs;
-> +               }
-> +               affinity_spec[nr_spec] = strdup(mask);
-
-Check the return value.
-
-Thanks,
-Namhyung
-
-> +               nr_spec++;
-> +       }
-> +
-> +       ret = record__init_thread_masks_spec(rec, cpus, maps_spec, affinity_spec, nr_spec);
-> +
-> +out_free_all_specs:
-> +       for (s = 0; s < nr_spec; s++) {
-> +               free(maps_spec[s]);
-> +               free(affinity_spec[s]);
-> +       }
-> +       free(affinity_spec);
-> +       free(maps_spec);
-> +
-> +       return ret;
-> +}
-> +
