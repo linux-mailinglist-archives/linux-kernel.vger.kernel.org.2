@@ -2,59 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7966C35DB5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943DF35DB3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhDMJgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:36:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35642 "EHLO mx2.suse.de"
+        id S230321AbhDMJch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:32:37 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15985 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhDMJg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:36:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B1EEAF1B;
-        Tue, 13 Apr 2021 09:36:09 +0000 (UTC)
-Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
- structures unreachable during hot remove
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210412120842.GY3697@techsingularity.net>
- <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
- <20210412140852.GZ3697@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b1243b7b-fa4c-496f-5bfc-c83c7cee81cf@suse.cz>
-Date:   Tue, 13 Apr 2021 11:36:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230251AbhDMJcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:32:35 -0400
+IronPort-SDR: elErqZP/fBlNNINW9GFTIXvKz16NHiN+UinrOS6z5MR2jGUGpk9roJ4J0cSRPpSw5gE94k43t6
+ mYCg0pSLJ8Ow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="173868030"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="173868030"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 02:32:14 -0700
+IronPort-SDR: gbYVj5qwLtUIw5q8DrxLiv4BRR4jht7zSoRGbxrC5sHYn6kDuJ1GSxWWZB1Pi4NTQ9OKOit9Uv
+ zUunE2UAFYpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="424178034"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by orsmga008.jf.intel.com with ESMTP; 13 Apr 2021 02:32:08 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     alexandre.torgue@foss.st.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net-next v2 0/7] stmmac: add XDP ZC support
+Date:   Tue, 13 Apr 2021 17:36:19 +0800
+Message-Id: <20210413093626.3447-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210412140852.GZ3697@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 4:08 PM, Mel Gorman wrote:
-> On Mon, Apr 12, 2021 at 02:40:18PM +0200, Vlastimil Babka wrote:
->> On 4/12/21 2:08 PM, Mel Gorman wrote:
->
-> the pageset structures in place would be much more straight-forward
-> assuming the structures were not allocated in the zone that is being
-> hot-removed.
+Hi,
 
-I would expect this is not possible, at least for ZONE_MOVABLE, as the percpu
-allocations should be GFP_KERNEL. And it's not realistic to expect offlining to
-succeed at all without using ZONE_MOVABLE.
+This is the v2 patch series to add XDP ZC support to stmmac driver.
 
-AFAIK even Oscar's work on using the node to self-contain its own structures is
-only applicable to struct pages, not percpu allocations?
+Summary of v2 patch change:-
+
+6/7: fix synchronize_rcu() is called stmmac_disable_all_queues() that is
+     used by ndo_setup_tc().
+
+ ########################################################################
+
+Continuous burst traffics are generated by pktgen script and in the midst
+of each packet processing operation by xdpsock the following tc-loop.sh
+script is looped continuously:-
+
+ #!/bin/bash
+ tc qdisc del dev eth0 parent root
+ tc qdisc add dev eth0 ingress
+ tc qdisc add dev eth0 root mqprio num_tc 4 map 0 1 2 3 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 1@1 1@2 1@3 hw 0
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 0 hw_tc 0
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 1 hw_tc 1
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 2 hw_tc 2
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 3 hw_tc 3
+ tc qdisc list dev eth0
+ tc filter show dev eth0 ingress
+
+ On different ssh terminal
+ $ while true; do ./tc-loop.sh; sleep 1; done
+
+The v2 patch series have been tested using the xdpsock app:
+ $ ./xdpsock -i eth0 -l -z
+
+From xdpsock poller pps report and dmesg, we don't find any warning
+related to rcu and the only difference when the script is executed is
+the pps rate drops momentarily.
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 436347         191361334
+tx                 436411         191361334
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 254117         191615476
+tx                 254053         191615412
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 466395         192081924
+tx                 466395         192081860
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 287410         192369365
+tx                 287474         192369365
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 395853         192765329
+tx                 395789         192765265
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 466132         193231514
+tx                 466132         193231450
+
+ ########################################################################
+
+Based on the above result, the fix looks promising. Appreciate that if
+community can help to review the patch series and provide me feedback
+for improvement.
+
+Thanks,
+Boon Leong
+
+ ------------------------------------------------------------------------
+ History of patch series as follow:-
+
+ v1: https://patchwork.kernel.org/project/netdevbpf/list/?series=465747&state=*
+
+ ------------------------------------------------------------------------
+
+Ong Boon Leong (7):
+  net: stmmac: rearrange RX buffer allocation and free functions
+  net: stmmac: introduce dma_recycle_rx_skbufs for
+    stmmac_reinit_rx_buffers
+  net: stmmac: refactor stmmac_init_rx_buffers for
+    stmmac_reinit_rx_buffers
+  net: stmmac: rearrange RX and TX desc init into per-queue basis
+  net: stmmac: Refactor __stmmac_xdp_run_prog for XDP ZC
+  net: stmmac: Enable RX via AF_XDP zero-copy
+  net: stmmac: Add TX via XDP zero-copy socket
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   24 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 1718 +++++++++++++----
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |   95 +
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.h  |    3 +
+ 4 files changed, 1411 insertions(+), 429 deletions(-)
+
+-- 
+2.25.1
+
