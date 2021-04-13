@@ -2,297 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D23F35E675
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE2335E674
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347864AbhDMSbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347681AbhDMSbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347840AbhDMSbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 13 Apr 2021 14:31:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC737C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:31:24 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id n13so17063415ybp.14
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 11:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=wP3BEooCPpuS3ZpV7a/AbrV/b1fsR44Fq9Twjjsk8fY=;
-        b=ubDbNdWuzeBxvz4Cp0cei+rI3pZfi8HfgTHHmJJV+9dtOQTDGflNR6VkSCvk34iuv5
-         v4y3Gf4HOcR1DyjMEMStkL+S1hGm4Njmbgo1Wtth5kraJcJ68mkl0UNTJR/pVNDahGyZ
-         BPJPDNcFyiR8sPhuvPOQHYaUDyqtDDfC2LrpNRr3azkVe4SwW5VvbGvsRLX9tM0zV9t4
-         j17LCYZ/8TbyDZysVDQPSFHWMSBT1S7nnHi9BE4k+IogT+HyLaHkQqv8D0GWqvNXiNLz
-         AlnT4djNwQOX13oqH2OpneoS+m6hd7C1RIAYx7Ly9fbV5KszU7O+Ghz/6EO+oXmzwfVN
-         ehxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=wP3BEooCPpuS3ZpV7a/AbrV/b1fsR44Fq9Twjjsk8fY=;
-        b=gbE+caV7XIKSZTJIlJfYF0jaYTj8gwwEniW2+CGYgCNvwsOs35bYKr0u44vMHj7SU2
-         CHiTux1WfPElsHrm5RcwoGDnkaoggrdwU8vIVh1y0GrWfIy9dp/RpntSqBwP0mIH1oWj
-         blLxovcjV0yLIWa3XUKyBaZukFM475aeV5jm/QegTRxqe7VpbddNXu0a/iaTEdRTJddZ
-         cPcNSK2YuJR7Gqu7Iz5+j9z88ZleqEyoU+/qsdKY8SUocn8+Q5bAeE1nd3dKytlmSfYd
-         sz3BwngNEd4JxBb5/FSWRn6+QT6VcH9FFFYbG3zT+zj1oL9HEWdNPnwZWXCHtto6gTNV
-         OPfg==
-X-Gm-Message-State: AOAM533ya3rBuPWT9rqJkKXBpuwnk8pGFaQOkF2AmPld2GGCSxY7/WcC
-        B89jm4nXRPMC8uNKwFBp4UNqBBN2lii/rWIi2wI=
-X-Google-Smtp-Source: ABdhPJz6uHDtQFVfnmG4sWqK1ZGaeV+mU4OoRpmb4c50wCNeJ2q5WBvYsJbGkIKBLBEB4N6639B3odyVPA2+b4dMywc=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:49f8:17:36c4:aa51])
- (user=ndesaulniers job=sendgmr) by 2002:a25:7491:: with SMTP id
- p139mr16469270ybc.53.1618338683899; Tue, 13 Apr 2021 11:31:23 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 11:31:12 -0700
-Message-Id: <20210413183113.2977432-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v3] gcov: clang: drop support for clang-10 and older
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Fangrui Song <maskray@google.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.kernel.org ([198.145.29.99]:53932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347681AbhDMSbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:31:42 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FB0B613C1;
+        Tue, 13 Apr 2021 18:31:22 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 14:31:21 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org
+Subject: Re: [PATCH v3 2/5] tracing: Add "last_func_repeats" to struct
+ trace_array
+Message-ID: <20210413143121.236db267@gandalf.local.home>
+In-Reply-To: <20210409181031.26772-3-y.karadz@gmail.com>
+References: <20210409181031.26772-1-y.karadz@gmail.com>
+        <20210409181031.26772-3-y.karadz@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM changed the expected function signatures for llvm_gcda_start_file()
-and llvm_gcda_emit_function() in the clang-11 release.  Drop the older
-implementations and require folks to upgrade their compiler if they're
-interested in GCOV support.
+On Fri,  9 Apr 2021 21:10:28 +0300
+"Yordan Karadzhov (VMware)" <y.karadz@gmail.com> wrote:
 
-Link: https://reviews.llvm.org/rGcdd683b516d147925212724b09ec6fb792a40041
-Link: https://reviews.llvm.org/rG13a633b438b6500ecad9e4f936ebadf3411d0f44
-Link: https://lkml.kernel.org/r/20210312224132.3413602-3-ndesaulniers@google.com
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Cc: Prasad Sodagudi <psodagud@quicinc.com>
-Cc: Johannes Berg <johannes.berg@intel.com>
----
-This patch is
-https://lore.kernel.org/lkml/20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid/
-and
-https://lore.kernel.org/lkml/20210312224132.3413602-3-ndesaulniers@google.com/
-rolled into one, then rebased on linux-next with
-https://lore.kernel.org/lkml/20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid/
-applied. I merged the Reviewed-by and Acked-by tags. It was
-simpler to drop v1
-https://www.spinics.net/lists/mm-commits/msg154861.html in order to land
-commit 9562fd132985 ("gcov: re-fix clang-11+ support").
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -262,6 +262,17 @@ struct cond_snapshot {
+>  	cond_update_fn_t		update;
+>  };
+>  
+> +/*
+> + * struct trace_func_repeats - used to keep track of the consecutive
+> + * (on the same CPU) calls of a single function.
+> + */
+> +struct trace_func_repeats {
+> +	unsigned long	ip;
+> +	unsigned long	parent_ip;
+> +	unsigned long	count;
+> +	u64		ts_last_call;
+> +};
+> +
+>  /*
+>   * The trace array - an array of per-CPU trace arrays. This is the
+>   * highest level data structure that individual tracers deal with.
+> @@ -358,8 +369,15 @@ struct trace_array {
+>  #ifdef CONFIG_TRACER_SNAPSHOT
+>  	struct cond_snapshot	*cond_snapshot;
+>  #endif
+> +	struct trace_func_repeats	__percpu *last_func_repeats;
+>  };
+>  
+> +static inline struct trace_func_repeats __percpu *
+> +tracer_alloc_func_repeats(struct trace_array *tr)
+> +{
+> +	return tr->last_func_repeats = alloc_percpu(struct trace_func_repeats);
+> +}
 
- kernel/gcov/Kconfig |   1 +
- kernel/gcov/clang.c | 103 --------------------------------------------
- 2 files changed, 1 insertion(+), 103 deletions(-)
+Also, is there a reason this is in the header file? It's only used in one C
+file, and should be a static function there.
 
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index f62de2dea8a3..58f87a3092f3 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -4,6 +4,7 @@ menu "GCOV-based kernel profiling"
- config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
-+	depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
- 	select CONSTRUCTORS
- 	default n
- 	help
-diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-index d43ffd0c5ddb..cbb0bed958ab 100644
---- a/kernel/gcov/clang.c
-+++ b/kernel/gcov/clang.c
-@@ -69,16 +69,10 @@ struct gcov_fn_info {
- 
- 	u32 ident;
- 	u32 checksum;
--#if CONFIG_CLANG_VERSION < 110000
--	u8 use_extra_checksum;
--#endif
- 	u32 cfg_checksum;
- 
- 	u32 num_counters;
- 	u64 *counters;
--#if CONFIG_CLANG_VERSION < 110000
--	const char *function_name;
--#endif
- };
- 
- static struct gcov_info *current_info;
-@@ -108,16 +102,6 @@ void llvm_gcov_init(llvm_gcov_callback writeout, llvm_gcov_callback flush)
- }
- EXPORT_SYMBOL(llvm_gcov_init);
- 
--#if CONFIG_CLANG_VERSION < 110000
--void llvm_gcda_start_file(const char *orig_filename, const char version[4],
--		u32 checksum)
--{
--	current_info->filename = orig_filename;
--	memcpy(&current_info->version, version, sizeof(current_info->version));
--	current_info->checksum = checksum;
--}
--EXPORT_SYMBOL(llvm_gcda_start_file);
--#else
- void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
- {
- 	current_info->filename = orig_filename;
-@@ -125,28 +109,7 @@ void llvm_gcda_start_file(const char *orig_filename, u32 version, u32 checksum)
- 	current_info->checksum = checksum;
- }
- EXPORT_SYMBOL(llvm_gcda_start_file);
--#endif
- 
--#if CONFIG_CLANG_VERSION < 110000
--void llvm_gcda_emit_function(u32 ident, const char *function_name,
--		u32 func_checksum, u8 use_extra_checksum, u32 cfg_checksum)
--{
--	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
--
--	if (!info)
--		return;
--
--	INIT_LIST_HEAD(&info->head);
--	info->ident = ident;
--	info->checksum = func_checksum;
--	info->use_extra_checksum = use_extra_checksum;
--	info->cfg_checksum = cfg_checksum;
--	if (function_name)
--		info->function_name = kstrdup(function_name, GFP_KERNEL);
--
--	list_add_tail(&info->head, &current_info->functions);
--}
--#else
- void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
- {
- 	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
-@@ -160,7 +123,6 @@ void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
- 	info->cfg_checksum = cfg_checksum;
- 	list_add_tail(&info->head, &current_info->functions);
- }
--#endif
- EXPORT_SYMBOL(llvm_gcda_emit_function);
- 
- void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
-@@ -291,16 +253,8 @@ int gcov_info_is_compatible(struct gcov_info *info1, struct gcov_info *info2)
- 		!list_is_last(&fn_ptr2->head, &info2->functions)) {
- 		if (fn_ptr1->checksum != fn_ptr2->checksum)
- 			return false;
--#if CONFIG_CLANG_VERSION < 110000
--		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
--			return false;
--		if (fn_ptr1->use_extra_checksum &&
--			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
--			return false;
--#else
- 		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
- 			return false;
--#endif
- 		fn_ptr1 = list_next_entry(fn_ptr1, head);
- 		fn_ptr2 = list_next_entry(fn_ptr2, head);
- 	}
-@@ -329,35 +283,6 @@ void gcov_info_add(struct gcov_info *dst, struct gcov_info *src)
- 	}
- }
- 
--#if CONFIG_CLANG_VERSION < 110000
--static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
--{
--	size_t cv_size; /* counter values size */
--	struct gcov_fn_info *fn_dup = kmemdup(fn, sizeof(*fn), GFP_KERNEL);
--
--	if (!fn_dup)
--		return NULL;
--	INIT_LIST_HEAD(&fn_dup->head);
--
--	fn_dup->function_name = kstrdup(fn->function_name, GFP_KERNEL);
--	if (!fn_dup->function_name)
--		goto err_name;
--
--	cv_size = fn->num_counters * sizeof(fn->counters[0]);
--	fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
--	if (!fn_dup->counters)
--		goto err_counters;
--	memcpy(fn_dup->counters, fn->counters, cv_size);
--
--	return fn_dup;
--
--err_counters:
--	kfree(fn_dup->function_name);
--err_name:
--	kfree(fn_dup);
--	return NULL;
--}
--#else
- static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
- {
- 	size_t cv_size; /* counter values size */
-@@ -378,7 +303,6 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
- 
- 	return fn_dup;
- }
--#endif
- 
- /**
-  * gcov_info_dup - duplicate profiling data set
-@@ -419,21 +343,6 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
-  * gcov_info_free - release memory for profiling data set duplicate
-  * @info: profiling data set duplicate to free
-  */
--#if CONFIG_CLANG_VERSION < 110000
--void gcov_info_free(struct gcov_info *info)
--{
--	struct gcov_fn_info *fn, *tmp;
--
--	list_for_each_entry_safe(fn, tmp, &info->functions, head) {
--		kfree(fn->function_name);
--		vfree(fn->counters);
--		list_del(&fn->head);
--		kfree(fn);
--	}
--	kfree(info->filename);
--	kfree(info);
--}
--#else
- void gcov_info_free(struct gcov_info *info)
- {
- 	struct gcov_fn_info *fn, *tmp;
-@@ -446,7 +355,6 @@ void gcov_info_free(struct gcov_info *info)
- 	kfree(info->filename);
- 	kfree(info);
- }
--#endif
- 
- /**
-  * convert_to_gcda - convert profiling data set to gcda file format
-@@ -469,21 +377,10 @@ size_t convert_to_gcda(char *buffer, struct gcov_info *info)
- 		u32 i;
- 
- 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
--#if CONFIG_CLANG_VERSION < 110000
--		pos += store_gcov_u32(buffer, pos,
--			fi_ptr->use_extra_checksum ? 3 : 2);
--#else
- 		pos += store_gcov_u32(buffer, pos, 3);
--#endif
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
--#if CONFIG_CLANG_VERSION < 110000
--		if (fi_ptr->use_extra_checksum)
--			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
--#else
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
--#endif
--
- 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
- 		for (i = 0; i < fi_ptr->num_counters; i++)
--- 
-2.31.1.295.g9ea45b61b8-goog
+-- Steve
+
+
+> +
+>  enum {
+>  	TRACE_ARRAY_FL_GLOBAL	= (1 << 0)
+>  };
 
