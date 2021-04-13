@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0884535E47B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAB235E47C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346984AbhDMQ7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
+        id S1346991AbhDMRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:00:04 -0400
+Received: from mga01.intel.com ([192.55.52.88]:14038 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347027AbhDMQ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:59:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 549B261369;
-        Tue, 13 Apr 2021 16:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618333136;
-        bh=88sxkTyTYXWLYzDFmz+5zZjfypnmUNRe54tb4TzzXuo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BGifDH0+LRI4gqrat5z5WqjW3NUyxkx6fQlp29sBMsCaQ9nOSEFtAam2/C4qyryve
-         hMKTAEMB5cFTodZB0y8R2Yqj/BNP4PQLV09TgNcnbLUxc04VuxL/J1ur4dqqCpU2gu
-         BTMZPKQZCM+8olTGsMoxuyuccu8fnnFkh5FVCg9jhuI0rJHDwG3WEMztHJOQXEag70
-         8fBqWMRZXJ7U7fcPpu4cmUYaaMWLm7YWQLn1YXk8ofLcPPzQ7aXcOq5lY4vvsrTfNy
-         LIiARWJuyEkWhDGxTMZJHcOKIC1DqL1TOgfvCQyrDf8Xf6qNU0KgaZI98bz3rzYsqQ
-         C7xW9ItkUdRLw==
-Date:   Tue, 13 Apr 2021 19:58:49 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
-Message-ID: <YHXNyVVUwZbVDBrr@kernel.org>
-References: <20210409215103.03999588@canb.auug.org.au>
- <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
- <YHPlTifk6jST5auY@kernel.org>
- <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org>
- <YHR86T15BzETVHhk@kernel.org>
- <d56ebb95-1c40-5994-383f-70d8f226e8c3@infradead.org>
- <YHU03AIwrpHCUlU/@kernel.org>
- <7cec048d-26f0-104a-6bca-d9afc6a7d1e8@infradead.org>
+        id S1345936AbhDMRAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:00:02 -0400
+IronPort-SDR: 5mB13PZ24mG0r+mMVE2i236uN1HMXlk+a/cJ5k3d7msMUcWuwMWM7sScNiI8euwQknGe0PTVGa
+ lIqlGmdddO4Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="214941197"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="214941197"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 09:59:41 -0700
+IronPort-SDR: b9JQnHmyNK9H0SxG2ldlD6mtXXg/Cwe1SH7FDueh3LgvnB1ET5V2880Yxkm6i8xK9N1XD7izze
+ ToJ8S6k9gT4w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="424337626"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga008.jf.intel.com with SMTP; 13 Apr 2021 09:59:35 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 13 Apr 2021 19:59:34 +0300
+Date:   Tue, 13 Apr 2021 19:59:34 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jon Bloomfield <jon.bloomfield@intel.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/i915: Fix "mitigations" parsing if i915 is builtin
+Message-ID: <YHXN9lqtdvisT8gn@intel.com>
+References: <20210413170240.0d4ffa38@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7cec048d-26f0-104a-6bca-d9afc6a7d1e8@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413170240.0d4ffa38@xhacker.debian>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:21:48PM -0700, Randy Dunlap wrote:
-> On 4/12/21 11:06 PM, Mike Rapoport wrote:
-> > Hi Randy,
-> > 
-> > On Mon, Apr 12, 2021 at 01:53:34PM -0700, Randy Dunlap wrote:
-> >> On 4/12/21 10:01 AM, Mike Rapoport wrote:
-> >>> On Mon, Apr 12, 2021 at 08:49:49AM -0700, Randy Dunlap wrote:
-> >>>  
-> >>> I thought about adding some prints to see what's causing the hang, the
-> >>> reservations or their absence. Can you replace the debug patch with this
-> >>> one:
-> >>>
-> >>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> >>> index 776fc9b3fafe..a10ac252dbcc 100644
-> >>> --- a/arch/x86/kernel/setup.c
-> >>> +++ b/arch/x86/kernel/setup.c
-> >>> @@ -600,10 +600,13 @@ static bool __init snb_gfx_workaround_needed(void)
-> >>>  		return false;
-> >>>  
-> >>>  	vendor = read_pci_config_16(0, 2, 0, PCI_VENDOR_ID);
-> >>> +	devid = read_pci_config_16(0, 2, 0, PCI_DEVICE_ID);
-> >>> +
-> >>> +	pr_info("%s: vendor: %x, device: %x\n", __func__, vendor, device);
-> >>
-> >> s/device)/devid)/
-> >  
-> > Oh, sorry.
-> > 
-> >>> +
-> >>>  	if (vendor != 0x8086)
-> >>>  		return false;
-> >>>  
-> >>> -	devid = read_pci_config_16(0, 2, 0, PCI_DEVICE_ID);
-> >>>  	for (i = 0; i < ARRAY_SIZE(snb_ids); i++)
-> >>>  		if (devid == snb_ids[i])
-> >>>  			return true;
-> >>
-> >> That prints:
-> >>
-> >> [    0.000000] snb_gfx_workaround_needed: vendor: 8086, device: 126
-> >> [    0.000000] early_reserve_memory: snb_gfx: 1
-> >> ...
-> >> [    0.014061] snb_gfx_workaround_needed: vendor: 8086, device: 126
-> >> [    0.014064] reserving inaccessible SNB gfx pages
-> >>
-> >>
-> >> The full boot log is attached.
-> >  
-> > Can you please send the log with memblock=debug added to the kernel command
-> > line?
-> > 
-> > Probably should have started from this...
-> > 
+On Tue, Apr 13, 2021 at 05:02:40PM +0800, Jisheng Zhang wrote:
+> I met below error during boot with i915 builtin if pass
+> "i915.mitigations=off":
+> [    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
 > 
-> It's attached.
+> The reason is slab subsystem isn't ready at that time, so kstrdup()
+> returns NULL. Fix this issue by using stack var instead of kstrdup().
+> 
+> Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
+> index 84f12598d145..7dadf41064e0 100644
+> --- a/drivers/gpu/drm/i915/i915_mitigations.c
+> +++ b/drivers/gpu/drm/i915/i915_mitigations.c
+> @@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
+>  static int mitigations_set(const char *val, const struct kernel_param *kp)
+>  {
+>  	unsigned long new = ~0UL;
+> -	char *str, *sep, *tok;
+> +	char str[64], *sep, *tok;
+>  	bool first = true;
+>  	int err = 0;
+>  
+>  	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
+>  
+> -	str = kstrdup(val, GFP_KERNEL);
+> -	if (!str)
+> -		return -ENOMEM;
+> +	strncpy(str, val, sizeof(str) - 1);
 
-Honestly, I can't see any reason why moving these reservations around would
-cause your laptop to hang.
-Let's try moving the reservations back to their original place one by
-one, e.g something like this:
+I don't think strncpy() guarantees that the string is properly
+terminated.
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 776fc9b3fafe..892ad20b8557 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -632,12 +632,6 @@ static void __init trim_snb_memory(void)
- 
- 	printk(KERN_DEBUG "reserving inaccessible SNB gfx pages\n");
- 
--	/*
--	 * Reserve all memory below the 1 MB mark that has not
--	 * already been reserved.
--	 */
--	memblock_reserve(0, 1<<20);
--	
- 	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
- 		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
- 			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
-@@ -1081,6 +1075,12 @@ void __init setup_arch(char **cmdline_p)
- 
- 	reserve_real_mode();
- 
-+	/*
-+	 * Reserve all memory below the 1 MB mark that has not
-+	 * already been reserved.
-+	 */
-+	memblock_reserve(0, 1<<20);
-+
- 	init_mem_mapping();
- 
- 	idt_setup_early_pf();
+Also commit b1b6bed3b503 ("usb: core: fix quirks_param_set() writing to
+a const pointer") looks broken as well given your findings, and
+arch/um/drivers/virtio_uml.c seems to suffer from this as well.
+kernel/params.c itself seems to have some slab_is_available() magic
+around kmalloc().
+
+I used the following cocci snippet to find these:
+@find@
+identifier O, F;
+position PS;
+@@
+struct kernel_param_ops O = {
+...,
+        .set = F@PS
+,...
+};
+
+@alloc@
+identifier ALLOC =~ "^k.*(alloc|dup)";
+identifier find.F;
+position PA;
+@@
+F(...) {
+<+...
+ALLOC@PA(...)
+...+>
+}
+
+@script:python depends on alloc@
+ps << find.PS;
+pa << alloc.PA;
+@@
+coccilib.report.print_report(ps[0], "struct")
+coccilib.report.print_report(pa[0], "alloc")
+
+That could of course miss a bunch more if they allocate
+via some other function I didn't consider.
 
 -- 
-Sincerely yours,
-Mike.
+Ville Syrjälä
+Intel
