@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5554E35DB88
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0262335DB94
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhDMJp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:45:57 -0400
-Received: from m12-18.163.com ([220.181.12.18]:47477 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhDMJpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:45:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=3/bHXVzFNaRdXvSYPl
-        2V8FEalM5QD/aDw5WwKyuiQ/M=; b=EAHdK0F7Km1Qaq2eWpJ55P8VkDJsRGmPxJ
-        dDWJU4CGMMgapwqK6b8eaOSzwUSl6N+qtYtAwv7GvSRitPeVTGQ31bEIo06Hh7ww
-        p0x96asJO7WKGnfTZVsqmgxqUcsrIfrBthahpKnuaUCGBO6aqu4HC/l0TvdbYbvc
-        41bxpXPeA=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowADnbIEvaHVg8nqbdg--.36679S2;
-        Tue, 13 Apr 2021 17:45:21 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     davem@davemloft.net, alex.dewar90@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: st-nci: remove unnecessary label
-Date:   Tue, 13 Apr 2021 17:45:30 +0800
-Message-Id: <20210413094530.22076-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EsCowADnbIEvaHVg8nqbdg--.36679S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxKry3JrW7uFWUKr1DGFg_yoWftrg_ur
-        y5XryxXrW8Gr1Yy34DurnxZr95Kw4UWry8Ww1agasxKryDGw1DC3yq9rn3Jw1UWr18AFyq
-        93Z3C34Syr98ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Ub15UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBLBFzsV++LMuPpQAAsT
+        id S239453AbhDMJsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:48:54 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2840 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236908AbhDMJss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:48:48 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FKLG15VZBz688MD;
+        Tue, 13 Apr 2021 17:41:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 13 Apr 2021 11:48:25 +0200
+Received: from [10.47.4.3] (10.47.4.3) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 13 Apr
+ 2021 10:48:17 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: perf arm64 --topdown support (was "perf arm64 metricgroup support")
+To:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <irogers@google.com>, <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
+        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>,
+        <huanglingyan2@huawei.com>
+References: <1617791570-165223-1-git-send-email-john.garry@huawei.com>
+ <YG7xzXjFzIr9lQlz@krava>
+Message-ID: <8b3e6667-ac48-9ca9-6645-b2eebbc828aa@huawei.com>
+Date:   Tue, 13 Apr 2021 10:45:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <YG7xzXjFzIr9lQlz@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.4.3]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On 08/04/2021 13:06, Jiri Olsa wrote:
+> perf stat --topdown is not supported, as this requires the CPU PMU to
+> expose (alias) events for the TopDown L1 metrics from sysfs, which arm
+> does not do. To get that to work, we probably need to make perf use the
+> pmu-events cpumap to learn about those alias events.
 
-in st_nci_spi_write function, first assign a value to a variable then
-goto exit label. return statement just follow the label and exit label
-just used once, so we should directly return and remove exit label.
+Hi guys,
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/st-nci/spi.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+About supporting --topdown command for other archs apart from x86, it 
+seems not possible today. Support there is based on kernel support for 
+"topdown" CPU events used in the metric calculations. However, arm64, 
+for example, does not support these "topdown" events.
 
-diff --git a/drivers/nfc/st-nci/spi.c b/drivers/nfc/st-nci/spi.c
-index 8db323a..09df6ea 100644
---- a/drivers/nfc/st-nci/spi.c
-+++ b/drivers/nfc/st-nci/spi.c
-@@ -95,17 +95,14 @@ static int st_nci_spi_write(void *phy_id, struct sk_buff *skb)
- 	 */
- 	if (!r) {
- 		skb_rx = alloc_skb(skb->len, GFP_KERNEL);
--		if (!skb_rx) {
--			r = -ENOMEM;
--			goto exit;
--		}
-+		if (!skb_rx)
-+			return -ENOMEM;
- 
- 		skb_put(skb_rx, skb->len);
- 		memcpy(skb_rx->data, buf, skb->len);
- 		ndlc_recv(phy->ndlc, skb_rx);
- 	}
- 
--exit:
- 	return r;
- }
- 
--- 
-1.9.1
+It seems to me that we can change to use pmu-events framework + 
+metricgroup support here, rather than hardcoded events - has anyone 
+considered this approach previously? Seems a pretty big job, so thought 
+I'd ask first ...
 
-
+Thanks,
+John
