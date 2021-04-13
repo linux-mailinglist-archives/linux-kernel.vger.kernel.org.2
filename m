@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1586135E085
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F41935E074
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346140AbhDMNqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:46:32 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59025 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346100AbhDMNps (ORCPT
+        id S1346077AbhDMNpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346062AbhDMNpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:45:48 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DDgCKb020074;
-        Tue, 13 Apr 2021 15:45:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=Sa3vC6SzHN8QPEow7pcGc+DlVRugfstE0VuBLK1pffo=;
- b=ebyc+BMi0ZTS5BbyfLZEcvq/r/l8o0ddKCCHz6uHPSqbaawthYNd7eP9Q8kflINsZsbn
- CO60d2+qukAUjqgowW9YpiFb2pB0OWzQDeKwm3N/RCq5ol2OgMq+DzSr6C1kAnk2z+aI
- +u0DJ5FSHffCYU23e8RnlUdrDWN8Ks5LuCWEA7aYvXGPIHxdOC3asnt2Cek5sRmxZMXm
- ISpTg3TWY/GUGBB5Ar0zEYj5i9PYdKmGBLlI4P5pV+AYu4Zm/Ln6MHP4c858axcEIsWy
- RTmHVA995IgQEBbKT8Vs5yvr9jUKnW6NZ5qaiUCCZ7LW8O4m/csmfip5gMunWYsN5ei7 QQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37vwg94ngu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 15:45:26 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 96CED100034;
-        Tue, 13 Apr 2021 15:45:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 89515226C5A;
-        Tue, 13 Apr 2021 15:45:25 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 15:45:25
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 7/7] rpmsg: char: Return error if user tries to destroy a default endpoint.
-Date:   Tue, 13 Apr 2021 15:44:58 +0200
-Message-ID: <20210413134458.17912-8-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
-References: <20210413134458.17912-1-arnaud.pouliquen@foss.st.com>
+        Tue, 13 Apr 2021 09:45:20 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBF7C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id iu14so8052644qvb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
+        b=P8TZ3q/K2FYMwgX8ih6dAOpznLZqzG37b1Il+KiMHbiWEjdcrBMIXlzDa57UplaUu8
+         1cAAmqJDwP+fMGvD6pfollJBQ39I4eEqGf7lGvVy2tw198zw6adWvWR1L3rvb6WgYOFV
+         uQGjCtawvPEMW58igm5A0CBka0uwolxOU4LEpFWKSs1lhPa77NKyBLPUg4WWHQTJy3LB
+         156DznYIBE8+OodCuxpBC0EFExw/tzwn0R97kcNdKbOkaiQkydvJ+gJ0LLFY0JZWEeRv
+         camQQdnfN4b3Ipkdf/GOljO8I/WtnNMwVi71Eh0N1IqdmIxk8/zkFM1RV0Whu15RMwut
+         uVGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1Jhigyf9UU6G6IXvufmrKhvm5rl8XcUyp6UG+kGmgLA=;
+        b=DkEWcoEs6FThcmdAyrxJTw0Pif36LA4GhJsajHLBpogpnPosIX4JyVHQahpDMnZoNW
+         OkcM/fe1npsBYwSSFOGSGDO/NrRtrYnbemW6DYY7bkoAEOQuQjcBwyRQE7OpJsUL9Uf2
+         Sfcg7j1NVNdO9EQcDDdbjIIDEoBjisJCgxP0JTicctQq4Nf0rLirlu7BYIhVeX7tDvSW
+         bQ6HBbNfQ252o0Q0WyC2rmdPDwFgLhnD5G7XuYkxJu5qElK+tLLePjvIeUQv6DyopVbT
+         t0OK2pAKz/eu3Mu08TwDQodQX6z1AaBXsiemuCQm9m1QY+JANaILDEFWTBh+DeC/sLvK
+         RLOw==
+X-Gm-Message-State: AOAM532aZZD+XkLoSvS88vAmrUe/YApWxxnJalHZJdLs4ivlM/+1ZIzO
+        Op9NFuCyrDUThxByfZw+BU2cNg==
+X-Google-Smtp-Source: ABdhPJxTLJu6I3qqH/XCtkZYAon1RFtHUEySj+DXtp3rSpBUrRvTcwgxXLIb7BBpqqA3GaZlyYTKOA==
+X-Received: by 2002:ad4:458b:: with SMTP id x11mr163890qvu.36.1618321500031;
+        Tue, 13 Apr 2021 06:45:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id i21sm1369148qtr.94.2021.04.13.06.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 06:44:59 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lWJLe-005HU5-T4; Tue, 13 Apr 2021 10:44:58 -0300
+Date:   Tue, 13 Apr 2021 10:44:58 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
+Message-ID: <20210413134458.GI227011@ziepe.ca>
+References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
+ <20210413133359.GG227011@ziepe.ca>
+ <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_07:2021-04-13,2021-04-13 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the RPMSG_DESTROY_EPT_IOCTL control, user application can
-destroy an endpoint. This patch prevents to destroy a default endpoint
-associated to a channel.
+On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
+> Jason Gunthorpe <jgg@ziepe.ca> 于2021年4月13日周二 下午9:34写道：
+> >
+> > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
+> > > Hi
+> > >
+> > > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
+> > > the Linux kernel, I found two use-after-free bugs which have been
+> > > reported a long time ago by Syzbot.
+> > > Although the corresponding patches have been merged into upstream,
+> > > these two bugs can still be triggered easily.
+> > > The original information about Syzbot report can be found here:
+> > > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
+> > > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
+> >
+> > Then why hasn't syzbot seen this in a year's time? Seems strange
+> >
+> 
+> Seems strange to me too, but the fact is that the reproduction program
+> in attachment can trigger these two bugs quickly.
 
-This update is needed to manage the "rpmsg-raw" channel. In this
-case a default endpoint is used and destroying it without the
-channel does not make sense.
+Do you have this in the C format?
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index fa59abfa8878..d4316bb904f2 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -280,6 +280,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
- 		return -EINVAL;
- 
-+	/* Don't allow to destroy a default endpoint. */
-+	if (!eptdev->rpdev || eptdev->ept == eptdev->rpdev->ept)
-+		return -EPERM;
-+
- 	return rpmsg_chrdev_destroy_eptdev(&eptdev->dev, NULL);
- }
- 
--- 
-2.17.1
-
+Jason
