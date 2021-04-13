@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685D035D7BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2825935D7B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbhDMGJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:09:02 -0400
-Received: from gateway30.websitewelcome.com ([192.185.152.11]:19480 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344339AbhDMGIy (ORCPT
+        id S244446AbhDMGDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:03:19 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:40113 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243829AbhDMGDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:08:54 -0400
-X-Greylist: delayed 1365 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 02:08:54 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 080911AB43
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:45:47 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id WBrulTThWL7DmWBrvliHyT; Tue, 13 Apr 2021 00:45:47 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=FdPe7BzPOHgzj9TAvNc5/1y9jOqgs2aGr6NfsdIlyjs=; b=FFxIhESqbN4S3mFCetyJhSUf+O
-        zl+teQNvVNZGJ6wZmWOqESG6ZyvCVFoXMhRxNXaG0S/Dzvps1W8X1XjntvoTKamXop8KSlzcqkzvF
-        +aE0Stl1LcGnrLP6+lDVloFMeYxF3kQP+viXkSA/5i3LepxaHyXOB3c9uakm+/tgFNTkJzoIdIAit
-        h9nZSPmcEsnlryDNAW22w/t8GNCD5GbXFwCBtRikP5cgNSL9WdIGBCShtefyD+QcYZepwjivEyTA0
-        1+L42/ERkUxCAPxAo8y/xTxjxTzuMfjl2xsN81ucyxKQKrh7Sf++QyCRf4oZGdAYfTlbLAfObJcv5
-        vNVWGfvg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:43606 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lWBru-000DkR-Kb; Tue, 13 Apr 2021 00:45:46 -0500
-Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
- flexible-array member
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210304203822.GA102218@embeddedor>
- <202104071216.5BEA350@keescook> <yq1h7ka7q68.fsf@ca-mkp.ca.oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <aba7d5cb-79be-088d-d1f8-9309109e9afc@embeddedor.com>
-Date:   Tue, 13 Apr 2021 00:45:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <yq1h7ka7q68.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lWBru-000DkR-Kb
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:43606
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        Tue, 13 Apr 2021 02:03:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVQPvrp_1618293771;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVQPvrp_1618293771)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 13 Apr 2021 14:02:57 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jdelvare@suse.com
+Cc:     linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] hwmon: (nct6683) remove useless function
+Date:   Tue, 13 Apr 2021 14:02:50 +0800
+Message-Id: <1618293770-55307-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Fix the following clang warning:
 
-On 4/12/21 23:52, Martin K. Petersen wrote:
+drivers/hwmon/nct6683.c:491:19: warning: unused function 'in_to_reg'
+[-Wunused-function].
 
-> Silencing analyzer warnings shouldn't be done at the expense of human
-> readers. If it is imperative to switch to flex_array_size() to quiesce
-> checker warnings, please add a comment in the code explaining that the
-> size evaluates to nseg_new-1 sge_ieee1212 structs.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/hwmon/nct6683.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-Done:
-	https://lore.kernel.org/lkml/20210413054032.GA276102@embeddedor/
+diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
+index a23047a..b886cf0 100644
+--- a/drivers/hwmon/nct6683.c
++++ b/drivers/hwmon/nct6683.c
+@@ -488,17 +488,6 @@ static inline long in_from_reg(u16 reg, u8 src)
+ 	return reg * scale;
+ }
+ 
+-static inline u16 in_to_reg(u32 val, u8 src)
+-{
+-	int scale = 16;
+-
+-	if (src == MON_SRC_VCC || src == MON_SRC_VSB || src == MON_SRC_AVSB ||
+-	    src == MON_SRC_VBAT)
+-		scale <<= 1;
+-
+-	return clamp_val(DIV_ROUND_CLOSEST(val, scale), 0, 127);
+-}
+-
+ static u16 nct6683_read(struct nct6683_data *data, u16 reg)
+ {
+ 	int res;
+-- 
+1.8.3.1
 
-Thanks!
---
-Gustavo
