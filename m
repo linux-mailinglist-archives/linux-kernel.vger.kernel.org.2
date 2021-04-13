@@ -2,116 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C695E35D61D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDCD35D61F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242602AbhDMDo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:44:27 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51556 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238999AbhDMDo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:44:26 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13D3hkRn022991;
-        Tue, 13 Apr 2021 05:43:46 +0200
-Date:   Tue, 13 Apr 2021 05:43:46 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210413034346.GA22861@1wt.eu>
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
- <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
- <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
- <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+        id S242787AbhDMDox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238999AbhDMDot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:44:49 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6368AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:44:28 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 10so1673053pfl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:44:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=47wD8xwWnEKLMN5FtKD6zAzX1Pa36iYfxbU1wCIqJ40=;
+        b=nEU+LL9SgYTRCvWcahxiNpnKvyooWlOeXj64dyCpFKTQoXcjho37iHetnv+XWpvy31
+         o3wJqJj9zcs9in/Esmufnj5HwT2g5znCyfJu7daWmYlGplIkkMdagAcgLGXmDuNQ33Pp
+         qsnoFgHLooAOebU9fMvrZ8vN2iFqwv6BwwTqM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=47wD8xwWnEKLMN5FtKD6zAzX1Pa36iYfxbU1wCIqJ40=;
+        b=SMimI3U28AFVvv2lDVRZhrohzAecV8TouN6T1mF8yDd7EvQo4AhR81nw6L2vnHVcAq
+         xV4Ev5+85+m1rq72c4Fb1dNu7QtqGxWZc4KC3oc8EmtR4gilocPU/53FQSy9Ms9ZbeXu
+         p5jZMecDGTf23JHuOkabRkjEDJ2EKMRbMAddB/dZmbKLqSi4sPvE51C7bfC0PcKFNz/y
+         tlfxlt31I//+P8jQ7a8nPPqTT8LXvDbm4ncZrKPZZQLZNKWJihXpa83+BLTho/ukegdA
+         8CNLm2YSXpm2Py+6vkvsgar16GVC2qQAe3kdYaxrM5LX3uNzlAYJkQSjteCcCnMmJs5t
+         7vlw==
+X-Gm-Message-State: AOAM533rdXLw1vuknKrIAlLNwDeT6Q0X9Bp4x/mFe+dhIBvdx3BFk2lF
+        YQeUw2RwEYDlICYUq4XL24MVow==
+X-Google-Smtp-Source: ABdhPJyYtRwnTVo858HHRocZd1GcOzAjQyZ28PzIv/swFx8j0ouxxXirl2hNMF/D+JrhN2OFpPjf8Q==
+X-Received: by 2002:a65:4985:: with SMTP id r5mr30033322pgs.65.1618285467888;
+        Mon, 12 Apr 2021 20:44:27 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
+        by smtp.gmail.com with ESMTPSA id u1sm12890575pgg.11.2021.04.12.20.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 20:44:27 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1618247003-28821-1-git-send-email-khsieh@codeaurora.org>
+References: <1618247003-28821-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH 2/2] drm/msm/dp: do not re initialize of audio_comp
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Mon, 12 Apr 2021 20:44:26 -0700
+Message-ID: <161828546608.3764895.4087177206996707347@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:46:06PM -0400, Len Brown wrote:
-> On Mon, Apr 12, 2021 at 11:21 AM Andy Lutomirski <luto@kernel.org> wrote:
-> 
-> > AMX: Multiplying a 4x4 matrix probably looks *great* in a
-> > microbenchmark.  Do it once and you permanently allocate 8kB (is that
-> > even a constant?  can it grow in newer parts?), potentially hurts all
-> > future context switches, and does who-knows-what to Turbo licenses and
-> > such.
-> 
-> Intel expects that AMX will be extremely valuable to key workloads.
-> It is true that you may never run that kind of workload on the machine
-> in front of you,
-> and so you have every right to be doubtful about the value of AMX.
-> 
-> The AMX architectural state size is not expected to change.
-> Rather, if a "new AMX" has a different state size, it is expected to
-> use a new feature bit, different from AMX.
-> 
-> The AMX context switch buffer is allocated only if and when a task
-> touches AMX registers.
-> 
-> Yes, there will be data transfer to and from that buffer when three
-> things all happen.
-> 1. the data is valid
-> 2. hardware interrupts the application
-> 3. the kernel decides to context switch.
+Quoting Kuogee Hsieh (2021-04-12 10:03:23)
+> At dp_display_disable(), do not re initialize audio_comp if
+> hdp_state =3D=3D ST_DISCONNECT_PENDING (unplug event) to avoid
+> race condition which cause 5 second timeout expired.
 
-As a userspace developer of a proxy, my code is extremely sensitive to
-syscall cost and works in environments where 1 million interrupts/s is
-not uncommon. Additionally the data I process are small HTTP headers
-and I already had to reimplement my own byte-level memcmp because the
-overhead of some libc to decide what variant to use to compare 5 bytes
-was higher than the time to iterate over them.
+More details please.
 
-So I'm among those userspace developers who grumble each time new
-technology is automatically adopted by the compiler and libs, because
-that tends to make me figure what the impact is and how to work around
-it. I have no idea what AMX could bring me but reading this above makes
-me think that it has a great potential of significantly hurting the
-performance if one lib decides to occasionally make use of it. It would
-possibly be similar if a lib decided to use AVX-512 to copy data and if
-it resulted in the CPU quickly reaching its TDP and starting to throttle
-like crazy :-/
+> Also
+> add abort mechanism to reduce time spinning at dp_aux_transfer()
+> during dpcd read if type-c connection had been broken.
 
-Thus I think that the first thing to think about before introducing
-possibly cost-sensitive optimizations is : how do I allow easily
-user-space to easily disable them for a task, and how do I allow an
-admin to easily disable them system-wide. "echo !foobar > cpuinfo"
-could be a nice way to mask a flag system-wide for example. prctl()
-would be nice for a task (as long as it's not too late already).
+Please split this to a different patch.
 
-Maybe the API should be surrounded by __amx_begin() / __amx_end() and
-the calls having undefined behavior outside of these. These flags would
-put a flag somewhere asking to extend the stacks, or __amx_begin() could
-even point itself to the specific stack to be used. This way it could
-possibly allow some userspace libraries to use it for small stuff
-without definitely impacting the rest of the process.
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_aux.c     | 18 ++++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_aux.h     |  1 +
+>  drivers/gpu/drm/msm/dp/dp_display.c | 16 ++++++++++++----
+>  drivers/gpu/drm/msm/dp/dp_link.c    | 20 +++++++++++++++-----
+>  4 files changed, 46 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_=
+aux.c
+> index 7c22bfe..e5ece8c 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> @@ -28,6 +28,7 @@ struct dp_aux_private {
+>         u32 offset;
+>         u32 segment;
+>         u32 isr;
+> +       atomic_t aborted;
 
-> At the risk of stating the obvious...
-> Intel's view is that libraries that deliver the most value from the
-> hardware are a "good thing",
-> and that anything preventing libraries from getting the most value
-> from the hardware is a "bad thing":-)
+Why is it an atomic?
 
-As a developer I have a different view. Anything that requires to build
-using different libraries depending on the systems is a real hassle,
-and I want to focus on the same code to run everywhere. I'm fine with
-some #ifdef in the code if I know that a specific part must run as
-fast as possible, and even some runtime detection at various points
-but do not want to have to deal with extra dependencies that further
-increase the test matrix and combinations in bug reports.
+> =20
+>         struct drm_dp_aux dp_aux;
+>  };
+> @@ -343,6 +344,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp=
+_aux,
+> =20
+>         mutex_lock(&aux->mutex);
+> =20
+> +       if (atomic_read(&aux->aborted)) {
+> +               ret =3D -ETIMEDOUT;
+> +               goto unlock_exit;
+> +       }
+> +
 
-Just my two cents,
-Willy
+Cool, it's checked inside a mutex.
+
+>         aux->native =3D msg->request & (DP_AUX_NATIVE_WRITE & DP_AUX_NATI=
+VE_READ);
+> =20
+>         /* Ignore address only message */
+> @@ -533,3 +539,15 @@ void dp_aux_put(struct drm_dp_aux *dp_aux)
+> =20
+>         devm_kfree(aux->dev, aux);
+>  }
+> +
+> +void dp_aux_abort(struct drm_dp_aux *dp_aux, bool abort)
+> +{
+> +       struct dp_aux_private *aux;
+> +
+> +       if (!dp_aux)
+> +               return;
+> +
+> +       aux =3D container_of(dp_aux, struct dp_aux_private, dp_aux);
+> +
+> +       atomic_set(&aux->aborted, abort);
+> +}
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
+/dp_display.c
+> index 4992a049..8960333 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -898,8 +898,10 @@ static int dp_display_disable(struct dp_display_priv=
+ate *dp, u32 data)
+>         /* wait only if audio was enabled */
+>         if (dp_display->audio_enabled) {
+>                 /* signal the disconnect event */
+> -               reinit_completion(&dp->audio_comp);
+> -               dp_display_handle_plugged_change(dp_display, false);
+> +               if (dp->hpd_state !=3D ST_DISCONNECT_PENDING) {
+> +                       reinit_completion(&dp->audio_comp);
+> +                       dp_display_handle_plugged_change(dp_display, fals=
+e);
+> +               }
+>                 if (!wait_for_completion_timeout(&dp->audio_comp,
+>                                 HZ * 5))
+>                         DRM_ERROR("audio comp timeout\n");
+
+This hunk is the first part of the patch and should be split away to one
+for itself, with appropriate Fixes tag and a proper explanation.
+
+> @@ -1137,20 +1139,26 @@ static irqreturn_t dp_display_irq_handler(int irq=
+, void *dev_id)
+>                 /* hpd related interrupts */
+>                 if (hpd_isr_status & DP_DP_HPD_PLUG_INT_MASK ||
+>                         hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
+> +                       dp_aux_abort(dp->aux, false);
+>                         dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+>                 }
+> =20
+>                 if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
+>                         /* stop sentinel connect pending checking */
+> +                       dp_aux_abort(dp->aux, false);
+>                         dp_del_event(dp, EV_CONNECT_PENDING_TIMEOUT);
+>                         dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
+>                 }
+> =20
+> -               if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK)
+> +               if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
+> +                       dp_aux_abort(dp->aux, false);
+>                         dp_add_event(dp, EV_HPD_REPLUG_INT, 0, 0);
+> +               }
+> =20
+> -               if (hpd_isr_status & DP_DP_HPD_UNPLUG_INT_MASK)
+> +               if (hpd_isr_status & DP_DP_HPD_UNPLUG_INT_MASK) {
+> +                       dp_aux_abort(dp->aux, true);
+
+Ok, so it seems that we want to stop trying aux transfers if the unplug
+irq comes in? That's a pretty big sledge hammer to stop a transfer in
+the middle of progress. Why doesn't the hardware timeout and stop or the
+dpcd reads in this DP driver fail and start bailing out when the cable
+is disconnected? Having to inject that synthetically is not great. Is
+there some sort of AUX channel "status" bit that can be read from the
+aux registers in the DP hardware to see if the connection was lost?
+
+>                         dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+> +               }
+>         }
+> =20
+>         /* DP controller isr */
+> diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp=
+_link.c
+> index be986da..d35b18e 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_link.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_link.c
+> @@ -737,18 +737,25 @@ static int dp_link_parse_sink_count(struct dp_link =
+*dp_link)
+>         return 0;
+>  }
+> =20
+> -static void dp_link_parse_sink_status_field(struct dp_link_private *link)
+> +static int dp_link_parse_sink_status_field(struct dp_link_private *link)
+>  {
+>         int len =3D 0;
+> =20
+>         link->prev_sink_count =3D link->dp_link.sink_count;
+> -       dp_link_parse_sink_count(&link->dp_link);
+> +       len =3D dp_link_parse_sink_count(&link->dp_link);
+> +       if (len < 0) {
+> +               DRM_ERROR("DP lparse sink count failed\n");
+
+s/lparse/parse/?
+
+> +               return len;
+> +       }
+> =20
+>         len =3D drm_dp_dpcd_read_link_status(link->aux,
+>                 link->link_status);
+> -       if (len < DP_LINK_STATUS_SIZE)
+> +       if (len < DP_LINK_STATUS_SIZE) {
+>                 DRM_ERROR("DP link status read failed\n");
+> -       dp_link_parse_request(link);
+> +               return len;
+> +       }
+> +
+> +       return dp_link_parse_request(link);
+>  }
+> =20
+>  /**
+> @@ -1032,7 +1039,10 @@ int dp_link_process_request(struct dp_link *dp_lin=
+k)
+> =20
+>         dp_link_reset_data(link);
+> =20
+> -       dp_link_parse_sink_status_field(link);
+> +       ret =3D dp_link_parse_sink_status_field(link);
+> +       if (ret) {
+> +               return ret;
+> +       }
+> =20
+>         if (link->request.test_requested =3D=3D DP_TEST_LINK_EDID_READ) {
+>                 dp_link->sink_request |=3D DP_TEST_LINK_EDID_READ;
