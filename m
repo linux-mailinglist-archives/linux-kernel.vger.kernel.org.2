@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA3135E28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494FB35E289
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346563AbhDMPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346552AbhDMPVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:21:10 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C666AC061756;
-        Tue, 13 Apr 2021 08:20:50 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id d15so5223734qkc.9;
-        Tue, 13 Apr 2021 08:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qCzCnYr3+785S76q01Q/UXckp8I3YkeIwVVNFc/YH5M=;
-        b=g3rAJOjjRkKXa8uh49lSVVH/mQz/fKZoW9IhSPi0jr5PoZeflJNTxdmaNGW09UDcQW
-         JpFChJhCMHGQ/6xp8DOYecWiIS9fEyB6+Us1LCbI1iYnRZudZdYblSwCbGelX1C+XlFq
-         joJYavZoVD3N1rXYMmtPTukucVBYsF56+Kwzi4IMbdUEk2g0jLzxSUK5j45wiYUYEbXe
-         lVR34K8WQQouphJuhWdmiYvCUb5KJCiVcP+IQ1VXc35UbB0NGotwQZ+ZloXXT2uNfgIl
-         tRfntLjMR51nvAgVFSIG7+GwLdydWH3vT3ZsLiCJv0JfnJhXtreILaLaIzYHcVyPSy/z
-         MGwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qCzCnYr3+785S76q01Q/UXckp8I3YkeIwVVNFc/YH5M=;
-        b=sf7s+mY1dzZlU3Aeoale3TCCtZkp4/oOxaG0iuCiWqZifWBx2OYnJhu6UtXJB/+Trd
-         oGo3ibvDOSt2TXahlagmGtSRcDDCsjQxJmq4zV2Rv6q3HqLo8NEMfUptzOCNnL1NZ7hA
-         zyIDvHxWGR0v1Zvm0TcdyIT4uSm2KR3JP8sfNp0PXvPV5MsNfT1MgzIuR5mljKYomZjQ
-         ccB5716rl2DqllL/L+EdV6nVWkF3Q7G+5yQ7oETg8R3IA+oR84t+kZPl52gq/07ksqQy
-         AZLxzLqeIfsNRmQPmvKdLZ4I06qgwHQPLr8I7C9BL66pRSJv3MJ2kiy3H4XfThPiFFkw
-         fCBA==
-X-Gm-Message-State: AOAM5323hm7d9kQpjIiSkEGS1rstULiGVFkvGvJEXSW3ONTmSISRe8uA
-        zGavKaCxgrPiuo1aadgYZLY=
-X-Google-Smtp-Source: ABdhPJyAocGXCuLriRpyEOCNRK4K9tbznGt6OQntKCBXIpjbof/p/bvMr+DN2HRLFgq0NPnEKVKqMQ==
-X-Received: by 2002:a37:6f41:: with SMTP id k62mr25738832qkc.262.1618327249995;
-        Tue, 13 Apr 2021 08:20:49 -0700 (PDT)
-Received: from horizon.localdomain ([2001:1284:f013:7670:f294:e7fa:2bfe:b930])
-        by smtp.gmail.com with ESMTPSA id m3sm7259613qkn.65.2021.04.13.08.20.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 08:20:49 -0700 (PDT)
-Received: by horizon.localdomain (Postfix, from userid 1000)
-        id 2AFFAC0784; Tue, 13 Apr 2021 12:20:47 -0300 (-03)
-Date:   Tue, 13 Apr 2021 12:20:47 -0300
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     Or Cohen <orcohen@paloaltonetworks.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
-        kuba@kernel.org, linux-sctp@vger.kernel.org, lucien.xin@gmail.com,
-        nmarkus@paloaltonetworks.com
-Subject: Re: [PATCH] net/sctp: fix race condition in sctp_destroy_sock
-Message-ID: <YHW2zwdoDLVRPB/6@horizon.localdomain>
-References: <20210413093153.27281-1-orcohen@paloaltonetworks.com>
+        id S1346550AbhDMPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:21:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhDMPVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF0A611CE;
+        Tue, 13 Apr 2021 15:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618327248;
+        bh=p7RmkSd/YcaE9xShOUQVPFRf7C98RAW1RMeav80HG/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jzrec9I5m/SmWCWVUPqBvFSFxcC+AulSvd9xXmg3Qz2ndDXDGSGUTEND16LngCdWa
+         pmqV5AoDS+tWkj1zyvNljxGjExbIvJ7Ia7tA3Ndfe3UvpI849Iuq/KwWKtdG9L8l/4
+         d0DJLCsc1o3Zt32tvwY1n92YqttIXxjLlxNI/hxnkFoKTG0xbJc0zcZMgi8Ldp4KTI
+         nXe6WTPWPh+ALXPwLzM1D337g/6pM3Kr9HugI5tjErwaldS2+ywotWamJ3R1ANSHkE
+         pyac2niEGTiIPr1s2u6AlIoY89ApC+5W2OEIz8GSXMdZASGzP7p6vUniRdLaPGC4D1
+         xCy9IaNz0EKDg==
+Date:   Tue, 13 Apr 2021 08:20:48 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: Re: linux-next: manual merge of the vfs tree with the xfs tree
+Message-ID: <20210413152048.GM3957620@magnolia>
+References: <20210412122211.713ca71d@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413093153.27281-1-orcohen@paloaltonetworks.com>
+In-Reply-To: <20210412122211.713ca71d@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:31:53PM +0300, Or Cohen wrote:
-> +++ b/net/sctp/socket.c
-> @@ -1520,11 +1520,9 @@ static void sctp_close(struct sock *sk, long timeout)
->  
->  	/* Supposedly, no process has access to the socket, but
->  	 * the net layers still may.
-> -	 * Also, sctp_destroy_sock() needs to be called with addr_wq_lock
-> -	 * held and that should be grabbed before socket lock.
->  	 */
+On Mon, Apr 12, 2021 at 12:22:11PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the vfs tree got a conflict in:
+> 
+>   fs/xfs/xfs_ioctl.c
+> 
+> between commits:
+> 
+>   ceaf603c7024 ("xfs: move the di_projid field to struct xfs_inode")
+>   031474c28a3a ("xfs: move the di_extsize field to struct xfs_inode")
+>   b33ce57d3e61 ("xfs: move the di_cowextsize field to struct xfs_inode")
+>   4800887b4574 ("xfs: cleanup xfs_fill_fsxattr")
+>   ee7b83fd365e ("xfs: use a union for i_cowextsize and i_flushiter")
+>   db07349da2f5 ("xfs: move the di_flags field to struct xfs_inode")
+>   3e09ab8fdc4d ("xfs: move the di_flags2 field to struct xfs_inode")
+> 
+> from the xfs tree and commit:
+> 
+>   280cad4ac884 ("xfs: convert to fileattr")
+> 
+> from the vfs tree.
+> 
+> I fixed it up (I think - see below) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-Please also update the following comment in sctp_init_sock():
-          /* Nothing can fail after this block, otherwise
-           * sctp_destroy_sock() will be called without addr_wq_lock held
-           */
+This looks correct to me; thanks for pointing out the merge conflict! :)
 
-Other than this, LGTM. Thanks.
+--D
 
-  Marcelo
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc fs/xfs/xfs_ioctl.c
+> index 708b77341a70,bbda105a2ce5..000000000000
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@@ -1056,76 -1057,16 +1057,18 @@@ xfs_ioc_ag_geometry
+>   static void
+>   xfs_fill_fsxattr(
+>   	struct xfs_inode	*ip,
+> - 	bool			attr,
+> - 	struct fsxattr		*fa)
+> + 	int			whichfork,
+> + 	struct fileattr		*fa)
+>   {
+>  +	struct xfs_mount	*mp = ip->i_mount;
+> - 	struct xfs_ifork	*ifp = attr ? ip->i_afp : &ip->i_df;
+> + 	struct xfs_ifork	*ifp = XFS_IFORK_PTR(ip, whichfork);
+>   
+> - 	simple_fill_fsxattr(fa, xfs_ip2xflags(ip));
+> + 	fileattr_fill_xflags(fa, xfs_ip2xflags(ip));
+>  -	fa->fsx_extsize = ip->i_d.di_extsize << ip->i_mount->m_sb.sb_blocklog;
+>  -	fa->fsx_cowextsize = ip->i_d.di_cowextsize <<
+>  -			ip->i_mount->m_sb.sb_blocklog;
+>  -	fa->fsx_projid = ip->i_d.di_projid;
+>  +
+>  +	fa->fsx_extsize = XFS_FSB_TO_B(mp, ip->i_extsize);
+>  +	if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
+>  +		fa->fsx_cowextsize = XFS_FSB_TO_B(mp, ip->i_cowextsize);
+>  +	fa->fsx_projid = ip->i_projid;
+>   	if (ifp && (ifp->if_flags & XFS_IFEXTENTS))
+>   		fa->fsx_nextents = xfs_iext_count(ifp);
+>   	else
+> @@@ -1212,10 -1167,10 +1169,10 @@@ static in
+>   xfs_ioctl_setattr_xflags(
+>   	struct xfs_trans	*tp,
+>   	struct xfs_inode	*ip,
+> - 	struct fsxattr		*fa)
+> + 	struct fileattr		*fa)
+>   {
+>   	struct xfs_mount	*mp = ip->i_mount;
+>  -	uint64_t		di_flags2;
+>  +	uint64_t		i_flags2;
+>   
+>   	/* Can't change realtime flag if any extents are allocated. */
+>   	if ((ip->i_df.if_nextents || ip->i_delayed_blks) &&
+> @@@ -1348,8 -1289,11 +1291,11 @@@ xfs_ioctl_setattr_check_extsize
+>   	xfs_extlen_t		size;
+>   	xfs_fsblock_t		extsize_fsb;
+>   
+> + 	if (!fa->fsx_valid)
+> + 		return 0;
+> + 
+>   	if (S_ISREG(VFS_I(ip)->i_mode) && ip->i_df.if_nextents &&
+>  -	    ((ip->i_d.di_extsize << mp->m_sb.sb_blocklog) != fa->fsx_extsize))
+>  +	    ((ip->i_extsize << mp->m_sb.sb_blocklog) != fa->fsx_extsize))
+>   		return -EINVAL;
+>   
+>   	if (fa->fsx_extsize == 0)
+> @@@ -1520,18 -1476,18 +1478,19 @@@ xfs_fileattr_set
+>   	 * extent size hint should be set on the inode. If no extent size flags
+>   	 * are set on the inode then unconditionally clear the extent size hint.
+>   	 */
+>  -	if (ip->i_d.di_flags & (XFS_DIFLAG_EXTSIZE | XFS_DIFLAG_EXTSZINHERIT))
+>  -		ip->i_d.di_extsize = fa->fsx_extsize >> mp->m_sb.sb_blocklog;
+>  -	else
+>  -		ip->i_d.di_extsize = 0;
+>  -	if (xfs_sb_version_has_v3inode(&mp->m_sb) &&
+>  -	    (ip->i_d.di_flags2 & XFS_DIFLAG2_COWEXTSIZE))
+>  -		ip->i_d.di_cowextsize = fa->fsx_cowextsize >>
+>  -				mp->m_sb.sb_blocklog;
+>  +	if (ip->i_diflags & (XFS_DIFLAG_EXTSIZE | XFS_DIFLAG_EXTSZINHERIT))
+>  +		ip->i_extsize = XFS_B_TO_FSB(mp, fa->fsx_extsize);
+>   	else
+>  -		ip->i_d.di_cowextsize = 0;
+>  +		ip->i_extsize = 0;
+>  +
+>  +	if (xfs_sb_version_has_v3inode(&mp->m_sb)) {
+>  +		if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
+>  +			ip->i_cowextsize = XFS_B_TO_FSB(mp, fa->fsx_cowextsize);
+>  +		else
+>  +			ip->i_cowextsize = 0;
+>  +	}
+>   
+> + skip_xattr:
+>   	error = xfs_trans_commit(tp);
+>   
+>   	/*
+
+
