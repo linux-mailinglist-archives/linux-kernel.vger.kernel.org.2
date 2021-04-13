@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CE635E10D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5612735E10E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346304AbhDMOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S1346311AbhDMOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhDMOLK (ORCPT
+        with ESMTP id S231910AbhDMOLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:11:10 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A3FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:10:49 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 12so8818499wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:10:49 -0700 (PDT)
+        Tue, 13 Apr 2021 10:11:12 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DCCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:10:52 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id h4so7589831wrt.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:10:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B3rpQGWrqKW/s7QbBC9Cbbf9cXI28JVOTOSLh/yBH1M=;
-        b=WpsaeFL3u13gWmEF34HRreUTaIqGah8lcSrJv73ie+KZpolrAepFs+uJ3rAJeZtplQ
-         ouH5wY3MxIFNLDfU5tyuKACVQ89g34WJ8CUPTGabCvSWam/AcV8ql8071XeEmpiCQt9X
-         vN9j22fgrc6LhJmcHPYeSuCeOv+6G3LsejiCseJTKkJ9b+2qBIqnJNyydY5r70GDpQV2
-         t/zFMhqpoDIFB8J+vRI88jm4SeguNqqNQlGtTpYiEealhGp9GbrYi3wR6Gmeq7DuELHp
-         6fMyThnIQ+wyAFOa7BS+xM8Q4HlJLwdrGe4XPDLNl8/BnOXLS0oENXUS6SbZekb10FLN
-         YUpQ==
+        bh=KltcSRDP7X3Yfu3VWFhrzHyopiix35MMmWdtK3KZ1EE=;
+        b=CRgfq8FTkXFHrs5B9IshafQuRK7Z+orJ77vQ+QoJo4K+N8ZAyL9wGghM1YsYgBeapq
+         Cihil2w6hTs3oJKbzuL2gs1ioGaMM0RKYeMI+7XOtvbIzrGRefF5sRf3s2JU35kvkNX5
+         bOkI4Z6jf0o+ELdBR94AAGImgB78ThNLe5tMBVQ1Dd/ZwETXxblZXNfjMbZYWjD8jzyf
+         ZWaYQoTJhjS2bv0bTuSnefvOu7P0kNbJx6k+sa2uI6KFGnUIy+0LcDbohJ3+yOz88NMb
+         6cUTWILTIVOK2wgyzHrUncqOxbHu8ih5fl8WrOt9s2RK6UmMvlBpGnYLM4A9FWqED1sN
+         iN+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B3rpQGWrqKW/s7QbBC9Cbbf9cXI28JVOTOSLh/yBH1M=;
-        b=hLT4dh3+s5uBU7Abd4f68Cj09Xh3LaZyskO+chmJ6YvzmmT952YpDr/pI8a+x9CsNb
-         KnG9mn5cFRRhhMv91tO8KsfBgpiuxOJqL/YfWIbQPv4BhZqLpfNoxTN03V0dxrAAian8
-         turiACi4rz1dMTv1UIg/ZdhiPBMNRUtgNQplKvPSdzSIz/iqzkv9hk3yfdZoGrLnBJPF
-         LEfqBiwM309xbqW34v5BYd+WPf+MBsGnqI/cW7qovw4daKywnMyD8yiN66nkkc2FmV/X
-         31mH2WDQwd2OCnY1m2o/XjxhmB/9I3X5CQ+NBHOoYahvmLDSpYzjLwl2oq2MY9xqUgia
-         AUfA==
-X-Gm-Message-State: AOAM531DgicKmQ4hFfe/N2MYANdOY6Wlsfa6eaPEz7ZjUCxAZW4RbWrP
-        SvwOtb7XU0RWp2TGrDOmUwadwYB+At32nA==
-X-Google-Smtp-Source: ABdhPJyiGwnP7Q9+ErwLtyrlvYnHHdXx5Pnm8vKOiNMHvca4e6/T/Z6AIUR3ZsUeuv9hIKHbm3Sigg==
-X-Received: by 2002:a1c:f614:: with SMTP id w20mr226170wmc.70.1618323048095;
-        Tue, 13 Apr 2021 07:10:48 -0700 (PDT)
+        bh=KltcSRDP7X3Yfu3VWFhrzHyopiix35MMmWdtK3KZ1EE=;
+        b=O4h1C3cB2iyH1jS5gftOvKzRlkpzjFxSwyBYhg2O94jFyaRH1gVHrEE8mhteGqNBwk
+         ig6trrP3IchUY8Gk8HzhOIVBBR0lYSPSEHbBNmH1pxq8Hvd0eZU/K+BNqEZelafgjxiG
+         5YL4kCUswiJFO828OHRCes/kHELsSs0DsqQZNGjJUBW14dvbA5iLz/0trWEySP0PYv/g
+         EyXscUyOj5oRmKxmw1RoAFr/QDt7yatf4z1tXIrSxP5SAG33CSlYL4XqHe73QfjkeHjY
+         lpxpDnjJeIf5jI1oEGZwzki+SyfrDE0CdgCjDYUSW1PzxqCSguRYgfNsMlhFl9o5oveZ
+         0hLg==
+X-Gm-Message-State: AOAM533adPwIupEfnHrcQbYCYL+0aXvCttYGyqMDdwV1nLrNWqwB9GZ8
+        Qhhf3AkBcMJRsow5LS1TzFLZzNqR0IIEDw==
+X-Google-Smtp-Source: ABdhPJxbByITxA1Mm1H0RKdUh+zCeKbEJVVFVdAEsWGFWd78HtlSBmBlIGoeHujOzKeRrMdNRKJV5w==
+X-Received: by 2002:a5d:6d0f:: with SMTP id e15mr36634018wrq.218.1618323050179;
+        Tue, 13 Apr 2021 07:10:50 -0700 (PDT)
 Received: from agape ([5.171.81.171])
-        by smtp.gmail.com with ESMTPSA id m17sm10525922wrq.63.2021.04.13.07.10.47
+        by smtp.gmail.com with ESMTPSA id m15sm19392261wrp.96.2021.04.13.07.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:10:47 -0700 (PDT)
+        Tue, 13 Apr 2021 07:10:49 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 Cc:     julia.lawall@inria.fr, joe@perches.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/7] staging: rtl8723bs: remove unnecessary dump_drv_version() usage
-Date:   Tue, 13 Apr 2021 16:10:37 +0200
-Message-Id: <d1804108cfe86375a3006134a8a2a65daefec9fe.1618322367.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 3/7] staging: rtl8723bs: remove two unused functions
+Date:   Tue, 13 Apr 2021 16:10:38 +0200
+Message-Id: <4d241b4cbc0c081a1d31d615b5069a223b2b7e7b.1618322367.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1618322367.git.fabioaiuto83@gmail.com>
 References: <cover.1618322367.git.fabioaiuto83@gmail.com>
@@ -64,28 +64,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unnecessary dump_drv_version() usage.
+remove dump_drv_version() and dump_log_level() function
+definitions and prototypes.
 
-This prepares dump_drv_version() for removal and
-further DBG_871X_SEL_NL removal.
+These two functions incapsulate DBG_871X_SEL_NL macro which
+does a raw printk call (something to avoid in a driver).
+The DBG_871X_SEL_NL seq_printf usage
+is never triggered. So we remove dump_drv_version() which
+is no more used and dump_log_level() which was never used.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/staging/rtl8723bs/core/rtw_debug.c    | 10 ----------
+ drivers/staging/rtl8723bs/include/rtw_debug.h |  3 ---
+ 2 files changed, 13 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-index a9a9631dd23c..d5ff22ebbc5c 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -491,7 +491,6 @@ static int __init rtw_drv_entry(void)
- 	int ret;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
+index d3ee7b7f6fde..324c7e5248f8 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_debug.c
++++ b/drivers/staging/rtl8723bs/core/rtw_debug.c
+@@ -14,16 +14,6 @@ u32 GlobalDebugLevel = _drv_err_;
  
- 	DBG_871X_LEVEL(_drv_always_, "module init start\n");
--	dump_drv_version(RTW_DBGDUMP);
- #ifdef BTCOEXVERSION
- 	DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version = %s\n", BTCOEXVERSION);
- #endif /*  BTCOEXVERSION */
+ #include <rtw_version.h>
+ 
+-void dump_drv_version(void *sel)
+-{
+-	DBG_871X_SEL_NL(sel, "%s %s\n", "rtl8723bs", DRIVERVERSION);
+-}
+-
+-void dump_log_level(void *sel)
+-{
+-	DBG_871X_SEL_NL(sel, "log_level:%d\n", GlobalDebugLevel);
+-}
+-
+ void sd_f0_reg_dump(void *sel, struct adapter *adapter)
+ {
+ 	int i;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
+index 7747e90bd1cc..f1b37d511f27 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_debug.h
++++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
+@@ -192,9 +192,6 @@
+ 
+ #endif /* defined(_dbgdump) */
+ 
+-void dump_drv_version(void *sel);
+-void dump_log_level(void *sel);
+-
+ void sd_f0_reg_dump(void *sel, struct adapter *adapter);
+ 
+ void mac_reg_dump(void *sel, struct adapter *adapter);
 -- 
 2.20.1
 
