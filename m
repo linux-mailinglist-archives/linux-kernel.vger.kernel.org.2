@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CC435E997
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 01:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7F835E998
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 01:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347915AbhDMXRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 19:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
+        id S1347980AbhDMXSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 19:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhDMXRP (ORCPT
+        with ESMTP id S230123AbhDMXSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 19:17:15 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D998C061574;
-        Tue, 13 Apr 2021 16:16:55 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 65so20033563ybc.4;
-        Tue, 13 Apr 2021 16:16:55 -0700 (PDT)
+        Tue, 13 Apr 2021 19:18:23 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4329C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 16:18:02 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id bx20so20249944edb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 16:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QgfRJoCybq9KsaEJIAzOX252QGmZc9D7nckNGd8wwqk=;
-        b=lsqgwiDY2hueWfpFoHPjNpqKf63Yrg8mX8D8SLHoJHZKmel0b1P07wSdUF6J10QhEQ
-         HrtsLKcKzQ1uBtTqsawQBIievd/Gge40kUWDjV3EybgbKtcY+MbAJfXFFlYy+s9UUvdf
-         uSCVbBLhEXv3z/EkNs2UIHz8bDwo97PcIvgccgecRKI/IfWRGuMJtMmS7u0MqS5b0RiF
-         +utIE7K7TLY4wrD8XKDwrY1X31s2X5W8JLJrSSIDvtS8iAurWmyEUL0iG4KuRC8bVGGW
-         06cgme0b0pazI+4lrFTuVAtZ7WpSogF3+QWU+aUCDKfUCjoqk15+rBbiiMIYu56oDHGW
-         ySuw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=K+/xYYU0ggPeP72L0+wPPvK33Oass5CheQLwj62UqKw=;
+        b=DpUk4hBixPnLSsh4YcGmRQU1CkX59cZ7QfeTC4OjMWs41wKxa8Xgji1Ne7olKqV1rf
+         FRxr1Utiby8WdpukhvAiLzKxUDoqR30+yiemu14uQL10v0wO1OjgEG8jJQe+bT4sKCRL
+         gUVPTQF5s8H2nw2f4gwEsrANZMOUK9Gg6vqNgF/PArDEOt/pLITgPbny+yVtyQlhOsl5
+         ZV55NS+/AZP8b7MTQJNrnaW4rc0E96M6JSLYeUnIyj6OybBDBErabFqbec8h3HbANZat
+         V7mhNJ98MjO8VcqDz6c12p92lzE2EWPjEonRolGFtXbCvpjFdkTeunpoBXkrkUafQZ8S
+         qc5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QgfRJoCybq9KsaEJIAzOX252QGmZc9D7nckNGd8wwqk=;
-        b=SwhtNvLdj5ncGQ6X5gbwkFHTmnehAYdEW7IsXlapoNi95w94nAyXP1i62KzJdxD7AD
-         Kqbqf5u2yQ9u6DKZNpETOsQRzq1jbnW7M46DmxIz1liShV7fOvX6RUFpHmC4Af2fH/Mv
-         qWcfyhXh+rDWytc1fhaSAlYf1dCNB46Y54Ooxb7Wg9x20wVa4eJ/veUoKCrguWw8e7+k
-         WU54zv4oxCuVeevSXbedJ+f1Gk5x6YUZw37mRw3ds+O3hEo6lRyULLgM7ZKrs+JMdDvK
-         kpTddDKwH4V76LkjlagRN3uyy7KrTlZ3hWNTuvTAU5gbsyKSsLBfoX2MAfSNEw8rDtF9
-         qWVA==
-X-Gm-Message-State: AOAM531dPQ8ztTm0fyaQWQwRYJkDxYscN0TqQdDrVyaSI5AQY0QmqmqH
-        IgKUU/VKNjrIj9/XdhjakNITQhmJSbkPqT8D0w6/fQiq
-X-Google-Smtp-Source: ABdhPJzVwe6XeypoL5AGx18j/fFFjg2J4NBzEF9zUVH7EBEvCdmGOBfgpttxDsWM1kVweQgS3tr7HNOjUsEmxxs2OqU=
-X-Received: by 2002:a25:850c:: with SMTP id w12mr4566130ybk.347.1618355814520;
- Tue, 13 Apr 2021 16:16:54 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=K+/xYYU0ggPeP72L0+wPPvK33Oass5CheQLwj62UqKw=;
+        b=Z7SJ+taSNmlPvtFAidK5j1zWoDEZO+q9SsaDCWCAQ4cMJgHJ0RSWoZ46efyh2IsceG
+         vLl1H+wL3LbEAdqPLhum/6OvyoGy/tQhOCjGkJFmmBjg0+KiH7TPd5LYmIZ6J+9b2jYF
+         DNuLVzYYaWYs/OC3EkdSGRl+TE7ixL/3+evkuJiwAnCBrwiZiZ4T0jZP9IHMigs0qB+n
+         p+g7mXnvwBzX1TWJKe3hMyH9adjPqzvmib9Z8ubMBU33Wx9Qx3h+DLYaZaVXawHksu8m
+         x4QlrCSCEFl+w0DSFIq2GLj1xY3Y++Dlh9ko29sLVyCqwruFfxyGU9ioHep3dj4hzCY3
+         UFnw==
+X-Gm-Message-State: AOAM533LsOf4wT3SqrHY8NwaMJRyAMTJI6Lw8wfkKqk6FACG2rgmBKZZ
+        gMnK6YyaBQm5ocQgAsCZ8bChbVedfP6LvIvLMDA=
+X-Google-Smtp-Source: ABdhPJyUAX3jfo4gpRk6r/8c72SSCq03u+JpJPbRaViYEgASkSfemfI5aluNiY1pqRcuUtvYwgBL2j7apEqp4nxIndk=
+X-Received: by 2002:a50:8fe6:: with SMTP id y93mr28171648edy.224.1618355881373;
+ Tue, 13 Apr 2021 16:18:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
-In-Reply-To: <20210412153754.235500-4-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 13 Apr 2021 16:16:43 -0700
-Message-ID: <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+Received: by 2002:a05:6402:3c5:0:0:0:0 with HTTP; Tue, 13 Apr 2021 16:18:00
+ -0700 (PDT)
+Reply-To: eric_chaix@yahoo.com
+From:   Eric Chaix <diedrigeorges@gmail.com>
+Date:   Wed, 14 Apr 2021 01:18:00 +0200
+Message-ID: <CAKJKRewNbZq_MAt9c8fivQPWcAFSdiwc50Gi_YcqxzQSY9AEcw@mail.gmail.com>
+Subject: Darlehensvorschlag zwischen Einzelpersonen
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
->
-> The implementation takes inspiration from the existing bpf_trace_printk
-> helper but there are a few differences:
->
-> To allow for a large number of format-specifiers, parameters are
-> provided in an array, like in bpf_seq_printf.
->
-> Because the output string takes two arguments and the array of
-> parameters also takes two arguments, the format string needs to fit in
-> one argument. Thankfully, ARG_PTR_TO_CONST_STR is guaranteed to point to
-> a zero-terminated read-only map so we don't need a format string length
-> arg.
->
-> Because the format-string is known at verification time, we also do
-> a first pass of format string validation in the verifier logic. This
-> makes debugging easier.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  include/linux/bpf.h            |  6 ++++
->  include/uapi/linux/bpf.h       | 28 +++++++++++++++++++
->  kernel/bpf/helpers.c           |  2 ++
->  kernel/bpf/verifier.c          | 41 ++++++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c       | 50 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 28 +++++++++++++++++++
->  6 files changed, 155 insertions(+)
->
+Hallo,
 
-[...]
+Ich biete Kredite an Personen an, die Geld f=C3=BCr ihre ben=C3=B6tigen
+kleine Finanzierungsprobleme, um endlich den Stillstand zu =C3=BCberwinden
+provozieren Sie die Banken, indem Sie Ihre Bewerbungsunterlagen f=C3=BCr ab=
+lehnen
+Anerkennung. Ich bin ein franz=C3=B6sischer Staatsb=C3=BCrger, der Ihnen ei=
+nen Kredit
+gew=C3=A4hren kann 5.000 bis 3.000.000 Euro und unter Bedingungen, die es I=
+hnen
+ leichter machen Leben. Hier sind die Bereiche, in denen ich Ihnen helfen k=
+ann:
+* zum Verzehr bereit
+* Hypothek
+* Investitionsdarlehen
+* Autokredit
+* Schuldenkonsolidierung
+* Kreditlinie
+* zweite Hypotheken
+* Kreditr=C3=BCckzahlung
+* Privat Darlehen
+Sie stecken fest, sind vom Bankgesch=C3=A4ft ausgeschlossen und haben nicht=
+ die
+Gunst der Banken oder besser du hast ein projekt und brauchst finanzierung,
+eine schlechte datei Kredit oder brauchen Geld, um Rechnungen zu bezahlen,
+Geld, um zu investieren Unternehmen. Also z=C3=B6gern Sie nicht, mich unter=
+ zu
+Kontaktieren eric_chaix@yahoo.com mit Ihrer Anfrage, wenn Sie interessiert =
+sind.
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 5f46dd6f3383..d4020e5f91ee 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5918,6 +5918,41 @@ static int check_reference_leak(struct bpf_verifier_env *env)
->         return state->acquired_refs ? -EINVAL : 0;
->  }
->
-> +static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
-> +                                  struct bpf_reg_state *regs)
-> +{
-> +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
-> +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
-> +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
-> +       int err, fmt_map_off, num_args;
-> +       u64 fmt_addr;
-> +       char *fmt;
-> +
-> +       /* data must be an array of u64 */
-> +       if (data_len_reg->var_off.value % 8)
-> +               return -EINVAL;
-> +       num_args = data_len_reg->var_off.value / 8;
-> +
-> +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
-> +        * and map_direct_value_addr is set.
-> +        */
-> +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
-> +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
-> +                                                 fmt_map_off);
-> +       if (err)
-> +               return err;
-> +       fmt = (char *)fmt_addr + fmt_map_off;
-> +
+NB: Mein Darlehensangebot ist f=C3=BCr maximale Sicherheit gut versichert.
+Senden Sie mir einfach eine E-Mail und achten Sie darauf, den Betrag anzuge=
+ben
+Sie wollen und Ihre R=C3=BCckzahlungsfrist.
 
-bot complained about lack of (long) cast before fmt_addr, please address
+Herzlich.
 
-
-[...]
-
-> +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
-> +        * all of them to snprintf().
-> +        */
-> +       err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
-> +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
-> +               BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
-> +               BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
-> +               BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
-> +               BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
-> +               BPF_CAST_FMT_ARG(11, args, mod));
-> +
-> +       put_fmt_tmp_buf();
-
-reading this for at least 3rd time, this put_fmt_tmp_buf() looks a bit
-out of place and kind of random. I think bpf_printf_cleanup() name
-pairs with bpf_printf_prepare() better.
-
-> +
-> +       return err + 1;
-
-snprintf() already returns string length *including* terminating zero,
-so this is wrong
-
-
-> +}
-> +
-
-[...]
+E. CHAIX.
