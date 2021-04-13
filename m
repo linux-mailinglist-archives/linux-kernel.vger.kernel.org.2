@@ -2,206 +2,453 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD11735E0A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D767A35E0AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346203AbhDMNwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhDMNwq (ORCPT
+        id S1346214AbhDMNxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:53:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33634 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241847AbhDMNx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:52:46 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8A5C061574;
-        Tue, 13 Apr 2021 06:52:26 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id p12so11975119pgj.10;
-        Tue, 13 Apr 2021 06:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G7bCnysN84VQEhynVbns7jnTBwcjJOfh8D98uQKmLX8=;
-        b=usIkk7z4qaQSqv9Ht59q/Q4D2dMEUgujRizmguQlu2VQx38pxR3+U7+YsvSDIX9hxp
-         zk1Ndmcr6kqKGBmh0DjE2spg/8jSZckHjK6H94i+JDfcwI4vcKKZqz2FewxOtz1Cqigp
-         9CT3zr8su0yZtb0zI4gLknBvG0rBvLjUReiG7ZozZL2GuJmxxZtXDyTlIxjfZAA7YRdb
-         BD7LwryTU9fjQJmEhnalwEPzUikBy4WWZUVuFcWO+0J8HXuatvMhXdbyHRwZJS4yYeQO
-         5glNCQWxLSIEMbsps9WhuiH2/IR7cy0khtaRlx+KaJqbMblscdGVg7Ws8ttnjdrBpy5C
-         FzOg==
+        Tue, 13 Apr 2021 09:53:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618321986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e9WkIOMcUwFDUyMACLWoMxGh3LJBvXzjIkBwNop4nTo=;
+        b=IoYEkMgyCAFePLizOPD5RdfhMxjh5hRMhJUXHUBh52vktI/m3OVff5fKXzgrlquD7Q4oyt
+        D3frxX02J1DJYj+AtAwoa92Tz7716fY7veCQ1rGOX72ecV+f256L0HnXk2dYDset82YiM3
+        8I8gwpL2d3MaklxclR9YS21cDabOd1M=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-y82o_DI0PIyiiwk4yWCZMg-1; Tue, 13 Apr 2021 09:53:04 -0400
+X-MC-Unique: y82o_DI0PIyiiwk4yWCZMg-1
+Received: by mail-ed1-f72.google.com with SMTP id l2-20020a50e8c20000b02903825413b3e0so1299707edn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:53:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G7bCnysN84VQEhynVbns7jnTBwcjJOfh8D98uQKmLX8=;
-        b=p5Mlb95LWnCY9ai9GYKX96HTio5OqlmTQKXfor+XMZiNqAY1KC0geoBeYi+5NZjZd2
-         dV2jUTrRrCt9O0yfGyvn3TaAMt3WjKEI3ZYK99FwZ9lPVVNpCWPKHwmc/Ua8zpzEgG/F
-         zG9RSzaSjYaA21GLK+QnDgPZUmZyFID7O3aUnZytVr1O69tKAkhhVGEQUz9UcN+KbYKj
-         M9i214qfIMrP3Znz2N6IpP64S+NCd20BPTiWD96TEbJ3l2uYSP5vOtR6winT+2CY6Ra2
-         SWIx/VArLXxosUHqUvacQrUIcumdgIM8v74L0jp2CRzusOXF6xWxdT+o/arvYlFVmyu8
-         1O/w==
-X-Gm-Message-State: AOAM530NQEfQi6UQSKix0ogsg1r8lhaND/2j/dHjvzOWQoFPCu6xx8KE
-        fpZ50/ZKsTYLaR6N19UkGNjv8jPtutaV+1mYtekTdT98ZwzGlQ==
-X-Google-Smtp-Source: ABdhPJwQLRqKzYUMxqYk0F6k+m9Rd87YasoF4B83KXz3O6lAJJFGDnT+LN9tZorp2ZTGBw8UUc3HVekXbOOf96LIe3o=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr31920450pgm.74.1618321945470;
- Tue, 13 Apr 2021 06:52:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=e9WkIOMcUwFDUyMACLWoMxGh3LJBvXzjIkBwNop4nTo=;
+        b=ILKeVFtyjiZ2MUKxm5z1FMp/bYbH6uThuJhHfTF53So+WhMKfit8lSSOGeQwivRlq2
+         dhQHCMMQlADT2/y7kQn6F68Xr6ao7bq+Fa9u/4vVx6J1/KSyouEkRCOpGTKn61SVSSzo
+         WDGfZDi6tvOZ8gk99eM0vpIsR6WaXOxCK+0XRjiJD47L3w6CLE6Ao8rMG64OfCd3wQ+K
+         RicoDq1p339JHntN2LSYLkWUrlI9vw/voXtfMD5e+/DhM0dPqG6ESvLntUJL/i48BDeR
+         uTzW27zbf/y7etzM9mN/EBlCngLEJkh1GXietEIfzFYcznD2YEkNgP4vHeY/njbHiToG
+         t8jw==
+X-Gm-Message-State: AOAM530LyqTfYRs8WSq1wR8pPriJTKk8YEhgkTEMOVeJ3PhdsPXu24VP
+        hDtTsLuqLauWp/hztuDaOKPjsq8Y6Iu3imjUPoazk5ZI8qua/ouFAc92poLcuA3TgNvsn2xa0ET
+        6n449aXW3M/+3iT6yGhzzEP3X
+X-Received: by 2002:a05:6402:447:: with SMTP id p7mr35041162edw.89.1618321983142;
+        Tue, 13 Apr 2021 06:53:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyHXOomQgkxeyE0F364NR5DIH4O6xkBxKCUnul0gTroAkuVjAwAjSvP8dggQhbTetDhwMHgQ==
+X-Received: by 2002:a05:6402:447:: with SMTP id p7mr35041131edw.89.1618321982854;
+        Tue, 13 Apr 2021 06:53:02 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id v8sm9269491edc.30.2021.04.13.06.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 06:53:02 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        Liran Alon <liran@amazon.com>,
+        Ioannis Aslanidis <iaslan@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 2/4] KVM: hyper-v: Collect hypercall params into struct
+In-Reply-To: <2ca35d1660401780a530e4dbdf3dcd49b8390e61.1618244920.git.sidcha@amazon.de>
+References: <cover.1618244920.git.sidcha@amazon.de>
+ <2ca35d1660401780a530e4dbdf3dcd49b8390e61.1618244920.git.sidcha@amazon.de>
+Date:   Tue, 13 Apr 2021 15:53:01 +0200
+Message-ID: <87v98q5m0y.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz> <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 13 Apr 2021 16:52:09 +0300
-Message-ID: <CAHp75VfR2zNmstvqCSRC2=0hf2DRV7sMdmy9-TDkO07KHwLjGA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 8:10 AM Chris Packham
-<chris.packham@alliedtelesis.co.nz> wrote:
+Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+
+> As of now there are 7 parameters (and flags) that are used in various
+> hyper-v hypercall handlers. There are 6 more input/output parameters
+> passed from XMM registers which are to be added in an upcoming patch.
 >
-> The fsl-i2c controller will generate an interrupt after every byte
-> transferred. Make use of this interrupt to drive a state machine which
-> allows the next part of a transfer to happen as soon as the interrupt is
-> received. This is particularly helpful with SMBUS devices like the LM81
-> which will timeout if we take too long between bytes in a transfer.
-
-Also see my other comments below.
-
-...
-
-> +// SPDX-License-Identifier: GPL-2.0
-
-I think it is better to split this with a removal of old stuff and
-updating a copyright notice and go as a last one in the series.
-
-...
-
-> +static char *action_str[] = {
-
-static const char * const action_str[]
-
-> +       "invalid",
-> +       "start",
-> +       "restart",
-> +       "read begin",
-> +       "read",
-> +       "write",
-> +       "stop",
-> +};
-
-...
-
-> +       dev_dbg(i2c->dev, "%s: action = %s\n", __func__,
-> +               action_str[i2c->action]);
-
-Drop useless __func__. With Dynamic Debug enabled it can be turned on
-and off at run time.
-
-...
-
-> +                       /* Generate txack on next to last byte */
-
-Tx ACK ? Ditto for other comments.
-
-...
-
-> +               dev_dbg(i2c->dev, "%s: %s %02x\n", __func__,
-> +                       action_str[i2c->action], byte);
-
-You already printed action. Anything changed?
-
-> +               dev_dbg(i2c->dev, "%s: %s %02x\n", __func__,
-> +                       action_str[i2c->action], msg->buf[i2c->byte_posn]);
-
-Deduplicate this. Perhaps at the end of switch-case print once with
-whatever temporary variable value you want to.
-
-...
-
-> +       case MPC_I2C_ACTION_INVALID:
-> +       default:
-
-Does the first one deserve loud WARN?
-Otherwise, why is it defined at all?
-
-> +               WARN(1, "Unexpected action %d\n", i2c->action);
-> +               break;
-
-...
-
-> +static void mpc_i2c_do_intr(struct mpc_i2c *i2c, u8 status)
->  {
-
-> +       spin_lock_irqsave(&i2c->lock, flags);
-
-Why _irqsave?
-
-...
-
-> +               dev_dbg(i2c->dev, "arbiritration lost\n");
-
-arbitration
-
-...
-
-> +       if (i2c->expect_rxack && (status & CSR_RXAK)) {
-> +               dev_dbg(i2c->dev, "no RXAK\n");
-
-You see, you have to be consistent in comments and messages.
-Either use TXAK/RXAK, or more verbose 'Tx ACK/Rx ACK' everywhere.
-
-...
-
-> +out:
-
-out_unlock:
-
-> +       spin_unlock_irqrestore(&i2c->lock, flags);
-
-...
-
-> +static irqreturn_t mpc_i2c_isr(int irq, void *dev_id)
-> +{
-> +       struct mpc_i2c *i2c = dev_id;
-
-> +       u8 status = readb(i2c->base + MPC_I2C_SR);
-
-I would split this assignment, so it will be closer to its user.
-
-> +       if (status & CSR_MIF) {
-> +               writeb(0, i2c->base + MPC_I2C_SR);
-> +               mpc_i2c_do_intr(i2c, status);
-> +               return IRQ_HANDLED;
->         }
-> +       return IRQ_NONE;
-> +}
-
-...
-
-> +       time_left = wait_event_timeout(i2c->waitq, !i2c->block, i2c->adap.timeout);
-
-> +
-
-No need for a blank line here.
-
-> +       if (!time_left)
-> +               i2c->rc = -ETIMEDOUT;
-
-> +       else if (time_left < 0)
-
-Redundant 'else'
-
-> +               i2c->rc = time_left;
-
-Can't you return an error code from here, rather than injecting it
-somewhere where it doesn't belong to?
-
+> To make passing arguments to the handlers more readable, capture all
+> these parameters into a single structure.
+>
+> Cc: Alexander Graf <graf@amazon.com>
+> Cc: Evgeny Iakovlev <eyakovl@amazon.de>
+> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> ---
+>  arch/x86/kvm/hyperv.c | 147 +++++++++++++++++++++++-------------------
+>  1 file changed, 79 insertions(+), 68 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index f98370a39936..8f6babd1ea0d 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1623,7 +1623,18 @@ static __always_inline unsigned long *sparse_set_to_vcpu_mask(
+>  	return vcpu_bitmap;
 >  }
+>  
+> -static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, u64 ingpa, u16 rep_cnt, bool ex)
+> +struct kvm_hv_hcall {
+> +	u64 param;
+> +	u64 ingpa;
+> +	u64 outgpa;
+> +	u16 code;
+> +	u16 rep_cnt;
+> +	u16 rep_idx;
+> +	bool fast;
+> +	bool rep;
+> +};
+> +
+> +static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
 
---
-With Best Regards,
-Andy Shevchenko
+Nitpick: Would it make sense to also pack the fact that we're dealing
+with a hypercall using ExProcessorMasks into 'struct kvm_hv_hcall' and
+get rid of 'bool ex' parameter for both kvm_hv_flush_tlb() and
+kvm_hv_send_ipi()? 'struct kvm_hv_hcall' is already a synthetic
+aggregator for input and output so adding some other information there
+may not be that big of a stretch...
+
+>  {
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+> @@ -1638,7 +1649,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, u64 ingpa, u16 rep_cnt, bool
+>  	bool all_cpus;
+>  
+>  	if (!ex) {
+> -		if (unlikely(kvm_read_guest(kvm, ingpa, &flush, sizeof(flush))))
+> +		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush, sizeof(flush))))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  
+>  		trace_kvm_hv_flush_tlb(flush.processor_mask,
+> @@ -1657,7 +1668,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, u64 ingpa, u16 rep_cnt, bool
+>  		all_cpus = (flush.flags & HV_FLUSH_ALL_PROCESSORS) ||
+>  			flush.processor_mask == 0;
+>  	} else {
+> -		if (unlikely(kvm_read_guest(kvm, ingpa, &flush_ex,
+> +		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
+>  					    sizeof(flush_ex))))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  
+> @@ -1679,8 +1690,8 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, u64 ingpa, u16 rep_cnt, bool
+>  
+>  		if (!all_cpus &&
+>  		    kvm_read_guest(kvm,
+> -				   ingpa + offsetof(struct hv_tlb_flush_ex,
+> -						    hv_vp_set.bank_contents),
+> +				   hc->ingpa + offsetof(struct hv_tlb_flush_ex,
+> +							hv_vp_set.bank_contents),
+>  				   sparse_banks,
+>  				   sparse_banks_len))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> @@ -1700,9 +1711,9 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, u64 ingpa, u16 rep_cnt, bool
+>  				    NULL, vcpu_mask, &hv_vcpu->tlb_flush);
+>  
+>  ret_success:
+> -	/* We always do full TLB flush, set rep_done = rep_cnt. */
+> +	/* We always do full TLB flush, set rep_done = hc->rep_cnt. */
+
+Nitpicking: I'd suggest we word it a bit differently:
+
+"We always do full TLB flush, set 'Reps completed' = 'Rep Count'."
+
+so it matches TLFS rather than KVM internals.
+
+>  	return (u64)HV_STATUS_SUCCESS |
+> -		((u64)rep_cnt << HV_HYPERCALL_REP_COMP_OFFSET);
+> +		((u64)hc->rep_cnt << HV_HYPERCALL_REP_COMP_OFFSET);
+>  }
+>  
+>  static void kvm_send_ipi_to_many(struct kvm *kvm, u32 vector,
+> @@ -1724,8 +1735,7 @@ static void kvm_send_ipi_to_many(struct kvm *kvm, u32 vector,
+>  	}
+>  }
+>  
+> -static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, u64 ingpa, u64 outgpa,
+> -			   bool ex, bool fast)
+> +static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
+>  {
+>  	struct kvm *kvm = vcpu->kvm;
+>  	struct hv_send_ipi_ex send_ipi_ex;
+> @@ -1740,25 +1750,25 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, u64 ingpa, u64 outgpa,
+>  	bool all_cpus;
+>  
+>  	if (!ex) {
+> -		if (!fast) {
+> -			if (unlikely(kvm_read_guest(kvm, ingpa, &send_ipi,
+> +		if (!hc->fast) {
+> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa, &send_ipi,
+>  						    sizeof(send_ipi))))
+>  				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			sparse_banks[0] = send_ipi.cpu_mask;
+>  			vector = send_ipi.vector;
+>  		} else {
+>  			/* 'reserved' part of hv_send_ipi should be 0 */
+> -			if (unlikely(ingpa >> 32 != 0))
+> +			if (unlikely(hc->ingpa >> 32 != 0))
+>  				return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> -			sparse_banks[0] = outgpa;
+> -			vector = (u32)ingpa;
+> +			sparse_banks[0] = hc->outgpa;
+> +			vector = (u32)hc->ingpa;
+>  		}
+>  		all_cpus = false;
+>  		valid_bank_mask = BIT_ULL(0);
+>  
+>  		trace_kvm_hv_send_ipi(vector, sparse_banks[0]);
+>  	} else {
+> -		if (unlikely(kvm_read_guest(kvm, ingpa, &send_ipi_ex,
+> +		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &send_ipi_ex,
+>  					    sizeof(send_ipi_ex))))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  
+> @@ -1778,8 +1788,8 @@ static u64 kvm_hv_send_ipi(struct kvm_vcpu *vcpu, u64 ingpa, u64 outgpa,
+>  
+>  		if (!all_cpus &&
+>  		    kvm_read_guest(kvm,
+> -				   ingpa + offsetof(struct hv_send_ipi_ex,
+> -						    vp_set.bank_contents),
+> +				   hc->ingpa + offsetof(struct hv_send_ipi_ex,
+> +							vp_set.bank_contents),
+>  				   sparse_banks,
+>  				   sparse_banks_len))
+>  			return HV_STATUS_INVALID_HYPERCALL_INPUT;
+> @@ -1839,20 +1849,21 @@ static int kvm_hv_hypercall_complete_userspace(struct kvm_vcpu *vcpu)
+>  	return kvm_hv_hypercall_complete(vcpu, vcpu->run->hyperv.u.hcall.result);
+>  }
+>  
+> -static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, bool fast, u64 param)
+> +static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc)
+>  {
+>  	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
+>  	struct eventfd_ctx *eventfd;
+>  
+> -	if (unlikely(!fast)) {
+> +	if (unlikely(!hc->fast)) {
+>  		int ret;
+> -		gpa_t gpa = param;
+> +		gpa_t gpa = hc->ingpa;
+>  
+> -		if ((gpa & (__alignof__(param) - 1)) ||
+> -		    offset_in_page(gpa) + sizeof(param) > PAGE_SIZE)
+> +		if ((gpa & (__alignof__(hc->ingpa) - 1)) ||
+> +		    offset_in_page(gpa) + sizeof(hc->ingpa) > PAGE_SIZE)
+>  			return HV_STATUS_INVALID_ALIGNMENT;
+>  
+> -		ret = kvm_vcpu_read_guest(vcpu, gpa, &param, sizeof(param));
+> +		ret = kvm_vcpu_read_guest(vcpu, gpa,
+> +					  &hc->ingpa, sizeof(hc->ingpa));
+>  		if (ret < 0)
+>  			return HV_STATUS_INVALID_ALIGNMENT;
+>  	}
+> @@ -1862,15 +1873,15 @@ static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, bool fast, u64 param)
+>  	 * have no use for it, and in all known usecases it is zero, so just
+>  	 * report lookup failure if it isn't.
+>  	 */
+> -	if (param & 0xffff00000000ULL)
+> +	if (hc->ingpa & 0xffff00000000ULL)
+>  		return HV_STATUS_INVALID_PORT_ID;
+>  	/* remaining bits are reserved-zero */
+> -	if (param & ~KVM_HYPERV_CONN_ID_MASK)
+> +	if (hc->ingpa & ~KVM_HYPERV_CONN_ID_MASK)
+>  		return HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  
+>  	/* the eventfd is protected by vcpu->kvm->srcu, but conn_to_evt isn't */
+>  	rcu_read_lock();
+> -	eventfd = idr_find(&hv->conn_to_evt, param);
+> +	eventfd = idr_find(&hv->conn_to_evt, hc->ingpa);
+>  	rcu_read_unlock();
+>  	if (!eventfd)
+>  		return HV_STATUS_INVALID_PORT_ID;
+> @@ -1881,9 +1892,8 @@ static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, bool fast, u64 param)
+>  
+>  int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  {
+> -	u64 param, ingpa, outgpa, ret = HV_STATUS_SUCCESS;
+> -	uint16_t code, rep_idx, rep_cnt;
+> -	bool fast, rep;
+> +	struct kvm_hv_hcall hc;
+> +	u64 ret = HV_STATUS_SUCCESS;
+>  
+>  	/*
+>  	 * hypercall generates UD from non zero cpl and real mode
+> @@ -1896,104 +1906,105 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  
+>  #ifdef CONFIG_X86_64
+>  	if (is_64_bit_mode(vcpu)) {
+> -		param = kvm_rcx_read(vcpu);
+> -		ingpa = kvm_rdx_read(vcpu);
+> -		outgpa = kvm_r8_read(vcpu);
+> +		hc.param = kvm_rcx_read(vcpu);
+> +		hc.ingpa = kvm_rdx_read(vcpu);
+> +		hc.outgpa = kvm_r8_read(vcpu);
+>  	} else
+>  #endif
+>  	{
+> -		param = ((u64)kvm_rdx_read(vcpu) << 32) |
+> -			(kvm_rax_read(vcpu) & 0xffffffff);
+> -		ingpa = ((u64)kvm_rbx_read(vcpu) << 32) |
+> -			(kvm_rcx_read(vcpu) & 0xffffffff);
+> -		outgpa = ((u64)kvm_rdi_read(vcpu) << 32) |
+> -			(kvm_rsi_read(vcpu) & 0xffffffff);
+> +		hc.param = ((u64)kvm_rdx_read(vcpu) << 32) |
+> +			    (kvm_rax_read(vcpu) & 0xffffffff);
+> +		hc.ingpa = ((u64)kvm_rbx_read(vcpu) << 32) |
+> +			    (kvm_rcx_read(vcpu) & 0xffffffff);
+> +		hc.outgpa = ((u64)kvm_rdi_read(vcpu) << 32) |
+> +			     (kvm_rsi_read(vcpu) & 0xffffffff);
+>  	}
+>  
+> -	code = param & 0xffff;
+> -	fast = !!(param & HV_HYPERCALL_FAST_BIT);
+> -	rep_cnt = (param >> HV_HYPERCALL_REP_COMP_OFFSET) & 0xfff;
+> -	rep_idx = (param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+> -	rep = !!(rep_cnt || rep_idx);
+> +	hc.code = hc.param & 0xffff;
+> +	hc.fast = !!(hc.param & HV_HYPERCALL_FAST_BIT);
+> +	hc.rep_cnt = (hc.param >> HV_HYPERCALL_REP_COMP_OFFSET) & 0xfff;
+> +	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
+> +	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
+>  
+> -	trace_kvm_hv_hypercall(code, fast, rep_cnt, rep_idx, ingpa, outgpa);
+> +	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
+> +			       hc.ingpa, hc.outgpa);
+>  
+> -	switch (code) {
+> +	switch (hc.code) {
+>  	case HVCALL_NOTIFY_LONG_SPIN_WAIT:
+> -		if (unlikely(rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		kvm_vcpu_on_spin(vcpu, true);
+>  		break;
+>  	case HVCALL_SIGNAL_EVENT:
+> -		if (unlikely(rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hvcall_signal_event(vcpu, fast, ingpa);
+> +		ret = kvm_hvcall_signal_event(vcpu, &hc);
+>  		if (ret != HV_STATUS_INVALID_PORT_ID)
+>  			break;
+>  		fallthrough;	/* maybe userspace knows this conn_id */
+>  	case HVCALL_POST_MESSAGE:
+>  		/* don't bother userspace if it has no way to handle it */
+> -		if (unlikely(rep || !to_hv_synic(vcpu)->active)) {
+> +		if (unlikely(hc.rep || !to_hv_synic(vcpu)->active)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+>  		vcpu->run->exit_reason = KVM_EXIT_HYPERV;
+>  		vcpu->run->hyperv.type = KVM_EXIT_HYPERV_HCALL;
+> -		vcpu->run->hyperv.u.hcall.input = param;
+> -		vcpu->run->hyperv.u.hcall.params[0] = ingpa;
+> -		vcpu->run->hyperv.u.hcall.params[1] = outgpa;
+> +		vcpu->run->hyperv.u.hcall.input = hc.param;
+> +		vcpu->run->hyperv.u.hcall.params[0] = hc.ingpa;
+> +		vcpu->run->hyperv.u.hcall.params[1] = hc.outgpa;
+>  		vcpu->arch.complete_userspace_io =
+>  				kvm_hv_hypercall_complete_userspace;
+>  		return 0;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
+> -		if (unlikely(fast || !rep_cnt || rep_idx)) {
+> +		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_flush_tlb(vcpu, ingpa, rep_cnt, false);
+> +		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
+> -		if (unlikely(fast || rep)) {
+> +		if (unlikely(hc.fast || hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_flush_tlb(vcpu, ingpa, rep_cnt, false);
+> +		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> -		if (unlikely(fast || !rep_cnt || rep_idx)) {
+> +		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_flush_tlb(vcpu, ingpa, rep_cnt, true);
+> +		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
+>  		break;
+>  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> -		if (unlikely(fast || rep)) {
+> +		if (unlikely(hc.fast || hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_flush_tlb(vcpu, ingpa, rep_cnt, true);
+> +		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
+>  		break;
+>  	case HVCALL_SEND_IPI:
+> -		if (unlikely(rep)) {
+> +		if (unlikely(hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_send_ipi(vcpu, ingpa, outgpa, false, fast);
+> +		ret = kvm_hv_send_ipi(vcpu, &hc, false);
+>  		break;
+>  	case HVCALL_SEND_IPI_EX:
+> -		if (unlikely(fast || rep)) {
+> +		if (unlikely(hc.fast || hc.rep)) {
+>  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
+>  			break;
+>  		}
+> -		ret = kvm_hv_send_ipi(vcpu, ingpa, outgpa, true, false);
+> +		ret = kvm_hv_send_ipi(vcpu, &hc, true);
+>  		break;
+>  	case HVCALL_POST_DEBUG_DATA:
+>  	case HVCALL_RETRIEVE_DEBUG_DATA:
+> -		if (unlikely(fast)) {
+> +		if (unlikely(hc.fast)) {
+>  			ret = HV_STATUS_INVALID_PARAMETER;
+>  			break;
+>  		}
+> @@ -2012,9 +2023,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+>  		}
+>  		vcpu->run->exit_reason = KVM_EXIT_HYPERV;
+>  		vcpu->run->hyperv.type = KVM_EXIT_HYPERV_HCALL;
+> -		vcpu->run->hyperv.u.hcall.input = param;
+> -		vcpu->run->hyperv.u.hcall.params[0] = ingpa;
+> -		vcpu->run->hyperv.u.hcall.params[1] = outgpa;
+> +		vcpu->run->hyperv.u.hcall.input = hc.param;
+> +		vcpu->run->hyperv.u.hcall.params[0] = hc.ingpa;
+> +		vcpu->run->hyperv.u.hcall.params[1] = hc.outgpa;
+>  		vcpu->arch.complete_userspace_io =
+>  				kvm_hv_hypercall_complete_userspace;
+>  		return 0;
+
+With or without the nitpicks from above addressed,
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
