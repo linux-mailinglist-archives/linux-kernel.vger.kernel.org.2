@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC5C35E3FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06E435E401
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345460AbhDMQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:31:13 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:41513 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237052AbhDMQbL (ORCPT
+        id S1345546AbhDMQcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:32:24 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:46796 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243383AbhDMQcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:31:11 -0400
-Received: by mail-oi1-f171.google.com with SMTP id x77so8190766oix.8;
-        Tue, 13 Apr 2021 09:30:51 -0700 (PDT)
+        Tue, 13 Apr 2021 12:32:23 -0400
+Received: by mail-ot1-f47.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso14731947otb.13;
+        Tue, 13 Apr 2021 09:32:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1Fo9ynsWoOvjEDoA9rCufsxRsqoZFiKZeBGSRsYcae4=;
-        b=KdyVdzvQRGm5c1yX2/LOkZyBNkzE1WVSf1TSGT4biR7GAdVHYq8l5Iw3SxFZVfMKjI
-         vYrUZjtu7UtgeluGUK2uAZ0KioTs8ryCkZks5rnkMhXahaFmza2qvFG/SCL2tQK8u+Fg
-         tHsZlyslU6acjfrm2yiGx3tqvSAwjldalq+rnS7ivHH2ni/FTzjVj0qzG2iXwE4L3Wwm
-         t4PiU2gZ8KCnUO1PtfqT4njAWoeEx/nfSH7JOuBih6rH64qaxPfwexJztBESaCGkS4pZ
-         AKX8X28IO6yArZvsnKX6tu2cYZBSXswuHBO4OLZ6AKy4SvfpARE+4Ys5DbcKrr7P0wLs
-         9+Lg==
-X-Gm-Message-State: AOAM530xMcWKYrhbWXiNsAwQL8GtMIMx5n167PMoegc42QJThs+54jHi
-        gu/HRwx8SkJ5+M1yLWaSc4zPT69IoA==
-X-Google-Smtp-Source: ABdhPJyP+OMLVTCrbMHkczAPOr/izOKao5pcDItX7d2aoEVcYxVkmmkMR+lt894gpm3hS5qy2p6Xmg==
-X-Received: by 2002:a05:6808:13c6:: with SMTP id d6mr572724oiw.155.1618331451206;
-        Tue, 13 Apr 2021 09:30:51 -0700 (PDT)
+        bh=FgJVcO2dd+RkqjT//6s4N7I0j+1YI7pMWiSGmJZmAyg=;
+        b=ijh2vTNZjc1Yo2uRmTetNKSQ2UA5vHkGTge1NnGJ0hAAt8TAkqk/iWCVCNV6HQVFbw
+         xihsloltV7B7VsQhIR5KGq0F8lcTRjfi08+Xt+MB8ifdbAPpxxJNsqFTgfmZuyKk4Vqe
+         YzUdJ1Usl8MiNpK91kMwfizJtDKNP3ZHac6wOqqLFTSGTaXmVkOyRSSNnXdNPKleHLEC
+         Vsw919KUQIceeCUX3Ftb/CSe2Ot2RtRhC+i6o+AQ204amE6UpJzIx9yyVpO0riuIHy/M
+         BCkb/bYZfakw+84Ghs3+DTROIRBuBTmPeqVeGMYjB7fHV+1lFkCzotjWVxUplIqJ3Fu/
+         0JrA==
+X-Gm-Message-State: AOAM530QfcP4r4Rb5mtxXFp2PbaQ1iliyLg0G83JZEXoTvkWZvgXUOpt
+        PebbzSH+MG6HCfaYkK5pIg==
+X-Google-Smtp-Source: ABdhPJyjGSEis2urWuEv96+x6uW3CqIzXP3QCiIPa8ysupm7o+ieoxENCqL5Ewotnm0/D/se+hcB1w==
+X-Received: by 2002:a9d:68c1:: with SMTP id i1mr29115384oto.169.1618331522917;
+        Tue, 13 Apr 2021 09:32:02 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u66sm1345350oif.23.2021.04.13.09.30.49
+        by smtp.gmail.com with ESMTPSA id e2sm725311otk.70.2021.04.13.09.32.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 09:30:50 -0700 (PDT)
-Received: (nullmailer pid 1789421 invoked by uid 1000);
-        Tue, 13 Apr 2021 16:30:48 -0000
-Date:   Tue, 13 Apr 2021 11:30:48 -0500
+        Tue, 13 Apr 2021 09:32:01 -0700 (PDT)
+Received: (nullmailer pid 1791125 invoked by uid 1000);
+        Tue, 13 Apr 2021 16:32:00 -0000
+Date:   Tue, 13 Apr 2021 11:32:00 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kishon Vijay Abraham <kishon@ti.com>,
-        Gowtham Tammana <g-tammana@ti.com>,
-        linux-crypto@vger.kernel.org, Praneeth Bajjuri <praneeth@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-kernel@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: crypto: ti,sa2ul: Add new compatible
- for AM64
-Message-ID: <20210413163048.GA1788635@robh.at.kernel.org>
-References: <20210316220558.GA3754419@robh.at.kernel.org>
- <20210413091559.154169-1-vaibhavgupta40@gmail.com>
- <20210413091559.154169-2-vaibhavgupta40@gmail.com>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     jacopo@jmondi.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v3 29/33] dt-bindings: media: atmel-isc: convert to yaml
+Message-ID: <20210413163200.GA1791073@robh.at.kernel.org>
+References: <20210413105731.610028-1-eugen.hristev@microchip.com>
+ <20210413105731.610028-30-eugen.hristev@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413091559.154169-2-vaibhavgupta40@gmail.com>
+In-Reply-To: <20210413105731.610028-30-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 14:45:57 +0530, Vaibhav Gupta wrote:
-> From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+On Tue, 13 Apr 2021 13:57:27 +0300, Eugen Hristev wrote:
+> Convert the Atmel ISC to yaml binding format.
 > 
-> Add the AM64 version of sa2ul to the compatible list.
-> 
-> [v_gupta@ti.com: Conditional dma-coherent requirement, clocks]
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Signed-off-by: Vaibhav Gupta <v_gupta@ti.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 > ---
->  .../devicetree/bindings/crypto/ti,sa2ul.yaml  | 24 ++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/media/atmel,isc.yaml  | 115 ++++++++++++++++++
+>  .../devicetree/bindings/media/atmel-isc.txt   |  65 ----------
+>  2 files changed, 115 insertions(+), 65 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/media/atmel,isc.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/media/atmel-isc.txt
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
