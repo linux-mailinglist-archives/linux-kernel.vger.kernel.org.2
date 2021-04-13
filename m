@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BE335E0F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E7635E0FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238540AbhDMOJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhDMOJf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:09:35 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4AEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:09:15 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id w18so19637199edc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5CizpbO31FtejMNYjXuvc8L275/b2XFa53SLVJcUKq0=;
-        b=d7rHSyX5FYqvYlUwaaFx6Cem28DMQMUp8Wv0FRZ9jb0O8CwlLq01rbCgyEQxp7Gs30
-         lKPsSc8nvZeDxcR0U+wzjIqCeG2udUGUvSL4Qh/O0Zwq28I1bh2gdzZFrqe9d3072Qdj
-         Q3URSx5mp2RCWFS0xm67XKNz8HjPomZ75ooaa9No/dlBf14Q53mxMbQ8Lhdso/91oPqw
-         kM21HVpgFwLl7ZiMlaTP7ouOzx49Imb8zIalR/JaD4KAHedjiAI5P9xQp0um2fX8Yq/E
-         9ysXejvNssC6iiF5ReY9A/m0mfi3FvuqBM9W4/QtLkVFMwqcwysapMh1n6YotvsA5udo
-         PykQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5CizpbO31FtejMNYjXuvc8L275/b2XFa53SLVJcUKq0=;
-        b=NG9TrrzVEhwNZJYuuFU/WkqpVZy7UU5Htpx/oPrVO8HdI93GOLDTg+I1UpFa5N+b48
-         sffomLwQRDE5Iib/GuMvFg0Oo7kmdWLnaFnKkoQN0xB3DoQYM/pwZrOuLwZGa4zIYsIt
-         AIexUS1yA4KFmlaEiNZ/7e11Zji/1zsbE8+bVl+E1hL3l8o/FXcX9Wx0WFvB5UI81tK7
-         9KPyUHuJDkFd2Dk1HMemDveSIgSpBRrI4uvnl/ehTMJj4Y3JK8Fiox9Qwk27n6upHtNM
-         FW0OEwbtsSFOvhAebOp09FMLk+7kk7zAFy9Ga/M2+LtfAvkqJpgS/OQOSNWzazGvY6fE
-         CzpQ==
-X-Gm-Message-State: AOAM533I/kOUMBJmSPL508rWsYtI0nS4VyE7Dn05fMmkaSjwUizIBG6J
-        wogQcLdYH3/TevRA8JfOzpJkdkQ2WkP9DA==
-X-Google-Smtp-Source: ABdhPJzIHPfjQ3RfGyIgVidserW8YJhVjjzVH+9I0B2hKR//rqHDuBo9egipHY87NwNH6yMY8OF8Ng==
-X-Received: by 2002:aa7:cd07:: with SMTP id b7mr35621061edw.293.1618322953605;
-        Tue, 13 Apr 2021 07:09:13 -0700 (PDT)
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
-        by smtp.gmail.com with ESMTPSA id g25sm9277765edp.95.2021.04.13.07.09.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 07:09:13 -0700 (PDT)
-Received: by mail-wr1-f50.google.com with SMTP id a4so16630982wrr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:09:12 -0700 (PDT)
-X-Received: by 2002:a5d:510d:: with SMTP id s13mr37397046wrt.12.1618322952421;
- Tue, 13 Apr 2021 07:09:12 -0700 (PDT)
+        id S1345304AbhDMOJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:09:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:6188 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231313AbhDMOJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:09:49 -0400
+IronPort-SDR: Mn+8/BqSEp97mazIEevCbscL/LVS2xueP6LnANHMUFothPlNZizhSxkuL5Z2cpx8sMIYOMzFaz
+ k58yud7QxmXg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="193982586"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="193982586"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 07:09:24 -0700
+IronPort-SDR: pXMK/UrgOtexN5LuGm7CrPTdSnHOV6i827NOH9aPx0juJi99JXRmCm+HQvnbA5K+RjSlwiUfVg
+ dsJsrlu8mK6g==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="600359213"
+Received: from damilitx-mobl1.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.134.165])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 07:09:23 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     linux-cxl@vger.kernel.org
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, ira.weiny@intel.com,
+        vishal.l.verma@intel.com, alison.schofield@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] cxl/mem: Add media provisioning required commands
+Date:   Tue, 13 Apr 2021 07:09:07 -0700
+Message-Id: <20210413140907.534404-1-ben.widawsky@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210413054733.36363-1-mst@redhat.com> <20210413054733.36363-3-mst@redhat.com>
- <43db5c1e-9908-55bb-6d1a-c6c8d71e2315@redhat.com>
-In-Reply-To: <43db5c1e-9908-55bb-6d1a-c6c8d71e2315@redhat.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 13 Apr 2021 10:08:34 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSdt6udHb7V4Xcj=OQ3M-iRazgOMWJinCbLJyof=ttB=Cw@mail.gmail.com>
-Message-ID: <CA+FuTSdt6udHb7V4Xcj=OQ3M-iRazgOMWJinCbLJyof=ttB=Cw@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 2/4] virtio_net: disable cb aggressively
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 4:53 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/4/13 =E4=B8=8B=E5=8D=881:47, Michael S. Tsirkin =E5=86=99=
-=E9=81=93:
-> > There are currently two cases where we poll TX vq not in response to a
-> > callback: start xmit and rx napi.  We currently do this with callbacks
-> > enabled which can cause extra interrupts from the card.  Used not to be
-> > a big issue as we run with interrupts disabled but that is no longer th=
-e
-> > case, and in some cases the rate of spurious interrupts is so high
-> > linux detects this and actually kills the interrupt.
-> >
-> > Fix up by disabling the callbacks before polling the tx vq.
-> >
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
-> >   drivers/net/virtio_net.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index 82e520d2cb12..16d5abed582c 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -1429,6 +1429,7 @@ static void virtnet_poll_cleantx(struct receive_q=
-ueue *rq)
-> >               return;
-> >
-> >       if (__netif_tx_trylock(txq)) {
-> > +             virtqueue_disable_cb(sq->vq);
-> >               free_old_xmit_skbs(sq, true);
-> >               __netif_tx_unlock(txq);
->
->
-> Any reason that we don't need to enable the cb here?
+Some of the commands have already been defined for the support of RAW
+commands (to be blocked). Unlike their usage in the RAW interface, when
+used through the supported interface, they will be coordinated and
+marshalled along with other commands being issued by userspace and the
+driver itself. That coordination will be added later.
 
-This is an opportunistic clean outside the normal tx-napi path, so if
-disabling the tx interrupt here, it won't be reenabled based on
-napi_complete_done.
+The list of commands was determined based on the learnings from
+libnvdimm and this list is provided directly from Dan.
 
-I think that means that it stays disabled until the following start_xmit:
+Recommended-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+---
+ drivers/cxl/mem.c            | 19 +++++++++++++++++++
+ include/uapi/linux/cxl_mem.h | 12 ++++++++++++
+ 2 files changed, 31 insertions(+)
 
-        if (use_napi && kick)
-                virtqueue_enable_cb_delayed(sq->vq);
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index e915e3743b76..e3306aa560cf 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -50,7 +50,14 @@ enum opcode {
+ 	CXL_MBOX_OP_GET_LSA		= 0x4102,
+ 	CXL_MBOX_OP_SET_LSA		= 0x4103,
+ 	CXL_MBOX_OP_GET_HEALTH_INFO	= 0x4200,
++	CXL_MBOX_OP_GET_ALERT_CONFIG	= 0x4201,
++	CXL_MBOX_OP_SET_ALERT_CONFIG	= 0x4202,
++	CXL_MBOX_OP_GET_SHUTDOWN_STATE	= 0x4203,
+ 	CXL_MBOX_OP_SET_SHUTDOWN_STATE	= 0x4204,
++	CXL_MBOX_OP_GET_POISON		= 0x4300,
++	CXL_MBOX_OP_INJECT_POISON	= 0x4301,
++	CXL_MBOX_OP_CLEAR_POISON	= 0x4302,
++	CXL_MBOX_OP_GET_SCAN_MEDIA_CAPS	= 0x4303,
+ 	CXL_MBOX_OP_SCAN_MEDIA		= 0x4304,
+ 	CXL_MBOX_OP_GET_SCAN_MEDIA	= 0x4305,
+ 	CXL_MBOX_OP_MAX			= 0x10000
+@@ -158,6 +165,18 @@ static struct cxl_mem_command mem_commands[CXL_MEM_COMMAND_ID_MAX] = {
+ 	CXL_CMD(GET_LSA, 0x8, ~0, 0),
+ 	CXL_CMD(GET_HEALTH_INFO, 0, 0x12, 0),
+ 	CXL_CMD(GET_LOG, 0x18, ~0, CXL_CMD_FLAG_FORCE_ENABLE),
++	CXL_CMD(SET_PARTITION_INFO, 0x0a, 0, 0),
++	CXL_CMD(SET_LSA, ~0, 0, 0),
++	CXL_CMD(GET_ALERT_CONFIG, 0, 0x10, 0),
++	CXL_CMD(SET_ALERT_CONFIG, 0xc, 0, 0),
++	CXL_CMD(GET_SHUTDOWN_STATE, 0, 0x1, 0),
++	CXL_CMD(SET_SHUTDOWN_STATE, 0x1, 0, 0),
++	CXL_CMD(GET_POISON, 0x10, ~0, 0),
++	CXL_CMD(INJECT_POISON, 0x8, 0, 0),
++	CXL_CMD(CLEAR_POISON, 0x48, 0, 0),
++	CXL_CMD(GET_SCAN_MEDIA_CAPS, 0x10, 0x4, 0),
++	CXL_CMD(SCAN_MEDIA, 0x11, 0, 0),
++	CXL_CMD(GET_SCAN_MEDIA, 0, ~0, 0),
+ };
+ 
+ /*
+diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
+index 3155382dfc9b..f6e8a005b113 100644
+--- a/include/uapi/linux/cxl_mem.h
++++ b/include/uapi/linux/cxl_mem.h
+@@ -29,6 +29,18 @@
+ 	___C(GET_LSA, "Get Label Storage Area"),                          \
+ 	___C(GET_HEALTH_INFO, "Get Health Info"),                         \
+ 	___C(GET_LOG, "Get Log"),                                         \
++	___C(SET_PARTITION_INFO, "Set Partition Information"),            \
++	___C(SET_LSA, "Set Label Storage Area"),                          \
++	___C(GET_ALERT_CONFIG, "Get Alert Configuration"),                \
++	___C(SET_ALERT_CONFIG, "Set Alert Configuration"),                \
++	___C(GET_SHUTDOWN_STATE, "Get Shutdown State"),                   \
++	___C(SET_SHUTDOWN_STATE, "Set Shutdown State"),                   \
++	___C(GET_POISON, "Get Poison List"),                              \
++	___C(INJECT_POISON, "Inject Poison"),                             \
++	___C(CLEAR_POISON, "Clear Poison"),                               \
++	___C(GET_SCAN_MEDIA_CAPS, "Get Scan Media Capabilities"),         \
++	___C(SCAN_MEDIA, "Scan Media"),                                   \
++	___C(GET_SCAN_MEDIA, "Get Scan Media Results"),                   \
+ 	___C(MAX, "invalid / last command")
+ 
+ #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
+-- 
+2.31.1
 
-But that seems sufficient.
