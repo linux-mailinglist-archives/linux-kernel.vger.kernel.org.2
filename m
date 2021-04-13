@@ -2,135 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B5435DF93
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3F835DF9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345645AbhDMM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:58:19 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:59125 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240505AbhDMM6R (ORCPT
+        id S240505AbhDMM7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:59:38 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3399 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346010AbhDMM7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:58:17 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N94uf-1lZosF0bMF-0168Am; Tue, 13 Apr 2021 14:57:56 +0200
-Received: by mail-wm1-f47.google.com with SMTP id o9-20020a1c41090000b029012c8dac9d47so1236047wma.1;
-        Tue, 13 Apr 2021 05:57:56 -0700 (PDT)
-X-Gm-Message-State: AOAM533Vhq4O/cymIHocG+GwgiYuvrD7WLhF/gPucLoH8LqHu5J7RreD
-        Bl6JJz8HTLXyji44JnC/KheiN6x6PTy5YRV8Lkc=
-X-Google-Smtp-Source: ABdhPJxTQZ7MuH8+gU54fvl5PqqUtAVuKR2Nq7J+aH8L83oc2Ox6+tJXCnKAoNROOSga1LhxVL51YnmncU3MpdLYGCI=
-X-Received: by 2002:a05:600c:19cf:: with SMTP id u15mr3941758wmq.43.1618318675780;
- Tue, 13 Apr 2021 05:57:55 -0700 (PDT)
+        Tue, 13 Apr 2021 08:59:25 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FKQZz15JVz5pg0;
+        Tue, 13 Apr 2021 20:56:11 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.234) by dggeme758-chm.china.huawei.com
+ (10.3.19.104) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Tue, 13
+ Apr 2021 20:59:03 +0800
+Subject: Re: [PATCH] spi: SPI_HISI_KUNPENG should depend on ARCH_HISI
+To:     Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+CC:     Wei Xu <xuwei5@hisilicon.com>, <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <huangdaode@huawei.com>
+References: <d93934dfdbb4d35e35371517de3b64c144aeb5ef.1618316782.git.geert+renesas@glider.be>
+ <20210413124715.GE5586@sirena.org.uk>
+From:   Jay Fang <f.fangjian@huawei.com>
+Message-ID: <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
+Date:   Tue, 13 Apr 2021 20:59:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
- <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com> <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
-In-Reply-To: <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 13 Apr 2021 14:57:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2NR2nhEffFQJdMq2Do_g2ji-7p3+iWyzw+aXD6gov05w@mail.gmail.com>
-Message-ID: <CAK8P3a2NR2nhEffFQJdMq2Do_g2ji-7p3+iWyzw+aXD6gov05w@mail.gmail.com>
-Subject: Re: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
- warning on PCI_IOBASE
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:E6mmaWCUfZfPbht3GMZr0hjzJ+RdY38JXsps0lawqf7LlqiLXsq
- 6fnk3imQuI+wUkUelFvV5mXbgdXzRdEAqllXZ07Q6Ccw7Ilacv+NtDFeldM4knPxm20Cl91
- WOOlfONeBG9xoH9D8mIBztq/G3s9X5uM6K2dNWRQ7USdd7gXd3aNRYOz8BsE/oOHL1v5MnZ
- eR9RYfaCIZojTwk6EDgxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VUhORDKfbxA=:+EAiGk9nv0aPd3XeVTW1yJ
- XhNc8pyGr83T4ajx2YO9Oc6vlzeNZIVFzpzS6B8W1SFdPCQPuLTTGqbfVM+Z0R5LOCKbi91Ur
- vJqXa+MLCeLpwF2POzpnez+eBV05J1j4CkMyA8oREKa3IS8t24vNctwjhXkqhRmrD3n8BCpeR
- hTj84sgXYawlBTnTPoAGdJu+jlAuCZpMMnOFWK0UFMLrgCPX3EplPPjtM3/hIMiMaLkrGKmMC
- MV3ZglUqTK5nmRQ3E+8LucDniOEqwVy0RQDarUL6Oa/iP0LVIxYdddwUfEBKETQ8fjNI23NM7
- bJWcIZ5VWv+EMcAf5hrVuiqvDuVjgxm+8wrnp+fUcD30DGif+btx4bXw5nyEVOshfCCtPuBDj
- 7rLJzbMDdTfntQ8mIWvNJw0VubCHcdWaPEOuE9EblQ+ZXfgOMjH10HNAAgeKnm1p+2eDpAIeD
- 4KXo/FVI0TZpiMt6ONKwmv2hcD5qmxFqWhg0q3IUWXpyfNXsFvWSbUBYcT6/O9S8Mf3Hesq0z
- D5M3gUUM+6+A5QrTlSvzCb5AmF8V7EaPzcIgIlX6h1u5RaX7Wy0AuQnUHalNJfObsZUyGFd9e
- N9KgT/7puOMLsjP6aY5TxCDejDxAvQLFtg0pwyOvaSoTxD5eOh7AtM+Qvu9Tl0RtvMEECw3oH
- hn14=
+In-Reply-To: <20210413124715.GE5586@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.234]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 2:38 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
-> On Tue, 2021-04-13 at 14:26 +0200, Arnd Bergmann wrote:
-> > I think the real underlying problem is that '0' is a particularly bad
-> > default value,
-> > we should not have used this one in asm-generic, or maybe have left it as
-> > mandatory to be defined by an architecture to a sane value. Note that
-> > architectures that don't actually support I/O ports will cause a NULL
-> > pointer dereference when loading a legacy driver, which is exactly what clang
-> > is warning about here. Architectures that to support I/O ports in PCI typically
-> > map them at a fixed location in the virtual address space and should put that
-> > location here, rather than adding the pointer value to the port resources.
-> >
-> > What we might do instead here would be move the definition into those
-> > architectures that actually define the base to be at address zero, with a
-> > comment explaining why this is a bad location, and then changing the
-> > inb/outb style helpers to either an empty function or a WARN_ONCE().
-> >
-> > On which architectures do you see the problem? How is the I/O port
-> > actually mapped there?
->
-> I'm seeing this on s390 which indeed has no I/O port support at all.
-> I'm not sure how many others there are but I feel like us having to
-> define these functions as empty is also kind of awkward. Maybe we could
-> put them into the asm-generic/io.h for the case that PCI_IOBASE is not
-> defined? Then at least every platform not supporting I/O ports would
-> share them.
+On 2021/4/13 20:47, Mark Brown wrote:
+> On Tue, Apr 13, 2021 at 02:27:23PM +0200, Geert Uytterhoeven wrote:
+>> The HiSilicon Kunpeng SPI controller is only present on HiSilicon
+>> Kunpeng SoCs.  Hence add a dependency on ARCH_HISI, to prevent asking
+>> the user about this driver when configuring a kernel without Hisilicon
+>> platform support.
+> 
+> Are you *sure* about this?  HiSilicon produce a wide range of SoCs with
+> very diverse target markets, this driver looks like it's for enterprise
+> stuff while most things guarded by that config option look like they're
+> for embedded applications.
+SPI_HISI_KUNPENG does not depend on ARCH_HISI.
 
-Yes, I meant doing this in the asm-generic version, something like
 
-#if !defined(inb) && !defined(_inb)
-#define _inb _inb
-static inline u8 _inb(unsigned long addr)
-{
-#ifdef PCI_IOBASE
-        u8 val;
+Thanks,
+Jay
 
-        __io_pbr();
-        val = __raw_readb(PCI_IOBASE + addr);
-        __io_par(val);
-        return val;
-#else
-        WARN_ONCE(1, "No I/O port support");
-        return 0xff;
-#endif
-}
-#endif
 
-And follow up with a separate patch that moves the
-"#define PCI_IOBASE ((void __iomem *)0)" into the architectures
-that would currently see it, i.e. those that include asm-generic/io.h
-but define neither inb/_inb nor PCI_IOBASE:
 
-$ git grep -l asm-generic/io.h | xargs grep -wL inb | xargs grep -L PCI_IOBASE
-arch/arc/include/asm/io.h
-arch/csky/include/asm/io.h
-arch/h8300/include/asm/io.h
-arch/m68k/include/asm/io.h
-arch/nds32/include/asm/io.h
-arch/nios2/include/asm/io.h
-arch/openrisc/include/asm/io.h
-arch/s390/include/asm/io.h
-arch/sparc/include/asm/io_32.h
-arch/um/include/asm/io.h
-
-Out of these, I see that arc, h8300, nds32, nios2, openrisc, and um
-never set CONFIG_HAVE_PCI, so these would all be better off
-leaving PCI_IOBASE undefined and getting the WARN_ONCE.
-
-The remaining ones (csky, m68k, sparc32) need to be inspected
-manually to see if they currently support PCI I/O space but in
-fact use address zero as the base (with large resources) or they
-should also turn the operations into a NOP.
-
-         Arnd
