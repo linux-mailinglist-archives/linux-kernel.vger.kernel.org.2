@@ -2,176 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8DD35D6AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECAA35D68C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 06:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhDMEzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 00:55:44 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:45662 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhDMEzm (ORCPT
+        id S229993AbhDMElU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 00:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhDMElT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 00:55:42 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210413045520epoutp0359ae86834d2c6910eefaa3dc32dde404~1Ue1Zgufo0543905439epoutp03d
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:55:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210413045520epoutp0359ae86834d2c6910eefaa3dc32dde404~1Ue1Zgufo0543905439epoutp03d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618289721;
-        bh=pYgBxRxmSvBxR/0n2Xafx8ZOywwSjUViktKFLcpcdMI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kRV5OhYEr9yBrh+qR6a6CB7OMzZW7VpvFyoNTlJtXrPz4EOBU526kWOmJvVTU7qz9
-         UqU2f3FZZnGur6ZonvhQe4QfGgC2wOOwQGv4DbikgxCGcowwJCLYFBVD89n1Bjv4Zz
-         4VV8vUS7rtCay8LlM6xfKcCfnptlwYrVtcNrEv3E=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210413045519epcas1p4ab5f821a65db43bdc4ddc6315883518d~1Ue0coiQH0199001990epcas1p4H;
-        Tue, 13 Apr 2021 04:55:19 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FKCw63J63z4x9Q5; Tue, 13 Apr
-        2021 04:55:18 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        51.91.22618.63425706; Tue, 13 Apr 2021 13:55:18 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210413045517epcas1p32b058646dd795e59389401ca997c4cac~1Ueyhw8kY1481214812epcas1p3n;
-        Tue, 13 Apr 2021 04:55:17 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210413045517epsmtrp2e0f9c4b8f0948f8aa93e75a8276f4fe9~1UeygePuG2055520555epsmtrp2r;
-        Tue, 13 Apr 2021 04:55:17 +0000 (GMT)
-X-AuditID: b6c32a38-3f2a8a800001585a-e4-60752436a4fd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FA.BF.33967.53425706; Tue, 13 Apr 2021 13:55:17 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210413045517epsmtip112161bdeeb0edfe88b5d1351b16309f5~1UeyMTm5_1472214722epsmtip1x;
-        Tue, 13 Apr 2021 04:55:17 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     ming.lei@redhat.com
-Cc:     Damien.LeMoal@wdc.com, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, hch@infradead.org,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
-        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [RESEND,v5,1/2] bio: limit bio max size
-Date:   Tue, 13 Apr 2021 13:37:33 +0900
-Message-Id: <20210413043733.28880-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <YHO9LQUt1e0J6+l9@T590>
+        Tue, 13 Apr 2021 00:41:19 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C3AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 21:41:00 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b10so15782876iot.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 21:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bx8fq9RMVJeYgjbVUnNNsjq4NPDKlddkrDot/R9W3U0=;
+        b=qKzEmUjCHxF9v7Gk82y4AynFWSLYAJC6SJRUorlaJEsI9Xns8UJNnx8nRAVPggQx0s
+         LWJzTdXinMJNElG07Ww6Bnew9ELqWfMsI6yYw3jmvxBi5cXn2u2EMnnr9aZsXkwP6mTZ
+         gaRf9nEztlW+Cn3CNcpGrJ9+gDcMngs9Nng8vE4gCYcpyqqhqI3V7U28TkEo9FmwJFwc
+         jktzgI39xnAJx6LnHhRef1VUg9LKH28vrRXbzDYq1lnlVfxFGHaTaKlFx2Ah0D1uih1n
+         c7zD8YQ/ssMJ61nT9aM1ExgPBPmLRWtwpTGBl1pxSvDXa96TffWdKP483bmZZ7+Bc1sT
+         vXMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bx8fq9RMVJeYgjbVUnNNsjq4NPDKlddkrDot/R9W3U0=;
+        b=Eerh6OzzWd/yBC5TgqKoYn93GG2nzTJ0x6X7KRDll4INLEG/m4xp9gNxVcrb/9QnEq
+         7zdjTc5I4JdWfXYr9i1yr+f38fE+1Ytmo0Y+k3OWtVIaek3lDldaJ6UTVrod7I0EsqDH
+         JUiMkRN8DKJI2scbygpVYupSn+I+WbkKfgFcnai7gy28WNXbTIZm7B4IkuUh32yoLdHW
+         aNNbL/rL0xXifYauUkbxEL29X91JkNzS1UI8fDmAGnSkF9LDgNozm3brJ16pXu1Lw75D
+         mnsTwdnYXPI2BsIxAYHorg21I508v7vEgGzYrufKAnzOSCsLRIUwahxpXR/CSpiMJxdT
+         Q2nA==
+X-Gm-Message-State: AOAM530a7dbMYoUltmweRzPp6UYWFJjEfhd2IA8jUC0uhFq175VFG+M8
+        1KD+garXrSOwG0qLz4DWMjiNnUFtL1GWA6dVacPGyA==
+X-Google-Smtp-Source: ABdhPJwXI/HKUS1nvH+kTJZ0qN/bCT+G1Iz1obFXECV6bQgKoKWtAB2XGAaDRQDS+bHpG6sbHn3DJbPfx/d0Y/AwLxo=
+X-Received: by 2002:a05:6602:2dce:: with SMTP id l14mr6765893iow.23.1618288859391;
+ Mon, 12 Apr 2021 21:40:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLJsWRmVeSWpSXmKPExsWy7bCmrq6ZSmmCQct9MYs5q7YxWqy+289m
-        Me3DT2aL1vZvTBbNi9ezWZyesIjJoudJE6vF3657TBZfHxZb7L2lbXF51xw2i0OTm5kspm+e
-        w2xx7f4ZdovD966yWDxcMpHZ4tzJT6wW8x47WPxafpTR4v2P6+wWp3ZMZrZYv/cnm4OYx+Ur
-        3h4Tm9+xe+ycdZfdY/MKLY/LZ0s9Nq3qZPPYP3cNu8f7fVfZPPq2rGL0+LxJzqP9QDdTAHdU
-        jk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0KdKCmWJ
-        OaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnAJDgwK94sTc4tK8dL3k/FwrQwMDI1OgyoSc
-        jObnd5gKTglXXLk2kamBcSN/FyMHh4SAicSlU4xdjJwcQgI7GCXmL6nvYuQCsj8xSnS/fcgM
-        4XxjlPh0pYUNpAqkofHiDFaIxF5GiaObu6DaPzNK/G9KB7HZBHQk+t7eAmsQERCXaF2yignE
-        ZhZoZZFom8sGslkYaNDJ/ywgYRYBVYk9046BlfAKWEtsuv8Oape8xJ/7PcwgNqeAisTe5g1s
-        EDWCEidnPmGBGCkv0bx1NtihEgL/OSS2XLvEAtHsAvTBRShbWOLV8S3sELaUxOd3e9kgGroZ
-        JZrb5jNCOBMYJZY8X8YEUWUs8enzZ0aQS5kFNCXW79KHCCtK7Pw9lxFiM5/Eu689rJBg5JXo
-        aBOCKFGRONNynxlm1/O1O5kgSjwkXl5whgRVucTzR6tZJjAqzELyziwk78xC2LuAkXkVo1hq
-        QXFuemqxYYEJcvRuYgSney2LHYxz337QO8TIxMF4iFGCg1lJhNdtSkmCEG9KYmVValF+fFFp
-        TmrxIUZTYGBPZJYSTc4HZpy8knhDUyNjY2MLEzNzM1NjJXHeJIMH8UIC6YklqdmpqQWpRTB9
-        TBycUg1M/gve9DWKHD11YXeDAn9vuaF7gDmH4J74jhPft2Rcd9yhpSHYlGEc4+QlwvLDtrBb
-        V3HfI6df5ZsyL+fNsC9MuvElaf8+jo3VzRu3/+XdI/878dkrvx2vhcQz89doyOhFP74RfNLi
-        rW2j3qJi9vkLv0cJma4JaYwwyfvo+8vs2vNi37RnsjwK95rY/J8sDLgza8o/hv7XjpOcls37
-        GzqLfZH8R/nSeIF7p1WELzdt+Pxuwp73721VPQ2v1tzZnHf4w7HDxxRuf/aPsLZx+H5Wa+52
-        +TMMOdJVTWtPf9k498CZlXx1j1ls1Z42RSiVhUs8m/v77p+YGTUbLU3FvmgucZJjsfw26ZAb
-        +46bb1uFlFiKMxINtZiLihMBA+T6Z4AEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsWy7bCSnK6pSmmCwZf3mhZzVm1jtFh9t5/N
-        YtqHn8wWre3fmCyaF69nszg9YRGTRc+TJlaLv133mCy+Piy22HtL2+LyrjlsFocmNzNZTN88
-        h9ni2v0z7BaH711lsXi4ZCKzxbmTn1gt5j12sPi1/Cijxfsf19ktTu2YzGyxfu9PNgcxj8tX
-        vD0mNr9j99g56y67x+YVWh6Xz5Z6bFrVyeaxf+4ado/3+66yefRtWcXo8XmTnEf7gW6mAO4o
-        LpuU1JzMstQifbsErozm53eYCk4JV1y5NpGpgXEjfxcjJ4eEgIlE48UZrF2MXBxCArsZJX5s
-        2sgIkZCSOH7iLVCCA8gWljh8uBii5iOjxJFTB9lAatgEdCT63t4Cs0UExCVal6xiAiliFpjP
-        InHn+WFGkGZhoA0n/7OA1LAIqErsmXaMCcTmFbCW2HT/HRvELnmJP/d7mEFsTgEVib3NG8Di
-        QgLKEkuf72aEqBeUODnzCdgcZqD65q2zmScwCsxCkpqFJLWAkWkVo2RqQXFuem6xYYFhXmq5
-        XnFibnFpXrpecn7uJkZwbGpp7mDcvuqD3iFGJg7GQ4wSHMxKIrxuU0oShHhTEiurUovy44tK
-        c1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamBauLlxmTQXo/KR9Y+qprX+jHzy
-        8+D+5NcFvMmizWlne9yCuyd4zD8js/h20wrLTCafkIk3GU6e443TVpKROTP5+fogrerX03Nz
-        WubOPLSrana/m/PzIwJyO3vmWnDfilu1zVpUidtXPfnPijSv0r8PUtyZprm9bfH/GfTGoX4Z
-        Q+cO6+qLF8xMExIcrl+sUnIO/brj0kpm9lXJbBfcS4QPTGyasUbH1VH6wpGPwixLpmxUfe73
-        PNmwdcbZ2ZumTAlNX/vgdXfmjxV9ob0b1lUtmSXt/kJFLNvBdMOlyT92/39u+cDPZf5uqflH
-        2ptNv6ueZ6hc8yBSINXsUCrHwlNadnvnb/t+ZUf1XcHnISrflViKMxINtZiLihMBaKtVKzwD
-        AAA=
-X-CMS-MailID: 20210413045517epcas1p32b058646dd795e59389401ca997c4cac
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210413045517epcas1p32b058646dd795e59389401ca997c4cac
-References: <YHO9LQUt1e0J6+l9@T590>
-        <CGME20210413045517epcas1p32b058646dd795e59389401ca997c4cac@epcas1p3.samsung.com>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+ <20210408234327.624367-5-axelrasmussen@google.com> <20210412231736.GA1002612@xz-x1>
+In-Reply-To: <20210412231736.GA1002612@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Mon, 12 Apr 2021 21:40:22 -0700
+Message-ID: <CAJHvVcirn08ad64pTdxTRDRRXF16QnFwC-3GOT8bXMp2E2UYhg@mail.gmail.com>
+Subject: Re: [PATCH 4/9] userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, Apr 11, 2021 at 10:13:01PM +0000, Damien Le Moal wrote:
-> > On 2021/04/09 23:47, Bart Van Assche wrote:
-> > > On 4/7/21 3:27 AM, Damien Le Moal wrote:
-> > >> On 2021/04/07 18:46, Changheun Lee wrote:
-> > >>> I'll prepare new patch as you recommand. It will be added setting of
-> > >>> limit_bio_size automatically when queue max sectors is determined.
-> > >>
-> > >> Please do that in the driver for the HW that benefits from it. Do not do this
-> > >> for all block devices.
-> > > 
-> > > Hmm ... is it ever useful to build a bio with a size that exceeds 
-> > > max_hw_sectors when submitting a bio directly to a block device, or in 
-> > > other words, if no stacked block driver sits between the submitter and 
-> > > the block device? Am I perhaps missing something?
-> > 
-> > Device performance wise, the benefits are certainly not obvious to me either.
-> > But for very fast block devices, I think the CPU overhead of building more
-> > smaller BIOs may be significant compared to splitting a large BIO into multiple
-> > requests. Though it may be good to revisit this with some benchmark numbers.
-> 
-> This patch tries to address issue[1] in do_direct_IO() in which
-> Changheun observed that other operations takes time between adding page
-> to bio.
-> 
-> However, do_direct_IO() just does following except for adding bio and
-> submitting bio:
-> 
-> - retrieves pages at batch(pin 64 pages each time from VM) and 
-> 
-> - retrieve block mapping(get_more_blocks), which is still done usually
-> very less times for 32MB; for new mapping, clean_bdev_aliases() may
-> take a bit time.
-> 
-> If there isn't system memory pressure, pin 64 pages won't be slow, but
-> get_more_blocks() may take a bit time.
-> 
-> Changheun, can you check if multiple get_more_blocks() is called for submitting
-> 32MB in your test?
+On Mon, Apr 12, 2021 at 4:17 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Thu, Apr 08, 2021 at 04:43:22PM -0700, Axel Rasmussen wrote:
+> > +/*
+> > + * Install PTEs, to map dst_addr (within dst_vma) to page.
+> > + *
+> > + * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
+> > + * whether or not dst_vma is VM_SHARED. It also handles the more general
+> > + * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
+> > + * backed, or not).
+> > + *
+> > + * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
+> > + * shmem_mcopy_atomic_pte instead.
+> > + */
+> > +static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> > +                                  struct vm_area_struct *dst_vma,
+> > +                                  unsigned long dst_addr, struct page *page,
+> > +                                  bool newly_allocated, bool wp_copy)
+> > +{
+> > +     int ret;
+> > +     pte_t _dst_pte, *dst_pte;
+> > +     int writable;
+> > +     bool vm_shared = dst_vma->vm_flags & VM_SHARED;
+> > +     spinlock_t *ptl;
+> > +     struct inode *inode;
+> > +     pgoff_t offset, max_off;
+> > +
+> > +     _dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+> > +     writable = dst_vma->vm_flags & VM_WRITE;
+> > +     /* For private, non-anon we need CoW (don't write to page cache!) */
+> > +     if (!vma_is_anonymous(dst_vma) && !vm_shared)
+> > +             writable = 0;
+> > +
+> > +     if (writable || vma_is_anonymous(dst_vma))
+> > +             _dst_pte = pte_mkdirty(_dst_pte);
+> > +     if (writable) {
+> > +             if (wp_copy)
+> > +                     _dst_pte = pte_mkuffd_wp(_dst_pte);
+> > +             else
+> > +                     _dst_pte = pte_mkwrite(_dst_pte);
+> > +     } else if (vm_shared) {
+> > +             /*
+> > +              * Since we didn't pte_mkdirty(), mark the page dirty or it
+> > +              * could be freed from under us. We could do this
+> > +              * unconditionally, but doing it only if !writable is faster.
+> > +              */
+> > +             set_page_dirty(page);
+> > +     }
+> > +
+> > +     dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+> > +
+> > +     if (vma_is_shmem(dst_vma)) {
+> > +             /* The shmem MAP_PRIVATE case requires checking the i_size */
+>
+> When you start to use this function in the last patch it'll be needed too even
+> if MAP_SHARED?
+>
+> How about directly state the reason of doing this ("serialize against truncate
+> with the PT lock") instead of commenting about "who will need it"?
+>
+> > +             inode = dst_vma->vm_file->f_inode;
+> > +             offset = linear_page_index(dst_vma, dst_addr);
+> > +             max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> > +             ret = -EFAULT;
+> > +             if (unlikely(offset >= max_off))
+> > +                     goto out_unlock;
+> > +     }
+>
+> [...]
+>
+> > +/* Handles UFFDIO_CONTINUE for all shmem VMAs (shared or private). */
+> > +static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
+> > +                             pmd_t *dst_pmd,
+> > +                             struct vm_area_struct *dst_vma,
+> > +                             unsigned long dst_addr,
+> > +                             bool wp_copy)
+> > +{
+> > +     struct inode *inode = file_inode(dst_vma->vm_file);
+> > +     pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
+> > +     struct page *page;
+> > +     int ret;
+> > +
+> > +     ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
+>
+> SGP_READ looks right, as we don't want page allocation.  However I noticed
+> there's very slight difference when the page was just fallocated:
+>
+>         /* fallocated page? */
+>         if (page && !PageUptodate(page)) {
+>                 if (sgp != SGP_READ)
+>                         goto clear;
+>                 unlock_page(page);
+>                 put_page(page);
+>                 page = NULL;
+>                 hindex = index;
+>         }
+>
+> I think it won't happen for your case since the page should be uptodate already
+> (the other thread should check and modify the page before CONTINUE), but still
+> raise this up, since if the page was allocated it smells better to still
+> install the fallocated page (do we need to clear the page and SetUptodate)?
 
-almost one time called.
+Sorry for the somewhat rambling thought process:
 
-> 
-> In my 32MB sync dio f2fs test on x86_64 VM, one buffer_head mapping can
-> hold 32MB, but it is one freshly new f2fs.
-> 
-> I'd suggest to understand the issue completely before figuring out one
-> solution.
+My first thought is, I don't really know what PageUptodate means for
+shmem pages. If I understand correctly, normally we say PageUptodate()
+if the in memory data is more recent or equivalent to the on-disk
+data. But, shmem pages are entirely in memory - they are file backed
+in name only, in some sense.
 
-Thank you for your advice. I'll analyze more about your point later. :)
-But I think it's different from finding main time spend point in
-do_direct_IO(). I think excessive loop should be controlled.
-8,192 loops in do_direct_IO() - for 32MB - to submit one bio is too much
-on 4KB page system. I want to apply a optional solution to avoid
-excessive loop casued by multipage bvec.
+fallocate() does all sorts of things so the comment to me seems a bit
+ambiguous, but it seems the implication is that we're worried
+specifically about the case where the shmem page was recently
+allocated with fallocate(mode=0)? In that case, do we use
+!PageUptodate() to denote that the page has been allocated, but its
+contents are undefined?
 
-Thanks,
+I suppose that would make sense, as the action "goto clear;" generally
+memset()-s the page to zero it, and then calls SetPageUptodate().
 
-Changheun Lee
+Okay so let's say the following sequence of events happens:
+
+1. Userspace calls fallocate(mode=0) to allocate some shmem pages.
+2. Another thread, via a UFFD-registered mapping, manages to trigger a
+minor fault on one such page, while we still have !PageUptodate().
+(I'm not 100% sure this can happen, but let's say it can.)
+3. UFFD handler thread gets the minor fault event, and for whatever
+(buggy?) reason does nothing - it doesn't modify the page, it just
+calls CONTINUE.
+
+I think if we get to this point, zeroing the page, returning it, and
+setting up the PTEs seems somewhat reasonable to me. I suppose
+alternatively we could notice that this happened and return an error
+to the caller? I'm hesitant to mess with the behavior of
+shmem_getpage_gfp() to make such a thing happen though. I do think if
+we're going to set up the PTEs instead of returning an error, we
+definitely do need to clear and SetPageUptodate() the page first.
+
+In conclusion, I think this behavior is correct.
+
+>
+> --
+> Peter Xu
+>
