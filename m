@@ -2,66 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85835E00B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3351535E00E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242081AbhDMN1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:27:38 -0400
-Received: from outbound-smtp13.blacknight.com ([46.22.139.230]:45593 "EHLO
-        outbound-smtp13.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239438AbhDMN1c (ORCPT
+        id S1345953AbhDMN2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242158AbhDMN2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:27:32 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp13.blacknight.com (Postfix) with ESMTPS id C7FC61C399E
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 14:27:11 +0100 (IST)
-Received: (qmail 18223 invoked from network); 13 Apr 2021 13:27:11 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 13 Apr 2021 13:27:11 -0000
-Date:   Tue, 13 Apr 2021 14:27:09 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 01/11] mm/page_alloc: Split per cpu page lists and zone
- stats
-Message-ID: <20210413132708.GD3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-2-mgorman@techsingularity.net>
- <81cf880c-826e-6bbf-3af0-22d7aa2d3075@suse.cz>
+        Tue, 13 Apr 2021 09:28:07 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF60C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:27:46 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id x8so12979306ybx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CFpLB8DIBaYGwxlQWaPSNY6O41QeyPIXs1swuZ8gAsc=;
+        b=ki3+aqqGlvi7IPzprReKeRHALl45saSRifTnATBrV8quvF9zINoIHLeV8qPd+A6uDt
+         +dh/PXmEr2LL2ALb2eX0A5XDS6j3n6PhJAAnRs+WPuxQwr15QpLModi4QqC4bSIq0IA4
+         wkiiobqLlTEpvJvj2B0axX36KG85ZlqqgMxN2MlLQ49HPynhQSePOMUz+hvR7EzUe6AZ
+         zOx8RCh6eCncG8UNy6mZyryMVwQctO4XOOo6Dje5gwcjEDGb+X+e9qBSQvdMSHvtz4Od
+         S4/i/qBd5OXoRiEAc3+j+ClVkBvZTbu5JbUCogC/lknhQZj6EOiCGzfIoxHizVS0dROJ
+         CCSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CFpLB8DIBaYGwxlQWaPSNY6O41QeyPIXs1swuZ8gAsc=;
+        b=YqNGIgDRNZM5lX8XhyDWIaM7r4zfQHGFtItFDPkFoSUqT+JjcALlVaQym2vIDBqr+I
+         pMADMefYRchMKb0GF0DV15380pVcgu1a6kEIp1Dh/kAgo5sfyaI99CkHLv9ZDsq4R7gE
+         bMocTdJgQ0zH/4TgRcmWec0TX/BGXZGzNi5CvH3URVLQ1+N1FCp9039BJriNcA2ulKdG
+         VkTEYfiOjhXDMNfUZGZnVDzED4S6u4KmcWDJYSpkF0zmUvNy+Miw0Rb5qQ7vxu+xZOkD
+         +8z3LQpECqlY4hGPnb9ye9S+uiCa86hFZV1FARGO8wBX3uYs2JastvRMGl9WM/AtFhPW
+         TH8w==
+X-Gm-Message-State: AOAM532z1Y87re23ZxJlpQAo7A/ZPMHNO5avZvjWqaAsdlEf/4No8bIr
+        JBz9166r0ru7Ro8N+OBuS2AIbxgbM4HaX3qmzbdgixvA019wbw==
+X-Google-Smtp-Source: ABdhPJxQZPXL+J7Pw71LOKFZotyLZciqj3G9dLrB8M03xC7UnUbEcgv2LeMk4ByFuKLKewvaUHpH1Zqar6AC3+PSBxU=
+X-Received: by 2002:a5b:e90:: with SMTP id z16mr2404490ybr.303.1618320465203;
+ Tue, 13 Apr 2021 06:27:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <81cf880c-826e-6bbf-3af0-22d7aa2d3075@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
+ <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
+ <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
+ <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com> <20210413085538-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210413085538-mutt-send-email-mst@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 15:27:33 +0200
+Message-ID: <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
+Subject: Re: Linux 5.12-rc7
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:43:18PM +0200, Vlastimil Babka wrote:
-> On 4/7/21 10:24 PM, Mel Gorman wrote:
-> > @@ -6691,7 +6697,7 @@ static __meminit void zone_pcp_init(struct zone *zone)
-> >  	 * relies on the ability of the linker to provide the
-> >  	 * offset of a (static) per cpu variable into the per cpu area.
-> >  	 */
-> > -	zone->pageset = &boot_pageset;
-> > +	zone->per_cpu_pageset = &boot_pageset;
-> 
-> I don't see any &boot_zonestats assignment here in zone_pcp_init() or its
-> caller(s), which seems strange, as zone_pcp_reset() does it.
-> 
+On Tue, Apr 13, 2021 at 2:57 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Apr 12, 2021 at 06:47:07PM +0200, Eric Dumazet wrote:
+> > On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
+> > > <torvalds@linux-foundation.org> wrote:
+> > > >
+> > > > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > > >
+> > > > > Qemu test results:
+> > > > >         total: 460 pass: 459 fail: 1
+> > > > > Failed tests:
+> > > > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+> > > > >
+> > > > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
+> > > > > skb->head"). It is a spurious problem - the test passes roughly every other
+> > > > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
+> > > > > with SIGTERM. So far I have only seen this with the "sh" architecture.
+> > > >
+> > > > Hmm. Let's add in some more of the people involved in that commit, and
+> > > > also netdev.
+> > > >
+> > > > Nothing in there looks like it should have any interaction with
+> > > > architecture, so that "it happens on sh" sounds odd, but maybe it's
+> > > > some particular interaction with the qemu environment.
+> > >
+> > > Yes, maybe.
+> > >
+> > > I spent few hours on this, and suspect a buggy memcpy() implementation
+> > > on SH, but this was not conclusive.
+> > >
+> > > By pulling one extra byte, the problem goes away.
+> > >
+> > > Strange thing is that the udhcpc process does not go past sendto().
+> >
+> > This is the patch working around the issue. Unfortunately I was not
+> > able to root-cause it (I really suspect something on SH)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
+> > 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
+> > virtnet_info *vi,
+> >
+> >         /* Copy all frame if it fits skb->head, otherwise
+> >          * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
+> > +        *
+> > +        * Apparently, pulling only the Ethernet Header triggers a bug
+> > on qemu-system-sh4.
+> > +        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
+> > +        * more to work around this bug : These 20 bytes can not belong
+> > +        * to UDP/TCP payload.
+> > +        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
+> >          */
+>
+> Question: do we still want to do this for performance reasons?
+> We also have the hdr_len coming from the device which is
+> just skb_headlen on the host.
 
-Yes, it's required, well spotted!
+Well, putting 20 bytes in skb->head will disable frag0 optimization.
 
--- 
-Mel Gorman
-SUSE Labs
+The change would only benefit to sh architecture :)
+
+About hdr_len, I suppose we could try it, with appropriate safety checks.
+
+>
+> >         if (len <= skb_tailroom(skb))
+> >                 copy = len;
+> >         else
+> > -               copy = ETH_HLEN + metasize;
+> > +               copy = ETH_HLEN + sizeof(struct iphdr) + metasize;
+> >         skb_put_data(skb, p, copy);
+> >
+> >         if (metasize) {
+>
