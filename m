@@ -2,175 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D1735E09F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD11735E0A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344374AbhDMNwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:52:35 -0400
-Received: from mail-mw2nam12on2083.outbound.protection.outlook.com ([40.107.244.83]:8640
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229570AbhDMNwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:52:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aCib8TeefJ+2wXoeX8XmYDh2tK2pTahraEL2o+5rLPQfp4XxJNEHD9H4QsVVCJutfij9D9Ajb+XbPCMg/TFHotgziGKpgUMB6yKOBSW/J3wU8UHnuOaIsn3rG8xufBx/McZzsj3qzGw18IbkBThZxH5k+qvWN+Ifhd1uEvJKZ+x4ZB8Z0wc2Kjl4fNSdAANcIeR9k9Tq7CxxCTFmMK0XxO+iMzHac4JdAPq4Lb9Gtna69pdilI4WgJ1DB+nPzDkF1OO69nfR4UF2YeCJMWA1Fm5vHhcP8dg07D1WIhmSd/ggJyM+sG71icmcM6zu2fxrFHJiU4F7cM+RTe5NQdcw9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p3oFWaVMnfEkZo/UfG6m6HYDXy/H42ps8KgYRGF1YTs=;
- b=c/HNfzCXqcXYBAYcnMAayOqpRfeFo2W+hLgC85Xn2h0wQfKvlsjztOCr+2xCxXCN45Nonf0OFFbR/0j/J3IbJjQSrL6QInzIPGrqqIcvsjx7Lgx7NlFbm3FOihBadrlWcGkFnUQ4bda1knKW5pQIULVJaoERSfdcddtJsnJoDDkgq4eCTHXJ/Pv2TXZcZHHOHAPzMXi9rODon9zKIUYS2VA14fCWj00RC5oY5w/TwxaF0SeTZrhEtdkXYuqtiATIwgkJhJIEk+3rEMGFnmYdY6+yH0vC2zPqttncJeD1Ws9vmJL71B0MSvZhCAaAABIfOehvMVdPhKaJ8dUg4FJ7YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p3oFWaVMnfEkZo/UfG6m6HYDXy/H42ps8KgYRGF1YTs=;
- b=A4c0kWyRN0JqP+Xio7tcha3Brb434RUt9KVFEEBQoNz4gf0DDC4/una2/vvEmuXvi2+umUe908E5CyKMExSvcJUebCliRLthphKcoa/tWm0OTl+zsgdbvOarW5Qe71JKBwP8jEW/yzfdnmtBfyKtl9Wt5CgnlD/EOPCJ2BW9Q8A=
-Authentication-Results: bugs.launchpad.net; dkim=none (message not signed)
- header.d=none;bugs.launchpad.net; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BY5PR12MB4001.namprd12.prod.outlook.com (2603:10b6:a03:1ac::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Tue, 13 Apr
- 2021 13:52:08 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109%5]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 13:52:08 +0000
-Subject: Re: [PATCH 2/2] iommu/amd: Remove performance counter
- pre-initialization test
-To:     David Coe <david.coe@live.co.uk>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, will@kernel.org, jsnitsel@redhat.com,
-        pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
-        Tj <ml.linux@elloe.vision>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Alex Hung <1917203@bugs.launchpad.net>
-References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
- <20210409085848.3908-3-suravee.suthikulpanit@amd.com>
- <VI1PR09MB26380EED406F2F08ACB6B5BBC7729@VI1PR09MB2638.eurprd09.prod.outlook.com>
-From:   "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
-Message-ID: <add9d575-191e-d7a6-e3e1-dfc7ea7f35c8@amd.com>
-Date:   Tue, 13 Apr 2021 20:51:56 +0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <VI1PR09MB26380EED406F2F08ACB6B5BBC7729@VI1PR09MB2638.eurprd09.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.80.7]
-X-ClientProxiedBy: KL1PR01CA0062.apcprd01.prod.exchangelabs.com
- (2603:1096:820:5::26) To BYAPR12MB4597.namprd12.prod.outlook.com
- (2603:10b6:a03:10b::14)
+        id S1346203AbhDMNwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhDMNwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:52:46 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8A5C061574;
+        Tue, 13 Apr 2021 06:52:26 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id p12so11975119pgj.10;
+        Tue, 13 Apr 2021 06:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G7bCnysN84VQEhynVbns7jnTBwcjJOfh8D98uQKmLX8=;
+        b=usIkk7z4qaQSqv9Ht59q/Q4D2dMEUgujRizmguQlu2VQx38pxR3+U7+YsvSDIX9hxp
+         zk1Ndmcr6kqKGBmh0DjE2spg/8jSZckHjK6H94i+JDfcwI4vcKKZqz2FewxOtz1Cqigp
+         9CT3zr8su0yZtb0zI4gLknBvG0rBvLjUReiG7ZozZL2GuJmxxZtXDyTlIxjfZAA7YRdb
+         BD7LwryTU9fjQJmEhnalwEPzUikBy4WWZUVuFcWO+0J8HXuatvMhXdbyHRwZJS4yYeQO
+         5glNCQWxLSIEMbsps9WhuiH2/IR7cy0khtaRlx+KaJqbMblscdGVg7Ws8ttnjdrBpy5C
+         FzOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G7bCnysN84VQEhynVbns7jnTBwcjJOfh8D98uQKmLX8=;
+        b=p5Mlb95LWnCY9ai9GYKX96HTio5OqlmTQKXfor+XMZiNqAY1KC0geoBeYi+5NZjZd2
+         dV2jUTrRrCt9O0yfGyvn3TaAMt3WjKEI3ZYK99FwZ9lPVVNpCWPKHwmc/Ua8zpzEgG/F
+         zG9RSzaSjYaA21GLK+QnDgPZUmZyFID7O3aUnZytVr1O69tKAkhhVGEQUz9UcN+KbYKj
+         M9i214qfIMrP3Znz2N6IpP64S+NCd20BPTiWD96TEbJ3l2uYSP5vOtR6winT+2CY6Ra2
+         SWIx/VArLXxosUHqUvacQrUIcumdgIM8v74L0jp2CRzusOXF6xWxdT+o/arvYlFVmyu8
+         1O/w==
+X-Gm-Message-State: AOAM530NQEfQi6UQSKix0ogsg1r8lhaND/2j/dHjvzOWQoFPCu6xx8KE
+        fpZ50/ZKsTYLaR6N19UkGNjv8jPtutaV+1mYtekTdT98ZwzGlQ==
+X-Google-Smtp-Source: ABdhPJwQLRqKzYUMxqYk0F6k+m9Rd87YasoF4B83KXz3O6lAJJFGDnT+LN9tZorp2ZTGBw8UUc3HVekXbOOf96LIe3o=
+X-Received: by 2002:a63:c48:: with SMTP id 8mr31920450pgm.74.1618321945470;
+ Tue, 13 Apr 2021 06:52:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.73.101] (165.204.80.7) by KL1PR01CA0062.apcprd01.prod.exchangelabs.com (2603:1096:820:5::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 13:52:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 398bc6b8-2a37-4b9d-f513-08d8fe83547f
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4001:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB400104CE8B51C828F58E9413F34F9@BY5PR12MB4001.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aOdQpA4Iedbj+yiJCsYmTG0Jls9M+1qH4iJqUgbF3O0h8cP4CSvJrhLYW23Qw20qhLD6PYPJ07BCkL9Pc7KD+ngB6J2meX1ur2hu1T2SZPp2VpGIi2qG29P8PE7iJSEwuiGwZ41HB8E8OLUI8ma8PrWxqu/AKNTSgMDWX/PrMG+cgWAODOUkbK/2EgwyQMiZ+nF3Z1pZ6mJuJQACtyi9xrLeon6Lq2ukYAeJqypZ/NRE2jxnBavtccoynia/EU8x9yVcm4KG/nWZjbgB2C6J2l+UuRlbKgkab0P1q1UIJjr3zUZ0TfBX7Zlpnr+EFlHi/yw8IwqD4q6G6dMpbXTQ1obgv79xcG1A/c4bLRDWIdUL2wfsRrZRCNwN/iv95vyRMwNanRznQHzh3JKcJRkiOBFX7Ycjjbgihpiqiphl3xov4Ry8Lqn3ZInWclpSAoMuvcvHhqHPob8MYAwwfIot3TcheqLGE3xdcHKkJ7iTGUWXrC0zU8YgfcGhntkeQugtZLv9fIhtHy/+VP+ryJow+hY1y5bOdJYmRUbfKhVcfHs24MiuDxWyx0K1SVaQhLKJ5qbX80n9uq4qk+KSM4OVfIGQ2sPHL9zZ18qKMrU3uI+md5lldmD+HLFiURLeM+v/EAWG3+Hj9PP9OO6ywXRK18xS/qQ4eJ/mSU+CRpHOCz0swjG/RIxWryTwN1xaYGdjsAG24fRjcXQCUhiKDZvUbd30w09hB8oaOcgeUUt0c+0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(34580700001)(26005)(16526019)(186003)(66946007)(31686004)(2906002)(54906003)(956004)(52116002)(66476007)(53546011)(478600001)(6486002)(36756003)(16576012)(4326008)(38100700002)(38350700002)(7416002)(31696002)(8676002)(83380400001)(86362001)(6666004)(316002)(66556008)(8936002)(2616005)(5660300002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZzIyTDlOQ25MN1NlSEtYaTJpTjcxOG56Zk50cnl3dysyOVA1TElXOVkyMS9P?=
- =?utf-8?B?UDhCQWVpcGk4b2x2bGFWVUpTMUJBNVRkcmhpalNXNTBRSG5IL3BWQ24xcTdr?=
- =?utf-8?B?Zno3WlQvOXd2ZlNBTXRSQ2xuaDdQdHFkMng1MGl4Mjk0TCtXTnBwTVc3bEgx?=
- =?utf-8?B?dXFxeTBVTG41WDVqQW4xU2FrMzRLN2VIYk9LK2VHb3VJVXc3cUw4WkQrVUlL?=
- =?utf-8?B?YmxTVE9acXMzQ0xNWGg2dS9PdDFpSTdXSWNlQm9lRGs1SUhYbWdrVEU2VVNU?=
- =?utf-8?B?Y3dsa0gzWUdMcWdiQm9YYTlzSWFlajNQK29TdGhLUDQvcHZMSkd1dGJsQnZY?=
- =?utf-8?B?YkdDV0NueW5YSHJ6dzNTUTAvVEhWcVRmRm9BYkZHUDZadVJWY1RHMllYcjdT?=
- =?utf-8?B?ekIxTUJmZGNJSmFGb2o2QWJRN2t3T3UwNTdEWXl5SG1WSVhRdEdnVkw0RktL?=
- =?utf-8?B?T0I2SjBCMnR3MTR0bkdKb2FQLytEaG4rbzFjL2dpSVNrZWtkOXNwOUhvdzQw?=
- =?utf-8?B?d0FSWVZsSXR6U0UxU1lPOWZycHZsQXY0aFZPVlhxRHo2NExJTGV6TzNFUXl5?=
- =?utf-8?B?Kzhrc05maVZVdUR1QURkVTl2TFJwSDJRWDZIT0ROemN6Yk5NV2ZuODMva215?=
- =?utf-8?B?aENlNHFqR2pIckxOU201V2lPZ2pvZ1BvOXdXak94em1CQUV6dmdFUDJxVXR5?=
- =?utf-8?B?YkRXV244T2JOUVRsUG9QbVg5VVorSXJNWVNaRVdDRVZKNy9YakptVUdVbzRI?=
- =?utf-8?B?THVPMnJ2MTVXc2RldGlHc0R5aTNDWEkrVzRCdEY5TWZkajhBL05wMXE1bC9W?=
- =?utf-8?B?aW5zWlVCWGgrdzNTa1NsUWJKR2ljMTMwc2VqcjJQZkpicE1RNkpaRTNIcDZh?=
- =?utf-8?B?bVcxdHBGR2F5UlFKbnBFU0VvMXA4eVViZUlxYm1BY0ZQbXoyM25WUStJekpK?=
- =?utf-8?B?dHdpQlhaWmNjQk9kZWNwbDduS0toeGJCREt2SmpsbFFsNHRPTHlTUUo0dU0y?=
- =?utf-8?B?U3lkNDIza0tIWTBSZVE2U0swRjQ1N0luL1crZjNTZWQxZDhyYnAva3hoRGlV?=
- =?utf-8?B?NzRwanlIa1N5SXF3OFJ5eXR4MnAzM2xrd2hnY0JDODl6T3FqUzdQQ1hmK0xG?=
- =?utf-8?B?b0xSb01XM0lNeEppUTN2ZzFEMzZKNGZnOUpSYVNIcUYyTWJLbm4yU2RrZit2?=
- =?utf-8?B?UUJIM29ZdE5MMXZ1YTdOOXFQdFlLV0hOMEV1NlpiM0toS1k3ZkhPVkRwaUx5?=
- =?utf-8?B?OUVyNTdrSzhVVjZlVHplcmRoUlRoaHdOUC9FWEo5OFRQd2dDOUJ6V0xzRkNz?=
- =?utf-8?B?Y1VUamRhMTBUQzU1K2FaK2YycUplQzNsR1ppYWpHMWVpQ09tcis2NEs3clZX?=
- =?utf-8?B?L0hTbDVqV3lXeHN6ZERPNlQyTkFpVXE0TWFJRU44aUxBOTZGdWhyYm5hK3VW?=
- =?utf-8?B?UWp5NmpiZXUvcUh0VS9VaFc2b3UrRnVYRENYSysrN3JFY3ozb0czOWMrQi9R?=
- =?utf-8?B?MGtjUkdiS29TMXFnL1dEaVZjRWxLeFN6eFF4RmxyVnNnajE1ekl1U1RXUTR1?=
- =?utf-8?B?VDVYeHpqZm1JUG1hWGZHT1h5Tis4bUpXTFlRclNpRjFZNHFDRlFRQXFxQncw?=
- =?utf-8?B?U2JhdFZoUE5XbU9aTWFGV1BxL05WNEdXR241ZW9XMUgrSmM1VEc1dlhIRElO?=
- =?utf-8?B?akNtVU9VdGlocnI4NFB5Zm5aSlpIeEJ4V1lJVVA4NnhwdFpjeFRnYmlpallB?=
- =?utf-8?Q?JEhyY+4f+7YQDPuwxObkcTCm4Myek88AulLIBAU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 398bc6b8-2a37-4b9d-f513-08d8fe83547f
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 13:52:08.8226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XVSJ05nMzkQrbhgIinW7JxjJE0ZbVLTmyDNaIZnqzgK28GupHXrdqIqKkaoqghSqiKpvCaXeGWCyE3ieognmbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4001
+References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz> <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 13 Apr 2021 16:52:09 +0300
+Message-ID: <CAHp75VfR2zNmstvqCSRC2=0hf2DRV7sMdmy9-TDkO07KHwLjGA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 8:10 AM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
+>
+> The fsl-i2c controller will generate an interrupt after every byte
+> transferred. Make use of this interrupt to drive a state machine which
+> allows the next part of a transfer to happen as soon as the interrupt is
+> received. This is particularly helpful with SMBUS devices like the LM81
+> which will timeout if we take too long between bytes in a transfer.
 
+Also see my other comments below.
 
-On 4/10/2021 5:03 PM, David Coe wrote:
-> Results for AMD Ryzen 4700U running Ubuntu 21.04β kernel 5.11.0-13
-> 
-> $ sudo dmesg | grep IOMMU
-> [    0.490352] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters supported
-> [    0.491985] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-> [    0.493732] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 counters/bank).
-> [    0.793259] AMD-Vi: AMD IOMMUv2 driver by Joerg Roedel <jroedel@suse.de>
-> 
-> ....
-> 
-> $ sudo perf stat -e 'amd_iommu_0/cmd_processed/, amd_iommu_0/cmd_processed_inv/, amd_iommu_0/ign_rd_wr_mmio_1ff8h/, amd_iommu_0/int_dte_hit/, amd_iommu_0/int_dte_mis/, amd_iommu_0/mem_dte_hit/, amd_iommu_0/mem_dte_mis/, amd_iommu_0/mem_iommu_tlb_pde_hit/, amd_iommu_0/mem_iommu_tlb_pde_mis/, amd_iommu_0/mem_iommu_tlb_pte_hit/, amd_iommu_0/mem_iommu_tlb_pte_mis/, amd_iommu_0/mem_pass_excl/, amd_iommu_0/mem_pass_pretrans/, amd_iommu_0/mem_pass_untrans/, amd_iommu_0/mem_target_abort/, 
-> amd_iommu_0/mem_trans_total/, amd_iommu_0/page_tbl_read_gst/, amd_iommu_0/page_tbl_read_nst/, amd_iommu_0/page_tbl_read_tot/, amd_iommu_0/smi_blk/, amd_iommu_0/smi_recv/, amd_iommu_0/tlb_inv/, amd_iommu_0/vapic_int_guest/, amd_iommu_0/vapic_int_non_guest/' sleep 10
-> 
-> Performance counter stats for 'system wide':
-> 
->                 12      amd_iommu_0/cmd_processed/             (33.28%)
->                  6       amd_iommu_0/cmd_processed_inv/        (33.32%)
->                  0       amd_iommu_0/ign_rd_wr_mmio_1ff8h/     (33.36%)
->                290       amd_iommu_0/int_dte_hit/              (33.40%)
->                 20       amd_iommu_0/int_dte_mis/              (33.46%)
->                391       amd_iommu_0/mem_dte_hit/              (33.49%)
->              3,720       amd_iommu_0/mem_dte_mis/              (33.49%)
->                 44       amd_iommu_0/mem_iommu_tlb_pde_hit/    (33.46%)
->                810       amd_iommu_0/mem_iommu_tlb_pde_mis/    (33.45%)
->                 35       amd_iommu_0/mem_iommu_tlb_pte_hit/    (33.41%)
->                746       amd_iommu_0/mem_iommu_tlb_pte_mis/    (33.37%)
->                  0       amd_iommu_0/mem_pass_excl/            (33.32%)
->                  0       amd_iommu_0/mem_pass_pretrans/        (33.28%)
->                  0       amd_iommu_0/mem_pass_untrans/         (33.28%)
->                  0       amd_iommu_0/mem_target_abort/         (33.27%)
->                715       amd_iommu_0/mem_trans_total/          (33.27%)
->                  0       amd_iommu_0/page_tbl_read_gst/        (33.28%)
->                 36       amd_iommu_0/page_tbl_read_nst/        (33.27%)
->                 36       amd_iommu_0/page_tbl_read_tot/        (33.27%)
->                  0       amd_iommu_0/smi_blk/                  (33.28%)
->                  0       amd_iommu_0/smi_recv/                 (33.26%)
->                  0       amd_iommu_0/tlb_inv/                  (33.23%)
->                  0       amd_iommu_0/vapic_int_guest/          (33.24%)
->                366       amd_iommu_0/vapic_int_non_guest/      (33.27%)
-> 
-> The immediately obvious difference is the with the enormous count seen on mem_dte_mis on the older Ryzen 2400G. Will do some RTFM but anyone with comments and insight?
-> 
-> 841,689,151,202,939       amd_iommu_0/mem_dte_mis/              (33.44%)
-> 
-> Otherwise, all seems to running smoothly (especially for a distribution still in β). Bravo and many thanks all!
-> 
-That doesn't look correct. Lemme do some more investigation also.
+...
 
-Thanks,
-Suravee
+> +// SPDX-License-Identifier: GPL-2.0
+
+I think it is better to split this with a removal of old stuff and
+updating a copyright notice and go as a last one in the series.
+
+...
+
+> +static char *action_str[] = {
+
+static const char * const action_str[]
+
+> +       "invalid",
+> +       "start",
+> +       "restart",
+> +       "read begin",
+> +       "read",
+> +       "write",
+> +       "stop",
+> +};
+
+...
+
+> +       dev_dbg(i2c->dev, "%s: action = %s\n", __func__,
+> +               action_str[i2c->action]);
+
+Drop useless __func__. With Dynamic Debug enabled it can be turned on
+and off at run time.
+
+...
+
+> +                       /* Generate txack on next to last byte */
+
+Tx ACK ? Ditto for other comments.
+
+...
+
+> +               dev_dbg(i2c->dev, "%s: %s %02x\n", __func__,
+> +                       action_str[i2c->action], byte);
+
+You already printed action. Anything changed?
+
+> +               dev_dbg(i2c->dev, "%s: %s %02x\n", __func__,
+> +                       action_str[i2c->action], msg->buf[i2c->byte_posn]);
+
+Deduplicate this. Perhaps at the end of switch-case print once with
+whatever temporary variable value you want to.
+
+...
+
+> +       case MPC_I2C_ACTION_INVALID:
+> +       default:
+
+Does the first one deserve loud WARN?
+Otherwise, why is it defined at all?
+
+> +               WARN(1, "Unexpected action %d\n", i2c->action);
+> +               break;
+
+...
+
+> +static void mpc_i2c_do_intr(struct mpc_i2c *i2c, u8 status)
+>  {
+
+> +       spin_lock_irqsave(&i2c->lock, flags);
+
+Why _irqsave?
+
+...
+
+> +               dev_dbg(i2c->dev, "arbiritration lost\n");
+
+arbitration
+
+...
+
+> +       if (i2c->expect_rxack && (status & CSR_RXAK)) {
+> +               dev_dbg(i2c->dev, "no RXAK\n");
+
+You see, you have to be consistent in comments and messages.
+Either use TXAK/RXAK, or more verbose 'Tx ACK/Rx ACK' everywhere.
+
+...
+
+> +out:
+
+out_unlock:
+
+> +       spin_unlock_irqrestore(&i2c->lock, flags);
+
+...
+
+> +static irqreturn_t mpc_i2c_isr(int irq, void *dev_id)
+> +{
+> +       struct mpc_i2c *i2c = dev_id;
+
+> +       u8 status = readb(i2c->base + MPC_I2C_SR);
+
+I would split this assignment, so it will be closer to its user.
+
+> +       if (status & CSR_MIF) {
+> +               writeb(0, i2c->base + MPC_I2C_SR);
+> +               mpc_i2c_do_intr(i2c, status);
+> +               return IRQ_HANDLED;
+>         }
+> +       return IRQ_NONE;
+> +}
+
+...
+
+> +       time_left = wait_event_timeout(i2c->waitq, !i2c->block, i2c->adap.timeout);
+
+> +
+
+No need for a blank line here.
+
+> +       if (!time_left)
+> +               i2c->rc = -ETIMEDOUT;
+
+> +       else if (time_left < 0)
+
+Redundant 'else'
+
+> +               i2c->rc = time_left;
+
+Can't you return an error code from here, rather than injecting it
+somewhere where it doesn't belong to?
+
+>  }
+
+--
+With Best Regards,
+Andy Shevchenko
