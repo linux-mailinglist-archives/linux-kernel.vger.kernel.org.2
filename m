@@ -2,213 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D5935E516
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E541B35E51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347212AbhDMRdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:33:41 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49522 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347213AbhDMRdj (ORCPT
+        id S1347239AbhDMRfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:35:23 -0400
+Received: from mail-yb1-f171.google.com ([209.85.219.171]:42624 "EHLO
+        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347213AbhDMRfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:33:39 -0400
-Received: by mail-il1-f200.google.com with SMTP id h1so100042ils.16
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:33:19 -0700 (PDT)
+        Tue, 13 Apr 2021 13:35:22 -0400
+Received: by mail-yb1-f171.google.com with SMTP id c195so19008280ybf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PtG5VoeaLOX1ZANv6L1Q3kXBlb+Ic1K3aPZyyu1giOs=;
+        b=lNdb+9h9wBRhXgvsq+m+1fdSVdCo/cY+DCTsMg3D/TsqtfvktRA/Cw2sPsl9cPuN4b
+         FMi3217Z5gSLs4YJNxzrMxHC2sJPjheUKNx3ylhJETzE9qCiC+G72K9eUmjukGFk2kdU
+         nf9gRUoE1QEkkofYBFAHAqFG/FpYj7pZn0Drv8RDvQIZz6qOdWr2biKB+rqPXcG+q78w
+         S//ENdBk8+r14MzToC0x4wk7UtE7ia91nJwUJvRES8OV+oBKuopd4a5PcaTTzDCd0bYX
+         QwYcN8TAkvvOj6c+iPF/Gb+8n4X8xxCuTi0FcLf9saesua+1YhUR2cec9e9uFLGSCAPI
+         kujQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=uSWBhsPhltIy8Vu4b7IqRwVOVBqHHHNi3V0ikDinqQA=;
-        b=tPy2efLkMADtYQRwXP5j1jkWYGUgJMj6FaXAFn4bZA77SQUzt9YMT3toRNAamBSeuG
-         XKxGXspWi7aTYSPjbutOvrg75RLtj+/SfxByrc9CHKhTKvpjtYq2FyoY/S+23XwJ+QEP
-         LW/a/sIWp+33l4mjvIZP2eXJ2KX5K9Br2077rSf+rFJ79q27Ks+P+40oEeXLN7P452qE
-         GxXRCqRB5nrBu9d/7cqJ/1PhY1eLQu5rJOhpnZ/YBtrPfAxb6x7dmGua1MiLPviltrSO
-         xoTwusNF3ZUr6rvK71r0UtFiTElsJRP2Yd/7ockNOSXbbXudOxvS81zAhsV5uqXEpi82
-         TWUw==
-X-Gm-Message-State: AOAM532191Qwrx0K9EQAI6FHv6xqRsHgm86nSg1X1DawmYFrEKONZd/m
-        uCK+/k+r9ooswZpE2vCXNDlUbB6b9b7djIV1WEliejfBqN8K
-X-Google-Smtp-Source: ABdhPJz2e5HG5xlxeuZfBVVk/37iB+7XHRq4HyKmoKN4yaSR4PiMTzrbLRuM1583YnqDGWjqmc1INV14srEKnq+Jg4VFQcfG2ZQA
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PtG5VoeaLOX1ZANv6L1Q3kXBlb+Ic1K3aPZyyu1giOs=;
+        b=E4xZpZBr4QQJOsxiW+R3BStsLG/3yap6MpVeCSHHdKsALCDw7J/kAWUt+Vgmr34qj4
+         i5ExvIcki4T4um/dzNsvali6PM3LrYpAjdh+NLQ5ewD0zfJJWgyucKMo4/CTr/Xa5KTt
+         OKWcM8/QvdS+en8Bz5EKLgimx8zhn5E7mRDMoBhbhDn0HRTR3gLj9AWNzPBw2oxTysoI
+         8oPEQOKwU13qnUR+NkRVhhXlQV6g+eS/EHL2FuD7NAVaghLmRt3nnKKJtw3lSxcZvM/v
+         Eo3DpmzHc/6SgnFZSa6isFxbeyoAhoI6FIPjJfBGnZ0um/Wae9qbNAEWbqgkbmKkecoI
+         DB+g==
+X-Gm-Message-State: AOAM5329AOXnKniMQQlAVLUpJAXEcM6BOu/QbNclujkFUFLf+4rBhFFL
+        0EPMXK/geTZH1YoB4tWctG+sVVsCAKfpykI5LpFODg==
+X-Google-Smtp-Source: ABdhPJzXV+rPIBDdBWiNRw+RZhWY2jegBLwxRq5qLWY9Rm/x71E73Tqiw1Vq5trTIu9gausYeFHC7ecDbz9080Kytpg=
+X-Received: by 2002:a25:4244:: with SMTP id p65mr17917166yba.452.1618335241752;
+ Tue, 13 Apr 2021 10:34:01 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:5a2:: with SMTP id k2mr29085153ils.177.1618335199272;
- Tue, 13 Apr 2021 10:33:19 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 10:33:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae236f05bfde0678@google.com>
-Subject: [syzbot] possible deadlock in del_gendisk
-From:   syzbot <syzbot+61e04e51b7ac86930589@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, axboe@kernel.dk, bp@alien8.de,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        masahiroy@kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
-        x86@kernel.org
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+ <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+ <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
+ <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com> <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+In-Reply-To: <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 19:33:50 +0200
+Message-ID: <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    e99d8a84 Add linux-next specific files for 20210409
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b01681d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7cd69574979bfeb7
-dashboard link: https://syzkaller.appspot.com/bug?extid=61e04e51b7ac86930589
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148265d9d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a981a1d00000
-
-The issue was bisected to:
-
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
-
-    lockdep: report broken irq restoration
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16a7e77ed00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15a7e77ed00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a7e77ed00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+61e04e51b7ac86930589@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.12.0-rc6-next-20210409-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor104/8440 is trying to acquire lock:
-ffff888016e9dca0 (&bdev->bd_mutex){+.+.}-{3:3}, at: del_gendisk+0x250/0x9e0 block/genhd.c:618
-
-but task is already holding lock:
-ffffffff8c7d9430 (bdev_lookup_sem){++++}-{3:3}, at: del_gendisk+0x222/0x9e0 block/genhd.c:616
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (bdev_lookup_sem){++++}-{3:3}:
-       down_write+0x92/0x150 kernel/locking/rwsem.c:1406
-       del_gendisk+0x222/0x9e0 block/genhd.c:616
-       loop_remove drivers/block/loop.c:2191 [inline]
-       loop_control_ioctl drivers/block/loop.c:2291 [inline]
-       loop_control_ioctl+0x40d/0x4f0 drivers/block/loop.c:2251
-       vfs_ioctl fs/ioctl.c:48 [inline]
-       __do_sys_ioctl fs/ioctl.c:753 [inline]
-       __se_sys_ioctl fs/ioctl.c:739 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #1 (loop_ctl_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       lo_open+0x1a/0x130 drivers/block/loop.c:1890
-       __blkdev_get+0x135/0xa30 fs/block_dev.c:1305
-       blkdev_get_by_dev fs/block_dev.c:1457 [inline]
-       blkdev_get_by_dev+0x26c/0x600 fs/block_dev.c:1425
-       blkdev_open+0x154/0x2b0 fs/block_dev.c:1554
-       do_dentry_open+0x4b9/0x11b0 fs/open.c:826
-       do_open fs/namei.c:3361 [inline]
-       path_openat+0x1c09/0x27d0 fs/namei.c:3494
-       do_filp_open+0x190/0x3d0 fs/namei.c:3521
-       do_sys_openat2+0x16d/0x420 fs/open.c:1187
-       do_sys_open fs/open.c:1203 [inline]
-       __do_sys_open fs/open.c:1211 [inline]
-       __se_sys_open fs/open.c:1207 [inline]
-       __x64_sys_open+0x119/0x1c0 fs/open.c:1207
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&bdev->bd_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:2938 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
-       validate_chain kernel/locking/lockdep.c:3676 [inline]
-       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
-       lock_acquire kernel/locking/lockdep.c:5512 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       del_gendisk+0x250/0x9e0 block/genhd.c:618
-       loop_remove drivers/block/loop.c:2191 [inline]
-       loop_control_ioctl drivers/block/loop.c:2291 [inline]
-       loop_control_ioctl+0x40d/0x4f0 drivers/block/loop.c:2251
-       vfs_ioctl fs/ioctl.c:48 [inline]
-       __do_sys_ioctl fs/ioctl.c:753 [inline]
-       __se_sys_ioctl fs/ioctl.c:739 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
-       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &bdev->bd_mutex --> loop_ctl_mutex --> bdev_lookup_sem
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(bdev_lookup_sem);
-                               lock(loop_ctl_mutex);
-                               lock(bdev_lookup_sem);
-  lock(&bdev->bd_mutex);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor104/8440:
- #0: ffffffff8ca5f148 (loop_ctl_mutex){+.+.}-{3:3}, at: loop_control_ioctl+0x7b/0x4f0 drivers/block/loop.c:2257
- #1: ffffffff8c7d9430 (bdev_lookup_sem){++++}-{3:3}, at: del_gendisk+0x222/0x9e0 block/genhd.c:616
-
-stack backtrace:
-CPU: 1 PID: 8440 Comm: syz-executor104 Not tainted 5.12.0-rc6-next-20210409-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
- check_prev_add kernel/locking/lockdep.c:2938 [inline]
- check_prevs_add kernel/locking/lockdep.c:3061 [inline]
- validate_chain kernel/locking/lockdep.c:3676 [inline]
- __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
- lock_acquire kernel/locking/lockdep.c:5512 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
- __mutex_lock_common kernel/locking/mutex.c:949 [inline]
- __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
- del_gendisk+0x250/0x9e0 block/genhd.c:618
- loop_remove drivers/block/loop.c:2191 [inline]
- loop_control_ioctl drivers/block/loop.c:2291 [inline]
- loop_control_ioctl+0x40d/0x4f0 drivers/block/loop.c:2251
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee49
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff4d86c238 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee49
-RDX: 0000000000000002 RSI: 0000000000004c81 RDI: 0000000000000003
-RBP: 0000000000402e30 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ec0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+On Tue, Apr 13, 2021 at 7:20 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> ----- On Apr 13, 2021, at 1:07 PM, Eric Dumazet edumazet@google.com wrote:
+>
+> > On Tue, Apr 13, 2021 at 7:01 PM Eric Dumazet <edumazet@google.com> wrote:
+> >>
+> >> On Tue, Apr 13, 2021 at 6:57 PM Eric Dumazet <edumazet@google.com> wrote:
+> >> >
+> >> > On Tue, Apr 13, 2021 at 6:54 PM Mathieu Desnoyers
+> >> > <mathieu.desnoyers@efficios.com> wrote:
+> >> > >
+> >> > > ----- On Apr 13, 2021, at 12:22 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
+> >> > >
+> >> > > > From: Eric Dumazet <edumazet@google.com>
+> >> > > >
+> >> > > > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+> >> > > > update includes") added regressions for our servers.
+> >> > > >
+> >> > > > Using copy_from_user() and clear_user() for 64bit values
+> >> > > > is suboptimal.
+> >> > > >
+> >> > > > We can use faster put_user() and get_user().
+> >> > > >
+> >> > > > 32bit arches can be changed to use the ptr32 field,
+> >> > > > since the padding field must always be zero.
+> >> > > >
+> >> > > > v2: added ideas from Peter and Mathieu about making this
+> >> > > >    generic, since my initial patch was only dealing with
+> >> > > >    64bit arches.
+> >> > >
+> >> > > Ah, now I remember the reason why reading and clearing the entire 64-bit
+> >> > > is important: it's because we don't want to allow user-space processes to
+> >> > > use this change in behavior to figure out whether they are running on a
+> >> > > 32-bit or in a 32-bit compat mode on a 64-bit kernel.
+> >> > >
+> >> > > So although I'm fine with making 64-bit kernels faster, we'll want to keep
+> >> > > updating the entire 64-bit ptr field on 32-bit kernels as well.
+> >> > >
+> >> > > Thanks,
+> >> > >
+> >> >
+> >> > So... back to V1 then ?
+> >>
+> >> Or add more stuff as in :
+> >
+> > diff against v2, WDYT ?
+>
+> I like this approach slightly better, because it moves the preprocessor ifdefs into
+> rseq_get_rseq_cs and clear_rseq_cs, while keeping the same behavior for a 32-bit
+> process running on native 32-bit kernel and as compat task on a 64-bit kernel.
+>
+> That being said, I don't expect anyone to care much about performance of 32-bit
+> kernels, so we could use copy_from_user() on 32-bit kernels to remove special-cases
+> in 32-bit specific code. This would eliminate the 32-bit specific "padding" read, and
+> let the TASK_SIZE comparison handle the check for both 32-bit and 64-bit kernels.
+>
+> As for clear_user(), I wonder whether we could simply keep using it, but change the
+> clear_user() macro to figure out that it can use a faster 8-byte put_user ? I find it
+> odd that performance optimizations which would be relevant elsewhere creep into the
+> rseq code.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+clear_user() is a maze of arch-dependent macros/functions/assembly
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I guess the same could be said from  copy_in_user(), but apparently we removed
+special-casing, like in commit a41e0d754240fe8ca9c4f2070bf67e3b0228aa22
+
+Definitely it seems odd having to carefully choose between multiple methods.
+
+
+>
+> Thanks,
+>
+> Mathieu
+>
+> >
+> > diff --git a/kernel/rseq.c b/kernel/rseq.c
+> > index
+> > f2eee3f7f5d330688c81cb2e57d47ca6b843873e..537b1f684efa11069990018ffa3642c209993011
+> > 100644
+> > --- a/kernel/rseq.c
+> > +++ b/kernel/rseq.c
+> > @@ -136,6 +136,10 @@ static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp,
+> > {
+> >        u32 ptr;
+> >
+> > +       if (get_user(ptr, &rseq->rseq_cs.ptr.padding))
+> > +               return -EFAULT;
+> > +       if (ptr)
+> > +               return -EINVAL;
+> >        if (get_user(ptr, &rseq->rseq_cs.ptr.ptr32))
+> >                return -EFAULT;
+> >        *uptrp = (struct rseq_cs __user *)ptr;
+> > @@ -150,8 +154,9 @@ static int rseq_get_rseq_cs(struct task_struct *t,
+> > struct rseq_cs *rseq_cs)
+> >        u32 sig;
+> >        int ret;
+> >
+> > -       if (rseq_get_cs_ptr(&urseq_cs, t->rseq))
+> > -               return -EFAULT;
+> > +       ret = rseq_get_cs_ptr(&urseq_cs, t->rseq);
+> > +       if (ret)
+> > +               return ret;
+> >        if (!urseq_cs) {
+> >                memset(rseq_cs, 0, sizeof(*rseq_cs));
+> >                return 0;
+> > @@ -237,7 +242,8 @@ static int clear_rseq_cs(struct task_struct *t)
+> > #ifdef CONFIG_64BIT
+> >        return put_user(0UL, &t->rseq->rseq_cs.ptr64);
+> > #else
+> > -       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32);
+> > +       return put_user(0UL, &t->rseq->rseq_cs.ptr.ptr32) |
+> > +              put_user(0UL, &t->rseq->rseq_cs.ptr.padding);
+> > #endif
+> >  }
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
