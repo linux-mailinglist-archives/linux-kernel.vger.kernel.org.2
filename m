@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB0935E1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1024235E1BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239392AbhDMOkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbhDMOkt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:40:49 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C29C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:40:29 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id f41so4361871lfv.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=B0Ze6zSePn8dZkD37LVudsQ716aTcli/ZveubzeD3u8=;
-        b=wGLMN6M+fpgYXDaOgMvbsV9YQT3c5dH36ePoA+A+QDzVbBDzGRc6wzf0IuOncaS9aR
-         Yl5krVByvJzPZVDcuYfoQgXN267xiPHiBM1eD8a9mSXfwu4HsCmwAU0V+lmINpmkuSst
-         3yuK7+gtaatssmw+xAWp2t9Yji/t/BZd1KTTvNDtuNScx9NnXFl/Vwdvl04pPqApfrjA
-         TOzSbifIu98RMKZjKWBSTThTTw1Va1/MNsSC8rxUHskOvQffoC22m0S00vga0QcLxh4k
-         bVQRwwj4xllY6QWFfJ5HN7zSRsX7Z/ul8pBewtivFYMrniAT0BOg4K1Yiv69tw3hNhM+
-         bdBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=B0Ze6zSePn8dZkD37LVudsQ716aTcli/ZveubzeD3u8=;
-        b=aSzZTWj3LL85v09Wy3alN5p8lCZyVmiNVJJtzqPNL7KRWDSLP3bsl+iX7p6RGLNz4l
-         OKw4rzq2ae37lX4ZO9fewtL7dgz2Z4awxKmeJChCOPTcqTdFJlyor/O80U9SjiG64ic1
-         iLwV9b9P/5DvXGjiONkbTAX2usby5VTbxPty7WVL5Y2kbD3ZV6RQi4TWNpufGwfIxvhd
-         7q76IVaVlu4C/KBBDrK6EeJBYYYqcWMs6z7oVH2IpsBiMRY/GYiu0sZFcl1TnNhSsGvM
-         ++GTa/1ZGgLa9cKdxjEmXQ+d32CJNcOu5QrzWbpH05gw45wtJFloJxs/BSuCVuX5/Eyp
-         T8Ug==
-X-Gm-Message-State: AOAM53008GTqTy1VUsIyjfHbovG6gmSwh9/btsQt6V+j5qNd14lhJPlo
-        b7tUQ7Xg1IGzDEUY7QOSTv3tQrriryXO587T
-X-Google-Smtp-Source: ABdhPJyyfHteWuNMJ9zxIqN3kTx27GAhgDzcIq80qon/4QXIUL/AtXJmAyix9ycyk0A0nt57CAK53w==
-X-Received: by 2002:a05:6512:b9e:: with SMTP id b30mr8084353lfv.278.1618324827516;
-        Tue, 13 Apr 2021 07:40:27 -0700 (PDT)
-Received: from wkz-x280 (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id q28sm3403883lfo.95.2021.04.13.07.40.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:40:26 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        id S1343955AbhDMOll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:41:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59738 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231917AbhDMOlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:41:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618324872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XrS3LvtoF2dKQLQn8cBGzZViUcGsw61UP94N7EYr7+k=;
+        b=ForxJz/oBkA0zRzL34o2nMOj9qljmCDmJdOXj5KRxijTFuU26d/zSTJyAqggC08fCacpQ+
+        3GqRC7No8e46XAJCiPpSORCzGjYZ04QsvvL9p87reE5HjYOlPNLYXWQ9AQvCrxw/f4aH62
+        E0LUf9FsoBvDiJF3PaVhDnR/UHiDaQk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DB05BAF9E;
+        Tue, 13 Apr 2021 14:41:11 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 16:41:11 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-In-Reply-To: <20210413015450.1ae597da@thinkpad>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412235054.73754df9@thinkpad> <87wnt7jgzk.fsf@waldekranz.com> <20210413005518.2f9b9cef@thinkpad> <87r1jfje26.fsf@waldekranz.com> <87o8ejjdu6.fsf@waldekranz.com> <20210413015450.1ae597da@thinkpad>
-Date:   Tue, 13 Apr 2021 16:40:25 +0200
-Message-ID: <87lf9mjlie.fsf@waldekranz.com>
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v4 04/13] dump_stack: Add vmlinux build ID to stack traces
+Message-ID: <YHWthzF+l0iacMuw@alley>
+References: <20210410015300.3764485-1-swboyd@chromium.org>
+ <20210410015300.3764485-5-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210410015300.3764485-5-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 01:54, Marek Behun <marek.behun@nic.cz> wrote:
-> On Tue, 13 Apr 2021 01:13:53 +0200
-> Tobias Waldekranz <tobias@waldekranz.com> wrote:
->
->> > ...you could get the isolation in place. But you will still lookup the
->> > DA in the ATU, and there you will find a destination of either cpu0 or
->> > cpu1. So for one of the ports, the destination will be outside of its
->> > port based VLAN. Once the vectors are ANDed together, it is left with no
->> > valid port to egress through, and the packet is dropped.
->> >  
->> >> Am I wrong? I confess that I did not understand this into the most fine
->> >> details, so it is entirely possible that I am missing something
->> >> important and am completely wrong. Maybe this cannot be done.  
->> >
->> > I really doubt that it can be done. Not in any robust way at
->> > least. Happy to be proven wrong though! :)  
->> 
->> I think I figured out why it "works" for you. Since the CPU address is
->> never added to the ATU, traffic for it is treated as unknown. Thanks to
->> that, it flooded and the isolation brings it together. As soon as
->> mv88e6xxx starts making use of Vladimirs offloading of host addresses
->> though, I suspect this will fall apart.
->
-> Hmm :( This is bad news. I would really like to make it balance via
-> input ports. The LAG balancing for this usecase is simply unacceptable,
-> since the switch puts so little information into the hash function.
+On Fri 2021-04-09 18:52:51, Stephen Boyd wrote:
+> Add the running kernel's build ID[1] to the stacktrace information
+> header.  This makes it simpler for developers to locate the vmlinux with
+> full debuginfo for a particular kernel stacktrace. Combined with
+> scripts/decode_stracktrace.sh, a developer can download the correct
+> vmlinux from a debuginfod[2] server and find the exact file and line
+> number for the functions plus offsets in a stacktrace.
+> 
+> This is especially useful for pstore crash debugging where the kernel
+> crashes are recorded in the pstore logs and the recovery kernel is
+> different or the debuginfo doesn't exist on the device due to space
+> concerns (the data can be large and a security concern). The stacktrace
+> can be analyzed after the crash by using the build ID to find the
+> matching vmlinux and understand where in the function something went
+> wrong.
+> 
+> Example stacktrace from lkdtm:
+> 
+>  WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNING+0x28/0x30 [lkdtm]
+>  Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cgroup uinput xt_MASQUERADE
+>  CPU: 4 PID: 3255 Comm: bash Not tainted 5.11 #3 aa23f7a1231c229de205662d5a9e0d4c580f19a1
+>  Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+>  pstate: 00400009 (nzcv daif +PAN -UAO -TCO BTYPE=--)
+>  pc : lkdtm_WARNING+0x28/0x30 [lkdtm]
+> 
+> The hex string aa23f7a1231c229de205662d5a9e0d4c580f19a1 is the build ID,
+> following the kernel version number. Put it all behind a config option,
+> STACKTRACE_BUILD_ID, so that kernel developers can remove this
+> information if they decide it is too much.
+> 
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Jessica Yu <jeyu@kernel.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Link: https://fedoraproject.org/wiki/Releases/FeatureBuildId [1]
+> Link: https://sourceware.org/elfutils/Debuginfod.html [2]
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-If you have the ports in standalone mode, you could imagine having each
-port use its own FID. But then you cannot to L2 forwarding between the
-LAN ports in hardware.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Tested-by: Petr Mladek <pmladek@suse.com>
 
-If you have a chip with a TCAM, you could theoretically use that to get
-policy switching to the preferred CPU port. But since that would likely
-run on top of TC flower or something, it is not obvious to my how to
-would describe that kind of action.
+One comment below.
 
-Barring something like that, I think you will have to accept the
-unacceptable :)
+> ---
+>  lib/Kconfig.debug | 11 +++++++++++
+>  lib/dump_stack.c  | 13 +++++++++++--
+>  2 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2779c29d9981..5f883e50f406 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -35,6 +35,17 @@ config PRINTK_CALLER
+>  	  no option to enable/disable at the kernel command line parameter or
+>  	  sysfs interface.
+>  
+> +config STACKTRACE_BUILD_ID
+> +	bool "Show build ID information in stacktraces"
+> +	depends on PRINTK
+> +	help
+> +	  Selecting this option adds build ID information for symbols in
+> +	  stacktraces printed with the printk format '%p[SR]b'.
+> +
+> +	  This option is intended for distros where debuginfo is not easily
+> +	  accessible but can be downloaded given the build ID of the vmlinux or
+> +	  kernel module where the function is located.
+> +
+>  config CONSOLE_LOGLEVEL_DEFAULT
+>  	int "Default console loglevel (1-15)"
+>  	range 1 15
+> diff --git a/lib/dump_stack.c b/lib/dump_stack.c
+> index f5a33b6f773f..d685331b065f 100644
+> --- a/lib/dump_stack.c
+> +++ b/lib/dump_stack.c
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  #include <linux/kernel.h>
+> +#include <linux/buildid.h>
+>  #include <linux/export.h>
+>  #include <linux/sched.h>
+>  #include <linux/sched/debug.h>
+> @@ -36,6 +37,14 @@ void __init dump_stack_set_arch_desc(const char *fmt, ...)
+>  	va_end(args);
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+> +#define BUILD_ID_FMT " %20phN"
+> +#define BUILD_ID_VAL vmlinux_build_id
+> +#else
+> +#define BUILD_ID_FMT "%s"
+> +#define BUILD_ID_VAL ""
+> +#endif
 
-> I will look into this, maybe ask some follow-up questions.
->
-> Marek
+3rd patch always defines and initializes vmlinux_build_id. But it is
+used only when CONFIG_STACKTRACE_BUILD_ID is enabled.
+Is it intentional, please?
+
+It is not a big deal for vmlinux_build_id. But it is more questionable
+for the per-module id. I am going to open this question for 5th patch
+as well.
+
+Best Regards,
+Petr
