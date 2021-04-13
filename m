@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5961E35E203
+	by mail.lfdr.de (Postfix) with ESMTP id C945935E204
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244119AbhDMO5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S244724AbhDMO5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238034AbhDMO5A (ORCPT
+        with ESMTP id S240914AbhDMO5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:57:00 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA36C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:40 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id m9so4043235wrx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:40 -0700 (PDT)
+        Tue, 13 Apr 2021 10:57:01 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB7DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:41 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so8913893wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fcNyffarNsOiVEVgcXOuYtMdvEd9IGl7N+PC1sh6FEc=;
-        b=Pm4POwMQ4Y6m5BACHfj/4VmvBLuQwj+n+4wNHczovv5QPTVCFmI7EUi9dPYGjLjXXX
-         R14zaoGQ1p2jerCyHbXTpZSVx/M7qJ2X6yfndPerKryGppsi5ZA/3R8q/YudEHtMsKiM
-         sf89lOQYsnVrkp01Sd8oGmrHNhY1k5MJEs4P5YawmqTb1FrbI7VY7jecNGCfG51TcAYv
-         TpEa4w0xLR0h0s6VfW7Z4pt04WxdCN63oAqpaATA+3QQsqeDeW+fE5yF32rJyGOWYs38
-         Cy/J+JrtmbTHpPtB+3RpZLVx1jwlTuk6mVmJ5zkCiMQGHSUevSYdIZD5GHd0sL/UFIrj
-         P8QA==
+        bh=RuGgfLKupLbilqe/abvITO4+NbqEOUhJydw5ktosY2U=;
+        b=JtikVqNzCVWPhSIuj8e73hDmbSRhwxEFds6eZ14gXvou4K4Ofl0Oyxt7YUQ3aDFseJ
+         UbGAUFDYHrE1m1eZvX91G9qw+KbVGh+eAAgXSn3nNv3RvQygR0aHI2UXFUnNr0jqlR/k
+         ciIgU7BPJp520GTV0Jbikc+RrjrP3L4yGRmtV8ECwVzmKG2avv5ZPyNX8PIB6h+MQgCq
+         vP1AG1sWZcbZBvGnIFAvcIoXZeQwsaLNH+eciP0PMRN5ari0meqdvD1RjgylPggIMCav
+         WG/THW9+e74p3OSEHgHFuqHbEl1Xd9OJUeMjIu6HSSD9nFJzrgV3BK+TkVFHz8EWKurL
+         zvuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fcNyffarNsOiVEVgcXOuYtMdvEd9IGl7N+PC1sh6FEc=;
-        b=Ja9AGFWRBXoe/RR45qF+6ohPpwK/HdqMUfPZfsg3pRainGEmr0RSLJqYYcru++IdWT
-         fh9koqx0HLMiYVmFYDNOaR9J1fFHcJmLqBEldmS1TXmOQRqr9gQiaz+mcuTTOTotLUqy
-         hHsI2yBUb1EyL3f7Oc6EGTRsPo6+a25hZfpIKaJNy+RVA4xytHcHImafPSSUlOOpPv7R
-         v8QnC4D2awrkYcfaX6W05dWdRpaVyVBS6zzQsWVrgeVe+17DiHGobehBZbhrKpmKfczb
-         6sQmWI3ITt5HdBYg+mkDD73OVKAqeRS3CPYeL0aUHl2pwQO5y859Zymv7HcXb05+Aa7F
-         yG2Q==
-X-Gm-Message-State: AOAM530pYfojrdwx/+TxPMlOJkHow98g3vlYV6fr/UxLvXmnGXAzNI0S
-        8yEfDYXIpoB5oW+rluJ29iGteCgT4MRGDQ==
-X-Google-Smtp-Source: ABdhPJx/KQgbI5xJ+lIxPVNo1xAh80jlt/TUSO/+ISZgy8Ahqt4OIOc/yKll/ao1UlGGPJYsxD5LQA==
-X-Received: by 2002:adf:e0d1:: with SMTP id m17mr37271782wri.90.1618325798766;
-        Tue, 13 Apr 2021 07:56:38 -0700 (PDT)
+        bh=RuGgfLKupLbilqe/abvITO4+NbqEOUhJydw5ktosY2U=;
+        b=X4V+UW+g1HC6etrzNuFfF7Z8iaAzatmOehBwsEHtEDvsgDTzt9BjyymZ5x7uhn1GZb
+         sG2j/v6391X4MHoKm1tS/WYKEf6DnkgQyMg1XQeW6vY7oc1Y/9lraX1Ne+NG3MXp19jP
+         fLL5LfIlfcpIPE2UWNyN4rpIyuGSuPy3s9wfzq8NXX0xrgbm82VFWfJiywENPKBmOnhS
+         Zq3XwRM+5QgNXuHnSeRwf/HfVu07Z6M8E6j+SgD+zI+lzAcAFzh0Uhiw6CBI8KvGTVNJ
+         PJW64uEz/zcoy4eOROSJzv9OSwYHIdl8Oy4RuJiQKteQXFTThY1yglBFjsrM2IPwRBvl
+         xDcw==
+X-Gm-Message-State: AOAM533hWG0uUPx5tisr5T0E0C4LV44ldy3VKwOgf0AcIAdVAKdbMiBr
+        dCe0iH4czmbfSU/x/RW6UCUVThqkQQNfjA==
+X-Google-Smtp-Source: ABdhPJycRHRBPJxQMUKwoCFVTOW+SGfPwd2DmIislYCi1LKVxB2NjrVRpRBQnwKcFFL64J79uCnZIA==
+X-Received: by 2002:a7b:c401:: with SMTP id k1mr440042wmi.48.1618325800163;
+        Tue, 13 Apr 2021 07:56:40 -0700 (PDT)
 Received: from agape ([5.171.81.171])
-        by smtp.gmail.com with ESMTPSA id b6sm21770430wrv.12.2021.04.13.07.56.38
+        by smtp.gmail.com with ESMTPSA id v3sm2641828wmj.25.2021.04.13.07.56.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:56:38 -0700 (PDT)
+        Tue, 13 Apr 2021 07:56:39 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     julia.lawall@inria.fr, joe@perches.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] staging: rtl8723bs: replace dump_drv_version() usage with netdev_dbg()
-Date:   Tue, 13 Apr 2021 16:56:29 +0200
-Message-Id: <a4df375dba6c004a22cf197ff8d498d0e4f3b52e.1618325614.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 2/7] staging: rtl8723bs: remove unnecessary dump_drv_version() usage
+Date:   Tue, 13 Apr 2021 16:56:30 +0200
+Message-Id: <9ce6559cac69eaebfdb07206921d14e99d2b1967.1618325614.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1618325614.git.fabioaiuto83@gmail.com>
 References: <cover.1618325614.git.fabioaiuto83@gmail.com>
@@ -64,36 +64,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-replace dump_drv_version() usage with netdev_dbg().
+remove unnecessary dump_drv_version() usage.
 
-There's no need to further wrap a netdev_dbg() call
-for such a low number of occurrences.
-
-The string printed is the same contained in DBG_871X_SEL_NL macro
-called inside dump_drv_version().
-
-This is just preparation before bulk DBG_871X_SEL_NL macro
-replacement by coccinelle, as the semantic patch that will be
-used just replaces, doesn't remove.
+This prepares dump_drv_version() for removal, before
+coccinelle script application.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-index 332855103b14..98c9eb399ba7 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-@@ -2590,7 +2590,7 @@ static int rtw_dbg_port(struct net_device *dev,
- 					break;
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+index a9a9631dd23c..d5ff22ebbc5c 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -491,7 +491,6 @@ static int __init rtw_drv_entry(void)
+ 	int ret;
  
- 				case 0x10:/*  driver version display */
--					dump_drv_version(RTW_DBGDUMP);
-+					netdev_dbg(dev, "%s %s\n", "rtl8723bs", DRIVERVERSION);
- 					break;
- 				case 0x11:/* dump linked status */
- 					{
+ 	DBG_871X_LEVEL(_drv_always_, "module init start\n");
+-	dump_drv_version(RTW_DBGDUMP);
+ #ifdef BTCOEXVERSION
+ 	DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version = %s\n", BTCOEXVERSION);
+ #endif /*  BTCOEXVERSION */
 -- 
 2.20.1
 
