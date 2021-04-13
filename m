@@ -2,291 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2672335D611
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA80335D602
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344443AbhDMDjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:39:47 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17322 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344417AbhDMDjh (ORCPT
+        id S1344397AbhDMDgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241799AbhDMDgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:39:37 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FKB9f59MMzB023;
-        Tue, 13 Apr 2021 11:36:54 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Tue, 13 Apr 2021
- 11:39:03 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <liulongfang@huawei.com>
-Subject: [RFC PATCH 3/3] vfio/hisilicom: add debugfs for driver
-Date:   Tue, 13 Apr 2021 11:36:23 +0800
-Message-ID: <1618284983-55581-4-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
-References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
+        Mon, 12 Apr 2021 23:36:46 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB7EC061574;
+        Mon, 12 Apr 2021 20:36:27 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso12971540otb.13;
+        Mon, 12 Apr 2021 20:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=z9mIiocSxE1TePrUJcF1e7BUeeqknUgt8Nh4peEV8zc=;
+        b=HrG4GzlTHuxu5ewkEMxKBatnbxRtlnQkHMxK2IbUUd3lq89tG6mQW8y+C2Ic28DmOw
+         88q3+v0KaSQRgl8V3l9UwXf7pOWtbFbNJ6bSPsAvaapwOfWxWjFvU/CtxmFoW1pTxCtO
+         pgsvI/gzunQm8aP0ah+NkSlniPN+VMTsI9/prBTMf0JIg+DQHOISl+i/K71bOeYT/8SN
+         iAXde41QcDACguC5Fo4jh/2z2c35fJE4KGF2SPM0lIfURvUjltoq9YG1jMpZ/ajvblH3
+         PMniHeZBBQ00m4Y/azoe9OsXCkb/F6SghfJcBaDbhu29S9+vNo1S1ur8XzekPrk9e0Q1
+         IuzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=z9mIiocSxE1TePrUJcF1e7BUeeqknUgt8Nh4peEV8zc=;
+        b=JS8yu6dZJbWgE/KhxFi1A/RHant9RrgjWRSEXYiSzR/4x+HBV90TCrlNt1zrvcZWBj
+         gU45r7TwQaiCoofI3KzTT3gqBY4s/BK82wylNCzihGYIWZkaBfTI1eN9n+EzJ0aNCLor
+         lztKhasGyiKISfXulQQsyMZ2qZeA4qZcuWXNPrIoIGpy3i7NsuiPwAwtgWYABe+35/AI
+         Ui18hi2Ic4cvXy4u4jWcacB7MUovY4Wrfn8n7ulk4EZScvJShWear06N5I8A+FdJLgAL
+         6CnY2/MqTTDwMNvjWfEW2kborSMwAWgdzGf3ysZCg3er1/ZZw+L66QEiQEwFDnCYmsPa
+         xITg==
+X-Gm-Message-State: AOAM530qtNWld3LR9Ai3msU8nYN0V1+1ZIA5w97cAxsPbNS6cLri8O1J
+        s6OtCN9kXQ0R+hRBQ1hO1nw=
+X-Google-Smtp-Source: ABdhPJzsrVwJQAsiUxDbwDjYyqzO7n2OjB4zc84/c8f3z0AzmBkbR2drQP/Sc2PVUky3CcWKoHwxxQ==
+X-Received: by 2002:a05:6830:17cf:: with SMTP id p15mr12733410ota.23.1618284986754;
+        Mon, 12 Apr 2021 20:36:26 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w29sm825354ott.24.2021.04.12.20.36.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Apr 2021 20:36:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 12 Apr 2021 20:36:24 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/188] 5.10.30-rc1 review
+Message-ID: <20210413033624.GA235256@roeck-us.net>
+References: <20210412084013.643370347@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add debugfs debugging interface to live migration driver
+On Mon, Apr 12, 2021 at 10:38:34AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.30 release.
+> There are 188 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/vfio/pci/hisilicon/acc_vf_migration.c | 193 ++++++++++++++++++++++++++
- drivers/vfio/pci/hisilicon/acc_vf_migration.h |   2 +
- 2 files changed, 195 insertions(+)
+Build results:
+	total: 156 pass: 156 fail: 0
+Qemu test results:
+	total: 454 pass: 454 fail: 0
 
-diff --git a/drivers/vfio/pci/hisilicon/acc_vf_migration.c b/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-index 5d8650d..d4eacaf 100644
---- a/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-+++ b/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-@@ -16,6 +16,9 @@
- 
- #define VDM_OFFSET(x) offsetof(struct vfio_device_migration_info, x)
- void vfio_pci_hisilicon_acc_uninit(struct acc_vf_migration *acc_vf_dev);
-+static void vf_debugfs_exit(struct acc_vf_migration *acc_vf_dev);
-+static struct dentry *mig_debugfs_root;
-+static int mig_root_ref;
- 
- /* return 0 mailbox ready, -ETIMEDOUT hardware timeout */
- static int qm_wait_mb_ready(struct hisi_qm *qm)
-@@ -933,6 +936,193 @@ static const struct vfio_pci_regops vfio_pci_acc_regops = {
- 	.add_capability = acc_vf_migration_add_capability,
- };
- 
-+static ssize_t acc_vf_debug_read(struct file *filp, char __user *buffer,
-+			   size_t count, loff_t *pos)
-+{
-+	char buf[VFIO_DEV_DBG_LEN];
-+	int len;
-+
-+	len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+			"echo 0: test vf data store\n"
-+			"echo 1: test vf data writeback\n"
-+			"echo 2: test vf send mailbox\n"
-+			"echo 3: dump vf dev data\n"
-+			"echo 4: dump migration state\n");
-+
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
-+}
-+
-+static ssize_t acc_vf_debug_write(struct file *filp, const char __user *buffer,
-+			    size_t count, loff_t *pos)
-+{
-+	struct acc_vf_migration *acc_vf_dev = filp->private_data;
-+	struct device *dev = &acc_vf_dev->vf_dev->dev;
-+	struct hisi_qm *qm = acc_vf_dev->vf_qm;
-+	char tbuf[VFIO_DEV_DBG_LEN];
-+	unsigned long val;
-+	u64 data;
-+	int len, ret;
-+
-+	if (*pos)
-+		return 0;
-+
-+	if (count >= VFIO_DEV_DBG_LEN)
-+		return -ENOSPC;
-+
-+	len = simple_write_to_buffer(tbuf, VFIO_DEV_DBG_LEN - 1,
-+					pos, buffer, count);
-+	if (len < 0)
-+		return len;
-+	tbuf[len] = '\0';
-+	if (kstrtoul(tbuf, 0, &val))
-+		return -EFAULT;
-+
-+	switch (val) {
-+	case STATE_SAVE:
-+		ret = vf_qm_state_save(qm, acc_vf_dev);
-+		if (ret)
-+			return -EINVAL;
-+		break;
-+	case STATE_RESUME:
-+		ret = vf_qm_state_resume(qm, acc_vf_dev);
-+		if (ret)
-+			return -EINVAL;
-+		break;
-+	case MB_TEST:
-+		data = readl(qm->io_base + QM_MB_CMD_SEND_BASE);
-+		dev_info(dev, "debug mailbox addr: 0x%lx, mailbox val: 0x%llx\n",
-+			 (uintptr_t)qm->io_base, data);
-+		break;
-+	case MIG_DATA_DUMP:
-+		dev_info(dev, "dumped vf migration data:\n");
-+		print_hex_dump(KERN_INFO, "Mig Data:", DUMP_PREFIX_OFFSET,
-+				VFIO_DBG_LOG_LEN, 1,
-+				(unsigned char *)acc_vf_dev->vf_data,
-+				sizeof(struct acc_vf_data), false);
-+		break;
-+	case MIG_DEV_SHOW:
-+		if (!acc_vf_dev->mig_ctl)
-+			dev_info(dev, "migration region have release!\n");
-+		else
-+			dev_info(dev,
-+				 "device  state: %u\n"
-+				 "pending bytes: %llu\n"
-+				 "data   offset: %llu\n"
-+				 "data     size: %llu\n"
-+				 "data     addr: 0x%lx\n",
-+				 acc_vf_dev->mig_ctl->device_state,
-+				 acc_vf_dev->mig_ctl->pending_bytes,
-+				 acc_vf_dev->mig_ctl->data_offset,
-+				 acc_vf_dev->mig_ctl->data_size,
-+				 (uintptr_t)acc_vf_dev->vf_data);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return count;
-+}
-+
-+static const struct file_operations acc_vf_debug_fops = {
-+	.owner = THIS_MODULE,
-+	.open = simple_open,
-+	.read = acc_vf_debug_read,
-+	.write = acc_vf_debug_write,
-+};
-+
-+static ssize_t acc_vf_state_read(struct file *filp, char __user *buffer,
-+			   size_t count, loff_t *pos)
-+{
-+	struct acc_vf_migration *acc_vf_dev = filp->private_data;
-+	char buf[VFIO_DEV_DBG_LEN];
-+	u32 state;
-+	int len;
-+
-+	if (!acc_vf_dev->mig_ctl) {
-+		len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n", "Invalid\n");
-+	} else {
-+		state = acc_vf_dev->mig_ctl->device_state;
-+		switch (state) {
-+		case VFIO_DEVICE_STATE_RUNNING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"RUNNING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"SAVING and RUNNING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_SAVING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"SAVING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_STOP:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"STOP\n");
-+			break;
-+		case VFIO_DEVICE_STATE_RESUMING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"RESUMING\n");
-+			break;
-+		default:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"Error\n");
-+		}
-+	}
-+
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
-+}
-+
-+static const struct file_operations acc_vf_state_fops = {
-+	.owner = THIS_MODULE,
-+	.open = simple_open,
-+	.read = acc_vf_state_read,
-+};
-+
-+static void vf_debugfs_init(struct acc_vf_migration *acc_vf_dev)
-+{
-+	char name[VFIO_DEV_DBG_LEN];
-+	int node_id;
-+
-+	if (!mig_root_ref)
-+		mig_debugfs_root = debugfs_create_dir("vfio_acc", NULL);
-+	mutex_lock(&acc_vf_dev->reflock);
-+	mig_root_ref++;
-+	mutex_unlock(&acc_vf_dev->reflock);
-+
-+	node_id = dev_to_node(&acc_vf_dev->vf_dev->dev);
-+	if (node_id < 0)
-+		node_id = 0;
-+
-+	if (acc_vf_dev->acc_type == HISI_SEC)
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "sec_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+	else if (acc_vf_dev->acc_type == HISI_HPRE)
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "hpre_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+	else
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "zip_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+
-+	acc_vf_dev->debug_root = debugfs_create_dir(name, mig_debugfs_root);
-+
-+	debugfs_create_file("debug", 0644, acc_vf_dev->debug_root,
-+			      acc_vf_dev, &acc_vf_debug_fops);
-+	debugfs_create_file("state", 0444, acc_vf_dev->debug_root,
-+			      acc_vf_dev, &acc_vf_state_fops);
-+}
-+
-+static void vf_debugfs_exit(struct acc_vf_migration *acc_vf_dev)
-+{
-+	debugfs_remove_recursive(acc_vf_dev->debug_root);
-+
-+	mutex_lock(&acc_vf_dev->reflock);
-+	mig_root_ref--;
-+	mutex_unlock(&acc_vf_dev->reflock);
-+
-+	if (!mig_root_ref)
-+		debugfs_remove_recursive(mig_debugfs_root);
-+}
-+
- static int qm_acc_type_init(struct acc_vf_migration *acc_vf_dev)
- {
- 	struct pci_dev *pdev = acc_vf_dev->vf_dev;
-@@ -1117,6 +1307,8 @@ int vfio_pci_hisilicon_acc_init(struct vfio_pci_device *vdev)
- 		goto register_error;
- 	}
- 
-+	vf_debugfs_init(acc_vf_dev);
-+
- 	return 0;
- 
- register_error:
-@@ -1139,6 +1331,7 @@ void vfio_pci_hisilicon_acc_uninit(struct acc_vf_migration *acc_vf_dev)
- 	acc_vf_dev->regions = NULL;
- 	acc_vf_dev->num_regions = 0;
- 
-+	vf_debugfs_exit(acc_vf_dev);
- 	kfree(acc_vf_dev);
- }
- 
-diff --git a/drivers/vfio/pci/hisilicon/acc_vf_migration.h b/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-index e8b116be..0a5438f 100644
---- a/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-+++ b/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-@@ -157,11 +157,13 @@ struct acc_vf_migration {
- 	struct hisi_qm			*vf_qm;
- 	int				vf_id;
- 	u8				acc_type;
-+	struct mutex			reflock;
- 
- 	struct vfio_device_migration_info *mig_ctl;
- 	struct acc_vf_data		*vf_data;
- 	struct vfio_pci_region		*regions;
- 	int				num_regions;
-+	struct dentry			*debug_root;
- };
- 
- #endif /* ACC_MIG_H */
--- 
-2.8.1
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
