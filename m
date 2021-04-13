@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A9A35DFCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E735DFD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239239AbhDMNMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        id S241659AbhDMNM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhDMNMG (ORCPT
+        with ESMTP id S240070AbhDMNM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:12:06 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD855C061574;
-        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id l14so16384104ljb.1;
-        Tue, 13 Apr 2021 06:11:44 -0700 (PDT)
+        Tue, 13 Apr 2021 09:12:26 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66800C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:12:05 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id m3so19337113edv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
-        b=CT0d7ft2eGC496UOqY7CPcm/vmeacczS8kxYMJupYLVqzF5Luq7SXqOCLpEuTKmOxN
-         5Fk1G14n4rLcTt3un6okLXTUpQD3o8eBq613SLQ7heYQmcrYsg4NuKfNTPEcCnBQeO78
-         spsQ/GSiAZFtO5OwxUoJGdWzSres2mZMMSgyblCWt4g2JOStBk80hQ6rHXeJpp8h7mEV
-         BnzO8dFbzxclTyaMKr7jxP5K92E+SZcAyoU0FceBXtGx1IP6yp0Jr1DvRjMY5czhBiFX
-         /47pNOfhYRjaHoSz5ykS3t2MUr2RJrBvqHVXz6hp4fPwBoYBfGtUUMg0uCX6a5UWP1Kw
-         bdrQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JgdFlcjKU9PU1av9/ApHGEGIWSg0KENF/Em1dnUWYKA=;
+        b=OJLF5WhrD/4VIOG76yBUebbn3H0fOwnYI0rMe8tkdMX28ZiUwh7j6/242zpXDxxbWi
+         HNR378B3E0FEEBK320AujAfmXL+NxAQWBHfD+wYOl4y1hXQP2KQN6Vb4s1wsIEB6W0sC
+         H3uQ/OvY9PuOEYVX6WnACc6RuO8pkgpWaJ4g/hFAMVIoazf5tzlrohf+jh660et0q0BH
+         TaIpLxUHPJJoratG/3CzPBHSc7yqBLaCkcE+icUwbLg/Q/8C2OjbZ5cLq1L+fxk+Ha5m
+         lfiJNZnK8LTQ+E1gCMmhEUobEZmeNW/sKZrxqs+jZ983J2SkimAbl+H040slCR0b2Miq
+         eTbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=QdLdl7ZYVcXzeYaosVMxtDawv9mtCEbRVs/6OC9JF9o=;
-        b=Wvsp+SOTdwmToC3bm8SdpWgY8xRBB0b96TDFg4jyGc+x8SfR8VvQquQcVGIM6vkmz4
-         vpe78z3dLeOM776HXDMIV9aVmNJ3ZDKxcNz3D0AqitlZ5vGUPd/TL7snsur7jB0fLnmb
-         af0alny6Y2f6Sphde+23yEFVKJGnzc8J4bsGU6n3qCW368uQtwljVQJ2CiZ1GacXsBjc
-         JUUn3hOa6HpiG+QjlHa905MDSSsaiCrTSxJkgHRAr8RAp7eqmTMZOm2LDlGJQjy5H+QJ
-         K/FJGegSPEi6e9W2lAc9B2YnUBci18iOq4lR6Y25Bi8augZWnugG1FliHobWsUbZi8LO
-         5GPg==
-X-Gm-Message-State: AOAM532d8u66ZDcJO94t5qCfeSGNtBGlX6LQ4JBMxU86nSOxq6fdjRWr
-        8rb7gCHcMTvvX2o8KncfiVvYljhi5+8lAg==
-X-Google-Smtp-Source: ABdhPJzzEAnNBu3PaFSv/V5rMsWkYmo2d4Mf6z3k/+v/uK+a8Iym35+wofwnC1KxXTZNa8IEUmZo1Q==
-X-Received: by 2002:a2e:b555:: with SMTP id a21mr21162925ljn.69.1618319503380;
-        Tue, 13 Apr 2021 06:11:43 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.229.90])
-        by smtp.gmail.com with ESMTPSA id k2sm3344307lfg.107.2021.04.13.06.11.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JgdFlcjKU9PU1av9/ApHGEGIWSg0KENF/Em1dnUWYKA=;
+        b=n74hXxaMISw/UTfQBw3Bjfy++iWCfVzdEKOYAQOTvElz/IfRZYJUv+juA7R9FM009+
+         2K7sfzjTrTDYhSa/WSXhW05VW2qXCmN/drTqg4/k+pCv3Bjlm0j3YYOqzOFmN4MT/WqS
+         zwpxhJ4z1yj+5fbyXtOKsXhdTkv8BEMBAM4VSbTLCbmDzDt6kF1CeQHRoiNqcDlDcBcU
+         kqa5sTYFFdoNEfVYeJkLtRV1BfObQl6ZclXe8WbHiiu/Khp2fOTePO5gko87tAA3jM3P
+         eE7mTKtAuCh+DnKVkBTjEsm9XpJZK19++41Ud154rJQFcvyo/nhZoLxU0Trfl9h+j0TW
+         B1yw==
+X-Gm-Message-State: AOAM533VQ9vu8De6l46wZ+torYoJRN4DykTqbKvjpgXlJtssVCSbgWSN
+        D6fQoi0w8sF+GuDrnnVPJoc=
+X-Google-Smtp-Source: ABdhPJyH+SpOOo0GQ1Svz6FgNJziJxDyrEqAFB2235ohGId9mNVMErtOJZdxkG0DfDCAhJ/PuPTZdw==
+X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr34370981edb.97.1618319524139;
+        Tue, 13 Apr 2021 06:12:04 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id hs26sm3655477ejc.23.2021.04.13.06.12.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 06:11:42 -0700 (PDT)
-Message-ID: <d37a412f244eaa0f1352b394fdf933ce75d9968c.camel@gmail.com>
-Subject: memory leak in ext4_multi_mount_protect
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>
-Date:   Tue, 13 Apr 2021 16:11:41 +0300
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 
+        Tue, 13 Apr 2021 06:12:03 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192u: ieee80211: Replaced strncpy() with strscpy()
+Date:   Tue, 13 Apr 2021 15:12:02 +0200
+Message-ID: <4666289.4L6Ep8XSK1@linux.local>
+In-Reply-To: <YHWVsahY4nfo9xF/@kroah.com>
+References: <20210413123041.24260-1-fmdefrancesco@gmail.com> <YHWVsahY4nfo9xF/@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tuesday, April 13, 2021 2:59:29 PM CEST Greg Kroah-Hartman wrote:
+> On Tue, Apr 13, 2021 at 02:30:41PM +0200, Fabio M. De Francesco wrote:
+> > Replaced strncpy() with strscpy() because of compilation time warnings
+> > about possible truncation of output [-Wstringop-truncation].
+>=20
+> build warnings?  What build warnings?
+>
+drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c:1388:5: warning:=20
+=E2=80=98strncpy=E2=80=99 output may be truncated copying 32 bytes from a s=
+tring of length=20
+32 [-Wstringop-truncation]
+ 1388 |     strncpy(tmp_ssid, ieee->current_network.ssid,=20
+IW_ESSID_MAX_SIZE);
+>=20
+> > Furthermore, according to the Linux official documentation, strscpy()
+> > is
+> > preferred to strncpy.
+> >=20
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> >=20
+> >  drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+> > b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c index
+> > 25ea8e1b6b65..aa58eedf5e86 100644
+> > --- a/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+> > +++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_softmac.c
+> > @@ -1385,12 +1385,12 @@ inline void ieee80211_softmac_new_net(struct
+> > ieee80211_device *ieee, struct ieee>=20
+> >  			 * essid provided by the user.
+> >  			 */
+> >  		=09
+> >  			if (!ssidbroad) {
+> >=20
+> > -				strncpy(tmp_ssid, ieee-
+>current_network.ssid, IW_ESSID_MAX_SIZE);
+> > +				strscpy(tmp_ssid, ieee-
+>current_network.ssid, IW_ESSID_MAX_SIZE);
+>=20
+> Are you sure you can just replace this like this?
+>
+I surely was... but now I'm not anymore, since your review :)
 
-I've done debugging on this issue
-https://syzkaller.appspot.com/bug?id=420258a304e5d92cfef6b0097f87b42506e1db08
-and I want to ask you about 
-proper way of fixing it. The problem was in case sbi->s_mmp_tsk hasn’t
-started at the time of kthread_stop() call. In that case allocated data
-won't be freed.
+Maybe you mean I have to check possible return of -E2BIG?
+Did you mean something else?
+May you please elaborate further?
 
-I wrote fix patch, but I am confused about it, because I didn't find
-any kernel code like this. I don't think, that adding new members to
-struct super_block is good idea, that's why I came to that decision: 
+Thanks,
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b9693680463a..9c33e97bd5c5 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5156,8 +5156,10 @@ static int ext4_fill_super(struct super_block
-*sb, void *data, int silent)
- failed_mount3:
- 	flush_work(&sbi->s_error_work);
- 	del_timer_sync(&sbi->s_err_report);
--	if (sbi->s_mmp_tsk)
--		kthread_stop(sbi->s_mmp_tsk);
-+	if (sbi->s_mmp_tsk) {
-+		if (kthread_stop(sbi->s_mmp_tsk) == -EINTR)
-+			kfree(kthread_data(sbi->s_mmp_tsk));
-+	}
- failed_mount2:
- 	rcu_read_lock();
- 	group_desc = rcu_dereference(sbi->s_group_desc);
+=46abio
+>=20
+> >  				tmp_ssid_len =3D ieee-
+>current_network.ssid_len;
+> >  		=09
+> >  			}
+> >  			memcpy(&ieee->current_network, net,=20
+sizeof(struct
+> >  			ieee80211_network));
+> >=20
+> > -			strncpy(ieee->current_network.ssid,=20
+tmp_ssid, IW_ESSID_MAX_SIZE);
+> > +			strscpy(ieee->current_network.ssid,=20
+tmp_ssid, IW_ESSID_MAX_SIZE);
+>=20
+> Same here, are you sure?
+>=20
+> thanks,
+>=20
+> greg k-h
 
 
-I look forward to hearing your perspective on this patch :)
-
-With regards,
-Pavel Skripkin
 
 
