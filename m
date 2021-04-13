@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D2235DB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FF835DB56
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245727AbhDMJbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245688AbhDMJbg (ORCPT
+        id S237785AbhDMJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:34:59 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:60702 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230378AbhDMJeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:31:36 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F00C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:31:16 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lWFNy-0007Gv-O1; Tue, 13 Apr 2021 11:31:06 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lWFNx-00027d-Ut; Tue, 13 Apr 2021 11:31:05 +0200
-Date:   Tue, 13 Apr 2021 11:31:05 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: [Ping for Dmitry] Re: [PATCH v5 3/3] iio: adc: add ADC driver for
- the TI TSC2046 controller
-Message-ID: <20210413093105.lbqe46srqvv7tj6s@pengutronix.de>
-References: <20210329073131.1759-1-o.rempel@pengutronix.de>
- <20210329073131.1759-4-o.rempel@pengutronix.de>
- <20210329115826.03bc5745@jic23-huawei>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210329115826.03bc5745@jic23-huawei>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:26:06 up 131 days, 23:32, 46 users,  load average: 0.00, 0.02,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Tue, 13 Apr 2021 05:34:50 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVRamsD_1618306463;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVRamsD_1618306463)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 13 Apr 2021 17:34:29 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     wim@linux-watchdog.org
+Cc:     linux@roeck-us.net, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] watchdog: it87_wdt: remove useless function
+Date:   Tue, 13 Apr 2021 17:34:20 +0800
+Message-Id: <1618306460-57286-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Fix the following clang warning:
 
-probably this mail passed under your radar. Can you please add your
-statement here.
+drivers/watchdog/it87_wdt.c:155:20: warning: unused function
+'superio_outw' [-Wunused-function].
 
-On Mon, Mar 29, 2021 at 11:58:26AM +0100, Jonathan Cameron wrote:
-> On Mon, 29 Mar 2021 09:31:31 +0200
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
-> > the touchscreen use case. By implementing it as an IIO ADC device, we can
-> > make use of resistive-adc-touch and iio-hwmon drivers.
-> > 
-> > Polled readings are currently not implemented to keep this patch small, so
-> > iio-hwmon will not work out of the box for now.
-> > 
-> > So far, this driver was tested with a custom version of resistive-adc-touch driver,
-> > since it needs to be extended to make use of Z1 and Z2 channels. The X/Y
-> > are working without additional changes.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Hi Oleksij,
-> 
-> Couple of things in here I missed before, but big question is still whether
-> Dmitry is happy with what you mention in the cover letter:
-> 
-> "This driver can replace drivers/input/touchscreen/ads7846.c and has
-> following advantages over it:
-> - less code to maintain
-> - shared code paths (resistive-adc-touch, iio-hwmon, etc)
-> - can be used as plain IIO ADC to investigate signaling issues or test
->   real capacity of the plates and attached low-pass filters
->   (or use the touchscreen as a microphone if you like ;) )"
-> 
-> So two things that need addressing in here are
-> iio_dev->name (part number, not hybrid of that an spi device name)
-> Why oversampling is DT rather than userspace controllable.
-> For that I'm looking for clear reasoning for the choice.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/watchdog/it87_wdt.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/drivers/watchdog/it87_wdt.c b/drivers/watchdog/it87_wdt.c
+index 2b48318..bb11229 100644
+--- a/drivers/watchdog/it87_wdt.c
++++ b/drivers/watchdog/it87_wdt.c
+@@ -152,14 +152,6 @@ static inline int superio_inw(int reg)
+ 	return val;
+ }
  
-Regards,
-Oleksij
+-static inline void superio_outw(int val, int reg)
+-{
+-	outb(reg++, REG);
+-	outb(val >> 8, VAL);
+-	outb(reg, REG);
+-	outb(val, VAL);
+-}
+-
+ /* Internal function, should be called after superio_select(GPIO) */
+ static void _wdt_update_timeout(unsigned int t)
+ {
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.8.3.1
+
