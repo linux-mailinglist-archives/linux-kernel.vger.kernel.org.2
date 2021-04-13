@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A7B35DACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E40135DAD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245361AbhDMJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245346AbhDMJMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:12:55 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F5EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:12:36 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id sd23so16098184ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cOAyiIpTL0MPS3HVlPhA17Z4KssVa29gOz8MIS/lLK4=;
-        b=ReVQZ/tKm2GnT7ScEH9ClWtZBQDCG5i9KRPiqdu7rubKxmPXOyvG9goxkqig689jRp
-         +6nnEPWj1qeORcIKvKahCIlDU52THgQVQNABsQnaKYAxNrJ8FDgZ6cQVlrfOUQ9O4n6W
-         ZZX4OC0ZdpLgxs0x/Ru1TiWMafgZvU5+FeEBUxOOrK5XvHQCYcv+8k8ZlhtIFvhy4hPU
-         TLWnNH1Nh7MTpj7UelhnYFV+/+2m+cuvgM/awVGc2xkPZYytcgHSD00w8P0MCfgdqg3D
-         dJ+dPiqiZTPV0qbzU1V0VHTuM9DOkQSHN19amopX79h2JyMDpfWY8mtTqu4HODNK0Y0C
-         w21w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cOAyiIpTL0MPS3HVlPhA17Z4KssVa29gOz8MIS/lLK4=;
-        b=XuaZGTUYK0KTQ33Kid6/QrMgL29LyvWeySkB2ESaeafnf41YrtG1s0eOTvSjLWRFft
-         xF9dsx5GTERMjhmh46zdJf2LQaIYNOpzzA43DdjV+CcgWIznQXwEAl0HOf/oJe78sjT+
-         /GQ9dIurcpM6zVfDLwyr7+sf+g/j32CHwJtgOoZ+ZydkDvZ5YQc5bi+teyQYI0zEjMbP
-         W/aYy6XQXP+/LwNDBZ6BqCrjVJHNVZrQru1IUJQfarEtfod9QRclVUUUXqHb/PId19fa
-         sesDHNv1mVk3eCUI4lUXbNfuP1CHGNL7fJuFDCO9DO5VHR8l9hSxxs1/A6Z6l1s4B6d5
-         hQMA==
-X-Gm-Message-State: AOAM532rq4Eng+R7IdZf5gmYiZoCD7AXyZvoNsDMbj28VJ3FqwaYLoC7
-        LKwz0fkIbTa3RKHM8yUSjmw=
-X-Google-Smtp-Source: ABdhPJxlaZO9nKzhGpRnRp0ThPh3RNrJ7SHbgJrXoc9b947qKLB6dXoR2hwOJ6NN1cDcBqtT8frAbg==
-X-Received: by 2002:a17:907:33cb:: with SMTP id zk11mr14642441ejb.231.1618305144069;
-        Tue, 13 Apr 2021 02:12:24 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id t11sm7389296ejs.95.2021.04.13.02.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 02:12:23 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Remove camelcase
-Date:   Tue, 13 Apr 2021 11:12:22 +0200
-Message-ID: <4613100.Flf31UX1ZZ@linux.local>
-In-Reply-To: <YHVKwEX8CvV7brRg@kroah.com>
-References: <20210412210258.8061-1-fmdefrancesco@gmail.com> <YHVKwEX8CvV7brRg@kroah.com>
+        id S245374AbhDMJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhDMJOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:14:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F31A60234;
+        Tue, 13 Apr 2021 09:14:32 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 10:14:29 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the arm64
+ tree
+Message-ID: <20210413091429.GA15806@arm.com>
+References: <20210413185936.5095cb11@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413185936.5095cb11@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, April 13, 2021 9:39:44 AM CEST Greg Kroah-Hartman wrote:
-> On Mon, Apr 12, 2021 at 11:02:58PM +0200, Fabio M. De Francesco wrote:
-> > Removed camelcase in (some) symbols. Further work is needed.
-> 
-> What symbols did you do this for?  What did you change them from and to?>
-> 
-> Be specific, and try to do only one structure at a time at the most,
-> trying to review 1000 lines of changes at once is hard, would you want
-> to do that?  :)
-> 
-For sure, if I were you, I wouldn't be reviewing one thousand lines of code 
-at once :) 
+On Tue, Apr 13, 2021 at 06:59:36PM +1000, Stephen Rothwell wrote:
+> diff --cc lib/test_kasan.c
+> index 785e724ce0d8,bf9225002a7e..000000000000
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@@ -78,33 -83,30 +83,35 @@@ static void kasan_test_exit(struct kuni
+>    * fields, it can reorder or optimize away the accesses to those fields.
+>    * Use READ/WRITE_ONCE() for the accesses and compiler barriers around the
+>    * expression to prevent that.
+> +  *
+> +  * In between KUNIT_EXPECT_KASAN_FAIL checks, fail_data.report_found is kept as
+> +  * false. This allows detecting KASAN reports that happen outside of the checks
+> +  * by asserting !fail_data.report_found at the start of KUNIT_EXPECT_KASAN_FAIL
+> +  * and in kasan_test_exit.
+>    */
+> - #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {		\
+> - 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
+> - 	    !kasan_async_mode_enabled())			\
+> - 		migrate_disable();				\
+> - 	WRITE_ONCE(fail_data.report_expected, true);		\
+> - 	WRITE_ONCE(fail_data.report_found, false);		\
+> - 	kunit_add_named_resource(test,				\
+> - 				NULL,				\
+> - 				NULL,				\
+> - 				&resource,			\
+> - 				"kasan_data", &fail_data);	\
+> - 	barrier();						\
+> - 	expression;						\
+> - 	barrier();						\
+> - 	if (kasan_async_mode_enabled())				\
+> - 		kasan_force_async_fault();			\
+> - 	barrier();						\
+> - 	KUNIT_EXPECT_EQ(test,					\
+> - 			READ_ONCE(fail_data.report_expected),	\
+> - 			READ_ONCE(fail_data.report_found));	\
+> - 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&			\
+> - 	    !kasan_async_mode_enabled()) {			\
+> - 		if (READ_ONCE(fail_data.report_found))		\
+> - 			kasan_enable_tagging_sync();		\
+> - 		migrate_enable();				\
+> - 	}							\
+> + #define KUNIT_EXPECT_KASAN_FAIL(test, expression) do {			\
+>  -	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS))				\
+> ++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&				\
+> ++	    !kasan_async_mode_enabled())				\
+> + 		migrate_disable();					\
+> + 	KUNIT_EXPECT_FALSE(test, READ_ONCE(fail_data.report_found));	\
+> + 	WRITE_ONCE(fail_data.report_expected, true);			\
+> + 	barrier();							\
+> + 	expression;							\
+> + 	barrier();							\
+> ++	if (kasan_async_mode_enabled())					\
+> ++		kasan_force_async_fault();				\
+> ++	barrier();							\
+> + 	KUNIT_EXPECT_EQ(test,						\
+> + 			READ_ONCE(fail_data.report_expected),		\
+> + 			READ_ONCE(fail_data.report_found));		\
+>  -	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {				\
+> ++	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS) &&				\
+> ++	    !kasan_async_mode_enabled()) {				\
+> + 		if (READ_ONCE(fail_data.report_found))			\
+>  -			kasan_enable_tagging();				\
+> ++			kasan_enable_tagging_sync();			\
+> + 		migrate_enable();					\
+> + 	}								\
+> + 	WRITE_ONCE(fail_data.report_found, false);			\
+> + 	WRITE_ONCE(fail_data.report_expected, false);			\
+>   } while (0)
+>   
+>   #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
 
-OK, let's work on one item at a time  
+Thanks Stephen. The resolution looks correct.
 
-I'd place each change in a patch of a series:
+Andrew, if you'd rather I dropped the MTE async mode support from the
+arm64 tree please let me know. Thanks.
 
-a) one global variable -> one patch with subject containing the name of the 
-symbol (beware that if not 1000 lines you'll have to review 200 lines or 
-more because that file is huge and its globals are used hundreds of times);
-b) one or more local variables -> one single patch containing the name of 
-the function where they are used;  
+https://lore.kernel.org/r/20210315132019.33202-1-vincenzo.frascino@arm.com/
 
-In the while, I'll remove also the trailing "p_" that stand for "pointer" 
-(as Julia suggested). 
-
-The above seems reasonable to me. Doesn't it?
-
-Regarding what Matthew wrote about making use of  
-drivers/net/wireless/realtek/rtlwifi/btcoexist/ I cannot work on it (too 
-much time commitment would be needed, I suppose), but,  if someone else 
-can, I won't do the above-mentioned tasks because they would be useless.
-
-Said that, I'm not sure if removing camelcase in this file should be done 
-at all.
-
-Thanks,
-
-Fabio
->
-> thanks,
-> 
-> greg k-h
-
-
-
-
+-- 
+Catalin
