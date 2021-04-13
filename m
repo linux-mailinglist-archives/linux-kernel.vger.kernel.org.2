@@ -2,189 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216E435E057
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62A135E05B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242271AbhDMNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:42:52 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:45950 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhDMNmt (ORCPT
+        id S244819AbhDMNm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243766AbhDMNm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:42:49 -0400
-Received: by mail-oi1-f182.google.com with SMTP id d12so16986355oiw.12;
-        Tue, 13 Apr 2021 06:42:30 -0700 (PDT)
+        Tue, 13 Apr 2021 09:42:57 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43F1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:42:37 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id x8so13030691ybx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LW3dM/PsWPmPpGTo4++4+Jcuo0fGVz6Qa1xCvzsVRgc=;
+        b=G1yv8U44nKYDufHfBo+TkQDivfgcV4vOYA3FiYvbUuLSpY4E8046CrnOHpgboRvMc9
+         PZxhL6WKrEI1y5o5sQWiKPYMm+7I2G/HWmioliFdm0wPwB38/miz1DmR8wvpRykkShDi
+         WbfJxfJLREBD9sgPWzdGD9ac0n8PG0qApDoeQu5Nidxhomii8Iih1MhRay/Sdn6ByFni
+         7e55/aRw3i5XlYj55ZFVHySYIy6LtRRp0F8LZOHXe8hNsonQs1g8grKCdC0pli66+KaJ
+         XHBR4X1F2ImeGNAUnaC7tA7FVO8MEEZE2ejMJ966DxldvgJDBPbfF6a0xV9uafXoTMVJ
+         zvFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o6pBRjCE6pRbY3vszk0ay9sUKDeG8wzW1EDOTJwQLjY=;
-        b=C+00Nni3BKH+SCPcfwDuefTCrueEdUAYBz00Ou9WgJGfP6Ij5/6e7VcPXuOQf6FB2X
-         deD3qP9s+Fbb5qG4U8/P7rsM+3R2iLUzw2iBOsFo+kAvnmNkbg7HQT3abJvCJqu2nuSs
-         ES2v8gt9hOQpxhZ0jP8H8S4yo1f4m9gpCDq79gFzn9aoCG865sF27l0zhc2mnfkrdKlL
-         BG+1OMW7e4S28Hi9nWuhoP8qItEMQpHg1TD7X3FHv/kdmuxkfIHGrVEVHirELEWk/abp
-         eNT5PwNaDdI+ryYFWWcxtwWXDCwSJLcIITqnCK1FUfnw7IEBfNhknpyai+rk+0MmQqfv
-         PVIA==
-X-Gm-Message-State: AOAM533A9xCc8KH2k2wFimfA7nJgiKA+nmKRNgeouafp5ZuX/vPibK8e
-        xWKuJyd1kL/DstIUcLSkV3JDQbhOd8Ovw4tJ5XM=
-X-Google-Smtp-Source: ABdhPJxA9HhnLEvziNv7yjuQ8k2crWMH7SVZJ0O4208XuVZ0tqLUA+h433baaWD4jGNtHLBMfjcjXWOaRUso36Hwygo=
-X-Received: by 2002:a54:4501:: with SMTP id l1mr38061oil.157.1618321349988;
- Tue, 13 Apr 2021 06:42:29 -0700 (PDT)
+        bh=LW3dM/PsWPmPpGTo4++4+Jcuo0fGVz6Qa1xCvzsVRgc=;
+        b=D7kJhrk/7cGofj8q52m8txI+mYkxyl6VNW4o6agmn1yeT0xIfAsJ69u0utsuJ6ZaL+
+         2QM2br2Z9ru7DHmAfV3IvR8LViV+x9y3Xi1RlfE8xdF+J9mnIDYj9qgb220mYZCNOjcw
+         ZojuufJ8B6cfMAyQNI4nA2kokhKkqIIDoAg2pshU11ATnDpGSQ+c4jNtuKsV/AhhMFxW
+         l9YRz3e20i8lxnqazjTBOWdMb+aGKAyark82i972Wz2qd9pqAkZlJO8U19l9nVh+399t
+         BzYt3npyIhLADUzLFgsk3idYehNj4E4+YiXez34yCY4PzRAdzerAztMzedub7EHikfS4
+         GyoA==
+X-Gm-Message-State: AOAM531zEbVfh9oOMxiBpW89z8vsEOZAThu3c0UWHsALI72P/coHuHXx
+        Mih5wTOkMgSBul9eFBEeDSllWrC5UVuFYNPHXci/pA==
+X-Google-Smtp-Source: ABdhPJxulQTBZ3zUs9igHP3kin8lIKME+0y372d30gSCnpjACVEOT/PqvuHGKVTV0q335sGqDGNqyWKLcpjh/nPkjRg=
+X-Received: by 2002:a25:6a88:: with SMTP id f130mr44944615ybc.234.1618321355721;
+ Tue, 13 Apr 2021 06:42:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210412222358.2078782-1-andy.shevchenko@gmail.com>
-In-Reply-To: <20210412222358.2078782-1-andy.shevchenko@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 13 Apr 2021 15:42:19 +0200
-Message-ID: <CAJZ5v0iHmpx3VQ431q17ePHqOrW2311hqNLsRUDyvARZGv_ipA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ACPI: bus: Introduce acpi_dev_get() and reuse it
- in ACPI code
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
+ <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
+ <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
+ <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com>
+ <20210413085538-mutt-send-email-mst@kernel.org> <CANn89iJODpHFAAZt0X-EewnbwKgeLPYpb=0GPRqqZmU9=12R6g@mail.gmail.com>
+ <CANn89iKrSDL9usw18uvVfarWRUBv=V4xTHOMEgS48jhNmzR5_A@mail.gmail.com> <20210413093606-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210413093606-mutt-send-email-mst@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 13 Apr 2021 15:42:24 +0200
+Message-ID: <CANn89iKB3x2T=8j5qBVVtStdQBASD-P6B1+yLKwLh+Y+PggB0A@mail.gmail.com>
+Subject: Re: Linux 5.12-rc7
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
+        Netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:24 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Tue, Apr 13, 2021 at 3:38 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 >
-> Introduce acpi_dev_get() to have a symmetrical API with acpi_dev_put()
-> and reuse both in ACPI code under drivers/acpi folder.
+> On Tue, Apr 13, 2021 at 03:33:40PM +0200, Eric Dumazet wrote:
+> > On Tue, Apr 13, 2021 at 3:27 PM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Tue, Apr 13, 2021 at 2:57 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Mon, Apr 12, 2021 at 06:47:07PM +0200, Eric Dumazet wrote:
+> > > > > On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
+> > > > > >
+> > > > > > On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
+> > > > > > <torvalds@linux-foundation.org> wrote:
+> > > > > > >
+> > > > > > > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > > > > > >
+> > > > > > > > Qemu test results:
+> > > > > > > >         total: 460 pass: 459 fail: 1
+> > > > > > > > Failed tests:
+> > > > > > > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+> > > > > > > >
+> > > > > > > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
+> > > > > > > > skb->head"). It is a spurious problem - the test passes roughly every other
+> > > > > > > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
+> > > > > > > > with SIGTERM. So far I have only seen this with the "sh" architecture.
+> > > > > > >
+> > > > > > > Hmm. Let's add in some more of the people involved in that commit, and
+> > > > > > > also netdev.
+> > > > > > >
+> > > > > > > Nothing in there looks like it should have any interaction with
+> > > > > > > architecture, so that "it happens on sh" sounds odd, but maybe it's
+> > > > > > > some particular interaction with the qemu environment.
+> > > > > >
+> > > > > > Yes, maybe.
+> > > > > >
+> > > > > > I spent few hours on this, and suspect a buggy memcpy() implementation
+> > > > > > on SH, but this was not conclusive.
+> > > > > >
+> > > > > > By pulling one extra byte, the problem goes away.
+> > > > > >
+> > > > > > Strange thing is that the udhcpc process does not go past sendto().
+> > > > >
+> > > > > This is the patch working around the issue. Unfortunately I was not
+> > > > > able to root-cause it (I really suspect something on SH)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
+> > > > > 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
+> > > > > virtnet_info *vi,
+> > > > >
+> > > > >         /* Copy all frame if it fits skb->head, otherwise
+> > > > >          * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
+> > > > > +        *
+> > > > > +        * Apparently, pulling only the Ethernet Header triggers a bug
+> > > > > on qemu-system-sh4.
+> > > > > +        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
+> > > > > +        * more to work around this bug : These 20 bytes can not belong
+> > > > > +        * to UDP/TCP payload.
+> > > > > +        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
+> > > > >          */
+> > > >
+> > > > Question: do we still want to do this for performance reasons?
+> > > > We also have the hdr_len coming from the device which is
+> > > > just skb_headlen on the host.
+> > >
+> > > Well, putting 20 bytes in skb->head will disable frag0 optimization.
+> > >
+> > > The change would only benefit to sh architecture :)
+> > >
+> > > About hdr_len, I suppose we could try it, with appropriate safety checks.
+> >
+> > I have added traces, hdr_len seems to be 0 with the qemu-system-sh4 I am using.
+> >
+> > Have I understood you correctly ?
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index 0824e6999e49957f7aaf7c990f6259792d42f32b..f024860f7dc260d4efbc35a3b8ffd358bd0da894
+> > 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -399,9 +399,10 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> >                 hdr_padded_len = sizeof(struct padded_vnet_hdr);
+> >
+> >         /* hdr_valid means no XDP, so we can copy the vnet header */
+> > -       if (hdr_valid)
+> > +       if (hdr_valid) {
+> >                 memcpy(hdr, p, hdr_len);
+> > -
+> > +               pr_err("hdr->hdr_len=%u\n", hdr->hdr.hdr_len);
+> > +       }
+> >         len -= hdr_len;
+> >         offset += hdr_padded_len;
+> >         p += hdr_padded_len;
 >
-> While at it, use acpi_bus_put_acpi_device() in one place rather than above.
 >
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
-> v2: made acpi_dev_get() to return pointer as get_device() does (Rafael)
->  drivers/acpi/device_sysfs.c | 4 ++--
->  drivers/acpi/glue.c         | 8 ++++----
->  drivers/acpi/scan.c         | 9 ++++-----
->  include/acpi/acpi_bus.h     | 5 +++++
->  4 files changed, 15 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> index a07d4ade5835..fa2c1c93072c 100644
-> --- a/drivers/acpi/device_sysfs.c
-> +++ b/drivers/acpi/device_sysfs.c
-> @@ -377,12 +377,12 @@ eject_store(struct device *d, struct device_attribute *attr,
->         if (ACPI_FAILURE(status) || !acpi_device->flags.ejectable)
->                 return -ENODEV;
->
-> -       get_device(&acpi_device->dev);
-> +       acpi_dev_get(acpi_device);
->         status = acpi_hotplug_schedule(acpi_device, ACPI_OST_EC_OSPM_EJECT);
->         if (ACPI_SUCCESS(status))
->                 return count;
->
-> -       put_device(&acpi_device->dev);
-> +       acpi_dev_put(acpi_device);
->         acpi_evaluate_ost(acpi_device->handle, ACPI_OST_EC_OSPM_EJECT,
->                           ACPI_OST_SC_NON_SPECIFIC_FAILURE, NULL);
->         return status == AE_NO_MEMORY ? -ENOMEM : -EAGAIN;
-> diff --git a/drivers/acpi/glue.c b/drivers/acpi/glue.c
-> index 36b24b0658cb..0715e3be99a0 100644
-> --- a/drivers/acpi/glue.c
-> +++ b/drivers/acpi/glue.c
-> @@ -190,7 +190,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
->         if (!acpi_dev)
->                 return -EINVAL;
->
-> -       get_device(&acpi_dev->dev);
-> +       acpi_dev_get(acpi_dev);
->         get_device(dev);
->         physical_node = kzalloc(sizeof(*physical_node), GFP_KERNEL);
->         if (!physical_node) {
-> @@ -217,7 +217,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
->                                 goto err;
->
->                         put_device(dev);
-> -                       put_device(&acpi_dev->dev);
-> +                       acpi_dev_put(acpi_dev);
->                         return 0;
->                 }
->                 if (pn->node_id == node_id) {
-> @@ -257,7 +257,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
->   err:
->         ACPI_COMPANION_SET(dev, NULL);
->         put_device(dev);
-> -       put_device(&acpi_dev->dev);
-> +       acpi_dev_put(acpi_dev);
->         return retval;
->  }
->  EXPORT_SYMBOL_GPL(acpi_bind_one);
-> @@ -285,7 +285,7 @@ int acpi_unbind_one(struct device *dev)
->                         ACPI_COMPANION_SET(dev, NULL);
->                         /* Drop references taken by acpi_bind_one(). */
->                         put_device(dev);
-> -                       put_device(&acpi_dev->dev);
-> +                       acpi_dev_put(acpi_dev);
->                         kfree(entry);
->                         break;
->                 }
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index d9e024fc6e70..bc973fbd70b2 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -530,7 +530,7 @@ static void acpi_device_del_work_fn(struct work_struct *work_not_used)
->                  * used by the device.
->                  */
->                 acpi_power_transition(adev, ACPI_STATE_D3_COLD);
-> -               put_device(&adev->dev);
-> +               acpi_dev_put(adev);
->         }
->  }
->
-> @@ -604,8 +604,7 @@ EXPORT_SYMBOL(acpi_bus_get_device);
->
->  static void get_acpi_device(void *dev)
->  {
-> -       if (dev)
-> -               get_device(&((struct acpi_device *)dev)->dev);
-> +       acpi_dev_get(dev);
->  }
->
->  struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
-> @@ -615,7 +614,7 @@ struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
->
->  void acpi_bus_put_acpi_device(struct acpi_device *adev)
->  {
-> -       put_device(&adev->dev);
-> +       acpi_dev_put(adev);
->  }
->
->  static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
-> @@ -2355,7 +2354,7 @@ int __init acpi_scan_init(void)
->                         acpi_detach_data(acpi_root->handle,
->                                          acpi_scan_drop_device);
->                         acpi_device_del(acpi_root);
-> -                       put_device(&acpi_root->dev);
-> +                       acpi_bus_put_acpi_device(acpi_root);
->                         goto out;
->                 }
->         }
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index d631cb52283e..d2f5afb04a0b 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -695,6 +695,11 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
->              adev;                                                      \
->              adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
->
-> +static inline struct acpi_device *acpi_dev_get(struct acpi_device *adev)
-> +{
-> +       return adev ? to_acpi_device(get_device(&adev->dev)) : NULL;
-> +}
-> +
->  static inline void acpi_dev_put(struct acpi_device *adev)
->  {
->         put_device(&adev->dev);
-> --
+> Depends on how you connect qemu on the host. It's filled by host tap,
+> see virtio_net_hdr_from_skb. If you are using slirp that just zero-fills
+> it.
 
-Applied as 5.13 material, thanks!
+Guenter provided :
+
+qemu-system-sh4 -M r2d -kernel ./arch/sh/boot/zImage -no-reboot \
+        -snapshot \
+        -drive file=rootfs.ext2,format=raw,if=ide \
+        -device virtio-net,netdev=net0 -netdev user,id=net0 \
+        -append "root=/dev/sda console=ttySC1,115200
+earlycon=scif,mmio16,0xffe80000 noiotrap" \
+        -serial null -serial stdio -nographic -monitor null
