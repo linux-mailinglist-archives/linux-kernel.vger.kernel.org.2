@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE9D35E422
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE93E35E41B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346332AbhDMQha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:37:30 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:38776 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346297AbhDMQhZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:37:25 -0400
-Received: by mail-oi1-f178.google.com with SMTP id b3so2813980oie.5;
-        Tue, 13 Apr 2021 09:37:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=l/gtMIE5aDSizPojDSpaMRMi6Yn99u3auh6+rCvsUmc=;
-        b=OQyGyidP9XO8oP6P2lynOf0eY8j9Gx3tfzmCHBADsEdo9oG8oVNrxjfZdpqQhTKtB3
-         dLvwUm5+iQ4iiP1uTw8oIKNmc4w2bcFIP+OLOZ9+vkZOtO5mcIE/uJ7aN6CqGFswC7OX
-         oVsVuGbZKqEbHl6ODSkBsQmLbJ2Mc6xp+jjK3O7TchlyBCI2Dl0w4tfHi+XBuVQs5M1w
-         uaNPsyXBqrPChSdYYif+7+ZCJ5e+vn7bEnOmDxZSUjAYQBaGHI62QOSHlEx5+nLxEAGy
-         Bh0F62n8fAZizP6loiaGcUCt/WXho83XXHZi4QbhTxy+vS3QOCqegpPbWa1BhlWbfWnM
-         VvwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l/gtMIE5aDSizPojDSpaMRMi6Yn99u3auh6+rCvsUmc=;
-        b=lt5dOeQ4V1L02jSXYnzP3XMRQB4GYCzp7ipfS9IokUMFdw5DCayelz85kxLr9C3fvP
-         CLJ+khpOL7DMnqJZU0tj1CcReJSoK4hvXGQgQIzNuWRViySJodj+AeOX+l3F0cRzpJAk
-         0pMV/FUiL/N+aU+9aMsRhkyA55Dg3Q2S02//36ej4ZBgKzbsz/fG1A8IY8tBgXmtSbFK
-         Y6LY6hhffwC6s04V11JfyprUp5Iz/kvYVTQZ0cslylhRjA3lk5zCl/A+QLM5JTZ6+R0F
-         2mxhuU8PSOcLnEloXzE9pMRk90bk+A/H+0zU5G7C0SKqgkHqF9d+7TrVjysy45Z/oGFB
-         we4Q==
-X-Gm-Message-State: AOAM5315gFvNSbHE0e2w8/AVQtDLeWRskRV4GJ/ogb9bh/8PBGVay4d3
-        V4+/WbrYXvf/ZrP5jaggbQVtAc2b8+U=
-X-Google-Smtp-Source: ABdhPJzyC1BeNd9Xj9nXxzy06KnTonvIwh6w57JmiafSfsegT35ymWEDfAp05khFuf0f6FDm6WDOXg==
-X-Received: by 2002:a05:6808:f8c:: with SMTP id o12mr563254oiw.137.1618331762234;
-        Tue, 13 Apr 2021 09:36:02 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j26sm232604ooe.32.2021.04.13.09.36.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Apr 2021 09:36:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 13 Apr 2021 09:35:59 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (nct6683) remove useless function
-Message-ID: <20210413163559.GA91705@roeck-us.net>
-References: <1618293770-55307-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S1345913AbhDMQhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:37:07 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:8358 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345371AbhDMQhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 12:37:01 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FKWTL3l94z9v4hC;
+        Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id DydKvha3r-0P; Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FKWTL1dSsz9v4h8;
+        Tue, 13 Apr 2021 18:36:38 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B63518B7AA;
+        Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id l6EiQIyyQ9dS; Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5627A8B75F;
+        Tue, 13 Apr 2021 18:36:39 +0200 (CEST)
+Subject: Re: [PATCH v1 2/2] powerpc/atomics: Use immediate operand when
+ possible
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
+ <9f50b5fadeb090553e5c2fae025052d04d52f3c7.1617896018.git.christophe.leroy@csgroup.eu>
+ <20210412220821.GN26583@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <063ca819-1276-8deb-0d9b-ea6ec33f9a98@csgroup.eu>
+Date:   Tue, 13 Apr 2021 18:36:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618293770-55307-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210412220821.GN26583@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:02:50PM +0800, Jiapeng Chong wrote:
-> Fix the following clang warning:
-> 
-> drivers/hwmon/nct6683.c:491:19: warning: unused function 'in_to_reg'
-> [-Wunused-function].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Applied.
 
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/nct6683.c | 11 -----------
->  1 file changed, 11 deletions(-)
+Le 13/04/2021 à 00:08, Segher Boessenkool a écrit :
+> Hi!
 > 
-> diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-> index a23047a..b886cf0 100644
-> --- a/drivers/hwmon/nct6683.c
-> +++ b/drivers/hwmon/nct6683.c
-> @@ -488,17 +488,6 @@ static inline long in_from_reg(u16 reg, u8 src)
->  	return reg * scale;
->  }
->  
-> -static inline u16 in_to_reg(u32 val, u8 src)
-> -{
-> -	int scale = 16;
-> -
-> -	if (src == MON_SRC_VCC || src == MON_SRC_VSB || src == MON_SRC_AVSB ||
-> -	    src == MON_SRC_VBAT)
-> -		scale <<= 1;
-> -
-> -	return clamp_val(DIV_ROUND_CLOSEST(val, scale), 0, 127);
-> -}
-> -
->  static u16 nct6683_read(struct nct6683_data *data, u16 reg)
->  {
->  	int res;
+> On Thu, Apr 08, 2021 at 03:33:45PM +0000, Christophe Leroy wrote:
+>> +#define ATOMIC_OP(op, asm_op, dot, sign)				\
+>>   static __inline__ void atomic_##op(int a, atomic_t *v)			\
+>>   {									\
+>>   	int t;								\
+>>   									\
+>>   	__asm__ __volatile__(						\
+>>   "1:	lwarx	%0,0,%3		# atomic_" #op "\n"			\
+>> -	#asm_op " %0,%2,%0\n"						\
+>> +	#asm_op "%I2" dot " %0,%0,%2\n"					\
+>>   "	stwcx.	%0,0,%3 \n"						\
+>>   "	bne-	1b\n"							\
+>> -	: "=&r" (t), "+m" (v->counter)					\
+>> -	: "r" (a), "r" (&v->counter)					\
+>> +	: "=&b" (t), "+m" (v->counter)					\
+>> +	: "r"#sign (a), "r" (&v->counter)				\
+>>   	: "cc");							\
+>>   }									\
+> 
+> You need "b" (instead of "r") only for "addi".  You can use "addic"
+> instead, which clobbers XER[CA], but *all* inline asm does, so that is
+> not a downside here (it is also not slower on any CPU that matters).
+> 
+>> @@ -238,14 +238,14 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
+>>   "1:	lwarx	%0,0,%1		# atomic_fetch_add_unless\n\
+>>   	cmpw	0,%0,%3 \n\
+>>   	beq	2f \n\
+>> -	add	%0,%2,%0 \n"
+>> +	add%I2	%0,%0,%2 \n"
+>>   "	stwcx.	%0,0,%1 \n\
+>>   	bne-	1b \n"
+>>   	PPC_ATOMIC_EXIT_BARRIER
+>> -"	subf	%0,%2,%0 \n\
+>> +"	sub%I2	%0,%0,%2 \n\
+>>   2:"
+>> -	: "=&r" (t)
+>> -	: "r" (&v->counter), "r" (a), "r" (u)
+>> +	: "=&b" (t)
+>> +	: "r" (&v->counter), "rI" (a), "r" (u)
+>>   	: "cc", "memory");
+> 
+> Same here.
+
+Yes, I thought about addic, I didn't find an early solution because I forgot the matching 'addc'.
+
+Now with the couple addc/addic it works well.
+
+Thanks
+
+> 
+> Nice patches!
+> 
+> Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
+> 
+
+Christophe
