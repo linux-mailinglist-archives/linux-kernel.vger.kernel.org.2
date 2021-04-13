@@ -2,146 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9AD35E36A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BF435E370
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 18:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346768AbhDMQEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 12:04:20 -0400
-Received: from mail-ed1-f53.google.com ([209.85.208.53]:46934 "EHLO
-        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346790AbhDMQEM (ORCPT
+        id S1346790AbhDMQEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 12:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346781AbhDMQEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:04:12 -0400
-Received: by mail-ed1-f53.google.com with SMTP id h10so19995658edt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 09:03:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3FvqmXbTPGrExPdYFPrOm7MfDEznWQ3cYJunL5tX4XI=;
-        b=QnUaa/ObnOTdkd9TXid6IcrAuQRmrpANhQd/Cl/ecdkS4vV8JdhUGaB3TX1BaZEkJl
-         OLPkpNcWWih05sUoZGIts+wX+ho3yP3gfTX24SzZEnp3WBBUiOxgJ7OBlJeQTJ9vufc4
-         EeDy1jwWolYm8HcDn75LtEXjHw3X39ADV84RU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3FvqmXbTPGrExPdYFPrOm7MfDEznWQ3cYJunL5tX4XI=;
-        b=mV8eQbN6/5jDxuX4XqxjI2f9mx+y5Z2qWZdPoC4Fp/vPIXFEO5Sb+oQJFYQAWBvBVS
-         bIoDOLBZZG+uZf/K4QnWmDidDan686utCdqWRSozZNSNbsawmGunJ6kwnl5cH+CdcjM0
-         YRfiQBMCdme5/e36/YUiQFvCRfTQcS/nsou0YascTemWGct63/yhKUJ/5molbFPAjIgF
-         cKBNg5LNrPFpQD/ghR3TUO8gIQtpv3UOb7Cc47xIjfGbtk9Qf36WhNL7NIIGrBvy+3Rt
-         IF1H//MrOsHb/Qosss4IywZDCGq4mTNprwXA6hboOhL1q7MKFzKukq0DOjKI32K6Taff
-         R6iA==
-X-Gm-Message-State: AOAM530jGsyb9vG0NE8J8XUv+Y/Z+Eq53xnlgfmRkaAsqpq74PP0GxdX
-        iBLD+v8Lfr3xfGQupaam8e8qSw==
-X-Google-Smtp-Source: ABdhPJxiZ+44bDa0LRDztD06kkg+VeqXHdVoBjsBPwk4/EjYsZpLyi+eafqUP7UkUkNMecAXtkdv2A==
-X-Received: by 2002:a50:82e5:: with SMTP id 92mr263078edg.141.1618329772096;
-        Tue, 13 Apr 2021 09:02:52 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8109:9880:57f0:ba7c:cdd5:fff7:623c])
-        by smtp.gmail.com with ESMTPSA id gb4sm8162852ejc.122.2021.04.13.09.02.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 09:02:51 -0700 (PDT)
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
-        containers@lists.linux-foundation.org
-Cc:     Rodrigo Campos <rodrigo@kinvolk.io>,
-        Sargun Dhillon <sargun@sargun.me>,
-        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
-        Alban Crequy <alban@kinvolk.io>, stable@vger.kernel.org
-Subject: [PATCH 1/1] seccomp: Always "goto wait" if the list is empty
-Date:   Tue, 13 Apr 2021 18:01:51 +0200
-Message-Id: <20210413160151.3301-2-rodrigo@kinvolk.io>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210413160151.3301-1-rodrigo@kinvolk.io>
-References: <20210413160151.3301-1-rodrigo@kinvolk.io>
+        Tue, 13 Apr 2021 12:04:41 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69EFC061574;
+        Tue, 13 Apr 2021 09:04:21 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A3E8C9F0;
+        Tue, 13 Apr 2021 18:04:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618329858;
+        bh=pUgM55miRgoN+NKLMy+bBwdxnn/EXzhYxduslvOw0Ag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uap0ILaCqSXV2FQ50sCvEAUadz05Gj75E13xc+gDhbZkBt6v8QkMz7prkHSAhSXyU
+         1Nd+cQJBWVeSwDO1yjQ9zvlHEd6mFAv271eFF1DwFbQxJOpWyUyu30lQioxBds4bUu
+         5LECcOIa3jxW/QL1qJCzvsWttGZlFonx0FHUmywg=
+Date:   Tue, 13 Apr 2021 19:03:28 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     a.hajda@samsung.com, paul@crapouillou.net, robert.foss@linaro.org,
+        devicetree@vger.kernel.org, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Phong LE <ple@baylibre.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: display: bridge: add it66121 bindings
+Message-ID: <YHXA0KFylvC7FDbK@pendragon.ideasonboard.com>
+References: <20210412154648.3719153-1-narmstrong@baylibre.com>
+ <20210412154648.3719153-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210412154648.3719153-2-narmstrong@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible for the thread with the seccomp filter attached (target)
-to be waken up by an addfd message, but the list be empty. This happens
-when the addfd ioctl on the other side (seccomp agent) is interrupted by
-a signal such as SIGURG. In that case, the target erroneously and
-prematurely returns from the syscall to userspace even though the
-seccomp agent didn't ask for it.
+Hi Neil,
 
-This happens in the following scenario:
+Thank you for the patch.
 
-seccomp_notify_addfd()                                           | seccomp_do_user_notification()
-                                                                 |
-                                                                 |  err = wait_for_completion_interruptible(&n.ready);
- complete(&knotif->ready);                                       |
- ret = wait_for_completion_interruptible(&kaddfd.completion);    |
- // interrupted                                                  |
-                                                                 |
- mutex_lock(&filter->notify_lock);                               |
- list_del(&kaddfd.list);                                         |
- mutex_unlock(&filter->notify_lock);                             |
-                                                                 |  mutex_lock(&match->notify_lock);
-                                                                 |  // This is false, addfd is false
-                                                                 |  if (addfd && n.state != SECCOMP_NOTIFY_REPLIED)
-                                                                 |
-                                                                 |  ret = n.val;
-                                                                 |  err = n.error;
-                                                                 |  flags = n.flags;
+On Mon, Apr 12, 2021 at 05:46:46PM +0200, Neil Armstrong wrote:
+> From: Phong LE <ple@baylibre.com>
+> 
+> Add the ITE bridge HDMI it66121 bindings.
+> 
+> Signed-off-by: Phong LE <ple@baylibre.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../bindings/display/bridge/ite,it66121.yaml  | 123 ++++++++++++++++++
+>  1 file changed, 123 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> new file mode 100644
+> index 000000000000..61ed6dc7740b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+> @@ -0,0 +1,123 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/ite,it66121.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ITE it66121 HDMI bridge Device Tree Bindings
+> +
+> +maintainers:
+> +  - Phong LE <ple@baylibre.com>
+> +  - Neil Armstrong <narmstrong@baylibre.com>
+> +
+> +description: |
+> +  The IT66121 is a high-performance and low-power single channel HDMI
+> +  transmitter, fully compliant with HDMI 1.3a, HDCP 1.2 and backward compatible
+> +  to DVI 1.0 specifications.
+> +
+> +properties:
+> +  compatible:
+> +    const: ite,it66121
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: base I2C address of the device
 
-So, the process blocked in seccomp_do_user_notification() will see a
-response. As n is 0 initialized and wasn't set, it will see a 0 as
-return value from the syscall.
+You can drop the description.
 
-The seccomp agent, when retrying the interrupted syscall, will see an
-ENOENT error as the notification no longer exists (it was already
-answered by this bug).
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: GPIO connected to active low reset
+> +
+> +  vrf12-supply:
+> +    description: Regulator for 1.2V analog core power.
+> +
+> +  vcn33-supply:
+> +    description: Regulator for 3.3V digital core power.
+> +
+> +  vcn18-supply:
+> +    description: Regulator for 1.8V IO core power.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/$defs/port-base
+> +        unevaluatedProperties: false
+> +        description: DPI input port.
+> +
+> +        properties:
+> +          endpoint:
+> +            $ref: /schemas/graph.yaml#/$defs/endpoint-base
+> +            unevaluatedProperties: false
+> +
+> +            properties:
+> +              bus-width:
+> +                description:
+> +                  Endpoint bus width.
+> +                enum:
+> +                  - 12  # 12 data lines connected and dual-edge mode
+> +                  - 24  # 24 data lines connected and single-edge mode
+> +                default: 24
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: HDMI Connector port.
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reset-gpios
+> +  - vrf12-supply
+> +  - vcn33-supply
+> +  - vcn18-supply
+> +  - interrupts
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
 
-This patch fixes the issue by splitting the if in two parts: if we were
-woken up and the state is not replied, we will always do a "goto wait".
-And if that happens and there is an addfd element on the list, we will
-add the fd before "goto wait".
+It's customary to indent DT examples with 4 spaces.
 
-This issue is present since 5.9, when addfd was added.
+> +
+> +      it66121hdmitx: it66121hdmitx@4c {
+> +        compatible = "ite,it66121";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&ite_pins_default>;
+> +        vcn33-supply = <&mt6358_vcn33_wifi_reg>;
+> +        vcn18-supply = <&mt6358_vcn18_reg>;
+> +        vrf12-supply = <&mt6358_vrf12_reg>;
+> +        reset-gpios = <&pio 160 1 /* GPIO_ACTIVE_LOW */>;
 
-Fixes: 7cf97b1254550
-Cc: stable@vger.kernel.org # 5.9+
-Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
----
- kernel/seccomp.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+You can #include the necessary headers at the top of the example, and
+use GPIO_ACTIVE_LOW and IRQ_TYPE_LEVEL_LOW to replace the numerical
+values.
 
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 63b40d12896b..1b34598f0e07 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1107,11 +1107,20 @@ static int seccomp_do_user_notification(int this_syscall,
- 	err = wait_for_completion_interruptible(&n.ready);
- 	mutex_lock(&match->notify_lock);
- 	if (err == 0) {
--		/* Check if we were woken up by a addfd message */
--		addfd = list_first_entry_or_null(&n.addfd,
--						 struct seccomp_kaddfd, list);
--		if (addfd && n.state != SECCOMP_NOTIFY_REPLIED) {
--			seccomp_handle_addfd(addfd);
-+
-+		if (n.state != SECCOMP_NOTIFY_REPLIED) {
-+			/*
-+			 * It is possible to be waken-up by an addfd message but
-+			 * the list be empty. This can happen if the addfd
-+			 * ioctl() is interrupted, as it deletes the element.
-+			 *
-+			 * So, check if indeed there is an element in the list.
-+			 */
-+			addfd = list_first_entry_or_null(&n.addfd,
-+							 struct seccomp_kaddfd, list);
-+			if (addfd)
-+				seccomp_handle_addfd(addfd);
-+
- 			mutex_unlock(&match->notify_lock);
- 			goto wait;
- 		}
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +        interrupt-parent = <&pio>;
+> +        interrupts = <4 8 /* IRQ_TYPE_LEVEL_LOW */>;
+> +        reg = <0x4c>;
+> +
+> +        ports {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          port@0 {
+> +            reg = <0>;
+> +            it66121_in: endpoint {
+> +              bus-width = <12>;
+> +              remote-endpoint = <&display_out>;
+> +            };
+> +          };
+> +
+> +          port@1 {
+> +            reg = <1>;
+> +            hdmi_conn_out: endpoint {
+> +              remote-endpoint = <&hdmi_conn_in>;
+> +            };
+> +          };
+> +        };
+> +      };
+> +    };
+
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
