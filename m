@@ -2,339 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8813935E101
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C2C35E104
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346271AbhDMOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:10:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24591 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346262AbhDMOKO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:10:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618322994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l1tsPKvk9cyMrjFqY00fCJRrMWcEEfacpS/IxrFGbrA=;
-        b=gxWo263604U4Mq6RZDOjmANzPMIgUVxp1tK97XuYR54+EQq8w1LTdlfyUaEniE1DV84YeH
-        BqC4mJS5fPWinOHvPOjrFKPS+bhrv7wfsdG4XsoEY2690Ufgu+/nLdNdm8bTgHvHtVWA4t
-        r74YOPj0EarlF0wBUz0UB9ZY/oYFMJw=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-ohlGeBegPemKTzXdzILS8Q-1; Tue, 13 Apr 2021 10:09:51 -0400
-X-MC-Unique: ohlGeBegPemKTzXdzILS8Q-1
-Received: by mail-ej1-f69.google.com with SMTP id d6so5080834ejd.15
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:09:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=l1tsPKvk9cyMrjFqY00fCJRrMWcEEfacpS/IxrFGbrA=;
-        b=Gvng/h/CxTBph5m1aTK3Q08GrxY4qUmSGwZpAH0YgD9f3Li5AxhEEfownyT9519fWL
-         /xaQYk5LToiTnX+vu6gPJLH0nyTGBTIBcpNWmzJxd1toHW8Gijycc810zU6ZiWsxFRD2
-         ly1WaA175o1fbS78jfBGhdxNETwB1WT3eCHGxKllqRZ2+U5aPSnIazzcP0cD4b3ClnhM
-         9fPz4tcIZqD/6P1hxFIaeVt2dV3BhhY/ycUYEnTOZgkXjJ/nJo9ALM31v49i7WTpvRIC
-         SCR2wKfqlwghQ9421TIOHeHstiX5acfx39m90YKyz6dVdYap/64GlixLgtbFoU6Ocgw2
-         yeMg==
-X-Gm-Message-State: AOAM533dNPXT2aejowdnaWIcF9Tckibo5puZCauFWLwAseSVZ6nYcU4h
-        4wbVlr9rkmGGEveG2wlA67yJ9g85qnqBmIPHUEom6AgSCdoCPEHZL0GdrE1rFa9IBnN8LNrUUv/
-        zB4pjY/6qoPWWxMMy1QTJnxUl
-X-Received: by 2002:a17:906:cb88:: with SMTP id mf8mr13912495ejb.541.1618322990370;
-        Tue, 13 Apr 2021 07:09:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSShJHcNjA5YQ01sjEtgoQm5P14692y1VzemFeZnsv4VJQyxJLgRwTJFH2n7G3ihWQSQm9bw==
-X-Received: by 2002:a17:906:cb88:: with SMTP id mf8mr13912466ejb.541.1618322990130;
-        Tue, 13 Apr 2021 07:09:50 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c2sm9618972edr.57.2021.04.13.07.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:09:49 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
+        id S1346282AbhDMOLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:11:20 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:48006 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229964AbhDMOLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 10:11:09 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1lWJkB-0003z9-Tp; Tue, 13 Apr 2021 16:10:19 +0200
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v2 3/4] KVM: x86: kvm_hv_flush_tlb use inputs from XMM
- registers
-In-Reply-To: <da036c786700032b32e68ebece06fd1a6b6bf344.1618244920.git.sidcha@amazon.de>
-References: <cover.1618244920.git.sidcha@amazon.de>
- <da036c786700032b32e68ebece06fd1a6b6bf344.1618244920.git.sidcha@amazon.de>
-Date:   Tue, 13 Apr 2021 16:09:48 +0200
-Message-ID: <87sg3u5l8z.fsf@vitty.brq.redhat.com>
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] KVM: Scalable memslots implementation
+Date:   Tue, 13 Apr 2021 16:10:06 +0200
+Message-Id: <cover.1618322001.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-> Hyper-V supports the use of XMM registers to perform fast hypercalls.
-> This allows guests to take advantage of the improved performance of the
-> fast hypercall interface even though a hypercall may require more than
-> (the current maximum of) two input registers.
->
-> The XMM fast hypercall interface uses six additional XMM registers (XMM0
-> to XMM5) to allow the guest to pass an input parameter block of up to
-> 112 bytes. Hyper-V can also return data back to the guest in the
-> remaining XMM registers that are not used by the current hypercall.
->
-> Add framework to read/write to XMM registers in kvm_hv_hypercall() and
-> use the additional hypercall inputs from XMM registers in
-> kvm_hv_flush_tlb() when possible.
->
-> Cc: Alexander Graf <graf@amazon.com>
-> Co-developed-by: Evgeny Iakovlev <eyakovl@amazon.de>
-> Signed-off-by: Evgeny Iakovlev <eyakovl@amazon.de>
-> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> ---
->  arch/x86/kvm/hyperv.c | 109 ++++++++++++++++++++++++++++++++++--------
->  1 file changed, 90 insertions(+), 19 deletions(-)
->
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 8f6babd1ea0d..1f9959aba70d 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -36,6 +36,7 @@
->  
->  #include "trace.h"
->  #include "irq.h"
-> +#include "fpu.h"
->  
->  /* "Hv#1" signature */
->  #define HYPERV_CPUID_SIGNATURE_EAX 0x31237648
-> @@ -1623,6 +1624,8 @@ static __always_inline unsigned long *sparse_set_to_vcpu_mask(
->  	return vcpu_bitmap;
->  }
->  
-> +#define KVM_HV_HYPERCALL_MAX_XMM_REGISTERS  6
+The current memslot code uses a (reverse) gfn-ordered memslot array
+for keeping track of them.
+This only allows quick binary search by gfn, quick lookup by hva is
+not possible (the implementation has to do a linear scan of the whole
+memslot array).
 
-Nitpick: this is not KVM-specific so could probably go to arch/x86/include/asm/hyperv-tlfs.h
+Because the memslot array that is currently in use cannot be modified
+every memslot management operation (create, delete, move, change
+flags) has to make a copy of the whole array so it has a scratch copy
+to work on.
 
-> +
->  struct kvm_hv_hcall {
->  	u64 param;
->  	u64 ingpa;
-> @@ -1632,10 +1635,14 @@ struct kvm_hv_hcall {
->  	u16 rep_idx;
->  	bool fast;
->  	bool rep;
-> +	sse128_t xmm[KVM_HV_HYPERCALL_MAX_XMM_REGISTERS];
-> +	bool xmm_dirty;
->  };
->  
->  static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool ex)
->  {
-> +	int i, j;
-> +	gpa_t gpa;
->  	struct kvm *kvm = vcpu->kvm;
->  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
->  	struct hv_tlb_flush_ex flush_ex;
-> @@ -1649,8 +1656,15 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  	bool all_cpus;
->  
->  	if (!ex) {
-> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush, sizeof(flush))))
-> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		if (hc->fast) {
-> +			flush.address_space = hc->ingpa;
-> +			flush.flags = hc->outgpa;
-> +			flush.processor_mask = sse128_lo(hc->xmm[0]);
-> +		} else {
-> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa,
-> +						    &flush, sizeof(flush))))
-> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		}
->  
->  		trace_kvm_hv_flush_tlb(flush.processor_mask,
->  				       flush.address_space, flush.flags);
-> @@ -1668,9 +1682,16 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  		all_cpus = (flush.flags & HV_FLUSH_ALL_PROCESSORS) ||
->  			flush.processor_mask == 0;
->  	} else {
-> -		if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
-> -					    sizeof(flush_ex))))
-> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		if (hc->fast) {
-> +			flush_ex.address_space = hc->ingpa;
-> +			flush_ex.flags = hc->outgpa;
-> +			memcpy(&flush_ex.hv_vp_set,
-> +			       &hc->xmm[0], sizeof(hc->xmm[0]));
-> +		} else {
-> +			if (unlikely(kvm_read_guest(kvm, hc->ingpa, &flush_ex,
-> +						    sizeof(flush_ex))))
-> +				return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		}
->  
->  		trace_kvm_hv_flush_tlb_ex(flush_ex.hv_vp_set.valid_bank_mask,
->  					  flush_ex.hv_vp_set.format,
-> @@ -1681,20 +1702,29 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
->  		all_cpus = flush_ex.hv_vp_set.format !=
->  			HV_GENERIC_SET_SPARSE_4K;
->  
-> -		sparse_banks_len =
-> -			bitmap_weight((unsigned long *)&valid_bank_mask, 64) *
-> -			sizeof(sparse_banks[0]);
-> +		sparse_banks_len = bitmap_weight((unsigned long *)&valid_bank_mask, 64);
->  
->  		if (!sparse_banks_len && !all_cpus)
->  			goto ret_success;
->  
-> -		if (!all_cpus &&
-> -		    kvm_read_guest(kvm,
-> -				   hc->ingpa + offsetof(struct hv_tlb_flush_ex,
-> -							hv_vp_set.bank_contents),
-> -				   sparse_banks,
-> -				   sparse_banks_len))
-> -			return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +		if (!all_cpus) {
-> +			if (hc->fast) {
-> +				if (sparse_banks_len > KVM_HV_HYPERCALL_MAX_XMM_REGISTERS - 1)
-> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +				for (i = 0, j = 1; i < sparse_banks_len; i += 2, j++) {
+Strictly speaking, however, it is only necessary to make copy of the
+memslot that is being modified, copying all the memslots currently
+present is just a limitation of the array-based memslot implementation.
 
-Nitpick: you don't really need 'j' here as 'j == i/2 + 1', right?
+Two memslot sets, however, are still needed so the VM continues to run
+on the currently active set while the requested operation is being
+performed on the second, currently inactive one.
 
-> +					sparse_banks[i + 0] = sse128_lo(hc->xmm[j]);
+In order to have two memslot sets, but only one copy of the actual
+memslots it is necessary to split out the memslot data from the
+memslot sets.
 
-Using ' + 0' for identation is ... unusual :-) I'm not opposed to it
-here though.
+The memslots themselves should be also kept independent of each other
+so they can be individually added or deleted.
 
-> +					sparse_banks[i + 1] = sse128_hi(hc->xmm[j]);
-> +				}
-> +			} else {
-> +				gpa = hc->ingpa;
-> +				gpa += offsetof(struct hv_tlb_flush_ex,
-> +						hv_vp_set.bank_contents);
+These two memslot sets should normally point to the same set of memslots.
+They can, however, be desynchronized when performing a memslot management
+operation by replacing the memslot to be modified by its copy.
+After the operation is complete, both memslot sets once again point to
+the same, common set of memslot data.
 
-Nitpick: if splitting these into two lines is only done to fit into 80
-chars then I'd the requirement is no more so we can be a bit wider.
+This series implements the aforementioned idea.
 
- gpa = hc->ingpa + offsetof(...) 
+The new implementation uses two trees to perform quick lookups:
+For tracking of gfn an ordinary rbtree is used since memslots cannot
+overlap in the guest address space and so this data structure is
+sufficient for ensuring that lookups are done quickly.
 
-> +				if (unlikely(kvm_read_guest(kvm, gpa, sparse_banks,
-> +							    sparse_banks_len *
-> +							    sizeof(sparse_banks[0]))))
-> +					return HV_STATUS_INVALID_HYPERCALL_INPUT;
-> +			}
-> +		}
->  	}
->  
->  	cpumask_clear(&hv_vcpu->tlb_flush);
-> @@ -1890,6 +1920,41 @@ static u16 kvm_hvcall_signal_event(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *h
->  	return HV_STATUS_SUCCESS;
->  }
->  
-> +static bool is_xmm_fast_hypercall(struct kvm_hv_hcall *hc)
-> +{
-> +	switch (hc->code) {
-> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
-> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
-> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
-> +	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static inline void kvm_hv_hypercall_read_xmm(struct kvm_hv_hcall *hc)
-> +{
-> +	int reg;
-> +
-> +	kvm_fpu_get();
-> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
-> +		_kvm_read_sse_reg(reg, &hc->xmm[reg]);
-> +	kvm_fpu_put();
-> +	hc->xmm_dirty = false;
-> +}
-> +
-> +static inline void kvm_hv_hypercall_write_xmm(struct kvm_hv_hcall *hc)
-> +{
-> +	int reg;
-> +
-> +	kvm_fpu_get();
-> +	for (reg = 0; reg < KVM_HV_HYPERCALL_MAX_XMM_REGISTERS; reg++)
-> +		_kvm_write_sse_reg(reg, &hc->xmm[reg]);
-> +	kvm_fpu_put();
-> +	hc->xmm_dirty = false;
-> +}
-> +
->  int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_hv_hcall hc;
-> @@ -1926,6 +1991,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  	hc.rep_idx = (hc.param >> HV_HYPERCALL_REP_START_OFFSET) & 0xfff;
->  	hc.rep = !!(hc.rep_cnt || hc.rep_idx);
->  
-> +	if (hc.fast && is_xmm_fast_hypercall(&hc))
-> +		kvm_hv_hypercall_read_xmm(&hc);
-> +
->  	trace_kvm_hv_hypercall(hc.code, hc.fast, hc.rep_cnt, hc.rep_idx,
->  			       hc.ingpa, hc.outgpa);
->  
-> @@ -1961,28 +2029,28 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  				kvm_hv_hypercall_complete_userspace;
->  		return 0;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST:
-> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
-> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
->  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
->  		break;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE:
-> -		if (unlikely(hc.fast || hc.rep)) {
-> +		if (unlikely(hc.rep)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
->  		ret = kvm_hv_flush_tlb(vcpu, &hc, false);
->  		break;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
-> -		if (unlikely(hc.fast || !hc.rep_cnt || hc.rep_idx)) {
-> +		if (unlikely(!hc.rep_cnt || hc.rep_idx)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
->  		ret = kvm_hv_flush_tlb(vcpu, &hc, true);
->  		break;
->  	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
-> -		if (unlikely(hc.fast || hc.rep)) {
-> +		if (unlikely(hc.rep)) {
->  			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
->  			break;
->  		}
-> @@ -2035,6 +2103,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		break;
->  	}
->  
-> +	if (hc.xmm_dirty)
-> +		kvm_hv_hypercall_write_xmm(&hc);
-> +
+For tracking of hva, however, an interval tree is needed since they
+can overlap between memslots.
 
-Wei already mention that but as 'xmm_dirty' is not being used in this
-patch I'd suggest we move it out too.
+ID to memslot mappings are kept in a hash table instead of using a
+statically allocated "id_to_index" array.
 
->  	return kvm_hv_hypercall_complete(vcpu, ret);
->  }
+The "lru slot" mini-cache, that keeps track of the last found-by-gfn
+memslot, is still present in the new code.
 
--- 
-Vitaly
+There was also a desire to make the new structure operate on "pay as
+you go" basis, that is, that the user only pays the price of the
+memslot count that is actually used, not of the maximum count allowed.
+
+The operation semantics were carefully matched to the original
+implementation, the outside-visible behavior should not change.
+Only the timing will be different.
+
+Making lookup and memslot management operations O(log(n)) brings some
+performance benefits (tested on a Xeon 8167M machine):
+509 slots in use:
+Test            Before          After           Improvement
+Map             0.0232s         0.0223s          4%
+Unmap           0.0724s         0.0315s         56%
+Unmap 2M        0.00155s        0.000869s       44%
+Move active     0.000101s       0.0000792s      22%
+Move inactive   0.000108s       0.0000847s      21%
+Slot setup      0.0135s         0.00803s        41%
+
+100 slots in use:
+Test            Before          After           Improvement
+Map             0.0195s         0.0191s         None
+Unmap           0.0374s         0.0312s         17%
+Unmap 2M        0.000470s       0.000447s        5%
+Move active     0.0000956s      0.0000800s      16%
+Move inactive   0.000101s       0.0000840s      17%
+Slot setup      0.00260s        0.00174s        33%
+
+50 slots in use:
+Test            Before          After           Improvement
+Map             0.0192s         0.0190s         None
+Unmap           0.0339s         0.0311s          8%
+Unmap 2M        0.000399s       0.000395s       None
+Move active     0.0000999s      0.0000854s      15%
+Move inactive   0.0000992s      0.0000826s      17%
+Slot setup      0.00141s        0.000990s       30%
+
+30 slots in use:
+Test            Before          After           Improvement
+Map             0.0192s         0.0190s         None
+Unmap           0.0325s         0.0310s          5%
+Unmap 2M        0.000373s       0.000373s       None
+Move active     0.000100s       0.0000865s      14%
+Move inactive   0.000106s       0.0000918s      13%
+Slot setup      0.000989s       0.000775s       22%
+
+10 slots in use:
+Test            Before          After           Improvement
+Map             0.0192s         0.0186s          3%
+Unmap           0.0313s         0.0310s         None
+Unmap 2M        0.000348s       0.000351s       None
+Move active     0.000110s       0.0000948s      14%
+Move inactive   0.000111s       0.0000933s      16%
+Slot setup      0.000342s       0.000283s       17%
+
+32k slots in use:
+Test            Before          After           Improvement
+Map (8194)       0.200s         0.0541s         73%
+Unmap            3.88s          0.0351s         99%
+Unmap 2M         3.88s          0.0348s         99%
+Move active      0.00142s       0.0000786s      94%
+Move inactive    0.00148s       0.0000880s      94%
+Slot setup      16.1s           0.59s           96%
+
+Since the map test can be done with up to 8194 slots, the result above
+for this test was obtained running it with that maximum number of
+slots.
+
+In both the old and new memslot code case the measurements were done
+against the new KVM selftest framework, with TDP MMU disabled
+(that is, with the default setting).
+
+On x86-64 the code was well tested, passed KVM unit tests and KVM
+selftests with KASAN on.
+And, of course, booted various guests successfully (including nested
+ones with TDP MMU enabled).
+On other KVM platforms the code was compile-tested only.
+
+Changes since v1:
+* Drop the already merged HVA handler retpoline-friendliness patch,
+
+* Split the scalable memslots patch into 8 smaller ones,
+
+* Rebase onto the current kvm/queue,
+
+* Make sure that ranges at both memslot's hva_nodes are always
+initialized,
+
+* Remove kvm_mmu_calculate_default_mmu_pages() prototype, too,
+when removing this function,
+
+* Redo benchmarks, measure 32k memslots on the old implementation, too.
+
+ arch/arm64/kvm/Kconfig              |   1 +
+ arch/arm64/kvm/mmu.c                |  20 +-
+ arch/mips/kvm/Kconfig               |   1 +
+ arch/mips/kvm/mmu.c                 |  12 +-
+ arch/powerpc/kvm/Kconfig            |   1 +
+ arch/powerpc/kvm/book3s_64_mmu_hv.c |  16 +-
+ arch/powerpc/kvm/book3s_64_vio.c    |   2 +-
+ arch/powerpc/kvm/book3s_64_vio_hv.c |   2 +-
+ arch/powerpc/kvm/book3s_hv.c        |   3 +-
+ arch/powerpc/kvm/book3s_hv_nested.c |   4 +-
+ arch/powerpc/kvm/book3s_hv_uvmem.c  |  14 +-
+ arch/powerpc/kvm/book3s_pr.c        |  12 +-
+ arch/s390/kvm/Kconfig               |   1 +
+ arch/s390/kvm/kvm-s390.c            |  66 +---
+ arch/s390/kvm/kvm-s390.h            |  15 +
+ arch/s390/kvm/pv.c                  |   4 +-
+ arch/x86/include/asm/kvm_host.h     |   2 +-
+ arch/x86/kvm/Kconfig                |   1 +
+ arch/x86/kvm/mmu/mmu.c              |  78 ++--
+ arch/x86/kvm/mmu/tdp_mmu.c          |  15 +-
+ arch/x86/kvm/x86.c                  |  18 +-
+ include/linux/kvm_host.h            | 139 ++++---
+ virt/kvm/kvm_main.c                 | 592 ++++++++++++++++------------
+ 23 files changed, 603 insertions(+), 416 deletions(-)
 
