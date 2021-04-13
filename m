@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F39B35E504
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12C135E50E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347146AbhDMR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:28:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241408AbhDMR2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:28:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AEF73B301;
-        Tue, 13 Apr 2021 17:28:30 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 19:28:27 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [thermal]  9223d0dccb:  stress-ng.msg.ops_per_sec -27.4%
- regression
-Message-ID: <20210413172827.GC17097@zn.tnic>
-References: <20210413135800.GA10266@xsang-OptiPlex-9020>
+        id S1347193AbhDMRa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:30:57 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:40558 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347186AbhDMRaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 13:30:55 -0400
+Received: by mail-vs1-f46.google.com with SMTP id b18so3743976vso.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJEhIE4vihT2Owsc6wUtrNP/XIiOpOQ3etGCIsAaU9c=;
+        b=AckIjkwx4FEDkORJKZgpOkQWycL4WE85rLbuKXcaLTLjjLjVs3YT20WyqdEnDarpey
+         +M/Hd8oRNX1EZ67bpQhd/7I4ETJXaQ+an4BsfZujfJPilai/yhAJKqZ7OQMM2z459kFU
+         prCwm4q71osfsJc63hGEhKVwWa8ywOeLGbvok=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJEhIE4vihT2Owsc6wUtrNP/XIiOpOQ3etGCIsAaU9c=;
+        b=Zi/6HPHLBOlZH8kjVk+z6zVWfMDaTAuZNgNY6dXuMNRnX85FFlLOi5VQArkSmN+UDw
+         7Pr7Trtz6WAIiOCTnk451DjwEduO2mrDEvnBmWw9oNjgCsowVAtm9HOz1UWw0FXwniWp
+         9Iu9KTwPjjCBSnrZo37WE/UvTetyogsZQYE5UbfamD23NBC+xUwzHKnDs8obKeLazRdz
+         SOSqXxqU8aIjw7+AABUYHtOok+cckC2ggpjj1ObvfSy6TLDaaphKFSdskGF5opQBpAUo
+         2D//xZAsjapEseKdvjZHcZyO+fILp49yHoBsrrRirUa3+pu51ZI05DQvn9z9jjfYqXEV
+         paUA==
+X-Gm-Message-State: AOAM530KxmIqLv5oqjqWTIBo3aXL2zuU6TBob2bsdlFqPeBLQiMlj9MX
+        POudzs8wP5BId+LpTJ2P5npwBFhPT9KUzaRP
+X-Google-Smtp-Source: ABdhPJze8Zh8fqaxgJJC1Cs6cZddcg5KNfjRccWPo0t3kxfCdwalDdh125DrPInlFHuulLxgcfLXKA==
+X-Received: by 2002:a67:e06:: with SMTP id 6mr18680640vso.21.1618334975402;
+        Tue, 13 Apr 2021 10:29:35 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id s84sm1261818vkd.45.2021.04.13.10.29.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 10:29:34 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id 66so8914547vsk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:29:34 -0700 (PDT)
+X-Received: by 2002:a67:d994:: with SMTP id u20mr25110324vsj.29.1618334973954;
+ Tue, 13 Apr 2021 10:29:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210413135800.GA10266@xsang-OptiPlex-9020>
+References: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
+In-Reply-To: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
+From:   Harry Cutts <hcutts@chromium.org>
+Date:   Tue, 13 Apr 2021 10:29:22 -0700
+X-Gmail-Original-Message-ID: <CA+jURcuD_qr0AwQJsVbpTGdVEdkr5eFtt87xGaMYSmPpBH3ZBg@mail.gmail.com>
+Message-ID: <CA+jURcuD_qr0AwQJsVbpTGdVEdkr5eFtt87xGaMYSmPpBH3ZBg@mail.gmail.com>
+Subject: Re: [PATCH v3] HID: i2c-hid: Skip ELAN power-on command after reset
+To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        Johnny Chuang <johnny.chuang@emc.com.tw>,
+        James Chen <james.chen@emc.com.tw>,
+        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
+        Paul Liang <paul.liang@emc.com.tw>,
+        Jeff Chuang <jeff.chuang@emc.com.tw>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jingle <jingle.wu@emc.com.tw>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:58:01PM +0800, kernel test robot wrote:
-> Greeting,
-> 
-> FYI, we noticed a -27.4% regression of stress-ng.msg.ops_per_sec due to commit:
-> 
-> 
-> commit: 9223d0dccb8f8523754122f68316dd1a4f39f7f8 ("thermal: Move therm_throt there from x86/mce")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+On Mon, 12 Apr 2021 at 18:20, Johnny Chuang <johnny.chuang.emc@gmail.com> wrote:
+>
+> Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
+>
+> For ELAN touchscreen, we found our boot code of IC was not flexible enough
+> to receive and handle this command.
+> Once the FW main code of our controller is crashed for some reason,
+> the controller could not be enumerated successfully to be recognized
+> by the system host. therefore, it lost touch functionality.
+>
+> Add quirk for skip send power-on command after reset.
+> It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+>
+> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+> ---
+> Changes in V3:
+>     - intent the comment at qurik entry
+>     - add Fixes:flag for previous commit id
+>
+> Changes in v2:
+>     - move comment to quirk entry
 
-Hmm, so I went and ran your reproducer, but simplified (see end of
-mail), on a KBL box here. The kernel is tip:x86/urgent from last week:
+Reviewed-by: Harry Cutts <hcutts@chromium.org>
 
-5.12.0-rc6+
------------
-stress-ng: info:  [1430] dispatching hogs: 9 msg
-stress-ng: info:  [1430] successful run completed in 60.01s (1 min, 0.01 secs)
-stress-ng: info:  [1430] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
-stress-ng: info:  [1430]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
-stress-ng: info:  [1430] msg           237390147     60.01    104.03    255.85   3955872.56    659636.95
-stress-ng: info:  [1430] for a 60.01s run time:
-stress-ng: info:  [1430]     360.08s available CPU time
-stress-ng: info:  [1430]     104.11s user time   ( 28.91%)
-stress-ng: info:  [1430]     255.93s system time ( 71.08%)
-stress-ng: info:  [1430]     360.04s total time  ( 99.99%)
-stress-ng: info:  [1430] load average: 8.47 3.71 1.48
+Harry Cutts
+Chrome OS Touch/Input team
 
-Now the same kernel with
-
->   4f432e8bb1 ("x86/mce: Get rid of mcheck_intel_therm_init()")
->   9223d0dccb ("thermal: Move therm_throt there from x86/mce")
-
-reverted.
-
-5.12.0-rc6-rev+
----------------
-stress-ng: info:  [1246] dispatching hogs: 9 msg
-stress-ng: info:  [1246] successful run completed in 60.02s (1 min, 0.02 secs)
-stress-ng: info:  [1246] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
-stress-ng: info:  [1246]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
-stress-ng: info:  [1246] msg           215174467     60.01     99.64    260.24   3585438.79    597906.15
-stress-ng: info:  [1246] for a 60.02s run time:
-stress-ng: info:  [1246]     360.10s available CPU time
-stress-ng: info:  [1246]      99.72s user time   ( 27.69%)
-stress-ng: info:  [1246]     260.32s system time ( 72.29%)
-stress-ng: info:  [1246]     360.04s total time  ( 99.98%)
-stress-ng: info:  [1246] load average: 7.98 2.33 0.80
-
-so if I'm reading this correctly, reverting the patches here brings the
-*slow-down*.
-
-What's up?
-
-reproducer:
-----------
-
-#!/usr/bin/bash
-
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
-do
-        online_file="$cpu_dir"/online
-        [ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
-
-        file="$cpu_dir"/cpufreq/scaling_governor
-        [ -f "$file" ] && echo "performance" > "$file"
-done
-
-stress-ng --timeout 60 --times --verify --metrics-brief --msg 9
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-core.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+> index 9993133..32e3287 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+> @@ -45,6 +45,7 @@
+>  #define I2C_HID_QUIRK_BOGUS_IRQ                        BIT(4)
+>  #define I2C_HID_QUIRK_RESET_ON_RESUME          BIT(5)
+>  #define I2C_HID_QUIRK_BAD_INPUT_SIZE           BIT(6)
+> +#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET    BIT(7)
+>
+>
+>  /* flags */
+> @@ -178,6 +179,12 @@ static const struct i2c_hid_quirks {
+>                  I2C_HID_QUIRK_RESET_ON_RESUME },
+>         { USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
+>                 I2C_HID_QUIRK_BAD_INPUT_SIZE },
+> +       /*
+> +        * Sending the wakeup after reset actually break ELAN touchscreen controller
+> +        * Add I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET to skip wakeup after reset
+> +        */
+> +       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
+> +                I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
+>         { 0, 0 }
+>  };
+>
+> @@ -461,7 +468,8 @@ static int i2c_hid_hwreset(struct i2c_client *client)
+>         }
+>
+>         /* At least some SIS devices need this after reset */
+> -       ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
+> +       if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
+> +               ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
+>
+>  out_unlock:
+>         mutex_unlock(&ihid->reset_lock);
+> --
+> 2.7.4
+>
