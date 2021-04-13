@@ -2,124 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9314335E4BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B5435E4C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 19:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhDMRMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 13:12:09 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:57515 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhDMRMI (ORCPT
+        id S232554AbhDMRNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 13:13:09 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48476 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhDMRNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 13:12:08 -0400
-Date:   Tue, 13 Apr 2021 17:11:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1618333905;
-        bh=JRgenIaLUI4xNF3fT6/o+CfeGgQ3ycbu2skgPulPjiI=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=el1X2abuLZXwA3e5DlDZ4teIaFcaAL7MIJTMwOlKmD9MiVRFaxtH0VvUE/DxjVnb0
-         wxON/ImnI9/nMl8lDQjVIc7AFD8nQIz2cCh5XgYiGCAlO2rLAewBWHK25fzi5V7cCQ
-         DjQ1AKX44wYKg6CcSSaNixgn7bLYhx+eUH+ctkJ1624VQbzqS1Iy0Ve9Rjzhgq/Rmd
-         ezY96vOYsRTNUquaitSQx5GQLg6AWC8vW38+2J64ELPl3pbEs3OlmII3jgjU1BTM9h
-         zac+ia0bQoPWSS5cK65xlMl1xGF6XIvZl/oAYYLvfuCL7MX556/fOhkuSpd2is8Eq2
-         Tc4lFeZ577fnQ==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove sdio_drv_priv structure
-Message-ID: <20210413171124.174008-1-hello@bryanbrattlof.com>
+        Tue, 13 Apr 2021 13:13:07 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13DHCbHf069372;
+        Tue, 13 Apr 2021 12:12:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618333957;
+        bh=jgjpxafnCT8dubyJgOzHyTiAXL0LIjTz+bwGAxcGFFE=;
+        h=From:To:CC:Subject:Date;
+        b=FEvSJcRaU4q67R2d8roIAVX2L11cVMVY662R4xLbXo+2gFunNYX37wVluKrVuDRFF
+         KEYS85jWw9urzTvi4dTWZOXXX4v2QzCAWZnKWThn/jZeBuQTkote17jGZqXm9DL2PW
+         g/6OBy9SX2GW3DEpvI8gnAmujjF4ZwSRyHS5+abU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13DHCbQW117571
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Apr 2021 12:12:37 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
+ Apr 2021 12:12:37 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 13 Apr 2021 12:12:37 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13DHCbfN060185;
+        Tue, 13 Apr 2021 12:12:37 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <s-anna@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH] dt-bindings: mailbox: ti,secure-proxy: Convert to yaml
+Date:   Tue, 13 Apr 2021 12:12:30 -0500
+Message-ID: <20210413171230.5872-1-nm@ti.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sdio_drv_priv structure is a small wrapper around sdio_driver in
-linux/mmc/sdio_func.h with an added drv_registered integer.
+Convert the ti,secure-proxy to yaml for better checks and documentation.
+Differences being mostly in the examples:
+- I've dropped the example usage of mailbox client, it is better done in
+  tisci node definition
+- Switched reg usage for address-cells and size-cells 1 - aligned with
+  schema checks as well
+- included header in example for buildable example
 
-drv_registered is never used anywhere in the driver and only assigned to
-during the sdio registering and unregistering process. We can safely
-remove sdio_drv_priv and use the sdio_driver structure directly.
+NOTE: The following warning is generated since we do include the header
+in the example, but this is a false positive warning.
+  WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 32 ++++++--------------
- 1 file changed, 9 insertions(+), 23 deletions(-)
+ .../bindings/mailbox/ti,secure-proxy.txt      | 50 -------------
+ .../bindings/mailbox/ti,secure-proxy.yaml     | 72 +++++++++++++++++++
+ 2 files changed, 72 insertions(+), 50 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+ create mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
-/rtl8723bs/os_dep/sdio_intf.c
-index a8ef95ab14da..816b5bf6e3ed 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -36,17 +36,12 @@ static const struct dev_pm_ops rtw_sdio_pm_ops =3D {
- =09.resume=09=3D rtw_sdio_resume,
- };
-=20
--struct sdio_drv_priv {
--=09struct sdio_driver r871xs_drv;
--=09int drv_registered;
--};
+diff --git a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+deleted file mode 100644
+index 6c9c7daf0f5c..000000000000
+--- a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-Texas Instruments' Secure Proxy
+-========================================
 -
--static struct sdio_drv_priv sdio_drvpriv =3D {
--=09.r871xs_drv.probe =3D rtw_drv_init,
--=09.r871xs_drv.remove =3D rtw_dev_remove,
--=09.r871xs_drv.name =3D "rtl8723bs",
--=09.r871xs_drv.id_table =3D sdio_ids,
--=09.r871xs_drv.drv =3D {
-+static struct sdio_driver rtl8723bs_sdio_driver =3D {
-+=09.probe =3D rtw_drv_init,
-+=09.remove =3D rtw_dev_remove,
-+=09.name =3D "rtl8723bs",
-+=09.id_table =3D sdio_ids,
-+=09.drv =3D {
- =09=09.pm =3D &rtw_sdio_pm_ops,
- =09}
- };
-@@ -498,18 +493,11 @@ static int __init rtw_drv_entry(void)
- =09DBG_871X_LEVEL(_drv_always_, "rtl8723bs BT-Coex version =3D %s\n", BTCO=
-EXVERSION);
- #endif /*  BTCOEXVERSION */
-=20
--=09sdio_drvpriv.drv_registered =3D true;
-=20
--=09ret =3D sdio_register_driver(&sdio_drvpriv.r871xs_drv);
--=09if (ret !=3D 0) {
--=09=09sdio_drvpriv.drv_registered =3D false;
-+=09ret =3D sdio_register_driver(&rtl8723bs_sdio_driver);
-+=09if (ret !=3D 0)
- =09=09rtw_ndev_notifier_unregister();
--=09=09goto exit;
--=09}
-=20
--=09goto exit;
+-The Texas Instruments' secure proxy is a mailbox controller that has
+-configurable queues selectable at SoC(System on Chip) integration. The
+-Message manager is broken up into different address regions that are
+-called "threads" or "proxies" - each instance is unidirectional and is
+-instantiated at SoC integration level by system controller to indicate
+-receive or transmit path.
 -
--exit:
- =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
- =09return ret;
- }
-@@ -518,9 +506,7 @@ static void __exit rtw_drv_halt(void)
- {
- =09DBG_871X_LEVEL(_drv_always_, "module exit start\n");
-=20
--=09sdio_drvpriv.drv_registered =3D false;
+-Message Manager Device Node:
+-===========================
+-Required properties:
+---------------------
+-- compatible:		Shall be "ti,am654-secure-proxy"
+-- reg-names 		target_data - Map the proxy data region
+-			rt - Map the realtime status region
+-			scfg - Map the configuration region
+-- reg:			Contains the register map per reg-names.
+-- #mbox-cells		Shall be 1 and shall refer to the transfer path
+-			called thread.
+-- interrupt-names:	Contains interrupt names matching the rx transfer path
+-			for a given SoC. Receive interrupts shall be of the
+-			format: "rx_<PID>".
+-- interrupts:		Contains the interrupt information corresponding to
+-			interrupt-names property.
 -
--=09sdio_unregister_driver(&sdio_drvpriv.r871xs_drv);
-+=09sdio_unregister_driver(&rtl8723bs_sdio_driver);
-=20
- =09rtw_ndev_notifier_unregister();
-=20
---=20
-2.27.0
-
+-Example(AM654):
+-------------
+-
+-	secure_proxy: mailbox@32c00000 {
+-		compatible = "ti,am654-secure-proxy";
+-		#mbox-cells = <1>;
+-		reg-names = "target_data", "rt", "scfg";
+-		reg = <0x0 0x32c00000 0x0 0x100000>,
+-		      <0x0 0x32400000 0x0 0x100000>,
+-		      <0x0 0x32800000 0x0 0x100000>;
+-		interrupt-names = "rx_011";
+-		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	};
+-
+-	dmsc: dmsc {
+-		[...]
+-		mbox-names = "rx", "tx";
+-		# RX Thread ID is 11
+-		# TX Thread ID is 13
+-		mboxes= <&secure_proxy 11>,
+-			<&secure_proxy 13>;
+-		[...]
+-	};
+diff --git a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+new file mode 100644
+index 000000000000..88eb32cb5678
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/ti,secure-proxy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments' Secure Proxy
++
++maintainers:
++  - Nishanth Menon <nm@ti.com>
++
++description: |
++  The Texas Instruments' secure proxy is a mailbox controller that has
++  configurable queues selectable at SoC(System on Chip) integration. The
++  Message manager is broken up into different address regions that are
++  called "threads" or "proxies" - each instance is unidirectional and is
++  instantiated at SoC integration level by system controller to indicate
++  receive or transmit path.
++
++properties:
++  $nodename:
++    pattern: "^mailbox@[0-9a-f]+$"
++
++  compatible:
++    const: ti,am654-secure-proxy
++
++  "#mbox-cells":
++    const: 1
++
++  reg-names:
++    items:
++      - const: target_data
++      - const: rt
++      - const: scfg
++
++  reg:
++    minItems: 3
++
++  interrupt-names:
++    minItems: 1
++    description:
++      Contains the interrupt name information for the Rx interrupt path for
++      secure proxy.
++
++  interrupts:
++    minItems: 1
++    description:
++      Contains the interrupt information for the Rx interrupt path for secure
++      proxy.
++
++required:
++  - compatible
++  - reg-names
++  - reg
++  - interrupts
++  - "#mbox-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    secure_proxy: mailbox@32c00000 {
++          compatible = "ti,am654-secure-proxy";
++          #mbox-cells = <1>;
++          reg-names = "target_data", "rt", "scfg";
++          reg = <0x32c00000 0x100000>,
++                <0x32400000 0x100000>,
++                <0x32800000 0x100000>;
++          interrupt-names = "rx_011";
++          interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++    };
+-- 
+2.31.0
 
