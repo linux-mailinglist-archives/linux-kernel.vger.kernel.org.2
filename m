@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3F835DF9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5770D35DFA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240505AbhDMM7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:59:38 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3399 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346010AbhDMM7Z (ORCPT
+        id S1345926AbhDMM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345922AbhDMM7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:59:25 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FKQZz15JVz5pg0;
-        Tue, 13 Apr 2021 20:56:11 +0800 (CST)
-Received: from [127.0.0.1] (10.40.188.234) by dggeme758-chm.china.huawei.com
- (10.3.19.104) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Tue, 13
- Apr 2021 20:59:03 +0800
-Subject: Re: [PATCH] spi: SPI_HISI_KUNPENG should depend on ARCH_HISI
-To:     Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-CC:     Wei Xu <xuwei5@hisilicon.com>, <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <huangdaode@huawei.com>
-References: <d93934dfdbb4d35e35371517de3b64c144aeb5ef.1618316782.git.geert+renesas@glider.be>
- <20210413124715.GE5586@sirena.org.uk>
-From:   Jay Fang <f.fangjian@huawei.com>
-Message-ID: <46a47db2-338e-2ca4-0eac-c2b129ee7b7d@huawei.com>
-Date:   Tue, 13 Apr 2021 20:59:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 13 Apr 2021 08:59:46 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6E5C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:59:25 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id k128so106780vke.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 05:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K6gp3sUpFpXKT8ewnG/DtO59TU7kZa7T83ujn+9U3LY=;
+        b=k/keZUcro40h04uT1/VfEHmkHDGBDKO2cnowLghFt0R1PeqRpkI4rt/hFE+iqBgHUI
+         Ogxoz2hyWL6OV7DkVxZA83PkMwrkh4obMpAwjOHmJLP+Rc+Oqjk0by3lSrhC4Gsac//n
+         e2uLp5gJHoSPY51YZjKCxlImTOj+FPPBMt6oU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K6gp3sUpFpXKT8ewnG/DtO59TU7kZa7T83ujn+9U3LY=;
+        b=SNHzg4JOVNub/9MDGN9CMDkAMjjtDFQ2OMIKuJMysYYCQ5JeprJoaBOzcEyKH6MIHm
+         z/o5hXdrTOz/zAY2wMXHNRLuhIpu+SMoi0TkfD1LSU62Fm41ynbDwdfwg9K7iPjBiruy
+         vIFQ5KXcPewvivFMZUS7M5S6tDdYf1oiECwAOntMyigYYKsKpCRfBAyGaLkZ+dbA0fnL
+         YrhTcAzR9n5R2WNoKH41c1pZINpE/Y/OEH2yJAEmTfiIEGBYeMDyDdXbQd7fwaSCJkDl
+         IJ13te0ZRMi4wnupjnkBXqGqjSniRR2s7HBKInPB7JtfsSajzaf+LZzLyk2Sz120nNDe
+         qt7g==
+X-Gm-Message-State: AOAM530yXACljo9LZZz9EV/dSjRBK/mm/2L7NT6G6dJCmvglKVxtyMWg
+        xq5OtiBRVuuG1CppRuoOqP6lzGvOnwNg/vgvbBOU/g==
+X-Google-Smtp-Source: ABdhPJxs6+Ltcl9KHtwI860jVS+ZVqSy1Ow96RAOLyEy068wP1TKV+u/hvVaYVi95fFNGiw4JKo3k26V5KV613Kdsvw=
+X-Received: by 2002:a1f:4ec3:: with SMTP id c186mr23220165vkb.11.1618318764741;
+ Tue, 13 Apr 2021 05:59:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210413124715.GE5586@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.188.234]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+References: <20210124232007.21639-1-richard@nod.at> <CAJfpegvN2KdMj_7T-OF1PAs8xZiU3f4233AvigaXwwRAsgQEjw@mail.gmail.com>
+ <563952295.378372.1612881357746.JavaMail.zimbra@nod.at> <1923896038.379134.1612901174023.JavaMail.zimbra@nod.at>
+ <CAJfpegufojx4q_CfR6L-fzSyQw9QXJZKy5xKVZZWaepADkL=Kw@mail.gmail.com>
+ <CAJfpegv-UDcgzkFiZXdoif2qjws5_xXh2bQSNbNdviQHhxzZHA@mail.gmail.com> <CAJfpegsbVWPGKe-bLvM=00EHe-PC_QgJ9umxCf1gFtUQge6_cg@mail.gmail.com>
+In-Reply-To: <CAJfpegsbVWPGKe-bLvM=00EHe-PC_QgJ9umxCf1gFtUQge6_cg@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 13 Apr 2021 14:59:13 +0200
+Message-ID: <CAJfpegv9kvJ_KKyRo89Yp30RocZut=PBNJGbVobgO2f2Z36jcQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] MUSE: Userspace backed MTD v3
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ron Minnich <rminnich@google.com>, sven <sven@narfation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/13 20:47, Mark Brown wrote:
-> On Tue, Apr 13, 2021 at 02:27:23PM +0200, Geert Uytterhoeven wrote:
->> The HiSilicon Kunpeng SPI controller is only present on HiSilicon
->> Kunpeng SoCs.  Hence add a dependency on ARCH_HISI, to prevent asking
->> the user about this driver when configuring a kernel without Hisilicon
->> platform support.
-> 
-> Are you *sure* about this?  HiSilicon produce a wide range of SoCs with
-> very diverse target markets, this driver looks like it's for enterprise
-> stuff while most things guarded by that config option look like they're
-> for embedded applications.
-SPI_HISI_KUNPENG does not depend on ARCH_HISI.
+On Thu, Feb 11, 2021 at 7:09 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> Pushed to
+>
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git#fs_fuse_split
+>
+> There's still room for improvement, but I guess this can wait after
+> MUSE integration.
 
+Hi Richard,
+
+Have you had a chance of looking at this?
 
 Thanks,
-Jay
-
-
-
+Miklos
