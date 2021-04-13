@@ -2,207 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF01935DD54
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A3B35DD64
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345263AbhDMLEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S1345345AbhDMLFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345186AbhDMLDs (ORCPT
+        with ESMTP id S1345320AbhDMLFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:03:48 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B553C06175F;
-        Tue, 13 Apr 2021 04:03:29 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id 7so12042322ilz.0;
-        Tue, 13 Apr 2021 04:03:29 -0700 (PDT)
+        Tue, 13 Apr 2021 07:05:09 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB363C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:04:49 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id i2so3513189vka.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SaQgaohvFRse8y7sF4qogtAi4k/YBL2bzDFsmdJBavY=;
-        b=DGpGEmKGP9Wcnn+JS5iPztOqsliXtOJ6fLtlbkr3oUuvarZefDCbhdQMV9rWTlrds6
-         wVHOwrYEI+99+2IGpmIWMLE1wpDIn2CXsqVN03ai7Hr0HO/V+oV8Q9L1lafgVFx2N1Nq
-         Yjp6zRrZh67xGBCgJlAuBnb4BUQzEPlP/ztzsxfRhFa04D9JaACtsymqEWnej2UBjzn0
-         SKzrmYaI1W+LGaLJvxWC2qOpEjrjJXQDccufw9sl37yZexj4AeNZ0gATKYofrkypsGKK
-         N6xL1b4cyfjUWNGopXT6QwjwOkFswUYd1+8eU1ds8KBVb5U2RII2lYVxAvgYYGPh5wXA
-         KuUw==
+         :cc:content-transfer-encoding;
+        bh=je0tXK2szor3C65YXdb81D9aE+MAP/3wuEdJm5mxyfw=;
+        b=Mj7Ac0nkjEdSctz+w4445kA2ADO6XOmj12OFa73aesRvYDiBgn+UpPl8quADDUYvS2
+         xCraii6FMAvWuzrtW3Zja1qRh88iw06YjNgbrh0WSvy9EOKsGlWHIwZEq/Oaylx181vm
+         ioZhfinaESXQZrcg94bpuFY+aj0RsEQwmVDHIzNgk21CAiEa5erqw6CCYqlgNPL6zdYF
+         i2ruCYBzuUepCkhFbxq3Ms4ptjPP6Wihg3ByiWwb06T2h7jVwSnTFsiIkBBN6methXP4
+         +feO0ty6+q5s6imk/y9xuEKAQHtZ+FUM89habadKZmeVL2a/yqaXocEhL3i0jjqtXAIt
+         BJNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SaQgaohvFRse8y7sF4qogtAi4k/YBL2bzDFsmdJBavY=;
-        b=CEMLWsyACSBXDcgdZZsHFI7XkakS9MqfbjgtEKcdTOCh4C+b9za5/Pzx276XdOnSvW
-         oaP+0a0wNsXs8x6GFnmPrMyXcaHlI+Gg0cU170qAyEbKMnpIajoEdiB9aZylVQnk/O/4
-         6shl4mH891G5lSRKjSjbC12wtWGW99Kb3eG7aNUOdImwt916vqOd4I8eCVgCxwfUP2Uh
-         c2apmar3Qx1uTks5+VLZgEIIza27vfdbvVaTmZb9kcZgqbCmUQE/6INEsOJMsHTaaqkI
-         1Foe2VoE/Nu+aldYGdLS8JnxlpXU9dNZpZnmYrwlZLSvelCQmB7yeeu8NdCZ6cmsVXGZ
-         Sk1Q==
-X-Gm-Message-State: AOAM531vF79Cl93KrC/ZGiDzzMirL0GzB58o7yGzVG+Ogx5qqTsJsgf2
-        7rg/l8PpZNeYnHkcxtPBXwlhu/R+JPMJQdrhbuI=
-X-Google-Smtp-Source: ABdhPJx1z9NLxTOUwTs565vCjlORC+kL0RY4GMGpIY2nljUMLDWzexizGFY+fWG/FlfOwOVgOUTLKxemLbute+nsrDk=
-X-Received: by 2002:a92:ac0f:: with SMTP id r15mr27223305ilh.52.1618311808723;
- Tue, 13 Apr 2021 04:03:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=je0tXK2szor3C65YXdb81D9aE+MAP/3wuEdJm5mxyfw=;
+        b=Eg+i8bBBpEPC2gzhS9XRAJvCo4Bgifo3bsA4An2BjDi7dkzuoYNI8e/IZbp86B0aYM
+         Z+uOgvAFmgDLnl7dG8zYq/tgZWYPgjq+dxUsnkd96YdfWg9ESm1JuFMk7BtMBXKhMMSG
+         ueZGVebY5kmn2MAz0ocy93HEvl7U7LC2GbMGV/20dSx90hPNvASJa0JBjLt/EcmPXLvQ
+         OvVPqQHO4mHXV4dU5EKbKGk56IpqOtTqGtmN9Q4SkGOJQlVeSUqRxy5VToigGvFTn1AG
+         ynKZRa3+kJUigRrO3odyvOZdHMk7n9VYNGB8TmUNoc2kzAn0Y05APeZRjT75dWaKZ7A2
+         iYcA==
+X-Gm-Message-State: AOAM531GeWwPgR8ozqDGzCPbDhTfrmUct2wYV3kk57leKBxP5m8T0qwQ
+        BZLWv55J6RHa0f/7yrt1aZk0eku87FUkrm8I8ek=
+X-Google-Smtp-Source: ABdhPJw2T4zkH5O3s8wSbpVcYKdfS2ik6a773rVb2Mt8OtX9ebRpMLzavazIbmQCo0FNwIjv/JRFYGcacnplRsVrM3w=
+X-Received: by 2002:a1f:1184:: with SMTP id 126mr13452119vkr.21.1618311889073;
+ Tue, 13 Apr 2021 04:04:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201127112114.3219360-1-pbonzini@redhat.com> <20201127112114.3219360-3-pbonzini@redhat.com>
- <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com> <YHS/BxMiO6I1VOEY@google.com>
-In-Reply-To: <YHS/BxMiO6I1VOEY@google.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Tue, 13 Apr 2021 19:03:17 +0800
-Message-ID: <CAJhGHyAcnwkCfTcnxXcgAHnF=wPbH2EDp7H+e74ce+oNOWJ=_Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
- window request
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Filippo Sironi <sironi@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "v4.7+" <stable@vger.kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <CAHB2gtTmGt=V4cUgbt3zGgi+y5h0f5ON0n+MdRC8P=su670qhQ@mail.gmail.com>
+ <YHVl8fFfdQDn+QYW@hirez.programming.kicks-ass.net> <CAHB2gtTzEuD7j-+5ztui0eV6UNiEisBTgoK+2Sr=Z0b4PPXRyA@mail.gmail.com>
+ <20210413104503.GD15806@arm.com>
+In-Reply-To: <20210413104503.GD15806@arm.com>
+From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>
+Date:   Tue, 13 Apr 2021 13:04:37 +0200
+Message-ID: <CAHB2gtTtszK8XjhzByU-ZRP80_L922yEE7qkuJmFcUo2AaN7XQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>, will.deacon@arm.com,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 5:43 AM Sean Christopherson <seanjc@google.com> wrote:
+On Tue, Apr 13, 2021 at 12:45 PM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
 >
-> On Fri, Apr 09, 2021, Lai Jiangshan wrote:
-> > On Fri, Nov 27, 2020 at 7:26 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> On Tue, Apr 13, 2021 at 12:25:00PM +0200, Christoph M=C3=BCllner wrote:
+> > On Tue, Apr 13, 2021 at 11:37 AM Peter Zijlstra <peterz@infradead.org> =
+wrote:
+> > > On Tue, Apr 13, 2021 at 11:22:40AM +0200, Christoph M=C3=BCllner wrot=
+e:
+> > > > What about trylock()?
+> > > > I.e. one could implement trylock() without a loop, by letting
+> > > > trylock() fail if the SC fails.
+> > > > That looks safe on first view, but nobody does this right now.
 > > >
-> > > kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
-> > > a hodge-podge of conditions, hacked together to get something that
-> > > more or less works.  But what is actually needed is much simpler;
-> > > in both cases the fundamental question is, do we have a place to stash
-> > > an interrupt if userspace does KVM_INTERRUPT?
+> > > Generic code has to use cmpxchg(), and then you get something like th=
+is:
 > > >
-> > > In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
-> > > Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
-> > > unnecessarily restrictive.
+> > > bool trylock(atomic_t *lock)
+> > > {
+> > >         u32 old =3D atomic_read(lock);
 > > >
-> > > In split irqchip mode it's a bit more complicated, we need to check
-> > > kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
-> > > cycle and thus requires ExtINTs not to be masked) as well as
-> > > !pending_userspace_extint(vcpu).  However, there is no need to
-> > > check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
-> > > pending ExtINT state separate from event injection state, and checking
-> > > kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
-> > > priority than APIC interrupts.  In fact the latter fixes a bug:
-> > > when userspace requests an IRQ window vmexit, an interrupt in the
-> > > local APIC can cause kvm_cpu_has_interrupt() to be true and thus
-> > > kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
-> > > happens, vcpu_run does not exit to userspace but the interrupt window
-> > > vmexits keep occurring.  The VM loops without any hope of making progress.
+> > >         if ((old >> 16) !=3D (old & 0xffff))
+> > >                 return false;
 > > >
-> > > Once we try to fix these with something like
-> > >
-> > >      return kvm_arch_interrupt_allowed(vcpu) &&
-> > > -        !kvm_cpu_has_interrupt(vcpu) &&
-> > > -        !kvm_event_needs_reinjection(vcpu) &&
-> > > -        kvm_cpu_accept_dm_intr(vcpu);
-> > > +        (!lapic_in_kernel(vcpu)
-> > > +         ? !vcpu->arch.interrupt.injected
-> > > +         : (kvm_apic_accept_pic_intr(vcpu)
-> > > +            && !pending_userspace_extint(v)));
-> > >
-> > > we realize two things.  First, thanks to the previous patch the complex
-> > > conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
-> > > window request in vcpu_enter_guest()
-> > >
-> > >         bool req_int_win =
-> > >                 dm_request_for_irq_injection(vcpu) &&
-> > >                 kvm_cpu_accept_dm_intr(vcpu);
-> > >
-> > > should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
-> > > it is unnecessary to ask the processor for an interrupt window
-> > > if we would not be able to return to userspace.  Therefore, the
-> > > complex conditional is really the correct implementation of
-> > > kvm_cpu_accept_dm_intr(vcpu).  It all makes sense:
-> > >
-> > > - we can accept an interrupt from userspace if there is a place
-> > >   to stash it (and, for irqchip split, ExtINTs are not masked).
-> > >   Interrupts from userspace _can_ be accepted even if right now
-> > >   EFLAGS.IF=0.
+> > >         return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, =
+for RCsc */
+> > > }
 > >
-> > Hello, Paolo
+> > This approach requires two loads (atomic_read() and cmpxchg()), which
+> > is not required.
+> > Detecting this pattern and optimizing it in a compiler is quite unlikel=
+y.
 > >
-> > If userspace does KVM_INTERRUPT, vcpu->arch.interrupt.injected is
-> > set immediately, and in inject_pending_event(), we have
+> > A bit less generic solution would be to wrap the LL/SC (would be
+> > mandatory in this case)
+> > instructions and do something like this:
 > >
-> >         else if (!vcpu->arch.exception.pending) {
-> >                 if (vcpu->arch.nmi_injected) {
-> >                         kvm_x86_ops.set_nmi(vcpu);
-> >                         can_inject = false;
-> >                 } else if (vcpu->arch.interrupt.injected) {
-> >                         kvm_x86_ops.set_irq(vcpu);
-> >                         can_inject = false;
-> >                 }
-> >         }
+> > uint32_t __smp_load_acquire_reserved(void*);
+> > int __smp_store_release_conditional(void*, uint32_t);
 > >
-> > I'm curious about that can the kvm_x86_ops.set_irq() here be possible
-> > to queue the irq with EFLAGS.IF=0? If not, which code prevents it?
+> > typedef union {
+> >     uint32_t v32;
+> >     struct {
+> >         uint16_t owner;
+> >         uint16_t next;
+> >     };
+> > } arch_spinlock_t;
+> >
+> > int trylock(arch_spinlock_t *lock)
+> > {
+> >     arch_spinlock_t l;
+> >     int success;
+> >     do {
+> >         l.v32 =3D __smp_load_acquire_reserved(lock);
+> >         if (l.owner !=3D l.next)
+> >             return 0;
+> >         l.next++;
+> >         success =3D __smp_store_release_conditional(lock, l.v32);
+> >     } while (!success);
+> >     return success;
+> > }
+> >
+> > But here we can't tell the compiler to optimize the code between LL and=
+ SC...
 >
-> The interrupt is only directly injected if the local APIC is _not_ in-kernel.
-> If userspace is managing the local APIC, my understanding is that userspace is
-> also responsible for honoring EFLAGS.IF, though KVM aids userspace by updating
-> vcpu->run->ready_for_interrupt_injection when exiting to userspace.  When
-> userspace is modeling the local APIC, that resolves to
-> kvm_vcpu_ready_for_interrupt_injection():
->
->         return kvm_arch_interrupt_allowed(vcpu) &&
->                 kvm_cpu_accept_dm_intr(vcpu);
->
-> where kvm_arch_interrupt_allowed() checks EFLAGS.IF (and an edge case related to
-> nested virtualization).  KVM also captures EFLAGS.IF in vcpu->run->if_flag.
-> For whatever reason, QEMU checks both vcpu->run flags before injecting an IRQ,
-> maybe to handle a case where QEMU itself clears EFLAGS.IF?
+> This indeed needs some care. IIUC RISC-V has similar restrictions as arm
+> here, no load/store instructions are allowed between LR and SC. You
+> can't guarantee that the compiler won't spill some variable onto the
+> stack.
 
-If userspace is managing the local APIC, the user VMM would insert IRQ
-when kvm_run->ready_for_interrupt_injection=1 since this flags
-implied EFLAGS.IF before this patch (for example gVisor checks this only
-instead of kvm_run->if_flag).  This patch claims that it has a place to
-stash the IRQ when EFLAGS.IF=0, but inject_pending_event() seams to ignore
-EFLAGS.IF and queues the IRQ to the guest directly in the first branch
-of using "kvm_x86_ops.set_irq(vcpu)".
+RISC-V behaves similar, but the specification is a bit more precise:
+To guarantee forward progress, the ("constrained") LL/SC sequence has to
+consist of <=3D16 instructions. Further, the "dynamic code executed between
+the LR and SC instructions can only contain instructions from the base =E2=
+=80=9CI=E2=80=9D
+instruction set, excluding loads, stores, backward jumps, taken backward
+branches, JALR, FENCE, and SYSTEM instructions".
 
-I have encountered a problem but failed to exactly dissect it with
-some internal code involved.
-
-It is somewhat possible that it has resulted from Li Wanpeng's patch
-(I replied to this patch because this patch relaxes the condition even
-more without reasons for how it suppresses/stashes IRQ to the guest).
-
-When a guest APP userspace hits an exception and vmexit and returns to
-the user VMM (gVisor) in conditions combined, and the user VMM wants to
-queue an IRQ to it: It is now EFLAGS.IF=1 and ready_for_interrupt_injection=1
-and user VMM happily queues the IRQ. In inject_pending_event(), the IRQ is
-lower priority and the earlier exception is queued to the guest first.  But
-the IRQ can't be continuously suppressed and it is queued at the beginning
-of the exception handler where EFLAGS.IF=0.
-(Before Li Wanpeng's patch, ready_for_interrupt_injection=0, since
-there is an exception pending)
-
-All above is just my guess.  But I want to know more clues.
-And this patch says:
-
- : we can accept an interrupt from userspace if there is a place
- : to stash it (and, for irqchip split, ExtINTs are not masked).
- : Interrupts from userspace _can_ be accepted even if right now
- : EFLAGS.IF=0.
-
-So it might help me for analyzing if I knew how this
-behavior is achieved since inject_pending_event() doesn't
-check EFLAGS.IF=0 for the first using "kvm_x86_ops.set_irq(vcpu)".
-
-Thanks
-
-Lai.
+And GCC generates a backward jump in-between LL and SC.
+So we have more than enough reasons, to no do it this way.
 
 >
-> > I'm asking about this because I just noticed that interrupt can
-> > be queued when exception pending, and this patch relaxed it even
-> > more.
-> >
-> > Note: interrupt can NOT be queued when exception pending
-> > until 664f8e26b00c7 ("KVM: X86: Fix loss of exception which
-> > has not yet been injected") which I think is dangerous.
+> BTW, I think the SC doesn't need release semantics above, only the LR
+> needs acquire semantics.
+>
+> --
+> Catalin
