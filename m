@@ -2,156 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4781035D59F
+	by mail.lfdr.de (Postfix) with ESMTP id B89B735D5A0
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240080AbhDMDEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:04:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16532 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238495AbhDMDEt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:04:49 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FK9Nw3fTQzPpCY;
-        Tue, 13 Apr 2021 11:01:36 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 13 Apr
- 2021 11:04:23 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to avoid touching checkpointed
- data in get_victim()
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210324031828.67133-1-yuchao0@huawei.com>
- <YFvQGxLbpmDjxEzR@google.com>
- <2dfb085b-80ce-050b-5650-986675a07488@huawei.com>
- <66e0a225-7f52-a33e-ccd6-e7bfa1067ed1@kernel.org>
- <YHUJFElliMOWMbWN@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <c83a46b3-de4b-5ba0-2cb4-162a349907aa@huawei.com>
-Date:   Tue, 13 Apr 2021 11:04:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S241159AbhDMDGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:06:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:19479 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238495AbhDMDG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:06:29 -0400
+IronPort-SDR: gLeN+dUBQw4t2ku2Sn3yqgLGkom07Jf9BbM1wJW8lUUV5EnB5/Z7tC63j70yq3VaIBwrDET6Xt
+ B63wbr8ATh2A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="255650491"
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="255650491"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 20:06:09 -0700
+IronPort-SDR: kpOlp1sn/TlKLMSJfuLVPXkm2wpq42Jttc8OFc0yvGZ+hi9wRkCCbm/SwIYxpvFmmpAZQqQh8N
+ BipNiQIs+AsA==
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="450230493"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 20:06:05 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>, Rik van Riel <riel@surriel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Yang Shi <shy828301@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kernel Page Reclaim v2 <page-reclaim@google.com>
+Subject: Re: [PATCH v1 09/14] mm: multigenerational lru: mm_struct list
+References: <20210313075747.3781593-1-yuzhao@google.com>
+        <20210313075747.3781593-10-yuzhao@google.com>
+        <048e5e1e977e720c3f9fc536ac54beebcc8319f5.camel@surriel.com>
+        <87pmzzsvfb.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFAsjP7NIZM5Ld+m@google.com>
+        <871rcfzjg0.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFBktbCH9JFcT0rL@google.com>
+        <87o8fixxfh.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFHeFslZ85/h3o/q@google.com>
+        <87czvryj74.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YFhQbvSq2Px25Ub5@google.com>
+        <87ft0lhwbm.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <CAOUHufYCVDz5=6iLgWhiNSGDVxVj2gz7MqyrFVNbAXtjW8W1GQ@mail.gmail.com>
+Date:   Tue, 13 Apr 2021 11:06:03 +0800
+In-Reply-To: <CAOUHufYCVDz5=6iLgWhiNSGDVxVj2gz7MqyrFVNbAXtjW8W1GQ@mail.gmail.com>
+        (Yu Zhao's message of "Sat, 10 Apr 2021 12:48:03 -0600")
+Message-ID: <87v98qubms.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YHUJFElliMOWMbWN@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/13 10:59, Jaegeuk Kim wrote:
-> On 04/11, Chao Yu wrote:
->> Hi Jaegeuk,
->>
->> Could you please help to merge below cleanup diff into original patch?
->> or merge this separately if it is too late since it is near rc7.
-> 
-> I didn't review this tho, this gives an error in xfstests/083.
+Yu Zhao <yuzhao@google.com> writes:
 
-My bad, I hit this issue too, let me check this.
+> On Wed, Mar 24, 2021 at 12:58 AM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Yu Zhao <yuzhao@google.com> writes:
+>>
+>> > On Mon, Mar 22, 2021 at 11:13:19AM +0800, Huang, Ying wrote:
+>> >> Yu Zhao <yuzhao@google.com> writes:
+>> >>
+>> >> > On Wed, Mar 17, 2021 at 11:37:38AM +0800, Huang, Ying wrote:
+>> >> >> Yu Zhao <yuzhao@google.com> writes:
+>> >> >>
+>> >> >> > On Tue, Mar 16, 2021 at 02:44:31PM +0800, Huang, Ying wrote:
+>> >> >> > The scanning overhead is only one of the two major problems of the
+>> >> >> > current page reclaim. The other problem is the granularity of the
+>> >> >> > active/inactive (sizes). We stopped using them in making job
+>> >> >> > scheduling decision a long time ago. I know another large internet
+>> >> >> > company adopted a similar approach as ours, and I'm wondering how
+>> >> >> > everybody else is coping with the discrepancy from those counters.
+>> >> >>
+>> >> >> From intuition, the scanning overhead of the full page table scanning
+>> >> >> appears higher than that of the rmap scanning for a small portion of
+>> >> >> system memory.  But form your words, you think the reality is the
+>> >> >> reverse?  If others concern about the overhead too, finally, I think you
+>> >> >> need to prove the overhead of the page table scanning isn't too higher,
+>> >> >> or even lower with more data and theory.
+>> >> >
+>> >> > There is a misunderstanding here. I never said anything about full
+>> >> > page table scanning. And this is not how it's done in this series
+>> >> > either. I guess the misunderstanding has something to do with the cold
+>> >> > memory tracking you are thinking about?
+>> >>
+>> >> If my understanding were correct, from the following code path in your
+>> >> patch 10/14,
+>> >>
+>> >> age_active_anon
+>> >>   age_lru_gens
+>> >>     try_walk_mm_list
+>> >>       walk_mm_list
+>> >>         walk_mm
+>> >>
+>> >> So, in kswapd(), the page tables of many processes may be scanned
+>> >> fully.  If the number of processes that are active are high, the
+>> >> overhead may be high too.
+>> >
+>> > That's correct. Just in case we have different definitions of what we
+>> > call "full":
+>> >
+>> >   I understand it as the full range of the address space of a process
+>> >   that was loaded by switch_mm() at least once since the last scan.
+>> >   This is not the case because we don't scan the full range -- we skip
+>> >   holes and VMAs that are unevictable, as well as PTE tables that have
+>> >   no accessed entries on x86_64, by should_skip_vma() and
+>> >   CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG.
+>> >
+>> >   If you are referring to the full range of PTE tables that have at
+>> >   least one accessed entry, i.e., other 511 are not none  but have not
+>> >   been accessed either since the last scan on x86_64, then yes, you
+>> >   are right again :) This is the worse case scenario.
+>>
+>> OK.  So there's no fundamental difference between us on this.
+>>
+>> >> > This series uses page tables to discover page accesses when a system
+>> >> > has run out of inactive pages. Under such a situation, the system is
+>> >> > very likely to have a lot of page accesses, and using the rmap is
+>> >> > likely to cost a lot more because its poor memory locality compared
+>> >> > with page tables.
+>> >>
+>> >> This is the theory.  Can you verify this with more data?  Including the
+>> >> CPU cycles or time spent scanning page tables?
+>> >
+>> > Yes, I'll be happy to do so as I should, because page table scanning
+>> > is counterintuitive. Let me add more theory in case it's still unclear
+>> > to others.
+>> >
+>> > From my understanding, the two fundamental questions we need to
+>> > consider in terms of page reclaim are:
+>> >
+>> >   What are the sizes of hot clusters (spatial locality) should we
+>> >   expect under memory pressure?
+>> >
+>> >   On smaller systems with 4GB memory, our observations are that the
+>> >   average size of hot clusters found during each scan is 32KB. On
+>> >   larger systems with hundreds of gigabytes of memory, it's well
+>> >   above this value -- 512KB or larger. These values vary under
+>> >   different workloads and with different memory allocators. Unless
+>> >   done deliberately by memory allocators, e.g., Scudo as I've
+>> >   mentioned earlier, it's safe to say if a PTE entry has been
+>> >   accessed, its neighbors are likely to have been accessed too.
+>> >
+>> >   What's hot memory footprint (total size of hot clusters) should we
+>> >   expect when we have run out of inactive pages?
+>> >
+>> >   Some numbers first: on large and heavily overcommitted systems, we
+>> >   have observed close to 90% during a scan. Those systems have
+>> >   millions of pages and using the rmap to find out which pages to
+>> >   reclaim will just blow kswapd. On smaller systems with less memory
+>> >   pressure (due to their weaker CPUs), this number is more reasonable,
+>> >   ~50%. Here is some kswapd profiles from a smaller systems running
+>> >   5.11:
+>> >
+>> >    the rmap                                 page table scan
+>> >    ---------------------------------------------------------------------
+>> >    31.03%  page_vma_mapped_walk             49.36%  lzo1x_1_do_compress
+>> >    25.59%  lzo1x_1_do_compress               4.54%  page_vma_mapped_walk
+>> >     4.63%  do_raw_spin_lock                  4.45%  memset_erms
+>> >     3.89%  vma_interval_tree_iter_next       3.47%  walk_pte_range
+>> >     3.33%  vma_interval_tree_subtree_search  2.88%  zram_bvec_rw
+>> >
+>> >   The page table scan is only twice as fast. Only larger systems,
+>> >   it's usually more than 4 times, without THP. With THP, both are
+>> >   negligible (<1% CPU usage). I can grab profiles from our servers
+>> >   too if you are interested in seeing them on 4.15 kernel.
+>>
+>> Yes.  On a heavily overcommitted systems with high-percent hot pages,
+>> the page table scanning works much better.  Because almost all pages
+>> (and their mappings) will be scanned finally.
+>>
+>> But on a not-so-heavily overcommitted system with low-percent hot pages,
+>> it's possible that rmap scanning works better.  That is, only a small
+>> fraction of the pages need to be scanned.  I know that the page table
+>> scanning may still work better in many cases.
+>>
+>> And another possibility, on a system with cool instead of completely
+>> cold pages, that is, some pages are accessed at quite low frequency, but
+>> not 0, there will be always some low-bandwidth memory reclaiming.  That
+>> is, it's impossible to find a perfect solution with one or two full
+>> scanning.  But we need to reclaim some pages periodically.  And I guess
+>> there are no perfect (or very good) page reclaiming solutions for some
+>> other situations too. Where what we can do are,
+>>
+>> - Avoid OOM, that is, reclaim some pages if possible.
+>>
+>> - Control the overhead of the page reclaiming.
+>>
+>> But this is theory only.  If anyone can point out that they are not
+>> realistic at all, it's good too :-)
+>>
+>> >> > But, page tables can be sparse too, in terms of hot memory tracking.
+>> >> > Dave has asked me to test the worst case scenario, which I'll do.
+>> >> > And I'd be happy to share more data. Any specific workload you are
+>> >> > interested in?
+>> >>
+>> >> We can start with some simple workloads that are easier to be reasoned.
+>> >> For example,
+>> >>
+>> >> 1. Run the workload with hot and cold pages, when the free memory
+>> >> becomes lower than the low watermark, kswapd will be waken up to scan
+>> >> and reclaim some cold pages.  How long will it take to do that?  It's
+>> >> expected that almost all pages need to be scanned, so that page table
+>> >
+>> > A typical scenario. Otherwise why would we have run out of cold pages
+>> > and still be under memory? Because what's in memory is hot and
+>> > therefore most of the them need to be scanned :)
+>> >
+>> >> scanning is expected to have less overhead.  We can measure how well it
+>> >> is.
+>> >
+>> > Sounds good to me.
+>> >
+>> >> 2. Run the workload with hot and cold pages, if the whole working-set
+>> >> cannot fit in DRAM, that is, the cold pages will be reclaimed and
+>> >> swapped in regularly (for example tens MB/s).  It's expected that less
+>> >> pages may be scanned with rmap, but the speed of page table scanning is
+>> >> faster.
+>> >
+>> > So IIUC, this is a sustained memory pressure, i.e., servers constantly
+>> > running under memory pressure?
+>>
+>> Yes.  The system can accommodate more workloads at the cost of
+>> performance, as long as the end-user latency isn't unacceptable.  Or we
+>> need some time to schedule more computing resources, so we need to run
+>> in this condition for some while.
+>>
+>> But again, this is theory only.  I am glad if people can tell me that
+>> this is unrealistic.
+>>
+>> >> 3. Run the workload with hot and cold pages, the system is
+>> >> overcommitted, that is, some cold pages will be placed in swap.  But the
+>> >> cold pages are cold enough, so there's almost no thrashing.  Then the
+>> >> hot working-set of the workload changes, that is, some hot pages become
+>> >> cold, while some cold pages becomes hot, so page reclaiming and swapin
+>> >> will be triggered.
+>> >
+>> > This is usually what we see on clients, i.e., bursty workloads when
+>> > switching from an active app to an inactive one.
+>>
+>> Thanks for your information.  Now I know a typical realistic use case :-)
+>>
+>> >> For each cases, we can use some different parameters.  And we can
+>> >> measure something like the number of pages scanned, the time taken to
+>> >> scan them, the number of page reclaimed and swapped in, etc.
+>> >
+>> > Thanks, I appreciate these -- very well thought test cases. I'll look
+>> > into them and probably write some synthetic test cases. If you have
+>> > some already, I'd love to get my hands one them.
+>>
+>> Sorry.  I have no test cases in hand.  Maybe we can add some into
+>> Fengguang's vm-scalability test suite as follows.
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
+>
+> Hi Ying,
+>
+> I'm still investigating the test cases you suggested. I'm also
+> wondering if it's possible to test the next version, which I'll post
+> soon, with Intel's 0-Day infra.
 
-Thanks,
+Sure.  But now 0-Day has only quite limited coverage for swap testing.
+Including the swap test in vm-scalability.git, and several test cases
+with pmbench.  I think it's good to improve the coverage of 0-Day for
+swap.  But it needs some time.
 
-> 
->>
->>  From 5a342a8f332a1b3281ec0e2b4d41b5287689c8ed Mon Sep 17 00:00:00 2001
->> From: Chao Yu <yuchao0@huawei.com>
->> Date: Sun, 11 Apr 2021 14:29:34 +0800
->> Subject: [PATCH] f2fs: avoid duplicated codes for cleanup
->>
->> f2fs_segment_has_free_slot() was copied from __next_free_blkoff(),
->> the main implementation of them is almost the same, clean up them to
->> reuse common code as much as possible.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>   fs/f2fs/segment.c | 32 ++++++++++----------------------
->>   1 file changed, 10 insertions(+), 22 deletions(-)
->>
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index b33273aa5c22..bd9056165d62 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -2627,22 +2627,20 @@ static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
->>   	curseg->alloc_type = LFS;
->>   }
->>
->> -static void __next_free_blkoff(struct f2fs_sb_info *sbi,
->> -			struct curseg_info *seg, block_t start)
->> +static int __next_free_blkoff(struct f2fs_sb_info *sbi,
->> +					int segno, block_t start)
->>   {
->> -	struct seg_entry *se = get_seg_entry(sbi, seg->segno);
->> +	struct seg_entry *se = get_seg_entry(sbi, segno);
->>   	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
->>   	unsigned long *target_map = SIT_I(sbi)->tmp_map;
->>   	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
->>   	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
->> -	int i, pos;
->> +	int i;
->>
->>   	for (i = 0; i < entries; i++)
->>   		target_map[i] = ckpt_map[i] | cur_map[i];
->>
->> -	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, start);
->> -
->> -	seg->next_blkoff = pos;
->> +	return __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, start);
->>   }
->>
->>   /*
->> @@ -2654,26 +2652,16 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
->>   				struct curseg_info *seg)
->>   {
->>   	if (seg->alloc_type == SSR)
->> -		__next_free_blkoff(sbi, seg, seg->next_blkoff + 1);
->> +		seg->next_blkoff =
->> +			__next_free_blkoff(sbi, seg->segno,
->> +						seg->next_blkoff + 1);
->>   	else
->>   		seg->next_blkoff++;
->>   }
->>
->>   bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
->>   {
->> -	struct seg_entry *se = get_seg_entry(sbi, segno);
->> -	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
->> -	unsigned long *target_map = SIT_I(sbi)->tmp_map;
->> -	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
->> -	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
->> -	int i, pos;
->> -
->> -	for (i = 0; i < entries; i++)
->> -		target_map[i] = ckpt_map[i] | cur_map[i];
->> -
->> -	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
->> -
->> -	return pos < sbi->blocks_per_seg;
->> +	return __next_free_blkoff(sbi, segno, 0) < sbi->blocks_per_seg;
->>   }
->>
->>   /*
->> @@ -2701,7 +2689,7 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type, bool flush)
->>
->>   	reset_curseg(sbi, type, 1);
->>   	curseg->alloc_type = SSR;
->> -	__next_free_blkoff(sbi, curseg, 0);
->> +	__next_free_blkoff(sbi, curseg->segno, 0);
->>
->>   	sum_page = f2fs_get_sum_page(sbi, new_segno);
->>   	if (IS_ERR(sum_page)) {
->> -- 
->> 2.22.1
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
+Best Regards,
+Huang, Ying
