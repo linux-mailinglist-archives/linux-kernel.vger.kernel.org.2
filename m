@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEFB35E1C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D4D35E1C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244378AbhDMOom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:44:42 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:47843 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1345247AbhDMOoh (ORCPT
+        id S1344627AbhDMOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:45:07 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:41733 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344609AbhDMOpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:44:37 -0400
-Received: (qmail 1456110 invoked by uid 1000); 13 Apr 2021 10:44:16 -0400
-Date:   Tue, 13 Apr 2021 10:44:16 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chris Chiu <chris.chiu@canonical.com>
-Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
-        linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek
- Hub
-Message-ID: <20210413144416.GB1454681@rowland.harvard.edu>
-References: <20210412150006.53909-1-chris.chiu@canonical.com>
- <20210412151205.GB1420451@rowland.harvard.edu>
- <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
+        Tue, 13 Apr 2021 10:45:04 -0400
+Received: by mail-vs1-f46.google.com with SMTP id d6so2387981vsm.8;
+        Tue, 13 Apr 2021 07:44:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qd2Cz9Wb7b4lwNE2TvDDaxnExO2muUrxaDPRQ6PGCSo=;
+        b=YAyZKa2Z1GmCyHZwvOHo8eNMFtg5CKx1B0zetbkQz/WB+PjAeBXorB03dZT3JSFgmw
+         Ra2RaqeOq57Ao/t3kqIc4QJ8M07thHLPSLXEjqR0btAwH3VSSPq4RnfPGCCMbKfKrfOs
+         tUCAWZSLbMy8bzeScbCngw+a7p8oqjTk89CeTrQfKBvMwKjY84xhhIwFNEaMoB8gGjac
+         UWW9/lliKBZzogl6RDDIjok/B3Hjv6b1xU0R/bWn3HhssokyRAjSVTyEnTllvO2Vi/h/
+         AEJW2C5RvN8KLBe7FmizaOh/GjOmcBIWMR2YJFKkVwq0bzqRQWrQI54UO8YLWjExnts0
+         76Cw==
+X-Gm-Message-State: AOAM532jT6YL4VKYxjVha3GYySdl3MgQifh6XNH1sqCPlnBAe44vBaMY
+        1HV1dZrATsszIzM/k8mQJvpL7iTQMSpt4y2ywWI=
+X-Google-Smtp-Source: ABdhPJz9v/HcQN0oGObIKVjlIReu+0YExHhoYWAtnb781H0kVeDbJjHAVuaxN8240622vbYcvLuY09Cyey/kyimRjeI=
+X-Received: by 2002:a67:2082:: with SMTP id g124mr9712122vsg.40.1618325084669;
+ Tue, 13 Apr 2021 07:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <YHWQaQaw53eZtYzn@smile.fi.intel.com> <CAMuHMdX29zQHaC9UgGyGad-LxRRK=hBKVHVZ5+9_Cawqk=NMtA@mail.gmail.com>
+ <YHWtmBTSKzFMQ/Dy@smile.fi.intel.com>
+In-Reply-To: <YHWtmBTSKzFMQ/Dy@smile.fi.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 13 Apr 2021 16:44:33 +0200
+Message-ID: <CAMuHMdV1kTcPhutZZa04zd53C37Ci7Fr51nq1z8OX3kg1C14CA@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 03:52:14PM +0800, Chris Chiu wrote:
-> On Mon, Apr 12, 2021 at 11:12 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Mon, Apr 12, 2021 at 11:00:06PM +0800, chris.chiu@canonical.com wrote:
-> > > The USB_PORT_FEAT_SUSPEND is not really necessary due to the
-> > > "global suspend" in USB 2.0 spec. It's only for many hub devices
-> > > which don't relay wakeup requests from the devices connected to
-> > > downstream ports. For this realtek hub, there's no problem waking
-> > > up the system from connected keyboard.
-> >
-> > What about runtime suspend?  That _does_ require USB_PORT_FEAT_SUSPEND.
-> 
-> It's hard to reproduce the same thing with runtime PM. I also don't
-> know the aggressive
-> way to trigger runtime suspend. So I'm assuming the same thing will happen in
-> runtime PM case because they both go the same usb_port_resume path. Could
-> you please suggest a better way to verify this for runtime PM?
+Hi Andy,
 
-To put a USB device into runtime suspend, do this:
-
-	echo 0 >/sys/bus/usb/devices/.../bConfigurationValue
-	echo auto >/sys/bus/usb/devices/.../power/control
-
-where ... is the pathname for the device you want to suspend.  (Note 
-that this will unbind the device from its driver, so make sure there's 
-no possibility of data loss before you do it.)
-
-To resume the device, write "on" to the power/control file.  You can 
-verify the runtime-PM status by reading the files in the power/ 
-subdirectory.
-
-> > > This commit bypasses the USB_PORT_FEAT_SUSPEND for the quirky hub.
+On Tue, Apr 13, 2021 at 4:41 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Tue, Apr 13, 2021 at 02:48:15PM +0200, Geert Uytterhoeven wrote:
+> > On Tue, Apr 13, 2021 at 2:37 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Tue, Apr 13, 2021 at 02:26:15PM +0200, Geert Uytterhoeven wrote:
+> > > > The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+> > > > Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+> > > > Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+> > > > about this driver when configuring a kernel without Hisilicon platform
+> > > > or ACPI firmware support.
 > > >
-> > > Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-> > > ---
+> > > I don't by the ACPI dependency, sorry.
+> > >
+> > > The driver is a pure platform driver that can be enumerated on ACPI enabled
+> > > devices, but otherwise it can be used as a platform one.
 > >
-> >
-> > > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> > > index 7f71218cc1e5..8478d49bba77 100644
-> > > --- a/drivers/usb/core/hub.c
-> > > +++ b/drivers/usb/core/hub.c
-> > > @@ -3329,8 +3329,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
-> > >        * descendants is enabled for remote wakeup.
-> > >        */
-> > >       else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
-> > > -             status = set_port_feature(hub->hdev, port1,
-> > > -                             USB_PORT_FEAT_SUSPEND);
-> > > +             if (udev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND)
-> >
-> > You should test hub->hdev->quirks, here, not udev->quirks.  The quirk
-> > belongs to the Realtek hub, not to the device that's plugged into the
-> > hub.
-> >
-> 
-> Thanks for pointing that out. I'll verify again and propose a V2 after
-> it's done.
+> > Sure, you can manually instantiate a platform device with a matching
+> > name, and set up the "clk_rate" device property.
+> > But would it make sense to do that? Would anyone ever do that?
+>
+> It will narrow down the possibility to have One Kernel for as many as possible
+> platforms.
 
-Another thing to consider: You shouldn't return 0 from usb_port_suspend 
-if the port wasn't actually suspended.  We don't want to kernel to have 
-a false idea of the hardware's current state.
+That One Kernel needs to have CONFIG_ACPI enabled to use I2C on the
+HiSilicon Kunpeng.  If CONFIG_ACPI is disabled, it cannot be used, as there
+is no other code that creates "hisi-i2c" platform devices.
 
-Alan Stern
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
