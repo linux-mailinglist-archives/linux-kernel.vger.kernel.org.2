@@ -2,229 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C46735D756
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B6D35D75B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245074AbhDMFl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56060 "EHLO
+        id S245428AbhDMFmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243542AbhDMFl5 (ORCPT
+        with ESMTP id S245095AbhDMFmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:41:57 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E7AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:41:38 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id sd23so15288135ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:41:38 -0700 (PDT)
+        Tue, 13 Apr 2021 01:42:36 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A4CC06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:42:17 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id z13so8278734lfd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/kMw36zWxGP4H2lobjhMKMAuy6hEt2CpZcO99mt+F8o=;
-        b=AN6wozYrxc2+Z63+sftHerBq0hRnhp0ClLvFmO7LGIZ0Q8TlHVBFqppXhqQm+irYO6
-         wvarjikyVOD4S3YCilLEkAIVIfO75/VQwYoPoigslk0hq26K42RUGtMYT/MUbx+9b6d8
-         dPupPfNZrGZVUCB50KRFW2guUfNASMEv1ujYT6BJ6X/DUbwpJQsgIQ3O68LWiANPNmye
-         S8V3a4ZC6iizcvmDYfIxixpgX/CN4X02mN3EDNCTbNdV6Esl4VbEcAHNHaJZEXdMEUif
-         28ElQNIB2Suj2t+8nt9EX3iLaGfoic96e3kDct0vEHCk7silCfsMa3B6e4y4TabA64KS
-         KFIg==
+         :cc;
+        bh=MITjT2ay51KOcdM71HVFO+ySm3JooSqiJI3Cb7Ri/aQ=;
+        b=on4KYu7s8YlB0xwBDXTiFFbdyzkvcU7IAPfyGWXq5powKidROTOJGmYgHpqcw41WBk
+         LKpnOH6b+gid2kUOFlDS9dLSbLUnXOhlFRgMmQBNx+hlvAIRZtZ07ga9CeO/UbifKU1F
+         k7bY/jo0BhF5LCfDddP8BLCX368gJlErfsjpgCrp3qE9NdnNmtf2G+6Eg2SdPpJoGmtF
+         IIkg9jc4Me4BMMIgM5CJEzPfYIECwFOi2unjFtYwX2tBiRT7FxVTQv2i2lnTZqAD00ZB
+         plosOla9KJY3ZZTEUXfgwMTXbWAQ2jUh9L3av/iP1JtGxs75TTJ+qEV2j1rvPxBSr0vi
+         ytpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/kMw36zWxGP4H2lobjhMKMAuy6hEt2CpZcO99mt+F8o=;
-        b=aNGi73FEKhtdP/nARgD9O5++oDLKtYQPIkn2eEqtsFqE78hzIsLswVvBy4O1fwqzQm
-         3wshrj1yTh+0sgDypAx8ayeauT8MstTPLzXfj2JDj3Zwdj4qUZPEdNG+qOo3yYptveGC
-         u84YXI5d6ifdpjV9ipDJWOk+MbSrSJUObA8FeOVHHgIeZcNZhFobBwxqj1lQvaNBw2Ar
-         eHs4dGIDMqSJ0foVoYY/wWAlj5Mju+m54h9HBLmr7s4TNEtME8qSQpaoUQoaIJT3M/C4
-         f6kKppaPTaleLgem+GX9j+GlojDkSHc6i2M9ozCWkmLoU9TUcSoAk1cvWe2wyWTaqRNA
-         WTjA==
-X-Gm-Message-State: AOAM530wlxeI4j3RDfOcy5ee6Aqf0tRxnIeSPnMPhHo9n1lbEsmi8NhG
-        xdPDXRRuBIwM5N9AKY7oKP1iUWGNXARBhnHKf6ncbA==
-X-Google-Smtp-Source: ABdhPJywywcH3eH6uMLv87dO08x+AXuJH9rMy6Rka+BEXPwvJAoDFlH7QVrVcFP+vUUfTozwZ2U88pdfnxfeiybg/QI=
-X-Received: by 2002:a17:907:98ae:: with SMTP id ju14mr2965643ejc.287.1618292496904;
- Mon, 12 Apr 2021 22:41:36 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=MITjT2ay51KOcdM71HVFO+ySm3JooSqiJI3Cb7Ri/aQ=;
+        b=PlgKzz8mOC4icUPa41OHm2KtNNkTNYxHB1vgevNPOMaappXQ8kc7RmxRjANuW+oTqg
+         C9Rm1VRjS9BquQR4mLHLIlJB0MjT/4x8tkSlsN5SVSY5YlsX5dWzAn4mm+Pw4n+NuRoZ
+         muF9cmmca63qAH7/QP8u7+S2iEjyyHqcZ7HNufYkBnioYzqBF6jjp35217brf0/07xMb
+         N1ceu2Lm4LE/UP98+Wqvs/NwjszDi1ueRcivIuIc08G7hzf7giFFqnA7aDJ3RJu40c4M
+         ZnH2J2vOSPo1QqfeCHDSy3ftyvGI1CJeallmbWhCKHIHvKErxI0SUm5p2Dm4pGUsyvaP
+         Nm/A==
+X-Gm-Message-State: AOAM531iBs+VdvmWaXRvCGgHwbxTRV4+HE5cTpd8Y2zKPWifkaGOQ6y7
+        +25VanBwfuFb9nUWm63Zi4C309nRXqH77YXqIiq3mg==
+X-Google-Smtp-Source: ABdhPJyMKOQIyeojpXPuo0SSdzWliMMkGmlkNBcznqsQM2TOrLpFA1+nvOPmwAotZazrF73OIccOTqzdFp3YLO7vuwY=
+X-Received: by 2002:a05:6512:3c8e:: with SMTP id h14mr3031818lfv.113.1618292535723;
+ Mon, 12 Apr 2021 22:42:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210412083958.129944265@linuxfoundation.org>
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Apr 2021 11:11:25 +0530
-Message-ID: <CA+G9fYvTQSAs_UZx1=kbOz23HvNF3GtixH17UpEQFoH0K6Y7uA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/66] 4.19.187-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <20210412160101.1627882-1-colin.king@canonical.com>
+ <adeb7c73d0bb354f04f8117c5ccf6b006dfc15de.camel@linux.ibm.com> <53fef8cf-0dd4-e4fe-260b-0f5ad25d9014@canonical.com>
+In-Reply-To: <53fef8cf-0dd4-e4fe-260b-0f5ad25d9014@canonical.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 13 Apr 2021 11:12:04 +0530
+Message-ID: <CAFA6WYPt97daNPQ+tWpFunTK77Q-vP=sdya7k+bUEJ9YHDq-Jg@mail.gmail.com>
+Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from kzalloc call
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 14:13, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, 12 Apr 2021 at 22:34, Colin Ian King <colin.king@canonical.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.19.187 release.
-> There are 66 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On 12/04/2021 17:48, James Bottomley wrote:
+> > On Mon, 2021-04-12 at 17:01 +0100, Colin King wrote:
+> >> From: Colin Ian King <colin.king@canonical.com>
+> >>
+> >> The kzalloc call can return null with the GFP_KERNEL flag so
+> >> add a null check and exit via a new error exit label. Use the
+> >> same exit error label for another error path too.
+> >>
+> >> Addresses-Coverity: ("Dereference null return value")
+> >> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys
+> >> framework")
+> >> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> >> ---
+> >>  security/keys/trusted-keys/trusted_core.c | 6 ++++--
+> >>  1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/security/keys/trusted-keys/trusted_core.c
+> >> b/security/keys/trusted-keys/trusted_core.c
+> >> index ec3a066a4b42..90774793f0b1 100644
+> >> --- a/security/keys/trusted-keys/trusted_core.c
+> >> +++ b/security/keys/trusted-keys/trusted_core.c
+> >> @@ -116,11 +116,13 @@ static struct trusted_key_payload
+> >> *trusted_payload_alloc(struct key *key)
+> >>
+> >>      ret = key_payload_reserve(key, sizeof(*p));
+> >>      if (ret < 0)
+> >> -            return p;
+> >> +            goto err;
+> >>      p = kzalloc(sizeof(*p), GFP_KERNEL);
+> >> +    if (!p)
+> >> +            goto err;
+> >>
+> >>      p->migratable = migratable;
+> >> -
+> >> +err:
+> >>      return p;
+> >
+> > This is clearly a code migration bug in
+> >
+> > commit 251c85bd106099e6f388a89e88e12d14de2c9cda
+> > Author: Sumit Garg <sumit.garg@linaro.org>
+> > Date:   Mon Mar 1 18:41:24 2021 +0530
+> >
+> >     KEYS: trusted: Add generic trusted keys framework
+> >
+> > Which has for addition to trusted_core.c:
+> >
+> > +static struct trusted_key_payload *trusted_payload_alloc(struct key
+> > *key)
+> > +{
+> > +       struct trusted_key_payload *p = NULL;
+> > +       int ret;
+> > +
+> > +       ret = key_payload_reserve(key, sizeof(*p));
+> > +       if (ret < 0)
+> > +               return p;
+> > +       p = kzalloc(sizeof(*p), GFP_KERNEL);
+> > +
+> > +       p->migratable = migratable;
+> > +
+> > +       return p;
+> > +}
+> >
+> > And for trusted_tpm1.c:
+> >
+> > -static struct trusted_key_payload *trusted_payload_alloc(struct key
+> > *key)
+> > -{
+> > -       struct trusted_key_payload *p = NULL;
+> > -       int ret;
+> > -
+> > -       ret = key_payload_reserve(key, sizeof *p);
+> > -       if (ret < 0)
+> > -               return p;
+> > -       p = kzalloc(sizeof *p, GFP_KERNEL);
+> > -       if (p)
+> > -               p->migratable = 1; /* migratable by default */
+> > -       return p;
+> > -}
+> >
+> > The trusted_tpm1.c code was correct and we got this bug introduced by
+> > what should have been a simple cut and paste ... how did that happen?
+
+It was a little more than just cut and paste where I did generalized
+"migratable" flag to be provided by the corresponding trust source's
+ops struct.
+
+> > And therefore, how safe is the rest of the extraction into
+> > trusted_core.c?
+> >
 >
-> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
-> Anything received after that time might be too late.
+> fortunately it gets caught by static analysis, but it does make me also
+> concerned about what else has changed and how this gets through review.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.187-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
+
+I agree that extraction into trusted_core.c was a complex change but
+this patch has been up for review for almost 2 years [1]. And
+extensive testing can't catch this sort of bug as allocation wouldn't
+normally fail.
+
+[1] https://lwn.net/Articles/795416/
+
+-Sumit
+
+> > James
+> >
+> >
 >
-> thanks,
->
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.19.187-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: 85bc28045cdbb9576907965c761445aaece4f5ad
-* git describe: v4.19.186-67-g85bc28045cdb
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.186-67-g85bc28045cdb
-
-## No regressions (compared to v4.19.185-19-g6aba908ea95f)
-
-## No fixes (compared to v4.19.185-19-g6aba908ea95f)
-
-## Test result summary
- total: 65010, pass: 52744, fail: 1575, skip: 10433, xfail: 258,
-
-## Build Summary
-* arm: 97 total, 96 passed, 1 failed
-* arm64: 25 total, 24 passed, 1 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 13 passed, 2 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 2 total, 1 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 14 passed, 1 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
