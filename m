@@ -2,48 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70D135D4BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D81035D4DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243373AbhDMBWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:22:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:37026 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235837AbhDMBWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:22:36 -0400
-IronPort-SDR: M0qZKOUr+WRb++ck8ErLZIT2URnQ/yVs8zmyNz2+4C7iUKAYV50NmtlFlv05pgtneyuTzb+5NU
- uRrsXDwwfpGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258286504"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="258286504"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 18:22:16 -0700
-IronPort-SDR: WgKI/MS8CYjT9EOaRVP21ODABMPhTbLn5dBCj+QNV9HVq2OGrDGvG7FQxhumNKavry00KhFNST
- TAS7RGfcfWvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="521403712"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Apr 2021 18:22:14 -0700
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-To:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>
-Cc:     "Gong, Richard" <richard.gong@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        russell.h.weight@intel.com
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
- <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
- <YGC619DmLM0AAQ5p@epycbox.lan>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <8c0fcdde-540b-2ae3-01f2-30cdb87ac037@linux.intel.com>
-Date:   Mon, 12 Apr 2021 20:41:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242505AbhDMBdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240410AbhDMBdu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 21:33:50 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909A8C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:33:31 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id v123so8596325ioe.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1zSwk+CCEogc630LEHl5RvzQDUBmzTV2qxrYb9cB3Hk=;
+        b=B24q9wJST01FRsZsarkzCP1lwZwRPEPqExf6Hu+l/Kd+8WaisnQaG2zYdisMujlv6p
+         iEBaVOeXwEFVP1jH7Rg21zTxYBAQmOie3LIGcikrH3h5CbA4X2ZraHhvETVDtiEs+oTz
+         05OaRttzVMbn9jULtSrdCOCB1AHayAtbKOGrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1zSwk+CCEogc630LEHl5RvzQDUBmzTV2qxrYb9cB3Hk=;
+        b=piAnj2Q0/9s7v5KCB4VhdReOHx2ERkISoOgCex3WYhWdWdF8SJK8INpLEftx3/yIFJ
+         4JZE/ipbt6D8+HInQJG+JIuiyHMLIhGHqnwLeC3GWty9UqWfkBMHIL4Wf5QaK1EQpsmk
+         jLMYglKHdEh3qFGUarSDlu7s4W7XPhJUJUDYn0e8PuCfQvmqRLm8rB5aDjgpD8qvB7+T
+         PfaUqdpjGeq695wQvxHY2qM4ubXMWU9PVh4RiEyweg42OtI1gDohmZsb2V663otZwKHh
+         lZISD8kAaZkIruDkOzFLCgXvS2giOkHT71LtjBxi6ONTFzQuS2j8xKPxDPWsSIL39+4d
+         BC0A==
+X-Gm-Message-State: AOAM532oiUYDJOwQ6/tPcMoQJq19aK19cDij6M+1VIUMwNQJSownbM3R
+        89JtaVUtC2H64YK1zNQy4DeTZA==
+X-Google-Smtp-Source: ABdhPJyTolXxo/bbblE34HUnjb7BH2KP2F7vK26sDVYh2nVRsnaWeDarYtarehVPQTIQI1b3deRutg==
+X-Received: by 2002:a02:272d:: with SMTP id g45mr31833069jaa.117.1618277610753;
+        Mon, 12 Apr 2021 18:33:30 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z12sm6369144ilb.18.2021.04.12.18.33.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 18:33:30 -0700 (PDT)
+Subject: Re: [PATCH 5.11 000/210] 5.11.14-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <bd74f887-f858-e69e-86e1-6104cf95a4ca@linuxfoundation.org>
+Date:   Mon, 12 Apr 2021 19:33:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YGC619DmLM0AAQ5p@epycbox.lan>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,124 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Moritz,
-
-On 3/28/21 12:20 PM, Moritz Fischer wrote:
-> Tom,
+On 4/12/21 2:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.14 release.
+> There are 210 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
->>
->> On 3/27/21 11:09 AM, Moritz Fischer wrote:
->>> Hi Richard, Russ,
->>>
->>> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
->>>> Hi Moritz,
->>>>
->>>> Sorry for asking.
->>>>
->>>> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
->>>>
->>>> Regards,
->>>> Richard
->>>>
->>>> -----Original Message-----
->>>> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com>
->>>> Sent: Tuesday, February 9, 2021 4:20 PM
->>>> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
->>>> Cc: Gong, Richard <richard.gong@intel.com>
->>>> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
->>>>
->>>> From: Richard Gong <richard.gong@intel.com>
->>>>
->>>> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
->>>>
->>>> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
->>>>
->>>> Bitstream authentication makes sure a signed bitstream has valid signatures.
->>>>
->>>> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
->>>>
->>>> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature.
->>>>
->>>> Richard Gong (7):
->>>>    firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
->>>>    firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
->>>>    firmware: stratix10-svc: extend SVC driver to get the firmware version
->>>>    fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
->>>>    fpga: of-fpga-region: add authenticate-fpga-config property
->>>>    dt-bindings: fpga: add authenticate-fpga-config property
->>>>    fpga: stratix10-soc: extend driver for bitstream authentication
->>>>
->>>>   .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
->>>>   drivers/firmware/stratix10-svc.c                   | 12 ++++-
->>>>   drivers/fpga/of-fpga-region.c                      | 24 ++++++---
->>>>   drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
->>>>   include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
->>>>   .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
->>>>   include/linux/fpga/fpga-mgr.h                      |  3 ++
->>>>   7 files changed, 125 insertions(+), 18 deletions(-)
->>>>
->>>> --
->>>> 2.7.4
->>>>
->>> Apologies for the epic delay in getting back to this, I took another
->>> look at this patchset and Russ' patchset.
->>>
->>> TL;DR I'm not really a fan of using device-tree overlays for this (and
->>> again, apologies, I should've voiced this earlier ...).
->>>
->>> Anyways, let's find a common API for this and Russ' work, they're trying
->>> to achieve the same / similar thing, they should use the same API.
->>>
->>> I'd like to re-invetigate the possiblity to extend FPGA Manager with
->>> 'secure update' ops that work for both these use-cases (and I susspect
->>> hte XRT patchset will follow with a similar requirement, right after).
->>
->> The xrt patchset makes heavy use of device trees.
->>
->> What is the general guidance for device tree usage ?
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
 > 
-> I'm not generally against using device tree, it has its place. To
-> describe hardware (and hardware *changes* with overlays) :)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.14-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
 > 
-> What I don't like about this particular implementation w.r.t device-tree
-> usage is that it uses DT overlays as a mechanism to program the flash --
-> in place of having an API to do so.
+> thanks,
 > 
-> One could add device-nodes during the DT overlay application, while the
-> FPGA doesn't actually get programmed with a new runtime image -- meaning
-> live DT and actual hardware state diverged -- worst case it'd crash.
+> greg k-h
 > 
-> So when roughly at the same time (from the same company even) we have two
-> patchsets that do similar things with radically different APIs I think
-> we should pause, and reflect on whether we can come up with something
-> that works for both :)
->
 
-I discussed with Russ and studies his patches, came to realize that the 
-work we had to accomplish was not same or similar. What I want to 
-achieve is to verify the identity of the bitstream, which is like doing 
-a "dry-run" to FPGA configuration.
+Compiled and booted on my test system. No dmesg regressions.
 
-Performing FPGA configuration (full or partial) through the device tree 
-overlay is a method widely used by our customers.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Russ's approach utilizes a different user API which is a set of sysfs files.
-
-If we depart from device tree overlay, then the end-user must utilize 2 
-different mechanism or APIs (device tree overlay is used for 
-full/partial configuration, and sysfs is used for bitstream 
-authentication). Similarly low-level FPGA manager driver also needs to 
-add additional codes. For the end-user the single and simple mechanism 
-is always better choice, device tree overlay should be a better way to 
-achieve that goal.
-
-Regards,
-Richard
-
-> TL;DR the firmware parts to authenticate the bitstream look fine to me, the
-> way we tie it into the FPGA region I'm not a fan of.
-> 
-> - Moritz
-> 
+thanks,
+-- Shuah
