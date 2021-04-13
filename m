@@ -2,186 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5306035D885
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B66F35D894
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhDMHLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhDMHLE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:11:04 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B904AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:10:44 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id r8so25556623lfp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 00:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v9FRv+BSyLXBPF4PpQQH/o+ADSo7dCk0iAUv3EspJDU=;
-        b=c1l8+6FEclvJWP67sekGDY0rEeEbcWi8oSJaEhTsC+KGoNmwQGHFmVTUcm90Z7uVx+
-         6wErS/35D0yDPJrH8sXsvtrKkuUKQwklo3zIpmlaBUN0DmH2UusXfQkDiZoZmoRtQeEX
-         9vqBKViYKGupGnblthu+5O8RDWGDQO+C2SP7l93y6dZnccov7siOtI599iYhscrDjDwu
-         7N/2H0R5kZIpisFhHH1zwDnyJewRcSd3NfnQETzI98EKuHdeibjMuQO36Zh1WklSnG3N
-         bRFS+bXQjXab+DkFgHZFevIDKNy/p7k/HKF2Ty3ssnWpH6ifZPoRGuqSGzrnBdhD6Z6V
-         SyCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v9FRv+BSyLXBPF4PpQQH/o+ADSo7dCk0iAUv3EspJDU=;
-        b=aVpZ5x3mrhMj1RecYyRTYezHJykGsXIx0NKDkbEOn5twPYD0wjtf1T9PIhAnZDDu9B
-         qQQ7a6WhkhBBznPlE+90KiDF7RQ+prFFVkiBf4MQKxw3oB3aFXRoIrUVce+QsOYwB7Yl
-         6kuKGLqr7jmd5WQqtcglB8QJJgDecW21FD1ThH2iz6KU70shF+j3QNjJFqSn/1fDlOPj
-         7JNxNnU86GCNQ0pF24h8NUsl3f6YjOy66U4z0LwhckaPAZgRkdcBanRiekpEPAzxSLaR
-         1OmagFa3s50yP+O+pfNw97/Eo2E4BgpNkMYi55fakzhpxemxqdEXNdlNBS/zMFT7Bz3E
-         Xzqw==
-X-Gm-Message-State: AOAM531DVovLg2oAQ6TawpSmcpGdUCvXnhSYw4nh/fUpNhNWlt4mnyHs
-        FNp8vFAu85TX/jm7I/wKTs6BJNugQHNssEnJG1Bxuw==
-X-Google-Smtp-Source: ABdhPJwb5xuCcOasc2Mz2bGUZr1Qtm/1SPcB5Y+duFeKCwYx+TagcRsU8lMSRelzE1z7969v2v8KGKtE2QW8oKxKSWA=
-X-Received: by 2002:ac2:5986:: with SMTP id w6mr6945656lfn.470.1618297842711;
- Tue, 13 Apr 2021 00:10:42 -0700 (PDT)
+        id S237615AbhDMHOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:14:41 -0400
+Received: from mail.pr-group.ru ([178.18.215.3]:57094 "EHLO mail.pr-group.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhDMHOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 03:14:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+        d=metrotek.ru; s=mail;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         content-transfer-encoding:in-reply-to:references;
+        bh=pd1fHE23NfZnQxckUIslFHR/YDaX2qQtIgwkeLQlW58=;
+        b=tnao5w7c9/I5l1BAlRvwEibBaCdse6jXQD2iKfsWWLWt+MmKLCgmiCoexYEMA9EtQ1THmrZL0R0TU
+         ni/LXp1IiY9WvPJSLarXfAHr5tlB+Zc3XSiuz6ahgK2AVtwNspbRKH120MIPGm++2j+iKgx7GFeWrY
+         ez+wMr31yLn7KRDsyhcBbk5rrBf6647SC6UgmEO3jSHDnaoqjShuGblYZA7iLnjhG3LRImo5Q+1kC4
+         OzsParxeeq8+Vczj3xqcVE/cyM8zJYwj6KgST4+qWdzEpLXgFeD9eF13LHkvnYytCXi8zQeJAxcWaG
+         A0hdQRs8JO6WxTRcw0QLcL7FskCmIdA==
+X-Spam-Status: No, hits=0.0 required=3.4
+        tests=AWL: 0.000, BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW,
+        TOTAL_SCORE: -1.665,autolearn=ham
+X-Spam-Level: 
+X-Footer: bWV0cm90ZWsucnU=
+Received: from dhcp-179.ddg ([85.143.252.66])
+        (authenticated user i.bornyakov@metrotek.ru)
+        by mail.pr-group.ru with ESMTPSA
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
+        Tue, 13 Apr 2021 10:14:03 +0300
+Date:   Tue, 13 Apr 2021 10:13:49 +0300
+From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
+To:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
+Cc:     system@metrotek.ru, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] net: phy: marvell-88x2222: check that link
+ is operational
+Message-ID: <20210413071349.r374hxctgboj7l5a@dhcp-179.ddg>
+References: <cover.1618227910.git.i.bornyakov@metrotek.ru>
+ <614b534f1661ecf1fff419e2f36eddfb0e6f066d.1618227910.git.i.bornyakov@metrotek.ru>
+ <20210413013122.7fa0195f@thinkpad>
 MIME-Version: 1.0
-References: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
- <20210412062436.GB2633526@linux.vnet.ibm.com> <20210412093722.GS3697@techsingularity.net>
- <CAKfTPtDX-p=gWAVgYzLNCNuQ2e=QP2pTeMs=BmNBo31fpGKxrg@mail.gmail.com> <20210412152444.GA3697@techsingularity.net>
-In-Reply-To: <20210412152444.GA3697@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 13 Apr 2021 09:10:31 +0200
-Message-ID: <CAKfTPtDTyyrqBymQx16P+uhQKZkCyCNvDtEebG7FX5Emh=kkCg@mail.gmail.com>
-Subject: Re: [RFC/PATCH] powerpc/smp: Add SD_SHARE_PKG_RESOURCES flag to MC sched-domain
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Rik van Riel <riel@surriel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Parth Shah <parth@linux.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413013122.7fa0195f@thinkpad>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 17:24, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Mon, Apr 12, 2021 at 02:21:47PM +0200, Vincent Guittot wrote:
-> > > > Peter, Valentin, Vincent, Mel, etal
-> > > >
-> > > > On architectures where we have multiple levels of cache access latencies
-> > > > within a DIE, (For example: one within the current LLC or SMT core and the
-> > > > other at MC or Hemisphere, and finally across hemispheres), do you have any
-> > > > suggestions on how we could handle the same in the core scheduler?
-> >
-> > I would say that SD_SHARE_PKG_RESOURCES is there for that and doesn't
-> > only rely on cache
-> >
->
-> From topology.c
->
->         SD_SHARE_PKG_RESOURCES - describes shared caches
->
-> I'm guessing here because I am not familiar with power10 but the central
-> problem appears to be when to prefer selecting a CPU sharing L2 or L3
-> cache and the core assumes the last-level-cache is the only relevant one.
->
-> For this patch, I wondered if setting SD_SHARE_PKG_RESOURCES would have
-> unintended consequences for load balancing because load within a die may
-> not be spread between SMT4 domains if SD_SHARE_PKG_RESOURCES was set at
-> the MC level.
+On Tue, Apr 13, 2021 at 01:32:12AM +0200, Marek Behún wrote:
+> On Mon, 12 Apr 2021 15:16:59 +0300
+> Ivan Bornyakov <i.bornyakov@metrotek.ru> wrote:
+> 
+> > Some SFP modules uses RX_LOS for link indication. In such cases link
+> > will be always up, even without cable connected. RX_LOS changes will
+> > trigger link_up()/link_down() upstream operations. Thus, check that SFP
+> > link is operational before actual read link status.
+> > 
+> > Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+> > ---
+> >  drivers/net/phy/marvell-88x2222.c | 26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> > 
+> > diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
+> > index eca8c2f20684..fb285ac741b2 100644
+> > --- a/drivers/net/phy/marvell-88x2222.c
+> > +++ b/drivers/net/phy/marvell-88x2222.c
+> > @@ -51,6 +51,7 @@
+> >  struct mv2222_data {
+> >  	phy_interface_t line_interface;
+> >  	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
+> > +	bool sfp_link;
+> >  };
+> >  
+> >  /* SFI PMA transmit enable */
+> > @@ -148,6 +149,9 @@ static int mv2222_read_status(struct phy_device *phydev)
+> >  	phydev->speed = SPEED_UNKNOWN;
+> >  	phydev->duplex = DUPLEX_UNKNOWN;
+> >  
+> > +	if (!priv->sfp_link)
+> > +		return 0;
+> > +
+> 
+> So if SFP is not used at all, if this PHY is used in a different
+> usecase, this function will always return 0? Is this correct?
+> 
 
-But the SMT4 level is still present  here with select_idle_core taking
-of the spreading
+Yes, probably. The thing is that I only have hardware with SFP cages, so
+I realy don't know if this driver work in other usecases. The good thing
+about open source is that other developers with different hardware
+configurations can rework here and there and contribute back. Right?
 
+> >  	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
+> >  		link = mv2222_read_status_10g(phydev);
+> >  	else
+> > @@ -446,9 +450,31 @@ static void mv2222_sfp_remove(void *upstream)
+> >  	linkmode_zero(priv->supported);
+> >  }
+> >  
+> > +static void mv2222_sfp_link_up(void *upstream)
+> > +{
+> > +	struct phy_device *phydev = upstream;
+> > +	struct mv2222_data *priv;
+> > +
+> > +	priv = (struct mv2222_data *)phydev->priv;
+> > +
+> > +	priv->sfp_link = true;
+> > +}
+> > +
+> > +static void mv2222_sfp_link_down(void *upstream)
+> > +{
+> > +	struct phy_device *phydev = upstream;
+> > +	struct mv2222_data *priv;
+> > +
+> > +	priv = (struct mv2222_data *)phydev->priv;
+> 
+> This cast is redundant since the phydev->priv is (void*). You can cast
+> (void*) to (struct ... *).
+> 
+> You can also just use
+> 	struct mv2222_data *priv = phydev->priv;
 >
-> > >
-> > > Minimally I think it would be worth detecting when there are multiple
-> > > LLCs per node and detecting that in generic code as a static branch. In
-> > > select_idle_cpu, consider taking two passes -- first on the LLC domain
-> > > and if no idle CPU is found then taking a second pass if the search depth
-> >
-> > We have done a lot of changes to reduce and optimize the fast path and
-> > I don't think re adding another layer  in the fast path makes sense as
-> > you will end up unrolling the for_each_domain behind some
-> > static_banches.
-> >
->
-> Searching the node would only happen if a) there was enough search depth
-> left and b) there were no idle CPUs at the LLC level. As no new domain
-> is added, it's not clear to me why for_each_domain would change.
 
-What I mean is that you should directly do for_each_sched_domain in
-the fast path because that what you are proposing at the end. It's no
-more looks like a fast path but a traditional LB
+Yeah, I know, but reverse XMAS tree wouldn't line up.
 
->
-> But still, your comment reminded me that different architectures have
-> different requirements
->
-> Power 10 appears to prefer CPU selection sharing L2 cache but desires
->         spillover to L3 when selecting and idle CPU.
->
-> X86 varies, it might want the Power10 approach for some families and prefer
->         L3 spilling over to a CPU on the same node in others.
->
-> S390 cares about something called books and drawers although I've no
->         what it means as such and whether it has any preferences on
->         search order.
->
-> ARM has similar requirements again according to "scheduler: expose the
->         topology of clusters and add cluster scheduler" and that one *does*
->         add another domain.
->
-> I had forgotten about the ARM patches but remembered that they were
-> interesting because they potentially help the Zen situation but I didn't
-> get the chance to review them before they fell off my radar again. About
-> all I recall is that I thought the "cluster" terminology was vague.
->
-> The only commonality I thought might exist is that architectures may
-> like to define what the first domain to search for an idle CPU and a
-> second domain. Alternatively, architectures could specify a domain to
-> search primarily but also search the next domain in the hierarchy if
-> search depth permits. The default would be the existing behaviour --
-> search CPUs sharing a last-level-cache.
->
-> > SD_SHARE_PKG_RESOURCES should be set to the last level where we can
-> > efficiently move task between CPUs at wakeup
-> >
->
-> The definition of "efficiently" varies. Moving tasks between CPUs sharing
-> a cache is most efficient but moving the task to a CPU that at least has
-> local memory channels is a reasonable option if there are no idle CPUs
-> sharing cache and preferable to stacking.
+> > +
+> > +	priv->sfp_link = false;
+> > +}
+> > +
+> >  static const struct sfp_upstream_ops sfp_phy_ops = {
+> >  	.module_insert = mv2222_sfp_insert,
+> >  	.module_remove = mv2222_sfp_remove,
+> > +	.link_up = mv2222_sfp_link_up,
+> > +	.link_down = mv2222_sfp_link_down,
+> >  	.attach = phy_sfp_attach,
+> >  	.detach = phy_sfp_detach,
+> >  };
+> 
 
-That's why setting SD_SHARE_PKG_RESOURCES for P10 looks fine to me.
-This last level of SD_SHARE_PKG_RESOURCES should define the cpumask to
-be considered  in fast path
-
->
-> > > allows within the node with the LLC CPUs masked out. While there would be
-> > > a latency hit because cache is not shared, it would still be a CPU local
-> > > to memory that is idle. That would potentially be beneficial on Zen*
-> > > as well without having to introduce new domains in the topology hierarchy.
-> >
-> > What is the current sched_domain topology description for zen ?
-> >
->
-> The cache and NUMA topologies differ slightly between each generation
-> of Zen. The common pattern is that a single NUMA node can have multiple
-> L3 caches and at one point I thought it might be reasonable to allow
-> spillover to select a local idle CPU instead of stacking multiple tasks
-> on a CPU sharing cache. I never got as far as thinking how it could be
-> done in a way that multiple architectures would be happy with.
->
-> --
-> Mel Gorman
-> SUSE Labs
