@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D4D35E1C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E8E35E1CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344627AbhDMOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:45:07 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:41733 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344609AbhDMOpE (ORCPT
+        id S1344852AbhDMOpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:45:18 -0400
+Received: from smtpcmd15177.aruba.it ([62.149.156.177]:59447 "EHLO
+        smtpcmd15177.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344672AbhDMOpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:45:04 -0400
-Received: by mail-vs1-f46.google.com with SMTP id d6so2387981vsm.8;
-        Tue, 13 Apr 2021 07:44:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qd2Cz9Wb7b4lwNE2TvDDaxnExO2muUrxaDPRQ6PGCSo=;
-        b=YAyZKa2Z1GmCyHZwvOHo8eNMFtg5CKx1B0zetbkQz/WB+PjAeBXorB03dZT3JSFgmw
-         Ra2RaqeOq57Ao/t3kqIc4QJ8M07thHLPSLXEjqR0btAwH3VSSPq4RnfPGCCMbKfKrfOs
-         tUCAWZSLbMy8bzeScbCngw+a7p8oqjTk89CeTrQfKBvMwKjY84xhhIwFNEaMoB8gGjac
-         UWW9/lliKBZzogl6RDDIjok/B3Hjv6b1xU0R/bWn3HhssokyRAjSVTyEnTllvO2Vi/h/
-         AEJW2C5RvN8KLBe7FmizaOh/GjOmcBIWMR2YJFKkVwq0bzqRQWrQI54UO8YLWjExnts0
-         76Cw==
-X-Gm-Message-State: AOAM532jT6YL4VKYxjVha3GYySdl3MgQifh6XNH1sqCPlnBAe44vBaMY
-        1HV1dZrATsszIzM/k8mQJvpL7iTQMSpt4y2ywWI=
-X-Google-Smtp-Source: ABdhPJz9v/HcQN0oGObIKVjlIReu+0YExHhoYWAtnb781H0kVeDbJjHAVuaxN8240622vbYcvLuY09Cyey/kyimRjeI=
-X-Received: by 2002:a67:2082:: with SMTP id g124mr9712122vsg.40.1618325084669;
- Tue, 13 Apr 2021 07:44:44 -0700 (PDT)
+        Tue, 13 Apr 2021 10:45:09 -0400
+Received: from ubuntu.localdomain ([146.241.148.6])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id WKHXlmrLILwkNWKHXlJXst; Tue, 13 Apr 2021 16:44:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1618325088; bh=U0Qd1ET85p5b68Y13MpIUPlK1rDZzbVefoF3xvqLDOU=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=NBaMcotXY70bC56EXyeoFnz3RCJ29sJl6g+TIIkxSELVlyJ7hfeHsJIyXfHuz/1Pp
+         keWgoiX6aQOIBx0JsvcWNlalUktwwkGg2QiZE6hZYK744XETkEPz+8+Dx1G2tBhIum
+         5fJNawsLqx3kU70SzDqKhZHNux9d+sFSZegxT304amEObSI6JU90CDeItptugt50N7
+         V0FrIjGe4TjFOvJl38524xiUzfJY+/YYqM4Bhl/CFAYqBp1yZjSIOeovVcuZHHtRp4
+         mrbUnmOnriZNejgRkQLN4Ko9CyxJQu1f2x7gcywfy0bTH4FFy+/xpR6siQrRoUTfVd
+         RJr4x3k0QgJeA==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>
+Subject: [PATCH v7 0/3] Input: add Hycon HY46XX Touchscreen controller
+Date:   Tue, 13 Apr 2021 16:44:43 +0200
+Message-Id: <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
- <YHWQaQaw53eZtYzn@smile.fi.intel.com> <CAMuHMdX29zQHaC9UgGyGad-LxRRK=hBKVHVZ5+9_Cawqk=NMtA@mail.gmail.com>
- <YHWtmBTSKzFMQ/Dy@smile.fi.intel.com>
-In-Reply-To: <YHWtmBTSKzFMQ/Dy@smile.fi.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Apr 2021 16:44:33 +0200
-Message-ID: <CAMuHMdV1kTcPhutZZa04zd53C37Ci7Fr51nq1z8OX3kg1C14CA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfB+HwW2y5aybo6pZitV3RXOKGVSD8WEGtMAvMUoYxMPIR8MXShWixvm+OpeQtwmrpIYCjyoMziiHttrgE2F51MTZOCHNk4CLae/gqgZUPH2dfyqw2RQc
+ qn1nSafpPFia4c3LZOkT/F20xEsKv91Tm6LbSuXj7pASrSSzoT9GXvD/8vTBPIjB38R9zBBqhhe0BwQieaQOM1cyJDpj31r6IJaA3Bc0OE8UneoeHx5eTiLi
+ swJ7nzKHcXGO6jlmhHbfsZnYv4eR79gAAyFLrfBG2CQNst/scecMLvtzqDzfJEZ1dtj72eFK1ElOYbkeTGRkUWfGOrX8cAGygfQLYwYZ5IiSCRjxlADrmqjv
+ zDoD4M5UpLaT3odQwLa9Lxeg+NfnDyqY8x+IcrZSIr0nhvvtSEdICV0eUcVGa3WpXI8YAB8QlrbuXWP0FwMT+pNNqwWZqHY0yxFNGvW8odWDCbdiFD4sRVgT
+ bPGeSFOuu0xN/PqCfDZgWyoHavcrjzK6uuxiGg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+This patchset adds Hycon vendor, HY46XX touchscreen controller driver
+and its .yaml binding.
 
-On Tue, Apr 13, 2021 at 4:41 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Tue, Apr 13, 2021 at 02:48:15PM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Apr 13, 2021 at 2:37 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Apr 13, 2021 at 02:26:15PM +0200, Geert Uytterhoeven wrote:
-> > > > The HiSilicon Kunpeng I2C controller is only present on HiSilicon
-> > > > Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
-> > > > Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
-> > > > about this driver when configuring a kernel without Hisilicon platform
-> > > > or ACPI firmware support.
-> > >
-> > > I don't by the ACPI dependency, sorry.
-> > >
-> > > The driver is a pure platform driver that can be enumerated on ACPI enabled
-> > > devices, but otherwise it can be used as a platform one.
-> >
-> > Sure, you can manually instantiate a platform device with a matching
-> > name, and set up the "clk_rate" device property.
-> > But would it make sense to do that? Would anyone ever do that?
->
-> It will narrow down the possibility to have One Kernel for as many as possible
-> platforms.
+---
+V1->V2:
+* changed authorship and SoBs to @benettiengineering.com domain
+* fixed vendor commit log according to Jonathan Neuschäfer's suggestion
+* fixed hy46xx bindings according to Rob Herring's suggestions
+* fixed hy46xx driver according to Dmitry Torokhov's suggestions
+further details are listed in single patches
+V2->V3:
+* fixed hy46xx bindings according to Jonathan Neuschäfer's suggestion
+* fixed hy46xx driver according to Jonathan Neuschäfer's suggestion
+further details are listed in single patches
+V3->V4:
+* fixed binding compatible string as suggested by Jonathan Neuschäfer
+V4->V5:
+* fixed hy46xx bindings and driver according to Rob Herring's suggestions
+further details are listed in single patches
+V5->V6:
+* changed report-speed property name into report-speed-hz according to
+Rob Herring's suggestion
+V6->V7:
+* added missing patch to series
+---
 
-That One Kernel needs to have CONFIG_ACPI enabled to use I2C on the
-HiSilicon Kunpeng.  If CONFIG_ACPI is disabled, it cannot be used, as there
-is no other code that creates "hisi-i2c" platform devices.
+Giulio Benetti (3):
+  dt-bindings: Add Hycon Technology vendor prefix
+  dt-bindings: touchscreen: Add HY46XX bindings
+  Input: add driver for the Hycon HY46XX touchpanel series
 
-Gr{oetje,eeting}s,
-
-                        Geert
+ .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   7 +
+ drivers/input/touchscreen/Kconfig             |  11 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/hycon-hy46xx.c      | 591 ++++++++++++++++++
+ 6 files changed, 731 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+ create mode 100644 drivers/input/touchscreen/hycon-hy46xx.c
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
