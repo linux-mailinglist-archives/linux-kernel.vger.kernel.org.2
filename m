@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494FB35E289
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9232E35E28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346550AbhDMPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhDMPVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:21:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EF0A611CE;
-        Tue, 13 Apr 2021 15:20:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618327248;
-        bh=p7RmkSd/YcaE9xShOUQVPFRf7C98RAW1RMeav80HG/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jzrec9I5m/SmWCWVUPqBvFSFxcC+AulSvd9xXmg3Qz2ndDXDGSGUTEND16LngCdWa
-         pmqV5AoDS+tWkj1zyvNljxGjExbIvJ7Ia7tA3Ndfe3UvpI849Iuq/KwWKtdG9L8l/4
-         d0DJLCsc1o3Zt32tvwY1n92YqttIXxjLlxNI/hxnkFoKTG0xbJc0zcZMgi8Ldp4KTI
-         nXe6WTPWPh+ALXPwLzM1D337g/6pM3Kr9HugI5tjErwaldS2+ywotWamJ3R1ANSHkE
-         pyac2niEGTiIPr1s2u6AlIoY89ApC+5W2OEIz8GSXMdZASGzP7p6vUniRdLaPGC4D1
-         xCy9IaNz0EKDg==
-Date:   Tue, 13 Apr 2021 08:20:48 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: Re: linux-next: manual merge of the vfs tree with the xfs tree
-Message-ID: <20210413152048.GM3957620@magnolia>
-References: <20210412122211.713ca71d@canb.auug.org.au>
+        id S1346574AbhDMPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231626AbhDMPVb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:21:31 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A13C061574;
+        Tue, 13 Apr 2021 08:21:11 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 18so19884040edx.3;
+        Tue, 13 Apr 2021 08:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9J3TXndvIULj3WAZLGbE3ugc9ArzX8JjLTHybcxDjc4=;
+        b=CuNah4ZK4moASJGCrTJPzX6e3r7OxjfMdSrxWLCMvfTSCP0T11NHw3dALbKCGYUS3K
+         DZn/wteiPjKltZQU/Vt/wySi5bTNY2k81UMkfO2Yo38vyYB8fzmVUjvGWOaqrO2pNrFT
+         Rflqbz93aJ69i/77xbLNVJgzm5TKvOPhX8dMyi1gecobZVSEPhmAR+chn++VCswPvqDh
+         /zRzXXyC6CGtDdgkB7X98vDCZQMVqSIyC+asOYW0XtpGAZbJyx12onGZjnZba1AoqK2k
+         nb46qAp3GcHxvtsToNvt12g741XjkfkfLyGwS4mC71G7EGIXDihfYuoXaJmg1ugVXjDU
+         fjSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9J3TXndvIULj3WAZLGbE3ugc9ArzX8JjLTHybcxDjc4=;
+        b=WCZhgbnubevfMXb7STNgKLIiXkSAGFXLEK4GRXFmSZreLueaXkrCW1tlea2bxamaN7
+         t18i9UkUJojndITdCDSWLa6fxRKV/Of7OSCtahpNoCtFjPiU6zZD382GbIpiWXZ57WCp
+         zNNR+jWKCmGGhBGvbEsSdP9WYAAwVvzvxhSBjzTjLX6D1gZKDjUeOxYvMeeVRHm/tn0G
+         6nYBG1XqFEqTBcAZL84vv5MGP4ROARzZC7r6WWTD8F2gVKaSyU5o3qTPXsWOrXSRM6Ub
+         3QIyp6YzLA4+o41J1A2WG8ClKW9q7mTc1fqH1vVuKka6HaoeKZOJAzBGZOqSAZuH/V3c
+         quiQ==
+X-Gm-Message-State: AOAM530YlmdjoOE+wKBZDOxJNl/4G+j6OgSHb/QITLtHZa1FfCViwOgT
+        Y1FS9FcpzmG4eXkKKu2cAd8pJq3C840=
+X-Google-Smtp-Source: ABdhPJxt5Xg16qvMSSfmRrT3ax/lsuy7w1rKcX9+TTamA1Z0wsuc7X1qXwvelnXFMYbmGWfchNaPog==
+X-Received: by 2002:a50:f40a:: with SMTP id r10mr35884651edm.200.1618327270259;
+        Tue, 13 Apr 2021 08:21:10 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id h24sm8172014ejl.9.2021.04.13.08.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 08:21:08 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 17:21:49 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Johan Jonker <jbx6244@gmail.com>, robh+dt@kernel.org,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
+Message-ID: <YHW3DYjr2ifBltVk@orome.fritz.box>
+References: <20210412200155.5316-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5lcH8ISxRT1ADI6c"
 Content-Disposition: inline
-In-Reply-To: <20210412122211.713ca71d@canb.auug.org.au>
+In-Reply-To: <20210412200155.5316-1-jbx6244@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:22:11PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the vfs tree got a conflict in:
-> 
->   fs/xfs/xfs_ioctl.c
-> 
-> between commits:
-> 
->   ceaf603c7024 ("xfs: move the di_projid field to struct xfs_inode")
->   031474c28a3a ("xfs: move the di_extsize field to struct xfs_inode")
->   b33ce57d3e61 ("xfs: move the di_cowextsize field to struct xfs_inode")
->   4800887b4574 ("xfs: cleanup xfs_fill_fsxattr")
->   ee7b83fd365e ("xfs: use a union for i_cowextsize and i_flushiter")
->   db07349da2f5 ("xfs: move the di_flags field to struct xfs_inode")
->   3e09ab8fdc4d ("xfs: move the di_flags2 field to struct xfs_inode")
-> 
-> from the xfs tree and commit:
-> 
->   280cad4ac884 ("xfs: convert to fileattr")
-> 
-> from the vfs tree.
-> 
-> I fixed it up (I think - see below) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
 
-This looks correct to me; thanks for pointing out the merge conflict! :)
+--5lcH8ISxRT1ADI6c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---D
+On Mon, Apr 12, 2021 at 10:01:52PM +0200, Johan Jonker wrote:
+> Current dts files with 'pwm' nodes are manually verified.
+> In order to automate this process pwm-rockchip.txt
+> has to be converted to yaml.
+>=20
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+> For some SoC nodes this patch serie generates notifications
+> for undocumented "interrupts" properties shared between
+> PWM channels till there is consensus of what to do with it or
+> someone makes a solution for the whole PWM block.
+>=20
+> Changed V3:
+>   fix mistake with compatibles introduced in V2
+> Changed V2:
+>   changed schema for clocks and clock-names
+> ---
+>  .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 -------
+>  .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 88 ++++++++++++++++=
+++++++
+>  2 files changed, 88 insertions(+), 27 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.ya=
+ml
 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc fs/xfs/xfs_ioctl.c
-> index 708b77341a70,bbda105a2ce5..000000000000
-> --- a/fs/xfs/xfs_ioctl.c
-> +++ b/fs/xfs/xfs_ioctl.c
-> @@@ -1056,76 -1057,16 +1057,18 @@@ xfs_ioc_ag_geometry
->   static void
->   xfs_fill_fsxattr(
->   	struct xfs_inode	*ip,
-> - 	bool			attr,
-> - 	struct fsxattr		*fa)
-> + 	int			whichfork,
-> + 	struct fileattr		*fa)
->   {
->  +	struct xfs_mount	*mp = ip->i_mount;
-> - 	struct xfs_ifork	*ifp = attr ? ip->i_afp : &ip->i_df;
-> + 	struct xfs_ifork	*ifp = XFS_IFORK_PTR(ip, whichfork);
->   
-> - 	simple_fill_fsxattr(fa, xfs_ip2xflags(ip));
-> + 	fileattr_fill_xflags(fa, xfs_ip2xflags(ip));
->  -	fa->fsx_extsize = ip->i_d.di_extsize << ip->i_mount->m_sb.sb_blocklog;
->  -	fa->fsx_cowextsize = ip->i_d.di_cowextsize <<
->  -			ip->i_mount->m_sb.sb_blocklog;
->  -	fa->fsx_projid = ip->i_d.di_projid;
->  +
->  +	fa->fsx_extsize = XFS_FSB_TO_B(mp, ip->i_extsize);
->  +	if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
->  +		fa->fsx_cowextsize = XFS_FSB_TO_B(mp, ip->i_cowextsize);
->  +	fa->fsx_projid = ip->i_projid;
->   	if (ifp && (ifp->if_flags & XFS_IFEXTENTS))
->   		fa->fsx_nextents = xfs_iext_count(ifp);
->   	else
-> @@@ -1212,10 -1167,10 +1169,10 @@@ static in
->   xfs_ioctl_setattr_xflags(
->   	struct xfs_trans	*tp,
->   	struct xfs_inode	*ip,
-> - 	struct fsxattr		*fa)
-> + 	struct fileattr		*fa)
->   {
->   	struct xfs_mount	*mp = ip->i_mount;
->  -	uint64_t		di_flags2;
->  +	uint64_t		i_flags2;
->   
->   	/* Can't change realtime flag if any extents are allocated. */
->   	if ((ip->i_df.if_nextents || ip->i_delayed_blks) &&
-> @@@ -1348,8 -1289,11 +1291,11 @@@ xfs_ioctl_setattr_check_extsize
->   	xfs_extlen_t		size;
->   	xfs_fsblock_t		extsize_fsb;
->   
-> + 	if (!fa->fsx_valid)
-> + 		return 0;
-> + 
->   	if (S_ISREG(VFS_I(ip)->i_mode) && ip->i_df.if_nextents &&
->  -	    ((ip->i_d.di_extsize << mp->m_sb.sb_blocklog) != fa->fsx_extsize))
->  +	    ((ip->i_extsize << mp->m_sb.sb_blocklog) != fa->fsx_extsize))
->   		return -EINVAL;
->   
->   	if (fa->fsx_extsize == 0)
-> @@@ -1520,18 -1476,18 +1478,19 @@@ xfs_fileattr_set
->   	 * extent size hint should be set on the inode. If no extent size flags
->   	 * are set on the inode then unconditionally clear the extent size hint.
->   	 */
->  -	if (ip->i_d.di_flags & (XFS_DIFLAG_EXTSIZE | XFS_DIFLAG_EXTSZINHERIT))
->  -		ip->i_d.di_extsize = fa->fsx_extsize >> mp->m_sb.sb_blocklog;
->  -	else
->  -		ip->i_d.di_extsize = 0;
->  -	if (xfs_sb_version_has_v3inode(&mp->m_sb) &&
->  -	    (ip->i_d.di_flags2 & XFS_DIFLAG2_COWEXTSIZE))
->  -		ip->i_d.di_cowextsize = fa->fsx_cowextsize >>
->  -				mp->m_sb.sb_blocklog;
->  +	if (ip->i_diflags & (XFS_DIFLAG_EXTSIZE | XFS_DIFLAG_EXTSZINHERIT))
->  +		ip->i_extsize = XFS_B_TO_FSB(mp, fa->fsx_extsize);
->   	else
->  -		ip->i_d.di_cowextsize = 0;
->  +		ip->i_extsize = 0;
->  +
->  +	if (xfs_sb_version_has_v3inode(&mp->m_sb)) {
->  +		if (ip->i_diflags2 & XFS_DIFLAG2_COWEXTSIZE)
->  +			ip->i_cowextsize = XFS_B_TO_FSB(mp, fa->fsx_cowextsize);
->  +		else
->  +			ip->i_cowextsize = 0;
->  +	}
->   
-> + skip_xattr:
->   	error = xfs_trans_commit(tp);
->   
->   	/*
+Heiko, do you want to pick up patches 1 & 2 into your tree along with 3 & 4=
+? If so:
 
+Acked-by: Thierry Reding <thierry.reding@gmail.com>
 
+--5lcH8ISxRT1ADI6c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB1twoACgkQ3SOs138+
+s6EInA//Qhd5kjNrJ7CIBfxAtCNmeqCKe/InIgxFdKwoUuUj5DaXIRLkaTquMCOP
+HLUUaHvlrD7bVWWh9RJncCgxbcBBx9q8xtBYC+mXpeSZIZL1rEURUDt0ZOAoPffS
+fKtneDEROOcmFz5kvmfcKXvl978cc0UYRFdmjfULzIWUpf+uFaFR0UNfbfoKSORC
+l7fdAlDlLvIKirzsqFULwTUPGww6ronyF9iy0Xd8gSPEx/z0TGdAZgIscoFzEkvg
+rrkWQZutZlVetD0+GNNn9cyZk7aeG+uAsQnusQRqgDreLwte0sJXWud47uElwHO0
+3ITmY4wZ7GxwmmpgqDVZAB8HxOezXolwemasxV3nzO5gMPFoAXNXoBVina4SLcnp
+FdDsUgJcsHXC30Bynd3+B2DUVlTWEZvMso7CnQRg+ljXARS8eyk6QaiHHTZ42Gb0
+0YZqM+uI82AyabHreSVROiuk4ENMZtqjMKLYbF6o0Dy2VXM8CI5hPqnXitEqpqtZ
+/fxJ++aVGpOMdLUpDN9F6X6K6z104C0atlZjj7/Egk1zFxUwA8vLozSEe+KDgvaH
++8TC0c2/RR5rHjTBgYFaMHReXI5O2e/94SH3x7luIaO17nGfAwcn9kJD7jKWgeyt
+EEO7abYq4hiwEu5/bO4FroIxDXEprb+7HlDrt7OdAtPyZ6QXsBA=
+=rjAb
+-----END PGP SIGNATURE-----
+
+--5lcH8ISxRT1ADI6c--
