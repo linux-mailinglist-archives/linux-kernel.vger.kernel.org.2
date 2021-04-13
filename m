@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A1535E6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ACE35E6C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347906AbhDMTCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 15:02:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60096 "EHLO mail.kernel.org"
+        id S1347917AbhDMTDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230397AbhDMTCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 15:02:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECD1B613CA;
-        Tue, 13 Apr 2021 19:02:29 +0000 (UTC)
+        id S230397AbhDMTDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:03:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 785A2613C7;
+        Tue, 13 Apr 2021 19:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618340550;
-        bh=Z8hvYdgOv69qiQpsJ+/2l0t6WJw1oLulD+XPkN84TGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D+l+kCe2DASf1Itba+L3RUIn5GHGmIWMrWTvE9P4UYaA2Uvq9Xgk34GRs0eskvbEj
-         4tLnvGakon86bakacrjaioMM6CTbP3rHJPZdGymJoHUSio8Jy0zuon/gMinFpfI71I
-         jtR4kZyAg9VG+/ZrhMZmzyFxrLNySXRuQSxH8/GzS+IixC3jlMHu6JU3H4eQi3/U8J
-         o76OtLQ186HXOkVJiec9Kum6ISJpLpV2OmarQ9bL2slmWt1Y9c2tVvlcslWj93/eEP
-         gAq34+SWUTQ+ihEw6IAPOZBW1TTSa6dEsme59C5Vx+Bq/7JzsP31DnFzY41kNikeaX
-         3BMq2w1SYKiYQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3676240647; Tue, 13 Apr 2021 16:02:27 -0300 (-03)
-Date:   Tue, 13 Apr 2021 16:02:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: Re: [PATCH v7 3/4] libperf: tests: Add support for verbose printing
-Message-ID: <YHXqw4FQAtH/ikMJ@kernel.org>
-References: <20210413171606.1825808-1-robh@kernel.org>
- <20210413171606.1825808-4-robh@kernel.org>
- <YHXnu2xRzPpaI3cn@kernel.org>
+        s=k20201202; t=1618340606;
+        bh=rLFd/xrh+tG4/zWboqcHD3m2GdGB/rmn4+tq21j9Vys=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LTKxpgW+UWCnxj9hzje2M721QQ5P7aG2LK17i+IcHNdaTiYc54EAJoY/9mOeyxsTP
+         BSleYznLnXp82DjbJgphYut4gbII1XflWxF7/xlGjM5v/YEvDJ/CknzOpA/8pA7wLa
+         DpQIustPmsJGwU+EHsuaTvnZ3mPL6H84GdavAJiIKHMLJL+MVBXN4LjYjZwyeoXzZ1
+         ZgnXVR95TXxBPO26ed3WldvI6TYe0JbT821PRLUCihScov7GDOpLuo7/TaZ6XbBuk8
+         tDKnwSjSU3nKJlINNNd1KVQCtFQ8krlMTkF3baIwKbSaIOvHme8y9iU/nMWMOPa8sv
+         7yCIbC0/GTKuQ==
+Date:   Tue, 13 Apr 2021 12:03:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     davem@davemloft.net, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
+        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
+        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
+        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v5 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210413120324.18983187@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210413023509.51952-1-decui@microsoft.com>
+References: <20210413023509.51952-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHXnu2xRzPpaI3cn@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 13, 2021 at 03:49:31PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Apr 13, 2021 at 12:16:05PM -0500, Rob Herring escreveu:
-> > Add __T_VERBOSE() so tests can add verbose output. The verbose output is
-> > enabled with the '-v' command line option.
-> 
-> You forgot to show how this is used, I'm trying:
-> 
->   # cd tools/lib/perf
->   # sudo make tests
-> 
-> So how from the command line one asks for verbose output from the tests?
-> 
->   Should be:
-> 
->   # sudo make tests V=1
-> 
+On Mon, 12 Apr 2021 19:35:09 -0700 Dexuan Cui wrote:
+> +	apc->port_st_save = apc->port_is_up;
+> +	apc->port_is_up = false;
+> +	apc->start_remove = true;
+> +
+> +	/* Ensure port state updated before txq state */
+> +	smp_wmb();
+> +
+> +	netif_tx_disable(ndev);
 
-> I'm only getting a move verbose output for the Makefile steps, not from
-> the actual tests.
-> 
-> Perhaps if I read the last cset... will do that now.
+In your napi poll method there is no barrier between port_is_up check
+and netif_tx_queue_stopped().
 
-Ok, I misread, I thought that was adding a way to enable verbose mode
-for _pre-existing tests_, so I tried to use it, it is only used in the
-following patch...
+> +	netif_carrier_off(ndev);
+> +
+> +	/* No packet can be transmitted now since apc->port_is_up is false.
+> +	 * There is still a tiny chance that mana_poll_tx_cq() can re-enable
+> +	 * a txq because it may not timely see apc->port_is_up being cleared
+> +	 * to false, but it doesn't matter since mana_start_xmit() drops any
+> +	 * new packets due to apc->port_is_up being false.
+> +	 *
+> +	 * Drain all the in-flight TX packets
+> +	 */
+> +	for (i = 0; i < apc->num_queues; i++) {
+> +		txq = &apc->tx_qp[i].txq;
+> +
+> +		while (atomic_read(&txq->pending_sends) > 0)
+> +			usleep_range(1000, 2000);
+> +	}
 
-- Arnaldo
+> +		/* All cleanup actions should stay after rtnl_lock(), otherwise
+> +		 * other functions may access partially cleaned up data.
+> +		 */
+> +		rtnl_lock();
+> +
+> +		mana_detach(ndev);
+> +
+> +		unregister_netdevice(ndev);
+> +
+> +		rtnl_unlock();
+
+I find the resource management somewhat strange. Why is mana_attach()
+and mana_detach() called at probe/remove time, and not when the
+interface is brought up? Presumably when the user ifdowns the interface
+there is no point holding the resources? Your open/close methods are
+rather empty.
+
+> +	if ((eq_addr & PAGE_MASK) != eq_addr)
+> +		return -EINVAL;
+> +
+> +	if ((cq_addr & PAGE_MASK) != cq_addr)
+> +		return -EINVAL;
+> +
+> +	if ((rq_addr & PAGE_MASK) != rq_addr)
+> +		return -EINVAL;
+> +
+> +	if ((sq_addr & PAGE_MASK) != sq_addr)
+> +		return -EINVAL;
+
+PAGE_ALIGNED()
