@@ -2,265 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6F835D728
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6941135D73B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344569AbhDMFSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344513AbhDMFSB (ORCPT
+        id S241689AbhDMF2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:28:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37714 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhDMF2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:18:01 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25602C06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:42 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id p133so10402658qka.17
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:17:42 -0700 (PDT)
+        Tue, 13 Apr 2021 01:28:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D5Jk3k110359;
+        Tue, 13 Apr 2021 05:28:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=LXDIZmEWyNpNfnOj9c9CdGkfuyqzVclVsYt07+l+r70=;
+ b=yikGzjdFlHLsbVoZTep7vgr8oF5c+kC+y69hkHTDEcP/s/t82qf3HbH9WcvvTnRnsOgD
+ 01ZxR3zCUt0jVarc3SbpJjY7HLSINh7O2KIdjr1g2TFLpxJ0QaUOoOZ8Qzqo6nPm8NSC
+ ewomtQsdYnw2YnnHSeaTxo6KqjFeTyIOcOkD6tzjh2ubHxTB4G2aIV1noa7FD/9nrNRF
+ +wTWrjvERciJcn/PK1I72iLbRrF+qFZD7z/gM+b7r/CZe3JeSb0fQ/TsffD59i8qh0Pt
+ VjiwrtUtwv7E+a5tdGqcB8xJuywuOg8UQ2VtRRGOJUA6yNMRrew/nDmKdrL5ZAloOuJB dQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37u4nnds3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 05:28:16 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13D5PcNt077599;
+        Tue, 13 Apr 2021 05:28:16 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by aserp3020.oracle.com with ESMTP id 37unwybgyj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 05:28:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ErN0lXCFtqq/vVcPDZL4jljbnn2l+rlaE6IUtIoh9O+DcaaXko/uhNdFyljCKzUIxfajUjdN/ycKWqiGnMGZcAztA2klPO9SEOAdfT2aigmN1W2STUhOz7PejPtZqFdkwfgHjb4U7sCgljxceVTMOXwBoCpfzCzmBb5Mhq/ypCgdiT4fF4hX19VnzFTnE1UzrX6ZKjcDnInbhR3bgeaggGcjPKyrHPVWJmFDDZ+BBpExQ93xl6RHeN8lw+xVjvgQFyqnaFE6gCVufCF70EpaX+gm7BqLw2yS8T9zYbt+ZqQQOzUaTHDwG9yNY4eh1sKOKpozz2XzeW+oexCmyeCymQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LXDIZmEWyNpNfnOj9c9CdGkfuyqzVclVsYt07+l+r70=;
+ b=DjjdfkYE7fncT58SibPDQyE1gwgvjuLpTrSoXTheG4OgSnX2zuxxd4Ch5IuT0rfj58OPbka6HXzUDSJNLNbfeKM/TMHDy42CKosdM/OCrVSG9BOG8UXCO6oX9Esxukc0s/Z6cwf7PRtCInsv5R/gQW3LLfw8WRNbW0qbfrlgcA1dFJgsXXbCCHLvbh+D+khhlSPlGxOmLao8W+pHDzeINy6+n4j7dLDL5dbEgPel86ffDLL79IPphcHeb9MSr01eHZT3AIgDjQqi4cLEnisr9W2IDB9hxqj0NFYINgyQNSDIHQjAVARYABJbfuOQRYuUpvEzzfaDj/4l8fwxqEm8SA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Zgnf19a0ZqBaTaEBX8AKF87dozcAw085CXjJ1xc2G4c=;
-        b=rqmxGiY4BnZEcWcCJ+Y4vbbSqxqZkFX6FuLF06wYSiqiRFj2LBTS8LLSDpXxq7lMBQ
-         o1/mdFqL/Uz3+JOkn0Jue9LNkOwwljV5BRnIvnUl9KGbag7eHngfvvGNmTLx+nXlnDTd
-         7VUCIt7IyXYtkNy8DDa9eov2tj+2HYt/8dtNrZeOHwpUwFGGGjXLANcpQIfhtD/pKprM
-         Yfuj+k1QdImYGkVGyfGiN7bGeOflMKLmMbxIO07eeZF8SAq6m076BaCNiz1tjxPpMrGv
-         RZmBTppvtn/efQKL/L55N+t7JEdEjC9eWgKjygFvdeh8P6btLSwC2PQefmW+cw3qQsAr
-         agYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Zgnf19a0ZqBaTaEBX8AKF87dozcAw085CXjJ1xc2G4c=;
-        b=Im30hemJ04IBUoNXWdw9jCse9lZhSVV0AvKHkXGDhdYxYA2wUAh1HeI2Qe58LhubDW
-         WGxXUKbTCSmd98ttCfr5JhqO0QeLctZRZmKMc0vItwma+n7lcYSNuExgmiX5LeHU9miE
-         Py9cZc1OkhG1vylB186ayxpWPHBWrnaGTsJ63nBQhuhL4gMxMRxF8EEnJFS41BzcCRPu
-         lZ8QawgB7oNFlnK/CmCXRRV0WMlajK4ySb4tQpKpUBl8PApCyAwINx9/2pBTJC9mX0/W
-         LOUfxiygUIkDwKBzpv7O0/1ak0kiaEw6BZtg7rhU8lJAwKGqyOxEhgU/5lBbJ3FXeDvF
-         hJYg==
-X-Gm-Message-State: AOAM5308j6KRjzmYdSRNG20GNjOX2cFO3/ebNGlTCKSVk0cn1otbourG
-        ZWzqRJyls9/aKboZH8TT97AebkCg3QZrlCGs9BSk
-X-Google-Smtp-Source: ABdhPJyql4cAl964Q5k7K3SfAR0oDzEdEWKdoNew6yg0Gt+a+L3rIdX6M21mQJNnFlN9UAkKjIzHIO4lAPEqRgyC0Dyr
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:d508:eee5:2d57:3e32])
- (user=axelrasmussen job=sendgmr) by 2002:a0c:ff48:: with SMTP id
- y8mr31802165qvt.8.1618291061296; Mon, 12 Apr 2021 22:17:41 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 22:17:21 -0700
-In-Reply-To: <20210413051721.2896915-1-axelrasmussen@google.com>
-Message-Id: <20210413051721.2896915-10-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210413051721.2896915-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2 9/9] userfaultfd/shmem: modify shmem_mcopy_atomic_pte to
- use install_ptes
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>
-Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, Axel Rasmussen <axelrasmussen@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LXDIZmEWyNpNfnOj9c9CdGkfuyqzVclVsYt07+l+r70=;
+ b=KuYugrmvvruKdpIHFwBwK6tSgLAK/DUJ+cjzZzdNZK+eqGlOxIDnoVrXY6aVkUyFuJ7nNfQCAGnuelPjS9ydaAK/jxXh7Y61DFolcXE2QBdBwAVRHnyq32zWFOPwrileaDyjW3GXNeaS+qqB1VHreHK+DGLopKLWi4Nsr0fRwJU=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4534.namprd10.prod.outlook.com (2603:10b6:510:30::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Tue, 13 Apr
+ 2021 05:28:13 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
+ 05:28:13 +0000
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
+        Brian King <brking@linux.vnet.ibm.com>
+Subject: Re: [PATCH] ibmvfc: Fix invalid state machine BUG_ON
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1zgy269et.fsf@ca-mkp.ca.oracle.com>
+References: <20210413001009.902400-1-tyreld@linux.ibm.com>
+Date:   Tue, 13 Apr 2021 01:28:11 -0400
+In-Reply-To: <20210413001009.902400-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
+        message of "Mon, 12 Apr 2021 18:10:09 -0600")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BYAPR02CA0050.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::27) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR02CA0050.namprd02.prod.outlook.com (2603:10b6:a03:54::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 05:28:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 336e2af8-6a05-4cf8-c33c-08d8fe3cef22
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4534:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4534B6EA0754AC6EF311CACE8E4F9@PH0PR10MB4534.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e31oY4v8dq9Qy6N6eZkp6MfvoGyRE3wtV+CZXV2ay0wNvuz6F7TzRp8QqiJEsLfWkBCg5vhzvhi+/E3uemjm1crMMYjqpiJUtPUAohPNGLAp7U3EL1B2/t5d3PfgrzAYTIT6DyMoS46MrtZ2yT+Nt0h4ZcBTLUYecc4Dm350adjzx0/x5jdLk1YIagVCxTms9j1TkYlpatZad63RnjvrYSzkvjmGjRINFgqyvKMx0Jgchv6ZtsuyBWvbcSbG1D3BDIoDIA/Fqb4Fc8bWjouXAvsEZTn0i1ccxzqA9CkaMl802+TPwNZivh9qGAIqpus82u4t8caDoAD6Rp53Z6GYpvkfcDj8CetgxC/5Tbx/wb/zCm/Ek8v3iKz4YRw59ofz2g+noiMdeOD9TGpmEqsmpBGbZOJEtdSh14U775ren2pr1deU5Yx9LV3xjIaCmHSqlkdM/SqbGSmeWqEz0BOuap3ZBjQV6brDJWTBzdpZF/KWHbTW3C1sqM1jy8Hg2u9vs24UkTN/qDa6d92bIJSd0dMKcu/Bl0dPDMzDrsomImORRMKEsksPYXPIkeJK8DMxSp28/HuTZK7Cdc5cJcwu+1tFtaV/eW5MBu/ROmSuaK6W4PsfbL0PyXyWE5sDcylO1vo5kIG+muIhprPyw6qVyA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(346002)(366004)(376002)(38100700002)(478600001)(2906002)(66946007)(66476007)(956004)(83380400001)(6916009)(66556008)(8936002)(4326008)(8676002)(7696005)(4744005)(55016002)(26005)(16526019)(186003)(52116002)(316002)(5660300002)(38350700002)(36916002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?p1Y+B/f3MLYFbT7nWVnil5YOMje2QbbTdsyHZbFaoy0wxDxnI6Bdv4PQUbgg?=
+ =?us-ascii?Q?//rL/Do9d+cA4FexrXCF4oYY5TGVZOLTy1OHCt74Fh4QfRMNmkpuWiStvbSm?=
+ =?us-ascii?Q?I3yuyQlvh6wKRZUCXjklSsZMDW9Ql6rYqc+NcBuAyJF/LxGkNbGT1Yc+/XtB?=
+ =?us-ascii?Q?07KCsSdg/hVq843XW75ReimuGwv2AGN04W1x2Prpve0ZGAWpIoz4k9M1u5Xq?=
+ =?us-ascii?Q?VvOkOiPyGDYzSFC/LUlEYx6MnrSV+f8Kk7u3/cojvEgaprdtJS6p4bYLiqGa?=
+ =?us-ascii?Q?fmCFJeIns+4QimUzNkP5uEy0BM0N/I27UJ76BO3scPRmVljSHqyZ+8n2UG62?=
+ =?us-ascii?Q?r573oEsIrpm1dXxLJXdv/bIDaVeOyqJfANoJR8vCY3e/AHHHiYfWHoxul0SE?=
+ =?us-ascii?Q?Kqzs6ATgibKCBEDISSWWS6pHvMFpTMmcdNIvGCERx9qfqjB7BxwA3CnnjjKo?=
+ =?us-ascii?Q?w/ZkeZS3fGG+KvgBxUv6hcZMSuiClLUmN/X/LD0i2HltN6bYeG69GTifbzt+?=
+ =?us-ascii?Q?lvZbTPLnMu8TYekJU2v7s489wzlj4hyHwHuB4M2n3vP6HSLgT28o5F5ef/qP?=
+ =?us-ascii?Q?3fuihs+gcnttJK/QBETpuZZXGpo7n08Vdj9JjcrRf2awb3JxET0DlrpDNtbe?=
+ =?us-ascii?Q?OCmZLb6I+8LZ716Gt/2EsRK+SyC99+EP9my4mXsd7TCOYAMRrCKqxH0Pwd4Y?=
+ =?us-ascii?Q?WJTJOX71xbLqsPAtm4rtiNLhF6Vz3UOZxNkmTWpZJQkm0zX+JilJyhK8jXJ8?=
+ =?us-ascii?Q?WP37+YjjBrp4VG8rSnBxDh+kwPCoNXK7Wpi62gLP11e91vReUgvZmlVOsNx9?=
+ =?us-ascii?Q?nSKwOw5dJAdy8j4xr8PT5BWeWJd3Si8IMd/g+XJlEDFoRyNMYfg4edmaTF8T?=
+ =?us-ascii?Q?GNJvJsdmDn7dvalxVkncK8uwjAlmMo6Cfa3law2rj70tuH5/Z808cWXnfZri?=
+ =?us-ascii?Q?ZqriUgtIblpTtOxyi/GC0Xm5LGGTEWXw2EZX3Mu+sALNvsKup8B3nxdlLywo?=
+ =?us-ascii?Q?OiWBerJve8YgKhdhpVyixN4/xl12WjURymFbxvgBFqVaaBmz+vSlax8+ouKB?=
+ =?us-ascii?Q?gjS7tZbQDfhskkZccbWfsyIdW7Tu3MEAh8wRZz2o44UPlgNRiHcdIL1wrIyE?=
+ =?us-ascii?Q?wmhqLIzgq6gaGXa1rVCKH8K2j6w5gAKR9Nb/el4VOfu0ZNgxh6hUBdwUN0rY?=
+ =?us-ascii?Q?cobDkCTAqleOkaz5Sgbywxg9n2zNL7QP0eOyBjkxCfz3iGYQtsDyN0cM8+F1?=
+ =?us-ascii?Q?W2DCmu9UEu6vaDxQwPfT7gfDdwYzw2Xb9DFGVTX7y4dr1nZ3PNeeNJRJ1C3Q?=
+ =?us-ascii?Q?3i7WbVl0uw5VTUguUz5SOt2O?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 336e2af8-6a05-4cf8-c33c-08d8fe3cef22
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 05:28:13.7346
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OaXft/+raF062cRS+yP7QmZMV6CdQ+eqBOoi4sPuAgWdJZr5mVg6Nt4POyZsOdHmDi2rNT4SWvqNP0J9Zp4GaBPdEq/gIjZwnqQ+xEiKFQ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4534
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130036
+X-Proofpoint-ORIG-GUID: scI7d0yktyPKp1opTyTg_sB2CLuK2pwh
+X-Proofpoint-GUID: scI7d0yktyPKp1opTyTg_sB2CLuK2pwh
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a previous commit, we added the mcopy_atomic_install_ptes() helper.
-This helper does the job of setting up PTEs for an existing page, to map
-it into a given VMA. It deals with both the anon and shmem cases, as
-well as the shared and private cases.
 
-In other words, shmem_mcopy_atomic_pte() duplicates a case it already
-handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
-directly, to reduce code duplication.
+Tyrel,
 
-This requires that we refactor shmem_mcopy_atomic-pte() a bit:
+> This fixes an issue hitting the BUG_ON in ibmvfc_do_work. When going
+> through a host action of IBMVFC_HOST_ACTION_RESET, we change the
+> action to IBMVFC_HOST_ACTION_TGT_DEL, then drop the host lock, and
+> reset the CRQ, which changes the host state to IBMVFC_NO_CRQ.
 
-Instead of doing accounting (shmem_recalc_inode() et al) part-way
-through the PTE setup, do it beforehand. This frees up
-mcopy_atomic_install_ptes() from having to care about this accounting,
-but it does mean we need to clean it up if we get a failure afterwards
-(shmem_uncharge()).
+[...]
 
-We can *almost* use shmem_charge() to do this, reducing code
-duplication. But, it does `inode->i_mapping->nrpages++`, which would
-double-count since shmem_add_to_page_cache() also does this.
+Applied to 5.13/scsi-staging, thanks!
 
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
----
- include/linux/userfaultfd_k.h |  5 ++++
- mm/shmem.c                    | 52 +++++++----------------------------
- mm/userfaultfd.c              | 25 ++++++++---------
- 3 files changed, 27 insertions(+), 55 deletions(-)
-
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index 794d1538b8ba..3e20bfa9ef80 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -53,6 +53,11 @@ enum mcopy_atomic_mode {
- 	MCOPY_ATOMIC_CONTINUE,
- };
- 
-+extern int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-+				     struct vm_area_struct *dst_vma,
-+				     unsigned long dst_addr, struct page *page,
-+				     bool newly_allocated, bool wp_copy);
-+
- extern ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
- 			    unsigned long src_start, unsigned long len,
- 			    bool *mmap_changing, __u64 mode);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 3f48cb5e8404..9b12298405a4 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2376,10 +2376,8 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
- 	struct address_space *mapping = inode->i_mapping;
- 	gfp_t gfp = mapping_gfp_mask(mapping);
- 	pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
--	spinlock_t *ptl;
- 	void *page_kaddr;
- 	struct page *page;
--	pte_t _dst_pte, *dst_pte;
- 	int ret;
- 	pgoff_t max_off;
- 
-@@ -2389,8 +2387,10 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
- 
- 	if (!*pagep) {
- 		page = shmem_alloc_page(gfp, info, pgoff);
--		if (!page)
--			goto out_unacct_blocks;
-+		if (!page) {
-+			shmem_inode_unacct_blocks(inode, 1);
-+			goto out;
-+		}
- 
- 		if (!zeropage) {	/* COPY */
- 			page_kaddr = kmap_atomic(page);
-@@ -2430,59 +2430,27 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
- 	if (ret)
- 		goto out_release;
- 
--	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
--	if (dst_vma->vm_flags & VM_WRITE)
--		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
--	else {
--		/*
--		 * We don't set the pte dirty if the vma has no
--		 * VM_WRITE permission, so mark the page dirty or it
--		 * could be freed from under us. We could do it
--		 * unconditionally before unlock_page(), but doing it
--		 * only if VM_WRITE is not set is faster.
--		 */
--		set_page_dirty(page);
--	}
--
--	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
--
--	ret = -EFAULT;
--	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
--	if (unlikely(pgoff >= max_off))
--		goto out_release_unlock;
--
--	ret = -EEXIST;
--	if (!pte_none(*dst_pte))
--		goto out_release_unlock;
--
--	lru_cache_add(page);
--
- 	spin_lock_irq(&info->lock);
- 	info->alloced++;
- 	inode->i_blocks += BLOCKS_PER_PAGE;
- 	shmem_recalc_inode(inode);
- 	spin_unlock_irq(&info->lock);
- 
--	inc_mm_counter(dst_mm, mm_counter_file(page));
--	page_add_file_rmap(page, false);
--	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
-+	ret = mcopy_atomic_install_ptes(dst_mm, dst_pmd, dst_vma, dst_addr,
-+					page, true, false);
-+	if (ret)
-+		goto out_release_uncharge;
- 
--	/* No need to invalidate - it was non-present before */
--	update_mmu_cache(dst_vma, dst_addr, dst_pte);
--	pte_unmap_unlock(dst_pte, ptl);
- 	unlock_page(page);
- 	ret = 0;
- out:
- 	return ret;
--out_release_unlock:
--	pte_unmap_unlock(dst_pte, ptl);
--	ClearPageDirty(page);
-+out_release_uncharge:
- 	delete_from_page_cache(page);
-+	shmem_uncharge(inode, 1);
- out_release:
- 	unlock_page(page);
- 	put_page(page);
--out_unacct_blocks:
--	shmem_inode_unacct_blocks(inode, 1);
- 	goto out;
- }
- #endif /* CONFIG_USERFAULTFD */
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 8df0438f5d6a..3f73ba0b99f0 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -51,18 +51,13 @@ struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
- /*
-  * Install PTEs, to map dst_addr (within dst_vma) to page.
-  *
-- * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
-- * whether or not dst_vma is VM_SHARED. It also handles the more general
-- * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
-- * backed, or not).
-- *
-- * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
-- * shmem_mcopy_atomic_pte instead.
-+ * This function handles both MCOPY_ATOMIC_NORMAL and _CONTINUE for both shmem
-+ * and anon, and for both shared and private VMAs.
-  */
--static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
--				     struct vm_area_struct *dst_vma,
--				     unsigned long dst_addr, struct page *page,
--				     bool newly_allocated, bool wp_copy)
-+int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-+			      struct vm_area_struct *dst_vma,
-+			      unsigned long dst_addr, struct page *page,
-+			      bool newly_allocated, bool wp_copy)
- {
- 	int ret;
- 	pte_t _dst_pte, *dst_pte;
-@@ -116,8 +111,12 @@ static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
- 	else
- 		page_add_new_anon_rmap(page, dst_vma, dst_addr, false);
- 
--	if (newly_allocated)
--		lru_cache_add_inactive_or_unevictable(page, dst_vma);
-+	if (newly_allocated) {
-+		if (vma_is_shmem(dst_vma) && vm_shared)
-+			lru_cache_add(page);
-+		else
-+			lru_cache_add_inactive_or_unevictable(page, dst_vma);
-+	}
- 
- 	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
- 
 -- 
-2.31.1.295.g9ea45b61b8-goog
-
+Martin K. Petersen	Oracle Linux Engineering
