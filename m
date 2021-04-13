@@ -2,243 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E822335D608
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE9235D616
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344408AbhDMDi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:38:57 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:32826 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDMDi4 (ORCPT
+        id S240622AbhDMDmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:42:01 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16905 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237526AbhDMDmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:38:56 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 13D3S8KF091532;
-        Tue, 13 Apr 2021 11:28:08 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr
- 2021 11:38:33 +0800
-Date:   Tue, 13 Apr 2021 11:38:30 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Milton Miller II <miltonm@us.ibm.com>
-CC:     Rob Herring <robh@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 1/2] dt-bindings: mmc: sdhci-of-aspeed: Add power-gpio
- and power-switch-gpio
-Message-ID: <20210413033829.GB3522@aspeedtech.com>
-References: <20210413013010.GA353@aspeedtech.com>
- <20210408015218.20560-1-steven_lee@aspeedtech.com>
- <20210408015218.20560-2-steven_lee@aspeedtech.com>
- <20210409184118.GA3934798@robh.at.kernel.org>
- <OF2606E97A.D9A04B5B-ON002586B6.000DC6EE-002586B6.000EF1DC@notes.na.collabserv.com>
+        Mon, 12 Apr 2021 23:42:00 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKBF05FMCzlXVc;
+        Tue, 13 Apr 2021 11:39:48 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 13 Apr
+ 2021 11:41:32 +0800
+Subject: Re: [PATCH v3] f2fs: fix to keep isolation of atomic write
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Yi Chen <chenyi77@huawei.com>
+References: <20210412081512.103592-1-yuchao0@huawei.com>
+ <YHUPjDY9ifsffk4z@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <1171d722-8810-998c-e4b3-0845dbbdea19@huawei.com>
+Date:   Tue, 13 Apr 2021 11:41:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <OF2606E97A.D9A04B5B-ON002586B6.000DC6EE-002586B6.000EF1DC@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 13D3S8KF091532
+In-Reply-To: <YHUPjDY9ifsffk4z@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 04/13/2021 10:43, Milton Miller II wrote:
+On 2021/4/13 11:27, Jaegeuk Kim wrote:
+> On 04/12, Chao Yu wrote:
+>> As Yi Chen reported, there is a potential race case described as below:
+>>
+>> Thread A			Thread B
+>> - f2fs_ioc_start_atomic_write
+>> 				- mkwrite
+>> 				 - set_page_dirty
+>> 				  - f2fs_set_page_private(page, 0)
+>>   - set_inode_flag(FI_ATOMIC_FILE)
+>> 				- mkwrite same page
+>> 				 - set_page_dirty
+>> 				  - f2fs_register_inmem_page
+>> 				   - f2fs_set_page_private(ATOMIC_WRITTEN_PAGE)
+>> 				     failed due to PagePrivate flag has been set
+>> 				   - list_add_tail
+>> 				- truncate_inode_pages
+>> 				 - f2fs_invalidate_page
+>> 				  - clear page private but w/o remove it from
+>> 				    inmem_list
+>> 				 - set page->mapping to NULL
+>> - f2fs_ioc_commit_atomic_write
+>>   - __f2fs_commit_inmem_pages
+>>     - __revoke_inmem_pages
+>>      - f2fs_put_page panic as page->mapping is NULL
+>>
+>> The root cause is we missed to keep isolation of atomic write in the case
+>> of start_atomic_write vs mkwrite, let start_atomic_write helds i_mmap_sem
+>> lock to avoid this issue.
 > 
-> 
-> -----"openbmc" <openbmc-bounces+miltonm=us.ibm.com@lists.ozlabs.org> wrote: -----
-> 
-> >To: Rob Herring <robh@kernel.org>
-> >From: Steven Lee 
-> >Sent by: "openbmc" 
-> >Date: 04/12/2021 08:31PM
-> >Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
-> ><devicetree@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>,
-> >Ryan Chen <ryan_chen@aspeedtech.com>, "moderated list:ASPEED SD/MMC
-> >DRIVER" <linux-aspeed@lists.ozlabs.org>, Andrew Jeffery
-> ><andrew@aj.id.au>, "open list:ASPEED SD/MMC DRIVER"
-> ><linux-mmc@vger.kernel.org>, "moderated list:ASPEED SD/MMC DRIVER"
-> ><openbmc@lists.ozlabs.org>, Ryan Chen <ryanchen.aspeed@gmail.com>,
-> >Adrian Hunter <adrian.hunter@intel.com>, open list
-> ><linux-kernel@vger.kernel.org>, Chin-Ting Kuo
-> ><chin-ting_kuo@aspeedtech.com>, "moderated list:ARM/ASPEED MACHINE
-> >SUPPORT" <linux-arm-kernel@lists.infradead.org>
-> >Subject: [EXTERNAL] Re: [PATCH v1 1/2] dt-bindings: mmc:
-> >sdhci-of-aspeed: Add power-gpio and power-switch-gpio
-> >
-> >The 04/10/2021 02:41, Rob Herring wrote:
-> >> On Thu, Apr 08, 2021 at 09:52:17AM +0800, Steven Lee wrote:
-> >> > AST2600-A2 EVB provides the reference design for enabling SD bus
-> >power
-> >> > and toggling SD bus signal voltage by GPIO pins.
-> >> > Add the definition and example for power-gpio and
-> >power-switch-gpio
-> >> > properties.
-> >> > 
-> >> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
-> >power
-> >> > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
-> >connected to
-> >> > a 1.8v and a 3.3v power load switch that providing signal voltage
-> >to
-> >> > SD1 bus.
-> >> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus
-> >is
-> >> > disabled.
-> >> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
-> >signal
-> >> > voltage is 3.3v. Otherwise, 1.8v power load switch will be
-> >enabled, SD1
-> >> > signal voltage becomes 1.8v.
-> >> > 
-> >> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> >> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio
-> >and GPIOV3
-> >> > as power-switch-gpio.
-> >> > 
-> >> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> >> > ---
-> >> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 25
-> >+++++++++++++++++++
-> >> >  1 file changed, 25 insertions(+)
-> >> > 
-> >> > diff --git
-> >a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> >b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> >> > index 987b287f3bff..515a74614f3c 100644
-> >> > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> >> > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> >> > @@ -37,6 +37,14 @@ properties:
-> >> >    clocks:
-> >> >      maxItems: 1
-> >> >      description: The SD/SDIO controller clock gate
-> >> > +  power-gpio:
-> >> 
-> >> '-gpios' is the preferred form even if just 1.
-> >> 
-> >
-> >Thanks for reviewing, I will change the name.
-> 
-> is this a clock gate or a power on gpio?
-> 
-> 
+> My only concern is performance regression. Could you please verify the numbers?
 
-A power on gpio.
+Do you have specific test script?
 
-> >
-> >> > +    description:
-> >> > +      The GPIO for enabling/disabling SD bus power.
-> >> > +    maxItems: 1
-> >> 
-> >> blank line
-> >> 
-> >
-> >I will remove the blank line.
-> >
-> >> > +  power-switch-gpio:
-> >> > +    description:
-> >> > +      The GPIO for toggling the signal voltage between 3.3v and
-> >1.8v.
-> 
-> Which way does it toggle for which voltage?
-> 
-> Oh, you said in the change log but not in the binding.
->
+IIRC, the scenario you mean is multi-threads write/mmap the same db, right?
 
-I will add description in the binding.
+Thanks,
 
-> But please, use gpio controled regulators as Ulf suggested and is
-> already used by other mmc controllers upstream.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/
-> Documentation/devicetree/bindings/regulator/gpio-regulator.yaml
-> 
-
-Thanks for reviewing and the information, I will use gpio-regulator
-instead of power-gpio and power-switch-gpio.
-
-> Ulf> Please do not model these as GPIO pins like this. Instead, it's better
-> Ulf> to model them as gpio regulators, since the mmc core manages them as
-> Ulf> regulators.
-> Ulf> 
-> Ulf> We have a vmmc regulator (corresponding to vdd) and a vqmmc regulator
-> Ulf> (corresponding the signal-voltage level). These are also described in
-> Ulf> the common mmc DT bindings, see
-> Ulf> Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-> Ulf> .
-> 
-> milton
-> 
-> >> > +    maxItems: 1
-> >> >  
-> >> >  patternProperties:
-> >> >    "^sdhci@[0-9a-f]+$":
-> >> > @@ -61,6 +69,14 @@ patternProperties:
-> >> >        sdhci,auto-cmd12:
-> >> >          type: boolean
-> >> >          description: Specifies that controller should use auto
-> >CMD12
-> >> > +      power-gpio:
-> >> > +        description:
-> >> > +          The GPIO for enabling/disabling SD bus power.
-> >> > +        maxItems: 1
-> >> > +      power-switch-gpio:
-> >> > +        description:
-> >> > +          The GPIO for toggling the signal voltage between 3.3v
-> >and 1.8v.
-> >> > +        maxItems: 1
-> >> >      required:
-> >> >        - compatible
-> >> >        - reg
-> >> > @@ -80,6 +96,7 @@ required:
-> >> >  examples:
-> >> >    - |
-> >> >      #include <dt-bindings/clock/aspeed-clock.h>
-> >> > +    #include <dt-bindings/gpio/aspeed-gpio.h>
-> >> >      sdc@1e740000 {
-> >> >              compatible = "aspeed,ast2500-sd-controller";
-> >> >              reg = <0x1e740000 0x100>;
-> >> > @@ -94,6 +111,10 @@ examples:
-> >> >                      interrupts = <26>;
-> >> >                      sdhci,auto-cmd12;
-> >> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
-> >> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 0)
-> >> > +                                     GPIO_ACTIVE_HIGH>;
-> >> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V,
-> >1)
-> >> > +                                     GPIO_ACTIVE_HIGH>;
-> >> >              };
-> >> >  
-> >> >              sdhci1: sdhci@200 {
-> >> > @@ -102,5 +123,9 @@ examples:
-> >> >                      interrupts = <26>;
-> >> >                      sdhci,auto-cmd12;
-> >> >                      clocks = <&syscon ASPEED_CLK_SDIO>;
-> >> > +                    power-gpio = <&gpio0 ASPEED_GPIO(V, 2)
-> >> > +                                     GPIO_ACTIVE_HIGH>;
-> >> > +                    power-switch-gpio = <&gpio0 ASPEED_GPIO(V,
-> >3)
-> >> > +                                     GPIO_ACTIVE_HIGH>;
-> >> >              };
-> >> >      };
-> >> > -- 
-> >> > 2.17.1
-> >> > 
-> >
-> >
+>>
+>> Reported-by: Yi Chen <chenyi77@huawei.com>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>> v3:
+>> - rebase to last dev branch
+>> - update commit message because this patch fixes a different racing issue
+>> of atomic write
+>>   fs/f2fs/file.c    | 3 +++
+>>   fs/f2fs/segment.c | 6 ++++++
+>>   2 files changed, 9 insertions(+)
+>>
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index d697c8900fa7..6284b2f4a60b 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -2054,6 +2054,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   		goto out;
+>>   
+>>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>   
+>>   	/*
+>>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+>> @@ -2064,6 +2065,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   			  inode->i_ino, get_dirty_pages(inode));
+>>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+>>   	if (ret) {
+>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>   		goto out;
+>>   	}
+>> @@ -2077,6 +2079,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>   	/* add inode in inmem_list first and set atomic_file */
+>>   	set_inode_flag(inode, FI_ATOMIC_FILE);
+>>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>   
+>>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index 0cb1ca88d4aa..78c8342f52fd 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -325,6 +325,7 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>   	struct f2fs_inode_info *fi = F2FS_I(inode);
+>>   
+>>   	do {
+>> +		down_write(&F2FS_I(inode)->i_mmap_sem);
+>>   		mutex_lock(&fi->inmem_lock);
+>>   		if (list_empty(&fi->inmem_pages)) {
+>>   			fi->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
+>> @@ -339,11 +340,13 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>   			spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+>>   
+>>   			mutex_unlock(&fi->inmem_lock);
+>> +			up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   			break;
+>>   		}
+>>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
+>>   						true, false, true);
+>>   		mutex_unlock(&fi->inmem_lock);
+>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   	} while (1);
+>>   }
+>>   
+>> @@ -468,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>   	f2fs_balance_fs(sbi, true);
+>>   
+>>   	down_write(&fi->i_gc_rwsem[WRITE]);
+>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>   
+>>   	f2fs_lock_op(sbi);
+>>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+>> @@ -479,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+>>   
+>>   	f2fs_unlock_op(sbi);
+>> +
+>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>   	up_write(&fi->i_gc_rwsem[WRITE]);
+>>   
+>>   	return err;
+>> -- 
+>> 2.29.2
+> .
 > 
