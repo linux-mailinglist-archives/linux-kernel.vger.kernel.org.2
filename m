@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA6E35E18D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84F335E188
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346500AbhDMOcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241146AbhDMOaB (ORCPT
+        id S1346438AbhDMObV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:31:21 -0400
+Received: from mail.efficios.com ([167.114.26.124]:35852 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240161AbhDMO36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:30:01 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21A2C06138C;
-        Tue, 13 Apr 2021 07:29:40 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id i3so2598970qvj.7;
-        Tue, 13 Apr 2021 07:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=wsPt6ZyZKtel+h7n+9l66V0YibnbW9ZpDXXI3HL5J6w=;
-        b=r+biRY2BGEAwIBiMnbaP0XXPZ4RIvk8aQM547tQs5bKqFwjCFEF+o4tqSQxVTY44cY
-         WTAV+qlYwUCkLjTTf2PsoRUjsTLp9PblXNEopoZHNM5OXawi1iYIZouHUZtuFwUqEPVh
-         ET4EYz4m4AIL3LLwaOSHOuw0SDjWHLabippOFQVITp68s1o7rFE30w5R3Jw06nTE8+h4
-         pdhWj0DeEod/RfSXoF+EmhDc0LNP3d++Xs06Q8KA7r0IVLbwZRPieBJfW48Xx7KmcgXA
-         hVJPnmIyStQ5SD94FT+qhVIwLJo/khFIbvAXv6bc3LY4G0L29dZSggpMs8Cjsy0frlyf
-         KeAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=wsPt6ZyZKtel+h7n+9l66V0YibnbW9ZpDXXI3HL5J6w=;
-        b=nj68li4WwVAt/VmXVL3tnGB5O7xcbdJbpsScOPFVYr/J22/LwVvbDPkRH8NCXE+dbE
-         5d5r3tIGaz6FsWMQ2Iw8zS08USCstcnGdMwWSJPLsw2QJlhNAMzo10jDrS5+4c3kMm3b
-         4M9r7ET9RYlP7tcAnzAzNuCZSMktuXQAc9VIOwwdzpuWQBWfio0g4+1G/BcLwnDlAPGi
-         NINHjM7REgtVD6DNML263Y3aHg4AcvwsxBkpfg3DTIBRKWBtEyvB+vRJE/wNI5q9WUWQ
-         m8vnGAEASkoA0Uvm0kjglPTtuSQTvlm9Fgh/LWYiaAOdF5Yc5e2CCzJOIVrB5uokJskZ
-         WakQ==
-X-Gm-Message-State: AOAM533AC47hmeY8isEgXAABvz2Ow5GF+RR8qHQzc4LNiuQe2l5iMVMA
-        b+ggucy/iEA/C5hPIrczFnk=
-X-Google-Smtp-Source: ABdhPJy7P2/Mgf/wLss5O9CsJ6jvWBFWAd983/dA3xh4TZeiqCh7YHwPx7mOPBkOIf7+ZUuFbbjS1g==
-X-Received: by 2002:a0c:8e86:: with SMTP id x6mr21257683qvb.34.1618324180316;
-        Tue, 13 Apr 2021 07:29:40 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id 2sm6160911qko.134.2021.04.13.07.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 07:29:39 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sj38.park@gmail.com, snu@amazon.de, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v28 13/13] MAINTAINERS: Update for DAMON
-Date:   Tue, 13 Apr 2021 14:29:04 +0000
-Message-Id: <20210413142904.556-14-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210413142904.556-1-sj38.park@gmail.com>
-References: <20210413142904.556-1-sj38.park@gmail.com>
+        Tue, 13 Apr 2021 10:29:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E8DE7338DBE;
+        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id GNMbJvh-04vH; Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3A85B33896A;
+        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3A85B33896A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618324178;
+        bh=m4g/8wNINmygDT/irkBjPuTYmIdbOKAJYHYYKCHbOPM=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Lf5L3R76i4/gGmSIkDOaQ9esCGWXd9ninp5R4OXRr7KRFOeAoYYnVl+8TKMJKTIwC
+         yzOGvpYHax3ZVBi4pgzzmQ6UwRP9xf+AfH27l5JNuWymfGX180itAiayKkswkBua4H
+         GZB68FfxgpCNwIWJZGV3qIunGalESpB1iPiTXV80j7l4J4tQ6M7aZP+rd/DNJgy+xD
+         DHzp9ADmEsApMroEhqEIc7mkHwVXFV7dl7hD5WkvZd732VRt6RD0g1i+Rk6f7p6VUH
+         BNOE8hzIML4eoYYPW9cTAVnn7brgZV5ScX0Q7Xhgx215K+1sPFOnfXXCugarPICows
+         1CWK/UNb+yJ4A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Pk3CEU5SqyVg; Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 29CB8338DB5;
+        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Message-ID: <643243714.71310.1618324178021.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210413073657.2308450-2-eric.dumazet@gmail.com>
+References: <20210413073657.2308450-1-eric.dumazet@gmail.com> <20210413073657.2308450-2-eric.dumazet@gmail.com>
+Subject: Re: [PATCH 1/3] rseq: optimize rseq_update_cpu_id()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: rseq: optimize rseq_update_cpu_id()
+Thread-Index: Kjhg1JGHu7tmu69Yv80ias0eQDavcg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+----- On Apr 13, 2021, at 3:36 AM, Eric Dumazet eric.dumazet@gmail.com wrote:
 
-This commit updates MAINTAINERS file for DAMON related files.
+> From: Eric Dumazet <edumazet@google.com>
+> 
+> Two put_user() in rseq_update_cpu_id() are replaced
+> by a pair of unsafe_put_user() with appropriate surroundings.
+> 
+> This removes one stac/clac pair on x86 in fast path.
+> 
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Arjun Roy <arjunroy@google.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> ---
+> kernel/rseq.c | 15 +++++++++++----
+> 1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rseq.c b/kernel/rseq.c
+> index
+> a4f86a9d6937cdfa2f13d1dcc9be863c1943d06f..d2689ccbb132c0fc8ec0924008771e5ee1ca855e
+> 100644
+> --- a/kernel/rseq.c
+> +++ b/kernel/rseq.c
+> @@ -84,13 +84,20 @@
+> static int rseq_update_cpu_id(struct task_struct *t)
+> {
+> 	u32 cpu_id = raw_smp_processor_id();
+> +	struct rseq *r = t->rseq;
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+AFAIU the variable above should be a struct rseq __user *.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4d68184d3f76..42bbcaec5050 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5025,6 +5025,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/damon/*
-+F:	Documentation/vm/damon/*
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon/*
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
+Elsewhere in the file we use "rseq" rather than "r" for struct rseq __user *
+variable name, it would be better to keep the naming consistent across the file
+if possible.
+
+Thanks,
+
+Mathieu
+
+> 
+> -	if (put_user(cpu_id, &t->rseq->cpu_id_start))
+> -		return -EFAULT;
+> -	if (put_user(cpu_id, &t->rseq->cpu_id))
+> -		return -EFAULT;
+> +	if (!user_write_access_begin(r, sizeof(*r)))
+> +		goto efault;
+> +	unsafe_put_user(cpu_id, &r->cpu_id_start, efault_end);
+> +	unsafe_put_user(cpu_id, &r->cpu_id, efault_end);
+> +	user_write_access_end();
+> 	trace_rseq_update(t);
+> 	return 0;
+> +
+> +efault_end:
+> +	user_write_access_end();
+> +efault:
+> +	return -EFAULT;
+> }
+> 
+> static int rseq_reset_rseq_cpu_id(struct task_struct *t)
+> --
+> 2.31.1.295.g9ea45b61b8-goog
+
 -- 
-2.17.1
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
