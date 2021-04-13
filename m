@@ -2,105 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A7335E931
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDB135E936
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348667AbhDMWpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:45:34 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16583 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348641AbhDMWpc (ORCPT
+        id S1348672AbhDMWqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:46:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43974 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348605AbhDMWqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:45:32 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKgbx4fTMz18JCT;
-        Wed, 14 Apr 2021 06:42:53 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.70.201) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 06:45:03 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <salil.mehta@huawei.com>, <jesse.brandeburg@intel.com>,
-        <anthony.l.nguyen@intel.com>, <henry.w.tieman@intel.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linuxarm@openeuler.org>,
-        <intel-wired-lan@lists.osuosl.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: [PATCH V2 net] ice: Re-organizes reqstd/avail {R,T}XQ check/code for efficiency+readability
-Date:   Tue, 13 Apr 2021 23:44:46 +0100
-Message-ID: <20210413224446.16612-1-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
+        Tue, 13 Apr 2021 18:46:01 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13DMjbQ8066593;
+        Tue, 13 Apr 2021 17:45:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618353937;
+        bh=3Ieq6oJ7r3rnTVtz+R9XBx5g2B/1i20kpZjZYXNDCBs=;
+        h=From:To:CC:Subject:Date;
+        b=REPIgVeFMDd3OsKwm4CPm65TiCk0rXKeAJmvbw4kPO7+Xd3JvFmbcCHQg/O8fITrw
+         nAC0JI+g2HN89HrDMUoH/EhLfiYgCQoX+KINggJOQA/jPGUPkjfEeLCKp1jHUdthTA
+         +bhUAtSv3iQPvwgK/4G029vPlnw9a95RjvwWW/0Y=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13DMjb8u079074
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Apr 2021 17:45:37 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
+ Apr 2021 17:45:36 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Tue, 13 Apr 2021 17:45:36 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13DMjaVk033192;
+        Tue, 13 Apr 2021 17:45:36 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <s-anna@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
+Subject: [PATCH V2] dt-bindings: mailbox: ti,secure-proxy: Convert to yaml
+Date:   Tue, 13 Apr 2021 17:45:35 -0500
+Message-ID: <20210413224535.30910-1-nm@ti.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.47.70.201]
-X-CFilter-Loop: Reflected
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If user has explicitly requested the number of {R,T}XQs, then it is
-unnecessary to get the count of already available {R,T}XQs from the
-PF avail_{r,t}xqs bitmap. This value will get overridden by user specified
-value in any case.
+Convert the ti,secure-proxy to yaml for better checks and documentation.
+Differences being mostly in the examples:
+- I've dropped the example usage of mailbox client, it is better done in
+  tisci node definition
+- Switched reg usage for address-cells and size-cells 1 - aligned with
+  schema checks as well
+- included header in example for buildable example
 
-This patch does minor re-organization of the code for improving the flow
-and readabiltiy. This scope of improvement was found during the review of
-the ICE driver code.
+While at this, lets make sure to support upto 100 rx threads even though
+typically upto 1 threads is practically in use.
 
-FYI, I could not test this change due to unavailability of the hardware.
-It would be helpful if somebody can test this patch and provide Tested-by
-Tag. Many thanks!
+NOTE: The following checkpatch warning is generated since we do include the header
+in the example, but this is a false positive warning.
+  WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
 
-Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
-Cc: intel-wired-lan@lists.osuosl.org
-Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
---
-Change V1->V2
- (*) Fixed the comments from Anthony Nguyen(Intel)
-     Link: https://lkml.org/lkml/2021/4/12/1997
+Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
- drivers/net/ethernet/intel/ice/ice_lib.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+Changes since V1: (Thanks Suman for some offline comments)
+- Strengthened interrupt-names property to be on rails
+- More documentation (we dont want an information loss between txt and
+  yaml)
+- Added a max interrupts of 100, which is a rather conservative limit on
+  current devices, but who knows..
+- Commit message updates
+- compatible is a simpler const.
+- interrupt-names are required property - makes no sense in not knowing
+  which interrupts belong to which thread irqs.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index d13c7fc8fb0a..d77133d6baa7 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -161,12 +161,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 
- 	switch (vsi->type) {
- 	case ICE_VSI_PF:
--		vsi->alloc_txq = min3(pf->num_lan_msix,
--				      ice_get_avail_txq_count(pf),
--				      (u16)num_online_cpus());
- 		if (vsi->req_txq) {
- 			vsi->alloc_txq = vsi->req_txq;
- 			vsi->num_txq = vsi->req_txq;
-+		} else {
-+			vsi->alloc_txq = min3(pf->num_lan_msix,
-+					      ice_get_avail_txq_count(pf),
-+					      (u16)num_online_cpus());
- 		}
- 
- 		pf->num_lan_tx = vsi->alloc_txq;
-@@ -175,12 +176,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 		if (!test_bit(ICE_FLAG_RSS_ENA, pf->flags)) {
- 			vsi->alloc_rxq = 1;
- 		} else {
--			vsi->alloc_rxq = min3(pf->num_lan_msix,
--					      ice_get_avail_rxq_count(pf),
--					      (u16)num_online_cpus());
- 			if (vsi->req_rxq) {
- 				vsi->alloc_rxq = vsi->req_rxq;
- 				vsi->num_rxq = vsi->req_rxq;
-+			} else {
-+				vsi->alloc_rxq = min3(pf->num_lan_msix,
-+						      ice_get_avail_rxq_count(pf),
-+						      (u16)num_online_cpus());
- 			}
- 		}
- 
+V1: https://lore.kernel.org/linux-arm-kernel/20210413171230.5872-1-nm@ti.com/
+
+ .../bindings/mailbox/ti,secure-proxy.txt      | 50 ------------
+ .../bindings/mailbox/ti,secure-proxy.yaml     | 79 +++++++++++++++++++
+ 2 files changed, 79 insertions(+), 50 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+ create mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+
+diff --git a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+deleted file mode 100644
+index 6c9c7daf0f5c..000000000000
+--- a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
++++ /dev/null
+@@ -1,50 +0,0 @@
+-Texas Instruments' Secure Proxy
+-========================================
+-
+-The Texas Instruments' secure proxy is a mailbox controller that has
+-configurable queues selectable at SoC(System on Chip) integration. The
+-Message manager is broken up into different address regions that are
+-called "threads" or "proxies" - each instance is unidirectional and is
+-instantiated at SoC integration level by system controller to indicate
+-receive or transmit path.
+-
+-Message Manager Device Node:
+-===========================
+-Required properties:
+---------------------
+-- compatible:		Shall be "ti,am654-secure-proxy"
+-- reg-names 		target_data - Map the proxy data region
+-			rt - Map the realtime status region
+-			scfg - Map the configuration region
+-- reg:			Contains the register map per reg-names.
+-- #mbox-cells		Shall be 1 and shall refer to the transfer path
+-			called thread.
+-- interrupt-names:	Contains interrupt names matching the rx transfer path
+-			for a given SoC. Receive interrupts shall be of the
+-			format: "rx_<PID>".
+-- interrupts:		Contains the interrupt information corresponding to
+-			interrupt-names property.
+-
+-Example(AM654):
+-------------
+-
+-	secure_proxy: mailbox@32c00000 {
+-		compatible = "ti,am654-secure-proxy";
+-		#mbox-cells = <1>;
+-		reg-names = "target_data", "rt", "scfg";
+-		reg = <0x0 0x32c00000 0x0 0x100000>,
+-		      <0x0 0x32400000 0x0 0x100000>,
+-		      <0x0 0x32800000 0x0 0x100000>;
+-		interrupt-names = "rx_011";
+-		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	};
+-
+-	dmsc: dmsc {
+-		[...]
+-		mbox-names = "rx", "tx";
+-		# RX Thread ID is 11
+-		# TX Thread ID is 13
+-		mboxes= <&secure_proxy 11>,
+-			<&secure_proxy 13>;
+-		[...]
+-	};
+diff --git a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+new file mode 100644
+index 000000000000..08a4837fdfcc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/ti,secure-proxy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments' Secure Proxy
++
++maintainers:
++  - Nishanth Menon <nm@ti.com>
++
++description: |
++  The Texas Instruments' secure proxy is a mailbox controller that has
++  configurable queues selectable at SoC(System on Chip) integration. The
++  Message manager is broken up into different address regions that are
++  called "threads" or "proxies" - each instance is unidirectional and is
++  instantiated at SoC integration level by system controller to indicate
++  receive or transmit path.
++
++properties:
++  $nodename:
++    pattern: "^mailbox@[0-9a-f]+$"
++
++  compatible:
++    const: ti,am654-secure-proxy
++
++  "#mbox-cells":
++    const: 1
++    description:
++      Contains the secure proxy thread ID used for the specific transfer path.
++
++  reg-names:
++    items:
++      - const: target_data
++      - const: rt
++      - const: scfg
++
++  reg:
++    minItems: 3
++
++  interrupt-names:
++    minItems: 1
++    maxItems: 100
++    items:
++      - pattern: "^rx_[0-9]{3}$"
++    description:
++      Contains the interrupt name information for the Rx interrupt path for
++      secure proxy thread in the form 'rx_<PID>'.
++
++  interrupts:
++    minItems: 1
++    maxItems: 100
++    description:
++      Contains the interrupt information for the Rx interrupt path for secure
++      proxy.
++
++required:
++  - compatible
++  - reg-names
++  - reg
++  - interrupt-names
++  - interrupts
++  - "#mbox-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    secure_proxy: mailbox@32c00000 {
++          compatible = "ti,am654-secure-proxy";
++          #mbox-cells = <1>;
++          reg-names = "target_data", "rt", "scfg";
++          reg = <0x32c00000 0x100000>,
++                <0x32400000 0x100000>,
++                <0x32800000 0x100000>;
++          interrupt-names = "rx_011";
++          interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++    };
 -- 
-2.17.1
+2.31.0
 
