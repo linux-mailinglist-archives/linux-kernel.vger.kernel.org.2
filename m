@@ -2,159 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB6335DCBC
+	by mail.lfdr.de (Postfix) with ESMTP id 98ADD35DCBD
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343853AbhDMKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343819AbhDMKrc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:47:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03938C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:47:13 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1lWGZZ-0001WX-3v; Tue, 13 Apr 2021 12:47:09 +0200
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1lWGZY-000711-RJ; Tue, 13 Apr 2021 12:47:08 +0200
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org
-Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v3 3/3] watchdog: f71808e_wdt: refactor to platform device/driver pair
-Date:   Tue, 13 Apr 2021 12:46:46 +0200
-Message-Id: <af287d106ef7f1e7f6426844ce1ae89b10dcef3e.1618310618.git-series.a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
-References: <cover.dc9133eee56aa67653455928e4de2162e344ce4d.1618310618.git-series.a.fatoum@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1343877AbhDMKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:48:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52744 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244914AbhDMKsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:48:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35202AF5A;
+        Tue, 13 Apr 2021 10:48:01 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v7 0/7] Make alloc_contig_range handle Hugetlb pages
+Date:   Tue, 13 Apr 2021 12:47:40 +0200
+Message-Id: <20210413104747.12177-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver so far wasn't ported to the driver model and registered
-the watchdog device out of the init after probing the I/O ports
-for a watchdog with correct vendor and device revision.
+So, after Mike's work [1] has gone in, here is a new version of top.
 
-Keep the device detection part at init time, but move watchdog
-registration to a platform driver probe function.
+NOTE: If you are going to try out this patchset, be aware of [2].
+      You should fix that up before any testing.
 
-Suggested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
- drivers/watchdog/f71808e_wdt.c | 42 +++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
+[1] https://patchwork.kernel.org/project/linux-mm/cover/20210409205254.242291-1-mike.kravetz@oracle.com/
+[2] https://patchwork.kernel.org/project/linux-mm/patch/1617259448-22529-5-git-send-email-anshuman.khandual@arm.com/#24108247
 
-diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-index 5496d2bb0089..e96f2c274b80 100644
---- a/drivers/watchdog/f71808e_wdt.c
-+++ b/drivers/watchdog/f71808e_wdt.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/ioport.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/watchdog.h>
- 
- #define DRVNAME "f71808e_wdt"
-@@ -432,10 +433,18 @@ static const struct watchdog_ops fintek_wdt_ops = {
- 	.set_timeout = fintek_wdt_set_timeout,
- };
- 
--static int __init watchdog_init(int sioaddr)
-+static int fintek_wdt_probe(struct platform_device *pdev)
- {
- 	struct watchdog_device *wdd;
- 	int wdt_conf, err = 0;
-+	struct resource *res;
-+	int sioaddr;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-+	if (!res)
-+		return -ENXIO;
-+
-+	sioaddr = res->start;
- 
- 	watchdog.sioaddr = sioaddr;
- 	watchdog.ident.options = WDIOF_SETTIMEOUT
-@@ -468,6 +477,7 @@ static int __init watchdog_init(int sioaddr)
- 
- 	superio_exit(sioaddr);
- 
-+	wdd->parent		= &pdev->dev;
- 	wdd->info               = &watchdog.ident;
- 	wdd->ops                = &fintek_wdt_ops;
- 	wdd->min_timeout        = 1;
-@@ -488,7 +498,7 @@ static int __init watchdog_init(int sioaddr)
- 	fintek_wdt_set_timeout(wdd, timeout);
- 	fintek_wdt_set_pulse_width(pulse_width);
- 
--	return watchdog_register_device(wdd);
-+	return devm_watchdog_register_device(&pdev->dev, wdd);
- }
- 
- static int __init fintek_wdt_find(int sioaddr)
-@@ -554,9 +564,19 @@ static int __init fintek_wdt_find(int sioaddr)
- 	return err;
- }
- 
-+static struct platform_driver fintek_wdt_driver = {
-+	.probe          = fintek_wdt_probe,
-+	.driver         = {
-+		.name   = DRVNAME,
-+	},
-+};
-+
-+static struct platform_device *fintek_wdt_pdev;
-+
- static int __init fintek_wdt_init(void)
- {
- 	static const unsigned short addrs[] = { 0x2e, 0x4e };
-+	struct resource wdt_res = {};
- 	int err = -ENODEV;
- 	int i;
- 
-@@ -573,12 +593,26 @@ static int __init fintek_wdt_init(void)
- 	if (i == ARRAY_SIZE(addrs))
- 		return err;
- 
--	return watchdog_init(addrs[i]);
-+	platform_driver_register(&fintek_wdt_driver);
-+
-+	wdt_res.name = "superio port";
-+	wdt_res.flags = IORESOURCE_IO;
-+	wdt_res.start = addrs[i];
-+	wdt_res.end   = addrs[i] + 1;
-+
-+	fintek_wdt_pdev = platform_device_register_simple(DRVNAME, -1, &wdt_res, 1);
-+	if (IS_ERR(fintek_wdt_pdev)) {
-+		platform_driver_unregister(&fintek_wdt_driver);
-+		return PTR_ERR(fintek_wdt_pdev);
-+	}
-+
-+	return 0;
- }
- 
- static void __exit fintek_wdt_exit(void)
- {
--	watchdog_unregister_device(&watchdog.wdd);
-+	platform_device_unregister(fintek_wdt_pdev);
-+	platform_driver_unregister(&fintek_wdt_driver);
- }
- 
- MODULE_DESCRIPTION("F71808E Watchdog Driver");
+v6 -> v7:
+ - Add patch to move the clearing of HPageFreed flag out of the lock
+ - Add patch to decouple counter handling from prep_new_huge_page().
+   We end up with two new functions, __prep_new_huge_page() which
+   does the proper initialization of the new huge page, and
+   __prep_account_new_huge_page(), which increments hstate->nr_huge_pages.
+   prep_new_huge_page() still calls both of them (details in patch#4).
+   This comes in handy in patch#5, where the whole operation of
+   replacing the page must be done under the lock.
+ - Remove Reviewed-by/Acked-by from patch#5, as needs to be checked again.
+
+v5 -> v6:
+ - Collect Acked-by from Michal
+ - Adressed feedback for patch#2 (expand the comment about migrate_pfn and
+   change return values)
+ - Complete pathc#3's changelog (per Michal)
+ - Place retry lock inside of alloc_and_dissolve_huge_page()
+
+v4 -> v5:
+ - Collect Acked-by and Reviewed-by from David and Vlastimil
+ - Drop racy checks in pfn_range_valid_contig (David)
+ - Rebased on top of 5.12-rc3
+
+v3 -> v4:
+ - Addressed some feedback from David and Michal
+ - Make more clear what hugetlb_lock protects in isolate_or_dissolve_huge_page
+ - Start reporting proper error codes from isolate_migratepages_{range,block}
+ - Bail out earlier in __alloc_contig_migrate_range on -ENOMEM
+ - Addressed internal feedback from Vastlimil wrt. compaction code changes
+
+v2 -> v3:
+ - Drop usage of high-level generic helpers in favour of
+   low-level approach (per Michal)
+ - Check for the page to be marked as PageHugeFreed
+ - Add a one-time retry in case someone grabbed the free huge page
+   from under us
+
+v1 -> v2:
+ - Adressed feedback by Michal
+ - Restrict the allocation to a node with __GFP_THISNODE
+ - Drop PageHuge check in alloc_and_dissolve_huge_page
+ - Re-order comments in isolate_or_dissolve_huge_page
+ - Extend comment in isolate_migratepages_block
+ - Place put_page right after we got the page, otherwise
+   dissolve_free_huge_page will fail
+
+ RFC -> v1:
+ - Drop RFC
+ - Addressed feedback from David and Mike
+ - Fence off gigantic pages as there is a cyclic dependency between
+   them and alloc_contig_range
+ - Re-organize the code to make race-window smaller and to put
+   all details in hugetlb code
+ - Drop nodemask initialization. First a node will be tried and then we
+   will back to other nodes containing memory (N_MEMORY). Details in
+   patch#1's changelog
+ - Count new page as surplus in case we failed to dissolve the old page
+   and the new one. Details in patch#1.
+
+Cover letter:
+
+ alloc_contig_range lacks the hability for handling HugeTLB pages.
+ This can be problematic for some users, e.g: CMA and virtio-mem, where those
+ users will fail the call if alloc_contig_range ever sees a HugeTLB page, even
+ when those pages lay in ZONE_MOVABLE and are free.
+ That problem can be easily solved by replacing the page in the free hugepage
+ pool.
+
+ In-use HugeTLB are no exception though, as those can be isolated and migrated
+ as any other LRU or Movable page.
+
+ This patchset aims for improving alloc_contig_range->isolate_migratepages_block,
+ so HugeTLB pages can be recognized and handled.
+
+ Since we also need to start reporting errors down the chain (e.g: -ENOMEM due to
+ not be able to allocate a new hugetlb page), isolate_migratepages_{range,block}
+ interfaces  need to change to start reporting error codes instead of the pfn == 0
+ vs pfn != 0 scheme it is using right now.
+ From now on, isolate_migratepages_block will not return the next pfn to be scanned
+ anymore, but -EINTR, -ENOMEM or 0, so we the next pfn to be scanned will be recorded
+ in cc->migrate_pfn field (as it is already done in isolate_migratepages_range()).
+
+ Below is an insight from David (thanks), where the problem can clearly be seen:
+
+ "Start a VM with 4G. Hotplug 1G via virtio-mem and online it to
+  ZONE_MOVABLE. Allocate 512 huge pages.
+
+  [root@localhost ~]# cat /proc/meminfo
+  MemTotal:        5061512 kB
+  MemFree:         3319396 kB
+  MemAvailable:    3457144 kB
+  ...
+  HugePages_Total:     512
+  HugePages_Free:      512
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+  Hugepagesize:       2048 kB
+
+  The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging
+  1G via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+
+  [  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy"
+
+ And then with this patchset running:
+
+ "Same experiment with ZONE_MOVABLE:
+
+  a) Free huge pages: all memory can get unplugged again.
+
+  b) Allocated/populated but idle huge pages: all memory can get unplugged
+     again.
+
+  c) Allocated/populated but all 512 huge pages are read/written in a
+     loop: all memory can get unplugged again, but I get a single
+
+  [  121.192345] alloc_contig_range: [180000, 188000) PFNs busy
+
+  Most probably because it happened to try migrating a huge page while it
+  was busy. As virtio-mem retries on ZONE_MOVABLE a couple of times, it
+  can deal with this temporary failure.
+
+  Last but not least, I did something extreme:
+
+  # cat /proc/meminfo
+  MemTotal:        5061568 kB
+  MemFree:          186560 kB
+  MemAvailable:     354524 kB
+  ...
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+
+  Triggering unplug would require to dissolve+alloc - which now fails when
+  trying to allocate an additional ~512 huge pages (1G).
+
+  As expected, I can properly see memory unplug not fully succeeding. + I
+  get a fairly continuous stream of
+
+  [  226.611584] alloc_contig_range: [19f400, 19f800) PFNs busy
+  ...
+
+  But more importantly, the hugepage count remains stable, as configured
+  by the admin (me):
+
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0"
+
+Oscar Salvador (7):
+  mm,page_alloc: Bail out earlier on -ENOMEM in
+    alloc_contig_migrate_range
+  mm,compaction: Let isolate_migratepages_{range,block} return error
+    codes
+  mm,hugetlb: Clear HPageFreed outside of the lock
+  mm,hugetlb: Split prep_new_huge_page functionality
+  mm: Make alloc_contig_range handle free hugetlb pages
+  mm: Make alloc_contig_range handle in-use hugetlb pages
+  mm,page_alloc: Drop unnecessary checks from pfn_range_valid_contig
+
+ include/linux/hugetlb.h |   7 +++
+ mm/compaction.c         |  97 ++++++++++++++++++++++---------
+ mm/hugetlb.c            | 148 ++++++++++++++++++++++++++++++++++++++++++++++--
+ mm/internal.h           |  10 +++-
+ mm/page_alloc.c         |  22 +++----
+ mm/vmscan.c             |   5 +-
+ 6 files changed, 242 insertions(+), 47 deletions(-)
+
 -- 
-git-series 0.9.1
+2.16.3
+
