@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84F335E188
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB6735E197
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346438AbhDMObV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:31:21 -0400
-Received: from mail.efficios.com ([167.114.26.124]:35852 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240161AbhDMO36 (ORCPT
+        id S244009AbhDMOdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:33:41 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:57286 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243826AbhDMOc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:29:58 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E8DE7338DBE;
-        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id GNMbJvh-04vH; Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3A85B33896A;
-        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3A85B33896A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618324178;
-        bh=m4g/8wNINmygDT/irkBjPuTYmIdbOKAJYHYYKCHbOPM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Lf5L3R76i4/gGmSIkDOaQ9esCGWXd9ninp5R4OXRr7KRFOeAoYYnVl+8TKMJKTIwC
-         yzOGvpYHax3ZVBi4pgzzmQ6UwRP9xf+AfH27l5JNuWymfGX180itAiayKkswkBua4H
-         GZB68FfxgpCNwIWJZGV3qIunGalESpB1iPiTXV80j7l4J4tQ6M7aZP+rd/DNJgy+xD
-         DHzp9ADmEsApMroEhqEIc7mkHwVXFV7dl7hD5WkvZd732VRt6RD0g1i+Rk6f7p6VUH
-         BNOE8hzIML4eoYYPW9cTAVnn7brgZV5ScX0Q7Xhgx215K+1sPFOnfXXCugarPICows
-         1CWK/UNb+yJ4A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Pk3CEU5SqyVg; Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 29CB8338DB5;
-        Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-Date:   Tue, 13 Apr 2021 10:29:38 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Message-ID: <643243714.71310.1618324178021.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210413073657.2308450-2-eric.dumazet@gmail.com>
-References: <20210413073657.2308450-1-eric.dumazet@gmail.com> <20210413073657.2308450-2-eric.dumazet@gmail.com>
-Subject: Re: [PATCH 1/3] rseq: optimize rseq_update_cpu_id()
+        Tue, 13 Apr 2021 10:32:56 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DEWMhv010104;
+        Tue, 13 Apr 2021 16:32:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=bavnRqI5ucsHk4llNawSfeoyU7Pikb9myCdrZ4Z3/yk=;
+ b=TPRfkXKj9nW5uYcESsVD8yTup6G7tzaqJ1lJx1bh0s5Uma3V4PMYyh9qu6PinXubCHWn
+ oMKyaDnuVAYcpmsxlmxXz5pLxkxikafapx25l1M3LWWyev/Bn1YkryQgOhcqN2FvPB0l
+ q9jM8coK+h9q9HF0eU6IW+n/XdmalwdjYxPnkkwZZMp6jfu1c/rxB0tRSlDQY0UQpHhc
+ nww4r4DubsuGy/Vb7ZAVpyuSiu8K1AYMqU0P/LK2Zqrl8esEIMZUhBOdMYMNFQMoigvF
+ 4jfMOAYhrApjwA5PQet+p3SkqF8QApIlab6BQJ1a2He3knm0LfSgCuY1o/P4x5cM90VB ow== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37vrp5e7eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 16:32:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 60A4C100034;
+        Tue, 13 Apr 2021 16:32:15 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4C40D246F3E;
+        Tue, 13 Apr 2021 16:32:15 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 16:32:14
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH v2 0/2] STM32 USBPHYC vbus-supply property support
+Date:   Tue, 13 Apr 2021 16:31:39 +0200
+Message-ID: <20210413143141.12919-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: rseq: optimize rseq_update_cpu_id()
-Thread-Index: Kjhg1JGHu7tmu69Yv80ias0eQDavcg==
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_08:2021-04-13,2021-04-13 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 13, 2021, at 3:36 AM, Eric Dumazet eric.dumazet@gmail.com wrote:
+STM32 USBPHYC provides two USB High-Speed ports which are used by controllers
+with Host capabilities. That's why vbus-supply has to be supported on each
+phy node.
 
-> From: Eric Dumazet <edumazet@google.com>
-> 
-> Two put_user() in rseq_update_cpu_id() are replaced
-> by a pair of unsafe_put_user() with appropriate surroundings.
-> 
-> This removes one stac/clac pair on x86 in fast path.
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Arjun Roy <arjunroy@google.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> ---
-> kernel/rseq.c | 15 +++++++++++----
-> 1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index
-> a4f86a9d6937cdfa2f13d1dcc9be863c1943d06f..d2689ccbb132c0fc8ec0924008771e5ee1ca855e
-> 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -84,13 +84,20 @@
-> static int rseq_update_cpu_id(struct task_struct *t)
-> {
-> 	u32 cpu_id = raw_smp_processor_id();
-> +	struct rseq *r = t->rseq;
+---
+Changes in v2:
+- use connector node vbus-supply property as suggested by Rob
+---
+Amelie Delaunay (2):
+  dt-bindings: phy: add vbus-supply optional property to
+    phy-stm32-usbphyc
+  phy: stm32: manage optional vbus regulator on phy_power_on/off
 
-AFAIU the variable above should be a struct rseq __user *.
-
-Elsewhere in the file we use "rseq" rather than "r" for struct rseq __user *
-variable name, it would be better to keep the naming consistent across the file
-if possible.
-
-Thanks,
-
-Mathieu
-
-> 
-> -	if (put_user(cpu_id, &t->rseq->cpu_id_start))
-> -		return -EFAULT;
-> -	if (put_user(cpu_id, &t->rseq->cpu_id))
-> -		return -EFAULT;
-> +	if (!user_write_access_begin(r, sizeof(*r)))
-> +		goto efault;
-> +	unsafe_put_user(cpu_id, &r->cpu_id_start, efault_end);
-> +	unsafe_put_user(cpu_id, &r->cpu_id, efault_end);
-> +	user_write_access_end();
-> 	trace_rseq_update(t);
-> 	return 0;
-> +
-> +efault_end:
-> +	user_write_access_end();
-> +efault:
-> +	return -EFAULT;
-> }
-> 
-> static int rseq_reset_rseq_cpu_id(struct task_struct *t)
-> --
-> 2.31.1.295.g9ea45b61b8-goog
+ .../bindings/phy/phy-stm32-usbphyc.yaml       | 11 +++++++
+ drivers/phy/st/phy-stm32-usbphyc.c            | 31 +++++++++++++++++++
+ 2 files changed, 42 insertions(+)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.17.1
+
