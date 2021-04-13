@@ -2,136 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981CA35D59A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C742735D589
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239409AbhDMDCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:02:37 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:41607 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344028AbhDMDCf (ORCPT
+        id S1343691AbhDMDBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242785AbhDMDBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:02:35 -0400
-Received: by mail-wm1-f43.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso7963210wmi.0;
-        Mon, 12 Apr 2021 20:02:15 -0700 (PDT)
+        Mon, 12 Apr 2021 23:01:20 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6834C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:01:01 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so14858287oto.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dmc0hZXmCrSXdyT5/+BGkfJc60KHiV2RT1PtaXLe5Bw=;
+        b=T6q6GhuwqN7A3KdhOF5AVGdnpPx5ePtwoQwax4QGqKNPuqCnCzmWx7Xc2zvZNLA4zw
+         vaWVs++vP4Y53aCeGS59FgjYf6jwZi5+tAcH6e2KCfepjvaujEFByGLFXodeBCAHms15
+         n06Fyqmo51EYaXN2AMozzYPIv3u0gm5xk7Wrk/de4TUjLuYJVEQ1hRSebmqFC1PbcU2C
+         dpgg9KSCjBCjOOpgtSH3DCQvQnRmvvEPrnNXmVgDcFXtNKHJH5Hz60BoLhbpL3RMfTgr
+         UHPE8N/nPoGFHpjQDVhAg0SrmPqDCGNs9uWSJbLWykuqskkUoTsYsLin9g8VznANsrY9
+         wlMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RA5vvjC6fYjBEhu3hg6HypYCy6fBqYfLd0XqaA1wLzE=;
-        b=VzGFc+hsVS5RumnnQ1/M7kbBmNWfLMMhMbPdPd8d3zRV1JpES2ohL8z15nBWanJv23
-         aO5xIClA1OAlqCu2MbFjY0xDliryLziJ6WOlaa4p55CiNoMpYM481yy4LnSHF3/G4Lok
-         z/T7Ey9Z8obS9b530iT42mjodp3OsbLtCmAyOL7m3DUHUlVfApSdCqhjZ9DyRUSKbUV5
-         v0/QwRS8E1X5cKqC+yM42i5jVAWRi8WlLgDryaSHsvu3NBsupTDV2g9vgcwU+YqMIq5e
-         r5JGPT+IjEFAogxoRyKA6kaAQEGZgrqObmjGU12dpX45FsK7u7BF8rpnUPBWrGR3PGjv
-         XtIw==
-X-Gm-Message-State: AOAM531oyPp4EKHbaHnO30CaEWxU5NevWbBFoQtXzb5m1rp88SrvLIZ0
-        vz2TcOfSqfkC5aVXaGMXQJj+gSaNW3zvIp3g
-X-Google-Smtp-Source: ABdhPJz2EcyX91aOwaVy1s4HzoUdIOUjDp/awwWdl+UXce69PPDS7sow0KcWLYlyF5ftj+9nz0yhxA==
-X-Received: by 2002:a05:600c:4f94:: with SMTP id n20mr1827699wmq.18.1618282934568;
-        Mon, 12 Apr 2021 20:02:14 -0700 (PDT)
-Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
-        by smtp.gmail.com with ESMTPSA id b206sm1022606wmc.15.2021.04.12.20.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 20:02:14 -0700 (PDT)
-From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
-Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] hwmon: (max31790) Update documentation
-Date:   Tue, 13 Apr 2021 04:59:48 +0200
-Message-Id: <20210413025948.901867-5-kubernat@cesnet.cz>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210413025948.901867-1-kubernat@cesnet.cz>
-References: <20210413025948.901867-1-kubernat@cesnet.cz>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dmc0hZXmCrSXdyT5/+BGkfJc60KHiV2RT1PtaXLe5Bw=;
+        b=XOV+s8SM5MJ7MGpfFJzkg0BVeQ4p2szlRdG3gfrW7/MlurYVg9Tv3qpkCCJrUu6fF7
+         PPpUjDON9nKFOlqEAm0g+YUAmGu0q2pxtZguUQiaFof0E5dzXW/U5tVVmPFm6qmPLyMj
+         VYHBpChMzuGZ0vlT0V2gIccoEq6h5XsKrSGr4WvxM0EHhGByhlIg0dytDrt0LVJZ5yOt
+         J+chlpMD5bdqpkT7Lxvt9KuOazvbvUSMJiPA9/QoKjqTjS6eb7nbXS3mMMwECwbO/hJ9
+         SNkG7z4vVeSoZXRc/RnsotEyGaZEKOXrArGtDNaAwedOLWYxtmPOKDyFYRbZUME/Vp8T
+         4tbw==
+X-Gm-Message-State: AOAM532lZv0LblJr7XK2I9IAUwXp691x6RgWnjCHSN2JJ3Zt339iT2Sd
+        p068No8QodTav7Iw9VTCyaNx2A==
+X-Google-Smtp-Source: ABdhPJzLEu/ne59rxKLrYKwS39IEy24zduSSC5TNViBz5Wb5iDoKEYf/g3Cma7Q3wf5RooKPWOn1uw==
+X-Received: by 2002:a9d:1a1:: with SMTP id e30mr2371575ote.283.1618282860923;
+        Mon, 12 Apr 2021 20:01:00 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h59sm3115213otb.29.2021.04.12.20.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 20:01:00 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 22:00:58 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 1/4] input: pm8941-pwrkey: add support for PMK8350
+ PON_HLOS PMIC peripheral
+Message-ID: <20210413030058.GK1538589@yoga>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617881469-31965-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conditions for fan fault and its connection to the PWM mode are now
-documented.
+On Thu 08 Apr 06:31 CDT 2021, satya priya wrote:
 
-The pwm_rate_of_change and fan_window are now mentioned. According to
-our testing with Sunon PF36281BX-000U-S99, these values are crucial in
-how RPM mode works and how long it takes for the RPM to stabilize. For
-example, setting 5000 RPM (the fan goes up to 23000), the
-pwm_rate_of_change needed to be changed to the lowest possible value,
-otherwise the chip would just go from pwm 0 to pwm 60 back and forth and
-never achieving 5000 RPM (and also signaling fan fault). Based on this
-testing, we found out that the pwm_rate_of_change and fan_window values
-need to be changed manually by the user, based on the user's exact fan
-configuration.
+> From: David Collins <collinsd@codeaurora.org>
+> 
+> On Qualcomm Technologies, Inc. PMIC PMK8350, the PON peripheral
+> is split into two peripherals: PON_HLOS and PON_PBS.  The
+> application processor only has write access to PON_HLOS which
+> limits it to only receiving PON interrupts.
+> 
+> Add support for the PMK8350 PON_HLOS peripheral so that its
+> KPDPWR_N and RESIN_N interrupts can be used to detect key
+> presses.
+> 
 
-Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
----
- Documentation/hwmon/max31790.rst | 41 +++++++++++++++++++++++++++++++-
- 1 file changed, 40 insertions(+), 1 deletion(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/Documentation/hwmon/max31790.rst b/Documentation/hwmon/max31790.rst
-index 2979addeac8f..6056b67c3a95 100644
---- a/Documentation/hwmon/max31790.rst
-+++ b/Documentation/hwmon/max31790.rst
-@@ -30,6 +30,44 @@ monitoring and control of fan RPM as well as detection of fan failure.
- Six pins are dedicated tachometer inputs. Any of the six PWM outputs can
- also be configured to serve as tachometer inputs.
- 
-+About pwm[1-6]_enable
-+---------------------
-+0 - full-speed
-+    The chip doesn't have a specific way to set "full speed", so setting
-+    pwm[1-6]_enable to 0 is just "set PWM mode with 255 duty cycle".
-+1 - PWM mode
-+    Fan speed is controlled by writing a value to pwm[1-6].
-+2 - RPM mode
-+    Fan speed is controlled by writing a value to fan[1-6]_target.
-+
-+About fan[1-6]_fault
-+--------------------
-+In PWM (or full-speed) mode, if the input RPM goes below what is set
-+in fan[1-6]_target, fan[1-6]_fault gets set to 1. In other words,
-+fan[1-6]_target works as the minimum input RPM before a fan fault goes off.
-+
-+In RPM mode, fan fault is set when the fan spins "too slowly" (exact
-+conditions are in the datasheet). RPM mode depends on four variables:
-+    target_speed:        This is set by fan[1-6]_target.
-+    speed_range:         This is set automatically when setting target_speed
-+                         or manually by fan[1-12]_div.
-+    pwm_rate_of_change:  NOT set by the driver.
-+    fan_window:          NOT set by the driver.
-+
-+The last two values are not set by the driver, because there's no generic way to
-+compute them. You should set them manually through i2c (in the bootloader for
-+example). Check the datasheet for details.
-+
-+The fan fault value latches, to reset it, set a value to pwm[1-6]
-+or fan[1-6]_target.
-+
-+About fan[1-12]_div
-+-------------------
-+This value affects the measurable range of the chip. The driver sets this value
-+automatically in RPM based on fan[1-6]_target. In PWM mode, you should set this
-+value manually based on the details from the datasheet. Setting the speed range
-+is disabled while in RPM mode to prevent overwriting the automatically
-+calculated value.
- 
- Sysfs entries
- -------------
-@@ -39,7 +77,8 @@ fan[1-12]_enable   RW  enable fan speed monitoring
- fan[1-12]_input    RO  fan tachometer speed in RPM
- fan[1-12]_fault    RO  fan experienced fault
- fan[1-12]_div      RW  set the measurable speed range, not available in RPM mode
--fan[1-6]_target    RW  desired fan speed in RPM
-+fan[1-6]_target    RW  RPM mode = desired fan speed
-+                       PWM mode = minimum fan speed until fault
- pwm[1-6]_enable    RW  regulator mode, 0=full speed, 1=manual (pwm) mode, 2=rpm mode
-                        setting rpm mode sets fan*_enable to 1
- pwm[1-6]           RW  fan target duty cycle (0-255)
--- 
-2.31.1
+Regards,
+Bjorn
 
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V2:
+>  - No change.
+> 
+>  drivers/input/misc/pm8941-pwrkey.c | 103 ++++++++++++++++++++++++++-----------
+>  1 file changed, 72 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/input/misc/pm8941-pwrkey.c b/drivers/input/misc/pm8941-pwrkey.c
+> index cf81044..10e3fc0 100644
+> --- a/drivers/input/misc/pm8941-pwrkey.c
+> +++ b/drivers/input/misc/pm8941-pwrkey.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+> + * Copyright (c) 2010-2011, 2020-2021, The Linux Foundation. All rights reserved.
+>   * Copyright (c) 2014, Sony Mobile Communications Inc.
+>   */
+>  
+> @@ -22,6 +22,8 @@
+>  #define PON_RT_STS			0x10
+>  #define  PON_KPDPWR_N_SET		BIT(0)
+>  #define  PON_RESIN_N_SET		BIT(1)
+> +#define  PON_GEN3_RESIN_N_SET		BIT(6)
+> +#define  PON_GEN3_KPDPWR_N_SET		BIT(7)
+>  
+>  #define PON_PS_HOLD_RST_CTL		0x5a
+>  #define PON_PS_HOLD_RST_CTL2		0x5b
+> @@ -38,8 +40,12 @@
+>  #define  PON_DBC_DELAY_MASK		0x7
+>  
+>  struct pm8941_data {
+> -	unsigned int pull_up_bit;
+> -	unsigned int status_bit;
+> +	unsigned int	pull_up_bit;
+> +	unsigned int	status_bit;
+> +	bool		supports_ps_hold_poff_config;
+> +	bool		supports_debounce_config;
+> +	const char	*name;
+> +	const char	*phys;
+>  };
+>  
+>  struct pm8941_pwrkey {
+> @@ -231,34 +237,40 @@ static int pm8941_pwrkey_probe(struct platform_device *pdev)
+>  
+>  	input_set_capability(pwrkey->input, EV_KEY, pwrkey->code);
+>  
+> -	pwrkey->input->name = "pm8941_pwrkey";
+> -	pwrkey->input->phys = "pm8941_pwrkey/input0";
+> -
+> -	req_delay = (req_delay << 6) / USEC_PER_SEC;
+> -	req_delay = ilog2(req_delay);
+> -
+> -	error = regmap_update_bits(pwrkey->regmap,
+> -				   pwrkey->baseaddr + PON_DBC_CTL,
+> -				   PON_DBC_DELAY_MASK,
+> -				   req_delay);
+> -	if (error) {
+> -		dev_err(&pdev->dev, "failed to set debounce: %d\n", error);
+> -		return error;
+> +	pwrkey->input->name = pwrkey->data->name;
+> +	pwrkey->input->phys = pwrkey->data->phys;
+> +
+> +	if (pwrkey->data->supports_debounce_config) {
+> +		req_delay = (req_delay << 6) / USEC_PER_SEC;
+> +		req_delay = ilog2(req_delay);
+> +
+> +		error = regmap_update_bits(pwrkey->regmap,
+> +					   pwrkey->baseaddr + PON_DBC_CTL,
+> +					   PON_DBC_DELAY_MASK,
+> +					   req_delay);
+> +		if (error) {
+> +			dev_err(&pdev->dev, "failed to set debounce: %d\n",
+> +				error);
+> +			return error;
+> +		}
+>  	}
+>  
+> -	error = regmap_update_bits(pwrkey->regmap,
+> -				   pwrkey->baseaddr + PON_PULL_CTL,
+> -				   pwrkey->data->pull_up_bit,
+> -				   pull_up ? pwrkey->data->pull_up_bit : 0);
+> -	if (error) {
+> -		dev_err(&pdev->dev, "failed to set pull: %d\n", error);
+> -		return error;
+> +	if (pwrkey->data->pull_up_bit) {
+> +		error = regmap_update_bits(pwrkey->regmap,
+> +					   pwrkey->baseaddr + PON_PULL_CTL,
+> +					   pwrkey->data->pull_up_bit,
+> +					   pull_up ? pwrkey->data->pull_up_bit :
+> +						     0);
+> +		if (error) {
+> +			dev_err(&pdev->dev, "failed to set pull: %d\n", error);
+> +			return error;
+> +		}
+>  	}
+>  
+>  	error = devm_request_threaded_irq(&pdev->dev, pwrkey->irq,
+>  					  NULL, pm8941_pwrkey_irq,
+>  					  IRQF_ONESHOT,
+> -					  "pm8941_pwrkey", pwrkey);
+> +					  pwrkey->data->name, pwrkey);
+>  	if (error) {
+>  		dev_err(&pdev->dev, "failed requesting IRQ: %d\n", error);
+>  		return error;
+> @@ -271,12 +283,14 @@ static int pm8941_pwrkey_probe(struct platform_device *pdev)
+>  		return error;
+>  	}
+>  
+> -	pwrkey->reboot_notifier.notifier_call = pm8941_reboot_notify,
+> -	error = register_reboot_notifier(&pwrkey->reboot_notifier);
+> -	if (error) {
+> -		dev_err(&pdev->dev, "failed to register reboot notifier: %d\n",
+> -			error);
+> -		return error;
+> +	if (pwrkey->data->supports_ps_hold_poff_config) {
+> +		pwrkey->reboot_notifier.notifier_call = pm8941_reboot_notify,
+> +		error = register_reboot_notifier(&pwrkey->reboot_notifier);
+> +		if (error) {
+> +			dev_err(&pdev->dev, "failed to register reboot notifier: %d\n",
+> +				error);
+> +			return error;
+> +		}
+>  	}
+>  
+>  	platform_set_drvdata(pdev, pwrkey);
+> @@ -289,7 +303,8 @@ static int pm8941_pwrkey_remove(struct platform_device *pdev)
+>  {
+>  	struct pm8941_pwrkey *pwrkey = platform_get_drvdata(pdev);
+>  
+> -	unregister_reboot_notifier(&pwrkey->reboot_notifier);
+> +	if (pwrkey->data->supports_ps_hold_poff_config)
+> +		unregister_reboot_notifier(&pwrkey->reboot_notifier);
+>  
+>  	return 0;
+>  }
+> @@ -297,16 +312,42 @@ static int pm8941_pwrkey_remove(struct platform_device *pdev)
+>  static const struct pm8941_data pwrkey_data = {
+>  	.pull_up_bit = PON_KPDPWR_PULL_UP,
+>  	.status_bit = PON_KPDPWR_N_SET,
+> +	.name = "pm8941_pwrkey",
+> +	.phys = "pm8941_pwrkey/input0",
+> +	.supports_ps_hold_poff_config = true,
+> +	.supports_debounce_config = true,
+>  };
+>  
+>  static const struct pm8941_data resin_data = {
+>  	.pull_up_bit = PON_RESIN_PULL_UP,
+>  	.status_bit = PON_RESIN_N_SET,
+> +	.name = "pm8941_resin",
+> +	.phys = "pm8941_resin/input0",
+> +	.supports_ps_hold_poff_config = true,
+> +	.supports_debounce_config = true,
+> +};
+> +
+> +static const struct pm8941_data pon_gen3_pwrkey_data = {
+> +	.status_bit = PON_GEN3_KPDPWR_N_SET,
+> +	.name = "pmic_pwrkey",
+> +	.phys = "pmic_pwrkey/input0",
+> +	.supports_ps_hold_poff_config = false,
+> +	.supports_debounce_config = false,
+> +};
+> +
+> +static const struct pm8941_data pon_gen3_resin_data = {
+> +	.status_bit = PON_GEN3_RESIN_N_SET,
+> +	.name = "pmic_resin",
+> +	.phys = "pmic_resin/input0",
+> +	.supports_ps_hold_poff_config = false,
+> +	.supports_debounce_config = false,
+>  };
+>  
+>  static const struct of_device_id pm8941_pwr_key_id_table[] = {
+>  	{ .compatible = "qcom,pm8941-pwrkey", .data = &pwrkey_data },
+>  	{ .compatible = "qcom,pm8941-resin", .data = &resin_data },
+> +	{ .compatible = "qcom,pmk8350-pwrkey", .data = &pon_gen3_pwrkey_data },
+> +	{ .compatible = "qcom,pmk8350-resin", .data = &pon_gen3_resin_data },
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, pm8941_pwr_key_id_table);
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
