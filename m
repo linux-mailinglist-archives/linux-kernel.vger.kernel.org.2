@@ -2,147 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F0D35DD8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7F735DD74
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244934AbhDMLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244167AbhDMLOP (ORCPT
+        id S230515AbhDMLKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:10:22 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:37778 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345295AbhDMLJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:14:15 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E36C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:13:54 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id a6so16040236wrw.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Cu3neruluoSCQXicI1kgn+ehmqNJHkuNyetxZuBFmfY=;
-        b=hfiiqOLquAbv0Zo8WwVW2P07q1yK3rArOdZiB3bFdqqgKEY4lhM+0k9N7CEc6B7dmD
-         //pm3E0tK9HCL2QxUb6/PVLhUGdQc10kea72DZarCyaqCO0WxxJqcCLQmwn7hJEkjfoH
-         2Iiqt6IqBtzKI9PfTgrsHx2BGKb2PpShkXb0fjnkpqqjDf78j39yJlk3ZbEDkvgPa93c
-         2/cJipB4xQ+mHSaKtRMPfX/Lxs8cPxa8S+O7QT1OJ0UHk1/ZbjFuQ8awzP/0P8bG1Q6w
-         hzU5VD/Pn9vta+7UKZmMtV44h1AS9WC2Ii173EYi71sMGuGasWPvDVwjcwUHvycImZde
-         gRSQ==
+        Tue, 13 Apr 2021 07:09:32 -0400
+Received: by mail-wr1-f49.google.com with SMTP id j5so15042601wrn.4;
+        Tue, 13 Apr 2021 04:09:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=Cu3neruluoSCQXicI1kgn+ehmqNJHkuNyetxZuBFmfY=;
-        b=nltXMaVFjAjNwNTd4GPkBX35uog5F59AqB6vnzpt9jxFqmfKg+91eZLON0jUcJFbKQ
-         4ih2/Wfl/h0JRG9RbMll+7AaGhY62YYFNHvFG/6Z0XdWf/ZIZ0jCzg7mRTYZRW3JNNpV
-         kIz2qNF80hgS8DHUN0p0ChjD9ujdnGpFmidzsO7LSJ0FpDMGmXLFDtuJJhxWThq14U1d
-         xLjcYr8QSeSe4M2JshHi3QIqTBHv8KnuSpvBaF8GdQjfi2jR5WgW2i5fQ20EGt7uORA4
-         mVbh7OfwHL5r6dPV9JFIu/IThoKXUShHTIZvrrujmCmnFrrXjrlY8yP5nMnptPLvbsml
-         OfDQ==
-X-Gm-Message-State: AOAM530vtGJoegiYCapSZ8K6AbUxGrrfb4HYYBLyVO0wcuuKKdNM+vha
-        +yWI61aXlBURLC4yeiulYNpRNg==
-X-Google-Smtp-Source: ABdhPJzY9shCczKjSRW6Y2rpwOvSTMSuxueUgRqhkgPrE9aInqm3+aebb0vYVhHDuo9TmXBtfSBYUQ==
-X-Received: by 2002:a5d:43c1:: with SMTP id v1mr11267064wrr.419.1618312432810;
-        Tue, 13 Apr 2021 04:13:52 -0700 (PDT)
-Received: from zen.linaroharston ([51.148.130.216])
-        by smtp.gmail.com with ESMTPSA id j6sm2130276wmq.16.2021.04.13.04.13.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G3TewBmGXdgtkv54qxfxiBx7mOKZlZK5eRltyB8fduM=;
+        b=FzgxESxr6n/bIo/CMaKR1zntOhSTt/bnJjzkY21564fy//ruK9S+HkQb/0rMMYibFX
+         j8bBLRav9EgsKLpds7N73rI4H2wSxroLrmvTphQbyr4XAwvV10kn9f1ciHpgG9x7Rj5h
+         Hw9Jj2nRC/2HSBO4EMqJk657XqiHkPKcUvCVdG2AFVTQQ13EouLQRPERxGXubzkax1pC
+         avnJRV6FvADM6/vVn3ump7e7R7RFECci5LxvKU5OF+oWeNe0yOiAmBpbWR2bONaKvyG/
+         thU73twrs7VFkflx1tiXW3gzEThMUnaPNgpHJE2e6n0UdeX33b2pPAd23sgCptrAsoTC
+         nVig==
+X-Gm-Message-State: AOAM530UyVkXwgA9cF6DOv8/fTNtFYY77p5s6xxfA5Qa9/ts039rj256
+        vGVy8lfJEtC3wUGzNLfykFLZenr09AA=
+X-Google-Smtp-Source: ABdhPJzGotePmavs2zmOyjWJSPIDjQxDgq4kl84fOK2KC3FTQB0D9yEk29kZqZzuxmJ9ltUaWrKA3w==
+X-Received: by 2002:a5d:6443:: with SMTP id d3mr36779739wrw.292.1618312151689;
+        Tue, 13 Apr 2021 04:09:11 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n9sm2102942wmo.27.2021.04.13.04.09.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:13:51 -0700 (PDT)
-Received: from zen (localhost [127.0.0.1])
-        by zen.linaroharston (Postfix) with ESMTP id 012321FF7E;
-        Tue, 13 Apr 2021 12:13:50 +0100 (BST)
-References: <20201203191135.21576-1-info@metux.net>
- <20201203191135.21576-2-info@metux.net>
- <8209ce55-a4aa-f256-b9b9-f7eb3cac877b@redhat.com>
- <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
-User-agent: mu4e 1.5.11; emacs 28.0.50
-From:   Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, mst@redhat.com,
-        linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-riscv@lists.infradead.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: Re: [PATCH v2 2/2] drivers: gpio: add virtio-gpio guest driver
-Date:   Tue, 13 Apr 2021 12:07:58 +0100
-In-reply-to: <43f1ee89-89f3-95a3-58f1-7a0a12c2b92f@metux.net>
-Message-ID: <87lf9mmo7l.fsf@linaro.org>
+        Tue, 13 Apr 2021 04:09:11 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 11:09:09 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Drivers: hv: vmbus: remove unused including
+ <linux/version.h>
+Message-ID: <20210413110909.jtv7vmo7lo3fqv54@liuwe-devbox-debian-v2>
+References: <1618307358-74492-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618307358-74492-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 05:49:18PM +0800, Yang Li wrote:
+> Fix the following versioncheck warning:
+> ./drivers/hv/hv.c: 16 linux/version.h not needed.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-"Enrico Weigelt, metux IT consult" <info@metux.net> writes:
+Thanks for the patch. This has also been reported by Huawei's kernel bot
+and fixed in hyperv-next.
 
-> On 04.12.20 04:35, Jason Wang wrote:
->
-> Hi,
->
->> Is the plan to keep this doc synced with the one in the virtio
->> specification?
->
-> Yes, of course. I'm still in progress of doing the beaurocratic stuff w/
-> virtio-tc folks (ID registration, ...) - yet have to see whether they
-> wanna add it to their spec documents ...
->
-> BTW: if you feel, sometings not good w/ the current spec, please raise
-> your voice now.
->
->> I think it's better to use u8 ot uint8_t here.Git grep told me the
->> former is more popular under Documentation/.
->
-> thx, I'll fix that
->
->>> +- for version field currently only value 1 supported.
->>> +- the line names block holds a stream of zero-terminated strings,
->>> +=C2=A0 holding the individual line names.
->>=20
->> I'm not sure but does this mean we don't have a fixed length of config
->> space? Need to check whether it can bring any trouble to
->> migration(compatibility).
->
-> Yes, it depends on how many gpio lines are present and how much space
-> their names take up.
->
-> A fixed size would either put unpleasent limits on the max number of
-> lines or waste a lot space when only few lines present.
->
-> Not that virtio-gpio is also meant for small embedded workloads running
-> under some hypervisor.
->
->>> +- unspecified fields are reserved for future use and should be zero.
->>> +
->>> +------------------------
->>> +Virtqueues and messages:
->>> +------------------------
->>> +
->>> +- Queue #0: transmission from host to guest
->>> +- Queue #1: transmission from guest to host
->>=20
->>=20
->> Virtio became more a popular in the area without virtualization. So I
->> think it's better to use "device/driver" instead of "host/guest" here.
->
-> Good point. But I'd prefer "cpu" instead of "driver" in that case.
-
-I think you are going to tie yourself up in knots if you don't move this
-to the OASIS spec. The reason being the VirtIO spec has definitions for
-what a "Device" and a "Driver" is that are clear and unambiguous. The
-upstream spec should be considered the canonical source of truth for any
-implementation (Linux or otherwise).
-
-By all means have the distilled documentation for the driver in the
-kernel source tree but trying to upstream an implementation before
-starting the definition in the standard is a little back to front IMHO*.
-
-* that's not to say these things can't be done in parallel as the spec
-  is reviewed and worked on and the kinks worked out but you want the
-  final order of upstreaming to start with the spec.
-
---=20
-Alex Benn=C3=A9e
+Wei.
