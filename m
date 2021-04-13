@@ -2,223 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AC35D4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AEC35D4A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 03:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240237AbhDMBDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 21:03:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240180AbhDMBDX (ORCPT
+        id S240287AbhDMBGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 21:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239318AbhDMBGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 21:03:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618275784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NsnOZhfDDmNX8NdBm3yb2Qi8vpH9UqjQP9RovkzcARY=;
-        b=SNEQzAlAPT+aQ60YxDF9A1iBUUmr1sXHtAEsrfNdGhf2loB6+6ib5wrjICqvnBCidFZDFb
-        1tHCXoFy+IsBn4JlE4ACf4KLKCJpbDRxWHucGfM5+9GVc84Z/VvKKNT/Q/ZJ8klY10wpRz
-        zRNow3guhdZmrLhoNxCPXKnPu0rH4MY=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-tQw6gGfgObK00hAD1Rc99g-1; Mon, 12 Apr 2021 21:03:03 -0400
-X-MC-Unique: tQw6gGfgObK00hAD1Rc99g-1
-Received: by mail-qv1-f71.google.com with SMTP id i7so9140878qvj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 18:03:03 -0700 (PDT)
+        Mon, 12 Apr 2021 21:06:43 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1F0C061574;
+        Mon, 12 Apr 2021 18:06:25 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 130so2141595qkm.4;
+        Mon, 12 Apr 2021 18:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hVwLckcTsoZ6HK6udwyuD9YVZ7bzQLTeObf78Se6sgk=;
+        b=QCzp8x7GFjs4FxDPNwWSJjU6yK4DbyvES3MDI167L9chvXvhp0yLhZQD2fiXsnGKGM
+         3i0gsu9rjaEavamxbBBEOlLWQCsnc2xI6rlhSILcsv6asO79PWHNegqkxKzm7He6K1ah
+         N+5t9nrIoGNBt5cXvHFyRB0qIgSmiSKeyE9SnVbpzEPa8f6SxUnvnOY3JmWW4Pr3KsiA
+         R4EeqpkN+mSkjsmq6DeTpkvjCQ1Mm150tWKaW3zmDyI7yKZ68HIvQO2rbBC/9D0itfhi
+         IBX5P1I/5n57m4wKLDLGkOzVZk8zRM4FZk7jKDNigPWhk0DdI88qLFTF5dEG+IrOJb+Y
+         r0Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=NsnOZhfDDmNX8NdBm3yb2Qi8vpH9UqjQP9RovkzcARY=;
-        b=i7bZtSI1DJPq5vglru0UebveVsJ3a/Y4WA+v68qGTbvCWZkjWRDo5zDIrx8kf0fFMj
-         9CB4mSnRJoXAO2+xmEEJXq35rFJIU4u35bEUtdsn2Dv+UAtr4qujTiYsJs3AhJ5HTasH
-         Y8XebYrMB8nIWCPuSRsgdRFu2a0Wr4QrEPVhPdIfL6Fj7aFtioIBdCF6z+mCLbsroRud
-         KuKMd7uLsS1g5jAy/nmIBIIR6VHSPvXo24WaiDBjiHAGkng350wbjnVNRaXgKV6rxJ0M
-         310Y6Zbuj6XFIH+cO7u1Cut2iS3kQljMyVTPNp5F5xYgcGVsPyTtN3kVHQmQ03embZSN
-         96gg==
-X-Gm-Message-State: AOAM531S+xm+GbkgJMStgDJSYLJFrOZ2pnQOLk3tf1xcyR5ma4v74Lp4
-        laP+v1ocK27FOsUPd0yrhX92vINHFUIRlhlCJoZK3PyQWnEhKCs2k/C8zfsigcYx4ML7tbSkfm/
-        rmdwkMNdHkPVS/rBBsJykyN8Y
-X-Received: by 2002:ac8:40d9:: with SMTP id f25mr27965005qtm.323.1618275782803;
-        Mon, 12 Apr 2021 18:03:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzf+ajxx6gJ8y8Xb7tFiweNA1lCZ4uIyKIj/PrrD1+GTjvm+6qf5Zxe9z4kJ2aMGZUg27GXLw==
-X-Received: by 2002:ac8:40d9:: with SMTP id f25mr27964989qtm.323.1618275782525;
-        Mon, 12 Apr 2021 18:03:02 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id f9sm9097847qkk.115.2021.04.12.18.03.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 18:03:01 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 5/5] mm/memcg: Optimize user context object stock
- access
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210412225503.15119-1-longman@redhat.com>
- <20210412225503.15119-6-longman@redhat.com>
- <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
-Message-ID: <507e199e-963c-b7e2-958a-6cc61b55ca5d@redhat.com>
-Date:   Mon, 12 Apr 2021 21:03:00 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hVwLckcTsoZ6HK6udwyuD9YVZ7bzQLTeObf78Se6sgk=;
+        b=m0qyG7vlPMxfHpR36kGdEVBHsbe+dzWT6/osF623pJZ6btpfkv/PsL/p+YATZBgNFt
+         KQ+lrHhoql7gc4g6jGUK3bcZLz0FFZUoFVSyXp1ZAV9ED+3e+7Crh0GXtWv0THHklpt9
+         kEOVq3U7zzM1zmdKsBZdVMMl8edNm4ylIrZX6jeeQyuaN825/5rLyL7LYX/uuepNbDLV
+         u8bqzK8HNpxnusavprHvZvIIb4lcUSOMn72dfDh3WrNOd7pQighmVicJC6Xck88xnaYQ
+         jOGL/Q7X3NSgs+xISFcKCm7SvZnDKZmRMdOXvksRTERh+s05nFOeBskOeFCBux3NwjEz
+         Fpqw==
+X-Gm-Message-State: AOAM533Ilf2fhbhJlrt99R8bYhfZS9J0PRU8eG1QRmZcjDAAPzbUN37S
+        oAG0uJ+4KHdjio6FuE7Ljef+bpTR1mF5Yw==
+X-Google-Smtp-Source: ABdhPJyuHutyJv2S2u4Q7vlQKIykhN/IxnoF1RdSKx+5d8R0WbEyc3A5hF7OurTjocDwEx8ldFs8PA==
+X-Received: by 2002:a05:620a:20db:: with SMTP id f27mr30565654qka.51.1618275983861;
+        Mon, 12 Apr 2021 18:06:23 -0700 (PDT)
+Received: from localhost.localdomain ([177.89.232.75])
+        by smtp.gmail.com with ESMTPSA id q67sm7104459qkb.89.2021.04.12.18.06.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 18:06:23 -0700 (PDT)
+From:   Ramon Fontes <ramonreisfontes@gmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Cc:     johannes@sipsolutions.net, kvalo@codeaurora.org,
+        davem@davemloft.net, Ramon Fontes <ramonreisfontes@gmail.com>
+Subject: [PATCH] mac80211_hwsim: indicate support for 60GHz channels
+Date:   Mon, 12 Apr 2021 22:06:13 -0300
+Message-Id: <20210413010613.50128-1-ramonreisfontes@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 7:10 PM, Shakeel Butt wrote:
-> On Mon, Apr 12, 2021 at 3:55 PM Waiman Long <longman@redhat.com> wrote:
->> Most kmem_cache_alloc() calls are from user context. With instrumentation
->> enabled, the measured amount of kmem_cache_alloc() calls from non-task
->> context was about 0.01% of the total.
->>
->> The irq disable/enable sequence used in this case to access content
->> from object stock is slow.  To optimize for user context access, there
->> are now two object stocks for task context and interrupt context access
->> respectively.
->>
->> The task context object stock can be accessed after disabling preemption
->> which is cheap in non-preempt kernel. The interrupt context object stock
->> can only be accessed after disabling interrupt. User context code can
->> access interrupt object stock, but not vice versa.
->>
->> The mod_objcg_state() function is also modified to make sure that memcg
->> and lruvec stat updates are done with interrupted disabled.
->>
->> The downside of this change is that there are more data stored in local
->> object stocks and not reflected in the charge counter and the vmstat
->> arrays.  However, this is a small price to pay for better performance.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Acked-by: Roman Gushchin <guro@fb.com>
->> ---
->>   mm/memcontrol.c | 73 +++++++++++++++++++++++++++++++++++++++----------
->>   1 file changed, 59 insertions(+), 14 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 69f728383efe..29f2df76644a 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -2229,7 +2229,8 @@ struct obj_stock {
->>   struct memcg_stock_pcp {
->>          struct mem_cgroup *cached; /* this never be root cgroup */
->>          unsigned int nr_pages;
->> -       struct obj_stock obj;
->> +       struct obj_stock task_obj;
->> +       struct obj_stock irq_obj;
->>
->>          struct work_struct work;
->>          unsigned long flags;
->> @@ -2254,11 +2255,48 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
->>   }
->>   #endif
->>
->> +/*
->> + * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
->> + * sequence used in this case to access content from object stock is slow.
->> + * To optimize for user context access, there are now two object stocks for
->> + * task context and interrupt context access respectively.
->> + *
->> + * The task context object stock can be accessed by disabling preemption only
->> + * which is cheap in non-preempt kernel. The interrupt context object stock
->> + * can only be accessed after disabling interrupt. User context code can
->> + * access interrupt object stock, but not vice versa.
->> + */
->>   static inline struct obj_stock *current_obj_stock(void)
->>   {
->>          struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
->>
->> -       return &stock->obj;
->> +       return in_task() ? &stock->task_obj : &stock->irq_obj;
->> +}
->> +
->> +#define get_obj_stock(flags)                           \
->> +({                                                     \
->> +       struct memcg_stock_pcp *stock;                  \
->> +       struct obj_stock *obj_stock;                    \
->> +                                                       \
->> +       if (in_task()) {                                \
->> +               preempt_disable();                      \
->> +               (flags) = -1L;                          \
->> +               stock = this_cpu_ptr(&memcg_stock);     \
-> The above line was missing in the previous version.
->
->> +               obj_stock = &stock->task_obj;           \
->> +       } else {                                        \
->> +               local_irq_save(flags);                  \
->> +               stock = this_cpu_ptr(&memcg_stock);     \
->> +               obj_stock = &stock->irq_obj;            \
->> +       }                                               \
->> +       obj_stock;                                      \
->> +})
->> +
->> +static inline void put_obj_stock(unsigned long flags)
->> +{
->> +       if (flags == -1L)
->> +               preempt_enable();
->> +       else
->> +               local_irq_restore(flags);
->>   }
->>
->>   /**
->> @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
->>          local_irq_save(flags);
->>
->>          stock = this_cpu_ptr(&memcg_stock);
->> -       drain_obj_stock(&stock->obj);
->> +       drain_obj_stock(&stock->irq_obj);
->> +       if (in_task())
->> +               drain_obj_stock(&stock->task_obj);
->>          drain_stock(stock);
->>          clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
->>
->> @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
->>          memcg = obj_cgroup_memcg(objcg);
->>          if (pgdat)
->>                  lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> -       __mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
->> +       mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
->>          rcu_read_unlock();
->>   }
->>
->> @@ -3193,7 +3233,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
->>          unsigned long flags;
->>          bool ret = false;
->>
->> -       local_irq_save(flags);
->> +       stock = get_obj_stock(flags);
->>
->>          stock = current_obj_stock();
-> The above is redundant.
+Advertise 60GHz channels to mac80211.
+---
+ drivers/net/wireless/mac80211_hwsim.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-Right. I should check the patch carefully. Will remove it.
-
-Thanks,
-Longman
-
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index fa7d4c20d..70d0af475 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -159,6 +159,8 @@ static const struct ieee80211_regdomain hwsim_world_regdom_custom_01 = {
+ 		REG_RULE(5150-10, 5240+10, 40, 0, 30, 0),
+ 		REG_RULE(5745-10, 5825+10, 40, 0, 30, 0),
+ 		REG_RULE(5855-10, 5925+10, 40, 0, 33, 0),
++		/* IEEE 802.11ad (60GHz), channels 1..3 */
++		REG_RULE(56160+2160*1-1080, 56160+2160*3+1080, 2160, 0, 0, 0),
+ 	}
+ };
+ 
+@@ -317,6 +319,12 @@ static struct net_device *hwsim_mon; /* global monitor netdev */
+ 	.hw_value = (_freq), \
+ }
+ 
++#define CHAN60G(_freq) { \
++        .band = NL80211_BAND_60GHZ, \
++        .center_freq = (_freq), \
++        .hw_value = (_freq), \
++}
++
+ static const struct ieee80211_channel hwsim_channels_2ghz[] = {
+ 	CHAN2G(2412), /* Channel 1 */
+ 	CHAN2G(2417), /* Channel 2 */
+@@ -445,6 +453,13 @@ static const struct ieee80211_channel hwsim_channels_6ghz[] = {
+ 	CHAN6G(7115), /* Channel 233 */
+ };
+ 
++static const struct ieee80211_channel hwsim_channels_60ghz[] = {
++	CHAN60G(58320), /* Channel 1 */
++	CHAN60G(60480), /* Channel 2 */
++	CHAN60G(62640), /* Channel 3 */
++	CHAN60G(64800), /* Channel 4 */
++};
++
+ #define NUM_S1G_CHANS_US 51
+ static struct ieee80211_channel hwsim_channels_s1g[NUM_S1G_CHANS_US];
+ 
+@@ -617,6 +632,7 @@ struct mac80211_hwsim_data {
+ 	struct ieee80211_channel channels_2ghz[ARRAY_SIZE(hwsim_channels_2ghz)];
+ 	struct ieee80211_channel channels_5ghz[ARRAY_SIZE(hwsim_channels_5ghz)];
+ 	struct ieee80211_channel channels_6ghz[ARRAY_SIZE(hwsim_channels_6ghz)];
++	struct ieee80211_channel channels_60ghz[ARRAY_SIZE(hwsim_channels_60ghz)];
+ 	struct ieee80211_channel channels_s1g[ARRAY_SIZE(hwsim_channels_s1g)];
+ 	struct ieee80211_rate rates[ARRAY_SIZE(hwsim_rates)];
+ 	struct ieee80211_iface_combination if_combination;
+@@ -648,7 +664,8 @@ struct mac80211_hwsim_data {
+ 		unsigned long next_start, start, end;
+ 	} survey_data[ARRAY_SIZE(hwsim_channels_2ghz) +
+ 		      ARRAY_SIZE(hwsim_channels_5ghz) +
+-		      ARRAY_SIZE(hwsim_channels_6ghz)];
++		      ARRAY_SIZE(hwsim_channels_6ghz) +
++		      ARRAY_SIZE(hwsim_channels_60ghz)];
+ 
+ 	struct ieee80211_channel *channel;
+ 	u64 beacon_int	/* beacon interval in us */;
+@@ -3221,6 +3238,8 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
+ 		sizeof(hwsim_channels_5ghz));
+ 	memcpy(data->channels_6ghz, hwsim_channels_6ghz,
+ 		sizeof(hwsim_channels_6ghz));
++	memcpy(data->channels_60ghz, hwsim_channels_60ghz,
++		sizeof(hwsim_channels_60ghz));
+ 	memcpy(data->channels_s1g, hwsim_channels_s1g,
+ 	       sizeof(hwsim_channels_s1g));
+ 	memcpy(data->rates, hwsim_rates, sizeof(hwsim_rates));
+-- 
+2.25.1
 
