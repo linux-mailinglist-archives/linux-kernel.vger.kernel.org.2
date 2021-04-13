@@ -2,150 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C5335E148
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF28135E14B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 16:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhDMOVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 10:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhDMOVk (ORCPT
+        id S237787AbhDMOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 10:22:12 -0400
+Received: from mail.efficios.com ([167.114.26.124]:60310 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231477AbhDMOWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 10:21:40 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B7DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:21:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id w3so26257425ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XSb26jWChq8UeB+2eG8t5Jx3KUuQ9YtghNH+PRQLkiY=;
-        b=k3pN5OC9G/4r78rKs51gKlPvO4wrZICaChTRKTnSRjLSywsKf07n6zNAkTF9Ne1o4d
-         +jFK5LbkH7qequCu3zp6PMfMIm0ZOqF5tQlMU0FGle1bTjVZLJYlQJqn4U8NEhpucNnK
-         upY+Bcj95F9aZorRKFwRu8uZpDWhTgjb1el7yjPiVJflv59Bpb45WnIk5jmJLP0/WSUJ
-         BbJ41+ChRp+bHpKKF3AwHOPh6M4x+EpQpr9PBhRcCxneHRBxhfbLih/fLud/nBSq/lr7
-         WMnE0Jd8qUIx5+9/WdOvi8uPusmIJAX0Vwg0Ct7EoqfpeCxI/6a+2yov8TTZQDnLK2L4
-         yoQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XSb26jWChq8UeB+2eG8t5Jx3KUuQ9YtghNH+PRQLkiY=;
-        b=dBwAgp6yrwDaXD+Tn3WzPmcUEIKqEFmAAnILUIKP+edDLJmpdJM+oTJMye2mn/RtZz
-         CnWNu60lYQc4j8zf1Id3SZcgSZ2fxfwSmp2ONd+QfXcP2Uq48YOPyHR5b9/7nTYmSWuV
-         6Oji5t4qsJapTPA0K+T3yTB08WSnpsetXfYN3sv2UmYCHYtuKSzl8HxZMsTNzTvgska0
-         y+UlkM3K2eRpZ7edJgwhOH5p1V91BV1TZQfwAUAMeVLLivqcxMVOCrUcZOuWd3CgtOc3
-         +tDFUfL5AMYi5cyCsylGFQ3cEp3DTNb6dZfDWvpLBkouJfCJ7MEazO501qbhAQZb00cM
-         dCdA==
-X-Gm-Message-State: AOAM5308s1DcAJWWX3yFbv3YUklxr/bSIcC3tHnuM3jx/8PQjEfxpOjf
-        V8uPzpES8lOvfDeTr9mQSntFGqQS/jb73A==
-X-Google-Smtp-Source: ABdhPJymdeMv0uUjFWR0CdB8/8ZZeGwkDBV5G3UaD6/U/HYdz7Z/jYamUPyVKggm6swd2pkExAzDnw==
-X-Received: by 2002:a17:906:5902:: with SMTP id h2mr32177502ejq.416.1618323679310;
-        Tue, 13 Apr 2021 07:21:19 -0700 (PDT)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id gt26sm7368877ejb.31.2021.04.13.07.21.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 07:21:18 -0700 (PDT)
-Received: by mail-wr1-f45.google.com with SMTP id m9so3922693wrx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 07:21:17 -0700 (PDT)
-X-Received: by 2002:a5d:510d:: with SMTP id s13mr37457079wrt.12.1618323677563;
- Tue, 13 Apr 2021 07:21:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210413054733.36363-1-mst@redhat.com> <20210413054733.36363-4-mst@redhat.com>
- <805053bf-960f-3c34-ce23-012d121ca937@redhat.com> <20210413100222-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210413100222-mutt-send-email-mst@kernel.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 13 Apr 2021 10:20:39 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSe=3cAkhwjSDDt1U8mSiVj5BKgJ7DJGxAAoF22kac3CMQ@mail.gmail.com>
-Message-ID: <CA+FuTSe=3cAkhwjSDDt1U8mSiVj5BKgJ7DJGxAAoF22kac3CMQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 3/4] virtio_net: move tx vq operation under tx
- queue lock
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
+        Tue, 13 Apr 2021 10:22:09 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 12B37338B7C;
+        Tue, 13 Apr 2021 10:21:49 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9EfswI6cimaZ; Tue, 13 Apr 2021 10:21:48 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 82A09338956;
+        Tue, 13 Apr 2021 10:21:48 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 82A09338956
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618323708;
+        bh=odGHcDlkkyoeYhCvi7gyQ5vI6O/Jo65FG1EYVJ0hYbk=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=I9pUNR5kim8HOLse4couqMfUL0G7sHZ8Ia2rdjRxXcayTT20CMYmmOuot/cPuGDzm
+         KtLuEvFzJqwsHlpIqGvnm6iWHbBbluNfnzql4g05u4JyabY1RulkF6F7j4kin0GzX6
+         S5Rg2X6QEGQalEpjpaEm8tLWAQ6IEgqTlrT04hMC8FIfHCS2To+NdAE7ytm3ZI1rq+
+         nOYFPfc0jZ81MFZDgQ+L02YNkNlDNEwsxh6ASMDtLTMKUPi5bs0Y0m/vz5hDpFL6Io
+         56sUcQI6w+mFWc2ldL2kWnlgvu3k+FbAqVPb2+l5gT8dGuNVbtbE+jXRob8lkrK/LS
+         0zlQMM2jJN8tQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 7Gr96GPnzDJy; Tue, 13 Apr 2021 10:21:48 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 7158D338DA8;
+        Tue, 13 Apr 2021 10:21:48 -0400 (EDT)
+Date:   Tue, 13 Apr 2021 10:21:48 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, paulmck <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Eric Dumazet <edumazet@google.com>
+Message-ID: <644332839.71291.1618323708305.JavaMail.zimbra@efficios.com>
+In-Reply-To: <fbf1a4449b0148b5b9c3baa32088c32a@AcuMS.aculab.com>
+References: <20210413073657.2308450-1-eric.dumazet@gmail.com> <20210413073657.2308450-4-eric.dumazet@gmail.com> <YHVf+F3sKlWyZags@hirez.programming.kicks-ass.net> <fbf1a4449b0148b5b9c3baa32088c32a@AcuMS.aculab.com>
+Subject: Re: [PATCH 3/3] rseq: optimise for 64bit arches
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Topic: rseq: optimise for 64bit arches
+Thread-Index: AQHXMETc4NN4/ddyHEK6qBKOxo8eAaqyQOlAaWt3qjQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:03 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Tue, Apr 13, 2021 at 04:54:42PM +0800, Jason Wang wrote:
-> >
-> > =E5=9C=A8 2021/4/13 =E4=B8=8B=E5=8D=881:47, Michael S. Tsirkin =E5=86=
-=99=E9=81=93:
-> > > It's unsafe to operate a vq from multiple threads.
-> > > Unfortunately this is exactly what we do when invoking
-> > > clean tx poll from rx napi.
+----- On Apr 13, 2021, at 6:36 AM, David Laight David.Laight@ACULAB.COM wrote:
 
-Actually, the issue goes back to the napi-tx even without the
-opportunistic cleaning from the receive interrupt, I think? That races
-with processing the vq in start_xmit.
+> From: Peter Zijlstra
+>> Sent: 13 April 2021 10:10
+>> 
+>> On Tue, Apr 13, 2021 at 12:36:57AM -0700, Eric Dumazet wrote:
+>> > From: Eric Dumazet <edumazet@google.com>
+>> >
+>> > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+>> > update includes") added regressions for our servers.
+>> >
+>> > Using copy_from_user() and clear_user() for 64bit values
+>> > on 64bit arches is suboptimal.
+>> >
+>> > We might revisit this patch once all 32bit arches support
+>> > get_user() and/or put_user() for 8 bytes values.
+>> 
+>> Argh, what a mess :/ afaict only nios32 lacks put_user_8, but get_user_8
+>> is missing in a fair number of archs.
+>> 
+>> That said; 32bit archs never have to actually set the top bits in that
+>> word, so they _could_ only set the low 32 bits. That works provided
+>> userspace itself keeps the high bits clear.
+> 
+> Does that work for 32bit BE ?
 
-> > > As a fix move everything that deals with the vq to under tx lock.
-> > >
+Yes, because uapi/linux/rseq.h defines the ptr32 as:
 
-If the above is correct:
+#if (defined(__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined(__BIG_ENDIAN)
+                        __u32 padding;          /* Initialized to zero. */
+                        __u32 ptr32;
+#else /* LITTLE */
+                        __u32 ptr32;
+                        __u32 padding;          /* Initialized to zero. */
+#endif /* ENDIAN */
 
-Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
+which takes care of BE vs LE.
 
-> > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > > ---
-> > >   drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
-> > >   1 file changed, 21 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index 16d5abed582c..460ccdbb840e 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -1505,6 +1505,8 @@ static int virtnet_poll_tx(struct napi_struct *=
-napi, int budget)
-> > >     struct virtnet_info *vi =3D sq->vq->vdev->priv;
-> > >     unsigned int index =3D vq2txq(sq->vq);
-> > >     struct netdev_queue *txq;
-> > > +   int opaque;
+> 
+>	David
+> 
+>> So I suppose that if we're going to #ifdef this, we might as well do the
+>> whole thing.
+>> 
+>> Mathieu; did I forget a reason why this cannot work?
 
-nit: virtqueue_napi_complete also stores as int opaque, but
-virtqueue_enable_cb_prepare actually returns, and virtqueue_poll
-expects, an unsigned int. In the end, conversion works correctly. But
-cleaner to use the real type.
+The only difference it brings on 32-bit is that the truncation of high bits
+will be done before the following validation:
 
-> > > +   bool done;
-> > >     if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
-> > >             /* We don't need to enable cb for XDP */
-> > > @@ -1514,10 +1516,28 @@ static int virtnet_poll_tx(struct napi_struct=
- *napi, int budget)
-> > >     txq =3D netdev_get_tx_queue(vi->dev, index);
-> > >     __netif_tx_lock(txq, raw_smp_processor_id());
-> > > +   virtqueue_disable_cb(sq->vq);
-> > >     free_old_xmit_skbs(sq, true);
-> > > +
-> > > +   opaque =3D virtqueue_enable_cb_prepare(sq->vq);
-> > > +
-> > > +   done =3D napi_complete_done(napi, 0);
-> > > +
-> > > +   if (!done)
-> > > +           virtqueue_disable_cb(sq->vq);
-> > > +
-> > >     __netif_tx_unlock(txq);
-> > > -   virtqueue_napi_complete(napi, sq->vq, 0);
-> >
-> >
-> > So I wonder why not simply move __netif_tx_unlock() after
-> > virtqueue_napi_complete()?
-> >
-> > Thanks
-> >
->
->
-> Because that calls tx poll which also takes tx lock internally ...
+        if (!ptr) {
+                memset(rseq_cs, 0, sizeof(*rseq_cs));
+                return 0;
+        }
+        if (ptr >= TASK_SIZE)
+                return -EINVAL;
 
-which tx poll?
+The question is whether we really want to issue a segmentation fault if 32-bit
+user-space has set non-zero high bits, or if silently ignoring those high
+bits is acceptable.
+
+Nits below:
+
+>> 
+>> diff --git a/kernel/rseq.c b/kernel/rseq.c
+>> index a4f86a9d6937..94006190b8eb 100644
+>> --- a/kernel/rseq.c
+>> +++ b/kernel/rseq.c
+>> @@ -115,20 +115,25 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
+>>  static int rseq_get_rseq_cs(struct task_struct *t, struct rseq_cs *rseq_cs)
+>>  {
+>>  	struct rseq_cs __user *urseq_cs;
+>> -	u64 ptr;
+>> +	unsigned long ptr;
+
+I am always reluctant to use long/unsigned long type as type for the get/put_user
+(x) argument, because it hides the cast deep within architecture-specific macros.
+I understand that in this specific case it happens that on 64-bit archs we end up
+casting a u64 to unsigned long (same size), and on 32-bit archs we end up casting a
+u32 to unsigned long (also same size), so there is no practical concern about type
+promotion and sign-extension, but I think it would be better to have something
+explicit, e.g.:
+
+#ifdef CONFIG_64BIT
+static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp, struct rseq_cs *rseq_cs)
+{
+    u64 ptr;
+
+    if (get_user(ptr, &rseq_cs->ptr64))
+        return -EFAULT;
+    *ptrp = (struct rseq_cs __user *)ptr;
+    return 0;
+}
+#else
+static int rseq_get_cs_ptr(struct rseq_cs __user **uptrp, struct rseq_cs *rseq_cs)
+{
+    u32 ptr;
+
+    if (get_user(ptr, &rseq_cs->ptr.ptr32))
+        return -EFAULT;
+    *ptrp = (struct rseq_cs __user *)ptr;
+    return 0;
+}
+#endif
+
+And use those helpers to get the ptr value.
+
+>>  	u32 __user *usig;
+>>  	u32 sig;
+>>  	int ret;
+>> 
+>> -	if (copy_from_user(&ptr, &t->rseq->rseq_cs.ptr64, sizeof(ptr)))
+>> +#ifdef CONFIG_64BIT
+>> +	if (get_user(ptr, &t->rseq->rseq_cs.ptr64))
+>>  		return -EFAULT;
+>> +#else
+>> +	if (get_user(ptr, &t->rseq->rseq_cs.ptr32))
+
+Note that this is also not right. It should be &t->rseq->rseq_cs.ptr.ptr32.
+
+Thanks,
+
+Mathieu
+
+>> +		return -EFAULT;
+>> +#endif
+>>  	if (!ptr) {
+>>  		memset(rseq_cs, 0, sizeof(*rseq_cs));
+>>  		return 0;
+>>  	}
+>>  	if (ptr >= TASK_SIZE)
+>>  		return -EINVAL;
+>> -	urseq_cs = (struct rseq_cs __user *)(unsigned long)ptr;
+>> +	urseq_cs = (struct rseq_cs __user *)ptr;
+>>  	if (copy_from_user(rseq_cs, urseq_cs, sizeof(*rseq_cs)))
+>>  		return -EFAULT;
+>> 
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT,
+> UK
+> Registration No: 1397386 (Wales)
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
