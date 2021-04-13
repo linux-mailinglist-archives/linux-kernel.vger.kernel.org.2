@@ -2,226 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FAB35DC05
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2BA35DC09
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhDMJ7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:59:04 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:37908 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229661AbhDMJ7B (ORCPT
+        id S231157AbhDMJ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229683AbhDMJ7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:59:01 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id A46305ECAE6;
-        Tue, 13 Apr 2021 19:58:38 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lWFob-005tqP-56; Tue, 13 Apr 2021 19:58:37 +1000
-Date:   Tue, 13 Apr 2021 19:58:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, bigeasy@linutronix.de,
-        hch@infradead.org, npiggin@kernel.dk
-Subject: Re: bl_list and lockdep
-Message-ID: <20210413095837.GD63242@dread.disaster.area>
-References: <20210406123343.1739669-1-david@fromorbit.com>
- <20210406123343.1739669-4-david@fromorbit.com>
- <20210406132834.GP2531743@casper.infradead.org>
- <20210406212253.GC1990290@dread.disaster.area>
- <874kgb1qcq.ffs@nanos.tec.linutronix.de>
- <20210412221536.GQ1990290@dread.disaster.area>
- <87fszvytv8.ffs@nanos.tec.linutronix.de>
+        Tue, 13 Apr 2021 05:59:44 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A2FC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:59:23 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id dp18so3110454qvb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 02:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VMcD35Ujet43ZNezuReqevqqKa5TLsaePHwZ/6BHBmQ=;
+        b=S3+uWhyju2pYgu1wXjOmMnmHTZTmAoCiP6NM3xoTtP9AyxvSCTDEPJ8dLRG1Vv4xFp
+         1aPSTG5dQLa/b7cOc05cQCev7SoNrr7x6+OP0l+6MFBtq7cjQSyerNCjolXRnx5tkuEL
+         9FoJZfztuA6RushKEviRDicw3Oyg11xvd/xAYILl8Dz0VBCZjr/ljAbEqPO3Au+TFKTS
+         yZI+y2w7r3++R5jIC+YozOY1ZJLaA1+7r75Onxo4KFrzsAFaFyp5PprUSrfGtyv4voxw
+         EWWcJqRRP2le6kSa+YhdLvlFXkL8cd7QAZJgmZRqzZX/cLhwD46CM836isccIHhD5BGg
+         nbfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VMcD35Ujet43ZNezuReqevqqKa5TLsaePHwZ/6BHBmQ=;
+        b=Y7pb8rJfgKAo/VNFw4NiW5DhGLYYKDqbTqK52TEgyOkKEJuyhxaj8zJMsJdbCRpPKx
+         X8VZYvosAsk8ZIu/NfNInI0y/+hyenGyv6G5aDKaADNu2wSiPlWhy9nC05azMN3fu5D0
+         cb6Vkyj18U3b2rZcrysFioLO7EsnIQGTKyb16MmIhp/VvTSZajdpofDDv14aqqDsBVYF
+         WlOMoSAqOzh2aaJdTiyw3csZZCZDIfPmxBbvoGnrvntrS/kI4TGqzsSaoXcgyjmmwaWs
+         rcqavkPNpTtoWF+Wxl6ahqXI7TFlWr87ohPvzTZi0r+6IEkizc2vSGfbPFJ9MTGHq8xm
+         k25g==
+X-Gm-Message-State: AOAM531ChiZCw0g5a+aCUZUi7HdUEgCF0+MoUXB5lQbWNu8SEi+phm0J
+        NTblu7UIjEZI1jJR33cQRAnxKOW2WDJ95yZo17Ohaw==
+X-Google-Smtp-Source: ABdhPJz500BW4+J/JjiGj2LeH6i25zeb9ERmyrNn9kazII9t+h6kxtBN96cg3TVzseLg79SdcQJSrq108pHhoVxIAXg=
+X-Received: by 2002:a05:6214:240a:: with SMTP id fv10mr31975524qvb.10.1618307962571;
+ Tue, 13 Apr 2021 02:59:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fszvytv8.ffs@nanos.tec.linutronix.de>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_f
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=Ta7Pabei9qwIYMADUlkA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <1618303531-16050-1-git-send-email-stefanc@marvell.com>
+ <20210413091741.GL1463@shell.armlinux.org.uk> <CO6PR18MB38732288887550115ACCCF75B04F9@CO6PR18MB3873.namprd18.prod.outlook.com>
+ <CO6PR18MB3873B0B27E086CA02E09B08DB04F9@CO6PR18MB3873.namprd18.prod.outlook.com>
+In-Reply-To: <CO6PR18MB3873B0B27E086CA02E09B08DB04F9@CO6PR18MB3873.namprd18.prod.outlook.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Tue, 13 Apr 2021 11:59:11 +0200
+Message-ID: <CAPv3WKfCLfMTDrmkf-1=tdQ6zJaBaDCV64T+vv2cLKUSqAAYGw@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH net-next] net: mvpp2: Add parsing support for
+ different IPv4 IHL values
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Nadav Haklai <nadavh@marvell.com>,
+        Yan Markman <ymarkman@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        Liron Himi <lironh@marvell.com>, Dana Vardi <danat@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 01:18:35AM +0200, Thomas Gleixner wrote:
-> Dave,
-> 
-> On Tue, Apr 13 2021 at 08:15, Dave Chinner wrote:
-> > On Mon, Apr 12, 2021 at 05:20:53PM +0200, Thomas Gleixner wrote:
-> >> On Wed, Apr 07 2021 at 07:22, Dave Chinner wrote:
-> >> > And, FWIW, I'm also aware of the problems that RT kernels have with
-> >> > the use of bit spinlocks and being unable to turn them into sleeping
-> >> > mutexes by preprocessor magic. I don't care about that either,
-> >> > because dentry cache...
-> >> 
-> >> In the dentry cache it's a non-issue.
+Hi Stefan,
+
+wt., 13 kwi 2021 o 11:56 Stefan Chulski <stefanc@marvell.com> napisa=C5=82(=
+a):
+>
+> > > -----Original Message-----
+> > > From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+> > > Sent: Tuesday, April 13, 2021 12:18 PM
+> > > To: Stefan Chulski <stefanc@marvell.com>
+> > > Cc: netdev@vger.kernel.org; thomas.petazzoni@bootlin.com;
+> > > davem@davemloft.net; Nadav Haklai <nadavh@marvell.com>; Yan
+> > Markman
+> > > <ymarkman@marvell.com>; linux-kernel@vger.kernel.org;
+> > kuba@kernel.org;
+> > > mw@semihalf.com; andrew@lunn.ch; atenart@kernel.org; Liron Himi
+> > > <lironh@marvell.com>; Dana Vardi <danat@marvell.com>
+> > > Subject: [EXT] Re: [PATCH net-next] net: mvpp2: Add parsing support
+> > > for different IPv4 IHL values
+> > >
+> > > External Email
+> > >
+> > > ---------------------------------------------------------------------=
+-
+> > > On Tue, Apr 13, 2021 at 11:45:31AM +0300, stefanc@marvell.com wrote:
+> > > > From: Stefan Chulski <stefanc@marvell.com>
+> > > >
+> > > > Add parser entries for different IPv4 IHL values.
+> > > > Each entry will set the L4 header offset according to the IPv4 IHL =
+field.
+> > > > L3 header offset will set during the parsing of the IPv4 protocol.
+> > >
+> > > What is the impact of this commit? Is something broken at the moment,
+> > > if so what? Does this need to be backported to stable kernels?
+> > >
+> > > These are key questions, of which the former two should be covered in
+> > > every commit message so that the reason for the change can be known.
+> > > It's no good just describing what is being changed in the commit
+> > > without also describing why the change is being made.
+> > >
+> > > Thanks.
 > >
-> > Incorrect.
-> 
-> I'm impressed about your detailed knowledge of something you do not care
-> about in the first place.
-
-There's a difference between "don't care because don't understand"
-and "don't care because I know how complex real-time is and I know I
-can't validate any code I write to be RT safe".
-
-Indeed, just because I work on filesystems now doesn't mean I don't
-know what real-time is - I spent the best part of a decade as an
-industrial control engineer building systems that provided water and
-electricity to populations of millions of people before I started
-working on filesystems....
-
-> >> RT does not have a problem with bit spinlocks per se, it depends on how
-> >> they are used and what nests inside. Most of them are just kept as bit
-> >> spinlocks because the lock held, and therefore preempt disabled times
-> >> are small and no other on RT conflicting operations happen inside.
-> >> 
-> >> In the case at hand this is going to be a problem because inode->i_lock
-> >> nests inside the bit spinlock and we can't make inode->i_lock a raw
-> >> spinlock because it protects way heavier weight code pathes as well.
+> > Due to missed parser support for IP header length > 20, RX IPv4 checksu=
+m
+> > offload fail.
 > >
-> > Yes, that's exactly the "problem" I'm refering to. And I don't care,
-> > precisely because, well, dentry cache....
-> >
-> > THat is, the dcache calls wake_up_all() from under the
-> > hlist_bl_lock() in __d_lookup_done(). That ends up in
-> > __wake_up_common_lock() which takes a spin lock embedded inside a
-> > wait_queue_head.  That's not a raw spinlock, either, so we already
-> > have this "spinlock inside bit lock" situation with the dcache usage
-> > of hlist_bl.
-> 
-> Sure, but you are missing that RT solves that by substituting the
-> wait_queue with a swait_queue, which does not suffer from that. But that
-> can't be done for the inode::i_lock case for various reasons.
+> > Regards.
+>
+> Currently driver set skb->ip_summed =3D CHECKSUM_NONE and checksum done b=
+y software.
+> So this just improve performance for packets with IP header length > 20.
+> IMO we can keep it in net-next.
+>
+> Stefan.
 
-I didn't know about that specific forklift replacement. But, really
-that simply adds weight to my comment below....
+Please update the commit message in v2 with the explanation.
 
-> > FYI, this dentry cache behaviour was added to the dentry cache in
-> > 2016 by commit d9171b934526 ("parallel lookups machinery, part 4
-> > (and last)"), so it's not like it's a new thing, either.
-> 
-> Really? I wasn't aware of that. Thanks for the education.
-> 
-> > If you want to make hlist_bl RT safe, then re-implement it behind
-> > the scenes for RT enabled kernels. All it takes is more memory
-> > usage for the hash table + locks, but that's something that non-RT
-> > people should not be burdened with caring about....
+Also - is there an easy way to test it? L3 forwarding with forced header le=
+ngth?
 
-... because if RT devs are willing to forklift replace core kernel
-functionality like wait queues to provide RT kernels with a
-completely different locking schema to vanilla kernels, then
-slightly modifying the hlist-bl structure in a RT compatible way is
-child's play....
-
-> I'm well aware that anything outside of @fromorbit universe is not
-> interesting to you, but I neverless want to take the opportunity to
-> express my appreciation for your truly caring and collaborative attitude
-> versus interests of others who unfortunately do no share that universe.
-
-I'm being realistic. I dont' have the time or mental bandwidth to
-solve RT kernel problems. I don't have any way to test RT kernels,
-and lockdep is a crock of shit for validating RT locking on vanilla
-kernels because of the forklift upgrade games like the above that
-give the RT kernel a different locking schema.
-
-Because I have sufficient knowledge of the real-time game, I know
-*I'm not an RT expert* these days. I know that I don't know all the
-games it plays, nor do I have the time (or patience) to learn about
-all of them, nor the resources or knowledge to test whether the code
-I write follows all the rules I don't know about, whether I
-introduced interrupt hold-offs longer than 50us, etc.
-
-IOWs, I chose not to care about RT because I know I don't know
-enough about it to write solid, well tested RT compatible kernel
-code. I can write untested shit as well as any other programmer, but
-I have much higher professional standards than that.
-
-And I also know there are paid professionals who are RT experts who
-are supposed to take care of this stuff so random kernel devs like
-myself *don't need to care about the details of how RT kernels do
-their magic*.
-
-So for solving the inode cache scalability issue with RT in mind,
-we're left with these choices:
-
-a) increase memory consumption and cacheline misses for everyone by
-   adding a spinlock per hash chain so that RT kernels can do their
-   substitution magic and make the memory footprint and scalability
-   for RT kernels worse
-
-b) convert the inode hash table to something different (rhashtable,
-   radix tree, Xarray, etc) that is more scalable and more "RT
-   friendly".
-
-c) have RT kernel substitute hlist-bl with hlist_head and a spinlock
-   so that it all works correctly on RT kernels and only RT kernels
-   take the memory footprint and cacheline miss penalties...
-
-We rejected a) for the dentry hash table, so it is not an appropriate
-soltion for the inode hash table for the same reasons.
-
-There is a lot of downside to b). Firstly there's the time and
-resources needed for experimentation to find an appropriate
-algorithm for both scalability and RT. Then all the insert, removal
-and search facilities will have to be rewritten, along with all the
-subtlies like "fake hashing" to allow fielsysetms to provide their
-own inode caches.  The changes in behaviour and, potentially, API
-semantics will greatly increase the risk of regressions and adverse
-behaviour on both vanilla and RT kernels compared to option a) or
-c).
-
-It is clear that option c) is of minimal risk to vanilla kernels,
-and low risk to RT kernels. It's pretty straight forward to do for
-both configs, and only the RT kernels take the memory footprint
-penalty.
-
-So a technical analysis points to c) being the most reasonable
-resolution of the problem.
-
-Making sure RT kernels work correctly is your job, Thomas, not mine.
-Converting hlist-bl to a rt compatible structure should be pretty
-simple:
-
-
-struct hlist_bl_head {
-        struct hlist_bl_node *first;
-+#idef CONFIG_RT
-+	spinlock_t lock;
-+#endif
-};
-
-.....
-static inline void hlist_bl_lock(struct hlist_bl_head *b)
-{
-+#ifdef CONFIG_RT
-+	spin_lock(&b->lock);
-+#else
-	bit_spin_lock(0, (unsigned long *)b);
-+#endif
-}
-
-static inline void hlist_bl_unlock(struct hlist_bl_head *b)
-{
-+#ifdef CONFIG_RT
-+	spin_unlock(&b->lock);
-+#else
-	bit_spin_lock(0, (unsigned long *)b);
-+#endif
-}
-
-So if you want to run up a patch that converts hlist-bl to be rt
-compatible and test it on your RT test farm and send it to me, then
-I'll happily include it in my patchset....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Marcin
