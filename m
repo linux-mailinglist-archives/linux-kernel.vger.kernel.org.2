@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC2735DE94
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0175C35DEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345476AbhDMMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
+        id S231465AbhDMM0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:26:24 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23725 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230025AbhDMMXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:23:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E7BD61278;
-        Tue, 13 Apr 2021 12:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618316581;
-        bh=ND/X5PX2F50VVA44GaiVxpFt4RRi9WYFZe/ETjrmJRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A07tmit26Z1hkuVBBr3htpkoV63+IyAC1YHM/7SHgFLlMucegNyEZzRJtQUSSot4v
-         nY6ASTaCF25336mR4ox7kx+7DMsrcglZXjtZlBpeQj7OdNR8IDWpE9hA7nPWbKJN68
-         7noArUgSXxdaA9CX9s73pmP8hq8FlPyaFiUeo//NneKfB7FzK41MW5VFZ8ig8O5Vj2
-         rka/ha2upJwc/daguFwxYUMuwkvlDGBAD3afTEFea+VrmoI/XUa0r9k1rRq5S8Xx5z
-         68nFM1V0WenqPieTJv4Uq/uVayQE05TwvRjE5nDXTAPZ9gNaMVDIn1WNeIIMfPFIf/
-         SUFxJDPptHtkw==
-Date:   Tue, 13 Apr 2021 14:22:58 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] i2c: mpc: Interrupt driven transfer
-Message-ID: <20210413122258.GC1553@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
- <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
+        id S231337AbhDMM0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:26:21 -0400
+IronPort-SDR: NW0aKAIPtnQT+YswojvzPKP4A4OAyLsSRVTZMuVTAXSS+W+QknNJH7UKSE5CYBkgDUSKDlxhIv
+ L2dk9aKBb+9g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194429530"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="194429530"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:25:55 -0700
+IronPort-SDR: /crXERL2PMluoSFGvQgxCtyWHDLQ5JIDJrH/Io9Js4y7MowQDTKNSjt8vkqt6Wpxj6Gp1NRJdx
+ mqvPuJCPnGdg==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="450379030"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:25:49 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWI6z-003kx1-N9; Tue, 13 Apr 2021 15:25:45 +0300
+Date:   Tue, 13 Apr 2021 15:25:45 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 1/1] devres: Enable trace events
+Message-ID: <YHWNyXdpHBsllTSx@smile.fi.intel.com>
+References: <20210413113801.18245-1-andriy.shevchenko@linux.intel.com>
+ <YHWH9KWrh2kkoAvU@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="V88s5gaDVPzZ0KCq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413050956.23264-3-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <YHWH9KWrh2kkoAvU@kuha.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 03:00:52PM +0300, Heikki Krogerus wrote:
+> On Tue, Apr 13, 2021 at 02:38:01PM +0300, Andy Shevchenko wrote:
+> > In some cases the printf() mechanism is too heavy and can't be used.
+> > For example, when debugging a race condition involving devres API.
+> > When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
+> > otherwise it's quite visible with a useful information being collected.
+> > 
+> > Enable trace events for devres part of the driver core.
 
---V88s5gaDVPzZ0KCq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Tue, Apr 13, 2021 at 05:09:53PM +1200, Chris Packham wrote:
-> The fsl-i2c controller will generate an interrupt after every byte
-> transferred. Make use of this interrupt to drive a state machine which
-> allows the next part of a transfer to happen as soon as the interrupt is
-> received. This is particularly helpful with SMBUS devices like the LM81
-> which will timeout if we take too long between bytes in a transfer.
->=20
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> >  struct devres_node {
+> >  	struct list_head		entry;
+> >  	dr_release_t			release;
+> > -#ifdef CONFIG_DEBUG_DEVRES
+> >  	const char			*name;
+> >  	size_t				size;
+> > -#endif
+> 
+> Those ifdefs are still required.
 
-Thanks for the update. I'll wait a little, because IIRC Andy wanted to
-review.
+Oh, yes, otherwise we end up with not filled name and size (as per header
+file). I'll rework in order to fill name and size always and get rid of
+ifdeffery in the header file.
+
+Thanks!
+
+> >  };
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---V88s5gaDVPzZ0KCq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB1jSEACgkQFA3kzBSg
-KbbYBBAAlXcLqEENblEIDE7psEDr4mEm+m3yO79FZEb7BBNe3+VZhfoRfjikkcbu
-IgP4JEjveLzN3oKuV2jniio7h5eX4I48yXAQJHonBUv8pDqCeMQ/D/trxfHE08GO
-iL36Yv9Ehun695nGDxmck1CwqvR8CuIUMDvnw08zgaNDHzPn1y9cQL38WF4uZLsc
-Exv4xrlxJESnSIkGEOSAEQO07Cz9ZULVIQK9hMboPIVvim8FwR8ZckEFly+HgGut
-CAt3DZHbNkSzA0tbmVoMLuVNhOkGd8mCNy30oB9ykuY6ZVGCmNYTWfVDPBa6KLgF
-6o8uuOPhWn2MfyWf95xYBJXiJvDeD0fS0tGTykGHgx+l2DR0etTukQBJzYLXZjna
-bNMCy0mMpPegRjQcPnSItRSJzkRo9/sKiQe0oSSP/zHkqKnX7vkGBlOYwLRmm4o/
-8PYM/IAi526elOGKVRX8D+sg5SkIymnHxzMVniqQb1xSnkv9qWGNJVC4cypXw0fi
-JIdie4YPkKh0p66PMiysCSg3JtQx6t/nwvu8N87e0vSJawcswCAqJYhh/F7N25Iv
-xlnu/lPphQTqiaqdphEsy0BVy2z1w3DBDu75zrBmXwqQ7jUUc17mJZBAbjxkjpAg
-hcjJGcGKfWoOO9gcAewgks/Q17XO/FjLviga63AQDsW29d8d30Q=
-=jhNF
------END PGP SIGNATURE-----
-
---V88s5gaDVPzZ0KCq--
