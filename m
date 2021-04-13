@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A1635DC6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF0935DC68
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243782AbhDMKVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:21:18 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21362 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241611AbhDMKVP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:21:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1618309251; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=ODcPpqHNFa6nSHdLSluGPXsM+qbnDv344uJSwsE3XE0vvpNv5a01KIMvV7rkXF8aUD9l4P5G0+BCvNimDgTqle8d6B8VCTR5lbI8UjEA1DuNtQpgnRKR0u8OWHCbd3P7LQWsmDZDyvbFGmASUHe4PwwVNsBIHnIX3CQd9pXlA8I=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1618309251; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=70LOhFP4xJsLfGUJFDZwNxh3gUlmcq/n+gv9JegQTlA=; 
-        b=LsTwK90yAZY6mjAZM6H36SXYwnNEBq3QvW5EWIhJgSps4woT6uHsof3vUCKX/l/vOxQnrk0/T6iKlq0+6230KQD+pQn9zoArJWLsxF1hyd7vrsh8caiOw4OEqzEOsLbi6Se3wUeR6K9Tytwr0qmO7TwHrajZAyPPP/WxNNSfGLo=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1618309251;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
-        bh=70LOhFP4xJsLfGUJFDZwNxh3gUlmcq/n+gv9JegQTlA=;
-        b=pQa4zxgK/JKHhny6xaW+5hWAKXzWf7aku8djSWwvAlg10eBAJU3agFn+nZAionza
-        wElIH18avLkU7Mdn36A20rDjXuotrcHa/K8BzEJbINodMLEULzdria62Vbw8fczsthn
-        ZNQ2azCSD8UfGBLW/nmXw1eprKyJdU4jp5fpKuJ8=
-Received: from localhost.localdomain (49.207.222.140 [49.207.222.140]) by mx.zohomail.com
-        with SMTPS id 161830924786833.2106187151885; Tue, 13 Apr 2021 03:20:47 -0700 (PDT)
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Junyong Sun <sunjy516@gmail.com>
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware_loader: fix use-after-free in firmware_fallback_sysfs
-Date:   Tue, 13 Apr 2021 15:49:25 +0530
-Message-Id: <20210413101925.30612-1-mail@anirudhrb.com>
-X-Mailer: git-send-email 2.26.2
+        id S241598AbhDMKU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:20:57 -0400
+Received: from smtp.asem.it ([151.1.184.197]:54000 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhDMKUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:20:55 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 8.0.0)
+        with ESMTP id 2af592a94e7142a3b507e2107c860276.MSG
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:20:34 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
+ Apr 2021 12:20:31 +0200
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 13 Apr 2021 12:20:31 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v2] watchdog: add new parameter to start the watchdog on module insertion
+Date:   Tue, 13 Apr 2021 12:20:30 +0200
+Message-ID: <20210413102030.3204571-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F28.60757070.0089,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use-after-free happens when a fw_priv object has been freed but
-hasn't been removed from the pending list (pending_fw_head). The next
-time fw_load_sysfs_fallback tries to insert into the list, it ends up
-accessing the pending_list member of the previoiusly freed fw_priv.
+The new parameter "start_enabled" starts the watchdog at the same time
+of the module insertion.
+This feature is very useful in embedded systems, to avoid cases where
+the system hangs before reaching userspace.
 
-In bcfbd3523f3c ("firmware: fix a double abort case with
-fw_load_sysfs_fallback"), fw_load_abort() is skipped if
-fw_sysfs_wait_timeout() returns -ENOENT. This causes the fw_priv to
-not be removed from the pending list.
+This feature can be enabled in the kernel config, so it can be also
+used when the watchdog driver is build as "built-in".
 
-To fix this, delete the fw_priv from the pending list when retval
-is -ENOENT instead of skipping the entire block.
+This parameter involves the "core" section of the watchdog driver;
+in this way it is common for all the watchdog hardware implementations.
 
-Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-Reported-and-tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
- drivers/base/firmware_loader/fallback.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index 91899d185e31..56ae4ab3199d 100644
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -526,9 +526,14 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
- 	}
+v2: - check WDOG_HW_RUNNING before starting watchdog;
+    - remove useless comments in commit text, watchdog-parameters.rst and
+      Kconfig;
+v1: - first version;
+
+ Documentation/watchdog/watchdog-parameters.rst |  3 +++
+ drivers/watchdog/Kconfig                       |  9 +++++++++
+ drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
+ 3 files changed, 24 insertions(+)
+
+diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
+index 223c99361a30..7780d0c1fb4a 100644
+--- a/Documentation/watchdog/watchdog-parameters.rst
++++ b/Documentation/watchdog/watchdog-parameters.rst
+@@ -21,6 +21,9 @@ watchdog core:
+ 	timeout. Setting this to a non-zero value can be useful to ensure that
+ 	either userspace comes up properly, or the board gets reset and allows
+ 	fallback logic in the bootloader to try something else.
++    start_enabled:
++	Watchdog is started on module insertion. This option can be also
++	selected by kernel config (default=kernel config parameter).
  
- 	retval = fw_sysfs_wait_timeout(fw_priv, timeout);
--	if (retval < 0 && retval != -ENOENT) {
-+	if (retval < 0) {
- 		mutex_lock(&fw_lock);
--		fw_load_abort(fw_sysfs);
-+
-+		if (retval != -ENOENT)
-+			fw_load_abort(fw_sysfs);
-+		else
-+			list_del_init(&fw_priv->pending_list);
-+
- 		mutex_unlock(&fw_lock);
- 	}
+ -------------------------------------------------
  
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 0470dc15c085..1c480f4c7f94 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -47,6 +47,15 @@ config WATCHDOG_NOWAYOUT
+ 	  get killed. If you say Y here, the watchdog cannot be stopped once
+ 	  it has been started.
+ 
++config WATCHDOG_START_ENABLED
++	bool "Start watchdog on module insertion"
++	help
++	  Say Y if you want to start the watchdog at the same time when the
++	  driver is loaded.
++	  This feature is very useful in embedded systems, to avoid cases where
++	  the system could hang before reaching userspace.
++	  This parameter applies to all watchdog drivers.
++
+ config WATCHDOG_HANDLE_BOOT_ENABLED
+ 	bool "Update boot-enabled watchdog until userspace takes over"
+ 	default y
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 5df0a22e2cb4..8a1e2e9331ee 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
+ module_param(stop_on_reboot, int, 0444);
+ MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
+ 
++static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
++module_param(start_enabled, bool, 0444);
++MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
++	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
++
+ /*
+  * Deferred Registration infrastructure.
+  *
+@@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	 * corrupted in a later stage then we expect a kernel panic!
+ 	 */
+ 
++	/* If required, start the watchdog immediately */
++	if (start_enabled && !watchdog_hw_running(wdd)) {
++		set_bit(WDOG_HW_RUNNING, &wdd->status);
++		wdd->ops->start(wdd);
++		pr_info("Watchdog enabled\n");
++	}
++
+ 	/* Use alias for watchdog id if possible */
+ 	if (wdd->parent) {
+ 		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
 -- 
-2.26.2
+2.25.1
 
