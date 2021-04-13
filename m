@@ -2,67 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753AC35D8C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6A035D8CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 09:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhDMH01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 03:26:27 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16906 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhDMH0Y (ORCPT
+        id S238110AbhDMH0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 03:26:37 -0400
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:50497 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230220AbhDMH0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 03:26:24 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKHCt69fJzlXP5;
-        Tue, 13 Apr 2021 15:24:10 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.202) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Tue, 13 Apr 2021
- 15:25:57 +0800
-Subject: Re: [PATCH 0/3] scsi: mptfusion: Clear the warnings indicating that
- the variable is not used
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "MPT-FusionLinux . pdl" <MPT-FusionLinux.pdl@broadcom.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210408061851.3089-1-thunder.leizhen@huawei.com>
- <yq1blai7p1z.fsf@ca-mkp.ca.oracle.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <7b538451-4e1e-4f4b-36e5-ad496ab40598@huawei.com>
-Date:   Tue, 13 Apr 2021 15:25:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 13 Apr 2021 03:26:35 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id WDQvlhJsG43ycWDQylbKsA; Tue, 13 Apr 2021 09:26:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618298774; bh=iuscKYlZrmNNcYDAdFgfUygRIDVn2zQTJzj0tnhaTjE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=TBgDYf6oNueT4ZNtCBRGqTHa+AeLyqCD19lzLlYmmSfw5j4763vmDLB23cr9Zrhmk
+         qSs9/RkWZ8hTzNsee6VK9miMwcxgjiain/ljENcNblcUo8Xrla4KiaeG8upGJqCM6a
+         +Hv4O2AKrn3KeaaKXJhtwM3Td87Si5rl6/JxliRAmSjM8WIH1FP2DJzfyg6H4YE4aT
+         E5nqdz4y9bZ1XTLVLdRQhsP/D85FbTmaRUEZZ1tFXhu9LwtIUcG6B+T/vy9AwvNkGP
+         Nx+oCIVSTHjYc34ZklGDBoU7kQPCd5ZrrS/mAT/xk4uDtc8fvjkx2PShCxDrHCYM5s
+         DMV2Qz0XW/xtg==
+Subject: Re: Subject: [PATCH v2] staging: media: meson: vdec: declare u32 as
+ static const appropriately
+To:     Mitali Borkar <mitaliborkar810@gmail.com>, narmstrong@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        linux-amlogic@lists.infradead.org, mitali_s@me.iitr.ac.in
+References: <YHU56OM+C2zY34VP@kali>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <00c8a239-49d3-fedb-ec67-076e8b823efa@xs4all.nl>
+Date:   Tue, 13 Apr 2021 09:26:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <yq1blai7p1z.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YHU56OM+C2zY34VP@kali>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+X-CMAE-Envelope: MS4xfMACiB/U3iBmeIo8g2sQHaGJfQjsL6GJ7v+M9ptXTdZx5bTSXHAIxK6HgPN5d14hv9IMqKdD7UkDJDWsTPefBdDD+Pk4FTegeqoWcKUT0squpR8jLHt5
+ kf8a7+2gQd8//OJJqeur7Rzfkj7GjP8p3rPeDAIq3TsvlNSGDvzd71Ia1SSDNBczzHanGs6Cm3cUXkZ2gpmWuD3g3s8c5ykxphhxahqSCKry+t+N5KyCaquP
+ AFzAtQr90Vk7DRNrDj7tRybqimpkkOOismwFRbZZwHOCbTXRal0OtwRdehHUxYCXJtiYuowDAwXFU/QGlJbW0Rgz69B2BQl+pxIv027K7OoJ7Kx58/2FHIRu
+ aFVG9byy7VQr3ssoeLqhG23oOrix7EhRvOUuko6z2NZwVkG04XUJB5ih6Oy47e3CIk2hLSej1zCFW1LB5iqE+o1qi587irxJRerd3SXjYtd/mfTgy9xIEiru
+ 3TIGJTn2Lj08Y0iTOJJouMb+ZTy/O9nNeZTOsQr3+vIjcDIZco8Y/ZJqVhKeyNRSIwOw/8reeoex51YYxujMkj6ZEbWENSzysjMG+Bm9nUJTBnW87Ca78wgr
+ emZ9uuHwXJ5TgUTCDclURjY8dtB20VuPnUcduBexg0gYE5eVrFJKqSYQd50H7EX6KE3RyHIeK6ifEX9Z5THD0sI8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/4/13 13:07, Martin K. Petersen wrote:
+On 13/04/2021 08:27, Mitali Borkar wrote:
+> Declared 32 bit unsigned int as static constant inside a function
+> appropriately.
 > 
-> Zhen,
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
 > 
->> Zhen Lei (3):
->>   scsi: mptfusion: Remove unused local variable 'time_count'
->>   scsi: mptfusion: Remove unused local variable 'port'
->>   scsi: mptfusion: Fix error return code of mptctl_hp_hostinfo()
+> Changes from v1:- Rectified the mistake by declaring u32 as static const
+> properly.
 > 
-> I applied patches 1+2. I hesitate making functional changes to such an
-> old driver.
+>  drivers/staging/media/meson/vdec/codec_h264.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/meson/vdec/codec_h264.c b/drivers/staging/media/meson/vdec/codec_h264.c
+> index ea86e9e1c447..80141b89a9f6 100644
+> --- a/drivers/staging/media/meson/vdec/codec_h264.c
+> +++ b/drivers/staging/media/meson/vdec/codec_h264.c
+> @@ -287,8 +287,8 @@ static void codec_h264_resume(struct amvdec_session *sess)
+>  	struct amvdec_core *core = sess->core;
+>  	struct codec_h264 *h264 = sess->priv;
+>  	u32 mb_width, mb_height, mb_total;
+> -	static const u32[] canvas3 = { ANCO_CANVAS_ADDR, 0 };
+> -	static const u32[] canvas4 = { 24, 0 };
+> +	static const u32 canvas3[] = { ANCO_CANVAS_ADDR, 0 };
+> +	static const u32 canvas4[] = { 24, 0 };
 
-I think patch 3 does not change any functions. The current modification only
-ensures that error codes are correctly returned in the error branch. In the
-previous version, 0 is always returned.
+This is a patch on top of your previous (v1) patch. That won't work
+since the v1 is not merged, you need to make a patch against the current
+mainline code.
 
+Regards,
+
+	Hans
+
+>  
+>  	amvdec_set_canvases(sess, canvas3, canvas4);
+>  
 > 
 
