@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F024E35D6F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4DA35D6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 07:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243081AbhDMFOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 01:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S243147AbhDMFPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 01:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242475AbhDMFOj (ORCPT
+        with ESMTP id S242475AbhDMFPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 01:14:39 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7985C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:14:19 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id o17so8270152qkl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r1MhGHptppR4JfVg5lhSU+kHwLLhNLD9eNv0NPDmNZg=;
-        b=JhmAgg9Wtu/dvfyYZkLeerLWdqYkkkklywFAcaG/TgjLYIZLrtVvli+2MW15yhPyaD
-         s6kf/EhhxePHiIaDal7Nd/9mLKRZbNusK7NKov4tePFr4Ced3EAqWSEd3OA+huC4nCqS
-         +Gw98JOOFXWjnMCNpMfrgdqqLaEFbpc1pOxUCMImYa2uJlpO5DxExs0fG1x7ZGDJhZtq
-         CoZjhcWTjDQHCwxBKhDMjNWZZ3M0f0DGMMbAATpE13bNkwpwjC3kaOUeQyH4dUhqSRlK
-         netSeFHiwmD5dvXK/AMMrSXCK7wS6Crj2G/F0ifavSPNeru39F7uIiI/416bbrHcqfOr
-         no8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r1MhGHptppR4JfVg5lhSU+kHwLLhNLD9eNv0NPDmNZg=;
-        b=A0Mw/hxDns3Eq5H1FYzztp8VgQ3FfLfF2DhFBfSvSUt3gPUd3pSv7NDHhnoJyAzz86
-         /2bWj00K+kOmJrYw3wN1xC4ZIsdZcTYuvBz86sH+/2HhGABz1yHEM6tX+/+zaHGzKkxn
-         H2fSeZLMlLV4rIwP8i2oCY/ufSsSGy8t27TSxcF4Uswxy8GA2XtcrRUm9cXISmrcQio9
-         shkIRUm0rTucbzDaeoQKw84vTi2K8bwFDjagzMS2+M1VL8sWUtO5Yj8fTidw/hGtiyQ8
-         HHCmfJcZ+a4DQkC62wtmng5OBd6XnYaMbV+/2E9RRAzn6R9IeKvFgVMtAh2rj+nU4Bd4
-         ELtw==
-X-Gm-Message-State: AOAM532fxUbHVUdFWDt33sE2YxrQtfvldNXO24DnuYBa90oWo4TbusSt
-        Y/z5molEDIKvKYl4ryDiiIW5rO1Ep2n5KrM0Sh+BBDBDMpesKQ==
-X-Google-Smtp-Source: ABdhPJxtioOCZAt2nsdSxmRzp5jWFVoslJNTaejpXYmOJC+2NLTdvqdGsNrKbR1CkUzMuNapA7Q+/6oO10Hg10SnSc4=
-X-Received: by 2002:a05:620a:243:: with SMTP id q3mr11531519qkn.501.1618290858611;
- Mon, 12 Apr 2021 22:14:18 -0700 (PDT)
+        Tue, 13 Apr 2021 01:15:19 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DBCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 22:15:00 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 95CF2891AE;
+        Tue, 13 Apr 2021 17:14:57 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1618290897;
+        bh=WLT2HRmZG+yAD2euirij3ShXl7XLE8a+E/Bxplpap7s=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=B/QVZvY68FT5CrvG/ciW/pXXpPbCxY7k8rojo7ksR0KSdYKt2RgKGtxeLXbMTpvjV
+         stUFbXFNYw/plsciz/dM62J2S2T0C33hdrIldAI0LxJOfJA2CkvMLzvdF9XiVbbTNP
+         2++uz30eqij6pvZtS2XcjFlH8fNcwIO67axrpcREN32pwD8rMt5TQhNCyoWv7pM6Xj
+         vYDU+Z6fiZz0OtaL7fG52q87M8y3SI8bgYQR7Z+nQDFlYbKYxIIbWTKehpkWAVsZAA
+         1UwFrqTmDIK5tYUdSyoktbhD9aOjdfM5YaSADQch37upebQ3Y0z2Vvpd92lHoKpCic
+         FCgM9rpqckDIA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B607528d10001>; Tue, 13 Apr 2021 17:14:57 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 17:14:57 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 17:14:57 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Wolfram Sang <wsa@kernel.org>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] MAINTAINERS: Add Chris Packham as FREESCALE MPC
+ I2C maintainer
+Thread-Topic: [PATCH v3 3/3] MAINTAINERS: Add Chris Packham as FREESCALE MPC
+ I2C maintainer
+Thread-Index: AQHXMCNDm/XTR0fU0EG5EYtvCWa2D6qxHnEA
+Date:   Tue, 13 Apr 2021 05:14:56 +0000
+Message-ID: <2e4e208d-d410-5b60-6992-1a9b8d23f7d4@alliedtelesis.co.nz>
+References: <20210413050956.23264-1-chris.packham@alliedtelesis.co.nz>
+ <20210413050956.23264-5-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20210413050956.23264-5-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AE77EC9DFF6F6A47BAB233B462226C72@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <0000000000004f14c105bde08f75@google.com> <CACT4Y+bLkFSc8manYrCukj-_nzwVsV9y6xYWXmGyYFS-PoBRPQ@mail.gmail.com>
- <20210319101043.GU1463@shell.armlinux.org.uk> <20210322172241.GB80352@C02TD0UTHF1T.local>
-In-Reply-To: <20210322172241.GB80352@C02TD0UTHF1T.local>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 07:14:07 +0200
-Message-ID: <CACT4Y+ZaFKB6xd9BiPjYsE+13GJb3d_4aRTkB8xrNMaexpLaFA@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in __context_tracking_enter
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        syzbot <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=VwQbUJbxAAAA:8 a=8AirrxEcAAAA:8 a=bX_5FWTj0mLFruiLH2MA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=ST-jHhOKWsTCqRlWije3:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 6:22 PM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> Hi Russell,
->
-> On Fri, Mar 19, 2021 at 10:10:43AM +0000, Russell King - ARM Linux admin wrote:
-> > On Fri, Mar 19, 2021 at 10:54:48AM +0100, Dmitry Vyukov wrote:
-> > > .On Fri, Mar 19, 2021 at 10:44 AM syzbot
-> > > <syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com> wrote:
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    8b12a62a Merge tag 'drm-fixes-2021-03-19' of git://anongit..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17e815aed00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cfeed364fc353c32
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f09a12b2c77bfbbf51bd
-> > > > userspace arch: arm
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+f09a12b2c77bfbbf51bd@syzkaller.appspotmail.com
-> > >
-> > >
-> > > +Mark, arm
-> > > It did not get far with CONFIG_CONTEXT_TRACKING_FORCE (kernel doesn't boot).
-> >
-> > It seems that the path:
-> >
-> > context_tracking_user_enter()
-> > user_enter()
-> > context_tracking_enter()
-> > __context_tracking_enter()
-> > vtime_user_enter()
-> >
-> > expects preemption to be disabled. It effectively is, because local
-> > interrupts are disabled by context_tracking_enter().
-> >
-> > However, the requirement for preemption to be disabled is not
-> > documented... so shrug. Maybe someone can say what the real requirements
-> > are here.
->
-> From dealing with this recently on arm64, theis is a bit messy. To
-> handle this robustly we need to do a few things in sequence, including
-> using the *_irqoff() variants of the context_tracking_user_*()
-> functions.
->
-> I wrote down the constraints in commit:
->
->   23529049c6842382 ("arm64: entry: fix non-NMI user<->kernel transitions")
->
-> For user->kernel transitions, the arch code needs the following sequence
-> before invoking arbitrary kernel C code:
->
->         lockdep_hardirqs_off(CALLER_ADDR0);
->         user_exit_irqoff();
->         trace_hardirqs_off_finish();
->
-> For kernel->user transitions, the arch code needs the following sequence
-> once it will no longer invoke arbitrary kernel C code, just before
-> returning to userspace:
->
->         trace_hardirqs_on_prepare();
->         lockdep_hardirqs_on_prepare(CALLER_ADDR0);
->         user_enter_irqoff();
->         lockdep_hardirqs_on(CALLER_ADDR0);
-
-Hi Russell,
-
-Does Mark's comment make sense to you?
-lockdep_assert_preemption_disabled() also checks "&&
-this_cpu_read(hardirqs_enabled)", so is it that we also need hardirq's
-disabled around user_enter/exit?
-This issue currently prevents ARM boot on syzbot.
+DQpPbiAxMy8wNC8yMSA1OjA5IHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBBZGQgQ2hyaXMg
+UGFja2hhbSBhcyBGUkVFU0NBTEUgTVBDIEkyQyBtYWludGFpbmVyLg0KPg0KPiBTaWduZWQtb2Zm
+LWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+DQpT
+b3JyeSBmb3IgdGhlIGR1cGxpY2F0ZS4gSSBoYWQgZXhpc3Rpbmcgb3V0cHV0IGZyb20gYW4gZWFy
+bGllciANCmludm9jYXRpb24gb2YgZ2l0IGZvcm1hdC1wYXRjaCBseWluZyBhcm91bmQuICJbUEFU
+Q0ggdjMgNC80XSANCk1BSU5UQUlORVJTOiAuLi4iIGlzIHRoZSBvbmUgSSBpbnRlbmRlZCB0byBz
+ZW5kIChhbHRob3VnaCB0aGUgY29udGVudCBpcyANCnRoZSBzYW1lKS4NCj4gLS0tDQo+ICAgTUFJ
+TlRBSU5FUlMgfCA3ICsrKysrKysNCj4gICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCsp
+DQo+DQo+IGRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQo+IGluZGV4IDU2
+ZTllNGQ3NzdkOC4uM2JjNzdiYThjZDA1IDEwMDY0NA0KPiAtLS0gYS9NQUlOVEFJTkVSUw0KPiAr
+KysgYi9NQUlOVEFJTkVSUw0KPiBAQCAtNzEzNSw2ICs3MTM1LDEzIEBAIFM6CU1haW50YWluZWQN
+Cj4gICBGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1pbXgtbHBp
+MmMueWFtbA0KPiAgIEY6CWRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtaW14LWxwaTJjLmMNCj4gICAN
+Cj4gK0ZSRUVTQ0FMRSBNUEMgSTJDIERSSVZFUg0KPiArTToJQ2hyaXMgUGFja2hhbSA8Y2hyaXMu
+cGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiArTDoJbGludXgtaTJjQHZnZXIua2VybmVs
+Lm9yZw0KPiArUzoJTWFpbnRhaW5lZA0KPiArRjoJRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL2kyYy9pMmMtbXBjLnlhbWwNCj4gK0Y6CWRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXBj
+LmMNCj4gKw0KPiAgIEZSRUVTQ0FMRSBRT1JJUSBEUEFBIEVUSEVSTkVUIERSSVZFUg0KPiAgIE06
+CU1hZGFsaW4gQnVjdXIgPG1hZGFsaW4uYnVjdXJAbnhwLmNvbT4NCj4gICBMOgluZXRkZXZAdmdl
+ci5rZXJuZWwub3Jn
