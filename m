@@ -2,183 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277DF35D52C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A70D35D531
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 04:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245403AbhDMCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 22:15:56 -0400
-Received: from mga07.intel.com ([134.134.136.100]:62321 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241049AbhDMCPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:15:54 -0400
-IronPort-SDR: hQzvGHaO6y35Jo62SZX+a7dKysFfbc0LtZmXW1W+PygwdyX8rwEQcE0KsdiAm/ZJm6bE/lAVum
- s+f18vI6G9Sw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258294113"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="258294113"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:15:34 -0700
-IronPort-SDR: VzxR/KhFUZ/Ug55YnFHEK5Q7gZ1bCZ/qTo8WhwKpTCn3iqlw/suCN/yM8GfMF2kKUCNu2ht1Mf
- RtYCGO+k0+RQ==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="417656688"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 19:15:32 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "David Rientjes" <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
-        <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
-        <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
-        <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
-        <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
-Date:   Tue, 13 Apr 2021 10:15:30 +0800
-In-Reply-To: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com> (Tim
-        Chen's message of "Fri, 9 Apr 2021 16:26:53 -0700")
-Message-ID: <877dl7udz1.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S245486AbhDMCR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 22:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239415AbhDMCRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 22:17:55 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69893C061574;
+        Mon, 12 Apr 2021 19:17:36 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id h19-20020a9d64130000b02902875a567768so3759095otl.0;
+        Mon, 12 Apr 2021 19:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fSxsn65EUsOh+O13K1SDdQjwp4rSXw4cGvQZYhLTy4w=;
+        b=UjhlUpEhCdk8GnfT/iFiLz0vCdgDf+MjXL8Tyd2IAmTDHUc8vHS2F3WZ2cVlSUOYHc
+         LESa9Id11SXNBaS/JSkO/nM+n74ekN7S6CRLqmJLnd7FM2LRbbrb10+2LUUN9iqgTRIv
+         ehUk+3/Oh22Gyhe1caE0cxSaqb8IMqiysqT81YgxTvOsEFAnWLi3ra+vxjlDktep+XyX
+         mNiIwOM7YfFTaYhGokJovHc62i5B9FhisuioWuQrwUCI4N4lHooSNmZippkRTUPtzbdg
+         vu8EhTm9LkWBLcDGUlk6Z9p/QpzpCZLDWKjfr9BZztvvdH1FtXdiBv78035SVAGdOi88
+         QtqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSxsn65EUsOh+O13K1SDdQjwp4rSXw4cGvQZYhLTy4w=;
+        b=cwXBW9yP5xaIw89YrJSoKILnNwJXCvK4wB28DczlolV9DWe8aqzdDVhjQ6wtXEG4+w
+         r1mnboFz2zvB/CvF7IU6S6OpURXg1yeiGEn9Jx0KzyRR6AQvpOf0F/nCh0IX9JHjeJuJ
+         gxzs51keeUxjiDGPbzn3aVjPfyGAs9qEkPiF0SIk+ws/A8nr61rOdseCmewbH8G8119R
+         qu0kxaPtV03AFEw0VyKQ5ldYhW7bgw+Vm1EK+fkIAzmnI5v12Hpc9OABi8I1IRHzPyi6
+         f8izogppYZBka90kl6N1hLv5xE/UzGjYa/uZQ3mBjzeDd4MXcqdL/w+BAIb4GR2P7JyX
+         /vug==
+X-Gm-Message-State: AOAM530m4uSWfwoNrYrmbGRpkjW60riG2rBUSMmPXWEDho2xFgmx0tF1
+        xPuCBsTSltw8sDvfmzBy97TtIQ+o+KqMtLkwUoRor1bB6ixuEQ==
+X-Google-Smtp-Source: ABdhPJx2SV6Eb4LfwNCWO6ws/iWrTQgLal8zMyEu58hWic1n8h9aO4mro0Kl/nTW7U6wxMcIhJpqXVMh2kHHsMg+lhI=
+X-Received: by 2002:a05:6830:802:: with SMTP id r2mr25324193ots.110.1618280255731;
+ Mon, 12 Apr 2021 19:17:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20210412065759.2907-1-kerneljasonxing@gmail.com> <20210412145229.00003e5d@intel.com>
+In-Reply-To: <20210412145229.00003e5d@intel.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Tue, 13 Apr 2021 10:17:00 +0800
+Message-ID: <CAL+tcoCJZBbkszE68xLRSrtfByZ3Epg7u40e2YftccUDi4034Q@mail.gmail.com>
+Subject: Re: [PATCH] i40e: fix the panic when running bpf in xdpdrv mode
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tim Chen <tim.c.chen@linux.intel.com> writes:
+On Tue, Apr 13, 2021 at 5:52 AM Jesse Brandeburg
+<jesse.brandeburg@intel.com> wrote:
+>
+> kerneljasonxing@gmail.com wrote:
+>
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> >
+> > Re: [PATCH] i40e: fix the panic when running bpf in xdpdrv mode
+>
+> Please use netdev style subject lines when patching net kernel to
+> indicate which kernel tree this is targeted at, "net" or "net-next"
+> [PATCH net v2] i40e: ...
+>
+> > Fix this by add more rules to calculate the value of @rss_size_max which
+>
+> Fix this panic by adding ...
+>
+> > could be used in allocating the queues when bpf is loaded, which, however,
+> > could cause the failure and then triger the NULL pointer of vsi->rx_rings.
+>
+> trigger
+>
+> > Prio to this fix, the machine doesn't care about how many cpus are online
+> > and then allocates 256 queues on the machine with 32 cpus online
+> > actually.
+> >
+> > Once the load of bpf begins, the log will go like this "failed to get
+> > tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> > failed".
+> >
+> > Thus, I attach the key information of the crash-log here.
+> >
+> > BUG: unable to handle kernel NULL pointer dereference at
+> > 0000000000000000
+> > RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> > Call Trace:
+> > [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> > [2160294.717666]  dev_xdp_install+0x4f/0x70
+> > [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> > [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> > [2160294.718705]  do_setlink+0xac7/0xe70
+> > [2160294.719035]  ? __nla_parse+0xed/0x120
+> > [2160294.719365]  rtnl_newlink+0x73b/0x860
+> >
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+>
+> if you send to "net" - I suspect you should supply a Fixes: line, above
+> the sign-offs.
+> In this case however, this bug has been here since the beginning of the
+> driver, but the patch will easily apply, so please supply
+>
+> Fixes: 41c445ff0f48 ("i40e: main driver core")
+>
+> > ---
+> >  drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> > index 521ea9d..4e9a247 100644
+> > --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+> > +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> > @@ -11867,6 +11867,7 @@ static int i40e_sw_init(struct i40e_pf *pf)
+> >  {
+> >       int err = 0;
+> >       int size;
+> > +     u16 pow;
+> >
+> >       /* Set default capability flags */
+> >       pf->flags = I40E_FLAG_RX_CSUM_ENABLED |
+> > @@ -11885,6 +11886,11 @@ static int i40e_sw_init(struct i40e_pf *pf)
+> >       pf->rss_table_size = pf->hw.func_caps.rss_table_size;
+> >       pf->rss_size_max = min_t(int, pf->rss_size_max,
+> >                                pf->hw.func_caps.num_tx_qp);
+> > +
+> > +     /* find the next higher power-of-2 of num cpus */
+> > +     pow = roundup_pow_of_two(num_online_cpus());
+> > +     pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
+> > +
+>
+> The fix itself is fine, and is correct as far as I can tell, thank you
+> for sending the patch!
+>
 
-> On 4/8/21 4:52 AM, Michal Hocko wrote:
->
->>> The top tier memory used is reported in
->>>
->>> memory.toptier_usage_in_bytes
->>>
->>> The amount of top tier memory usable by each cgroup without
->>> triggering page reclaim is controlled by the
->>>
->>> memory.toptier_soft_limit_in_bytes 
->> 
->
-> Michal,
->
-> Thanks for your comments.  I will like to take a step back and
-> look at the eventual goal we envision: a mechanism to partition the 
-> tiered memory between the cgroups. 
->
-> A typical use case may be a system with two set of tasks.
-> One set of task is very latency sensitive and we desire instantaneous
-> response from them. Another set of tasks will be running batch jobs
-> were latency and performance is not critical.   In this case,
-> we want to carve out enough top tier memory such that the working set
-> of the latency sensitive tasks can fit entirely in the top tier memory.
-> The rest of the top tier memory can be assigned to the background tasks.  
->
-> To achieve such cgroup based tiered memory management, we probably want
-> something like the following.
->
-> For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
-> where tier t_0 sits at the top and demotes to the lower tier. 
-> We envision for this top tier memory t0 the following knobs and counters 
-> in the cgroup memory controller
->
-> memory_t0.current 	Current usage of tier 0 memory by the cgroup.
->
-> memory_t0.min		If tier 0 memory used by the cgroup falls below this low
-> 			boundary, the memory will not be subjected to demotion
-> 			to lower tiers to free up memory at tier 0.  
->
-> memory_t0.low		Above this boundary, the tier 0 memory will be subjected
-> 			to demotion.  The demotion pressure will be proportional
-> 			to the overage.
->
-> memory_t0.high		If tier 0 memory used by the cgroup exceeds this high
-> 			boundary, allocation of tier 0 memory by the cgroup will
-> 			be throttled. The tier 0 memory used by this cgroup
-> 			will also be subjected to heavy demotion.
+Thanks for your advice. I'm going to send the patch v2 :)
 
-I think we don't really need throttle here, because we can fallback to
-allocate memory from the t1.  That will not cause something like IO
-device bandwidth saturation.
+Jason
 
-Best Regards,
-Huang, Ying
-
-> memory_t0.max		This will be a hard usage limit of tier 0 memory on the cgroup.
+> >       if (pf->hw.func_caps.rss) {
+> >               pf->flags |= I40E_FLAG_RSS_ENABLED;
+> >               pf->alloc_rss_size = min_t(int, pf->rss_size_max,
 >
-> If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
-> This follows closely with the design of the general memory controller interface.  
 >
-> Will such an interface looks sane and acceptable with everyone?
->
-> The patch set I posted is meant to be a straw man cgroup v1 implementation
-> and I readily admits that it falls short of the eventual functionality 
-> we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
-> memory management should work.
->
->> Are you trying to say that soft limit acts as some sort of guarantee?
->
-> No, the soft limit does not offers guarantee.  It will only serves to keep the usage
-> of the top tier memory in the vicinity of the soft limits.
->
->> Does that mean that if the memcg is under memory pressure top tiear
->> memory is opted out from any reclaim if the usage is not in excess?
->
-> In the prototype implementation, regular memory reclaim is still in effect
-> if we are under heavy memory pressure. 
->
->> 
->> From you previous email it sounds more like the limit is evaluated on
->> the global memory pressure to balance specific memcgs which are in
->> excess when trying to reclaim/demote a toptier numa node.
->
-> On a top tier node, if the free memory on the node falls below a percentage, then
-> we will start to reclaim/demote from the node.
->
->> 
->> Soft limit reclaim has several problems. Those are historical and
->> therefore the behavior cannot be changed. E.g. go after the biggest
->> excessed memcg (with priority 0 - aka potential full LRU scan) and then
->> continue with a normal reclaim. This can be really disruptive to the top
->> user.
->
-> Thanks for pointing out these problems with soft limit explicitly.
->
->> 
->> So you can likely define a more sane semantic. E.g. push back memcgs
->> proporitional to their excess but then we have two different soft limits
->> behavior which is bad as well. I am not really sure there is a sensible
->> way out by (ab)using soft limit here.
->> 
->> Also I am not really sure how this is going to be used in practice.
->> There is no soft limit by default. So opting in would effectivelly
->> discriminate those memcgs. There has been a similar problem with the
->> soft limit we have in general. Is this really what you are looing for?
->> What would be a typical usecase?
->
->>> Want to make sure I understand what you mean by NUMA aware limits.
->>> Yes, in the patch set, it does treat the NUMA nodes differently.
->>> We are putting constraint on the "top tier" RAM nodes vs the lower
->>> tier PMEM nodes.  Is this what you mean?
->> 
->> What I am trying to say (and I have brought that up when demotion has been
->> discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
->> The specific technology shouldn't be imprinted into the interface.
->> Fundamentally you are trying to balance memory among NUMA nodes as we do
->> not have other abstraction to use. So rather than talking about top,
->> secondary, nth tier we have different NUMA nodes with different
->> characteristics and you want to express your "priorities" for them.
->
-> With node priorities, how would the system reserve enough
-> high performance memory for those performance critical task cgroup? 
->
-> By priority, do you mean the order of allocation of nodes for a cgroup?
-> Or you mean that all the similar performing memory node will be grouped in
-> the same priority?
->
-> Tim
