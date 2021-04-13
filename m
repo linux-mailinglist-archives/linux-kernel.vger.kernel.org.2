@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2825935D7B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A444A35D7B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 08:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244446AbhDMGDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 02:03:19 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:40113 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243829AbhDMGDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 02:03:18 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVQPvrp_1618293771;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVQPvrp_1618293771)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 14:02:57 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     jdelvare@suse.com
-Cc:     linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] hwmon: (nct6683) remove useless function
-Date:   Tue, 13 Apr 2021 14:02:50 +0800
-Message-Id: <1618293770-55307-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1344837AbhDMGDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 02:03:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:33175 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243829AbhDMGDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 02:03:32 -0400
+IronPort-SDR: 60st5OJIVbGvXR0TkvkoUJZIai7IN7b3SJv4Go0nvuTHNFv/4JHjC7hGFtaLrOECQWfqRkx2EG
+ +qUr+H0m1sXA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="193905530"
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="193905530"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 23:03:13 -0700
+IronPort-SDR: YfsjmzNVqgEX+RdhsWjbLI5ZVirirOpsD1AM61E0QbDtRsiM7gg9190uv5YFGFNZQx9q7f3c/1
+ czWhBSzWKi+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,218,1613462400"; 
+   d="scan'208";a="521476626"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Apr 2021 23:03:12 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id D856F301AA9; Mon, 12 Apr 2021 23:03:12 -0700 (PDT)
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Alex Kogan <alex.kogan@oracle.com>
+Cc:     linux@armlinux.org.uk, peterz@infradead.org, mingo@redhat.com,
+        will.deacon@arm.com, arnd@arndb.de, longman@redhat.com,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, guohanjun@huawei.com,
+        jglauber@marvell.com, steven.sistare@oracle.com,
+        daniel.m.jordan@oracle.com, dave.dice@oracle.com
+Subject: Re: [PATCH v14 4/6] locking/qspinlock: Introduce starvation avoidance into CNA
+References: <20210401153156.1165900-1-alex.kogan@oracle.com>
+        <20210401153156.1165900-5-alex.kogan@oracle.com>
+Date:   Mon, 12 Apr 2021 23:03:12 -0700
+In-Reply-To: <20210401153156.1165900-5-alex.kogan@oracle.com> (Alex Kogan's
+        message of "Thu, 1 Apr 2021 11:31:54 -0400")
+Message-ID: <87mtu2vhzz.fsf@linux.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
+Alex Kogan <alex.kogan@oracle.com> writes:
+>  
+> +	numa_spinlock_threshold=	[NUMA, PV_OPS]
+> +			Set the time threshold in milliseconds for the
+> +			number of intra-node lock hand-offs before the
+> +			NUMA-aware spinlock is forced to be passed to
+> +			a thread on another NUMA node.	Valid values
+> +			are in the [1..100] range. Smaller values result
+> +			in a more fair, but less performant spinlock,
+> +			and vice versa. The default value is 10.
 
-drivers/hwmon/nct6683.c:491:19: warning: unused function 'in_to_reg'
-[-Wunused-function].
+ms granularity seems very coarse grained for this. Surely
+at some point of spinning you can afford a ktime_get? But ok.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/hwmon/nct6683.c | 11 -----------
- 1 file changed, 11 deletions(-)
+Could you turn that into a moduleparm which can be changed at runtime?
+Would be strange to have to reboot just to play with this parameter
 
-diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-index a23047a..b886cf0 100644
---- a/drivers/hwmon/nct6683.c
-+++ b/drivers/hwmon/nct6683.c
-@@ -488,17 +488,6 @@ static inline long in_from_reg(u16 reg, u8 src)
- 	return reg * scale;
- }
- 
--static inline u16 in_to_reg(u32 val, u8 src)
--{
--	int scale = 16;
--
--	if (src == MON_SRC_VCC || src == MON_SRC_VSB || src == MON_SRC_AVSB ||
--	    src == MON_SRC_VBAT)
--		scale <<= 1;
--
--	return clamp_val(DIV_ROUND_CLOSEST(val, scale), 0, 127);
--}
--
- static u16 nct6683_read(struct nct6683_data *data, u16 reg)
- {
- 	int res;
--- 
-1.8.3.1
+This would also make the code a lot shorter I guess.
 
+-Andi
