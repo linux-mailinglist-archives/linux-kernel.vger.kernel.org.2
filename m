@@ -2,157 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50F635E6B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 20:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAF235E6BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 21:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhDMS5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 14:57:42 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:32393 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232517AbhDMS5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:57:41 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ALLiDiKgOMGhUFS2AKwnY+EjHlnBQXw113DAb?=
- =?us-ascii?q?vn1ZSRFFG/GwvcrGppUm/DXzjyscX2xlpMuJP7OOTWiZ2Zl+54QQOrnKZniDhE?=
- =?us-ascii?q?KDKoZ+4Yz+hwDxAiGWzJ856Y5MUYhbTOfxA19zkNrg7GCDeeoI7dGb/MmT6Nv2?=
- =?us-ascii?q?4GxqSWhRB51IygdiF0KyCUd2RBZLbKBJbqa0w8pcun6BVB0sH7+GL1wERfWGnt?=
- =?us-ascii?q?vQifvdEGM7Ljsm8hTLsTSz9LXhGQOZ1Rt2aUIy/Z4H/XLemwL0ooWP2sva9jb5?=
- =?us-ascii?q?12veq6tbg8HgzNwrPr3vtuEtMTnnhgulY45sMofy2wwdm+2k5FY0nNSkmX5JVP?=
- =?us-ascii?q?hb0H/Je3HwnB2F4Wbd+Qwz4Hzvw0LwuwqBneXFQlsBZfZptMZwbgber3Etpsh7?=
- =?us-ascii?q?17hGm1iEroNNAQnb9R6NmOTgZlVFlleUvXFnquIalXpZOLFuEIN5nMgw/F51DJ?=
- =?us-ascii?q?xFJy7x6JkmHO5yZfusncp+QBe1b235omIq+9CnXm0yEhCaBmAOt9eYySI+pgEG?=
- =?us-ascii?q?82IogOIeg1Yd/9YGR55I6/+sCNUPqI1z?=
-X-IronPort-AV: E=Sophos;i="5.82,220,1613430000"; 
-   d="scan'208";a="503068718"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:57:20 +0200
-Date:   Tue, 13 Apr 2021 20:57:20 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] :staging: rtl8723bs: Remove useless
- led_blink_hdl()
-In-Reply-To: <4666345.5ezhEZ0rgB@linux.local>
-Message-ID: <alpine.DEB.2.22.394.2104132056470.14108@hadrien>
-References: <20210413155908.8691-1-fmdefrancesco@gmail.com> <3381109.TaO10cqo9c@linux.local> <20210413182050.GJ6021@kadam> <4666345.5ezhEZ0rgB@linux.local>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1347885AbhDMTBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 15:01:06 -0400
+Received: from mga05.intel.com ([192.55.52.43]:34357 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230397AbhDMTBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 15:01:04 -0400
+IronPort-SDR: S4Oy7l2ID2WDCBasHKZHaUkg3XwYVfIUGih/wbF16bgGrRpuJ+7m+i+HAoj76KknRwGbIYxrMW
+ zOwTeaprXisw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279791308"
+X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
+   d="scan'208";a="279791308"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 12:00:35 -0700
+IronPort-SDR: YEYZ9PrUFNIeD52/0lbNqFpdYVSE/a+PNNIjh2WVNCHXLUZfot91z4rJjSy1FXquDjx8EX3LFd
+ RrTQi7kdgTyg==
+X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
+   d="scan'208";a="443533651"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.18.184])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 12:00:34 -0700
+Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+ add cluster scheduler
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Cc:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        Guodong Xu <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>
+References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
+ <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
+ <20210108151241.GA47324@e123083-lin>
+ <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
+ <20210111092811.GB47324@e123083-lin>
+ <4fdc781e-7385-2ae6-d9c9-3ec165f473c4@arm.com>
+ <9201b56a29dd4dacb7d9fcbf307ca5ff@hisilicon.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <6e067798-5585-5169-38fc-77e173831af5@linux.intel.com>
+Date:   Tue, 13 Apr 2021 12:00:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <9201b56a29dd4dacb7d9fcbf307ca5ff@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-
-> On Tuesday, April 13, 2021 8:20:50 PM CEST Dan Carpenter wrote:
-> > On Tue, Apr 13, 2021 at 06:47:06PM +0200, Fabio M. De Francesco wrote:
-> > > On Tuesday, April 13, 2021 6:27:17 PM CEST Julia Lawall wrote:
-> > > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > On Tuesday, April 13, 2021 6:04:16 PM CEST Julia Lawall wrote:
-> > > > > > On Tue, 13 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > > > Removed the led_blink_hdl() function (declaration, definition,
-> > > > > > > and
-> > > > > > > caller code) because it's useless. It only seems to check
-> > > > > > > whether
-> > > > > > > or
-> > > > > > > not a given pointer is NULL. There are other (simpler) means
-> > > > > > > for
-> > > > > > > that
-> > > > > > > purpose.
-> > > > > > >
-> > > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > > > > ---
-> > > > > > >
-> > > > > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 1 -
-> > > > > > >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
-> > > > > > >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
-> > > > > > >  3 files changed, 11 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > > > > > > 0297fbad7bce..4c44dfd21514 100644
-> > > > > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > > @@ -150,7 +150,6 @@ static struct cmd_hdl wlancmds[] = {
-> > > > > > >
-> > > > > > >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
-> > > > > > >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param),
-> > > > > > >  	set_chplan_hdl) /*59*/>
-> > > > > > >
-> > > > > > > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param),
-> > > > >
-> > > > > led_blink_hdl)
-> > > > >
-> > > > > > > /*60*/
-> > > > > >
-> > > > > > This is worrisome.  Doyou fully understand the impact of this?
-> > > > > > If
-> > > > > > not,
-> > > > > > the change is probably not a good idea.
-> > > > >
-> > > > > This is that macro definition:
-> > > > >
-> > > > > #define GEN_MLME_EXT_HANDLER(size, cmd) {size, cmd},
-> > > > >
-> > > > > struct C2HEvent_Header {
-> > > > >
-> > > > > #ifdef __LITTLE_ENDIAN
-> > > > >
-> > > > >         unsigned int len:16;
-> > > > >         unsigned int ID:8;
-> > > > >         unsigned int seq:8;
-> > > > >
-> > > > > #else
-> > > > >
-> > > > >         unsigned int seq:8;
-> > > > >         unsigned int ID:8;
-> > > > >         unsigned int len:16;
-> > > > >
-> > > > > #endif
-> > > > >
-> > > > >         unsigned int rsvd;
-> > > > >
-> > > > > };
-> > > > >
-> > > > > It's a bit convoluted with regard to my experience. Probably I
-> > > > > don't
-> > > > > understand it fully, but it seems to me to not having effects to
-> > > > > the
-> > > > > code where I removed its use within core/rtw_cmd.c.
-> > > > >
-> > > > > What am I missing?
-> > > >
-> > > > It seems that the function is being put into an array.  Probably
-> > > > someone
-> > > > expects to find it there.  Probably you have shifted all of the
-> > > > functions that come afterwards back one slot so that they are all in
-> > > > the wrong places.
-> > > >
-> > > > julia
-> > >
-> > > Thanks for your explanation. Obviously this implies that the function
-> > > cannot be removed, unless one fill the slot that is deleted by to not
-> > > calling this macro at the right moment.
-> > >
-> > > I also suppose that providing a function pointer with a NULL value
-> > > wouldn't work either.
-> >
-> > It would work.  That array is full of NULL function pointers.
-> >
-> Interesting, thanks.
+On 4/13/21 3:45 AM, Song Bao Hua (Barry Song) wrote:
+> 
+> 
 >
-> I'm going to remove that function and replace its name in the macro with a
-> NULL function pointer.
->
-> I couldn't believe it would work when I wrote about that.
+> Right now in the main cases of using wake_affine to achieve
+> better performance, processes are actually bound within one
+> numa which is also a LLC in kunpeng920. 
+> 
+> Probably LLC=NUMA is also true for X86 Jacobsville, Tim?
 
-Have you checked that a value of NULL in that place is going to have the
-same effect as the function?
+In general for x86, LLC is partitioned at the sub-numa cluster level.  
+LLC could be divided between sub-numa cluster within a NUMA node.
+That said, for Jacobsville, we don't have sub-numa clusters
+so LLC=NUMA is true for that platform. 
 
-julia
+Tim
