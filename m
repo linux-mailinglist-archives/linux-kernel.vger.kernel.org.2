@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F7C35D9D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B0E35D9D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242539AbhDMIRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:17:11 -0400
-Received: from mail-oln040092073034.outbound.protection.outlook.com ([40.92.73.34]:49742
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241675AbhDMIRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:17:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nqvk1m+g8HSYN/nSz2HXCWjecI3ztf7Fhmohh3SICQwPCnUHCjRbvuMAneNEP7MQDO+W8W1hBFwwKHB8hAd3cGhLBikfnTPuri6F4irRbv2cXfbg1hJyWGtzJcKsixvwytJLMGd6gd5A6BjZPT15j5FDm6jO1cm+n9vnvGOPDsUXgWACbLduVDq36pqtAHPNAwqa3H4+b32jIekgqPVixhAqQ0WTpEsoU6+NDBaj2lphxk4UQiutzKMR1V0KjLkWCy7R8H3PVhWQw329WAG3njG7NbJR2HL5+1750atU6QqSiaN5OD9npIrA6THTIEAplcx8+SWi24vjf/h3bGNGHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z4AWzqTzAG2rdZpscGGBKR9wvYLK3+R5Gv6kXYJeSKU=;
- b=Nh6XBF3VCSEUrGpE0OTtqo7TB4qYU1DxLGNQaRa/lEb+gFVBJYNr1JC2TDiIC8IAvdzzO+/Y+vpz0ifRW0BkWUUJXoYwzx+aDieF+SDr/v6aTxHSSElc0K3n825Q9RuIXhpcReMRrGqwhfWULIPQfNtUL5O9H038zmm2iEKjIUKag2/XH2I3OKl0BhUATvpdkujPtK3HSbgPROh91mE3JlgFt3PUcOSF4nMou4h5TCZfQLECN6gWkui8DwsjT+Taa32BaAPGnceABNyqqj0fV2aT0LLFuWsMr9mLKNEX+VRSZzHAkc5RhUCsJoncRRvqALV9p5FGa46cyzzWExfU1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z4AWzqTzAG2rdZpscGGBKR9wvYLK3+R5Gv6kXYJeSKU=;
- b=dYXQYjtHNshrTJiee3aa0Vnh6G+o4yJUmGeqKkmK97guJE9C8ftch6mOvKeUkhEyhGXuyeQRHn5kSb0Wc378BpRfsZPiKbt2C2ffWk+wseh5LxbTcapsuHaRuuUYXW8wFhcfEJ64hxyxxZesOt800pIdpOxnyZuZSmA/oVEn2LXhI/4XMIz0FgmQx6+AWfu3BVvhGx+wmWq+Ge3fkz/trGKoG6GVHOz5NVDHCyKkCacca7hqXreSJ9FfSE/cdbc40bekcMLTogbRRm9j7HhImI86fvYoVw8td3eW4SpxMBDhdbuJfYjfstDlOjQuAQ2D03aqRxZIFQR+4ruIMltVYg==
-Received: from VI1EUR04FT048.eop-eur04.prod.protection.outlook.com
- (2a01:111:e400:7e0e::4c) by
- VI1EUR04HT172.eop-eur04.prod.protection.outlook.com (2a01:111:e400:7e0e::161)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Tue, 13 Apr
- 2021 08:16:48 +0000
-Received: from AM0PR01MB4259.eurprd01.prod.exchangelabs.com
- (2a01:111:e400:7e0e::42) by VI1EUR04FT048.mail.protection.outlook.com
- (2a01:111:e400:7e0e::259) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
- Transport; Tue, 13 Apr 2021 08:16:48 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:B23A13BA061885BDCE1480CA385425818C984A31AE2FF9521B59CF3408CDE234;UpperCasedChecksum:70D87F1691DAC5600AEA4C6E5B8EC8E6B6842D7315D8752C560680AE24E9DEB7;SizeAsReceived:7354;Count:44
-Received: from AM0PR01MB4259.eurprd01.prod.exchangelabs.com
- ([fe80::18c2:36c1:2595:c74d]) by AM0PR01MB4259.eurprd01.prod.exchangelabs.com
- ([fe80::18c2:36c1:2595:c74d%6]) with mapi id 15.20.4020.022; Tue, 13 Apr 2021
- 08:16:48 +0000
-Date:   Tue, 13 Apr 2021 10:16:37 +0200
-From:   Mikko Talikka <mikko.talikka@live.com>
-To:     gregkh@linuxfoundation.org
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: comedi: adv_pci_dio: remove whitespace
-Message-ID: <AM0PR01MB42597C4CAA1B9E51D4AE3D5E974F9@AM0PR01MB4259.eurprd01.prod.exchangelabs.com>
+        id S242641AbhDMIRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241675AbhDMIRh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:17:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CCFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uZZGljHI+pEQTN9kef9SQSB785V0yvmr/JmVQj1uQhM=; b=UV6GxUjHogdqfKF2OVfvAuRjBC
+        vDJ17oB2J+4vrYX3Xv/8QzCHnN0OKbKnX67T77g3aaFXA9JRMw3dy/aHppYzoiD+XvmFuFRZycoHF
+        isR6cC+m3F94Vu16ZZ4nYcA0bqFqvzXTIkpkjBOixQn8H6zAMjJqT/0E5jzpjgLTwkrF9k5YPoqu6
+        lGCStF9w5A9T+hJWBBfzvDtXoQjLvkJMRrBotBqhGIojmG/87aNY8XrBTeWmNPtweuoECgT6EzCvE
+        DvIdur/0oxBIUbMNQABWKZzfxE2uaIhWeXiJKLMz83tqW5Ydc2ylbRcRSFp2e+6FlJcewLUDwg1Jh
+        IkT3nl1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWEEM-008ZRN-DN; Tue, 13 Apr 2021 08:17:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D990D3001F6;
+        Tue, 13 Apr 2021 10:17:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6667E20224209; Tue, 13 Apr 2021 10:17:05 +0200 (CEST)
+Date:   Tue, 13 Apr 2021 10:17:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>, catalin.marinas@arm.com,
+        will.deacon@arm.com, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock
+ implementation
+Message-ID: <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-TMN:  [O2lj88HIoQl/6mJFuY0h/mQi1ZD8XrGS]
-X-ClientProxiedBy: PR0P264CA0218.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1e::14) To AM0PR01MB4259.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:6f::27)
-X-Microsoft-Original-Message-ID: <YHVTZcSChScebk1j@localhost.localdomain>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (89.172.40.255) by PR0P264CA0218.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 08:16:47 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 44
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 5e0fdc2e-39ce-4687-4de1-08d8fe547bb0
-X-MS-TrafficTypeDiagnostic: VI1EUR04HT172:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DP87mcKzggo4HtEbX0V4gQ5XQc1IYPrahceaYhLt7gFP+fa/bCRjKqdJd3dGO2Jap1xtHHjWD2R/4ogeTbs/gcK9hnBdpLrVYmKMOtXX2qoxXBI3Rd964tXhh2vEogBLx3Nkwxb+rbkYobE/jsm9rg5J278fmDSmRbulLnk1CL8SRde+fATEuW01h7KbGtOseVFDUZkWBTL86q2ZTGaww7Z3QqShNUPH/1P3YGTmFmsW4uOgyS+z2SDTDGmdn4KG47YhFBFFPsCgo7Ew6tjxnX3uwjf20VtF4A2APAtxGQrZZTRS38L5Rg9apovvzJQSHtUgKSHJq42cczoQi8XCSHcE2aflU1Ja/DnSNjM7VoYRQ65to48ASaoGV5luQBOvbOPzrU5a5CC7QhEiEWNq3g==
-X-MS-Exchange-AntiSpam-MessageData: W1fMrc6GxpHm48epRelJ2o2NjecJIXZJdC212jRYuK2xaeuaWWNne2QaPuz9WLLXaV7Yplk6LWPcEj54Epo83wiybY0xJ8jt+++88Hg55c/thdR+NWcl6Zg91ESznP9nwUJkRyai5D9MWg5gqkU3bg==
-X-OriginatorOrg: live.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e0fdc2e-39ce-4687-4de1-08d8fe547bb0
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 08:16:48.3632
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR04FT048.eop-eur04.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR04HT172
+In-Reply-To: <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed checkpatch.pl warning:
+On Tue, Apr 13, 2021 at 10:03:01AM +0200, Peter Zijlstra wrote:
 
-CHECK: Blank lines aren't necessary before a close brace '}'
-+
-+               }
+> For ticket locks you really only needs atomic_fetch_add() and
+> smp_store_release() and an architectural guarantees that the
+> atomic_fetch_add() has fwd progress under contention and that a sub-word
+> store (through smp_store_release()) will fail the SC.
+> 
+> Then you can do something like:
+> 
+> void lock(atomic_t *lock)
+> {
+> 	u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
+> 	u16 ticket = val >> 16;
+> 
+> 	for (;;) {
+> 		if (ticket == (u16)val)
+> 			break;
+> 		cpu_relax();
+> 		val = atomic_read_acquire(lock);
+> 	}
 
-Signed-off-by: Mikko Talikka <mikko.talikka@live.com>
----
- drivers/staging/comedi/drivers/adv_pci_dio.c | 1 -
- 1 file changed, 1 deletion(-)
+A possibly better might be:
 
-diff --git a/drivers/staging/comedi/drivers/adv_pci_dio.c b/drivers/staging/comedi/drivers/adv_pci_dio.c
-index 8e222b6ff2b4..54c7419c8ca6 100644
---- a/drivers/staging/comedi/drivers/adv_pci_dio.c
-+++ b/drivers/staging/comedi/drivers/adv_pci_dio.c
-@@ -604,7 +604,6 @@ static int pci_dio_auto_attach(struct comedi_device *dev,
- 						? pci_dio_insn_bits_di_w
- 						: pci_dio_insn_bits_di_b;
- 			s->private	= (void *)d->addr;
--
- 		}
- 	}
- 
--- 
-2.30.2
+	if (ticket == (u16)val)
+		return;
 
+	atomic_cond_read_acquire(lock, ticket == (u16)VAL);
+
+Since that allows architectures to use WFE like constructs.
+
+> }
+> 
+> void unlock(atomic_t *lock)
+> {
+> 	u16 *ptr = (u16 *)lock + (!!__BIG_ENDIAN__);
+> 	u32 val = atomic_read(lock);
+> 
+> 	smp_store_release(ptr, (u16)val + 1);
+> }
+> 
+> That's _almost_ as simple as a test-and-set :-) It isn't quite optimal
+> on x86 for not being allowed to use a memop on unlock, since its being
+> forced into a load-store because of all the volatile, but whatever.
