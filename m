@@ -2,140 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9F735D5D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EABE35D5E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 05:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242535AbhDMDYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 23:24:02 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:39876 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237789AbhDMDYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:24:00 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axnci5DnVgd2QHAA--.9969S2;
-        Tue, 13 Apr 2021 11:23:38 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jessica Yu <jeyu@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH RFC v2] module: Use ARG_MAX as second argument of strndup_user() in load_module()
-Date:   Tue, 13 Apr 2021 11:23:36 +0800
-Message-Id: <1618284216-17004-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Axnci5DnVgd2QHAA--.9969S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF15GFWrZFy3WrWDKF17Jrb_yoW5XrW5pa
-        y3Cr95GFs8JrWFkayIy340vFyF9r45Gr4ag3Z8Cwn3Z3WqvF48CFZav3ZI9FyxWrW8GFy0
-        kryrtr13uF4UCwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUUivttUUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S241377AbhDMDZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 23:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237789AbhDMDZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:25:28 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043F0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:25:10 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id k21so1473250pll.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 20:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=SRXvRUJitDAL3LVBcxgMSN2+Nyo+g/E1R/YUuhMK3zY=;
+        b=NT5wxcrMIElDPZAIwOHzPA+cCkYYmfN0PcrXjLMovuafkLeOokhyvZDn2+qKo1JRMw
+         yfifmdoDp0w2m5Lq8veWu5rKtEumpKNmqr5PHwjWEM9M+FvcakfBMLmH5HMQ5mVP+Y+m
+         Xc6qu+v5+bA4mn4ApziWUp4d9NSZ7y7kojwd/lKea4W7FW4qdJbG6GwkCemLFG241fRU
+         2LOd1mtDMhFJdW6M88KvI8PSK+ZpgeDOPmQ60KIxOUuea6gtP7WojxZbAjsV4dUTCPa9
+         WGSxnkmoixLKk4UHZqJul0iqUf0VQNm+Cuv3hxFjsj0qN9e8/NrkHF/Ve38cU4JU80PD
+         0Xmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=SRXvRUJitDAL3LVBcxgMSN2+Nyo+g/E1R/YUuhMK3zY=;
+        b=avL5lyosSZ4141NHKeagomvoDmc0mo8+eRoE5t+smDFktnOxwxI7TdPFvR680zgb/o
+         xoSD3CSj39X9/KT112/7y7yoHCTefRtIApVP0o96mUccfU3xAgWFWrXzEMT4rNlUqAj3
+         Hh19whHsoZkVn0qsFGoPj7LqVVyT8SKmiFq3hZDzbpVEAB2cg1v60m7yrGkQDKU1634p
+         k+J1OytQisawmtgfcQxi2QUN7Q9ggx16ugnT9lDJ4qVrTu6+EQ6I6OyEq0zNjnzbSFHV
+         TmjbnDKOxSrT1+uLYY+AtUTzM0uHMhHp5nkkJvQidmMQtEf3XXpIkeV0kdpHKMUEFo7d
+         pwDQ==
+X-Gm-Message-State: AOAM5303SchIQKUjv20NektOd3tB594kb2/+wEYb0OADMHZrqlavtcma
+        hWVzvOP5eLZxQ6yTe5wF7+gFuNAGEK158Q==
+X-Google-Smtp-Source: ABdhPJz3w+bs8FKEbZQO5/VCoWcYR59uE27wBIEKt7H5yflDTqlYWDg0XRJIdjOaTQbyPflIpgtrDg==
+X-Received: by 2002:a17:902:aa8a:b029:e6:64bd:e29d with SMTP id d10-20020a170902aa8ab02900e664bde29dmr30083774plr.24.1618284309436;
+        Mon, 12 Apr 2021 20:25:09 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id s20sm8993891pfh.144.2021.04.12.20.25.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 20:25:09 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 08:55:03 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: [PATCH v5 0/3] staging: rtl8192e: Cleanup patchset for style issues
+ in rtl819x_HTProc.c
+Message-ID: <cover.1618283232.git.mitaliborkar810@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When update kernel with the latest mips-next, we can not login through a
-graphical interface, this is because drm radeon GPU driver does not work,
-we can not see the boot message "[drm] radeon kernel modesetting enabled."
-through the serial console.
+Changes from v4:-
+[PATCH v4 1/3]:- No changes.
+[PATCH v4 2/3]:- No changes.
+[PATCH V4 3/3]:- Removed casts and parentheses.
 
-drivers/gpu/drm/radeon/radeon_drv.c
-static int __init radeon_module_init(void)
-{
-	[...]
-	DRM_INFO("radeon kernel modesetting enabled.\n");
-	[...]
-}
+Changes from v3:- Changed subject line to match prefix on the patches.
+[PATCH v3 1/3]:- No changes.
+[PATCH v3 2/3]:- No changes.
+[PATCH V3 3/3]:- No changes.
 
-I use git bisect to find out the commit 04324f44cb69 ("MIPS: Remove
-get_fs/set_fs") is the first bad commit.
+Changes from v2:-
+[PATCH v2 1/3]:- Modified subject description. Changes has been made in
+v3.
+[PATCH v2 2/3]:- No changes.
+[PATCH v2 3/3]:- Rectified spelling mistake in subject description.
+Changes has been made in v3.
 
-I analysis and test the changes in the above first bad commit and then
-find out the following obvious difference which leads to the login issue.
+Changes from v1:-
+[PATCH 1/3]:- Removed unnecessary parentheses around boolean expression.
+Changes has been made in v2.
+[PATCH 2/3]:- No changes.
+[PATCH 3/3]:- No changes.
 
-arch/mips/include/asm/uaccess.h
-static inline long strnlen_user(const char __user *s, long n)
-{
-	[...]
-	if (!access_ok(s, n))
-		return -0;
-	[...]
-}
+Mitali Borkar (3):
+  staging: rtl8192e: remove parentheses around boolean expression
+  staging: rtl8192e: remove unnecessary ftrace-like logging
+  staging: rtl8192e: remove casts and parentheses
 
-I use dump_stack() to find out the following call trace:
-load_module()
-	strndup_user()
-		strnlen_user()
+ drivers/staging/rtl8192e/rtl819x_HTProc.c     |  18 ++--
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-load_module() failed in the following error path, we can see that the
-second argument of strndup_user() is very big.
 
-static int load_module(struct load_info *info, const char __user *uargs,
-		       int flags)
-{
-	[...]
-	mod->args = strndup_user(uargs, ~0UL >> 1);
-	if (IS_ERR(mod->args)) {
-		err = PTR_ERR(mod->args);
-		goto free_arch_cleanup;
-	}
-	[...]
-}
-
-As discussed earlier [1], it seems that just modify the exception check
-condition in strnlen_user() to fix load_module() failure, like this:
-
-arch/mips/include/asm/uaccess.h
-static inline long strnlen_user(const char __user *s, long n)
-{
-	[...]
-	if (!access_ok(s, 1))
-		return 0;
-	[...]
-}
-
-At the other hand, I search strndup_user() in the kernel tree, the second
-argument of them are almost a macro or a fixed value which is relatively
-small, such as PAGE_SIZE, PATH_MAX. So I think maybe we can use ARG_MAX as
-second argument of strndup_user() in load_module().
-
-With this patch, the load_module() failure disappered and we can login
-normally through a graphical interface.
-
-[1] https://lore.kernel.org/patchwork/patch/1411214/
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v2: Update the commit message to avoid using diff content - patch(1) might not work
-
- kernel/module.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index 3047935..30d320b 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3998,7 +3998,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
- 	flush_module_icache(mod);
- 
- 	/* Now copy in args */
--	mod->args = strndup_user(uargs, ~0UL >> 1);
-+	mod->args = strndup_user(uargs, ARG_MAX);
- 	if (IS_ERR(mod->args)) {
- 		err = PTR_ERR(mod->args);
- 		goto free_arch_cleanup;
 -- 
-2.1.0
+2.30.2
 
