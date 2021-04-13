@@ -2,135 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF0935DC68
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB4635DC6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241598AbhDMKU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:20:57 -0400
-Received: from smtp.asem.it ([151.1.184.197]:54000 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhDMKUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:20:55 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 8.0.0)
-        with ESMTP id 2af592a94e7142a3b507e2107c860276.MSG
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 12:20:34 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Apr 2021 12:20:31 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Tue, 13 Apr 2021 12:20:31 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v2] watchdog: add new parameter to start the watchdog on module insertion
-Date:   Tue, 13 Apr 2021 12:20:30 +0200
-Message-ID: <20210413102030.3204571-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S242959AbhDMKVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241620AbhDMKU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:20:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD53C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:20:39 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id v6so23755914ejo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvmfAjhAD75vFCCwV7Fr+IU7OY4E5qiwJqveL+UcwEs=;
+        b=uMlyqifqVFl76a2qS3JaTbUAuKVxnmP7ZjDUGoO5A0rDRibyZhWKK67CzIe1nABH4k
+         WdY7wMIRIJoJrGZ9Vw7QIYvlgEwJfba85e+uM1Ycqpf2ZOBN7d9iuCZ0QhpozpDeJnCb
+         /Qk2a1GYoH9/53XjiYhCfWhVz4WammPeG120HKy4wdPcoRl5vChyp3RSMykGxmSpzG5V
+         GD8RIvY6l61Wik3G2ZZ7C5Wcmd/CUjkwrKhr5KtjcvqHTfGYwPmSw0WFyJ53pvIMsh2g
+         LSmFprisskPRKpQ2qbQAEYXDiI190annCbYAaW0MUGCu+KHuOCpbfMu/YKTGx7t/qecm
+         IstA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvmfAjhAD75vFCCwV7Fr+IU7OY4E5qiwJqveL+UcwEs=;
+        b=CthG27G+3hUtWBqiyrqteLCUoYrMcekiDpvesZffKH31UWsic5dKOTiJwZJVXqiLAQ
+         9vVKJSUYqhEmVpSQT4UQMZW+BmInomBPpJryo2f5i+PUcO1K28kUWQA3dl+TQ8wh4/h1
+         Fqd1uLPXOmo0v4cV79wMfnufTju2q2frZ4iPYvVqovtIl9eeGaX6RbkVIQNnuo4b/G+P
+         Yd5JdrqlkuUIaeA6bTLQsd6uN8wInD7B/4MPM9F2ZhAPP4q8BqK7G0tlaOo14N0hdbg4
+         xMQDTtqYbRK/tRoXZ3LFZ8iYMMvegQpSD6CHldodXo5MkYMulGtU2pwklZSLtciNaoCv
+         wvUg==
+X-Gm-Message-State: AOAM533Vif3q6CvFugUxXhzz9va4BIIcgnNuTOuvmoW8djqZAv57v5pj
+        3tK/s0l4QnbmgRzzPyu++p4=
+X-Google-Smtp-Source: ABdhPJzin6vzUy5rdpSDcOnbdYH95QlRx4lImMz+KTL6dlF1CZSYA7oX8krfgbzocjXLwfFkscU9qQ==
+X-Received: by 2002:a17:906:524f:: with SMTP id y15mr31008850ejm.65.1618309237743;
+        Tue, 13 Apr 2021 03:20:37 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id y6sm7496565ejw.83.2021.04.13.03.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 03:20:37 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy patch] [PATCH] staging: rtl8188eu: Move channel_table away from rtw_mlme_ext.h
+Date:   Tue, 13 Apr 2021 12:20:33 +0200
+Message-Id: <20210413102033.24781-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F28.60757070.0089,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new parameter "start_enabled" starts the watchdog at the same time
-of the module insertion.
-This feature is very useful in embedded systems, to avoid cases where
-the system hangs before reaching userspace.
+Moved "static const struct channel_table[]" from include/rtw_mlme_ext.h
+to core/rtw_ioctl_set.c because the latter is the only file that uses
+that array of struct(s) in the whole driver. "make rtl8188eu/ W=1" output
+several warnings about "'channel_table' defined but not used
+[-Wunused-const-variable=]".
 
-This feature can be enabled in the kernel config, so it can be also
-used when the watchdog driver is build as "built-in".
-
-This parameter involves the "core" section of the watchdog driver;
-in this way it is common for all the watchdog hardware implementations.
-
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
+ drivers/staging/rtl8188eu/core/rtw_ioctl_set.c   | 8 ++++++++
+ drivers/staging/rtl8188eu/include/rtw_mlme_ext.h | 8 --------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-v2: - check WDOG_HW_RUNNING before starting watchdog;
-    - remove useless comments in commit text, watchdog-parameters.rst and
-      Kconfig;
-v1: - first version;
-
- Documentation/watchdog/watchdog-parameters.rst |  3 +++
- drivers/watchdog/Kconfig                       |  9 +++++++++
- drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
- 3 files changed, 24 insertions(+)
-
-diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
-index 223c99361a30..7780d0c1fb4a 100644
---- a/Documentation/watchdog/watchdog-parameters.rst
-+++ b/Documentation/watchdog/watchdog-parameters.rst
-@@ -21,6 +21,9 @@ watchdog core:
- 	timeout. Setting this to a non-zero value can be useful to ensure that
- 	either userspace comes up properly, or the board gets reset and allows
- 	fallback logic in the bootloader to try something else.
-+    start_enabled:
-+	Watchdog is started on module insertion. This option can be also
-+	selected by kernel config (default=kernel config parameter).
+diff --git a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
+index 1ef32ff900a9..17b999f45132 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
++++ b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
+@@ -11,6 +11,14 @@
+ #include <rtw_ioctl_set.h>
+ #include <hal_intf.h>
  
- -------------------------------------------------
- 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 0470dc15c085..1c480f4c7f94 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -47,6 +47,15 @@ config WATCHDOG_NOWAYOUT
- 	  get killed. If you say Y here, the watchdog cannot be stopped once
- 	  it has been started.
- 
-+config WATCHDOG_START_ENABLED
-+	bool "Start watchdog on module insertion"
-+	help
-+	  Say Y if you want to start the watchdog at the same time when the
-+	  driver is loaded.
-+	  This feature is very useful in embedded systems, to avoid cases where
-+	  the system could hang before reaching userspace.
-+	  This parameter applies to all watchdog drivers.
++static const struct {
++        int channel_plan;
++        char *name;
++} channel_table[] = { { RT_CHANNEL_DOMAIN_FCC, "US" },
++        { RT_CHANNEL_DOMAIN_ETSI, "EU" },
++        { RT_CHANNEL_DOMAIN_MKK, "JP" },
++        { RT_CHANNEL_DOMAIN_CHINA, "CN"} };
 +
- config WATCHDOG_HANDLE_BOOT_ENABLED
- 	bool "Update boot-enabled watchdog until userspace takes over"
- 	default y
-diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-index 5df0a22e2cb4..8a1e2e9331ee 100644
---- a/drivers/watchdog/watchdog_core.c
-+++ b/drivers/watchdog/watchdog_core.c
-@@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
- module_param(stop_on_reboot, int, 0444);
- MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
+ extern void indicate_wx_scan_complete_event(struct adapter *padapter);
  
-+static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
-+module_param(start_enabled, bool, 0444);
-+MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
-+	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
-+
- /*
-  * Deferred Registration infrastructure.
-  *
-@@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 	 * corrupted in a later stage then we expect a kernel panic!
- 	 */
+ u8 rtw_do_join(struct adapter *padapter)
+diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
+index 77eb5e3ef172..03d55eb7dc16 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8188eu/include/rtw_mlme_ext.h
+@@ -171,14 +171,6 @@ struct rt_channel_plan_map {
+ 	unsigned char	Index2G;
+ };
  
-+	/* If required, start the watchdog immediately */
-+	if (start_enabled && !watchdog_hw_running(wdd)) {
-+		set_bit(WDOG_HW_RUNNING, &wdd->status);
-+		wdd->ops->start(wdd);
-+		pr_info("Watchdog enabled\n");
-+	}
-+
- 	/* Use alias for watchdog id if possible */
- 	if (wdd->parent) {
- 		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
+-static const struct {
+-	int channel_plan;
+-	char *name;
+-} channel_table[] = { { RT_CHANNEL_DOMAIN_FCC, "US" },
+-	{ RT_CHANNEL_DOMAIN_ETSI, "EU" },
+-	{ RT_CHANNEL_DOMAIN_MKK, "JP" },
+-	{ RT_CHANNEL_DOMAIN_CHINA, "CN"} };
+-
+ enum Associated_AP {
+ 	atherosAP	= 0,
+ 	broadcomAP	= 1,
 -- 
-2.25.1
+2.31.1
 
