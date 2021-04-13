@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4F535DEF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B67935DEC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241141AbhDMMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:30:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345760AbhDMM2N (ORCPT
+        id S1345682AbhDMM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:27:49 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:33297 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345548AbhDMM1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:28:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618316874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IGQywB7E/UfuggqU2qvxH/Kn9lWGAmCZ1u/iTfLS0l0=;
-        b=WGr/KztGqlIJmR7Wn7RAPRjjS2CH2mUiFhcIV3wDIJJbTKW6fb/Y6XH7GfL3VZx8vUYlx4
-        6perIZPYr9hymYBEgFlKlS6w0NORUEL7NgoyPhAvYgEp1qqjouKr8Cf95s5DHFlQm+2Nxm
-        Wy+AKz74lmnQGKMhYKv8Xup500gFbks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-Ps4Cnv96MKyN4Fy3WsCYbw-1; Tue, 13 Apr 2021 08:27:52 -0400
-X-MC-Unique: Ps4Cnv96MKyN4Fy3WsCYbw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F17D5A40CC;
-        Tue, 13 Apr 2021 12:27:50 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.75])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E24CA60C04;
-        Tue, 13 Apr 2021 12:27:46 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Subject: [PATCH RFC 22/22] KVM: x86: hyper-v: Check access to HVCALL_NOTIFY_LONG_SPIN_WAIT hypercall
-Date:   Tue, 13 Apr 2021 14:26:30 +0200
-Message-Id: <20210413122630.975617-23-vkuznets@redhat.com>
-In-Reply-To: <20210413122630.975617-1-vkuznets@redhat.com>
-References: <20210413122630.975617-1-vkuznets@redhat.com>
+        Tue, 13 Apr 2021 08:27:16 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MrPRB-1lrNHN3EEp-00oUcR; Tue, 13 Apr 2021 14:26:54 +0200
+Received: by mail-wr1-f45.google.com with SMTP id p6so9547056wrn.9;
+        Tue, 13 Apr 2021 05:26:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531RTstzoW4h7X7DkOkmmdQSaYrP2Al/ftLmMhudAKAJCFLXLUcP
+        HjMk5ntP6e9qG/JnrR6iaGNd02jZkbV1GYuKFnM=
+X-Google-Smtp-Source: ABdhPJwKvFsyDfbyGYss2v7jOXjBzh0mMu283RtmlU14qXGq/cPdHuxJ1FGe8j5NYZ0lo1+YSfN65D73UMNsuNFan5U=
+X-Received: by 2002:adf:c70b:: with SMTP id k11mr37437743wrg.165.1618316814410;
+ Tue, 13 Apr 2021 05:26:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+In-Reply-To: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 13 Apr 2021 14:26:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+Message-ID: <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:dwhLFRyXtozyRyi1aq+zXpihKoy+XXL8N0nzsGkulGAzdwz913q
+ 7fTw87231jyO3u6CvzKm9eEf8D9WZFO6cLrezMC4w5U4uhS/tw+fzAlBhhMpxPJTZHjRlto
+ 49WKb3GeoAXWTThvGsmnA4O4qxcGlJSejpq135ayI/0VpyOlluzSzsrAcWpmKtMwE8Hg3yS
+ EXjszpaTTTDdYSir7qfKQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QOfJNXzDiqU=:EyA4ORiDC71ZdPS+LwbCIj
+ 6oCSQ/AlSWHA50t2dJeYhpqgohKBe39xLKPMr86cm06Hq0aoWiYDmDllz8mN2uCZTmnwXmqc+
+ 9v/98mj08bVQL8oz0k4CTaOWcanM/2seOEXVdvbpUKFXQGpno+7BOLgmPnm1zZld+xrLPa3cw
+ y5CJn6eDe/W7dew/+VX3ZF7OD+xg4gE8Mph7EuPS4ojOjA2HCo8KejEInEWIrDswqhxXYi4hd
+ Kv4759OF0w1bWpY3Z8eLEi9vd31s9VyjFwtUhPzTvUrY2i8922Ih0gpdvVJrOb8/8zDIxtce8
+ /ndK4EpuCqnA9TAOoYtA9LLqO1Egx0NlEiRSyZFVj/6JD2rFI3o+lK2uenwgd5vQqWSQD9Z0/
+ WG0ik7PnQ7HJQ9cCCNaQ0Mis7nlJn4WKiahilxVe6KGo7X6SACKT37d8twXOOL/h//TQzEpMf
+ xi0w7wSnko4nTT4tDLJ4YMKKlo7TE6uXjomEN6ID2rQMwBYRQfX1EpR3m1qyC/ASPjUeR0svN
+ L9t5sOvt1zhgThXGlFaUS0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TLFS6.0b states that partition issuing HVCALL_NOTIFY_LONG_SPIN_WAIT must
-posess 'UseHypercallForLongSpinWait' privilege but there's no
-corresponding feature bit. Instead, we have "Recommended number of attempts
-to retry a spinlock failure before notifying the hypervisor about the
-failures. 0xFFFFFFFF indicates never notify." Use this to check access to
-the hypercall. Also, check against zero as the corresponding CPUID must
-be set (and '0' attempts before re-try is weird anyway).
+On Tue, Apr 13, 2021 at 1:54 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+>
+> When PCI_IOBASE is not defined, it is set to 0 such that it is ignored
+> in calls to the readX/writeX primitives. While mathematically obvious
+> this triggers clang's -Wnull-pointer-arithmetic warning.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/hyperv.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Indeed, this is an annoying warning.
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 37b8ff30fc1d..325446833bbe 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -2113,6 +2113,12 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
- 
- 	switch (code) {
- 	case HVCALL_NOTIFY_LONG_SPIN_WAIT:
-+		if (unlikely(!hv_vcpu->cpuid_cache.enlightenments_ebx ||
-+			     hv_vcpu->cpuid_cache.enlightenments_ebx == U32_MAX)) {
-+			ret = HV_STATUS_ACCESS_DENIED;
-+			break;
-+		}
-+
- 		if (unlikely(rep)) {
- 			ret = HV_STATUS_INVALID_HYPERCALL_INPUT;
- 			break;
--- 
-2.30.2
+> An additional complication is that PCI_IOBASE is explicitly typed as
+> "void __iomem *" which causes the type conversion that converts the
+> "unsigned long" port/addr parameters to the appropriate pointer type.
+> As non pointer types are used by drivers at the callsite since these are
+> dealing with I/O port numbers, changing the parameter type would cause
+> further warnings in drivers. Instead use "uintptr_t" for PCI_IOBASE
+> 0 and explicitly cast to "void __iomem *" when calling readX/writeX.
+>
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+>  include/asm-generic/io.h | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
+>
+> diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> index c6af40ce03be..8eb00bdef7ad 100644
+> --- a/include/asm-generic/io.h
+> +++ b/include/asm-generic/io.h
+> @@ -441,7 +441,7 @@ static inline void writesq(volatile void __iomem *addr, const void *buffer,
+>  #endif /* CONFIG_64BIT */
+>
+>  #ifndef PCI_IOBASE
+> -#define PCI_IOBASE ((void __iomem *)0)
+> +#define PCI_IOBASE ((uintptr_t)0)
+>  #endif
+>
+>  #ifndef IO_SPACE_LIMIT
 
+Your patch looks wrong in the way it changes the type of one of the definitions,
+but not the type of any of the architecture specific ones. It's also
+awkward since
+'void __iomem *' is really the correct type, while 'uintptr_t' is not!
+
+I think the real underlying problem is that '0' is a particularly bad
+default value,
+we should not have used this one in asm-generic, or maybe have left it as
+mandatory to be defined by an architecture to a sane value. Note that
+architectures that don't actually support I/O ports will cause a NULL
+pointer dereference when loading a legacy driver, which is exactly what clang
+is warning about here. Architectures that to support I/O ports in PCI typically
+map them at a fixed location in the virtual address space and should put that
+location here, rather than adding the pointer value to the port resources.
+
+What we might do instead here would be move the definition into those
+architectures that actually define the base to be at address zero, with a
+comment explaining why this is a bad location, and then changing the
+inb/outb style helpers to either an empty function or a WARN_ONCE().
+
+On which architectures do you see the problem? How is the I/O port
+actually mapped there?
+
+      Arnd
