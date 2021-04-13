@@ -2,103 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D8F35D44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F4F35D44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239198AbhDMAGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        id S1344237AbhDMAGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237762AbhDMAGX (ORCPT
+        with ESMTP id S237762AbhDMAGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:06:23 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1E7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:04 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l19so8733645ilk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:04 -0700 (PDT)
+        Mon, 12 Apr 2021 20:06:32 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7396C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id c6-20020a4aacc60000b02901e6260b12e2so947905oon.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oc8KDiOWuwADnzIA25HidDazWPNHccWEXTYmACDczag=;
-        b=G3MmhBQSxPp8hy3RJxE7/AHj5wYLU/wal3dtuc+Hu1ED8dOFUsVkmKd59y17amn7N4
-         Y3glEJBHd+euhT/qra+SIse7JEnBa1xLscQG0ZDaHDtGLJVczImyM0f/uA4arFYxj/OD
-         wz0xIbIt7a5dn8sojVg6bE5+8ppSTgNF22T3zD6mw1b8dYOrIwZKUjqYuaSAU8wHaqTy
-         d/qpCxTFw9TtC7Ld24iZrIAV5qlZr/4IA8I1KwXkyD2w0zfEiILC3A9DWc83msK5u0ce
-         GEV9F7s4m5NUhXs3N9th7yzL91/vVUQzruX47ztxAYV1eFDQ6iJQR3UEAAUYXVUH2Bff
-         1X+A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8fxzT0uDrVTZBSQzxnvbCG//UD0EW3zTDTfE8VxsHrc=;
+        b=hjwYNlWWZKfcv2jU4VNMOZ60EHaQpSYRZYAmnsiyFrZuBjUnjHeJSL0nOJ2VKUmjUl
+         Z8riG/xcb9KBQVHI6N2Ego7tvElHpe6Njq2rgxKUS3RqOgOgjzAW4vtNRrbsimTpbkxI
+         j24++xNm0Yh6dXBGNdT1lNynHNA+juSm6Jb0lO/7gxQ8cHogdfas6Sy3sL/egZ6MRJ/Y
+         5aXsKHoVhwR8S5EJceL7EPQe0sEU0YsYMp5D2S0PbsbiTLn2TBmQXzUDSVTp01BaUn90
+         TLeJOGVhACbUl9T7uipnvddSGQ6ym4ttDHgrRaHBfAoQlT3BNRbPqCYuOa67DQB0pizH
+         fIgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oc8KDiOWuwADnzIA25HidDazWPNHccWEXTYmACDczag=;
-        b=XHWSsWyR29luh4VuqI+bln7nJHDqWvVwyqcrH1KwbLrmHvPcMfe/51hZngkSdHEHlp
-         4JWTswwUQP39rhLTBVgnkSbKgLRT1NKk0kgb0f+XVqfjmM+OQf1IuxsOYzr7r695e5sp
-         ZmMRZu5lwLRnTFrcIHRA7urPDjwutjNiqb4a2l4TudEOApsa7GU27KrgWfmEhp7O9OMC
-         kIOP5uZ0g3cu+Amdm7elKC68QT+SoUlh1ljxqfSTW5sDMMctUL3V6KM0WMbMJA+m1ZqA
-         j4RdFIAosmgXQLLdAnD27u9SgCrKv7DL2yn2qF9ueIxYeBQBjH+Ez/S4MipwtyiyLB4K
-         Qt4Q==
-X-Gm-Message-State: AOAM533IBwlSVXbMihbDzyW+SgRaFlalwAXRwIuIYKlNxPpSk1k3sP4C
-        +y5u1UfkdbYbsWViVSHxw7l3UXnJo4R/mpEznHmfyQ==
-X-Google-Smtp-Source: ABdhPJwt3lAnilBhiJwW5hW0wvM9UynrbmdkqL8tSyjQF+bL5upsICRlEi6khnogCFg89M5espWn2e0B99MVXdu8Y8E=
-X-Received: by 2002:a05:6e02:eb4:: with SMTP id u20mr26826705ilj.182.1618272364171;
- Mon, 12 Apr 2021 17:06:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8fxzT0uDrVTZBSQzxnvbCG//UD0EW3zTDTfE8VxsHrc=;
+        b=jKKYrTaKf/QlwmXhPtWpKFr4FsmwJ//enoNRTklgM0dfr0HPdaRJqC2TghSH8TVhyl
+         0mKWncVRFADCY/6V7zi0f9HgKzV+viAC0fWBMtXUNcA4NY04EFdIHOlBpnkcNaJxjZBq
+         PVA7UIxsuFNOrmQfipOPtwG1a54nSZ4PT7rpD8O9ExqbEV+PDKF2SMRJTajaRyOBmTK7
+         PSCIK8NtbKXJaqKQf+08QPvMjr6/Rkxq1eUIaPoPubsG9qdXU9w2Vb5EanAVsZtQzdH+
+         V6hd/UnxX6FeCgBuQtIPHQiYCcS1HidWUtcbzniiK9oQRplF69kx5XP/HIbWivt5lx1X
+         dkZA==
+X-Gm-Message-State: AOAM530w/kFdne+ycqjJ1jAi5AKVT3p+jZsVY/xbRZnvqAXYeSx1zKZj
+        cJgXwBnQZSzClcrYrf5Nsxqasg==
+X-Google-Smtp-Source: ABdhPJxttMmrIFUBQ2/jJF76W75whagEnk4Y+SUZP3EtUsqpzT+YH+C6AAjdM/AtBBZ+j8G+HV9u6Q==
+X-Received: by 2002:a4a:bc92:: with SMTP id m18mr1826918oop.55.1618272372130;
+        Mon, 12 Apr 2021 17:06:12 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s3sm2513396ool.36.2021.04.12.17.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 17:06:11 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:06:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Deepak Kumar Singh <deesin@codeaurora.org>, clew@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH V1 1/2] soc: qcom: aoss: Expose send for generic usecase
+Message-ID: <20210413000609.GG1538589@yoga>
+References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
+ <1617344238-12137-2-git-send-email-deesin@codeaurora.org>
+ <YGn0wBkOOILgaq5w@builder.lan>
+ <20210409073153.GE4376@work>
 MIME-Version: 1.0
-References: <cover.1618254007.git.ashish.kalra@amd.com> <ae8924d0dcac0b397295f53f7bd3ff06f6a9ff12.1618254007.git.ashish.kalra@amd.com>
-In-Reply-To: <ae8924d0dcac0b397295f53f7bd3ff06f6a9ff12.1618254007.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 12 Apr 2021 17:05:28 -0700
-Message-ID: <CABayD+chYok0LCxk6Z763D+SFHKnYcu9ERc39OOai0=davDCqA@mail.gmail.com>
-Subject: Re: [PATCH v12 11/13] EFI: Introduce the new AMD Memory Encryption GUID.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Venu Busireddy <venu.busireddy@oracle.com>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409073153.GE4376@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:46 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> Introduce a new AMD Memory Encryption GUID which is currently
-> used for defining a new UEFI environment variable which indicates
-> UEFI/OVMF support for the SEV live migration feature. This variable
-> is setup when UEFI/OVMF detects host/hypervisor support for SEV
-> live migration and later this variable is read by the kernel using
-> EFI runtime services to verify if OVMF supports the live migration
-> feature.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  include/linux/efi.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 6b5d36babfcc..6f364ace82cb 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
->
->  /* OEM GUIDs */
->  #define DELLEMC_EFI_RCI2_TABLE_GUID            EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-> +#define MEM_ENCRYPT_GUID                       EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
->
->  typedef struct {
->         efi_guid_t guid;
-> --
-> 2.17.1
->
+On Fri 09 Apr 02:31 CDT 2021, Manivannan Sadhasivam wrote:
 
-Reviewed-by: Steve Rutherford <srutherford@google.com>
+> On Sun, Apr 04, 2021 at 12:17:52PM -0500, Bjorn Andersson wrote:
+> > On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
+> > 
+> > > Not all upcoming usecases will have an interface to allow the aoss
+> > > driver to hook onto. Expose the send api and create a get function to
+> > > enable drivers to send their own messages to aoss.
+> > > 
+> > > Signed-off-by: Chris Lew <clew@codeaurora.org>
+> > > Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> > > ---
+> > >  drivers/soc/qcom/qcom_aoss.c | 36 +++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 35 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> > > index 53acb94..5c643f0 100644
+> > > --- a/drivers/soc/qcom/qcom_aoss.c
+> > > +++ b/drivers/soc/qcom/qcom_aoss.c
+> > > @@ -8,10 +8,12 @@
+> 
+> [...]
+> 
+> > > +	pdev = of_find_device_by_node(np);
+> > 
+> > of_find_device_by_node() will increment the refcount of the underlying
+> > struct device of pdev, so you need to platform_device_put() once you're
+> > done with it.
+> > 
+> > As a side effect of not putting the struct device, the devm_kzalloc'ed
+> > qmp pointer will remain valid. So care is needed to make sure that the
+> > client doesn't end up with a dangling pointer if the qmp device is
+> > removed.
+> > 
+> > My suggestion is that you add a "qmp_put()" function, which invokes
+> > platform_device_put() and that you add some sort of tracking ("bool
+> > orphan"?) to the struct qmp and make qmp_send() fail if this is set.
+> > 
+> 
+> I think this is a duplication of what the struct device offers. Why
+> can't we use the generic infrastructure for this usecase?
+> 
+> Like using device_initialize() in qmp_probe() along with a release
+> callback for "struct device", then using get_device() in qmp_get().
+> Then there should also be a qmp_put() API which calls put_device() to
+> decrease the refcount.
+> 
+> Ideally, the final refcount should be dropped in qmp_remove() and then
+> the release callback will be called automatically to free "struct qmp".
+> 
+> > That way if someone unbinds the aoss device, the client will still have
+> > a "valid" pointer, but won't be able to qmp_send() after qmp_close() has
+> > been called in the aoss remove function.
+> > 
+> 
+> How can someone remove the qmp device if a client is holding its reference?
+> 
+
+The device could be unbound using sysfs, in which case remove() is
+called and I assumed that devres wouldn't be released until the struct
+device's refcount hit 0.
+
+Apparently this does not seems to be how it works, following the unbind
+path I see that devres is shot down regardless of the struct device's
+refcount.
+
+So we would need to ensure that struct qmp is refcounted on its own.
+For this we don't need a separate struct device, we can simply add a
+kref to the struct and avoid using devres to keep track of its lifetime.
+
+Regards,
+Bjorn
+
+> Thanks,
+> Mani
+> 
+> > Regards,
+> > Bjorn
+> > 
+> > > +	if (!pdev)
+> > > +		return ERR_PTR(-EINVAL);
+> > > +
+> > > +	qmp = platform_get_drvdata(pdev);
+> > > +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+> > > +}
+> > > +EXPORT_SYMBOL(qmp_get);
+> > > +
+> > >  static int qmp_probe(struct platform_device *pdev)
+> > >  {
+> > >  	struct resource *res;
+> > > -- 
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
