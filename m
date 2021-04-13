@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B839835DC84
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5740835DC85
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245611AbhDMKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245197AbhDMKeh (ORCPT
+        id S245446AbhDMKhM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 06:37:12 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:22620 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245151AbhDMKhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:34:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476ECC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 03:34:18 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWGN2-0008Cb-Vn; Tue, 13 Apr 2021 12:34:12 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWGN2-0002a2-FD; Tue, 13 Apr 2021 12:34:12 +0200
-Date:   Tue, 13 Apr 2021 12:34:12 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 6/8] pwm: pca9685: Support new PWM_USAGE_POWER flag
-Message-ID: <20210413103412.ngvtk5cw2ftyjvob@pengutronix.de>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412132745.76609-6-clemens.gruber@pqgruber.com>
- <20210412163045.apgnac7atgpboths@pengutronix.de>
- <YHR/Xm5nOjrSwVYs@workstation.tuxnet>
+        Tue, 13 Apr 2021 06:37:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-35-nVjCyOMmNoSV_7KKXm-MGA-1; Tue, 13 Apr 2021 11:36:49 +0100
+X-MC-Unique: nVjCyOMmNoSV_7KKXm-MGA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 11:36:48 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 11:36:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+CC:     Ingo Molnar <mingo@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Arjun Roy <arjunroy@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Subject: RE: [PATCH 3/3] rseq: optimise for 64bit arches
+Thread-Topic: [PATCH 3/3] rseq: optimise for 64bit arches
+Thread-Index: AQHXMETc4NN4/ddyHEK6qBKOxo8eAaqyQOlA
+Date:   Tue, 13 Apr 2021 10:36:48 +0000
+Message-ID: <fbf1a4449b0148b5b9c3baa32088c32a@AcuMS.aculab.com>
+References: <20210413073657.2308450-1-eric.dumazet@gmail.com>
+ <20210413073657.2308450-4-eric.dumazet@gmail.com>
+ <YHVf+F3sKlWyZags@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHVf+F3sKlWyZags@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5yi73bsuwgixsqmt"
-Content-Disposition: inline
-In-Reply-To: <YHR/Xm5nOjrSwVYs@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Peter Zijlstra
+> Sent: 13 April 2021 10:10
+> 
+> On Tue, Apr 13, 2021 at 12:36:57AM -0700, Eric Dumazet wrote:
+> > From: Eric Dumazet <edumazet@google.com>
+> >
+> > Commit ec9c82e03a74 ("rseq: uapi: Declare rseq_cs field as union,
+> > update includes") added regressions for our servers.
+> >
+> > Using copy_from_user() and clear_user() for 64bit values
+> > on 64bit arches is suboptimal.
+> >
+> > We might revisit this patch once all 32bit arches support
+> > get_user() and/or put_user() for 8 bytes values.
+> 
+> Argh, what a mess :/ afaict only nios32 lacks put_user_8, but get_user_8
+> is missing in a fair number of archs.
+> 
+> That said; 32bit archs never have to actually set the top bits in that
+> word, so they _could_ only set the low 32 bits. That works provided
+> userspace itself keeps the high bits clear.
 
---5yi73bsuwgixsqmt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Does that work for 32bit BE ?
 
-Hi Clemens,
+	David
 
-On Mon, Apr 12, 2021 at 07:11:58PM +0200, Clemens Gruber wrote:
-> On Mon, Apr 12, 2021 at 06:30:45PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Mon, Apr 12, 2021 at 03:27:43PM +0200, Clemens Gruber wrote:
-> > >  static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int ch=
-annel)
-> > >  {
-> > > -	unsigned int off_h =3D 0, val =3D 0;
-> > > +	struct pwm_device *pwm =3D &pca->chip.pwms[channel];
-> > > +	unsigned int off =3D 0, on =3D 0, val =3D 0;
-> > > =20
-> > >  	if (WARN_ON(channel >=3D PCA9685_MAXCHAN)) {
-> > >  		/* HW does not support reading state of "all LEDs" channel */
-> > >  		return 0;
-> > >  	}
-> > > =20
-> > > -	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off_h);
-> > > -	if (off_h & LED_FULL) {
-> > > +	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off);
-> > > +	if (off & LED_FULL) {
-> > >  		/* Full OFF bit is set */
-> > >  		return 0;
-> > >  	}
-> > > =20
-> > > -	regmap_read(pca->regmap, LED_N_ON_H(channel), &val);
-> > > -	if (val & LED_FULL) {
-> > > +	regmap_read(pca->regmap, LED_N_ON_H(channel), &on);
-> > > +	if (on & LED_FULL) {
-> > >  		/* Full ON bit is set */
-> > >  		return PCA9685_COUNTER_RANGE;
-> > >  	}
-> > > =20
-> > > -	val =3D 0;
-> > >  	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-> > > -	return ((off_h & 0xf) << 8) | (val & 0xff);
-> > > +	off =3D ((off & 0xf) << 8) | (val & 0xff);
-> > > +	if (!pwm->args.usage_power)
-> > > +		return off;
-> > > +
-> > > +	/* Read ON register to calculate duty cycle of staggered output */
-> > > +	val =3D 0;
-> > > +	regmap_read(pca->regmap, LED_N_ON_L(channel), &val);
-> > > +	on =3D ((on & 0xf) << 8) | (val & 0xff);
-> > > +	return (off - on) & (PCA9685_COUNTER_RANGE - 1);
-> >=20
-> > If LED_N_ON is !=3D 0 but usage_power is false, the returned state is
-> > bogus.
->=20
-> If usage_power is false, LED_N_ON is guaranteed to be 0. It is reset to
-> 0 in probe and never changed. Or did I miss something?
+> So I suppose that if we're going to #ifdef this, we might as well do the
+> whole thing.
+> 
+> Mathieu; did I forget a reason why this cannot work?
+> 
+> diff --git a/kernel/rseq.c b/kernel/rseq.c
+> index a4f86a9d6937..94006190b8eb 100644
+> --- a/kernel/rseq.c
+> +++ b/kernel/rseq.c
+> @@ -115,20 +115,25 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
+>  static int rseq_get_rseq_cs(struct task_struct *t, struct rseq_cs *rseq_cs)
+>  {
+>  	struct rseq_cs __user *urseq_cs;
+> -	u64 ptr;
+> +	unsigned long ptr;
+>  	u32 __user *usig;
+>  	u32 sig;
+>  	int ret;
+> 
+> -	if (copy_from_user(&ptr, &t->rseq->rseq_cs.ptr64, sizeof(ptr)))
+> +#ifdef CONFIG_64BIT
+> +	if (get_user(ptr, &t->rseq->rseq_cs.ptr64))
+>  		return -EFAULT;
+> +#else
+> +	if (get_user(ptr, &t->rseq->rseq_cs.ptr32))
+> +		return -EFAULT;
+> +#endif
+>  	if (!ptr) {
+>  		memset(rseq_cs, 0, sizeof(*rseq_cs));
+>  		return 0;
+>  	}
+>  	if (ptr >= TASK_SIZE)
+>  		return -EINVAL;
+> -	urseq_cs = (struct rseq_cs __user *)(unsigned long)ptr;
+> +	urseq_cs = (struct rseq_cs __user *)ptr;
+>  	if (copy_from_user(rseq_cs, urseq_cs, sizeof(*rseq_cs)))
+>  		return -EFAULT;
+> 
 
-Ah right, so my concern is only a challenge once the reset in probe goes
-away.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-> > >  }
-> > > =20
-> > >  #if IS_ENABLED(CONFIG_GPIOLIB)
-> > > @@ -439,9 +469,11 @@ static int pca9685_pwm_probe(struct i2c_client *=
-client,
-> > >  	reg &=3D ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
-> > >  	regmap_write(pca->regmap, PCA9685_MODE1, reg);
-> > > =20
-> > > -	/* Reset OFF registers to POR default */
-> > > +	/* Reset OFF/ON registers to POR default */
-> > >  	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
-> > >  	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
-> > > +	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
-> > > +	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
-> > > =20
-> > >  	pca->chip.ops =3D &pca9685_pwm_ops;
-> > >  	/* Add an extra channel for ALL_LED */
-> > > @@ -450,6 +482,9 @@ static int pca9685_pwm_probe(struct i2c_client *c=
-lient,
-> > >  	pca->chip.dev =3D &client->dev;
-> > >  	pca->chip.base =3D -1;
-> > > =20
-> > > +	pca->chip.of_xlate =3D of_pwm_xlate_with_flags;
-> > > +	pca->chip.of_pwm_n_cells =3D 3;
-> > > +
-> >=20
-> > Huh, you're incompatibly changing the device tree binding here.
->=20
-> No, I don't think so:
->=20
-> The third cell is optional with of_pwm_xlate_with_flags.
-> So previous DTs with pwm-cells =3D <2> will still work.
-
-I thought that .of_pwm_n_cells was enforced, let me check the code ... I
-had in mind that of_pwm_get() enforced that, but I cannot find it, so I
-guess you're right and my concern is unjustified.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---5yi73bsuwgixsqmt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB1c6AACgkQwfwUeK3K
-7AklQQgAmLXZlUmBHqlmxp/futrTOuHVljzfFpomRmDqlZuObEjkJP81nV8mExNu
-DBAxVX1Th6DSWddMWZzkEUzVrqGo3xe9EDM1GhSRufq3Eh+PpIQfBEi4j1EiRjW0
-uq6Gz0e58FtVAGbcwQl/xEPTBDNdYtPQ3cPcNQ0btvlFGPnyALVaD1TzIajpxoOQ
-6sa4XqoXweKu+HNdD3l/VmnT9S7odmJw7BMgnJ8EMtGJVW4T/w9UvKFh6ZcJzskQ
-cAgv6qMUmEEjKd1bKZeIPui3OPAxVn7lwf9AVpem/U9iTikpuCpmPI7fbHp3jWw9
-5TUqU7sLjtkRr9qJr/VkCHNG2Wodeg==
-=KDCe
------END PGP SIGNATURE-----
-
---5yi73bsuwgixsqmt--
