@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0175C35DEA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FED35DEA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhDMM0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:26:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:23725 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231337AbhDMM0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:26:21 -0400
-IronPort-SDR: NW0aKAIPtnQT+YswojvzPKP4A4OAyLsSRVTZMuVTAXSS+W+QknNJH7UKSE5CYBkgDUSKDlxhIv
- L2dk9aKBb+9g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194429530"
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="194429530"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:25:55 -0700
-IronPort-SDR: /crXERL2PMluoSFGvQgxCtyWHDLQ5JIDJrH/Io9Js4y7MowQDTKNSjt8vkqt6Wpxj6Gp1NRJdx
- mqvPuJCPnGdg==
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="450379030"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 05:25:49 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lWI6z-003kx1-N9; Tue, 13 Apr 2021 15:25:45 +0300
-Date:   Tue, 13 Apr 2021 15:25:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2 1/1] devres: Enable trace events
-Message-ID: <YHWNyXdpHBsllTSx@smile.fi.intel.com>
-References: <20210413113801.18245-1-andriy.shevchenko@linux.intel.com>
- <YHWH9KWrh2kkoAvU@kuha.fi.intel.com>
+        id S1345491AbhDMM07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:26:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231592AbhDMM05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 08:26:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618316797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gHXO771pHe9zTon0JL2N9C6BipX6JwrG/i20Z7QO1yU=;
+        b=GuA6Rtthf8JXqJQFj/qpp7burMWEpjnmaWQmghpIYLFBTi2eIyag/QVldlDlzsulqwCFlb
+        wbItJAknyNXHEdulcAA5LOpaNx394ssS15qoeKg6Al0909mfgps1JzlDY1KOANPa8KmgZ/
+        LNOi4wiTsNcO48vT2ORJ2lmmO9oiSv8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-XnBuu0xjN3SGTxk9jSZ6cQ-1; Tue, 13 Apr 2021 08:26:36 -0400
+X-MC-Unique: XnBuu0xjN3SGTxk9jSZ6cQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44E488030D0;
+        Tue, 13 Apr 2021 12:26:34 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.75])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C3AB660C04;
+        Tue, 13 Apr 2021 12:26:31 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: [PATCH RFC 00/22] KVM: x86: hyper-v: Fine-grained access check to Hyper-V hypercalls and MSRs
+Date:   Tue, 13 Apr 2021 14:26:08 +0200
+Message-Id: <20210413122630.975617-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHWH9KWrh2kkoAvU@kuha.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 03:00:52PM +0300, Heikki Krogerus wrote:
-> On Tue, Apr 13, 2021 at 02:38:01PM +0300, Andy Shevchenko wrote:
-> > In some cases the printf() mechanism is too heavy and can't be used.
-> > For example, when debugging a race condition involving devres API.
-> > When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
-> > otherwise it's quite visible with a useful information being collected.
-> > 
-> > Enable trace events for devres part of the driver core.
+Currently, all implemented Hyper-V features (MSRs and hypercalls) are
+available unconditionally to all Hyper-V enabled guests. This is not
+ideal as KVM userspace may decide to provide only a subset of the
+currently implemented features to emulate an older Hyper-V version,
+to reduce attack surface,... Implement checks against guest visible
+CPUIDs for all currently implemented MSRs and hypercalls.
 
-...
+RFC part:
+- KVM has KVM_CAP_ENFORCE_PV_FEATURE_CPUID for KVM PV features. Should
+ we use it for Hyper-V as well or should we rather add a Hyper-V specific
+ CAP (or neither)?
 
-> >  struct devres_node {
-> >  	struct list_head		entry;
-> >  	dr_release_t			release;
-> > -#ifdef CONFIG_DEBUG_DEVRES
-> >  	const char			*name;
-> >  	size_t				size;
-> > -#endif
-> 
-> Those ifdefs are still required.
+TODO:
+- Write a selftest
+- Check with various Windows/Hyper-V versions that CPUID feature bits
+ are actually respected.
 
-Oh, yes, otherwise we end up with not filled name and size (as per header
-file). I'll rework in order to fill name and size always and get rid of
-ifdeffery in the header file.
+Vitaly Kuznetsov (22):
+  asm-generic/hyperv: add HV_STATUS_ACCESS_DENIED definition
+  KVM: x86: hyper-v: Cache guest CPUID leaves determining features
+    availability
+  KVM: x86: hyper-v: Honor HV_MSR_VP_RUNTIME_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_TIME_REF_COUNT_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_HYPERCALL_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_VP_INDEX_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_RESET_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_REFERENCE_TSC_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_SYNIC_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_SYNTIMER_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_MSR_APIC_ACCESS_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_ACCESS_FREQUENCY_MSRS privilege bit
+  KVM: x86: hyper-v: Honor HV_ACCESS_REENLIGHTENMENT privilege bit
+  KVM: x86: hyper-v: Honor HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE
+    privilege bit
+  KVM: x86: hyper-v: Honor HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE
+    privilege bit
+  KVM: x86: hyper-v: Honor HV_STIMER_DIRECT_MODE_AVAILABLE privilege bit
+  KVM: x86: hyper-v: Honor HV_POST_MESSAGES privilege bit
+  KVM: x86: hyper-v: Honor HV_SIGNAL_EVENTS privilege bit
+  KVM: x86: hyper-v: Honor HV_DEBUGGING privilege bit
+  KVM: x86: hyper-v: Honor HV_X64_REMOTE_TLB_FLUSH_RECOMMENDED bit
+  KVM: x86: hyper-v: Honor HV_X64_CLUSTER_IPI_RECOMMENDED bit
+  KVM: x86: hyper-v: Check access to HVCALL_NOTIFY_LONG_SPIN_WAIT
+    hypercall
 
-Thanks!
-
-> >  };
+ arch/x86/include/asm/kvm_host.h   |   8 +
+ arch/x86/kvm/hyperv.c             | 305 +++++++++++++++++++++++++++---
+ include/asm-generic/hyperv-tlfs.h |   1 +
+ 3 files changed, 291 insertions(+), 23 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
