@@ -2,176 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCCC35DF67
+	by mail.lfdr.de (Postfix) with ESMTP id A8C8035DF68
 	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345627AbhDMMvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:51:11 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:59040 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345829AbhDMMsN (ORCPT
+        id S1344028AbhDMMvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:51:24 -0400
+Received: from mail-vk1-f172.google.com ([209.85.221.172]:37510 "EHLO
+        mail-vk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345905AbhDMMsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:48:13 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 2DD4975FD9;
-        Tue, 13 Apr 2021 15:47:47 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1618318067;
-        bh=T/iBLyY0/bbcse9xJzBWsyOYMbx9yUWYCR/JpsE3JkI=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=RtCiRIk1oJ6rQejGyUYYWMUFUWm+Hw+zvQAFNVUDQdUCDD2ZjIDEaKLb9fhBp1SNd
-         rxxY/JZaTqpeXbxhIb5gtkVTjUg1D4EguQZwXssLrUm2CDtBZ59SqnEgmKsF/+C+Nu
-         oyuCC5RWOVqscWSwb1dQRjkHZ7qZbOGLMJF1i9VHjdc6BGfZQLYv+tpl/yNQQ+v7ra
-         NGwCYHAsxu/+4ibRA2m8ERHco8c7tv9bOnTVgZ23zFOF9Hsbl/QuKldUPWz1Y3IZMp
-         tigN3GD78EKYO/xUpJbRTZ/KG8r0tHlFtigNlDzwte9Flcqq6tzXOFRKGwd95UZSZ9
-         bfYM3Dqv4+nMQ==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id ED50675FDE;
-        Tue, 13 Apr 2021 15:47:46 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Apr 2021 15:47:46 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stsp2@yandex.ru>, <arseny.krasnov@kaspersky.com>,
-        <oxffffaa@gmail.com>
-Subject: [RFC PATCH v8 19/19] af_vsock: serialize writes to shared socket
-Date:   Tue, 13 Apr 2021 15:47:36 +0300
-Message-ID: <20210413124739.3408031-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
-References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+        Tue, 13 Apr 2021 08:48:46 -0400
+Received: by mail-vk1-f172.google.com with SMTP id p206so1060810vkd.4;
+        Tue, 13 Apr 2021 05:48:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BPCwCEu/tlD0sPdVV7Acf3Q88fdnLj8wuh/uaB99fZ0=;
+        b=SxSg1XYx4RyYpuIGG8o9w0PpfCiC/84tJy6jumMgo888duy0YbQFzbvt4yUji2H89h
+         lBLyIUiruh+dIMQC/YPCPiL90s5aEBe5FjsjaZHc1WN1MBxrP2112yy4sMTxd8csHGFm
+         404tXIc9leiIb04bO+lm+hudoOnhTdiRhLg0wdE9y/7/oi1hvTV/oUdoQxnZkpjnquuy
+         Gt+tebNdPfwmPubPrIx3beAxjjT8yOKLqNuqe+6cM/5K+PVv6mwqIopJebHkY7OjtHRG
+         oRwM7PUSk/wXn8HsvSBuj99IJXx9AlZM/89fONfmo4ciKOHy3UaaF1/i+63/BFLxWZQW
+         fEdg==
+X-Gm-Message-State: AOAM5311/P1x8gka0sSnmoDXvIXdG6qLTn1U6Xp0C61SZ6QrrCp9y/HZ
+        DCPM8CqhMv/aWp8eg/sii9q/xnWTiQDqzF14icg=
+X-Google-Smtp-Source: ABdhPJzV+Q6RQgrKzEVEruhMtyqX3cZ+hfIXaRTxVkQJ4gAkFfCxaCbMerKFjzCqhoZqkiQzh4ee87eJb2p6DQ1CyqQ=
+X-Received: by 2002:a1f:1f81:: with SMTP id f123mr567276vkf.6.1618318106468;
+ Tue, 13 Apr 2021 05:48:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/13/2021 12:36:22
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163057 [Apr 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/13/2021 12:38:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 13.04.2021 10:53:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/04/13 07:05:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/13 03:14:00 #16587160
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <YHWQaQaw53eZtYzn@smile.fi.intel.com>
+In-Reply-To: <YHWQaQaw53eZtYzn@smile.fi.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 13 Apr 2021 14:48:15 +0200
+Message-ID: <CAMuHMdX29zQHaC9UgGyGad-LxRRK=hBKVHVZ5+9_Cawqk=NMtA@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This add logic, that serializes write access to single socket
-by multiple threads. It is implemented be adding field with TID
-of current writer. When writer tries to send something, it checks
-that field is -1(free), else it sleep in the same way as waiting
-for free space at peers' side.
+Hi Andy,
 
-This implementation is PoC and not related to SEQPACKET close, so
-i've placed it after whole patchset.
+On Tue, Apr 13, 2021 at 2:37 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Tue, Apr 13, 2021 at 02:26:15PM +0200, Geert Uytterhoeven wrote:
+> > The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+> > Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+> > Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+> > about this driver when configuring a kernel without Hisilicon platform
+> > or ACPI firmware support.
+>
+> I don't by the ACPI dependency, sorry.
+>
+> The driver is a pure platform driver that can be enumerated on ACPI enabled
+> devices, but otherwise it can be used as a platform one.
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
----
- include/net/af_vsock.h   |  1 +
- net/vmw_vsock/af_vsock.c | 10 +++++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+Sure, you can manually instantiate a platform device with a matching
+name, and set up the "clk_rate" device property.
+But would it make sense to do that? Would anyone ever do that?
 
-diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-index 53d3f33dbdbf..786df80b9fc3 100644
---- a/include/net/af_vsock.h
-+++ b/include/net/af_vsock.h
-@@ -69,6 +69,7 @@ struct vsock_sock {
- 	u64 buffer_size;
- 	u64 buffer_min_size;
- 	u64 buffer_max_size;
-+	pid_t tid_owner;
- 
- 	/* Private to transport. */
- 	void *trans;
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 54bee7e643f4..d00f8c07a9d3 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1765,7 +1765,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
- 		ssize_t written;
- 
- 		add_wait_queue(sk_sleep(sk), &wait);
--		while (vsock_stream_has_space(vsk) == 0 &&
-+		while ((vsock_stream_has_space(vsk) == 0 ||
-+			(vsk->tid_owner != current->pid &&
-+			 vsk->tid_owner != -1)) &&
- 		       sk->sk_err == 0 &&
- 		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
- 		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
-@@ -1796,6 +1798,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
- 				goto out_err;
- 			}
- 		}
-+
-+		vsk->tid_owner = current->pid;
- 		remove_wait_queue(sk_sleep(sk), &wait);
- 
- 		/* These checks occur both as part of and after the loop
-@@ -1852,7 +1856,10 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
- 			err = total_written;
- 	}
- out:
-+	vsk->tid_owner = -1;
- 	release_sock(sk);
-+	sk->sk_write_space(sk);
-+
- 	return err;
- }
- 
-@@ -2199,6 +2206,7 @@ static int vsock_create(struct net *net, struct socket *sock,
- 		return -ENOMEM;
- 
- 	vsk = vsock_sk(sk);
-+	vsk->tid_owner = -1;
- 
- 	if (sock->type == SOCK_DGRAM) {
- 		ret = vsock_assign_transport(vsk, NULL);
+The corresponding SPI_HISI_KUNPENG depends on ACPI, too.
+
+> If you remove ACPI dependency, feel free to add my
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thanks! ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
