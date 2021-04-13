@@ -2,169 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028DB35D9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1D635D9C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241603AbhDMIMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238331AbhDMIMk (ORCPT
+        id S241881AbhDMINt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:13:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240786AbhDMINl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:12:40 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B96C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:12:18 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id c6so12069229qtc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:12:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d12Y9lIvm9byUn0SmfXOlS4sJonP+P/fuF6Juefsf6E=;
-        b=dx59nD8YvzUjRAKMmEe8ZjDN6wLp/6yBkKTw03FUf7tcIeXd3nXwEWgjF9i+PW2LTJ
-         Njt3BpleKBhacmw70gkuWOl/yOl8qFhdQJ5jl8B0aiVTJt0GLNkqLX37kBR5yaWc2IdK
-         IQwiKLr9//ZaVQvzFNZMuOScdp9sBFAc0z7v6co2tPH1CR0mO3ktZ9vbPfsouUZstbZO
-         HM8dAlKPhlNOYVkG5O5eMrOpPK417AL6h9oqXaGQjiwdYa6dHfPbvFA3vQqRtdCXe/PI
-         NRWCfoDAqvNwVwupMHE9Z3XZ/lgDhqx659VqmsdUr0C8qlx+vxPtnyfX89uYW07FP6nD
-         Pdbg==
+        Tue, 13 Apr 2021 04:13:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618301599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KLyUzT5M5en0X4VIingKMBNaeYaSW+6rovobSSA9k74=;
+        b=Z+eQwLmJH1wz9V3zvCulWMMFSTbzWCgT/QlvLMuqKMaThP5yU6AcT4WFZIyUAj42xF7ZEO
+        DmjGXxxo1+N++bDORuiYc+1Frw6cKKsPTuUs2xiWveSvyqwtwrNz33WaqFf3nWgsLQ9wEx
+        U/wAxph/ydqUBgaL+dc4ARruG555fUs=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-FhJlnQLNPWWZgwwqOTAIxg-1; Tue, 13 Apr 2021 04:13:18 -0400
+X-MC-Unique: FhJlnQLNPWWZgwwqOTAIxg-1
+Received: by mail-yb1-f200.google.com with SMTP id k199so12714060ybf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:13:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=d12Y9lIvm9byUn0SmfXOlS4sJonP+P/fuF6Juefsf6E=;
-        b=j5Fb/lUOipJ0QXsBmUgM23R8S3nRyhrTI/HOHMnQ2lOgTWbKD/QpEGzfhJy/20iBIt
-         gpGJFYdcR1jcmo4dS40DSd/+O1rIT4VMwAphRBaDGUyK8Unb3GVkbPJva7PKNHYqu+me
-         Y5E2JQ8OmRgNQLGXEZkwyRunl6nOlaYgxvSNAdN2kETTsZXVqKnPhgIEtCaad5AUrBiC
-         5D8HWyBC8+Om9Q/DMvrJIRc/AE4q/Kx8BQdHOxBCShn/SxNJ1ayz/r1+36P3VK/rM8K3
-         VJ3paGphdV7rA3twr7wguSiYXXPNqfjFxYOvHY8N/7mcRLB+4D+Rdass8bNScIl8u2g9
-         hTJg==
-X-Gm-Message-State: AOAM533pFiPkpa4cOnBEx4j/4wfqFtRk1/Vf+nDR6N6xHMJyfSOK7y6c
-        xuvbeD5q2wv9n23KKVBDmvOTD1Q0XLwSDBZPfYpRsTL6x1om7w==
-X-Google-Smtp-Source: ABdhPJzsnUzLNTX+i5G5H/gHEPyYzJhNPKRvbEFWIG2MZ4p0lw0eyprjt/BHtYOoRI3BTl4TsaLYGoJHy+HbbSSW4JU=
-X-Received: by 2002:a05:622a:c3:: with SMTP id p3mr28974716qtw.43.1618301536606;
- Tue, 13 Apr 2021 01:12:16 -0700 (PDT)
+        bh=KLyUzT5M5en0X4VIingKMBNaeYaSW+6rovobSSA9k74=;
+        b=Tp6ArC7qbjVKUdMJHE1+FaHUdTu5Ci1XP8ToopIW4YGNWSjF9uLDAPuxntmWO9wcWT
+         2zjKb/hrga/FLmZKyNKOIUZaBF+V2ZO06ew+l37XUgFxQpBwc6NO4r8B9J3Mu1EBLErQ
+         IR0lNP3GJfHWBixHNgTqyI3nErN4QMcMZvprqKlbzqh6aERaQLH9JecOAJOfKrU0l8dT
+         3bHBzKHMVN9DT7qWstvwWzxvtNHn9NX5v6kB1czzl0vDHEutonXecIVGJYIv/52PhWHi
+         RwKC+4596GniROiqlLYQ22pVfp7F5V1+c2S36SgSzfVmDLcz+CTSIWtaPpToR06Ne68A
+         gx+A==
+X-Gm-Message-State: AOAM533R0PJ/q60Tw0jXajzyZMNH/HE2KyfZlAGudlXWnOCluCvdvQBf
+        ha79dlqQRUpJ3NoXAksUmL7Vk3lu7tJz4IKK6n2qJ2S4FP+tpHdrCns9ITT0gyEyl8cfx9veY9u
+        yTfIAMveCdOSpareX0eZL6PaX69PDEUtwMhSLgWhA
+X-Received: by 2002:a25:ce09:: with SMTP id x9mr7099183ybe.81.1618301597499;
+        Tue, 13 Apr 2021 01:13:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZMvsTkqUxAY9JNxCpjjk3fc9GGC9EFicegDOlF/Jpnn3EnjqB4N6bPUo4PnYHL4tsk1GsNBMxRJOZZ531USk=
+X-Received: by 2002:a25:ce09:: with SMTP id x9mr7099155ybe.81.1618301597217;
+ Tue, 13 Apr 2021 01:13:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000075c58405bfd6228c@google.com>
-In-Reply-To: <00000000000075c58405bfd6228c@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Apr 2021 10:12:05 +0200
-Message-ID: <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-To:     syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <20191012005747.210722465@goodmis.org> <20191012005921.580293464@goodmis.org>
+In-Reply-To: <20191012005921.580293464@goodmis.org>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Tue, 13 Apr 2021 10:13:04 +0200
+Message-ID: <CAFqZXNs4eRC6kjFRe6CdwA-sng-w6bcJZf5io+hoLKwM98TVSA@mail.gmail.com>
+Subject: Re: [PATCH 7/7 v2] tracing: Do not create tracefs files if tracefs
+ lockdown is in effect
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        James Morris James Morris <jmorris@namei.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Herton Krzesinski <hkrzesin@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:08 AM syzbot
-<syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com> wrote:
+On Sat, Oct 12, 2019 at 2:59 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 >
-> Hello,
+> If on boot up, lockdown is activated for tracefs, don't even bother creating
+> the files. This can also prevent instances from being created if lockdown is
+> in effect.
 >
-> syzbot found the following issue on:
+> Link: http://lkml.kernel.org/r/CAHk-=whC6Ji=fWnjh2+eS4b15TnbsS4VPVtvBOwCy1jjEG_JHQ@mail.gmail.com
 >
-> HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=124adbf6d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=eb4674092e6cc8d9e0bd
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com
-
-I suspect that the raw gadget_unbind() can be called while the timer
-is still active. gadget_unbind() sets gadget data to NULL.
-But I am not sure which unbind call this is:
-usb_gadget_remove_driver() or right in udc_bind_to_driver() due to a
-start error.
-
-Also looking at the code, gadget_bind() resets data to NULL on this error path:
-https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/usb/gadget/legacy/raw_gadget.c#L283
-but not on this error path:
-https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/usb/gadget/legacy/raw_gadget.c#L306
-Should the second one also reset data to NULL?
-
-
-> general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-> CPU: 1 PID: 5016 Comm: systemd-udevd Not tainted 5.12.0-rc4-syzkaller #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
-> Code: 09 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 48 69 09 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e c0 13 38 8f 0f 84 d0 f3 ff
-> RSP: 0000:ffffc90000ce77d8 EFLAGS: 00010002
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000000004 RSI: 1ffff9200019cf0c RDI: 0000000000000020
-> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-> R10: 0000000000000001 R11: 0000000000000006 R12: ffff88801295b880
-> R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
-> FS:  00007fcd745f98c0(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ffe279f7d87 CR3: 000000001c7d4000 CR4: 0000000000150ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  lock_acquire kernel/locking/lockdep.c:5510 [inline]
->  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
->  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->  _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
->  gadget_setup+0x4e/0x510 drivers/usb/gadget/legacy/raw_gadget.c:327
->  dummy_timer+0x1615/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1903
->  call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
->  expire_timers kernel/time/timer.c:1476 [inline]
->  __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
->  __run_timers kernel/time/timer.c:1726 [inline]
->  run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
->  __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
->  invoke_softirq kernel/softirq.c:221 [inline]
->  __irq_exit_rcu kernel/softirq.c:422 [inline]
->  irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
->  sysvec_apic_timer_interrupt+0x45/0xc0 arch/x86/kernel/apic/apic.c:1100
->  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-> RIP: 0033:0x560cfc4a02ed
-> Code: 4c 39 c1 48 89 42 18 4c 89 52 08 4c 89 5a 10 48 89 1a 0f 87 7b ff ff ff 48 89 f8 48 f7 d0 48 01 c8 48 83 e0 f8 48 8d 7c 07 08 <48> 8d 0d 34 d9 02 00 48 63 04 b1 48 01 c8 ff e0 0f 1f 00 48 8d 0d
-> RSP: 002b:00007ffe279f9dd0 EFLAGS: 00000246
-> RAX: 0000000000000000 RBX: 0000560cfcd88e40 RCX: 0000560cfcd72af0
-> RDX: 00007ffe279f9de0 RSI: 0000000000000007 RDI: 0000560cfcd72af0
-> RBP: 00007ffe279f9e70 R08: 0000000000000000 R09: 0000000000000020
-> R10: 0000560cfcd72af7 R11: 0000560cfcd73530 R12: 0000560cfcd72af0
-> R13: 0000000000000000 R14: 0000560cfcd72b10 R15: 0000000000000001
-> Modules linked in:
-> ---[ end trace ab0f6632fdd289cf ]---
-> RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
-> Code: 09 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 48 69 09 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e c0 13 38 8f 0f 84 d0 f3 ff
-> RSP: 0000:ffffc90000ce77d8 EFLAGS: 00010002
-> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000000004 RSI: 1ffff9200019cf0c RDI: 0000000000000020
-> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-> R10: 0000000000000001 R11: 0000000000000006 R12: ffff88801295b880
-> R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
-> FS:  00007fcd745f98c0(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ffe279f7d87 CR3: 000000001c7d4000 CR4: 0000000000150ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  fs/tracefs/inode.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+> index eeeae0475da9..0caa151cae4e 100644
+> --- a/fs/tracefs/inode.c
+> +++ b/fs/tracefs/inode.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/namei.h>
+>  #include <linux/tracefs.h>
+>  #include <linux/fsnotify.h>
+> +#include <linux/security.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/parser.h>
+>  #include <linux/magic.h>
+> @@ -390,6 +391,9 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+>         struct dentry *dentry;
+>         struct inode *inode;
 >
+> +       if (security_locked_down(LOCKDOWN_TRACEFS))
+> +               return NULL;
+> +
+>         if (!(mode & S_IFMT))
+>                 mode |= S_IFREG;
+>         BUG_ON(!S_ISREG(mode));
 > --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000075c58405bfd6228c%40google.com.
+> 2.23.0
+
+Hi all,
+
+sorry for coming back to an old thread, but it turns out that this
+patch doesn't play well with SELinux's implementation of the
+security_locked_down() hook, which was added a few months later (so
+not your fault :) in commit 59438b46471a ("security,lockdown,selinux:
+implement SELinux lockdown").
+
+What SELinux does is it checks if the current task's creds are allowed
+the lockdown::integrity or lockdown::confidentiality permission in the
+policy whenever security_locked_down() is called. The idea is to be
+able to control at SELinux domain level which tasks can do these
+sensitive operations (when the kernel is not actually locked down by
+the Lockdown LSM).
+
+With this patch + the SELinux lockdown mechanism in use, when a
+userspace task loads a module that creates some tracefs nodes in its
+initcall SELinux will check if the task has the
+lockdown::confidentiality permission and if not, will report denials
+in audit log and prevent the tracefs entries from being created. But
+that is not a very logical behavior, since the task loading the module
+is itself not (explicitly) doing anything that would breach
+confidentiality. It just indirectly causes some tracefs nodes to be
+created, but doesn't actually use them at that point.
+
+Since it seems the other patches also added security_locked_down()
+calls to the tracefs nodes' open functions, I guess reverting this
+patch could be an acceptable way to fix this problem (please correct
+me if there is something that this call catches, which the other ones
+don't). However, even then I can understand that you (or someone else)
+might want to keep this as an optimization, in which case we could
+instead do this:
+1. Add a new hook security_locked_down_permanently() (the name is open
+for discussion), which would be intended for situations when we want
+to avoid doing some pointless work when the kernel is in a "hard"
+lockdown that can't be taken back (except perhaps in some rescue
+scenario...).
+2. This hook would be backed by the same implementation as
+security_locked_down() in the Lockdown LSM and left unimplemented by
+SELinux.
+3. tracefs_create_file() would call this hook instead of security_locked_down().
+
+This way it would work as before relative to the standard lockdown via
+the Lockdown LSM and would be simply ignored by SELinux. I went over
+all the security_locked_down() call in the kernel and I think this
+alternative hook could also fit better in arch/powerpc/xmon/xmon.c,
+where it seems to be called from interrupt context (so task creds are
+irrelevant, anyway...) and mainly causes some values to be redacted.
+(I also found a couple minor issues with how the hook is used in other
+places, for which I plan to send patches later.)
+
+Thoughts?
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
+
