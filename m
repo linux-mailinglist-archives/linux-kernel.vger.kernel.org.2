@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8561035DFEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC6C35DFF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345949AbhDMNRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S1345995AbhDMNTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344864AbhDMNRO (ORCPT
+        with ESMTP id S1345980AbhDMNTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:17:14 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF5FC061574;
-        Tue, 13 Apr 2021 06:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ropDLcpP7yGMVkAD0I4OVyDHA5X+bljerlASzUM5/t4=; b=OMSN+h+FUy4gJad4fIayGztOV
-        DPqnvkCshZXI0TrarQzoTKRJCIwoIAQ2cju0aFm/1JyfVcfhIJNDTtpOek7FZ57nHCuWQeDF0Susj
-        75aCxTLBIh09DCJhV2LkMrEDZzAppbSEYKp6T8lbpXiDSs2Tz+EvSyMNWHfOJY07/OLdwwmeT7khF
-        szjhCWzJWizxCewqVRQjOBTbRWJQ0V+w0VXa15pLyyJUBf9XQ4A0tGyR97uHxANdS31IXfavVNDgx
-        sIfeEzcgfMWTml6CT30hfMpxHDYAPjDb3pKbvqIooGDqx1J/altiA23UY7XfSimj903GMyYPSaO9+
-        4NNK2ZbZw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52382)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lWIuN-0005g7-3Y; Tue, 13 Apr 2021 14:16:47 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lWIuM-0008DZ-HQ; Tue, 13 Apr 2021 14:16:46 +0100
-Date:   Tue, 13 Apr 2021 14:16:46 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Ivan Bornyakov <i.bornyakov@metrotek.ru>, system@metrotek.ru,
-        hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: phy: marvell-88x2222: check that link
- is operational
-Message-ID: <20210413131646.GQ1463@shell.armlinux.org.uk>
-References: <cover.1618227910.git.i.bornyakov@metrotek.ru>
- <614b534f1661ecf1fff419e2f36eddfb0e6f066d.1618227910.git.i.bornyakov@metrotek.ru>
- <YHTacMwlsR8Wl5q/@lunn.ch>
- <20210413071930.52vfjkewkufl7hrb@dhcp-179.ddg>
- <20210413092348.GM1463@shell.armlinux.org.uk>
- <YHWYpQhjxKBjRvC3@lunn.ch>
+        Tue, 13 Apr 2021 09:19:24 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F35C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:19:05 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id x2so16955587oiv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 06:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+lMWYPNRgjHfGJ2IGynOc/e2UwksaNHcfV33RwyFvJc=;
+        b=MLovbU708M86ukdmzujhwKR2SfF/Kewm/N7w2ooqHqcICoeeDsN0mvEF8lIdDWF6jx
+         jTASP6qAuAPkXVVP5kRdC4y7IuXIGhORnP44X7D2WktQgRCZCBoNKr7WR8yDojonIHrF
+         mK0RFQSxYe8ZUHGnhSE6FTLFl0y7HXSIHDD4jnrHoinGB5ZKNBdjuA/Jg1ZkxB+m8wDD
+         PG5WP3X6quMzfOaoEc6y/VEmWsbwLxbFXU7oGJD/NBdX2lGCFy+SEoIaDRVG89dYm9iH
+         Od6CnjqrqyLfGO0ANRbBPLT20VmGtfbWXtHi4R3IxPgSYv8PRQ9z7Es58w7PYerLLxod
+         BnzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+lMWYPNRgjHfGJ2IGynOc/e2UwksaNHcfV33RwyFvJc=;
+        b=Q5/WFKXIkdIFnFbQhhQO59tX+/YKznJ7o8Zs8r/dSSCeXKF8kln5sds10qr8nedmuO
+         2KgdKQK9YGhLRQ+5kPd++8Va70Bspxqfbl20a8maQL4AACflMsIjlDgGTd40RmGsgrKY
+         vYjHvFy4AiWn1/zRumiQbaNpghgTKk7wFkwfg65sZHF2nkH+W05OtFZs4yadlwVCiRg7
+         Uaci1HZ64C3QHTozMFq50pG9dgSNVLColNFVxjbO8UV4WRI+91RO5Xs7uP2NNGN1gabH
+         SuElc1mQwIYpBk3O9ccAssd9mX3BM6xa4MsQGC/okWK6rT85LtwJZ1ZaG9ApIBPIvnBP
+         UWPA==
+X-Gm-Message-State: AOAM531Esdg4GJsCMaCSRBsHMERvnTjSuTfqUOQLKMC41Cycz31od+Ca
+        jhp4GZGUTRtEwkmT83q7MBA=
+X-Google-Smtp-Source: ABdhPJzRvTvT7S7M8GS+Uom/UCGNj2bqytIgONGBxPcyXrd5SArrwFHF091BOUOIBK7LKp/I8pg39g==
+X-Received: by 2002:aca:39d6:: with SMTP id g205mr3282295oia.81.1618319944420;
+        Tue, 13 Apr 2021 06:19:04 -0700 (PDT)
+Received: from localhost.localdomain ([50.236.19.102])
+        by smtp.gmail.com with ESMTPSA id v1sm2854207ooh.3.2021.04.13.06.18.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Apr 2021 06:19:03 -0700 (PDT)
+From:   qianjun.kernel@gmail.com
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de
+Cc:     linux-kernel@vger.kernel.org, jun qian <qianjun.kernel@gmail.com>
+Subject: [PATCH 1/1] sched/fair:Reduce unnecessary check preempt in the sched tick
+Date:   Tue, 13 Apr 2021 21:18:42 +0800
+Message-Id: <20210413131842.44430-1-qianjun.kernel@gmail.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHWYpQhjxKBjRvC3@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+From: jun qian <qianjun.kernel@gmail.com>
 
-On Tue, Apr 13, 2021 at 03:12:05PM +0200, Andrew Lunn wrote:
-> Is there something like this in the marvell10 driver?
+If it has been determined that the current cpu need resched in the
+early stage of for_each_sched_entity, then there is no need to check
+preempt in the subsequent se->parent entity_tick.
 
-No, it doesn't seem to be necessary there - I haven't seen spontaneous
-link-ups with the 88x3310 there. Even if we did, that would cause other
-issues beyond a nusience link-up event, as the PHY selects the first
-media that has link between copper and fiber (and both are present on
-Macchiatobin platforms.)
+Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+---
+ kernel/sched/fair.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-If the fiber indicates link up, it would prevent a copper connection
-being established.
-
-> Also, do you know when there is an SFP cage? Do we need a standardised
-> DT property for this?
-
-phydev->sfp_bus being non-NULL?
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a0536add..c0d135100d54 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4352,8 +4352,13 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+ {
+ 	unsigned long ideal_runtime, delta_exec;
+ 	struct sched_entity *se;
++	struct rq *rq = rq_of(cfs_rq);
+ 	s64 delta;
+ 
++	/* If the TIF_NEED_RESCHED has been set, it is no need to check again */
++	if (test_tsk_need_resched(rq->curr))
++		return;
++
+ 	ideal_runtime = sched_slice(cfs_rq, curr);
+ 	delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
+ 	if (delta_exec > ideal_runtime) {
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.18.2
+
