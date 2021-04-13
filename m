@@ -2,54 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D4E35DBB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3317F35DBB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 11:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238045AbhDMJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 05:49:48 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59259 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241048AbhDMJtl (ORCPT
+        id S240265AbhDMJty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 05:49:54 -0400
+Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:45231 "EHLO
+        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241211AbhDMJto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 05:49:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UVRjtdp_1618307360;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UVRjtdp_1618307360)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 17:49:20 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     kys@microsoft.com
-Cc:     haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] Drivers: hv: vmbus: remove unused including <linux/version.h>
-Date:   Tue, 13 Apr 2021 17:49:18 +0800
-Message-Id: <1618307358-74492-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 13 Apr 2021 05:49:44 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id CD6FABABFE
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 10:49:23 +0100 (IST)
+Received: (qmail 31546 invoked from network); 13 Apr 2021 09:49:23 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 13 Apr 2021 09:49:23 -0000
+Date:   Tue, 13 Apr 2021 10:49:20 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
+ structures unreachable during hot remove
+Message-ID: <20210413094920.GC3697@techsingularity.net>
+References: <20210412120842.GY3697@techsingularity.net>
+ <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
+ <20210412140852.GZ3697@techsingularity.net>
+ <b1243b7b-fa4c-496f-5bfc-c83c7cee81cf@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <b1243b7b-fa4c-496f-5bfc-c83c7cee81cf@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following versioncheck warning:
-./drivers/hv/hv.c: 16 linux/version.h not needed.
+On Tue, Apr 13, 2021 at 11:36:08AM +0200, Vlastimil Babka wrote:
+> On 4/12/21 4:08 PM, Mel Gorman wrote:
+> > On Mon, Apr 12, 2021 at 02:40:18PM +0200, Vlastimil Babka wrote:
+> >> On 4/12/21 2:08 PM, Mel Gorman wrote:
+> >
+> > the pageset structures in place would be much more straight-forward
+> > assuming the structures were not allocated in the zone that is being
+> > hot-removed.
+> 
+> I would expect this is not possible, at least for ZONE_MOVABLE, as the percpu
+> allocations should be GFP_KERNEL.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/hv/hv.c | 1 -
- 1 file changed, 1 deletion(-)
+True.
 
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index f202ac7..2c3ae4d 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -13,7 +13,6 @@
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/hyperv.h>
--#include <linux/version.h>
- #include <linux/random.h>
- #include <linux/clockchips.h>
- #include <clocksource/hyperv_timer.h>
+> And it's not realistic to expect offlining to
+> succeed at all without using ZONE_MOVABLE.
+> 
+> AFAIK even Oscar's work on using the node to self-contain its own structures is
+> only applicable to struct pages, not percpu allocations?
+
+That I don't know as I didn't check although in general, it would be
+somewhat unfortunate if per-cpu structures were remote. It wouldn't be
+critical given that they'll be in cache assuming the per-cpu structures
+are not straddling cache lines.
+
 -- 
-1.8.3.1
-
+Mel Gorman
+SUSE Labs
