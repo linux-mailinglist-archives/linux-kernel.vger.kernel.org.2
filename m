@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EA735DD79
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1975A35DD7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 13:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244235AbhDMLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 07:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        id S1344039AbhDMLLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 07:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhDMLLG (ORCPT
+        with ESMTP id S243781AbhDMLLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 07:11:06 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B17BC061574;
-        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id q189so6933385qka.8;
-        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
-        b=q1ERVVWAx8ubOeUPgRemTV8yO1ywDCn6T6+7Fpn0bEZLD/ykqlxQa4cx5qhKoLFWah
-         9jEY39DodaVFGzguLL6/qtozNbo0KhNSiAzuofUrRZdUoTEHN0MRBxc+1b07Fsq8Atf7
-         Bx7V1si+Tv0Z7WPHcxv64OOElRaYVNjapC0p2hFSYerXzPcOm/bkiW+kqa8LOQR43wqp
-         MZa7lCiDECwiedicR8vDlu5bv/9M/4/dAR6m0Ww/bGGzSw2hEKw7K7pKszV+ToyAmGzL
-         QgEbkKpswzBAQxAJDbnPpBXl2fQnNq5nwV19Y/CURlwAvu6l2pmR/Sau81u+5vqd5N1v
-         sMcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
-        b=UERrNXvyZVG5EdYvh6r3/Qas9CRYSJldqNHXDgaf43gVR3PxEEghB6MkjwhPi/PZ3U
-         Z0IKBJ8GNbASjM51GhZFjWHs/fFoA0gtVpBcV/kYu0jFwXCFzyEqKo2rgZVNemdz7lLy
-         FtDTLpWi2bEQn+r6lUigI3qqC0i1qzu4So6iOu+/uacYKm5u+5RHgOFLo/i1S1VRucy+
-         wsISbBGd/cXeYAobprBWHaHh/oZLxYbv0+BXp34kEPQcJL4zp4eZ4NYhPX4xgQJlZONJ
-         FYDTqQ8NkeYUjk6CS6awCD1VrP6Jq1KbhppQ691PqlbbURVqlx64vP47b1xA31JdBL4P
-         jIOg==
-X-Gm-Message-State: AOAM530GQlqP4UKrJznyb3nD4B5b8ybEZgIY4T+e9yLZoPSWh53tSl/z
-        koqvkQVdQ5RluXYC/F/jwM0=
-X-Google-Smtp-Source: ABdhPJxu7+yZw6bHJMJFvSl+K9081V0Oowi4TJZ8e4CVVlGiX7vdVfdTHbF2G84NCSlVJ0LfjquoIw==
-X-Received: by 2002:a37:71c3:: with SMTP id m186mr24873153qkc.453.1618312246533;
-        Tue, 13 Apr 2021 04:10:46 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id p185sm1861834qke.10.2021.04.13.04.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:10:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 13 Apr 2021 07:10:44 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Relax cpuset validation for cgroup v2
-Message-ID: <YHV8NGTQ480UM+Yh@slm.duckdns.org>
-References: <20210413090235.1903026-1-odin@uged.al>
+        Tue, 13 Apr 2021 07:11:16 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E95C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 04:10:56 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lWGwU-0005NZ-1e; Tue, 13 Apr 2021 13:10:50 +0200
+Message-ID: <5277e89e497be121aa7d371a434a3f510fa00e4b.camel@pengutronix.de>
+Subject: Re: [PATCH v2 0/7] remove different PHY fixups
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        David Jander <david@protonic.nl>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Date:   Tue, 13 Apr 2021 13:10:47 +0200
+In-Reply-To: <20210413105144.GN1463@shell.armlinux.org.uk>
+References: <20210309112615.625-1-o.rempel@pengutronix.de>
+         <c03053f59a89ef6ea4a4f2ce15aee4b4f4892745.camel@pengutronix.de>
+         <20210413105144.GN1463@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413090235.1903026-1-odin@uged.al>
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:02:33AM +0200, Odin Ugedal wrote:
-> Two small validation relaxations for cgroup v2, making it easier to
-> manage the hierarchy without the current pain points. Both changes
-> work for both mems and cpus (but I have no NUMA machine to test mems).
+Hi Russell,
+
+sorry for the noise of this arriving in your inbox twice. Apparently I
+messed up and replied in private in my last mail.
+
+Am Dienstag, dem 13.04.2021 um 11:51 +0100 schrieb Russell King - ARM Linux admin:
+> On Tue, Apr 13, 2021 at 12:00:45PM +0200, Lucas Stach wrote:
+> > I agree with the opinion that those PHY fixups introduce more harm than
+> > good. Essentially they are pushing board specific configuration values
+> > into the PHY, without any checks that the fixup is even running on the
+> > specific board it was targeted at.
 > 
-> Hopefully the patches has an ok description about what change they
-> provide, and why they are helpful.
+> Yes and no. The problem is, that's an easy statement to make when one
+> doesn't understand what they're all doing.
+> 
+> Some are "board specific" in that the normal setup for e.g. iMX6 would
+> be to enable clock output from the AR8035 PHY and feed that into the
+> iMX6 - as far as I'm aware, that's the only working configuration for
+> that SoC and PHY. However, it's also true that this fixup should not
+> be applied unconditionally.
+> 
+> Then there's SmartEEE - it has been found that the PHY defaults for
+> this lead to link drops independent of the board and SoC that it is
+> connected to. It seems that the PHY is essentially broken - it powers
+> up with SmartEEE enabled, and when connected to another SmartEEE
+> supporting device, it seems guaranteed that it will result in link
+> drops in its default configuration.
+> 
+> Freescale's approach has apparently been to unconditionally disable
+> SmartEEE for all their platforms because of this. With a bit of
+> research however (as has been done by Jon and myself) we've found
+> that increasing the Tw parameter for 1G connections results in a
+> much more stable link.
+> 
+> So, just saying that these are bad without actually understanding what
+> they are doing is _also_ bad.
 
-I'm generally in favor of removing configuration constraints but let's hear
-what Li thinks.
+I'm not saying the fixups are bad per se. What I'm saying is that they
+are inherently board specific and the right way to apply them is either
+via DT properties, or if absolutely necessary via a fixup that at least
+checks that it is running on the specific board it was targeted at.
 
-Thanks.
+While SmartEEE disabling will cause no big harm, aside from a bit more
+power consumption, a wrong clock configuration can cause major
+confusion. Especially if the configuration in DT and values put into
+the PHY via fixups differ from each other.
 
--- 
-tejun
+Regards,
+Lucas
+
+
