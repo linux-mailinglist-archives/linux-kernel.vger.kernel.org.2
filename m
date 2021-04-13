@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8E435DCA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E3E35DCAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 12:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343827AbhDMKo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 06:44:58 -0400
-Received: from mga04.intel.com ([192.55.52.120]:25467 "EHLO mga04.intel.com"
+        id S1343731AbhDMKp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 06:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343814AbhDMKo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 06:44:56 -0400
-IronPort-SDR: Vat1+OsWf+6SDcq6Pu0Qe31iWmiMNqJpkiSQv1WiD07iGLHN0zhcwmf/F82jPvytSz2QgyYa6g
- jHu2uVMz6G6A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="192257608"
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="192257608"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 03:44:37 -0700
-IronPort-SDR: 3PUF6PcGRPMdE3KsQleHMqmiukVuS53w9Xkb0qf1ik57NY6VgzQK+P0yyVBLftq4K/KDjGywbN
- MpgQ0qsyh78A==
-X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
-   d="scan'208";a="417813705"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 03:44:34 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id B0B5E200E8;
-        Tue, 13 Apr 2021 13:44:32 +0300 (EEST)
-Date:   Tue, 13 Apr 2021 13:44:32 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH v2 3/4] staging: media: intel-ipu3: reduce length of line
-Message-ID: <20210413104432.GU3@paasikivi.fi.intel.com>
-References: <cover.1618289130.git.mitaliborkar810@gmail.com>
- <f18b704654797e29f3bbbe49689eaa2c0ad28d59.1618289130.git.mitaliborkar810@gmail.com>
- <20210413100134.GR3@paasikivi.fi.intel.com>
- <YHV1uOq9pXmGUD+x@kali>
+        id S236770AbhDMKp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 06:45:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2C461278;
+        Tue, 13 Apr 2021 10:45:06 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 11:45:03 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>, will.deacon@arm.com,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock
+ implementation
+Message-ID: <20210413104503.GD15806@arm.com>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <CAHB2gtTmGt=V4cUgbt3zGgi+y5h0f5ON0n+MdRC8P=su670qhQ@mail.gmail.com>
+ <YHVl8fFfdQDn+QYW@hirez.programming.kicks-ass.net>
+ <CAHB2gtTzEuD7j-+5ztui0eV6UNiEisBTgoK+2Sr=Z0b4PPXRyA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YHV1uOq9pXmGUD+x@kali>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHB2gtTzEuD7j-+5ztui0eV6UNiEisBTgoK+2Sr=Z0b4PPXRyA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:13:04PM +0530, Mitali Borkar wrote:
-> On Tue, Apr 13, 2021 at 01:01:34PM +0300, Sakari Ailus wrote:
-> > Hi Mitali,
-> > 
-> > Thanks for the update.
-> > 
-> > On Tue, Apr 13, 2021 at 10:46:06AM +0530, Mitali Borkar wrote:
-> > > Reduced length of the line under 80 characters to meet linux-kernel
-> > > coding style.
-> > > 
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > > 
-> > > Changes from v1:- Reduced length of the line under 80 characters
-> > > 
-> > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > index 6a72c81d2b67..52dcc6cdcffc 100644
-> > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > @@ -247,7 +247,8 @@ struct ipu3_uapi_ae_ccm {
-> > >   */
-> > >  struct ipu3_uapi_ae_config {
-> > >  	struct ipu3_uapi_ae_grid_config grid_cfg __aligned(32);
-> > > -	struct ipu3_uapi_ae_weight_elem weights[IPU3_UAPI_AE_WEIGHTS] __aligned(32);
-> > > +	struct ipu3_uapi_ae_weight_elem weights[IPU3_UAPI_AE_WEIGHTS]
-> > > +							__aligned(32);
-> > 
-> > Do you still have the other two patches in your tree? This doesn't apply
-> > here due to the different attribute syntax.
+On Tue, Apr 13, 2021 at 12:25:00PM +0200, Christoph Müllner wrote:
+> On Tue, Apr 13, 2021 at 11:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > On Tue, Apr 13, 2021 at 11:22:40AM +0200, Christoph Müllner wrote:
+> > > What about trylock()?
+> > > I.e. one could implement trylock() without a loop, by letting
+> > > trylock() fail if the SC fails.
+> > > That looks safe on first view, but nobody does this right now.
 > >
-> I have patch 1/6 and 2/6 in my tree which you asked me to drop.
+> > Generic code has to use cmpxchg(), and then you get something like this:
+> >
+> > bool trylock(atomic_t *lock)
+> > {
+> >         u32 old = atomic_read(lock);
+> >
+> >         if ((old >> 16) != (old & 0xffff))
+> >                 return false;
+> >
+> >         return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, for RCsc */
+> > }
+> 
+> This approach requires two loads (atomic_read() and cmpxchg()), which
+> is not required.
+> Detecting this pattern and optimizing it in a compiler is quite unlikely.
+> 
+> A bit less generic solution would be to wrap the LL/SC (would be
+> mandatory in this case)
+> instructions and do something like this:
+> 
+> uint32_t __smp_load_acquire_reserved(void*);
+> int __smp_store_release_conditional(void*, uint32_t);
+> 
+> typedef union {
+>     uint32_t v32;
+>     struct {
+>         uint16_t owner;
+>         uint16_t next;
+>     };
+> } arch_spinlock_t;
+> 
+> int trylock(arch_spinlock_t *lock)
+> {
+>     arch_spinlock_t l;
+>     int success;
+>     do {
+>         l.v32 = __smp_load_acquire_reserved(lock);
+>         if (l.owner != l.next)
+>             return 0;
+>         l.next++;
+>         success = __smp_store_release_conditional(lock, l.v32);
+>     } while (!success);
+>     return success;
+> }
+> 
+> But here we can't tell the compiler to optimize the code between LL and SC...
 
-Could you drop them and then submit v3?
+This indeed needs some care. IIUC RISC-V has similar restrictions as arm
+here, no load/store instructions are allowed between LR and SC. You
+can't guarantee that the compiler won't spill some variable onto the
+stack.
 
-Thanks.
+BTW, I think the SC doesn't need release semantics above, only the LR
+needs acquire semantics.
 
 -- 
-Sakari Ailus
+Catalin
