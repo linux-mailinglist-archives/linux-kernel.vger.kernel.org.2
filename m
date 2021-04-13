@@ -2,81 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B19035E247
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E05835E24A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346503AbhDMPHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:07:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58804 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346482AbhDMPHn (ORCPT
+        id S232037AbhDMPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:09:08 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:60691 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230327AbhDMPJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:07:43 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lWKdO-0005qS-Fk
-        for linux-kernel@vger.kernel.org; Tue, 13 Apr 2021 15:07:22 +0000
-Received: by mail-ed1-f71.google.com with SMTP id f26-20020a056402069ab02903788b40ed89so1427376edy.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 08:07:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BbLS8YFFiy7aQZZ6pW2QChOM2i4McA8DXTegdPkwtbw=;
-        b=G2E1Rc6/cqTehfLGXCEvlcs1DZy2BokgKsctirGRiW2JsIJuRDL3kIDcMAdLnfEnVe
-         UxDNl+eU7NKQLyA3O9bnG1zRP0v8e9hSs2C5pNj0OWEXDGUBV6xwdShT05JMyTBG6l+A
-         slXUPfwhq6FX8lSCoRZy9NMopT+vVNA3IjFLp2ang8ldxnQl6uBNJdNf6FO0BLIiAnSe
-         fIBiB0A1dWCYNamYknl0b6wOlFzYWJNEd8B5ixZGqfeHgJxsRuMMTGswRAwHpdkWTEw+
-         66Qw7u7Vc15hDWX4t70++zE7lxUt0R5ZWNnmbNhUuxFyiTxcbYpytOHRZCzn48B00903
-         1TfQ==
-X-Gm-Message-State: AOAM532ijsZlPpOgPUpnDZPPiyO8eoUolbcTlXtvKofSmQ+BVquzJyH1
-        HdRw+pxbVFQXSODI6FlV70s4uHFOvOFyrldUQ6aDzEzz2rwu3EippTdITlUSkNzCSaHdAq21hXU
-        7PnzZHgDxamGFdMigKP7s+s6kpJ82YPl/QSnCA1hwVA==
-X-Received: by 2002:a05:6402:c:: with SMTP id d12mr34967848edu.100.1618326442229;
-        Tue, 13 Apr 2021 08:07:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyWppPmHJVhEQzMw3NoPRy3HSvan9DczQR6zow4e4/MKICDqAiBqgdCGfAG5MyEeiRhZhMW/w==
-X-Received: by 2002:a05:6402:c:: with SMTP id d12mr34967816edu.100.1618326441990;
-        Tue, 13 Apr 2021 08:07:21 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id r25sm9717507edv.78.2021.04.13.08.07.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 08:07:21 -0700 (PDT)
-Subject: Re: [PATCH] arm: mach-s3c: Remove unnecessary break
-To:     Wan Jiabing <wanjiabing@vivo.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-References: <20210409064920.1096367-1-wanjiabing@vivo.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <1c1e4839-fbc7-b50c-dc25-983edf018e7b@canonical.com>
-Date:   Tue, 13 Apr 2021 17:07:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 13 Apr 2021 11:09:07 -0400
+Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 13DF8Jfk024849;
+        Wed, 14 Apr 2021 00:08:19 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 13DF8Jfk024849
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618326500;
+        bh=DalnZGHxFxlKUbrbYS8CMzx9sk7AKzLI0DhChYwCx4g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fVLyWMFvlrHNr8JN3XNS5KhZlot8/oJG53r/awjettEHUN5JSLfXTJbDOw7FV65+D
+         DgulosEZ9rtWtw6cjoA0wRRxTcoBXH8lUwyKnBMqq6+E3MHCd4qW9+CbpBIsIPXXu2
+         2b9j13/uOEF3r+g7mJM8JCT1xDJp0e772urPKhh4AkwUYkY9zPD1fmQ1qwcBL/o84q
+         70ZkBaR1dcHlzFMddhbKf69VtgGl4xu5z+vm4eicUxk4VLV42EAskvKLuWZhT5Emf9
+         g8qToxWSTBrkf0iVGN57uBIaz9Rw8LBkXC5sAWgvWJFixdaPA/Zo90++f4IS2AZDNv
+         3GNguyYSnT4oA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kconfig: split menu.c out of parser.y
+Date:   Wed, 14 Apr 2021 00:08:17 +0900
+Message-Id: <20210413150817.110282-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210409064920.1096367-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2021 08:49, Wan Jiabing wrote:
-> There is a return above the break.
-> The break here is unnecessary. Remove it.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  arch/arm/mach-s3c/mach-rx1950.c | 1 -
->  1 file changed, 1 deletion(-)
+Compile menu.c as an independent compilation unit.
 
-Thanks, looks good but I do not plan another pull request in current
-cycle, so I will take it after the merge window.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
+ scripts/kconfig/Makefile   | 4 ++--
+ scripts/kconfig/internal.h | 9 +++++++++
+ scripts/kconfig/menu.c     | 1 +
+ scripts/kconfig/parser.y   | 5 ++---
+ 4 files changed, 14 insertions(+), 5 deletions(-)
+ create mode 100644 scripts/kconfig/internal.h
 
-Best regards,
-Krzysztof
+diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+index 1d1a7f83ee8d..5a215880b268 100644
+--- a/scripts/kconfig/Makefile
++++ b/scripts/kconfig/Makefile
+@@ -143,8 +143,8 @@ help:
+ 
+ # ===========================================================================
+ # object files used by all kconfig flavours
+-common-objs	:= confdata.o expr.o lexer.lex.o parser.tab.o preprocess.o \
+-		   symbol.o util.o
++common-objs	:= confdata.o expr.o lexer.lex.o menu.o parser.tab.o \
++		   preprocess.o symbol.o util.o
+ 
+ $(obj)/lexer.lex.o: $(obj)/parser.tab.h
+ HOSTCFLAGS_lexer.lex.o	:= -I $(srctree)/$(src)
+diff --git a/scripts/kconfig/internal.h b/scripts/kconfig/internal.h
+new file mode 100644
+index 000000000000..2f7298c21b64
+--- /dev/null
++++ b/scripts/kconfig/internal.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef INTERNAL_H
++#define INTERNAL_H
++
++struct menu;
++
++extern struct menu *current_menu, *current_entry;
++
++#endif /* INTERNAL_H */
+diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+index 8b2108b74821..606ba8a63c24 100644
+--- a/scripts/kconfig/menu.c
++++ b/scripts/kconfig/menu.c
+@@ -9,6 +9,7 @@
+ #include <string.h>
+ 
+ #include "lkc.h"
++#include "internal.h"
+ 
+ static const char nohelp_text[] = "There is no help available for this option.";
+ 
+diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+index e90889edf5b3..2af7ce4e1531 100644
+--- a/scripts/kconfig/parser.y
++++ b/scripts/kconfig/parser.y
+@@ -12,6 +12,7 @@
+ #include <stdbool.h>
+ 
+ #include "lkc.h"
++#include "internal.h"
+ 
+ #define printd(mask, fmt...) if (cdebug & (mask)) printf(fmt)
+ 
+@@ -28,7 +29,7 @@ static bool zconf_endtoken(const char *tokenname,
+ 
+ struct symbol *symbol_hash[SYMBOL_HASHSIZE];
+ 
+-static struct menu *current_menu, *current_entry;
++struct menu *current_menu, *current_entry;
+ 
+ %}
+ 
+@@ -713,5 +714,3 @@ void zconfdump(FILE *out)
+ 		}
+ 	}
+ }
+-
+-#include "menu.c"
+-- 
+2.27.0
+
