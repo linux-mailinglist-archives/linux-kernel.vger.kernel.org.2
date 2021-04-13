@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E8535D99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DBD35D9A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240719AbhDMII2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:08:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14604 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238229AbhDMII0 (ORCPT
+        id S241158AbhDMIIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 04:08:46 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42167 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhDMIIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:08:26 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D834iN024563;
-        Tue, 13 Apr 2021 04:07:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Ql7r4twH3uyhCQI3WyBa/+Qd1zCPeMx1W+pnxHpMXU4=;
- b=pdLfpNvjq37NJ9D7fhlZy5Sj4vGHxYnqDGkxvRFHkj967UNeZg1U+2mSkrRMvR638S0G
- grkhTD+Zz1MWJ6JFp11j6ahLEtu5fb/TEzDT139pSrPDOGm3gi4E4SssqSv0/2IUcJnk
- +TICj7Ud4tIbCywrgm+FEkfYlABgzWTRj/Q1l/4CjuAlL2AjO9ZDh4gfrInSV61/qHN/
- LYGLVhmNRRZ14BU/XM3E2qPqIZJ9BE8L2WS9IRnvUuoba3CKj3nIbMBLIY/QEKhec3Fa
- m4UxQLvXMZSAkDr5HfzEi67tNpuIeQJn1ONrpRRFRj65iMuJpkZl038kdNMBNmDY9yDq Yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37w6uvhbcq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 04:07:20 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13D83HNG026422;
-        Tue, 13 Apr 2021 04:07:19 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37w6uvhbbu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 04:07:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13D7wmPb002367;
-        Tue, 13 Apr 2021 08:07:17 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8agce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Apr 2021 08:07:17 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13D87FjY41812328
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 08:07:15 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8EDBC4C044;
-        Tue, 13 Apr 2021 08:07:15 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00B2A4C052;
-        Tue, 13 Apr 2021 08:07:15 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.28.118])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Apr 2021 08:07:14 +0000 (GMT)
-Subject: Re: [PATCH v2 1/3] context_tracking: Split guest_enter/exit_irqoff
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
- <1618298169-3831-2-git-send-email-wanpengli@tencent.com>
- <81112cec-72fa-dd8c-21c8-b24f51021f43@de.ibm.com>
- <CANRm+CwNxcKPKdV4Bxr-5sWJtg_SKZEN5atGJKRyLcVnWVSKSg@mail.gmail.com>
- <4551632e-5584-29f6-68dd-d85fa968858b@de.ibm.com>
- <CANRm+Cw=7kKztPFHaXrK926ve7pY3NN4O22t_QaevHnCXqX5tg@mail.gmail.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <1d6a5fa9-3639-0908-206f-c9e941270f11@de.ibm.com>
-Date:   Tue, 13 Apr 2021 10:07:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tue, 13 Apr 2021 04:08:45 -0400
+Received: by mail-io1-f72.google.com with SMTP id q7so10554444ioh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 01:08:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Y/oDACJtgLinpTpc1ULu2CK8rCzMbC+DVtin1IyEpTA=;
+        b=mITGjazVK9YRnOcsIbixryTfkR0fibFyRIGYfO8zTx/35MrceoUFCTez1uyp8IyQiE
+         qVSHaRbIpRTFRK7I1E3N6tBESo9nnQY+9zPZ7dSdlxZt7X4sCXvIZDllUPh/1kIq6JBf
+         hJS/P+TwDDJkhizO9wqKS9dzvhra1Mid2ZYAPWru+Ck1/r0V/fncgudEnfWpX0xGdZ1r
+         EfZQIB78W8vrRmP6BH98hTC66qGZCc/Ukx6ZFD8PaCCoxnKvZjdIsP4iLjRiVJaVlVGW
+         yvsMXbEJ0lk0NykhkmAcQRYnE87ewo8NXLB3elNI5Gvafpv8vqTwIHceZp8gqaAEUUyd
+         5i2w==
+X-Gm-Message-State: AOAM530zmubRinildMtOu+5IYLyIfBMwdSMq4IYyMne35QZFeO8UbENv
+        SPbzbgglEKhAD+WgFxvMb/CfKBgw3j4SQJyxapNRiA746oVN
+X-Google-Smtp-Source: ABdhPJyk8tvo/hpIfraWlryo6+YOX+fsTD8hAmNjGaTBrqniv2eUUTI+KoZGA2vA0h/He0fkX08RQ5QnkvOIeeqF+f+B8laIqg++
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Cw=7kKztPFHaXrK926ve7pY3NN4O22t_QaevHnCXqX5tg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: sib58JeUfnxZZPGmfodP0ElEmi9mFVRE
-X-Proofpoint-GUID: EQAoTGuOQtv-r8sP28ywUXslUTNSPbjo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-13_03:2021-04-13,2021-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130055
+X-Received: by 2002:a05:6e02:11a9:: with SMTP id 9mr16160389ilj.288.1618301305601;
+ Tue, 13 Apr 2021 01:08:25 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 01:08:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000075c58405bfd6228c@google.com>
+Subject: [syzbot] general protection fault in gadget_setup
+From:   syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>
+To:     andreyknvl@gmail.com, balbi@kernel.org, dan.carpenter@oracle.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=124adbf6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb4674092e6cc8d9e0bd
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+CPU: 1 PID: 5016 Comm: systemd-udevd Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
+Code: 09 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 48 69 09 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e c0 13 38 8f 0f 84 d0 f3 ff
+RSP: 0000:ffffc90000ce77d8 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: 1ffff9200019cf0c RDI: 0000000000000020
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000006 R12: ffff88801295b880
+R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
+FS:  00007fcd745f98c0(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe279f7d87 CR3: 000000001c7d4000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+ gadget_setup+0x4e/0x510 drivers/usb/gadget/legacy/raw_gadget.c:327
+ dummy_timer+0x1615/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1903
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
+ expire_timers kernel/time/timer.c:1476 [inline]
+ __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
+ __run_timers kernel/time/timer.c:1726 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu kernel/softirq.c:422 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0x45/0xc0 arch/x86/kernel/apic/apic.c:1100
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+RIP: 0033:0x560cfc4a02ed
+Code: 4c 39 c1 48 89 42 18 4c 89 52 08 4c 89 5a 10 48 89 1a 0f 87 7b ff ff ff 48 89 f8 48 f7 d0 48 01 c8 48 83 e0 f8 48 8d 7c 07 08 <48> 8d 0d 34 d9 02 00 48 63 04 b1 48 01 c8 ff e0 0f 1f 00 48 8d 0d
+RSP: 002b:00007ffe279f9dd0 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000560cfcd88e40 RCX: 0000560cfcd72af0
+RDX: 00007ffe279f9de0 RSI: 0000000000000007 RDI: 0000560cfcd72af0
+RBP: 00007ffe279f9e70 R08: 0000000000000000 R09: 0000000000000020
+R10: 0000560cfcd72af7 R11: 0000560cfcd73530 R12: 0000560cfcd72af0
+R13: 0000000000000000 R14: 0000560cfcd72b10 R15: 0000000000000001
+Modules linked in:
+---[ end trace ab0f6632fdd289cf ]---
+RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
+Code: 09 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 48 69 09 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e c0 13 38 8f 0f 84 d0 f3 ff
+RSP: 0000:ffffc90000ce77d8 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000004 RSI: 1ffff9200019cf0c RDI: 0000000000000020
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000006 R12: ffff88801295b880
+R13: 0000000000000000 R14: 0000000000000020 R15: 0000000000000000
+FS:  00007fcd745f98c0(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe279f7d87 CR3: 000000001c7d4000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-On 13.04.21 09:52, Wanpeng Li wrote:
->> Or did I miss anything.
-> 
-> I mean the if (!context_tracking_enabled_this_cpu()) part in the
-> function context_guest_enter_irqoff() ifdef
-> CONFIG_VIRT_CPU_ACCOUNTING_GEN. :)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Ah I missed that. Thanks.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
