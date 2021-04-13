@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5DE35DA26
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2AD35DA2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 10:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243119AbhDMId6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 04:33:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37656 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243002AbhDMIdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 04:33:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618302811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xqtPjR7YPu3QtWRhej9VtvpTC9wUcZOleE8LJV9ZstU=;
-        b=gW6C57kRMYh9tnigP4Yod/k2tcJ22/aMy7THV74MfzMBT9OXrTXUYhLOLjyoxJAeYbBTzC
-        ktScc275SZcMd1IxnU5F2nBI3e72PAIoWqNLVXVrRF4tJcuKDnx2R9OC4d2TBrbub8S4fB
-        +8LuK7iOS1fkZgxxxWrF+QdgiW40fKA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D83DB125;
-        Tue, 13 Apr 2021 08:33:31 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 10:33:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-Message-ID: <YHVXWu4aG/X+W7q2@dhcp22.suse.cz>
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
- <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
- <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
- <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
+        id S243212AbhDMIe5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Apr 2021 04:34:57 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27598 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243151AbhDMIex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 04:34:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-5-bF6YM675PiCIR3nXuaRTwg-1; Tue, 13 Apr 2021 09:34:30 +0100
+X-MC-Unique: bF6YM675PiCIR3nXuaRTwg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 09:34:30 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 09:34:29 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jinyang He' <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] MIPS: Fix strnlen_user access check
+Thread-Topic: [PATCH] MIPS: Fix strnlen_user access check
+Thread-Index: AQHXMAKOYikh9GetHkGcA/EmeWNB36qyHTfQ
+Date:   Tue, 13 Apr 2021 08:34:29 +0000
+Message-ID: <4e6c077c130c43d5b7e0fc84c979f8b4@AcuMS.aculab.com>
+References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
+ <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
+ <20210412142730.GA23146@alpha.franken.de>
+ <2fd31420-1f96-9165-23ea-fdccac1b522a@loongson.cn>
+In-Reply-To: <2fd31420-1f96-9165-23ea-fdccac1b522a@loongson.cn>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09-04-21 16:26:53, Tim Chen wrote:
+From: Jinyang He
+> Sent: 13 April 2021 02:16
 > 
-> On 4/8/21 4:52 AM, Michal Hocko wrote:
-> 
-> >> The top tier memory used is reported in
+> > On Mon, Apr 12, 2021 at 11:02:19AM +0800, Tiezhu Yang wrote:
+> >> On 04/11/2021 07:04 PM, Jinyang He wrote:
+> >>> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
+> >>> strnlen_user(). Jump out when checking access_ok() with condition that
+> >>> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
+> >>> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
+> >>> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+> >>>
+> >>> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> >>> ---
+> >>>    arch/mips/include/asm/uaccess.h | 11 +++++++++--
+> >>>    1 file changed, 9 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> >>> index 91bc7fb..85ba0c8 100644
+> >>> --- a/arch/mips/include/asm/uaccess.h
+> >>> +++ b/arch/mips/include/asm/uaccess.h
+> >>> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
+> >>>    {
+> >>>    	long res;
+> >>> -	if (!access_ok(s, n))
+> >>> -		return -0;
+> >>> +	if (unlikely(n <= 0))
+> >>> +		return 0;
+> >>> +
+> >>> +	if (!access_ok(s, n)) {
+> >>> +		if (!access_ok(s, 0))
+> >>> +			return 0;
+> >>> +
+> >>> +		n = __UA_LIMIT - (unsigned long)s - 1;
+> >>> +	}
+> >>>    	might_fault();
+> >>>    	__asm__ __volatile__(
+> >> The following simple changes are OK to fix this issue?
 > >>
-> >> memory.toptier_usage_in_bytes
-> >>
-> >> The amount of top tier memory usable by each cgroup without
-> >> triggering page reclaim is controlled by the
-> >>
-> >> memory.toptier_soft_limit_in_bytes 
-> > 
+> >> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> >> index 91bc7fb..eafc99b 100644
+> >> --- a/arch/mips/include/asm/uaccess.h
+> >> +++ b/arch/mips/include/asm/uaccess.h
+> >> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user *s, long n)
+> >>   {
+> >>          long res;
+> >> -       if (!access_ok(s, n))
+> >> -               return -0;
+> >> +       if (!access_ok(s, 1))
+> >> +               return 0;
+> >>          might_fault();
+> >>          __asm__ __volatile__(
+> > that's the fix I'd like to apply. Could someone send it as a formal
+> > patch ? Thanks.
+> >
+> > Thomas.
+> >
+> Hi, Thomas,
 > 
-> Michal,
+> Thank you for bringing me more thinking.
 > 
-> Thanks for your comments.  I will like to take a step back and
-> look at the eventual goal we envision: a mechanism to partition the 
-> tiered memory between the cgroups. 
-
-OK, this is goot mission statemet to start with. I would expect a follow
-up to say what kind of granularity of control you want to achieve here.
-Pressumably you want more than all or nothing because that is where
-cpusets can be used for.
-
-> A typical use case may be a system with two set of tasks.
-> One set of task is very latency sensitive and we desire instantaneous
-> response from them. Another set of tasks will be running batch jobs
-> were latency and performance is not critical.   In this case,
-> we want to carve out enough top tier memory such that the working set
-> of the latency sensitive tasks can fit entirely in the top tier memory.
-> The rest of the top tier memory can be assigned to the background tasks.  
-
-While from a very high level this makes sense I would be interested in
-more details though. Your high letency sensitive applications very likely
-want to be bound to high performance node, right? Can they tolerate
-memory reclaim? Can they consume more memory than the node size? What do
-you expect to happen then?
- 
-> To achieve such cgroup based tiered memory management, we probably want
-> something like the following.
+> I always think it is better to use access_ok(s, 0) on MIPS. I have been
+> curious about the difference between access_ok(s, 0) and access_ok(s, 1)
+> until I saw __access_ok() on RISCV at arch/riscv/include/asm/uaccess.h
 > 
-> For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
-> where tier t_0 sits at the top and demotes to the lower tier. 
+> The __access_ok() is noted with `Ensure that the range [addr, addr+size)
+> is within the process's address space`. Does the range checked by
+> __access_ok() on MIPS is [addr, addr+size]. So if we want to use
+> access_ok(s, 1), should we modify __access_ok()? Or my misunderstanding?
 
-How is each tear defined? Is this an admin define set of NUMA nodes or
-is this platform specific?
+ISTR that access_ok(xxx, 0) is unconditionally true on some architectures.
+The range checked should be [addr, addr+size).
+These are needed so that write(fd, random(), 0) doesn't ever fault.
 
-[...]
+> More importantly, the implementation of strnlen_user in lib/strnlen_user.c
+> is noted `we hit the address space limit, and we still had more characters
+> the caller would have wanted. That's 0.` Does it make sense? It is not
+> achieved on MIPS when hit __ua_limit, if only access_ok(s, 1) is used.
 
-> Will such an interface looks sane and acceptable with everyone?
+There is the question of whether one call to access_ok(addr, 1) is
+sufficient for any code that does sequential accesses.
+It is if there is an unmapped page between the last valid user page
+and the first valid kernel page.
+IIRC x86 has such an unmapped page because 'horrid things' (tm) happen
+if the cpu prefetches across the user-kernel boundary.
 
-Let's talk more about usecases first before we even start talking about
-the interface or which controller is the best fit for implementing it.
- 
-> The patch set I posted is meant to be a straw man cgroup v1 implementation
-> and I readily admits that it falls short of the eventual functionality 
-> we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
-> memory management should work.
+	David
 
-OK, fair enough. Let me then just state that I strongly believe that
-Soft limit based approach is a dead end and it would be better to focus
-on the actual usecases and try to understand what you want to achieve
-first.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-[...]
-
-> > What I am trying to say (and I have brought that up when demotion has been
-> > discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
-> > The specific technology shouldn't be imprinted into the interface.
-> > Fundamentally you are trying to balance memory among NUMA nodes as we do
-> > not have other abstraction to use. So rather than talking about top,
-> > secondary, nth tier we have different NUMA nodes with different
-> > characteristics and you want to express your "priorities" for them.
-> 
-> With node priorities, how would the system reserve enough
-> high performance memory for those performance critical task cgroup? 
-> 
-> By priority, do you mean the order of allocation of nodes for a cgroup?
-> Or you mean that all the similar performing memory node will be grouped in
-> the same priority?
-
-I have to say I do not yet have a clear idea on what those priorities
-would look like. I just wanted to outline that usecases you are
-interested about likely want to implement some form of (application
-transparent) control for memory distribution over several nodes. There
-is a long way to land on something more specific I am afraid.
--- 
-Michal Hocko
-SUSE Labs
