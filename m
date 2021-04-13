@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1FA35DF8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B87135DF89
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 14:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhDMM5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 08:57:34 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38884 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbhDMM53 (ORCPT
+        id S231708AbhDMM5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 08:57:11 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:29043 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231546AbhDMM5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 08:57:29 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DCn8N7159369;
-        Tue, 13 Apr 2021 12:56:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kdLWZIMHb3SQudb0jxNMATYyODvy77jL7zBOLEtpNVw=;
- b=z6+dZckmzZhuYl2HFD91SDizhxB0Ag4v8uHgc/VNfz2EO9hiteFnxiJ5GWGu7doE5G/e
- vciQDRMQU33q4JdqbfZQ/JjDW8Vm9A7uhKW36t/61e5yptpJGaAmcqAqRs0jOd9lBbkr
- Y1YaFtQse8QRYCrfd5+m2WiOFRtKxprvIx8Ozrlz735iDyC/W+Yc4ViEav7PmJHTiiz/
- HA8xLRRi3icKLSx4kBBlFcV962z/9cqOlbG3a/ibPRcAklWtng0zuRsqj0zvspWv5c3s
- MKm+smub/NfZMfCwJZ7dPekRlztI3Aj67iLl12suN0lEpB50tzwKNveABNZZvk5yvp85 eA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 37u4nnewxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 12:56:55 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DCuK55057461;
-        Tue, 13 Apr 2021 12:56:54 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 37unxwtcn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 12:56:54 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13DCupl1032142;
-        Tue, 13 Apr 2021 12:56:51 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Apr 2021 05:56:51 -0700
-Date:   Tue, 13 Apr 2021 15:56:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Deborah Brouwer <deborahbrouwer3563@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH 3/4] staging: rtl8712: remove space after cast
-Message-ID: <20210413125643.GD6021@kadam>
-References: <cover.1617674639.git.deborahbrouwer3563@gmail.com>
- <b1ba94644f5204505623ffc64614671aac30bbd8.1617674639.git.deborahbrouwer3563@gmail.com>
+        Tue, 13 Apr 2021 08:57:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-27-ltlbnxZ9N6qogcWxar3evA-1; Tue, 13 Apr 2021 13:56:45 +0100
+X-MC-Unique: ltlbnxZ9N6qogcWxar3evA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 13:56:44 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Tue, 13 Apr 2021 13:56:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+CC:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: RE: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+Thread-Topic: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+Thread-Index: AQHXMGBrFmL3q8InjEiRDqC8qAyY5KqyZ1tA
+Date:   Tue, 13 Apr 2021 12:56:44 +0000
+Message-ID: <2783670cf610467ca19fd5abcad5a747@AcuMS.aculab.com>
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+ <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+In-Reply-To: <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1ba94644f5204505623ffc64614671aac30bbd8.1617674639.git.deborahbrouwer3563@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130090
-X-Proofpoint-ORIG-GUID: v4hqLfl9cFykEzjKPTu8wXtu5XpcM927
-X-Proofpoint-GUID: v4hqLfl9cFykEzjKPTu8wXtu5XpcM927
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130089
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch has already been applied, which is fine, but really all these
-casts are totally pointless and should be removed.
-
-regards,
-dan carpenter
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxMyBBcHJpbCAyMDIxIDEzOjI3DQo+IA0KPiBP
+biBUdWUsIEFwciAxMywgMjAyMSBhdCAxOjU0IFBNIE5pa2xhcyBTY2huZWxsZSA8c2NobmVsbGVA
+bGludXguaWJtLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBXaGVuIFBDSV9JT0JBU0UgaXMgbm90IGRl
+ZmluZWQsIGl0IGlzIHNldCB0byAwIHN1Y2ggdGhhdCBpdCBpcyBpZ25vcmVkDQo+ID4gaW4gY2Fs
+bHMgdG8gdGhlIHJlYWRYL3dyaXRlWCBwcmltaXRpdmVzLiBXaGlsZSBtYXRoZW1hdGljYWxseSBv
+YnZpb3VzDQo+ID4gdGhpcyB0cmlnZ2VycyBjbGFuZydzIC1XbnVsbC1wb2ludGVyLWFyaXRobWV0
+aWMgd2FybmluZy4NCj4gDQo+IEluZGVlZCwgdGhpcyBpcyBhbiBhbm5veWluZyB3YXJuaW5nLg0K
+PiANCj4gPiBBbiBhZGRpdGlvbmFsIGNvbXBsaWNhdGlvbiBpcyB0aGF0IFBDSV9JT0JBU0UgaXMg
+ZXhwbGljaXRseSB0eXBlZCBhcw0KPiA+ICJ2b2lkIF9faW9tZW0gKiIgd2hpY2ggY2F1c2VzIHRo
+ZSB0eXBlIGNvbnZlcnNpb24gdGhhdCBjb252ZXJ0cyB0aGUNCj4gPiAidW5zaWduZWQgbG9uZyIg
+cG9ydC9hZGRyIHBhcmFtZXRlcnMgdG8gdGhlIGFwcHJvcHJpYXRlIHBvaW50ZXIgdHlwZS4NCj4g
+PiBBcyBub24gcG9pbnRlciB0eXBlcyBhcmUgdXNlZCBieSBkcml2ZXJzIGF0IHRoZSBjYWxsc2l0
+ZSBzaW5jZSB0aGVzZSBhcmUNCj4gPiBkZWFsaW5nIHdpdGggSS9PIHBvcnQgbnVtYmVycywgY2hh
+bmdpbmcgdGhlIHBhcmFtZXRlciB0eXBlIHdvdWxkIGNhdXNlDQo+ID4gZnVydGhlciB3YXJuaW5n
+cyBpbiBkcml2ZXJzLiBJbnN0ZWFkIHVzZSAidWludHB0cl90IiBmb3IgUENJX0lPQkFTRQ0KPiA+
+IDAgYW5kIGV4cGxpY2l0bHkgY2FzdCB0byAidm9pZCBfX2lvbWVtICoiIHdoZW4gY2FsbGluZyBy
+ZWFkWC93cml0ZVguDQoNClNpbmNlIHRoZSBkZWZpbml0aW9ucyBtYWtlIG5vIHNlbnNlIHdoZW4g
+UENJX0lPQkFTRSBpbiB1bmRlZmluZWQNCm1heWJlIHRoZSBmdW5jdGlvbnMgc2hvdWxkIGVpdGhl
+ciBub3QgYmUgZGVmaW5lZCwgYmUgc3R1YnMgdGhhdA0KZG8gbm90aGluZyBvciBzdHVicyB0aGF0
+IGFyZSBCVUcoKS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
