@@ -2,219 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF3B35E938
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC2335E93C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 00:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348669AbhDMWqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 18:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237308AbhDMWqw (ORCPT
+        id S1347602AbhDMWri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 18:47:38 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:36707 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348665AbhDMWrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:46:52 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C897CC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:46:30 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id 130so5424696qkm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 15:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ka12zSDI6XCwHjAoONYaOjus8+rMfQI6N0FnSz1U3qM=;
-        b=F2j0xrWRjkc1gVRnJ6bgBamzhgA3GO9KHnirGkCL+wSGWK7xSYlb6N6RDfxBw+Jwv/
-         uyhjxlYfWIQH4n+0wVHzmMs5bw6RGnjGzkZSUYNFm9zDj8VuyTd4tfBYpKJ7XJFmfkoj
-         ypTwTFhskqXStAHvrgu2nXf83WwxCvXjTBzeVff+UJbYCoIyCuv+6bAWSjwdG6arrwp0
-         I9U//xuPonJHVbt2pZjgXLYBz6NyLEdBBXe7k1d8JkoPNl69G8tPPrEnZeRVMYH71111
-         JP+Z00kI2S2MheSTJhL1D1NvXyQ4ZIsN40CGglrUpYWBwi+as0JexGioUqI2QwO5tmDu
-         id1w==
+        Tue, 13 Apr 2021 18:47:37 -0400
+Received: by mail-ed1-f53.google.com with SMTP id 18so21352781edx.3;
+        Tue, 13 Apr 2021 15:47:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ka12zSDI6XCwHjAoONYaOjus8+rMfQI6N0FnSz1U3qM=;
-        b=nI+/Y9RJOhp26bwK8djeOSI0Haw5PCK1Yru1BFOK5IloySu+sEpZC98zlz1pI5fw33
-         GygYiN9G6qW8F0rHiaI8c4pG2whxK16A+XZGMhgcnKiF/aVH9zQtTQrsDJF0fXPJtALe
-         2KZ8RJ/LVkdlVM0iEb959sA21DFVqX4QG1TiO5jrfy4gU1Q+rgdrjyrbr74Ifvdb1hs+
-         2bAYG7M9eMP2M7ohM/LAHURHYS03+iuVaO/M0j6ZEPdFV3HblWgMjWw8qL/+Tgm6EjDg
-         FumoLV5yP6A7DPlskDAAU+oM64dH8xVL2VQAc/GISlkdNPRvvnTlz4YTPn2IJs81hq9U
-         iJnA==
-X-Gm-Message-State: AOAM530fuv61fddmmRSG8bEx4Q5m/+C2fhFr5qcmVOdWrjEwwlU7o/Cj
-        KY4kJcqGujzlm09c3PD1k27j1r2QjcjCjg==
-X-Google-Smtp-Source: ABdhPJzDi9zE+rBHhF3cuWO7TksJiS9PthaqQ8DRMYBVBWYctv2ZFFUE3n341QDfLY3yHc3pguewqA==
-X-Received: by 2002:a37:6182:: with SMTP id v124mr16851251qkb.289.1618353989470;
-        Tue, 13 Apr 2021 15:46:29 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id 188sm7720117qkf.27.2021.04.13.15.46.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Apr 2021 15:46:28 -0700 (PDT)
-Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
- <20210225182716.1402449-7-thara.gopinath@linaro.org>
- <20210405221848.GA904837@yoga>
- <64543792-7237-8622-9619-7020ed0b3fa1@linaro.org>
- <20210413223316.GT1538589@yoga>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <784e0379-ee24-51ea-68c5-de7adf907dfb@linaro.org>
-Date:   Tue, 13 Apr 2021 18:46:28 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1mPbtibU3Fh5sSrZq8G0/u9i81sI/lY2kXV2ao+WnyA=;
+        b=DZcquxH2dZbxOnTZe51XLb/P5tE1/RaMjSiONJ6DW+WwCBgK8Vt991SbFHqnkgXN3H
+         Pp/GF53vk+rHB48ORJeHFGokE4ak/AZKY1jKGVEK0WVkLYiDNR4Oe7koYMFXvTMSsnZM
+         +iI1vISX+JcPfHrXEU7/N7xI3PYkePwYZ1hApOmtVFsz+/6yU07ybw9gyxsltjrFTbPt
+         fdTEmtps84fYAYYWp/SOfVrn4AQIJQmyUKctobfxh+S0YUn99FmfwHYzeumcwSZuKW7P
+         qUI5BribfCas8nTESCC53PTqQq9G5VNHH6RVBiuf9xVj27qiMPlswM+oYa4gqENlF3UG
+         Ry3Q==
+X-Gm-Message-State: AOAM533QkUVd0i7SR/muPgUKGbabSU8c5efw9tlGon+VuIBqTzgVzZ34
+        PU+s45cJVtGJqeEvo2dsPlZWBiz2+5vaJwSK9/E=
+X-Google-Smtp-Source: ABdhPJxTnYqTsJ4p6QgVcXWsdElSvoyXRZAqJLksH6oI7m/MsND/BUBBd34ONoiZCSTe8Gz95pjslhomjEWQmn1z65o=
+X-Received: by 2002:a05:6402:4245:: with SMTP id g5mr37892755edb.306.1618354036178;
+ Tue, 13 Apr 2021 15:47:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210413223316.GT1538589@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
+ <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com> <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
+In-Reply-To: <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 13 Apr 2021 18:47:04 -0400
+Message-ID: <CAJvTdKmDb3TOHbb4w1YNcdYH2Pzr+RsAS_o0q3AFP1Xz55R37g@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>, Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 4:16 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Mon, Apr 12, 2021 at 4:46 PM Len Brown <lenb@kernel.org> wrote:
+> >
+> > On Mon, Apr 12, 2021 at 11:21 AM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > > AMX: Multiplying a 4x4 matrix probably looks *great* in a
+> > > microbenchmark.  Do it once and you permanently allocate 8kB (is that
+> > > even a constant?  can it grow in newer parts?), potentially hurts all
+> > > future context switches, and does who-knows-what to Turbo licenses and
+> > > such.
+> >
+> > Intel expects that AMX will be extremely valuable to key workloads.
+> > It is true that you may never run that kind of workload on the machine
+> > in front of you,
+> > and so you have every right to be doubtful about the value of AMX.
+>
+> I fully believe that AMX will be amazing when used for the right
+> workload.  The problem is that a library may have no way to tell
+> whether a workload is the type of computationally intensive workload
+> for which it makes sense.  Imagine you have a little function:
+>
+> int matrix_times_vector(int dim, float *out, const float *matrix,
+> const float *vector);
+>
+> A clever library might use AMX for this.  If dim == 4 and the caller
+> is planning to call it in a long, tight loop, maybe this even makes
+> sense.  If dim == 4 and it's being called once, AMX is probably a
+> losing proposition.  With previous technologies, at least the impact
+> was limited to the function itself and maybe once per call to the
+> caller.  But now, with AMX, the program that invoked this takes a
+> performance and memory hit *forever* if it uses AMX once.
 
+Again...
 
-On 4/13/21 6:33 PM, Bjorn Andersson wrote:
-> On Tue 13 Apr 17:27 CDT 2021, Thara Gopinath wrote:
-> 
->>
->>
->> On 4/5/21 6:18 PM, Bjorn Andersson wrote:
->>> On Thu 25 Feb 12:27 CST 2021, Thara Gopinath wrote:
->>>
->>>> Add register programming sequence for enabling AEAD
->>>> algorithms on the Qualcomm crypto engine.
->>>>
->>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->>>> ---
->>>>    drivers/crypto/qce/common.c | 155 +++++++++++++++++++++++++++++++++++-
->>>>    1 file changed, 153 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
->>>> index 05a71c5ecf61..54d209cb0525 100644
->>>> --- a/drivers/crypto/qce/common.c
->>>> +++ b/drivers/crypto/qce/common.c
->>>> @@ -15,6 +15,16 @@
->>>>    #include "core.h"
->>>>    #include "regs-v5.h"
->>>>    #include "sha.h"
->>>> +#include "aead.h"
->>>> +
->>>> +static const u32 std_iv_sha1[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->>>> +	SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4, 0, 0, 0
->>>> +};
->>>> +
->>>> +static const u32 std_iv_sha256[SHA256_DIGEST_SIZE / sizeof(u32)] = {
->>>> +	SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
->>>> +	SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7
->>>> +};
->>>>    static inline u32 qce_read(struct qce_device *qce, u32 offset)
->>>>    {
->>>> @@ -96,7 +106,7 @@ static inline void qce_crypto_go(struct qce_device *qce, bool result_dump)
->>>>    		qce_write(qce, REG_GOPROC, BIT(GO_SHIFT));
->>>>    }
->>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SHA) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>>>    static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>>>    {
->>>>    	u32 cfg = 0;
->>>> @@ -139,7 +149,9 @@ static u32 qce_auth_cfg(unsigned long flags, u32 key_size, u32 auth_size)
->>>>    	return cfg;
->>>>    }
->>>> +#endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SHA
->>>>    static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>>>    {
->>>>    	struct ahash_request *req = ahash_request_cast(async_req);
->>>> @@ -225,7 +237,7 @@ static int qce_setup_regs_ahash(struct crypto_async_request *async_req)
->>>>    }
->>>>    #endif
->>>> -#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->>>> +#if defined(CONFIG_CRYPTO_DEV_QCE_SKCIPHER) || defined(CONFIG_CRYPTO_DEV_QCE_AEAD)
->>>>    static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>>>    {
->>>>    	u32 cfg = 0;
->>>> @@ -271,7 +283,9 @@ static u32 qce_encr_cfg(unsigned long flags, u32 aes_key_size)
->>>>    	return cfg;
->>>>    }
->>>> +#endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_SKCIPHER
->>>>    static void qce_xts_swapiv(__be32 *dst, const u8 *src, unsigned int ivsize)
->>>>    {
->>>>    	u8 swap[QCE_AES_IV_LENGTH];
->>>> @@ -386,6 +400,139 @@ static int qce_setup_regs_skcipher(struct crypto_async_request *async_req)
->>>>    }
->>>>    #endif
->>>> +#ifdef CONFIG_CRYPTO_DEV_QCE_AEAD
->>>> +static int qce_setup_regs_aead(struct crypto_async_request *async_req)
->>>> +{
->>>> +	struct aead_request *req = aead_request_cast(async_req);
->>>> +	struct qce_aead_reqctx *rctx = aead_request_ctx(req);
->>>> +	struct qce_aead_ctx *ctx = crypto_tfm_ctx(async_req->tfm);
->>>> +	struct qce_alg_template *tmpl = to_aead_tmpl(crypto_aead_reqtfm(req));
->>>> +	struct qce_device *qce = tmpl->qce;
->>>> +	__be32 enckey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 enciv[QCE_MAX_IV_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authkey[QCE_SHA_HMAC_KEY_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authiv[SHA256_DIGEST_SIZE / sizeof(__be32)] = {0};
->>>> +	__be32 authnonce[QCE_MAX_NONCE / sizeof(__be32)] = {0};
->>>> +	unsigned int enc_keylen = ctx->enc_keylen;
->>>> +	unsigned int auth_keylen = ctx->auth_keylen;
->>>> +	unsigned int enc_ivsize = rctx->ivsize;
->>>> +	unsigned int auth_ivsize;
->>>> +	unsigned int enckey_words, enciv_words;
->>>> +	unsigned int authkey_words, authiv_words, authnonce_words;
->>>> +	unsigned long flags = rctx->flags;
->>>> +	u32 encr_cfg = 0, auth_cfg = 0, config, totallen;
->>>
->>> I don't see any reason to initialize encr_cfg or auth_cfg.
->>>
->>>> +	u32 *iv_last_word;
->>>> +
->>>> +	qce_setup_config(qce);
->>>> +
->>>> +	/* Write encryption key */
->>>> +	qce_cpu_to_be32p_array(enckey, ctx->enc_key, enc_keylen);
->>>> +	enckey_words = enc_keylen / sizeof(u32);
->>>> +	qce_write_array(qce, REG_ENCR_KEY0, (u32 *)enckey, enckey_words);
->>>
->>> Afaict all "array registers" in this function are affected by the
->>> CRYPTO_SETUP little endian bit, but you set this bit before launching
->>> the operation dependent on IS_CCM(). So is this really working for the
->>> !IS_CCM() case?
->>>
->>>> +
->>>> +	/* Write encryption iv */
->>>> +	qce_cpu_to_be32p_array(enciv, rctx->iv, enc_ivsize);
->>>> +	enciv_words = enc_ivsize / sizeof(u32);
->>>> +	qce_write_array(qce, REG_CNTR0_IV0, (u32 *)enciv, enciv_words);
->>>
->>> It would be nice if this snippet was extracted to a helper function.
->>
->> I kind of forgot to type this earlier. So yes I agree in principle.
->> It is more elegant to have something like qce_convert_be32_and_write
->> and in the function do the above three steps. This snippet is prevalent in
->> this driver code across other alogs as well (skcipher and hash).
-> 
-> Perhaps make qce_cpu_to_be32p_array() (or qce_be32_to_cpu() per the
-> other reply), could return the number of words written - that way you
-> remove the ugly middle line at least - and can still poke at the data
-> when needed.
+As this is a "clever" library, built with a clever toolchain, and the
+result is that
+TILERELEASE was properly issued at the end of computation.
+Thus the hardware knows that the  (volatile) AMX registers are no longer live.
 
-Right. I will note this down for clean up as it touches other stuff as 
-well.
+The XSAVE hardware recognizes this INIT=1 condition and
+transfers NO DATA "*forever*".  This is true both on context switch (compacted)
+where it is automatic, and on (uncompacted) signal delivery, where we
+check for this case.
 
-> 
->> Take it up as a separate clean up activity  ?
->>
-> 
-> Yes, that seems like a good idea.
-> 
-> Regards,
-> Bjorn
-> 
+Was that the "performance hit" of concern, or did I miss something?
 
--- 
-Warm Regards
-Thara
+Yes, it is true that the kernel allocated a context switch buffer for
+the lifetime
+of that task, and it will not be freed until that task exits.
+
+If this proves to be an issue, there is nothing
+preventing us from implementing a re-claim scheme for a rarely used buffer.
+After recognizing this situation, we'd simply arm XFD, free the
+buffer, and from then onwards, the task behaves exactly as if had
+never touched AMX.
+
+However, nobody has yet suggested that would be a common situation
+worth an optimization to reclaim that task's 8KB.
+
+> Beyond that, we have the signal handling issue.
+
+I'm unaware of any unresolved feedback on the signal handling series
+other than a wistful "wouldn't a new SIGFAIL be more clear (for future apps)
+than the existing SIGSEGV?"  I agree with this sentiment, but I don't
+think we should hold up a patch to prevent corrupting user data
+because a new signal number to describe the scenario doesn't exit.
+Particularly since the new code that knows about the new SIGFAIL
+will also be new code that has been compiled with the new glibc
+that for most cases will prevent this scenario in the first place...
+
+> One solution, going
+> off of what WIlly mentioned, is:
+>
+> bool amx_begin(void *signal_save_buffer);
+> void amx_end();
+>
+> In the amx_begin() region, if you get a signal, the AMX state is saved
+> in the buffer.  Outside the region, if you get a signal and AMX is in
+> use, the kernel will either unceremoniously kill the task or will
+> deliver SIGYOUBLEWIT. [0]
+
+I think it is clear that if a new signal ABI is going to be invented,
+that it should be opt-in on state, so that it can run fast on machines
+far into the future by not choosing to opt-in on anything.
+
+It isn't clear that changing the signal save state around critical regions
+(in multiple threads) so that a single (per process definition) of a signal
+handler gets a different result at different times is going to make that
+(new) signal handler author especially happy.  More likely they
+either always want the state, or they do not.
+
+> I'm really hoping some userspace people can chime in.
+
+Len Brown, Intel Open Source Technology Center
