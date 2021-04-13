@@ -2,157 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214135E040
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B21135E043
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 15:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhDMNiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 09:38:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55470 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344639AbhDMNim (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 09:38:42 -0400
-Received: from 111-240-117-68.dynamic-ip.hinet.net ([111.240.117.68] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lWJFB-00083c-IW; Tue, 13 Apr 2021 13:38:18 +0000
-From:   chris.chiu@canonical.com
-To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        m.v.b@runbox.com, hadess@hadess.net
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Chiu <chris.chiu@canonical.com>
-Subject: [PATCH v2] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek Hub
-Date:   Tue, 13 Apr 2021 21:38:08 +0800
-Message-Id: <20210413133808.54287-1-chris.chiu@canonical.com>
-X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
+        id S231683AbhDMNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 09:40:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56412 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231221AbhDMNkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 09:40:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618321219; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w4n0cxlCyqS1x0LaC8rVG8ZjMbw0TbHzMdAFoDindWE=;
+        b=sBgYpizxtCNbxKBgSKLT+CY/2ieNI+cQo/TrblBb1knak94bMJEQ02v5sLATc6Pcm5ZFph
+        ANqaUcaBsDHz7AXFuHTsThYx1tqUpuZOzWScyLhwL0U2BxOe5PBEgEXa8T3f1VpJnpQ2Nc
+        vn2sIQoOeVB/jpRcuE0zICPVn5pmNkE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2C672AFAA;
+        Tue, 13 Apr 2021 13:40:19 +0000 (UTC)
+Date:   Tue, 13 Apr 2021 15:40:18 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/7] mm: Make alloc_contig_range handle free hugetlb
+ pages
+Message-ID: <YHWfQjegLi4xekhM@dhcp22.suse.cz>
+References: <20210413104747.12177-1-osalvador@suse.de>
+ <20210413104747.12177-6-osalvador@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413104747.12177-6-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+On Tue 13-04-21 12:47:45, Oscar Salvador wrote:
+> alloc_contig_range will fail if it ever sees a HugeTLB page within the
+> range we are trying to allocate, even when that page is free and can be
+> easily reallocated.
+> This has proved to be problematic for some users of alloc_contic_range,
+> e.g: CMA and virtio-mem, where those would fail the call even when those
+> pages lay in ZONE_MOVABLE and are free.
+> 
+> We can do better by trying to replace such page.
+> 
+> Free hugepages are tricky to handle so as to no userspace application
+> notices disruption, we need to replace the current free hugepage with
+> a new one.
+> 
+> In order to do that, a new function called alloc_and_dissolve_huge_page
+> is introduced.
+> This function will first try to get a new fresh hugepage, and if it
+> succeeds, it will replace the old one in the free hugepage pool.
+> 
+> The free page replacement is done under hugetlb_lock, so no external
+> users of hugetlb will notice the change.
+> To allocate the new huge page, we use alloc_buddy_huge_page(), so we
+> do not have to deal with any counters, and prep_new_huge_page() is not
+> called. This is valulable because in case we need to free the new page,
+> we only need to call __free_pages().
+> 
+> Once we know that the page to be replaced is a genuine 0-refcounted
+> huge page, we remove the old page from the freelist by remove_hugetlb_page().
+> Then, we can call __prep_new_huge_page() and __prep_account_new_huge_page()
+> for the new huge page to properly initialize it and increment the
+> hstate->nr_huge_pages counter (previously decremented by
+> remove_hugetlb_page()).
+> Once done, the page is enqueued by enqueue_huge_page() and it is ready
+> to be used.
+> 
+> There is one tricky case when
+> page's refcount is 0 because it is in the process of being released.
+> A missing PageHugeFreed bit will tell us that freeing is in flight so
+> we retry after dropping the hugetlb_lock. The race window should be
+> small and the next retry should make a forward progress.
+> 
+> E.g:
+> 
+> CPU0				CPU1
+> free_huge_page()		isolate_or_dissolve_huge_page
+> 				  PageHuge() == T
+> 				  alloc_and_dissolve_huge_page
+> 				    alloc_buddy_huge_page()
+> 				    spin_lock_irq(hugetlb_lock)
+> 				    // PageHuge() && !PageHugeFreed &&
+> 				    // !PageCount()
+> 				    spin_unlock_irq(hugetlb_lock)
+>   spin_lock_irq(hugetlb_lock)
+>   1) update_and_free_page
+>        PageHuge() == F
+>        __free_pages()
+>   2) enqueue_huge_page
+>        SetPageHugeFreed()
+>   spin_unlock(&hugetlb_lock)
+> 				  spin_lock_irq(hugetlb_lock)
+>                                    1) PageHuge() == F (freed by case#1 from CPU0)
+> 				   2) PageHuge() == T
+>                                        PageHugeFreed() == T
+>                                        - proceed with replacing the page
+> 
+> In the case above we retry as the window race is quite small and we have high
+> chances to succeed next time.
+> 
+> With regard to the allocation, we restrict it to the node the page belongs
+> to with __GFP_THISNODE, meaning we do not fallback on other node's zones.
+> 
+> Note that gigantic hugetlb pages are fenced off since there is a cyclic
+> dependency between them and alloc_contig_range.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 
-Realtek Hub (0bda:5487) in Dell Dock WD19 sometimes fails to work
-after the system resumes from suspend with remote wakeup enabled
-device connected:
-[ 1947.640907] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
-[ 1947.641208] usb 5-2.3-port5: cannot disable (err = -71)
-[ 1947.641401] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
-[ 1947.641450] usb 5-2.3-port4: cannot reset (err = -71)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Information of this hub:
-T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 10 Spd=480  MxCh= 5
-D:  Ver= 2.10 Cls=09(hub  ) Sub=00 Prot=02 MxPS=64 #Cfgs=  1
-P:  Vendor=0bda ProdID=5487 Rev= 1.47
-S:  Manufacturer=Dell Inc.
-S:  Product=Dell dock
-C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=01 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
-I:* If#= 0 Alt= 1 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=02 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+One minor nit below
+[...]
 
-The failure results from the ETIMEDOUT by chance when turning on
-the suspend feature of the hub. The usb_resume_device will not be
-invoked since the device state is not set to suspended, then the
-hub fails to activate subsequently.
+> +		/*
+> +		 * Ok, old_page is still a genuine free hugepage. Remove it from
+> +		 * the freelist and decrease the counters. These will be
+> +		 * incremented again when calling __prep_account_new_huge_page()
+> +		 * and enqueue_huge_page() for new_page. The counters will remain
+> +		 * stable since this happens under the lock.
+> +		 */
+> +		remove_hugetlb_page(h, old_page, false);
+> +
+> +		/*
+> +		 * Call __prep_new_huge_page() to construct the hugetlb page, and
+> +		 * enqueue it then to place it in the freelists. After this,
+> +		 * counters are back on track. Free hugepages have a refcount of 0,
+> +		 * so we need to decrease new_page's count as well.
+> +		 */
+> +		__prep_new_huge_page(new_page);
+> +		__prep_account_new_huge_page(h, nid);
 
-The USB_PORT_FEAT_SUSPEND is not really necessary due to the
-"global suspend" in USB 2.0 spec. It's only for many hub devices
-which don't relay wakeup requests from the devices connected to
-downstream ports. For this realtek hub, there's no problem waking
-up the system from connected keyboard.
+I think it would help to put something like the following into the
+comment above this really strange construct.
 
-This commit bypasses the USB_PORT_FEAT_SUSPEND for the quirky hub.
+		/*
+		 * new_page needs to be initialized with the standard
+		 * hugetlb state. This is normally done by
+		 * prep_new_huge_page but that takes hugetlb_lock which
+		 * is already held so we need to open code it here.
+		 * Reference count trick is needed because allocator
+		 * gives us referenced page but the pool requires pages
+		 * with 0 refcount.
+		 */
 
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
----
+> +		page_ref_dec(new_page);
+> +		enqueue_huge_page(h, new_page);
+> +
+> +		/*
+> +		 * Pages have been replaced, we can safely free the old one.
+> +		 */
+> +		spin_unlock_irq(&hugetlb_lock);
+> +		update_and_free_page(h, old_page);
 
-Changelog:
-  v2: 
-    Since the 0bda:5413 is the hub device connects to upstream hub
-    0bda:5487, the upstream hub which fails the USB_PORT_FEAT_SUSPEND
-    is the target this patch really wants to quirk.
-    - Fix the quirk target from the connected hub device to the
-      upstream hub
-    - Correct the usb info of the target hub in the commit message
-    - Revise the description of the quirk
-
- Documentation/admin-guide/kernel-parameters.txt | 3 +++
- drivers/usb/core/hub.c                          | 7 +++++--
- drivers/usb/core/quirks.c                       | 5 +++++
- include/linux/usb/quirks.h                      | 3 +++
- 4 files changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..1bb22a9ea5ba 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5682,6 +5682,9 @@
- 					pause after every control message);
- 				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
- 					delay after resetting its port);
-+				p = USB_QUIRK_NO_SET_FEAT_SUSPEND (Hub can't
-+					handle set-port-feature-suspend request
-+					correctly);
- 			Example: quirks=0781:5580:bk,0a5c:5834:gij
- 
- 	usbhid.mousepoll=
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 7f71218cc1e5..36b38af46a41 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -3329,8 +3329,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
- 	 * descendants is enabled for remote wakeup.
- 	 */
- 	else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
--		status = set_port_feature(hub->hdev, port1,
--				USB_PORT_FEAT_SUSPEND);
-+		if (hub->hdev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND)
-+			status = 0;
-+		else
-+			status = set_port_feature(hub->hdev, port1,
-+					USB_PORT_FEAT_SUSPEND);
- 	else {
- 		really_suspend = false;
- 		status = 0;
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 76ac5d6555ae..9f373579bf9e 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -138,6 +138,9 @@ static int quirks_param_set(const char *value, const struct kernel_param *kp)
- 			case 'o':
- 				flags |= USB_QUIRK_HUB_SLOW_RESET;
- 				break;
-+			case 'p':
-+				flags |= USB_QUIRK_NO_SET_FEAT_SUSPEND;
-+				break;
- 			/* Ignore unrecognized flag characters */
- 			}
- 		}
-@@ -406,6 +409,8 @@ static const struct usb_device_id usb_quirk_list[] = {
- 
- 	/* Realtek hub in Dell WD19 (Type-C) */
- 	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
-+	{ USB_DEVICE(0x0bda, 0x5487), .driver_info =
-+			USB_QUIRK_NO_SET_FEAT_SUSPEND },
- 
- 	/* Generic RTL8153 based ethernet adapters */
- 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
-diff --git a/include/linux/usb/quirks.h b/include/linux/usb/quirks.h
-index 5e4c497f54d6..ac469d446c78 100644
---- a/include/linux/usb/quirks.h
-+++ b/include/linux/usb/quirks.h
-@@ -72,4 +72,7 @@
- /* device has endpoints that should be ignored */
- #define USB_QUIRK_ENDPOINT_IGNORE		BIT(15)
- 
-+/* Hub can't handle set-port-feature-suspend request correctly */
-+#define USB_QUIRK_NO_SET_FEAT_SUSPEND		BIT(16)
-+
- #endif /* __LINUX_USB_QUIRKS_H */
 -- 
-2.20.1
-
+Michal Hocko
+SUSE Labs
