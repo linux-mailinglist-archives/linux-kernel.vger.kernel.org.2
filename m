@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB8535E22E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1664035E22F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 17:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343960AbhDMPB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 11:01:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33660 "EHLO mx2.suse.de"
+        id S1345446AbhDMPCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 11:02:00 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:46691 "EHLO uho.ysoft.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239913AbhDMPBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 11:01:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618326090; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2IjKSBCv3C4jbUL7pL2ucxgwpj3Y/YzLvCHEEk6KOlg=;
-        b=N7DoJyQPpVoAV3KyqL1zbeYGRmgfua+LEVTKobcG5aTrVYjyeSu9pqTzJFh5BsXSnyNscN
-        DcQKAxyio4CuDEOktdkmFpiCIQ/WOSAOF7uADON+EZijn15DK+x1B0c1X77jiX53sNdCz6
-        DHhqwI29bibWf5lONnAU5lY3uYfwTeY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E0DD4B30E;
-        Tue, 13 Apr 2021 15:01:29 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 17:01:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4 05/13] module: Add printk formats to add module build
- ID to stacktraces
-Message-ID: <YHWyOhYZuLsbt2gB@alley>
-References: <20210410015300.3764485-1-swboyd@chromium.org>
- <20210410015300.3764485-6-swboyd@chromium.org>
+        id S239975AbhDMPB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 11:01:57 -0400
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+        by uho.ysoft.cz (Postfix) with ESMTP id E7894A2B15;
+        Tue, 13 Apr 2021 17:01:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1618326092;
+        bh=ppuEtfUiNh6dPna9esARC/I573CvEjsGGl/2B/7p0bA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i3peWw2tiwVc/c43nN3u+uH0kMWmLgRDcBHllTzW8fUmTDRGr9kUY+F3iGP7c22Dz
+         wGxa99AmKvBy5LrfU9YzISO+GPOSbOP0j1FPkWftwiChuSTY0gQkQ3hG1bEEAaSqXy
+         zFxo7r8x9RH8VIEwYx3RXers/rTqS5LW0qqvZ4yg=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH] ARM: dts: imx6dl-yapp4: Configure the OLED display segment offset
+Date:   Tue, 13 Apr 2021 17:01:16 +0200
+Message-Id: <1618326076-6869-1-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410015300.3764485-6-swboyd@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-04-09 18:52:52, Stephen Boyd wrote:
-> Let's make kernel stacktraces easier to identify by including the build
-> ID[1] of a module if the stacktrace is printing a symbol from a module.
-> This makes it simpler for developers to locate a kernel module's full
-> debuginfo for a particular stacktrace. Combined with
-> scripts/decode_stracktrace.sh, a developer can download the matching
-> debuginfo from a debuginfod[2] server and find the exact file and line
-> number for the functions plus offsets in a stacktrace that match the
-> module. This is especially useful for pstore crash debugging where the
-> kernel crashes are recorded in something like console-ramoops and the
-> recovery kernel/modules are different or the debuginfo doesn't exist on
-> the device due to space concerns (the debuginfo can be too large for
-> space limited devices).
-> 
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 59f094fa6f74..4bf869f6c944 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -11,6 +11,7 @@
->  
->  #include <linux/list.h>
->  #include <linux/stat.h>
-> +#include <linux/buildid.h>
->  #include <linux/compiler.h>
->  #include <linux/cache.h>
->  #include <linux/kmod.h>
-> @@ -367,6 +368,9 @@ struct module {
->  	/* Unique handle for this module */
->  	char name[MODULE_NAME_LEN];
->  
-> +	/* Module build ID */
-> +	unsigned char build_id[BUILD_ID_SIZE_MAX];
+The imx6dl-yapp4 platform uses a GE-LX012864FWPP3N0000 OLED display.
+The display consist of a 128x64 OLED panel and a SSD1305 controller.
 
-Do we want to initialize/store the ID even when
-CONFIG_STACKTRACE_BUILD_ID is disabled and nobody would
-use it?
+The OLED panel resolution is 128x64 but the built-in controller default
+resolution is 132x64. To display properly a segment offset needs to be
+configured.
 
-Most struct module members are added only when the related feature
-is enabled.
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+---
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-I am not sure how it would complicate the code. It is possible
-that it is not worth it. Well, I could imagine that the API
-will always pass the buildid parameter and
-module_address_lookup() might do something like
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+index 51972c85e207..111d4d331f98 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -373,6 +373,7 @@
+ 		solomon,height = <64>;
+ 		solomon,width = <128>;
+ 		solomon,page-offset = <0>;
++		solomon,col-offset = <4>;
+ 		solomon,prechargep2 = <15>;
+ 		reset-gpios = <&gpio_oled 1 GPIO_ACTIVE_LOW>;
+ 		vbat-supply = <&sw2_reg>;
+-- 
+2.1.4
 
-#ifndef CONFIG_STACKTRACE_BUILD_ID
-static char empty_build_id[BUILD_ID_SIZE_MAX];
-#endif
-
-		if (modbuildid) {
-			if (IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID))
-				*modbuildid = mod->build_id;
-			else
-				*modbuildid = empty_build_id;
-
-IMHO, this is primary a call for Jessica as the module code maintainer.
-
-Otherwise, I am fine with this patch. And it works as expected.
-
-Best Regards,
-Petr
