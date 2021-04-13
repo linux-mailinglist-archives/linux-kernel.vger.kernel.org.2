@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E9335E7F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A2D35E7F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 23:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242494AbhDMVDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 17:03:08 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49368 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhDMVDE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:03:04 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DKsTeS161373;
-        Tue, 13 Apr 2021 21:01:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=4dfm4RYUr78E9iOXwzBJjD+SfiaJJoNxrQuIO7bUaho=;
- b=vYGxKbGql9P0qHyyxthSn5g3d5s78/gURsoGiPTnXKEyWtn3TXnBuxyBfx4b48ixgXSL
- Hc7Gbn9fDu/YatFxrPmh3FLy8OcC+1Wt8CYhwKUt98HfiKax4A1AeKxt19Jfo2llOVZu
- AnV96eudiy7sF+DB+u8yoL1QkyNRADsfkCv2AOQ+q9v79ODo/+FhxIAEKtZB9BKa3VbB
- 0XFTRpsVob4Ozw2PXkIEfs+NPcBydzHiT1pBh3MzJNAASN8iUfDk8/eNW6N3lgpoesfu
- qv8aitwVLpYZ8hEoi3GMFgyf33UKL3o3MGfTXpqhfgzfBinj/ZSVLmd++dzLSoULB2nY vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37u3ymge2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 21:01:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13DKpgdd195472;
-        Tue, 13 Apr 2021 21:01:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 37unx0ach3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Apr 2021 21:01:46 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13DL1d15001510;
-        Tue, 13 Apr 2021 21:01:39 GMT
-Received: from [10.39.235.234] (/10.39.235.234)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Apr 2021 14:01:39 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [External] : Re: [PATCH v14 4/6] locking/qspinlock: Introduce
- starvation avoidance into CNA
-From:   Alex Kogan <alex.kogan@oracle.com>
-In-Reply-To: <87mtu2vhzz.fsf@linux.intel.com>
-Date:   Tue, 13 Apr 2021 17:01:37 -0400
-Cc:     linux@armlinux.org.uk, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, will.deacon@arm.com,
-        arnd@arndb.de, longman@redhat.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        guohanjun@huawei.com, jglauber@marvell.com,
-        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CA1141EF-76A8-47A9-97B9-3CB2FC246B1A@oracle.com>
-References: <20210401153156.1165900-1-alex.kogan@oracle.com>
- <20210401153156.1165900-5-alex.kogan@oracle.com>
- <87mtu2vhzz.fsf@linux.intel.com>
-To:     Andi Kleen <ak@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130140
-X-Proofpoint-GUID: dMb8NI2VGUfRTEMwrIaQQqvhIrl_kPln
-X-Proofpoint-ORIG-GUID: dMb8NI2VGUfRTEMwrIaQQqvhIrl_kPln
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104130140
+        id S232283AbhDMVCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 17:02:45 -0400
+Received: from ms.lwn.net ([45.79.88.28]:46252 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229832AbhDMVCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 17:02:43 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 2A16E9A6;
+        Tue, 13 Apr 2021 21:02:22 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2A16E9A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1618347742; bh=wVSp4RSQ4L05NKFpyUO+TSUmthwRID+uUqxyo2Y9fJw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=em1+ots0iaxdxDiuOo4TgLB6Qv+QppNx4oNLYZN5kB7GJBue3PZTY4p4SPahEPGZQ
+         lEyt1Qjw8Bwzfcwud2ErlPMaUc6Jjotp9/alEHtR2gu35WqcRATYHVhDcle8DZx6Z9
+         T4k1F2khvaZ0JoXRkcWUoPjhimsADWlu1t69SGIf/3KAsH6Q9sWV+NIAr61kRRqy48
+         84HWLAmg3CPhmCybmi4xhs38aocuuoltpREkili11RjuJPP4X1Aa0HZpgxi5vD2i8e
+         CN38aefQZDwmCUA8eX1zZbQpjUJ9E88LQLWpy4OcduIVWzbPRlyRUFi4hDWws3PpXS
+         oEKr0OPhbo2Hw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Documentation/submitting-patches: Document RESEND tag
+ on patches
+In-Reply-To: <20210413113834.GE16519@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic> <20210413113834.GE16519@zn.tnic>
+Date:   Tue, 13 Apr 2021 15:02:21 -0600
+Message-ID: <87pmyxsxsy.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andi.
+Borislav Petkov <bp@alien8.de> writes:
 
-Thanks for your comments!
+> Hi Jon,
+>
+> here's the next piece of documentation which should be generic enough.
+>
+> Thx.
+>
+> ---
+> From: Borislav Petkov <bp@suse.de>
+> Date: Tue, 13 Apr 2021 13:26:29 +0200
+>
+> Explain when a submitter should tag a patch or a patch series with the
+> "RESEND" tag.
+>
+> This has been partially carved out from a tip subsystem handbook
+> patchset by Thomas Gleixner:
+>
+>   https://lkml.kernel.org/r/20181107171010.421878737@linutronix.de
+>
+> and incorporates follow-on comments.
+>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  Documentation/process/submitting-patches.rst | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+> index ab92d9ccd39a..9284735e0b34 100644
+> --- a/Documentation/process/submitting-patches.rst
+> +++ b/Documentation/process/submitting-patches.rst
+> @@ -346,6 +346,16 @@ that you have sent your patches to the right place.  Wait for a minimum of
+>  one week before resubmitting or pinging reviewers - possibly longer during
+>  busy times like merge windows.
+>  
+> +It's also ok to resend the patch or the patch series after a couple of
+> +weeks with the word "RESEND" added to the subject line::
+> +
+> +   [PATCH Vx RESEND] sub/sys: Condensed patch summary
+> +
+> +Don't add "RESEND" when you are submitting a modified version of your
+> +patch or patch series - "RESEND" only applies to resubmission of a
+> +patch or patch series which have not been modified in any way from the
+> +previous submission.
+> +
 
-> On Apr 13, 2021, at 2:03 AM, Andi Kleen <ak@linux.intel.com> wrote:
->=20
-> Alex Kogan <alex.kogan@oracle.com> writes:
->>=20
->> +	numa_spinlock_threshold=3D	[NUMA, PV_OPS]
->> +			Set the time threshold in milliseconds for the
->> +			number of intra-node lock hand-offs before the
->> +			NUMA-aware spinlock is forced to be passed to
->> +			a thread on another NUMA node.	Valid values
->> +			are in the [1..100] range. Smaller values result
->> +			in a more fair, but less performant spinlock,
->> +			and vice versa. The default value is 10.
->=20
-> ms granularity seems very coarse grained for this. Surely
-> at some point of spinning you can afford a ktime_get? But ok.
-We are reading time when we are at the head of the (main) queue, but
-don=E2=80=99t have the lock yet. Not sure about the latency of =
-ktime_get(), but
-anything reasonably fast but not necessarily precise should work.
+Makes sense, applied.
 
-> Could you turn that into a moduleparm which can be changed at runtime?
-> Would be strange to have to reboot just to play with this parameter
-Yes, good suggestion, thanks.
+For future installments, could you send them in their own thread as an
+ordinary patch so I don't need to edit in the changelog after applying
+them?
 
-> This would also make the code a lot shorter I guess.
-So you don=E2=80=99t think we need the command-line parameter, just the =
-module_param?
+Thanks,
 
-Regards,
-=E2=80=94 Alex
-
+jon
