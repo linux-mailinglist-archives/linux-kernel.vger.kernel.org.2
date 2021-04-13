@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB54635D444
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA2C35D446
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 02:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239502AbhDMAFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 20:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S1344222AbhDMAFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 20:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237712AbhDMAF2 (ORCPT
+        with ESMTP id S237712AbhDMAFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 20:05:28 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4039C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:05:09 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id r5so4435675ilb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:05:09 -0700 (PDT)
+        Mon, 12 Apr 2021 20:05:38 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3A3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:05:19 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id c3so6504075ils.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 17:05:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jbLoFUpoxerbXfuk2REVmj1RRI8UwcgqsaxvxzI7hpw=;
-        b=cH6M00A/hS5cg68oevSxPkKfKG7PoZAmIKU+FYlK1ynBNBCjpe2EkboP42tCoQyZaa
-         uhtau93gk3xG+REnWcl6csQ92Fi3HEVPOTUWGBRT4aGSe03IQoXIcMjMQrrw/RhnyryC
-         lViirhY+X76K1WuZTGCSc87rbRtKQfu9vOYCYrL3pI9Kslvw8QVuPv14reDNge/QF3pV
-         P6Wd1jNulcX5yiuREpObRVBofo+eJ6X9f666bBrWDr6D8xVSnFw85O08XY5i5bkEEo67
-         Ds2V33CpE4GSk/S6NsM49sH2ba0OyUDRbJqx5tiMgtp1xoAZZUQpi8iBIuGbia5iZNTU
-         Dqkg==
+        bh=KTTyuyVJMQ7i18qjf0Ue5SHbPHNLK214rpN4goKhaEw=;
+        b=HHWJrZtVPT2QD1IqIeSMeQXU4JinLVjekhBpAuCByZjQ/dzGrtGqyejQbTbS66NOBY
+         cSK5yN2WxUo0xLCQkV0DybAF5Jk1C8SJK4Ik4mwrirEFkEOUuL86HCPP0DhMcZ+zHYUr
+         /JLfYdskYPn6X26TdA15XKD84GlD8fYA9HLsVI0XMA5CEoPtBcTcRXgYyZWpAoDvKzPM
+         ARQ9W8b0J+6YGEhOBEIz95BrgrUCNB27RNLcgGnoxICA+dcGTFIr77l8siS7UhpJaeMw
+         1LWvbCZ55J6r7rID9y1xbKvhNW5c6K/kyyNneUEpFNzK1WPZSHihO5cQquKcDteteaJz
+         AjtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jbLoFUpoxerbXfuk2REVmj1RRI8UwcgqsaxvxzI7hpw=;
-        b=ZDtnjkvnSbnIIpaO5802OSSfOqVlPx+TwDn0QSrPecmyyqvqXMIFPEbPc8GwoUrWUM
-         B9X/dIYAKg+s+7ETNarB3wIQI3SgYAp18a/E3gRBzHLajk6nHcwr2HAKyTXLql6wDbzx
-         z66UoZ8eIxfxU9lX9W9r2CsQZSm+tEtRMpvNupjD55YaF5dVy+vbE3nvgRk2hwlg+E+f
-         vd3WHZNF9nMUGWPCPcNp9R5p4PGPNJ3ABwoQ301xrSrhO9VkYgjizODaeLjNJNDSsFu8
-         lu10s4spOe6kRjCLiI23OQ8s8u2uLI2ZZM5mWOlizGQbrDgQIuxnD53p1wrp01rb1CMq
-         pLOw==
-X-Gm-Message-State: AOAM531hDMd9Kg+OgHq87GUpqMHK83OYZwbG2z4cpVzA1zmjQWMi+Nj9
-        QRgA1lwMDKuC9UAEYg6J+a7kyAVyAxy0FXGzUdAAjw==
-X-Google-Smtp-Source: ABdhPJzaSPc8kah7NjLxLNlk20ABmq2QETcJfTvvVfrco19YKAPKYHF5kaQ7ON3bozf2W/gIa+O2DLB7jXW4fbKm1Ak=
-X-Received: by 2002:a05:6e02:1e08:: with SMTP id g8mr25429324ila.176.1618272309261;
- Mon, 12 Apr 2021 17:05:09 -0700 (PDT)
+        bh=KTTyuyVJMQ7i18qjf0Ue5SHbPHNLK214rpN4goKhaEw=;
+        b=VcvKtBbK+zuYlSA2LJWK80JFyCI58xNws9e3HkaF8060KL1QW+RfBo1s2bqdP4o6D+
+         LsizneIrRQsmgdWEKmH4VusHuyoHMZFeQ3VhkBxN1FLfgxWulwUCsbEilMV0dg+lhpxg
+         37LxpIBfiMsFC6SdasQOYnIq/rc4w8FdYM+6BPJbvQcsba8ilFDkgOXwaVtzrOtqz8Nf
+         InfK8h8DJPjr3EYyYXdVpwCDWeX+m++s8rM5CkC4yRhuoBQlC4qnhyG/n2Z7Dk/whh/1
+         LG350eowYA7eWqMGW7DoJasnSFdKEWbQ8alq0i6NUWdCBhdreDp1lM8ak7A89sqk9IZt
+         R+oQ==
+X-Gm-Message-State: AOAM530dHqgkYxNMBCCP4/j+s+pJg9ubcNYVdJPvdFtXfFZ1jYSyEXq8
+        xTevm5o7CDdt70tMmjhd47vtvblla3ZZtNU4n5NE0Q==
+X-Google-Smtp-Source: ABdhPJwouwMVu1+AnQk6ZzLR/pJ3RnhMJy/NRT4KCe4DeuAcUKwAZGA/lehQal/wlbGUlerGcB8iwF42eqhkATLdGic=
+X-Received: by 2002:a05:6e02:12b4:: with SMTP id f20mr24668835ilr.212.1618272319235;
+ Mon, 12 Apr 2021 17:05:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1618254007.git.ashish.kalra@amd.com> <3232806199b2f4b307d28f6fd4f756d487b4e482.1618254007.git.ashish.kalra@amd.com>
-In-Reply-To: <3232806199b2f4b307d28f6fd4f756d487b4e482.1618254007.git.ashish.kalra@amd.com>
+References: <cover.1618254007.git.ashish.kalra@amd.com> <d08914dc259644de94e29b51c3b68a13286fc5a3.1618254007.git.ashish.kalra@amd.com>
+In-Reply-To: <d08914dc259644de94e29b51c3b68a13286fc5a3.1618254007.git.ashish.kalra@amd.com>
 From:   Steve Rutherford <srutherford@google.com>
-Date:   Mon, 12 Apr 2021 17:04:33 -0700
-Message-ID: <CABayD+fX516CLTPDW7xkRZoVEWWLFE1jNL8n-O7KxUhmcRGTfQ@mail.gmail.com>
-Subject: Re: [PATCH v12 10/13] KVM: x86: Introduce new KVM_FEATURE_SEV_LIVE_MIGRATION
- feature & Custom MSR.
+Date:   Mon, 12 Apr 2021 17:04:43 -0700
+Message-ID: <CABayD+ckRHXwAgMz-RGP=pyqQR9N-tdC1M_cCx2kyetArkiPyQ@mail.gmail.com>
+Subject: Re: [PATCH v12 06/13] KVM: SVM: Add KVM_SEV_RECEIVE_FINISH command
 To:     Ashish Kalra <Ashish.Kalra@amd.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -69,102 +68,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:46 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
+On Mon, Apr 12, 2021 at 12:45 PM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
 >
-> From: Ashish Kalra <ashish.kalra@amd.com>
+> From: Brijesh Singh <brijesh.singh@amd.com>
 >
-> Add new KVM_FEATURE_SEV_LIVE_MIGRATION feature for guest to check
-> for host-side support for SEV live migration. Also add a new custom
-> MSR_KVM_SEV_LIVE_MIGRATION for guest to enable the SEV live migration
-> feature.
+> The command finalize the guest receiving process and make the SEV guest
+> ready for the execution.
 >
-> MSR is handled by userspace using MSR filters.
->
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Reviewed-by: Steve Rutherford <srutherford@google.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 > ---
->  Documentation/virt/kvm/cpuid.rst     |  5 +++++
->  Documentation/virt/kvm/msr.rst       | 12 ++++++++++++
->  arch/x86/include/uapi/asm/kvm_para.h |  4 ++++
->  arch/x86/kvm/cpuid.c                 |  3 ++-
->  4 files changed, 23 insertions(+), 1 deletion(-)
+>  .../virt/kvm/amd-memory-encryption.rst        |  8 +++++++
+>  arch/x86/kvm/svm/sev.c                        | 23 +++++++++++++++++++
+>  2 files changed, 31 insertions(+)
 >
-> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-> index cf62162d4be2..0bdb6cdb12d3 100644
-> --- a/Documentation/virt/kvm/cpuid.rst
-> +++ b/Documentation/virt/kvm/cpuid.rst
-> @@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
->                                                 before using extended destination
->                                                 ID bits in MSI address bits 11-5.
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index c6ed5b26d841..0466c0febff9 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -396,6 +396,14 @@ Returns: 0 on success, -negative on error
+>                  __u32 trans_len;
+>          };
 >
-> +KVM_FEATURE_SEV_LIVE_MIGRATION     16          guest checks this feature bit before
-> +                                               using the page encryption state
-> +                                               hypercall to notify the page state
-> +                                               change
+> +15. KVM_SEV_RECEIVE_FINISH
+> +------------------------
 > +
->  KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
->                                                 per-cpu warps are expected in
->                                                 kvmclock
-> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-> index e37a14c323d2..020245d16087 100644
-> --- a/Documentation/virt/kvm/msr.rst
-> +++ b/Documentation/virt/kvm/msr.rst
-> @@ -376,3 +376,15 @@ data:
->         write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
->         and check if there are more notifications pending. The MSR is available
->         if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
+> +After completion of the migration flow, the KVM_SEV_RECEIVE_FINISH command can be
+> +issued by the hypervisor to make the guest ready for execution.
 > +
-> +MSR_KVM_SEV_LIVE_MIGRATION:
-> +        0x4b564d08
+> +Returns: 0 on success, -negative on error
 > +
-> +       Control SEV Live Migration features.
+>  References
+>  ==========
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 2c95657cc9bf..c9795a22e502 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1524,6 +1524,26 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>         return ret;
+>  }
+>
+> +static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +       struct sev_data_receive_finish *data;
+> +       int ret;
 > +
-> +data:
-> +        Bit 0 enables (1) or disables (0) host-side SEV Live Migration feature,
-> +        in other words, this is guest->host communication that it's properly
-> +        handling the shared pages list.
+> +       if (!sev_guest(kvm))
+> +               return -ENOTTY;
 > +
-> +        All other bits are reserved.
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 950afebfba88..f6bfa138874f 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -33,6 +33,7 @@
->  #define KVM_FEATURE_PV_SCHED_YIELD     13
->  #define KVM_FEATURE_ASYNC_PF_INT       14
->  #define KVM_FEATURE_MSI_EXT_DEST_ID    15
-> +#define KVM_FEATURE_SEV_LIVE_MIGRATION 16
->
->  #define KVM_HINTS_REALTIME      0
->
-> @@ -54,6 +55,7 @@
->  #define MSR_KVM_POLL_CONTROL   0x4b564d05
->  #define MSR_KVM_ASYNC_PF_INT   0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK   0x4b564d07
-> +#define MSR_KVM_SEV_LIVE_MIGRATION     0x4b564d08
->
->  struct kvm_steal_time {
->         __u64 steal;
-> @@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
->  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
->  #define KVM_PV_EOI_DISABLED 0x0
->
-> +#define KVM_SEV_LIVE_MIGRATION_ENABLED BIT_ULL(0)
+> +       data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +       if (!data)
+> +               return -ENOMEM;
 > +
->  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..4e2e69a692aa 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -812,7 +812,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->                              (1 << KVM_FEATURE_PV_SEND_IPI) |
->                              (1 << KVM_FEATURE_POLL_CONTROL) |
->                              (1 << KVM_FEATURE_PV_SCHED_YIELD) |
-> -                            (1 << KVM_FEATURE_ASYNC_PF_INT);
-> +                            (1 << KVM_FEATURE_ASYNC_PF_INT) |
-> +                            (1 << KVM_FEATURE_SEV_LIVE_MIGRATION);
->
->                 if (sched_info_on())
->                         entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
+> +       data->handle = sev->handle;
+> +       ret = sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, data, &argp->error);
+> +
+> +       kfree(data);
+> +       return ret;
+> +}
+> +
+>  int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>         struct kvm_sev_cmd sev_cmd;
+> @@ -1592,6 +1612,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         case KVM_SEV_RECEIVE_UPDATE_DATA:
+>                 r = sev_receive_update_data(kvm, &sev_cmd);
+>                 break;
+> +       case KVM_SEV_RECEIVE_FINISH:
+> +               r = sev_receive_finish(kvm, &sev_cmd);
+> +               break;
+>         default:
+>                 r = -EINVAL;
+>                 goto out;
 > --
 > 2.17.1
 >
