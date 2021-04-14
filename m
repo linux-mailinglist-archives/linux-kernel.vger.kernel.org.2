@@ -2,108 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB4135F7A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C47E35F7AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352280AbhDNP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352278AbhDNP3Y (ORCPT
+        id S1352313AbhDNP3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:29:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352306AbhDNP3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:29:24 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E808C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:03 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id x11so21743479qkp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w9Oa3BGE0nLdxfYSEJulYCQMQ2MOOmW16QvouCtA+Ws=;
-        b=Trw4QaVx4IDtynizdbhRMzOZ6NQrZOQkImB52ygkyeKLdYaiE1ZQofk/brnMhXSpSS
-         84gc4QfaWVXCoIWRgBQ+2U/V90JRhWBtDdeODEyCIwoQ7RTmvB+6v8tXi4ZltwjX7XbJ
-         UBthN1H+rm9GC2LQJeI14t5WmXgg2Zgh075As=
+        Wed, 14 Apr 2021 11:29:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618414154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MeWK7S4FSJDFGhFSe6NzT/9bbUJoX8iagCcLa/pL95g=;
+        b=MYMzPUNHJLXsfEhquSFaJc3FrOkbcAIeplHZl4w7ctCUqzhQUo9RMpeqGrEQN/Ryx9MRJk
+        RbaR+Sv87pU5Bdi8V5QwAdPQNJxOpUAgceC+m/6aDQzJJBSn7bLrMmIT753AOnUkPT+cOd
+        cKW/SBisQ49M2qHqIJYC63K/A9qORe8=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-g3STivb-NSOq8gK99bj_oA-1; Wed, 14 Apr 2021 11:29:13 -0400
+X-MC-Unique: g3STivb-NSOq8gK99bj_oA-1
+Received: by mail-qt1-f197.google.com with SMTP id 1-20020aed31010000b029019d1c685840so2160160qtg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w9Oa3BGE0nLdxfYSEJulYCQMQ2MOOmW16QvouCtA+Ws=;
-        b=NpY9eO0+hykQngQu1qNqdL2jqOiNtPIodPqjQrG8nC8dpw5qFROw0uWx9E61lvnkZD
-         ybFbW6KLOqDzmnYlZdJu8wmL4hY7MhOVu3KyY0Udht00esxrCoLv0Pi5IXxznnJM2GUt
-         YnYquNrD7+iUcMh9hdkwldbGl4xOJ1kZDSLAJiCMu76PvgUdsoS+2o2OAZgEKPefFlZn
-         ygabOWB4R0sjtfiQ1R0c0yUzEdzfEpxT2Ga2/3lgob+xR+qAf2fSDIm6h/N+ukXdGmM/
-         CW6rc/jDXdJHJHSjWcq409txEOIVtyUDNolfMSbwn80uadkmNkQUEiXBaMt7DGRL9lXW
-         dL8A==
-X-Gm-Message-State: AOAM531caO1uLYSSVnyPW84l8jWUeG3V2M30zUjrYydrNZizDuW/rj24
-        oc6xs9eyWFq9BAEGom17kHddV3MfUMrtKQ==
-X-Google-Smtp-Source: ABdhPJx0unGGXbUg5T9Xo6Y+oqfqM3ntkTn0vxSANCrVMelcpcEtmZeXYH/j7ZmVhAoCxpXXTX3TLg==
-X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr30535336qka.145.1618414142202;
-        Wed, 14 Apr 2021 08:29:02 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id 2sm8395552qko.134.2021.04.14.08.29.00
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=MeWK7S4FSJDFGhFSe6NzT/9bbUJoX8iagCcLa/pL95g=;
+        b=XYJa7z4G47HzUuwBc5uV7NceQ2Udjyyg/xsFuhv/DlD9T3PgjKlQgslty1jc7Bw+CX
+         yFFTgL7zZsQrX4DOAPcUmxX5S8ZhNPZjI6Hs35gtbJcsqiBxH6MNPKfkKbQWlk3cQUSB
+         JV6pw38gRGdoFKRhNmqauN2XOnT9iisNVSKXZoEoobxmR6qZRdtEDFvM1BippC+c/rnP
+         ABvT1RwAnfojiFYwYHyD3aELomVqyceQuNV/a1iSNdMjTE1VB57nvT62Uv7j6OqdXYtz
+         RKoPQTOOXLVqNSHgpeSt/78DlvjoVCgXSsXsIeq2CUPeaW0WtGMVjcRgHf6xynafN0Xm
+         PLYQ==
+X-Gm-Message-State: AOAM530RZFIL3/ihZe0O7anyrCa7eLJ26ARInsNCX55+jW8m5tnhRfPV
+        p9Xhr6o7/32B3cCo4VACv261wYgEmnGVAJGxLcBwv1r6F9w+OLOdYKQNA+QRw3ET8NGwwjiKCIG
+        zJQJxAoAEjRSvJaSB3mgHXCPX
+X-Received: by 2002:ad4:538a:: with SMTP id i10mr38685668qvv.9.1618414151567;
+        Wed, 14 Apr 2021 08:29:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxP2zEotmr81rgi5/eyGgnxNajj/C8MBL7fJk7ZrR0lMMWOY1AqoZeH+UyFVOPVQsjAXEsbSw==
+X-Received: by 2002:ad4:538a:: with SMTP id i10mr38685635qvv.9.1618414151269;
+        Wed, 14 Apr 2021 08:29:11 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a10sm12492404qkh.122.2021.04.14.08.29.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 08:29:01 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id k73so16289675ybf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:00 -0700 (PDT)
-X-Received: by 2002:a25:58d5:: with SMTP id m204mr55376026ybb.32.1618414140336;
- Wed, 14 Apr 2021 08:29:00 -0700 (PDT)
+        Wed, 14 Apr 2021 08:29:11 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] spi: Add DFL bus driver for Altera SPI Master
+To:     matthew.gerlach@linux.intel.com, hao.wu@intel.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yilun.xu@intel.com, jdelvare@suse.com, linux@roeck-us.net,
+        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
+        russell.h.weight@intel.com, broonie@kernel.org,
+        linux-spi@vger.kernel.org
+References: <20210413225835.459662-1-matthew.gerlach@linux.intel.com>
+ <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <559fdf6a-d019-6353-071e-f973ddc906a7@redhat.com>
+Date:   Wed, 14 Apr 2021 08:29:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
-In-Reply-To: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 14 Apr 2021 08:28:49 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
-Message-ID: <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
-Subject: Re: [PATCH v3] HID: i2c-hid: Skip ELAN power-on command after reset
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Harry Cutts <hcutts@chromium.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>,
-        Jingle <jingle.wu@emc.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Mon, Apr 12, 2021 at 6:20 PM Johnny Chuang
-<johnny.chuang.emc@gmail.com> wrote:
+On 4/13/21 3:58 PM, matthew.gerlach@linux.intel.com wrote:
+> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 >
-> Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
-
-Note that the "Fixes" tag actually belongs down at the end. It also
-shouldn't have a "." at the end. Presumably the maintainer can adjust
-this when landing?
-
-
-> For ELAN touchscreen, we found our boot code of IC was not flexible enough
-> to receive and handle this command.
-> Once the FW main code of our controller is crashed for some reason,
-> the controller could not be enumerated successfully to be recognized
-> by the system host. therefore, it lost touch functionality.
+> This patch adds a Device Feature List (DFL) bus driver for the
+> Altera SPI Master controller.  The SPI master is connected to an
+> Intel SPI Slave to Avalon Master Bridge inside an Intel MAX10
+> BMC Chip.
 >
-> Add quirk for skip send power-on command after reset.
-> It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+> v2: moved drivers/fpga/dfl-spi-altera.c to drivers/spi/spi-altera-dfl.c
+> ---
+>   drivers/spi/Kconfig          |   9 ++
+>   drivers/spi/Makefile         |   1 +
+>   drivers/spi/spi-altera-dfl.c | 222 +++++++++++++++++++++++++++++++++++++++++++
+does this need a MAINTAINER's entry ?
+>   3 files changed, 232 insertions(+)
+>   create mode 100644 drivers/spi/spi-altera-dfl.c
 >
-> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+> index 853cf4c..6c6798e 100644
+> --- a/drivers/spi/Kconfig
+> +++ b/drivers/spi/Kconfig
+> @@ -63,6 +63,15 @@ config SPI_ALTERA
+>   	help
+>   	  This is the driver for the Altera SPI Controller.
+>   
+> +config SPI_ALTERA_DFL
+> +	tristate "DFL driver for Altera SPI Controller"
+> +	depends on FPGA_DFL
+> +	select SPI_ALTERA
+> +	help
+> +	  This is a Device Feature List (DFL) bus driver for the
+> +	  Altera SPI master controller.  The SPI master is connected
+> +	  to a SPI slave to Avalon Master bridge in a Intel MAX BMC.
 
-This patch looks fine to me, thus:
+Last sentence is a little confusing with two 'masters', could this be
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+The SPI master is connected to the Avalon SPI bridge in the Intel Max10 BMC.
 
-I can confirm that after applying this patch I can recovery my borked
-touchscreen (which got borked by a failed firmware update ages ago):
+?
 
-Tested-by: Douglas Anderson <dianders@chromium.org>
+> +
+>   config SPI_AR934X
+>   	tristate "Qualcomm Atheros AR934X/QCA95XX SPI controller driver"
+>   	depends on ATH79 || COMPILE_TEST
+> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+> index 29fee71..2e348ea 100644
+> --- a/drivers/spi/Makefile
+> +++ b/drivers/spi/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_SPI_LOOPBACK_TEST)		+= spi-loopback-test.o
+>   
+>   # SPI master controller drivers (bus)
+>   obj-$(CONFIG_SPI_ALTERA)		+= spi-altera.o
+> +obj-$(CONFIG_SPI_ALTERA_DFL)		+= spi-altera-dfl.o
+>   obj-$(CONFIG_SPI_AR934X)		+= spi-ar934x.o
+>   obj-$(CONFIG_SPI_ARMADA_3700)		+= spi-armada-3700.o
+>   obj-$(CONFIG_SPI_ATMEL)			+= spi-atmel.o
+> diff --git a/drivers/spi/spi-altera-dfl.c b/drivers/spi/spi-altera-dfl.c
+> new file mode 100644
+> index 0000000..8ddfc5d
+> --- /dev/null
+> +++ b/drivers/spi/spi-altera-dfl.c
+> @@ -0,0 +1,222 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * DFL bus driver for Altera SPI Master
+> + *
+> + * Copyright (C) 2020 Intel Corporation, Inc.
+> + *
+> + * Authors:
+> + *   Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/stddef.h>
+> +#include <linux/errno.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/io.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/io-64-nonatomic-lo-hi.h>
+> +#include <linux/regmap.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/spi/altera.h>
+> +#include <linux/dfl.h>
+> +
+> +struct dfl_altera_spi {
+> +	void __iomem *base;
+> +	struct regmap *regmap;
+> +	struct device *dev;
+> +	struct platform_device *altr_spi;
+the read/write can take a while, is a lock needed ?
+> +};
+> +
+> +#define SPI_CORE_PARAMETER      0x8
+a prefix would like 'DFL_' would make this less likely to have namespace 
+issues.
+> +#define SHIFT_MODE              BIT_ULL(1)
+> +#define SHIFT_MODE_MSB          0
+> +#define SHIFT_MODE_LSB          1
+> +#define DATA_WIDTH              GENMASK_ULL(7, 2)
+> +#define NUM_CHIPSELECT          GENMASK_ULL(13, 8)
+> +#define CLK_POLARITY            BIT_ULL(14)
+> +#define CLK_PHASE               BIT_ULL(15)
+> +#define PERIPHERAL_ID           GENMASK_ULL(47, 32)
+> +#define SPI_CLK                 GENMASK_ULL(31, 22)
+> +#define SPI_INDIRECT_ACC_OFST   0x10
+> +
+> +#define INDIRECT_ADDR           (SPI_INDIRECT_ACC_OFST+0x0)
+checkpatch --strict complains here and similar, preferring spaces around 
+the '+'
+> +#define INDIRECT_WR             BIT_ULL(8)
+> +#define INDIRECT_RD             BIT_ULL(9)
+> +#define INDIRECT_RD_DATA        (SPI_INDIRECT_ACC_OFST+0x8)
+> +#define INDIRECT_DATA_MASK      GENMASK_ULL(31, 0)
+> +#define INDIRECT_DEBUG          BIT_ULL(32)
+> +#define INDIRECT_WR_DATA        (SPI_INDIRECT_ACC_OFST+0x10)
+> +#define INDIRECT_TIMEOUT        10000
+this does not have units of time, maybe rename to INDIRECT_RETRY_COUNT
+> +
+> +static int indirect_bus_reg_read(void *context, unsigned int reg,
+> +				 unsigned int *val)
+> +{
+> +	struct dfl_altera_spi *aspi = context;
+> +	void __iomem *base = aspi->base;
+> +	int loops;
+could initialize loop here
+> +	u64 v;
+> +
+> +	writeq((reg >> 2) | INDIRECT_RD, base + INDIRECT_ADDR);
+is input 'reg' checked elsewhere ?
+> +
+> +	loops = 0;
+> +	while ((readq(base + INDIRECT_ADDR) & INDIRECT_RD) &&
+> +	       (loops++ < INDIRECT_TIMEOUT))
+> +		cpu_relax();
+> +
+> +	if (loops >= INDIRECT_TIMEOUT) {
+> +		pr_err("%s timed out %d\n", __func__, loops);
+> +		return -ETIME;
+maybe -EBUSY ?
+> +	}
+> +
+> +	v = readq(base + INDIRECT_RD_DATA);
+> +
+> +	*val = v & INDIRECT_DATA_MASK;
+> +
+> +	return 0;
+> +}
+> +
+> +static int indirect_bus_reg_write(void *context, unsigned int reg,
+> +				  unsigned int val)
+> +{
+> +	struct dfl_altera_spi *aspi = context;
+> +	void __iomem *base = aspi->base;
+> +	int loops;
+> +
+> +	writeq(val, base + INDIRECT_WR_DATA);
+> +	writeq((reg >> 2) | INDIRECT_WR, base + INDIRECT_ADDR);
+> +
+> +	loops = 0;
+> +	while ((readq(base + INDIRECT_ADDR) & INDIRECT_WR) &&
+> +	       (loops++ < INDIRECT_TIMEOUT))
+> +		cpu_relax();
+> +
+> +	if (loops >= INDIRECT_TIMEOUT) {
+> +		pr_err("%s timed out %d\n", __func__, loops);
+> +		return -ETIME;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct regmap_config indirect_regbus_cfg = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+> +	.fast_io = true,
+> +	.max_register = 24,
+> +
+> +	.reg_write = indirect_bus_reg_write,
+> +	.reg_read = indirect_bus_reg_read,
+> +};
+> +
+> +static struct spi_board_info m10_bmc_info = {
+> +	.modalias = "m10-d5005",
+> +	.max_speed_hz = 12500000,
+> +	.bus_num = 0,
+> +	.chip_select = 0,
+> +};
+> +
+> +static struct platform_device *create_cntrl(struct device *dev,
+> +					    void __iomem *base,
+> +					    struct spi_board_info *m10_info)
+> +{
+could this function be inlined to probe ?
+> +	struct altera_spi_platform_data pdata;
+> +	struct platform_device_info pdevinfo;
+> +	u64 v;
+> +
+> +	v = readq(base + SPI_CORE_PARAMETER);
+move down two lines to before the if-checks that use it
+> +
+> +	memset(&pdata, 0, sizeof(pdata));
+> +	pdata.mode_bits = SPI_CS_HIGH;
+> +	if (FIELD_GET(CLK_POLARITY, v))
+> +		pdata.mode_bits |= SPI_CPOL;
+> +	if (FIELD_GET(CLK_PHASE, v))
+> +		pdata.mode_bits |= SPI_CPHA;
+> +
+> +	pdata.num_chipselect = FIELD_GET(NUM_CHIPSELECT, v);
+> +	pdata.bits_per_word_mask =
+> +		SPI_BPW_RANGE_MASK(1, FIELD_GET(DATA_WIDTH, v));
+> +
+> +	pdata.num_devices = 1;
+> +	pdata.devices = m10_info;
+> +
+> +	dev_dbg(dev, "%s cs %u bpm 0x%x mode 0x%x\n", __func__,
+> +		pdata.num_chipselect, pdata.bits_per_word_mask,
+> +		pdata.mode_bits);
+> +
+> +	memset(&pdevinfo, 0, sizeof(pdevinfo));
+> +
+> +	pdevinfo.name = "subdev_spi_altera";
+> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> +	pdevinfo.parent = dev;
+> +	pdevinfo.data = &pdata;
+> +	pdevinfo.size_data = sizeof(pdata);
+> +
+> +	return platform_device_register_full(&pdevinfo);
+> +}
+> +static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
+> +{
+> +	struct device *dev = &dfl_dev->dev;
+> +	struct dfl_altera_spi *aspi;
+> +
+> +	aspi = devm_kzalloc(dev, sizeof(*aspi), GFP_KERNEL);
+> +
+> +	if (!aspi)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(dev, aspi);
+> +
+> +	aspi->dev = dev;
+> +
+> +	aspi->base = devm_ioremap_resource(dev, &dfl_dev->mmio_res);
+> +
+> +	if (IS_ERR(aspi->base)) {
+> +		dev_err(dev, "%s get mem resource fail!\n", __func__);
+> +		return PTR_ERR(aspi->base);
+> +	}
+> +
+> +	aspi->regmap = devm_regmap_init(dev, NULL, aspi, &indirect_regbus_cfg);
+> +	if (IS_ERR(aspi->regmap))
+> +		return PTR_ERR(aspi->regmap);
+> +
+> +	aspi->altr_spi = create_cntrl(dev, aspi->base, &m10_bmc_info);
+
+it does not seem like this can fail for device reasons. is there a 
+sanity check on the reg values that could be done ?
+
+Tom
+
+> +
+> +	if (IS_ERR(aspi->altr_spi)) {
+> +		dev_err(dev, "%s failed to create spi platform driver\n",
+> +			__func__);
+> +		return PTR_ERR(aspi->base);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
+> +{
+> +	struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
+> +
+> +	platform_device_unregister(aspi->altr_spi);
+> +}
+> +
+> +#define FME_FEATURE_ID_MAX10_SPI        0xe
+> +
+> +static const struct dfl_device_id dfl_spi_altera_ids[] = {
+> +	{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
+> +	{ }
+> +};
+> +
+> +static struct dfl_driver dfl_spi_altera_driver = {
+> +	.drv	= {
+> +		.name       = "dfl-spi-altera",
+> +	},
+> +	.id_table = dfl_spi_altera_ids,
+> +	.probe   = dfl_spi_altera_probe,
+> +	.remove  = dfl_spi_altera_remove,
+> +};
+> +
+> +module_dfl_driver(dfl_spi_altera_driver);
+> +
+> +MODULE_DEVICE_TABLE(dfl, dfl_spi_altera_ids);
+> +MODULE_DESCRIPTION("DFL spi altera driver");
+> +MODULE_AUTHOR("Intel Corporation");
+> +MODULE_LICENSE("GPL v2");
+
