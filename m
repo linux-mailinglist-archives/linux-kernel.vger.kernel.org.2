@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A9435F92C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A0235F92F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352798AbhDNQnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:43:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhDNQnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 33BBD61154;
-        Wed, 14 Apr 2021 16:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618418576;
-        bh=HiaHo83UxCTv7AY9PP2ko6gjKORB1fnZL6keftudnpI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fLMbxWSNeue0x6h/GU5FhS0JATU9RhjhMUo03GlKGwukjWgbJMbhKacdibk658UyP
-         p1eYHnGHEN7sj1tS2xuc2CjsjLp8g4Wr919KTq9xcx1GMNZhJ2b8JG4IKRbWpcYW6U
-         VIQgmU6KOexies1ksT4Hod5bGOjxBDq1/PWPaZ3FOBBhdUznwNa19f/JiKtqEwHwG/
-         UxE7bK+fWB+/pkZ8ZqqsamMilpOL4ckIUz5Cc2CG49+9ATH7MiikO2WZPjfaXYRtmA
-         a1VcTy1z2C3et4luAd7R6GOqPGJOoTHGROt7EbzH09v++Ej5VPpVlfaEb49xrR5uYK
-         A69uxlq+hN4Ag==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27B4260CCF;
-        Wed, 14 Apr 2021 16:42:56 +0000 (UTC)
-Subject: Re: [GIT PULL]: dmaengine fixes for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YHcZ2Kylq+RuDzPg@vkoul-mobl.Dlink>
-References: <YHcZ2Kylq+RuDzPg@vkoul-mobl.Dlink>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YHcZ2Kylq+RuDzPg@vkoul-mobl.Dlink>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.12
-X-PR-Tracked-Commit-Id: ea9aadc06a9f10ad20a90edc0a484f1147d88a7a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c17a3066b4c1acdf36fa307faaa391f558ac0420
-Message-Id: <161841857610.15788.3753215321939337130.pr-tracker-bot@kernel.org>
-Date:   Wed, 14 Apr 2021 16:42:56 +0000
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        dma <dmaengine@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S232528AbhDNQpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:45:16 -0400
+Received: from mail-03.mail-europe.com ([91.134.188.129]:48972 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233976AbhDNQpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:45:15 -0400
+Date:   Wed, 14 Apr 2021 16:44:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1618418686;
+        bh=7SuPu6tI+XPCR0O8XUCWVN2D8iwekEcROS+xCcAAL+Y=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=HyoBmm1nPGsJZbclGiz85wEAglAOUGh+A5+ENwcjeLhxvXp08/PFJxwTlfRe1fSLh
+         Dj0NbH4Kys02HoqXnTs/Yzcd/rQBY0UkK8ciyAjTPQl3rcM5/XpwQ/iWtOjnZjF08J
+         DvXTjxN+l9fcRssVvyqDuMOuJV6V9tps/Q2ED3Qc=
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+From:   w4v3 <vv4v3@protonmail.com>
+Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Reply-To: w4v3 <vv4v3@protonmail.com>
+Subject: Re: "Reporting issues" document feedback
+Message-ID: <3x-mW2Aa7Iz_sCWB1nxpPelpI18fDYosCWTq0_3mkcpnkNC6-HTsmIZ9eCEqcSKzXvt7-F25btwz38vkxAQBRLRVsgUqxUZlU9a-ZR_XhMY=@protonmail.com>
+In-Reply-To: <CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com>
+References: <vaWPnw1Txo_MD5Sf-BnMmq3pBTkITza0W5p_jAi8JIy3hBAbCsKPXZ5g5IHKYGqK6zLjzUNgJ59xMCHvhREBUq6Vc1105b8yCIVDgaPABqE=@protonmail.com> <dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info> <wqM80O49houE3ZJHpxjcrNxijZ_h9pMjxZU2OCL-ZpsdwMhIVFcGXZb9qe93r2AY0qd0dB-94ZVQaF-Xb-i-zqX5DIO5S4C6UTBpVkxvszA=@protonmail.com> <CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Apr 2021 22:05:36 +0530:
+Alright, thanks for clarifying!
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.12
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c17a3066b4c1acdf36fa307faaa391f558ac0420
+Sent with ProtonMail Secure Email.
 
-Thank you!
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+On Wednesday, April 14, 2021 3:42 PM, Rafael J. Wysocki <rafael@kernel.org>=
+ wrote:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> On Wed, Apr 14, 2021 at 3:22 PM w4v3 vv4v3@protonmail.com wrote:
+>
+> > Hi Thorsten,
+> > Thanks for the quick and illuminating response :)
+> >
+> > > Links to your bug report and the thread on the mailing list would hav=
+e
+> > > helped here to understand better what's going on, but whatever, they =
+are
+> > > not that important.
+> >
+> > Here you go: https://bugzilla.kernel.org/show_bug.cgi?id=3D212643
+> > https://marc.info/?l=3Dlinux-acpi&m=3D161824910030600&w=3D2
+> >
+> > > But it should, otherwise the subsystem should remove the line startin=
+g
+> > > with B: ("bugs:" in the webview).
+> > > Rafael might be able to clarify things.
+> >
+> > > But afais it's appropriate there is a B: line: just a few weeks ago I
+> > > took a quick look at bugzilla and ACPI bugs in particular, and back t=
+hen
+> > > most of the bug reports there got handled by the maintainers. That's =
+why
+> > > I assume you were just unlucky and your report fall through the crack=
+s
+> > > (but obviously I might be wrong here). And maybe your report even did
+> > > help: the developer that fixed the issue might have seen both the bug
+> > > entry and the mailed report, but simply forget to close the former.
+> >
+> > Good to know. It does seem like many recent ACPI bug reports on bugzill=
+a
+> > have been processed by maintainers. Maybe it is the ACPI-subcomponent I
+> > chose for the bug: in Config-Tables, only two other bugs were submitted
+> > and they did not attract comments. Anyways, I understand now that it's
+> > not an issue with the document so thanks for forwarding it to Rafael.
+>
+> As a rule, ACPI bugs submitted through the BZ are processed by the
+> ACPI team (not necessarily by me in person, though), but the response
+> time may vary, so it's better to report urgent issues by sending
+> e-mail to linux-acpi@vger.kernel.org.
+>
+> Definitely issues where table dumps or similar are requested are best
+> handled in the BZ, so reporters can be asked to create a BZ entry for
+> a bug reported by e-mail anyway.
+>
+> If you are interested in the history (ie. what issues were reported in
+> the past), you need to look at both the BZ and the ml record.
+>
+> HTH
+
+
