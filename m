@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1F835EFD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB85835EFDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350126AbhDNIiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
+        id S231543AbhDNIjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346738AbhDNIiG (ORCPT
+        with ESMTP id S1350157AbhDNIi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:38:06 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE0BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:37:45 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id e14so30103717ejz.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dg8FS+bLDkB10N5Z5KnKd2eYRzDk9ID1rsN2vEPTbU4=;
-        b=GGOjZ7BVkPzalD3FUyVu39H4QrFG5tUQc1m1z9OkiFvXJSHHOUtcbZFJ2RMrgoL+M+
-         t/E5EH1PteIEwws9YYapeHD4xmlg+U+MSAJj8hbHRA1a+5XrbsECm7PJdbIZhcYmtzty
-         7ieyTaCKb5OfbrUuK1zqlam1HFoGG77x+btIa0uusnk5ImMtuWbcYqlyhYHDGl2CYj+b
-         KIDf5KtR/hqzWDo51x7EVHRbr9qaf0iYKTo4MvtfExqrx5FgJrBMrZIAi35Jgvz7v+By
-         wTK9LgjFUY/rZwvqg7GoCzMi2fStbj3qN3d12cb/GJumBG4kmscI5N3HG5B+bM0dm7Ld
-         sg3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dg8FS+bLDkB10N5Z5KnKd2eYRzDk9ID1rsN2vEPTbU4=;
-        b=MfEEgRmyjk0NKpLBYTwa+W8ELRxvMEmM5+7teu2f5q4TLkBy6M5+p8NdDGAp3w/bx3
-         k0NMGV2LwAkDRkdUvxo8c2RSyNEVJ72ejloh0Q9H8h1OjPOnRrD3WlHQ3oUbPCMiWQp1
-         Xil3LEiM5BMjz1webLJ8hyifTdMmNvM6gS5mnlWi6seqX1GbnMuo4/VYh8lYPZ1yy7Gg
-         FU/9SqCmUBvwZYq/sK7KzK1eqwgQMVOsXgxLjoOfS8mmpFMUVRf9zxYf6gHRWpeug2cR
-         f2FXwgKwQ/8I7tal7xR+9QVOq8nDrW5MnPAEGTnZJrid/qPl+mIztfTLPWcOMD7rD/TI
-         jIzQ==
-X-Gm-Message-State: AOAM533b1sL+kQcMGKTSMW70JK/zNTOkSRk6QJIlH4XaBKDUys0pwK5d
-        4zS83aXn4X4z3tSW4HdH2BLOVA==
-X-Google-Smtp-Source: ABdhPJzcX935JREkGggRLRsEljVM25IyhSty1cnoTr37gYdkGR5gD6pU1kOHq7KK12mn7gdmhJ8Mnw==
-X-Received: by 2002:a17:906:6789:: with SMTP id q9mr37394692ejp.295.1618389463848;
-        Wed, 14 Apr 2021 01:37:43 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id n14sm6148221ejy.90.2021.04.14.01.37.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:37:43 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 09:37:41 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-rtc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org
-Subject: Re: [PATCH V2 2/4] dt-bindings: mfd: Add compatible for pmk8350 rtc
-Message-ID: <20210414083741.GG4869@dell>
-References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
- <1617976766-7852-3-git-send-email-skakit@codeaurora.org>
+        Wed, 14 Apr 2021 04:38:26 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D11C061574;
+        Wed, 14 Apr 2021 01:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HOtc4Cl5BmOPZRqmjAtE1IxvnshDfxYTlqGmfr7o1nE=; b=BwF4H/P2hb8LfuzoAdXv9Wp9Es
+        BNHces+QXuyLvlSJ5+FSQeScHQtEIfqpgbDaVqFy7Ge+lgMWEMFs6Whl9ajZcc+K2LuviMV6+dpPd
+        dtZgw7fnI43BKmv19Ub7B7Jo9Qv03hRa5F6v+sBVyZnbWWoQ3qnkgiHS4L+T7J+WtD91ErdItBcVf
+        bcuHuN0gguJ7qEvj0lUhVLamEsNtiPr5+rI3uocgNqvt116V4I9FjypnB2OGtVUZhfkxKA1LlzO3m
+        Fs+tsvcT3QeclXBiRwzyE4cejhBDdMC2h27by3aAdEAdonNbOnSUhk4zJ30llp6d5bhCjfGNxpVp8
+        4qbJzL+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWb1w-00C0Hf-DL; Wed, 14 Apr 2021 08:37:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5236300033;
+        Wed, 14 Apr 2021 10:37:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 60B7D203CF7DB; Wed, 14 Apr 2021 10:37:46 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 10:37:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
+        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
+        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
+        mascasa@google.com, pcc@google.com, irogers@google.com,
+        oleg@redhat.com, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 00/10] Add support for synchronous signals on perf
+ events
+Message-ID: <YHap2v/pQJlFVE3W@hirez.programming.kicks-ass.net>
+References: <20210408103605.1676875-1-elver@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1617976766-7852-3-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <20210408103605.1676875-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 09 Apr 2021, satya priya wrote:
+On Thu, Apr 08, 2021 at 12:35:55PM +0200, Marco Elver wrote:
+> Marco Elver (9):
+>   perf: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
+>   perf: Support only inheriting events if cloned with CLONE_THREAD
+>   perf: Add support for event removal on exec
+>   signal: Introduce TRAP_PERF si_code and si_perf to siginfo
+>   perf: Add support for SIGTRAP on perf events
+>   selftests/perf_events: Add kselftest for process-wide sigtrap handling
+>   selftests/perf_events: Add kselftest for remove_on_exec
 
-> Add compatible string for pmk8350 rtc support.
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> Changes in V2:
->  - Moved this patch before conversion patches.
-> 
->  Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt | 1 +
->  1 file changed, 1 insertion(+)
+Thanks!, I've picked up the above 8 patches. Arnaldo, do you want to
+carry the last 2 patches or are you fine with me taking them as well?
 
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>   tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
+>   perf test: Add basic stress test for sigtrap handling
