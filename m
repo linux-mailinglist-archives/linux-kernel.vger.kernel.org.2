@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93BC35FB48
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BFF35FB4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353193AbhDNTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:00:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        id S1350347AbhDNTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhDNTAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:00:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D9B61222;
-        Wed, 14 Apr 2021 18:59:52 +0000 (UTC)
+        id S232347AbhDNTFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:05:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2758F61042;
+        Wed, 14 Apr 2021 19:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618426794;
-        bh=LYYO4HZeiyflbXu22XRjrSqjKF1aopb6IFR/toz6BrE=;
+        s=k20201202; t=1618427080;
+        bh=gwzQcRwbOgaN2/pzYunq2zGc557r7YyWb4fDr1lKMWk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FY4OSukw42A9w7mugJGLbvz/lUKmexZF/yWDTt2BWAbYW83VLNwWl0kylYrgH2skv
-         fzEq1f8xFrKkCmep36ljW9SZr7v/N8bcUw8FBFCmSQLoJO5e5o4Sq+qBwEkdHcTOIs
-         izaI3KuImeeCevmPFysG6ltEyNIZSkaEvmqRUW2WYHXXoyUweNGV5jUz2uNBTbqLQ2
-         JMoTP/zW++fruQbMxXh2pOH5E2tnZYreKPVfwUDQPQjdoSw0r33bWOgA/RBM293BgP
-         si6IhZObIvHGAMj1LCO3cIXqzWGWmWCvatDVrTlCeIp6yTMT6HY7f153kJ9uwh+ocd
-         P0/+CF6HuvFgw==
-Date:   Wed, 14 Apr 2021 11:59:48 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 03/13] Makefile: Generate CLANG_FLAGS even in GCC builds
-Message-ID: <YHc7pHjwmDJrkXqZ@archlinux-ax161>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414184604.23473-4-ojeda@kernel.org>
+        b=e6qnGByFvXV9VYanDYyrfo3Op2Qw3WPOuIw6m4nBoRdH78TMm5J07FTuZb7xBN/F3
+         +gmhwMhJW+bcamgtEbdcaQxHpg9EYvFJLvASLGuQXlzvqbswKpjQbTaDyeG3gVlUvo
+         fsBoVvMtenSLfi306gn5/M2KhyjleNqmFqYxXTUpZjbJ4/cEGUhR0SqX54cegyrBPD
+         QKooXGHCiNK4hWwFqLEQ0J0QAtNfNa+BDh4D28Bgw6qymymoHSh2yPGTOJbo/xz81b
+         IomMV3BQNBcHs6FDUTvcyVs5B8ImydLV3N3qNEloL3KnBJOFSt98cjV6VSIpNvE3ab
+         SZMgGVoShVL5w==
+Date:   Wed, 14 Apr 2021 12:04:38 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        squashfs-devel@lists.sourceforge.net,
+        Johannes Weiner <jweiner@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Yann Collet <cyan@fb.com>, David Sterba <dsterba@suse.cz>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, Petr Malat <oss@malat.biz>,
+        Chris Mason <clm@fb.com>, Nick Terrell <terrelln@fb.com>,
+        linux-crypto@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Kernel Team <Kernel-team@fb.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Niket Agarwal <niketa@fb.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [GIT PULL][PATCH v9 0/3] Update to zstd-1.4.10
+Message-ID: <YHc8xtmzKaazC6kP@gmail.com>
+References: <20210330225112.496213-1-nickrterrell@gmail.com>
+ <CANr2DbfL2B5Tx+k1AwVh-5dQZ+fNpucJKu9QVQat7QVvK-5AbQ@mail.gmail.com>
+ <CANr2DbfZ+fV+GN7CfDi1AFmfsdnX+kGnTA6kayEchtGwfoAE-A@mail.gmail.com>
+ <YHc16rz4Y/PkzNH1@gmail.com>
+ <CANr2Dbc+2rS7seuXGtU6Y+x0Qv+hrtwz71r+akKeQUXECZaJZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414184604.23473-4-ojeda@kernel.org>
+In-Reply-To: <CANr2Dbc+2rS7seuXGtU6Y+x0Qv+hrtwz71r+akKeQUXECZaJZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miguel,
+On Wed, Apr 14, 2021 at 11:53:51AM -0700, Nick Terrell wrote:
+> On Wed, Apr 14, 2021 at 11:35 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > On Wed, Apr 14, 2021 at 11:01:29AM -0700, Nick Terrell wrote:
+> > > Hi all,
+> > >
+> > > I would really like to make some progress on this and get it merged.
+> > > This patchset offsers:
+> > > * 15-30% better decompression speed
+> > > * 3 years of zstd bug fixes and code improvements
+> > > * Allows us to import zstd directly from upstream so we don't fall 3
+> > > years out of date again
+> > >
+> > > Thanks,
+> > > Nick
+> > >
+> >
+> > I think it would help get it merged if someone actually volunteered to maintain
+> > it.  As-is there is no entry in MAINTAINERS for this code.
+> 
+> I was discussing with Chris Mason about volunteering to maintain the
+> code myself.
+> We wanted to wait until this series got merged before going that
+> route, because there
+> was already a lot of comments about it, and I didn't want to appear to
+> be trying to bypass
+> any review or criticisms. But, please let me know what you think.
+> 
 
-On Wed, Apr 14, 2021 at 08:45:54PM +0200, ojeda@kernel.org wrote:
-> From: Miguel Ojeda <ojeda@kernel.org>
-> 
-> To support Rust under GCC-built kernels, we need to save the flags that
-> would have been passed if the kernel was being compiled with Clang.
-> 
-> The reason is that bindgen -- the tool we use to generate Rust bindings
-> to the C side of the kernel -- relies on libclang to parse C. Ideally:
-> 
->   - bindgen would support a GCC backend (requested at [1]),
-> 
->   - or the Clang driver would be perfectly compatible with GCC,
->     including plugins. Unlikely, of course, but perhaps a big
->     subset of configs may be possible to guarantee to be kept
->     compatible nevertheless.
-> 
-> This is also the reason why GCC builds are very experimental and some
-> configurations may not work (e.g. GCC_PLUGIN_RANDSTRUCT). However,
-> we keep GCC builds working (for some example configs) in the CI
-> to avoid diverging/regressing further, so that we are better prepared
-> for the future when a solution might become available.
-> 
-> [1] https://github.com/rust-lang/rust-bindgen/issues/1949
-> 
-> Link: https://github.com/Rust-for-Linux/linux/issues/167
-> 
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Co-developed-by: Finn Behrens <me@kloenk.de>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
-> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
->  Makefile | 27 ++++++++++++++++-----------
->  1 file changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index d4784d181123..9c75354324ed 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -559,26 +559,31 @@ ifdef building_out_of_srctree
->  	{ echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
->  endif
->  
-> -# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
-> -# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-> -# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-> -# and from include/config/auto.conf.cmd to detect the compiler upgrade.
-> -CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
-> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
->  
-> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->  ifneq ($(CROSS_COMPILE),)
-> -CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
-> +TENTATIVE_CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+I expect that most people would like to see a commitment to maintain this code
+before merging.  The usual way to do that is to add a MAINTAINERS entry.
 
-Shuffling this around will cause this issue (I never saw you CC'd on the
-thread).
+Otherwise it is 27000 lines of code dumped on other people to maintain.
 
-https://lore.kernel.org/r/f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de/
-
-Perhaps that patch should be added to this series?
-
-> -CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> +TENTATIVE_CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
->  GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
->  endif
->  ifneq ($(GCC_TOOLCHAIN),)
-> -CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
-> +TENTATIVE_CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
->  endif
->  ifneq ($(LLVM_IAS),1)
-> -CLANG_FLAGS	+= -no-integrated-as
-> +TENTATIVE_CLANG_FLAGS	+= -no-integrated-as
->  endif
-> -CLANG_FLAGS	+= -Werror=unknown-warning-option
-> +
-> +export TENTATIVE_CLANG_FLAGS
-> +
-> +# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
-> +# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-> +# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-> +# and from include/config/auto.conf.cmd to detect the compiler upgrade.
-> +CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
-> +
-> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> +CLANG_FLAGS	+= $(TENTATIVE_CLANG_FLAGS)
->  KBUILD_CFLAGS	+= $(CLANG_FLAGS)
->  KBUILD_AFLAGS	+= $(CLANG_FLAGS)
->  export CLANG_FLAGS
-> -- 
-> 2.17.1
-> 
+- Eric
