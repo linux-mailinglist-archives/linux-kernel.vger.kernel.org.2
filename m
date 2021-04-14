@@ -2,183 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0152035F2BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7667F35F2DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350615AbhDNLtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:49:19 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:19026 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350606AbhDNLtR (ORCPT
+        id S1349027AbhDNLwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233595AbhDNLwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:49:17 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 04A988004B0;
-        Wed, 14 Apr 2021 19:48:53 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V3] watchdog: mtk: support pre-timeout when the bark irq is available
-Date:   Wed, 14 Apr 2021 19:48:49 +0800
-Message-Id: <1618400929-17013-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGh9MSFZPHRkYQ0IYThhLSUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6PDo4Ez8XFhNPAksqPzNR
-        M0IaCyFVSlVKTUpDT0tLQkhPTU5PVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFOSkNMNwY+
-X-HM-Tid: 0a78d036799eb03akuuu04a988004b0
+        Wed, 14 Apr 2021 07:52:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02765C061574;
+        Wed, 14 Apr 2021 04:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6j2YFPpldChGlEhTkgAYG/8AUFiAqXWlLNjztkCHHPQ=; b=J5BS1O4q7ajQjzXd/LDJSC/n5W
+        nLaatbwhpGPw27uZHO96g6+/tyMJhvL6qzIDuTqVYDpLZWsiE1eH4gs+RGnwjwtZofj11rAp/QNXo
+        5zG9CPBgECBICOpGLmaKDiNFg88n/0HpOy3h47nUCcA+napEcZ6cGJeegmGXvIMAF1IlI0QKv3yBn
+        t6pmOrCaFDoZvjKu2kkCNcN34EEDw6FAeKgqXUk9Y5TV1rcrTtUeqHGfKDG51wcCgKv9JHy4zWIOT
+        ccnhwj9yHyFetqx/J/jBsogxkFb+x3kADp7eIqy6wSJt5ccTYHYk9f87uwXMNh3c7s66KKsbIgnZx
+        RoTlxVDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWe2m-0073tL-Rj; Wed, 14 Apr 2021 11:51:01 +0000
+Date:   Wed, 14 Apr 2021 12:50:52 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210414115052.GS2531743@casper.infradead.org>
+References: <20210410205246.507048-1-willy@infradead.org>
+ <20210410205246.507048-2-willy@infradead.org>
+ <20210411114307.5087f958@carbon>
+ <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414101044.19da09df@carbon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the bark interrupt as the pretimeout notifier if available.
+On Wed, Apr 14, 2021 at 10:10:44AM +0200, Jesper Dangaard Brouer wrote:
+> Yes, indeed! - And very frustrating.  It's keeping me up at night.
+> I'm dreaming about 32 vs 64 bit data structures. My fitbit stats tell
+> me that I don't sleep well with these kind of dreams ;-)
 
-By default, the pretimeout notification shall occur one second earlier
-than the timeout.
+Then you're going to love this ... even with the latest patch, there's
+still a problem.  Because dma_addr_t is still 64-bit aligned _as a type_,
+that forces the union to be 64-bit aligned (as we already knew and worked
+around), but what I'd forgotten is that forces the entirety of struct
+page to be 64-bit aligned.  Which means ...
 
-V2:
-- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
+        /* size: 40, cachelines: 1, members: 4 */
+        /* padding: 4 */
+        /* forced alignments: 1 */
+        /* last cacheline: 40 bytes */
+} __attribute__((__aligned__(8)));
 
-V3:
-- Modify the pretimeout behavior, manually reset after the pretimeout
-- is processed and wait until timeout.
+.. that we still have a hole!  It's just moved from being at offset 4
+to being at offset 36.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/watchdog/mtk_wdt.c | 62 ++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 57 insertions(+), 5 deletions(-)
+> That said, I think we need to have a quicker fix for the immediate
+> issue with 64-bit bit dma_addr on 32-bit arch and the misalignment hole
+> it leaves[3] in struct page.  In[3] you mention ppc32, does it only
+> happens on certain 32-bit archs?
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993..7bef1e3
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -25,6 +25,7 @@
- #include <linux/reset-controller.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
-+#include <linux/interrupt.h>
- 
- #define WDT_MAX_TIMEOUT		31
- #define WDT_MIN_TIMEOUT		1
-@@ -234,18 +235,46 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
- 	void __iomem *wdt_base = mtk_wdt->wdt_base;
- 	int ret;
- 
--	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
-+	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
- 	if (ret < 0)
- 		return ret;
- 
- 	reg = ioread32(wdt_base + WDT_MODE);
--	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	reg &= ~WDT_MODE_IRQ_EN;
-+	if (wdt_dev->pretimeout)
-+		reg |= WDT_MODE_IRQ_EN;
-+	else
-+		reg &= ~WDT_MODE_IRQ_EN;
- 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
- 	iowrite32(reg, wdt_base + WDT_MODE);
- 
- 	return 0;
- }
- 
-+static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
-+				   unsigned int timeout)
-+{
-+	wdd->pretimeout = timeout;
-+	return mtk_wdt_start(wdd);
-+}
-+
-+static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-+{
-+	struct watchdog_device *wdd = arg;
-+	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdd);
-+	void __iomem *wdt_base = mtk_wdt->wdt_base;
-+
-+	watchdog_notify_pretimeout(wdd);
-+	/*
-+	 * Guaranteed to be reset when the timeout
-+	 * expires under any situations
-+	 */
-+	mdelay(1000*wdd->pretimeout);
-+	writel(WDT_SWRST_KEY, wdt_base + WDT_SWRST);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static const struct watchdog_info mtk_wdt_info = {
- 	.identity	= DRV_NAME,
- 	.options	= WDIOF_SETTIMEOUT |
-@@ -253,12 +282,21 @@ static const struct watchdog_info mtk_wdt_info = {
- 			  WDIOF_MAGICCLOSE,
- };
- 
-+static const struct watchdog_info mtk_wdt_pt_info = {
-+	.identity	= DRV_NAME,
-+	.options	= WDIOF_SETTIMEOUT |
-+			  WDIOF_PRETIMEOUT |
-+			  WDIOF_KEEPALIVEPING |
-+			  WDIOF_MAGICCLOSE,
-+};
-+
- static const struct watchdog_ops mtk_wdt_ops = {
- 	.owner		= THIS_MODULE,
- 	.start		= mtk_wdt_start,
- 	.stop		= mtk_wdt_stop,
- 	.ping		= mtk_wdt_ping,
- 	.set_timeout	= mtk_wdt_set_timeout,
-+	.set_pretimeout	= mtk_wdt_set_pretimeout,
- 	.restart	= mtk_wdt_restart,
- };
- 
-@@ -267,7 +305,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_wdt_dev *mtk_wdt;
- 	const struct mtk_wdt_data *wdt_data;
--	int err;
-+	int err, irq;
- 
- 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
- 	if (!mtk_wdt)
-@@ -279,7 +317,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	if (IS_ERR(mtk_wdt->wdt_base))
- 		return PTR_ERR(mtk_wdt->wdt_base);
- 
--	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq > 0) {
-+		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-+							&mtk_wdt->wdt_dev);
-+		if (err)
-+			return err;
-+
-+		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
-+		mtk_wdt->wdt_dev.pretimeout = 1;
-+	} else {
-+		if (irq == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+
-+		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-+	}
-+
- 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
- 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
- 	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
-@@ -360,7 +413,6 @@ static struct platform_driver mtk_wdt_driver = {
- };
- 
- module_platform_driver(mtk_wdt_driver);
--
- module_param(timeout, uint, 0);
- MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds");
- 
--- 
-2.7.4
+AFAICT it happens on mips32, ppc32, arm32 and arc.  It doesn't happen
+on x86-32 because dma_addr_t is 32-bit aligned.
 
+Doing this fixes it:
+
++++ b/include/linux/types.h
+@@ -140,7 +140,7 @@ typedef u64 blkcnt_t;
+  * so they don't care about the size of the actual bus addresses.
+  */
+ #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+-typedef u64 dma_addr_t;
++typedef u64 __attribute__((aligned(sizeof(void *)))) dma_addr_t;
+ #else
+ typedef u32 dma_addr_t;
+ #endif
+
+> I'm seriously considering removing page_pool's support for doing/keeping
+> DMA-mappings on 32-bit arch's.  AFAIK only a single driver use this.
+
+... if you're going to do that, then we don't need to do this.
