@@ -2,77 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB85835EFDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D143E35EFDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhDNIjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S232046AbhDNIkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350157AbhDNIi0 (ORCPT
+        with ESMTP id S1350170AbhDNIii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:38:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D11C061574;
-        Wed, 14 Apr 2021 01:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HOtc4Cl5BmOPZRqmjAtE1IxvnshDfxYTlqGmfr7o1nE=; b=BwF4H/P2hb8LfuzoAdXv9Wp9Es
-        BNHces+QXuyLvlSJ5+FSQeScHQtEIfqpgbDaVqFy7Ge+lgMWEMFs6Whl9ajZcc+K2LuviMV6+dpPd
-        dtZgw7fnI43BKmv19Ub7B7Jo9Qv03hRa5F6v+sBVyZnbWWoQ3qnkgiHS4L+T7J+WtD91ErdItBcVf
-        bcuHuN0gguJ7qEvj0lUhVLamEsNtiPr5+rI3uocgNqvt116V4I9FjypnB2OGtVUZhfkxKA1LlzO3m
-        Fs+tsvcT3QeclXBiRwzyE4cejhBDdMC2h27by3aAdEAdonNbOnSUhk4zJ30llp6d5bhCjfGNxpVp8
-        4qbJzL+Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWb1w-00C0Hf-DL; Wed, 14 Apr 2021 08:37:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5236300033;
-        Wed, 14 Apr 2021 10:37:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 60B7D203CF7DB; Wed, 14 Apr 2021 10:37:46 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 10:37:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
-        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
-        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
-        mascasa@google.com, pcc@google.com, irogers@google.com,
-        oleg@redhat.com, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 00/10] Add support for synchronous signals on perf
- events
-Message-ID: <YHap2v/pQJlFVE3W@hirez.programming.kicks-ass.net>
-References: <20210408103605.1676875-1-elver@google.com>
+        Wed, 14 Apr 2021 04:38:38 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7506C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:14 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso10434973pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ziD1BQdNKZSqD9NFOROVnnc3R2EFM0orDAwFpUzsN4A=;
+        b=C0vWj0hcBIafvHaGDWKGXb8qFbK28K+6CTcbRx+jBhqGxVEenk0ZpfI0OEJ3GBjUn1
+         OI3le/p6rRWJtcT/v150Mb1TBw0aVJ4I4ujf8XZJ6QCEcWxfboN3sWqrCM1RMVPgD/7m
+         LGkG0VLXouLy5TRv1hH1BP9Xpzl7X+4Qz8jbA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ziD1BQdNKZSqD9NFOROVnnc3R2EFM0orDAwFpUzsN4A=;
+        b=Z9I/vcIhrUBE1UV6o94JXyx3HRg6ZW7rELl1bEbXy7WfnUU3PWNRiVnnxtQVogJjD9
+         tO/8M0IVZDgIO/+/CdZH6Lrutqb9XGauJqAYvjM7/COGrp9s50x5GHYAt56LMTflujIb
+         SBHEVCgjyd6yapCMa0du/y8OPM8Y2xTb568wS8sBWsOeFoxeUZ5pYpExgFKHaUQDLde4
+         sr6I6iLuccunDcPmRr0Bub+EHL7jmFWMOdS5p7JDUCthzba9q3cPlj0SOkYCl1LO35tv
+         O/Ihs7dCzJAyPBRwL0jEsvAzLMLRjurq8tYoHJjIQfST8oFOD4jStAIf1WHXLXyxpjzX
+         R6iA==
+X-Gm-Message-State: AOAM533GLA0Kgd8qY7/wUrcF29B7n4tTnG5tavkJBVw++l0ZBLF32RIu
+        yJUV8BlFPf+becy3MtcOkQijFA==
+X-Google-Smtp-Source: ABdhPJxSlTkPVFR0T8QT7aqFYNKg9cTSJzvySRAavLQ24KU4Uo3AyiacyaFpCBzs8QBA2CP0H23BOA==
+X-Received: by 2002:a17:902:f2d1:b029:eb:2e32:8804 with SMTP id h17-20020a170902f2d1b02900eb2e328804mr7489637plc.40.1618389494389;
+        Wed, 14 Apr 2021 01:38:14 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:bae3:4af0:9792:1539])
+        by smtp.gmail.com with ESMTPSA id g24sm8901582pfh.164.2021.04.14.01.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 01:38:13 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v18 0/5] add power control in i2c
+Date:   Wed, 14 Apr 2021 16:38:04 +0800
+Message-Id: <20210414083809.1932133-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408103605.1676875-1-elver@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 12:35:55PM +0200, Marco Elver wrote:
-> Marco Elver (9):
->   perf: Apply PERF_EVENT_IOC_MODIFY_ATTRIBUTES to children
->   perf: Support only inheriting events if cloned with CLONE_THREAD
->   perf: Add support for event removal on exec
->   signal: Introduce TRAP_PERF si_code and si_perf to siginfo
->   perf: Add support for SIGTRAP on perf events
->   selftests/perf_events: Add kselftest for process-wide sigtrap handling
->   selftests/perf_events: Add kselftest for remove_on_exec
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-Thanks!, I've picked up the above 8 patches. Arnaldo, do you want to
-carry the last 2 patches or are you fine with me taking them as well?
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
->   tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
->   perf test: Add basic stress test for sigtrap handling
+Changes since v17:
+ - Add a patch to fix unbalanced regulator disabling.
+ - Add dts patch.
+
+Changes since v16:
+ - request regulator in device instead of in the core.
+ - control regulator only if it's provided.
+
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
+
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+        [... snip ...]
+
+Bibby Hsieh (1):
+  i2c: core: support bus regulator controlling in adapter
+
+Hsin-Yi Wang (4):
+  dt-binding: i2c: mt65xx: add vbus-supply property
+  i2c: mediatek: mt65xx: add optional vbus-supply
+  misc: eeprom: at24: check suspend status before disable regulator
+  arm64: dts: mt8183: add supply name for eeprom
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
+ .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  4 +
+ .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  4 +
+ .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  4 +
+ drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
+ drivers/i2c/i2c-core-base.c                   | 88 +++++++++++++++++++
+ drivers/misc/eeprom/at24.c                    |  6 +-
+ include/linux/i2c.h                           |  2 +
+ 8 files changed, 114 insertions(+), 2 deletions(-)
+
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
