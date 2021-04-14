@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35BE35F644
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DC535F64B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhDNOfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S233830AbhDNOja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhDNOfi (ORCPT
+        with ESMTP id S231678AbhDNOjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:35:38 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB92C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:35:16 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id v13so1268439ilj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2rbXicCAr8vD+feC/9JhEPaSLkL44d68CS0R7zJKVxY=;
-        b=hEUjns1QGUe9hO2hoejJrRwZPEIjpifBEJDMGjE71lvLMG3wCP4ayf8yeetHwOrBLn
-         SZFrt0tVnp6XeO2vmAN20wXb/LfZEFZH5t62jn/mYvVPBf55tw4UixdpuI4TjimH9QiW
-         THDaF4uAun6+vww12gQSxvamWIYPqGhQzq4Ko=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2rbXicCAr8vD+feC/9JhEPaSLkL44d68CS0R7zJKVxY=;
-        b=OWkdUNpJVvWP+Ub4y2+wxynQLlgNARBwkhTfmeNAqjyNkD93HsL+oTtBEgXrxghHA/
-         JxHZH8xMc5/w7l1sCRIfAiFDZ18OyrVK9raEnPYyGvb4epA4IgmH9K/LpY2kJOyfvdBa
-         ESXlk/uV3s20AvOT7tKb9R/e6Ob2VuPjdqJRO1JQnLpFcvjOKau5UDyyRQrxkFoIvImP
-         UO9LrMGYagW+NWcGTl4gFPGfDPj3GCYDCkcFdl899caIC3MVWhUVhe1HxNYCDqPOjNw6
-         hGZB8ZVkdjGw8zuU6277cQp5aSGjqXKczL+lbwYmPg1ag2W3fhWx3EZqSGy7FXUVo8ps
-         nmzQ==
-X-Gm-Message-State: AOAM5309TgPYD+UVexr+ccvakFbas8FCMwXk0gAo4G+GXTz5sb5Bm28B
-        rCaoxUzSleZFLj76LN0Mtd3ynQ==
-X-Google-Smtp-Source: ABdhPJxgAKwab2DYZQHYvNRaf7til72OiIr8070gbCI5ZDj1UeVcKG4GIweVUT0I9E7hmkBo64gmkw==
-X-Received: by 2002:a92:ab01:: with SMTP id v1mr29484106ilh.230.1618410915925;
-        Wed, 14 Apr 2021 07:35:15 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id o6sm8257245ioa.21.2021.04.14.07.35.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 07:35:15 -0700 (PDT)
-Subject: Re: [PATCH] staging: greybus: Match parentheses alignment
-To:     Joe Perches <joe@perches.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     johan@kernel.org, elder@kernel.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-References: <20210406124259.GA96537@zhans> <YGxhrLZPIPjILWUH@kroah.com>
- <7d7be8bcc0e80d826083890ed7791070ad25e603.camel@perches.com>
- <1607b040-6bc4-9a58-ae81-4ea0adf5885d@ieee.org>
- <b22ffa716ee871f7e09ad7321213a897156edab0.camel@perches.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <78c88472-9ed9-bade-407c-23bd557f19bb@ieee.org>
-Date:   Wed, 14 Apr 2021 09:35:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 14 Apr 2021 10:39:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36ED2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0Sv9NEP22wjna5CIpFfxEXT3qRzPSodaVUOesDxk1QA=; b=VLkGN1vJjSHuydMty0NSFfPDnq
+        avZRQ4ysQU5wSO8a8yVkJqe6H5ZsDqXUGlxnLpeH+8sLO8LBS7sdU6I64XNB8GUnn0HH3aJIQxZMd
+        LvjncF+hpEmIgxElClojr6YNbkmIhgzlyUfUQ02+eOnW5G0zWLrFmmYms3I/yfVF4YsNJa8ZWcsu1
+        m7xA6Sq8ZeNzmQUxfYZexyEceaK9rqjr1VWRzYgfZxcv51N8LnLrWqP+HOSf+4VvxTdjwpj5ePMOw
+        kXrXk6zE9M0TqHymq07CJGeaCU67MmcmQjpIvbSKFpr2C4KzHpGfh3rlYrKKnPXr8lfs1E1Odbm8b
+        YKFKDqLA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWgd0-007EGl-DK; Wed, 14 Apr 2021 14:36:29 +0000
+Date:   Wed, 14 Apr 2021 15:36:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Alex Shi <alexs@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Rik van Riel <riel@surriel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v2 10/16] mm: multigenerational lru: mm_struct list
+Message-ID: <20210414143626.GT2531743@casper.infradead.org>
+References: <20210413065633.2782273-1-yuzhao@google.com>
+ <20210413065633.2782273-11-yuzhao@google.com>
 MIME-Version: 1.0
-In-Reply-To: <b22ffa716ee871f7e09ad7321213a897156edab0.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413065633.2782273-11-yuzhao@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 9:29 AM, Joe Perches wrote:
-> On Wed, 2021-04-14 at 08:17 -0500, Alex Elder wrote:
->> Perhaps (like the -W options for GCC) there
->> could be a way to specify in a Makefile which checkpatch
->> messages are reported/not reported?  I don't claim that's
->> a good suggestion, but if I could optionally indicate
->> somewhere that "two consecutive blank lines is OK for
->> Greybus" (one example that comes to mind) I might do so.
+On Tue, Apr 13, 2021 at 12:56:27AM -0600, Yu Zhao wrote:
+> In order to scan page tables, we add an infrastructure to maintain
+> either a system-wide mm_struct list or per-memcg mm_struct lists.
+> Multiple threads can concurrently work on the same mm_struct list, and
+> each of them will be given a different mm_struct.
 > 
-> checkpatch already has --ignore=<list> and --types=<list>
-> for the various classes of messages it emits.
-> 
-> see: $ ./scripts/checkpatch.pl --list-types --verbose
-> 
-> Dwaipayan Ray (cc'd) is supposedly working on expanding
-> the verbose descriptions of each type.
-> 
+> This infrastructure also tracks whether an mm_struct is being used on
+> any CPUs or has been used since the last time a worker looked at it.
+> In other words, workers will not be given an mm_struct that belongs to
+> a process that has been sleeping.
 
-That's awesome, I wasn't aware of that.
+This seems like a great use for an allocating XArray.  You can use a
+search mark to indicate whether it's been used since the last time a
+worker looked at it.
 
-Any suggestions on a standardized way to say "in this
-subtree, please provide these arguments to checkpatch.pl"?
-
-I can probably stick it in a README file or something,
-but is there an existing best practice?
-
-Thanks.
-
-					-Alex
