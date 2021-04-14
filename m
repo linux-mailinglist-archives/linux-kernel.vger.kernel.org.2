@@ -2,119 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C8B35FD31
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB0135FD3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhDNVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        id S232720AbhDNVXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhDNVTm (ORCPT
+        with ESMTP id S232036AbhDNVXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:19:42 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E50C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:20 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id r9so33574818ejj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:20 -0700 (PDT)
+        Wed, 14 Apr 2021 17:23:14 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6341FC061574;
+        Wed, 14 Apr 2021 14:22:51 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id w3so33621928ejc.4;
+        Wed, 14 Apr 2021 14:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Lpc6RYLWLDEpwLOi/hV46x6VxBnwTNow/+x2BqXaIi0=;
-        b=KCkADvu+U/VtADJMTHsn6p3YX696ldK3wIux/PsGDVNiLSvvNK+GVr4kVrLyuDr4E6
-         /Tlbu6T2xilWNUHwgDmNeiBY4SiCKt3vz2pL6P7KF+/zBqDBXyOrLD2XgVu+XFQXsBsZ
-         +Vq00aXLVJ79n1rpyTlcjoUZVUm+0qBwWL8ruvPfQ9LdnsU5hGSoiA7yBOs3UwV1Fn2a
-         Pm9zo+nS8j0xDE8nY3sbdTC1YGOVew4gJO9td/YpF2uLO8orawhLI1kFHhk90umnerht
-         uz1/zVBTXCLw5A04psJKetRSR2terRyQSR4PD9+qN+bEFpmAvG5CMvTnbZNPp0m3Fzil
-         KvYQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L8jfAogNeKCWWv1zaa7om4rEu/mAS7YNOdM/85EuRkA=;
+        b=Ap2aOflASrspeVeXAvULF6WN1yH4NdL+eDp0qD/X2fuimESfwiAimvQhAwSHbi7szR
+         uZCgSMI3repBxlgBe8x8Jf6AGffcXhlpHlR6mGheX/sbBoR0EsPS73u2Z/VDFnyWL4y3
+         UMGTi/U+66z2tDq8zv3g492xZguOi1bHkNnpIo9vDZnAxCvcmKADELdal1v/3gphTY8d
+         jiD0iq5NGTlTAGpn31IRTyvu1y2+isNH6hcdy3yowH/0+tF/IwdA158xfmygpp2iHiSd
+         GLgLltz1DD52TBcaiGVQfsRn14NI0pgX4P+dAJLIsI6rrDCg59rFqJ2obuD01II+X/7z
+         syxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Lpc6RYLWLDEpwLOi/hV46x6VxBnwTNow/+x2BqXaIi0=;
-        b=DPAx+k22tr0OdqAlnjxkkJSQK8GKKG9/URlK1kbroyAAyL1ZIaxYFiuD/wgaKwwe4C
-         kF7vYFGl4SZ0aVGKZoUW9tBBYebmH0mE65xLofIB5Df0JdZe/GKnM6/5iBu+FwEzIY+b
-         WyVckDMrzAgmCyC2k0V/OHmUtiblZ82VAtyJ3zUdGT1rF1M3Zg2GlMHNZS0WdaFcIg4Y
-         r1y92WuG2NadnpOciw1+A5QH8CQzGxKHCWB+TxI+zIJiL0Wz2syRAYelyo3Ttx0myvYD
-         uxzjrdhwN/ACkSrYVlaBbj5vw3faMdJH2Z8HPQtlBGPQZNpdtKoPY1mNzFnGlFm/iT/k
-         jVrw==
-X-Gm-Message-State: AOAM5311XnTyCm+tpczlKGM4lrChtdBZWEpDUQl3SL2m9LDOYooBY4bR
-        oazUv4xtyw+pNORBGmvVQ6b0Pb3u0HlUuQ==
-X-Google-Smtp-Source: ABdhPJwIg0OtmR6Xln9tsg2C1Q81TAVOcGw3LZ40p0AmzGLangViKlrU1nTARl6n/KzDOA+/UgW5lw==
-X-Received: by 2002:a17:906:fb90:: with SMTP id lr16mr66148ejb.173.1618435158908;
-        Wed, 14 Apr 2021 14:19:18 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id e20sm412752ejy.66.2021.04.14.14.19.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L8jfAogNeKCWWv1zaa7om4rEu/mAS7YNOdM/85EuRkA=;
+        b=EFNL9dlQjQyuwgS3LLPHyFzrMtACYchP7PTgtXgvuDsJspj30lEkWLoRqIXz51TdGD
+         fxRSCuzZdhQCZMLNRU5ZLyvMeiCX32+o8XqhX99DngJJprz2ZiZY0BZ24K29AohvgZ22
+         G4ykDqpgjil2yUMXSg68MFUOLrcuiHYUJfnlOoNoRm/c1tc3TpuEXK+s+diAWzJ/R9Ik
+         Wm+paUOwho7EYeWnu6T467TpyuPGTP9jbI/dsTFmt+dTYyXULMsLCcvvf8QUn7wQXFOn
+         6F5F31DFujhCyMtlUByQ6g1vP3PaqOOKXGoOqNWBgjfHAixCIsmK1Ez46xiFh7n2bMfQ
+         9vNg==
+X-Gm-Message-State: AOAM533ppVUDmdweBq1jmCpkGNvlnSlWokKRoLcjdUzuckHG0iyTJ5ny
+        ODcMwJX9BE1BQlxbUQgkLeviTKWdgrsifBIn
+X-Google-Smtp-Source: ABdhPJyhnIM/TVGVyeHj2rd2daFjwSwt0tqMcoJ49N04lvb8YO1MbOJ6zdT+H/+POTsRRX2cqVQI1w==
+X-Received: by 2002:a17:907:3f08:: with SMTP id hq8mr116060ejc.90.1618435370199;
+        Wed, 14 Apr 2021 14:22:50 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.gmail.com with ESMTPSA id t7sm586187edq.42.2021.04.14.14.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 14:19:18 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 22:19:16 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick
- with const
-Message-ID: <20210414211916.GS4869@dell>
-References: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
- <20210326145129.GB2916463@dell>
- <20210414171319.GQ4869@dell>
- <YHcr144krHDay72g@smile.fi.intel.com>
+        Wed, 14 Apr 2021 14:22:49 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     ulf.hansson@linaro.org, wsa+renesas@sang-engineering.com,
+        adrian.hunter@intel.com, yoshihiro.shimoda.uh@renesas.com
+Cc:     beanhuo@micron.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Let sanitize not retry in case of timeout/failure
+Date:   Wed, 14 Apr 2021 23:22:34 +0200
+Message-Id: <20210414212236.346813-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YHcr144krHDay72g@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021, Andy Shevchenko wrote:
+From: Bean Huo <beanhuo@micron.com>
 
-> On Wed, Apr 14, 2021 at 06:13:19PM +0100, Lee Jones wrote:
-> > On Fri, 26 Mar 2021, Lee Jones wrote:
-> > 
-> > > On Fri, 26 Mar 2021, Andy Shevchenko wrote:
-> > > 
-> > > > As Linus rightfully noticed, the driver plays dirty trick with const,
-> > > > i.e. it assigns a place holder data structure to the const field
-> > > > in the MFD cell and then drops the const by explicit casting. This is
-> > > > not how it should be.
-> > > > 
-> > > > Assign local pointers of the cell and resource to the respective
-> > > > non-const place holders in the intel_quark_i2c_setup() and
-> > > > intel_quark_gpio_setup().
-> > > > 
-> > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > > ---
-> > > > v2: eliminated bar parameter (Lee)
-> > > >  drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
-> > > >  1 file changed, 12 insertions(+), 14 deletions(-)
-> > > 
-> > > Neat.
-> > > 
-> > > Applied, thanks.
-> > 
-> > Am I still missing patches from you Andy?
-> 
-> Patches for fixes should be applied to for-next as well. I don't know why with
-> my patches it diverged.
-> 
-> I have already commented on this when kbuild bot complained.
-> 
-> So,
-> 
-> 	git checkout for-mfd-next
-> 	git merge for-mfd-fixes
-> 
-> or equivalent (cherry-pick) will fix that.
 
-Ah, it's in -rc5.  Very good.  Thanks for the explanation.
+Bean Huo (2):
+  mmc: core: Add a retries parameter to __mmc_switch function
+  mmc: core: Let sanitize not retry in case of timeout/failure
+
+ drivers/mmc/core/mmc.c     | 22 +++++++++++-----------
+ drivers/mmc/core/mmc_ops.c | 11 ++++++-----
+ drivers/mmc/core/mmc_ops.h |  2 +-
+ 3 files changed, 18 insertions(+), 17 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
