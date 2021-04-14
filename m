@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE03B35F9E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D6935F9F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351013AbhDNRaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350752AbhDNRaE (ORCPT
+        id S233568AbhDNRbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:31:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54748 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350698AbhDNRbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:30:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF94AC061346
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:29:40 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id r13so6838408pjf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=70dSAhdvNf9rW7naVyB8FacZo/tKpmgYTIzZpzN71Cs=;
-        b=LsiMLszNVSqTMFSOmT7Vt7BL2HWjYpQnn9/Ah8Ahmt14VXi38iwnxuRRnAMd7nV+F4
-         L8OiYKIW4vYpw8N0fUeTwgUCiDMq5+HbPF+3sOym2H36ZFwtvq4PnCKSeplaTzdczwh+
-         M1/M+ijlrnFtXNjeEsgG7aN63y8Ce7LLt8uSE=
+        Wed, 14 Apr 2021 13:31:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618421482;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pwu8ITVpaktX/oaFXebOFcED+CIuIn8065SfkxgfWGI=;
+        b=foQvjc3s0ZEtrldIiYePQl5xO747Hgz0vu3XoGP1TESxsTOaU0pU4qU6w9KNZzl+jEFwxl
+        83ed0eLAcxRthubRE+GmYpo+2WGg9UYKaDYLdc+ZUfqtu8cjb8/5JYHTOJGtJ8Wt/hO77O
+        mhgfRvLkrafo9ddZhkIFTWT38lA+cM0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-CQdCdmyNPYaUUY8SfeIT7A-1; Wed, 14 Apr 2021 13:31:21 -0400
+X-MC-Unique: CQdCdmyNPYaUUY8SfeIT7A-1
+Received: by mail-qk1-f197.google.com with SMTP id o4so4954878qkg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:31:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=70dSAhdvNf9rW7naVyB8FacZo/tKpmgYTIzZpzN71Cs=;
-        b=G6FBmg8po7Sj+hKysMgPOn5Pcvn/bRBAM4jmIz1Bp0YlnOcXwf/iVGiG+26ycIp2yG
-         tffu0+0Qp8Dw9WvjQ0/463N1ZToAnUsGAEObOUUSxr8n+v73NDw5XthUYPu9G4U40o3M
-         rDS7SLq8837utDFqYnldwKQu3B/arQElLTBjMO1HCpotsX6s/713yMjTzr5uq+pS1+4m
-         MiWQ0CIo6za0/KXnWYW5BAt/qdIOlThvc/suOdtcMNy6PQgEGF8blkURrPvHwkkOy1+p
-         spTYj6FYs/xMAK10ghstFHgirQR2oDeymrVusxxUF6ZvYbtwf1V6y3JqS2fWyh2u33cW
-         4tJQ==
-X-Gm-Message-State: AOAM530H212q9VesZ+nI/rMfaaPV7As67FYLW2EUPunHJIBc45qGHREF
-        afVIWxOUceJZbVVR8qa2dLGiIKRqF18uug==
-X-Google-Smtp-Source: ABdhPJwqy6xfsxSkXZwh4yhPlR+yx5Kxrr/lleQqawAAaqaYA9AZc2k7rgE80MSaJDQAOD1ejSDS8w==
-X-Received: by 2002:a17:90a:ca83:: with SMTP id y3mr4896192pjt.191.1618421380273;
-        Wed, 14 Apr 2021 10:29:40 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:bae3:4af0:9792:1539])
-        by smtp.gmail.com with ESMTPSA id e31sm63460pjk.4.2021.04.14.10.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 10:29:39 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: [PATCH v19 6/6] drm/i915/selftests: Rename functions names
-Date:   Thu, 15 Apr 2021 01:29:16 +0800
-Message-Id: <20210414172916.2689361-7-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-In-Reply-To: <20210414172916.2689361-1-hsinyi@chromium.org>
-References: <20210414172916.2689361-1-hsinyi@chromium.org>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Pwu8ITVpaktX/oaFXebOFcED+CIuIn8065SfkxgfWGI=;
+        b=fyyIkFgT8BjKok7FLE9VEriiPvKZhbB4J0L5v+ulojfr39RyptSqy8GA8yHUVzYJbV
+         xD2P01jPXI/5qAz1MO1JAoXOctUCicv4vyTMg5qFE05LVKXI+88VJaWK9WMcPxOv9jCD
+         Jv5e0TQ8d1n9BhpeP2iO2URGIAtn8bVmN35abiZs05Wc4JeRQLELlGzdYTSfY8PCY2sQ
+         0T+56pLeAuOIlREpPgOaF1Nwct/jWRXYwBZoOD8HNq9hglSf/MpEEiGKTKz1t4pj8GBK
+         ZFrbMwYEcjmyYjg7LUKUNh2nCIK3xqBW90rHvo+6WKrhQ4lzAbCA7USlWbbGcdAq22Km
+         G4HQ==
+X-Gm-Message-State: AOAM530X/S0RyeFzfURVw2y/4GqVRt+mIbu//PBzEgZ1K3xSEXPU83eu
+        rq7gzQHCbiTRsKuc8c46J+nwyyRF+6gTia+TEzWw4Uy8VQyQD07irXCRhUXg0b1jZskebXzI6O5
+        pKxl0zb1IubPAyo3yoHG4oq0H
+X-Received: by 2002:ae9:dcc1:: with SMTP id q184mr6147240qkf.482.1618421480631;
+        Wed, 14 Apr 2021 10:31:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRXvclwrtNw0vyg4pKHWPDmETRkr+Mf1wxudR7KTzhxmhPecsOFB7lkLfuIC0V32mXc/loLw==
+X-Received: by 2002:ae9:dcc1:: with SMTP id q184mr6147223qkf.482.1618421480434;
+        Wed, 14 Apr 2021 10:31:20 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id t17sm18505qtr.42.2021.04.14.10.31.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 10:31:19 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [External] : Re: [PATCH v14 4/6] locking/qspinlock: Introduce
+ starvation avoidance into CNA
+To:     Andi Kleen <ak@linux.intel.com>, Waiman Long <llong@redhat.com>
+Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, will.deacon@arm.com,
+        arnd@arndb.de, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+References: <20210401153156.1165900-1-alex.kogan@oracle.com>
+ <20210401153156.1165900-5-alex.kogan@oracle.com>
+ <87mtu2vhzz.fsf@linux.intel.com>
+ <CA1141EF-76A8-47A9-97B9-3CB2FC246B1A@oracle.com>
+ <4a9dbfa7-db68-a2dc-9018-a5b74f0f421c@redhat.com>
+ <20210414172602.GW3762101@tassilo.jf.intel.com>
+Message-ID: <6c968acd-dda2-ed1f-6582-b7811030761e@redhat.com>
+Date:   Wed, 14 Apr 2021 13:31:17 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414172602.GW3762101@tassilo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_resume and pm_suspend might be conflict with the ones defined in
-include/linux/suspend.h. Rename pm_resume{suspend} to
-i915_pm_resume{suspend} since they are only used here.
+On 4/14/21 1:26 PM, Andi Kleen wrote:
+>> The CNA code, if enabled, will be in vmlinux, not in a kernel module. As a
+>> result, I think a module parameter will be no different from a kernel
+>> command line parameter in this regard.
+> You can still change it in /sys at runtime, even if it's in the vmlinux.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/gpu/drm/i915/selftests/i915_gem.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I see, thank for the clarification.
 
-diff --git a/drivers/gpu/drm/i915/selftests/i915_gem.c b/drivers/gpu/drm/i915/selftests/i915_gem.c
-index dc394fb7ccfa..525afda9d31f 100644
---- a/drivers/gpu/drm/i915/selftests/i915_gem.c
-+++ b/drivers/gpu/drm/i915/selftests/i915_gem.c
-@@ -94,7 +94,7 @@ static int pm_prepare(struct drm_i915_private *i915)
- 	return 0;
- }
- 
--static void pm_suspend(struct drm_i915_private *i915)
-+static void i915_pm_suspend(struct drm_i915_private *i915)
- {
- 	intel_wakeref_t wakeref;
- 
-@@ -116,7 +116,7 @@ static void pm_hibernate(struct drm_i915_private *i915)
- 	}
- }
- 
--static void pm_resume(struct drm_i915_private *i915)
-+static void i915_pm_resume(struct drm_i915_private *i915)
- {
- 	intel_wakeref_t wakeref;
- 
-@@ -152,12 +152,12 @@ static int igt_gem_suspend(void *arg)
- 	if (err)
- 		goto out;
- 
--	pm_suspend(i915);
-+	i915_pm_suspend(i915);
- 
- 	/* Here be dragons! Note that with S3RST any S3 may become S4! */
- 	simulate_hibernate(i915);
- 
--	pm_resume(i915);
-+	i915_pm_resume(i915);
- 
- 	err = switch_to_context(ctx);
- out:
-@@ -192,7 +192,7 @@ static int igt_gem_hibernate(void *arg)
- 	/* Here be dragons! */
- 	simulate_hibernate(i915);
- 
--	pm_resume(i915);
-+	i915_pm_resume(i915);
- 
- 	err = switch_to_context(ctx);
- out:
--- 
-2.31.1.295.g9ea45b61b8-goog
+Cheers,
+Longman
 
