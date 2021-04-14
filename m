@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA5635FB24
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C7C35FB25
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhDNSy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        id S234753AbhDNSyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhDNSyY (ORCPT
+        with ESMTP id S230398AbhDNSyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:54:24 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2AE1C061574;
-        Wed, 14 Apr 2021 11:54:02 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id n12so23280678ybf.8;
-        Wed, 14 Apr 2021 11:54:02 -0700 (PDT)
+        Wed, 14 Apr 2021 14:54:39 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F380AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:54:16 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id r7so8864401wrm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=flmIDluCNeh75YeiVOPif0ZTE+n5s/nCyOwAZlpQU7o=;
-        b=kekdDeOjmHaMG2fuZJyLFX5hme1rCH1Tdsme1LNpWtdEAw2Pgtl48jeDVEDfhr75st
-         SCl9q0WjhPR+SDZfbO/tCseQn9B384gU1QGqu7hJgmDi3wyzdAdTu61oolRZ1ul7IkMq
-         EbKZpP6wE9m9YWFO0XW8L6i7S5vA0KmX7MlCeswOoWHhvb0YGKdruCdo0QAsqyxnfDBK
-         qGbkTib8gzxtXVvgYVPbkpGzhLJsV1Gsq5BI1wLZN9Sbx20AbBn+mNkanZip6rBPA6+H
-         aN/w0f/DCnVpuTwtoBcvAdyMp6BDkoeSQDGDuioOXGVlSDQsJsycqP9psTE1sdhqLY4G
-         9iHQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+5LgeKpusYSyxX8qx1DrgdRoJ4W0OuV8svaN4mMwLYQ=;
+        b=awkOVaY3FBqbwSPvcQFmJMgiBgkPDfbnZZ2JQ+y8NXjsQiUsY8xnqDYZRA7DOHDzuc
+         UnjikV7YvVHMPseWobwAnaIsaRLDLQz8H7o7TGRDab0w9LD2ea9DMUCM3HO2M2z+GBBQ
+         A1EZN8u4whHzQLSmfAp6fFr7v0csq+Jqe79dw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=flmIDluCNeh75YeiVOPif0ZTE+n5s/nCyOwAZlpQU7o=;
-        b=LVcacozwWAfEJfoDC+S2lIBHfrpbq26Vuut6VVsMezxcN8W/ifktqWjWA9BDUnz2vf
-         Q1XvugK1OVHKKon6VfooEMDCztEljyLJwqJc24d0KW9OK405DZ0AneZ2vkGGV/wMklQZ
-         Ffiex8qLKE+tP4u3wZdy/I6dKpfRaH5Syjayc7PlRidfKjJh3CDHIn1C3PYP8l+W3wxj
-         GqxVFxDlM3dhNCB+VnHRdkS+EbGVZ/KDLuoBbOqdFNTzABZARwXXSh/w+KoHLB/69fCo
-         U8O5Vi4bgUKevDhtMncRP5RL4GUPeNcqMgfWD9GZVXMVBKhqWHlp0CRTinn17m14z4mX
-         iW6g==
-X-Gm-Message-State: AOAM530l9enXTs9gkTO6xtlWziD2KV+U1hSSHDeHWHHn6qBg2VeqYdW1
-        3hplFoMHKPmaNL8mZJk+pW2+ZIeCAqwp4nQH58hI7MZmjjk=
-X-Google-Smtp-Source: ABdhPJyrW3O8NO3th8zugZp2JKtf2V5GrYLoUcTLB9FXu+ENrG2LNJFpEF3qEdvn+wO3N1wM0QysC8QWV4luIxIw/Hk=
-X-Received: by 2002:a25:becf:: with SMTP id k15mr41711527ybm.83.1618426442030;
- Wed, 14 Apr 2021 11:54:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+5LgeKpusYSyxX8qx1DrgdRoJ4W0OuV8svaN4mMwLYQ=;
+        b=EUTjVO33WYEbl15hsZpZZHm8317fpl62bvvLAqZdc+5byCwhL7B7Txj13owHQ/ZCPs
+         eQ4xAGX4L0xwE0NmHyRMLc0/OZxRGvm2l1LtBM3AfzH5H8m/Wuepymg2LCETtj3ockC4
+         4RWkKOJ4qQLsDUajtVkeK5CdTTI4qk7pvhuByJR3JlvtpIvdXiVeGvhS4rStVOB3KUaF
+         xrmHmMolyeV7knQTYHhuJDgBVrHSLmTsXISiMVIu7a/FPHLZWchlumeVvrDZKTdGQD91
+         ObDAPNt0eMMbkRfW8UpdK3tZO2094kT2QlnObQxexlbayYs2twWmBuTP9KkizxOEhdi3
+         bDFQ==
+X-Gm-Message-State: AOAM5312SM3QslSEtf1aS4QBmFhIGeyiZViXiLKheXsM35jbt0B9oyBc
+        Nn9b1W3x/QnhLX/iH+D6QsnbPw==
+X-Google-Smtp-Source: ABdhPJx6DcJkWzUWpASQkdTl/1t4thDEK/b1p0UTmNmJzVT2H1fZsxV8vsRV9zMCc2XL91cnWOzViA==
+X-Received: by 2002:adf:f510:: with SMTP id q16mr5741957wro.343.1618426455698;
+        Wed, 14 Apr 2021 11:54:15 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:8b2a:41bd:9d62:10d5])
+        by smtp.gmail.com with ESMTPSA id f12sm253131wrr.61.2021.04.14.11.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 11:54:15 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v4 0/6] Add a snprintf eBPF helper
+Date:   Wed, 14 Apr 2021 20:54:00 +0200
+Message-Id: <20210414185406.917890-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-References: <20210330225112.496213-1-nickrterrell@gmail.com>
- <CANr2DbfL2B5Tx+k1AwVh-5dQZ+fNpucJKu9QVQat7QVvK-5AbQ@mail.gmail.com>
- <CANr2DbfZ+fV+GN7CfDi1AFmfsdnX+kGnTA6kayEchtGwfoAE-A@mail.gmail.com> <YHc16rz4Y/PkzNH1@gmail.com>
-In-Reply-To: <YHc16rz4Y/PkzNH1@gmail.com>
-From:   Nick Terrell <nickrterrell@gmail.com>
-Date:   Wed, 14 Apr 2021 11:53:51 -0700
-Message-ID: <CANr2Dbc+2rS7seuXGtU6Y+x0Qv+hrtwz71r+akKeQUXECZaJZA@mail.gmail.com>
-Subject: Re: [GIT PULL][PATCH v9 0/3] Update to zstd-1.4.10
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        squashfs-devel@lists.sourceforge.net,
-        Johannes Weiner <jweiner@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yann Collet <cyan@fb.com>, David Sterba <dsterba@suse.cz>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, Petr Malat <oss@malat.biz>,
-        Chris Mason <clm@fb.com>, Nick Terrell <terrelln@fb.com>,
-        linux-crypto@vger.kernel.org,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Kernel Team <Kernel-team@fb.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Niket Agarwal <niketa@fb.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:35 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Wed, Apr 14, 2021 at 11:01:29AM -0700, Nick Terrell wrote:
-> > Hi all,
-> >
-> > I would really like to make some progress on this and get it merged.
-> > This patchset offsers:
-> > * 15-30% better decompression speed
-> > * 3 years of zstd bug fixes and code improvements
-> > * Allows us to import zstd directly from upstream so we don't fall 3
-> > years out of date again
-> >
-> > Thanks,
-> > Nick
-> >
->
-> I think it would help get it merged if someone actually volunteered to maintain
-> it.  As-is there is no entry in MAINTAINERS for this code.
+We have a usecase where we want to audit symbol names (if available) in
+callback registration hooks. (ex: fentry/nf_register_net_hook)
 
-I was discussing with Chris Mason about volunteering to maintain the
-code myself.
-We wanted to wait until this series got merged before going that
-route, because there
-was already a lot of comments about it, and I didn't want to appear to
-be trying to bypass
-any review or criticisms. But, please let me know what you think.
+A few months back, I proposed a bpf_kallsyms_lookup series but it was
+decided in the reviews that a more generic helper, bpf_snprintf, would
+be more useful.
 
-Best,
-Nick
+This series implements the helper according to the feedback received in
+https://lore.kernel.org/bpf/20201126165748.1748417-1-revest@google.com/T/#u
 
-> - Eric
+- A new arg type guarantees the NULL-termination of string arguments and
+  lets us pass format strings in only one arg
+- A new helper is implemented using that guarantee. Because the format
+  string is known at verification time, the format string validation is
+  done by the verifier
+- To implement a series of tests for bpf_snprintf, the logic for
+  marshalling variadic args in a fixed-size array is reworked as per:
+https://lore.kernel.org/bpf/20210310015455.1095207-1-revest@chromium.org/T/#u
+
+---
+Changes in v4:
+- Moved bpf_snprintf, bpf_printf_prepare and bpf_printf_cleanup to
+  kernel/bpf/helpers.c so that they get built without CONFIG_BPF_EVENTS
+- Added negative test cases (various invalid format strings)
+- Renamed put_fmt_tmp_buf() as bpf_printf_cleanup()
+- Fixed a mistake that caused temporary buffers to be unconditionally
+  freed in bpf_printf_prepare
+- Fixed a mistake that caused missing 0 character to be ignored
+- Fixed a warning about integer to pointer conversion
+- Misc cleanups
+
+---
+Changes in v3:
+- Simplified temporary buffer acquisition with try_get_fmt_tmp_buf()
+- Made zero-termination check more consistent
+- Allowed NULL output_buffer
+- Simplified the BPF_CAST_FMT_ARG macro
+- Three new test cases: number padding, simple string with no arg and
+  string length extraction only with a NULL output buffer
+- Clarified helper's description for edge cases (eg: str_size == 0)
+- Lots of cosmetic changes
+
+---
+Changes in v2:
+- Extracted the format validation/argument sanitization in a generic way
+  for all printf-like helpers.
+- bpf_snprintf's str_size can now be 0
+- bpf_snprintf is now exposed to all BPF program types
+- We now preempt_disable when using a per-cpu temporary buffer
+- Addressed a few cosmetic changes
+
+Florent Revest (6):
+  bpf: Factorize bpf_trace_printk and bpf_seq_printf
+  bpf: Add a ARG_PTR_TO_CONST_STR argument type
+  bpf: Add a bpf_snprintf helper
+  libbpf: Initialize the bpf_seq_printf parameters array field by field
+  libbpf: Introduce a BPF_SNPRINTF helper macro
+  selftests/bpf: Add a series of tests for bpf_snprintf
+
+ include/linux/bpf.h                           |  22 ++
+ include/uapi/linux/bpf.h                      |  28 ++
+ kernel/bpf/helpers.c                          | 304 ++++++++++++++
+ kernel/bpf/verifier.c                         |  82 ++++
+ kernel/trace/bpf_trace.c                      | 373 ++----------------
+ tools/include/uapi/linux/bpf.h                |  28 ++
+ tools/lib/bpf/bpf_tracing.h                   |  58 ++-
+ .../selftests/bpf/prog_tests/snprintf.c       | 124 ++++++
+ .../selftests/bpf/progs/test_snprintf.c       |  73 ++++
+ .../bpf/progs/test_snprintf_single.c          |  20 +
+ 10 files changed, 767 insertions(+), 345 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
