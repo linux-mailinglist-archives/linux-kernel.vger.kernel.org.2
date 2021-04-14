@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A730235F756
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB1935F758
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349840AbhDNPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:13:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41079 "EHLO
+        id S1350073AbhDNPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:13:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41093 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232834AbhDNPNN (ORCPT
+        with ESMTP id S1349964AbhDNPNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:13:13 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
+        Wed, 14 Apr 2021 11:13:14 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lWhCE-0002Hr-7p
-        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 15:12:50 +0000
-Received: by mail-ej1-f70.google.com with SMTP id t23so534108ejx.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:12:50 -0700 (PDT)
+        id 1lWhCF-0002IS-ON
+        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 15:12:51 +0000
+Received: by mail-ed1-f72.google.com with SMTP id f9-20020a50fe090000b02903839889635cso1563806edt.14
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:12:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WryX6gSc+ItY/rCx8dz1xB9HPi4k+9GNIEb2q0R+7K4=;
-        b=jSM7dw6pRSPuVHAogpT5AMJBjEVvRz6JS4v/7lxSji5eFPctThItK9OHrTKs+clWFQ
-         hziU37ENakkHLEa5Gk/xSevkQYOvJsPuUfCoj9CWUkV0osOyGlATkU1WmX1QVEuzMs/7
-         OpCRWZAftAvIK//buonxmFg2rCmUKSkp40LdYGV0t2N4icy3+NcilPDOqrdcA1+ikf9p
-         k0wbmw/Qaln5E8CygrKeprZm2xAtNq9ri7nRNkxpoWL5K10sfFOv6nwRut/Qh7/vnYg3
-         Ie8d3Ws4iZFqjP2eI3vD36X2b2IB382Ttrcptx6eGSK9vt6ejoHEjL6nZdEJ01a3dpRw
-         VFEw==
-X-Gm-Message-State: AOAM531YBAbsmOYtuNoY6dRzfdThZhxNwD2jHDXaHTDnEA5gdqvD3/Ab
-        ZPAemHuyz4V6cOwIj/YZZZDnL0KfWM7uVAu3KZHdwW7w2Zn2hssatrQglPCK7fUx/c0KngGDriC
-        SriKu5ZmHZGhOhjJQjWDTkUd3j1LcT2jSCTlNK54gzg==
-X-Received: by 2002:a17:906:1d10:: with SMTP id n16mr2942883ejh.445.1618413169931;
-        Wed, 14 Apr 2021 08:12:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzVuLhdr/RdbFjzizZO7TcF3wf/gDWnzeZJthNfbAkiMwzS0ryDeIT3XxIzo5k8joG1VRS4vQ==
-X-Received: by 2002:a17:906:1d10:: with SMTP id n16mr2942861ejh.445.1618413169763;
-        Wed, 14 Apr 2021 08:12:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=COhBZ6btGRsjvqs/la8SVt6/jjZQ184vl6dkwyCMK0o=;
+        b=evrW0HDIFrKFFMJvR1Ok6uH2OrmQPAoxhaui/Y1rf0UfZRB9OUsfI74Fzo+lIwynej
+         7/kSzJjsksZUptxgbgdyGJg4U4e2WlVLOpZrubFBtIGl1ILsSWaMOGNop/LjO1/mwwtR
+         cTwWavjinmfjxo2hz9KPfObP48okopgMhmn/sIoJfsNJIKRYE6vWw0nZyubg5E/jmB5z
+         hlKAWgIkjg99nP45AyrLZDHkdBlzG6I6fEWRFZixV+PQ27pqQrjJb+zhBDrE/k8MuRMk
+         gs7z+PCChQDeawe5fo7THKlGP1sY6IlupfbSfJhTzQjJZc2cjpMzyapEH6a0OSVKUJoa
+         xNQQ==
+X-Gm-Message-State: AOAM532IQik9qzSg6V9aeXaL7s3oFjm26uqsYeJbPkNsRihQFSVvRzWl
+        QSU/K4opJWdw55G2dfSxMkSlM1xX4gmVxWttsX6NHhg3jQx8Ne2C3ip+X/zPeGP/87kg+5c+EJE
+        ZPKfS3PwPQJOQZgFV1JFz9/DOQuDjKW3wnPIOxCSSsw==
+X-Received: by 2002:a05:6402:2209:: with SMTP id cq9mr25756423edb.216.1618413171471;
+        Wed, 14 Apr 2021 08:12:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoEnBh0pgDGjY81tHu+mQ80T5OJ5Q2koCwc3xWYjWc3lu5/63JtbuO1Ft0H2LIiJa4xQSZEg==
+X-Received: by 2002:a05:6402:2209:: with SMTP id cq9mr25756401edb.216.1618413171329;
+        Wed, 14 Apr 2021 08:12:51 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id o9sm6608022ejg.56.2021.04.14.08.12.48
+        by smtp.gmail.com with ESMTPSA id o9sm6608022ejg.56.2021.04.14.08.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 08:12:49 -0700 (PDT)
+        Wed, 14 Apr 2021 08:12:51 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Ben Dooks <ben-linux@fluff.org>,
         Jaehoon Chung <jh80.chung@samsung.com>,
@@ -52,64 +52,41 @@ To:     Ben Dooks <ben-linux@fluff.org>,
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 1/3] mmc: sdhci-s3c: fix possible NULL pointer dereference when probed via platform
-Date:   Wed, 14 Apr 2021 17:12:40 +0200
-Message-Id: <20210414151242.102313-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/3] mmc: sdhci-s3c: correct kerneldoc of sdhci_s3c_drv_data
+Date:   Wed, 14 Apr 2021 17:12:41 +0200
+Message-Id: <20210414151242.102313-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210414151242.102313-1-krzysztof.kozlowski@canonical.com>
+References: <20210414151242.102313-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver can be matched by legacy platform way or OF-device matching.
-In the first case, of_match_node() can return NULL, which immediately
-would be dereferenced to get the match data.
+Correct the name of sdhci_s3c_drv_data structure in kerneldoc:
 
-Addresses-Coverity: Dereference null return value
-Fixes: cd1b00eb24b0 ("mmc: sdhci-s3c: Add device tree support")
+  drivers/mmc/host/sdhci-s3c.c:143: warning:
+    expecting prototype for struct sdhci_s3c_driver_data. Prototype was for struct sdhci_s3c_drv_data instead
+
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
-
-Not tested on HW, but the code should be equivalent (plus safer).
-
- drivers/mmc/host/sdhci-s3c.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/mmc/host/sdhci-s3c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-index f48a788a9d3d..8e1dca625620 100644
+index 8e1dca625620..a07a8f011741 100644
 --- a/drivers/mmc/host/sdhci-s3c.c
 +++ b/drivers/mmc/host/sdhci-s3c.c
-@@ -20,6 +20,7 @@
- #include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
-@@ -461,19 +462,12 @@ static int sdhci_s3c_parse_dt(struct device *dev,
- }
- #endif
+@@ -130,7 +130,7 @@ struct sdhci_s3c {
+ };
  
--#ifdef CONFIG_OF
--static const struct of_device_id sdhci_s3c_dt_match[];
--#endif
--
- static inline struct sdhci_s3c_drv_data *sdhci_s3c_get_driver_data(
- 			struct platform_device *pdev)
- {
- #ifdef CONFIG_OF
--	if (pdev->dev.of_node) {
--		const struct of_device_id *match;
--		match = of_match_node(sdhci_s3c_dt_match, pdev->dev.of_node);
--		return (struct sdhci_s3c_drv_data *)match->data;
--	}
-+	if (pdev->dev.of_node)
-+		return (struct sdhci_s3c_drv_data *)of_device_get_match_data(&pdev->dev);
- #endif
- 	return (struct sdhci_s3c_drv_data *)
- 			platform_get_device_id(pdev)->driver_data;
+ /**
+- * struct sdhci_s3c_driver_data - S3C SDHCI platform specific driver data
++ * struct sdhci_s3c_drv_data - S3C SDHCI platform specific driver data
+  * @sdhci_quirks: sdhci host specific quirks.
+  * @no_divider: no or non-standard internal clock divider.
+  *
 -- 
 2.25.1
 
