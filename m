@@ -2,636 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0C835F3D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1692035F3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350947AbhDNMeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhDNMeP (ORCPT
+        id S1350945AbhDNMfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:35:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28006 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229765AbhDNMfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:34:15 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0CBC061574;
-        Wed, 14 Apr 2021 05:33:52 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso5072104otm.4;
-        Wed, 14 Apr 2021 05:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=w8ii4XDR2ivcw7sl8ciBbpj3uGDjJqqbNONNfrMFDnA=;
-        b=AEI82nikl6lmu8NLMM/3ud5LnWdupmwubLCWpU3hRaU4cvIRn71VPPyb+OPTiiEzpb
-         TfaN36aVDhcG6jXZMmTOij4Lc19x9aY9KFJ4uWbbYhtNlmFWJSwTFXoHVYoeuSgipIiT
-         c3LH6Z0ItrIeUrXa8dwnq56wFYNi6W2rZuurrmvYCuXdaDWJmmMgxFeQceeWwQ6ZYLjh
-         /D71vUn9pNcr8kpifMW+k3JQqhLT/Jnj55Iiq/D0G/pGEU3SLoZ1ofPH3oslafsu5P2+
-         BLwxcsBumgt9gF+74KymwLMVuOV18hj2Qb5BboApCosxdu+SFM72A+uifBJ7h6n14VYe
-         iY8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=w8ii4XDR2ivcw7sl8ciBbpj3uGDjJqqbNONNfrMFDnA=;
-        b=EXEYzV+ZyRhK9eFZUgmr7QO2CPbdeo74GA1Uwt76DiwXP7qx9nR4f5NPrpt+d+a5xB
-         lAOxtQCWhKoOGlYmbH8jfDESzhdIl09FGktuk7x3YUu+8JG+HmucaCZiO6THcWHLoHmz
-         iT7QZpjcVvD0CrQfugcJ3ESoK2WOPTPKOCelqhkbX5Kmqc/HqQkIdJxD1qEPPB7K5oJT
-         Bc9fKox3KceU3X7nJupCmdAdeLEoniAkJyFcr2vKfPH4ToWHeRFte/6n11tndHapj2DV
-         kqINwnqspQx0p6P2TUgrd6Z/6yHYD2v2Ywv8/SMeoEmWoJoX8mUKP6p9j8rl8dywfiiI
-         8ZpA==
-X-Gm-Message-State: AOAM530EG9+aKrIRmX9keyd0NL+8+lJhl4eKgPELez3uQwqJo+d2slYA
-        tcK9sfQxFx7tbLxqkR1Te14=
-X-Google-Smtp-Source: ABdhPJxAjvi08im0lNlExsNP5gMdOYnBIvapXZY3Chrl7yQYkdggU/Qm4bSHcLQkJh5fi4kdcq02nQ==
-X-Received: by 2002:a9d:740a:: with SMTP id n10mr32643871otk.27.1618403631847;
-        Wed, 14 Apr 2021 05:33:51 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r63sm1535233oia.43.2021.04.14.05.33.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 14 Apr 2021 05:33:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 14 Apr 2021 05:33:49 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v3 3/4] hwmon: smpro: Add Ampere's Altra smpro-hwmon
- driver
-Message-ID: <20210414123349.GA18905@roeck-us.net>
-References: <20210409031332.21919-1-quan@os.amperecomputing.com>
- <20210409031332.21919-4-quan@os.amperecomputing.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409031332.21919-4-quan@os.amperecomputing.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Wed, 14 Apr 2021 08:35:11 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13ECXLjs082105;
+        Wed, 14 Apr 2021 08:34:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=t08pgRARfONYID5oKmw0vTX25J07bAbAivjLULLeJlI=;
+ b=OBv9mqk8OQSiONC9E+wYDo1FXHt4dM3rdsn/IuJ84PSLffEAlbm5N7JCOofjkvPeaadQ
+ Uf9X0yQBTF6FTpHYq1QLbyJYsASUSxhAk8kV/0OCopur3k3UbKAdK8cP2vZlPeiuTgni
+ nsOBxNUL16Gm6n4mH8X43/fRQkqPURvE8EGQoM4YQdWknGNA9YNBKYlsg8idwDDa3Ep8
+ 3w0HMqtd7ZhsMkV+65U5aX6FXjnmHTJh0AImneJrzWPzRLESbZL30E8mArZlXUik6gNk
+ eSMY/BKHk41R2TOVihjo0uG2MovJkxDuRn3VPQczFrZORFxw/hphjKLLxpFpZkjpSpWW ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtv8vx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Apr 2021 08:34:42 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13ECYJmi088812;
+        Wed, 14 Apr 2021 08:34:41 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtv8vwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Apr 2021 08:34:41 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13ECRL8P008697;
+        Wed, 14 Apr 2021 12:34:39 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 37u3n89rcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Apr 2021 12:34:39 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13ECYFmI13107558
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 12:34:15 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C380A4051;
+        Wed, 14 Apr 2021 12:34:37 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFFA6A4055;
+        Wed, 14 Apr 2021 12:34:36 +0000 (GMT)
+Received: from sig-9-145-163-27.de.ibm.com (unknown [9.145.163.27])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Apr 2021 12:34:36 +0000 (GMT)
+Message-ID: <c6f3c9a70e054e9087f657bf4f142732fd43784c.camel@linux.ibm.com>
+Subject: Re: [PATCH] asm-generic/io.h: Silence -Wnull-pointer-arithmetic
+ warning on PCI_IOBASE
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "'Arnd Bergmann'" <arnd@arndb.de>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+Date:   Wed, 14 Apr 2021 14:34:36 +0200
+In-Reply-To: <40d4114fa34043d0841b81d09457c415@AcuMS.aculab.com>
+References: <20210413115439.1011560-1-schnelle@linux.ibm.com>
+         <CAK8P3a1WTZOYpJ2TSjnbytQJWgtfwkQ8bXXdnqCnOn6ugJqN_w@mail.gmail.com>
+         <84ab737edbe13d390373850bf317920b3a486b87.camel@linux.ibm.com>
+         <CAK8P3a2NR2nhEffFQJdMq2Do_g2ji-7p3+iWyzw+aXD6gov05w@mail.gmail.com>
+         <11ead5c2c73c42cbbeef32966bc7e5c2@AcuMS.aculab.com>
+         <CAK8P3a3PK9zyeP4ymELtc2ZYnymECoACiigw9Za+pvSJpCk5=g@mail.gmail.com>
+         <40d4114fa34043d0841b81d09457c415@AcuMS.aculab.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cXeDngAzJk4G47j_fUM_9aNOG6XcQ9XV
+X-Proofpoint-ORIG-GUID: XfhqNwJhoXUPrB125TwaEW8uHjp9E7Ad
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-14_06:2021-04-14,2021-04-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:13:31AM +0700, Quan Nguyen wrote:
-> This commit adds support for Ampere SMpro hwmon driver. This driver
-> supports accessing various CPU sensors provided by the SMpro co-processor
-> including temperature, power, voltages, and current.
+On Tue, 2021-04-13 at 14:12 +0000, David Laight wrote:
+> From: Arnd Bergmann
+> > Sent: 13 April 2021 14:40
+> > 
+> > On Tue, Apr 13, 2021 at 3:06 PM David Laight <David.Laight@aculab.com> wrote:
+> > > From: Arnd Bergmann
+> > > > Sent: 13 April 2021 13:58
+> > > ...
+> > > > The remaining ones (csky, m68k, sparc32) need to be inspected
+> > > > manually to see if they currently support PCI I/O space but in
+> > > > fact use address zero as the base (with large resources) or they
+> > > > should also turn the operations into a NOP.
+> > > 
+> > > I'd expect sparc32 to use an ASI to access PCI IO space.
+> > > I can't quite remember whether IO space was supported at all.
+> > 
+> > I see this bit in arch/sparc/kernel/leon_pci.c
+> > 
+> >  * PCI Memory and Prefetchable Memory is direct-mapped. However I/O Space is
+> >  * accessed through a Window which is translated to low 64KB in PCI space, the
+> >  * first 4KB is not used so 60KB is available.
+> > ...
+> >         pci_add_resource_offset(&resources, &info->io_space,
+> >                                 info->io_space.start - 0x1000);
+> > 
+> > which means that there is I/O space, which gets accessed through whichever
+> > method readb() uses. Having the offset equal to the resource means that
+> > the '(void *)0' start is correct.
 > 
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
-
-Change log goes here. You are making it difficult to review your patches.
-
->  drivers/hwmon/Kconfig       |   8 +
->  drivers/hwmon/Makefile      |   1 +
->  drivers/hwmon/smpro-hwmon.c | 491 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 500 insertions(+)
->  create mode 100644 drivers/hwmon/smpro-hwmon.c
+> It must have been the VMEbus (and maybe sBus) sparc that used an ASI.
 > 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 0ddc974b102e..ba4b5a911baf 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -67,6 +67,14 @@ config SENSORS_ABITUGURU3
->  	  This driver can also be built as a module. If so, the module
->  	  will be called abituguru3.
->  
-> +config SENSORS_SMPRO
-> +	tristate "Ampere's Altra SMpro hardware monitoring driver"
-> +	depends on MFD_SMPRO
-> +	help
-> +	  If you say yes here you get support for the thermal, voltage,
-> +	  current and power sensors of Ampere's Altra processor family SoC
-> +	  with SMpro co-processor.
-> +
->  config SENSORS_AD7314
->  	tristate "Analog Devices AD7314 and compatibles"
->  	depends on SPI
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 59e78bc212cf..b25391f9c651 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -174,6 +174,7 @@ obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
->  obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
->  obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
->  obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-> +obj-$(CONFIG_SENSORS_SMPRO)	+= smpro-hwmon.o
->  obj-$(CONFIG_SENSORS_SMSC47B397)+= smsc47b397.o
->  obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
->  obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
-> diff --git a/drivers/hwmon/smpro-hwmon.c b/drivers/hwmon/smpro-hwmon.c
-> new file mode 100644
-> index 000000000000..a3389fcbad82
-> --- /dev/null
-> +++ b/drivers/hwmon/smpro-hwmon.c
-> @@ -0,0 +1,491 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Ampere Computing SoC's SMPro Hardware Monitoring Driver
-> + *
-> + * Copyright (c) 2021, Ampere Computing LLC
-> + */
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +/* Identification Registers */
-> +#define MANUFACTURER_ID_REG	0x02
-> +#define AMPERE_MANUFACTURER_ID	0xCD3A
-> +
-> +/* Logical Power Sensor Registers */
-> +#define SOC_TEMP		0x00
-> +#define SOC_VRD_TEMP		0x01
-> +#define DIMM_VRD_TEMP		0x02
-> +#define CORE_VRD_TEMP		0x03
-> +#define CH0_DIMM_TEMP		0x04
-> +#define CH1_DIMM_TEMP		0x05
-> +#define CH2_DIMM_TEMP		0x06
-> +#define CH3_DIMM_TEMP		0x07
-> +#define CH4_DIMM_TEMP		0x08
-> +#define CH5_DIMM_TEMP		0x09
-> +#define CH6_DIMM_TEMP		0x0A
-> +#define CH7_DIMM_TEMP		0x0B
-> +#define RCA_VRD_TEMP		0x0C
-> +
-> +#define CORE_VRD_PWR		0x10
-> +#define SOC_PWR			0x11
-> +#define DIMM_VRD1_PWR		0x12
-> +#define DIMM_VRD2_PWR		0x13
-> +#define CORE_VRD_PWR_MW		0x16
-> +#define SOC_PWR_MW		0x17
-> +#define DIMM_VRD1_PWR_MW	0x18
-> +#define DIMM_VRD2_PWR_MW	0x19
-> +#define RCA_VRD_PWR		0x1A
-> +#define RCA_VRD_PWR_MW		0x1B
-> +
-> +#define MEM_HOT_THRESHOLD	0x22
-> +#define SOC_VR_HOT_THRESHOLD	0x23
-> +#define CORE_VRD_VOLT		0x24
-> +#define SOC_VRD_VOLT		0x25
-> +#define DIMM_VRD1_VOLT		0x26
-> +#define DIMM_VRD2_VOLT		0x27
-> +#define RCA_VRD_VOLT		0x28
-> +
-> +#define CORE_VRD_CURR		0x29
-> +#define SOC_VRD_CURR		0x2A
-> +#define DIMM_VRD1_CURR		0x2B
-> +#define DIMM_VRD2_CURR		0x2C
-> +#define RCA_VRD_CURR		0x2D
-> +
-> +struct smpro_hwmon {
-> +	struct regmap *regmap;
-> +	u32 offset;
-> +};
-> +
-> +struct smpro_sensor {
-> +	const u8 reg;
-> +	const u8 reg_ext;
-> +	const char *label;
-> +};
-> +
-> +static const struct smpro_sensor temperature[] = {
-> +	{
-> +		.reg = SOC_TEMP,
-> +		.label = "temp1 SoC"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_TEMP,
-> +		.reg_ext = SOC_VR_HOT_THRESHOLD,
-> +		.label = "temp2 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD_TEMP,
-> +		.label = "temp3 DIMM VRD"
-> +	},
-> +	{
-> +		.reg = CORE_VRD_TEMP,
-> +		.label = "temp4 CORE VRD"
-> +	},
-> +	{
-> +		.reg = CH0_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp5 CH0 DIMM"
-> +	},
-> +	{
-> +		.reg = CH1_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp6 CH1 DIMM"
-> +	},
-> +	{
-> +		.reg = CH2_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp7 CH2 DIMM"
-> +	},
-> +	{
-> +		.reg = CH3_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp8 CH3 DIMM"
-> +	},
-> +	{
-> +		.reg = CH4_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp9 CH4 DIMM"
-> +	},
-> +	{
-> +		.reg = CH5_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp10 CH5 DIMM"
-> +	},
-> +	{
-> +		.reg = CH6_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp11 CH6 DIMM"
-> +	},
-> +	{
-> +		.reg = CH7_DIMM_TEMP,
-> +		.reg_ext = MEM_HOT_THRESHOLD,
-> +		.label = "temp12 CH7 DIMM"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_TEMP,
-> +		.label = "temp13 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor voltage[] = {
-> +	{
-> +		.reg = CORE_VRD_VOLT,
-> +		.label = "vout0 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_VOLT,
-> +		.label = "vout1 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_VOLT,
-> +		.label = "vout2 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_VOLT,
-> +		.label = "vout3 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_VOLT,
-> +		.label = "vout4 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor curr_sensor[] = {
-> +	{
-> +		.reg = CORE_VRD_CURR,
-> +		.label = "iout1 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_VRD_CURR,
-> +		.label = "iout2 SoC VRD"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_CURR,
-> +		.label = "iout3 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_CURR,
-> +		.label = "iout4 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_CURR,
-> +		.label = "iout5 RCA VRD"
-> +	},
-> +};
-> +
-> +static const struct smpro_sensor power[] = {
-> +	{
-> +		.reg = CORE_VRD_PWR,
-> +		.reg_ext = CORE_VRD_PWR_MW,
-> +		.label = "power1 CORE VRD"
-> +	},
-> +	{
-> +		.reg = SOC_PWR,
-> +		.reg_ext = SOC_PWR_MW,
-> +		.label = "power2 SoC"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD1_PWR,
-> +		.reg_ext = DIMM_VRD1_PWR_MW,
-> +		.label = "power3 DIMM VRD1"
-> +	},
-> +	{
-> +		.reg = DIMM_VRD2_PWR,
-> +		.reg_ext = DIMM_VRD2_PWR_MW,
-> +		.label = "power4 DIMM VRD2"
-> +	},
-> +	{
-> +		.reg = RCA_VRD_PWR,
-> +		.reg_ext = RCA_VRD_PWR_MW,
-> +		.label = "power5 RCA VRD"
-> +	},
-> +};
-> +
-> +static int smpro_read_temp(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + temperature[channel].reg, &value);
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	case hwmon_temp_crit:
-> +		ret = regmap_read(hwmon->regmap,
-> +				  hwmon->offset + temperature[channel].reg_ext, &value);
-> +		if (ret)
-> +			return ret;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	*val = sign_extend32(value, 8) * 1000;
-> +	return 0;
-> +}
-> +
-> +static int smpro_read_in(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_in_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + voltage[channel].reg, &value);
-> +		if (ret < 0)
-> +			return ret;
-> +		/* 15-bit value in 1mV */
-> +		*val = value & 0x7fff;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_curr(struct device *dev, u32 attr, int channel, long *val)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_curr_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + curr_sensor[channel].reg, &value);
-> +		if (ret < 0)
-> +			return ret;
-> +		/* Scale reported by the hardware is 1mA */
-> +		*val = value & 0x7fff;
-> +		return 0;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_power(struct device *dev, u32 attr, int channel, long *val_pwr)
-> +{
-> +	struct smpro_hwmon *hwmon = dev_get_drvdata(dev);
-> +	unsigned int val = 0, val_mw = 0;
-> +	int ret;
-> +
-> +	switch (attr) {
-> +	case hwmon_power_input:
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg, &val);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = regmap_read(hwmon->regmap, hwmon->offset + power[channel].reg_ext, &val_mw);
-> +		if (ret)
-> +			return ret;
-> +
-> +		*val_pwr = val * 1000000 + val_mw * 1000;
-> +		return 0;
-> +
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read(struct device *dev, enum hwmon_sensor_types type,
-> +		      u32 attr, int channel, long *val)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		return smpro_read_temp(dev, attr, channel, val);
-> +	case hwmon_in:
-> +		return smpro_read_in(dev, attr, channel, val);
-> +	case hwmon_power:
-> +		return smpro_read_power(dev, attr, channel, val);
-> +	case hwmon_curr:
-> +		return smpro_read_curr(dev, attr, channel, val);
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int smpro_read_string(struct device *dev, enum hwmon_sensor_types type,
-> +			     u32 attr, int channel, const char **str)
-> +{
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_label:
-> +			*str = temperature[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_label:
-> +			*str = voltage[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_label:
-> +			*str = curr_sensor[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_label:
-> +			*str = power[channel].label;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static umode_t smpro_is_visible(const void *data, enum hwmon_sensor_types type,
-> +				u32 attr, int channel)
-> +{
-> +	const struct smpro_hwmon *hwmon = data;
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +		case hwmon_temp_label:
-> +		case hwmon_temp_crit:
-> +			ret = regmap_read(hwmon->regmap,
-> +					  hwmon->offset + temperature[channel].reg, &value);
-> +			if (ret || value == 0xFFFF)
-> +				return 0;
-> +		break;
-> +		}
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0444;
-> +}
-> +
-> +static const struct hwmon_channel_info *smpro_info[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL | HWMON_T_CRIT,
-> +			   HWMON_T_INPUT | HWMON_T_LABEL),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL,
-> +			   HWMON_I_INPUT | HWMON_I_LABEL),
-> +	HWMON_CHANNEL_INFO(power,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL,
-> +			   HWMON_P_INPUT | HWMON_P_LABEL),
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL,
-> +			   HWMON_C_INPUT | HWMON_C_LABEL),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops smpro_hwmon_ops = {
-> +	.is_visible = smpro_is_visible,
-> +	.read = smpro_read,
-> +	.read_string = smpro_read_string,
-> +};
-> +
-> +static const struct hwmon_chip_info smpro_chip_info = {
-> +	.ops = &smpro_hwmon_ops,
-> +	.info = smpro_info,
-> +};
-> +
-> +static int smpro_hwmon_probe(struct platform_device *pdev)
-> +{
-> +	struct smpro_hwmon *hwmon;
-> +	struct device *hwmon_dev;
-> +	unsigned int val;
-> +	int ret;
-> +
-> +	hwmon = devm_kzalloc(&pdev->dev, sizeof(struct smpro_hwmon), GFP_KERNEL);
-> +	if (!hwmon)
-> +		return -ENOMEM;
-> +
-> +	hwmon->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-> +	if (!hwmon->regmap)
-> +		return -ENODEV;
-> +
-> +	ret = device_property_read_u32(&pdev->dev, "reg", &hwmon->offset);
-> +	if (ret)
-> +		return -EINVAL;
-> +
-> +	/* Check for valid ID */
-> +	ret = regmap_read(hwmon->regmap, MANUFACTURER_ID_REG, &val);
-> +	if (ret)
-> +		return -EPROBE_DEFER;
+> I do remember issues with Solaris of some PCI cards not liking
+> being assigned a BAR address of zero.
+> That may be why the low 4k IO space isn't assigned here.
+> (I've never run Linux on sparc, just SVR4 and Solaris.)
+> 
+> I guess setting PCI_IOBASE to zero is safer when you can't trust
+> drivers not to use inb() instead of readb().
+> Or whatever io_read() ends up being.
+> 
+> 	David
 
-This is unacceptable. regmap_read() could return various errors.
-An error here might mean that the chip is simply not there, or that
-there is some other problem with, say, the i2c controller driver.
-The function might, for all we know, even return -ENOMEM.
+So "I guess setting PCI_IOBASE to zero is safer when you can't trust
+drivers not to use inb()…" in principle is true on other architectures
+than sparc too, right? So do you think this means we shouldn't go with
+Arnd's idea of making inb() just WARN_ONCE() if PCI_IOBASE is not
+defined or just that for sparc defining it as 0 would be preferred?
 
-If this is supposed to mean that the chip is not yet ready, some other
-and more specific solution will be needed. -EPROBE_DEFER means that
-some other driver needs to be loaded first, not "chip is not ready,
-try again later".
+As for s390 since we only support a limited number of drivers I think
+for us such a WARN_ONCE() for inb() would be preferable.
 
-Thanks,
-Guenter
+I guess one option would be to let each architecture opt in to leaving
+PCI_IOBASE undefined but in the first patch push PCI_IOBASE 0 into all
+drivers that currently don't define it at all _and_ do not define their
+own inb() etc.
 
-> +
-> +	if (val != AMPERE_MANUFACTURER_ID)
-> +		return -ENODEV;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&pdev->dev, "smpro_hwmon",
-> +							 hwmon, &smpro_chip_info, NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct of_device_id smpro_hwmon_of_match[] = {
-> +	{ .compatible = "ampere,ac01-hwmon" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, smpro_hwmon_of_match);
-> +
-> +static struct platform_driver smpro_hwmon_driver = {
-> +	.probe		= smpro_hwmon_probe,
-> +	.driver = {
-> +		.name	= "smpro-hwmon",
-> +		.of_match_table = smpro_hwmon_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(smpro_hwmon_driver);
-> +
-> +MODULE_AUTHOR("Thu Nguyen <thu@os.amperecomputing.com>");
-> +MODULE_AUTHOR("Quan Nguyen <quan@os.amperecomputing.com>");
-> +MODULE_DESCRIPTION("Ampere Altra SMPro hwmon driver");
-> +MODULE_LICENSE("GPL v2");
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
