@@ -2,88 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAE835ED5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA3D35ED68
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345603AbhDNGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:42:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232403AbhDNGmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:42:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2CDC6120E;
-        Wed, 14 Apr 2021 06:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618382499;
-        bh=kA8zOgdDuts/SjL+HhXf1S6TGSm7w76OyzQRoZXsuFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d4jaPQmIJT2wWYTgZX2W1xgXbF3Kuwhz1fUFxu7OMfRZDLjJdAyCBOQffWnZpbZ7S
-         f/XC9+6Sgvt2QcL4Zks0/4rFGbOXv5PV0QaVmcM6yYr7p7Aotzn9s/BreAbiF+ux8Q
-         tC1mpZl1xDMjTUmtlo0mnYZpAloE6cIP9bwddcSc=
-Date:   Wed, 14 Apr 2021 08:41:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     saeed.mirzamohammadi@oracle.com, stable@vger.kernel.org,
-        Camille Lu <camille.lu@hpe.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.4 v3 1/1] iommu/vt-d: Fix agaw for a supported 48 bit
- guest address width
-Message-ID: <YHaOn5qigsremnmh@kroah.com>
-References: <20210412202736.70765-1-saeed.mirzamohammadi@oracle.com>
+        id S233000AbhDNGo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345962AbhDNGoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:44:19 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E56CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:43:58 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id x11so20411412qkp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=xAItGVctj4Ym5XgJXrEHjFWuIEiXbFDkgH2LTVJTlqw=;
+        b=boogogHOP6aMxYaO4TKu7w6/UT0zb6tK49kFGEqd/tGljpv/chIVdkvDoZiKgvcWl3
+         uD72xEs3pGMozk801LATYIGOzSooQdo333X4M4rD3PNeWeoZ9/oX6LUPDbjvhVvQyG6/
+         nTt5wmIPnMoq8lxe0TYVtm4DE/rQlDzKDa0fCpcwtw5WUsLaifXWcqsMidIkzaY8/9og
+         +s8FqQNRmO6BXRBVpR03kz2epvzqQrKFmi5Hh/Dr9nzx9eIzWvOC83DKTQkse5T5QfKN
+         OwqGrAsqVhMbFN/3vaxP0hsIwcf4UGB3beOYirKF+LBu4y8XLIbOcMpkmguDaeVt3yZa
+         ZVXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=xAItGVctj4Ym5XgJXrEHjFWuIEiXbFDkgH2LTVJTlqw=;
+        b=CTOLF0SI4SZdVe53AFhXpxrGehBrYea7ouYOyIfF3HtmZrXQkcQJOf4iZp7GRym4ip
+         zyE5IH8sfaEVHLdpPwA+Or4TwA8MIgvHQnMsN82KPappO29DuKrvZBJ8ush3tSSyK4Ew
+         7Sk55Dw7bBAoV04XHtIqQ5xtEjsLkbm4C0HUWzeIHXpkO7dbYpe4h18hOSsLERXaS4ZU
+         x56MRFXzwuCb7euUa3yumHGt7PpHnkG3KbkbKhBl1p7zkOrnp1HTd9dGGSn309DbakaL
+         bVGTC4vm6EUlBhSrLK6RLdDoTBTb5GhrR6Bvz4Gf+/pN3kpsNgu0iOjVaKJYYZO+YIXe
+         Fptg==
+X-Gm-Message-State: AOAM533+pxNXX8wUNpxoY7RaeZOZvhwGeyWg4BdLGR+5kp5UCAem28ZL
+        oHkL2pdf2oly2DyIAx3xwb3kOQ==
+X-Google-Smtp-Source: ABdhPJyCbITTz5lmswPHeW0wVM8gnjbv6Zo4xmnNDnf/pa88GLZJNPjvZPoeIsTQcCXPoW3nk85tvw==
+X-Received: by 2002:ae9:e113:: with SMTP id g19mr34615511qkm.480.1618382637457;
+        Tue, 13 Apr 2021 23:43:57 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x22sm5174625qtq.93.2021.04.13.23.43.55
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 13 Apr 2021 23:43:57 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 23:43:41 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v2 1/9] userfaultfd/hugetlbfs: avoid including userfaultfd_k.h
+ in hugetlb.h
+In-Reply-To: <20210413051721.2896915-2-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104132336001.9086@eggly.anvils>
+References: <20210413051721.2896915-1-axelrasmussen@google.com> <20210413051721.2896915-2-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412202736.70765-1-saeed.mirzamohammadi@oracle.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 01:27:35PM -0700, Saeed Mirzamohammadi wrote:
-> The IOMMU driver calculates the guest addressability for a DMA request
-> based on the value of the mgaw reported from the IOMMU. However, this
-> is a fused value and as mentioned in the spec, the guest width
-> should be calculated based on the minimum of supported adjusted guest
-> address width (SAGAW) and MGAW.
+On Mon, 12 Apr 2021, Axel Rasmussen wrote:
+
+> Minimizing header file inclusion is desirable. In this case, we can do
+> so just by forward declaring the enumeration our signature relies upon.
 > 
-> This is from specification:
-> "Guest addressability for a given DMA request is limited to the
-> minimum of the value reported through this field and the adjusted
-> guest address width of the corresponding page-table structure.
-> (Adjusted guest address widths supported by hardware are reported
-> through the SAGAW field)."
-> 
-> This causes domain initialization to fail and following
-> errors appear for EHCI PCI driver:
-> 
-> [    2.486393] ehci-pci 0000:01:00.4: EHCI Host Controller
-> [    2.486624] ehci-pci 0000:01:00.4: new USB bus registered, assigned bus
-> number 1
-> [    2.489127] ehci-pci 0000:01:00.4: DMAR: Allocating domain failed
-> [    2.489350] ehci-pci 0000:01:00.4: DMAR: 32bit DMA uses non-identity
-> mapping
-> [    2.489359] ehci-pci 0000:01:00.4: can't setup: -12
-> [    2.489531] ehci-pci 0000:01:00.4: USB bus 1 deregistered
-> [    2.490023] ehci-pci 0000:01:00.4: init 0000:01:00.4 fail, -12
-> [    2.490358] ehci-pci: probe of 0000:01:00.4 failed with error -12
-> 
-> This issue happens when the value of the sagaw corresponds to a
-> 48-bit agaw. This fix updates the calculation of the agaw based on
-> the minimum of IOMMU's sagaw value and MGAW.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Tested-by: Camille Lu <camille.lu@hpe.com>
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> 
+> Reviewed-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 > ---
+>  include/linux/hugetlb.h | 4 +++-
+>  mm/hugetlb.c            | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 09f1fd12a6fa..3f47650ab79b 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -11,7 +11,6 @@
+>  #include <linux/kref.h>
+>  #include <linux/pgtable.h>
+>  #include <linux/gfp.h>
+> -#include <linux/userfaultfd_k.h>
+>  
+>  struct ctl_table;
+>  struct user_struct;
+> @@ -135,6 +134,8 @@ void hugetlb_show_meminfo(void);
+>  unsigned long hugetlb_total_pages(void);
+>  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+>  			unsigned long address, unsigned int flags);
+> +
+> +enum mcopy_atomic_mode;
 
-Also when you resend this, please state the commit that this fixes, as
-this must be a regression, right?  What kernel version did this previous
-work for?
+Wrongly placed: the CONFIG_USERFAULTFD=y CONFIG_HUGETLB_PAGE=n build
+fails. Better place it up above with struct ctl_table etc.
 
-thanks,
-
-greg k-h
+>  #ifdef CONFIG_USERFAULTFD
+>  int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
+>  				struct vm_area_struct *dst_vma,
+> @@ -143,6 +144,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
+>  				enum mcopy_atomic_mode mode,
+>  				struct page **pagep);
+>  #endif /* CONFIG_USERFAULTFD */
+> +
+>  bool hugetlb_reserve_pages(struct inode *inode, long from, long to,
+>  						struct vm_area_struct *vma,
+>  						vm_flags_t vm_flags);
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 54d81d5947ed..b1652e747318 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -40,6 +40,7 @@
+>  #include <linux/hugetlb_cgroup.h>
+>  #include <linux/node.h>
+>  #include <linux/page_owner.h>
+> +#include <linux/userfaultfd_k.h>
+>  #include "internal.h"
+>  
+>  int hugetlb_max_hstate __read_mostly;
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
+> 
+> 
