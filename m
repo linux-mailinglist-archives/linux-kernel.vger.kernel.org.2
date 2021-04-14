@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940F535FD76
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EACF835FD79
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhDNV4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhDNV4G (ORCPT
+        id S229882AbhDNV5J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Apr 2021 17:57:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34617 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229493AbhDNV5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:56:06 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FA5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:55:42 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 12so35580167lfq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B4PaWns9RJ50yLEbIsVE4NO8Jz9HTGhoiTqPXXKZY0o=;
-        b=s1wyX63Xge5OaK2bvQYCPwYwTo8RW1Ss67gsTC4iCTzZoahL7laxohuv/MPLIUzFoj
-         ROAq7rAsGUJOA652YpszDiLcIHiw/bsF8Kf104koIMVxrs7IjfC2ZMLFvWqo/K2PjrBv
-         h1TVj+FK5oxtvzbQ7S1AJgKqzqCudfvIdDXy1QN+hrDEZlChwUSuxEj2IEbP0x7z+qv6
-         OeqQUR+rWppCmnEJ551i0JpWrikmiqQ7ruYF4Ze1kETfUI/jXkJl805i5UQrnF4YiPjq
-         Ij8EDur12AMreoEbspDDbQikoLxbNDoqI3ehMI1TtNuIBWQm6HZCP3W0DV0IHf6fdmKW
-         GK3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B4PaWns9RJ50yLEbIsVE4NO8Jz9HTGhoiTqPXXKZY0o=;
-        b=NS2vGUsp3JrZmUoTfex/LBdp4pUxtHMHJhhsMLiHYUpk09jdaZ9hwiesv67CPjxOVy
-         jMlFamuUu7lCFAfXV6/aZi7t/PkM/X0eMRuyu6KJHYAXZnDlAYWdkGUIyO7BR/uRQS0t
-         sJXEJT5UD8+ugIugnoBDZV/WUE1fsd1+ekSSWOZjngVwJsK8d//2OtDWkXyp7QNc9WWl
-         SiE+huUeeQoQfwhOJ7tvi/zY/JSVzOHrWpGtyNetq0LqRGorTwGcpE7AnwRhRX7HnUNC
-         Y4uiTiNZ9WuUP85hbGoVGHe7VdTVDfBf3Y8MTcKVITF8VqUwKFGS2iXpL3VynEw1XgD/
-         R8AQ==
-X-Gm-Message-State: AOAM532Q9XH2W2xkPNVyw7J59dozivYReOUafJTPvui5gEJ1yxQzBOOH
-        yqezLnOj+6pfnWFG+IZXEJLNd8AxFx406a6EfQCQqA==
-X-Google-Smtp-Source: ABdhPJybnuynIs4AvePyaUNGDLqr+r0Yz2Iy4PQXStulsEF5z88FI42uo8XdSJXWQ5Lzbs9b7+w3vLEui4bGWt/MeGM=
-X-Received: by 2002:a19:a410:: with SMTP id q16mr197991lfc.73.1618437340809;
- Wed, 14 Apr 2021 14:55:40 -0700 (PDT)
+        Wed, 14 Apr 2021 17:57:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-4-PsdLgvNoPOivxmwyvxbtWw-1; Wed, 14 Apr 2021 22:56:40 +0100
+X-MC-Unique: PsdLgvNoPOivxmwyvxbtWw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 22:56:39 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 14 Apr 2021 22:56:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Matthew Wilcox' <willy@infradead.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Christoph Hellwig" <hch@lst.de>
+Subject: RE: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Thread-Topic: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Thread-Index: AQHXMXYmwdfrgigLI0exh4xFUSZq9Kq0jZ3g
+Date:   Wed, 14 Apr 2021 21:56:39 +0000
+Message-ID: <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+References: <20210410205246.507048-1-willy@infradead.org>
+ <20210410205246.507048-2-willy@infradead.org>
+ <20210411114307.5087f958@carbon>
+ <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+ <20210414115052.GS2531743@casper.infradead.org>
+ <20210414211322.3799afd4@carbon>
+ <20210414213556.GY2531743@casper.infradead.org>
+In-Reply-To: <20210414213556.GY2531743@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-12-ojeda@kernel.org>
-In-Reply-To: <20210414184604.23473-12-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Apr 2021 14:55:29 -0700
-Message-ID: <CAKwvOdniKs+cNKS9qHgq3xR6cmJ7xdiVpAzxaQEN372HY6xc7w@mail.gmail.com>
-Subject: Re: [PATCH 11/13] MAINTAINERS: Rust
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:50 AM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Miguel, Alex and Wedson will be maintaining the Rust support.
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
->  MAINTAINERS | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9e876927c60d..de32aaa5cabd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15547,6 +15547,20 @@ L:     linux-rdma@vger.kernel.org
->  S:     Maintained
->  F:     drivers/infiniband/ulp/rtrs/
->
-> +RUST
-> +M:     Miguel Ojeda <ojeda@kernel.org>
-> +M:     Alex Gaynor <alex.gaynor@gmail.com>
-> +M:     Wedson Almeida Filho <wedsonaf@google.com>
-> +L:     rust-for-linux@vger.kernel.org
-> +S:     Maintained
+From: Matthew Wilcox
+> Sent: 14 April 2021 22:36
+> 
+> On Wed, Apr 14, 2021 at 09:13:22PM +0200, Jesper Dangaard Brouer wrote:
+> > (If others want to reproduce).  First I could not reproduce on ARM32.
+> > Then I found out that enabling CONFIG_XEN on ARCH=arm was needed to
+> > cause the issue by enabling CONFIG_ARCH_DMA_ADDR_T_64BIT.
+> 
+> hmmm ... you should be able to provoke it by enabling ARM_LPAE,
+> which selects PHYS_ADDR_T_64BIT, and
+> 
+> config ARCH_DMA_ADDR_T_64BIT
+>         def_bool 64BIT || PHYS_ADDR_T_64BIT
+> 
+> >  struct page {
+> >         long unsigned int          flags;                /*     0     4 */
+> >
+> >         /* XXX 4 bytes hole, try to pack */
+> >
+> >         union {
+> >                 struct {
+> >                         struct list_head lru;            /*     8     8 */
+> >                         struct address_space * mapping;  /*    16     4 */
+> >                         long unsigned int index;         /*    20     4 */
+> >                         long unsigned int private;       /*    24     4 */
+> >                 };                                       /*     8    20 */
+> >                 struct {
+> >                         dma_addr_t dma_addr
 
-Assuming this will at least be part of Wedson's core responsibilities,
-shouldn't this be "Supported."  Per Maintainers:
-   87   S: *Status*, one of the following:
-   88      Supported: Someone is actually paid to look after this.
-   89      Maintained:  Someone actually looks after it.
+Adding __packed here will remove the 4 byte hole before the union
+and the compiler seems clever enough to know that anything following
+a 'long' must also be 'long' aligned.
+So you don't get anything horrid like byte accesses.
+On 64bit dma_addr will remain 64bit aligned.
+On arm32 dma_addr will be 32bit aligned - but forcing two 32bit access
+won't make any difference.
 
-Either way,
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+So definitely the only simple fix.
 
-> +W:     https://github.com/Rust-for-Linux/linux
-> +B:     https://github.com/Rust-for-Linux/linux/issues
-> +T:     git https://github.com/Rust-for-Linux/linux.git rust-next
-> +F:     rust/
-> +F:     samples/rust/
-> +F:     Documentation/rust/
-> +K:     \b(?i:rust)\b
-> +
->  RXRPC SOCKETS (AF_RXRPC)
->  M:     David Howells <dhowells@redhat.com>
->  L:     linux-afs@lists.infradead.org
-> --
-> 2.17.1
->
+	David
 
+> >                                            ;             /*     8     8 */
+> >                 };                                       /*     8     8 */
+> [...]
+> >         } __attribute__((__aligned__(8)));               /*     8    24 */
+> >         union {
+> >                 atomic_t           _mapcount;            /*    32     4 */
+> >                 unsigned int       page_type;            /*    32     4 */
+> >                 unsigned int       active;               /*    32     4 */
+> >                 int                units;                /*    32     4 */
+> >         };                                               /*    32     4 */
+> >         atomic_t                   _refcount;            /*    36     4 */
+> >
+> >         /* size: 40, cachelines: 1, members: 4 */
+> >         /* sum members: 36, holes: 1, sum holes: 4 */
+> >         /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
+> >         /* last cacheline: 40 bytes */
+> > } __attribute__((__aligned__(8)));
+> 
+> If you also enable CONFIG_MEMCG or enough options to make
+> LAST_CPUPID_NOT_IN_PAGE_FLAGS true, you'll end up with another 4-byte
+> hole at the end.
 
--- 
-Thanks,
-~Nick Desaulniers
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
