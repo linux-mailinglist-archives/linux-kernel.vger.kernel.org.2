@@ -2,471 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF8735F260
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D635F247
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348974AbhDNL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:27:03 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16587 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350387AbhDNL0E (ORCPT
+        id S1348995AbhDNLY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234176AbhDNLYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:26:04 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FL0TQ5q4xz18Hbh;
-        Wed, 14 Apr 2021 19:23:22 +0800 (CST)
-Received: from S00345302A-PC.china.huawei.com (10.47.82.32) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 19:25:28 +0800
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <jean-philippe@linaro.org>,
-        <julien@xen.org>, <linuxarm@huawei.com>
-Subject: [PATCH v4 16/16] kvm/arm: Align the VMID allocation with the arm64 ASID one
-Date:   Wed, 14 Apr 2021 12:23:12 +0100
-Message-ID: <20210414112312.13704-17-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
-In-Reply-To: <20210414112312.13704-1-shameerali.kolothum.thodi@huawei.com>
-References: <20210414112312.13704-1-shameerali.kolothum.thodi@huawei.com>
+        Wed, 14 Apr 2021 07:24:02 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C34C061574;
+        Wed, 14 Apr 2021 04:23:40 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so13109647oti.9;
+        Wed, 14 Apr 2021 04:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+o8PYYJsjZVZf5tMo+rQ7pqa7OQfXYmx9xWhw0qDkvs=;
+        b=dKjKB9nQtCB4kmd5RkaSCIg7ImQSUVUrCneTikYCSi5e5NOr0CMcxTljcR79Glwm4C
+         J4WaOsuGas5kcSDAXqbes8IAItR3mA1yM0ZMSQal99Jwoi/JSqHl3BhTvDiAEHEH7TjA
+         +kp+/zIHqm6UNqyhuTsKljZsBT2suhV8GrHpmu8lg2iv8WP6wEOk5/HmKfXyOon4Uj99
+         j9iUr9kDtK6RHQzhopbY3w8LGJgkazi3Ljtw4ChfT1Rs3vkGvno6KQToc84D74KmZTTB
+         UZUauNc9eo5lk7AkhCFy80cycSQDHC/RDg694lSPCeYDDceUGHrmuuz52IcllGotwWUM
+         Pg1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=+o8PYYJsjZVZf5tMo+rQ7pqa7OQfXYmx9xWhw0qDkvs=;
+        b=sILIVGYOxJmAoCPDqzExjWsotddtwTSUu8DA3U+4zXwchJqDs9xEG2rvWP4ANirePS
+         iimnSJw1Z1x3mtqiUs6HaXFXQkMDZq50izGqGJiIif9UJ0DYps5pISMckiqaIOdLX1Ie
+         lcj7ZRissqlKPzmCiWtLrW3wZUYN5hoAMsumOV0R5Qa73rdRTozg2fpGmTwIus4Jd4sG
+         eAGxW4Jx/w+PljCiXbPGnirsWtapwxpBHeqmxEO1I4NZz9YrG7N7KyjRXC807ivS4pJ1
+         WWF5hT8gRNfGb5kBGiwCqUcdJZNNewUSYXaEB5OWT2v5SUb19hJPmTr7WCAyBy1nLaEz
+         SVDQ==
+X-Gm-Message-State: AOAM532t1shOoj+xMsfK+5+KoxhXdFebXGBIhARmRDA1fZ+ah5Hi8BHX
+        VlxQOnPfQ0hjtTqNtvmMk0p92018tkI=
+X-Google-Smtp-Source: ABdhPJyahaCh7kd7QTJlPrP43Nuv9AfYshvMA2NaZgaWUZzgojzoODTHh/IFHA+mkChFz0B06XxFqQ==
+X-Received: by 2002:a9d:3a4a:: with SMTP id j68mr31977690otc.4.1618399419506;
+        Wed, 14 Apr 2021 04:23:39 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i25sm4169284otf.37.2021.04.14.04.23.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 04:23:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH V2] watchdog: mtk: support pre-timeout when the bark irq
+ is available
+To:     Wang Qing <wangqing@vivo.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1618385339-3527-1-git-send-email-wangqing@vivo.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <427a4dc7-3528-83c6-b951-8ca0b2ca09a3@roeck-us.net>
+Date:   Wed, 14 Apr 2021 04:23:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.82.32]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1618385339-3527-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Grall <julien.grall@arm.com>
+On 4/14/21 12:28 AM, Wang Qing wrote:
+> Use the bark interrupt as the pretimeout notifier if available.
+> 
+> By default, the pretimeout notification shall occur one second earlier
+> than the timeout.
+> 
+> V2:
+> - panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  drivers/watchdog/mtk_wdt.c | 57 ++++++++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 52 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 97ca993..b0ec933
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/reset-controller.h>
+>  #include <linux/types.h>
+>  #include <linux/watchdog.h>
+> +#include <linux/interrupt.h>
+>  
+>  #define WDT_MAX_TIMEOUT		31
+>  #define WDT_MIN_TIMEOUT		1
+> @@ -234,18 +235,41 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+>  	void __iomem *wdt_base = mtk_wdt->wdt_base;
+>  	int ret;
+>  
+> -	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
+> +	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
+>  	if (ret < 0)
+>  		return ret;
+>  
+>  	reg = ioread32(wdt_base + WDT_MODE);
+> -	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	reg &= ~WDT_MODE_IRQ_EN;
+> +	if (wdt_dev->pretimeout)
+> +		reg |= WDT_MODE_IRQ_EN;
+> +	else
+> +		reg &= ~WDT_MODE_IRQ_EN;
+>  	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+>  	iowrite32(reg, wdt_base + WDT_MODE);
+> 
 
-At the moment, the VMID algorithm will send an SGI to all the CPUs to
-force an exit and then broadcast a full TLB flush and I-Cache
-invalidation.
 
-This patch re-use the new ASID allocator. The
-benefits are:
-    - CPUs are not forced to exit at roll-over. Instead the VMID will be
-    marked reserved and the context will be flushed at next exit. This
-    will reduce the IPIs traffic.
-    - Context invalidation is now per-CPU rather than broadcasted.
-    - Catalin has a formal model of the ASID allocator.
+You said previously that the pretimeout would prevent the real timeout / reset
+from happening, and the driver has no provision to set the real timeout.
+That makes this a no-go.
 
-With the new algo, the code is now adapted:
-    - The function __kvm_flush_vm_context() has been renamed to
-    __kvm_tlb_flush_local_all() and now only flushing the current CPU
-    context.
-    - The call to update_vmid() will be done with preemption disabled
-    as the new algo requires to store information per-CPU.
-    - The TLBs associated to EL1 will be flushed when booting a CPU to
-    deal with stale information. This was previously done on the
-    allocation of the first VMID of a new generation.
+>  	return 0;
+>  }
+>  
+> +static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
+> +				   unsigned int timeout)
+> +{
+> +	wdd->pretimeout = timeout;
+> +	return mtk_wdt_start(wdd);
+> +}
+> +
+> +static irqreturn_t mtk_wdt_isr(int irq, void *arg)
+> +{
+> +	struct watchdog_device *wdd = arg;
+> +if (IS_ENABLED(CONFIG_WATCHDOG_PRETIMEOUT_GOV))
+> +	watchdog_notify_pretimeout(wdd);
+> +else
+> +	//panic by decault instead of WDT_SWRST;
+> +	panic("MTk Watchdog bark!\n");
+> +
+The idea behind the pretimeout governor is that it can be disabled
+by setting it to "none", and if pretimeout governors are disabled
+it is supposed to be a no-op. The above bypasses this mechanism
+and is not acceptable.
 
+This suggests that the real timeout indeed doesn't happen when
+WDT_MODE_IRQ_EN is set. Again, this is unacceptable.
 
-Signed-off-by: Julien Grall <julien.grall@arm.com>
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
-Test Results:
+On a side note, formatting is way off here.
 
-v4:
-The measurement was made on a HiSilicon D06 platform with maxcpus set
-to 8 and with the number of VMID limited to 4-bit. The test involves
-running concurrently 40 guests with 2 vCPUs. Each guest will then
- execute hackbench 5 times before exiting.
+Guenter
 
-The performance difference between the current algo and the new one are
-(avg. of 10 runs):
-   - 1.9% less entry/exit from guest
-   - 0.7% faster
-
-v3:
-The measurement was made on a Seattle based SoC (8 CPUs), with the
-number of VMID limited to 4-bit. The test involves running concurrently 40
-guests with 2 vCPUs. Each guest will then execute hackbench 5 times
-before exiting.
-
-The performance difference between the current algo and the new one are:
-    - 2.5% less exit from the guest
-    - 22.4% more flush, although they are now local rather than
-    broadcasted
-    - 0.11% faster (just for the record)
-
----
- arch/arm64/include/asm/kvm_asm.h   |   4 +-
- arch/arm64/include/asm/kvm_host.h  |   5 +-
- arch/arm64/include/asm/kvm_mmu.h   |   3 +-
- arch/arm64/kvm/arm.c               | 124 +++++++++++------------------
- arch/arm64/kvm/hyp/nvhe/hyp-main.c |   6 +-
- arch/arm64/kvm/hyp/nvhe/tlb.c      |  10 +--
- arch/arm64/kvm/hyp/vhe/tlb.c       |  10 +--
- arch/arm64/kvm/mmu.c               |   1 -
- 8 files changed, 65 insertions(+), 98 deletions(-)
-
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index a7ab84f781f7..29697c5ab2c2 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -44,7 +44,7 @@
- 
- #define __KVM_HOST_SMCCC_FUNC___kvm_hyp_init			0
- #define __KVM_HOST_SMCCC_FUNC___kvm_vcpu_run			1
--#define __KVM_HOST_SMCCC_FUNC___kvm_flush_vm_context		2
-+#define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_local_all		2
- #define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa		3
- #define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid		4
- #define __KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context		5
-@@ -182,7 +182,7 @@ DECLARE_KVM_NVHE_SYM(__per_cpu_end);
- DECLARE_KVM_HYP_SYM(__bp_harden_hyp_vecs);
- #define __bp_harden_hyp_vecs	CHOOSE_HYP_SYM(__bp_harden_hyp_vecs)
- 
--extern void __kvm_flush_vm_context(void);
-+extern void __kvm_tlb_flush_local_all(void);
- extern void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu);
- extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
- 				     int level);
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 3d10e6527f7d..5309216e4a94 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -70,9 +70,7 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu);
- void kvm_arm_vcpu_destroy(struct kvm_vcpu *vcpu);
- 
- struct kvm_vmid {
--	/* The VMID generation used for the virt. memory system */
--	u64    vmid_gen;
--	u32    vmid;
-+	atomic64_t id;
- };
- 
- struct kvm_s2_mmu {
-@@ -631,7 +629,6 @@ void kvm_arm_resume_guest(struct kvm *kvm);
- 		ret;							\
- 	})
- 
--void force_vm_exit(const cpumask_t *mask);
- void kvm_mmu_wp_memory_region(struct kvm *kvm, int slot);
- 
- int handle_exit(struct kvm_vcpu *vcpu, int exception_index);
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index c3080966ef83..43e83df87e3a 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -252,7 +252,8 @@ static __always_inline u64 kvm_get_vttbr(struct kvm_s2_mmu *mmu)
- 	u64 cnp = system_supports_cnp() ? VTTBR_CNP_BIT : 0;
- 
- 	baddr = mmu->pgd_phys;
--	vmid_field = (u64)vmid->vmid << VTTBR_VMID_SHIFT;
-+	vmid_field = atomic64_read(&vmid->id) << VTTBR_VMID_SHIFT;
-+	vmid_field &= VTTBR_VMID_MASK(kvm_get_vmid_bits());
- 	return kvm_phys_to_vttbr(baddr) | vmid_field | cnp;
- }
- 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 7f06ba76698d..c63242db2d42 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -31,6 +31,7 @@
- #include <asm/tlbflush.h>
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
-+#include <asm/lib_asid.h>
- #include <asm/virt.h>
- #include <asm/kvm_arm.h>
- #include <asm/kvm_asm.h>
-@@ -55,10 +56,10 @@ static DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
- unsigned long kvm_arm_hyp_percpu_base[NR_CPUS];
- DECLARE_KVM_NVHE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
- 
--/* The VMID used in the VTTBR */
--static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
--static u32 kvm_next_vmid;
--static DEFINE_SPINLOCK(kvm_vmid_lock);
-+static DEFINE_PER_CPU(atomic64_t, active_vmids);
-+static DEFINE_PER_CPU(u64, reserved_vmids);
-+
-+static struct asid_info vmid_info;
- 
- static bool vgic_present;
- 
-@@ -486,85 +487,22 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- 	return vcpu_mode_priv(vcpu);
- }
- 
--/* Just ensure a guest exit from a particular CPU */
--static void exit_vm_noop(void *info)
--{
--}
--
--void force_vm_exit(const cpumask_t *mask)
-+static void vmid_flush_cpu_ctxt(void)
- {
--	preempt_disable();
--	smp_call_function_many(mask, exit_vm_noop, NULL, true);
--	preempt_enable();
-+	kvm_call_hyp(__kvm_tlb_flush_local_all);
- }
- 
--/**
-- * need_new_vmid_gen - check that the VMID is still valid
-- * @vmid: The VMID to check
-- *
-- * return true if there is a new generation of VMIDs being used
-- *
-- * The hardware supports a limited set of values with the value zero reserved
-- * for the host, so we check if an assigned value belongs to a previous
-- * generation, which requires us to assign a new value. If we're the first to
-- * use a VMID for the new generation, we must flush necessary caches and TLBs
-- * on all CPUs.
-- */
--static bool need_new_vmid_gen(struct kvm_vmid *vmid)
-+static void vmid_set_reserved_bits(struct asid_info *info)
- {
--	u64 current_vmid_gen = atomic64_read(&kvm_vmid_gen);
--	smp_rmb(); /* Orders read of kvm_vmid_gen and kvm->arch.vmid */
--	return unlikely(READ_ONCE(vmid->vmid_gen) != current_vmid_gen);
-+	bitmap_clear(info->map, 0, NUM_CTXT_ASIDS(info));
- }
--
- /**
-  * update_vmid - Update the vmid with a valid VMID for the current generation
-  * @vmid: The stage-2 VMID information struct
-  */
- static void update_vmid(struct kvm_vmid *vmid)
- {
--	if (!need_new_vmid_gen(vmid))
--		return;
--
--	spin_lock(&kvm_vmid_lock);
--
--	/*
--	 * We need to re-check the vmid_gen here to ensure that if another vcpu
--	 * already allocated a valid vmid for this vm, then this vcpu should
--	 * use the same vmid.
--	 */
--	if (!need_new_vmid_gen(vmid)) {
--		spin_unlock(&kvm_vmid_lock);
--		return;
--	}
--
--	/* First user of a new VMID generation? */
--	if (unlikely(kvm_next_vmid == 0)) {
--		atomic64_inc(&kvm_vmid_gen);
--		kvm_next_vmid = 1;
--
--		/*
--		 * On SMP we know no other CPUs can use this CPU's or each
--		 * other's VMID after force_vm_exit returns since the
--		 * kvm_vmid_lock blocks them from reentry to the guest.
--		 */
--		force_vm_exit(cpu_all_mask);
--		/*
--		 * Now broadcast TLB + ICACHE invalidation over the inner
--		 * shareable domain to make sure all data structures are
--		 * clean.
--		 */
--		kvm_call_hyp(__kvm_flush_vm_context);
--	}
--
--	vmid->vmid = kvm_next_vmid;
--	kvm_next_vmid++;
--	kvm_next_vmid &= (1 << kvm_get_vmid_bits()) - 1;
--
--	smp_wmb();
--	WRITE_ONCE(vmid->vmid_gen, atomic64_read(&kvm_vmid_gen));
--
--	spin_unlock(&kvm_vmid_lock);
-+	asid_check_context(&vmid_info, &vmid->id, NULL);
- }
- 
- static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
-@@ -728,8 +666,6 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		cond_resched();
- 
--		update_vmid(&vcpu->arch.hw_mmu->vmid);
--
- 		check_vcpu_requests(vcpu);
- 
- 		/*
-@@ -739,6 +675,15 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		preempt_disable();
- 
-+		/*
-+		 * The ASID/VMID allocator only tracks active VMIDs per
-+		 * physical CPU, and therefore the VMID allocated may not be
-+		 * preserved on VMID roll-over if the task was preempted,
-+		 * making a thread's VMID inactive. So we need to call
-+		 * update_vttbr in non-premptible context.
-+		 */
-+		update_vmid(&vcpu->arch.hw_mmu->vmid);
-+
- 		kvm_pmu_flush_hwstate(vcpu);
- 
- 		local_irq_disable();
-@@ -777,8 +722,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		smp_store_mb(vcpu->mode, IN_GUEST_MODE);
- 
--		if (ret <= 0 || need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
--		    kvm_request_pending(vcpu)) {
-+		if (ret <= 0 || kvm_request_pending(vcpu)) {
- 			vcpu->mode = OUTSIDE_GUEST_MODE;
- 			isb(); /* Ensure work in x_flush_hwstate is committed */
- 			kvm_pmu_sync_hwstate(vcpu);
-@@ -1460,6 +1404,8 @@ static void cpu_hyp_reset(void)
- {
- 	if (!is_kernel_in_hyp_mode())
- 		__hyp_reset_vectors();
-+
-+	kvm_call_hyp(__kvm_tlb_flush_local_all);
- }
- 
- /*
-@@ -1635,9 +1581,32 @@ static bool init_psci_relay(void)
- 
- static int init_common_resources(void)
- {
-+	struct asid_info *info = &vmid_info;
-+	int err;
-+
-+	/*
-+	 * Initialize the ASID allocator telling it to allocate a single
-+	 * VMID per VM.
-+	 */
-+	err = asid_allocator_init(info, kvm_get_vmid_bits(), false);
-+	if (err) {
-+		kvm_err("Failed to initialize VMID allocator.\n");
-+		return err;
-+	}
-+
-+	info->active = &active_vmids;
-+	info->reserved = &reserved_vmids;
-+	info->flush_cpu_ctxt_cb = vmid_flush_cpu_ctxt;
-+	info->set_reserved_bits = vmid_set_reserved_bits;
-+
- 	return kvm_set_ipa_limit();
- }
- 
-+static void free_common_resources(void)
-+{
-+	asid_allocator_free(&vmid_info);
-+}
-+
- static int init_subsystems(void)
- {
- 	int err = 0;
-@@ -1918,7 +1887,7 @@ int kvm_arch_init(void *opaque)
- 
- 	err = kvm_arm_init_sve();
- 	if (err)
--		return err;
-+		goto out_err;
- 
- 	if (!in_hyp_mode) {
- 		err = init_hyp_mode();
-@@ -1952,6 +1921,7 @@ int kvm_arch_init(void *opaque)
- 	if (!in_hyp_mode)
- 		teardown_hyp_mode();
- out_err:
-+	free_common_resources();
- 	return err;
- }
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-index 936328207bde..62027448d534 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-@@ -25,9 +25,9 @@ static void handle___kvm_vcpu_run(struct kvm_cpu_context *host_ctxt)
- 	cpu_reg(host_ctxt, 1) =  __kvm_vcpu_run(kern_hyp_va(vcpu));
- }
- 
--static void handle___kvm_flush_vm_context(struct kvm_cpu_context *host_ctxt)
-+static void handle___kvm_tlb_flush_local_all(struct kvm_cpu_context *host_ctxt)
- {
--	__kvm_flush_vm_context();
-+	__kvm_tlb_flush_local_all();
- }
- 
- static void handle___kvm_tlb_flush_vmid_ipa(struct kvm_cpu_context *host_ctxt)
-@@ -112,7 +112,7 @@ typedef void (*hcall_t)(struct kvm_cpu_context *);
- 
- static const hcall_t host_hcall[] = {
- 	HANDLE_FUNC(__kvm_vcpu_run),
--	HANDLE_FUNC(__kvm_flush_vm_context),
-+	HANDLE_FUNC(__kvm_tlb_flush_local_all),
- 	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
- 	HANDLE_FUNC(__kvm_tlb_flush_vmid),
- 	HANDLE_FUNC(__kvm_flush_cpu_context),
-diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
-index 229b06748c20..3f1fc5125e9e 100644
---- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-+++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-@@ -138,10 +138,10 @@ void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu)
- 	__tlb_switch_to_host(&cxt);
- }
- 
--void __kvm_flush_vm_context(void)
-+void __kvm_tlb_flush_local_all(void)
- {
--	dsb(ishst);
--	__tlbi(alle1is);
-+	dsb(nshst);
-+	__tlbi(alle1);
- 
- 	/*
- 	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-@@ -153,7 +153,7 @@ void __kvm_flush_vm_context(void)
- 	 *
- 	 */
- 	if (icache_is_vpipt())
--		asm volatile("ic ialluis");
-+		asm volatile("ic iallu" : : );
- 
--	dsb(ish);
-+	dsb(nsh);
- }
-diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
-index 66f17349f0c3..89f229e77b7d 100644
---- a/arch/arm64/kvm/hyp/vhe/tlb.c
-+++ b/arch/arm64/kvm/hyp/vhe/tlb.c
-@@ -142,10 +142,10 @@ void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu)
- 	__tlb_switch_to_host(&cxt);
- }
- 
--void __kvm_flush_vm_context(void)
-+void __kvm_tlb_flush_local_all(void)
- {
--	dsb(ishst);
--	__tlbi(alle1is);
-+	dsb(nshst);
-+	__tlbi(alle1);
- 
- 	/*
- 	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-@@ -157,7 +157,7 @@ void __kvm_flush_vm_context(void)
- 	 *
- 	 */
- 	if (icache_is_vpipt())
--		asm volatile("ic ialluis");
-+		asm volatile("ic iallu" : : );
- 
--	dsb(ish);
-+	dsb(nsh);
- }
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 8711894db8c2..4933fc9a13fb 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -390,7 +390,6 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu)
- 	mmu->kvm = kvm;
- 	mmu->pgt = pgt;
- 	mmu->pgd_phys = __pa(pgt->pgd);
--	mmu->vmid.vmid_gen = 0;
- 	return 0;
- 
- out_destroy_pgtable:
--- 
-2.17.1
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static const struct watchdog_info mtk_wdt_info = {
+>  	.identity	= DRV_NAME,
+>  	.options	= WDIOF_SETTIMEOUT |
+> @@ -253,12 +277,21 @@ static const struct watchdog_info mtk_wdt_info = {
+>  			  WDIOF_MAGICCLOSE,
+>  };
+>  
+> +static const struct watchdog_info mtk_wdt_pt_info = {
+> +	.identity	= DRV_NAME,
+> +	.options	= WDIOF_SETTIMEOUT |
+> +			  WDIOF_PRETIMEOUT |
+> +			  WDIOF_KEEPALIVEPING |
+> +			  WDIOF_MAGICCLOSE,
+> +};
+> +
+>  static const struct watchdog_ops mtk_wdt_ops = {
+>  	.owner		= THIS_MODULE,
+>  	.start		= mtk_wdt_start,
+>  	.stop		= mtk_wdt_stop,
+>  	.ping		= mtk_wdt_ping,
+>  	.set_timeout	= mtk_wdt_set_timeout,
+> +	.set_pretimeout	= mtk_wdt_set_pretimeout,
+>  	.restart	= mtk_wdt_restart,
+>  };
+>  
+> @@ -267,7 +300,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct mtk_wdt_dev *mtk_wdt;
+>  	const struct mtk_wdt_data *wdt_data;
+> -	int err;
+> +	int err, irq;
+>  
+>  	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+>  	if (!mtk_wdt)
+> @@ -279,7 +312,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>  	if (IS_ERR(mtk_wdt->wdt_base))
+>  		return PTR_ERR(mtk_wdt->wdt_base);
+>  
+> -	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq > 0) {
+> +		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
+> +								&mtk_wdt->wdt_dev);
+> +		if (err)
+> +			return err;
+> +
+> +		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
+> +		mtk_wdt->wdt_dev.pretimeout = 1;
+> +	} else {
+> +		if (irq == -EPROBE_DEFER)
+> +			return -EPROBE_DEFER;
+> +
+> +		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
+> +	}
+> +
+>  	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+>  	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+>  	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+> @@ -360,7 +408,6 @@ static struct platform_driver mtk_wdt_driver = {
+>  };
+>  
+>  module_platform_driver(mtk_wdt_driver);
+> -
+>  module_param(timeout, uint, 0);
+>  MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds");
+>  
+> 
 
