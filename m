@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D4835F635
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2BA35F63C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349713AbhDNObD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:31:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347902AbhDNOax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:30:53 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39CB361139;
-        Wed, 14 Apr 2021 14:30:31 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 10:30:29 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kcarcia@redhat.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 2/5] tracing/hwlat: Implement the mode config option
-Message-ID: <20210414103029.7c48b76e@gandalf.local.home>
-In-Reply-To: <c6b6ac9274e417b650c7aa9494bcf4f6ca0a1097.1617889883.git.bristot@redhat.com>
-References: <cover.1617889883.git.bristot@redhat.com>
-        <c6b6ac9274e417b650c7aa9494bcf4f6ca0a1097.1617889883.git.bristot@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1348699AbhDNOca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:32:30 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:58121 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231818AbhDNOc2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:32:28 -0400
+Received: (qmail 1494041 invoked by uid 1000); 14 Apr 2021 10:32:06 -0400
+Date:   Wed, 14 Apr 2021 10:32:06 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Chris Chiu <chris.chiu@canonical.com>
+Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek
+ Hub
+Message-ID: <20210414143206.GA1493067@rowland.harvard.edu>
+References: <20210412150006.53909-1-chris.chiu@canonical.com>
+ <20210412151205.GB1420451@rowland.harvard.edu>
+ <CABTNMG1fvbOMrP+FmH0X5Yh04gf6vvhqhXfRrmpJ=f-fPBx4xw@mail.gmail.com>
+ <20210413144416.GB1454681@rowland.harvard.edu>
+ <CABTNMG21xp6TA8SGJhamfM9D6JGvQHwg8AMySSCh09-DnAZ5qQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABTNMG21xp6TA8SGJhamfM9D6JGvQHwg8AMySSCh09-DnAZ5qQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  8 Apr 2021 16:13:20 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+On Wed, Apr 14, 2021 at 01:07:43PM +0800, Chris Chiu wrote:
+> Thanks for the instructions. I can hit the same timeout problem with
+> runtime PM. The
+> fail rate seems the same as normal PM. (around 1/4 ~ 1/7)
+> root@:/sys/bus/usb/devices/3-4.3# echo auto > power/control
+> root@:/sys/bus/usb/devices/3-4.3# echo on > power/control
+> root@:/sys/bus/usb/devices/3-4.3# dmesg -c
+> [ 2789.679807] usb 3-4: kworker/7:0 timed out on ep0out len=0/0
+> [ 2789.679812] usb 3-4-port3: can't suspend, status -110
+> [ 2789.680078] usb 3-4.3: Failed to suspend device, error -110
 
-> +/**
-> + * hwlat_mode_write - Write function for "mode" entry
-> + * @filp: The active open file structure
-> + * @ubuf: The user buffer that contains the value to write
-> + * @cnt: The maximum number of bytes to write to "file"
-> + * @ppos: The current position in @file
-> + *
-> + * This function provides a write implementation for the "mode" interface
-> + * to the hardware latency detector. hwlatd has different operation modes.
-> + * The "none" sets the allowed cpumask for a single hwlatd thread at the
-> + * startup and lets the scheduler handle the migration. The default mode is
-> + * the "round-robin" one, in which a single hwlatd thread runs, migrating
-> + * among the allowed CPUs in a round-robin fashion.
-> + */
-> +static ssize_t hwlat_mode_write(struct file *filp, const char __user *ubuf,
-> +				 size_t cnt, loff_t *ppos)
-> +{
-> +	const char *mode;
-> +	char buf[64];
-> +	int ret;
-> +	int i;
-> +
-> +	if (hwlat_busy)
-> +		return -EBUSY;
+Since these are random failures, occurring at a low rate, maybe it would 
+help simply to retry the transfer that timed out.  Have you tested this?
 
-So we can't switch modes while running?
+> > > > > diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> > > > > index 7f71218cc1e5..8478d49bba77 100644
+> > > > > --- a/drivers/usb/core/hub.c
+> > > > > +++ b/drivers/usb/core/hub.c
+> > > > > @@ -3329,8 +3329,11 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
+> > > > >        * descendants is enabled for remote wakeup.
+> > > > >        */
+> > > > >       else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
+> > > > > -             status = set_port_feature(hub->hdev, port1,
+> > > > > -                             USB_PORT_FEAT_SUSPEND);
+> > > > > +             if (udev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND)
+> > > >
+> > > > You should test hub->hdev->quirks, here, not udev->quirks.  The quirk
+> > > > belongs to the Realtek hub, not to the device that's plugged into the
+> > > > hub.
+> > > >
+> > >
+> > > Thanks for pointing that out. I'll verify again and propose a V2 after
+> > > it's done.
+> >
+> > Another thing to consider: You shouldn't return 0 from usb_port_suspend
+> > if the port wasn't actually suspended.  We don't want to kernel to have
+> > a false idea of the hardware's current state.
+> >
+> So we still need the "really_suspend=false". What if I replace it with
+> the following?
+> It's a little verbose but expressive enough. Any suggestions?
+> 
+> +       else if (!(hub->hdev->quirks & USB_QUIRK_NO_SET_FEAT_SUSPEND) &&
+> +               (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0))
+> +               status = set_port_feature(hub->hdev, port1,
+> +                               USB_PORT_FEAT_SUSPEND);
+>         else {
+>                 really_suspend = false;
+>                 status = 0;
 
+You should do something more like this:
 
-Also, with this implemented, you can remove the disable_migrate variable,
-and just switch the mode to NONE when it's detected that the affinity mask
-of the thread has been changed.
+-	else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0)
+-		status = set_port_feature(hub->hdev, port1,
+-				USB_PORT_FEAT_SUSPEND);
+-	else {
++	else if (PMSG_IS_AUTO(msg) || usb_wakeup_enabled_descendants(udev) > 0) {
++		if (hub->hdev->quirks & USB_QUIRK_NO_SUSPEND)
++			status = -EIO;
++		else
++			status = set_port_feature(hub->hdev, port1,
++					USB_PORT_FEAT_SUSPEND);
++	} else {
+		really_suspend = false;
+		status = 0;
+	}
 
--- Steve
+But I would prefer to find a way to make port suspend actually work, 
+instead of giving up on it.
 
-
-> +
-> +	if (cnt >= sizeof(buf))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(buf, ubuf, cnt))
-> +		return -EFAULT;
-> +
-> +	buf[cnt] = 0;
-> +
-> +	mode = strstrip(buf);
-> +
-> +	ret = -EINVAL;
-> +
-> +	for (i = 0; i < MODE_MAX; i++) {
-> +		if (strcmp(mode, thread_mode_str[i]) == 0) {
-> +			hwlat_data.thread_mode = i;
-> +			ret = cnt;
-> +		}
-> +	}
-> +
-> +	*ppos += cnt;
-> +
-> +	return cnt;
-> +}
-> +
-> +
+Alan Stern
