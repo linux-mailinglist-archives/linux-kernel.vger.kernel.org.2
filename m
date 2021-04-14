@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E388B35ED3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E23035ED3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhDNGa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:30:57 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52907 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhDNGaz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:30:55 -0400
-Received: from 1-171-231-81.dynamic-ip.hinet.net ([1.171.231.81] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lWZ2f-0007lr-7U; Wed, 14 Apr 2021 06:30:26 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/i915/dp: Use slow and wide link training for DPCP rev < 1.4
-Date:   Wed, 14 Apr 2021 14:29:50 +0800
-Message-Id: <20210414063011.996773-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        id S1347930AbhDNGco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:32:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:25036 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231831AbhDNGc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:32:26 -0400
+IronPort-SDR: XhwycpHN6oHcXIMOs2W5zE7xuKkVZyVdu2kwZ3FMGG+QdG3vNijWAP8+gQa/T80Afb30sKKzh5
+ KoPxaFjncsIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="194603677"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="194603677"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 23:31:49 -0700
+IronPort-SDR: jtTk4WrJ1bqaHDp2OMiOJLdZVz7CpNjV6TV1Sg570t5Pli+ReRHeJNydL3jvtdloMOYZwH7tn6
+ r2LcAEzJYvOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="443703998"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Apr 2021 23:31:45 -0700
+Cc:     baolu.lu@linux.intel.com, LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+ <YHAoY9+w2ebYZ7VV@myrica> <20210409110305.6b0471d9@jacob-builder>
+ <20210413170947.35ba9267@jacob-builder>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <41433d99-e413-f5bf-5279-695dae6c58ba@linux.intel.com>
+Date:   Wed, 14 Apr 2021 14:22:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413170947.35ba9267@jacob-builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Screen flickers on Innolux panel when clock rate 540000 is in use.
+Hi Jacob,
 
-According to the panel vendor, though clock rate 540000 is advertised,
-but the max clock rate it really supports is 270000.
+On 4/14/21 8:09 AM, Jacob Pan wrote:
+> Hi Jean,
+> 
+> On Fri, 9 Apr 2021 11:03:05 -0700, Jacob Pan
+> <jacob.jun.pan@linux.intel.com> wrote:
+> 
+>>> problems:
+>>>
+>>> * We don't have a use-case for binding the mm of a remote process (and
+>>>    it's supposedly difficult for device drivers to do it securely). So
+>>> OK, we remove the mm argument from iommu_sva_bind_device() and use the
+>>>    current mm. But the IOMMU driver isn't going to do
+>>> get_task_mm(current) every time it needs the mm being bound, it will
+>>> take it from iommu_sva_bind_device(). Likewise iommu_sva_alloc_pasid()
+>>> shouldn't need to bother with get_task_mm().
+>>>
+>>> * cgroup accounting for IOASIDs needs to be on the current task.
+>>> Removing the mm parameter from iommu_sva_alloc_pasid() doesn't help
+>>> with that. Sure it indicates that iommu_sva_alloc_pasid() needs a
+>>> specific task context but that's only for cgroup purpose, and I'd
+>>> rather pass the cgroup down from iommu_sva_bind_device() anyway (but am
+>>> fine with keeping it within ioasid_alloc() for now). Plus it's an
+>>> internal helper, easy for us to check that the callers are doing the
+>>> right thing.
+>> With the above split, we really just have one allocation function:
+>> ioasid_alloc(), so it can manage current cgroup accounting within. Would
+>> this work?
+> After a few attempts, I don't think the split can work better. I will
+> restore the mm parameter and add a warning if mm != current->mm.
 
-So use slow and wide training for panels with DPCP rev < 1.4 to resolve
-the issue. User also confirmed the new strategy doesn't introduce
-regression on XPS 9380.
+I still worry about supervisor pasid allocation.
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3384
-References: https://gitlab.freedesktop.org/drm/intel/-/issues/272
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_dp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+If we use iommu_sva_alloc_pasid() to allocate a supervisor pasid, which
+mm should the pasid be set? I've ever thought about passing &init_mm to
+iommu_sva_alloc_pasid(). But if you add "mm != current->mm", this seems
+not to work. Or do you prefer a separated interface for supervisor pasid
+allocation/free?
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index 775d89b6c3fc..ca73e2179659 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -1461,12 +1461,12 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
- 	    intel_dp_can_bigjoiner(intel_dp))
- 		pipe_config->bigjoiner = true;
- 
--	if (intel_dp_is_edp(intel_dp))
-+	if (intel_dp_is_edp(intel_dp) && intel_dp->dpcd[DP_DPCD_REV] > 0x13)
- 		/*
--		 * Optimize for fast and narrow. eDP 1.3 section 3.3 and eDP 1.4
--		 * section A.1: "It is recommended that the minimum number of
--		 * lanes be used, using the minimum link rate allowed for that
--		 * lane configuration."
-+		 * Optimize for fast and narrow on DP 1.4. eDP 1.3 section 3.3
-+		 * and eDP 1.4 section A.1: "It is recommended that the minimum
-+		 * number of lanes be used, using the minimum link rate allowed
-+		 * for that lane configuration."
- 		 *
- 		 * Note that we fall back to the max clock and lane count for eDP
- 		 * panels that fail with the fast optimal settings (see
--- 
-2.30.2
+Best regards,
+baolu
 
+> 
+> Thanks,
+> 
+> Jacob
+> 
