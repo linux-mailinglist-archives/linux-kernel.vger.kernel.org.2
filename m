@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1929735EFE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E7935F02B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhDNIkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:40:18 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:60076 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350181AbhDNIir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:38:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618389506; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=jyUb42qJgomuB7pQkbu5JzcZ0Y3XJSuvxS8VVPF5vLU=; b=E0Cs0XIWdiYExgOr7oouF5nengQGEYU8JinT9wbIGLZ+Q9Zaw0JWACjz2xafBPO47Sh34o7q
- 1AIq3QMJ4YdC9pkKa+zPKYx5vAZeQM9RiD9or4d6VlWABFrw/PXD+SxGrHbfKnwNxei9qHnC
- pJwQVQjKrIp063D+R1oe9KBcA70=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6076a9ee9a9ff96d95a070a6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Apr 2021 08:38:06
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D3D30C433ED; Wed, 14 Apr 2021 08:38:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE6CCC433CA;
-        Wed, 14 Apr 2021 08:38:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE6CCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V3 4/4] arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support node
-Date:   Wed, 14 Apr 2021 14:02:05 +0530
-Message-Id: <ac5c413a4f2987a6812d6baaa95a3a83e53c5f43.1618387606.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1618387606.git.schowdhu@codeaurora.org>
-References: <cover.1618387606.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1618387606.git.schowdhu@codeaurora.org>
-References: <cover.1618387606.git.schowdhu@codeaurora.org>
+        id S1350210AbhDNIuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:50:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:43393 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244803AbhDNIuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:50:35 -0400
+IronPort-SDR: 9P4sCaVcIkhEGipDuK81dxmTWOC8qe0pbFxQ04f7Ef1zU40AZ/nH+z2HsTeGNvJWE8VYxgfJpW
+ iGjZQY178qWw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="194709272"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="asc'?scan'208";a="194709272"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 01:50:14 -0700
+IronPort-SDR: PhnCozf8UEFW4UKr5HkHWVFHrUZnwzlL5liJMxVYioxCDwDp1Ia1ghsUam5JRrwtgLBrVYSj2v
+ Dzotrex2mzTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="asc'?scan'208";a="450722624"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Apr 2021 01:50:11 -0700
+Date:   Wed, 14 Apr 2021 16:32:21 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     airlied@linux.ie, intel-gfx@lists.freedesktop.org,
+        joonas.lahtinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        jani.nikula@linux.intel.com, dri-devel@lists.freedesktop.org,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com,
+        intel-gvt-dev@lists.freedesktop.org, zhi.a.wang@intel.com
+Subject: Re: [PATCH] drm/i915/gvt: remove useless function
+Message-ID: <20210414083221.GN1551@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <1618294728-78952-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ctZH5Gqgrl5HoVnD"
+Content-Disposition: inline
+In-Reply-To: <1618294728-78952-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DCC(Data Capture and Compare) device tree node entry along with
-the addresses for register regions.
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+--ctZH5Gqgrl5HoVnD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index e5bb17b..7d4bb28 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -654,6 +654,12 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		dma@10a2000 {
-+			compatible = "qcom,sm8150-dcc", "qcom,dcc";
-+			reg = <0x0 0x010a2000 0x0 0x1000>,
-+			      <0x0 0x010ad000 0x0 0x3000>;
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+On 2021.04.13 14:18:48 +0800, Jiapeng Chong wrote:
+> Fix the following clang warning:
+>=20
+> drivers/gpu/drm/i915/gvt/gtt.c:590:20: warning: unused function
+> 'ppgtt_set_guest_root_entry' [-Wunused-function].
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/i915/gvt/gtt.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gt=
+t.c
+> index 897c007..a01ff44 100644
+> --- a/drivers/gpu/drm/i915/gvt/gtt.c
+> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
+> @@ -587,12 +587,6 @@ static void _ppgtt_set_root_entry(struct intel_vgpu_=
+mm *mm,
+>  			   entry, index, false, 0, mm->vgpu);
+>  }
+> =20
+> -static inline void ppgtt_set_guest_root_entry(struct intel_vgpu_mm *mm,
+> -		struct intel_gvt_gtt_entry *entry, unsigned long index)
+> -{
+> -	_ppgtt_set_root_entry(mm, entry, index, true);
+> -}
+> -
+>  static inline void ppgtt_set_shadow_root_entry(struct intel_vgpu_mm *mm,
+>  		struct intel_gvt_gtt_entry *entry, unsigned long index)
+>  {
+> --=20
 
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+
+Thanks for covering me on this! Queue this up.
+
+--ctZH5Gqgrl5HoVnD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYHaokAAKCRCxBBozTXgY
+J332AJ4salQYvYttCagxF7P2YWnt4+5OtACfSsWoYZp+DqERU/BbGvS+EbPHckI=
+=oqD8
+-----END PGP SIGNATURE-----
+
+--ctZH5Gqgrl5HoVnD--
