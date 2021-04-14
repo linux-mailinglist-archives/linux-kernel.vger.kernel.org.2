@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4818A35F139
+	by mail.lfdr.de (Postfix) with ESMTP id 936D135F13A
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348803AbhDNKFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
+        id S1348848AbhDNKF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbhDNKFe (ORCPT
+        with ESMTP id S231645AbhDNKFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:05:34 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39966C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:05:13 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id l76so14040712pga.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:05:13 -0700 (PDT)
+        Wed, 14 Apr 2021 06:05:51 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80749C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:05:29 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 18so22994234edx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:05:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WNtB4o+0je6m6Iv/hxpsZ7k1lBzZu9C3dQfxcFge/sY=;
-        b=K2suukuNiVkLANxIkI3yCx5pOloVIYD8+TW6JJAGH7k9zrO0/A+tXKSMs1r8qgYHom
-         dKbXsUqNx28Q1ZC8G+CqSgBLdX/6p97YfgyLWtPv37D/rqB4Sn5HjJFW2vgyxEyR/6rv
-         KfdYTYJFgCb3TUdmWTr+qXWg6r8FlYO5GvL7FjU0O/4CSHXO99VPHM8FXvmOjPlTOWYt
-         Qah3E3fu04pTj1qB0Q6sOAt3dsQCAKxKpfgfN8zHRKSqlI6bjeDoRZwXNWDd2Iezhb+G
-         2n5xuyRPsm7In+XuOJKGE5csNq5ddTP5NFsWGLCFD5LckfegyRDWdcTUiDz8yJK80jcr
-         dqqQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GVh307TByYmYoNzLAF6596sbOa45mSgCV5D/X4yX508=;
+        b=kRv98L8xJPnkCwfDV/m+Gne5gNAPGjmBs7UWw5q4POogq0Z2Y8rGBGXfPUqUB1nKqq
+         ULMzcZvMKnpRudRkAujqVbwDZvzQ8CmCGLRR0rOPl+z0yF65KAG7A83EE52ZIY+BWwM8
+         9YPgyABoKBIUf3Mefnj7Rw6OGKSZR0Buare6DJ7jGwSznoNLe60BL4d52oXQCcemsxPN
+         h5hJtyI4hTNgdbWq5dIdZ9sMwaGrvTcRwbiaoiBlAQggQW14M6VVx39l8FnFjq9NoI3C
+         Jr0+wA4QJgAcA0yBsv02pZR/OP6eXw+o4ZOaaxlnbv6MDmLRHm2fEzJZh2XtjC9nu8X8
+         hjjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WNtB4o+0je6m6Iv/hxpsZ7k1lBzZu9C3dQfxcFge/sY=;
-        b=AbeuUwGKubrPXSo3/c8HnDHu3/9OrNK/FMMkr7e3L9nlqlilJ+9F7J2WmBBwXw7Xrz
-         U/2wJK2ZnI7fCnUBHRhAYss85ZZzPvEMUwbd3rGPcG8Wtp2xXcdzRQgEfqKlMqzUCCy2
-         lWtJmaGSBaaJtM6OvJ2OXft8i0U540JiIg4NQJowfBejAoWit/K3C7vJ65kaPRU8+QHJ
-         QzjysCrsRBRc2k2tkh1pAhVqxDkGVxaX/G0ptJtPrgb5gn490L+sMKRU0tQGw9gxOdMx
-         AjTHEPYAijtnCqX8aV61Y5ofYeKwS9a95E19ZGP+BmsoEAUPkCL6MZP9CygTXMFUgqxi
-         fK3A==
-X-Gm-Message-State: AOAM5337LL86LDUa4ViHBs/h1mDVEJJXF+x2ukHMyx/VOKwGo+DvuD7X
-        3xK5amrlsc6WyL/qCwXUvaexCSGvqcIgJd6I+Ayt7Q==
-X-Google-Smtp-Source: ABdhPJykKLm23kCH/wnmdc/CWEONNuwxGeR3Xxpl2OWhmqxsoBzGI44cwtF1IAS9iuYGqAXyf3SGdk4LKH9dNCqdSYk=
-X-Received: by 2002:a65:6645:: with SMTP id z5mr35991057pgv.273.1618394712780;
- Wed, 14 Apr 2021 03:05:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GVh307TByYmYoNzLAF6596sbOa45mSgCV5D/X4yX508=;
+        b=J5d6KFnqKAXfk/MHw0juBIZH6u81ATOO3WFz5jahjOeuDCv3qQ1Zn8q8RAEub+BAFH
+         eddWjtovr1nGAQiL07w17+5NN482OWnlGdlo0fVS2NHoFm/s8eS+59TfqiGLAC+yvyA8
+         mCN0ysRUfoxCWV/aCTnwpGfvF7F7eySV8yqr0kZ3vRwuZkDb/rV4z2DQwL7r14cBEzE6
+         yikNBnLPMP71Aakc0l2gNnrUEN1cWJHiqsd5wUWEMUMiu9SvC2lfFFTwIi/RhtH1xJlI
+         pbDse4zrp6+VbmwXLv7u3ch73MYjgr2c6rirA/9Cev5XVWyHF/oDDtjhJw8RzR85+8iy
+         EPtQ==
+X-Gm-Message-State: AOAM532h17H6tO8FCzVNktBYpc7Pp2+0/5/cc72KE12k7TEocf27tpju
+        N7XePW26H7fDPRJvpsVRxtZuBw==
+X-Google-Smtp-Source: ABdhPJwqK8oiXg0xutMuNK4j6I69rvn/k96EWnLpL8VbK3QGFBwP0I7B9b6O0lVzKXVvxd4HA0sbhw==
+X-Received: by 2002:a05:6402:128a:: with SMTP id w10mr39701798edv.277.1618394728272;
+        Wed, 14 Apr 2021 03:05:28 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id mm8sm3068019ejb.28.2021.04.14.03.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 03:05:27 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 11:05:25 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v9 1/1] mfd: intel-m10-bmc: support for MAX10 BMC Secure
+ Updates
+Message-ID: <20210414100525.GM4869@dell>
+References: <20210412195329.241357-1-russell.h.weight@intel.com>
+ <20210412195329.241357-2-russell.h.weight@intel.com>
 MIME-Version: 1.0
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-3-songmuchun@bytedance.com> <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
-In-Reply-To: <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 14 Apr 2021 18:04:35 +0800
-Message-ID: <CAMZfGtVpUW1=Zvys7J=gW1xqkuUVLuPYcQbwJoe=TEkBa6qqQw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 2/7] mm: memcontrol: bail out early when
- !mm in get_mem_cgroup_from_mm
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210412195329.241357-2-russell.h.weight@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 5:24 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 13-04-21 14:51:48, Muchun Song wrote:
-> > When mm is NULL, we do not need to hold rcu lock and call css_tryget for
-> > the root memcg. And we also do not need to check !mm in every loop of
-> > while. So bail out early when !mm.
->
-> mem_cgroup_charge and other callers unconditionally drop the reference
-> so how come this does not underflow reference count?
+On Mon, 12 Apr 2021, Russ Weight wrote:
 
-For the root memcg, the CSS_NO_REF flag is set, so css_get
-and css_put do not get or put reference.
+> Add macros and definitions required by the MAX10 BMC
+> Secure Update driver.
+> 
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+> ---
+> v9:
+>   - Rebased on next-20210412
+> v8:
+>   - Previously patch 1/6 in "Intel MAX10 BMC Secure Update Driver"
+>   - Rebased on next-20210121
+> v7:
+>   - No change
+> v6:
+>   - No change
+> v5:
+>   - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
+> v4:
+>   - No change
+> v3:
+>   - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
+>     Update driver"
+>   - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+>     underlying functions will be called directly.
+> v2:
+>   - These functions and macros were previously distributed among
+>     the patches that needed them. They are now grouped together
+>     in a single patch containing changes to the Intel MAX10 BMC
+>     driver.
+>   - Added DRBL_ prefix to some definitions
+>   - Some address definitions were moved here from the .c files that
+>     use them.
+> ---
+>  include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
 
-Thanks.
+Applied, thanks.
 
-
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > ---
-> >  mm/memcontrol.c | 21 ++++++++++-----------
-> >  1 file changed, 10 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index f229de925aa5..9cbfff59b171 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -901,20 +901,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
-> >       if (mem_cgroup_disabled())
-> >               return NULL;
-> >
-> > +     /*
-> > +      * Page cache insertions can happen without an
-> > +      * actual mm context, e.g. during disk probing
-> > +      * on boot, loopback IO, acct() writes etc.
-> > +      */
-> > +     if (unlikely(!mm))
-> > +             return root_mem_cgroup;
-> > +
-> >       rcu_read_lock();
-> >       do {
-> > -             /*
-> > -              * Page cache insertions can happen without an
-> > -              * actual mm context, e.g. during disk probing
-> > -              * on boot, loopback IO, acct() writes etc.
-> > -              */
-> > -             if (unlikely(!mm))
-> > +             memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> > +             if (unlikely(!memcg))
-> >                       memcg = root_mem_cgroup;
-> > -             else {
-> > -                     memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> > -                     if (unlikely(!memcg))
-> > -                             memcg = root_mem_cgroup;
-> > -             }
-> >       } while (!css_tryget(&memcg->css));
-> >       rcu_read_unlock();
-> >       return memcg;
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
