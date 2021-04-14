@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AD535FD2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1405D35FD29
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhDNVTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
+        id S232416AbhDNVTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232107AbhDNVTc (ORCPT
+        with ESMTP id S232088AbhDNVTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Apr 2021 17:19:32 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FDDC061756;
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D039FC061574;
         Wed, 14 Apr 2021 14:19:10 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id f8so25411232edd.11;
+Received: by mail-ej1-x635.google.com with SMTP id n2so33541200ejy.7;
         Wed, 14 Apr 2021 14:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tKq3KmV45GoK0Thnkb+rqanYcWMZ9fjuF6uc/TWZBZk=;
-        b=YqKT4SI1v9R4LEvk80UH8n+sy4MPcpTpPrLcdOogMHQtV3Yr2OKlCMFlQdM0xJVE/0
-         f9hr5PPin5yzuvlOrYJv4zHDDMyPwiqDK3tVwx6ILst5vw/m3hxfXyAH/ObdqXL4XbHh
-         RwMQmxr9qi3yHblVUOdbKpD9HXtFK9f5Iv7ZejpXbbWVyEn2tVu0q9ddNOCC6SnQr4R8
-         fcR5IidNI9ToVEMVwwfNvclMKNJRxmIPVDcxXLOZFL699noNvAa/MleSD2tLln5bp8XU
-         RdHoNtdtUs6IskhA9Gpqn9lFfRLUIhKjU9u9OVtbPENIpl3c7HGJ3Zd1g25vsOg5cIHK
-         FuKw==
+        bh=0M5FwzbPAy5c2Cwb5UeKel5vnxZKoOrIQ9Hgfx4Nf84=;
+        b=XJqVnGGlPZX8CvYzl+WAUGvK24upEn2NOmomJFSU4ooCZYs6HJOr4/t1XziPzp+u4w
+         wGsQ6wTWlNxh+Hvf/mkKbRax2q5pXa4HmceACb5v8qmitzDJJJbEFs5YVwgxlUZG92gJ
+         Jshy1rhQD+kHiFAkr5T/Jo0sSAUkmZ3wwZOST6F/HnNpHT5SWpabWDq+wMmkCBsOHqu4
+         f/7t6SETkH9L5kVFe5CFD0vgoaRfPAA1OaSmIoSV/L8XJ0mLVKU5YWSSWd9iHobA/UTS
+         mK7EhvQccYYe/WAnRds4xEYe4VhVWIECxTahYfsjMisxQYW+e8PBLrn22a9Wf2gGJTjQ
+         m59Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=tKq3KmV45GoK0Thnkb+rqanYcWMZ9fjuF6uc/TWZBZk=;
-        b=DWVcLz/H+I3IGBD7k0/QMV6SshsdOYKYpwkc14a/RlKd/EWlLRUeuWuX/JDTdWnCFv
-         sYWDEvXZEQTfwg+gQqTPzoe37G9Fo11Agh4TOBVcUfYxGuuyRg2oWr9cnm3XJtLkqiRt
-         //wZveOKd2X8Rpog+uH3pLvwIo8hpDM+ECERgECfqQ9K7knmcMa+wcp1nu0Xvfl24oPF
-         uyTHl7f7Hm3qxOhdQG4NNI8Ikfl3ZQ0YG0AVTRIfUq0Kg1WfEfkDO0hVDDoYZFf/l+6s
-         a+5iGE0dJGXHS8XOtJ3NZttagyPE60ojIFKfWCnhqNmfJ9+kh8dwkmT1dUZpf4NuBJnF
-         MTCg==
-X-Gm-Message-State: AOAM5339qDLtt6fQ7PQH1cdrPYPC7RKWnk1XaRt5ulC8Oxw73HGxTmr7
-        jaxyCWv6RNlmP8+UuoqnEk4=
-X-Google-Smtp-Source: ABdhPJwGaoyXbcXZZDDR9Bdi4koV4AolNtt2HiuR/HCyC01ILpIZK2Opxa2GHecgZn/knYI/amUKMw==
-X-Received: by 2002:a05:6402:515:: with SMTP id m21mr238606edv.382.1618435148888;
-        Wed, 14 Apr 2021 14:19:08 -0700 (PDT)
+        bh=0M5FwzbPAy5c2Cwb5UeKel5vnxZKoOrIQ9Hgfx4Nf84=;
+        b=eCb49Hq78xyPRUfbbf0hVPDh1LPR1L01ZjCHdqUQonVyEGPJY4yLiYjyWOPx3s024o
+         UcDKcvtggfhblI3qEwDEOOyLJddWWHdhH9TodbLhcGDzknTPzJfjMAN6ZOOLoo+3c64K
+         BLrsEEKfASaw82TIrFrpMwEdC+Zeg2PyF7KRM41TtBfxpz5pDv4qYTNhPKeUTMoexJ2W
+         0QTTUwBLnIsSVqKIUqeMASqJ0Qo/CJx0E4cVH/TExIs5f/1H/6jvY9Fk98ftGGQMskx1
+         iPgmFYN8IqfXzrHgJBNlyR/VM2paQaCoe8HTWlEZ4NC+byukwgFo46MAXa7nG4BFWy6E
+         FyUA==
+X-Gm-Message-State: AOAM5313O7NbNjEj7vtfCKy4R5/p6JUrQnv4wSn2Ff6keO2TFht668IV
+        2coSZDuEPVdJoe5sRkxz46gSe1fxMriD1g3D
+X-Google-Smtp-Source: ABdhPJz32JfxtVn+RJlnSVHMQiHFOzrDCBnX4lrD24OLqQcMNGwPPcjTjN2IvCPYDD3M7NzOLB5Mqw==
+X-Received: by 2002:a17:907:969e:: with SMTP id hd30mr74976ejc.5.1618435149669;
+        Wed, 14 Apr 2021 14:19:09 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
         by smtp.gmail.com with ESMTPSA id v5sm568222edx.87.2021.04.14.14.19.08
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Apr 2021 14:19:08 -0700 (PDT)
+        Wed, 14 Apr 2021 14:19:09 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
         enric.balletbo@collabora.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 04/11] arm64: dts: rockchip: Fix power-controller node names for px30
-Date:   Wed, 14 Apr 2021 23:18:49 +0200
-Message-Id: <20210414211856.12104-5-jbx6244@gmail.com>
+Subject: [PATCH v7 05/11] arm64: dts: rockchip: Fix power-controller node names for rk3328
+Date:   Wed, 14 Apr 2021 23:18:50 +0200
+Message-Id: <20210414211856.12104-6-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210414211856.12104-1-jbx6244@gmail.com>
 References: <20210414211856.12104-1-jbx6244@gmail.com>
@@ -72,81 +72,30 @@ Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/arm64/boot/dts/rockchip/px30.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 09baa8a16..2b43c3d72 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -244,20 +244,20 @@
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 5bab61784..35df57535 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -300,13 +300,13 @@
+ 			#address-cells = <1>;
  			#size-cells = <0>;
  
- 			/* These power domains are grouped by VD_LOGIC */
--			pd_usb@PX30_PD_USB {
-+			power-domain@PX30_PD_USB {
- 				reg = <PX30_PD_USB>;
- 				clocks = <&cru HCLK_HOST>,
- 					 <&cru HCLK_OTG>,
- 					 <&cru SCLK_OTG_ADP>;
- 				pm_qos = <&qos_usb_host>, <&qos_usb_otg>;
+-			pd_hevc@RK3328_PD_HEVC {
++			power-domain@RK3328_PD_HEVC {
+ 				reg = <RK3328_PD_HEVC>;
  			};
--			pd_sdcard@PX30_PD_SDCARD {
-+			power-domain@PX30_PD_SDCARD {
- 				reg = <PX30_PD_SDCARD>;
- 				clocks = <&cru HCLK_SDMMC>,
- 					 <&cru SCLK_SDMMC>;
- 				pm_qos = <&qos_sdmmc>;
+-			pd_video@RK3328_PD_VIDEO {
++			power-domain@RK3328_PD_VIDEO {
+ 				reg = <RK3328_PD_VIDEO>;
  			};
--			pd_gmac@PX30_PD_GMAC {
-+			power-domain@PX30_PD_GMAC {
- 				reg = <PX30_PD_GMAC>;
- 				clocks = <&cru ACLK_GMAC>,
- 					 <&cru PCLK_GMAC>,
-@@ -265,7 +265,7 @@
- 					 <&cru SCLK_GMAC_RX_TX>;
- 				pm_qos = <&qos_gmac>;
+-			pd_vpu@RK3328_PD_VPU {
++			power-domain@RK3328_PD_VPU {
+ 				reg = <RK3328_PD_VPU>;
+ 				clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
  			};
--			pd_mmc_nand@PX30_PD_MMC_NAND {
-+			power-domain@PX30_PD_MMC_NAND {
- 				reg = <PX30_PD_MMC_NAND>;
- 				clocks =  <&cru HCLK_NANDC>,
- 					  <&cru HCLK_EMMC>,
-@@ -278,14 +278,14 @@
- 				pm_qos = <&qos_emmc>, <&qos_nand>,
- 					 <&qos_sdio>, <&qos_sfc>;
- 			};
--			pd_vpu@PX30_PD_VPU {
-+			power-domain@PX30_PD_VPU {
- 				reg = <PX30_PD_VPU>;
- 				clocks = <&cru ACLK_VPU>,
- 					 <&cru HCLK_VPU>,
- 					 <&cru SCLK_CORE_VPU>;
- 				pm_qos = <&qos_vpu>, <&qos_vpu_r128>;
- 			};
--			pd_vo@PX30_PD_VO {
-+			power-domain@PX30_PD_VO {
- 				reg = <PX30_PD_VO>;
- 				clocks = <&cru ACLK_RGA>,
- 					 <&cru ACLK_VOPB>,
-@@ -301,7 +301,7 @@
- 				pm_qos = <&qos_rga_rd>, <&qos_rga_wr>,
- 					 <&qos_vop_m0>, <&qos_vop_m1>;
- 			};
--			pd_vi@PX30_PD_VI {
-+			power-domain@PX30_PD_VI {
- 				reg = <PX30_PD_VI>;
- 				clocks = <&cru ACLK_CIF>,
- 					 <&cru ACLK_ISP>,
-@@ -312,7 +312,7 @@
- 					 <&qos_isp_wr>, <&qos_isp_m1>,
- 					 <&qos_vip>;
- 			};
--			pd_gpu@PX30_PD_GPU {
-+			power-domain@PX30_PD_GPU {
- 				reg = <PX30_PD_GPU>;
- 				clocks = <&cru SCLK_GPU>;
- 				pm_qos = <&qos_gpu>;
 -- 
 2.11.0
 
