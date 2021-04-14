@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5889935F33A
+	by mail.lfdr.de (Postfix) with ESMTP id A46E035F33B
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350680AbhDNMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
+        id S1350697AbhDNMNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233659AbhDNMNB (ORCPT
+        with ESMTP id S233780AbhDNMNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Apr 2021 08:13:01 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC320C061756;
-        Wed, 14 Apr 2021 05:12:39 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r8so32670575lfp.10;
-        Wed, 14 Apr 2021 05:12:39 -0700 (PDT)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEBDC061574;
+        Wed, 14 Apr 2021 05:12:40 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x20so2495395lfu.6;
+        Wed, 14 Apr 2021 05:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7fcOwlh1hWcYkPKcp1G6pZ9TYsQSyP841jgIbzs8dR0=;
-        b=P2HFnSwnBV8zt6Iet2HAllbgMASac9KeO+xhP7trAzIXtzfEssorWiFMj8IiU0hs9J
-         nngEll9YZ2ChBaAmic98HgHkrvDXnYc3Thl+JSLgR2VfdiURJgtA48erJ2lGxMm5GqL/
-         jP47SyKK4Q60IWocJyd4NuEqMK6qTcHVcHa8czIHApP9U3oTi3gf7JmyFa/dwVNN0d+i
-         trfkT3q8ho98Q4Y651DGZKk4n0IX2TyiH4WwRvxG+SUy6AwKAA7/jGp9RXC32Ou8MtUJ
-         vYGZxKgP2Bz+taWOK2cIdhnWP/d+l4g+xK7YWwgRjGETFB8IwoD24eVCBo9Lf5jxwTBN
-         T0kg==
+        bh=1StD1decQS7zRdEOzRVJotVRFVyFLJ+Y3wtmlXev/IY=;
+        b=YWqdqVidTwyyPcwaWIOh+MXw/0ithmAZaBZD3lJOeFdoAUMnyIH5NwJuIjaNrmkZda
+         08k/n5gwIihOOlDl0d2uYPib5faG9ctnuiU0+8Dyf7ZY0lhxwB6eZX0dTg2K0F087fLz
+         9Y5F8Sx5yKkeMHP/olqsd35+mJ0IZT58pLbx3h9+5mgyWzpgAWPMZUV5Q/2IWnFHacDm
+         WvVRNbtA4bhY4b9DKAvg75Nb3wgcLsRh928TDQ1tYDX1JX230704PKDtl39IaTMC2Own
+         l+NkCgGBt4YLJDrKP2dR2j0bM19lDRxMUYmzXeAK83d3L5FTgzP0mjPl3s24s21KRRrh
+         lklg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7fcOwlh1hWcYkPKcp1G6pZ9TYsQSyP841jgIbzs8dR0=;
-        b=q5GsKdwV1X5oOc66OlNjBh9CcEK/5szf6/6MC12sLhfq8tEBWp+aPGmZN7uzhNHcr9
-         i2KG26fDEPPt02dt/HJwTIFwNur7iNLvzg/78fyvXmPHyFCKc1MKY83hc7pPOlTZ3ue+
-         VY2v9+tSJeSt9q4T6ueXNaVMS55C//3qLwgKq2WxcBETtIp+Wi4Q+0W6lfl0mP9pM8KU
-         dkn3CnlHLBQrp9SJ3gelUs5AoMjvEOhZ9Mnz3VtUj9sw9uAlzp5pp325CM4q1VxicC2l
-         dEJVzAMaR9uP8NR9+vze094e0UXTVO+8EIBvLB2/5Q/7lt4oVkNKlOQ2HxW3C60Aishb
-         RJhA==
-X-Gm-Message-State: AOAM533KULc8as/gttgfoSmc7dDfB6+UgfBnGvoaPLtboQKTuZvJ5mZu
-        V/pv6EJ5QWyO50TYXCan1Kik9JFfTv+ldQ==
-X-Google-Smtp-Source: ABdhPJxgmVYZQLdi8sLRdnC4VQhcZxuyKkUCdAWfw7JmdX123gb3+m4wYCqo5rglrxyyiZ965yW+bg==
-X-Received: by 2002:ac2:47ee:: with SMTP id b14mr17310494lfp.447.1618402358122;
+        bh=1StD1decQS7zRdEOzRVJotVRFVyFLJ+Y3wtmlXev/IY=;
+        b=W952oUtYzNfm93ESDMJWL5AByutBqTB513erjkfzz6jzECvEETXTnCSpdTQmeWiMRX
+         Q7A8rH6Flb/oGlRQYFr9pCGPWg/PqblsKz9kMGTzV45iTpyeOeIo6xMDiERBtx3gDVTU
+         l3tpe0qo+u4YsQjxMPbSIWv2Vr+a3XAnFPPMg9gWa6Do5W1CtGXZF9Zb07VsZzCDe6oC
+         gOQBDkYcuEBwjehGn5MW0znepfGkH+wZ9c35AGmsvtU4hpykFFL7ZCLbHDKLrMt+5YkJ
+         ZrKC9uppp9SWJkcytQJ9yAOy9epC/v+RKSjNBmZ9PG6sdCcKdrnT5FABrjzlSiKwC5Z0
+         Hxpw==
+X-Gm-Message-State: AOAM5309NsrppSeEBpbhB29MaoS+UPoMxRF+hthf/bPSQblqfzYUE+4u
+        8tTLd6FJQJHx4msirfsCeTXF+2jyFvaAHw==
+X-Google-Smtp-Source: ABdhPJwH59eH06gguM5t4WgzIM5xI8HRNEkg0jGasy30GLT2kvSHfzUWhP/f0O/1f5MqTSbLNoxsrw==
+X-Received: by 2002:ac2:5e30:: with SMTP id o16mr19820524lfg.35.1618402358997;
         Wed, 14 Apr 2021 05:12:38 -0700 (PDT)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i4sm4338061lfu.33.2021.04.14.05.12.37
+        by smtp.gmail.com with ESMTPSA id i4sm4338061lfu.33.2021.04.14.05.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 05:12:37 -0700 (PDT)
+        Wed, 14 Apr 2021 05:12:38 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -63,9 +63,9 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 4/6] kvfree_rcu: add a bulk-list check when a scheduler is run
-Date:   Wed, 14 Apr 2021 14:12:24 +0200
-Message-Id: <20210414121226.2650-4-urezki@gmail.com>
+Subject: [PATCH 5/6] kvfree_rcu: clear KRC_MONITOR_TODO bit once a batch is started
+Date:   Wed, 14 Apr 2021 14:12:25 +0200
+Message-Id: <20210414121226.2650-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210414121226.2650-1-urezki@gmail.com>
 References: <20210414121226.2650-1-urezki@gmail.com>
@@ -75,46 +75,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RCU_SCHEDULER_RUNNING is set when a scheduling is available.
-That signal is used in order to check and queue a "monitor work"
-to reclaim freed objects(if they are) during a boot-up phase.
+Before attempting of starting a new batch the KRC_MONITOR_TODO
+bit is cleared and set back when a previous RCU batch is still
+in progress.
 
-We have it because, the main path of the kvfree_rcu() call can
-not queue the work untill the scheduler is up and running.
-
-Currently in such helper only "krcp->head" is checked to figure
-out if there are outstanding objects to be released. And this is
-only one channel. After adding a bulk interface there are two
-extra which have to be checked also: "krcp->bkvhead[0]" as well
-as "krcp->bkvhead[1]". So, we have to queue the "monitor work"
-if _any_ corresponding channel is not empty.
+Clear the KRC_MONITOR_TODO bit only when a new batch has been
+successfully queued, if not, it stays active anyway, thus no
+reason in setting it back. Please note that checking/setting
+this bit is protected by the krcp->lock spinlock.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ kernel/rcu/tree.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 31ee820c3d9e..da3605067cc1 100644
+index da3605067cc1..012030cbe55e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3723,13 +3723,11 @@ void __init kfree_rcu_scheduler_running(void)
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
--		if (!krcp->head || test_and_set_bit(KRC_MONITOR_TODO, &krcp->flags)) {
--			raw_spin_unlock_irqrestore(&krcp->lock, flags);
--			continue;
-+		if (krcp->bkvhead[0] || krcp->bkvhead[1] || krcp->head ||
-+				!test_and_set_bit(KRC_MONITOR_TODO, &krcp->flags)) {
-+			schedule_delayed_work_on(cpu, &krcp->monitor_work,
-+				KFREE_DRAIN_JIFFIES);
- 		}
+@@ -3427,16 +3427,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+ 					  unsigned long flags)
+ {
+ 	// Attempt to start a new batch.
+-	clear_bit(KRC_MONITOR_TODO, &krcp->flags);
 -
--		schedule_delayed_work_on(cpu, &krcp->monitor_work,
--					 KFREE_DRAIN_JIFFIES);
+ 	if (queue_kfree_rcu_work(krcp)) {
+ 		// Success! Our job is done here.
++		clear_bit(KRC_MONITOR_TODO, &krcp->flags);
  		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 		return;
  	}
+ 
+ 	// Previous RCU batch still in progress, try again later.
+-	set_bit(KRC_MONITOR_TODO, &krcp->flags);
+ 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
  }
 -- 
 2.20.1
