@@ -2,223 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1AA35F908
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA10535F90D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347390AbhDNQfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhDNQe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:34:59 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D876CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:34:37 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id b136-20020a1c1b8e0000b029012c69da2040so3490246wmb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5bUo8r4r13lEGITKVpdKd1iCEn6Je2Xyo3Iut/rgrSM=;
-        b=d8pyRcO2akO++aJRtc4XlKYLV9HOYFfpM2oJ0m08qW8aKmlXMkm+76KUVyxOjb9jvv
-         7PXy1UMvErOfSIltPjlp38GfJjp5MGByBkpcvZADTkWbkKStuCbG+0nZgK/+vFj05brw
-         MQFrrMxB5Ws0YjOUzCT7LYWfb8M3fYdxhWxNXEJ0heN1sTB7776cpiWzS8Z0HuPOpm7g
-         vrgg6cVd0VL212ZpiTSMz2VOMpoq9yLuBLcJWnsFSucXMjh8lg7iEfLzmNu7ftttv90f
-         rgBwNG2nMLd0XifiVhCfpHoQuJmm1Gm+ktt0avQomzvBO42pPaonIVep4QHCf/f+Op2C
-         42yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5bUo8r4r13lEGITKVpdKd1iCEn6Je2Xyo3Iut/rgrSM=;
-        b=XRlVvDw0Ke7BDwVyyhiPhAq22VPSpHIcYa6KiEVX2peisojDH3LXTCrRCBRTIFLjxI
-         AnUz0zuLva97iSdN4n3rf441lTEc7LyTQ9L1h7/OIcGjvE7atTaymLXrVu2F09Kf2zuv
-         tcczMWty8AXAjYjf6pl5iWPCuIEpwOGjIHd0kFTjIevfcZ0XXv/HV7wFGRrP6IGxpT6j
-         K2gpddJMGVu4nIHoTE7xH4wyGOYa2UfgFLFUraRa6SHMRuSA6yf7yQT6PWgANdg6Cwf/
-         dL1it0c/aQkqd8kOjn79hcPKesqswwsHfwQJvno7b/dk1GfQ5BTNLu4YuW4roMo0wpXb
-         TCGQ==
-X-Gm-Message-State: AOAM532DiOKMKMPSz8sySmo7jhNOj6tbKazr7p8VmXcysnpZPSOjWgdk
-        N+XH+A0RqDoDb2ARCZ0p830=
-X-Google-Smtp-Source: ABdhPJzdczMyr4rGvuoYhoKkz4/Q5rSl4879o+8TF2z7yz7NTNcg8SsrIWSSIZ3pnCaolfo0Ss9ouA==
-X-Received: by 2002:a05:600c:4f03:: with SMTP id l3mr3874188wmq.149.1618418076603;
-        Wed, 14 Apr 2021 09:34:36 -0700 (PDT)
-Received: from oliver-Z170M-D3H.cuni.cz ([2001:718:1e03:5128:b9b8:574a:9cb2:1c55])
-        by smtp.gmail.com with ESMTPSA id l4sm5677999wmh.8.2021.04.14.09.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 09:34:36 -0700 (PDT)
-From:   glittao@gmail.com
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Oliver Glitta <glittao@gmail.com>
-Subject: [PATCH] mm/slub: use stackdepot to save stack trace in objects
-Date:   Wed, 14 Apr 2021 18:34:34 +0200
-Message-Id: <20210414163434.4376-1-glittao@gmail.com>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
+        id S1352761AbhDNQgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231599AbhDNQgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:36:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B619F6113B;
+        Wed, 14 Apr 2021 16:35:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618418140;
+        bh=Yk43lQt3xONHQ5mcQacuvBpjQEzfRMYBnN12EuEhqzk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HVAjvvZPZg1FGeF0GyMhjlgweFtOfb7q9guzW769W2QEn6562VmynrgyKIkSlkWT2
+         0QxzL+A0ZFGMg2vcx6k2eBODIkvh9b6l8cDykhOkTyWDIr43MgGAAh7DkYQahJpgdn
+         9yH6/IHvm6h/okRtZz9z88k+ejIWibnqiY6sL7tGx3tMzqALg8ciU8Oj3fZhRgV/vq
+         EGBN8H9EIsZFqN38TSGpoipZ9N0pX7z1mui1wolFO30Df+MdWWKYg9/TygQ+1vm8CF
+         LJjPloH45rh40HbM/TWcmgP16tNFKYvmgON8yyW1YpxB+at2wnz/SyxXtdn5eEOWgA
+         dWVzCsFWR5T1Q==
+Date:   Wed, 14 Apr 2021 22:05:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine fixes for 5.12
+Message-ID: <YHcZ2Kylq+RuDzPg@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RpyAts/MSfBWytVk"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Glitta <glittao@gmail.com>
 
-Many stack traces are similar so there are many similar arrays.
-Stackdepot saves each unique stack only once.
+--RpyAts/MSfBWytVk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Replace field addrs in struct track with depot_stack_handle_t handle.
-Use stackdepot to save stack trace.
+Hi Linus,
 
-The benefits are smaller memory overhead and possibility to aggregate
-per-cache statistics in the future using the stackdepot handle
-instead of matching stacks manually.
+Please pull to receive the fixes for dmaengine for v5.12. Mostly bunch
+of driver fixes.
 
-Signed-off-by: Oliver Glitta <glittao@gmail.com>
----
- init/Kconfig |  1 +
- mm/slub.c    | 79 ++++++++++++++++++++++++++++++++--------------------
- 2 files changed, 50 insertions(+), 30 deletions(-)
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 37a17853433a..a4ed2daa6c41 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1891,6 +1891,7 @@ config SLUB_DEBUG
- 	default y
- 	bool "Enable SLUB debugging support" if EXPERT
- 	depends on SLUB && SYSFS
-+	select STACKDEPOT if STACKTRACE_SUPPORT
- 	help
- 	  SLUB has extensive debug support features. Disabling these can
- 	  result in significant savings in code size. This also disables
-diff --git a/mm/slub.c b/mm/slub.c
-index 9c0e26ddf300..4b18499726eb 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -35,6 +35,7 @@
- #include <linux/prefetch.h>
- #include <linux/memcontrol.h>
- #include <linux/random.h>
-+#include <linux/stackdepot.h>
- 
- #include <trace/events/kmem.h>
- 
-@@ -203,8 +204,8 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
- #define TRACK_ADDRS_COUNT 16
- struct track {
- 	unsigned long addr;	/* Called from address */
--#ifdef CONFIG_STACKTRACE
--	unsigned long addrs[TRACK_ADDRS_COUNT];	/* Called from address */
-+#ifdef CONFIG_STACKDEPOT
-+	depot_stack_handle_t handle;
- #endif
- 	int cpu;		/* Was running on cpu */
- 	int pid;		/* Pid context */
-@@ -581,22 +582,27 @@ static struct track *get_track(struct kmem_cache *s, void *object,
- 	return kasan_reset_tag(p + alloc);
- }
- 
-+#ifdef CONFIG_STACKDEPOT
-+static depot_stack_handle_t save_stack_trace(gfp_t flags)
-+{
-+	unsigned long entries[TRACK_ADDRS_COUNT];
-+	depot_stack_handle_t handle;
-+	unsigned int nr_entries;
-+
-+	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 4);
-+	handle = stack_depot_save(entries, nr_entries, flags);
-+	return handle;
-+}
-+#endif
-+
- static void set_track(struct kmem_cache *s, void *object,
- 			enum track_item alloc, unsigned long addr)
- {
- 	struct track *p = get_track(s, object, alloc);
- 
- 	if (addr) {
--#ifdef CONFIG_STACKTRACE
--		unsigned int nr_entries;
--
--		metadata_access_enable();
--		nr_entries = stack_trace_save(kasan_reset_tag(p->addrs),
--					      TRACK_ADDRS_COUNT, 3);
--		metadata_access_disable();
--
--		if (nr_entries < TRACK_ADDRS_COUNT)
--			p->addrs[nr_entries] = 0;
-+#ifdef CONFIG_STACKDEPOT
-+		p->handle = save_stack_trace(GFP_KERNEL);
- #endif
- 		p->addr = addr;
- 		p->cpu = smp_processor_id();
-@@ -623,14 +629,19 @@ static void print_track(const char *s, struct track *t, unsigned long pr_time)
- 
- 	pr_err("%s in %pS age=%lu cpu=%u pid=%d\n",
- 	       s, (void *)t->addr, pr_time - t->when, t->cpu, t->pid);
--#ifdef CONFIG_STACKTRACE
-+#ifdef CONFIG_STACKDEPOT
- 	{
--		int i;
--		for (i = 0; i < TRACK_ADDRS_COUNT; i++)
--			if (t->addrs[i])
--				pr_err("\t%pS\n", (void *)t->addrs[i]);
--			else
--				break;
-+		depot_stack_handle_t handle;
-+		unsigned long *entries;
-+		unsigned int nr_entries;
-+
-+		handle = READ_ONCE(t->handle);
-+		if (!handle) {
-+			pr_err("object allocation/free stack trace missing\n");
-+		} else {
-+			nr_entries = stack_depot_fetch(handle, &entries);
-+			stack_trace_print(entries, nr_entries, 0);
-+		}
- 	}
- #endif
- }
-@@ -4017,18 +4028,26 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
- 	objp = fixup_red_left(s, objp);
- 	trackp = get_track(s, objp, TRACK_ALLOC);
- 	kpp->kp_ret = (void *)trackp->addr;
--#ifdef CONFIG_STACKTRACE
--	for (i = 0; i < KS_ADDRS_COUNT && i < TRACK_ADDRS_COUNT; i++) {
--		kpp->kp_stack[i] = (void *)trackp->addrs[i];
--		if (!kpp->kp_stack[i])
--			break;
--	}
-+#ifdef CONFIG_STACKDEPOT
-+	{
-+		depot_stack_handle_t handle;
-+		unsigned long *entries;
-+		unsigned int nr_entries;
- 
--	trackp = get_track(s, objp, TRACK_FREE);
--	for (i = 0; i < KS_ADDRS_COUNT && i < TRACK_ADDRS_COUNT; i++) {
--		kpp->kp_free_stack[i] = (void *)trackp->addrs[i];
--		if (!kpp->kp_free_stack[i])
--			break;
-+		handle = READ_ONCE(trackp->handle);
-+		if (handle) {
-+			nr_entries = stack_depot_fetch(handle, &entries);
-+			for (i = 0; i < KS_ADDRS_COUNT && i < nr_entries; i++)
-+				kpp->kp_stack[i] = (void *)entries[i];
-+		}
-+
-+		trackp = get_track(s, objp, TRACK_FREE);
-+		handle = READ_ONCE(trackp->handle);
-+		if (handle) {
-+			nr_entries = stack_depot_fetch(handle, &entries);
-+			for (i = 0; i < KS_ADDRS_COUNT && i < nr_entries; i++)
-+				kpp->kp_free_stack[i] = (void *)entries[i];
-+		}
- 	}
- #endif
- #endif
--- 
-2.31.1.272.g89b43f80a5
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-fix-5.12
+
+for you to fetch changes up to ea9aadc06a9f10ad20a90edc0a484f1147d88a7a:
+
+  dmaengine: idxd: fix wq cleanup of WQCFG registers (2021-04-12 22:08:39 +=
+0530)
+
+----------------------------------------------------------------
+dmaengine fixes for v5.12
+
+Couple of dmaengine driver fixes for:
+- race and descriptor issue for xilinx driver
+- fix interrupt handling, wq state & cleanup, field sizes for
+  completion, msix permissions for idxd driver
+- rumtim pm fix for tegra driver
+- double free fix in dma_async_device_register
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      dmaengine: dw: Make it dependent to HAS_IOMEM
+
+Dan Carpenter (1):
+      dmaengine: plx_dma: add a missing put_device() on error path
+
+Dave Jiang (6):
+      dmaengine: idxd: Fix clobbering of SWERR overflow bit on writeback
+      dmaengine: idxd: fix delta_rec and crc size field for completion reco=
+rd
+      dmaengine: idxd: fix opcap sysfs attribute output
+      dmaengine: idxd: fix wq size store permission state
+      dmaengine: idxd: clear MSIX permission entry on shutdown
+      dmaengine: idxd: fix wq cleanup of WQCFG registers
+
+Dinghao Liu (1):
+      dmaengine: tegra20: Fix runtime PM imbalance on error
+
+Laurent Pinchart (2):
+      dmaengine: xilinx: dpdma: Fix descriptor issuing on video group
+      dmaengine: xilinx: dpdma: Fix race condition in done IRQ
+
+Lv Yunlong (1):
+      dmaengine: Fix a double free in dma_async_device_register
+
+ drivers/dma/dmaengine.c           |  1 +
+ drivers/dma/dw/Kconfig            |  2 ++
+ drivers/dma/idxd/device.c         | 65 ++++++++++++++++++++++++++++++++---=
+----
+ drivers/dma/idxd/idxd.h           |  3 ++
+ drivers/dma/idxd/init.c           | 11 ++-----
+ drivers/dma/idxd/irq.c            |  4 ++-
+ drivers/dma/idxd/sysfs.c          | 19 ++++++------
+ drivers/dma/plx_dma.c             | 18 ++++++-----
+ drivers/dma/tegra20-apb-dma.c     |  4 +--
+ drivers/dma/xilinx/xilinx_dpdma.c | 31 +++++++++++--------
+ include/uapi/linux/idxd.h         |  4 +--
+ 11 files changed, 109 insertions(+), 53 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--RpyAts/MSfBWytVk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmB3GdcACgkQfBQHDyUj
+g0e73xAAh92P0bnd2ehiDqCIgDzQdh/A7neBQIFoJZyW9wT+YabAWpmqQmLdOAPq
+d7t5s5yUUW6uKyyRu7pQumCnVrD+dIM+FheXN3QDqqfp4cwxJeEavCTUkL/AhNgE
+aclWQozwFdtbzjWqrpTM2+bS7Ef8tFHeOzeXhtfjdsFZztAavtCnAUAhfgNZmB9I
+cafm8HWUeUiylsEU1mV3E6cSFLMIlsAImyisS2DYroZbvXqmMOnmnxO/p0524t3F
+9BGvTHg8QdEJ73D/PS1s9q4M+9V4E2ZK9yth8RB0n8PUmWARgRr3lNEjDgFLqupS
+eppisRYmRruaDscG4mex2javW2hqyJaCF1zXS1fyo3bNR3vdE6Oh8niLEVimozJ6
+0+U/z/5jMulWpTkml/eOLIhAOO5gj5u9zwIkoax2jjIYaZH9nF5zEEZbi2WwKkzi
+RgA5iSmcLlWWp6DdxCgK6sNsaFL6odr3VF9J/iLOscb7I4MhMMMFKyQr0b3JemVV
+fnp+iOX+jjc9nArcfi/8mwB1iJbFSaPzn2I8ZsDEjsWJS1MkYye2b0ZswXOCHALh
+6IJLtH6ZmIih+wdBvZRfBMk9lMvuHPq42K+5KctxE93camWM7HLDhIANh7UuANbl
+0nWtgbJZeF2DD7goHvp8VqH8PDwKqwjn83wVfKcSosMrIG7W6MU=
+=Ka6t
+-----END PGP SIGNATURE-----
+
+--RpyAts/MSfBWytVk--
