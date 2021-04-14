@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4456A35EAED
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981E535EAF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345098AbhDNCfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbhDNCfk (ORCPT
+        id S1345004AbhDNCg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:36:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16909 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230303AbhDNCgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:35:40 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C0AC061574;
-        Tue, 13 Apr 2021 19:35:19 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id a85so12295180pfa.0;
-        Tue, 13 Apr 2021 19:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=onJ7uZ3p8s/gKYB2XhKDCCe0q8Rs1VMepIA3BYKB0DU=;
-        b=Lf76OYaMA5bhIGPnuA0rAWAsgXyge80EA9BgGy8o+1VXvM8FP6WhN/cHP1e4LZYYBO
-         4yF/I0exQMYmvrduW+IXfAbg6/AxUNpT0tcN7gA72Zq2Ba8yfOg87iQN8yHZhLD8hmeB
-         qDQfe+ob4c+00ZXCVa7s1Fzu7ZGKXyBOlAh7ldFk/1HpxdXb/0OXdKtEWjE4JBjZhAXx
-         7rZ6lorLr6QgTj7yBRtpHDscYhJmS6ISrd9BJM52ZZxMoELQAgC17MW4W9mdXjcSqpox
-         Jx08xklBNBVlNS0dlTrGEsEkXPw+Qy+NMblWfiIZ63Ip3cbcdrj+xpwqq2kCHQ4avnzp
-         RfCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=onJ7uZ3p8s/gKYB2XhKDCCe0q8Rs1VMepIA3BYKB0DU=;
-        b=osckRrF3BUrmPfKXR4cZC5S2IldAf6Inkc22i7+7/D97HWYdXzGkZagl5uX/UMnMqL
-         3n2B2LxXIlTLgtqtl1wuXGSOO17kTK3O9gseyrWXDeIoRDjlB4v4X7c6B1Qgx/G1FY7h
-         Qx/OglzGQjM9H5qsqfKqZg4bn1XJDwEfsyB2pgFBRmJota3VrYkJEqvzqyPl6hJMUH0K
-         nysE4oR1RYUVP5X+0/JufNJ2ULpOlHDwW+phRW+FeP7KvLWZWh03888E26eByzYSkhlZ
-         lKRHT26EbbCOqTFx/MznPY7/P3WKaQXFGCGSvQcMbuuNbHQSDmw0b1yo5uC5dkYxtZCB
-         VsDQ==
-X-Gm-Message-State: AOAM531ZdHdadgTKseQO+YIpqZcWdGd9rgUQY2hUU2uV4ysrWv+8X34Z
-        W9PGqeeYjiIHJR5/QaAMiaI=
-X-Google-Smtp-Source: ABdhPJyp6z+TiBTp0H57GdxdQPdnbE3dIbUCkYCnADULGHr44ZkS+S0tCL9NDDiTHv9WgWkI9IQ74w==
-X-Received: by 2002:a62:7907:0:b029:23e:9010:3844 with SMTP id u7-20020a6279070000b029023e90103844mr32223691pfc.58.1618367718317;
-        Tue, 13 Apr 2021 19:35:18 -0700 (PDT)
-Received: from localhost.localdomain ([103.112.79.202])
-        by smtp.gmail.com with ESMTPSA id r1sm3403988pjo.26.2021.04.13.19.35.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Apr 2021 19:35:17 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv mode
-Date:   Wed, 14 Apr 2021 10:34:28 +0800
-Message-Id: <20210414023428.10121-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20210413025011.1251-1-kerneljasonxing@gmail.com>
-References: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+        Tue, 13 Apr 2021 22:36:54 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKmlM6j0LzjYxw;
+        Wed, 14 Apr 2021 10:34:39 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 14 Apr 2021 10:36:23 +0800
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <jean-philippe@linaro.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <will@kernel.org>,
+        <maz@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <alex.williamson@redhat.com>, <tn@semihalf.com>,
+        <zhukeqian1@huawei.com>
+CC:     <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
+        <zhangfei.gao@linaro.org>, <zhangfei.gao@gmail.com>,
+        <vivek.gautam@arm.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <yuzenghui@huawei.com>, <nicoleotsuka@gmail.com>,
+        <lushenming@huawei.com>, <vsethi@nvidia.com>,
+        <chenxiang66@hisilicon.com>, <vdumpa@nvidia.com>,
+        <jiangkunkun@huawei.com>
+References: <20210411111228.14386-1-eric.auger@redhat.com>
+From:   Xingang Wang <wangxingang5@huawei.com>
+Subject: Re: [PATCH v15 00/12] SMMUv3 Nested Stage Setup (IOMMU part)
+Message-ID: <55930e46-0a45-0d43-b34e-432cf332b42c@huawei.com>
+Date:   Wed, 14 Apr 2021 10:36:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
+In-Reply-To: <20210411111228.14386-1-eric.auger@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+Hi Eric, Jean-Philippe
 
-Fix this panic by adding more rules to calculate the value of @rss_size_max
-which could be used in allocating the queues when bpf is loaded, which,
-however, could cause the failure and then trigger the NULL pointer of
-vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-cpus are online and then allocates 256 queues on the machine with 32 cpus
-online actually.
+On 2021/4/11 19:12, Eric Auger wrote:
+> SMMUv3 Nested Stage Setup (IOMMU part)
+> 
+> This series brings the IOMMU part of HW nested paging support
+> in the SMMUv3. The VFIO part is submitted separately.
+> 
+> This is based on Jean-Philippe's
+> [PATCH v14 00/10] iommu: I/O page faults for SMMUv3
+> https://www.spinics.net/lists/arm-kernel/msg886518.html
+> (including the patches that were not pulled for 5.13)
+> 
+> The IOMMU API is extended to support 2 new API functionalities:
+> 1) pass the guest stage 1 configuration
+> 2) pass stage 1 MSI bindings
+> 
+> Then those capabilities gets implemented in the SMMUv3 driver.
+> 
+> The virtualizer passes information through the VFIO user API
+> which cascades them to the iommu subsystem. This allows the guest
+> to own stage 1 tables and context descriptors (so-called PASID
+> table) while the host owns stage 2 tables and main configuration
+> structures (STE).
+> 
+> Best Regards
+> 
+> Eric
+> 
+> This series can be found at:
+> v5.12-rc6-jean-iopf-14-2stage-v15
+> (including the VFIO part in its last version: v13)
+> 
 
-Once the load of bpf begins, the log will go like this "failed to get
-tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-failed".
+I am testing the performance of an accelerator with/without SVA/vSVA,
+and found there might be some potential performance loss risk for SVA/vSVA.
 
-Thus, I attach the key information of the crash-log here.
+I use a Network and computing encryption device (SEC), and send 1MB 
+request for 10000 times.
 
-BUG: unable to handle kernel NULL pointer dereference at
-0000000000000000
-RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-Call Trace:
-[2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-[2160294.717666]  dev_xdp_install+0x4f/0x70
-[2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-[2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-[2160294.718705]  do_setlink+0xac7/0xe70
-[2160294.719035]  ? __nla_parse+0xed/0x120
-[2160294.719365]  rtnl_newlink+0x73b/0x860
+I trigger mm fault before I send the request, so there should be no iopf.
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Here's what I got:
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 521ea9d..4e9a247 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -11867,6 +11867,7 @@ static int i40e_sw_init(struct i40e_pf *pf)
- {
- 	int err = 0;
- 	int size;
-+	u16 pow;
- 
- 	/* Set default capability flags */
- 	pf->flags = I40E_FLAG_RX_CSUM_ENABLED |
-@@ -11885,6 +11886,11 @@ static int i40e_sw_init(struct i40e_pf *pf)
- 	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
- 	pf->rss_size_max = min_t(int, pf->rss_size_max,
- 				 pf->hw.func_caps.num_tx_qp);
-+
-+	/* find the next higher power-of-2 of num cpus */
-+	pow = roundup_pow_of_two(num_online_cpus());
-+	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-+
- 	if (pf->hw.func_caps.rss) {
- 		pf->flags |= I40E_FLAG_RSS_ENABLED;
- 		pf->alloc_rss_size = min_t(int, pf->rss_size_max,
--- 
-1.8.3.1
+physical scenario:
+performance:		SVA:9MB/s  	NOSVA:9MB/s
+tlb_miss: 		SVA:302,651	NOSVA:1,223
+trans_table_walk_access:SVA:302,276	NOSVA:1,237
 
+VM scenario:
+performance:		vSVA:9MB/s  	NOvSVA:6MB/s  about 30~40% loss
+tlb_miss: 		vSVA:4,423,897	NOvSVA:1,907
+trans_table_walk_access:vSVA:61,928,430	NOvSVA:21,948
+
+In physical scenario, there's almost no performance loss, but the 
+tlb_miss and trans_table_walk_access of stage 1 for SVA is quite high, 
+comparing to NOSVA.
+
+In VM scenario, there's about 30~40% performance loss, this is because 
+the two stage tlb_miss and trans_table_walk_access is even higher, and 
+impact the performance.
+
+I compare the procedure of building page table of SVA and NOSVA, and 
+found that NOSVA uses 2MB mapping as far as possible, while SVA uses 
+only 4KB.
+
+I retest with huge page, and huge page could solve this problem, the 
+performance of SVA/vSVA is almost the same as NOSVA.
+
+I am wondering do you have any other solution for the performance loss 
+of vSVA, or any other method to reduce the tlb_miss/trans_table_walk.
+
+Thanks
+
+Xingang
+
+.
