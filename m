@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C6435F4A6
+	by mail.lfdr.de (Postfix) with ESMTP id B3AD935F4A7
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351210AbhDNNRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
+        id S1351215AbhDNNRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233167AbhDNNRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232172AbhDNNRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Apr 2021 09:17:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30EE761220;
-        Wed, 14 Apr 2021 13:16:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 731B16120E;
+        Wed, 14 Apr 2021 13:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618406200;
-        bh=odidKAiA512P4ANs2PRs0Au5dvY1BlcBlOgh91/Z5kA=;
+        s=k20201202; t=1618406204;
+        bh=7x4SG3KAg2iNOLgXlb3WD0iJVO26sPoNWb3W/yuCPoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hlha5C74RXhORwcG/LRPdopOsKZCe/10/H1Fb/pbnVUQEnKwZguIcTJyB/mSyLeus
-         fKLOi1rVsJ7ETpEltx7Jo7D40fg1+Q/MDMXHzuecxDGfEah5hrQOiT0je1THFA3QQt
-         LpGL9/mt6c8VqMaQexfOfHBCGcOOKdGKBPh5vrKegQ6uXNWGO5SjMmn47qz8tdFUfQ
-         Y5G+u4fEnepOFCYmYaE2NSeJrXspwN/mQdALd1FH+XOL+OB296ycbxXFtMKC93Ob5j
-         vIWom9JOsFB94Ku423Wj4r4C0lezUd5tOBpysesHnIhrPnEx3NPfhn3olG4/ZxgFNp
-         dNVMLirboo86A==
+        b=PlZOvKrCymTlL3fS+ogEYa1bt2KQXL4YJnTHkuVpdkJLw4+YFuLVr80T59sezRzIJ
+         uvk7AehhU7hXiwwDm68QHEa+Nwzqp3TxQUnbv9+19GahRdBezNCS9uVAH7WKFmODTB
+         XeAdzFthMKStnu8LvYDvJZcRbK1I7HDzUBpL1NWorTd283DYo5KGgG0zNVoo5q/gBs
+         8xWbJU+4lV1akEYUGzXLl6tyD7TxgQa0gfxNuCSDyU7kilhrcSTfQT/aVHN4C9AA76
+         va95z5kHVCF7Rq58Mw+hyxVn6bHCUpMtt+SzlkK/3SFPabS94/TP4q/U2S8eWXK6b2
+         wskrQMb+30zgw==
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -32,9 +32,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 1/2] perf evlist: Add a method to return the list of evsels as a string
-Date:   Wed, 14 Apr 2021 10:16:27 -0300
-Message-Id: <20210414131628.2064862-2-acme@kernel.org>
+Subject: [PATCH 2/2] perf record: Improve 'Workload failed' message printing events + what was exec'ed
+Date:   Wed, 14 Apr 2021 10:16:28 -0300
+Message-Id: <20210414131628.2064862-3-acme@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210414131628.2064862-1-acme@kernel.org>
 References: <20210414131628.2064862-1-acme@kernel.org>
@@ -46,13 +46,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Add a 'scnprintf' method to obtain the list of evsels in a evlist as a
-string, excluding the "dummy" event used for things like receiving
-metadata events (PERF_RECORD_FORK, MMAP, etc) when synthesizing
-preexisting threads.
+Before:
 
-Will be used to improve the error message for workload failure in 'perf
-record.
+  # perf record -a cycles,instructions,cache-misses
+  Workload failed: No such file or directory
+  #
+
+After:
+
+  # perf record -a cycles,instructions,cache-misses
+  Failed to collect 'cycles' for the 'cycles,instructions,cache-misses' workload: No such file or directory
+  #
+
+Helps disambiguating other error scenarios:
+
+  # perf record -a -e cycles,instructions,cache-misses bla
+  Failed to collect 'cycles,instructions,cache-misses' for the 'bla' workload: No such file or directory
+  # perf record -a cycles,instructions,cache-misses sleep 1
+  Failed to collect 'cycles' for the 'cycles,instructions,cache-misses' workload: No such file or directory
+  #
+
+When all goes well we're back to the usual:
+
+  # perf record -a -e cycles,instructions,cache-misses sleep 1
+  [ perf record: Woken up 3 times to write data ]
+  [ perf record: Captured and wrote 3.151 MB perf.data (21242 samples) ]
+  #
 
 Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: Ian Rogers <irogers@google.com>
@@ -60,48 +79,29 @@ Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/evlist.c | 19 +++++++++++++++++++
- tools/perf/util/evlist.h |  2 ++
- 2 files changed, 21 insertions(+)
+ tools/perf/builtin-record.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index f1c79ecf81073f74..d29a8a118973c71c 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -2138,3 +2138,22 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
- 	}
- 	return NULL;
- }
-+
-+int evlist__scnprintf_evsels(struct evlist *evlist, size_t size, char *bf)
-+{
-+	struct evsel *evsel;
-+	int printed = 0;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (evsel__is_dummy_event(evsel))
-+			continue;
-+		if (size > (strlen(evsel__name(evsel)) + (printed ? 2 : 1))) {
-+			printed += scnprintf(bf + printed, size - printed, "%s%s", printed ? "," : "", evsel__name(evsel));
-+		} else {
-+			printed += scnprintf(bf + printed, size - printed, "%s...", printed ? "," : "");
-+			break;
-+		}
-+	}
-+
-+	return printed;
-+}
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index b695ffaae519a5d0..a8b97b50cceb7e43 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -365,4 +365,6 @@ int evlist__ctlfd_ack(struct evlist *evlist);
- #define EVLIST_DISABLED_MSG "Events disabled\n"
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 35465d1db6dda3ae..5fb9665a2ec27dde 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1977,9 +1977,13 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		record__auxtrace_snapshot_exit(rec);
  
- struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
+ 	if (forks && workload_exec_errno) {
+-		char msg[STRERR_BUFSIZE];
++		char msg[STRERR_BUFSIZE], strevsels[2048];
+ 		const char *emsg = str_error_r(workload_exec_errno, msg, sizeof(msg));
+-		pr_err("Workload failed: %s\n", emsg);
 +
-+int evlist__scnprintf_evsels(struct evlist *evlist, size_t size, char *bf);
- #endif /* __PERF_EVLIST_H */
++		evlist__scnprintf_evsels(rec->evlist, sizeof(strevsels), strevsels);
++
++		pr_err("Failed to collect '%s' for the '%s' workload: %s\n",
++			strevsels, argv[0], emsg);
+ 		err = -1;
+ 		goto out_child;
+ 	}
 -- 
 2.26.2
 
