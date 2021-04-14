@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA8E35F24A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208BD35F256
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350462AbhDNLYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:24:40 -0400
-Received: from smtpcmd01-sp1.aruba.it ([62.149.158.218]:45732 "EHLO
-        smtpcmd01-sp1.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350424AbhDNLYg (ORCPT
+        id S1350487AbhDNL0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350286AbhDNLZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:24:36 -0400
-Received: from [192.168.126.129] ([146.241.148.6])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id WdcyllWxJkdBBWdcyl2YpR; Wed, 14 Apr 2021 13:24:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1618399452; bh=1QQRifXVR0oTRxBo0DxVJYGcPyQtnZXzwUZ3jWxWIcY=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=b+gWbmOSEwN+GDOsMwEwTRGAgRBBjH8r7SECt2j2u+kZwtTxUcH5f60Kji2jLGbnO
-         vl87sWp9da+o9pf+4H9yKw9MesHx0hnKmcgi3iX+NkaLRU+OG1IFII0UbZ8sBNZpKc
-         ATRUR3ArDNm43X+b/z9Ta4xIJ4KJhDCUT2K6h5OowirDamzVVFD0BYicxRbXXQ1f9y
-         AnO/sNhO+qUrhXfPlEebfZ9or+e288H5J8yq65xj2qOz9ALYiTEyiXr+RZSMM5lJOU
-         blP2iHyUrmpNVD7OjUz19JROoeJHHw1iWHkNCJzThYFu9M3SwW19dLefYw1/OtR8ez
-         /0qfTujDpSSkQ==
-Subject: Re: [PATCH v7 3/3] Input: add driver for the Hycon HY46XX touchpanel
- series
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
- <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
- <20210413144446.2277817-4-giulio.benetti@benettiengineering.com>
- <YHaBJ6MX9c28MUQY@google.com>
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-Message-ID: <d065ad6f-4f60-60f9-6d95-d3c772a3aa63@benettiengineering.com>
-Date:   Wed, 14 Apr 2021 13:24:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 14 Apr 2021 07:25:22 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F43C06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:24:58 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id r128so5567312lff.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:24:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OuhKmn9FYt80c9ROH/y1oStEmOA02E9r2ZFVc64O4vU=;
+        b=h8GWyIwQyu60pOCe4C60MthHMqT5pMO47tMHYURZaLLnjuqqmRLPPW3NxTj3zmgCkq
+         J9MJdes7wg290CO9mdRjSDufx1MJ88id5lkJr9CrTxpgHv7xmqwSq4HV/wDPoLhiLN3I
+         Zjgr9bP+xMv1I85lpUGUO6rdq+4JRxq2NMzd9rxJD5kq/BEGlCxTHtSMhZtJgvZTgSx2
+         bl/VKJ7ykaGdB5iExvBHq0VwnYzGl8AH1TfgUwPqcMFyGrgg5I3pGLUqiUVWXnLRpkGS
+         Iavi/tLjCf/cv1wGSfges1YuQVHuiVRsVl0V6Ds2Lkhu5rUQlPEKdH7YLOGzzGPQwSXk
+         DEgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OuhKmn9FYt80c9ROH/y1oStEmOA02E9r2ZFVc64O4vU=;
+        b=O7DPTdSPOvYFArnrJF+SPIwaQG/hpmq+yzaSePG6547eRoFYHYqhgbrzbKSc62c/D6
+         7U/6my9ILdP2ZPraTj5fQJc4xUz/Y1VG2qCzNrucLIE6TsaklQ+r6faGpIRrMjACSs+y
+         tKu7AtaVyj+rWOMZ/CimSpK9HfKDcjAs9pVwCu8pI7NZwhQwZlO8du5fUXCOvlZlw7mY
+         Fv0sIpvZRs02OJc5I5DRQZ7O5/mGMZWz+oQesDZtgsnIgWyGZkCFRVqf4bhRzkk8LvnF
+         bx4OO5adXgQ/9OWY2jm4sfZp3UWimcsrvzpC0ooM9AAgajSY626IS/8RTHZku1HgmcQ1
+         IRhQ==
+X-Gm-Message-State: AOAM532c2MXFpcJK5MuA0zdtP1tDWYFW1XO0zDzFERZlrW4WLrkQIrGK
+        vmxeeFNUSA1tDwZ0kGjOqdR6jDtXyKpQijnZI0l2UQ==
+X-Google-Smtp-Source: ABdhPJypOoKb7zY0yopEiDor+KdM+gPLg/z4FR7SXyJJUzfRhluH65oC8mcVTQMJQu7oVHUsLhEKzfAVrRZWsg1i2G0=
+X-Received: by 2002:ac2:5cae:: with SMTP id e14mr11595625lfq.69.1618399497182;
+ Wed, 14 Apr 2021 04:24:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YHaBJ6MX9c28MUQY@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfIHovaEG2odf866I67FeotfeLzP4bSdwkp7WLNi93RSPvdfq0exsyZ7wfUCuPFBehTO6h4l0GRJrDrrHTOyGOdUrrHUJe+F21PILFrqdQFH9dnbrSGd9
- tGMTxeCQDfzrjhe5KCeKNjEtMcdRu1nQ/+aWi1zAQotiyNulEge3BtbxQdxWM/UP4JCySf/boexi/lhzCYIewVxlmOTN3/SRxXi0HxemxfB4qNorXEEiSrqG
- IROUAih0LkRXDTYCXVhaYtuMaEsiPxkDbKambtTYHxiNdf3q4S6sSdIrOPnkKKZFV5yeAMXvkMgiDzRjpdtkxu7v9pp3LIwFIR1ap/psv5MYL4m71LYxh0c7
- m1uOtHSqu/Z62nEbHvS3+DemXtyjAVUyqKIa1XrARRONda+b5Lnj0L7Tdho/8gJNQN59k7Yh
+References: <20210414055217.543246-1-avagin@gmail.com> <87blahb1pr.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87blahb1pr.fsf@oldenburg.str.redhat.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 14 Apr 2021 13:24:30 +0200
+Message-ID: <CAG48ez2z0a4x2GfHv9L0HmO1-uzsKtfOF40erPb8ADR-m+itbg@mail.gmail.com>
+Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
+ address space
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-um@lists.infradead.org, criu@openvz.org,
+        Andrei Vagin <avagin@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 7:44 AM, Dmitry Torokhov wrote:
-> Hi Giulio,
-> 
-> On Tue, Apr 13, 2021 at 04:44:46PM +0200, Giulio Benetti wrote:
->> +
->> +	input_mt_report_pointer_emulation(tsdata->input, true);
-> 
-> For touchscreens it does not make much sense to report BTN_DOUBLETAP,
-> BTN_TRIPLETAP, etc, events (they are really for touchpads), so I changed
-> this to
-> 
-> 	input_mt_report_pointer_emulation(tsdata->input, false);
-> 
-> to only report ABS_X, ABS_Y, and BTN_TOUCH, and applied.
-> 
-> Thanks.
-> 
+On Wed, Apr 14, 2021 at 12:27 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Andrei Vagin:
+>
+> > We already have process_vm_readv and process_vm_writev to read and write
+> > to a process memory faster than we can do this with ptrace. And now it
+> > is time for process_vm_exec that allows executing code in an address
+> > space of another process. We can do this with ptrace but it is much
+> > slower.
+> >
+> > = Use-cases =
+>
+> We also have some vaguely related within the same address space: running
+> code on another thread, without modifying its stack, while it has signal
+> handlers blocked, and without causing system calls to fail with EINTR.
+> This can be used to implement certain kinds of memory barriers.
 
-Thank you, I've re-tested and it works correctly, I've answered to Peter 
-Hutterer with what I've understood about that. Please correct me if I'm 
-wrong.
+That's what the membarrier() syscall is for, right? Unless you don't
+want to register all threads for expedited membarrier use?
 
-Thanks a lot for reviewing
-Best regards
--- 
-Giulio Benetti
-Benetti Engineering sas
+> It is
+> also necessary to implement set*id with POSIX semantics in userspace.
+> (Linux only changes the current thread credentials, POSIX requires
+> process-wide changes.)  We currently use a signal for set*id, but it has
+> issues (it can be blocked, the signal could come from somewhere, etc.).
+> We can't use signals for barriers because of the EINTR issue, and
+> because the signal context is stored on the stack.
+
+This essentially becomes a question of "how much is set*id allowed to
+block and what level of guarantee should there be by the time it
+returns that no threads will perform privileged actions anymore after
+it returns", right?
+
+Like, if some piece of kernel code grabs a pointer to the current
+credentials or acquires a temporary reference to some privileged
+resource, then blocks on reading an argument from userspace, and then
+performs a privileged action using the previously-grabbed credentials
+or resource, what behavior do you want? Should setuid() block until
+that privileged action has completed? Should it abort that action
+(which is kinda what you get with the signals approach)? Should it
+just return immediately even though an attacker who can write to
+process memory at that point might still be able to influence a
+privileged operation that hasn't read all its inputs yet? Should the
+kernel be designed to keep track of whether it is currently holding a
+privileged resource? Or should the kernel just specifically permit
+credential changes in specific places where it is known that a task
+might block for a long time and it is not holding any privileged
+resources (kinda like the approach taken for freezer stuff)?
+
+If userspace wants multithreaded setuid() without syscall aborting,
+things get gnarly really fast; and having an interface to remotely
+perform operations under another task's context isn't really relevant
+to the core problem here, I think.
