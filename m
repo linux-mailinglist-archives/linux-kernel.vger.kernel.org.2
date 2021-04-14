@@ -2,249 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF2135F32B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD7135F331
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350691AbhDNMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:09:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42242 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350681AbhDNMJb (ORCPT
+        id S1350673AbhDNMJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350681AbhDNMJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:09:31 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C1CE120B8001;
-        Wed, 14 Apr 2021 05:09:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C1CE120B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618402150;
-        bh=v0ULWuQjUPYwa15zeI0R/EsTera5cyCTMJvOs4xIdvc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=RA8ZE1f1UgKRggZIoza2duaJ2xS8CVO+xzv6iBgiZXQQAv5rEjZLdF3FvjOPvpGt7
-         TH9zkAHuPVcUc42Jbb6Zbkgnj1Hc/fTh9zTYtN2h9i5um49c8FSMDxn42qf5Y/9HDW
-         25Pkf0xjwxKl1OmhsCw1t7adgnxBObu7r3TMjaQA=
-Subject: Re: [RFC PATCH v2 1/1] arm64: Implement stack trace termination
- record
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <659f3d5cc025896ba4c49aea431aa8b1abc2b741>
- <20210402032404.47239-1-madvenka@linux.microsoft.com>
- <20210402032404.47239-2-madvenka@linux.microsoft.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <dfa80040-8ac2-3694-4f69-a10b0e5dd959@linux.microsoft.com>
-Date:   Wed, 14 Apr 2021 07:09:09 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 14 Apr 2021 08:09:39 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650D9C061574;
+        Wed, 14 Apr 2021 05:09:17 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id C0EE9C725D8;
+        Wed, 14 Apr 2021 14:09:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1618402156;
+        bh=jzfesz/tc5g4uK9XizjG/xFnmqTcGzY409QvJU0he+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nyNBklIMXpBtSyuPKntfpU+A7XXA1KHMgtJ8q25632tHenrfXFNbVyZ9tUdCfSaIx
+         yfWaN0cmtJsGGNluR2rx6OaPfT1ktYXpIqt0hMZZCsreEmVFmcQLYUzjV0XzltbKps
+         MRje6pZI1ykWXXaBdPHahB83LCgRhLQhsrF4OFx4=
+Date:   Wed, 14 Apr 2021 14:09:14 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
+Message-ID: <YHbbaiwK9Tasb7NF@workstation.tuxnet>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
+ <YHR3wP4Fk3jidnri@workstation.tuxnet>
+ <20210412201019.vouxx4daumusrcvr@pengutronix.de>
+ <YHWKehtYFSaHt1hC@workstation.tuxnet>
+ <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210402032404.47239-2-madvenka@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark Rutland, Mark Brown,
+Hi Uwe,
 
-Could you take a look at this version for proper stack termination and let me know
-what you think?
+On Tue, Apr 13, 2021 at 09:38:18PM +0200, Uwe Kleine-König wrote:
+> Hello Clemens,
+> 
+> On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
+> > On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-König wrote:
+> > > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
+> > > > On Mon, Apr 12, 2021 at 06:18:08PM +0200, Uwe Kleine-König wrote:
+> > > > > On Mon, Apr 12, 2021 at 03:27:38PM +0200, Clemens Gruber wrote:
+> > > > > > The switch to the atomic API goes hand in hand with a few fixes to
+> > > > > > previously experienced issues:
+> > > > > > - The duty cycle is no longer lost after disable/enable (previously the
+> > > > > >   OFF registers were cleared in disable and the user was required to
+> > > > > >   call config to restore the duty cycle settings)
+> > > > > > - If one sets a period resulting in the same prescale register value,
+> > > > > >   the sleep and write to the register is now skipped
+> > > > > > - Previously, only the full ON bit was toggled in GPIO mode (and full
+> > > > > >   OFF cleared if set to high), which could result in both full OFF and
+> > > > > >   full ON not being set and on=0, off=0, which is not allowed according
+> > > > > >   to the datasheet
+> > > > > > - The OFF registers were reset to 0 in probe, which could lead to the
+> > > > > >   forbidden on=0, off=0. Fixed by resetting to POR default (full OFF)
+> > > > > > 
+> > > > > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > > > > ---
+> > > > > > Changes since v7:
+> > > > > > - Moved check for !state->enabled before prescaler configuration
+> > > > > > - Removed unnecessary cast
+> > > > > > - Use DIV_ROUND_DOWN in .apply
+> > > > > > 
+> > > > > > Changes since v6:
+> > > > > > - Order of a comparison switched for improved readability
+> > > > > > 
+> > > > > > Changes since v5:
+> > > > > > - Function documentation for set_duty
+> > > > > > - Variable initializations
+> > > > > > - Print warning if all LEDs channel
+> > > > > > - Changed EOPNOTSUPP to EINVAL
+> > > > > > - Improved error messages
+> > > > > > - Register reset corrections moved to this patch
+> > > > > > 
+> > > > > > Changes since v4:
+> > > > > > - Patches split up
+> > > > > > - Use a single set_duty function
+> > > > > > - Improve readability / new macros
+> > > > > > - Added a patch to restrict prescale changes to the first user
+> > > > > > 
+> > > > > > Changes since v3:
+> > > > > > - Refactoring: Extracted common functions
+> > > > > > - Read prescale register value instead of caching it
+> > > > > > - Return all zeros and disabled for "all LEDs" channel state
+> > > > > > - Improved duty calculation / mapping to 0..4096
+> > > > > > 
+> > > > > > Changes since v2:
+> > > > > > - Always set default prescale value in probe
+> > > > > > - Simplified probe code
+> > > > > > - Inlined functions with one callsite
+> > > > > > 
+> > > > > > Changes since v1:
+> > > > > > - Fixed a logic error
+> > > > > > - Impoved PM runtime handling and fixed !CONFIG_PM
+> > > > > > - Write default prescale reg value if invalid in probe
+> > > > > > - Reuse full_off/_on functions throughout driver
+> > > > > > - Use cached prescale value whenever possible
+> > > > > > 
+> > > > > >  drivers/pwm/pwm-pca9685.c | 259 +++++++++++++-------------------------
+> > > > > >  1 file changed, 89 insertions(+), 170 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > > > > > index 4a55dc18656c..827b57ced3c2 100644
+> > > > > > --- a/drivers/pwm/pwm-pca9685.c
+> > > > > > +++ b/drivers/pwm/pwm-pca9685.c
+> > > > > > @@ -51,7 +51,6 @@
+> > > > > >  #define PCA9685_PRESCALE_MAX	0xFF	/* => min. frequency of 24 Hz */
+> > > > > >  
+> > > > > >  #define PCA9685_COUNTER_RANGE	4096
+> > > > > > -#define PCA9685_DEFAULT_PERIOD	5000000	/* Default period_ns = 1/200 Hz */
+> > > > > >  #define PCA9685_OSC_CLOCK_MHZ	25	/* Internal oscillator with 25 MHz */
+> > > > > >  
+> > > > > >  #define PCA9685_NUMREGS		0xFF
+> > > > > > @@ -71,10 +70,14 @@
+> > > > > >  #define LED_N_OFF_H(N)	(PCA9685_LEDX_OFF_H + (4 * (N)))
+> > > > > >  #define LED_N_OFF_L(N)	(PCA9685_LEDX_OFF_L + (4 * (N)))
+> > > > > >  
+> > > > > > +#define REG_ON_H(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_H : LED_N_ON_H((C)))
+> > > > > > +#define REG_ON_L(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_ON_L : LED_N_ON_L((C)))
+> > > > > > +#define REG_OFF_H(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_H : LED_N_OFF_H((C)))
+> > > > > > +#define REG_OFF_L(C)	((C) >= PCA9685_MAXCHAN ? PCA9685_ALL_LED_OFF_L : LED_N_OFF_L((C)))
+> > > > > 
+> > > > > I'd like to see these named PCA9685_REG_ON_H etc.
+> > > > 
+> > > > I did not use the prefix because the existing LED_N_ON/OFF_H/L also do
+> > > > not have a prefix. If the prefix is mandatory, I think LED_N_.. should
+> > > > also be prefixed, right?
+> > > 
+> > > I'd like to seem the prefixed (and assume that Thierry doesn't agree).
+> > > IMHO it's good style and even though it yields longer name usually it
+> > > yields easier understandable code. (But this seems to be subjective.)
+> > 
+> > I am not sure I want to also rename the existing LED_N_OFF stuff in this
+> > patch. Maybe we can discuss unifying the macros (either with or without
+> > prefix) in a later patch and I keep the REG_ON_ stuff for now without to
+> > match the LED_N_ stuff?
+> 
+> While consistency is fine I agree that this patch is already big and
+> letting it do the things similar to other stuff in this driver is ok.
+> 
+> > > > > Consider the following request: state->period = 4177921 [ns] +
+> > > > > state->duty_cycle = 100000 [ns], then we get
+> > > > > PRESCALE = round(25 * state->period / 4096000) - 1 = 25 and so an actual
+> > > > > period of 4096000 / 25 * (25 + 1) = 4259840 [ns]. If you now calculate
+> > > > > the duty using 4096 * 100000 / 4177920 = 98, this corresponds to an
+> > > > > actual duty cycle of 98 * 4259840 / 4096 = 101920 ns while you should
+> > > > > actually configure 96 to get 99840 ns.
+> > > > > 
+> > > > > So in the end I'd like to have the following:
+> > > > > 
+> > > > > 	PRESCALE = round-down(25 * state->period / 4096000) - 1
+> > > > > 
+> > > > > (to get the biggest period not bigger than state->period) and
+> > > > > 
+> > > > > 	duty = round-down(state->duty_cycle * 25 / ((PRESCALE + 1) * 1000))
+> > > > > 
+> > > > > (to get the biggest duty cycle not bigger than state->duty_cycle). With
+> > > > > the example above this yields
+> > > > > 
+> > > > > 	PRESCALE = 24
+> > > > > 	duty = 100
+> > > > > 
+> > > > > which results in
+> > > > > 
+> > > > > 	.period = 4096000 / 25 * 25 = 4096000 [ns]
+> > > > > 	.duty_cycle = 100000 [ns]
+> > > > > 	
+> > > > > Now you have a mixture of old and new with no consistent behaviour. So
+> > > > > please either stick to the old behaviour or do it right immediately.
+> > > > 
+> > > > I avoided rounding down the prescale value because the datasheet has an
+> > > > example where a round-closest is used, see page 25.
+> > > 
+> > > The hardware guy who wrote this data sheet wasn't aware of the rounding
+> > > rules for Linux PWM drivers :-)
+> > > 
+> > > > With your suggested round-down, the example with frequency of 200 Hz
+> > > > would no longer result in 30 but 29 and that contradicts the datasheet.
+> > > 
+> > > Well, with PRESCALE = 30 we get a frequency of 196.88 Hz and with
+> > > PRESCALE = 29 we get a frequency of 203.45 Hz. So no matter if you pick
+> > > 29 or 30, you don't get 200 Hz. And which of the two possible values is
+> > > the better one depends on the consumer, no matter what rounding
+> > > algorithm the data sheet suggests. Also note that the math here contains
+> > > surprises you don't expect at first. For example, what PRESCALE value
+> > > would you pick to get 284 Hz? [If my mail was a video, I'd suggest to
+> > > press Space now to pause and let you think first :-)] The data sheet's
+> > > formula suggests:
+> > > 
+> > > 	round(25 MHz / (4096 * 284)) - 1 = 20
+> > > 
+> > > The resulting frequency when picking PRESCALE = 20 is 290.644 Hz (so an
+> > > error of 6.644 Hz). If instead you pick PRESCALE = 21 you get 277.433 Hz
+> > > (error = 6.567 Hz), so 21 is the better choice.
+> > > 
+> > > Exercise for the reader:
+> > >  What is the correct formula to really determine the PRESCALE value that
+> > >  yields the best approximation (i.e. minimizing
+> > >  abs(real_freq - target_freq)) for a given target_freq?
+> 
+> I wonder if you tried this.
 
-Thanks!
+We could calculate both round-up and round-down and decide which one is
+closer to "real freq" (even though that is not the actual frequency but
+just our backwards-calculated frequency).
 
-Madhavan
+But I can't give you a formula with minimized abs(real_freq-target_freq)
+Is it a different round point than 0.5 and maybe relative to f ?
 
-On 4/1/21 10:24 PM, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Please enlighten us :-)
+
 > 
-> Reliable stacktracing requires that we identify when a stacktrace is
-> terminated early. We can do this by ensuring all tasks have a final
-> frame record at a known location on their task stack, and checking
-> that this is the final frame record in the chain.
+> > > These things don't happen when you round down only.
+> > 
+> > Sure, but it might also be counterintuitive that the Linux driver does
+> > not use the same formula as the datasheet. And when using 200 Hz, 29 is
+> > a little closer than 30.
 > 
-> Kernel Tasks
-> ============
+> First let me state that I consider keeping the math as is in this patch
+> a good idea. So to argue already for the future:
 > 
-> All tasks except the idle task have a pt_regs structure right after the
-> task stack. This is called the task pt_regs. The pt_regs structure has a
-> special stackframe field. Make this stackframe field the final frame in the
-> task stack. This needs to be done in copy_thread() which initializes a new
-> task's pt_regs and initial CPU context.
+> I value consistency among the various pwm lowlevel drivers higher than
+> what an individual hardware engineer happened to write in a data sheet.
+> That engineer was successful in describing the functionality of the chip
+> and that's where her/his job ends. How a driver should behave is to be
+> decided by us.
 > 
-> For the idle task, there is no task pt_regs. For our purpose, we need one.
-> So, create a pt_regs just like other kernel tasks and make
-> pt_regs->stackframe the final frame in the idle task stack. This needs to be
-> done at two places:
+> > I once measured the actual frequency and the internal oscillator is not
+> > very accurate, so even if you think you should get 196.88 Hz, the actual
+> > frequency measured with a decent scope is about 206 Hz and varies from
+> > chip to chip (~ 205-207 Hz).
 > 
-> 	- On the primary CPU, the boot task runs. It calls start_kernel()
-> 	  and eventually becomes the idle task for the primary CPU. Just
-> 	  before start_kernel() is called, set up the final frame.
-> 
-> 	- On each secondary CPU, a startup task runs that calls
-> 	  secondary_startup_kernel() and eventually becomes the idle task
-> 	  on the secondary CPU. Just before secondary_start_kernel() is
-> 	  called, set up the final frame.
-> 
-> User Tasks
-> ==========
-> 
-> User tasks are initially set up like kernel tasks when they are created.
-> Then, they return to userland after fork via ret_from_fork(). After that,
-> they enter the kernel only on an EL0 exception. (In arm64, system calls are
-> also EL0 exceptions). The EL0 exception handler stores state in the task
-> pt_regs and calls different functions based on the type of exception. The
-> stack trace for an EL0 exception must end at the task pt_regs. So, make
-> task pt_regs->stackframe as the final frame in the EL0 exception stack.
-> 
-> In summary, task pt_regs->stackframe is where a successful stack trace ends.
-> 
-> Stack trace termination
-> =======================
-> 
-> In the unwinder, terminate the stack trace successfully when
-> task_pt_regs(task)->stackframe is reached. For stack traces in the kernel,
-> this will correctly terminate the stack trace at the right place.
-> 
-> However, debuggers terminate the stack trace when FP == 0. In the
-> pt_regs->stackframe, the PC is 0 as well. So, stack traces taken in the
-> debugger may print an extra record 0x0 at the end. While this is not
-> pretty, this does not do any harm. This is a small price to pay for
-> having reliable stack trace termination in the kernel.
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> ---
->  arch/arm64/kernel/entry.S      |  8 +++++---
->  arch/arm64/kernel/head.S       | 29 +++++++++++++++++++++++------
->  arch/arm64/kernel/process.c    |  5 +++++
->  arch/arm64/kernel/stacktrace.c | 10 +++++-----
->  4 files changed, 38 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index a31a0a713c85..e2dc2e998934 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -261,16 +261,18 @@ alternative_else_nop_endif
->  	stp	lr, x21, [sp, #S_LR]
->  
->  	/*
-> -	 * For exceptions from EL0, terminate the callchain here.
-> +	 * For exceptions from EL0, terminate the callchain here at
-> +	 * task_pt_regs(current)->stackframe.
-> +	 *
->  	 * For exceptions from EL1, create a synthetic frame record so the
->  	 * interrupted code shows up in the backtrace.
->  	 */
->  	.if \el == 0
-> -	mov	x29, xzr
-> +	stp	xzr, xzr, [sp, #S_STACKFRAME]
->  	.else
->  	stp	x29, x22, [sp, #S_STACKFRAME]
-> -	add	x29, sp, #S_STACKFRAME
->  	.endif
-> +	add	x29, sp, #S_STACKFRAME
->  
->  #ifdef CONFIG_ARM64_SW_TTBR0_PAN
->  alternative_if_not ARM64_HAS_PAN
-> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-> index 840bda1869e9..743c019a42c7 100644
-> --- a/arch/arm64/kernel/head.S
-> +++ b/arch/arm64/kernel/head.S
-> @@ -393,6 +393,23 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
->  	ret	x28
->  SYM_FUNC_END(__create_page_tables)
->  
-> +	/*
-> +	 * The boot task becomes the idle task for the primary CPU. The
-> +	 * CPU startup task on each secondary CPU becomes the idle task
-> +	 * for the secondary CPU.
-> +	 *
-> +	 * The idle task does not require pt_regs. But create a dummy
-> +	 * pt_regs so that task_pt_regs(idle_task)->stackframe can be
-> +	 * set up to be the final frame on the idle task stack just like
-> +	 * all the other kernel tasks. This helps the unwinder to
-> +	 * terminate the stack trace at a well-known stack offset.
-> +	 */
-> +	.macro setup_final_frame
-> +	sub	sp, sp, #PT_REGS_SIZE
-> +	stp	xzr, xzr, [sp, #S_STACKFRAME]
-> +	add	x29, sp, #S_STACKFRAME
-> +	.endm
-> +
->  /*
->   * The following fragment of code is executed with the MMU enabled.
->   *
-> @@ -447,9 +464,9 @@ SYM_FUNC_START_LOCAL(__primary_switched)
->  #endif
->  	bl	switch_to_vhe			// Prefer VHE if possible
->  	add	sp, sp, #16
-> -	mov	x29, #0
-> -	mov	x30, #0
-> -	b	start_kernel
-> +	setup_final_frame
-> +	bl	start_kernel
-> +	nop
->  SYM_FUNC_END(__primary_switched)
->  
->  	.pushsection ".rodata", "a"
-> @@ -606,14 +623,14 @@ SYM_FUNC_START_LOCAL(__secondary_switched)
->  	cbz	x2, __secondary_too_slow
->  	msr	sp_el0, x2
->  	scs_load x2, x3
-> -	mov	x29, #0
-> -	mov	x30, #0
-> +	setup_final_frame
->  
->  #ifdef CONFIG_ARM64_PTR_AUTH
->  	ptrauth_keys_init_cpu x2, x3, x4, x5
->  #endif
->  
-> -	b	secondary_start_kernel
-> +	bl	secondary_start_kernel
-> +	nop
->  SYM_FUNC_END(__secondary_switched)
->  
->  SYM_FUNC_START_LOCAL(__secondary_too_slow)
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 325c83b1a24d..906baa232a89 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -437,6 +437,11 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
->  	}
->  	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
->  	p->thread.cpu_context.sp = (unsigned long)childregs;
-> +	/*
-> +	 * For the benefit of the unwinder, set up childregs->stackframe
-> +	 * as the final frame for the new task.
-> +	 */
-> +	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
->  
->  	ptrace_hw_copy_thread(p);
->  
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index ad20981dfda4..72f5af8c69dc 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -44,16 +44,16 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->  	unsigned long fp = frame->fp;
->  	struct stack_info info;
->  
-> -	/* Terminal record; nothing to unwind */
-> -	if (!fp)
-> +	if (!tsk)
-> +		tsk = current;
-> +
-> +	/* Final frame; nothing to unwind */
-> +	if (fp == (unsigned long) task_pt_regs(tsk)->stackframe)
->  		return -ENOENT;
->  
->  	if (fp & 0xf)
->  		return -EINVAL;
->  
-> -	if (!tsk)
-> -		tsk = current;
-> -
->  	if (!on_accessible_stack(tsk, fp, &info))
->  		return -EINVAL;
->  
-> 
+> Huh. Did you do further measurements that suggest that the oscillator
+> doesn't run at 25 MHz but maybe at 26 MHz (which would yield 204.7552
+> Hz)? (Assume this is true, what do you think: Should be use the formula
+> that matches reality, or should we stick to the formula defined in the
+> data sheet?)
+
+No, I just tested this for 3-4 chips and for them I measured these
+errors, but that's just a small sample.
+Maybe the next few measurements would indicate that it runs at 24 MHz
+and it evens out at 25 MHz for all produced chips, but we just have
+enough information imho.
+
+Clemens
