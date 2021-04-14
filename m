@@ -2,122 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF3335F4F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475E935F505
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbhDNNjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351415AbhDNNjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80488611AD;
-        Wed, 14 Apr 2021 13:38:50 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 15:38:47 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH] Documentation: syscalls: add a note about  ABI-agnostic
- types
-Message-ID: <20210414133847.2gwws46ktuqxkghu@wittgenstein>
-References: <20210409204304.1273139-1-yury.norov@gmail.com>
- <20210414044020.GA44464@yury-ThinkPad>
- <20210414081422.5a9d0c4b@coco.lan>
- <20210414084605.pdlnjkwa3h47jxno@wittgenstein>
- <YHa52ddAzcRGOB/m@kernel.org>
+        id S1346946AbhDNNkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:40:10 -0400
+Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:35697 "EHLO
+        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351401AbhDNNkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:40:04 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id 2ADF31C620D
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:39:42 +0100 (IST)
+Received: (qmail 27216 invoked from network); 14 Apr 2021 13:39:42 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 14 Apr 2021 13:39:41 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/11 v3] Use local_lock for pcp protection and reduce stat overhead
+Date:   Wed, 14 Apr 2021 14:39:20 +0100
+Message-Id: <20210414133931.4555-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YHa52ddAzcRGOB/m@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:46:01PM +0300, Mike Rapoport wrote:
-> On Wed, Apr 14, 2021 at 10:46:05AM +0200, Christian Brauner wrote:
-> > On Wed, Apr 14, 2021 at 08:14:22AM +0200, Mauro Carvalho Chehab wrote:
-> > > Em Tue, 13 Apr 2021 21:40:20 -0700
-> > > Yury Norov <yury.norov@gmail.com> escreveu:
-> > > 
-> > > > Ping?
-> > > > 
-> > > > On Fri, Apr 09, 2021 at 01:43:04PM -0700, Yury Norov wrote:
-> > > > > Recently added memfd_secret() syscall had a flags parameter passed
-> > > > > as unsigned long, which requires creation of compat entry for it.
-> > > > > It was possible to change the type of flags to unsigned int and so
-> > > > > avoid bothering with compat layer.
-> > > > > 
-> > > > > https://www.spinics.net/lists/linux-mm/msg251550.html
-> > > > > 
-> > > > > Documentation/process/adding-syscalls.rst doesn't point clearly about
-> > > > > preference of ABI-agnostic types. This patch adds such notification.
-> > > > > 
-> > > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > > > ---
-> > > > >  Documentation/process/adding-syscalls.rst | 7 +++++++
-> > > > >  1 file changed, 7 insertions(+)
-> > > > > 
-> > > > > diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/process/adding-syscalls.rst
-> > > > > index 9af35f4ec728..46add16edf14 100644
-> > > > > --- a/Documentation/process/adding-syscalls.rst
-> > > > > +++ b/Documentation/process/adding-syscalls.rst
-> > > > > @@ -172,6 +172,13 @@ arguments (i.e. parameter 1, 3, 5), to allow use of contiguous pairs of 32-bit
-> > > > >  registers.  (This concern does not apply if the arguments are part of a
-> > > > >  structure that's passed in by pointer.)
-> > > > >  
-> > > > > +Whenever possible, try to use ABI-agnostic types for passing parameters to
-> > > > > +a syscall in order to avoid creating compat entry for it. Linux supports two
-> > > > > +ABI models - ILP32 and LP64. 
-> > > 
-> > > > > + The types like ``void *``, ``long``, ``size_t``,
-> > > > > +``off_t`` have different size in those ABIs;
-> > > 
-> > > In the case of pointers, the best is to use __u64. The pointer can then
-> > > be read on Kernelspace with something like this:
-> > > 
-> > > 	static inline void __user *media_get_uptr(__u64 arg)
-> > > 	{
-> > > 		return (void __user *)(uintptr_t)arg;
-> > > 	}
-> > > 
-> > > 
-> > > > > types like ``char`` and  ``int``
-> > > > > +have the same size and don't require a compat layer support. For flags, it's
-> > > > > +always better to use ``unsigned int``.
-> > > > > +
-> > > 
-> > > I don't think this is true for all compilers on userspace, as the C
-> > > standard doesn't define how many bits an int/unsigned int has. 
-> > > So, even if this is today's reality, things may change in the future.
-> > > 
-> > > For instance, I remember we had to replace "int" and "enum" by "__u32" 
-> > > and "long" by "__u64" at the media uAPI in the past, when we start
-> > > seeing x86_64 Kernels with 32-bits userspace and when cameras started 
-> > > being supported on arm32.
-> > > 
-> > > We did have some real bugs with "enum", as, on that time, some
-> > > compilers (gcc, I guess) were optimizing them to have less than
-> > > 32 bits on certain architectures, when it fits.
-> > 
-> > Fwiw, Aleksa and I have written extended syscall documentation
-> > documenting the agreement that we came to in a dedicated session with a
-> > wide range of kernel folks during Linux Plumbers last year. We simply
-> > never had time to actually send this series but fwiw here it is. It also
-> > mentions the use of correct types. If people feel it's worth it I can
-> > send as a proper series:
-> 
-> Yes, please.
+Changelog since v2
+o Fix zonestats initialisation
+o Merged memory hotplug fix separately
+o Embed local_lock within per_cpu_pages
 
-Ok, I'll try to fix the commit messages and send it out.
+This series requires patches in Andrew's tree so for convenience, it's
+also available at
 
-Christian
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v3r6
+
+The PCP (per-cpu page allocator in page_alloc.c) shares locking
+requirements with vmstat and the zone lock which is inconvenient and
+causes some issues. For example, the PCP list and vmstat share the
+same per-cpu space meaning that it's possible that vmstat updates dirty
+cache lines holding per-cpu lists across CPUs unless padding is used.
+Second, PREEMPT_RT does not want to disable IRQs for too long in the
+page allocator.
+
+This series splits the locking requirements and uses locks types more
+suitable for PREEMPT_RT, reduces the time when special locking is required
+for stats and reduces the time when IRQs need to be disabled on !PREEMPT_RT
+kernels.
+
+Why local_lock? PREEMPT_RT considers the following sequence to be unsafe
+as documented in Documentation/locking/locktypes.rst
+
+   local_irq_disable();
+   spin_lock(&lock);
+
+The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
+-> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). While it's possible to
+separate this out, it generally means there are points where we enable
+IRQs and reenable them again immediately. To prevent a migration and the
+per-cpu pointer going stale, migrate_disable is also needed. That is a
+custom lock that is similar, but worse, than local_lock. Furthermore,
+on PREEMPT_RT, it's undesirable to leave IRQs disabled for too long.
+By converting to local_lock which disables migration on PREEMPT_RT, the
+locking requirements can be separated and start moving the protections
+for PCP, stats and the zone lock to PREEMPT_RT-safe equivalent locking. As
+a bonus, local_lock also means that PROVE_LOCKING does something useful.
+
+After that, it's obvious that zone_statistics incurs too much overhead
+and leaves IRQs disabled for longer than necessary on !PREEMPT_RT
+kernels. zone_statistics uses perfectly accurate counters requiring IRQs
+be disabled for parallel RMW sequences when inaccurate ones like vm_events
+would do. The series makes the NUMA statistics (NUMA_HIT and friends)
+inaccurate counters that then require no special protection on !PREEMPT_RT.
+
+The bulk page allocator can then do stat updates in bulk with IRQs enabled
+which should improve the efficiency.  Technically, this could have been
+done without the local_lock and vmstat conversion work and the order
+simply reflects the timing of when different series were implemented.
+
+Finally, there are places where we conflate IRQs being disabled for the
+PCP with the IRQ-safe zone spinlock. The remainder of the series reduces
+the scope of what is protected by disabled IRQs on !PREEMPT_RT kernels.
+By the end of the series, page_alloc.c does not call local_irq_save so
+the locking scope is a bit clearer. The one exception is that modifying
+NR_FREE_PAGES still happens in places where it's known the IRQs are
+disabled as it's harmless for PREEMPT_RT and would be expensive to split
+the locking there.
+
+No performance data is included because despite the overhead of the stats,
+it's within the noise for most workloads on !PREEMPT_RT. However, Jesper
+Dangaard Brouer ran a page allocation microbenchmark on a E5-1650 v4 @
+3.60GHz CPU on the first version of this series. Focusing on the array
+variant of the bulk page allocator reveals the following.
+
+(CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
+ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+
+         Baseline        Patched
+ 1       56.383          54.225 (+3.83%)
+ 2       40.047          35.492 (+11.38%)
+ 3       37.339          32.643 (+12.58%)
+ 4       35.578          30.992 (+12.89%)
+ 8       33.592          29.606 (+11.87%)
+ 16      32.362          28.532 (+11.85%)
+ 32      31.476          27.728 (+11.91%)
+ 64      30.633          27.252 (+11.04%)
+ 128     30.596          27.090 (+11.46%)
+
+While this is a positive outcome, the series is more likely to be
+interesting to the RT people in terms of getting parts of the PREEMPT_RT
+tree into mainline.
+
+ drivers/base/node.c    |  18 +--
+ include/linux/mmzone.h |  58 ++++++--
+ include/linux/vmstat.h |  65 +++++----
+ mm/mempolicy.c         |   2 +-
+ mm/page_alloc.c        | 302 +++++++++++++++++++++++++----------------
+ mm/vmstat.c            | 250 ++++++++++++----------------------
+ 6 files changed, 370 insertions(+), 325 deletions(-)
+
+-- 
+2.26.2
+
+Mel Gorman (11):
+  mm/page_alloc: Split per cpu page lists and zone stats
+  mm/page_alloc: Convert per-cpu list protection to local_lock
+  mm/vmstat: Convert NUMA statistics to basic NUMA counters
+  mm/vmstat: Inline NUMA event counter updates
+  mm/page_alloc: Batch the accounting updates in the bulk allocator
+  mm/page_alloc: Reduce duration that IRQs are disabled for VM counters
+  mm/page_alloc: Remove duplicate checks if migratetype should be
+    isolated
+  mm/page_alloc: Explicitly acquire the zone lock in __free_pages_ok
+  mm/page_alloc: Avoid conflating IRQs disabled with zone->lock
+  mm/page_alloc: Update PGFREE outside the zone lock in __free_pages_ok
+  mm/page_alloc: Embed per_cpu_pages locking within the per-cpu
+    structure
+
+ drivers/base/node.c    |  18 +--
+ include/linux/mmzone.h |  58 ++++++--
+ include/linux/vmstat.h |  65 +++++----
+ mm/mempolicy.c         |   2 +-
+ mm/page_alloc.c        | 302 +++++++++++++++++++++++++----------------
+ mm/vmstat.c            | 250 ++++++++++++----------------------
+ 6 files changed, 370 insertions(+), 325 deletions(-)
+
+-- 
+2.26.2
+
