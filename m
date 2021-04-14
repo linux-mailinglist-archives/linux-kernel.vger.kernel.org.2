@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1783435F078
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A9835F07C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbhDNJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:11:12 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:16031 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230491AbhDNJLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:11:10 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FKxXQ05PXz9txRC;
-        Wed, 14 Apr 2021 11:10:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 0zeBA9ZPccDQ; Wed, 14 Apr 2021 11:10:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FKxXP4rdvz9ttBY;
-        Wed, 14 Apr 2021 11:10:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE0B88B7BC;
-        Wed, 14 Apr 2021 11:10:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id QZ2BMSlNARn7; Wed, 14 Apr 2021 11:10:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 098558B7BA;
-        Wed, 14 Apr 2021 11:10:44 +0200 (CEST)
-Subject: Re: [PATCH] init: consolidate trap_init()
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc:     uclinux-h8-devel@lists.sourceforge.jp,
-        linux-parisc@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210414165808.458a3d11@xhacker.debian>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <44bdf1f1-117d-0f10-fc59-9edd32d1ad61@csgroup.eu>
-Date:   Wed, 14 Apr 2021 11:10:42 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232261AbhDNJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:12:13 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21350 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232131AbhDNJMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:12:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1618391506; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=QMHhcgxPPNSCRuRZ5p+tWwJVttj2dn1QIO1Y2jmBl88zrYvBWCNsd8kb2PHIvZLLCwgxO4ahzjCJxNRBgAykX2Irt1ORYrNSSSv2VlGGSjbratWoxEV4KOV4NC4XcjjE2uZrAvwvZbJFO3wA3lafeKBNWnmNJfdEvrU3wc5AuzY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1618391506; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=Zi1pCymnws3KmFT5eK4yZ89uZWqTyFy2eL+2AksUNN0=; 
+        b=YciDOzjttUtvUCGybR7ATK7OPEY5epjZVNzw54JEIjObqDejay4aSzzVBynj88Db8Ud9fO0Zt5SXbPxsHdW8ULI2JWUqKp4xL1SAa/HYBIQllFi7kktZW0ms0ZhLraiVadJ4+5Q+AKQ5Or8Fz8urlAF3artOyB7+doRWgaqCeB4=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1618391506;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=Zi1pCymnws3KmFT5eK4yZ89uZWqTyFy2eL+2AksUNN0=;
+        b=wERjucwUFIrHGI8K6wfPVMWoDPa6kRz5g1vin9cHzBVfNCxSXNm2IGYG4F9G8QCa
+        z8cKhmk5CYIQP79yXK/qjAtzXuVjVSTyL38J95HdHbrMT1UrddO31vk074uq8u0G8q1
+        dnqgplMoFl504D4UmLbjuvISWh5+sObi9W+ly9qo=
+Received: from anirudhrb.com (49.207.201.215 [49.207.201.215]) by mx.zohomail.com
+        with SMTPS id 16183915039067.846894114221527; Wed, 14 Apr 2021 02:11:43 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 14:41:37 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Junyong Sun <sunjy516@gmail.com>,
+        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] firmware_loader: fix use-after-free in
+ firmware_fallback_sysfs
+Message-ID: <YHaxySNDxXIRp+eH@anirudhrb.com>
+References: <20210413104242.31564-1-mail@anirudhrb.com>
+ <20210413165138.GI4332@42.do-not-panic.com>
 MIME-Version: 1.0
-In-Reply-To: <20210414165808.458a3d11@xhacker.debian>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413165138.GI4332@42.do-not-panic.com>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 14/04/2021 à 10:58, Jisheng Zhang a écrit :
-> Many architectures implement the trap_init() as NOP, since there is
-> no such default for trap_init(), this empty stub is duplicated among
-> these architectures. Provide a generic but weak NOP implementation
-> to drop the empty stubs of trap_init() in these architectures.
-
-You define the weak function in the __init section.
-
-Most but not all architectures had it in __init section.
-
-And the remaining ones may not be defined in __init section. For instance look at the one in alpha 
-architecture.
-
-Have you checked that it is not a problem ? It would be good to say something about it in the commit 
-description.
-
-
+On Tue, Apr 13, 2021 at 04:51:38PM +0000, Luis Chamberlain wrote:
+> On Tue, Apr 13, 2021 at 04:12:42PM +0530, Anirudh Rayabharam wrote:
+> > The use-after-free happens when a fw_priv object has been freed but
+> > hasn't been removed from the pending list (pending_fw_head). The next
+> > time fw_load_sysfs_fallback tries to insert into the list, it ends up
+> > accessing the pending_list member of the previoiusly freed fw_priv.
+> > 
+> > In commit bcfbd3523f3c ("firmware: fix a double abort case with
+> > fw_load_sysfs_fallback"), fw_load_abort() is skipped if
+> > fw_sysfs_wait_timeout() returns -ENOENT. This causes the fw_priv to
+> > not be removed from the pending list.
+> > 
+> > To fix this, delete the fw_priv from the pending list when retval
+> > is -ENOENT instead of skipping the entire block.
+> > 
+> > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
+> > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+> > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 > 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
->   arch/arc/kernel/traps.c      |  5 -----
->   arch/arm/kernel/traps.c      |  5 -----
->   arch/h8300/kernel/traps.c    | 13 -------------
->   arch/hexagon/kernel/traps.c  |  4 ----
->   arch/nds32/kernel/traps.c    |  5 -----
->   arch/nios2/kernel/traps.c    |  5 -----
->   arch/openrisc/kernel/traps.c |  5 -----
->   arch/parisc/kernel/traps.c   |  4 ----
->   arch/powerpc/kernel/traps.c  |  5 -----
->   arch/riscv/kernel/traps.c    |  5 -----
->   arch/um/kernel/trap.c        |  4 ----
->   init/main.c                  |  2 ++
->   12 files changed, 2 insertions(+), 60 deletions(-)
+> Thanks for your patch Anirudh, but please also see this reply to the
+> issue:
 > 
-> diff --git a/init/main.c b/init/main.c
-> index 53b278845b88..4bdbe2928530 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -790,6 +790,8 @@ static inline void initcall_debug_enable(void)
->   }
->   #endif
->   
-> +void __init __weak trap_init(void) { }
-> +
+> http://lkml.kernel.org/r/20210403013143.GV4332@42.do-not-panic.com
 
-I think in a C file we don't try to save space as much as in a header file.
+I have now sent a v3 that is more along the lines of the patch suggested
+in the above thread.
 
-I would prefer something like:
+Thanks!
 
+	- Anirudh.
 
-void __init __weak trap_init(void)
-{
-}
-
-
->   /* Report memory auto-initialization states for this boot. */
->   static void __init report_meminit(void)
->   {
-> 
