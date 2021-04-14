@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20EA35F299
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DD935F29E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350553AbhDNLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:32:19 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:38020 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhDNLcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:32:17 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id DE8DD400298;
-        Wed, 14 Apr 2021 19:31:54 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Derek Chickles <dchickles@marvell.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] [net] cavium/liquidio: Fix duplicate argument
-Date:   Wed, 14 Apr 2021 19:31:48 +0800
-Message-Id: <20210414113148.9777-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S1350588AbhDNLf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:35:26 -0400
+Received: from mga05.intel.com ([192.55.52.43]:16156 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232069AbhDNLfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:35:24 -0400
+IronPort-SDR: Qsj014cOJnYFUeEIw5fXuAa7FIogtoNJuy4yYmPNgFlbxpFEQwb8Jo05wl/BIvXxjr/IuBiS7K
+ Lm9pHVCnmeVw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279931720"
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="279931720"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 04:35:01 -0700
+IronPort-SDR: 6Oc8hCUQ5OB3w7UeCQOSf8wfQ4KqG9pk5f56OMXThcachX8Y4M+Sar7znTNCW9SsONT5Sf++nb
+ HT/MU2hA4ddg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="521961851"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2021 04:34:59 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 14 Apr 2021 14:34:58 +0300
+Date:   Wed, 14 Apr 2021 14:34:58 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] software node: Allow node addition to already existing
+ device
+Message-ID: <YHbTYuMSyzPKXGoB@kuha.fi.intel.com>
+References: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
+ <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
+ <YHazQ33v4PY8kRHd@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkJMGFZLGRlJH0NJSkMZQk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PDY6ORw*Pz8NHhNNKAsVERAM
-        NRYKCTxVSlVKTUpDSEJCQkpOSE1NVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJSk5INwY+
-X-HM-Tid: 0a78d026ec33d991kuwsde8dd400298
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHazQ33v4PY8kRHd@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Wed, Apr 14, 2021 at 11:17:55AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 14, 2021 at 12:13:35PM +0300, Heikki Krogerus wrote:
+> > +Greg
+> > 
+> > Sorry about that. Should I resend this?
+> 
+> No worries, I can pick it up, thanks
+> 
+> `b4` really is nice to use :)
 
-./drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h:413:6-28:
-duplicated argument to & or |
+Yes, it's a really nice tool.
 
-The CN6XXX_INTR_M1UPB0_ERR here is duplicate.
-Here should be CN6XXX_INTR_M1UNB0_ERR.
+thanks,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h b/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-index b248966837b4..7aad40b2aa73 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-+++ b/drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h
-@@ -412,7 +412,7 @@
- 	   | CN6XXX_INTR_M0UNWI_ERR             \
- 	   | CN6XXX_INTR_M1UPB0_ERR             \
- 	   | CN6XXX_INTR_M1UPWI_ERR             \
--	   | CN6XXX_INTR_M1UPB0_ERR             \
-+	   | CN6XXX_INTR_M1UNB0_ERR             \
- 	   | CN6XXX_INTR_M1UNWI_ERR             \
- 	   | CN6XXX_INTR_INSTR_DB_OF_ERR        \
- 	   | CN6XXX_INTR_SLIST_DB_OF_ERR        \
 -- 
-2.25.1
-
+heikki
