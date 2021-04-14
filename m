@@ -2,49 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6372935EF6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B583535EF73
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349647AbhDNIUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
+        id S1349913AbhDNIWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:22:17 -0400
+Received: from mx.socionext.com ([202.248.49.38]:53655 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231825AbhDNIUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:20:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0554613B1;
-        Wed, 14 Apr 2021 08:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618388425;
-        bh=riGWsoIxXItIjhgKXrwEti07y5iF8ReFcCz2X1qZ3ns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e+/pjhnt6FIJpq30LX7bTmVUzxMzX2Wn7Zez1wT0be/z7F54s+qLO7yGdSVi2J7cS
-         F+cJqyozSEMfdzIhqWtMbjWpW16LoSE5lBpbAay2pzKw3LieYieO1rtY+BoYcjwqBn
-         65hbgzNjjEACe5nNh+wK5XLvvYi2WfqtNWj+oTPg=
-Date:   Wed, 14 Apr 2021 10:20:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: Subject: [PATCH v2 0/5] staging: rtl8192e: CLeanup patchset for
- style issues in rtl819x_Y.c files
-Message-ID: <YHalxnhnf0ZcVafz@kroah.com>
-References: <cover.1618380932.git.mitaliborkar810@gmail.com>
+        id S1348780AbhDNIWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:22:16 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 14 Apr 2021 17:21:54 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 52740205902A;
+        Wed, 14 Apr 2021 17:21:54 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 14 Apr 2021 17:21:54 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by iyokan2.css.socionext.com (Postfix) with ESMTP id 24EDFB1D40;
+        Wed, 14 Apr 2021 17:21:54 +0900 (JST)
+Received: from [10.212.23.128] (unknown [10.212.23.128])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 4B646623D;
+        Wed, 14 Apr 2021 17:21:53 +0900 (JST)
+Subject: Re: [PATCH v10 1/3] PCI: portdrv: Add pcie_port_service_get_irq()
+ function
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+References: <1617985338-19648-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1617985338-19648-2-git-send-email-hayashi.kunihiko@socionext.com>
+ <20210412094219.000031ca@Huawei.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <1001a75f-76fb-5a99-7af2-602aef31b01b@socionext.com>
+Date:   Wed, 14 Apr 2021 17:21:52 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618380932.git.mitaliborkar810@gmail.com>
+In-Reply-To: <20210412094219.000031ca@Huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:24:44PM +0530, Mitali Borkar wrote:
-> Changes from v1:- Dropped 6/6 from and made this as a patchset of 5 as
-> alignment of code is done in following patches.
+Hi Jonathan,
 
-Why is "Subject:" listed in your subject line?  Do not manually add it
-after git format-patch has created it...
+On 2021/04/12 17:42, Jonathan Cameron wrote:
+> On Sat, 10 Apr 2021 01:22:16 +0900
+> Kunihiko Hayashi <hayashi.kunihiko@socionext.com> wrote:
+> 
+>> Add pcie_port_service_get_irq() that returns the virtual IRQ number
+>> for specified portdrv service.
+> 
+> Trivial comment inline.
+> 
+>>
+>> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>> ---
+>>   drivers/pci/pcie/portdrv.h      |  1 +
+>>   drivers/pci/pcie/portdrv_core.c | 16 ++++++++++++++++
+>>   2 files changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+>> index 2ff5724..628a3de 100644
+>> --- a/drivers/pci/pcie/portdrv.h
+>> +++ b/drivers/pci/pcie/portdrv.h
+>> @@ -144,4 +144,5 @@ static inline void pcie_pme_interrupt_enable(struct pci_dev *dev, bool en) {}
+>>   #endif /* !CONFIG_PCIE_PME */
+>>   
+>>   struct device *pcie_port_find_device(struct pci_dev *dev, u32 service);
+>> +int pcie_port_service_get_irq(struct pci_dev *dev, u32 service);
+>>   #endif /* _PORTDRV_H_ */
+>> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+>> index e1fed664..b60f0f3 100644
+>> --- a/drivers/pci/pcie/portdrv_core.c
+>> +++ b/drivers/pci/pcie/portdrv_core.c
+>> @@ -477,7 +477,22 @@ struct device *pcie_port_find_device(struct pci_dev *dev,
+>>   }
+>>   EXPORT_SYMBOL_GPL(pcie_port_find_device);
+>>   
+>> +/*
+> 
+> /**
+> 
+> this is kernel-doc style, so why not mark it as such?
 
-thanks,
+Thank you for pointing out.
+I'll apply the style to this comment.
 
-greg k-h
+Thank you,
+
+---
+Best Regards
+Kunihiko Hayashi
