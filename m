@@ -2,121 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B51F35F5B4
+	by mail.lfdr.de (Postfix) with ESMTP id B1A9235F5B6
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344998AbhDNN6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233761AbhDNN6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:58:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 980EF6113D;
-        Wed, 14 Apr 2021 13:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618408683;
-        bh=hIMGIIDnDHf7gAYZ0W2mlUdfjZOZMX6FwWZvfvSiO8U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vA4DQdLbkUphCcG9zNnFRtd0s0icWfziVvNBU9VxWrAlz8/a54AKW9Y2Njje9/59q
-         8S90+v2LhXhO3h3vktUotPZWUmRTWCdomm1kBVOuo6IX0efGNK/LBnpPlpLz+7R19M
-         80Y6ZPlPpORNogO+RVUuLd0O4JZQFbcSu3/uJeTt/aX6yqm73fddYWEPzPFIMxd5yN
-         GV9QrYyEW+RMuhBdf25EFjIkwh04Q5t99UcDFK5Bp01tIjTJtsRmqLwA/EA4CYymZg
-         GRc/qkaR5QbENsnL+XHu1nQAQ+sZGSRGIzgsrLXD/pz//u4QIc5LBZBrylRody6+1E
-         vZ1SollammY0A==
-Date:   Wed, 14 Apr 2021 16:58:00 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
-Subject: [GIT PULL] TPM DEVICE DRIVER updates for v5.13
-Message-ID: <YHb06P4IOGV7eoiJ@kernel.org>
+        id S1351767AbhDNN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349256AbhDNN7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:59:16 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5D1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:58:55 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id a36so12550859ljq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3TW/VUxpoop3CV7OBSruiVlDrYQhCUzznkHnE/1dpw=;
+        b=hCqPhJEbqW3DalT0QlHdxLYYZmZltgIWVbrVJdZyEBC/vsvXuhAJSx0lxbfxV9or2G
+         fVLnv84ZewjwDGufJ/Si72WQU2XPW8RakxXyRNTmkHjWY+7IcXC8AR59TxJdzY4wzFBO
+         IqCZflBvHojbxtZdyqwpuYfqDCjFsrIqH9ld0jFl6quEiJd2tahRPgTUyRqi2DG895mz
+         oqvhH1h8ebWRKEMx6Xp8Uu90WmgyaNYJddcAH6zuR3+1ehRk5FYS2X18BtbnK1Fw8yPX
+         kBFs+ctV6Ert/VRhSY8GW+c/KCAcVveBrUyhYyPMYP/2O8dyGvDEFWlLtEMzo8k0sALT
+         tdLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3TW/VUxpoop3CV7OBSruiVlDrYQhCUzznkHnE/1dpw=;
+        b=c1g2aHkLgeEgk2qSZM7G0xLj9Dbsob6wQRbokGKea0/Oa1E+cWxgnZm4e+aQ6iakyv
+         7OZvKz1lCrIl/ag2dKJLABEghR3fcmtyS7wwIZwNDZ7vRh0sFpgbk/YXBwg8Kb6qnGOm
+         FUrih29BgB9Q1o3sr4b0Ub/xFdmBln3BGaRlnswIMcyrL97rXkKhWC6AsFwyxXDn4ujo
+         T8q60voSqvgXD5h5v/eVpyfTSFH+PWw29/1eI8zYnjHmpVxLi0ZhJlC3EnOh9ahinCAs
+         G+AiqkhLBM2kTkAXFRl2mOJG0JvWBwnPHJEXeF4eMELUSeIIViiVATSJTXX+jp8B9sZz
+         k4TA==
+X-Gm-Message-State: AOAM5315woYoNkrG8MImf7TCzCIcl1H4mh0fVPawXnjLAZRHWUg1MVmX
+        oOyl6Q/nLy9nNqmaa1Rx1T6JRkuufOq1Ao1lPgZ9TQ==
+X-Google-Smtp-Source: ABdhPJzXiYnByYOweKPqo5V02GydcVPisdDJJyVyHIX7nHY7WjJeSeDlPhH97SgaPRAM81x4DVGA8rFaYsqMb0kpCNA=
+X-Received: by 2002:a2e:7607:: with SMTP id r7mr10786299ljc.226.1618408733362;
+ Wed, 14 Apr 2021 06:58:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210414055217.543246-1-avagin@gmail.com> <87blahb1pr.fsf@oldenburg.str.redhat.com>
+ <CAG48ez2z0a4x2GfHv9L0HmO1-uzsKtfOF40erPb8ADR-m+itbg@mail.gmail.com> <874kg99hwf.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <874kg99hwf.fsf@oldenburg.str.redhat.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 14 Apr 2021 15:58:25 +0200
+Message-ID: <CAG48ez02UDn_yeLuLF4c=kX0=h2Qq8Fdb0cer1yN8atbXSNjkQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
+ address space
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andrei Vagin <avagin@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-um@lists.infradead.org, criu@openvz.org,
+        Andrei Vagin <avagin@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ On Wed, Apr 14, 2021 at 2:20 PM Florian Weimer <fweimer@redhat.com> wrote:
+>
+> * Jann Horn:
+>
+> > On Wed, Apr 14, 2021 at 12:27 PM Florian Weimer <fweimer@redhat.com> wrote:
+> >>
+> >> * Andrei Vagin:
+> >>
+> >> > We already have process_vm_readv and process_vm_writev to read and write
+> >> > to a process memory faster than we can do this with ptrace. And now it
+> >> > is time for process_vm_exec that allows executing code in an address
+> >> > space of another process. We can do this with ptrace but it is much
+> >> > slower.
+> >> >
+> >> > = Use-cases =
+> >>
+> >> We also have some vaguely related within the same address space: running
+> >> code on another thread, without modifying its stack, while it has signal
+> >> handlers blocked, and without causing system calls to fail with EINTR.
+> >> This can be used to implement certain kinds of memory barriers.
+> >
+> > That's what the membarrier() syscall is for, right? Unless you don't
+> > want to register all threads for expedited membarrier use?
+>
+> membarrier is not sufficiently powerful for revoking biased locks, for
+> example.
 
-New features:
+But on Linux >=5.10, together with rseq, it is, right? Then lock
+acquisition could look roughly like this, in pseudo-C (yes, I know,
+real rseq doesn't quite look like that, you'd need inline asm for that
+unless the compiler adds special support for this):
 
-1. ARM TEE backend for kernel trusted keys to complete the existing TPM
-   backend.
-2. ASN.1 format for TPM2 trusted keys to make them interact with the
-   user space stack, such as OpenConnect VPN.
 
-Other than that, contains bunch of bug fixes.
+enum local_state {
+  STATE_FREE_OR_BIASED,
+  STATE_LOCKED
+};
+#define OWNER_LOCKBIT (1U<<31)
+#define OWNER_WAITER_BIT (1U<<30) /* notify futex when OWNER_LOCKBIT
+is cleared */
+struct biased_lock {
+  unsigned int owner_with_lockbit;
+  enum local_state local_state;
+};
 
-/Jarkko
+void lock(struct biased_lock *L) {
+  unsigned int my_tid = THREAD_SELF->tid;
+  RSEQ_SEQUENCE_START(); // restart here on failure
+  if (READ_ONCE(L->owner) == my_tid) {
+    if (READ_ONCE(L->local_state) == STATE_LOCKED) {
+      RSEQ_SEQUENCE_END();
+      /*
+       * Deadlock, abort execution.
+       * Note that we are not necessarily actually *holding* the lock;
+       * this can also happen if we entered a signal handler while we
+       * were in the process of acquiring the lock.
+       * But in that case it could just as well have happened that we
+       * already grabbed the lock, so the caller is wrong anyway.
+       */
+      fatal_error();
+    }
+    RSEQ_COMMIT(L->local_state = STATE_LOCKED);
+    return; /* fastpath success */
+  }
+  RSEQ_SEQUENCE_END();
 
-The following changes since commit 50987beca096a7ed4f453a6da245fd6a2fadedeb:
+  /* slowpath */
+  /* acquire and lock owner field */
+  unsigned int old_owner_with_lockbit;
+  while (1) {
+    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+    if (old_owner_with_lockbit & OWNER_LOCKBIT) {
+      if (!__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid | OWNER_LOCKBIT | OWNER_WAITER_BIT))
+       continue;
+      futex(&L->owner_with_lockbit, FUTEX_WAIT,
+old_owner_with_lockbit, NULL, NULL, 0);
+      continue;
+    } else {
+      if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid | OWNER_LOCKBIT))
+        break;
+    }
+  }
 
-  Merge tag 'trace-v5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (2021-04-13 18:40:00 -0700)
+  /*
+   * ensure old owner won't lock local_state anymore.
+   * we only have to worry about the owner that directly preceded us here;
+   * it will have done this step for the owners that preceded it before clearing
+   * the LOCKBIT; so if we were the old owner, we don't have to sync.
+   */
+  if (old_owner_with_lockbit != my_tid) {
+    if (membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ, 0, 0))
+      fatal_error();
+  }
 
-are available in the Git repository at:
+  /*
+   * As soon as the lock becomes STATE_FREE_OR_BIASED, we own it; but
+   * at this point it might still be locked.
+   */
+  while (READ_ONCE(L->local_state) == STATE_LOCKED) {
+    futex(&L->local_state, FUTEX_WAIT, STATE_LOCKED, NULL, NULL, 0);
+  }
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.13
+  /* OK, now the lock is biased to us and we can grab it. */
+  WRITE_ONCE(L->local_state, STATE_LOCKED);
 
-for you to fetch changes up to aec00aa04b1131e17e6744681b380779f89d77b3:
+  /* drop lockbit */
+  unsigned int old_owner_with_lockbit;
+  while (1) {
+    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+    if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
+old_owner_with_lockbit, my_tid))
+      break;
+  }
+  if (old_owner_with_lockbit & OWNER_WAITER_BIT)
+    futex(&L->owner_with_lockbit, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+}
 
-  KEYS: trusted: Fix missing null return from kzalloc call (2021-04-14 16:30:31 +0300)
+void unlock(struct biased_lock *L) {
+  unsigned int my_tid = THREAD_SELF->tid;
 
-----------------------------------------------------------------
-tpmdd updates for Linux v5.13
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      KEYS: trusted: Fix missing null return from kzalloc call
-
-James Bottomley (5):
-      lib: Add ASN.1 encoder
-      oid_registry: Add TCG defined OIDS for TPM keys
-      security: keys: trusted: fix TPM2 authorizations
-      security: keys: trusted: use ASN.1 TPM2 key format for the blobs
-      security: keys: trusted: Make sealed key properly interoperable
-
-Stefan Berger (3):
-      tpm: efi: Use local variable for calculating final log size
-      tpm: acpi: Check eventlog signature before using it
-      tpm: vtpm_proxy: Avoid reading host log when using a virtual device
-
-Sumit Garg (4):
-      KEYS: trusted: Add generic trusted keys framework
-      KEYS: trusted: Introduce TEE based Trusted Keys
-      doc: trusted-encrypted: updates with TEE as a new trust source
-      MAINTAINERS: Add entry for TEE based Trusted Keys
-
-Zhihao Cheng (1):
-      char: tpm: fix error return code in tpm_cr50_i2c_tis_recv()
-
- Documentation/admin-guide/kernel-parameters.txt   |  12 +
- Documentation/security/keys/trusted-encrypted.rst | 229 +++++++++--
- MAINTAINERS                                       |   8 +
- drivers/char/tpm/eventlog/acpi.c                  |  33 +-
- drivers/char/tpm/eventlog/common.c                |   3 +
- drivers/char/tpm/eventlog/efi.c                   |  29 +-
- drivers/char/tpm/tpm_tis_i2c_cr50.c               |   1 +
- include/keys/trusted-type.h                       |  55 +++
- include/keys/trusted_tee.h                        |  16 +
- include/keys/trusted_tpm.h                        |  29 +-
- include/linux/asn1_encoder.h                      |  32 ++
- include/linux/oid_registry.h                      |   5 +
- include/linux/tpm.h                               |   2 +
- lib/Kconfig                                       |   3 +
- lib/Makefile                                      |   1 +
- lib/asn1_encoder.c                                | 454 ++++++++++++++++++++++
- security/keys/Kconfig                             |   3 +
- security/keys/trusted-keys/Makefile               |   6 +
- security/keys/trusted-keys/tpm2key.asn1           |  11 +
- security/keys/trusted-keys/trusted_core.c         | 360 +++++++++++++++++
- security/keys/trusted-keys/trusted_tee.c          | 318 +++++++++++++++
- security/keys/trusted-keys/trusted_tpm1.c         | 398 +++++--------------
- security/keys/trusted-keys/trusted_tpm2.c         | 269 +++++++++++--
- 23 files changed, 1887 insertions(+), 390 deletions(-)
- create mode 100644 include/keys/trusted_tee.h
- create mode 100644 include/linux/asn1_encoder.h
- create mode 100644 lib/asn1_encoder.c
- create mode 100644 security/keys/trusted-keys/tpm2key.asn1
- create mode 100644 security/keys/trusted-keys/trusted_core.c
- create mode 100644 security/keys/trusted-keys/trusted_tee.c
+  /*
+   * If we run before the membarrier(), the lock() path will immediately
+   * see the lock as uncontended, and we don't need to call futex().
+   * If we run after the membarrier(), the ->owner_with_lockbit read
+   * here will observe the new owner and we'll wake the futex.
+   */
+  RSEQ_SEQUENCE_START();
+  unsigned int old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
+  RSEQ_COMMIT(WRITE_ONCE(L->local_state, STATE_FREE_OR_BIASED));
+  if (old_owner_with_lockbit != my_tid)
+    futex(&L->local_state, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+}
