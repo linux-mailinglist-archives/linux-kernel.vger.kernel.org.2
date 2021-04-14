@@ -2,234 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B63235EE56
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F50E35EE70
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348680AbhDNH2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbhDNH2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:28:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284E5C061574;
-        Wed, 14 Apr 2021 00:27:57 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e8f000e4e88675fafc1c1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:e4e:8867:5faf:c1c1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 92DF41EC03A0;
-        Wed, 14 Apr 2021 09:27:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618385275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IpAXtilQ8p4ZDwtbgeb9KY0InAhzSGPotnUZhB4cNj8=;
-        b=PRoaDLAcfw3/VXz/8um/bqMiuphYBfVtO/QHxkisG7n+E6ohJaHWrOTl/XmVS+u7Oi1jMg
-        1BtlNLPFnD14kHk92JIc8F+sVTd2kdCI08nwudSJVSv79/ZrcNG6frZ924I0Vgn66j+RMZ
-        V3yrWXEYnsl1JuB/lTK5p5U0kiXBDw4=
-Date:   Wed, 14 Apr 2021 09:27:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, ak@linux.intel.com,
-        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part2 PATCH 01/30] x86: Add the host SEV-SNP initialization
- support
-Message-ID: <20210414072747.GA15722@zn.tnic>
-References: <20210324170436.31843-1-brijesh.singh@amd.com>
- <20210324170436.31843-2-brijesh.singh@amd.com>
+        id S243980AbhDNH2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:28:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:39030 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349538AbhDNH2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:28:30 -0400
+IronPort-SDR: hFw5wS7kp0/Z/AymqABCwGJyz5Q5iU7MR8QbcTx+71IQW8aSQDo7ub56yMuOxYUkFwjtJXVAMY
+ xvqtGDXYTueA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255904581"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="255904581"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:28:03 -0700
+IronPort-SDR: G662FlIdTzBS+sgyF982vbTaYMXS791eapI1uQ7YZ9cmOYdI8Vm6F7ySXj2FWXxjdoBR/PvNKs
+ 7ga5mYfCzYww==
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="382268190"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:28:00 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 1BBA1200E8;
+        Wed, 14 Apr 2021 10:27:58 +0300 (EEST)
+Date:   Wed, 14 Apr 2021 10:27:58 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Mitali Borkar <mitaliborkar810@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] Re: [PATCH v3 4/4] staging: media:
+ intel-ipu3: remove space before tabs
+Message-ID: <20210414072757.GY3@paasikivi.fi.intel.com>
+References: <cover.1618326535.git.mitaliborkar810@gmail.com>
+ <01ad7ff353f805dfc48e7bcc26ed974e7bb5ef9f.1618326535.git.mitaliborkar810@gmail.com>
+ <20210413181712.GI6021@kadam>
+ <YHX3iVCNXJlOsmuQ@kali>
+ <alpine.DEB.2.22.394.2104140004430.14108@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324170436.31843-2-brijesh.singh@amd.com>
+In-Reply-To: <alpine.DEB.2.22.394.2104140004430.14108@hadrien>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:04:07PM -0500, Brijesh Singh wrote:
-> @@ -538,6 +540,10 @@
->  #define MSR_K8_SYSCFG			0xc0010010
->  #define MSR_K8_SYSCFG_MEM_ENCRYPT_BIT	23
->  #define MSR_K8_SYSCFG_MEM_ENCRYPT	BIT_ULL(MSR_K8_SYSCFG_MEM_ENCRYPT_BIT)
-> +#define MSR_K8_SYSCFG_SNP_EN_BIT	24
-> +#define MSR_K8_SYSCFG_SNP_EN		BIT_ULL(MSR_K8_SYSCFG_SNP_EN_BIT)
-> +#define MSR_K8_SYSCFG_SNP_VMPL_EN_BIT	25
-> +#define MSR_K8_SYSCFG_SNP_VMPL_EN	BIT_ULL(MSR_K8_SYSCFG_SNP_VMPL_EN_BIT)
->  #define MSR_K8_INT_PENDING_MSG		0xc0010055
->  /* C1E active bits in int pending message */
->  #define K8_INTP_C1E_ACTIVE_MASK		0x18000000
+On Wed, Apr 14, 2021 at 12:05:04AM +0200, Julia Lawall wrote:
+> 
+> 
+> On Wed, 14 Apr 2021, Mitali Borkar wrote:
+> 
+> > On Tue, Apr 13, 2021 at 09:17:12PM +0300, Dan Carpenter wrote:
+> > > On Tue, Apr 13, 2021 at 08:59:34PM +0530, Mitali Borkar wrote:
+> > > > Removed unnecessary space before tabs to adhere to linux kernel coding
+> > > > style.
+> > > > Reported by checkpatch.
+> > > >
+> > > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > > > ---
+> > > >
+> > > > Changes from v2:- No changes.
+> > > > Changes from v1:- No changes.
+> > > >
+> > > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > index 47e98979683c..42edac5ee4e4 100644
+> > > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > @@ -633,7 +633,7 @@ struct ipu3_uapi_bnr_static_config_wb_gains_thr_config {
+> > > >   * @cg:	Gain coefficient for threshold calculation, [0, 31], default 8.
+> > > >   * @ci:	Intensity coefficient for threshold calculation. range [0, 0x1f]
+> > > >   *	default 6.
+> > > > - * 	format: u3.2 (3 most significant bits represent whole number,
+> > > > + *format: u3.2 (3 most significant bits represent whole number,
+> > > >   *	2 least significant bits represent the fractional part
+> > >
+> > > Just remove the spaces, don't remove the tab.  It's looks silly now.
+> > >
+> > Okay Sir, do I have to send a v4 patch on this now?
+> 
+> Yes.  If you get feedback on a patch, you should send a new version.
 
-Ok, I believe it is finally time to make this MSR architectural and drop
-this silliness with "K8" in the name. If you wanna send me a prepatch which
-converts all like this:
-
-MSR_K8_SYSCFG -> MSR_AMD64_SYSCFG
-
-I'll gladly take it. If you prefer me to do it, I'll gladly do it.
-
-> @@ -44,12 +45,16 @@ u64 sev_check_data __section(".data") = 0;
->  EXPORT_SYMBOL(sme_me_mask);
->  DEFINE_STATIC_KEY_FALSE(sev_enable_key);
->  EXPORT_SYMBOL_GPL(sev_enable_key);
-> +DEFINE_STATIC_KEY_FALSE(snp_enable_key);
-> +EXPORT_SYMBOL_GPL(snp_enable_key);
->  
->  bool sev_enabled __section(".data");
->  
->  /* Buffer used for early in-place encryption by BSP, no locking needed */
->  static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
->  
-> +static unsigned long rmptable_start, rmptable_end;
-
-__ro_after_init I guess.
-
-> +
->  /*
->   * When SNP is active, this routine changes the page state from private to shared before
->   * copying the data from the source to destination and restore after the copy. This is required
-> @@ -528,3 +533,82 @@ void __init mem_encrypt_init(void)
->  	print_mem_encrypt_feature_info();
->  }
->  
-> +static __init void snp_enable(void *arg)
-> +{
-> +	u64 val;
-> +
-> +	rdmsrl_safe(MSR_K8_SYSCFG, &val);
-
-Why is this one _safe but the wrmsr isn't? Also, _safe returns a value -
-check it pls and return early.
-
-> +
-> +	val |= MSR_K8_SYSCFG_SNP_EN;
-> +	val |= MSR_K8_SYSCFG_SNP_VMPL_EN;
-> +
-> +	wrmsrl(MSR_K8_SYSCFG, val);
-> +}
-> +
-> +static __init int rmptable_init(void)
-> +{
-> +	u64 rmp_base, rmp_end;
-> +	unsigned long sz;
-> +	void *start;
-> +	u64 val;
-> +
-> +	rdmsrl_safe(MSR_AMD64_RMP_BASE, &rmp_base);
-> +	rdmsrl_safe(MSR_AMD64_RMP_END, &rmp_end);
-
-Ditto, why _safe if you're checking CPUID?
-
-> +
-> +	if (!rmp_base || !rmp_end) {
-> +		pr_info("SEV-SNP: Memory for the RMP table has not been reserved by BIOS\n");
-> +		return 1;
-> +	}
-> +
-> +	sz = rmp_end - rmp_base + 1;
-> +
-> +	start = memremap(rmp_base, sz, MEMREMAP_WB);
-> +	if (!start) {
-> +		pr_err("SEV-SNP: Failed to map RMP table 0x%llx-0x%llx\n", rmp_base, rmp_end);
-			^^^^^^^
-
-That prefix is done by doing
-
-#undef pr_fmt
-#define pr_fmt(fmt)     "SEV-SNP: " fmt
-
-before the SNP-specific functions.
-
-> +		return 1;
-> +	}
-> +
-> +	/*
-> +	 * Check if SEV-SNP is already enabled, this can happen if we are coming from kexec boot.
-> +	 * Do not initialize the RMP table when SEV-SNP is already.
-> +	 */
-
-comment can be 80 cols wide.
-
-> +	rdmsrl_safe(MSR_K8_SYSCFG, &val);
-
-As above.
-
-> +	if (val & MSR_K8_SYSCFG_SNP_EN)
-> +		goto skip_enable;
-> +
-> +	/* Initialize the RMP table to zero */
-> +	memset(start, 0, sz);
-> +
-> +	/* Flush the caches to ensure that data is written before we enable the SNP */
-> +	wbinvd_on_all_cpus();
-> +
-> +	/* Enable the SNP feature */
-> +	on_each_cpu(snp_enable, NULL, 1);
-
-What happens if you boot only a subset of the CPUs and then others get
-hotplugged later? IOW, you need a CPU hotplug notifier which enables the
-feature bit on newly arrived CPUs.
-
-Which makes me wonder whether it makes sense to have this in an initcall
-and not put it instead in init_amd(): the BSP will do the init work
-and the APs coming in will see that it has been enabled and only call
-snp_enable().
-
-Which solves the hotplug thing automagically.
-
-> +
-> +skip_enable:
-> +	rmptable_start = (unsigned long)start;
-> +	rmptable_end = rmptable_start + sz;
-> +
-> +	pr_info("SEV-SNP: RMP table physical address 0x%016llx - 0x%016llx\n", rmp_base, rmp_end);
-
-			  "RMP table at ..."
-
-also, why is this issued in skip_enable? You want to issue it only once,
-on enable.
-
-also, rmp_base and rmp_end look redundant - you can simply use
-rmptable_start and rmptable_end.
-
-Which reminds me - that function needs to check as the very first thing
-on entry whether SNP is enabled and exit if so - there's no need to read
-MSR_AMD64_RMP_BASE and MSR_AMD64_RMP_END unnecessarily.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init mem_encrypt_snp_init(void)
-> +{
-> +	if (!boot_cpu_has(X86_FEATURE_SEV_SNP))
-> +		return 1;
-> +
-> +	if (rmptable_init()) {
-> +		setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
-> +		return 1;
-> +	}
-> +
-> +	static_branch_enable(&snp_enable_key);
-> +
-> +	return 0;
-> +}
-> +/*
-> + * SEV-SNP must be enabled across all CPUs, so make the initialization as a late initcall.
-
-Is there any particular reason for this to be a late initcall?
+v2 of this patch can be used as well, it's fine. (I missed this change in
+v3.)
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sakari Ailus
