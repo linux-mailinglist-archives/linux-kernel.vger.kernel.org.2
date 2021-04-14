@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0233C35FC7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A806635FC86
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349370AbhDNUV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
+        id S232605AbhDNUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346875AbhDNUVY (ORCPT
+        with ESMTP id S232705AbhDNUWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:21:24 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0CECC061574;
-        Wed, 14 Apr 2021 13:21:02 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id v72so2844498ybe.11;
-        Wed, 14 Apr 2021 13:21:02 -0700 (PDT)
+        Wed, 14 Apr 2021 16:22:33 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4CCC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:22:10 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id e14so22534933lfn.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9WAReIIx1ygTdBPWTI/Fl7Iw9AOXUrLAYUBbvQxYk/0=;
-        b=AtZ86fQsc9vbhS+649ka/x3Vj2lPW3l2j7IbUMgqzoHIr27tbnz34peNrS+Osln6MF
-         8s4zB25sJWABQ/ft4gzaNPScyPjYQNC6LqeY6kIAvpae9UbMrYeiSduUmQyEr1EMCPbi
-         BjHlDGCELkTeNCMKpJ/0AHTa+3ie6WA0rOS3EMqB0QPDD/wIjGm6QO0gxhWuMp0+W8T8
-         IZ2Nf99VYAhiC0/QDvOCEXIia/ABgVwDWpNN0NvwfiyaD14yindlUw0D8NetVqY38kPT
-         Xu49nNmdrxSButVyzlw+DOOqBuE/QPdX06vRdQcJnhKmevZTVYU9OVfuTeOipVVsoxNu
-         L5Cg==
+        bh=6thTORuT8bN7jwK094fMT/y8sU4GZakkr5R6ovUTdHI=;
+        b=UAoa76Qtsf0pbMc9IJqG9ooEMfjhEIrknCxndD8VY6cPrguml69YvPFqGmlzuBSQzh
+         FrdelVohMGw/UXPitS8jaS0vYBU01i6SIHCs/u+B0uDNa1/+o7AFCQGtYFo/uY/vW9FE
+         e35iod5n6V1pTvp83DTqqYHvpeFqDSO7Dx/Rk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9WAReIIx1ygTdBPWTI/Fl7Iw9AOXUrLAYUBbvQxYk/0=;
-        b=eJJdEcNPjIHf1/e7BkerASwIXLi9o9PtTb+MC51cZGUF1IZEVx776AvKuOrRfEliKb
-         /owULlJD0OfKptZaslRvZ6skXXLHdEu8Az28SozSlYzRGN1SOBXsjwQvshQwnllBQEkz
-         X7LZOf/HNJpFgbyLXZg2vL+yU8dUJQx4d5ROULtN8SkCXlkuANdm7YswYGAVWPZNDsMj
-         3PKFVS9LIEZzekN3nV5uYGrMmdKmC9mnEMqPeECStQsApsJk0G7IihMij3VujNYaktj4
-         n7jKqQkwef4FOiDUDmrCTgfEEuYzoK+wxdyIjWLoLRd5P8Goty9VaBU4h6pLq6GAgJeJ
-         4pgA==
-X-Gm-Message-State: AOAM532fxC04geBXDqwQc+plblCz3t7J4nSN0KHGD4aRYO6plDRqxa6N
-        W4TKA7B+ipdEs6XsjqOUQ3HMVvS05DIjclRd+l/kK6d66Po=
-X-Google-Smtp-Source: ABdhPJwtFkwWYVw1PZvDFwR6rrbSIKUJhbJ583nYNAFSAqVJ1i9nl83cDJyFig6U2jHrTseiLxEuutlz1Vwc1rFqekk=
-X-Received: by 2002:a25:b781:: with SMTP id n1mr56541289ybh.115.1618431662257;
- Wed, 14 Apr 2021 13:21:02 -0700 (PDT)
+        bh=6thTORuT8bN7jwK094fMT/y8sU4GZakkr5R6ovUTdHI=;
+        b=Tl8pt3RHXqmgvm15ZitmuHvaDZhg2mlqgOmjiTu76uJ5OzQw2ubFSHpd6oCfEjBVgs
+         Xlddj+Tb7cqZJpkVWhJNLDxaXCJVpr585SJt1NxrTyCXrlepj8DtHbikZreAWB32h5IM
+         43sQY0dzMGf/r3yM4MmrEWwzc7eBJwwAIxcIVNGWseAkiMw1yLJXFMtfnwGQ4W5gBbmU
+         bDDfttUfm8H0AVPhq+AOQ1MbdVMSZizzQ519/2h8S3xxan+roIY+liy8YyPXYoBBqmHg
+         TYBZ31KV74n6Y8LlqSOxrRII2i/7yaktmmxLHVc0fSWB5zdGKhJSHm+ziwxfOox906ge
+         C0pg==
+X-Gm-Message-State: AOAM530hKb863H8bqfVzWzci0mprxlM0caFe4SgVDLBwT7EupuOCnWuH
+        LaycqCQye7zReHEbZaJ5MYpmmpa6qxocDShE
+X-Google-Smtp-Source: ABdhPJx+hWmFootQkTwPh84o+Oa8Gakf5vlf5M2WL63HsL0EwsmrCczujENftYnlBangf/7bLGpH3g==
+X-Received: by 2002:a05:6512:3187:: with SMTP id i7mr14029085lfe.340.1618431729207;
+        Wed, 14 Apr 2021 13:22:09 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id h20sm193129lfm.274.2021.04.14.13.22.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 13:22:08 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 12so35186444lfq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:22:08 -0700 (PDT)
+X-Received: by 2002:a05:6512:1286:: with SMTP id u6mr16109842lfs.377.1618431727841;
+ Wed, 14 Apr 2021 13:22:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
-In-Reply-To: <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 14 Apr 2021 22:20:51 +0200
-Message-ID: <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414200953.GX2531743@casper.infradead.org>
+In-Reply-To: <20210414200953.GX2531743@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 14 Apr 2021 13:21:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdhVW3+YFHG5Le=mZMYf3mGjgv1f-Td=254bj9fYd7fg@mail.gmail.com>
+Message-ID: <CAHk-=wgdhVW3+YFHG5Le=mZMYf3mGjgv1f-Td=254bj9fYd7fg@mail.gmail.com>
 Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     ojeda@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         rust-for-linux@vger.kernel.org,
         Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
@@ -63,46 +69,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 9:45 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, Apr 14, 2021 at 1:10 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> With the main point of Rust being safety, there is no way I will ever
-> accept "panic dynamically" (whether due to out-of-memory or due to
-> anything else - I also reacted to the "floating point use causes
-> dynamic panics") as a feature in the Rust model.
+> There's a philosophical point to be discussed here which you're skating
+> right over!  Should rust-in-the-linux-kernel provide the same memory
+> allocation APIs as the rust-standard-library, or should it provide a Rusty
+> API to the standard-linux-memory-allocation APIs?
 
-Agreed on all your points. As I mentioned in the other message (we
-crossed emails), we have a lot of work to do regarding `alloc` and
-slicing `core` for things that are not needed for the kernel
-(floating-point, etc.).
+Yeah, I think that the standard Rust API may simply not be acceptable
+inside the kernel, if it has similar behavior to the (completely
+broken) C++ "new" operator.
 
-We haven't done it just yet because it is not a trivial amount of work
-and we wanted to have some overall sentiment from you and the
-community overall before tackling everything. But it is doable and
-there isn't any fundamental reason that prevents it (in fact, the
-language supports no-allocation code).
+So anything that does "panic!" in the normal Rust API model needs to
+be (statically) caught, and never exposed as an actual call to
+"panic()/BUG()" in the kernel.
 
-Worst case, we may need to request a few bits here and there to the
-`rustc` and standard library teams, but that should be about it.
+So "Result<T, E>" is basically the way to go, and if the standard Rust
+library alloc() model is based on "panic!" then that kind of model
+must simply not be used in the kernel.
 
-In summary, to be clear:
+             Linus
 
-  - On allocation: this is just our usage of `alloc` in order to speed
-development up -- it will be replaced (or customized, we have to
-decide how we will approach it) with our own allocation and data
-structures.
-
-  - On floating-point, 128-bit, etc.: the main issue is that the
-`core` library is a single big blob at the moment. I have already
-mentioned this to some Rust team folks. We will need a way to "cut"
-some things out, for instance with the "feature flags" they already
-have for other crates (or they can split `core` in to several, like
-`alloc` is for similar reasons). Or we could do it on our side
-somehow, but I prefer to avoid that (we cannot easily customize `core`
-like we can with `alloc`, because it is tied to the compiler too
-tightly).
-
-Thanks a lot for having taken a look so quickly, by the way!
-
-Cheers,
-Miguel
+           Linus
