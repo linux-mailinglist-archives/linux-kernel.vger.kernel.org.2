@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703BC35F188
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D22F35F194
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhDNKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:33:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42510 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232235AbhDNKdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:33:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618396379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4f9XVi08AUnEb2K13TH7oU76g65kV0XAZJ7MmHU+byU=;
-        b=XJoXRkrBRwgetqxmgVhqJJnDosEI+hw98nimjUD/azguCxCfnAsanFB0n1WnfBjldlCycy
-        8LL0mCJn39fjzqkr5pgIkTIFdSR3j0magWQP+mu76o6BvXE0ucE7oI73WU2fWznLqbv2N3
-        4HqLfTjic1B2W+lEIlipjfUaMtz4Gus=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CDF50AF31;
-        Wed, 14 Apr 2021 10:32:59 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 12:32:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/7] mm,hugetlb: Clear HPageFreed outside of the lock
-Message-ID: <YHbE2q/Otrdx1cgK@dhcp22.suse.cz>
-References: <20210413104747.12177-1-osalvador@suse.de>
- <20210413104747.12177-4-osalvador@suse.de>
- <YHWbPjgPpsLoqGvL@dhcp22.suse.cz>
- <b8f36340-df56-1180-2a14-7b20cc1a0cda@oracle.com>
- <YHaF5efHcJJ71UP9@dhcp22.suse.cz>
- <20210414074132.GB20401@linux>
- <YHansW/OnNT6/i9d@dhcp22.suse.cz>
- <20210414100147.GD20886@linux>
+        id S233175AbhDNKjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:39:14 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:38866 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233885AbhDNKjA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:39:00 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 4E4BE92009C; Wed, 14 Apr 2021 12:38:28 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 3F46092009B;
+        Wed, 14 Apr 2021 12:38:28 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 12:38:28 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: Disable HIGHMEM64G selection for M486SX
+Message-ID: <alpine.DEB.2.21.2104141221340.44318@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414100147.GD20886@linux>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 14-04-21 12:01:47, Oscar Salvador wrote:
-> On Wed, Apr 14, 2021 at 10:28:33AM +0200, Michal Hocko wrote:
-> > You are right it doesn't do it there. But all struct pages, even those
-> > that are allocated by the bootmem allocator should initialize its struct
-> > pages. They would be poisoned otherwise, right? I would have to look at
-> > the exact code path but IIRC this should be around the time bootmem
-> > allocator state transitions to the page allocator.
-> 
-> Ok, you are right.
-> struct pages are initialized a bit earlier through:
-> 
-> start_kernel
->  setup_arch
->   paging_init
->    zone_sizes_init
->     free_area_init
->      free_area_init_node
->       free_area_init_core
->        memmap_init_zone
->         memmap_init_range
->          __init_single_page
-> 
-> While the allocation of bootmem hugetlb happens
-> 
-> start_kernel
->  parse_args
->   ...
->    hugepages_setup
->     ...
->      hugetlb_hstate_alloc_pages
->       __alloc_bootmem_huge_page
-> 
-> which is after the setup_arch() call.
+Fix a regression caused by making the 486SX a separate processor family, 
+for which the HIGHMEM64G setting has not been updated and therefore has 
+become exposed as a user selectable option for the M486SX configuration 
+setting unlike with original M486 and all the other settings that choose 
+non-PAE-enabled processors:
 
-Thanks for pulling those paths. It is always painful to crawl that code.
+High Memory Support
+> 1. off (NOHIGHMEM)
+  2. 4GB (HIGHMEM4G)
+  3. 64GB (HIGHMEM64G)
+choice[1-3?]:
 
-> So by the time we get the page from __alloc_bootmem_huge_page(), fields are
-> zeroed.
-> I thought we might get in trouble because memblock_alloc_try_nid_raw() calls
-> page_init_poison() which poisons the chunk with 0xff,e.g:
-> 
-> [    1.955471] boot: ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
-> [    1.955476] boot: ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
-> 
->  but it seems that does not the memmap struct page.
+With the fix in place the setting is now correctly removed:
 
-Well, to be precise it does the very same thing with memamp struct pages
-but that is before the initialization code you have pointed out above.
-In this context it just poisons the allocated content which is the GB
-page storage.
+High Memory Support
+> 1. off (NOHIGHMEM)
+  2. 4GB (HIGHMEM4G)
+choice[1-2?]:
 
-> I checked, and when we get there in __alloc_bootmem_huge_page, page->private is
-> still zeroed, so I guess it should be safe to assume that we do not really need
-> to clear the flag in __prep_new_huge_page() routine?
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Fixes: 87d6021b8143 ("x86/math-emu: Limit MATH_EMULATION to 486SX compatibles")
+Cc: stable@vger.kernel.org # v5.5+
+---
+ arch/x86/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It would be quite nasty if the struct pages content would be undefined.
-Maybe that is possible but then I would rather stick the initialization
-into __alloc_bootmem_huge_page.
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+linux-x86-highmem64g-m486sx.diff
+Index: linux-macro-ide/arch/x86/Kconfig
+===================================================================
+--- linux-macro-ide.orig/arch/x86/Kconfig
++++ linux-macro-ide/arch/x86/Kconfig
+@@ -1406,7 +1406,7 @@ config HIGHMEM4G
+ 
+ config HIGHMEM64G
+ 	bool "64GB"
+-	depends on !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
++	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
+ 	select X86_PAE
+ 	help
+ 	  Select this if you have a 32-bit processor and more than 4
