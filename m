@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A9835F07C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7563135F084
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhDNJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:12:13 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21350 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbhDNJMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:12:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1618391506; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=QMHhcgxPPNSCRuRZ5p+tWwJVttj2dn1QIO1Y2jmBl88zrYvBWCNsd8kb2PHIvZLLCwgxO4ahzjCJxNRBgAykX2Irt1ORYrNSSSv2VlGGSjbratWoxEV4KOV4NC4XcjjE2uZrAvwvZbJFO3wA3lafeKBNWnmNJfdEvrU3wc5AuzY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1618391506; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Zi1pCymnws3KmFT5eK4yZ89uZWqTyFy2eL+2AksUNN0=; 
-        b=YciDOzjttUtvUCGybR7ATK7OPEY5epjZVNzw54JEIjObqDejay4aSzzVBynj88Db8Ud9fO0Zt5SXbPxsHdW8ULI2JWUqKp4xL1SAa/HYBIQllFi7kktZW0ms0ZhLraiVadJ4+5Q+AKQ5Or8Fz8urlAF3artOyB7+doRWgaqCeB4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1618391506;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=Zi1pCymnws3KmFT5eK4yZ89uZWqTyFy2eL+2AksUNN0=;
-        b=wERjucwUFIrHGI8K6wfPVMWoDPa6kRz5g1vin9cHzBVfNCxSXNm2IGYG4F9G8QCa
-        z8cKhmk5CYIQP79yXK/qjAtzXuVjVSTyL38J95HdHbrMT1UrddO31vk074uq8u0G8q1
-        dnqgplMoFl504D4UmLbjuvISWh5+sObi9W+ly9qo=
-Received: from anirudhrb.com (49.207.201.215 [49.207.201.215]) by mx.zohomail.com
-        with SMTPS id 16183915039067.846894114221527; Wed, 14 Apr 2021 02:11:43 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 14:41:37 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S232643AbhDNJOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:14:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29997 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232081AbhDNJOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:14:01 -0400
+IronPort-SDR: 9FAL0JQT7q05lWP1+96p0NBulpnriPJeQjJAa9yWjvbTYSppnKgHXQt5p8lkexYkU3b1i+sLdP
+ HBSlL/I5df2A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255919985"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="255919985"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 02:13:38 -0700
+IronPort-SDR: NOutl8Gepr0SWfFGtfiLlZqxJPFJSvnWFpQyE0mKQfUw7u48WfSiRYNgPzPiWmm30GaiOt/tkz
+ M3xcMxtZP7pw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="521925571"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2021 02:13:36 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 14 Apr 2021 12:13:35 +0300
+Date:   Wed, 14 Apr 2021 12:13:35 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Junyong Sun <sunjy516@gmail.com>,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] firmware_loader: fix use-after-free in
- firmware_fallback_sysfs
-Message-ID: <YHaxySNDxXIRp+eH@anirudhrb.com>
-References: <20210413104242.31564-1-mail@anirudhrb.com>
- <20210413165138.GI4332@42.do-not-panic.com>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] software node: Allow node addition to already existing
+ device
+Message-ID: <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
+References: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413165138.GI4332@42.do-not-panic.com>
-X-ZohoMailClient: External
+In-Reply-To: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:51:38PM +0000, Luis Chamberlain wrote:
-> On Tue, Apr 13, 2021 at 04:12:42PM +0530, Anirudh Rayabharam wrote:
-> > The use-after-free happens when a fw_priv object has been freed but
-> > hasn't been removed from the pending list (pending_fw_head). The next
-> > time fw_load_sysfs_fallback tries to insert into the list, it ends up
-> > accessing the pending_list member of the previoiusly freed fw_priv.
-> > 
-> > In commit bcfbd3523f3c ("firmware: fix a double abort case with
-> > fw_load_sysfs_fallback"), fw_load_abort() is skipped if
-> > fw_sysfs_wait_timeout() returns -ENOENT. This causes the fw_priv to
-> > not be removed from the pending list.
-> > 
-> > To fix this, delete the fw_priv from the pending list when retval
-> > is -ENOENT instead of skipping the entire block.
-> > 
-> > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
++Greg
+
+Sorry about that. Should I resend this?
+
+On Wed, Apr 14, 2021 at 10:54:38AM +0300, Heikki Krogerus wrote:
+> If the node is added to an already exiting device, the node
+> needs to be also linked to the device separately.
 > 
-> Thanks for your patch Anirudh, but please also see this reply to the
-> issue:
+> This will make sure the reference count is kept in balance
+> also when the node is injected to a device afterwards.
 > 
-> http://lkml.kernel.org/r/20210403013143.GV4332@42.do-not-panic.com
+> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Fixes: e68d0119e328 ("software node: Introduce device_add_software_node()")
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/base/swnode.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 740333629b420..3cc11b813f28c 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -1045,6 +1045,7 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
+>  	}
+>  
+>  	set_secondary_fwnode(dev, &swnode->fwnode);
+> +	software_node_notify(dev, KOBJ_ADD);
+>  
+>  	return 0;
+>  }
+> @@ -1118,8 +1119,8 @@ int software_node_notify(struct device *dev, unsigned long action)
+>  
+>  	switch (action) {
+>  	case KOBJ_ADD:
+> -		ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
+> -					"software_node");
+> +		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
+> +					       "software_node");
+>  		if (ret)
+>  			break;
+>  
+> -- 
+> 2.30.2
 
-I have now sent a v3 that is more along the lines of the patch suggested
-in the above thread.
-
-Thanks!
-
-	- Anirudh.
-
+-- 
+heikki
