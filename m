@@ -2,136 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C13735F6E0
+	by mail.lfdr.de (Postfix) with ESMTP id BDACA35F6E1
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350179AbhDNOwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        id S243701AbhDNOwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352135AbhDNOv3 (ORCPT
+        with ESMTP id S1350095AbhDNOvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:51:29 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F79C061574;
-        Wed, 14 Apr 2021 07:51:07 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id t11so7045587qtr.8;
-        Wed, 14 Apr 2021 07:51:07 -0700 (PDT)
+        Wed, 14 Apr 2021 10:51:44 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78596C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d8so10232565plh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=hGtfqo5Bo6cc29ptmRB3Rcvg0AUrNYFdCJJIvwgoZk4=;
-        b=W+wbeZWbrNkJ38iJZGGqvLcGCG5QfT2PDdv9szoQGjlZ/ht5i0k77xTd0wfuWKrnE/
-         vsRJXOeXLzndtAMMkqApYdqssKzVxMCNE7v7tfVZmcESZ+e3IOk8lxHGQr8ZL6Fkt+wT
-         CDHuURFLWlKMpEOVQ77UMNYx1O48RWV7C3DP3gBXyjcLiIchh0eiyVH0zRU7hMBYHwaF
-         U3GA4SiW2Qz3tbK7hRAQj9G0N1Pz4OTqoH2C8JJKmEcxgXYqsgSXHvqhG8XYRA+V8zeP
-         JiehTHXsjqiwCPNZwhNzjQ6LIgFoieaBa9ASFNv5cpRPaGP6rqOoH0oHQAsh5NcQCUzz
-         R5fg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0f1yRWivcg5wQEbGqXPrGa6vWe7+yI6CnScm8BKrOXM=;
+        b=GMp7JY7KV9+C/G92RdzQXM1EdpBV/CchvizI/V9Rl6NATzXRvScvm5DqvzOlxZefSw
+         K38lN8vuLA8/44nzXSkhr/bv0EzkOvz0qsxv0ihzQkrjTaZs7HI2LXE7KWSyVV0el0/E
+         9lm4pKpbmp3G6eszp8Rr2lzbGUZywcoPllowYPXFgXEggVD2Tt0V6pa4kDbzdVvYOtXu
+         NTynYwE15sz2/3cwd6W9KmD2keoIn7uHQo6edSza/PmuboGtkLgbHZo8EaTIYGJs5XsX
+         sXQgqJQPEfxMaNUc8zxwXv82U2nFsXN8l4pfjQ6vT6NoiDmAM/+knTxaj4QACHOHrSI8
+         eVgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=hGtfqo5Bo6cc29ptmRB3Rcvg0AUrNYFdCJJIvwgoZk4=;
-        b=j3uB7g50Blku6Q5WoEhion3uQdTlv6mI8cskVEIFEE03qb0ChypeSFKXsOMsHP9wF1
-         LuEBQiIxMPY6oWil7H4Bzk7Pdz7DtejZcB0A1QIVpOpquGfhHXksIzpS2hLn/a482xdM
-         mbx4ADFUm7HPWtKOziiMGxUTWwPXGH89CE+IyBPelsl/q022+mNtm4QH7qeT8XnYSB8l
-         3SsmWTBd8Rn+b0SPVlf+KemKwjjaDjD4PvtATcR+9s7/l0/XIij/56VttfQ8sOx7dGok
-         zmcSikKL9gVnG3LPSDKToMO7Nj04iOQ0O0W6azBvUMM0G2ff1ol7WQ5c5BqhlKtJIlZC
-         6mvQ==
-X-Gm-Message-State: AOAM5313Q3xvhGYLN0i30c1lG/3w0n22C+6fo+1xsH7xK3Th49i2NaaJ
-        BZvRbjexbr0TMEmH2k8CTqt3lAbSPzSzMKGa
-X-Google-Smtp-Source: ABdhPJxxLl/SLPnQiIUj5qukT/Wp0of+NZJZ40B76pC2bad/th4kkBgMUo80bs8aBHs5wqj6Wt9YFA==
-X-Received: by 2002:a05:622a:2d2:: with SMTP id a18mr21067960qtx.146.1618411866781;
-        Wed, 14 Apr 2021 07:51:06 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:e514:d03b:27b2:153? ([2001:1284:f016:a037:e514:d03b:27b2:153])
-        by smtp.gmail.com with ESMTPSA id p10sm8688096qtl.17.2021.04.14.07.51.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0f1yRWivcg5wQEbGqXPrGa6vWe7+yI6CnScm8BKrOXM=;
+        b=FYGASpfU8kZ9ClgAKmSN8OGPAG5vZeZ8FVMomBlfObWJrg2bieoFiOY1konlWu73X0
+         RVp1ZkBgBzX9okTNU5XzU4LUXNzCFRBjIwREDIXq1P/Y2gMBhzuS6N1nsK1mXDAOY1Mh
+         pqo29suI3XwJi425W7wah2EO7pRvNhkIhNzsn9HWeIeJk8l4VS4zjZEgLVCB+6Tdlm0y
+         q1lQ9QZwDpk586G40vPyKPG3BXrZq8gUsG+6c1YFBRn7IcXRdCgv7YPdsjGVZSY20nFc
+         wKcqzgvjvlDZ0E6YF918PTlPj7v4AsclhWF6m17C79Jjeg7/GHZLC7qmXaevXBBA5Mo5
+         VbvQ==
+X-Gm-Message-State: AOAM533OGkMfGB4bDvHXcnVMjr+9c6P13lDgn9awsgMhtdUozvmxzF/i
+        6awvLHTQGTJFlGCDmVeGzGy06h+eyaexeA==
+X-Google-Smtp-Source: ABdhPJy6nS3DZqN9rRxKPIxlJr7UaPzNPqUID4YYB0NrdZ4Da19lEFMdSIImOmNOYY6GRIAvEjxzJA==
+X-Received: by 2002:a17:903:1d2:b029:ea:e375:6a57 with SMTP id e18-20020a17090301d2b02900eae3756a57mr19026603plh.31.1618411882083;
+        Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id h18sm17268953pgj.51.2021.04.14.07.51.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 07:51:06 -0700 (PDT)
-Message-ID: <1ae81e5c2380cf928579d5c62360bdd03a6bbc67.camel@gmail.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH 1/2] staging: media: atomisp:
- pci: Correct identation in block of conditional statements in file
- atomisp_v4l2.c
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Wed, 14 Apr 2021 11:51:02 -0300
-In-Reply-To: <20210414144502.GW6021@kadam>
-References: <cover.1618409028.git.alinesantanacordeiro@gmail.com>
-         <0ef18a36d6905628fa596fd5e0a32fdb9c6a8ada.1618409028.git.alinesantanacordeiro@gmail.com>
-         <20210414143011.GV6021@kadam>
-         <alpine.DEB.2.22.394.2104141638140.25259@hadrien>
-         <20210414144502.GW6021@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Wed, 14 Apr 2021 07:51:21 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 07:51:19 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Chen Jun <chenjun102@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        rui.xiang@huawei.com, John Stultz <john.stultz@linaro.org>
+Subject: Re: [PATCH v2] time: Fix overwrite err unexpected in clock_adjtime32
+Message-ID: <20210414145119.GB9318@hoboy.vegasvil.org>
+References: <20210414030449.90692-1-chenjun102@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414030449.90692-1-chenjun102@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qua, 2021-04-14 às 17:45 +0300, Dan Carpenter escreveu:
-> On Wed, Apr 14, 2021 at 04:39:20PM +0200, Julia Lawall wrote:
-> > 
-> > 
-> > On Wed, 14 Apr 2021, Dan Carpenter wrote:
-> > 
-> > > On Wed, Apr 14, 2021 at 11:06:02AM -0300, Aline Santana Cordeiro
-> > > wrote:
-> > > > Correct identation in block of conditional statements.
-> > > > The function "v4l2_device_unregister_subdev()" depends on
-> > > > the results of the macro function "list_for_each_entry_safe()".
-> > > > 
-> > > > Signed-off-by: Aline Santana Cordeiro <
-> > > > alinesantanacordeiro@gmail.com>
-> > > > ---
-> > > >  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > > > b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > > > index 0295e2e..6d853f4 100644
-> > > > --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > > > +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> > > > @@ -1178,7 +1178,7 @@ static void
-> > > > atomisp_unregister_entities(struct atomisp_device *isp)
-> > > >                 atomisp_mipi_csi2_unregister_entities(&isp-
-> > > > >csi2_port[i]);
-> > > > 
-> > > >         list_for_each_entry_safe(sd, next, &isp-
-> > > > >v4l2_dev.subdevs, list)
-> > > > -       v4l2_device_unregister_subdev(sd);
-> > > > +               v4l2_device_unregister_subdev(sd);
-> > > > 
-> > > 
-> > > It's really more common to use curly braces for list_for_each()
-> > > one
-> > > liners.
-> > > 
-> > >         list_for_each_entry_safe(sd, next, &isp-
-> > > >v4l2_dev.subdevs, list) {
-> > >                 v4l2_device_unregister_subdev(sd);
-> > >         }
-> > 
-> > A quick test with grep shows 4000 lines containing list_for_each
-> > that
-> > contain no {, out of 15000 lines containing list_for_each in all.
-> > 
+On Wed, Apr 14, 2021 at 03:04:49AM +0000, Chen Jun wrote:
+> the correct error is covered by put_old_timex32.
 > 
-> Huh...  You're right.  Never mind then.
-> 
-> regards,
-> dan carpenter
-> 
+> Fixes: 3a4d44b61625 ("ntp: Move adjtimex related compat syscalls to native counterparts")
+> Signed-off-by: Chen Jun <chenjun102@huawei.com>
 
-Ok then :)
-
-Thank you all,
-
-Aline
-
+Reviewed-by: Richard Cochran <richardcochran@gmail.com>
