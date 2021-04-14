@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F51D35F60E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E91535F612
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349411AbhDNORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:17:24 -0400
-Received: from m12-16.163.com ([220.181.12.16]:58067 "EHLO m12-16.163.com"
+        id S1349441AbhDNOTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:19:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348303AbhDNORW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:17:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2p7xN
-        dQVAt+VJI8mut/3TIEyzUuatnLRUtisnz6PIMI=; b=EPzx6A3QbQGpzXabrRMhH
-        X16vYz4paLYhxx1bmlywEdOzCe9d/xUYxiGHXzNedxyB83Or+wNBHD9G+J36HPC6
-        x0gq3NahHu9uidK7TpJ9xP1HMyfUtFIUesO6u8RrgKFa6fFoWrL+Whb6uIhKvTcU
-        RaWL7a4k+537BOpjTVsFnE=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowAAHD+88+XZgletMlg--.578S2;
-        Wed, 14 Apr 2021 22:16:31 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     shuah@kernel.org, andrii@kernel.org, kafai@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] tools/testing: Remove unused variable
-Date:   Wed, 14 Apr 2021 22:16:39 +0800
-Message-Id: <20210414141639.1446-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S1348303AbhDNOTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:19:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BAFA61019;
+        Wed, 14 Apr 2021 14:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618409918;
+        bh=3+BEa1WIe58IawQ6VmmJOzqBr5VUedP15td9Yp8Hja8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=feFFbNfOb3QXsKWsPk5qK67Fa/JDO38PJ0hTsOQQDTVm2vzZJorf+dx9KnXdGttx2
+         BqVxz+jkwyvDxrpbueTxNYalvNf/sDyFrt41EACC2a43y9zJN1cIdcwwmiZ5Tt5QQD
+         cTsTTdn5tadgscWz9VU1Rv6czywdfdGkBZyL7uWEnR5S0MDKv2bUBfIoU0F4pgvBlM
+         i095pHpIZcAVpWVEKuXP+dFwkQM4ZqS4EDFNbsNd1T0SgL4S0ic3MyzehZ/Oi/9Q2y
+         LTAnxz5LAYHOEOgD/D7gEh7ihzy7xltXj6X/QcAqwGlcs7+A9jAGACM7FSBnNrqj4f
+         CeAlPmcNbx4SQ==
+Date:   Wed, 14 Apr 2021 15:18:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     matthew.gerlach@linux.intel.com
+Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yilun.xu@intel.com, jdelvare@suse.com, linux@roeck-us.net,
+        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
+        russell.h.weight@intel.com, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] spi: Add DFL bus driver for Altera SPI Master
+Message-ID: <20210414141816.GD4535@sirena.org.uk>
+References: <20210413225835.459662-1-matthew.gerlach@linux.intel.com>
+ <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAAHD+88+XZgletMlg--.578S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFWfJr48tF43Jw1xGFW8Xrb_yoW3ZrbEvr
-        4IgrykuF4ku343Jr13GwnxurZYvw4j9rWDGFW8Wa43tws8u3W5KFn5Crn7J34rWrZ8GasF
-        ganYkF93Cr4UGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU80fO7UUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQJ0iV8ZN04rRAACsI
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
+Content-Disposition: inline
+In-Reply-To: <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
+X-Cookie: George Orwell was an optimist.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
 
-Remove unused variable "ret2".
+--zbGR4y+acU1DwHSi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Apr 13, 2021 at 03:58:34PM -0700, matthew.gerlach@linux.intel.com wrote:
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index ba6eadf..e7b6731 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -396,7 +396,7 @@ int _ip6vxlan_get_tunnel(struct __sk_buff *skb)
- SEC("geneve_set_tunnel")
- int _geneve_set_tunnel(struct __sk_buff *skb)
- {
--	int ret, ret2;
-+	int ret;
- 	struct bpf_tunnel_key key;
- 	struct geneve_opt gopt;
- 
--- 
-1.9.1
+> +++ b/drivers/spi/spi-altera-dfl.c
+> @@ -0,0 +1,222 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * DFL bus driver for Altera SPI Master
+> + *
 
+Please make the entire comment a C++ one so things look more
+intentional.
 
+> +	memset(&pdevinfo, 0, sizeof(pdevinfo));
+> +
+> +	pdevinfo.name = "subdev_spi_altera";
+> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> +	pdevinfo.parent = dev;
+> +	pdevinfo.data = &pdata;
+> +	pdevinfo.size_data = sizeof(pdata);
+> +
+> +	return platform_device_register_full(&pdevinfo);
+
+Don't create a platform device here, extend the spi-altera driver to
+register with both DFL and platform buses.
+
+--zbGR4y+acU1DwHSi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+acACgkQJNaLcl1U
+h9AI6gf+NS9LzXREWWKJsIJdM7epyzoLnZtHG1CXXEPLU7ng5Ii9GchDNM6fJMyt
+4F48+okJW2olNPq03QY8LHEPCjXGMqGbIoWMSUH4F/L+sUfNKyDHg6lCWLgYzkHk
+qhjIMFuZflh0WEFJbWAUNWm2WTJEgEFgyf6fNOgoReaOkOfE5T8foZgEd54FSbxB
+EifEY/L+VSTZXBOlDibAEiMizeKXjIBvQ4g8la4lJesFmQcgDJg/4qr+400WJM/s
+Cy2G2gN15tB2mDYr7gcQkUy50r2Vx4kgXbePBF3cGFoRBLq4wnuRqMf4zGsZKA/n
+ehLYl0S92Jzn94vcINKp8J2HN1cGiQ==
+=eB6p
+-----END PGP SIGNATURE-----
+
+--zbGR4y+acU1DwHSi--
