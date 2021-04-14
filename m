@@ -2,184 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDCC35F0ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DBA35F0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhDNJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:39:19 -0400
-Received: from mail-dm6nam11on2059.outbound.protection.outlook.com ([40.107.223.59]:3425
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232503AbhDNJjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:39:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VfSj20KT/SmrdhvLv4Kb6qBplgqWe0+pCxTQifAT4P59ZY7a5OLrE2xmTGthOoP+VeTrw+7DesHfcDggWYblJqLvWJ63zKuQAQtB1A/Nnk5UU9xCowvxZqsbpuzrzKD2VntQJYkzunM7SkcnOIyBxz42cq+stgnNdpQvo+7xNQTUyQDyEu/GBTCh2kG9udB/kWsHTalCDJegctW4NeGtl92OyZfUjJvkDwOzoK/6buVqRwpt7B6CPQjit1FbEL2Pa8ElDn5tUN4azwuP+B+ewklDWlzDJRm3YZc3Wq51Fxswnn+2dezj5i219v2tOXOYYkaMNiiLpWsW2iaMhWoQBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v1zZJXr025wCYwZ03VgZPHTWfFdwlmtq4D6SWbnexTA=;
- b=J/4G5firr/L2taSclCLRv4cDi82LzOMgIVVv5bGD6xjIwYfsWKhYGZiMGxlGVT6BUI7ewF0mTkV3UYqSJo4z5+iJhvvfF83uC3ujqPIAi4nPUxOc5rLVtn93fCIZm49gQ1+uGzjS/KWDXX1pjQV60FA9i8e6RN0dlR8moUkfVsH1rJnu44wW/yPL89BftirgMkGoSWUdORdrApUOJQNnGFfa54RTBOoo8O7oYw8ToWrM+J7x78kWghq5wkb6Gv1yhESEgBp7AaYLHWFiPBq34ZJP5IIqDxkJv7PRtXTgrt8jOzAH4PrNlfg6BmBnnoOAuBBwwojTbkQeoi7B2kLPow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S232760AbhDNJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231782AbhDNJkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:40:14 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B669C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:39:53 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id v21-20020a4ae0550000b02901e6970ea355so376837oos.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v1zZJXr025wCYwZ03VgZPHTWfFdwlmtq4D6SWbnexTA=;
- b=M6SH2r//uRhJor0lzgJmoIeFfIb0I0l8XmqZWqkyWyNt74wIDeuZYSt5ErscuH9jqngrUtzrobE+Deib0ozGSKkum7z8XML/6PBurUhXCxCSWJpIsy9YDbwCknFb+D3CUH8xjcvnPanVC9BzFJ4RbCgHVaVORD1XcszpkFUq184=
-Authentication-Results: csgroup.eu; dkim=none (message not signed)
- header.d=none;csgroup.eu; dmarc=none action=none header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by SJ0PR03MB5440.namprd03.prod.outlook.com (2603:10b6:a03:284::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Wed, 14 Apr
- 2021 09:38:45 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
- 09:38:45 +0000
-Date:   Wed, 14 Apr 2021 17:38:32 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-parisc@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] init: consolidate trap_init()
-Message-ID: <20210414173832.52bc3ddb@xhacker.debian>
-In-Reply-To: <20210414172757.3ebfaa4c@xhacker.debian>
-References: <20210414165808.458a3d11@xhacker.debian>
-        <44bdf1f1-117d-0f10-fc59-9edd32d1ad61@csgroup.eu>
-        <20210414172757.3ebfaa4c@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR05CA0023.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::36) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=h6merFAI8nWuQUtaPMgNZzm0Zs+GfD/helzkO3aNm6M=;
+        b=Gpi0MuCR1W1QhfNJMyeuLEMzdGv2u9cUgcQKDLr2A2Z7SlRIk59djZP/Zf2H2SyFPx
+         3VEVmAZd++akAu43BavcVWFhv9+DDOwmy/w75/C8gJu84rvaeDKX3u8PRUDObn13vjsQ
+         EH0FugmPO04mpdbLrUyBhZezJXw8AmazdE4oNGrziKL2NBpWqW6axbhhveuM8DG10Z5w
+         HvxLjD53Swn9y2BGDbZ20Ln0jlLgm+eV5Jyyiq6JMc7yimjZlApDjq2kQY+nRW4ZrP9J
+         WYCO3nUgu1Fa/EVFWIVYKC3JXOSWIFw6Sbd5W3br/yYvm/xOc2xatsMsVkwwKp2sZ2yR
+         z5XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=h6merFAI8nWuQUtaPMgNZzm0Zs+GfD/helzkO3aNm6M=;
+        b=JPiIC7BQPaQetknSXyaZgHAAIw4Pk3Bavcq1hfZjjXC+8j7aqur9tJ7GMsbtokWPrK
+         urtNit4P5dCHz5nPzPlOHL+UzElzmiaIBJDF0Q2FrOfQxLQTQ+oYHnM26pE+rMU0rlqn
+         5XxcBaNiQlghCG3D4fflVNDOFPFNegmidrq1O3cUKYmnu5gM1Ouxo++ZmTy12tu5ChhZ
+         3HRNU9x7h0Blct8l+OauUc6JxSUz/H08DOwtgdqcmU3sRIxXZ97RVd9xTTDhl+A73PQx
+         foYzCT3tt9K2A15Po7nXZKkEZ5+FlWJID0fHW4KGI1HJHKaUdXXkZDm+OnYUUGymSHZT
+         8qxg==
+X-Gm-Message-State: AOAM530ZRT524Rn2zaX+9o5ymTic5TQFIDb7quRTXB+Y4aumaXy4l77Y
+        gb9fpw9o6LsClyzULoqH/2faora0jZK/iABFePECnA==
+X-Google-Smtp-Source: ABdhPJwP+m7PQ2KqWNLVMQtbp6TPlsLhusBZ0RCccTszTcZThlUiM1pmE6bpAXBBzKEcpDp9Xu+2/Ec/7YpA8CYjwrY=
+X-Received: by 2002:a4a:d0ce:: with SMTP id u14mr30250246oor.36.1618393192568;
+ Wed, 14 Apr 2021 02:39:52 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR05CA0023.namprd05.prod.outlook.com (2603:10b6:a03:c0::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Wed, 14 Apr 2021 09:38:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7c7614f2-058d-4ec7-48bb-08d8ff2918e1
-X-MS-TrafficTypeDiagnostic: SJ0PR03MB5440:
-X-Microsoft-Antispam-PRVS: <SJ0PR03MB5440EC1241F238CF3050F3FBED4E9@SJ0PR03MB5440.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HOwd3PMqdcpF05NX25PqVYW5PWTB6GgxcazGSivwmtehmz4H4cFPckWw10Q/rZi49D0ARPd6KUfTyvOGHLPjXr0tBC5Jfa6G8rEi5x1ZadZu82yJHWzUsHpJyThBX0BtdRWqoAjmWVLEW/s7elGhZQOSWPLob44HeOzJ4jlNzGPvCyZNtorOKSUnoU+/UMb4HqGv6c+9Ay1PrhC7wIUMlwd3qbJfM9gikx0bMzWEJB1+boFeZzOnCw1T8nRJUXosEKYfoqQotboOR4OpwdrMLojTOukDkBsuxc1wFz8iXccTiEqsenFViRxm6eLcYaOa8vslgej8+o5rNRMt5TVpscUklxH5hX1HyAWITVPF7CXXJC2D9VT9pyIZMJQbr9J14f1wT/KIeyPitI0gK87+xuWs2CypTG8lA79D7iP8CgxQzLQ0YzRChOhUPtBqZBRM7wDk2E4l52fCeGfHYTgCul3GulFZUCAyHemEUdxkb3FgUvncEp1CTS2yuPhRcf4CJrCVjRMTNrmpejmh5ZeX7IarlUC1gNrRoxZGcNPWloUIcbB22ZGo0WS6YIA5KamQW63fjd+UCWgvOSQMLvByCF4JlJ7bdhKzxTvnGq6SfpnlFSfboTCSuVQoDUnqsUTrop6cDH+1lphkDo7G+CHy2Si1pKx3iMyHKCGsZjz+ZTg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39850400004)(366004)(346002)(396003)(5660300002)(9686003)(55016002)(8676002)(6666004)(66556008)(66476007)(478600001)(6506007)(86362001)(6916009)(66946007)(54906003)(2906002)(16526019)(4326008)(1076003)(7406005)(7416002)(7696005)(26005)(52116002)(38350700002)(316002)(956004)(8936002)(38100700002)(186003)(66574015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?blBLQ2ZOOGdEWjY5MFR4Rmg1S2txVEhWUndPTEFzcWVITDl6c2dlY3VXOTdr?=
- =?utf-8?B?K1ZCMWYxdDZwL0lXajN4R2dUK0VzMVRZT3hTSDFteXlTUmFwZU5QMVFNM1ln?=
- =?utf-8?B?MFpZYkE4ckRGTzlkMHQ0M0JuNWp4TENjdjF1T1VlT3ZsSUtwMk1vb2wwSnVG?=
- =?utf-8?B?anF3Mk96WEswcnpZT1VwTmxERkRxd2libGlVNEptTUQ5WFdsYmlpdGZJS0Ux?=
- =?utf-8?B?UFRmdkJqS2FNVjh3bXd0RElCbG1oZnNlSG55QllPbHpkYVpuZVR4RXhLR1VW?=
- =?utf-8?B?V1RvM3FPTVpWbk1VN0s1eDNkdUg1UjBnNTZjQUxxVnZieDZFWFJTM1YwZVd3?=
- =?utf-8?B?d0pvVDM5SzNUbUNlbXZMSWZiRFAzNTRES0ttVFRZNmkzN1UxdjdhS0x4T3V6?=
- =?utf-8?B?cWxzaG9nWUxkMjlZVTZ3UlFLYXdNRUN5Q2lVOHBBME9udDF1cWx4V2hBRmdz?=
- =?utf-8?B?UzVuRGRGMHZkZEh6a2ZlZnJydXJaak1DYnpVc01EYzNCVHVScnZHekNWVE9P?=
- =?utf-8?B?WXI2YXBaL3B5VXhWWm1zKzVrNzF6WWtUY3daVGxmQTg5Q3ZiVG04NEZKcUZ1?=
- =?utf-8?B?RXJqVHRqcFRJZndpQzhENTNyTGhiek1mSTJUNC91UTNGRmdSVERJK3VhMkp2?=
- =?utf-8?B?RU16MjdLUkhZekhjaWo4YVE4dEw2UXo2Vi9MaU93ZlhrcjdQZUs5OXJjSlRu?=
- =?utf-8?B?Y2dqQjlIcytKSjREbUZaN2s5eG0zUDAyRXJHcWRJVVE3bEtCS1luMGxHeGgv?=
- =?utf-8?B?VkgrVnRWbkJsV2ZTOC9QUFBmcU94aEt5TEd0NSsrR1EwVmwrbFBFVG1KczZI?=
- =?utf-8?B?NVpXODV0c1JhdVJaSmJBdTMzbnRjVmt6dlVEdVlxMGxMcXRmeHI3K25DVVBm?=
- =?utf-8?B?ODV0Ri9ZRXJaaUo4WVRHSVNXZUp6Y0RWbndHWmEyY0xPYVNtby9Sd1g2Z0xS?=
- =?utf-8?B?UkpjT0EwU3NLNUlPVzk3UmNnWTk4aXBCdzZSZVBlNTRrbHJLdHdUc2RTdEp0?=
- =?utf-8?B?WHVNRW9OdzkzVjZqeHVCUUkvSTBYcVQwbHJXamQ0dHlnV3lUcEVYQmJRaHoy?=
- =?utf-8?B?cmdxR013VVF5YzFMTHhFYlNQczI4TGpCcnk5VkV2TGdVVW5YOVRmZmZWdmhz?=
- =?utf-8?B?SUt5bjBxdWxrY2FJUDVRenZjYmUyekhWS2xJY0pXbkFoVk9LREFrYTRxcWRz?=
- =?utf-8?B?c2lYdWtmMWQ3M1NIL3dPeGtQekh1SFZVMCt3RkRDVnZlWGxhM2NlYlpwS0N0?=
- =?utf-8?B?WnRrekszQXpiNFd2cUxhdm1Db3JiM0FzK2VFYU9IbGt3QzlRS3VJSWRFOGV2?=
- =?utf-8?B?d09ZdCtKOGV4MGdRRGJnczc0Z2FzSlBxTUJ1ZmpnVEYySkRLN3pWUFY2NmRT?=
- =?utf-8?B?TTlOVkUxRDRWYWpBTFBlaVVVeTRNcDk1MndISGFKK0J1N3dKNFpORklCb3Zk?=
- =?utf-8?B?dDFlUTlXK0g1alhmVzdEbzhHcnB2bGdEeWkybm1Cb1J2dll2R2hqRVRnTlBi?=
- =?utf-8?B?alpMMlAwUzhaMUdseWJjYVN5ZUZsY2JsdnFDMlNsdmJ1WGpMeFlGRllKYWxw?=
- =?utf-8?B?TTNwcVZicXlPdDltU3oxTElIazR1OWx4NXJZbWx5c0ZzR2lkeWt1VlV6WW5u?=
- =?utf-8?B?MytGNGJZRTBMbWY5bVN1T0Rqcklneno3TDlEZktZMmRRT3cwUkJ5WnZTRkF2?=
- =?utf-8?B?aDJoclVadHkxRXdzQ2xSN0s1OVZ5clRQbTVDUDY2ZVlYMUlVdEtMWFAxaU1x?=
- =?utf-8?Q?Po3HMuu7gw0KdPCfzQux4ZIt0I7xsifeBoND27E?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c7614f2-058d-4ec7-48bb-08d8ff2918e1
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 09:38:45.2011
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2mIuMcyFpyprnnCRialV/0j+B0sqCGIatNUxuuu5qpQhtxcOnJn9LpXumcXWlVtZrYJDrM+kBJt6PEAmktrRQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5440
+References: <20210414081428.337494-1-davidgow@google.com>
+In-Reply-To: <20210414081428.337494-1-davidgow@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 14 Apr 2021 11:39:39 +0200
+Message-ID: <CANpmjNNWQZGOCiNQaTWr5ebh7jp7TMzTp0OXnss_5xpRP9GvSw@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: dev-tools: Add Testing Overview
+To:     David Gow <davidgow@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 17:27:57 +0800
-Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+On Wed, 14 Apr 2021 at 10:15, David Gow <davidgow@google.com> wrote:
+>
+> The kernel now has a number of testing and debugging tools, and we've
+> seen a bit of confusion about what the differences between them are.
+>
+> Add a basic documentation outlining the testing tools, when to use each,
+> and how they interact.
+>
+> This is a pretty quick overview rather than the idealised "kernel
+> testing guide" that'd probably be optimal, but given the number of times
+> questions like "When do you use KUnit and when do you use Kselftest?"
+> are being asked, it seemed worth at least having something. Hopefully
+> this can form the basis for more detailed documentation later.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-> CAUTION: Email originated externally, do not click links or open attachme=
-nts unless you recognize the sender and know the content is safe.
->=20
->=20
-> On Wed, 14 Apr 2021 11:10:42 +0200
-> Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
->=20
-> >
-> > Le 14/04/2021 =C3=A0 10:58, Jisheng Zhang a =C3=A9crit : =20
-> > > Many architectures implement the trap_init() as NOP, since there is
-> > > no such default for trap_init(), this empty stub is duplicated among
-> > > these architectures. Provide a generic but weak NOP implementation
-> > > to drop the empty stubs of trap_init() in these architectures. =20
-> >
-> > You define the weak function in the __init section.
-> >
-> > Most but not all architectures had it in __init section.
-> >
-> > And the remaining ones may not be defined in __init section. For instan=
-ce look at the one in alpha
-> > architecture.
-> >
-> > Have you checked that it is not a problem ? It would be good to say som=
-ething about it in the commit
-> > description. =20
->=20
-> For those non-nop platforms, I can only test x86/arm64/, but both has
-> __init mark. I'm not sure whether this is a problem for alpha etc. Maybe
-> I can check which section the trap_init() sits. Or to avoid any possible
-> regression, I can add __init mark to those remaining ones without it in
-> preparation patches.
->=20
+Reviewed-by: Marco Elver <elver@google.com>
 
-Hi,
+Looks good to me, thanks. I think one can write whole articles (or
+even books) about this topic, so it's easy to forget this is a quick
+overview, and keep on adding.
 
-I found only three platforms don't have the __init marker for trap_init(), =
-I
-will add the __init marker in three preparation patches in new version.
-
-thanks
+> ---
+> Thanks, everyone, for the comments on the doc. I've made a few of the
+> suggested changes. Please let me know what you think!
+>
+> -- David
+>
+> Changes since v1:
+> https://lore.kernel.org/linux-kselftest/20210410070529.4113432-1-davidgow=
+@google.com/
+> - Note KUnit's speed and that one should provide selftests for syscalls
+> - Mention lockdep as a Dynamic Analysis Tool
+> - Refer to "Dynamic Analysis Tools" instead of "Sanitizers"
+> - A number of minor formatting tweaks and rewordings for clarity.
+>
+> Not changed:
+> - I haven't included an exhaustive list of differences, advantages, etc,
+>   between KUnit and kselftest: for now, the doc continues to focus on
+>   the difference between 'in-kernel' and 'userspace' testing here.
+> - Similarly, I'm not linking out to docs defining and describing "Unit"
+>   tests versus "End-to-end" tests. None of the existing documentation
+>   elsewhere quite matches what we do in the kernel perfectly, so it
+>   seems less confusing to focus on the 'in-kernel'/'userspace'
+>   distinction, and leave other definitions as a passing mention for
+>   those who are already familiar with the concepts.
+> - I haven't linked to any talk videos here: a few of them are linked on
+>   (e.g.) the KUnit webpage, but I wanted to keep the Kernel documentation
+>   more self-contained for now. No objection to adding them in a follow-up
+>   patch if people feel strongly about it, though.
+> - The link from index.rst to this doc is unchanged. I personally think
+>   that the link is prominent enough there: it's the first link, and
+>   shows up a few times. One possibility if people disagreed would be to
+>   merge this page with the index, but given not all dev-tools are going
+>   to be testing-related, it seemed a bit arrogant. :-)
+>
+>  Documentation/dev-tools/index.rst            |   3 +
+>  Documentation/dev-tools/testing-overview.rst | 117 +++++++++++++++++++
+>  2 files changed, 120 insertions(+)
+>  create mode 100644 Documentation/dev-tools/testing-overview.rst
+>
+> diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/=
+index.rst
+> index 1b1cf4f5c9d9..f590e5860794 100644
+> --- a/Documentation/dev-tools/index.rst
+> +++ b/Documentation/dev-tools/index.rst
+> @@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents hav=
+e been pulled
+>  together without any significant effort to integrate them into a coheren=
+t
+>  whole; patches welcome!
+>
+> +A brief overview of testing-specific tools can be found in :doc:`testing=
+-overview`.
+> +
+>  .. class:: toc-title
+>
+>            Table of contents
+> @@ -14,6 +16,7 @@ whole; patches welcome!
+>  .. toctree::
+>     :maxdepth: 2
+>
+> +   testing-overview
+>     coccinelle
+>     sparse
+>     kcov
+> diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation=
+/dev-tools/testing-overview.rst
+> new file mode 100644
+> index 000000000000..ce36a8cdf6b5
+> --- /dev/null
+> +++ b/Documentation/dev-tools/testing-overview.rst
+> @@ -0,0 +1,117 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Kernel Testing Guide
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +
+> +There are a number of different tools for testing the Linux kernel, so k=
+nowing
+> +when to use each of them can be a challenge. This document provides a ro=
+ugh
+> +overview of their differences, and how they fit together.
+> +
+> +
+> +Writing and Running Tests
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +The bulk of kernel tests are written using either the kselftest or KUnit
+> +frameworks. These both provide infrastructure to help make running tests=
+ and
+> +groups of tests easier, as well as providing helpers to aid in writing n=
+ew
+> +tests.
+> +
+> +If you're looking to verify the behaviour of the Kernel =E2=80=94 partic=
+ularly specific
+> +parts of the kernel =E2=80=94 then you'll want to use KUnit or kselftest=
+.
+> +
+> +
+> +The Difference Between KUnit and kselftest
+> +------------------------------------------
+> +
+> +KUnit (Documentation/dev-tools/kunit/index.rst) is an entirely in-kernel=
+ system
+> +for "white box" testing: because test code is part of the kernel, it can=
+ access
+> +internal structures and functions which aren't exposed to userspace.
+> +
+> +KUnit tests therefore are best written against small, self-contained par=
+ts
+> +of the kernel, which can be tested in isolation. This aligns well with t=
+he
+> +concept of 'unit' testing.
+> +
+> +For example, a KUnit test might test an individual kernel function (or e=
+ven a
+> +single codepath through a function, such as an error handling case), rat=
+her
+> +than a feature as a whole.
+> +
+> +This also makes KUnit tests very fast to build and run, allowing them to=
+ be
+> +run frequently as part of the development process.
+> +
+> +There is a KUnit test style guide which may give further pointers in
+> +Documentation/dev-tools/kunit/style.rst
+> +
+> +
+> +kselftest (Documentation/dev-tools/kselftest.rst), on the other hand, is
+> +largely implemented in userspace, and tests are normal userspace scripts=
+ or
+> +programs.
+> +
+> +This makes it easier to write more complicated tests, or tests which nee=
+d to
+> +manipulate the overall system state more (e.g., spawning processes, etc.=
+).
+> +However, it's not possible to call kernel functions directly from kselft=
+est.
+> +This means that only kernel functionality which is exposed to userspace =
+somhow
+> +(e.g. by a syscall, device, filesystem, etc.) can be tested with kselfte=
+st.  To
+> +work around this, some tests include a companion kernel module which exp=
+oses
+> +more information or functionality. If a test runs mostly or entirely wit=
+hin the
+> +kernel, however,  KUnit may be the more appropriate tool.
+> +
+> +kselftest is therefore suited well to tests of whole features, as these =
+will
+> +expose an interface to userspace, which can be tested, but not implement=
+ation
+> +details. This aligns well with 'system' or 'end-to-end' testing.
+> +
+> +For example, all new system calls should be accompanied by kselftest tes=
+ts.
+> +
+> +Code Coverage Tools
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The Linux Kernel supports two different code coverage measurement tools.=
+ These
+> +can be used to verify that a test is executing particular functions or l=
+ines
+> +of code. This is useful for determining how much of the kernel is being =
+tested,
+> +and for finding corner-cases which are not covered by the appropriate te=
+st.
+> +
+> +:doc:`gcov` is GCC's coverage testing tool, which can be used with the k=
+ernel
+> +to get global or per-module coverage. Unlike KCOV, it does not record pe=
+r-task
+> +coverage. Coverage data can be read from debugfs, and interpreted using =
+the
+> +usual gcov tooling.
+> +
+> +:doc:`kcov` is a feature which can be built in to the kernel to allow
+> +capturing coverage on a per-task level. It's therefore useful for fuzzin=
+g and
+> +other situations where information about code executed during, for examp=
+le, a
+> +single syscall is useful.
+> +
+> +
+> +Dynamic Analysis Tools
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The kernel also supports a number of dynamic analysis tools, which attem=
+pt to
+> +detect classes of issues when the occur in a running kernel. These typic=
+ally
+> +look for undefined behaviour of some kind, such as invalid memory access=
+es,
+> +concurrency issues such as data races, or other undefined behaviour like
+> +integer overflows.
+> +
+> +Some of these tools are listed below:
+> +
+> +* kmemleak detects possible memory leaks. See
+> +  Documentation/dev-tools/kmemleak.rst
+> +* KASAN detects invalid memory accesses such as out-of-bounds and
+> +  use-after-free errors. See Documentation/dev-tools/kasan.rst
+> +* UBSAN detects behaviour that is undefined by the C standard, like inte=
+ger
+> +  overflows. See Documentation/dev-tools/ubsan.rst
+> +* KCSAN detects data races. See Documentation/dev-tools/kcsan.rst
+> +* KFENCE is a low-overhead detector of memory issues, which is much fast=
+er than
+> +  KASAN and can be used in production. See Documentation/dev-tools/kfenc=
+e.rst
+> +* lockdep is a locking correctness validator. See
+> +  Documentation/locking/lockdep-design.rst
+> +* There are several other pieces of debug instrumentation in the kernel,=
+ many
+> +  of which can be found in lib/Kconfig.debug
+> +
+> +These tools tend to test the kernel as a whole, and do not "pass" like
+> +kselftest or KUnit tests. They can be combined with KUnit or kselftest b=
+y
+> +running tests on a kernel with a sanitizer enabled: you can then be sure
+> +that none of these errors are occurring during the test.
+> +
+> +Some of these tools integrate with KUnit or kselftest and will
+> +automatically fail tests if an issue is detected.
+> +
+> --
+> 2.31.1.295.g9ea45b61b8-goog
+>
