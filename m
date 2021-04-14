@@ -2,92 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3159635F944
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5517935F94C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351965AbhDNQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45624 "EHLO mail.kernel.org"
+        id S1352025AbhDNQyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:54:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232143AbhDNQuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:50:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A679561153;
-        Wed, 14 Apr 2021 16:49:43 +0000 (UTC)
+        id S1352065AbhDNQyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1919601FC
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618418985;
-        bh=sWQ71+khW/HhXEH6hXNiMZxDq1vYrXn/LOWzn6c44Bg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QMUyXw0imrkvaPO1DWlSoQPOurzaRmc1x1bEpx2J2ASyKkNIRZnHyThxy/B/lhFdZ
-         WU3Gt3PTy3qprvS11oWrVbrpTm6l8VGR/c6WygHAXfQuBI9fOqp17Nv4P7+kHpSvMr
-         A16Bh3y/EoduKIVAZDoqth0DJM9MYRmcuw00wMxwpM5fgRRjjzATgPaCHq1euVbhqA
-         ibH3KIrG/E7ICcMmKJbTtDhy20hsvB7Q/i2hI15w9oGaQ4W+OaUXYwe0HoGw2UAM2D
-         R8FK2q3K5tKKScXXv+taCmhIc6umUcgvIkkeDJeE5/s03heWQcs6QKLgYM2WOPUtSk
-         Exdf3oa672aIQ==
-Subject: Re: [PATCH 1/3] mmc: sdhci-s3c: fix possible NULL pointer dereference
- when probed via platform
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20210414151242.102313-1-krzysztof.kozlowski@canonical.com>
- <a0ac5d21-acc1-825a-1585-f8d897902b14@canonical.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <74059494-3610-c24e-7d09-b89106c0a396@kernel.org>
-Date:   Wed, 14 Apr 2021 18:49:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        s=k20201202; t=1618419234;
+        bh=0jxxX5bMiN78N8jK61NGtfPnyGe/47tNlvQvSWHwgMM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u6KJ+ZoQpqLiCQpJDNNT/xR8tvLmh399HN4Bcj6hPFNS5OoiW40hsN/35M2F4THwl
+         kTjDkxh00iIjyVm3pPbkrVMEp0dpUX8A8MxrFz1QG2kUtXINR4qso+mq0LNgNKfMSp
+         gNdcx1bzD8gfRiogkLY+VYLifpMO2ETIlI3oFw3VId6rLwka4Ou49y+jOwb1Znk3lK
+         F+tXAZOw8w7n3FLUvMsVWnfLUpmDnr47vsYj0cOMlxMCFSRhYGNA70L/f0PyI9CihE
+         n6ggIKpFAJDKR0OU7sdtjS1RbWOmARhTAxYt3O2OLh5X/iJGg51deDFeQRhUZ6wJqL
+         sfB085QgwsEwA==
+Received: by mail-qv1-f54.google.com with SMTP id i9so10040128qvo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:53:53 -0700 (PDT)
+X-Gm-Message-State: AOAM533+PzhEwyjRn3OzqRSvht3LtB/UE0+45DN0d+jfhFzLBBZPezCJ
+        w9rvzgKXmC0wA50fw0Sj7nRsn5WHOp4Ju+cczA==
+X-Google-Smtp-Source: ABdhPJx6Qao/9YSuvw7snDFnt5i+qEajx0NvfxNxrvFICYFmp+vk+o9UgY8ZvI2WGExubATPFj79CRrV2xpZwUMTxfc=
+X-Received: by 2002:ad4:5a07:: with SMTP id ei7mr20530370qvb.50.1618419233276;
+ Wed, 14 Apr 2021 09:53:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a0ac5d21-acc1-825a-1585-f8d897902b14@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414155412.3697605-1-robh@kernel.org> <20210414155412.3697605-2-robh@kernel.org>
+ <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com>
+In-Reply-To: <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 14 Apr 2021 11:53:41 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLEEeJjP1TmSLt=ruQUureSw1gk5sxP7RvMSm=jXAeOtw@mail.gmail.com>
+Message-ID: <CAL_JsqLEEeJjP1TmSLt=ruQUureSw1gk5sxP7RvMSm=jXAeOtw@mail.gmail.com>
+Subject: Re: [PATCH v8 2/4] libperf: Add evsel mmap support
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.04.2021 17:25, Krzysztof Kozlowski wrote:
-> On 14/04/2021 17:12, Krzysztof Kozlowski wrote:
->> The driver can be matched by legacy platform way or OF-device matching.
->> In the first case, of_match_node() can return NULL, which immediately
->> would be dereferenced to get the match data.
->>
->> Addresses-Coverity: Dereference null return value
->> Fixes: cd1b00eb24b0 ("mmc: sdhci-s3c: Add device tree support")
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Wed, Apr 14, 2021 at 11:41 AM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hello,
+>
+> On Thu, Apr 15, 2021 at 1:07 AM Rob Herring <robh@kernel.org> wrote:
+> > +void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
+> > +{
+> > +       if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
+> > +               return NULL;
+>
+> I think you should check the cpu and the thread is in
+> a valid range.  Currently xyarray__entry() simply accesses
+> the content without checking the boundaries.
 
->> -#ifdef CONFIG_OF
->> -static const struct of_device_id sdhci_s3c_dt_match[];
->> -#endif
->> -
->>   static inline struct sdhci_s3c_drv_data *sdhci_s3c_get_driver_data(
->>   			struct platform_device *pdev)
->>   {
->>   #ifdef CONFIG_OF
->> -	if (pdev->dev.of_node) {
->> -		const struct of_device_id *match;
->> -		match = of_match_node(sdhci_s3c_dt_match, pdev->dev.of_node);
-> 
-> Now I have second thoughts whether NULL pointer can actually happen.  If
-> device is matched via platform/board files, maybe the pdev->dev.of_node
-> will be NULL thus skipping this branch?
-> 
-> Could there be a case where device is matched via platform_device_id()
-> (which has different name than compatible!) and (pdev->dev.of_node) is
-> still assigned? Maybe in case of out of tree DTS?
+Happy to add a patch to do that if desired, but I think that's
+separate from this series. That would be something to add to
+xyarray__entry().
 
-That seems unlikely, the platform device would need to be initialized
-via board file and then its of_node assigned somehow. It doesn't make
-much sense to me. We either use board file or dtb to instantiate devices.
-
-> Anyway, the patch makes the code simpler/smaller, so I still think it is
-> reasonable. Just the severity of issue is questionable...
-
-Yes, the patch looks good. Similar cleanups are already done in most of
-the s3c/s5p/exynos drivers.
-
---
-Thanks,
-Sylwester
+Rob
