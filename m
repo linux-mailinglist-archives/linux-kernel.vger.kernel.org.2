@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2135EFFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9005F35EFFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350312AbhDNIkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        id S1350364AbhDNIk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350232AbhDNIj3 (ORCPT
+        with ESMTP id S1350238AbhDNIjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:39:29 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AC5C06134B
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t22so13934165pgu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
+        Wed, 14 Apr 2021 04:39:32 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49489C06134F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:28 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id y32so13883681pga.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NtcyLr97vt7tBtf+Evf5JrbdU0JuK+5BO0OeaqqfGII=;
-        b=M2Qed2dqPK3r2F98RhSaRL4bhJ+/mwydP58V5jXiwgHzzCjhvHuA6DumjP2cVJF/PE
-         LpXbYiNhZZrcgzcxjfHV9MolbdoNxqDa+iBVipjy7/zVGTBS4fe7vwq1/dg8wzSWUt5+
-         lwVsSMsZUN5IC3SmEKK+a6EIiwtDNx4SUXIDQ=
+        bh=SDiflsGvBCYCoVMBt0Fyo3zuZR1BmIQO6zXHXOu40Mw=;
+        b=dHicorp99OgGYzZtDEhGPP14NXcmgNSFB7Mn9d/JE9VuRhG3WEeyTRH+9WHAtBXtIt
+         2b8tEJzbaOIhB31U0t5l4R12SrNzFBqxeFqFhyKAqht1YEWLa2c1o8vLDyx0spo9LUvd
+         Z4tI/rFuOgd5MX9mGBPO87LQS1vO3o5PcodAU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NtcyLr97vt7tBtf+Evf5JrbdU0JuK+5BO0OeaqqfGII=;
-        b=hsIf0Kd/flRrA5x3zKpR0fhD3w+s9yjl/uK3K5hHtuiytb41E9FQzTw4KNwRGIO3ks
-         8qTxx6Y3AjFSfIdF/dTP3nl7phdtSEcZ4+HXPVPg9y1XxmHZINjjLdM29b68NqRzopQ5
-         rU1ZibkfqnuOkT4JkqjdWmwQIiOtd6a3pCGhfeBh9FkIpl2cL2kKcBz3fRb7jTtZlqZn
-         3+mg1wGdO7GuAT51YALhrxmzidddtgTY1a3DRzLisIO+iVAzvyliD1xC8j/bIUSKajqf
-         btjxsJ3axH7oObyNC784ijAFxROLk7b3yYnCE7yz4j3Iq6VMdsbvw1mq79fuTJKlBlUm
-         i6HQ==
-X-Gm-Message-State: AOAM530XaZdxSqSe1LxkE2ME6fJyaxEtYrspNVlyFZFdRIFydlT8WaaH
-        U+4dIKBUZH1l0oQKHMi+vUK2Ww==
-X-Google-Smtp-Source: ABdhPJwD4LQbePm4sDMFJpfH5dE5UMs7w65+Ap4I1G0x9cqB/s9fdo197WaPyYM+2axsd1BSLYd4ug==
-X-Received: by 2002:a63:4413:: with SMTP id r19mr35948254pga.75.1618389505195;
-        Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
+        bh=SDiflsGvBCYCoVMBt0Fyo3zuZR1BmIQO6zXHXOu40Mw=;
+        b=eR/+N7ooPFamvU0bNGHJUzBTrCH5Gbc+nRKJTVXxek7p9HZYi+ozwWT9NR1ykR3slo
+         F4HKlanuVZOgElZ6AYIr6jqfpb/XXk3dLCCzr2jBNLtfiLEWwzYITb7lALIWKD9B5Bx7
+         DlUF+zUJNOsV2WZ2DwrnIN64W1lmyV52ExFQ1x3Y37IwLeutjCa3+Ck+mw59yLhY7pWq
+         n24xCNKUym94Gl3yRQ8oPIUEyab+JFo0mq0jj7zkcMUdoylMnB2ZQPkLL/bdbwkf7KSW
+         4CVEew9tUZ+3v0ybvy/nF9mP7Z+NH+OE8WcN5KLNzJaso/fog9MEz3N2GL46Avizj6e9
+         oqKQ==
+X-Gm-Message-State: AOAM532+Kk0TkFbrGoF1SHkwbWKcuCc/Op5t/wMST2IAtcJ601GYN+5/
+        mTBZUi0JyRjsYx/Hh1PpIx0c9g==
+X-Google-Smtp-Source: ABdhPJw8DhWVrzjIH8JTyLWzkCwTPDmhi+RWo2XG234hq40sGn8kYoUJy/Ov654V+I50pVRpW/d88A==
+X-Received: by 2002:a63:5b26:: with SMTP id p38mr3620664pgb.141.1618389507824;
+        Wed, 14 Apr 2021 01:38:27 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:bae3:4af0:9792:1539])
-        by smtp.gmail.com with ESMTPSA id g24sm8901582pfh.164.2021.04.14.01.38.22
+        by smtp.gmail.com with ESMTPSA id g24sm8901582pfh.164.2021.04.14.01.38.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:38:24 -0700 (PDT)
+        Wed, 14 Apr 2021 01:38:27 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Wolfram Sang <wsa@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Bibby Hsieh <bibby.hsieh@mediatek.com>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v18 4/5] misc: eeprom: at24: check suspend status before disable regulator
-Date:   Wed, 14 Apr 2021 16:38:08 +0800
-Message-Id: <20210414083809.1932133-5-hsinyi@chromium.org>
+Subject: [PATCH v18 5/5] arm64: dts: mt8183: add supply name for eeprom
+Date:   Wed, 14 Apr 2021 16:38:09 +0800
+Message-Id: <20210414083809.1932133-6-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 In-Reply-To: <20210414083809.1932133-1-hsinyi@chromium.org>
 References: <20210414083809.1932133-1-hsinyi@chromium.org>
@@ -70,38 +70,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
-regulator in runtime suspend. If runtime suspend is called before
-regulator disable, it will results in regulator unbalanced disabling.
+Add supplies for eeprom for mt8183 boards.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- drivers/misc/eeprom/at24.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 926408b41270..7a6f01ace78a 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client *client)
- 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
- 	if (IS_ERR(at24->nvmem)) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return PTR_ERR(at24->nvmem);
- 	}
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+index b442e38a3156..28966a65391b 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
+@@ -88,11 +88,13 @@ &i2c2 {
+ 	pinctrl-0 = <&i2c2_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcamio_reg>;
  
-@@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client *client)
- 	err = at24_read(at24, 0, &test_byte, 1);
- 	if (err) {
- 		pm_runtime_disable(dev);
--		regulator_disable(at24->vcc_reg);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
- 		return -ENODEV;
- 	}
+ 	eeprom@58 {
+ 		compatible = "atmel,24c32";
+ 		reg = <0x58>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcama2_reg>;
+ 	};
+ };
+ 
+@@ -101,11 +103,13 @@ &i2c4 {
+ 	pinctrl-0 = <&i2c4_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcn18_reg>;
+ 
+ 	eeprom@54 {
+ 		compatible = "atmel,24c32";
+ 		reg = <0x54>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcn18_reg>;
+ 	};
+ };
+ 
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+index 2f5234a16ead..3aa79403c0c2 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
+@@ -62,11 +62,13 @@ &i2c2 {
+ 	pinctrl-0 = <&i2c2_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcamio_reg>;
+ 
+ 	eeprom@58 {
+ 		compatible = "atmel,24c64";
+ 		reg = <0x58>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcamio_reg>;
+ 	};
+ };
+ 
+@@ -75,11 +77,13 @@ &i2c4 {
+ 	pinctrl-0 = <&i2c4_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcn18_reg>;
+ 
+ 	eeprom@54 {
+ 		compatible = "atmel,24c64";
+ 		reg = <0x54>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcn18_reg>;
+ 	};
+ };
+ 
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+index fbc471ccf805..30c183c96a54 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+@@ -71,11 +71,13 @@ &i2c2 {
+ 	pinctrl-0 = <&i2c2_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcamio_reg>;
+ 
+ 	eeprom@58 {
+ 		compatible = "atmel,24c32";
+ 		reg = <0x58>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcama2_reg>;
+ 	};
+ };
+ 
+@@ -84,11 +86,13 @@ &i2c4 {
+ 	pinctrl-0 = <&i2c4_pins>;
+ 	status = "okay";
+ 	clock-frequency = <400000>;
++	vbus-supply = <&mt6358_vcn18_reg>;
+ 
+ 	eeprom@54 {
+ 		compatible = "atmel,24c32";
+ 		reg = <0x54>;
+ 		pagesize = <32>;
++		vcc-supply = <&mt6358_vcn18_reg>;
+ 	};
+ };
  
 -- 
 2.31.1.295.g9ea45b61b8-goog
