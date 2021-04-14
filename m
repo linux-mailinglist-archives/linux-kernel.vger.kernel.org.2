@@ -2,232 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC76B35FD33
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4036E35FD1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhDNVUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:20:46 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:43094 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbhDNVUR (ORCPT
+        id S232120AbhDNVTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231944AbhDNVT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:20:17 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13ELFvW7176458;
-        Wed, 14 Apr 2021 21:19:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=TXVE9LEeb5Hg5E0kTeemqA9teCC2YWBiJDwc/unnR/U=;
- b=kkMKdc2PV+cCLd71ZoCFodurcH7lEGk8/oh1WjADxFGngvMJw+uSrRWU/x0IbSejvTZ0
- kQ6Egbz7etZzxb+KdNpUw+R0sEjxczPwPTej4+TwwcDLf6YoENf5FsbLFgBQGT0Tb5og
- g0AlUFAElbJrY1IcsGVsOMHFKD1HQlgKzG2vn3RTmXY7fDpYyrLghcKrECgphfzH4zaZ
- RkTIbM0hTIG/R3ce7sE15r48+QMHm8eMviqjOfcHVm0W7GkXzOSGbXHtBCj7rl6sg7I7
- AVDunN7G90YCjXlJWWpMhY0y+6OdrrTMoestQfkk7WDoOFm4g/E8L58+N2Q7uiHPndkC Dg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 37u1hbm06x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 21:19:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13ELESTO101158;
-        Wed, 14 Apr 2021 21:19:51 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        by userp3030.oracle.com with ESMTP id 37uny004rk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 21:19:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AtorXHRDlVRyDAoTuBTboeT8eX6aJoA45X+dufHOh77vkdWLVVykWIPHn2whls8O9STQ7zL6m6mo2pe8db8rWkKOG8DOJJnVr02KznIoM0PGtpnUlzjf4ri1WoyjDTQDGUqXioKUFSO2AJLca1iQBRG/4YFn5EM1551wpVMvELzAL5BYlYJnsdsX3ZuU8KwMKDWT/nF/JLw3wDanHgvrkhf24KfacMft0BUKshUszTgNG0rKTz+USaDyOZ92hosi85bdidbiDu4sqcZxok3OGPZ6HWowaTD4DmqWtPiflxA+YJf1Ba4oR04y324NW2tzrewGnXwRvnmAOTZfyGmsiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXVE9LEeb5Hg5E0kTeemqA9teCC2YWBiJDwc/unnR/U=;
- b=TwaaKSGU9zk529Qi797W+cRaVtVnAsUd1/bwD0gzOYeaZKteZ98uhK4AoLMXktTi7Xf3M7cs6lL15AQfNPsQC8Cxh8fldNjQ4rsGtmPUYFrlTXpUDakPjr24t6QZOcprBYVU15iT8FRakqJJDxnVU6AiYNYI5xcI/o9D/T2Z7KJYB6aYmSMaYPEpMtePXyjqhY7Hh/HWdIshaFgziajcvTKbTjfw5FkI4dLoTWjvgVpwF2H+gOhWw8IrkB+tbm9fimd2QVZRtrqOEvJrgwA2/pzo2gwVqoPKuP3j63cR1sBsllAqq53Kcw0Gus2DABrJNgaLDgCXcKB1gGdz+vpO5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 14 Apr 2021 17:19:29 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDC7C061756;
+        Wed, 14 Apr 2021 14:19:06 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id f8so25411049edd.11;
+        Wed, 14 Apr 2021 14:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TXVE9LEeb5Hg5E0kTeemqA9teCC2YWBiJDwc/unnR/U=;
- b=QzbljKNFI8PyoVH69aX0bJdchB3zH50foxqBY/Nc/gFeR4yE8uhVJlgxJ09HIII6WhSF7+i/QYo0nkrpZjwq+dhi33Tk0270/KpfSFLsACkMhLS3gEsUz+x3sDCYd/2lXsfs+f8WEZiroVWpsGLmuuohWMK83LaeJV4HMkm36rc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com (2603:10b6:a03:2d7::19)
- by BY5PR10MB3940.namprd10.prod.outlook.com (2603:10b6:a03:1f6::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 14 Apr
- 2021 21:19:48 +0000
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::7865:7d35:9cee:363f]) by SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::7865:7d35:9cee:363f%5]) with mapi id 15.20.4042.016; Wed, 14 Apr 2021
- 21:19:48 +0000
-From:   Junxiao Bi <junxiao.bi@oracle.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk
-Subject: [PATCH] block: fix io hung by block throttle
-Date:   Wed, 14 Apr 2021 14:18:30 -0700
-Message-Id: <20210414211830.5720-1-junxiao.bi@oracle.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [73.231.9.254]
-X-ClientProxiedBy: BY3PR04CA0020.namprd04.prod.outlook.com
- (2603:10b6:a03:217::25) To SJ0PR10MB4752.namprd10.prod.outlook.com
- (2603:10b6:a03:2d7::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from dhcp-10-159-238-183.vpn.oracle.com (73.231.9.254) by BY3PR04CA0020.namprd04.prod.outlook.com (2603:10b6:a03:217::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 14 Apr 2021 21:19:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fa6d7833-a947-4a79-e808-08d8ff8b08ac
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3940:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3940F32DE27D75BB3975071EE84E9@BY5PR10MB3940.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qKTl/dzIAXlpM+2YXl18W2WRN1MfBgD2LbQS04vqBGW0bkoO9tPckslC5MuTEDYe4O1vQPFkuoLxX03Viumggz4X3PkGJSk1As4yigXEMeu4iO3WRY2eYuxIb9K0jGClk10nNLuHvNW4usmWPbFVGWcv/NXV+Piw9LaXY/5Rn3x95glYDLCvZqCLUwTkAp/fpTq0iwypNqIrgTZdBU90IA6hF6+qqKNLAI7gnwFokgi7Syr68skfZP47V+4xIxVvktPeGemQNEpo4btoyb3V6mAdTUFbveEz+Uo4PptF9b1xPqSfAIMau+nlV9HnaGpHBmpW0jMSRaVfLhYuXO8FXR8Z+jTiLOo4DZB/iIiatAEo8h1uki++Ena9M0L7RAPEhZwS3GfRuvnLP6tH3GYC/gnVEjDLJyrCgEyIjnqzw2eN/8yVZGfGq5c2fsmtR5z/fw4HWh922WrWiisDdheDJJqN0gB5XwtaTNu0xXJcIcIuBDC6C1kDR1fvV47pCvICezISIsBZRoju34Oq42QplsUMlgLwWVkKu/CqBXtn0n1WdtHMLutikA25ZJ/BH3GJXIFPg3efgiX5y8+D9zoChGrmw0abkCrwSei+odteH+yxZsF/lDOcmJIaQGUQas9EMQ8PTq2FLZDJuNUbKBm24O0tzXUdFIP7Qdm0wTS2qEc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4752.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(396003)(376002)(136003)(7696005)(52116002)(44832011)(1076003)(6486002)(8676002)(38100700002)(4326008)(38350700002)(2906002)(26005)(186003)(16526019)(66476007)(36756003)(66946007)(316002)(83380400001)(478600001)(5660300002)(6666004)(8936002)(2616005)(66556008)(86362001)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uhd9wf5bsxcABdnJ3TUjA5qo+fEjEacEssSI2HcCG73MsP2/0ktOLHxxe+DX?=
- =?us-ascii?Q?TonLaRsAoCPbScbqhch1lJySYp2hvlE7mLiznBKjbQRZNaG28FRU2CSt9Qho?=
- =?us-ascii?Q?5UmqfJrZyk1m0qFPbDVm3MFSQCjZoAoixWbU45oIscHyimtsPAYUQxpuhY14?=
- =?us-ascii?Q?BFjAavsu+CS82tFHLsXnRU9NTCp4nDJ19UsYwiHcwdecEuF5z5O7gwGy67sT?=
- =?us-ascii?Q?mw4RCGFOmL/TUh9wH41+/OBMMFWZy5lXTs+hSg0utcZhwxphSczcJto1VD2K?=
- =?us-ascii?Q?qfQpwj+X5MWoJalrEOJEF6mULL1tY/92/e1mV9lv/fRuEpSMrhg6q+ROT2hR?=
- =?us-ascii?Q?eRhlcBQXUBZUBMsB28maptsUqdE4QRQK3DbbLs/IbnLIjkC6GUKqvOaQqM5p?=
- =?us-ascii?Q?fqKzC022VRuGuMrzsvD7GmhIcQHBYiLWjB6biMZ11JJXIzVhuX4D+ZOLf3xm?=
- =?us-ascii?Q?QPyEQ5fk0bdyDrzzGl6p0jtEra2HI2G2+UvMlZTv3VESmETMMQuu9gz81u4F?=
- =?us-ascii?Q?UpAPQwprHqm/7nNBTrn4I1qZrPS+ChN2qnVPIzob/o60fHi+4xKBM3/Q+UYF?=
- =?us-ascii?Q?16h+D8U71JSm9AzTRbZsUS71CPVQryhFZiLr86eBKhY8sq2dfWk4/8CeYI1h?=
- =?us-ascii?Q?0klYjQqX4M42vMpJYnf4zZplFbnZlS+L/v6pbEEKsF+dakcoICqo5naMDVCW?=
- =?us-ascii?Q?nRHr94CGqhmPrx4uCf0/vHUYVGj/Gpck+8j7EpftUfI1WAX5z4hTo7+I/y+i?=
- =?us-ascii?Q?PNXC12sjJEZ88jlxU+ETpkfnVeFzbnrTGSPecrwtb8/wugFtJR0LBs102hfC?=
- =?us-ascii?Q?V38OkXYLC3eTGkJQBke5N341MAcCyI7TJqPnxdh4qIOse+cHXJQRaQYsQPIl?=
- =?us-ascii?Q?tk+9Nke8eiaX8zr/bmVe+eUMV1PGeGR9PVwmNvBwqg4llBF6EF9Pwm9cTvT4?=
- =?us-ascii?Q?p2VjDykjWP5mnWK196Ku5FOek0ruEpm7OCn00vBl1HRnvJ7WN80W6Xxi8AjL?=
- =?us-ascii?Q?tdkrkn3EyXKwpCsj4JhuCpdLm9Hz9JeuM0ER/sZt79hJstsO4Aq1RFg7t/Sr?=
- =?us-ascii?Q?FmYDZt9Tq+rnd8fSd2aOmHG3NDHwqZvMwe91tdG+l8fArR8oy6ZcsQCclOFY?=
- =?us-ascii?Q?jQjGTkYn2vxYUPoFN4G0klivYJp+WLmckFwk//Sz0BYqyRDdbYHe+DkOXSjy?=
- =?us-ascii?Q?1loL3v0ySs1RXbm6etQK9qPPInxp8Nq4OKGQ0TD1GnBfNHWZodljY7G8Uhpd?=
- =?us-ascii?Q?cB30xDasDcImWvTG3eyYEQP954PGrY/GglEBEz+hXVYh4Wi/9WacVoNxjRgH?=
- =?us-ascii?Q?DqlRHCk8ZdbgbMQDLj6yDGa7?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa6d7833-a947-4a79-e808-08d8ff8b08ac
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4752.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 21:19:48.5624
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YP4el9c9+6ZhZhAoTQ5hXU5C3aLQmi4+QFqIlIQkq6RiQlI5sni0RymQ4MOsge3JRGB1XmJ8g1TaSPwAyqrfGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3940
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104140137
-X-Proofpoint-GUID: VBj_4rb1LGXDqX2j6xI-1ze-NGQVVl8G
-X-Proofpoint-ORIG-GUID: VBj_4rb1LGXDqX2j6xI-1ze-NGQVVl8G
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104140137
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=sivu3yMxn7WQFGx4J7BCqHxoq6bWyr/i/BQeBwsAz6w=;
+        b=Ne/Jtg3R3EbB3PKuGutnf/94vrL4JxfSqvcOv9diXq+m8WnrlC7Hmjgy46yv0kjGVv
+         Z0qh3xdm3w/9Ei/Kv0xBklKcMIogFEFhQNmtJG2TTp+wkt+/K4D5XxsXgmefTSfsgr46
+         gZ7hvKMi6gGoky8WFB9ROmBPhKmHyXTHhiwJerbBzv4Pfzj2tuxJQfDeW/ZediFpeqoY
+         A9emGCjGWI0DjqqHG3lF2r5/PaDZZZTAbLtQ5cbbYtvL15pTf/OMLufZI9GMaEan0Uf7
+         Gw8rLpHQO0PR9fjtPlX7gQJgaJq091NQJKA8RZETsVqB5KEGxeJfjNAHe5Ug7oXFqR1K
+         l/Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sivu3yMxn7WQFGx4J7BCqHxoq6bWyr/i/BQeBwsAz6w=;
+        b=iLNnzdpp1tLKhKCfJHwufxr9SBCk37HC7e7Ii793963QdxqL/Y5+hfwXGATqSbYB5e
+         NokJzdfYVZ1O0EGSCmbVwb3VageYtJ7ZmIADEdgG0obIZWEjdXnnBJlVtruhHlp8fFmE
+         bzrTlJ0WP83ruQGen+PZDCS+R4E4CX33swtbDiGQJekXwBgK9tLLjiPkMUk5+c7h2vVN
+         /oIVXIbY0zj0ZavxWRp/Weoaml19tOi6gvg1Le1Nj8pQu4R1/kPWTKSiGNjcDMgppKBY
+         4686WvpdeizJUrs2zBYOr4eeT2qkNphzFenI3oZ548nlFnpDrPpk+nJvPxGUmnc4CPfS
+         9HQQ==
+X-Gm-Message-State: AOAM531y/d1M8EtQsa8ObtmhRN6C+hlxq8TRGxiFnkVy6Ti6UqZBfiRw
+        0DKPbMfD5nwur0Hefe3+PH6ily6IayX9Aqco
+X-Google-Smtp-Source: ABdhPJxgvC3a2ajhFLpY1gsJ62ZsK+Y70a6DRRd1syLq0+TpLW7ewr20jjQ3xy2O4NDexpBYso6UxQ==
+X-Received: by 2002:aa7:cf03:: with SMTP id a3mr259245edy.142.1618435145581;
+        Wed, 14 Apr 2021 14:19:05 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id v5sm568222edx.87.2021.04.14.14.19.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Apr 2021 14:19:05 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 00/11] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Wed, 14 Apr 2021 23:18:45 +0200
+Message-Id: <20210414211856.12104-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a race bug which can cause io hung when multiple processes
-run parallel in rq_qos_wait().
-Let assume there were 4 processes P1/P2/P3/P4, P1/P2 were at the entry
-of rq_qos_wait, and P3/P4 were waiting for io done, 2 io were inflight,
-the inflight io limit was 2. See race below.
+Fix power-controller node names for dtbs_check.
+Convert power domain documentation to json-schema.
+Add a meaningful power domain name.
+Support power domain function for RK3568 Soc.
 
-void rq_qos_wait()
-{
-	...
-    bool has_sleeper;
+Changed in V7:
+[PATCH v7 07/11]
+  Fix TAB warning
+  Fix alignment
+[PATCH v7 09/11]:
+  Fix commit message and author format
+  Changed SPDX-License-Identifier back to GPL-2.0
+  Remove "clocks", "assigned-clocks" and "assigned-clock-parents"
+  Fix indent example
+[PATCH v7 11/11]
+  Fix alignment
 
-	>>>> P3/P4 were in sleeper list, has_sleeper was true for both P1 and P2.
-    has_sleeper = wq_has_sleeper(&rqw->wait);
-    if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
-        return;
+Changed in V6:
+[PATCH v6 7/11]: Use kbasename(node->full_name).
+[PATCH v6 9/11]: Update the commit message.
 
-	>>>> 2 inflight io done, P3/P4 were waken up to issue 2 new io.
-	>>>> 2 new io done, no inflight io.
+Changed in V5:
+[PATCH v5 1/11]: New.
+[PATCH v5 2/11]: New.
+[PATCH v5 3/11]: New.
+[PATCH v5 4/11]: New.
+[PATCH v5 5/11]: New.
+[PATCH v5 6/11]: New.
+[PATCH v5 7/11]: New.
+[PATCH v5 8/11]: No change. Same as [PATCH v4 1/4].
+[PATCH v5 9/11]: [PATCH v4 2/4] Fix up yaml code styles.
+[PATCH v5 10/11]: No change. Same as [PATCH v4 3/4].
+[PATCH v5 11/11]: [PATCH v4 4/4] add a meaningful power domain name for
+RK3568 Soc.
 
-	>>>> P1/P2 were added to the sleeper list, 2 entry in the list
-    prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
+Changed in V4:
+[PATCH v4 2/4]: Fix up yaml code styles. Remove the new compatible to [PATCH v4 3/4]
+[PATCH v4 3/4]: Adding new compatible for RK3568 Soc.
+[PATCH v4 4/4]: No change. Same as [PATCH v3 3/3].
 
-	>>>> P1/P2 were in the sleeper list, has_sleeper was true for P1/P2.
-    has_sleeper = !wq_has_single_sleeper(&rqw->wait);
-    do {
-        /* The memory barrier in set_task_state saves us here. */
-        if (data.got_token)
-            break;
-        if (!has_sleeper && acquire_inflight_cb(rqw, private_data)) {
-            finish_wait(&rqw->wait, &data.wq);
+Changed in V3:
+[PATCH v3 2/3]: Fix up the code styles and add rk3568 base on:
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
 
-            /*
-             * We raced with wbt_wake_function() getting a token,
-             * which means we now have two. Put our local token
-             * and wake anyone else potentially waiting for one.
-             */
-            smp_rmb();
-            if (data.got_token)
-                cleanup_cb(rqw, private_data);
-            break;
-        }
+Changed in V2:
+[PATCH v2 2/3]: Fix up yaml code styles.
 
-	>>>> P1/P2 hung here forever. New io requests will also hung here.
-        io_schedule();
-        has_sleeper = true;
-        set_current_state(TASK_UNINTERRUPTIBLE);
-    } while (1);
-    finish_wait(&rqw->wait, &data.wq);
-}
+Elaine Zhang (10):
+  arm: dts: rockchip: Fix power-controller node names for rk3066a
+  arm: dts: rockchip: Fix power-controller node names for rk3188
+  arm: dts: rockchip: Fix power-controller node names for rk3288
+  arm64: dts: rockchip: Fix power-controller node names for px30
+  arm64: dts: rockchip: Fix power-controller node names for rk3328
+  arm64: dts: rockchip: Fix power-controller node names for rk3399
+  soc: rockchip: pm-domains: Add a meaningful power domain name
+  dt-bindings: add power-domain header for RK3568 SoCs
+  dt-bindings: power: rockchip: Add bindings for RK3568 Soc
+  soc: rockchip: power-domain: add rk3568 powerdomains
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
----
- block/blk-rq-qos.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Enric Balletbo i Serra (1):
+  dt-bindings: power: rockchip: Convert to json-schema
 
-diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-index 656460636ad3..04d888c99bc0 100644
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -260,19 +260,17 @@ void rq_qos_wait(struct rq_wait *rqw, void *private_data,
- 		.cb = acquire_inflight_cb,
- 		.private_data = private_data,
- 	};
--	bool has_sleeper;
- 
--	has_sleeper = wq_has_sleeper(&rqw->wait);
--	if (!has_sleeper && acquire_inflight_cb(rqw, private_data))
-+	if (!wq_has_sleeper(&rqw->wait)
-+		&& acquire_inflight_cb(rqw, private_data))
- 		return;
- 
- 	prepare_to_wait_exclusive(&rqw->wait, &data.wq, TASK_UNINTERRUPTIBLE);
--	has_sleeper = !wq_has_single_sleeper(&rqw->wait);
- 	do {
- 		/* The memory barrier in set_task_state saves us here. */
- 		if (data.got_token)
- 			break;
--		if (!has_sleeper && acquire_inflight_cb(rqw, private_data)) {
-+		if (acquire_inflight_cb(rqw, private_data)) {
- 			finish_wait(&rqw->wait, &data.wq);
- 
- 			/*
-@@ -286,7 +284,6 @@ void rq_qos_wait(struct rq_wait *rqw, void *private_data,
- 			break;
- 		}
- 		io_schedule();
--		has_sleeper = true;
- 		set_current_state(TASK_UNINTERRUPTIBLE);
- 	} while (1);
- 	finish_wait(&rqw->wait, &data.wq);
+ .../bindings/power/rockchip,power-controller.yaml  | 285 +++++++++++++++++++++
+ .../bindings/soc/rockchip/power_domain.txt         | 136 ----------
+ arch/arm/boot/dts/rk3066a.dtsi                     |   6 +-
+ arch/arm/boot/dts/rk3188.dtsi                      |   6 +-
+ arch/arm/boot/dts/rk3288.dtsi                      |   8 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi             |  16 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |   6 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  40 +--
+ drivers/soc/rockchip/pm_domains.c                  | 252 ++++++++++--------
+ include/dt-bindings/power/rk3568-power.h           |  32 +++
+ 10 files changed, 503 insertions(+), 284 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
+
 -- 
-2.24.3 (Apple Git-128)
+2.11.0
 
