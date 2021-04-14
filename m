@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B401435F88B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3045A35F88C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352560AbhDNP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:57:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5216 "EHLO mga11.intel.com"
+        id S1352567AbhDNP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:57:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56588 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232662AbhDNP5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:57:13 -0400
-IronPort-SDR: WDd4lPt1AuUiPreH8j9oQz4plKBc1BpV+sYlUBm//YikBAKUVeap2Iu1aDf/udGQeWPdQ9yCyi
- 40flsVQcscRw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191484140"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="191484140"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:56:49 -0700
-IronPort-SDR: 5Y/X998Ljj2Jxjpfsq/hVDjcfZCU8JZsvF2rGTzQLUNE5VeNnxg7dntcgoHjF/Yw47zakGLESf
- lI5RfYJka5kg==
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="443861179"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:56:48 -0700
-Date:   Wed, 14 Apr 2021 08:56:47 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>, Yu Zhao <yuzhao@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        id S1351195AbhDNP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:57:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D6F03B0BA;
+        Wed, 14 Apr 2021 15:56:53 +0000 (UTC)
+Subject: Re: [PATCH 04/11] mm/vmstat: Convert NUMA statistics to basic NUMA
+ counters
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-Message-ID: <20210414155647.GV3762101@tassilo.jf.intel.com>
-References: <20210413075155.32652-1-sjpark@amazon.de>
- <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
- <20210413231436.GF63242@dread.disaster.area>
- <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
- <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
- <87tuo9qtmd.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <CAOUHufbk=TVOpEOvTNRBe0uoOWNZ=wf3umQ628ZFZ=QYhNqsHA@mail.gmail.com>
- <87lf9lqnit.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <93308ea276cfe7997c29ce7132516e830e8fec40.camel@surriel.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-5-mgorman@techsingularity.net>
+ <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
+ <20210414151850.GG3697@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <c4dff8a5-7959-c191-c66d-23a515244b80@suse.cz>
+Date:   Wed, 14 Apr 2021 17:56:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93308ea276cfe7997c29ce7132516e830e8fec40.camel@surriel.com>
+In-Reply-To: <20210414151850.GG3697@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Now imagine we have an 8 node system, and memory
-> pressure in the DMA32 zone of node 0.
+On 4/14/21 5:18 PM, Mel Gorman wrote:
+> On Wed, Apr 14, 2021 at 02:56:45PM +0200, Vlastimil Babka wrote:
+>> So it seems that this intermediate assignment to zone counters (using
+>> atomic_long_set() even) is unnecessary and this could mimic sum_vm_events() that
+>> just does the summation on a local array?
+>> 
+> 
+> The atomic is unnecessary for sure but using a local array is
+> problematic because of your next point.
 
-The question is how much do we still care about DMA32.
-If there are problems they can probably just turn on the IOMMU for
-these IO mappings.
+IIUC vm_events seems to do fine without a centralized array and handling CPU hot
+remove at the sime time ...
 
--Andi
+>> And probably a bit more serious is that vm_events have vm_events_fold_cpu() to
+>> deal with a cpu going away, but after your patch the stats counted on a cpu just
+>> disapepar from the sums as it goes offline as there's no such thing for the numa
+>> counters.
+>> 
+> 
+> That is a problem I missed. Even if zonestats was preserved on
+> hot-remove, fold_vm_zone_numa_events would not be reading the CPU so
+> hotplug events jump all over the place.
+> 
+> So some periodic folding is necessary. I would still prefer not to do it
+> by time but it could be done only on overflow or when a file like
+> /proc/vmstat is read. I'll think about it a bit more and see what I come
+> up with.
+
+... because vm_events_fold_cpu() seems to simply move the stats from the CPU
+being offlined to the current one. So the same approach should be enough for
+NUMA stats?
+
+> Thanks!
+> 
+
