@@ -2,199 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C60E35F220
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829BF35F244
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348911AbhDNLWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:22:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46696 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229886AbhDNLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:22:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618399317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GbwNrz+C+FlJj2Tmf1qzyMIm3jUMt5tfj2rrUtGbXLs=;
-        b=bocG8ylE+M6EpHPFfK0Jw/6lNz6u8zUKN9ND/FAlaPcbSfA+hQHIy3ZVKEKRI8p0SwqGjA
-        oHOENSU4WR1H/Bn2Y05XDy6GuyT/HMo/Z8F99x0E0kn/q8MJ+z4LHRCm2qgPCkfjC7TMtW
-        O3+1N11NMBz2NGxwFZIi4mJarJz4Lsg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 501EEAFC1;
-        Wed, 14 Apr 2021 11:21:57 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 13:21:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v4 00/13] Introduced multi-preference mempolicy
-Message-ID: <YHbQU7ObwzXiIfeM@dhcp22.suse.cz>
-References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+        id S1348948AbhDNLXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:23:23 -0400
+Received: from smtpcmd01-sp1.aruba.it ([62.149.158.218]:45732 "EHLO
+        smtpcmd01-sp1.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348954AbhDNLXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:23:20 -0400
+Received: from [192.168.126.129] ([146.241.148.6])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id WdbjllVNnkdBBWdbkl2XjH; Wed, 14 Apr 2021 13:22:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1618399377; bh=0F+vBt2TA34xwOMDg/rFjQNTe2kOJ5mDE5te0iNhXEY=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=GTALKCDYaxeYuVDCyggMObVlGXrqVxKKYCYtbBDS7S/XJ2MCfs15CkYR0vBUfQuYu
+         78p5qNX91vwWQAdONSIysEiNYSGrSNdBcDYOV0Il2bEmYe/7hCQ1rDmp6U8wQlglN1
+         O9UrJHu0CntpsFmsheAduFLWES5nWfzqUBTj1jlhbTJF8yGEqiIO+N7VlsH1Y22B69
+         B/is15dvY6hRgr8wL/XfOprDlzCTlJyiUSsgiKbEZyMxa6Lc8Op/49Oq1585PIbfoX
+         dbwJsI01Lu6YCxbgFSUtmqdY2hGOrafFlE+HiDLYMTtepagTw8gFoC65jgNEzgKv5z
+         Qj1EIxHju9Kcg==
+Subject: Re: [PATCH v7 3/3] Input: add driver for the Hycon HY46XX touchpanel
+ series
+To:     Peter Hutterer <peter.hutterer@who-t.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+ <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
+ <20210413144446.2277817-4-giulio.benetti@benettiengineering.com>
+ <YHaBJ6MX9c28MUQY@google.com> <YHaP1Fzsi5pSaEq3@koala>
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Message-ID: <080a71d9-d629-5589-c943-4e65a7f414d8@benettiengineering.com>
+Date:   Wed, 14 Apr 2021 13:22:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+In-Reply-To: <YHaP1Fzsi5pSaEq3@koala>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfM7avIgFexNNvYx1guTyVc0Xmp2xddnI0yXtpkWYal7MGcfx7EvEZDqXSh7odITtGiUqYV1J1BX+HN9jGj/Zm730JLoyQ88cL9VfD5Rp4MAIcH+LYOGN
+ 2yWnnZkFcGp6L3L5/RkPTOImvvxeuILImclUFkVK3flqLQX9BuSzN2amk7oWj0rN+ACpeRN7rYEH0nFp7WU9dK3RzJAL+BTE5LwZdQwW8m1PcbpR54Svkf4Q
+ 2pBtnCJPBN1lM+oBs1bqY3oDndEImaHzbul1oBT97VgN+tt1e3Eg++Q3yG76qtZzk7tgqlziZKnPXypKwsdkqwUSKt7Gk0kppvbyP2ilVsj6v8h1JD0zperH
+ l2qAYeXUn8pfq3Z0JUEEepTSjUTVfxZOdqpVSRmYPVcUWyvajOLn/0nwvOWE3L2lzXKPe2F92HYit+6GImKFObbarQvz7FFldx7tI6kuPeTd0A6TOYM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc linux-api]
+Hi Peter, Dmitry,
 
-On Wed 17-03-21 11:39:57, Feng Tang wrote:
-> This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
-> This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
-> interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
-> preference for nodes which will fulfil memory allocation requests. Unlike the
-> MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
-> works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
-> invoke the OOM killer if those preferred nodes are not available.
+On 4/14/21 8:46 AM, Peter Hutterer wrote:
+> On Tue, Apr 13, 2021 at 10:44:07PM -0700, Dmitry Torokhov wrote:
+>> Hi Giulio,
+>>
+>> On Tue, Apr 13, 2021 at 04:44:46PM +0200, Giulio Benetti wrote:
+>>> +
+>>> +	input_mt_report_pointer_emulation(tsdata->input, true);
+>>
+>> For touchscreens it does not make much sense to report BTN_DOUBLETAP,
+>> BTN_TRIPLETAP, etc, events (they are really for touchpads), so I changed
+>> this to
+>>
+>> 	input_mt_report_pointer_emulation(tsdata->input, false);
+>>
+>> to only report ABS_X, ABS_Y, and BTN_TOUCH, and applied.
 > 
-> Along with these patches are patches for libnuma, numactl, numademo, and memhog.
-> They still need some polish, but can be found here:
-> https://gitlab.com/bwidawsk/numactl/-/tree/prefer-many
-> It allows new usage: `numactl -P 0,3,4`
-> 
-> The goal of the new mode is to enable some use-cases when using tiered memory
-> usage models which I've lovingly named.
-> 1a. The Hare - The interconnect is fast enough to meet bandwidth and latency
-> requirements allowing preference to be given to all nodes with "fast" memory.
-> 1b. The Indiscriminate Hare - An application knows it wants fast memory (or
-> perhaps slow memory), but doesn't care which node it runs on. The application
-> can prefer a set of nodes and then xpu bind to the local node (cpu, accelerator,
-> etc). This reverses the nodes are chosen today where the kernel attempts to use
-> local memory to the CPU whenever possible. This will attempt to use the local
-> accelerator to the memory.
-> 2. The Tortoise - The administrator (or the application itself) is aware it only
-> needs slow memory, and so can prefer that.
-> 
-> Much of this is almost achievable with the bind interface, but the bind
-> interface suffers from an inability to fallback to another set of nodes if
-> binding fails to all nodes in the nodemask.
-> 
-> Like MPOL_BIND a nodemask is given. Inherently this removes ordering from the
-> preference.
-> 
-> > /* Set first two nodes as preferred in an 8 node system. */
-> > const unsigned long nodes = 0x3
-> > set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
-> 
-> > /* Mimic interleave policy, but have fallback *.
-> > const unsigned long nodes = 0xaa
-> > set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
-> 
-> Some internal discussion took place around the interface. There are two
-> alternatives which we have discussed, plus one I stuck in:
-> 1. Ordered list of nodes. Currently it's believed that the added complexity is
->    nod needed for expected usecases.
-> 2. A flag for bind to allow falling back to other nodes. This confuses the
->    notion of binding and is less flexible than the current solution.
-> 3. Create flags or new modes that helps with some ordering. This offers both a
->    friendlier API as well as a solution for more customized usage. It's unknown
->    if it's worth the complexity to support this. Here is sample code for how
->    this might work:
-> 
-> > // Prefer specific nodes for some something wacky
-> > set_mempolicy(MPOL_PREFER_MANY, 0x17c, 1024);
-> >
-> > // Default
-> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_SOCKET, NULL, 0);
-> > // which is the same as
-> > set_mempolicy(MPOL_DEFAULT, NULL, 0);
-> >
-> > // The Hare
-> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, NULL, 0);
-> >
-> > // The Tortoise
-> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE_REV, NULL, 0);
-> >
-> > // Prefer the fast memory of the first two sockets
-> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, -1, 2);
-> >
-> 
-> In v1, Andi Kleen brought up reusing MPOL_PREFERRED as the mode for the API.
-> There wasn't consensus around this, so I've left the existing API as it was. I'm
-> open to more feedback here, but my slight preference is to use a new API as it
-> ensures if people are using it, they are entirely aware of what they're doing
-> and not accidentally misusing the old interface. (In a similar way to how
-> MPOL_LOCAL was introduced).
-> 
-> In v1, Michal also brought up renaming this MPOL_PREFERRED_MASK. I'm equally
-> fine with that change, but I hadn't heard much emphatic support for one way or
-> another, so I've left that too.
-> 
-> Changelog: 
-> 
->   Since v3:
->   * Rebased against v5.12-rc2
->   * Drop the v3/0013 patch of creating NO_SLOWPATH gfp_mask bit
->   * Skip direct reclaim for the first allocation try for
->     MPOL_PREFERRED_MANY, which makes its semantics close to
->     existing MPOL_PREFFERRED policy
-> 
->   Since v2:
->   * Rebased against v5.11
->   * Fix a stack overflow related panic, and a kernel warning (Feng)
->   * Some code clearup (Feng)
->   * One RFC patch to speedup mem alloc in some case (Feng)
-> 
->   Since v1:
->   * Dropped patch to replace numa_node_id in some places (mhocko)
->   * Dropped all the page allocation patches in favor of new mechanism to
->     use fallbacks. (mhocko)
->   * Dropped the special snowflake preferred node algorithm (bwidawsk)
->   * If the preferred node fails, ALL nodes are rechecked instead of just
->     the non-preferred nodes.
-> 
-> v4 Summary:
-> 1: Random fix I found along the way
-> 2-5: Represent node preference as a mask internally
-> 6-7: Tread many preferred like bind
-> 8-11: Handle page allocation for the new policy
-> 12: Enable the uapi
-> 13: unifiy 2 functions
-> 
-> Ben Widawsky (8):
->   mm/mempolicy: Add comment for missing LOCAL
->   mm/mempolicy: kill v.preferred_nodes
->   mm/mempolicy: handle MPOL_PREFERRED_MANY like BIND
->   mm/mempolicy: Create a page allocator for policy
->   mm/mempolicy: Thread allocation for many preferred
->   mm/mempolicy: VMA allocation for many preferred
->   mm/mempolicy: huge-page allocation for many preferred
->   mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
-> 
-> Dave Hansen (4):
->   mm/mempolicy: convert single preferred_node to full nodemask
->   mm/mempolicy: Add MPOL_PREFERRED_MANY for multiple preferred nodes
->   mm/mempolicy: allow preferred code to take a nodemask
->   mm/mempolicy: refactor rebind code for PREFERRED_MANY
-> 
-> Feng Tang (1):
->   mem/mempolicy: unify mpol_new_preferred() and
->     mpol_new_preferred_many()
-> 
->  .../admin-guide/mm/numa_memory_policy.rst          |  22 +-
->  include/linux/mempolicy.h                          |   6 +-
->  include/uapi/linux/mempolicy.h                     |   6 +-
->  mm/hugetlb.c                                       |  26 +-
->  mm/mempolicy.c                                     | 272 ++++++++++++++-------
->  5 files changed, 225 insertions(+), 107 deletions(-)
-> 
-> -- 
-> 2.7.4
+> Can you expand on this please, just to make sure I'm not misinterpreting
+> those codes? Those bits are just for how many fingers are down (but without
+> position), dropping those bits means you restrict the device to a pure
+> single-touch screen. Or am I missing something here?
 
+I've re-tested the driver after setting 
+input_mt_report_pointer_emulation() use_count to false. It works 
+correctly with all touch points expected. That use_count refers to 
+finger count of Touchpad[1]. Also you can see that even with 
+use_count=false this for loop[2] is entered by counting all the 
+mt->slots and then input_event() reports all of them.
+
+I hope I've understood correctly :-)
+
+[1]: 
+https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/input/input-mt.c#L190
+[2]: 
+https://elixir.bootlin.com/linux/v5.12-rc7/source/drivers/input/input-mt.c#L208
+
+> then again, MT support has been in the kernel for long enough that by now
+> everything should understand it, so there's a certain "meh" factor.
+> 
+> Cheers,
+>     Peter
+> 
+
+Best regards
 -- 
-Michal Hocko
-SUSE Labs
+Giulio Benetti
+Benetti Engineering sas
