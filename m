@@ -2,222 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF935E9FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459BE35EA02
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348252AbhDNA1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 20:27:49 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55470 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237029AbhDNA1r (ORCPT
+        id S1348854AbhDNAcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 20:32:01 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48355 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348308AbhDNAcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:27:47 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13E0RNID069350;
-        Tue, 13 Apr 2021 19:27:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618360043;
-        bh=8B7/458hroNL10JXEQwHmtq+ENc6/m8u+y+7uLgXATY=;
-        h=From:To:CC:Subject:Date;
-        b=XZXgm91u7PcSrIJakEoEDTFighynJUAtjniggNp4gejlBqL+R7kzuUewxG6AxQBOq
-         e3z9zElvBbuktKjUH6Vesj1LO5McPF5bXhtCBd5ZO96Z3LfKXxlSNjBpN5FsS3Ekua
-         S3o28GjFcvLrAHt3O7HWg4O5YSJUzma8Oa3HCHL0=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13E0RMup033154
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 13 Apr 2021 19:27:23 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 13
- Apr 2021 19:27:22 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 13 Apr 2021 19:27:22 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13E0RMVD113196;
-        Tue, 13 Apr 2021 19:27:22 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Santosh Shilimkar <ssantosh@kernel.org>, <s-anna@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH] dt-bindings: mailbox: ti,message-manager: Convert to yaml
-Date:   Tue, 13 Apr 2021 19:27:21 -0500
-Message-ID: <20210414002721.23638-1-nm@ti.com>
-X-Mailer: git-send-email 2.31.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 13 Apr 2021 20:32:00 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8F9AB580666;
+        Tue, 13 Apr 2021 20:31:37 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 13 Apr 2021 20:31:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=knUE4eA4OJPF+HeLNfyGSHUwlIZ5VVc
+        yXxGwT1wC3mg=; b=HbYw7hONcS2tHP0GCTKx/rYFKmy6+Sd8TH68re77bRFrgzx
+        QfAEqd7AD81GTnpwPRTHX98f7jeTYe0eIJrVMD7TH3Ec6Gt15D3MejL0meVGrwHS
+        J5NfluxWOHookNX0PJoE6SkGMYt5rPCJ/gQX5daohJXLfcwOVgJ3S0XrgMD3BpJR
+        J/KSQK33bz/jrNS1sUH+Beav2jyJ94ajcCVDblqlzdIgjt5uaeDAduPXTJcqavWu
+        5ZWrRj3Jg1z1hCoanX2OMsAcGREhn+umQZF6L017nZowqg/gq/E70GTZD2uGK+rL
+        3R5nU9r7z+YX5ukYQt3oI/7NiZrlPuGorVs42ug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=knUE4e
+        A4OJPF+HeLNfyGSHUwlIZ5VVcyXxGwT1wC3mg=; b=rHiavBpyRcIE+PMbzfzvJx
+        Cr0oPNN4/2GPWA08i2c3zxaa0bCXP6OpOt0z9DxTj3u7rX9bODvYxWjKt9AMh9oq
+        at3vN/9FuHI/5WPEOKa0OsHxcVXceSH7iIFcKTVpRmz/ojIULPbaVKHczk2sWa1D
+        24AjCtbKYoNJcRg2+JeTL2jRymF/6ytOVskQ7FqMAHT2q+YTtwiO5zxOGe4ohDAm
+        uvED+R76YyBdT354ty/u8x0Ab/7YTrQqQyWx/hw6XS2C2LDLtBex30XxQe0GjcCM
+        IhpOXK3epVnXqDeCFLLPJo4IKrr655YhdgYQdW1/byEQ7Fs5Z8LbDtYpNa99jNNw
+        ==
+X-ME-Sender: <xms:5zd2YEf91elAHYYF4a6xWKfQAzs7g9rGGYewbD2w0AF8U7yJZ-SyoQ>
+    <xme:5zd2YGO9FCnHPZFcDcYLZI4wtuK_1OstqatjI7Qh0DkBR-GKFZc3_9Su08_u9ZRVX
+    gMgo74vCRxb9gNtJw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeltddgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudevjeegleejteffgfdvudetgfdvjedujeefgfekheeitedtgedvtdei
+    keevjeeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:6Dd2YFjtn4geL8pbKnmdAxFVCoANBYEZVkahiXm_FtHrWW0aY8vmeQ>
+    <xmx:6Dd2YJ-KWD3CTYBpBOPTc1wpT8VvPQ16wE_vhPkC_b-a3QTwR38AGw>
+    <xmx:6Dd2YAukFZRXWD8XhWMtnEMZsuSwPC8CgxTCiwg3fr-9HN6LBY6b6w>
+    <xmx:6Td2YLmq1Q30OW6nlYM7YkKRtyM73qX1nztS54cbHVRn2JqlSrb0bw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D411AA0048E; Tue, 13 Apr 2021 20:31:35 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <37e75b07-a5c6-422f-84b3-54f2bea0b917@www.fastmail.com>
+In-Reply-To: <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-16-andrew@aj.id.au>
+ <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
+ <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
+ <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+ <e2d7268b-bdaf-45bf-bb21-a5b9f7e985a4@www.fastmail.com>
+ <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
+Date:   Wed, 14 Apr 2021 10:00:20 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        openipmi-developer@lists.sourceforge.net,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>, "Joel Stanley" <joel@jms.id.au>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Benjamin Fair" <benjaminfair@google.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_16/21]_ipmi:_kcs=5Fbmc:_Add_a_"raw"_character_de?=
+ =?UTF-8?Q?vice_interface?=
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the ti,secure-proxy to yaml for better checks and documentation.
-Differences being mostly in the examples:
-- I've dropped the example usage of mailbox client, it is better done in
-  tisci node definition
-- included header in example for buildable example
 
-NOTE: The following checkpatch warning is generated since we do include
-the header
-in the example, but this is a false positive warning.
-  WARNING: DT binding docs and includes should be a separate patch. See:
-  Documentation/devicetree/bindings/submitting-patches.rst
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
+On Tue, 13 Apr 2021, at 17:52, Arnd Bergmann wrote:
+> On Tue, Apr 13, 2021 at 1:45 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > On Mon, 12 Apr 2021, at 18:18, Arnd Bergmann wrote:
+> > > On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > > On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
+> > > > > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > > > >
+> > > > > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
+> > > > > > However, KCS devices are useful beyond IPMI (or keyboards), as they
+> > > > > > provide a means to generate IRQs and exchange arbitrary data between a
+> > > > > > BMC and its host system.
+> > > > >
+> > > > > I only noticed the series after Joel asked about the DT changes on the arm
+> > > > > side. One question though:
+> > > > >
+> > > > > How does this related to the drivers/input/serio/ framework that also talks
+> > > > > to the keyboard controller for things that are not keyboards?
+> > > >
+> > > > I've taken a brief look and I feel they're somewhat closely related.
+> > > >
+> > > > It's plausible that we could wrangle the code so the Aspeed and Nuvoton
+> > > > KCS drivers move under drivers/input/serio. If you squint, the i8042
+> > > > serio device driver has similarities with what the Aspeed and Nuvoton
+> > > > device drivers are providing to the KCS IPMI stack.
+> > >
+> > > After looking some more into it, I finally understood that the two are
+> > > rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
+> > > is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
+> > > that the proposed kcs_bmc_cdev_raw.c interface would be
+> > > what corresponds to the other side of
+> > > drivers/input/serio/i8042.c+userio.c.
+> >
+> > Right. I guess the question is should we be splitting kernel subsystems
+> > along host/bmc lines? Doesn't feel intuitive, it's all Linux, but maybe
+> > we can consolidate in the future if it makes sense?
+> 
+> We actually have a number of subsystems with somewhat overlapping
+> functionality. I brought up serio, because it has an abstraction for multiple
+> things that communicate over the keyboard controller and I thought
+> the problem you were trying to solve was also related to the keyboard
+> controller.
+> It is also one of multiple abstractions that allow you to connect a device
+> to a uart (along with serdev and tty_ldisc, probably at least one more that
+> you can nest above or below these).
+> 
+> Consolidating the kcs_bmc.c interface into something that already
+> exists would obviously be best, but it's not clear which of these that
+> should be, that depends on the fundamental properties of the hardware
+> interface.
+> 
+> > > Then again, these are also on
+> > > separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
+> > > KCS), so they would never actually talk to one another.
+> >
+> > Well, sort of I guess. On Power systems we don't use the keyboard
+> > controller for IPMI or keyboards, so we're just kinda exploiting the
+> > hardware for our own purposes.
+> 
+> Can you describe in an abstract form what the hardware interface
+> can do here and what you want from it? I wonder if it could be
+> part of a higher-level interface such as drivers/mailbox/ instead.
 
-Depending on how [1] turns out in discussion, we might want to queue [2]
-appropriately.
+It gives us interrupts each way between the host and BMC when we send 
+some (small amount of) data/metadata. Mailbox is possibly a fit for 
+this? We're (ab)using the keyboard controllers to implement a vendor 
+MCTP binding over LPC[1] and also a simple protocol for the (Power) 
+host to trigger BMC debug data capture in the event of issues with 
+other (more complex) in-band communication stacks. The MCTP binding is 
+what requires access to STR.
 
-[1] https://lore.kernel.org/linux-arm-kernel/CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com/
-[2] https://lore.kernel.org/linux-arm-kernel/20210414001926.20002-1-nm@ti.com/
- .../bindings/mailbox/ti,message-manager.txt   | 50 -------------
- .../bindings/mailbox/ti,message-manager.yaml  | 75 +++++++++++++++++++
- 2 files changed, 75 insertions(+), 50 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mailbox/ti,message-manager.txt
- create mode 100644 Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
+It's feasible that we could implement the debug capture protocol with 
+the serio_raw interface now that I think about it (as it only makes use 
+of data and not status). What's unclear to me right now is what impact 
+that has on the Aspeed/Nuvoton KCS drivers we have in the IPMI 
+subsystem. If we can do something sensible to service both serio and 
+IPMI with the one driver implementation then I can put together a PoC 
+for the debug data stuff using serio_raw.
 
-diff --git a/Documentation/devicetree/bindings/mailbox/ti,message-manager.txt b/Documentation/devicetree/bindings/mailbox/ti,message-manager.txt
-deleted file mode 100644
-index ebf0e3710cee..000000000000
---- a/Documentation/devicetree/bindings/mailbox/ti,message-manager.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--Texas Instruments' Message Manager Driver
--========================================
--
--The Texas Instruments' Message Manager is a mailbox controller that has
--configurable queues selectable at SoC(System on Chip) integration. The Message
--manager is broken up into queues in different address regions that are called
--"proxies" - each instance is unidirectional and is instantiated at SoC
--integration level to indicate receive or transmit path.
--
--Message Manager Device Node:
--===========================
--Required properties:
----------------------
--- compatible:		Shall be: "ti,k2g-message-manager"
--- reg-names 		queue_proxy_region - Map the queue proxy region.
--			queue_state_debug_region - Map the queue state debug
--			region.
--- reg:			Contains the register map per reg-names.
--- #mbox-cells		Shall be 2. Contains the queue ID and proxy ID in that
--		        order referring to the transfer path.
--- interrupt-names:	Contains interrupt names matching the rx transfer path
--			for a given SoC. Receive interrupts shall be of the
--			format: "rx_<QID>".
--			For ti,k2g-message-manager, this shall contain:
--				"rx_005", "rx_057"
--- interrupts:		Contains the interrupt information corresponding to
--			interrupt-names property.
--
--Example(K2G):
--------------
--
--	msgmgr: msgmgr@2a00000 {
--		compatible = "ti,k2g-message-manager";
--		#mbox-cells = <2>;
--		reg-names = "queue_proxy_region", "queue_state_debug_region";
--		reg = <0x02a00000 0x400000>, <0x028c3400 0x400>;
--		interrupt-names = "rx_005", "rx_057";
--		interrupts = <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
--			     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>;
--	};
--
--	pmmc: pmmc {
--		[...]
--		mbox-names = "rx", "tx";
--		# RX queue ID is 5, proxy ID is 2
--		# TX queue ID is 0, proxy ID is 0
--		mboxes= <&msgmgr 5 2>,
--			<&msgmgr 0 0>;
--		[...]
--	};
-diff --git a/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
-new file mode 100644
-index 000000000000..4987e803ac37
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mailbox/ti,message-manager.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments' Message Manager Driver
-+
-+maintainers:
-+  - Nishanth Menon <nm@ti.com>
-+
-+description: |
-+  The Texas Instruments' Message Manager is a mailbox controller that has
-+  configurable queues selectable at SoC(System on Chip) integration. The Message
-+  manager is broken up into queues in different address regions that are called
-+  "proxies" - each instance is unidirectional and is instantiated at SoC
-+  integration level to indicate receive or transmit path.
-+
-+properties:
-+  $nodename:
-+    pattern: "^mailbox@[0-9a-f]+$"
-+
-+  compatible:
-+    const: ti,k2g-message-manager
-+
-+  "#mbox-cells":
-+    const: 2
-+    description:
-+      Contains the queue ID and proxy ID in that order referring to the
-+      transfer path.
-+
-+  reg-names:
-+    items:
-+      - const: queue_proxy_region
-+      - const: queue_state_debug_region
-+
-+  reg:
-+    minItems: 2
-+
-+  interrupt-names:
-+    items:
-+      - const: rx_005
-+      - const: rx_057
-+    description:
-+      Contains interrupt names matching the Rx transfer path for a given SoC.
-+      Receive interrupts shall be of the format "rx_<QID>".
-+
-+  interrupts:
-+    minItems: 2
-+    description:
-+      Contains the interrupt information for the Rx interrupt paths for message
-+      manager corresponding to the interrupt-names.
-+
-+required:
-+  - compatible
-+  - reg-names
-+  - reg
-+  - interrupt-names
-+  - interrupts
-+  - "#mbox-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    msgmgr: mailbox@2a00000 {
-+          compatible = "ti,k2g-message-manager";
-+          #mbox-cells = <2>;
-+          reg-names = "queue_proxy_region", "queue_state_debug_region";
-+          reg = <0x02a00000 0x400000>, <0x028c3400 0x400>;
-+          interrupt-names = "rx_005", "rx_057";
-+          interrupts = <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
-+                       <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>;
-+    };
--- 
-2.31.0
+Regarding the MCTP binding, Jeremy Kerr is working in an in-kernel, 
+socket-based implementation of MCTP. Eventually this will allow us to 
+bury the KCS details in the MCTP subsystem, which removes some of the 
+motivation for the raw interface here.
 
+Andrew
+
+[1] https://github.com/openbmc/libmctp/blob/master/docs/bindings/vendor-ibm-astlpc.md
