@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A735FD5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E4F35FD6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhDNVk0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Apr 2021 17:40:26 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44698 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231459AbhDNVkZ (ORCPT
+        id S232876AbhDNVqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbhDNVqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:40:25 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-2-grvJhRMvO7O3_liCxi_SMA-1;
- Wed, 14 Apr 2021 22:40:01 +0100
-X-MC-Unique: grvJhRMvO7O3_liCxi_SMA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 22:40:00 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 14 Apr 2021 22:40:00 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Oleg Nesterov' <oleg@redhat.com>
-CC:     He Zhe <zhe.he@windriver.com>, Paul Moore <paul@paul-moore.com>,
-        "Eric Paris" <eparis@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/2] ptrace: is_syscall_success: Add syscall return code
- handling for compat task
-Thread-Topic: [PATCH 2/2] ptrace: is_syscall_success: Add syscall return code
- handling for compat task
-Thread-Index: AQHXMUAOqLMsGXFf70mFNgTI1J74Jqq0MByg///6qICAAF7FQA==
-Date:   Wed, 14 Apr 2021 21:39:59 +0000
-Message-ID: <a4cffbd2aee74105864a7d68be829888@AcuMS.aculab.com>
-References: <20210414080245.25476-1-zhe.he@windriver.com>
- <20210414150810.GA19371@redhat.com>
- <e2efffb879914176a2eae8b52a3c5c33@AcuMS.aculab.com>
- <20210414165547.GA22294@redhat.com>
-In-Reply-To: <20210414165547.GA22294@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Wed, 14 Apr 2021 17:46:13 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED90AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:45:51 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id c1-20020a5b0bc10000b02904e7c6399b20so125198ybr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=3tZuog4SLHhpY3z/paxkTsPCnEx+8O3qafW8rWHSl20=;
+        b=oDg5/eyghmiYZFBxy2BnHB/r+LUvSsj2yKruJv+rqilNQM6dwrSQ0g7sPsJOgLSqL9
+         CBzKYzO27y9kQfpbCLg/xDva9W1JFVPGrwJsi8kgTr0lsVd0uU+c9jPK2XGMBkEqfbHC
+         8m1+6DdPb6kidvx+k9XsG/UrhjzlWoUgqiZh6BFVZiK3xfiNie4MFoZyhtl5xFRp//rI
+         6BUlGHR63Qj9h/KOw+QrnFKJikMLAyDEDIjet0iEpP1/0rTSMPZ3rABgdZtSqu2ge5fg
+         eE+T/4e4rrkzEAGPSxOhvFAPtaeFV4MKfRkvFAb3fdH+rdw3mJVCYSw+KOM5FHaLAAOU
+         xQMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=3tZuog4SLHhpY3z/paxkTsPCnEx+8O3qafW8rWHSl20=;
+        b=uBn0151SlCZ3FaU2JaD9EPYms2OKN5feMPkYzf8sGN/Ccp1Bu2/O6rMQ9Mm+VdauZe
+         h8DrbNyfOmOjDp3eceDsZHHerr3HcT8jswsXAd6v9MArPRetQB4stq6tJEqe77QpHd6T
+         Yv9sdf4eo4wcx6/586VeoG6MpLYGGQihVsrBGMzKpc26S4GMmrzEN2YNjOuGeL8Q+nzY
+         U38rkTTuUjsQVbaavezf3HIOciZMnyKV/lA1PftkB4G9czaz9ufFYLLmNuijYK0cE78O
+         IN4C0iTyseyxz62K3Q/yc0g6J6BonPb1W/2OnBy68pVjX+u9mXn2wSCjp4Q+PrHqeJpl
+         OJ7g==
+X-Gm-Message-State: AOAM532zoyXqhNtjp6acI1Vxwl5/F8IHb93FgKm4+N+G2OGNdQSP/1LG
+        HY4ZB6mG+Dnn7gzm3KyQO/j+LIc0StwxIcAyqlI=
+X-Google-Smtp-Source: ABdhPJwBULOkshK1bSSyx73ltUcgL3/lyV9Uo67fQ+9LPjaPjF0btDHX3w/AnLtnDoHA/IMhzuuUxU69aXweEyeNpQM=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:7cc9:fe9f:6e17:380e])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:4f06:: with SMTP id
+ d6mr94731ybb.105.1618436750824; Wed, 14 Apr 2021 14:45:50 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 14:45:45 -0700
+In-Reply-To: <YHYlQnFRMNdn/CDp@archlinux-ax161>
+Message-Id: <20210414214548.700993-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <YHYlQnFRMNdn/CDp@archlinux-ax161>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v2] arm64: vdso32: drop -no-integrated-as flag
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     vincenzo.frascino@arm.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov
-> Sent: 14 April 2021 17:56
-> 
-> On 04/14, David Laight wrote:
-> >
-> > From: Oleg Nesterov
-> > > Sent: 14 April 2021 16:08
-> > >
-> > > Add audit maintainers...
-> > >
-> > > On 04/14, He Zhe wrote:
-> > > >
-> > > > When 32-bit userspace application is running on 64-bit kernel, the 32-bit
-> > > > syscall return code would be changed from u32 to u64 in regs_return_value
-> > > > and then changed to s64. Hence the negative return code would be treated
-> > > > as a positive number and results in a non-error in, for example, audit
-> > > > like below.
-> > >
-> > > Sorry, can understand. At least on x86_64 even the 32-bit syscall returns
-> > > long, not u32.
-> > >
-> > > Hmm. And afaics on x86 is_compat_task() is only defined if !CONFIG_COMPAT,
-> > > so this patch looks wrong anyway.
-> >
-> > And, as with the other patch a x64_64 64bit process can make both types
-> > of 32bit system call - so it needs to depend on the system call entry type
-> > not any type of the task.
-> 
-> I don't understand... but iirc is_compat_task() used to check TS_COMPAT and
-> this is what we need to detect the 32-bit syscall.
+Clang can assemble these files just fine; this is a relic from the top
+level Makefile conditionally adding this. We no longer need --prefix,
+--gcc-toolchain, or -Qunused-arguments flags either with this change, so
+remove those too.
 
-Not on X86_64.
-The syscall entry code sets the type on the current system call entry.
-So a process that is created as a 64bit process can make both i386
-and x32 system calls as well as normal 64bit ones.
+To test building:
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+  CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 LLVM_IAS=1 \
+  defconfig arch/arm64/kernel/vdso32/
 
-> But it looks deprecated,
-> I think in_compat_syscall() should be used instead.
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes V1 -> V2:
+* Remove --prefix, --gcc-toolchain, COMPAT_GCC_TOOLCHAIN, and
+  COMPAT_GCC_TOOLCHAIN_DIR as per Nathan.
+* Credit Nathan with Suggested-by tag.
+* Remove -Qunused-arguments.
+* Update commit message.
 
-That does the right checks on x86.
-Most code doesn't need to know about the subtle difference between
-normal 32bit calls and x32 ones.
+ arch/arm64/kernel/vdso32/Makefile | 8 --------
+ 1 file changed, 8 deletions(-)
 
-> But this doesn't matter, I still can't understand the problem.
-
-Dunno, I only know the 'fix' is borked.
-
-	David
-
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 789ad420f16b..3dba0c4f8f42 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -10,15 +10,7 @@ include $(srctree)/lib/vdso/Makefile
+ 
+ # Same as cc-*option, but using CC_COMPAT instead of CC
+ ifeq ($(CONFIG_CC_IS_CLANG), y)
+-COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
+-COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
 -
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+-CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE_COMPAT))
+-CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
+-ifneq ($(COMPAT_GCC_TOOLCHAIN),)
+-CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
+-endif
+ 
+ CC_COMPAT ?= $(CC)
+ CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
