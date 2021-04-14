@@ -2,190 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2EF35EB19
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028AA35EB1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhDNCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:49:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15674 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346823AbhDNCtV (ORCPT
+        id S1343679AbhDNCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239489AbhDNCte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:49:21 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKn0Z05DMzpXFS;
-        Wed, 14 Apr 2021 10:46:06 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 10:48:50 +0800
-Subject: Re: [RFC PATCH v2 2/2] kvm/arm64: Try stage2 block mapping for host
- device MMIO
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210316134338.18052-1-zhukeqian1@huawei.com>
- <20210316134338.18052-3-zhukeqian1@huawei.com> <878s5up71v.wl-maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <a72d4b34-1088-70b8-2cf9-628119fbbb74@huawei.com>
-Date:   Wed, 14 Apr 2021 10:48:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 13 Apr 2021 22:49:34 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F641C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:49:14 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id j12so1964779ils.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pfXneJvz0C/vmR/s1WVupLiCXqI05TupW72jk8dT3HE=;
+        b=f6G9Sp2yd9j4jRVXOkFWmU7cr+lF7b3NV6UjUSuCqtz7BfPT90JINGVDjaFXSKu/UA
+         1SnSQwsYAlfc/9uivJFQGbBP/6v6qKbSLkY8zLf1I7Jc2AZgZ6Lzn6IDZkNctyNSS42g
+         NEA7cxhAi/Jkbfv/SSUfombNU8ETTvAR5gkjEEj+QhYC4FFHDOwd9g/fWO0ksCsQqlXm
+         tKKiNe24tqQMMSwntpN/AyMYHhlokCzXAZopTOuNDndzBWUOhTuzQbd5ny7xHmuxs6PP
+         aJXkcsESndH72wvLLfwf8et6HEV/9noPo5vak8G5Ir+Ow/G3R0dgQGXb/gcxyLkQrvcJ
+         yHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pfXneJvz0C/vmR/s1WVupLiCXqI05TupW72jk8dT3HE=;
+        b=kTbEDRZ+BJfde/AJZEFgBlSyIlgM7DJxh9kihwrf1ZRysJlxdnpvwg/7D3Yg4Dv5Ke
+         jwTbyBOooE7b5KkbReJGvo+cIHKSaBHwTnjJy+RuBwEgUVTXdiULfpSCtyZU+jCoaqal
+         gF0s2r2aLAQekanuaiNra9sDZ7HTgx8R5bgSwG2L+LYCfL4g8Qu6Y77/mWDGpbLCYxXy
+         1mQ3k86IQnjA1vb0Dl3XJo7FdDwaJkJocPoyh+JQmRibJwXYad/dH32pz8nmwqarKsxf
+         yf2hJePTS2RmWmg2CiyjoKZksmi12lBRDvDshjYHNiVVj0f83YDSZ4F/ypOB/Ngtjjoc
+         gSjA==
+X-Gm-Message-State: AOAM531xD3twssKBorR7mJ7PRrhvwUsrzOLZYGrysVJv0k8MW9yjqY7/
+        mpRi9uJklCBkctxmb9+KNpqsRzinXZTjbe72OcaY5Q==
+X-Google-Smtp-Source: ABdhPJxFD7Q/IMG2eTERE4O/KZZY/5mUsYQxRoL/NriGRRYzYgNutozWqMQir7c2qWV4N5KOe/4jZFxHMBGhL6B57MI=
+X-Received: by 2002:a05:6e02:2197:: with SMTP id j23mr2481295ila.269.1618368553440;
+ Tue, 13 Apr 2021 19:49:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <878s5up71v.wl-maz@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com>
+ <YHXRWoVIYLL4rYG9@kroah.com>
+In-Reply-To: <YHXRWoVIYLL4rYG9@kroah.com>
+From:   Lorenzo Colitti <lorenzo@google.com>
+Date:   Wed, 14 Apr 2021 11:49:01 +0900
+Message-ID: <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
+Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        mikael.beckius@windriver.com, Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, Apr 14, 2021 at 2:14 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> To give context, the commit is now 46eb1701c046 ("hrtimer: Update
+> softirq_expires_next correctly after __hrtimer_get_next_event()") and is
+> attached below.
+>
+> The f_ncm.c driver is doing a lot of calls to hrtimer_start() with mode
+> HRTIMER_MODE_REL_SOFT for I think every packet it gets.  If that should
+> not be happening, we can easily fix it but I guess no one has actually
+> had fast USB devices that noticed this until now :)
 
-I think I have fully tested this patch. The next step is to do some restriction on
-HVA in vfio module, so we can build block mapping for it with a higher probability.
+AIUI the purpose of this timer is to support packet aggregation. USB
+transfers are relatively expensive/high latency. 6 Gbps is 500k
+1500-byte packets per second, or one every 2us. So f_ncm buffers as
+many packets as will fit into 16k (usually, 10 1500-byte packets), and
+only initiates a USB transfer when those packets have arrived. That
+ends up doing only one transfer every 20us. It sets a 300us timer to
+ensure that if the 10 packets haven't arrived, it still sends out
+whatever it has when the timer fires. The timer is set/updated on
+every packet buffered by ncm.
 
-Is there anything to improve? If not, could you apply it? ^_^
-
-Thanks,
-Keqian
-
-On 2021/4/7 21:18, Marc Zyngier wrote:
-> On Tue, 16 Mar 2021 13:43:38 +0000,
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>
->> The MMIO region of a device maybe huge (GB level), try to use
->> block mapping in stage2 to speedup both map and unmap.
->>
->> Compared to normal memory mapping, we should consider two more
->> points when try block mapping for MMIO region:
->>
->> 1. For normal memory mapping, the PA(host physical address) and
->> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
->> the HVA to request hugepage, so we don't need to consider PA
->> alignment when verifing block mapping. But for device memory
->> mapping, the PA and HVA may have different alignment.
->>
->> 2. For normal memory mapping, we are sure hugepage size properly
->> fit into vma, so we don't check whether the mapping size exceeds
->> the boundary of vma. But for device memory mapping, we should pay
->> attention to this.
->>
->> This adds device_rough_page_shift() to check these two points when
->> selecting block mapping size.
->>
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>
->> Mainly for RFC, not fully tested. I will fully test it when the
->> code logic is well accepted.
->>
->> ---
->>  arch/arm64/kvm/mmu.c | 42 ++++++++++++++++++++++++++++++++++++++----
->>  1 file changed, 38 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index c59af5ca01b0..224aa15eb4d9 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -624,6 +624,36 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
->>  	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
->>  }
->>  
->> +/*
->> + * Find a mapping size that properly insides the intersection of vma and
->> + * memslot. And hva and pa have the same alignment to this mapping size.
->> + * It's rough because there are still other restrictions, which will be
->> + * checked by the following fault_supports_stage2_huge_mapping().
-> 
-> I don't think these restrictions make complete sense to me. If this is
-> a PFNMAP VMA, we should use the biggest mapping size that covers the
-> VMA, and not more than the VMA.
-> 
->> + */
->> +static short device_rough_page_shift(struct kvm_memory_slot *memslot,
->> +				     struct vm_area_struct *vma,
->> +				     unsigned long hva)
->> +{
->> +	size_t size = memslot->npages * PAGE_SIZE;
->> +	hva_t sec_start = max(memslot->userspace_addr, vma->vm_start);
->> +	hva_t sec_end = min(memslot->userspace_addr + size, vma->vm_end);
->> +	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
->> +
->> +#ifndef __PAGETABLE_PMD_FOLDED
->> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
->> +	    ALIGN_DOWN(hva, PUD_SIZE) >= sec_start &&
->> +	    ALIGN(hva, PUD_SIZE) <= sec_end)
->> +		return PUD_SHIFT;
->> +#endif
->> +
->> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
->> +	    ALIGN_DOWN(hva, PMD_SIZE) >= sec_start &&
->> +	    ALIGN(hva, PMD_SIZE) <= sec_end)
->> +		return PMD_SHIFT;
->> +
->> +	return PAGE_SHIFT;
->> +}
->> +
->>  static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
->>  					       unsigned long hva,
->>  					       unsigned long map_size)
->> @@ -769,7 +799,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  		return -EFAULT;
->>  	}
->>  
->> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
->> +	/*
->> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
->> +	 * get block mapping for device MMIO region.
->> +	 */
->>  	mmap_read_lock(current->mm);
->>  	vma = find_vma_intersection(current->mm, hva, hva + 1);
->>  	if (unlikely(!vma)) {
->> @@ -780,11 +813,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  
->>  	if (is_vm_hugetlb_page(vma))
->>  		vma_shift = huge_page_shift(hstate_vma(vma));
->> +	else if (vma->vm_flags & VM_PFNMAP)
->> +		vma_shift = device_rough_page_shift(memslot, vma, hva);
->>  	else
->>  		vma_shift = PAGE_SHIFT;
->>  
->> -	if (logging_active ||
->> -	    (vma->vm_flags & VM_PFNMAP)) {
->> +	if (logging_active) {
->>  		force_pte = true;
->>  		vma_shift = PAGE_SHIFT;
-> 
-> But why should we downgrade to page-size mappings if logging? This is
-> a device, and you aren't moving the device around, are you? Or is your
-> device actually memory with a device mapping that you are trying to
-> migrate?
-> 
->>  	}
->> @@ -855,7 +889,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  
->>  	if (kvm_is_device_pfn(pfn)) {
->>  		device = true;
->> -		force_pte = true;
->> +		force_pte = (vma_pagesize == PAGE_SIZE);
->>  	} else if (logging_active && !write_fault) {
->>  		/*
->>  		 * Only actually map the page as writable if this was a write
->> -- 
->> 2.19.1
->>
->>
-> 
-> Thanks,
-> 
-> 	M.
-> 
+Is this somehow much more expensive in 5.10.24 than it was before?
+Even if this driver is somehow "holding it wrong", might there not be
+other workloads that have a similar problem? What about regressions on
+those workloads?
