@@ -2,327 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A1635FE8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06EC35FE92
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhDNXp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 19:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhDNXp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:45:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B4A61166;
-        Wed, 14 Apr 2021 23:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618443904;
-        bh=LbPsXNRXxEamjimN0qT9LvkGOE8tTJtCkKeSzIaILRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WUGoQJ9E88e6XAVKia9xrC70VCa/+8cZStRLZ+la/RVG/Qop+8R+U5u8MaBcKOcFX
-         +Il/hZl1NOQYBPp2XwD2RkwuDLQ4I90SyRJLAbvFydmTdP6iXaJ9ZnH8uZvxqPIgmk
-         MIL9GHFZ1oaID0pHcZfvsYCRVlH/rDf4QD21DcGApkh6kUwIxA6jvTUetM2WYUsFze
-         aNCFOsvNCg+CMBxfe7uQRnnDz4R2rwywG5bRQHQ4hM8IAgCGSnMB/x4b9DKmTm+wkw
-         knZ+pxHYteYxf8+pHkgUpku4UvPa03Ob6ESCE2XLulIjt0NHOTMwzfmCqNtufH2RHb
-         vjrAvEmrXjHaA==
-Date:   Wed, 14 Apr 2021 18:45:15 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH v3 2/2] wl3501_cs: Fix out-of-bounds warnings in
- wl3501_mgmt_join
-Message-ID: <1fbaf516da763b50edac47d792a9145aa4482e29.1618442265.git.gustavoars@kernel.org>
-References: <cover.1618442265.git.gustavoars@kernel.org>
+        id S229839AbhDNXrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 19:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhDNXrg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 19:47:36 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B5BC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:47:13 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a1so25129218ljp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+TpZa+C9cCQwz4Q2nu+eQulPH6EC1ZhAKJ0Pt2gzF58=;
+        b=CjmCZvhyG1hOPzQ0l7b1Br0e4i7SFJ8KrImnZRGRP0SCVDXXfHW4HoDlWBvTbq0WSv
+         fcLuenxPR5TSbfjQ5WLbNxs4D/NVnzepr7FK1GKTd+9yxFp2VJ0GJiai7n5rL72Uq1aM
+         k3WkJ5gAaYpFl4qQnWX8ZCTVosqEi7TA2Lv6054ltoIuPK4G4ZQ4jvl6eKT82QnjkBAF
+         Q5ZPhd81n9Xkk9fA61LKnmq+9yejt3s3XqOHeHq+/XeTbgYIGpvlwr19zfoDp+QsqCyQ
+         vHm1OgzZtwmFWKakdNo6gbNopibS26GcSs32BtOUqA4UMcnY0TV3dAeu1Dx9xqoPwCr1
+         sl9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+TpZa+C9cCQwz4Q2nu+eQulPH6EC1ZhAKJ0Pt2gzF58=;
+        b=EH4NGcU3yjNnXVK5ojTmBavbv48PcaZib41z0boAPqVX/llFb819aaXtkxVokRx7DE
+         tTa9iihc1j8RVI/E5ECsHt2lITe2iQ6EWnieex6UuDUgl7VQyQVKpNqWXemAV0z25OI9
+         uPBrrb1PW5ptw5Ygxo4IiHyqc+i/0yJd6lMWLgEKTjUhcl4CTw7It8okssuEKw7+nW5t
+         BLnMqk0RFwTGOtWgRuy0U1S/t0rTZWU/zSa5U6mLTQiATDxEdyQ3gxN2MhUZQHEP9Jv2
+         ybBfAQRdkJZisGU1QyQVjzILCzsGF0Q1HODQXZ/0AcpXVr2F3nGQcJFPoevY3KfCwLsS
+         HijA==
+X-Gm-Message-State: AOAM5335wUOpslGDWXrs1zLYz7vMeEOtokoH37QUpeXPp66U+qTmdkYm
+        iSlf0anXZkf5D6lwrumVk1jxJW29CaUVkMOcTrPQHA==
+X-Google-Smtp-Source: ABdhPJx1061aL/GqHoj3QkAEX++DNSP6KXBGITCMLiN6jW2qaQa8bGDJNhOL8TCspjkGwTLyMoKgn+vBboav1U+bOOg=
+X-Received: by 2002:a2e:b817:: with SMTP id u23mr249392ljo.116.1618444031762;
+ Wed, 14 Apr 2021 16:47:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618442265.git.gustavoars@kernel.org>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-4-ojeda@kernel.org>
+In-Reply-To: <20210414184604.23473-4-ojeda@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Apr 2021 16:46:59 -0700
+Message-ID: <CAKwvOd=YV1Ck3hYKEC9035o+yghy_Oh1VWAyeGLQP5B9SR9xLw@mail.gmail.com>
+Subject: Re: [PATCH 03/13] Makefile: Generate CLANG_FLAGS even in GCC builds
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warnings by adding a new structure
-wl3501_req instead of duplicating the same members in structure
-wl3501_join_req and wl3501_scan_confirm:
+On Wed, Apr 14, 2021 at 11:48 AM <ojeda@kernel.org> wrote:
+>
+> From: Miguel Ojeda <ojeda@kernel.org>
+>
+> To support Rust under GCC-built kernels, we need to save the flags that
+> would have been passed if the kernel was being compiled with Clang.
+>
+> The reason is that bindgen -- the tool we use to generate Rust bindings
+> to the C side of the kernel -- relies on libclang to parse C. Ideally:
+>
+>   - bindgen would support a GCC backend (requested at [1]),
+>
+>   - or the Clang driver would be perfectly compatible with GCC,
+>     including plugins. Unlikely, of course, but perhaps a big
+>     subset of configs may be possible to guarantee to be kept
+>     compatible nevertheless.
+>
+> This is also the reason why GCC builds are very experimental and some
+> configurations may not work (e.g. GCC_PLUGIN_RANDSTRUCT). However,
+> we keep GCC builds working (for some example configs) in the CI
+> to avoid diverging/regressing further, so that we are better prepared
+> for the future when a solution might become available.
+>
+> [1] https://github.com/rust-lang/rust-bindgen/issues/1949
+>
+> Link: https://github.com/Rust-for-Linux/linux/issues/167
+>
+> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Co-developed-by: Finn Behrens <me@kloenk.de>
+> Signed-off-by: Finn Behrens <me@kloenk.de>
+> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  Makefile | 27 ++++++++++++++++-----------
+>  1 file changed, 16 insertions(+), 11 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index d4784d181123..9c75354324ed 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -559,26 +559,31 @@ ifdef building_out_of_srctree
+>         { echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
+>  endif
+>
+> -# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> -# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> -# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> -# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> -CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
+> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
+>
+> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>  ifneq ($(CROSS_COMPILE),)
+> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>  GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+>  endif
+>  ifneq ($(GCC_TOOLCHAIN),)
+> -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
+> +TENTATIVE_CLANG_FLAGS  += --gcc-toolchain=$(GCC_TOOLCHAIN)
+>  endif
+>  ifneq ($(LLVM_IAS),1)
+> -CLANG_FLAGS    += -no-integrated-as
+> +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
+>  endif
+> -CLANG_FLAGS    += -Werror=unknown-warning-option
+> +
+> +export TENTATIVE_CLANG_FLAGS
 
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [25, 95] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 22 [-Warray-bounds]
+I'm ok with this approach, but I'm curious:
+If the user made a copy of the CLANG_FLAGS variable and modified its
+copy, would TENTATIVE_CLANG_FLAGS even be necessary? IIUC,
+TENTATIVE_CLANG_FLAGS is used to filter out certain flags before
+passing them to bindgen?
 
-Refactor the code, accordingly:
+Or, I'm curious whether you even need to rename this variable (or
+create a new variable) at all? Might make for a shorter diff if you
+just keep the existing identifier (CLANG_FLAGS), but create them
+unconditionally (at least not conditional on CC=clang).
 
-$ pahole -C wl3501_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_req {
-        u16                        beacon_period;        /*     0     2 */
-        u16                        dtim_period;          /*     2     2 */
-        u16                        cap_info;             /*     4     2 */
-        u8                         bss_type;             /*     6     1 */
-        u8                         bssid[6];             /*     7     6 */
-        struct iw_mgmt_essid_pset  ssid;                 /*    13    34 */
-        struct iw_mgmt_ds_pset     ds_pset;              /*    47     3 */
-        struct iw_mgmt_cf_pset     cf_pset;              /*    50     8 */
-        struct iw_mgmt_ibss_pset   ibss_pset;            /*    58     4 */
-        struct iw_mgmt_data_rset   bss_basic_rset;       /*    62    10 */
 
-        /* size: 72, cachelines: 2, members: 10 */
-        /* last cacheline: 8 bytes */
-};
+> +
+> +# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> +# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> +# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> +# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> +CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
+> +
+> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
+>  KBUILD_CFLAGS  += $(CLANG_FLAGS)
+>  KBUILD_AFLAGS  += $(CLANG_FLAGS)
+>  export CLANG_FLAGS
+> --
+> 2.17.1
+>
 
-$ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_join_req {
-        u16                        next_blk;             /*     0     2 */
-        u8                         sig_id;               /*     2     1 */
-        u8                         reserved;             /*     3     1 */
-        struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
-        u16                        reserved2;            /*    14     2 */
-        u16                        timeout;              /*    16     2 */
-        u16                        probe_delay;          /*    18     2 */
-        u8                         timestamp[8];         /*    20     8 */
-        u8                         local_time[8];        /*    28     8 */
-        struct wl3501_req          req;                  /*    36    72 */
 
-        /* size: 108, cachelines: 2, members: 10 */
-        /* last cacheline: 44 bytes */
-};
-
-$ pahole -C wl3501_scan_confirm drivers/net/wireless/wl3501_cs.o
-struct wl3501_scan_confirm {
-        u16                        next_blk;             /*     0     2 */
-        u8                         sig_id;               /*     2     1 */
-        u8                         reserved;             /*     3     1 */
-        u16                        status;               /*     4     2 */
-        char                       timestamp[8];         /*     6     8 */
-        char                       localtime[8];         /*    14     8 */
-        struct wl3501_req          req;                  /*    22    72 */
-        /* --- cacheline 1 boundary (64 bytes) was 30 bytes ago --- */
-        u8                         rssi;                 /*    94     1 */
-
-        /* size: 96, cachelines: 2, members: 8 */
-        /* padding: 1 */
-        /* last cacheline: 32 bytes */
-};
-
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). Now that a new struct wl3501_req enclosing all those adjacent
-members is introduced, memcpy() doesn't overrun the length of
-&sig.beacon_period and &this->bss_set[i].beacon_period, because the
-address of the new struct object _req_ is used as the destination,
-instead.
-
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v3:
- - Add new struct wl3501_req and refactor the code, accordingly.
- - Fix one more instance of this same issue.
- - Update changelog text.
-
-Changes in v2:
- - None.
-
- drivers/net/wireless/wl3501.h    | 35 +++++++++++--------------
- drivers/net/wireless/wl3501_cs.c | 44 +++++++++++++++++---------------
- 2 files changed, 38 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
-index aa8222cbea68..59b7b93c5963 100644
---- a/drivers/net/wireless/wl3501.h
-+++ b/drivers/net/wireless/wl3501.h
-@@ -379,16 +379,7 @@ struct wl3501_get_confirm {
- 	u8	mib_value[100];
- };
- 
--struct wl3501_join_req {
--	u16			    next_blk;
--	u8			    sig_id;
--	u8			    reserved;
--	struct iw_mgmt_data_rset    operational_rset;
--	u16			    reserved2;
--	u16			    timeout;
--	u16			    probe_delay;
--	u8			    timestamp[8];
--	u8			    local_time[8];
-+struct wl3501_req {
- 	u16			    beacon_period;
- 	u16			    dtim_period;
- 	u16			    cap_info;
-@@ -401,6 +392,19 @@ struct wl3501_join_req {
- 	struct iw_mgmt_data_rset    bss_basic_rset;
- };
- 
-+struct wl3501_join_req {
-+	u16			    next_blk;
-+	u8			    sig_id;
-+	u8			    reserved;
-+	struct iw_mgmt_data_rset    operational_rset;
-+	u16			    reserved2;
-+	u16			    timeout;
-+	u16			    probe_delay;
-+	u8			    timestamp[8];
-+	u8			    local_time[8];
-+	struct wl3501_req	    req;
-+};
-+
- struct wl3501_join_confirm {
- 	u16	next_blk;
- 	u8	sig_id;
-@@ -443,16 +447,7 @@ struct wl3501_scan_confirm {
- 	u16			    status;
- 	char			    timestamp[8];
- 	char			    localtime[8];
--	u16			    beacon_period;
--	u16			    dtim_period;
--	u16			    cap_info;
--	u8			    bss_type;
--	u8			    bssid[ETH_ALEN];
--	struct iw_mgmt_essid_pset   ssid;
--	struct iw_mgmt_ds_pset	    ds_pset;
--	struct iw_mgmt_cf_pset	    cf_pset;
--	struct iw_mgmt_ibss_pset    ibss_pset;
--	struct iw_mgmt_data_rset    bss_basic_rset;
-+	struct wl3501_req	    req;
- 	u8			    rssi;
- };
- 
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index 70307308635f..672f5d5f3f2c 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 	struct wl3501_join_req sig = {
- 		.sig_id		  = WL3501_SIG_JOIN_REQ,
- 		.timeout	  = 10,
--		.ds_pset = {
-+		.req.ds_pset = {
- 			.el = {
- 				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
- 				.len = 1,
-@@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 		},
- 	};
- 
--	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
-+	memcpy(&sig.req, &this->bss_set[stas].req, sizeof(sig.req));
- 	return wl3501_esbq_exec(this, &sig, sizeof(sig));
- }
- 
-@@ -667,35 +667,37 @@ static void wl3501_mgmt_scan_confirm(struct wl3501_card *this, u16 addr)
- 	if (sig.status == WL3501_STATUS_SUCCESS) {
- 		pr_debug("success");
- 		if ((this->net_type == IW_MODE_INFRA &&
--		     (sig.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
-+		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
- 		    (this->net_type == IW_MODE_ADHOC &&
--		     (sig.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
-+		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
- 		    this->net_type == IW_MODE_AUTO) {
- 			if (!this->essid.el.len)
- 				matchflag = 1;
- 			else if (this->essid.el.len == 3 &&
- 				 !memcmp(this->essid.essid, "ANY", 3))
- 				matchflag = 1;
--			else if (this->essid.el.len != sig.ssid.el.len)
-+			else if (this->essid.el.len != sig.req.ssid.el.len)
- 				matchflag = 0;
--			else if (memcmp(this->essid.essid, sig.ssid.essid,
-+			else if (memcmp(this->essid.essid, sig.req.ssid.essid,
- 					this->essid.el.len))
- 				matchflag = 0;
- 			else
- 				matchflag = 1;
- 			if (matchflag) {
- 				for (i = 0; i < this->bss_cnt; i++) {
--					if (ether_addr_equal_unaligned(this->bss_set[i].bssid, sig.bssid)) {
-+					if (ether_addr_equal_unaligned(this->bss_set[i].req.bssid,
-+								       sig.req.bssid)) {
- 						matchflag = 0;
- 						break;
- 					}
- 				}
- 			}
- 			if (matchflag && (i < 20)) {
--				memcpy(&this->bss_set[i].beacon_period,
--				       &sig.beacon_period, 73);
-+				memcpy(&this->bss_set[i].req,
-+				       &sig.req, sizeof(sig.req));
- 				this->bss_cnt++;
- 				this->rssi = sig.rssi;
-+				this->bss_set[i].rssi = sig.rssi;
- 			}
- 		}
- 	} else if (sig.status == WL3501_STATUS_TIMEOUT) {
-@@ -887,19 +889,19 @@ static void wl3501_mgmt_join_confirm(struct net_device *dev, u16 addr)
- 			if (this->join_sta_bss < this->bss_cnt) {
- 				const int i = this->join_sta_bss;
- 				memcpy(this->bssid,
--				       this->bss_set[i].bssid, ETH_ALEN);
--				this->chan = this->bss_set[i].ds_pset.chan;
-+				       this->bss_set[i].req.bssid, ETH_ALEN);
-+				this->chan = this->bss_set[i].req.ds_pset.chan;
- 				iw_copy_mgmt_info_element(&this->keep_essid.el,
--						     &this->bss_set[i].ssid.el);
-+						     &this->bss_set[i].req.ssid.el);
- 				wl3501_mgmt_auth(this);
- 			}
- 		} else {
- 			const int i = this->join_sta_bss;
- 
--			memcpy(&this->bssid, &this->bss_set[i].bssid, ETH_ALEN);
--			this->chan = this->bss_set[i].ds_pset.chan;
-+			memcpy(&this->bssid, &this->bss_set[i].req.bssid, ETH_ALEN);
-+			this->chan = this->bss_set[i].req.ds_pset.chan;
- 			iw_copy_mgmt_info_element(&this->keep_essid.el,
--						  &this->bss_set[i].ssid.el);
-+						  &this->bss_set[i].req.ssid.el);
- 			wl3501_online(dev);
- 		}
- 	} else {
-@@ -1573,30 +1575,30 @@ static int wl3501_get_scan(struct net_device *dev, struct iw_request_info *info,
- 	for (i = 0; i < this->bss_cnt; ++i) {
- 		iwe.cmd			= SIOCGIWAP;
- 		iwe.u.ap_addr.sa_family = ARPHRD_ETHER;
--		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].bssid, ETH_ALEN);
-+		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].req.bssid, ETH_ALEN);
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_ADDR_LEN);
- 		iwe.cmd		  = SIOCGIWESSID;
- 		iwe.u.data.flags  = 1;
--		iwe.u.data.length = this->bss_set[i].ssid.el.len;
-+		iwe.u.data.length = this->bss_set[i].req.ssid.el.len;
- 		current_ev = iwe_stream_add_point(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe,
--						  this->bss_set[i].ssid.essid);
-+						  this->bss_set[i].req.ssid.essid);
- 		iwe.cmd	   = SIOCGIWMODE;
--		iwe.u.mode = this->bss_set[i].bss_type;
-+		iwe.u.mode = this->bss_set[i].req.bss_type;
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_UINT_LEN);
- 		iwe.cmd = SIOCGIWFREQ;
--		iwe.u.freq.m = this->bss_set[i].ds_pset.chan;
-+		iwe.u.freq.m = this->bss_set[i].req.ds_pset.chan;
- 		iwe.u.freq.e = 0;
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_FREQ_LEN);
- 		iwe.cmd = SIOCGIWENCODE;
--		if (this->bss_set[i].cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
-+		if (this->bss_set[i].req.cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
- 			iwe.u.data.flags = IW_ENCODE_ENABLED | IW_ENCODE_NOKEY;
- 		else
- 			iwe.u.data.flags = IW_ENCODE_DISABLED;
--- 
-2.27.0
-
+--
+Thanks,
+~Nick Desaulniers
