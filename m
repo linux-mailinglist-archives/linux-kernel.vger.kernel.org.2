@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFB435FA78
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680F035FA7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352498AbhDNSMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:12:43 -0400
+        id S1352627AbhDNSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:12:56 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244919AbhDNSMM (ORCPT
+        with ESMTP id S1347626AbhDNSMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:12:12 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4C5C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:50 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u21so32811322ejo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:50 -0700 (PDT)
+        Wed, 14 Apr 2021 14:12:14 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D6C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:51 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id m3so24830952edv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Xo+FKasd3gyu4aP2gmz/WdWr4BgS5HtGq4NGSXvNMVw=;
-        b=M3eRDjsaWUxrp72xFWXSAcoZRztWJY1Sq2nrcqq+joRbBQwXyF5a8JRuPpnMFVsvyr
-         YGhH3JpHdqx1bnzM5Pgrgz2NbxogVSFAcB/T/hNkaJL3mlVycskNHHxoTK/WTKq0JXce
-         tAZODtydWNyT4uzl1rFdZdhCEJKMdKW1ciBVjGa3Z/617fAFlpWeU60W6H7UBifraXSr
-         MG1UBUsXxhgaOSOmkodojpQgGztcmnAJ+0EFHsFfbV4ZPXyICUEMNrV1vkk2QqrXGMsl
-         lRUonzKICUsYBP8ktJ+wxsjvNN+YJFg98E275EpBgBfvi8U32fmY5XnfizLSPi5OrbFX
-         vREg==
+        bh=jmKShNJOq6+2r/pcFVOsH3BuY6l+Ra5OlenQ7pEqnqQ=;
+        b=HtOKDuoGu95gJsvLP+zYZwjWmOr5BtTfd4KX1etWcBAQoLUdWPopIHOQWQ8KhTuhho
+         0MSWHDTJCo7h3hx2z593WazWNcl6i0t1gE0U4yJFm7ZAheNJwJ3He/dRC4C9r9SDvaPY
+         uZ3rbqvBvFEu92pZQR/cn4UmVptzDzzlOq8jXyIlq9a5jPc2DEx5+VUA4nKXD3BF8Ejh
+         CAuPqKB9m7k/MWie0o3R16Avo0GW6+2aR6HQGTv4VIhRkSoI8O8QzGPk+NSTv0Fp3XGy
+         Cln3XUn4IWL+ui1s1EIQ5klVDwPlpQJPFNXxX9wM4cIUfvIdAQmnkAT/0tbA6cDBll1z
+         B2Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xo+FKasd3gyu4aP2gmz/WdWr4BgS5HtGq4NGSXvNMVw=;
-        b=rjvidw+xT+r+S2fE0bxn2DjrwYTJ6X8Ngb7eASGkwGyhBAiH/cTkDv2BtthSZ7VIe1
-         36+He+uC942L6+DGKKPZwriPKi5uzm3ENCR0DGkmPLVg2usVG7KOx9X3pTpNVUYhTvLy
-         hJGZHrkHwK5wiiDGw+JyZ0X5isSVCR+wdhLeL8WG+HWFBmIOyn1uF/AiYvGbXUo70HYL
-         H4aV89S4XadjnA7wgRBDWCmR8AAhn2rkQRKgkktGkv6ETNFX3PCLkOSvpXCqVAL8pjp8
-         ZimWm9YZbLkm4WKJiQI+XgYbQ7ajYITc5GMUX6qAeqiap30/+Y4pQPiLIQv5oFSa/k+U
-         szkA==
-X-Gm-Message-State: AOAM531XkbC1jwCZhHJUFCrOoBJXiFRfQvBHvl7NOEJSahSvIsr3XX2I
-        g4qAHKHsdn+34LhFPsenIyrJug==
-X-Google-Smtp-Source: ABdhPJxjp9uvX4PC1R+SJpRYCTUUvvrn/t7fdrGvk/9TLxQ4RVKGvITHC0+F52asO0jZ9mASZpXDIg==
-X-Received: by 2002:a17:907:2d94:: with SMTP id gt20mr149467ejc.552.1618423909349;
-        Wed, 14 Apr 2021 11:11:49 -0700 (PDT)
+        bh=jmKShNJOq6+2r/pcFVOsH3BuY6l+Ra5OlenQ7pEqnqQ=;
+        b=YEPrEC92zNTucbivlceCAAIz3tN2CgGKzgtdELfO38xwsB6FCgUWgZCXP4h+Qg0aiz
+         jujKwdh9Vr1dRUAhxXjKlJAbKJS4AmYE+xfKDXv+AE/C4eKXjNh4EK+GVDx+nsGFATVb
+         cOiUN+R6IuCfJNlWMxkvPL4pZW+0QVimHZj2sUogu6fs3Jv1n2zNxL/J5GsrSUqQ4zwR
+         87j9RnsJ79hRBF60mEHJlijkfdEH1H+y7bM+TAK0Z26k4YzCFL4s4B9kwkkzVr9hOCgu
+         ia6M1Vn7VK1CLDRBfpWrZ/QSc49wOaUBrmwI7yLDA3BNKxzARQyEZwfbr/OzX15MiiFn
+         BR+w==
+X-Gm-Message-State: AOAM531SAogpvNgcj944ayy3Ey1mKCsvxpARR3r2hSdhyWjC8oiVAVio
+        tHgjwYs0M/1Haf6ofc3Bhu0Sdg==
+X-Google-Smtp-Source: ABdhPJxGCjbKgVr7boBMoGbxjfqHGMXuiWIsdwvVGeLqCS95sTCVJ4eSuTj0eKMpNKqJLmMhF/lg2w==
+X-Received: by 2002:a50:d7d7:: with SMTP id m23mr178840edj.378.1618423910286;
+        Wed, 14 Apr 2021 11:11:50 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.48
+        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:11:48 -0700 (PDT)
+        Wed, 14 Apr 2021 11:11:49 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev
-Subject: [PATCH 14/57] staging: rtl8188eu: core: rtw_security: Fix some formatting and misdocumentation
-Date:   Wed, 14 Apr 2021 19:10:46 +0100
-Message-Id: <20210414181129.1628598-15-lee.jones@linaro.org>
+Subject: [PATCH 15/57] staging: rtl8723bs: core: rtw_security: Demote non-conformant kernel-doc header
+Date:   Wed, 14 Apr 2021 19:10:47 +0100
+Message-Id: <20210414181129.1628598-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210414181129.1628598-1-lee.jones@linaro.org>
 References: <20210414181129.1628598-1-lee.jones@linaro.org>
@@ -78,43 +76,26 @@ Fixes the following W=1 kernel build warning(s):
  drivers/staging/rtl8188eu/core/rtw_security.c:517: warning: Function parameter or member 'p1k' not described in 'phase2'
  drivers/staging/rtl8723bs/core/rtw_security.c:1937: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-Cc: Larry Finger <Larry.Finger@lwfinger.net>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Michael Straube <straube.linux@gmail.com>
 Cc: linux-staging@lists.linux.dev
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/staging/rtl8188eu/core/rtw_security.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_security.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index 617f89842c812..4d0a23bf3f660 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -465,8 +465,9 @@ static const unsigned short Sbox1[2][256] = {  /* Sbox for hash (can be in ROM)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index 9587d89a6b24e..60b724729900e 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -1921,7 +1921,7 @@ const u8 rcons[] = {
+ 	/* for 128-bit blocks, Rijndael never uses more than 10 rcon values */
+ };
  
- /**
-  * phase1() - generate P1K, given TA, TK, IV32
-- * @tk[]: temporal key [128 bits]
-- * @ta[]: transmitter's MAC address [ 48 bits]
-+ * @p1k: placeholder for the returned phase 1 key
-+ * @tk: temporal key [128 bits]
-+ * @ta: transmitter's MAC address [ 48 bits]
-  * @iv32: upper 32 bits of IV [ 32 bits]
+-/**
++/*
+  * Expand the cipher key into the encryption key schedule.
   *
-  * This function only needs to be called every 2**16 packets,
-@@ -498,8 +499,9 @@ static void phase1(u16 *p1k, const u8 *tk, const u8 *ta, u32 iv32)
- 
- /**
-  * phase2() - generate RC4KEY, given TK, P1K, IV16
-- * @tk[]: Temporal key [128 bits]
-- * @p1k[]: Phase 1 output key [ 80 bits]
-+ * @rc4key: Placeholder for the returned key
-+ * @tk: Temporal key [128 bits]
-+ * @p1k: Phase 1 output key [ 80 bits]
-  * @iv16: low 16 bits of IV counter [ 16 bits]
-  *
-  * The value {TA, IV32, IV16} for Phase1/Phase2 must be unique
+  * @return	the number of rounds for the given cipher key size.
 -- 
 2.27.0
 
