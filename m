@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78E435F8AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4649335F8AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352611AbhDNQHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:07:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34016 "EHLO mail.kernel.org"
+        id S1352618AbhDNQHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:07:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352604AbhDNQHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:07:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C19D061179;
-        Wed, 14 Apr 2021 16:06:49 +0000 (UTC)
+        id S1352610AbhDNQHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:07:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C3B611B0;
+        Wed, 14 Apr 2021 16:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618416410;
-        bh=BPlhBuiYRkW4vB0YGvE5clIuOpYnoQwsKGoAS9ZehhM=;
+        s=k20201202; t=1618416413;
+        bh=L4F495iiGqUPwVJ4yGcCT0wnok09sJf0k66HFI3lKV0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFQt6bK6bi9ufRvVIHDJ1FOwMBnGKV1FbdyJ/T/XiKircSoWb6ODOR7fZNcLIQlPu
-         Zhucq1fRYHWUgwCdQRQj35kvk6Ir8RFZghNgmQ5rlY+ID4rJGBBdgDg8jpe8YnuO5X
-         0cdeYtq8BzgNcVxl0kpLbQnN6FBC+rrcxskTNy3uyu5AOyfvQgSlPhGK2DEpBFiX3P
-         T3pQ913H7UjG7bVK7XrMpaK7T+MP6WPyCDbcRBi9/MjgyzWCbItIbBCmoSFGg0SKuh
-         MaeT5eABQZraoOzLJ9zeqscZg3CB9EGWL9lQ9/rKzQRu9GuFxiz5vZhugLWIcfO/8/
-         1YAmEQpyytcpg==
+        b=sMOacyPQRr8/MPuUavf2Pn/pCNUvsu2u+/soswqXFs7ti8gxsIqCrnnOGoXrr14nv
+         jgVfNHTpijfPBACmIMdeaKYFNwzmmEMo8WCnVCDih1tx22iujjn1kpJwm4I+FksnDO
+         FK5kUm/KWi66DUSdc2O22y1lkNbBZrml/El2kDSsFs7UQ5BW7UOoOPc/KLx+TPl+3g
+         fv0tUZ3EK0aIiy/lXosQR93QlwL+U62AVQqQKxlxtrN5bPEXV/foClBEfSSMWg+0Bb
+         fHXUlhALVM1v/R69olzXhN8jF1pERGrgvtDEmTjkU7wEMfFfJ5lDhCCBELe/gEUdCL
+         rqyH7DfzzBThA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>, james.schulman@cirrus.com
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, lgirdwood@gmail.com,
+To:     alsa-devel@alsa-project.org, perex@perex.cz, lgirdwood@gmail.com,
         linux-kernel@vger.kernel.org, tiwai@suse.com,
-        david.rhodes@cirrus.com
-Subject: Re: [PATCH] ASoC: cs35l35: remove unused including <linux/version.h>
-Date:   Wed, 14 Apr 2021 17:06:21 +0100
-Message-Id: <161841601730.20953.11471604452451396638.b4-ty@kernel.org>
+        Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 -next 1/2] ASoC: ak5558: correct reset polarity
+Date:   Wed, 14 Apr 2021 17:06:22 +0100
+Message-Id: <161841601730.20953.3339137188444911098.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1618380883-114841-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1618380883-114841-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,9 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 14:14:43 +0800, Yang Li wrote:
-> Fix the following versioncheck warning:
-> ./sound/soc/codecs/cs35l35.c: 12 linux/version.h not needed.
+On Wed, 14 Apr 2021 14:33:43 +0800, Shengjiu Wang wrote:
+> Reset (aka power off) happens when the reset gpio is made active.
+> The reset gpio is GPIO_ACTIVE_LOW
 
 Applied to
 
@@ -52,8 +51,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs35l35: remove unused including <linux/version.h>
-      commit: e42b6e813f4231d3c38362fd800724bd41040ef9
+[1/2] ASoC: ak5558: correct reset polarity
+      commit: 0b93bbc977af55fd10687f2c96c807cba95cb927
+[2/2] ASoC: ak5558: change function name to ak5558_reset
+      commit: 4d5d75ce2b32577afef26a233119d8ee1b764ea7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
