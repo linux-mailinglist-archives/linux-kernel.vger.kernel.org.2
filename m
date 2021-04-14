@@ -2,430 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BB635F658
+	by mail.lfdr.de (Postfix) with ESMTP id 53C8035F659
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349690AbhDNOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:41:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41796 "EHLO mail.kernel.org"
+        id S1349834AbhDNOmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:42:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:57390 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232413AbhDNOl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:41:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1A6760FF3;
-        Wed, 14 Apr 2021 14:41:03 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 10:41:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kcarcia@redhat.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 3/5] tracing/hwlat: Implement the per-cpu mode
-Message-ID: <20210414104102.7589626c@gandalf.local.home>
-In-Reply-To: <1c99ca2d7403474508aa7b025869c0673238400a.1617889883.git.bristot@redhat.com>
-References: <cover.1617889883.git.bristot@redhat.com>
-        <1c99ca2d7403474508aa7b025869c0673238400a.1617889883.git.bristot@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232380AbhDNOmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:42:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6939BED1;
+        Wed, 14 Apr 2021 07:41:50 -0700 (PDT)
+Received: from [10.57.47.202] (unknown [10.57.47.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A2F23F694;
+        Wed, 14 Apr 2021 07:41:48 -0700 (PDT)
+Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+To:     coresight@lists.linaro.org
+Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414143919.12605-1-james.clark@arm.com>
+ <20210414143919.12605-2-james.clark@arm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
+Date:   Wed, 14 Apr 2021 17:41:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  8 Apr 2021 16:13:21 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+Hi,
 
-> Implements the per-cpu mode in which a sampling thread is created for
-> each cpu in the "cpus" (and tracing_mask).
-> 
-> The per-cpu mode has the potention to speed up the hwlat detection by
-> running on multiple CPUs at the same time.
+For this change, I also tried removing the setting of PERF_SAMPLE_TIME in cs_etm__synth_events(). In theory, this would remove the sorting when opening the file, but the change doesn't affect when the built-in events are saved to the inject file. Resulting in events like MMAP and COMM with timestamps, but the synthesised events without. This results in the same issue of the synthesised events appearing before the COMM and MMAP events. If it was possible to somehow tell perf to remove timestamps from built-in events, removing PERF_SAMPLE_TIME would probably be the right solution, because we don't set sample.time.
 
-And totally slow down the entire system in the process ;-)
+For Arm v8.4 we will have the kernel time in the etm timestamps, so an if can be added to switch between this behaviour and the next (more correct) one depending on the hardware. 
 
+On the subject of timestamps, but not related to this change, some combinations of timestamp options aren't working. For example:
+
+    perf record -e cs_etm/time,@tmc_etr0/u --per-thread
+or  perf record -e cs_etm/@tmc_etr0/u --timestamp --per-thread
+
+These don't work because of the assumption that etm->timeless_decoding == --per-thread
+and kernel timestamps enabled (/time/ or --timestamp) == etm timestamps enabled (/timestamp/), which isn't necessarily true.
+
+This can be made to work with a few code changes for cs_etm/time,timestamp/u --per-thread, but cs_etm/time/u --per-thread could be a bit more work. Changes involved would be using "per_cpu_mmaps" in some places instead of etm->timeless_decoding, and also setting etm->timeless_decoding based on whether there are any etm timestamps, not kernel ones. Although to search for any etm timestamp would involve a full decode ahead of time which might not be feasible (or maybe just checking the options, although that's not how it's done in cs_etm__is_timeless_decoding() currently).
+
+Or, we could force /time/ and /timestamp/ options to always be enabled together in the record stage. 
+
+
+Thanks
+James
+
+On 14/04/2021 17:39, James Clark wrote:
+> The following attribute is set when synthesising samples in
+> timed decoding mode:
 > 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Cc: Clark Willaims <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+>     attr.sample_type |= PERF_SAMPLE_TIME;
 > 
+> This results in new samples that appear to have timestamps but
+> because we don't assign any timestamps to the samples, when the
+> resulting inject file is opened again, the synthesised samples
+> will be on the wrong side of the MMAP or COMM events.
+> 
+> For example this results in the samples being associated with
+> the perf binary, rather than the target of the record:
+> 
+>     perf record -e cs_etm/@tmc_etr0/u top
+>     perf inject -i perf.data -o perf.inject --itrace=i100il
+>     perf report -i perf.inject
+> 
+> Where 'Command' == perf should show as 'top':
+> 
+>     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
+>     # ........  .......  ....................  ......................  ......................  ..................
+>     #
+>         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
+> 
+> If the perf.data file is opened directly with perf, without the
+> inject step, then this already works correctly because the
+> events are synthesised after the COMM and MMAP events and
+> no second sorting happens. Re-sorting only happens when opening
+> the perf.inject file for the second time so timestamps are
+> needed.
+> 
+> Using the timestamp from the AUX record mirrors the current
+> behaviour when opening directly with perf, because the events
+> are generated on the call to cs_etm__process_queues().
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Co-developed-by: Al Grant <al.grant@arm.com>
+> Signed-off-by: Al Grant <al.grant@arm.com>
 > ---
->  Documentation/trace/hwlat_detector.rst |   6 +-
->  kernel/trace/trace_hwlat.c             | 171 +++++++++++++++++++------
->  2 files changed, 137 insertions(+), 40 deletions(-)
+>  tools/perf/util/cs-etm.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/trace/hwlat_detector.rst b/Documentation/trace/hwlat_detector.rst
-> index f63fdd867598..7a6fab105b29 100644
-> --- a/Documentation/trace/hwlat_detector.rst
-> +++ b/Documentation/trace/hwlat_detector.rst
-> @@ -85,10 +85,12 @@ the available options are:
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index c25da2ffa8f3..d0fa9dce47f1 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
+>  	u8 sample_instructions;
 >  
->   - none:        do not force migration
->   - round-robin: migrate across each CPU specified in cpus between each window
-> + - per-cpu:     create a per-cpu thread for each cpu in cpus
+>  	int num_cpu;
+> +	u64 latest_kernel_timestamp;
+>  	u32 auxtrace_type;
+>  	u64 branches_sample_type;
+>  	u64 branches_id;
+> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
+>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
+>  	event->sample.header.size = sizeof(struct perf_event_header);
 >  
->  By default, hwlat detector will also obey the tracing_cpumask, so the thread
->  will be placed only in the set of cpus that is both on the hwlat detector's
->  cpus and in the global tracing_cpumask file. The user can overwrite the
->  cpumask by setting it manually. Changing the hwlatd affinity externally,
-> -e.g., via taskset tool, will disable the round-robin migration.
-> -
-> +e.g., via taskset tool, will disable the round-robin migration. In the
-> +per-cpu mode, the per-cpu thread (hwlatd/CPU) will be pinned to its relative
-> +cpu, and its affinity cannot be changed.
-> diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-> index 3818200c9e24..52968ea312df 100644
-> --- a/kernel/trace/trace_hwlat.c
-> +++ b/kernel/trace/trace_hwlat.c
-> @@ -34,7 +34,7 @@
->   * Copyright (C) 2008-2009 Jon Masters, Red Hat, Inc. <jcm@redhat.com>
->   * Copyright (C) 2013-2016 Steven Rostedt, Red Hat, Inc. <srostedt@redhat.com>
->   *
-> - * Includes useful feedback from Clark Williams <clark@redhat.com>
-> + * Includes useful feedback from Clark Williams <williams@redhat.com>
-
-Interesting update ;-)
-
->   *
->   */
->  #include <linux/kthread.h>
-> @@ -54,9 +54,6 @@ static struct trace_array	*hwlat_trace;
->  #define DEFAULT_SAMPLE_WIDTH	500000			/* 0.5s */
->  #define DEFAULT_LAT_THRESHOLD	10			/* 10us */
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>  	sample.ip = addr;
+>  	sample.pid = tidq->pid;
+>  	sample.tid = tidq->tid;
+> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
+>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
+>  	event->sample.header.size = sizeof(struct perf_event_header);
 >  
-> -/* sampling thread*/
-> -static struct task_struct *hwlat_kthread;
-> -
->  static struct dentry *hwlat_sample_width;	/* sample width us */
->  static struct dentry *hwlat_sample_window;	/* sample window us */
->  static struct dentry *hwlat_cpumask_dentry;	/* hwlat cpus allowed */
-> @@ -65,19 +62,27 @@ static struct dentry *hwlat_thread_mode;	/* hwlat thread mode */
->  enum {
->  	MODE_NONE = 0,
->  	MODE_ROUND_ROBIN,
-> +	MODE_PER_CPU,
->  	MODE_MAX
->  };
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>  	sample.ip = ip;
+>  	sample.pid = tidq->pid;
+>  	sample.tid = tidq->tid;
+> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
+>  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
+>  		return cs_etm__process_switch_cpu_wide(etm, event);
 >  
-> -static char *thread_mode_str[] = { "none", "round-robin" };
-> +static char *thread_mode_str[] = { "none", "round-robin", "per-cpu" };
->  
->  /* Save the previous tracing_thresh value */
->  static unsigned long save_tracing_thresh;
->  
-> -/* NMI timestamp counters */
-> -static u64 nmi_ts_start;
-> -static u64 nmi_total_ts;
-> -static int nmi_count;
-> -static int nmi_cpu;
-> +/* runtime kthread data */
-> +struct hwlat_kthread_data {
-> +	struct task_struct *kthread;
-> +	/* NMI timestamp counters */
-> +	u64 nmi_ts_start;
-> +	u64 nmi_total_ts;
-> +	int nmi_count;
-> +	int nmi_cpu;
-> +};
-> +
-> +struct hwlat_kthread_data hwlat_single_cpu_data;
-> +DEFINE_PER_CPU(struct hwlat_kthread_data, hwlat_per_cpu_data);
->  
->  /* Tells NMIs to call back to the hwlat tracer to record timestamps */
->  bool trace_hwlat_callback_enabled;
-> @@ -114,6 +119,14 @@ static struct hwlat_data {
->  	.thread_mode		= MODE_ROUND_ROBIN
->  };
->  
-> +struct hwlat_kthread_data *get_cpu_data(void)
-> +{
-> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
-> +		return this_cpu_ptr(&hwlat_per_cpu_data);
-> +	else
-> +		return &hwlat_single_cpu_data;
-> +}
-> +
->  static bool hwlat_busy;
->  
->  static void trace_hwlat_sample(struct hwlat_sample *sample)
-> @@ -151,7 +164,9 @@ static void trace_hwlat_sample(struct hwlat_sample *sample)
->  
->  void trace_hwlat_callback(bool enter)
->  {
-> -	if (smp_processor_id() != nmi_cpu)
-> +	struct hwlat_kthread_data *kdata = get_cpu_data();
-> +
-> +	if (kdata->kthread)
->  		return;
->  
->  	/*
-> @@ -160,13 +175,13 @@ void trace_hwlat_callback(bool enter)
->  	 */
->  	if (!IS_ENABLED(CONFIG_GENERIC_SCHED_CLOCK)) {
->  		if (enter)
-> -			nmi_ts_start = time_get();
-> +			kdata->nmi_ts_start = time_get();
->  		else
-> -			nmi_total_ts += time_get() - nmi_ts_start;
-> +			kdata->nmi_total_ts += time_get() - kdata->nmi_ts_start;
->  	}
->  
->  	if (enter)
-> -		nmi_count++;
-> +		kdata->nmi_count++;
->  }
->  
->  /**
-> @@ -178,6 +193,7 @@ void trace_hwlat_callback(bool enter)
->   */
->  static int get_sample(void)
->  {
-> +	struct hwlat_kthread_data *kdata = get_cpu_data();
->  	struct trace_array *tr = hwlat_trace;
->  	struct hwlat_sample s;
->  	time_type start, t1, t2, last_t2;
-> @@ -190,9 +206,8 @@ static int get_sample(void)
->  
->  	do_div(thresh, NSEC_PER_USEC); /* modifies interval value */
->  
-> -	nmi_cpu = smp_processor_id();
-> -	nmi_total_ts = 0;
-> -	nmi_count = 0;
-> +	kdata->nmi_total_ts = 0;
-> +	kdata->nmi_count = 0;
->  	/* Make sure NMIs see this first */
->  	barrier();
->  
-> @@ -262,15 +277,15 @@ static int get_sample(void)
->  		ret = 1;
->  
->  		/* We read in microseconds */
-> -		if (nmi_total_ts)
-> -			do_div(nmi_total_ts, NSEC_PER_USEC);
-> +		if (kdata->nmi_total_ts)
-> +			do_div(kdata->nmi_total_ts, NSEC_PER_USEC);
->  
->  		hwlat_data.count++;
->  		s.seqnum = hwlat_data.count;
->  		s.duration = sample;
->  		s.outer_duration = outer_sample;
-> -		s.nmi_total_ts = nmi_total_ts;
-> -		s.nmi_count = nmi_count;
-> +		s.nmi_total_ts = kdata->nmi_total_ts;
-> +		s.nmi_count = kdata->nmi_count;
->  		s.count = count;
->  		trace_hwlat_sample(&s);
->  
-> @@ -376,23 +391,43 @@ static int kthread_fn(void *data)
->  }
->  
->  /**
-> - * start_kthread - Kick off the hardware latency sampling/detector kthread
-> + * stop_stop_kthread - Inform the hardware latency samping/detector kthread to stop
-> + *
-> + * This kicks the running hardware latency sampling/detector kernel thread and
-> + * tells it to stop sampling now. Use this on unload and at system shutdown.
-> + */
-> +static void stop_single_kthread(void)
-> +{
-> +	struct hwlat_kthread_data *kdata = get_cpu_data();
-> +	struct task_struct *kthread = kdata->kthread;
-> +
-> +	if (!kthread)
-> +
-> +		return;
-> +	kthread_stop(kthread);
-> +
-> +	kdata->kthread = NULL;
-> +}
-> +
-> +
-> +/**
-> + * start_single_kthread - Kick off the hardware latency sampling/detector kthread
->   *
->   * This starts the kernel thread that will sit and sample the CPU timestamp
->   * counter (TSC or similar) and look for potential hardware latencies.
->   */
-> -static int start_kthread(struct trace_array *tr)
-> +static int start_single_kthread(struct trace_array *tr)
->  {
-> +	struct hwlat_kthread_data *kdata = get_cpu_data();
->  	struct cpumask *current_mask = &save_cpumask;
->  	struct task_struct *kthread;
->  	int next_cpu;
->  
-> -	if (hwlat_kthread)
-> +	if (kdata->kthread)
->  		return 0;
->  
-> -
->  	kthread = kthread_create(kthread_fn, NULL, "hwlatd");
-> -	if (IS_ERR(kthread)) {
-> +	if (IS_ERR(kdata->kthread)) {
->  		pr_err(BANNER "could not start sampling thread\n");
->  		return -ENOMEM;
->  	}
-> @@ -419,24 +454,77 @@ static int start_kthread(struct trace_array *tr)
->  
->  	sched_setaffinity(kthread->pid, current_mask);
->  
-> -	hwlat_kthread = kthread;
-> +	kdata->kthread = kthread;
->  	wake_up_process(kthread);
+> -	if (!etm->timeless_decoding &&
+> -	    event->header.type == PERF_RECORD_AUX)
+> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
+> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
+>  		return cs_etm__process_queues(etm);
+> +	}
 >  
 >  	return 0;
 >  }
->  
->  /**
-> - * stop_kthread - Inform the hardware latency samping/detector kthread to stop
-> + * stop_per_cpu_kthread - Inform the hardware latency samping/detector kthread to stop
->   *
-> - * This kicks the running hardware latency sampling/detector kernel thread and
-> + * This kicks the running hardware latency sampling/detector kernel threads and
->   * tells it to stop sampling now. Use this on unload and at system shutdown.
->   */
-> -static void stop_kthread(void)
-> +static void stop_per_cpu_kthreads(void)
->  {
-> -	if (!hwlat_kthread)
-> -		return;
-> -	kthread_stop(hwlat_kthread);
-> -	hwlat_kthread = NULL;
-> +	struct task_struct *kthread;
-> +	int cpu;
-> +
-> +	for_each_online_cpu(cpu) {
-> +		kthread = per_cpu(hwlat_per_cpu_data, cpu).kthread;
-> +		if (kthread)
-> +			kthread_stop(kthread);
-
-Probably want:
-
-		per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
-
-Just to be safe. I don't like to rely on the start doing the job, as things
-can change in the future. Having the clearing here as well makes the code
-more robust.
-
-
-> +	}
-> +}
-> +
-> +/**
-> + * start_per_cpu_kthread - Kick off the hardware latency sampling/detector kthreads
-> + *
-> + * This starts the kernel threads that will sit on potentially all cpus and
-> + * sample the CPU timestamp counter (TSC or similar) and look for potential
-> + * hardware latencies.
-> + */
-> +static int start_per_cpu_kthreads(struct trace_array *tr)
-> +{
-> +	struct cpumask *current_mask = &save_cpumask;
-> +	struct cpumask *this_cpumask;
-> +	struct task_struct *kthread;
-> +	char comm[24];
-> +	int cpu;
-> +
-> +	if (!alloc_cpumask_var(&this_cpumask, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	get_online_cpus();
-> +	/*
-> +	 * Run only on CPUs in which trace and hwlat are allowed to run.
-> +	 */
-> +	cpumask_and(current_mask, tr->tracing_cpumask, &hwlat_cpumask);
-> +	/*
-> +	 * And the CPU is online.
-> +	 */
-> +	cpumask_and(current_mask, cpu_online_mask, current_mask);
-> +	put_online_cpus();
-> +
-> +	for_each_online_cpu(cpu)
-> +		per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
-> +
-> +	for_each_cpu(cpu, current_mask) {
-> +		snprintf(comm, 24, "hwlatd/%d", cpu);
-> +
-> +		kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-> +		if (IS_ERR(kthread)) {
-> +			pr_err(BANNER "could not start sampling thread\n");
-> +			stop_per_cpu_kthreads();
-> +			return -ENOMEM;
-> +		}
-> +
-> +		per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
-> +		wake_up_process(kthread);
-> +	}
-> +
-> +	return 0;
->  }
->  
->  /*
-> @@ -701,7 +789,8 @@ static int hwlat_mode_open(struct inode *inode, struct file *file)
->   * The "none" sets the allowed cpumask for a single hwlatd thread at the
->   * startup and lets the scheduler handle the migration. The default mode is
->   * the "round-robin" one, in which a single hwlatd thread runs, migrating
-> - * among the allowed CPUs in a round-robin fashion.
-> + * among the allowed CPUs in a round-robin fashion. The "per-cpu" mode
-> + * creates one hwlatd thread per allowed CPU.
->   */
->  static ssize_t hwlat_mode_write(struct file *filp, const char __user *ubuf,
->  				 size_t cnt, loff_t *ppos)
-> @@ -827,14 +916,20 @@ static void hwlat_tracer_start(struct trace_array *tr)
->  {
->  	int err;
->  
-> -	err = start_kthread(tr);
-> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
-> +		err = start_per_cpu_kthreads(tr);
-> +	else
-> +		err = start_single_kthread(tr);
->  	if (err)
->  		pr_err(BANNER "Cannot start hwlat kthread\n");
->  }
->  
->  static void hwlat_tracer_stop(struct trace_array *tr)
->  {
-> -	stop_kthread();
-> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
-> +		stop_per_cpu_kthreads();
-> +	else
-> +		stop_single_kthread();
-
-This explains why you have the "busy" check in the changing of the modes.
-But really, I don't see why you cant change the mode. Just stop the
-previous mode, and start the new one.
-
--- Steve
-
-
->  }
->  
->  static int hwlat_tracer_init(struct trace_array *tr)
-> @@ -864,7 +959,7 @@ static int hwlat_tracer_init(struct trace_array *tr)
->  
->  static void hwlat_tracer_reset(struct trace_array *tr)
->  {
-> -	stop_kthread();
-> +	hwlat_tracer_stop(tr);
->  
->  	/* the tracing threshold is static between runs */
->  	last_tracing_thresh = tracing_thresh;
-
+> 
