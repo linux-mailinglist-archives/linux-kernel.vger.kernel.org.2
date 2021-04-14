@@ -2,348 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3986C35F8F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F392035F8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351759AbhDNQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351623AbhDNQab (ORCPT
+        id S1352726AbhDNQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:31:06 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53246 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349084AbhDNQbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:30:31 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F0CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:30:09 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id a9so10403463ioc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:30:09 -0700 (PDT)
+        Wed, 14 Apr 2021 12:31:04 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13EGEgur149290;
+        Wed, 14 Apr 2021 16:30:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Frl3qGnuhhzmNiKBToajHVY2sASWR2ZgJRsSHRAPsZU=;
+ b=KLALLeeiaXmI7U5+prZldZ4JCYdlg6NxreDIkaTjCxWutBQUu8bXofOBjYtKTkDVe8DP
+ 21hJULGu4X7Dvkbnmmqph8lPgXRWBA9M7FA2CFs44OQP8QXST+KtkHGPTJggz9qeIPfL
+ Hz5k08NAWpOzXv6aBJ11izYSU76VKCp2vPojqldn+i2d4vFsDYjHqwe8BY3nTYvFDdkT
+ xVRElWquYBs4ni3OHpszM9zG5v97CU20Hf8c06SPvbzxvwSYk9kWJBptc/a+nMV0yNsw
+ puLX3Gy919NTYNTv/nfBDQlvqfWUk023ofuDhO17V7WwVa+dddxAVaf3IszZ3j/0wjyZ Yg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37u3erk3f8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 16:30:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13EGGYAT072369;
+        Wed, 14 Apr 2021 16:30:15 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+        by aserp3030.oracle.com with ESMTP id 37unkr9r5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 16:30:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IHOskn9q1BavT/uRpTzrxWQqhyvJ4fsbkhfJCDqSmfQziRGqDuQw68GLvULcdLfpWnewMNXTmTK/H5D9n1VPnweGHEoHGtQLijp5Pb4f6b3yB55VS95algZCod1BhasYKbmWIMH4Y4iykmdbuuNQndgORieJ0/qQqCjATxPUnEHCX8ATlzsClhPPagfA7uEdScqTRQe6UMfL03PJLuzMS56yHEe8OVJ+KuJEXm9895bYnk8P6zl9/29gQt6cRaHODRUuOPGNRDUKI5pkTiyjHeuXbizCw8SjjYWomjrEelRx0ae7DzkP4WEwGYBiYTqXVMfnIWyGbWs90I2FzgzIeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Frl3qGnuhhzmNiKBToajHVY2sASWR2ZgJRsSHRAPsZU=;
+ b=KvolMQOja6hfmVJb9DRAAFjWNGBMByoBWw7ft8impLJ5mL0mlPh3GTt+ak/t93c2NSpHzeYFL/zZP0CMYN8+AeJwsWcJqS+BGG834DtrEfYTPFlQs0PMiqJf3LTxMMRzJCKDmYJnixxkD9lT3BNMEfhj5KkQ/myRICjTgvAh9w+aH5LB1X/WZ7O4pMazVsJ4dwGYeWoKE1WrPo+Gt9q4WndTdxtNQmahac5G87y2wQyMOQgZ6f0J0yoU4XGinSQnhRyFKuy+54DRuWHiPdfLj5jIplS0sCS9yIdhew3l/DEqM8FTCTWITgaxbqo2FV3xVJ1CoIvlAfBiSOGyPPP52w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ky8WjahUCjRIuhExK/xZvUryo/aleQ7oFfWueFWPLGA=;
-        b=FHR9Ov6YiB5/FLeBtCUoTTPdcK1wp0TldbDFyFijloNQv1KL6ycVGLburcy+ZXUTHk
-         F5l0aJDfQul/A4ys8XqOB7bqOOwzqq58+Wy9BceQCC4rr3cgdvYYkAXYUZjYixAO/tdv
-         6imNFd4AWJSShn2YZkQMmxii3UZ0qZgmuwdjoCPQHkREJcXI81Grp3JISTOqxk4FcOvz
-         BuV6pW59Fvg1Hz62jWh7qz//6LfMVlhlqnhT8bxHAgUe4rzk2tzcIlPt45iDXJxsO+ZP
-         VSFux6u2G5jzRYV9k7hybvEbAPut/6kcIeX782iGJ8tOkt0efo3dSofM6FwIgtwpPg13
-         dmpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ky8WjahUCjRIuhExK/xZvUryo/aleQ7oFfWueFWPLGA=;
-        b=roP6Vrwlk3MDlR+rsqkyhcvHXkCcgWZH2bfHi4T+Z9y/cmU+AEuvAoIxZDDE2YRrN5
-         pe+QyLJHFgUIc64izE8SPn/uxTPHX1k7+Lh/nJY/KoAUfQz4K/7xo0EohLNV7HQJBdco
-         6EvwBwsJgI3GDP3UVw8xzmWUuaXTpLCi39ahbjYfLFOSiICiIuAlqjD5V0FUNxU6ktDZ
-         HrekNIFpp3YFv5X5XxW+FkhadmzLed3BbIlHP7t/cZsyL1YX3KpqbYwkoMzNpw3fV5Ha
-         HGnJtBA6+yf1HsEGu2hHADbKVfNgzm9JBYNAkMxgvLEPDarh7u/EQEn7IBX45XVAGJfZ
-         s+CQ==
-X-Gm-Message-State: AOAM532uEuTe4VQjZoycRWh36HROZ/ZikVK+7xryKYhRgBPFkhgfW3eW
-        eGoCWWBAZ3uc9ZGtDK+Kc33JxGGg4Z3NrgSpOjkthg==
-X-Google-Smtp-Source: ABdhPJyaJLhuX+duILX4Qq2IW8YSDP9Uy+pmtix0AocXALijfpi4IY6PrjHey73aKpbmIZ+wzki35tLSLV/P9nBiRPM=
-X-Received: by 2002:a05:6638:204f:: with SMTP id t15mr15049389jaj.75.1618417808103;
- Wed, 14 Apr 2021 09:30:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210414081428.337494-1-davidgow@google.com>
-In-Reply-To: <20210414081428.337494-1-davidgow@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 14 Apr 2021 09:29:56 -0700
-Message-ID: <CAGS_qxryjASsRy9Ozox8UXx1=9PittUs=WmkO7=QpWt9HrLj7A@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: dev-tools: Add Testing Overview
-To:     David Gow <davidgow@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-doc@vger.kernel.org,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Frl3qGnuhhzmNiKBToajHVY2sASWR2ZgJRsSHRAPsZU=;
+ b=wruvBUsY7hJpBhIZK5gf0/jRQfZfMEoLLsy4MIJFwaAWQv7Yvde4Gkf/WgRXNytTKcFNWhimaLpDZ72a2CoRXWLt3SC0IMitjGhRq5qnjiC099KwcIE/QbUK78bmf27Yn4jBftlwAdgw2rZNboeYCTK2ZbIkWsNRBxNk5vFZslc=
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
+ by CO1PR10MB4770.namprd10.prod.outlook.com (2603:10b6:303:94::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Wed, 14 Apr
+ 2021 16:30:11 +0000
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::1ce7:260b:b004:c82c]) by MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::1ce7:260b:b004:c82c%11]) with mapi id 15.20.4020.023; Wed, 14 Apr
+ 2021 16:30:11 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>
+Subject: Re: [PATCH] arch/arm64/kernel/traps: Use find_vma_intersection() in
+ traps for setting si_code
+Thread-Topic: [PATCH] arch/arm64/kernel/traps: Use find_vma_intersection() in
+ traps for setting si_code
+Thread-Index: AQHXK8A77pSb5Vt+VUCCce95n7TITaqxL0MAgAGEBoCAABMCgIABeQ8A
+Date:   Wed, 14 Apr 2021 16:30:11 +0000
+Message-ID: <20210414163006.jh2kccbliktnt3x4@revolver>
+References: <20210407150940.542103-1-Liam.Howlett@Oracle.com>
+ <20210412174343.GG2060@arm.com> <20210413143035.7zrct6a3up42uaoo@revolver>
+ <20210413180030.GA31164@arm.com>
+In-Reply-To: <20210413180030.GA31164@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 86a62310-4d23-48b4-db0d-08d8ff62935e
+x-ms-traffictypediagnostic: CO1PR10MB4770:
+x-microsoft-antispam-prvs: <CO1PR10MB47700E7B16C157AA23C70ED3FD4E9@CO1PR10MB4770.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +RuixIKoPh+CPhxQZCQfx9plUGkHPHL86oTDpaXKSblxe+RWFyNRzaRPJptXErj6EeB3CbN23hQQOl8NQA8sJdMGLMkkhKv0pft6fjt7JqYyuxpEWh0O8f3+8mXYTrGDxwaYRO6S4WUfT3JsZftGzUVf0oopSuUge0Tdq9UE9nxt/2GgonxQbl98mNdIKlponpG0/zD7fZAewsgqQ6nE0uKXv/pHjLQRd511kZRcwecctP91Xr2VNqnW6PBHcgfIR2baDkJ1nw9lVtEvTLzL88fHdLXy7/kFEoVd7gLbgIXfxtRJj3UcMa+ze20MT5X4Kl8z5Qcyiu3RrfhdAPMWo2ForDEp5gWM3b0K6lza7xHds1Le18z6UzfWQA1eq3U0BBMNqu4gBEaoULRHbiaom5g982XI7bX3ArNmJ2jgHBWY4uksDZMsWXSySuiY29tEehlaSnEWUbq3lj9mhKJZAx5Qp5ToYfH0TeD1MZYV5Gh7oCczX9LmlXOpD5tWXMvsNL0va6e+dIzHfdCQVwdOpyBlejxWiRszTajwaMJZX+60pxfwAlZ2qxrZsGaqq/MS98uQ5GRNH54TkWyvUhpPVkZfcW61wWj5jynymLAGbH0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(396003)(366004)(136003)(39860400002)(376002)(44832011)(54906003)(83380400001)(316002)(6486002)(4326008)(6506007)(9686003)(8676002)(478600001)(6512007)(6916009)(66476007)(71200400001)(33716001)(66556008)(7416002)(66446008)(66946007)(76116006)(122000001)(1076003)(8936002)(91956017)(64756008)(38100700002)(86362001)(26005)(2906002)(5660300002)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SsC9CxSZboGtnuZ5Nb/Wgi9ImbSzRmNqk0Yhg859lUlqjxGJlRAB8H+i9gtj?=
+ =?us-ascii?Q?J74P9nMmrePJcswBlHHf/q4iwjFWn6cSFs9h9rQV+87KNdUfabiR9BH66yZv?=
+ =?us-ascii?Q?Gnfv8E24Ht2843HmDuWTl+Xg0VkX3gCUedGXOzKM0ygTyqOeNk1tPFkxJEJN?=
+ =?us-ascii?Q?CDjOrlITeYr0BzHUQTZoumH6EriO8FHxjnjSq+hvgqLBjBFgjUxv7oa4Pzzj?=
+ =?us-ascii?Q?7sjJZWv5dAokrnEdv7KH0m+vQoNYiE1LoCBx77X3c51tVJ8jaIa6+tQMAehT?=
+ =?us-ascii?Q?9eSyGSGIbaKIby1/t8+bNp56pyd3eiQ69YWO4ciKYALpfkMqK2aCpzo0dlEP?=
+ =?us-ascii?Q?mVddS90jzKGLgeLvJYa4aGJ9J9K1yAxZnPMoqW3zws/8GOuzhbpCfrO8E/u6?=
+ =?us-ascii?Q?e2vuvXtU/hjsUc75Cphu3lZYPp2uPWKeRUKLY8kpbG9UI+WANTDQEBen7kem?=
+ =?us-ascii?Q?byS+i2tA6R7ZfxX57a6EdljUIA2RlbITxyxWpe7SsSJNVqIwCZuM0exlIFgB?=
+ =?us-ascii?Q?Pqy281BB2YH2/ftDQbLSXPCqsXXd4uBfhWDhaFmKlHqVrWwxy4pL7rmfEn3F?=
+ =?us-ascii?Q?h3kmaGqFt3Ujde1aEriZIxJ+Vc+6gKbR7ZJEJsQHH8I4Cd3vH9lAfygz8DSS?=
+ =?us-ascii?Q?IhVNZI3JrCbD4Wve2kR1gyqTJTQQTPoIP7WLUKnz49BITotw1ADe0kl5CVMH?=
+ =?us-ascii?Q?JHPoLB+n6NVQEVMy01hYpfG1MnM5wHu+x5tQzK1llowf3lL4W22W0AoteErU?=
+ =?us-ascii?Q?zuHAhWX9PPvfc81KhXXtPtcu0UQ+usHFoteqQ1T1IeYmNXlcInSeaGTV3uMf?=
+ =?us-ascii?Q?4Xt4hM6QI+z861ln0bVc+yWskfTa1XJHzadNmzYwYJStWnHDqoq3cwqbi/e5?=
+ =?us-ascii?Q?S9VdEzup/VE47zVPY3gbQ6NThK4NVlK4OCthgfsLmPLCkeZeR6dLbNGiBwdI?=
+ =?us-ascii?Q?gl3L1DeLWSKDrjssrhZJ8V/1IzF0Y4M7pj86upyu97vxKkk5D+RdBtwDIjrN?=
+ =?us-ascii?Q?c63dLVoqepuA5ZoqynMLrRouZAQaUJfSq2/I8nz9bAfMocHm6dc8sadsvjPl?=
+ =?us-ascii?Q?VUtqw2/Lph6akVnFr6A3yeRCgdAik1aFzKhMtCH1hNg7W2v4sZjyv9IlCOnL?=
+ =?us-ascii?Q?iWFjDNb/wGm+/GOznpk8FhTUAtVTbv7BwQVPcQpKSq+XV/EY61WmkGRoWG4p?=
+ =?us-ascii?Q?z9jE+yMphjZb6O2eQowuIM8jOGjpMnM0aOJq1/P1T15BFvsNnHQOYmfwZuhv?=
+ =?us-ascii?Q?osDs8BBDYBuYyIg3AF/f3BwdQmHPbQIZrmj0oXCIfWX18u/OOIEOFD0+KhgG?=
+ =?us-ascii?Q?YQqm03VASnK0fJuNJWkB0M2a?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <838FEE97A1C3084C97469725CCFBD0F7@namprd10.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86a62310-4d23-48b4-db0d-08d8ff62935e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2021 16:30:11.5850
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NO7YHqAbu5yv7sUocE/EIE2VG5/AQwvzfcSjegdRISv2GO95sKrNE1vb6vX4ladquKxOGNYvG2Ms58Nvf70pWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4770
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104140106
+X-Proofpoint-ORIG-GUID: dqmCT1ggQgPCavJD7rBM2RtUT30x4sCK
+X-Proofpoint-GUID: dqmCT1ggQgPCavJD7rBM2RtUT30x4sCK
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 1:15 AM David Gow <davidgow@google.com> wrote:
->
-> The kernel now has a number of testing and debugging tools, and we've
-> seen a bit of confusion about what the differences between them are.
->
-> Add a basic documentation outlining the testing tools, when to use each,
-> and how they interact.
->
-> This is a pretty quick overview rather than the idealised "kernel
-> testing guide" that'd probably be optimal, but given the number of times
-> questions like "When do you use KUnit and when do you use Kselftest?"
-> are being asked, it seemed worth at least having something. Hopefully
-> this can form the basis for more detailed documentation later.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-Looks good to me. Some minor typos and nits about wording here and there.
-
-> ---
-> Thanks, everyone, for the comments on the doc. I've made a few of the
-> suggested changes. Please let me know what you think!
->
-> -- David
->
-> Changes since v1:
-> https://lore.kernel.org/linux-kselftest/20210410070529.4113432-1-davidgow=
-@google.com/
-> - Note KUnit's speed and that one should provide selftests for syscalls
-> - Mention lockdep as a Dynamic Analysis Tool
-> - Refer to "Dynamic Analysis Tools" instead of "Sanitizers"
-> - A number of minor formatting tweaks and rewordings for clarity.
->
-> Not changed:
-> - I haven't included an exhaustive list of differences, advantages, etc,
->   between KUnit and kselftest: for now, the doc continues to focus on
->   the difference between 'in-kernel' and 'userspace' testing here.
-> - Similarly, I'm not linking out to docs defining and describing "Unit"
->   tests versus "End-to-end" tests. None of the existing documentation
->   elsewhere quite matches what we do in the kernel perfectly, so it
->   seems less confusing to focus on the 'in-kernel'/'userspace'
->   distinction, and leave other definitions as a passing mention for
->   those who are already familiar with the concepts.
-> - I haven't linked to any talk videos here: a few of them are linked on
->   (e.g.) the KUnit webpage, but I wanted to keep the Kernel documentation
->   more self-contained for now. No objection to adding them in a follow-up
->   patch if people feel strongly about it, though.
-> - The link from index.rst to this doc is unchanged. I personally think
->   that the link is prominent enough there: it's the first link, and
->   shows up a few times. One possibility if people disagreed would be to
->   merge this page with the index, but given not all dev-tools are going
->   to be testing-related, it seemed a bit arrogant. :-)
->
->  Documentation/dev-tools/index.rst            |   3 +
->  Documentation/dev-tools/testing-overview.rst | 117 +++++++++++++++++++
->  2 files changed, 120 insertions(+)
->  create mode 100644 Documentation/dev-tools/testing-overview.rst
->
-> diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/=
-index.rst
-> index 1b1cf4f5c9d9..f590e5860794 100644
-> --- a/Documentation/dev-tools/index.rst
-> +++ b/Documentation/dev-tools/index.rst
-> @@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents hav=
-e been pulled
->  together without any significant effort to integrate them into a coheren=
-t
->  whole; patches welcome!
->
-> +A brief overview of testing-specific tools can be found in :doc:`testing=
--overview`.
-> +
->  .. class:: toc-title
->
->            Table of contents
-> @@ -14,6 +16,7 @@ whole; patches welcome!
->  .. toctree::
->     :maxdepth: 2
->
-> +   testing-overview
->     coccinelle
->     sparse
->     kcov
-> diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation=
-/dev-tools/testing-overview.rst
-> new file mode 100644
-> index 000000000000..ce36a8cdf6b5
-> --- /dev/null
-> +++ b/Documentation/dev-tools/testing-overview.rst
-> @@ -0,0 +1,117 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +Kernel Testing Guide
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +
-> +There are a number of different tools for testing the Linux kernel, so k=
-nowing
-> +when to use each of them can be a challenge. This document provides a ro=
-ugh
-> +overview of their differences, and how they fit together.
-> +
-> +
-> +Writing and Running Tests
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> +
-> +The bulk of kernel tests are written using either the kselftest or KUnit
-> +frameworks. These both provide infrastructure to help make running tests=
- and
-> +groups of tests easier, as well as providing helpers to aid in writing n=
-ew
-> +tests.
-> +
-> +If you're looking to verify the behaviour of the Kernel =E2=80=94 partic=
-ularly specific
-> +parts of the kernel =E2=80=94 then you'll want to use KUnit or kselftest=
-.
-> +
-> +
-> +The Difference Between KUnit and kselftest
-> +------------------------------------------
-> +
-> +KUnit (Documentation/dev-tools/kunit/index.rst) is an entirely in-kernel=
- system
-> +for "white box" testing: because test code is part of the kernel, it can=
- access
-> +internal structures and functions which aren't exposed to userspace.
-> +
-> +KUnit tests therefore are best written against small, self-contained par=
-ts
-> +of the kernel, which can be tested in isolation. This aligns well with t=
-he
-> +concept of 'unit' testing.
-> +
-> +For example, a KUnit test might test an individual kernel function (or e=
-ven a
-> +single codepath through a function, such as an error handling case), rat=
-her
-> +than a feature as a whole.
-> +
-> +This also makes KUnit tests very fast to build and run, allowing them to=
- be
-> +run frequently as part of the development process.
-> +
-> +There is a KUnit test style guide which may give further pointers in
-> +Documentation/dev-tools/kunit/style.rst
-> +
-> +
-> +kselftest (Documentation/dev-tools/kselftest.rst), on the other hand, is
-> +largely implemented in userspace, and tests are normal userspace scripts=
- or
-> +programs.
-> +
-> +This makes it easier to write more complicated tests, or tests which nee=
-d to
-> +manipulate the overall system state more (e.g., spawning processes, etc.=
-).
-> +However, it's not possible to call kernel functions directly from kselft=
-est.
-> +This means that only kernel functionality which is exposed to userspace =
-somhow
-
-*s/somhow/somehow
-
-> +(e.g. by a syscall, device, filesystem, etc.) can be tested with kselfte=
-st.  To
-> +work around this, some tests include a companion kernel module which exp=
-oses
-> +more information or functionality. If a test runs mostly or entirely wit=
-hin the
-> +kernel, however,  KUnit may be the more appropriate tool.
-
-I like this slightly tweaked wording better, thanks.
-Still might be a bit confusing for a reader to see "it's not possible"
-=3D> "it's possible if you have a companion module," but I'm happy
-enough with it as-is.
-
-> +
-> +kselftest is therefore suited well to tests of whole features, as these =
-will
-> +expose an interface to userspace, which can be tested, but not implement=
-ation
-> +details. This aligns well with 'system' or 'end-to-end' testing.
-> +
-> +For example, all new system calls should be accompanied by kselftest tes=
-ts.
-> +
-> +Code Coverage Tools
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +The Linux Kernel supports two different code coverage measurement tools.=
- These
-> +can be used to verify that a test is executing particular functions or l=
-ines
-> +of code. This is useful for determining how much of the kernel is being =
-tested,
-> +and for finding corner-cases which are not covered by the appropriate te=
-st.
-> +
-> +:doc:`gcov` is GCC's coverage testing tool, which can be used with the k=
-ernel
-> +to get global or per-module coverage. Unlike KCOV, it does not record pe=
-r-task
-> +coverage. Coverage data can be read from debugfs, and interpreted using =
+* Catalin Marinas <catalin.marinas@arm.com> [210413 14:00]:
+> On Tue, Apr 13, 2021 at 04:52:34PM +0000, Liam Howlett wrote:
+> > * Catalin Marinas <catalin.marinas@arm.com> [210412 13:44]:
+> > > On Wed, Apr 07, 2021 at 03:11:06PM +0000, Liam Howlett wrote:
+> > > > find_vma() will continue to search upwards until the end of the vir=
+tual
+> > > > memory space.  This means the si_code would almost never be set to
+> > > > SEGV_MAPERR even when the address falls outside of any VMA.  The re=
+sult
+> > > > is that the si_code is not reliable as it may or may not be set to =
 the
-> +usual gcov tooling.
-> +
-> +:doc:`kcov` is a feature which can be built in to the kernel to allow
-> +capturing coverage on a per-task level. It's therefore useful for fuzzin=
-g and
-> +other situations where information about code executed during, for examp=
-le, a
-> +single syscall is useful.
-> +
-> +
-> +Dynamic Analysis Tools
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +The kernel also supports a number of dynamic analysis tools, which attem=
-pt to
-> +detect classes of issues when the occur in a running kernel. These typic=
-ally
+> > > > correct result, depending on where the address falls in the address
+> > > > space.
+> > > >=20
+> > > > Using find_vma_intersection() allows for what is intended by only
+> > > > returning a VMA if it falls within the range provided, in this case=
+ a
+> > > > window of 1.
+> > > >=20
+> > > > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> > > > ---
+> > > >  arch/arm64/kernel/traps.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > >=20
+> > > > diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> > > > index a05d34f0e82a..a44007904a64 100644
+> > > > --- a/arch/arm64/kernel/traps.c
+> > > > +++ b/arch/arm64/kernel/traps.c
+> > > > @@ -383,9 +383,10 @@ void force_signal_inject(int signal, int code,=
+ unsigned long address, unsigned i
+> > > >  void arm64_notify_segfault(unsigned long addr)
+> > > >  {
+> > > >  	int code;
+> > > > +	unsigned long ut_addr =3D untagged_addr(addr);
+> > > > =20
+> > > >  	mmap_read_lock(current->mm);
+> > > > -	if (find_vma(current->mm, untagged_addr(addr)) =3D=3D NULL)
+> > > > +	if (find_vma_intersection(current->mm, ut_addr, ut_addr + 1) =3D=
+=3D NULL)
+> > > >  		code =3D SEGV_MAPERR;
+> > > >  	else
+> > > >  		code =3D SEGV_ACCERR;
+> [...]
+> > > I don't think your change is entirely correct either. We can have a
+> > > fault below the vma of a stack (with VM_GROWSDOWN) and
+> > > find_vma_intersection() would return NULL but it should be a SEGV_ACC=
+ERR
+> > > instead.
+> >=20
+> > I'm pretty sure I am missing something.  From what you said above, I
+> > think this means that there can be a user cache fault below the stack
+> > which should notify the user application that they are not allowed to
+> > expand the stack by sending a SIGV_ACCERR in the si_code?  Is this
+> > expected behaviour or am I missing a code path to this function?
+>=20
+> My point was that find_vma() may return a valid vma where addr < vm_end
+> but also addr < vm_addr. It's the responsibility of the caller to check
+> that that vma can be expanded (VM_GROWSDOWN) and we do something like
+> this in __do_page_fault(). find_vma_intersection(), OTOH, requires addr
+> >=3D vm_start.
 
-*s/the occur/they occur
+Right.  The find_vma() interface is not clear by the function name;
+returning a VMA that doesn't include the address of interest is unclear.
+I think this is why we ended up with the bug in the first place.
 
-> +look for undefined behaviour of some kind, such as invalid memory access=
-es,
+>=20
+> If we hit this case (addr < vm_start), normally we'd first need to check
+> whether it's expandable and, if not, return MAPERR. If it's expandable,
+> it should be ACCERR since something else caused the fault.
+>=20
+> Now, I think at least for user_cache_maint_handler(), we can assume that
+> __do_page_fault() handled any expansion already, so we don't need to
+> check it here. In this case, your find_vma_intersection() check should
+> work.
+>=20
+> Are there other cases where we invoke arm64_notify_segfault() without a
+> prior fault? I think in swp_handler() we can bail out early before we
+> even attempted the access so we may report MAPERR but ACCERR is a better
+> indication.
 
-nit: "look for undefined behaviour of some kind"
-Given that I think most readers will interpret UB in the sense that C
-uses it, this might be a bit misleading. E.g. lockdep errors aren't UB
-in that sense.
+swp_handler() is also buggy.  It is currently getting the ACCERR as long
+as the address being checked is > mm->highest_vm_end.  If access_ok()
+fails, it should return ACCERR and not search VMAs for the address at
+all.
 
-Perhaps we can reword this to "look for invalid behaviour" or even
-just "look for bugs"
+...
 
-> +concurrency issues such as data races, or other undefined behaviour like
-> +integer overflows.
-> +
-> +Some of these tools are listed below:
-> +
-> +* kmemleak detects possible memory leaks. See
-> +  Documentation/dev-tools/kmemleak.rst
-> +* KASAN detects invalid memory accesses such as out-of-bounds and
-> +  use-after-free errors. See Documentation/dev-tools/kasan.rst
-> +* UBSAN detects behaviour that is undefined by the C standard, like inte=
-ger
-> +  overflows. See Documentation/dev-tools/ubsan.rst
-> +* KCSAN detects data races. See Documentation/dev-tools/kcsan.rst
-> +* KFENCE is a low-overhead detector of memory issues, which is much fast=
-er than
-> +  KASAN and can be used in production. See Documentation/dev-tools/kfenc=
-e.rst
-> +* lockdep is a locking correctness validator. See
-> +  Documentation/locking/lockdep-design.rst
-> +* There are several other pieces of debug instrumentation in the kernel,=
- many
-> +  of which can be found in lib/Kconfig.debug
-> +
-> +These tools tend to test the kernel as a whole, and do not "pass" like
-> +kselftest or KUnit tests. They can be combined with KUnit or kselftest b=
-y
-> +running tests on a kernel with a sanitizer enabled: you can then be sure
+>Also in sys_rt_sigreturn() we always call it as
+> arm64_notify_segfault(regs->sp). I'm not sure that's correct in all
+> cases, see restore_altstack().
 
-nit: we refer to "sanitizers" again, I assume this needs to be updated as w=
-ell?
+Ditto for sys_rt_sigreturn() and sys_sigreturn(), they both suffer the
+same bug as swp_handler() outlined above.
 
-> +that none of these errors are occurring during the test.
-> +
-> +Some of these tools integrate with KUnit or kselftest and will
-> +automatically fail tests if an issue is detected.
-> +
-> --
-> 2.31.1.295.g9ea45b61b8-goog
->
+In the case of restore_sigframe() or restore_altstack() failing, it
+seems that the signal shouldn't be dependent on where the address falls
+within the VMA at all.  Should the signal still be SIGSEGV or something
+else?  By the comments, I would have thought SIGBUS, si_code of
+BUS_ADRALN?
+
+>=20
+> I guess this code needs some tidying up.
+
+Indeed, there seems to be a few code paths that need to skip this
+function all together and just set the code to ACCERR - especially since
+the access_ok() just validates the number itself.
+
+I don't think the right answer is to rewrite the function to check
+VM_GROWSDOWN, as I cannot see a way to reach this function when trying
+to expand the stack which should report back ACCERR.  Do you agree?
+
+I also see that my fix would expose other bugs which need to be
+addressed at the same time.
+
+>=20
+> > > Maybe this should employ similar checks as __do_page_fault() (with
+> > > expand_stack() and VM_GROWSDOWN).
+> >=20
+> > You mean the code needs to detect endianness and to check if this is an
+> > attempt to expand the stack for both cases?
+>=20
+> Nothing to do with endianness, just the relation between the address and
+> the vma->vm_start and whether the vma can be expanded down.
+
+Okay, thanks for clarifying.
+
+
+Cheers,
+Liam=
