@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D81A35F5F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C6535F5F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbhDNOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:11:18 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3083 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbhDNOLM (ORCPT
+        id S242150AbhDNOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233839AbhDNOMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:11:12 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FL46P3N9YzWWnf;
-        Wed, 14 Apr 2021 22:07:09 +0800 (CST)
-Received: from dggpeml100013.china.huawei.com (7.185.36.238) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 14 Apr 2021 22:10:47 +0800
-Received: from [10.174.187.161] (10.174.187.161) by
- dggpeml100013.china.huawei.com (7.185.36.238) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Wed, 14 Apr 2021 22:10:47 +0800
-Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
- Lake Servers
-To:     Andi Kleen <andi@firstfloor.org>
-References: <20210329054137.120994-2-like.xu@linux.intel.com>
- <606BD46F.7050903@huawei.com>
- <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
- <60701165.3060000@huawei.com>
- <1ba15937-ee3d-157a-e891-981fed8b414d@linux.intel.com>
- <60742E82.5010607@huawei.com>
- <20210412152511.igvdfilnuv6ed6hi@two.firstfloor.org>
-CC:     Like Xu <like.xu@linux.intel.com>,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>,
-        <kan.liang@linux.intel.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wei.w.wang@intel.com>,
-        <x86@kernel.org>, "Xu, Like" <like.xu@intel.com>
-From:   Liuxiangdong <liuxiangdong5@huawei.com>
-Message-ID: <6076F7E7.5080200@huawei.com>
-Date:   Wed, 14 Apr 2021 22:10:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Wed, 14 Apr 2021 10:12:38 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC07C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so6078620pja.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vp40JX7MD1oyRAb9Y8UvaxNthRrEWLT17bpKIw89Vp8=;
+        b=hgK+6erZ/ZaIIki51J5aG86ePrPsolHe2qeKZ3mg0eC79G+Ei/Bl8NcW1/owX7Xdvd
+         rmz970jRX+yXh0X9NH6qR54n+i8aLCInwqGmBYXVE5Pz/41ZSjaa2XardvhUTDY0Cs8p
+         Yb8qSrX8YZkIaX1LZOMsIyyp2AANwpQbaD0TPaGWdD1+oDzIhG4EZDWR4UpDRE/xVuCQ
+         N8pnfMt21Jt8oaHjNOazLwIuBchS7NTnnWhbxgVR/eiJnPPzM4uD+eQIsTwsTcftdTN2
+         PLFnQlYAW0zxbCBAw867haMamI/S87JyMzhiPrlCaEk/1uzEh5rdFQu8pm1apetFdwCW
+         YVfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vp40JX7MD1oyRAb9Y8UvaxNthRrEWLT17bpKIw89Vp8=;
+        b=TLZXC8A6INzg38mC/Urt3hBBiuxDO4jVZ+kq0gHptM9iW3aDyP/vZ9AJOnxX7D+40P
+         0/93FbzG+hHH47G5qYAJLvB8/45AvzMYxyk48k+lHyArerwhWd9PScuDRuCn/rowkDww
+         mN22eOCSK8e0GEX+GigTNcfda1aEAm8CWjwNxlZmJx//eMdzeinmDYSzc92/JSQ0vZDj
+         Vxrb7VetXwEtvnWNl+8OaTR1/FEyGuUdjvgAiDbceEx6bJ5CaicefPzNlWVkkVtQ9G5o
+         8t/ojBhH4yPWS3W4smmCm07Do9cxBR+CL2/0gPDxH1dEItugLSv9Lq5SlsNJ+LdT6biw
+         qHXw==
+X-Gm-Message-State: AOAM530XwNlYYNa+l1bfDZTAw9OBZpUyV+7604awjqcZu/2h+VGlQRbv
+        ToqE5vddSTKh1VggAjPrZRA=
+X-Google-Smtp-Source: ABdhPJza5jUB4sMZoDE0tC09q1IDVXc3SViDZwxG00IgG6HA9/9/9np52gjLQ2051sKXN15McHj8Hw==
+X-Received: by 2002:a17:90a:ee95:: with SMTP id i21mr4068778pjz.160.1618409536393;
+        Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
+        by smtp.gmail.com with ESMTPSA id i18sm6579059pfq.168.2021.04.14.07.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
+Subject: Re: [RFC V2 PATCH 9/12] swiotlb: Add bounce buffer remap address
+ setting function
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     konrad.wilk@oracle.com, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210413152217.3386288-1-ltykernel@gmail.com>
+ <20210413152217.3386288-10-ltykernel@gmail.com>
+ <20210414064358.GA25877@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <963fc95f-915e-99a2-aa5c-63ae8e2c6591@gmail.com>
+Date:   Wed, 14 Apr 2021 22:12:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210412152511.igvdfilnuv6ed6hi@two.firstfloor.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20210414064358.GA25877@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.161]
-X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
- dggpeml100013.china.huawei.com (7.185.36.238)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/14/2021 2:43 PM, Christoph Hellwig wrote:
+> On Tue, Apr 13, 2021 at 11:22:14AM -0400, Tianyu Lan wrote:
+>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>
+>> For Hyper-V isolation VM with AMD SEV SNP, the bounce buffer(shared memory)
+>> needs to be accessed via extra address space(e.g address above bit39).
+>> Hyper-V code may remap extra address space outside of swiotlb. swiotlb_bounce()
+>> needs to use remap virtual address to copy data from/to bounce buffer. Add
+>> new interface swiotlb_set_bounce_remap() to do that.
+> 
+> I have no way to review what this actually doing when you only Cc me
+> on a single patch.  Please make sure everyone is Cced on the whole
+> series to enable proper review.
+> 
 
-
-On 2021/4/12 23:25, Andi Kleen wrote:
->> The reason why soft lockup happens may be the unmapped EPT pages. So, do we
->> have a way to map all gpa
->> before we use pebs on Skylake?
-> Can you configure a VT-d device, that will implicitly pin all pages for the
-> IOMMU. I *think* that should be enough for testing.
->
-> -Andi
-
-Thanks!
-But,  it doesn't seem to work because host still soft lockup when I 
-configure a SR-IOV direct network card for vm.
-
-Besides, I have tried to configure 1G-hugepages for 2G-mem vm.  Each of 
-guest numa nodes has 1G mem.
-When I use pebs (perf record -e cycles:pp) in guest, there are 
-successful pebs samples on skylake just for a while and
-then I cannot get pebs sample. Host doesn't soft lockup in this process.
-
-Is this method effective?   Are there something wrong on skylake for we 
-can only get a few samples ?  Maybe IRQ?
+Sure. I will resend all patches. Thanks for reminder.
