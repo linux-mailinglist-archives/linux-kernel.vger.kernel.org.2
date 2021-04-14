@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692B535F8D6
+	by mail.lfdr.de (Postfix) with ESMTP id D9CD035F8D7
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352648AbhDNQQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:16:50 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:50939 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352561AbhDNQQt (ORCPT
+        id S1352653AbhDNQR3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Apr 2021 12:17:29 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:45860 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345859AbhDNQR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:16:49 -0400
-Received: from fsav405.sakura.ne.jp (fsav405.sakura.ne.jp [133.242.250.104])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13EGGGMe078064;
-        Thu, 15 Apr 2021 01:16:16 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav405.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp);
- Thu, 15 Apr 2021 01:16:16 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav405.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13EGGG3q078059
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 15 Apr 2021 01:16:16 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] unexpected kernel reboot (4)
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
-References: <000000000000301a4d05bfe14b8f@google.com>
- <CACT4Y+ZT2m7t+o9=VYCE32U_1aUVJXRp_5KgJSdEZC1YXy=qgA@mail.gmail.com>
- <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <b8162e95-fb2e-51f6-9d9b-a4d64873876e@i-love.sakura.ne.jp>
-Date:   Thu, 15 Apr 2021 01:16:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Wed, 14 Apr 2021 12:17:27 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-118-qT5hAe95OjawYbLmY3sI9g-1; Wed, 14 Apr 2021 17:17:02 +0100
+X-MC-Unique: qT5hAe95OjawYbLmY3sI9g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 17:17:02 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 14 Apr 2021 17:17:02 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Oleg Nesterov' <oleg@redhat.com>, He Zhe <zhe.he@windriver.com>,
+        "Paul Moore" <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] ptrace: is_syscall_success: Add syscall return code
+ handling for compat task
+Thread-Topic: [PATCH 2/2] ptrace: is_syscall_success: Add syscall return code
+ handling for compat task
+Thread-Index: AQHXMUAOqLMsGXFf70mFNgTI1J74Jqq0MByg
+Date:   Wed, 14 Apr 2021 16:17:02 +0000
+Message-ID: <e2efffb879914176a2eae8b52a3c5c33@AcuMS.aculab.com>
+References: <20210414080245.25476-1-zhe.he@windriver.com>
+ <20210414150810.GA19371@redhat.com>
+In-Reply-To: <20210414150810.GA19371@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/15 0:39, Andrey Konovalov wrote:
-> On Wed, Apr 14, 2021 at 7:45 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>
->> On Tue, Apr 13, 2021 at 11:27 PM syzbot
->> <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com> wrote:
->>>
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    89698bec Merge tag 'm68knommu-for-v5.12-rc7' of git://git...
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=1243fcfed00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b234ddbbe2953747
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=9ce030d4c89856b27619
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173e92fed00000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1735da2ed00000
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com
->>>
->>> output_len: 0x000000000e74eb68
->>> kernel_total_size: 0x000000000f226000
->>> needed_size: 0x000000000f400000
->>> trampoline_32bit: 0x000000000009d000
->>> Decompressing Linux... Parsing ELF... done.
->>> Booting the kernel.
->>
->> +linux-input
->>
->> The reproducer connects some USB HID device and communicates with the driver.
->> Previously we observed reboots because HID devices can trigger reboot
->> SYSRQ, but we disable it with "CONFIG_MAGIC_SYSRQ is not set".
->> How else can a USB device reboot the machine? Is it possible to disable it?
->> I don't see any direct includes of <linux/reboot.h> in drivers/usb/*
+From: Oleg Nesterov
+> Sent: 14 April 2021 16:08
 > 
-> This happens when a keyboard sends the Ctrl+Alt+Del sequence, see
-> fn_boot_it()->ctrl_alt_del() in drivers/tty/vt/keyboard.c.
+> Add audit maintainers...
 > 
-> There was a patchset by Tetsuo [1] to suppress this, but I think it
-> was abandoned.
+> On 04/14, He Zhe wrote:
+> >
+> > When 32-bit userspace application is running on 64-bit kernel, the 32-bit
+> > syscall return code would be changed from u32 to u64 in regs_return_value
+> > and then changed to s64. Hence the negative return code would be treated
+> > as a positive number and results in a non-error in, for example, audit
+> > like below.
+> 
+> Sorry, can understand. At least on x86_64 even the 32-bit syscall returns
+> long, not u32.
+> 
+> Hmm. And afaics on x86 is_compat_task() is only defined if !CONFIG_COMPAT,
+> so this patch looks wrong anyway.
 
+And, as with the other patch a x64_64 64bit process can make both types
+of 32bit system call - so it needs to depend on the system call entry type
+not any type of the task.
 
-Not abandoned; I'm waiting for you to join the discussion.
-But for right now I'm trying to merge LOCKDEP's capacity tuning patch for
-https://github.com/google/syzkaller/pull/2535 in the next merge window.
-
-I still believe that ctrl_alt_del() etc. should be initially controlled
-via kernel config options (despite Linus's objection at
-https://lore.kernel.org/lkml/CAHk-=wgz=7MGxxX-tmMmdCsKyYJkuyxNc-4uLP=e_eEV=OzUaw@mail.gmail.com/ ), for
-we will need several trials and errors (and an effort to avoid kernel size bloating
-like https://lkml.kernel.org/r/YD57hjaSmsYapHnQ@alley still remains) before we can
-determine usable units for allow toggling via kernel command line options.
+	David
 
 > 
-> (This reminds of a somewhat related syzkaller issue:
-> https://github.com/google/syzkaller/issues/1824; it relies on a
-> similar reproducer.)
+> Oleg.
 > 
-> [1] https://groups.google.com/g/syzkaller/c/7wCmrGlLgm0/m/5yG6HVtbBQAJ
-> 
+> > type=SYSCALL msg=audit(1611110715.887:582): arch=40000028 syscall=322
+> > success=yes exit=4294967283
+> >
+> > This patch forces the u32->s32->s64 for compat tasks.
+> >
+> > Signed-off-by: He Zhe <zhe.he@windriver.com>
+> > ---
+> >  include/linux/ptrace.h | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
+> > index b5ebf6c01292..bc3056fff8a6 100644
+> > --- a/include/linux/ptrace.h
+> > +++ b/include/linux/ptrace.h
+> > @@ -260,7 +260,9 @@ static inline void ptrace_release_task(struct task_struct *task)
+> >   * is an error value.  On some systems like ia64 and powerpc they have different
+> >   * indicators of success/failure and must define their own.
+> >   */
+> > -#define is_syscall_success(regs) (!IS_ERR_VALUE((unsigned long)(regs_return_value(regs))))
+> > +#define is_syscall_success(regs) (!IS_ERR_VALUE(is_compat_task() ? \
+> > +	(unsigned long)(s64)(s32)(regs_return_value(regs)) : \
+> > +	(unsigned long)(regs_return_value(regs))))
+> >  #endif
+> >
+> >  /*
+> > --
+> > 2.17.1
+> >
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
