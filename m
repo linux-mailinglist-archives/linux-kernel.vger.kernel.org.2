@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B0035F8DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC6E35F8E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351688AbhDNQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352655AbhDNQSK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:18:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06467C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:17:48 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so6263176pja.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0eL/B6Xsq6Q/24IYguuLfwVoh9qvE+Qw7MZOf5nGHyg=;
-        b=DWKLnEjIRc6nqOLRuoo9K6bOLQMW5c1mqbVDL7yGhVs88fhUl8h/izys8YK3f/gwVM
-         PcQzKMKIFq9o0hwsUhKISfLDewBl34wWHl1mNxtvbMhH9ULpfprQDggqRkhav/DB3fq5
-         Lt6TuRqVyREjop1FfnrZ4OwusSTzbuxed+y0o4pqUcZLeuQPE7o9Q0ERP1T2859SlHBK
-         swDXpNsO2sseabX97kJN/6O4FliaKLmz/0n5+zOfFOhIc71jVo20vJcnie48mgAzBh32
-         YSPSVWZiitdeHf/qr6sagNpJv+45RDkOHNv90Ca9f1wMkoDLDoLK0Hka9u0ctg+akLmV
-         r8Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0eL/B6Xsq6Q/24IYguuLfwVoh9qvE+Qw7MZOf5nGHyg=;
-        b=iE5XcufVllFLuaxGeN+7b2jDxGCh/e1UebN2PORSC5kInTPX+71bbwI8rAPOJgwsR+
-         AIhFION3tn7Pu+NwKm9Dd73cqptUBK90WA8qulyYxzLMqzqD7pIa+rS9NI2swA18PxwV
-         NXbGwU04t08uRQypPOXOJNAkWY8FeWDWjfs+oMcfmQuIvRN9yOrhBu1samcBqS7Vfkd8
-         iLUMkWcH/KNLQWr/mw7xyEvThVri+DC/vOXLu4yzC/dzqH9Lzm7FWokNExVo9Pio1S+6
-         eRMMW3jiNtAoaNLSGEuSZOQR3eE0zVEsW38nZwh0C9xaQbSQCmpDPWNiw+xSDGXRwnhJ
-         cABQ==
-X-Gm-Message-State: AOAM533nIWbxFd9stD9IoAczSDBLMGpB63USt0NxddzVPSQu915uV76t
-        vhIEyAttre6wu3O2KjLapln1ow==
-X-Google-Smtp-Source: ABdhPJx5Ic6DX2vQpbh90Yradu9W82hKhZ9FhXc7n7c05NjGIO6V9+vgFJUqzgqafzt2aOiNHdkPHQ==
-X-Received: by 2002:a17:902:cec1:b029:eb:66ee:6da0 with SMTP id d1-20020a170902cec1b02900eb66ee6da0mr1001099plg.84.1618417068337;
-        Wed, 14 Apr 2021 09:17:48 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id r5sm5092591pjd.38.2021.04.14.09.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 09:17:48 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 09:17:38 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, arnd@arndb.de, akpm@linux-foundation.org,
-        konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, joro@8bytes.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com
-Subject: Re: [Resend RFC PATCH V2 08/12] UIO/Hyper-V: Not load UIO HV driver
- in the isolation VM.
-Message-ID: <20210414091738.3df4bed5@hermes.local>
-In-Reply-To: <YHcOL+HlEoh5jPb8@kroah.com>
-References: <20210414144945.3460554-1-ltykernel@gmail.com>
-        <20210414144945.3460554-9-ltykernel@gmail.com>
-        <YHcOL+HlEoh5jPb8@kroah.com>
+        id S1352691AbhDNQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:21:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35032 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233512AbhDNQVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:21:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2135AF0E;
+        Wed, 14 Apr 2021 16:20:38 +0000 (UTC)
+Subject: Re: [PATCH 04/11] mm/vmstat: Inline NUMA event counter updates
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210414133931.4555-1-mgorman@techsingularity.net>
+ <20210414133931.4555-5-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <6b25af48-9c6e-2c55-03d5-763de4aba149@suse.cz>
+Date:   Wed, 14 Apr 2021 18:20:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210414133931.4555-5-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 17:45:51 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+On 4/14/21 3:39 PM, Mel Gorman wrote:
+> __count_numa_event is small enough to be treated similarly to
+> __count_vm_event so inline it.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-> On Wed, Apr 14, 2021 at 10:49:41AM -0400, Tianyu Lan wrote:
-> > From: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> > 
-> > UIO HV driver should not load in the isolation VM for security reason.
-> > Return ENOTSUPP in the hv_uio_probe() in the isolation VM.
-> > 
-> > Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-This is debatable, in isolation VM's shouldn't userspace take responsibility
-to validate host communication. If that is an issue please participate with
-the DPDK community (main user of this) to make sure netvsc userspace driver
-has the required checks.
+> ---
+>  include/linux/vmstat.h | 9 +++++++++
+>  mm/vmstat.c            | 9 ---------
+>  2 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index fc14415223c5..dde4dec4e7dd 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -237,6 +237,15 @@ static inline unsigned long zone_page_state_snapshot(struct zone *zone,
+>  }
+>  
+>  #ifdef CONFIG_NUMA
+> +/* See __count_vm_event comment on why raw_cpu_inc is used. */
+> +static inline void
+> +__count_numa_event(struct zone *zone, enum numa_stat_item item)
+> +{
+> +	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+> +
+> +	raw_cpu_inc(pzstats->vm_numa_event[item]);
+> +}
+> +
+>  extern void __count_numa_event(struct zone *zone, enum numa_stat_item item);
+>  extern unsigned long sum_zone_node_page_state(int node,
+>  					      enum zone_stat_item item);
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 63bd84d122c0..b853df95ed0c 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -902,15 +902,6 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+>  #endif
+>  
+>  #ifdef CONFIG_NUMA
+> -/* See __count_vm_event comment on why raw_cpu_inc is used. */
+> -void __count_numa_event(struct zone *zone,
+> -				 enum numa_stat_item item)
+> -{
+> -	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+> -
+> -	raw_cpu_inc(pzstats->vm_numa_event[item]);
+> -}
+> -
+>  /*
+>   * Determine the per node value of a stat item. This function
+>   * is called frequently in a NUMA machine, so try to be as
+> 
 
