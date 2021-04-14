@@ -2,140 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA1435F99F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C272B35F9A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348526AbhDNRPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S1349102AbhDNRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232183AbhDNRPk (ORCPT
+        with ESMTP id S233618AbhDNRPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:15:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5610FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:19 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id q14-20020a17090a430eb02901503aaee02bso123560pjg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:19 -0700 (PDT)
+        Wed, 14 Apr 2021 13:15:44 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0312BC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:23 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id d21so4513397edv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CzQ5mUD4wfNdi0P00ZxPERafYFyidD1VSYPt3GhsJFE=;
-        b=vS30pULZ0aW9HQrz30/psCHrhq6d4pv+guhxV1KgmozRQ2b5Uy9kUJkgfxYBef6+JR
-         xepA8HKCdrBVd2FHcD8hmZYgmDOJR/VCAJShnPuHObfowzZO5M9ZxiU0lgjC2i5c+xAu
-         RnDmrwmuaZpaq/i92Zrrq7bZHQsFMv1PgYjF8PJvFJNVPrcwAe/Z3UxX0SgW0kdxdY5h
-         FqPOtbolLRilnuNwZJ2HCAPU89Z29uY73cULXygu08wqRT9FVxaI4KR4GkYyM588vNsq
-         dsUEpl4BCOFwSayDE2HylBdHvA03fQ4tU4v2HfZOkiv96RbEUSS9g1DWJNbF3f29PaDk
-         s8Lg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UXvQGOPGMiIBh+TNB+TuJqTHlXvXGuBCSN0JQwAe2RQ=;
+        b=PWwEvYYJje0y3hO9Tl1LpDzu7QSF9xAeVKMVaYsWQZrwkc7nZjup6LaFcS/lfjD4cs
+         U3RG3b+S0Ul3QZJC7Rahky+ypsws8OJFNWgcA/uATSo/kIWbttCAdlLjnFhau8ieQOdi
+         lnZoUpHjTPV1fOkCJ3QGdk1ZDi10Do4z5CbIpvZiR6P5jMXr0qAflAIqifK5T8ybVR3s
+         DRNGrAOLqXYnH/lFkKF2u6vDCp1NHUPLZ6iwjPQaYSd3VF/lGxM3wJJgqXvYrChs7Z+T
+         R2y9g/F6WEvR4q6w7JpydKRIExcO4e8E6By3YV3o4tE6XP0k/AeXUqxynt4rjyLMpLtB
+         nSZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CzQ5mUD4wfNdi0P00ZxPERafYFyidD1VSYPt3GhsJFE=;
-        b=eolgKZSkAo0Vu8ffSOpGs5NB4/1l7igtDFFVHPv9s41UWJN9djT/JBQPi8EoKMPu63
-         HRi2piqF4baaBw6clifELGj/UPI59h+9P5M7ookOVqM6KlfQU1yq9QzpdqsQ7Y+HULl6
-         w/66cs0zkPmgIA1jOZugzt0b/aDvqwNBIzBU4MVhA6hSXtZj474MGhHxRd9UCP1Sfo1T
-         PbLhhxYzE1Nl2i6YoLX2XbxcuAejgaTGa03LAYP4Kz7t/FhJzno35VRd81YvppQRnclG
-         wrtB0RZyE2vErhYKkr7ktmeGWJ/78EN94PMJhSKU73PcKRBHLrhMk1idEFP6h4U/RMxm
-         jvaw==
-X-Gm-Message-State: AOAM531Mt1r56SGdk9RBrtP8x2c/c3n2yfj38FyE4vmOizRVkUVrjDCF
-        QfN4+HawRlzGrsmFCTLR3NWpXv3mpiJnP50sGEIEuQ==
-X-Google-Smtp-Source: ABdhPJygku8upzUd52ITREUJqbfQqigq4LnuPTxPHKTXSxM64PVtOoBzSgBx+DZoeHaqDVoo6AXQHjY78UH9qAzdwKY=
-X-Received: by 2002:a17:90a:ce8d:: with SMTP id g13mr4631071pju.85.1618420518655;
- Wed, 14 Apr 2021 10:15:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UXvQGOPGMiIBh+TNB+TuJqTHlXvXGuBCSN0JQwAe2RQ=;
+        b=kKwfKXB/G/jeCkrLpn9dyZZTAtTr5yqjC8XpTVeqc1r1u0GSnOTe981F+iYh4i8Cbv
+         LgQRMtLOKss8u7yn41gnn6PwQF8V4gMJtWoWhu53R6n21gV109/X6ZiuqeniYHSIPlKr
+         ++6AVJmEKJpR/tk527sMqp5Gxf0zlolslnrjeAKBDxpQgfdFX1XMqeH47X0etuyP39ss
+         XxlE/CHsDDAkwTt69nSkcmoF51rKcFgKlNIyBtdAthLk51nH/98kN0VOeK8pv0ji5nd+
+         T98HGU+VfucJ/bOuMrIc9OZeDblFtqw0VPPvB8//MNE3aNQjtZPE4HGKYfntpD2XEaYX
+         a8jg==
+X-Gm-Message-State: AOAM530V//SSFOJcxXvnbqE8l7ZSUF7aylJfPCw9zD/yvcDulvlnxmMR
+        nKAD7Foyi81hzPGMmIJFU50g5w==
+X-Google-Smtp-Source: ABdhPJxsbziy4uMsB6zVMu3xcsr6bls0vIOO6rGwapNBI/ohN+5CrAvAeMvtWBDqkfAGseaP3jUKjQ==
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr42149129edb.62.1618420521771;
+        Wed, 14 Apr 2021 10:15:21 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id p24sm180643edt.5.2021.04.14.10.15.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 10:15:21 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 18:15:19 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+Subject: Re: [GIT PULL] Immutable branch between MFD, Clock, GPIO, Regulator
+ and RTC due for the v5.13 merge window
+Message-ID: <20210414171519.GR4869@dell>
+References: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210414131158.GN4869@dell>
+ <20210414145345.GO4869@dell>
+ <43131cbebdd04a3abc51e05de5170c583006e2d2.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
- <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
- <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
- <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
- <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
- <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
- <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
- <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
- <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
- <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
- <feed2c13dbe34279a03929a588c46c67@AcuMS.aculab.com> <CAOFY-A21tjC5dWwM0W0aXHij40kKj2JNo5Nq4X8mBZZdKwr+AA@mail.gmail.com>
- <2c6885b0241d4127b8cb7e38abbbe1e5@AcuMS.aculab.com> <CANn89iJj9254GORTsabwv6ZBPWzebR4iYAj9VYxuOZSrF99fNg@mail.gmail.com>
- <1e5576a1a5b24cb0b1d53b9bb22d528e@AcuMS.aculab.com> <CANn89iKmUJRf3FNuk6BhC06Qt-C_RuYfxPUm-1Ho0ztL0KJsLg@mail.gmail.com>
-In-Reply-To: <CANn89iKmUJRf3FNuk6BhC06Qt-C_RuYfxPUm-1Ho0ztL0KJsLg@mail.gmail.com>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Wed, 14 Apr 2021 10:15:07 -0700
-Message-ID: <CAOFY-A1Nff_99-V+W-xyhq3g4kvqXPzM3eWAQV2WpzrxPfjeFw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <43131cbebdd04a3abc51e05de5170c583006e2d2.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 9:10 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Wed, Apr 14, 2021 at 6:08 PM David Laight <David.Laight@aculab.com> wrote:
-> >
-> > From: Eric Dumazet
-> > > Sent: 14 April 2021 17:00
-> > ...
-> > > > Repeated unsafe_get_user() calls are crying out for an optimisation.
-> > > > You get something like:
-> > > >         failed = 0;
-> > > >         copy();
-> > > >         if (failed) goto error;
-> > > >         copy();
-> > > >         if (failed) goto error;
-> > > > Where 'failed' is set by the fault handler.
-> > > >
-> > > > This could be optimised to:
-> > > >         failed = 0;
-> > > >         copy();
-> > > >         copy();
-> > > >         if (failed) goto error;
-> > > > Even if it faults on every invalid address it probably
-> > > > doesn't matter - no one cares about that path.
-> > >
-> > >
-> > > On which arch are you looking at ?
-> > >
-> > > On x86_64 at least, code generation is just perfect.
-> > > Not even a conditional jmp, it is all handled by exceptions (if any)
-> > >
-> > > stac
-> > > copy();
-> > > copy();
-> > > clac
-> > >
-> > >
-> > > <out_of_line>
-> > > efault_end: do error recovery.
-> >
-> > It will be x86_64.
-> > I'm definitely seeing repeated tests of (IIRC) %rdx.
-> >
-> > It may well be because the compiler isn't very new.
-> > Will be an Ubuntu build of 9.3.0.
-> > Does that support 'asm goto with outputs' - which
-> > may be the difference.
-> >
->
-> Yep, probably. I am using some recent clang version.
->
+On Wed, 14 Apr 2021, Vaittinen, Matti wrote:
 
-On x86-64 I can confirm, for me it (4 x unsafe_get_user()) compiles
-down to stac + lfence + 8 x mov + clac as straight line code. And
-results in roughly a 5%-10% speedup over copy_from_user().
+> Hello Lee, Mark, Stephen, Linus, Alexandre,
+> 
+> On Wed, 2021-04-14 at 15:53 +0100, Lee Jones wrote:
+> > On Wed, 14 Apr 2021, Lee Jones wrote:
+> > 
+> > > Please note that this PR will break your build unless you have the
+> > > required Regulator API update.
+> > > 
+> > >  fb8fee9efdcf0 regulator: Add regmap helper for ramp-delay setting
+> > >  e3baacf542756 regulator: helpers: Export helper voltage listing
+> > 
+> > Looks like Mark has these:
+> > 
+> >  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator
+> > regulator-list-ramp-helpers
+> >  
+> > > Pull at your peril! :)
+> > > 
+> > > The following changes since commit
+> > > a38fd8748464831584a19438cbb3082b5a2dab15:
+> > > 
+> > >   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git
+> > > tags/ib-mfd-clk-gpio-regulator-rtc-v5.13
+> > > 
+> > > for you to fetch changes up to
+> > > 5a8a64d9a38b9d3794f9f5e153fc0358b858cc24:
+> > > 
+> > >   MAINTAINERS: Add ROHM BD71815AGW (2021-04-14 10:21:43 +0100)
+> > > 
+> > > ----------------------------------------------------------------
+> > > Immutable branch between MFD, Clock, GPIO, Regulator and RTC due
+> > > for the v5.13 merge window
+> > > 
+> > > ----------------------------------------------------------------
+> > > Matti Vaittinen (16):
+> > >       rtc: bd70528: Do not require parent data
+> > >       mfd: bd718x7: simplify by cleaning unnecessary device data
+> > >       dt_bindings: bd71828: Add clock output mode
+> > >       dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
+> > >       dt_bindings: mfd: Add ROHM BD71815 PMIC
+> > >       mfd: Add ROHM BD71815 ID
+> > >       mfd: Sort ROHM chip ID list for better readability
+> > >       mfd: Support for ROHM BD71815 PMIC core
+> > >       gpio: Support ROHM BD71815 GPOs
+> > >       regulator: rohm-regulator: linear voltage support
+> > >       regulator: rohm-regulator: Support SNVS HW state.
+> > >       regulator: bd718x7, bd71828: Use ramp-delay helper
+> > >       regulator: Support ROHM BD71815 regulators
+> > >       clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
+> > >       rtc: bd70528: Support RTC on ROHM BD71815
+> > >       MAINTAINERS: Add ROHM BD71815AGW
+> 
+> I think the original idea was that Lee could get the Tag from Mark and
+> then get all the changes in via MFD tree. I can't say what would be the
+> best way to get these in. I'm open to all suggestions :)
 
--Arjun
+It's done now.  Anyone who wishes to pull (and test) this branch
+should also pull in the regulator-list-ramp-helpers tag from Mark's
+Regulator tree.
 
-
-> >         David
-> >
-> > -
-> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> > Registration No: 1397386 (Wales)
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
