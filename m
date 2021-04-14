@@ -2,252 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C8F35EA8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD34835EAD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhDNB7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 21:59:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15673 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhDNB7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 21:59:00 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKltT5YLRzmdLP;
-        Wed, 14 Apr 2021 09:55:45 +0800 (CST)
-Received: from [10.174.176.162] (10.174.176.162) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 09:58:33 +0800
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-2-linmiaohe@huawei.com>
- <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
- <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <75e27441-7744-7a10-e709-c8cd00830099@huawei.com>
-Date:   Wed, 14 Apr 2021 09:58:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S245475AbhDNC3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:29:10 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:37472 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231379AbhDNC3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 22:29:09 -0400
+Received: from BC-Mail-Ex18.internal.baidu.com (unknown [172.31.51.12])
+        by Forcepoint Email with ESMTPS id C0DAA8386E1067EA70E7;
+        Wed, 14 Apr 2021 09:42:06 +0800 (CST)
+Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
+ BC-Mail-Ex18.internal.baidu.com (172.31.51.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 14 Apr 2021 09:42:06 +0800
+Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
+ BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2176.009;
+ Wed, 14 Apr 2021 09:42:06 +0800
+From:   "Chu,Kaiping" <chukaiping@baidu.com>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUgY29t?=
+ =?gb2312?Q?paction_order_configurable?=
+Thread-Topic: [PATCH] mm/compaction:let proactive compaction order
+ configurable
+Thread-Index: AQHXL7zzcaEIrraHzUCH0C8T1IQ/zaqzPI6w
+Date:   Wed, 14 Apr 2021 01:42:06 +0000
+Message-ID: <9ca9b808cc9a48518a7da271e36395e5@baidu.com>
+References: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+ <20210412165741.shqududzlfhge7ff@spock.localdomain>
+In-Reply-To: <20210412165741.shqududzlfhge7ff@spock.localdomain>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.194.34]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.162]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/14 9:17, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
-> 
->> On 2021/4/12 15:24, Huang, Ying wrote:
->>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>
->>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>
->>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
->>>>> patch adds the percpu_ref support for later fixup.
->>>>>
->>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>> ---
->>>>>  include/linux/swap.h |  2 ++
->>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
->>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>> index 144727041e78..849ba5265c11 100644
->>>>> --- a/include/linux/swap.h
->>>>> +++ b/include/linux/swap.h
->>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>>>>   * The in-memory structure used to track swap areas.
->>>>>   */
->>>>>  struct swap_info_struct {
->>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>>>>  	signed short	prio;		/* swap priority of this type */
->>>>>  	struct plist_node list;		/* entry in swap_active_head */
->>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
->>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>>>>  	struct file *swap_file;		/* seldom referenced */
->>>>>  	unsigned int old_block_size;	/* seldom referenced */
->>>>> +	struct completion comp;		/* seldom referenced */
->>>>>  #ifdef CONFIG_FRONTSWAP
->>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>>> index 149e77454e3c..724173cd7d0c 100644
->>>>> --- a/mm/swapfile.c
->>>>> +++ b/mm/swapfile.c
->>>>> @@ -39,6 +39,7 @@
->>>>>  #include <linux/export.h>
->>>>>  #include <linux/swap_slots.h>
->>>>>  #include <linux/sort.h>
->>>>> +#include <linux/completion.h>
->>>>>  
->>>>>  #include <asm/tlbflush.h>
->>>>>  #include <linux/swapops.h>
->>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
->>>>>  	spin_unlock(&si->lock);
->>>>>  }
->>>>>  
->>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
->>>>> +{
->>>>> +	struct swap_info_struct *si;
->>>>> +
->>>>> +	si = container_of(ref, struct swap_info_struct, users);
->>>>> +	complete(&si->comp);
->>>>> +	percpu_ref_exit(&si->users);
->>>>
->>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
->>>> get_swap_device(), better to add comments there.
->>>
->>> I just noticed that the comments of percpu_ref_tryget_live() says,
->>>
->>>  * This function is safe to call as long as @ref is between init and exit.
->>>
->>> While we need to call get_swap_device() almost at any time, so it's
->>> better to avoid to call percpu_ref_exit() at all.  This will waste some
->>> memory, but we need to follow the API definition to avoid potential
->>> issues in the long term.
->>
->> I have to admit that I'am not really familiar with percpu_ref. So I read the
->> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
->> be called after exit now. But you're right we need to follow the API definition
->> to avoid potential issues in the long term.
->>
->>>
->>> And we need to call percpu_ref_init() before insert the swap_info_struct
->>> into the swap_info[].
->>
->> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
->> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
->> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
->> or percpu_ref_resurrect() will do the work.
->>
->> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
->> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
->> Maybe I could do this in alloc_swap_info()?
-> 
-> Yes.  In alloc_swap_info(), you can distinguish newly allocated and
-> reused swap_info_struct.
-> 
->>>
->>>>> +}
->>>>> +
->>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>>  {
->>>>>  	struct swap_cluster_info *ci = si->cluster_info;
->>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>>>>  	 */
->>>>> -	synchronize_rcu();
->>>>> +	percpu_ref_reinit(&p->users);
->>>>
->>>> Although the effect is same, I think it's better to use
->>>> percpu_ref_resurrect() here to improve code readability.
->>>
->>> Check the original commit description for commit eb085574a752 "mm, swap:
->>> fix race between swapoff and some swap operations" and discussion email
->>> thread as follows again,
->>>
->>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
->>>
->>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
->>> smp_load_acquire() in get_swap_device().  Now we will use
->>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
->>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
->>> ACQUIRE semantics.  Per my understanding, we need to change
->>> percpu_ref_tryget_live() for that.
->>>
->>
->> Do you mean the below scene is possible?
->>
->> cpu1
->> swapon()
->>   ...
->>   percpu_ref_init
->>   ...
->>   setup_swap_info
->>   /* smp_store_release() is inside percpu_ref_reinit */
->>   percpu_ref_reinit
-> 
-> spin_unlock() has RELEASE semantics already.
-> 
->>   ...
->>
->> cpu2
->> get_swap_device()
->>   /* ignored  smp_rmb() */
->>   percpu_ref_tryget_live
-> 
-> Some kind of ACQUIRE is required here to guarantee the refcount is
-> checked before fetching the other fields of swap_info_struct.  I have
-> sent out a RFC patch to mailing list to discuss this.
-
-Many thanks.
-But We may still need to add a smp_rmb() in get_swap_device() in case
-we can't add ACQUIRE for refcount.
-
-> >>   ...
->>
->> There is indeed missing smp_rmb() in percpu_ref_tryget_live. So I think the above
->> scene possible and we should fix this.
->>
->>>>>  	spin_lock(&swap_lock);
->>>>>  	spin_lock(&p->lock);
->>>>>  	_enable_swap_info(p);
->>>>> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->>>>>  	spin_unlock(&p->lock);
->>>>>  	spin_unlock(&swap_lock);
->>>>> +
->>>>> +	percpu_ref_kill(&p->users);
->>>>>  	/*
->>>>>  	 * wait for swap operations protected by get/put_swap_device()
->>>>>  	 * to complete
->>>>>  	 */
->>>>> -	synchronize_rcu();
->>>>> +	wait_for_completion(&p->comp);
->>>>
->>>> Better to move percpu_ref_kill() after the comments.  And maybe revise
->>>> the comments.
->>>
->>> After reading the original commit description as above, I found that we
->>> need synchronize_rcu() here to protect the accessing to the swap cache
->>> data structure.  Because there's call_rcu() during percpu_ref_kill(), it
->>> appears OK to keep the synchronize_rcu() here.  And we need to revise
->>> the comments to make it clear what is protected by which operation.
->>>
->>
->> Per my understanding, percpu_ref->data->release is called only after the refcnt
->> reaches 0, including a full grace period has elapsed or refcnt won't be 0.
->> wait_for_completion() is used for waiting the last refcnt being released. So
->> synchronize_rcu() is not necessary here?
-> 
-> Then we will depends on the implementation of percpu_ref.  If it changed
-> its implementation, it may take long to find out we need to change the
-> code here.  I guess in most cases, even adding a synchronize_rcu() here,
-> we still only need to wait for one grace period.  So the overhead to
-> call synchronize_rcu() is low here.  And the code is easier to be
-> maintained.
-> 
-
-Sounds reasonable. Will do. Thanks.
-
-> Best Regards,
-> Huang, Ying
-> .
-> 
-
+SGkgT2xla3NhbmRyLA0KUGxlYXNlIHNlZSBteSBhbnN3ZXIgaW5saW5lLg0KDQpCUiwNCkNodSBL
+YWlwaW5nDQoNCi0tLS0t08q8/tStvP4tLS0tLQ0Kt6K8/sjLOiBPbGVrc2FuZHIgTmF0YWxlbmtv
+IDxvbGVrc2FuZHJAbmF0YWxlbmtvLm5hbWU+IA0Kt6LLzcqxvOQ6IDIwMjHE6jTUwjEzyNUgMDo1
+OA0KytW8/sjLOiBDaHUsS2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQqzrcvNOiBtY2dy
+b2ZAa2VybmVsLm9yZzsga2Vlc2Nvb2tAY2hyb21pdW0ub3JnOyB5emFpa2luQGdvb2dsZS5jb207
+IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
+IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1tbUBrdmFjay5vcmcNCtb3zOI6
+IFJlOiBbUEFUQ0hdIG1tL2NvbXBhY3Rpb246bGV0IHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVy
+IGNvbmZpZ3VyYWJsZQ0KDQpIZWxsby4NCg0KT24gTW9uLCBBcHIgMTIsIDIwMjEgYXQgMDU6MDU6
+MzBQTSArMDgwMCwgY2h1a2FpcGluZyB3cm90ZToNCj4gQ3VycmVudGx5IHRoZSBwcm9hY3RpdmUg
+Y29tcGFjdGlvbiBvcmRlciBpcyBmaXhlZCB0byANCj4gQ09NUEFDVElPTl9IUEFHRV9PUkRFUig5
+KSwgaXQncyBPSyBpbiBtb3N0IG1hY2hpbmVzIHdpdGggbG90cyBvZiANCj4gbm9ybWFsIDRLQiBt
+ZW1vcnksIGJ1dCBpdCdzIHRvbyBoaWdoIGZvciB0aGUgbWFjaGluZXMgd2l0aCBzbWFsbCANCj4g
+bm9ybWFsIG1lbW9yeSwgZm9yIGV4YW1wbGUgdGhlIG1hY2hpbmVzIHdpdGggbW9zdCBtZW1vcnkg
+Y29uZmlndXJlZCBhcyANCj4gMUdCIGh1Z2V0bGJmcyBodWdlIHBhZ2VzLiBJbiB0aGVzZSBtYWNo
+aW5lcyB0aGUgbWF4IG9yZGVyIG9mIGZyZWUgDQo+IHBhZ2VzIGlzIG9mdGVuIGJlbG93IDksIGFu
+ZCBpdCdzIGFsd2F5cyBiZWxvdyA5IGV2ZW4gd2l0aCBoYXJkIA0KPiBjb21wYWN0aW9uLiBUaGlz
+IHdpbGwgbGVhZCB0byBwcm9hY3RpdmUgY29tcGFjdGlvbiBiZSB0cmlnZ2VyZWQgdmVyeSANCj4g
+ZnJlcXVlbnRseS4gSW4gdGhlc2UgbWFjaGluZXMgd2Ugb25seSBjYXJlIGFib3V0IG9yZGVyIG9m
+IDMgb3IgNC4NCj4gVGhpcyBwYXRjaCBleHBvcnQgdGhlIG9kZXIgdG8gcHJvYyBhbmQgbGV0IGl0
+IGNvbmZpZ3VyYWJsZSBieSB1c2VyLCANCj4gYW5kIHRoZSBkZWZhdWx0IHZhbHVlIGlzIHN0aWxs
+IENPTVBBQ1RJT05fSFBBR0VfT1JERVIuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBjaHVrYWlwaW5n
+IDxjaHVrYWlwaW5nQGJhaWR1LmNvbT4NCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L2NvbXBhY3Rp
+b24uaCB8ICAgIDEgKw0KPiAga2VybmVsL3N5c2N0bC5jICAgICAgICAgICAgfCAgIDEwICsrKysr
+KysrKysNCj4gIG1tL2NvbXBhY3Rpb24uYyAgICAgICAgICAgIHwgICAgNyArKysrLS0tDQo+ICAz
+IGZpbGVzIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9jb21wYWN0aW9uLmggYi9pbmNsdWRlL2xpbnV4L2Nv
+bXBhY3Rpb24uaCANCj4gaW5kZXggZWQ0MDcwZS4uMTUxY2NkMSAxMDA2NDQNCj4gLS0tIGEvaW5j
+bHVkZS9saW51eC9jb21wYWN0aW9uLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9jb21wYWN0aW9u
+LmgNCj4gQEAgLTgzLDYgKzgzLDcgQEAgc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIGNvbXBh
+Y3RfZ2FwKHVuc2lnbmVkIGludCANCj4gb3JkZXIpICAjaWZkZWYgQ09ORklHX0NPTVBBQ1RJT04g
+IGV4dGVybiBpbnQgc3lzY3RsX2NvbXBhY3RfbWVtb3J5OyAgDQo+IGV4dGVybiB1bnNpZ25lZCBp
+bnQgc3lzY3RsX2NvbXBhY3Rpb25fcHJvYWN0aXZlbmVzczsNCj4gK2V4dGVybiB1bnNpZ25lZCBp
+bnQgc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXI7DQo+ICBleHRlcm4gaW50IHN5c2N0bF9jb21wYWN0
+aW9uX2hhbmRsZXIoc3RydWN0IGN0bF90YWJsZSAqdGFibGUsIGludCB3cml0ZSwNCj4gIAkJCXZv
+aWQgKmJ1ZmZlciwgc2l6ZV90ICpsZW5ndGgsIGxvZmZfdCAqcHBvcyk7ICBleHRlcm4gaW50IA0K
+PiBzeXNjdGxfZXh0ZnJhZ190aHJlc2hvbGQ7IGRpZmYgLS1naXQgYS9rZXJuZWwvc3lzY3RsLmMg
+DQo+IGIva2VybmVsL3N5c2N0bC5jIGluZGV4IDYyZmJkMDkuLjI3N2RmMzEgMTAwNjQ0DQo+IC0t
+LSBhL2tlcm5lbC9zeXNjdGwuYw0KPiArKysgYi9rZXJuZWwvc3lzY3RsLmMNCj4gQEAgLTExNCw2
+ICsxMTQsNyBAQA0KPiAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBuZWdfb25lID0gLTE7ICBz
+dGF0aWMgaW50IF9fbWF5YmVfdW51c2VkIA0KPiB0d28gPSAyOyAgc3RhdGljIGludCBfX21heWJl
+X3VudXNlZCBmb3VyID0gNDsNCj4gK3N0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgdGVuID0gMTA7
+DQoNCl5eIGRvZXMgdGhlIHVwcGVyIGxpbWl0IGhhdmUgdG8gYmUgaGFyZC1jb2RlZCBsaWtlIHRo
+aXM/DQotLT4gdGhlIG1heCBvcmRlciBvZiBidWRkeSBpcyBkZWZpbmVkIGJ5IE1BWF9PUkRFUiwg
+SSB3aWxsIGNoYW5nZSBpdCB0byBNQVhfT1JERVIgaXMgbmV4dCBwYXRjaC4NCg0KPiAgc3RhdGlj
+IHVuc2lnbmVkIGxvbmcgemVyb191bDsNCj4gIHN0YXRpYyB1bnNpZ25lZCBsb25nIG9uZV91bCA9
+IDE7DQo+ICBzdGF0aWMgdW5zaWduZWQgbG9uZyBsb25nX21heCA9IExPTkdfTUFYOw0KPiBAQCAt
+Mjg3MSw2ICsyODcyLDE1IEBAIGludCBwcm9jX2RvX3N0YXRpY19rZXkoc3RydWN0IGN0bF90YWJs
+ZSAqdGFibGUsIGludCB3cml0ZSwNCj4gIAkJLmV4dHJhMgkJPSAmb25lX2h1bmRyZWQsDQo+ICAJ
+fSwNCj4gIAl7DQo+ICsJCS5wcm9jbmFtZSAgICAgICA9ICJjb21wYWN0aW9uX29yZGVyIiwNCj4g
+KwkJLmRhdGEgICAgICAgICAgID0gJnN5c2N0bF9jb21wYWN0aW9uX29yZGVyLA0KPiArCQkubWF4
+bGVuICAgICAgICAgPSBzaXplb2Yoc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIpLA0KPiArCQkubW9k
+ZSAgICAgICAgICAgPSAwNjQ0LA0KPiArCQkucHJvY19oYW5kbGVyICAgPSBwcm9jX2RvaW50dmVj
+X21pbm1heCwNCj4gKwkJLmV4dHJhMSAgICAgICAgID0gU1lTQ1RMX1pFUk8sDQoNCkkgd29uZGVy
+IHdoYXQgaGFwcGVucyBpZiB0aGlzIGtub2IgaXMgc2V0IHRvIDAuIEhhdmUgeW91IHRlc3RlZCBz
+dWNoIGENCmNvcm5lciBjYXNlPw0KLS0+IGluIHRoZW9yeSwgMCBpcyBhbHNvIGEgY29uZmlndXJh
+YmxlIHZhbHVlLCBidXQgdGhlIGZyYWdtZW50IGluZGV4IG9mIG9yZGVyIDAgaXMgYWx3YXlzIDAs
+IHNvIGl0IHdvbid0IGRvIGFueSBwcm9hY3RpdmUgY29tcGFjdGlvbi4gSSBoYXZlIGhhZCBhIHRl
+c3QsIGlmIHNldCBvcmRlciB0byAwLCB0aGVyZSBpcyBubyBhbnkgZXJyb3IsIGJ1dCBwcm9hY3Rp
+dmUgY29tcGFjdGlvbiB3b24ndCBoYXBwZW4uDQoNCj4gKwkJLmV4dHJhMiAgICAgICAgID0gJnRl
+biwNCj4gKwl9LA0KPiArCXsNCj4gIAkJLnByb2NuYW1lCT0gImV4dGZyYWdfdGhyZXNob2xkIiwN
+Cj4gIAkJLmRhdGEJCT0gJnN5c2N0bF9leHRmcmFnX3RocmVzaG9sZCwNCj4gIAkJLm1heGxlbgkJ
+PSBzaXplb2YoaW50KSwNCj4gZGlmZiAtLWdpdCBhL21tL2NvbXBhY3Rpb24uYyBiL21tL2NvbXBh
+Y3Rpb24uYw0KPiBpbmRleCBlMDRmNDQ3Li5hMTkyOTk2IDEwMDY0NA0KPiAtLS0gYS9tbS9jb21w
+YWN0aW9uLmMNCj4gKysrIGIvbW0vY29tcGFjdGlvbi5jDQo+IEBAIC0xOTI1LDE2ICsxOTI1LDE2
+IEBAIHN0YXRpYyBib29sIGtzd2FwZF9pc19ydW5uaW5nKHBnX2RhdGFfdCAqcGdkYXQpDQo+ICAN
+Cj4gIC8qDQo+ICAgKiBBIHpvbmUncyBmcmFnbWVudGF0aW9uIHNjb3JlIGlzIHRoZSBleHRlcm5h
+bCBmcmFnbWVudGF0aW9uIHdydCB0byB0aGUNCj4gLSAqIENPTVBBQ1RJT05fSFBBR0VfT1JERVIu
+IEl0IHJldHVybnMgYSB2YWx1ZSBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ICsgKiBzeXNjdGxf
+Y29tcGFjdGlvbl9vcmRlci4gSXQgcmV0dXJucyBhIHZhbHVlIGluIHRoZSByYW5nZSBbMCwgMTAw
+XS4NCj4gICAqLw0KPiAgc3RhdGljIHVuc2lnbmVkIGludCBmcmFnbWVudGF0aW9uX3Njb3JlX3pv
+bmUoc3RydWN0IHpvbmUgKnpvbmUpDQo+ICB7DQo+IC0JcmV0dXJuIGV4dGZyYWdfZm9yX29yZGVy
+KHpvbmUsIENPTVBBQ1RJT05fSFBBR0VfT1JERVIpOw0KPiArCXJldHVybiBleHRmcmFnX2Zvcl9v
+cmRlcih6b25lLCBzeXNjdGxfY29tcGFjdGlvbl9vcmRlcik7DQo+ICB9DQo+ICANCj4gIC8qDQo+
+ICAgKiBBIHdlaWdodGVkIHpvbmUncyBmcmFnbWVudGF0aW9uIHNjb3JlIGlzIHRoZSBleHRlcm5h
+bCBmcmFnbWVudGF0aW9uDQo+IC0gKiB3cnQgdG8gdGhlIENPTVBBQ1RJT05fSFBBR0VfT1JERVIg
+c2NhbGVkIGJ5IHRoZSB6b25lJ3Mgc2l6ZS4gSXQNCj4gKyAqIHdydCB0byB0aGUgc3lzY3RsX2Nv
+bXBhY3Rpb25fb3JkZXIgc2NhbGVkIGJ5IHRoZSB6b25lJ3Mgc2l6ZS4gSXQNCj4gICAqIHJldHVy
+bnMgYSB2YWx1ZSBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ICAgKg0KPiAgICogVGhlIHNjYWxp
+bmcgZmFjdG9yIGVuc3VyZXMgdGhhdCBwcm9hY3RpdmUgY29tcGFjdGlvbiBmb2N1c2VzIG9uIGxh
+cmdlcg0KPiBAQCAtMjY2Niw2ICsyNjY2LDcgQEAgc3RhdGljIHZvaWQgY29tcGFjdF9ub2Rlcyh2
+b2lkKQ0KPiAgICogYmFja2dyb3VuZC4gSXQgdGFrZXMgdmFsdWVzIGluIHRoZSByYW5nZSBbMCwg
+MTAwXS4NCj4gICAqLw0KPiAgdW5zaWduZWQgaW50IF9fcmVhZF9tb3N0bHkgc3lzY3RsX2NvbXBh
+Y3Rpb25fcHJvYWN0aXZlbmVzcyA9IDIwOw0KPiArdW5zaWduZWQgaW50IF9fcmVhZF9tb3N0bHkg
+c3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIgPSBDT01QQUNUSU9OX0hQQUdFX09SREVSOw0KPiAgDQo+
+ICAvKg0KPiAgICogVGhpcyBpcyB0aGUgZW50cnkgcG9pbnQgZm9yIGNvbXBhY3RpbmcgYWxsIG5v
+ZGVzIHZpYQ0KPiAtLSANCj4gMS43LjENCj4gDQoNCi0tIA0KICBPbGVrc2FuZHIgTmF0YWxlbmtv
+IChwb3N0LWZhY3R1bSkNCg==
