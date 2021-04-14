@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A6035FA35
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0FB35FA37
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351795AbhDNSDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35808 "EHLO mail.kernel.org"
+        id S1351907AbhDNSEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351580AbhDNSDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:03:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6221C61168;
-        Wed, 14 Apr 2021 18:02:53 +0000 (UTC)
+        id S237770AbhDNSEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:04:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E8961168;
+        Wed, 14 Apr 2021 18:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618423373;
-        bh=S969RyVAw4Ti/v4d6k5/FzuVNBExktfV22kbKIfcgI8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=uREhpwRQgDPYeec1CgxySUsN22ZzdRko6hlx79zFUCxRK3/b9VWJ7XSr/iD8ksxp5
-         0Ub7P/fxduHciJRnqluCrrLAmx9j0lt5FcpNGFazEqh4QEExHpnYawwzehdCYLwBed
-         XvJox0jMuLKRUX1l4cMUmSTgHi8jikT4Xkc4F0ShkMGJdlrGAX32G429+DcLzyMhbJ
-         cf7XQ7x69F+4aX8XjCn/12Csna/GozWpgWaxgcDLyA3fQexIYPqmAUIme/VvU1+CgQ
-         i+9+CSSMV4DuhfPWGpnd5qUGIsB/0926lDaMzyMbpTR+4YkL1c2AYGSaY8WkU/yAeS
-         a8AKq6EnilHdQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 522B860CD1;
-        Wed, 14 Apr 2021 18:02:53 +0000 (UTC)
-Subject: Re: [GIT PULL] arm64: Fixes for -rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210414171334.GA25300@willie-the-truck>
-References: <20210414171334.GA25300@willie-the-truck>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210414171334.GA25300@willie-the-truck>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
-X-PR-Tracked-Commit-Id: 738fa58ee1328481d1d7889e7c430b3401c571b9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ec97a7296ad1ca3ccb8bca1e72739cb8262686f1
-Message-Id: <161842337327.19533.11791869407185736160.pr-tracker-bot@kernel.org>
-Date:   Wed, 14 Apr 2021 18:02:53 +0000
-To:     Will Deacon <will@kernel.org>
-Cc:     torvalds@linux-foundation.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM Kernel Mailing List 
-        <linux-arm-kernel@lists.infradead.org>, kernel-team@android.com
+        s=k20201202; t=1618423459;
+        bh=da5oT651eb/OA+CG8BtsWgd/Hqwu7V9RxxqBlB2OEdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lnuSB3Cb5tSKDAXDkV4+JZhuUg+NHch25ugvyzLwx4FZdZIM+cRKawykeFuhHLPHg
+         QtPURQ8GxoFR3axiE8w1q+MqT0jwwjmI/VZ26KhjdeLWHpqp+WKAsoqfY8Pe4ira/L
+         +xaQ/w/ragT5KLXyRUFUsRKFz++g5L9D0OYyM0qg/b+Im1yeNdiz1GpLlGMYorE1+u
+         f4mfzMqF+epicb8nQdnflMQJCitI3cesy/g6l7liNVoYy0re8fDID1Ub/J2q1Dy5mr
+         //wUgl4XamCnQRKE/M6Uckh+YYS4nA1qU7pje9hC/lyEeP95ptREJbFPXCVa38d+kG
+         fLMNQ4ajyjwJQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C316440647; Wed, 14 Apr 2021 15:04:16 -0300 (-03)
+Date:   Wed, 14 Apr 2021 15:04:16 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     linux-kernel@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>
+Subject: Re: [PATCH] perf beauty: Fix fsconfig generator
+Message-ID: <YHcuoEz8KzGjoZO1@kernel.org>
+References: <20210414162942.1660600-1-vt@altlinux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414162942.1660600-1-vt@altlinux.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Apr 2021 18:13:35 +0100:
+Em Wed, Apr 14, 2021 at 07:29:42PM +0300, Vitaly Chikunov escreveu:
+> After gnulib update sed stopped matching `[[:space:]]*+' as before,
+> causing the following compilation error:
+> 
+>   In file included from builtin-trace.c:719:
+>   trace/beauty/generated/fsconfig_arrays.c:2:3: error: expected expression before ']' token
+>       2 |  [] = "",
+> 	|   ^
+>   trace/beauty/generated/fsconfig_arrays.c:2:3: error: array index in initializer not of integer type
+>   trace/beauty/generated/fsconfig_arrays.c:2:3: note: (near initialization for 'fsconfig_cmds')
+> 
+> Fix this by correcting the regular expression used in the generator.
+> Also, clean up the script by removing redundant egrep, xargs, and printf
+> invocations.
+> 
+> Fixes: d35293004a5e4 ("perf beauty: Add generator for fsconfig's 'cmd' arg values")
+> Co-authored-by: Dmitry V. Levin <ldv@altlinux.org>
+> Signed-off-by: Vitaly Chikunov <vt@altlinux.org>
+> ---
+>  tools/perf/trace/beauty/fsconfig.sh | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/trace/beauty/fsconfig.sh b/tools/perf/trace/beauty/fsconfig.sh
+> index 83fb24df05c9f..cc76b2aa7a5af 100755
+> --- a/tools/perf/trace/beauty/fsconfig.sh
+> +++ b/tools/perf/trace/beauty/fsconfig.sh
+> @@ -10,8 +10,6 @@ fi
+>  linux_mount=${linux_header_dir}/mount.h
+>  
+>  printf "static const char *fsconfig_cmds[] = {\n"
+> -regex='^[[:space:]]*+FSCONFIG_([[:alnum:]_]+)[[:space:]]*=[[:space:]]*([[:digit:]]+)[[:space:]]*,[[:space:]]*.*'
+> -egrep $regex ${linux_mount} | \
+> -	sed -r "s/$regex/\2 \1/g"	| \
+> -	xargs printf "\t[%s] = \"%s\",\n"
+> +regex='^[[:space:]]*FSCONFIG_([[:alnum:]_]+)[[:space:]]*=[[:space:]]*([[:digit:]]+)[[:space:]]*,.*'
+> +sed -nr "s/$regex/\t[\2] = \"\1\",/p" ${linux_mount}
+>  printf "};\n"
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+Testing this, all working, I'll step back and ask you to remove that now
+useless regex variable and do it directly in the now only line using it,
+the sed one.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ec97a7296ad1ca3ccb8bca1e72739cb8262686f1
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+- Arnaldo
