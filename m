@@ -2,141 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8A135F904
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD4235F900
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352758AbhDNQcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:32:16 -0400
-Received: from mout.gmx.net ([212.227.15.18]:34845 "EHLO mout.gmx.net"
+        id S1351799AbhDNQbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:31:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43334 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349084AbhDNQcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:32:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618417896;
-        bh=FZ9GrzKKcGZUQfcEpxp5BlYmttssC2dTkHA74RKI9aU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=KkESVuej5eT2CJPcF5VQs0Oeu1LoTXOqiXguXm5VZoxTivkFFQuUBisUIRnLvJcpk
-         qqN+nHf+AlYUbar99jp/FNpAlv4uLlo4leSeAlO69tiR3uTSMugeq/z80WhkwhL4Md
-         o+22OYHsdvxq6NsZIarwaP0M9sIsMA08a2aylvkM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.158.221]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MybKp-1lkvOX1jkD-00yvkz; Wed, 14
- Apr 2021 18:31:36 +0200
-Subject: Re: [PATCH 15/20] kbuild: parisc: use common install script
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-parisc@vger.kernel.org
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-16-gregkh@linuxfoundation.org>
- <CAK7LNATkQfwqr9-G5KwGmWDeG81Wn0eb3ZVxopJjxCq18S28=Q@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <5e16a94b-7383-3ec5-949f-f4c5d2c812f5@gmx.de>
-Date:   Wed, 14 Apr 2021 18:30:59 +0200
+        id S233369AbhDNQbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:31:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2E18EAF80;
+        Wed, 14 Apr 2021 16:31:19 +0000 (UTC)
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210414133931.4555-1-mgorman@techsingularity.net>
+ <20210414133931.4555-6-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 05/11] mm/page_alloc: Batch the accounting updates in the
+ bulk allocator
+Message-ID: <e9301fe4-04ce-8bb0-e76c-1ac824c8e1a5@suse.cz>
+Date:   Wed, 14 Apr 2021 18:31:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATkQfwqr9-G5KwGmWDeG81Wn0eb3ZVxopJjxCq18S28=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210414133931.4555-6-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TDlocKOvRUziINmfgs2TvkiCW4nNU7lXGq0VVBP61oTJiZ0A07t
- /buLeUgCiwyBnknrQEm5Kd7KAeUkHPkdNTwZ0+W+iDyhuqE7EeRfO11ZX6GvCqHC0aLq2rA
- JE+DPR60MNvV6kDw82f/M2OtDqptP+wtaZAUS5mev3hxVqg8ImkolZWdDs6BHvcM9j9tNXn
- +buLPIV04t7HhKxX/vB4Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KDpldex5/p0=:M1Mu70R/n4l0ji5vnqhKZc
- aE4E6oGYhzHyb9dW997jQgjZf5WYxb8ADiT3ComF+GSNVtt5omGFuJWNKYInTOhsRl5d253ws
- OOgVinVqLCsKwIQ4oAVchOz55MgeDqD/jVKBjONwsyWHNWrF924g3A7pHTuzOThOPV5mQQyz8
- /+6PY9/IdFnhFz4lZbP5uQZCbeBRfIIqVPwL+M9XGEn/YwUrB+ovbEPLMtLIP48CNS4OijmPE
- vwAlMBDvnjr+iKKnOhNg/NeqazGxifbnSAkqw2t2H/CUpP6jQX4chbxKIubX6mzZ0MG0LIIc1
- yUWZU2ow/Bw9VAhep6zngAj9KsdjHQkU3r/+b5vP8Re0gsWGwbUfRG+T6L4ZITs/fjfQF8BUI
- Px+KsBsg434zXuOvdBY426jkjhDPSPIIoWeL8cXUQag03yW6yrwkf9PlxAj69sYpFBbeGraoE
- sX4OmnoNQI8p25hIsYx0E7APYrW+SlSz43sg6W185rA7ZPgh7CiGpPh7F1Btva5xYOgG/Pf30
- xMMS9cD8CQJyvnizwszlF9xiz7apweEJTVROhUrw4xatKtmOqbaKPJlbrZmkfFge28uBPmIz/
- K8txzSuOU24Ro5LMrctPOfA46MkKUjLze76aMlG2evJ2VYzy06UerOBmuVvPb0v8ZYPUFAHrB
- pwMIMU5GIuuP/keyzKdHQU9sGo0T6bNFFR3it6xHXAfNEaGX01QsK40fSVeh1YRizkPIQbXKC
- 0Es48oCCJPCLUsYZvugzJiL8zLcIX2QXYdbEweFPTOvwVpz4w37MEng5cD3nVb+y2gK2FHPY5
- afVuykgZNonRixH7CdeXpnTzb410b77HlsZ9u4KA4x+xR1amf5ZvO1uK669jFa7QW15A1ttU5
- cIW2c0lPK6y72+8wRTVZVBRHrkd25IviKMp/fdE2/O5fjNwDvnOaQENHNEXlx7FJrG63uWCDk
- E5s3GsNwjCH6kpw3cSjlydVn3CD+dw5WXdFkhkTB64SUIkQTk/GODXR4M8+rfLUaokDikEI9C
- 1craIDnyBQvzW9PxcuOCakPmFEQi9I+MVY73oLRAHqD4fqXihxxxIi1xZP45hoONmWTnA4UIU
- VUSPricM6+Dpt9E2o2STiSpspBeRloRymryOpu4pqPOWqUvqDQOVJnz2k6+uMLGZpMzgKNVT/
- RLQZIEur75igqG0CZOdH5H1KbPUjN77p6E+3TgCSdglz/Lsq7om8dOgfuS/tKhwTcL8Mk=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 1:23 PM, Masahiro Yamada wrote:
-> On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> The common scripts/install.sh script will now work for parisc, all that
->> is needed is to add the compressed image type to it.  So add that file
->> type check, and then we can remove the two different copies of the
->> parisc install.sh script that were only different by one line and have
->> the arch call the common install script.
->>
->> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
->> Cc: Helge Deller <deller@gmx.de>
->> Cc: linux-parisc@vger.kernel.org
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>   arch/parisc/Makefile        |  4 +--
->>   arch/parisc/boot/Makefile   |  2 +-
->>   arch/parisc/boot/install.sh | 65 ------------------------------------
->>   arch/parisc/install.sh      | 66 ------------------------------------=
--
->>   scripts/install.sh          |  1 +
->>   5 files changed, 4 insertions(+), 134 deletions(-)
->>   delete mode 100644 arch/parisc/boot/install.sh
->>   delete mode 100644 arch/parisc/install.sh
->>
->> diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
->> index 7d9f71aa829a..296d8ab8e2aa 100644
->> --- a/arch/parisc/Makefile
->> +++ b/arch/parisc/Makefile
->> @@ -164,10 +164,10 @@ vmlinuz: vmlinux
->>   endif
->>
->>   install:
->> -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
->> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
->>                          $(KERNELRELEASE) vmlinux System.map "$(INSTALL=
-_PATH)"
->>   zinstall:
->> -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
->> +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
->>                          $(KERNELRELEASE) vmlinuz System.map "$(INSTALL=
-_PATH)"
->>
->>   CLEAN_FILES    +=3D lifimage
->> diff --git a/arch/parisc/boot/Makefile b/arch/parisc/boot/Makefile
->> index 61f44142cfe1..ad2611929aee 100644
->> --- a/arch/parisc/boot/Makefile
->> +++ b/arch/parisc/boot/Makefile
->> @@ -17,5 +17,5 @@ $(obj)/compressed/vmlinux: FORCE
->>          $(Q)$(MAKE) $(build)=3D$(obj)/compressed $@
->>
->>   install: $(CONFIGURE) $(obj)/bzImage
->> -       sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/bzI=
-mage \
->> +       sh -x  $(srctree)/scripts/install.sh $(KERNELRELEASE) $(obj)/bz=
-Image \
->>                System.map "$(INSTALL_PATH)"
->
->
->
-> As far as I understood, there is no way to invoke this 'install' target
-> in arch/parisc/boot/Makefile since everything is done
-> by arch/parisc/Makefile.
->
-> Can we remove this 'install' rule entirely?
+On 4/14/21 3:39 PM, Mel Gorman wrote:
+> Now that the zone_statistics are simple counters that do not require
+> special protection, the bulk allocator accounting updates can be batch
+> updated without adding too much complexity with protected RMW updates or
+> using xchg.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-Yes, I think it can go in arch/parisc/boot/Makefile.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Helge
+> ---
+>  include/linux/vmstat.h |  8 ++++++++
+>  mm/page_alloc.c        | 30 +++++++++++++-----------------
+>  2 files changed, 21 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index dde4dec4e7dd..8473b8fa9756 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -246,6 +246,14 @@ __count_numa_event(struct zone *zone, enum numa_stat_item item)
+>  	raw_cpu_inc(pzstats->vm_numa_event[item]);
+>  }
+>  
+> +static inline void
+> +__count_numa_events(struct zone *zone, enum numa_stat_item item, long delta)
+> +{
+> +	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+> +
+> +	raw_cpu_add(pzstats->vm_numa_event[item], delta);
+> +}
+> +
+>  extern void __count_numa_event(struct zone *zone, enum numa_stat_item item);
+>  extern unsigned long sum_zone_node_page_state(int node,
+>  					      enum zone_stat_item item);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 9d0f047647e3..cff0f1c98b28 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3411,7 +3411,8 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
+>   *
+>   * Must be called with interrupts disabled.
+>   */
+> -static inline void zone_statistics(struct zone *preferred_zone, struct zone *z)
+> +static inline void zone_statistics(struct zone *preferred_zone, struct zone *z,
+> +				   long nr_account)
+>  {
+>  #ifdef CONFIG_NUMA
+>  	enum numa_stat_item local_stat = NUMA_LOCAL;
+> @@ -3424,12 +3425,12 @@ static inline void zone_statistics(struct zone *preferred_zone, struct zone *z)
+>  		local_stat = NUMA_OTHER;
+>  
+>  	if (zone_to_nid(z) == zone_to_nid(preferred_zone))
+> -		__count_numa_event(z, NUMA_HIT);
+> +		__count_numa_events(z, NUMA_HIT, nr_account);
+>  	else {
+> -		__count_numa_event(z, NUMA_MISS);
+> -		__count_numa_event(preferred_zone, NUMA_FOREIGN);
+> +		__count_numa_events(z, NUMA_MISS, nr_account);
+> +		__count_numa_events(preferred_zone, NUMA_FOREIGN, nr_account);
+>  	}
+> -	__count_numa_event(z, local_stat);
+> +	__count_numa_events(z, local_stat, nr_account);
+>  #endif
+>  }
+>  
+> @@ -3475,7 +3476,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+>  	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
+>  	if (page) {
+>  		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
+> -		zone_statistics(preferred_zone, zone);
+> +		zone_statistics(preferred_zone, zone, 1);
+>  	}
+>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>  	return page;
+> @@ -3536,7 +3537,7 @@ struct page *rmqueue(struct zone *preferred_zone,
+>  				  get_pcppage_migratetype(page));
+>  
+>  	__count_zid_vm_events(PGALLOC, page_zonenum(page), 1 << order);
+> -	zone_statistics(preferred_zone, zone);
+> +	zone_statistics(preferred_zone, zone, 1);
+>  	local_irq_restore(flags);
+>  
+>  out:
+> @@ -5019,7 +5020,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	struct alloc_context ac;
+>  	gfp_t alloc_gfp;
+>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+> -	int nr_populated = 0;
+> +	int nr_populated = 0, nr_account = 0;
+>  
+>  	if (unlikely(nr_pages <= 0))
+>  		return 0;
+> @@ -5092,15 +5093,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  				goto failed_irq;
+>  			break;
+>  		}
+> -
+> -		/*
+> -		 * Ideally this would be batched but the best way to do
+> -		 * that cheaply is to first convert zone_statistics to
+> -		 * be inaccurate per-cpu counter like vm_events to avoid
+> -		 * a RMW cycle then do the accounting with IRQs enabled.
+> -		 */
+> -		__count_zid_vm_events(PGALLOC, zone_idx(zone), 1);
+> -		zone_statistics(ac.preferred_zoneref->zone, zone);
+> +		nr_account++;
+>  
+>  		prep_new_page(page, 0, gfp, 0);
+>  		if (page_list)
+> @@ -5110,6 +5103,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  		nr_populated++;
+>  	}
+>  
+> +	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+> +	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+> +
+>  	local_unlock_irqrestore(&pagesets.lock, flags);
+>  
+>  	return nr_populated;
+> 
+
