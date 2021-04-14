@@ -2,156 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B6435F9AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F4735F9BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349715AbhDNRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:20:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54090 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhDNRUG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:20:06 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618420784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jJtu21/9foT+QNiwv3C3gjPou7M8V3FS1zdC8cROlQo=;
-        b=K+tRj/Nx3upTDelOmH/DdHFlb2DXXGnU/l4qDG3EMuq4NNgZFN0LL/1OhrotxXHg8MjCcE
-        T2ILNN3buva3TEos4phTCQlSAGANbK/Xv8EbRGwHSdn5C4FN48FWjMRNuMoO+Pnwq2gSRZ
-        aPu+yISC1ofcwkH23MrCalB4ooHhvIkiF0up6ptFhK9WJovMSKfUX+NqSC9S03Sc19IfdD
-        JFxYFJUlhe3W8d3iykBuzW+tfU38swZDT/j8IVTAyOvmjx95Vr3C6YSsWR63tfNh8WM3N0
-        Ai2wbLwqAN/aT5tjaQYKt5Hp5yxMlIli9ujr70abv6LxiXF7nNn1GaK9VjC5Hg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618420784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jJtu21/9foT+QNiwv3C3gjPou7M8V3FS1zdC8cROlQo=;
-        b=Ab/uSholFzHpg20UZMZoIq3f53CtBdvcYSuzlj0MEt3GWp5TkAeci0sdmkvOZWa71nkIFD
-        k1lS52SXXectlEBQ==
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>
-Subject: Re: [PATCH v2] hrtimer: avoid retrigger_next_event IPI
-In-Reply-To: <20210413170431.GA16190@fuller.cnet>
-References: <20210407135301.GA16985@fuller.cnet> <87o8en4k9a.ffs@nanos.tec.linutronix.de> <20210409165146.GA40118@fuller.cnet> <87lf9q4lue.ffs@nanos.tec.linutronix.de> <20210413170431.GA16190@fuller.cnet>
-Date:   Wed, 14 Apr 2021 19:19:43 +0200
-Message-ID: <874kg8wzps.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1350215AbhDNR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:26:04 -0400
+Received: from gate.crashing.org ([63.228.1.57]:53260 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231475AbhDNR0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:26:02 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13EHK42L023677;
+        Wed, 14 Apr 2021 12:20:04 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13EHK3HZ023672;
+        Wed, 14 Apr 2021 12:20:03 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 14 Apr 2021 12:20:03 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when possible
+Message-ID: <20210414172003.GX26583@gate.crashing.org>
+References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu> <20210412215428.GM26583@gate.crashing.org> <ecb1b1a5-ae92-e8a3-6490-26341edfbccb@csgroup.eu> <20210413215803.GT26583@gate.crashing.org> <1618365589.67fxh7cot9.astroid@bobo.none> <20210414122409.GV26583@gate.crashing.org> <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu> <20210414151921.GW26583@gate.crashing.org> <efcabc9410cf4d03b203749a02e5a935@AcuMS.aculab.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efcabc9410cf4d03b203749a02e5a935@AcuMS.aculab.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marcelo,
+On Wed, Apr 14, 2021 at 03:32:04PM +0000, David Laight wrote:
+> From: Segher Boessenkool
+> > Sent: 14 April 2021 16:19
+> ...
+> > > Could the kernel use GCC builtin atomic functions instead ?
+> > >
+> > > https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
+> > 
+> > Certainly that should work fine for the simpler cases that the atomic
+> > operations are meant to provide.  But esp. for not-so-simple cases the
+> > kernel may require some behaviour provided by the existing assembler
+> > implementation, and not by the atomic builtins.
+> > 
+> > I'm not saying this cannot work, just that some serious testing will be
+> > needed.  If it works it should be the best of all worlds, so then it is
+> > a really good idea yes :-)
+> 
+> I suspect they just add an extra layer of abstraction that makes it
+> even more difficult to verify and could easily get broken by a compiler
+> update (etc).
 
-On Tue, Apr 13 2021 at 14:04, Marcelo Tosatti wrote:
-> Setting the realtime clock triggers an IPI to all CPUs to reprogram
-> hrtimers.
+I would say it uses an existing facility, instead of creating a kernel-
+specific one.
 
-s/hrtimers/clock event device/
+> The other issue is that the code needs to be correct with compiled
+> with (for example) -O0.
+> That could very easily break anything except the asm implementation
+> if additional memory accesses and/or increased code size cause grief.
 
-> However, only realtime and TAI clocks have their offsets updated
-> (and therefore potentially require a reprogram).
->
-> Check if it only has monotonic active timers, and in that case
+The compiler generates correct code.  New versions of the compiler or
+old, -O0 or not, under any phase of the moon.
 
-boottime != monotonic 
+Of course sometimes the compiler is broken, but there are pre-existing
+ways of dealing with that, and there is no reason at all to think this
+would break more often than random other code.
 
-> update the realtime and TAI base offsets remotely, skipping the IPI.
 
-Something like this perhaps:
-
-Instead of sending an IPI unconditionally, check each per CPU hrtimer base
-whether it has active timers in the CLOCK_REALTIME and CLOCK_TAI bases. If
-that's not the case, update the realtime and TAI base offsets remotely and
-skip the IPI. This ensures that any subsequently armed timers on
-CLOCK_REALTIME and CLOCK_TAI are evaluated with the correct offsets.
-
-Hmm?
-
-> +#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME)|		\
-
-Missing space between ) and |
-
-> +			 (1U << HRTIMER_BASE_REALTIME_SOFT)|	\
-> +			 (1U << HRTIMER_BASE_TAI)|		\
-> +			 (1U << HRTIMER_BASE_TAI_SOFT))
-> +
-> +static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
-> +{
-> +	unsigned int active = 0;
-> +
-> +	if (cpu_base->softirq_activated)
-> +		return true;
-> +
-> +	active = cpu_base->active_bases & HRTIMER_ACTIVE_SOFT;
-> +
-> +	active = active | (cpu_base->active_bases & HRTIMER_ACTIVE_HARD);
-> +
-> +	if ((active & CLOCK_SET_BASES) == 0)
-> +		return false;
-> +
-> +	return true;
-
-That's a pretty elaborate way of writing:
-
-       return (cpu_base->active_bases & CLOCK_SET_BASES) != 0;
-
-> +}
-> +
->  /*
->   * Clock realtime was set
->   *
-> @@ -885,9 +907,31 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
->  void clock_was_set(void)
->  {
->  #ifdef CONFIG_HIGH_RES_TIMERS
-> -	/* Retrigger the CPU local events everywhere */
-> -	on_each_cpu(retrigger_next_event, NULL, 1);
-> +	cpumask_var_t mask;
-> +	int cpu;
-> +
-> +	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-> +		on_each_cpu(retrigger_next_event, NULL, 1);
-> +		goto set_timerfd;
-> +	}
-> +
-> +	/* Avoid interrupting CPUs if possible */
-> +	preempt_disable();
-
-That preempt disable is only required around the function call, for the
-loop cpus_read_lock() is sufficient.
-
-> +	for_each_online_cpu(cpu) {
-> +		unsigned long flags;
-> +		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
-> +
-> +		raw_spin_lock_irqsave(&cpu_base->lock, flags);
-> +		if (need_reprogram_timer(cpu_base))
-> +			cpumask_set_cpu(cpu, mask);
-> +		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
-> +	}
-> +
-> +	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
-> +	preempt_enable();
-> +	free_cpumask_var(mask);
->  #endif
-> +set_timerfd:
-
-My brain compiler tells me that with CONFIG_HIGH_RES_TIMERS=n a real
-compiler will emit a warning about a defined, but unused label....
-
->  	timerfd_clock_was_set();
->  }
-
-Thanks,
-
-        tglx
+Segher
