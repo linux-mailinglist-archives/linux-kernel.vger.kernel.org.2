@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B787A35FBA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B1535FBA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhDNT1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S1349223AbhDNT2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhDNT1m (ORCPT
+        with ESMTP id S235028AbhDNT2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:27:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B682C061574;
-        Wed, 14 Apr 2021 12:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=4+1wd2pK7CXY/M3KV/UrvShdnppGdq/Gmh3jx1eH2uk=; b=V38veh0ZV+GJTzNvuppo+TnfmG
-        +YAEeyyCSpWLmXom4TZxQadG8btsAH7f4u6Qwf0wek/LetPwrWMBMwvjrWEYs7UjjEZksCrpdf0+R
-        S1gHNfzcABdBis/UMk5bAk/1mJtG6Btz5JdMKtNYM6stCqMFahtOd1fYZSJ23bMedmgc0pJDALQhR
-        EpbNYsrDTGUwl/h4a2DcbMQIMcqvOUiyS1saP6sriN2cC5uVDOO5FvWgVJ01URq+j7b6arBXs3zws
-        11fH8api7CEMImDjHqHMptTd6EKf8n4RNr9wqVPoyn0NjC1xyKsGPDeS5OJv5BUIpMIB/GjR5zika
-        dds9ppZA==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWlAE-007XJv-So; Wed, 14 Apr 2021 19:27:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: [PATCH] uml: fix W=1 missing-include-dirs warnings
-Date:   Wed, 14 Apr 2021 12:26:57 -0700
-Message-Id: <20210414192657.17764-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 14 Apr 2021 15:28:19 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F4CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:27:56 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id e14so33097939ejz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l3Dfg+t81O6iIBFRL3yKUv5Drx9glzGHFqa+e6m1HgM=;
+        b=TymgCV05iTqKAdGAjC97+N/q4GoSVXD9mWjK5skpZ9Ge6BbpWqu2DXzQW9WE6/8cjq
+         wU2UPbCkn5qKzQWpjLVCWSPqASNcrfE8z6DabgcvTz8bLUZkLgv5HrG+RMHig5A3LPOw
+         QOqnHyEB7S+QA63x/mmarxWpDRn+Vtwe+2wsB7M+r83OMnlB9fjDY3sYagbJNJP1En9t
+         NwAw9KNdeum0QixGZL1ah3EVdG1KryTeoGyldKiSW+httLClEAsk/9Dcqm9mWxhvL49D
+         j3yNpJ/PCY2j5sSG4r5b0bNzTan7LIAqce3iKOa51qSEstbeX34x4I1hMM75gLGgOIFe
+         YTCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l3Dfg+t81O6iIBFRL3yKUv5Drx9glzGHFqa+e6m1HgM=;
+        b=mP/VkFQmEjDs5Bc6Q/8QdKjmMa7Tf9nMKAFQJ5nhbL/4DtdNCFbilp2kqQFo0iTlPO
+         RCmvYMcpACXqBh1FDrIVCUmuQIhxCgkummBkPwRj9cjmZb6Bjh7VcUisBP3uZJRKdV39
+         IH5QqMnu3ZKmBDsdFSpNnoSQul48SofVys7LwSEQEWLpFAy6MAAVsTScK0olrNQpTiI6
+         SgqfatgNDxOWs+YUYtWo3iX1BGI0enxOiC56ogmRU4VCpbl4dJS19ULwdrWxEaPzRPRq
+         zTkVEO82b1fvzj9bBVykPy6cx6+FtXprKTr6ophoAW/AQN7ezDoTTJL1gqrwolrjmCCE
+         1qOg==
+X-Gm-Message-State: AOAM533IYd13vz4nNGqNgQKm3o52Xvp/FayFRiCbSC8bd3DSjB3GXZI7
+        unx5+LN/Nvs4WjVLc+Q3OUo=
+X-Google-Smtp-Source: ABdhPJwm7LizrJVVwMgBW5UwqHZE3wKCjwCzoDBLYgdgpt984xNVzoEd0jiH9BOVBVdYp9WTzJ7VkA==
+X-Received: by 2002:a17:906:6d01:: with SMTP id m1mr421426ejr.501.1618428475504;
+        Wed, 14 Apr 2021 12:27:55 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id gn3sm259049ejc.2.2021.04.14.12.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 12:27:55 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v3 0/2] Remove led_blink_hdl and other related symbols
+Date:   Wed, 14 Apr 2021 21:27:48 +0200
+Message-Id: <20210414192750.4974-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently when using "W=1" with UML builds, there are over 700 warnings
-like so:
+Removed useless led_blink_hdl() prototype and definition.
+Removed struct LedBlink_param. Removed LedBlink entries in
+rtw_cmd_callback[] and in wlancmds[]. Everything related to LedBlink is
+not anymore needed. Removed extra blank lines in the two mentioned
+arrays and changend the numbers set in comments for having them in line
+with the shift. 
 
-  CC      arch/um/drivers/stderr_console.o
-cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+Fabio M. De Francesco (2):
+  staging: rtl8723bs: Remove useless led_blink_hdl()
+  staging: rtl8723bs: Remove everything related with LedBlink
 
-but arch/um/ does not have include/uapi/ at all, so don't
-include arch/um/include/uapi/ in USERINCLUDE for UML.
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      | 27 +++++--------------
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  9 -------
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   | 14 +++-------
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  1 -
+ 4 files changed, 11 insertions(+), 40 deletions(-)
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
----
- Makefile |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+-- 
+2.31.1
 
-Option 2: change the setting of USERINCLUDE. This could alter
-	(a) build times and
-	(b) which header files get used: if there are multiple
-	    header files named foobar.h in the $(USERINCLUDE)
-	    subdirectories, this Option changes the order in which
-	    they would be found.
-
-- linux-next-20210413.orig/Makefile
-+ linux-next-20210413/Makefile
-@@ -501,13 +501,16 @@ LDFLAGS_vmlinux =
- 
- # Use USERINCLUDE when you must reference the UAPI directories only.
- USERINCLUDE    := \
--		-I$(srctree)/arch/$(SRCARCH)/include/uapi \
- 		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
- 		-I$(srctree)/include/uapi \
- 		-I$(objtree)/include/generated/uapi \
-                 -include $(srctree)/include/linux/compiler-version.h \
-                 -include $(srctree)/include/linux/kconfig.h
- 
-+ifneq ($(ARCH),um)
-+USERINCLUDE    += -I$(srctree)/arch/$(SRCARCH)/include/uapi
-+endif
-+
- # Use LINUXINCLUDE when you must reference the include/ directory.
- # Needed to be compatible with the O= option
- LINUXINCLUDE    := \
-
-Option 3: modify scripts/Makefile.extrawarn not to set
-	-Wmissing-include-dirs for arch=um. I think that this is not
-	a good idea: it could cause valid problem reports not to be
-	reported.
-
-Option 4: simply mkdir arch/um/include/uapi
-	That's what I did first, just as a test, and it works.
-
---- linux-next-20210413.orig/Makefile
-+++ linux-next-20210413/Makefile
-@@ -500,6 +500,15 @@ AFLAGS_KERNEL	=
- LDFLAGS_vmlinux =
- 
- # Use USERINCLUDE when you must reference the UAPI directories only.
-+# Note: arch/um/ does not have an include/uapi/ subdir.
-+ifeq ($(ARCH),um)
-+USERINCLUDE    := \
-+		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
-+		-I$(srctree)/include/uapi \
-+		-I$(objtree)/include/generated/uapi \
-+                -include $(srctree)/include/linux/compiler-version.h \
-+                -include $(srctree)/include/linux/kconfig.h
-+else
- USERINCLUDE    := \
- 		-I$(srctree)/arch/$(SRCARCH)/include/uapi \
- 		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
-@@ -507,6 +516,7 @@ USERINCLUDE    := \
- 		-I$(objtree)/include/generated/uapi \
-                 -include $(srctree)/include/linux/compiler-version.h \
-                 -include $(srctree)/include/linux/kconfig.h
-+endif
- 
- # Use LINUXINCLUDE when you must reference the include/ directory.
- # Needed to be compatible with the O= option
