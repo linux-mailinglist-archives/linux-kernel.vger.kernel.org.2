@@ -2,53 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF0035ED49
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A8E35ED57
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349234AbhDNGkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbhDNGj6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:39:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66AEC061756;
-        Tue, 13 Apr 2021 23:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9FMDp4FETi2Plb1JTq4/Y90vv0hkjYHxRXV0YigHgkU=; b=NiKW6pebZPWlXqHQEZnlj0rogl
-        O+K72x+e4LN1WVcf6Ka/PjrjeMEA7BGc8sBpsSrAR6pZJMwYjqFnkmPHkUcVkrv/LiTn5BpA0zqKj
-        FOvNYnJBawz/QZQv5o0V3jlbEdYo3hx3MRJkuml9A205qFPpZ3GOAZlvpILUudK8UOhw+H111eIPE
-        FD3eE6S6zBAeJLrfC3ov1c6POkyId7njuUpkYOBsyTtItJC/wvvw/Tv6ovLRq/HAH6wl2GOl0c5qi
-        y/EaDxv/LOIvt1XfZAGCR9+jI6v+CceDuhO1FmepzIFkJKdXqlNvmorLD4N2wh8uuCEV70yrbYpkI
-        1J8uU87A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWZBO-006kdc-0D; Wed, 14 Apr 2021 06:39:27 +0000
-Date:   Wed, 14 Apr 2021 07:39:25 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Remove me from IDE/ATAPI section
-Message-ID: <20210414063925.GA1607069@infradead.org>
-References: <20210412090346.31213-1-bp@alien8.de>
+        id S1349263AbhDNGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:41:21 -0400
+Received: from m12-18.163.com ([220.181.12.18]:36018 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349254AbhDNGlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:41:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=T2FgI
+        EBnBRmAKPQPAqT1xukyZIsaFUReHtLwyWIQa0g=; b=GugPYnrjMakS1fdwnzdcR
+        H0IENcwqferJJ8eUD4U5Jx2otuEqgEzwOxQPs+bk0LN+f/m9n8AjQBSLsTXXFFVL
+        WNuDWZ5A8dfcWRGGBRgEv8OygDVVKQDHL3IhuMphxye5rjuu9PkTlcNqQYJt4Wqg
+        7Oj2oaxolkRPhjibFCrNnA=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowACXm+NdjnZg1iswdw--.55593S2;
+        Wed, 14 Apr 2021 14:40:31 +0800 (CST)
+From:   dingsenjie@163.com
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] thermal: tegra: Use devm_platform_ioremap_resource_byname
+Date:   Wed, 14 Apr 2021 14:39:43 +0800
+Message-Id: <20210414063943.96244-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412090346.31213-1-bp@alien8.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowACXm+NdjnZg1iswdw--.55593S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Wry3ZF13tw4fWFW8GFW3KFg_yoW8uFyUpr
+        1xGa4xu398CF48Aa4fJr43ZFs8tF129ayUu34rGw1Sya98JryUAF18JFWrZFW8A3ykKF1U
+        tFWYyr48AFyDXFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbOz3UUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiHh90yFSIt3Yg3wAAsf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:03:46AM +0200, Borislav Petkov wrote:
->  IDE/ATAPI DRIVERS
-> -M:	Borislav Petkov <bp@alien8.de>
->  L:	linux-ide@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/cdrom/ide-cd.rst
+From: dingsenjie <dingsenjie@yulong.com>
 
-The Maintained should also become Orphaned then.
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
+separately.
+
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/thermal/tegra/soctherm.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/thermal/tegra/soctherm.c b/drivers/thermal/tegra/soctherm.c
+index 66e0639..ee289e2 100644
+--- a/drivers/thermal/tegra/soctherm.c
++++ b/drivers/thermal/tegra/soctherm.c
+@@ -2118,7 +2118,6 @@ static int tegra_soctherm_probe(struct platform_device *pdev)
+ 	struct tegra_soctherm *tegra;
+ 	struct thermal_zone_device *z;
+ 	struct tsensor_shared_calib shared_calib;
+-	struct resource *res;
+ 	struct tegra_soctherm_soc *soc;
+ 	unsigned int i;
+ 	int err;
+@@ -2140,26 +2139,20 @@ static int tegra_soctherm_probe(struct platform_device *pdev)
+ 
+ 	tegra->soc = soc;
+ 
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-					   "soctherm-reg");
+-	tegra->regs = devm_ioremap_resource(&pdev->dev, res);
++	tegra->regs = devm_platform_ioremap_resource_byname(pdev, "soctherm-reg");
+ 	if (IS_ERR(tegra->regs)) {
+ 		dev_err(&pdev->dev, "can't get soctherm registers");
+ 		return PTR_ERR(tegra->regs);
+ 	}
+ 
+ 	if (!tegra->soc->use_ccroc) {
+-		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-						   "car-reg");
+-		tegra->clk_regs = devm_ioremap_resource(&pdev->dev, res);
++		tegra->clk_regs = devm_platform_ioremap_resource_byname(pdev, "car-reg");
+ 		if (IS_ERR(tegra->clk_regs)) {
+ 			dev_err(&pdev->dev, "can't get car clk registers");
+ 			return PTR_ERR(tegra->clk_regs);
+ 		}
+ 	} else {
+-		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+-						   "ccroc-reg");
+-		tegra->ccroc_regs = devm_ioremap_resource(&pdev->dev, res);
++		tegra->ccroc_regs = devm_platform_ioremap_resource_byname(pdev, "ccroc-reg");
+ 		if (IS_ERR(tegra->ccroc_regs)) {
+ 			dev_err(&pdev->dev, "can't get ccroc registers");
+ 			return PTR_ERR(tegra->ccroc_regs);
+-- 
+1.9.1
+
+
