@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A0335FAA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4899635FAA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352994AbhDNSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        id S1351583AbhDNSQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352619AbhDNSMz (ORCPT
+        with ESMTP id S1348077AbhDNSM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:12:55 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED98C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:32 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id w18so24902785edc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:32 -0700 (PDT)
+        Wed, 14 Apr 2021 14:12:57 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A771C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:34 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id w18so24902846edc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Qc8L+dcw3d24zY+sl7nk13L5CWZODm4pKqWzC24XNuA=;
-        b=RsMgUT9z0UgmuLd6/gWneuaSH+Wz/H1T8WVju8abvzHVPMWI3GmgdyBg8QdGdZjuIv
-         z3YoVjwQ6wODbJ5VYXsTgTq+uBrpOiwRFAdQKtpk26C7k3h7foR+2uOAoFGeO8EaFhj6
-         M4ST8cvuVDSyLpCGSRIqE7CKfRJTUFAQhFCVOWYJoAdVsCEAegxj5IxiAWrV6yPY7Qf2
-         ayGdBgUrCqajeFjbx4+PhFN0sO7T2giM+/fz/7m/TfAR58NVbWkRuxOAE3a1ct5yaPGV
-         7yNv2MwI9CTjshNXfar2RaphsllJYOh8aaDuts9iWX83FjCTfpuMwjzTgVWq4tzgrPWL
-         g+Fg==
+        bh=e8cMsDT9er0yB1vAcvjl5ixcilD8+YkGrcYft26XCmo=;
+        b=Dc2TJ4cZEHs6KJ9s7IOUBRa+KjVExnbDv1YoO7FzRj9z13fDkJV+xCLxVlVj5n6v5j
+         GW2wnsJkg/I/FlLkrT+L3/IUlb5HE4qUCnnnlgfpvELIUdeeMkZZNTL4hIfjQ5AyJXXO
+         0nh7D60iJ0cdMjTLbX6O3a5uyksmhyzwbKhawkON3NmVl/VtrdFGS8oJwKUlbmGR23rJ
+         Q2D3aaHDnzF0nuh5n3RWyp9KbGA00hUwLb/W5ZpGUUphHQZO5f6HrDSXM2+27GZcZfPa
+         /xqgppvcS7w28CB2Jb/b93+pgiuVgv3jgnY54w6uIGZCvm4te19r3gkXiuzsJsiXKsKz
+         543Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Qc8L+dcw3d24zY+sl7nk13L5CWZODm4pKqWzC24XNuA=;
-        b=hG7ek7FDUURv23voxZ6Qk5yrgCo3dan1S4bI8ZlDdifywLC9/PIgiPmZ6RdGKPglRI
-         +SDChRvagSlU2KTIEn2s3S8gfLH1Du1CTbufEFxw3PkC+R2bf7uvfCLZlvYMPpZ26d9d
-         dUTqTlIhkrsu9vFnEW8+BgTVUc5Q7wtbc8yL/F2D8kYMz2uS7Dk33msASyhldfcpRjd2
-         8ixqU1R3x8J9dyzLWKydsIkfJXExOT47qIlBAt3MLPv2ld00OIzLFzXGZVDdmUttBYgD
-         +DsQDYiheYjrfYYTuJwZ9E68vsxP03/457o/8OQizHq8xrw7O65sen6Hs9O0hkcUiqrA
-         H7cg==
-X-Gm-Message-State: AOAM533wpRp8szADB+5d9N2Jqne2D9bQhaM8SKPtUSnZVDg0nANs/5qD
-        lr6T9rTDTfCEVfnimXjF21o1ig==
-X-Google-Smtp-Source: ABdhPJym0XykJ7uehzEeDKck0S1U4BFMDECGcI32y18+IAFrQ1uRgChUm0Ua5MADkZ09X2gDGKfcMw==
-X-Received: by 2002:a05:6402:150e:: with SMTP id f14mr178010edw.63.1618423951574;
-        Wed, 14 Apr 2021 11:12:31 -0700 (PDT)
+        bh=e8cMsDT9er0yB1vAcvjl5ixcilD8+YkGrcYft26XCmo=;
+        b=OXReqKRenBQV6ZdUQ+QXgMQ1ltiw4GwOC3CaSA3Yd68JYUog10otVZTl6Nj+tNjbAm
+         qkAuq7+J61mRF4sBamx+X36hM6K0bkipUuNzCNXIH6kC3JWlczFC09dJPFbR9Gh3s3zx
+         PoDi92ihIdEG9Z4RyB8Hwb4ISsLEuvrwTVCgCySSYaLC+TBrn6W8+sMRflwGp1dKbYvU
+         3VMlo0jkEfdQPl417s+hjDDXHFnCsXjuAQUXn+1aYmcJIe0kQJtYOGNn0BeXSXh8c9ev
+         NEcwcli16m40X6HbQ5cttOH3ooRSj6P7IZ0uPQ0uvvsPp9EulEc/4+Sj3ZzPUR8UxVVk
+         JvHA==
+X-Gm-Message-State: AOAM532daYKjUQoB3uRkKMR5nV9YmfBdGqIlFIIZ8I9FsURVbDotgqMR
+        Lnk/7gid6YOIcRCoxAPpjYATxQ==
+X-Google-Smtp-Source: ABdhPJy07wiGwp3wa0/ZBXYc7WlybCUgXXjfZ8f/v2CdjW/WEP/SDmpS96vAcpkD3zT1dlobX688sg==
+X-Received: by 2002:a50:e702:: with SMTP id a2mr183896edn.3.1618423952806;
+        Wed, 14 Apr 2021 11:12:32 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.12.30
+        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.12.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:12:30 -0700 (PDT)
+        Wed, 14 Apr 2021 11:12:32 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>, Stanley@BB.SD3,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 54/57] staging: rtl8723bs: hal: rtl8723b_hal_init: Mark a bunch of debug variables as __maybe_unused
-Date:   Wed, 14 Apr 2021 19:11:26 +0100
-Message-Id: <20210414181129.1628598-55-lee.jones@linaro.org>
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David A. Schleef" <ds@schleef.org>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        Truxton Fulton <trux@truxton.com>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
+Subject: [PATCH 55/57] staging: comedi: drivers: ni_mio_common: Move 'range_ni_E_ao_ext' to where it is used
+Date:   Wed, 14 Apr 2021 19:11:27 +0100
+Message-Id: <20210414181129.1628598-56-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210414181129.1628598-1-lee.jones@linaro.org>
 References: <20210414181129.1628598-1-lee.jones@linaro.org>
@@ -68,56 +73,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+... and mark it as __maybe_unused since not all users of the
+header file reference it.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c: In function ‘SetHwReg8723B’:
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:3507:32: warning: variable ‘ioted’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:3507:20: warning: variable ‘masked’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:3507:7: warning: variable ‘input_b’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c: In function ‘GetHalDefVar8723B’:
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4072:46: warning: variable ‘lowest_rate’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4072:34: warning: variable ‘hight_rate’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4072:21: warning: variable ‘curr_tx_sgi’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4072:7: warning: variable ‘curr_tx_rate’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4071:20: warning: variable ‘rate_mask2’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:4071:8: warning: variable ‘rate_mask1’ set but not used [-Wunused-but-set-variable]
+ drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
 
+Cc: Ian Abbott <abbotti@mev.co.uk>
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Marco Cesati <marcocesati@gmail.com>
-Cc: Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc: Stanley@BB.SD3
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: "David A. Schleef" <ds@schleef.org>
+Cc: Mori Hess <fmhess@users.sourceforge.net>
+Cc: Truxton Fulton <trux@truxton.com>
 Cc: linux-staging@lists.linux.dev
+Cc: linux-pwm@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/staging/comedi/drivers/ni_mio_common.c | 9 ---------
+ drivers/staging/comedi/drivers/ni_stc.h        | 9 ++++++++-
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index 4773f0dcd9819..ebed2a912dcdd 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -3348,7 +3348,8 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
- 	case HW_VAR_BASIC_RATE:
- 	{
- 		struct mlme_ext_info *mlmext_info = &padapter->mlmeextpriv.mlmext_info;
--		u16 input_b = 0, masked = 0, ioted = 0, BrateCfg = 0;
-+		u16 __maybe_unused input_b = 0, __maybe_unused masked = 0;
-+		u16 __maybe_unused ioted = 0, BrateCfg = 0;
- 		u16 rrsr_2g_force_mask = (RRSR_11M|RRSR_5_5M|RRSR_1M);
- 		u16 rrsr_2g_allow_mask = (RRSR_24M|RRSR_12M|RRSR_6M|RRSR_CCK_RATES);
+diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
+index 4f80a4991f953..37615b4e2c10d 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_common.c
++++ b/drivers/staging/comedi/drivers/ni_mio_common.c
+@@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
+ 	}
+ };
  
-@@ -3894,8 +3895,9 @@ u8 GetHalDefVar8723B(struct adapter *padapter, enum hal_def_variable variable, v
- 			u8 mac_id = *(u8 *)pval;
- 			u32 cmd;
- 			u32 ra_info1, ra_info2;
--			u32 rate_mask1, rate_mask2;
--			u8 curr_tx_rate, curr_tx_sgi, hight_rate, lowest_rate;
-+			u32 __maybe_unused rate_mask1, __maybe_unused rate_mask2;
-+			u8 __maybe_unused curr_tx_rate, __maybe_unused curr_tx_sgi;
-+			u8 __maybe_unused hight_rate, __maybe_unused lowest_rate;
+-static const struct comedi_lrange range_ni_E_ao_ext = {
+-	4, {
+-		BIP_RANGE(10),
+-		UNI_RANGE(10),
+-		RANGE_ext(-1, 1),
+-		RANGE_ext(0, 1)
+-	}
+-};
+-
+ static const struct comedi_lrange *const ni_range_lkup[] = {
+ 	[ai_gain_16] = &range_ni_E_ai,
+ 	[ai_gain_8] = &range_ni_E_ai_limited,
+diff --git a/drivers/staging/comedi/drivers/ni_stc.h b/drivers/staging/comedi/drivers/ni_stc.h
+index fbc0b753a0f59..0822e65f709dd 100644
+--- a/drivers/staging/comedi/drivers/ni_stc.h
++++ b/drivers/staging/comedi/drivers/ni_stc.h
+@@ -1137,6 +1137,13 @@ struct ni_private {
+ 	u8 rgout0_usage;
+ };
  
- 			cmd = 0x40000100 | mac_id;
- 			rtw_write32(padapter, REG_HMEBOX_DBG_2_8723B, cmd);
+-static const struct comedi_lrange range_ni_E_ao_ext;
++static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
++	4, {
++		BIP_RANGE(10),
++		UNI_RANGE(10),
++		RANGE_ext(-1, 1),
++		RANGE_ext(0, 1)
++	}
++};
+ 
+ #endif /* _COMEDI_NI_STC_H */
 -- 
 2.27.0
 
