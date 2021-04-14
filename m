@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0985235EEEA
+	by mail.lfdr.de (Postfix) with ESMTP id A037835EEEC
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349783AbhDNH53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:57:29 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34569 "EHLO mout.gmx.net"
+        id S1349793AbhDNH6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:58:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245671AbhDNH5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:57:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618387013;
-        bh=THS3x+hU0eqVl18y1Db7EOuahnPn/NI11RQChZnBbJw=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=DclMOqzLj3H3kxQtuL/eClDM53XEQy9KHCPI2B9uFwki7yOcfi0w/XV92HZV4xw+/
-         stjkgs/q+YFFiOTJDHYrAwdsFPHm/D+M4aQ7woLIN0TJHCz9ft6NC6J2FK1Mp68PP0
-         rhkv+GECCJgjK9fLcFfOaHd7LNmI3iEzvoDyYx0M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.50]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M72sP-1lT2pG16P1-008cGJ; Wed, 14
- Apr 2021 09:56:53 +0200
-Message-ID: <d47e3abad714ddae643c7e3a10bbf428a65ddd17.camel@gmx.de>
-Subject: Re: =?UTF-8?Q?=E5=9B=9E=E5=A4=8D=3A?= Question on KASAN calltrace
- record in RT
-From:   Mike Galbraith <efault@gmx.de>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Halaney <ahalaney@redhat.com>,
-        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>
-Date:   Wed, 14 Apr 2021 09:56:52 +0200
-In-Reply-To: <DM6PR11MB420260ED9EC885CCD33840EEFF4E9@DM6PR11MB4202.namprd11.prod.outlook.com>
-References: <BY5PR11MB4193DBB0DE4AF424DE235892FF769@BY5PR11MB4193.namprd11.prod.outlook.com>
-         <CACT4Y+bsOhKnv2ikR1fTb7KhReGfEeAyxCOyvCu7iS37Lm0vnw@mail.gmail.com>
-        ,<182eea30ee9648b2a618709e9fc894e49cb464ad.camel@gmx.de>
-         <DM6PR11MB420260ED9EC885CCD33840EEFF4E9@DM6PR11MB4202.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S232363AbhDNH5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:57:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5CF1601FE;
+        Wed, 14 Apr 2021 07:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618387053;
+        bh=f6zDGNINJ/UW60c2hM9vk1vwDoFWms62JvvgGtA5Tag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=csey9zwjcY3ybehi0G5Wx0jZNBYX6/hEeL8xXR0WQZetH7/TewxSS87rwsCvwcGYG
+         ffy9h8zEa0CG+1U1Xhj6QV00vP9a2XDKB9MTEphkh/h21dQAEtE8/6T7SHKRq1d4TU
+         My+MJfF7D5ZswzFLs/y4wKTh8w7v/LVqOlqq6giLN7u1R+IvETgkLTw8P/Ivckb5A8
+         O8KMZ9XTWSsAAo+wPp/NFdVrjpuKXoXX4qeTh47rGObtY53EOqX9i+5kL+fnrk/t3t
+         yYALMLqEn1qQAVpSMgfbz3kXOPTXK4Sur31iDJpsBF6IcmoPFjWc0tILJQ5WUyj3ce
+         F/ERT9b07imqA==
+Date:   Wed, 14 Apr 2021 09:57:30 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     michal.simek@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yangjihong1@huawei.com, zhangjinhao2@huawei.com
+Subject: Re: [PATCH -next] i2c: cadence: Fix PM reference leak in
+ cdns_i2c_master_xfer()
+Message-ID: <20210414075730.GD2180@ninjato>
+References: <20210408112352.211173-1-pulehui@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lOl8XRpuQSDP5jCLgTZRxrpHEEiYy6+1yubRgO/J/4je0GfEMvp
- h4u1jz185MnWrGanzgpPolJ7uRtTXt5qqFIqhhM1d6+LYPP5fT/GVY9HMJ68Kste03PBL8d
- lcdJJFJpcs++Ksdv9Sz30NOudW63ejXvLTCwdTkkcwArK8GxWn1Bjwz23ThTMH57um1xfBB
- fJRvtKmBBfBmrUI0o5SOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:siDEEibQxqo=:EvtHd77BMBR0tdMlJIOtUs
- OmiK5HRrlJfX7CW1iIvdyOTDjOpD3MSOgDWwOJXPFHHwzL2NaAbt5E/FBHMNKDKUnxSOGHZDj
- 12FJ2xKsK6P15mqaB2rykElfTDOyi6MSzcfmeaWGh7AvCMFzXs71fC2v6mktcM9gBNW3HRK8i
- 7E2m7zB83moDV0deKWzsbvxgzyZ4yfwhLFRtOS4BM8gFTaVxsHLWtOMmI+VZ9nxfSqNha4CHg
- fJNgaOWcmvfIU4ImMFmW1i3IOYPxhFrIHfxfUF6vX9Vq31hyVjlpw+lypWv6FR6J0QKzMCGQY
- vEOqPgTOkBHbZtDpin1n8l/waME5m2wRh9FrOlfb1LK9qxMoHx/0nzr5S0t4Os0m9K30OJCRj
- JrR/DfR1yxVJTWyMk3VyLMDuEdztHXQMBjP5CN6RGy3hTMueNOKyX4WOJwP6LDo94cmDh1T7U
- 0XCsvf/ggBKUSNiYPkBCdh7hpkF4wIwqvnku12fyxaO2nsMsvOQORIdX/G6Zn91nd6Ven3P2y
- p7ADfd+5JBce6ocSuY6dpW9Wx3Gu/lzdf7Y7/z6CcsWdMtv/F1+JBenUJJTg7um/EzErMHr57
- g1l70dUicQjFkrf17PpMpiZYEmY+lSuqIpXnpVFtPWs4jyeyd4Jtd4Ol7/negh04Cf9zzk0CN
- SItsFcxBEF/G5yHvCxtxURfJbBFttVNtuI/r/Sv+uzadlHt5rDuD4HmXhVvlj+Xrbz9KEAkWC
- A3TTValnN9yQ4pecWCaLgLCi0VsHVfRbz1U8Z0q7jYc2Prf3S8GgtMDshnxzcGynXux21ICQD
- x1P16Xpe9mLTCnhokC1XSWJh4XIT2Scq+wwS8YkozM8lLtwB/NaSuDeEbFIWIOdDLr+Qv5Fig
- 3U1AGZWAi4W8+/fpqTjWGHmts/dZT7RrFkjQcdudqK7tBcwBDrVOibAcP7kF1AIrNZwXJtr3o
- kr2BB5ZT9LeflNSq9dRf5WlKCH/SaGK50mXoGX4/5rVdJfsw6bfN/Za9Nt3/JoXuSPx3T0lpn
- ypyOX85OKna/6HSTgVMOerIe+x8Kf0GUvcbtWp7dtAofZLAUX5jJWgHQGx7dOkjicZedaBBKI
- LpOWTzTkjzBLT+gIuiI11ddfx+LNaqWlMITYydwVvbdX0uVF2Mf9LXlZ8TOgwoQ/an799ozG5
- vtnofUFVLZ5ZdIpRlNrb8ZgqnORD78NZGeePRbW1vmWSzl9GiX4RTI3tXiskkbqxPvSb8=
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1sNVjLsmu1MXqwQ/"
+Content-Disposition: inline
+In-Reply-To: <20210408112352.211173-1-pulehui@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-14 at 07:29 +0000, Zhang, Qiang wrote:
->
-> if CONFIG_PREEMPT_RT is enabled and  but not in preemptible, the preallo=
-c should be allowed
 
-No, you can't take an rtmutex when not preemptible.
+--1sNVjLsmu1MXqwQ/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	-Mike
+On Thu, Apr 08, 2021 at 07:23:52PM +0800, Pu Lehui wrote:
+> pm_runtime_get_sync() will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get() to keep usage
+> counter balanced.
+>=20
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
+Thanks, yet I applied this series now:
+
+http://patchwork.ozlabs.org/project/linux-i2c/list/?series=3D217733&state=
+=3D*
+
+
+--1sNVjLsmu1MXqwQ/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB2oGoACgkQFA3kzBSg
+KbaJ8A/+LOVFIgPpu1Sk9JiNXEaOG8IHDrpPANUQXUYRI9GsWFrOLZ7S+lTl1IDN
+W3HehonqL9azP0lyhCBGoqDKp+1znEfoJMOGyFxW1OyiGOLXthlZjGE59Iadsbxp
+jT4SOeSJ1EK6KacxWyNjaQ46RHBqZGRCJGYI9fASjBlOag+r00MAL3i64meDZfiR
+inBqaDzNhfxxa3+Z/n2mbEwiQ2h5vP2N4QZfXUlOMv4JqtTDEJieg51qcIn8mzDN
+fOwBvgM1Q0lNhE/J/jowt7yDBSH0WLPV6ELO/D+7olPQbHJIbMYdNVlmIYwVkDUS
+PVeqYkLqjPiE+30/X/C8Z/E3AvwqBaCIFXyOp0bSGLvkSSPHt3N27fK+VP8ezT5x
+KSN+qd4fZBT+21f8m7T2k1uFhUsArAj6jlsKWObkeCbWgL42blMcUlEa0sWMHh+r
+2N0XWwBc8kp4mAyw2hJSNNpjA4o+5CzHBG07UpAaXt6xY3FFwF9oRIi4/SKjPHf+
+wXqz69BLorUe0j9ZI24K5mqIDVaZAh1RcgK6MfV5CFJQDt0qGZaRwJP6jtVGz6kU
+4RXZhYD3SmAiO1j/mo7Xdb6KYEGni/q1tNOvpTRa6xCOsODZ2fZRSrhwEMplZ84+
+Ht5hHhgXJ2zjavMJG4r/zeKZpS7flnCG/eLIf6olIy9/C+m6fx8=
+=B9B5
+-----END PGP SIGNATURE-----
+
+--1sNVjLsmu1MXqwQ/--
