@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A5A35F99A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510A135F99C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349252AbhDNRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348918AbhDNRNp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:13:45 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372B6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:13:23 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w23so24621589edx.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hRWa134yVdeu+HkfPMiwB6/8Nw4vcn7mYJDdehe4HJ4=;
-        b=oXUTj9N075M3AlDHDjkFxiWKo9+YDjdUmItJOSJ/8WXGovn+fhujMCelIQmAwBbeUh
-         th8oZwubkaWxphvZjeGdwJRmOfuJqguTb+JOpx83faA0M8k5JBT65JdADFXDMW6FU48I
-         NPtYDpbzZqefRsel0ur0/cP8OFMp1bGH/NDlO/bVbQha4MJWK6+/CwS/iaQYewGpN0Uz
-         BlN9ttwDwJk3l4cfMOzosjKlwQFEaif/E7loCBr7WogPgPrc+MU8dCvO1LtK2T3Wu3+U
-         X2prr8ECl6lgLRER48NseO815dNEZuPAAdm2bSkcsdjEUq6wX+YDxBof97Il//Ew/hai
-         bdAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hRWa134yVdeu+HkfPMiwB6/8Nw4vcn7mYJDdehe4HJ4=;
-        b=AKWTKYVC+XkTlYjGEfCC+z530BNsJdUgz67VH1s0Bqq3/k4TlznSgjoSYsnbEcOzkO
-         OOJ01Hs97xJ5DqtwckgW4OWENWZPu5WgDZ9PAI+g80AAvIESdXVP+uCYoAt3/DHRjyfd
-         0VOxfrEYw62pefd5ZuvaJus+mFPIyBMBWdNK5MTK5XCRg6WI0nAg6JpT/IJ/yuHBdtRJ
-         UrSUdQKOs4OdAYEnSCVYZS7FSC93xCnwq1JTRH7mZgzsZrQxQpwz93GNMT9oG+RN1iZG
-         Hf4K5eWICSWXxPOJVJg36PcCjokanSR9yUxutJqzrCyd0EJCY6sIdrs47BgBDekIqzWJ
-         wePQ==
-X-Gm-Message-State: AOAM531bWIDRxjX0lq2Ej1TsJgmix5x0isRa02WkT/YW+R2QlnYuj3QY
-        o68Xj+I85dMjrDHZQw0pyd4iDH8lNCSKtA==
-X-Google-Smtp-Source: ABdhPJyA9YeM1Vnc5BKJklfSEchAh0hBEqRbFRYD8j5Dwv9WLERLmGrljF/gTyLinbHTenSgwZkkfw==
-X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr41786271edb.97.1618420401827;
-        Wed, 14 Apr 2021 10:13:21 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id o20sm151297eds.65.2021.04.14.10.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 10:13:21 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 18:13:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick
- with const
-Message-ID: <20210414171319.GQ4869@dell>
-References: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
- <20210326145129.GB2916463@dell>
+        id S1349034AbhDNROE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347495AbhDNROA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:14:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB3D6105A;
+        Wed, 14 Apr 2021 17:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618420419;
+        bh=WQq9WQ8YmZerfUOMQcrnFFazcCugJEQgQmNIPNDw2ck=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VhCWsbX0XEnxOZLuyiTtLFsh1iwCkojK38LAHcGSiqVufuTgjDclWCZPKlUwgTmgM
+         5yN/6WfNLQA1VGgyC/DYD/3FyxFjZgJHHNao4Rh/z9Rj40zBCgT7fZ8n5q5nXCYSo7
+         Bs50nT783dxiqThvpnFEJuC2zHjLtjSKu6LWMBLfYQsuQuSCiSe2cc3crqlszQxt6W
+         Sr0LvL1rQpSlme/JDx07DOWZRzyJUfCj1vNEsm8Xgjt8iGa7APl9wC8CZwh2ZSZ+az
+         OZTyxohdyXunyECgbInre2Qw3tCAT20g9Y5kzVCfxIzcAJvdr24baDr+cxr9NBrlCo
+         hxP8APY3FoTFA==
+Date:   Wed, 14 Apr 2021 18:13:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel Mailing List 
+        <linux-arm-kernel@lists.infradead.org>, kernel-team@android.com
+Subject: [GIT PULL] arm64: Fixes for -rc8
+Message-ID: <20210414171334.GA25300@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210326145129.GB2916463@dell>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021, Lee Jones wrote:
+Hi Linus,
 
-> On Fri, 26 Mar 2021, Andy Shevchenko wrote:
-> 
-> > As Linus rightfully noticed, the driver plays dirty trick with const,
-> > i.e. it assigns a place holder data structure to the const field
-> > in the MFD cell and then drops the const by explicit casting. This is
-> > not how it should be.
-> > 
-> > Assign local pointers of the cell and resource to the respective
-> > non-const place holders in the intel_quark_i2c_setup() and
-> > intel_quark_gpio_setup().
-> > 
-> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > v2: eliminated bar parameter (Lee)
-> >  drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
-> >  1 file changed, 12 insertions(+), 14 deletions(-)
-> 
-> Neat.
-> 
-> Applied, thanks.
+Please pull these three arm64 fixes for -rc8; summary in the tag. We
+don't have anything else on the horizon, although two of these issues
+(the asm constraint and kprobes bugs) have been around for a while so
+you never know.
 
-Am I still missing patches from you Andy?
+Cheers,
 
-I get:
+Will
 
- make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc' allmodconfig
- make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
- /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_i2c_setup':
- /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:181:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-   struct resource *res = intel_quark_i2c_res;
-                          ^~~~~~~~~~~~~~~~~~~
- /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_gpio_setup':
- /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:203:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-   struct resource *res = intel_quark_gpio_res;
-                          ^~~~~~~~~~~~~~~~~~~~
+--->8
 
-Link to the build (see: build.log):
+The following changes since commit 20109a859a9b514eb10c22b8a14b5704ffe93897:
 
-  https://builds.tuxbuild.com/1rAMovpd041jvsjfQ538kW3nvYK/
+  arm64: kernel: disable CNP on Carmel (2021-03-25 10:00:23 +0000)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 738fa58ee1328481d1d7889e7c430b3401c571b9:
+
+  arm64: kprobes: Restore local irqflag if kprobes is cancelled (2021-04-13 09:30:16 +0100)
+
+----------------------------------------------------------------
+arm64 fixes for -rc8
+
+- Fix incorrect asm constraint for load_unaligned_zeropad() fixup
+
+- Fix thread flag update when setting TIF_MTE_ASYNC_FAULT
+
+- Fix restored irq state when handling fault on kprobe
+
+----------------------------------------------------------------
+Catalin Marinas (1):
+      arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is set atomically
+
+Jisheng Zhang (1):
+      arm64: kprobes: Restore local irqflag if kprobes is cancelled
+
+Peter Collingbourne (1):
+      arm64: fix inline asm in load_unaligned_zeropad()
+
+ arch/arm64/Kconfig                      |  6 +++++-
+ arch/arm64/include/asm/word-at-a-time.h | 10 +++++-----
+ arch/arm64/kernel/entry.S               | 10 ++++++----
+ arch/arm64/kernel/probes/kprobes.c      |  6 ++++--
+ 4 files changed, 20 insertions(+), 12 deletions(-)
