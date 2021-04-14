@@ -2,114 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF22A35ED15
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE95D35ED19
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347834AbhDNGQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:16:28 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48231 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229877AbhDNGQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:16:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618380954;
-        bh=LutR6DvZ3BWEG3fagVRG7i7mzJ5l1vET1psDib4/VJA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=kGoeBbSaTL4ITAtEsDpxtBbrpi/IppekwhvdnQv94nUMWzkloattfwY1VvehH3FlN
-         bTr6KLC70IcDvBLLQmYf5uNhT8tz4DCoDwfFawa652Wqm9Y7LTo+MxWhVeTIjFnwiN
-         GcEpeicowCfdVrcJQuPS7viyPehzBqmTIb669JwY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.50]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQvD5-1l9HSv0MjP-00O1tK; Wed, 14
- Apr 2021 08:15:54 +0200
-Message-ID: <a262b57875cf894020df9b3aa84030e2080ad187.camel@gmx.de>
-Subject: Re: Question on KASAN calltrace record in RT
-From:   Mike Galbraith <efault@gmx.de>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>
-Date:   Wed, 14 Apr 2021 08:15:53 +0200
-In-Reply-To: <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
-References: <BY5PR11MB4193DBB0DE4AF424DE235892FF769@BY5PR11MB4193.namprd11.prod.outlook.com>
-         <CACT4Y+bsOhKnv2ikR1fTb7KhReGfEeAyxCOyvCu7iS37Lm0vnw@mail.gmail.com>
-         <182eea30ee9648b2a618709e9fc894e49cb464ad.camel@gmx.de>
-         <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
+        id S1349113AbhDNGR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:17:29 -0400
+Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:36456
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232679AbhDNGRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:17:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=esAIjVuLZimaH9PdWi4dg8kAGI3Xl403zJqbl/Tladozx5QVDr748gNwa5YjTfr4jpEPIK+4MWsWSQF7pyq3UOmf4vJ4vMcNH3NUFGhjeeQYMS8gVDDuC3n6qn97XA0AZpn49erRu5x210xip67KdFtYMAVQFDJKg6FLrF9CKZ/7vZmodY1jveWdwa2zXRZs2nk2Xj4YjI0ucUDfyVMfKR6aQycy2bAxKnX+uD1OVIHF6tviZ/GWtht3wQfb+VHCP38+IUv6EcSppEA6z6u878tsJHD/eyWFKpjqJHkti6jXCjVz8Zf6zfMVc01BUXoLJGZl2mYxU5mAs9a36ExpVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ctm0BCMZoTWHosv2ES4NAqA5h2Q9d4q5DfdJJijMhgU=;
+ b=e3apNk2eCwXlPIHm0oqZk98w2Z5uTIo9iaZXBHFL0GtdsdBSL+6n+34VjN+ZQQDYMHppkZUiAeYY28TrRCgnvLHc6vfnxi7JjzxC4XAw2fw73EBy3fnDhOBVSA2lEtShiKLLGBpjKLWhqdvVwwSZwjpLgZdsEEesBRMjBJDBvDkWJS3ZJv55jzWmni+bEMN3gT/WsZqe+YsJMMvWDrOpEO/zjnyPWhNTPFYual+tfRcW64HkBcwQKdEqdF14Wk/XPrYW7F99tB12Kw6fIqzgMRy0Ro7oNh6yjKvZYi1iK0DoGgmuqpJsdUsYRuKDWSoS9dTnIcu8gQXZoJsd3Gnomw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ctm0BCMZoTWHosv2ES4NAqA5h2Q9d4q5DfdJJijMhgU=;
+ b=UBBlsZns/WNTzkDrFc0qd8WZiiqe5roDMXPocACMLrAA/sx01LJ84A0phA953qoxDLETUjr2XMLpCCYlEu2tK44v4NiEnoJ1bNjUhvuK+dgFPz84YvB2RXGTFi4kSnO/VDo/88oB8WuCc0a04dDuc1ALGOKMuN0J8OurcGmCd4U=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BYAPR03MB4245.namprd03.prod.outlook.com (2603:10b6:a03:18::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Wed, 14 Apr
+ 2021 06:17:01 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
+ 06:17:01 +0000
+Date:   Wed, 14 Apr 2021 14:16:53 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jon Bloomfield <jon.bloomfield@intel.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/i915: Fix "mitigations" parsing if i915 is builtin
+Message-ID: <20210414141653.07235214@xhacker.debian>
+In-Reply-To: <YHXN9lqtdvisT8gn@intel.com>
+References: <20210413170240.0d4ffa38@xhacker.debian>
+        <YHXN9lqtdvisT8gn@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i2oTji6pkK7Awnn4kp8awBkagqnDehpwQ19loaFFTEDOWWzpnJT
- 5ZWePAPbDr4rTHVpYVUUBYlMAKHS6+2sdX7n1tdPxczJZz8mzCKpkoxzCe7SWM/50iSywXK
- RH+YSrCdoOHBhEZ9MRZu3dJKn6zt9yAYMAWf3yTAZ4J5yi6w59Stoy+3HZ0PutFJUNeI8g+
- PceWxcmskbS47vHR1NR0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d0fpSXM5V8w=:DBY15R1nVlW7LxOLFEPwLs
- UREHxo4fBskbInhck33ZUBkKQdD0vRU0gjuSKhx2B3cgiTI3SV6Er/3ZhFIgZlyTcvwIbUCOz
- lnHDE10fPuKpJyCsIoN5bd6Cs2IAoTJByLtufFeY+/YnMnA+YMPv8uxzuesxiuFqjSbSS8lyO
- B1uqZc0SF3s7xp3ixbFph8mCq1KxSGaStEeEwtgIx0J57bY85dMhR6UFaPHUTtuGv4pxBz0it
- ThXrI0/n6as1AWVOTmEI2hkLDSh3wMmb3rcMwI3ulj9k1XCCw3PtkrTcOtyLp04gTvNn3kNBa
- +ZGO4Ib0lFpyHneqmA/vLy+LY5u8oBeeYHRHvVm2TS6g1Pi/VIPSh1lTd21aKQ2d31aY7AS/O
- OHKtphiOQEtNn/SeapMt6q9kfIXeXnXLPzeY55CKq6WgN8Wp4/+KBbueAufhHHSissdFVJ5rP
- Ad7v+NqxWF5fkVlqMQpIou147d9Oh+4mliH8Hj0opjX9MU+W0hpn0RbgjiLUYu7vGfCz61+Fv
- vUwc92f2tXBZv5Gd4LqOACDpDBI5m3S+1Cpb5t/N0TBrpD4aze83LL5ZIjw3ECmDcMqpRCdvo
- Tp57EcGXefPGV14+ErR4hIj3traBLNLIw7ucgO8AHbpETHS/GfC+LnbJYA4WE7NqlLp4CUdNO
- HAXj6TdWpHW0uAdOK1U4gMnXo/FBHCCYCxwuIsXiQoAB2aWUd+r3nKD6L76lpwxFu2elozIR6
- 57PMDNI0xc3iA2QAoHFBKzuvBkt76phX5IBor7L/yjOdoheBnN9Lzx7FIsSxBli0cFKmGVbhL
- 6X4N49j3erCH2vTuV1GvJtE0VBwqzauzJy+Jjldmug9BJKJEJgJZGs/fjyc5E2rX727gtdPy4
- 5BaXrpFCMvn+f8r4P5xYpKtT+Suz+0I32a2yG0C0FFKibLUTD6cAtl2nlg0F1qRuEbe7KZRsp
- G/lP2w6vlI7HHIK7lYrLzdpcY3EOPiaHD6Bnx0+aAKH8cutZSlzPWVANdCg748YZdbP/ihiBM
- HiSRMEkevol7wFeengVrkC8nIBIBgcDPIyChaQKA/re8Zjc+VRCbGP1gEzKFw0i/MbXUj5QUw
- pYoBrS4v3T40HXvwvfm3JBm8wjEwgS9HXZWa21b9cvLMqxj6DFXDqvBMs/94eBg6LQVe4dvXV
- R+v5deDlKTUkSCh604hAC/anoJMeOoRjI5g0rN79RqScYNhpCr1YKO14vtywz5Gt9eNSg=
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR03CA0321.namprd03.prod.outlook.com
+ (2603:10b6:a03:39d::26) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0321.namprd03.prod.outlook.com (2603:10b6:a03:39d::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Wed, 14 Apr 2021 06:16:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1a270b75-2d0a-4bc4-6494-08d8ff0cea52
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4245:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB424583A73CD734E1A8FA1178ED4E9@BYAPR03MB4245.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1mziHeXHbKqt0aSLSwuTcGIbUCQ8Ry1hAaDkmtCHV3BWBQ1IkZRHtvF5oUD4fzXBepf63iCEY6dS9GwQjAuPJw6mBXLjiB2AxTtvbY+qlhjy3alBzfdsfIknfU0qHSC5DTCBtN8DxjR0E88T6jqWeccttTOmIK2Lf4dUr00+fVoKazuni84aNRD+fuiobdoYu29SlsRGoX+95NY+uhA4cO8K/hUYcBxtvX3ciqFD+Hy18vauTRqE7WSAcp2W5GqYCk2n4u4ArL6B8kQLW0wMAYs/MaRhsrHvTTbHJoiuzy7o3tqxAx4SYrGqbtLG+xK7iMYzfYN2NaiP/7m5K3TMUDn5O3QfKDnJm2gnHolHKgxl6Z80PAI1GZHY/LyNp6lKtlQxarsHpmSooSuZkMfKxUapBhJSIP9o1NV4NZ672XIhh61UZkPWQI3w+Gr8XZknw8d3xz37l96J301uCFTqyDDC33n2yYYUmaNuphhm2X6NYFwc3dbIz+ScCsv9mIEWOHoi7724xpvzyShwmFjXFDiFHGjh4dJQARbBIJ3jwSe6GWBV9575zdFHSsCd66sCD2Cqdax6SwWuFGjKW6S/ufMp+WQrJvfhVs1qSvrU5h4dlocjLwEmOfIEfjalmnH8Czbx+qu0TknEqVgIo6/nYKE6AfTyo0+69BCUvw5M/6s=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39850400004)(376002)(366004)(396003)(956004)(2906002)(38100700002)(186003)(1076003)(38350700002)(66946007)(478600001)(54906003)(6916009)(66574015)(83380400001)(9686003)(16526019)(6666004)(6506007)(26005)(4326008)(66556008)(316002)(7416002)(86362001)(7696005)(52116002)(5660300002)(8676002)(55016002)(66476007)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SXB1aThadVUxTy9mOVJTUnZiaSttYTRacU1hWnl2b0p1bElTVDV0dXduMWI0?=
+ =?utf-8?B?cjZGTElPeUxja24zUHhjUmVOS2lSSkxRZzFrcHVnNDlYRDkxbXd4aFVhNVVE?=
+ =?utf-8?B?UFEzaU14dFVmVE9yd2JJeDJQS3h0RVZqOE1vQ1JFby9qVk42Rm5Nd0xKbTBx?=
+ =?utf-8?B?MFhVVStUYk5sT0M2cWRhZTBycVpzWnFMS053RnJhMjhudmlWVi9hRDN5ZkNu?=
+ =?utf-8?B?VXZlK0pCWmFMVlpPNWxNdi9WcVNydFVDVko2UExIcU85bHJqV2dkekRxSjFx?=
+ =?utf-8?B?ODdOVzRkVzMwV3RuVTNoclhJYUsrSys0bmttTTJLL2JBVTdGVkJYa3pZOXgx?=
+ =?utf-8?B?SFV5aXhnUUk2RjE1S1BRSklPdXpSNlN1QnB0Zk02ODVac0JPMWdVWHBudlRF?=
+ =?utf-8?B?Vll0U3o3REloMTUrL3gwQmEzVlJ6aGU0Y3J2bTl6Yzl3Y0pkLzZBS0NjWm4z?=
+ =?utf-8?B?YWlabWN3UzVZTlFrcERpVVBxMXlkZzFUbXlpVlVCMm9LSlh0MExacklDSy95?=
+ =?utf-8?B?a2JjYXZFTC9WMmJBYzh4cy9kSFhyM25Pd0FxNGpKNmlLWFJMRlJNYUlQc1Zs?=
+ =?utf-8?B?MW5XWUFJQURLZEJSMkhycjU5WXlxdHVUMjRxVldDYmI5a2lSbFVVcjVFaGFQ?=
+ =?utf-8?B?U01FdU5YQm5nN3F6QnRQejdXVURaVGNaNFhyR1RhWjNPNlZJMWkzR1NRcFR1?=
+ =?utf-8?B?STROMWVhMjJOMnJjL2psc09JeDA2V3JnRG5QaXpaeHV5L1lKQXpNbU4zWGk1?=
+ =?utf-8?B?eXRHNEhucERBYUxKeDdtaVFFVXBTWGFZcFNxeExrSlpOeWRZQTQzU1k0cjEv?=
+ =?utf-8?B?eDM5cWVUbmpQc05YT0orOEF6OGRnTXdXTzc5LzdyUDFaUmFNSzM0ay9DTDFW?=
+ =?utf-8?B?UVgwVVpiQkNRZ3JiOXNZSCsrYWkvQjFvVDcxWG9TdmtIKzBSeFdPUGVkdTFT?=
+ =?utf-8?B?TXJIdDZGMkFnNGhmK0ZTS0UzNGUvaklNMW1LNTB3N0ltenFiUzdLdmhiNFZU?=
+ =?utf-8?B?VWIzalFXeCtGdTlKQjEzbDhmaWw5TlZ6TjFUQTY3bXdFTW5ObkZjTzFnM2xQ?=
+ =?utf-8?B?VUppVXEydmFnQytNSTRDdm9tVVJMWUp1aVJhZ1MvUm0xa0VXWEtGUUJRejNF?=
+ =?utf-8?B?L2h2clI5ZHVtbk9SWEVGL3k3WEVHTis3aFBpTFRsZCtUM1JWWGQ1WE9UZ01E?=
+ =?utf-8?B?R0NwaVg2UmtDSTNNVFZ4NHdpSTJjUDJpUVowQjQrYUhHNlZ0dXphOUIvazN2?=
+ =?utf-8?B?VXpVR0t5b3NGNmJucjlERDc1SXkzbFZUSGE0OFRPbnkvcDlzWWZGaGZXSGx4?=
+ =?utf-8?B?dndIcDZXWFBNTjBWQmp0emJHQy9iSjNkYS8wZUhRWjJhUHVSOXBxekZBWU9w?=
+ =?utf-8?B?RHlOTTRadXRJYTQ2Mnc0ZEVvVlpwNzIwQ0Z3MzFKeXBhdFlNWExBaVRFbkxG?=
+ =?utf-8?B?cEhiTWR1dE5yZ3M5SU5udVBWeDBPMGIyekZrSUpWLy9lQ1Q0Zk44dW81a2hS?=
+ =?utf-8?B?cVJtZDE2MWFOVGFEWVBjWXdVc3M5bXUzZWRaRHcxR2dGQXhSQW9rMVo5UUdr?=
+ =?utf-8?B?bGF1WE5KMDFKZTFpTWZXN3N5OGwyK0JWY3FCbVkvN1EzWGZieTF5dW9VVU9y?=
+ =?utf-8?B?R1lCS05tSTlHQVdUeldEUmY1SnBOWkNUQWw1NkFoZ3FHNkNkcys0YmlqTUhX?=
+ =?utf-8?B?dTVhMEkrRnQ5TE5FelllSEtjMksvd3RiTzBBS2g2YXBXK2Z1V1E3K0ZpT0ta?=
+ =?utf-8?Q?1ZstA8ixTU+46pXPpQLI9V90XdrnFSaUsQiv2wm?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a270b75-2d0a-4bc4-6494-08d8ff0cea52
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 06:17:01.0257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zgv6/QScLfxv7+cJlLEnIA5YMGSvFRFBgY/QOm+vSbqTlKd6FIdfg6d4+qn8bml/V1ScRisIMwynXNiWtor5OQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4245
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-14 at 07:26 +0200, Dmitry Vyukov wrote:
-> On Wed, Apr 14, 2021 at 6:00 AM Mike Galbraith <efault@gmx.de> wrote:
->
-> > [    0.692437] BUG: sleeping function called from invalid context at k=
-ernel/locking/rtmutex.c:943
-> > [    0.692439] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: =
-1, name: swapper/0
-> > [    0.692442] Preemption disabled at:
-> > [    0.692443] [<ffffffff811a1510>] on_each_cpu_cond_mask+0x30/0xb0
-> > [    0.692451] CPU: 5 PID: 1 Comm: swapper/0 Not tainted 5.12.0.g2afef=
-ec-tip-rt #5
-> > [    0.692454] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20=
-C 09/23/2013
-> > [    0.692456] Call Trace:
-> > [    0.692458]  ? on_each_cpu_cond_mask+0x30/0xb0
-> > [    0.692462]  dump_stack+0x8a/0xb5
-> > [    0.692467]  ___might_sleep.cold+0xfe/0x112
-> > [    0.692471]  rt_spin_lock+0x1c/0x60
->
-> HI Mike,
->
-> If freeing pages from smp_call_function is not OK, then perhaps we
-> need just to collect the objects to be freed to the task/CPU that
-> executes kasan_quarantine_remove_cache and it will free them (we know
-> it can free objects).
+On Tue, 13 Apr 2021 19:59:34 +0300 Ville Syrj=C3=A4l=C3=A4 wrote:
 
-Yeah, RT will have to shove freeing into preemptible context.
 
+>=20
+> On Tue, Apr 13, 2021 at 05:02:40PM +0800, Jisheng Zhang wrote:
+> > I met below error during boot with i915 builtin if pass
+> > "i915.mitigations=3Doff":
+> > [    0.015589] Booting kernel: `off' invalid for parameter `i915.mitiga=
+tions'
 > >
-> > [   15.428008] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [   15.428011] BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap=
-_entries+0x17e/0x3a0
->
-> This looks like a genuine kernel bug on first glance. I think it needs
-> to be fixed rather than ignored.
+> > The reason is slab subsystem isn't ready at that time, so kstrdup()
+> > returns NULL. Fix this issue by using stack var instead of kstrdup().
+> >
+> > Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security=
+ mitigations")
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > ---
+> >  drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
+> >  1 file changed, 2 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/=
+i915/i915_mitigations.c
+> > index 84f12598d145..7dadf41064e0 100644
+> > --- a/drivers/gpu/drm/i915/i915_mitigations.c
+> > +++ b/drivers/gpu/drm/i915/i915_mitigations.c
+> > @@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
+> >  static int mitigations_set(const char *val, const struct kernel_param =
+*kp)
+> >  {
+> >       unsigned long new =3D ~0UL;
+> > -     char *str, *sep, *tok;
+> > +     char str[64], *sep, *tok;
+> >       bool first =3D true;
+> >       int err =3D 0;
+> >
+> >       BUILD_BUG_ON(ARRAY_SIZE(names) >=3D BITS_PER_TYPE(mitigations));
+> >
+> > -     str =3D kstrdup(val, GFP_KERNEL);
+> > -     if (!str)
+> > -             return -ENOMEM;
+> > +     strncpy(str, val, sizeof(str) - 1); =20
+>=20
+> I don't think strncpy() guarantees that the string is properly
+> terminated.
+>=20
+> Also commit b1b6bed3b503 ("usb: core: fix quirks_param_set() writing to
+> a const pointer") looks broken as well given your findings, and
+> arch/um/drivers/virtio_uml.c seems to suffer from this as well.
 
-I figured KASAN probably knew what it was talking about, I just wanted
-it to either go find something shiny or leave lockdep the heck alone.
+wow thank you so much. I will send out patches to fix them as well.
 
-	-Mike
+> kernel/params.c itself seems to have some slab_is_available() magic
+> around kmalloc().
+>=20
+> I used the following cocci snippet to find these:
+
+Nice cocci script.
+
+
+> @find@
+> identifier O, F;
+> position PS;
+> @@
+> struct kernel_param_ops O =3D {
+> ...,
+>         .set =3D F@PS
+> ,...
+> };
+>=20
+> @alloc@
+> identifier ALLOC =3D~ "^k.*(alloc|dup)";
+> identifier find.F;
+> position PA;
+> @@
+> F(...) {
+> <+...
+> ALLOC@PA(...)
+> ...+> =20
+> }
+>=20
+> @script:python depends on alloc@
+> ps << find.PS;
+> pa << alloc.PA;
+> @@
+> coccilib.report.print_report(ps[0], "struct")
+> coccilib.report.print_report(pa[0], "alloc")
+>=20
+> That could of course miss a bunch more if they allocate
+> via some other function I didn't consider.
+>=20
+> --
+> Ville Syrj=C3=A4l=C3=A4
+> Intel
 
