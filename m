@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B0D35FC4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6955335FC4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhDNUHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:07:02 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16953 "EHLO mga14.intel.com"
+        id S234905AbhDNUHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:07:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230493AbhDNUG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:06:56 -0400
-IronPort-SDR: Px7SQbTyzPb7O9Qw7eH65/9SHqBd4q+6usabJHiOKB3cWh3XuiUxf+uIhdlmr+Fj7UUXNEDGio
- TqduC6O/5e3w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194289909"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="194289909"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 13:06:34 -0700
-IronPort-SDR: /F/n8F7lMm7e3GOVharWdu5rWXP8oSpLWbns0yEtrIrJZjMsOoYOhObCXE3k+ZJHuJvBwiCMCE
- GPLVAO67U3gg==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="532893966"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 13:06:32 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id 66643204F8;
-        Wed, 14 Apr 2021 23:06:30 +0300 (EEST)
-Date:   Wed, 14 Apr 2021 23:06:30 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     ascordeiro <alinesantanacordeiro@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH] staging: media: atomisp: pci: Format multi-line comments
- according to coding-style in file atomisp_cmd.c
-Message-ID: <20210414200630.GE3@paasikivi.fi.intel.com>
-References: <20210414182755.GA2799@focaruja>
- <20210414183325.GD3@paasikivi.fi.intel.com>
- <fae832b2555f1d971b45fcdfe34952aa03a42e4d.camel@gmail.com>
+        id S234803AbhDNUHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C300961154;
+        Wed, 14 Apr 2021 20:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618430801;
+        bh=MUyogixBd6zIDiaR0VtNwpReVA3q8yetd1FUh51s0mY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LVDXufk2mGL1uurwUlE0uKYfGUCD/t4dulxRWu+0ZVD/Y0y1eVtNu69zMAHUO41OP
+         mh760Of0rNXS9bxqsSMLBPa1WLFeVJyldHM7wX6MhoavPNsSNpM2jZqEYCYO8dfVsg
+         b3GmAX4DMY/u9HG19F7urXJLTPs3GXiMuO5TWcv6/GEQwqdIE8He+jYu60ulNZihyT
+         8jFHXJ1sUyZyKm9a9ITlIDmRgu+aBB1yDlgnjws89Omum+Eosc+Pv5A9npX92lBWal
+         caFG9N9gAfrmPqdD6arq0PCOtSFtWWu/34fGD/Np9/8IltuT2PW6Abq/ok928hEM77
+         9A8v8fK9P6xkw==
+Date:   Wed, 14 Apr 2021 23:06:33 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC/RFT PATCH 1/3] memblock: update initialization of reserved
+ pages
+Message-ID: <YHdLSeYE3f5+v3n5@kernel.org>
+References: <20210407172607.8812-1-rppt@kernel.org>
+ <20210407172607.8812-2-rppt@kernel.org>
+ <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fae832b2555f1d971b45fcdfe34952aa03a42e4d.camel@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 03:55:42PM -0300, ascordeiro wrote:
-> Em qua, 2021-04-14 às 21:33 +0300, Sakari Ailus escreveu:
-> > Hi Aline,
+On Wed, Apr 14, 2021 at 05:12:11PM +0200, David Hildenbrand wrote:
+> On 07.04.21 19:26, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
 > > 
-> > Thanks for the patch.
+> > The struct pages representing a reserved memory region are initialized
+> > using reserve_bootmem_range() function. This function is called for each
+> > reserved region just before the memory is freed from memblock to the buddy
+> > page allocator.
 > > 
-> > On Wed, Apr 14, 2021 at 03:27:55PM -0300, Aline Santana Cordeiro
-> > wrote:
-> > > Format multi-line comments according to the coding-style.
-> > > Issue detected by checkpatch.pl.
-> > > 
-> > > Signed-off-by: Aline Santana Cordeiro <
-> > > alinesantanacordeiro@gmail.com>
-> > > ---
-> > >  drivers/staging/media/atomisp/pci/atomisp_cmd.c | 109
-> > > ++++++++++++++----------
-> > >  1 file changed, 65 insertions(+), 44 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > > b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > > index 592ea99..6113785 100644
-> > > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > > @@ -67,7 +67,8 @@
-> > >   * At 15fps this means 133ms. We set the timeout a bit longer.
-> > >   * Each flash driver is supposed to set its own timeout, but
-> > >   * just in case someone else changed the timeout, we set it
-> > > - * here to make sure we don't damage the flash hardware. */
-> > > + * here to make sure we don't damage the flash hardware.
-> > > + */
-> > >  #define FLASH_TIMEOUT 800 /* ms */
-> > >  
-> > >  union host {
-> > > @@ -562,7 +563,8 @@ irqreturn_t atomisp_isr(int irq, void *dev)
-> > >                          * and driver needs to keep old
-> > > sequence_temp value.
-> > >                          * NOTE: There is assumption here that ISP
-> > > will not
-> > >                          * start processing next frame from sensor
-> > > before old
-> > > -                        * one is completely done. */
-> > > +                        * one is completely done.
-> > > +                        */
-> > >                         if (atomic_read(&asd->sequence) ==
-> > > atomic_read(
-> > >                                 &asd->sequence_temp))
-> > >                                 atomic_set(&asd->sequence_temp,
-> > > @@ -1247,7 +1249,8 @@ void atomisp_buf_done(struct
-> > > atomisp_sub_device *asd, int error,
-> > >  
-> > >         if (IS_ISP2401) {
-> > >                 /* If there are no buffers queued then
-> > 
-> > This should begin with:
-> > 
-> >                 /*
-> >                  *
-> > 
-> > And the same for the rest. Apart from this the patch seems fine.
-> > 
-> Hi Sakari,
+> > The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+> > values set by the memory map initialization which makes it necessary to
+> > have a special treatment for such pages in pfn_valid() and
+> > pfn_valid_within().
 > 
-> I'm going to send a v2 correcting all the multi-line comments that are
-> not beginning like this.
-> 
-> Besides, there are single line comments with different styles, a few
-> like this:
-> 
-> case 1:				/* comment */
-> 
-> and the other like this:
-> 				/*
-> case2:				 * comment
->  				 */
-> 
-> Should I standardize these ones to the first case?
+> I assume these pages are never given to the buddy, because we don't have a
+> direct mapping. So to the kernel, it's essentially just like a memory hole
+> with benefits.
 
-The first one is preferred for multi-line comments. But please keep under
-80 characters per line.
+The pages should not be accessed as normal memory so they do not have a
+direct (or in ARMish linear) mapping and are never given to buddy. 
+After looking at ACPI standard I don't see a fundamental reason for this
+but they've already made this mess and we need to cope with it.
+ 
+> I can spot that we want to export such memory like any special memory
+> thingy/hole in /proc/iomem -- "reserved", which makes sense.
 
+It does, but let's wait with /proc/iomem changes. We don't really have a
+100% consistent view of it on different architectures, so adding yet
+another type there does not seem, well, urgent.
+ 
+> I would assume that MEMBLOCK_NOMAP is a special type of *reserved* memory.
+> IOW, that for_each_reserved_mem_range() should already succeed on these as
+> well -- we should mark anything that is MEMBLOCK_NOMAP implicitly as
+> reserved. Or are there valid reasons not to do so? What can anyone do with
+> that memory?
 > 
-> Thank you for yout attention,
+> I assume they are pretty much useless for the kernel, right? Like other
+> reserved memory ranges.
 
-You're welcome!
+I agree that there is a lot of commonality between NOMAP and reserved. The
+problem is that even semantics for reserved is different between
+architectures. Moreover, on the same architecture there could be
+E820_TYPE_RESERVED and memblock.reserved with different properties.
+
+I'd really prefer moving in baby steps here because any change in the boot
+mm can bear several month of early hangs debugging ;-)
+
+> > Split out initialization of the reserved pages to a function with a
+> > meaningful name and treat the MEMBLOCK_NOMAP regions the same way as the
+> > reserved regions and mark struct pages for the NOMAP regions as
+> > PageReserved.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >   mm/memblock.c | 23 +++++++++++++++++++++--
+> >   1 file changed, 21 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/memblock.c b/mm/memblock.c
+> > index afaefa8fc6ab..6b7ea9d86310 100644
+> > --- a/mm/memblock.c
+> > +++ b/mm/memblock.c
+> > @@ -2002,6 +2002,26 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
+> >   	return end_pfn - start_pfn;
+> >   }
+> > +static void __init memmap_init_reserved_pages(void)
+> > +{
+> > +	struct memblock_region *region;
+> > +	phys_addr_t start, end;
+> > +	u64 i;
+> > +
+> > +	/* initialize struct pages for the reserved regions */
+> > +	for_each_reserved_mem_range(i, &start, &end)
+> > +		reserve_bootmem_region(start, end);
+> > +
+> > +	/* and also treat struct pages for the NOMAP regions as PageReserved */
+> > +	for_each_mem_region(region) {
+> > +		if (memblock_is_nomap(region)) {
+> > +			start = region->base;
+> > +			end = start + region->size;
+> > +			reserve_bootmem_region(start, end);
+> > +		}
+> > +	}
+> > +}
+> > +
+> >   static unsigned long __init free_low_memory_core_early(void)
+> >   {
+> >   	unsigned long count = 0;
+> > @@ -2010,8 +2030,7 @@ static unsigned long __init free_low_memory_core_early(void)
+> >   	memblock_clear_hotplug(0, -1);
+> > -	for_each_reserved_mem_range(i, &start, &end)
+> > -		reserve_bootmem_region(start, end);
+> > +	memmap_init_reserved_pages();
+> >   	/*
+> >   	 * We need to use NUMA_NO_NODE instead of NODE_DATA(0)->node_id
 
 -- 
-Kind regards,
-
-Sakari Ailus
+Sincerely yours,
+Mike.
