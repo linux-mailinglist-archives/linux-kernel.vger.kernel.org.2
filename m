@@ -2,183 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D2E35F0D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0E35F0D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhDNJ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:28:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40702 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232454AbhDNJ1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:27:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618392433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I4M0tkmcqKTvrAzd8ABxiVydKwG24FDTFmuy+1YGYSU=;
-        b=N2M1K3wQJyemuE66ZlLCYBTRJ2pc+RcYLwo5N9tkPh603oA31ldIeEXp6BXNizpFAFOEse
-        pFtZQU8P0YOdQ2927y6UOD31TXWlBHC+kEs6ZZSSL7a0BUNY6IHLj67f9mgmwRSPuWSXgM
-        E7PybdvZ0BB0zzmOTqEEM5/Qzl/8MwQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2D37FACC4;
-        Wed, 14 Apr 2021 09:27:13 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 11:27:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [PATCH 3/7] mm: memcontrol: remove the pgdata parameter of
- mem_cgroup_page_lruvec
-Message-ID: <YHa1cBEjXp09bLZW@dhcp22.suse.cz>
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-4-songmuchun@bytedance.com>
+        id S231665AbhDNJ2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:28:48 -0400
+Received: from mail-bn8nam12on2062.outbound.protection.outlook.com ([40.107.237.62]:58208
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231888AbhDNJ2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:28:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NWfcPYzyYgdp2Z9UdLYDGnFSjv631FQt9ZqJ7mCpdN+Yo7moSq618V2qZAr9L8XqipdN6LqxoCG+HWIM18iRDfa4RiVUlJD90e18r0hywZd0wWTvkY9J0FpgJZTGnik7+G71Wg6y/G8BbYZvHcQD3BvFvHnsXnRXbuDzRD3BZtQcXCZZeBcq8m8Ca8Dy6LSd+dlP4Jk5Ye1XjgDmzYTPAU1M6bygJQIwHMdITceenp6wExDAVlKwJqMuuIYX7nVez2pwkH8h8Y/u1jYi1oSVRbfQ7fLBCADfFIxAaJqXhUrAOV4ZB03kBXvbUIN3vrgc+kuJzkWNAszjaynUk7APyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wGn6HpN6f+b3HanJnFxiW4e/ZPzZpDDHYpCx/0xUmrs=;
+ b=SLzQ7Wcpg7Yoe/g5QDjERPjuuj9daNLu1GQ2m+v9E/ptt0qU+/jxH0Y0D9g18eZTEWeALLOoYq8X8jVG4+L2+lTUiAGxQ9pPy1MT3HTZQzt2Q5MWLcgkuvnn4ZOR+FwqgAiSrp0u1VboVOQ9XfTuRHnzj8sOs+DnFbDcrlMOmo8035VcCfce1uWdpsjoM0mLXWKXpRd9VK6gYlpljZfPS7W1jHu1pJB9H6aJAq+T4OTYIpzDWeJEvNDoWMkV2Gpk0K6kHVMCVWyXDcfizZ5pU0CC36/lGwa1r2orWGqczA23qU6YJn0/fkQvV/90IvxVNdmw31G4uMu3tWuYLNdKkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wGn6HpN6f+b3HanJnFxiW4e/ZPzZpDDHYpCx/0xUmrs=;
+ b=gCK3WosoSkUVj9o0NyAZtww7Lm4CfCxWPidNUpYLeMu6Sx5UhkNxCg24QQa67fD0uHkCEMHNTnFVZcOjBaa2cCpUBa9PoaEBFqfxPsW/Vf07Wth9USxbPqE0dTb/45+WUEE7s4KKB8aP3OTsrqTP+9NQk8lspmbrQc12JcEMy0s=
+Authentication-Results: csgroup.eu; dkim=none (message not signed)
+ header.d=none;csgroup.eu; dmarc=none action=none header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by BYAPR03MB3622.namprd03.prod.outlook.com (2603:10b6:a02:b9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Wed, 14 Apr
+ 2021 09:28:10 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
+ 09:28:10 +0000
+Date:   Wed, 14 Apr 2021 17:27:57 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Vineet Gupta <vgupta@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-parisc@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openrisc@lists.librecores.org, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] init: consolidate trap_init()
+Message-ID: <20210414172757.3ebfaa4c@xhacker.debian>
+In-Reply-To: <44bdf1f1-117d-0f10-fc59-9edd32d1ad61@csgroup.eu>
+References: <20210414165808.458a3d11@xhacker.debian>
+        <44bdf1f1-117d-0f10-fc59-9edd32d1ad61@csgroup.eu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR07CA0088.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::29) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413065153.63431-4-songmuchun@bytedance.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0088.namprd07.prod.outlook.com (2603:10b6:a03:12b::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 14 Apr 2021 09:28:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5120a7f7-5623-41c8-77de-08d8ff279e49
+X-MS-TrafficTypeDiagnostic: BYAPR03MB3622:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB36222C312A140D3F2A33A054ED4E9@BYAPR03MB3622.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BBoyky1dSeFRX0Ag+4ecLhEn/iqymRc0DygmvkAJG3qhX3BIAN+gpVB9ehyrxpTj5MK7V2fqC98QUaAKJlZMdsPp97mbd333mEaHQ06xvJ69BvHY7r8u5+tXHNuaxLXanEpftcMrJpg3RyQzLUNUYkD/+cGEy2SooAnCRWom7NRVDIkROqXPpJ9HXVWls63l27z9Q0jSLyakwF0dlu5mapmrbbVXVznyMqcj8wBXjQ6N0l4dETrBMZRqv7d9qixkbaWGZENrVAeCEKyAE8sw51HK0gqK8jhTXqVPuBBMs7vGDEN4G6ATNEwie6nGfBVKpih5ws45GL/BMD7hLHTuMVtMSL2PRW7HEdZ/F1Z9WijnNxPK5/Y6C8oXlqf+6EIR2B94+Q1QGLy5ASTmYack67TxVQEHXBRuJFYTb9p8dhmzzf1ExxyjWZMAsSo6O3pwL8zLWuDxaKOoaGQLC32NjIri66ndEgthYqub92SYWIs2bW3F4oH0xyQ6fnTJOhifKyBbNsp3/bqwtJMe/gZL5LBwAHdzyijp630WfUnMYwNHrefGq3UcJSoNm5A7DTTW3O4XSljjLtkbwtNq8JEIUbeDCnRiGTKaP5mV+/MQ0si9L7/L4HO2NUACU0JIf3ZEj9OZcQmnkJB8ukE0ooeAwl/l+SUPH0nxtUc5DUN0EzU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(39850400004)(396003)(55016002)(66476007)(316002)(66574015)(66946007)(186003)(66556008)(2906002)(9686003)(4326008)(7416002)(16526019)(6506007)(26005)(478600001)(52116002)(38350700002)(5660300002)(8936002)(1076003)(38100700002)(7696005)(6666004)(8676002)(7406005)(83380400001)(54906003)(956004)(86362001)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MjY4SzdaNDlMNVhRcjBnY2hJcHJrazRPY0tkN1Z6ckd4YUZYa2sxekI4YXRC?=
+ =?utf-8?B?U01vdzYydTljc0tMenhnaHRpV28zZWhCcm5hWGZBNzkyV0UxZGh6ZE5QYVlv?=
+ =?utf-8?B?ZDljb0xYb1VtaDRqNjg4eFhCVWNsODV4NzBPNHdYOURNTnEyWTFHN0FJejJq?=
+ =?utf-8?B?RWRnSHZ4MFU2c2RMWExMWktqN1ZFbTVSZDY5NjluZHhxN3RuUlozVlprT3My?=
+ =?utf-8?B?Vkp5UnNMZjc1U29SZ3MycC80VkhOT2d0OU5WMUg2N0NCajFqQUlwcTd0MXY1?=
+ =?utf-8?B?djhvQWxJdUtpMWhxRURYSkZtNEs1a2F0MFVCK0RZVUJSL09FSmk3d0dyQUVr?=
+ =?utf-8?B?STNEZTBGcWxyOC9wMU4yWDUyVEZTRldRVm5BcXZPdkY1QnQvRG9qWlNkQlls?=
+ =?utf-8?B?OURyUkVueUNVSXhkcFFCWHJ1Z2FyaU5Xa0lNQWV5MXo4LzMvQVNVZ2JUQXY2?=
+ =?utf-8?B?SnAvWU13Uk8yZ1RBUzBaUDNvY04yN0wwTDkydE01R2FWcjAzTHRSU3FrSm5T?=
+ =?utf-8?B?ZWVsWGUxc2tZNU5jOUsrSmxGS1BqbkFVczM4Tnh6cStRS0xkZGpDQ013OGg3?=
+ =?utf-8?B?NU9jcENFVmowV2REZGEzckgrbm1aNWxHVFhMSXB5aGhFcEdTdEFoN2U4Sk1y?=
+ =?utf-8?B?ZUxjYWYxSnAvY05qa1JDanRweUdQUWRNb2MwQms5OXRQNGNoUTV1RkdVZlg5?=
+ =?utf-8?B?ajJ6bC90b0ZSSnNVVGRlSk53aHNVQXpBNGc0ekhrTVY0K1ZKOFVPc3lyRndV?=
+ =?utf-8?B?Z3RTNXlRMk8zT2g2ejZxZldobk5wRWxUMno3WWp0MkQyUzZ2UWswOHl4dVNE?=
+ =?utf-8?B?bHJBSTBoYnlQa3VIVWsxVDhndVhxaGtzV1p5UTRsTTV3Z1IveUpiaDR5ak9a?=
+ =?utf-8?B?RlJWbFk0R1RPMmFnNFNpTzV5T2ZnYktLUU5wdklQRVNkQXNHUHdJV0NubUFx?=
+ =?utf-8?B?NlhTZzljVVljNTRwTkdaOE9EQjVVMEFIMDlWSGQrNzRudk5IR0kxQmF1ZDB1?=
+ =?utf-8?B?L0NKS1BONzh4VW5USUlyZWU3WWtObEJXdzE0MGczTzlPcVBzc0FuNTMra21h?=
+ =?utf-8?B?cDRtUFlVNDRIUkRXelloVWc5NEJiK1pZa0F4MFVqWU9KUGhwVlNXQk1hL2E1?=
+ =?utf-8?B?TUtjS0krSEM4cHA1NjB3QVpxcUZMbC9CZjVQZVJockx1dXBZOUNDbkJ6UnAz?=
+ =?utf-8?B?SUlJWTI0L3ZZVFlGZHZlT05HbTEwQk5PdnRuYktiMTQ2SEV0d2d4NkdWMjBL?=
+ =?utf-8?B?TS9oTm9mMFVPMnZObUI1dVRWV3IwdCtZR1JQVzd4UWhINFFubjFtY2FVQXds?=
+ =?utf-8?B?VUNBeFlIbzNudHM4VStoaHJ1OFB5enV1TEsvU250Z1hHRnF4UDNoUUI0Z1U2?=
+ =?utf-8?B?UGZBb2xOVytveDNTc3d3bnN3OFNQOTd2UDJlNW5oRjlrUEc2OWtvbzF3TENz?=
+ =?utf-8?B?R3poSllndHRESEI1N2F6NWNNK0NsdzFHZzFxNGV0ZGtUbmR2azBnYXd5Q1NB?=
+ =?utf-8?B?K2p2Y2F0TEwyd1RnZDh3OEZsNHVOOWxJMWVENzdUV0xGRmZRd0tPRk9udUht?=
+ =?utf-8?B?STd0VzBaQWdVREtDVUJLL09pMmp4TzM4TUhiU21TV09hWmJOUEJIK2dxM0xV?=
+ =?utf-8?B?YmZnRTJlNDBSWjlFc2pVTHUycGl1NDNQVmJRY0FZQTY5Szl2TWJ6bHREaktK?=
+ =?utf-8?B?Q3FxQUVWVjZoQWRKb0x6d2pSdnRJUVZCc0ZhTjhlWU90ck51VkRCeWgwdXFi?=
+ =?utf-8?Q?D3GmPb0EMi3pdCwfFb4tp/A+lzyS75V5Z67/b0v?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5120a7f7-5623-41c8-77de-08d8ff279e49
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 09:28:09.9985
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xbSQwoe9+sk+OIeMD2fVJIdjwRYcFjMH/krNmyYNJFJsAtaRccxFVAkceNwNekPD/uStkHEqycl7udIev9Ns4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB3622
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-04-21 14:51:49, Muchun Song wrote:
-> All the callers of mem_cgroup_page_lruvec() just pass page_pgdat(page)
-> as the 2nd parameter to it (except isolate_migratepages_block()). But
-> for isolate_migratepages_block(), the page_pgdat(page) is also equal
-> to the local variable of @pgdat. So mem_cgroup_page_lruvec() do not
-> need the pgdat parameter. Just remove it to simplify the code.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On Wed, 14 Apr 2021 11:10:42 +0200
+Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
-I like this. Two arguments where one can be directly inferred from the
-first one can just lead to subtle bugs. In this case it even doesn't
-give any advantage for most callers.
+>=20
+> Le 14/04/2021 =C3=A0 10:58, Jisheng Zhang a =C3=A9crit :
+> > Many architectures implement the trap_init() as NOP, since there is
+> > no such default for trap_init(), this empty stub is duplicated among
+> > these architectures. Provide a generic but weak NOP implementation
+> > to drop the empty stubs of trap_init() in these architectures. =20
+>=20
+> You define the weak function in the __init section.
+>=20
+> Most but not all architectures had it in __init section.
+>=20
+> And the remaining ones may not be defined in __init section. For instance=
+ look at the one in alpha
+> architecture.
+>=20
+> Have you checked that it is not a problem ? It would be good to say somet=
+hing about it in the commit
+> description.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+For those non-nop platforms, I can only test x86/arm64/, but both has
+__init mark. I'm not sure whether this is a problem for alpha etc. Maybe
+I can check which section the trap_init() sits. Or to avoid any possible
+regression, I can add __init mark to those remaining ones without it in
+preparation patches.
 
-> ---
->  include/linux/memcontrol.h | 10 +++++-----
->  mm/compaction.c            |  2 +-
->  mm/memcontrol.c            |  9 +++------
->  mm/swap.c                  |  2 +-
->  mm/workingset.c            |  2 +-
->  5 files changed, 11 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index c960fd49c3e8..4f49865c9958 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -743,13 +743,12 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  /**
->   * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
->   * @page: the page
-> - * @pgdat: pgdat of the page
->   *
->   * This function relies on page->mem_cgroup being stable.
->   */
-> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> -						struct pglist_data *pgdat)
-> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
->  {
-> +	pg_data_t *pgdat = page_pgdat(page);
->  	struct mem_cgroup *memcg = page_memcg(page);
->  
->  	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
-> @@ -1223,9 +1222,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  	return &pgdat->__lruvec;
->  }
->  
-> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> -						    struct pglist_data *pgdat)
-> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
->  {
-> +	pg_data_t *pgdat = page_pgdat(page);
-> +
->  	return &pgdat->__lruvec;
->  }
->  
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index caa4c36c1db3..e7da342003dd 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1033,7 +1033,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->  		if (!TestClearPageLRU(page))
->  			goto isolate_fail_put;
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		lruvec = mem_cgroup_page_lruvec(page);
->  
->  		/* If we already hold the lock, we can skip some rechecking */
->  		if (lruvec != locked) {
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 9cbfff59b171..1f807448233e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1177,9 +1177,8 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
->  struct lruvec *lock_page_lruvec(struct page *page)
->  {
->  	struct lruvec *lruvec;
-> -	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	lruvec = mem_cgroup_page_lruvec(page);
->  	spin_lock(&lruvec->lru_lock);
->  
->  	lruvec_memcg_debug(lruvec, page);
-> @@ -1190,9 +1189,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
->  struct lruvec *lock_page_lruvec_irq(struct page *page)
->  {
->  	struct lruvec *lruvec;
-> -	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	lruvec = mem_cgroup_page_lruvec(page);
->  	spin_lock_irq(&lruvec->lru_lock);
->  
->  	lruvec_memcg_debug(lruvec, page);
-> @@ -1203,9 +1201,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
->  struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
->  {
->  	struct lruvec *lruvec;
-> -	struct pglist_data *pgdat = page_pgdat(page);
->  
-> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	lruvec = mem_cgroup_page_lruvec(page);
->  	spin_lock_irqsave(&lruvec->lru_lock, *flags);
->  
->  	lruvec_memcg_debug(lruvec, page);
-> diff --git a/mm/swap.c b/mm/swap.c
-> index a75a8265302b..e0d5699213cc 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -313,7 +313,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
->  
->  void lru_note_cost_page(struct page *page)
->  {
-> -	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
-> +	lru_note_cost(mem_cgroup_page_lruvec(page),
->  		      page_is_file_lru(page), thp_nr_pages(page));
->  }
->  
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index b7cdeca5a76d..4f7a306ce75a 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -408,7 +408,7 @@ void workingset_activation(struct page *page)
->  	memcg = page_memcg_rcu(page);
->  	if (!mem_cgroup_disabled() && !memcg)
->  		goto out;
-> -	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-> +	lruvec = mem_cgroup_page_lruvec(page);
->  	workingset_age_nonresident(lruvec, thp_nr_pages(page));
->  out:
->  	rcu_read_unlock();
-> -- 
-> 2.11.0
+>=20
+>=20
+> >
+> > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > ---
+> >   arch/arc/kernel/traps.c      |  5 -----
+> >   arch/arm/kernel/traps.c      |  5 -----
+> >   arch/h8300/kernel/traps.c    | 13 -------------
+> >   arch/hexagon/kernel/traps.c  |  4 ----
+> >   arch/nds32/kernel/traps.c    |  5 -----
+> >   arch/nios2/kernel/traps.c    |  5 -----
+> >   arch/openrisc/kernel/traps.c |  5 -----
+> >   arch/parisc/kernel/traps.c   |  4 ----
+> >   arch/powerpc/kernel/traps.c  |  5 -----
+> >   arch/riscv/kernel/traps.c    |  5 -----
+> >   arch/um/kernel/trap.c        |  4 ----
+> >   init/main.c                  |  2 ++
+> >   12 files changed, 2 insertions(+), 60 deletions(-)
+> >
+> > diff --git a/init/main.c b/init/main.c
+> > index 53b278845b88..4bdbe2928530 100644
+> > --- a/init/main.c
+> > +++ b/init/main.c
+> > @@ -790,6 +790,8 @@ static inline void initcall_debug_enable(void)
+> >   }
+> >   #endif
+> >
+> > +void __init __weak trap_init(void) { }
+> > + =20
+>=20
+> I think in a C file we don't try to save space as much as in a header fil=
+e.
+>=20
 
--- 
-Michal Hocko
-SUSE Labs
+This is to follow most weak NOP implementations in init/main.c to make
+the style unified in the same file. I'm not sure which is better.
+
+> I would prefer something like:
+>=20
+>=20
+> void __init __weak trap_init(void)
+> {
+> }
+>=20
+>=20
+> >   /* Report memory auto-initialization states for this boot. */
+> >   static void __init report_meminit(void)
+> >   {
+> > =20
+
