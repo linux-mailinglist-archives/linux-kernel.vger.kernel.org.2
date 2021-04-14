@@ -2,160 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8509F35F353
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8FB35F357
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350733AbhDNMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:17:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36616 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231849AbhDNMR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:17:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618402624; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HAtrD1tNAWI9BzuevlzoirkMUubcdEDcF7Ti8gTJYRo=;
-        b=ekbeNKYyjkEa+HbaK28aaBu0fheOw/hei/9DUicHIhmp/aDf4RB0ON8YJy/1hESYGUzd+7
-        xxrGHnpYO/Lj19pye0OvbSHVrkWOBuEU8q7JRtkYs5eqAILrE2GXDDQgwU6AYX0v6idKEt
-        m6FCZT+eZssyjWmPS1xSsjWDmsDOS2Y=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 512CBB013;
-        Wed, 14 Apr 2021 12:17:04 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 14:17:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v4 02/13] mm/mempolicy: convert single preferred_node to
- full nodemask
-Message-ID: <YHbdPkhPp5x2o2ob@dhcp22.suse.cz>
-References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
- <1615952410-36895-3-git-send-email-feng.tang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615952410-36895-3-git-send-email-feng.tang@intel.com>
+        id S1350750AbhDNMSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:18:06 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48677 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231849AbhDNMSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 08:18:03 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 10A6A5C019A;
+        Wed, 14 Apr 2021 08:17:42 -0400 (EDT)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Wed, 14 Apr 2021 08:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=Ss1GKS6i3LrHc66hcrihc6wkJR56nSZ
+        Wv1oaboPv68A=; b=ENvQBfpsOmtjAQoSxPOxKhMjpNpEgHhJbbPCYbYhZKl0Z6F
+        tlzSp0kHVoGoLk7Gyy/P1ALOAL47Ws6AGfLINMgcMTw/bNMW5ty2CxFtq1XsBT0L
+        5Utc37boQ7RSSNnN9ovAfGV64N4b0uvOYzePLFT+s8LIbz4fk+HqrvPDLPsZUT9h
+        oklrbXcysfEynmLaLoBwTo+51+An9k6E+Pdmd1e7BsDy6sWOMvE2TvB3BJLEdVYi
+        57/em/TdvjVAmWpi0q35IeEL0Y3tYmXejlb2pPY8SJPmogNV6jYNWVXnEBjGbxqo
+        inXnye78BfzknXllNokN/EP0w0FPuCdA++xj9zw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Ss1GKS
+        6i3LrHc66hcrihc6wkJR56nSZWv1oaboPv68A=; b=QgUh3mrnwK8n0pOB6cIay4
+        x5SXl3qADIcpM+0hjclSWp0x4pNWEydRzCDxVC3dUCfWkzWypdZ9JpoM65F3liB8
+        Ogkyk5Ie4n7IID6U8iMpjNI9TsLkhTWl+t7YqqwLED6dQIyD4My18McjuGkiXHiV
+        3JinDPBwONfnY4p55LA9uKMoKnmIZO1D0ZjhS959G2YxlOKLFW/ivYElyRhY6dsh
+        YvUrvUT8IIdDcVIcoKSALG22O3u0PlH0M3YGocf5/e3lNjJuO0ePjn6yaOS0KDx9
+        8aNFwrdxwnA5TPBRFlPb7CyfrVXlnb75DsPudO5VAMLASiddD1j9IeSrAF4sXMPw
+        ==
+X-ME-Sender: <xms:ZN12YAGBSNqKyFNmNLDSmTGbIAJdr2N6DE3XDDGb3H5vE4_Lw0yPGQ>
+    <xme:ZN12YJXvpyclK8-T-_F94hvFH6nHEaW0Zf9qcseg92ZiATAWSLKWCNrjc1WAx7gXm
+    r34S-gGykZg2U3iSuo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeluddghedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflihgr
+    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeekleehtefhhefftddtleeiveefieehueduieefueegueei
+    leeitdeujeehheehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:ZN12YKI4fc6UJiDzvioXjyOtT8xgU9mrQy_QTz2qC5yNChN7drWxag>
+    <xmx:ZN12YCEVbmI9sbdjnAR1L1SnHUTpJ4156oJ31SAo4Qo_d709o9QbKQ>
+    <xmx:ZN12YGVpiiTdkaxr9nuVO7yyRvn9dhiUsvIyAoAabDRhCIysLuIIgw>
+    <xmx:Zt12YDhesWDTOEFOh2uXVtoj3ZvLP3i2BlZaIG7J_nniVryACDku3g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 344D91300062; Wed, 14 Apr 2021 08:17:40 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <3947384b-37dd-436a-8cda-2391e49a94d2@www.fastmail.com>
+In-Reply-To: <20210414012622.23610-1-zhangqing@loongson.cn>
+References: <20210414012622.23610-1-zhangqing@loongson.cn>
+Date:   Wed, 14 Apr 2021 20:17:20 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Qing Zhang" <zhangqing@loongson.cn>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Huacai Chen" <chenhuacai@kernel.org>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Loongson64: Add Loongson-2K1000 reset support
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 11:39:59, Feng Tang wrote:
-> From: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> The NUMA APIs currently allow passing in a "preferred node" as a
-> single bit set in a nodemask.  If more than one bit it set, bits
-> after the first are ignored.  Internally, this is implemented as
-> a single integer: mempolicy->preferred_node.
-> 
-> This single node is generally OK for location-based NUMA where
-> memory being allocated will eventually be operated on by a single
-> CPU.  However, in systems with multiple memory types, folks want
-> to target a *type* of memory instead of a location.  For instance,
-> someone might want some high-bandwidth memory but do not care about
-> the CPU next to which it is allocated.  Or, they want a cheap,
-> high capacity allocation and want to target all NUMA nodes which
-> have persistent memory in volatile mode.  In both of these cases,
-> the application wants to target a *set* of nodes, but does not
-> want strict MPOL_BIND behavior as that could lead to OOM killer or
-> SIGSEGV.
-> 
-> To get that behavior, a MPOL_PREFERRED mode is desirable, but one
-> that honors multiple nodes to be set in the nodemask.
-> 
-> The first step in that direction is to be able to internally store
-> multiple preferred nodes, which is implemented in this patch.
-> 
-> This should not have any function changes and just switches the
-> internal representation of mempolicy->preferred_node from an
-> integer to a nodemask called 'mempolicy->preferred_nodes'.
-> 
-> This is not a pie-in-the-sky dream for an API.  This was a response to a
-> specific ask of more than one group at Intel.  Specifically:
-> 
-> 1. There are existing libraries that target memory types such as
->    https://github.com/memkind/memkind.  These are known to suffer
->    from SIGSEGV's when memory is low on targeted memory "kinds" that
->    span more than one node.  The MCDRAM on a Xeon Phi in "Cluster on
->    Die" mode is an example of this.
-> 2. Volatile-use persistent memory users want to have a memory policy
->    which is targeted at either "cheap and slow" (PMEM) or "expensive and
->    fast" (DRAM).  However, they do not want to experience allocation
->    failures when the targeted type is unavailable.
-> 3. Allocate-then-run.  Generally, we let the process scheduler decide
->    on which physical CPU to run a task.  That location provides a
->    default allocation policy, and memory availability is not generally
->    considered when placing tasks.  For situations where memory is
->    valuable and constrained, some users want to allocate memory first,
->    *then* allocate close compute resources to the allocation.  This is
->    the reverse of the normal (CPU) model.  Accelerators such as GPUs
->    that operate on core-mm-managed memory are interested in this model.
 
-This is a very useful background for the feature. The changelog for the
-specific patch is rather modest and it would help to add more details
-about the change. The mempolicy code is a maze and it is quite easy to
-get lost there. I hope we are not going to miss something just by hunting
-preferred_node usage...
- 
-[...]
-> @@ -345,22 +345,26 @@ static void mpol_rebind_preferred(struct mempolicy *pol,
->  						const nodemask_t *nodes)
->  {
->  	nodemask_t tmp;
-> +	nodemask_t preferred_node;
 
-This is rather harsh. Some distribution kernels use high NODES_SHIFT
-(SLES has 10 for x86) so this will consume additional 1K on the stack.
-Unless I am missing something this shouldn't be called in deep call
-chains but still.
+On Wed, Apr 14, 2021, at 9:26 AM, Qing Zhang wrote:
+> Add power management register operations to support reboot and poweroff.
+> 
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 
+No that's not what we intended to do.
+Please add a devicetree node for pm block.
+
+Thanks
+
+
+
+> ---
+>  .../include/asm/mach-loongson64/loongson.h    |  8 ++++++
+>  arch/mips/loongson64/reset.c                  | 28 ++++++++++++++++---
+>  2 files changed, 32 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h 
+> b/arch/mips/include/asm/mach-loongson64/loongson.h
+> index f7c3ab6d724e..9d254a7b438a 100644
+> --- a/arch/mips/include/asm/mach-loongson64/loongson.h
+> +++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+> @@ -263,4 +263,12 @@ extern u64 loongson_freqctrl[MAX_PACKAGES];
+>  #define LOONGSON_PCIMAP_WIN(WIN, ADDR)	\
+>  	((((ADDR)>>26) & LOONGSON_PCIMAP_PCIMAP_LO0) << ((WIN)*6))
+>  
+> +/* Loongson-2K1000 Power management related registers */
+> +#define	PM1_STS         0x0C /* Power Management1 Status Register */
+> +#define	PM1_CNT         0x14 /* Power Management 1 Control Register */
+> +#define	RST_CNT         0x30 /* Reset Control Register */
+> +#define	SLP_TYP		GENMASK(12, 10) /* Sleep Enable */
+> +#define	SLP_EN          BIT(13) /* Soft Off */
+> +#define	ACPI_OFF        0x7000
 > +
-> +	/* MPOL_PREFERRED uses only the first node in the mask */
-> +	preferred_node = nodemask_of_node(first_node(*nodes));
+>  #endif /* __ASM_MACH_LOONGSON64_LOONGSON_H */
+> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+> index 3bb8a1ed9348..b4348bf50538 100644
+> --- a/arch/mips/loongson64/reset.c
+> +++ b/arch/mips/loongson64/reset.c
+> @@ -18,9 +18,16 @@
+>  static void loongson_restart(char *command)
+>  {
 >  
->  	if (pol->flags & MPOL_F_STATIC_NODES) {
->  		int node = first_node(pol->w.user_nodemask);
+> -	void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+> +	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+> +		unsigned long base;
 >  
->  		if (node_isset(node, *nodes)) {
-> -			pol->v.preferred_node = node;
-> +			pol->v.preferred_nodes = nodemask_of_node(node);
->  			pol->flags &= ~MPOL_F_LOCAL;
->  		} else
->  			pol->flags |= MPOL_F_LOCAL;
->  	} else if (pol->flags & MPOL_F_RELATIVE_NODES) {
->  		mpol_relative_nodemask(&tmp, &pol->w.user_nodemask, nodes);
-> -		pol->v.preferred_node = first_node(tmp);
-> +		pol->v.preferred_nodes = tmp;
->  	} else if (!(pol->flags & MPOL_F_LOCAL)) {
-> -		pol->v.preferred_node = node_remap(pol->v.preferred_node,
-> -						   pol->w.cpuset_mems_allowed,
-> -						   *nodes);
-> +		nodes_remap(tmp, pol->v.preferred_nodes,
-> +			    pol->w.cpuset_mems_allowed, preferred_node);
-> +		pol->v.preferred_nodes = tmp;
->  		pol->w.cpuset_mems_allowed = *nodes;
->  	}
+> -	fw_restart();
+> +		base = CKSEG1ADDR(LOONGSON_REG_BASE) + ACPI_OFF;
+> +		writel(1, (void *)(base + RST_CNT));
+> +	} else {
+> +		void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+> +
+> +		fw_restart();
+> +	}
+>  	while (1) {
+>  		if (cpu_wait)
+>  			cpu_wait();
+> @@ -29,9 +36,22 @@ static void loongson_restart(char *command)
+>  
+>  static void loongson_poweroff(void)
+>  {
+> -	void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
+>  
+> -	fw_poweroff();
+> +	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+> +		unsigned long base;
+> +		unsigned int acpi_ctrl;
+> +
+> +		base = CKSEG1ADDR(LOONGSON_REG_BASE) + ACPI_OFF;
+> +		acpi_ctrl = readl((void *)(base + PM1_STS));
+> +		acpi_ctrl &= 0xffffffff;
+> +		writel(acpi_ctrl, (void *)(base + PM1_STS));
+> +		acpi_ctrl = SLP_EN | SLP_TYP;
+> +		writel(acpi_ctrl, (void *)(base + PM1_CNT));
+> +	} else {
+> +		void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
+> +
+> +		fw_poweroff();
+> +	}
+>  	while (1) {
+>  		if (cpu_wait)
+>  			cpu_wait();
+> -- 
+> 2.31.0
+> 
+> 
 
-I have to say that I really disliked the original code (becasuse it
-fiddles with user provided input behind the back) I got lost here
-completely. What the heck is going on?
-a) why do we even care remaping a hint which is overriden by the cpuset
-at the page allocator level and b) why do we need to allocate _two_
-potentially large temporary bitmaps for that here?
 
-I haven't spotted anything unexpected in the rest.
 -- 
-Michal Hocko
-SUSE Labs
+- Jiaxun
