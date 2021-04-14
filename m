@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D912935F741
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1C035F744
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344329AbhDNPKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhDNPKT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:10:19 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE71FC061574;
-        Wed, 14 Apr 2021 08:09:57 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lWh9O-00BgYI-5w; Wed, 14 Apr 2021 17:09:54 +0200
-Message-ID: <d919fd21c36bd72955ff18190fe628eae438b098.camel@sipsolutions.net>
-Subject: Re: [PATCH] mac80211_hwsim: indicate support for 60GHz channels
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Ramon Fontes <ramonreisfontes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        kvalo@codeaurora.org, davem@davemloft.net
-Date:   Wed, 14 Apr 2021 17:09:53 +0200
-In-Reply-To: <CAK8U23ZXs1LYFXaXKmNfT3M4yXPGhoGoFNh4r4G45YaMHtU-Xg@mail.gmail.com> (sfid-20210414_170712_484139_3E38AB65)
-References: <20210413010613.50128-1-ramonreisfontes@gmail.com>
-         <4d0a27c465522ddd8d6ae1e552221c707ec05b22.camel@sipsolutions.net>
-         <CAK8U23ZXs1LYFXaXKmNfT3M4yXPGhoGoFNh4r4G45YaMHtU-Xg@mail.gmail.com>
-         (sfid-20210414_170712_484139_3E38AB65)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S234050AbhDNPKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:10:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231174AbhDNPKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:10:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AF1361132;
+        Wed, 14 Apr 2021 15:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618413000;
+        bh=ZWvJN4HVnHD0g7ZiqQ+fUQ0ZaA8fRAMztyQFEK4IEkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YP3AjKElNyLCXGOxF4lZ35QmWabWZH8iqTASwD2E9ov/mgqcYT2GjIGH47BNQath8
+         pV8ZO+/fDUKTunxNwlWjN7Hz+73+u9ZuQBl3Z53gtM0gzm9wV1hcmvLtuYvWs/K4QQ
+         ng878uyuBLgA61AdeGIJ1O4aBiA0U2smHVhW6zvE=
+Date:   Wed, 14 Apr 2021 17:09:57 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Subject: Re: [PATCH v4 2/3] usb: typec: tcpm: Allow slow charging loops to
+ comply to pSnkStby
+Message-ID: <YHcFxReUDYpbe+4s@kroah.com>
+References: <20210414142656.63749-1-badhri@google.com>
+ <20210414142656.63749-2-badhri@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414142656.63749-2-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-14 at 12:06 -0300, Ramon Fontes wrote:
-> > Advertise 60GHz channels to mac80211.
-> Oh.. That was a mistake. Sorry for that.
+On Wed, Apr 14, 2021 at 07:26:55AM -0700, Badhri Jagan Sridharan wrote:
+> When a PD charger advertising Rp-3.0 is connected to a sink port, the
+> sink port current limit would 3A, during SNK_DISCOVERY, till power
+> negotiation starts. Once the negotiation starts the power limit needs
+> to drop down to pSnkStby(500mA @ 5V) and to negotiated current limit
+> once the explicit contract is in place. Not all charging loops can ramp
+> up to 3A and drop down to 500mA within tSnkStdby which is 15ms. The port
+> partner might hard reset if tSnkStdby is not met.
 > 
-> Anyway, can we indicate 60GHz support even though it is not being
-> supported by mac80211 yet?
+> To solve this problem, this patch introduces slow-charger-loop which
+> when set makes the port request PD_P_SNK_STDBY_MW upon entering
+> SNK_DISCOVERY(instead of 3A or the 1.5A during SNK_DISCOVERY) and the
+> actual currrent limit after RX of PD_CTRL_PSRDY for PD link or during
+> SNK_READY for non-pd link.
 > 
-No, that makes no sense. DMG operation is significantly different from
-non-DMG operation, even the A-MSDU format for example (an abbreviated
-format called "short A-MSDU" is used in DMG). Similarly beacons, etc.,
-all kinds of operations are significantly different.
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+> Changes since V3:
+> * Added reviewed-by tag from Heikki
 
-Adding 60 GHz channels to hwsim would be essentially operating as non-
-DMG yet on a DMG channel, which makes no sense.
+No need to add reviewed-by tags, my tools pick that up already.
 
-I don't think anyone's planning to add DMG support to mac80211, and in
-the absence of a real driver requiring that it wouldn't make sense
-anyway. Quite possibly, it simply doesn't make sense period, because DMG
-operation is sufficiently different.
+Patches 1 and 2 now queued up.
 
-johannes
+thanks,
 
+greg k-h
