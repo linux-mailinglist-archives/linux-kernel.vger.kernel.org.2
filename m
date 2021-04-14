@@ -2,147 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1DD35F919
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC7535F922
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhDNQls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:41:48 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:23985 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233828AbhDNQlq (ORCPT
+        id S1352783AbhDNQmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:42:11 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:35656 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234299AbhDNQmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:41:46 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 14 Apr 2021 09:41:24 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Apr 2021 09:41:22 -0700
-X-QCInternal: smtphost
-Received: from rajeevny-linux.qualcomm.com ([10.204.66.121])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Apr 2021 22:11:12 +0530
-Received: by rajeevny-linux.qualcomm.com (Postfix, from userid 2363605)
-        id C4D7C21351; Wed, 14 Apr 2021 22:11:10 +0530 (IST)
-From:   Rajeev Nandan <rajeevny@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        kalyan_t@codeaurora.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org
-Subject: [v1 3/3] drm/bridge: ti-sn65dsi86: Add DisplayPort aux backlight support
-Date:   Wed, 14 Apr 2021 22:09:50 +0530
-Message-Id: <1618418390-15055-4-git-send-email-rajeevny@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618418390-15055-1-git-send-email-rajeevny@codeaurora.org>
-References: <1618418390-15055-1-git-send-email-rajeevny@codeaurora.org>
+        Wed, 14 Apr 2021 12:42:08 -0400
+Received: by mail-lj1-f180.google.com with SMTP id a1so24013951ljp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:41:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mzKRJH6t8hqM0DdakAY6Aw7V8M89CnstZWV3CfDX2rY=;
+        b=Il/5ovbn/ZQ6tM0lOQzPLZcVho8J1nMWHrCmBcR01ZcqKS3miDR7LBFObfi38y11DN
+         beJiKVM01MOawGUu9XbJY3U7xB2NwqcBhlDXhS2OhmdKVXucGQo02x7A7n7dBq15M5jS
+         NAvEQoOWH7np6XDegoIGCnYGKlDxkruCVUMln7ZtqQjBn55XbGMm7t4f+G/0CuVpVL7K
+         F/QkZ4Qm+hjExBdUZaAjhVOekOySRJfmKTVhSJAgvJ8yARZXp7SKxSBIoQ+C5T2ro0ql
+         wQm/yye1IA868zoS30H3jSjPRc6om5C2y3Mv3gED/OslGNRW5Vru3WQQH5+p3nLJOYoz
+         jopg==
+X-Gm-Message-State: AOAM5327UDVzFFDh0zdb5rAq00XnAfYPD1O0FHaC4d7ga1Z9jr4BrZW5
+        /rY3JMZPIT37zith8fHo0Uwy0pMPk9flGoux8w9ft/EbaPM=
+X-Google-Smtp-Source: ABdhPJxnMhjijjS4CU7p9zdnA1c5U9tshmTlvTHsXNDvwIrVIm+vXRg9oKRD4+UYD/3ZbEkoEXHDnVbpmpbnqYve4Sk=
+X-Received: by 2002:a05:651c:312:: with SMTP id a18mr13788028ljp.52.1618418506247;
+ Wed, 14 Apr 2021 09:41:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210414155412.3697605-1-robh@kernel.org> <20210414155412.3697605-2-robh@kernel.org>
+In-Reply-To: <20210414155412.3697605-2-robh@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 15 Apr 2021 01:41:35 +0900
+Message-ID: <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com>
+Subject: Re: [PATCH v8 2/4] libperf: Add evsel mmap support
+To:     Rob Herring <robh@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to control the backlight of the eDP panel connected to
-the ti-sn65dsi86 bridge through aux channel.
+Hello,
 
-Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
----
- drivers/gpu/drm/bridge/Kconfig        |  1 +
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 26 ++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+)
+On Thu, Apr 15, 2021 at 1:07 AM Rob Herring <robh@kernel.org> wrote:
+> +void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
+> +{
+> +       if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
+> +               return NULL;
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index e4110d6..e556ec22 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -239,6 +239,7 @@ config DRM_TI_SN65DSI86
- 	select REGMAP_I2C
- 	select DRM_PANEL
- 	select DRM_MIPI_DSI
-+	select DRM_DP_AUX_BACKLIGHT
- 	help
- 	  Texas Instruments SN65DSI86 DSI to eDP Bridge driver
- 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index f27306c..813d067 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -22,6 +22,7 @@
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_dp_aux_backlight.h>
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
-@@ -126,6 +127,7 @@
-  * @panel:        Our panel.
-  * @enable_gpio:  The GPIO we toggle to enable the bridge.
-  * @supplies:     Data for bulk enabling/disabling our regulators.
-+ * @backlight:    The DP aux backlight device.
-  * @dp_lanes:     Count of dp_lanes we're using.
-  * @ln_assign:    Value to program to the LN_ASSIGN register.
-  * @ln_polrs:     Value for the 4-bit LN_POLRS field of SN_ENH_FRAME_REG.
-@@ -154,6 +156,7 @@ struct ti_sn_bridge {
- 	struct drm_panel		*panel;
- 	struct gpio_desc		*enable_gpio;
- 	struct regulator_bulk_data	supplies[SN_REGULATOR_SUPPLY_NUM];
-+	struct drm_dp_aux_backlight	*backlight;
- 	int				dp_lanes;
- 	u8				ln_assign;
- 	u8				ln_polrs;
-@@ -431,6 +434,8 @@ static void ti_sn_bridge_disable(struct drm_bridge *bridge)
- {
- 	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
- 
-+	drm_dp_aux_backlight_disable(pdata->backlight);
-+
- 	drm_panel_disable(pdata->panel);
- 
- 	/* disable video stream */
-@@ -819,6 +824,8 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
- 			   VSTREAM_ENABLE);
- 
- 	drm_panel_enable(pdata->panel);
-+
-+	drm_dp_aux_backlight_enable(pdata->backlight);
- }
- 
- static void ti_sn_bridge_pre_enable(struct drm_bridge *bridge)
-@@ -1215,6 +1222,7 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 			      const struct i2c_device_id *id)
- {
- 	struct ti_sn_bridge *pdata;
-+	struct drm_dp_aux_backlight *aux_bl;
- 	int ret;
- 
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-@@ -1294,9 +1302,27 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 
- 	drm_bridge_add(&pdata->bridge);
- 
-+	if (of_find_property(pdata->dev->of_node, "use-aux-backlight", NULL)) {
-+		aux_bl = devm_kzalloc(pdata->dev, sizeof(*aux_bl), GFP_KERNEL);
-+		if (!aux_bl) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		aux_bl->dev = pdata->dev;
-+		aux_bl->aux = &pdata->aux;
-+		ret = drm_dp_aux_backlight_register("ti-sn-aux-backlight", aux_bl);
-+		if (ret)
-+			goto out;
-+		pdata->backlight = aux_bl;
-+	}
-+
- 	ti_sn_debugfs_init(pdata);
- 
- 	return 0;
-+
-+out:
-+	pm_runtime_disable(pdata->dev);
-+	return ret;
- }
- 
- static int ti_sn_bridge_remove(struct i2c_client *client)
--- 
-2.7.4
+I think you should check the cpu and the thread is in
+a valid range.  Currently xyarray__entry() simply accesses
+the content without checking the boundaries.
 
+Thanks,
+Namhyung
+
+
+> +
+> +       return MMAP(evsel, cpu, thread)->base;
+> +}
+> +
+>  int perf_evsel__read_size(struct perf_evsel *evsel)
+>  {
+>         u64 read_format = evsel->attr.read_format;
+> diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
+> index 1ffd083b235e..1c067d088bc6 100644
+> --- a/tools/lib/perf/include/internal/evsel.h
+> +++ b/tools/lib/perf/include/internal/evsel.h
+> @@ -41,6 +41,7 @@ struct perf_evsel {
+>         struct perf_cpu_map     *own_cpus;
+>         struct perf_thread_map  *threads;
+>         struct xyarray          *fd;
+> +       struct xyarray          *mmap;
+>         struct xyarray          *sample_id;
+>         u64                     *id;
+>         u32                      ids;
+> diff --git a/tools/lib/perf/include/perf/evsel.h b/tools/lib/perf/include/perf/evsel.h
+> index c82ec39a4ad0..60eae25076d3 100644
+> --- a/tools/lib/perf/include/perf/evsel.h
+> +++ b/tools/lib/perf/include/perf/evsel.h
+> @@ -27,6 +27,9 @@ LIBPERF_API int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *
+>                                  struct perf_thread_map *threads);
+>  LIBPERF_API void perf_evsel__close(struct perf_evsel *evsel);
+>  LIBPERF_API void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
+> +LIBPERF_API int perf_evsel__mmap(struct perf_evsel *evsel, int pages);
+> +LIBPERF_API void perf_evsel__munmap(struct perf_evsel *evsel);
+> +LIBPERF_API void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread);
+>  LIBPERF_API int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>                                  struct perf_counts_values *count);
+>  LIBPERF_API int perf_evsel__enable(struct perf_evsel *evsel);
+> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> index 7be1af8a546c..c0c7ceb11060 100644
+> --- a/tools/lib/perf/libperf.map
+> +++ b/tools/lib/perf/libperf.map
+> @@ -23,6 +23,9 @@ LIBPERF_0.0.1 {
+>                 perf_evsel__disable;
+>                 perf_evsel__open;
+>                 perf_evsel__close;
+> +               perf_evsel__mmap;
+> +               perf_evsel__munmap;
+> +               perf_evsel__mmap_base;
+>                 perf_evsel__read;
+>                 perf_evsel__cpus;
+>                 perf_evsel__threads;
+> --
+> 2.27.0
