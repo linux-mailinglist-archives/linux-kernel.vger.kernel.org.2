@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F50E35EE70
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3732C35EE73
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243980AbhDNH2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:28:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:39030 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349538AbhDNH2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:28:30 -0400
-IronPort-SDR: hFw5wS7kp0/Z/AymqABCwGJyz5Q5iU7MR8QbcTx+71IQW8aSQDo7ub56yMuOxYUkFwjtJXVAMY
- xvqtGDXYTueA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255904581"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="255904581"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:28:03 -0700
-IronPort-SDR: G662FlIdTzBS+sgyF982vbTaYMXS791eapI1uQ7YZ9cmOYdI8Vm6F7ySXj2FWXxjdoBR/PvNKs
- 7ga5mYfCzYww==
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="382268190"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:28:00 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 1BBA1200E8;
-        Wed, 14 Apr 2021 10:27:58 +0300 (EEST)
-Date:   Wed, 14 Apr 2021 10:27:58 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Mitali Borkar <mitaliborkar810@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] Re: [PATCH v3 4/4] staging: media:
- intel-ipu3: remove space before tabs
-Message-ID: <20210414072757.GY3@paasikivi.fi.intel.com>
-References: <cover.1618326535.git.mitaliborkar810@gmail.com>
- <01ad7ff353f805dfc48e7bcc26ed974e7bb5ef9f.1618326535.git.mitaliborkar810@gmail.com>
- <20210413181712.GI6021@kadam>
- <YHX3iVCNXJlOsmuQ@kali>
- <alpine.DEB.2.22.394.2104140004430.14108@hadrien>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104140004430.14108@hadrien>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1349762AbhDNH3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:29:37 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:18314 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349556AbhDNH3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:29:34 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id A5D1680042A;
+        Wed, 14 Apr 2021 15:29:06 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH V2] watchdog: mtk: support pre-timeout when the bark irq is available
+Date:   Wed, 14 Apr 2021 15:28:58 +0800
+Message-Id: <1618385339-3527-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUsdTFZCHU8aTxgaTh9LQktVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzI6LSo5SD8JHhwhTTc5LiEX
+        Ey1PCyFVSlVKTUpDSENOSE9MSElLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBT0JKTDcG
+X-HM-Tid: 0a78cf48a173b03akuuua5d1680042a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:05:04AM +0200, Julia Lawall wrote:
-> 
-> 
-> On Wed, 14 Apr 2021, Mitali Borkar wrote:
-> 
-> > On Tue, Apr 13, 2021 at 09:17:12PM +0300, Dan Carpenter wrote:
-> > > On Tue, Apr 13, 2021 at 08:59:34PM +0530, Mitali Borkar wrote:
-> > > > Removed unnecessary space before tabs to adhere to linux kernel coding
-> > > > style.
-> > > > Reported by checkpatch.
-> > > >
-> > > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > > ---
-> > > >
-> > > > Changes from v2:- No changes.
-> > > > Changes from v1:- No changes.
-> > > >
-> > > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > > index 47e98979683c..42edac5ee4e4 100644
-> > > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > > @@ -633,7 +633,7 @@ struct ipu3_uapi_bnr_static_config_wb_gains_thr_config {
-> > > >   * @cg:	Gain coefficient for threshold calculation, [0, 31], default 8.
-> > > >   * @ci:	Intensity coefficient for threshold calculation. range [0, 0x1f]
-> > > >   *	default 6.
-> > > > - * 	format: u3.2 (3 most significant bits represent whole number,
-> > > > + *format: u3.2 (3 most significant bits represent whole number,
-> > > >   *	2 least significant bits represent the fractional part
-> > >
-> > > Just remove the spaces, don't remove the tab.  It's looks silly now.
-> > >
-> > Okay Sir, do I have to send a v4 patch on this now?
-> 
-> Yes.  If you get feedback on a patch, you should send a new version.
+Use the bark interrupt as the pretimeout notifier if available.
 
-v2 of this patch can be used as well, it's fine. (I missed this change in
-v3.)
+By default, the pretimeout notification shall occur one second earlier
+than the timeout.
 
+V2:
+- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/watchdog/mtk_wdt.c | 57 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+index 97ca993..b0ec933
+--- a/drivers/watchdog/mtk_wdt.c
++++ b/drivers/watchdog/mtk_wdt.c
+@@ -25,6 +25,7 @@
+ #include <linux/reset-controller.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
++#include <linux/interrupt.h>
+ 
+ #define WDT_MAX_TIMEOUT		31
+ #define WDT_MIN_TIMEOUT		1
+@@ -234,18 +235,41 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+ 	void __iomem *wdt_base = mtk_wdt->wdt_base;
+ 	int ret;
+ 
+-	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
++	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	reg = ioread32(wdt_base + WDT_MODE);
+-	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
++	reg &= ~WDT_MODE_IRQ_EN;
++	if (wdt_dev->pretimeout)
++		reg |= WDT_MODE_IRQ_EN;
++	else
++		reg &= ~WDT_MODE_IRQ_EN;
+ 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+ 	iowrite32(reg, wdt_base + WDT_MODE);
+ 
+ 	return 0;
+ }
+ 
++static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
++				   unsigned int timeout)
++{
++	wdd->pretimeout = timeout;
++	return mtk_wdt_start(wdd);
++}
++
++static irqreturn_t mtk_wdt_isr(int irq, void *arg)
++{
++	struct watchdog_device *wdd = arg;
++if (IS_ENABLED(CONFIG_WATCHDOG_PRETIMEOUT_GOV))
++	watchdog_notify_pretimeout(wdd);
++else
++	//panic by decault instead of WDT_SWRST;
++	panic("MTk Watchdog bark!\n");
++
++	return IRQ_HANDLED;
++}
++
+ static const struct watchdog_info mtk_wdt_info = {
+ 	.identity	= DRV_NAME,
+ 	.options	= WDIOF_SETTIMEOUT |
+@@ -253,12 +277,21 @@ static const struct watchdog_info mtk_wdt_info = {
+ 			  WDIOF_MAGICCLOSE,
+ };
+ 
++static const struct watchdog_info mtk_wdt_pt_info = {
++	.identity	= DRV_NAME,
++	.options	= WDIOF_SETTIMEOUT |
++			  WDIOF_PRETIMEOUT |
++			  WDIOF_KEEPALIVEPING |
++			  WDIOF_MAGICCLOSE,
++};
++
+ static const struct watchdog_ops mtk_wdt_ops = {
+ 	.owner		= THIS_MODULE,
+ 	.start		= mtk_wdt_start,
+ 	.stop		= mtk_wdt_stop,
+ 	.ping		= mtk_wdt_ping,
+ 	.set_timeout	= mtk_wdt_set_timeout,
++	.set_pretimeout	= mtk_wdt_set_pretimeout,
+ 	.restart	= mtk_wdt_restart,
+ };
+ 
+@@ -267,7 +300,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct mtk_wdt_dev *mtk_wdt;
+ 	const struct mtk_wdt_data *wdt_data;
+-	int err;
++	int err, irq;
+ 
+ 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+ 	if (!mtk_wdt)
+@@ -279,7 +312,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mtk_wdt->wdt_base))
+ 		return PTR_ERR(mtk_wdt->wdt_base);
+ 
+-	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	irq = platform_get_irq(pdev, 0);
++	if (irq > 0) {
++		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
++								&mtk_wdt->wdt_dev);
++		if (err)
++			return err;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
++		mtk_wdt->wdt_dev.pretimeout = 1;
++	} else {
++		if (irq == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	}
++
+ 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+ 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+ 	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+@@ -360,7 +408,6 @@ static struct platform_driver mtk_wdt_driver = {
+ };
+ 
+ module_platform_driver(mtk_wdt_driver);
+-
+ module_param(timeout, uint, 0);
+ MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds");
+ 
 -- 
-Sakari Ailus
+2.7.4
+
