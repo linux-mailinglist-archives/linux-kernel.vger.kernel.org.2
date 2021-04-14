@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD7935F992
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072A035F993
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbhDNRNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:13:06 -0400
+        id S1345991AbhDNRNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:13:09 -0400
 Received: from mga02.intel.com ([134.134.136.20]:3013 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233433AbhDNRNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:13:04 -0400
-IronPort-SDR: T72mCPwBChFuXngrAT7moXLzxgoIkIr355i0UKw+23nbRyw1f3fsb3C+/MkMzP3QC+Jx+DzYS+
- 2cj/0Qov+69Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181811912"
+        id S233433AbhDNRNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:13:06 -0400
+IronPort-SDR: 2PmhoVAwWOTQE0xI9e/8q64dsIY9t2swHHTc/CETmjbQb8RRpp6XuCAD9hOqU83GsaCjz6D/e2
+ d2r91TZpjVIg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181811918"
 X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="181811912"
+   d="scan'208";a="181811918"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:12:43 -0700
-IronPort-SDR: H6BS4xofiw/LO7ZHS1dCEkOJzKxnMrHMBFfxTlre7khZ5UigqmoQG0To3ZizgcOFOZcMVf0xsU
- xKkgMu6XzqZQ==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:12:45 -0700
+IronPort-SDR: gyfisw2WbfZBLaum65VkszCJUaZs6T6OMlF/Vb0xQPdKFiVd+70jPbyYZcnVhexvkfM2LJUo1v
+ j6uHr2M4mEwQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="382427932"
+   d="scan'208";a="382427953"
 Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 14 Apr 2021 10:12:40 -0700
+  by orsmga003.jf.intel.com with ESMTP; 14 Apr 2021 10:12:43 -0700
 From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-Date:   Wed, 14 Apr 2021 20:12:46 +0300
-Message-Id: <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 3/7] intel_th: Constify all drvdata references
+Date:   Wed, 14 Apr 2021 20:12:47 +0300
+Message-Id: <20210414171251.14672-4-alexander.shishkin@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
 References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
@@ -42,79 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Anything that deals with drvdata structures should leave them intact.
+Reflect this in function signatures.
 
-It appears that uuid_t use in STM code abuses UUID API. Moreover,
-this type is only useful when we parse user input. Due to above
-replace uuid_t with u8 uuid[16] and use uuid_t only when parse
-user input.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/hwtracing/stm/p_sys-t.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ drivers/hwtracing/intel_th/core.c     | 2 +-
+ drivers/hwtracing/intel_th/intel_th.h | 6 +++---
+ drivers/hwtracing/intel_th/pci.c      | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
-index 360b5c03df95..04d13b3785d3 100644
---- a/drivers/hwtracing/stm/p_sys-t.c
-+++ b/drivers/hwtracing/stm/p_sys-t.c
-@@ -76,7 +76,7 @@ enum sys_t_message_string_subtype {
- 				 MIPI_SYST_SEVERITY(MAX))
- 
- struct sys_t_policy_node {
--	uuid_t		uuid;
-+	u8		uuid[UUID_SIZE];
- 	bool		do_len;
- 	unsigned long	ts_interval;
- 	unsigned long	clocksync_interval;
-@@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
+diff --git a/drivers/hwtracing/intel_th/core.c b/drivers/hwtracing/intel_th/core.c
+index c9ac3dc65113..24d0c974bfd5 100644
+--- a/drivers/hwtracing/intel_th/core.c
++++ b/drivers/hwtracing/intel_th/core.c
+@@ -844,7 +844,7 @@ static irqreturn_t intel_th_irq(int irq, void *data)
+  * @irq:	irq number
+  */
+ struct intel_th *
+-intel_th_alloc(struct device *dev, struct intel_th_drvdata *drvdata,
++intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
+ 	       struct resource *devres, unsigned int ndevres)
  {
- 	struct sys_t_policy_node *pn = priv;
- 
--	generate_random_uuid(pn->uuid.b);
-+	generate_random_uuid(pn->uuid);
+ 	int err, r, nr_mmios = 0;
+diff --git a/drivers/hwtracing/intel_th/intel_th.h b/drivers/hwtracing/intel_th/intel_th.h
+index 5fe694708b7a..05fa2dab37d1 100644
+--- a/drivers/hwtracing/intel_th/intel_th.h
++++ b/drivers/hwtracing/intel_th/intel_th.h
+@@ -74,7 +74,7 @@ struct intel_th_drvdata {
+  */
+ struct intel_th_device {
+ 	struct device		dev;
+-	struct intel_th_drvdata *drvdata;
++	const struct intel_th_drvdata *drvdata;
+ 	struct resource		*resource;
+ 	unsigned int		num_resources;
+ 	unsigned int		type;
+@@ -224,7 +224,7 @@ static inline struct intel_th *to_intel_th(struct intel_th_device *thdev)
  }
  
- static int sys_t_output_open(void *priv, struct stm_output *output)
-@@ -120,7 +120,7 @@ static ssize_t sys_t_policy_uuid_show(struct config_item *item,
+ struct intel_th *
+-intel_th_alloc(struct device *dev, struct intel_th_drvdata *drvdata,
++intel_th_alloc(struct device *dev, const struct intel_th_drvdata *drvdata,
+ 	       struct resource *devres, unsigned int ndevres);
+ void intel_th_free(struct intel_th *th);
+ 
+@@ -272,7 +272,7 @@ struct intel_th {
+ 
+ 	struct intel_th_device	*thdev[TH_SUBDEVICE_MAX];
+ 	struct intel_th_device	*hub;
+-	struct intel_th_drvdata	*drvdata;
++	const struct intel_th_drvdata	*drvdata;
+ 
+ 	struct resource		resource[TH_MMIO_END];
+ 	int			(*activate)(struct intel_th *);
+diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
+index 251e75c9ba9d..759994055cb4 100644
+--- a/drivers/hwtracing/intel_th/pci.c
++++ b/drivers/hwtracing/intel_th/pci.c
+@@ -71,7 +71,7 @@ static void intel_th_pci_deactivate(struct intel_th *th)
+ static int intel_th_pci_probe(struct pci_dev *pdev,
+ 			      const struct pci_device_id *id)
  {
- 	struct sys_t_policy_node *pn = to_pdrv_policy_node(item);
- 
--	return sprintf(page, "%pU\n", &pn->uuid);
-+	return sprintf(page, "%pU\n", pn->uuid);
- }
- 
- static ssize_t
-@@ -129,13 +129,17 @@ sys_t_policy_uuid_store(struct config_item *item, const char *page,
- {
- 	struct mutex *mutexp = &item->ci_group->cg_subsys->su_mutex;
- 	struct sys_t_policy_node *pn = to_pdrv_policy_node(item);
-+	uuid_t uuid;
- 	int ret;
- 
- 	mutex_lock(mutexp);
--	ret = uuid_parse(page, &pn->uuid);
-+	ret = uuid_parse(page, &uuid);
- 	mutex_unlock(mutexp);
-+	if (ret)
-+		return ret;
- 
--	return ret < 0 ? ret : count;
-+	export_uuid(pn->uuid, &uuid);
-+	return count;
- }
- 
- CONFIGFS_ATTR(sys_t_policy_, uuid);
-@@ -322,7 +326,7 @@ static ssize_t sys_t_write(struct stm_data *data, struct stm_output *output,
- 		return sz;
- 
- 	/* GUID */
--	sz = stm_data_write(data, m, c, false, op->node.uuid.b, UUID_SIZE);
-+	sz = stm_data_write(data, m, c, false, op->node.uuid, sizeof(op->node.uuid));
- 	if (sz <= 0)
- 		return sz;
- 
+-	struct intel_th_drvdata *drvdata = (void *)id->driver_data;
++	const struct intel_th_drvdata *drvdata = (void *)id->driver_data;
+ 	struct resource resource[TH_MMIO_END + TH_NVEC_MAX] = {
+ 		[TH_MMIO_CONFIG]	= pdev->resource[TH_PCI_CONFIG_BAR],
+ 		[TH_MMIO_SW]		= pdev->resource[TH_PCI_STH_SW_BAR],
 -- 
 2.30.2
 
