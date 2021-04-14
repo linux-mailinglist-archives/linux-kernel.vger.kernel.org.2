@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7563135F084
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BCC35F085
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhDNJOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:14:05 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29997 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232081AbhDNJOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:14:01 -0400
-IronPort-SDR: 9FAL0JQT7q05lWP1+96p0NBulpnriPJeQjJAa9yWjvbTYSppnKgHXQt5p8lkexYkU3b1i+sLdP
- HBSlL/I5df2A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255919985"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="255919985"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 02:13:38 -0700
-IronPort-SDR: NOutl8Gepr0SWfFGtfiLlZqxJPFJSvnWFpQyE0mKQfUw7u48WfSiRYNgPzPiWmm30GaiOt/tkz
- M3xcMxtZP7pw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="521925571"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2021 02:13:36 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 14 Apr 2021 12:13:35 +0300
-Date:   Wed, 14 Apr 2021 12:13:35 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] software node: Allow node addition to already existing
- device
-Message-ID: <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
-References: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
+        id S237308AbhDNJOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232715AbhDNJOi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:14:38 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B42AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:14:16 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u21so30288896ejo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=S7Nl/dzV+akrNQvsnMiiu0kWOdSscSjYzYhuC8wPGSo=;
+        b=sOAHL2mWZY+78lOShlM9reMPKSryH3wmn68iz72GGBR1FFS00omlpI2mEX6ZHMHWuO
+         PFa9A3s0l68RfmQ6P2iJHwiPR5uKMwwckKQy8LFghkatWq7I4vOKmQrGzMvuLWJwvfxW
+         QQ1DBDxGclm6Daz4v6CWoFD5FD1eMFPoXLxufRwW3lG2QSjUR310mYetX2rlBxQqFxVd
+         hCO2lJoj0NF5IVSPn8NPgRuHMDId8LLuYvruI764bZ9e3TA1Ua6XPeqhiDCPg2i12HHz
+         p25zrILMduceN4Xvs6hNFQvU0O5oYaup/EaEfxG/OiCpqU3UkOW22cgAzr72xfrqB26v
+         y9Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=S7Nl/dzV+akrNQvsnMiiu0kWOdSscSjYzYhuC8wPGSo=;
+        b=luRy9glSE1bmOkTJFOrX1kFawPg79jFW1IH6VlJ4giI5ZkhNAI9foiTsF7yMZ+Fusv
+         E5vouHOzAhrxY5F82eCviGHgHJdOr40AwFUy7BnLU4ug8d3vNPHuO4JL3Ctq+9QIp+GK
+         GD7NBx34WwDb8Ay7SX7yyyyt36c1KXMRCulKllJOO+tBYVVdnVZn0dV2q146FowLTQxP
+         IvCaWOG3ct/p+CNb/YjR1DBOUn01ygShm60/VO7v3YssmLHkg/R+ZpZRsltFaP3cZ2xt
+         16JfaJRKoi3a+sibtb387NDfGelY3kZkHqC2fWUOEBoDs8/oe30C8qnPi360RxXEF7mT
+         xvJQ==
+X-Gm-Message-State: AOAM5311vLNVmUpXiHPh1DIWBVpADtfls4wjEk8WTlpG2UOmHPWZGlNP
+        HA5Q/x6vp+d+WD8Guqj8PzhvE9OULHZwuQ==
+X-Google-Smtp-Source: ABdhPJzSE77OdgvHeXMjrSPwShkQBqyaUfMKBJdNP8DC+Pd1oVy/CV7nZi+AtvWVQKlFbJ++gZa5DA==
+X-Received: by 2002:a17:906:bc41:: with SMTP id s1mr10635848ejv.527.1618391655173;
+        Wed, 14 Apr 2021 02:14:15 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id i2sm11453134edy.72.2021.04.14.02.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 02:14:14 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 10:14:13 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "mfd: max8997: Add of_compatible to Extcon and
+ Charger mfd_cell"
+Message-ID: <20210414091413.GK4869@dell>
+References: <20210405071344.1215429-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210405071344.1215429-1-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Greg
+On Mon, 05 Apr 2021, Timon Baetz wrote:
 
-Sorry about that. Should I resend this?
-
-On Wed, Apr 14, 2021 at 10:54:38AM +0300, Heikki Krogerus wrote:
-> If the node is added to an already exiting device, the node
-> needs to be also linked to the device separately.
+> This reverts commit 9c03008da125c1007919a9186628af3cc105f526.
 > 
-> This will make sure the reference count is kept in balance
-> also when the node is injected to a device afterwards.
+> commit 41a8a027f4d3 ("regulator: dt-bindings: Document charger-supply
+> for max8997") introduced a binding which uses a property of the max8997
+> pmic node to configure charger supply, making subnodes for MFD cells
+> obsolete.
 > 
-> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Fixes: e68d0119e328 ("software node: Introduce device_add_software_node()")
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
 > ---
->  drivers/base/swnode.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 740333629b420..3cc11b813f28c 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -1045,6 +1045,7 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
->  	}
->  
->  	set_secondary_fwnode(dev, &swnode->fwnode);
-> +	software_node_notify(dev, KOBJ_ADD);
->  
->  	return 0;
->  }
-> @@ -1118,8 +1119,8 @@ int software_node_notify(struct device *dev, unsigned long action)
->  
->  	switch (action) {
->  	case KOBJ_ADD:
-> -		ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
-> -					"software_node");
-> +		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
-> +					       "software_node");
->  		if (ret)
->  			break;
->  
-> -- 
-> 2.30.2
+>  drivers/mfd/max8997.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Applied, thanks.
 
 -- 
-heikki
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
