@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA5535EDA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155E435EDAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349319AbhDNGrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:47:17 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:32783 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348255AbhDNGrP (ORCPT
+        id S1349336AbhDNGsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348295AbhDNGsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:47:15 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 2787B177F;
-        Wed, 14 Apr 2021 02:46:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 14 Apr 2021 02:46:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=64gjXIhv/+g283uK3HI1Fy6VCqL
-        /A34oMNdA2BrGOz4=; b=SMaCRGz/2atN6NqYrJ7F7wtHeKeBu0pQtw6+0+gxgrv
-        jNqGUiEsy9osUhvQazpqF2fAcobI4KnuqEWNBgPfyKGpkBtICKwziz398aDmFxzm
-        u7gidnodlPnFNrVdsAIAfQNWAYC00b0OCWGnJ5A02WVuJIJsCzXo1fZkWNLtUsf/
-        XRapJVw1mBCRMgQLUlVCoKVb/szbct8avqt1lc+QuHRq37yyvMuu6Esw8CDovf38
-        jxM7c6MZECEefHH5sfVT581pvi/7y+/vdCRcs0GrHqbIgEE6c9GFhbs91cvKQC0L
-        9pFn6la4Zb2Dr/qno7G6U5A7TmnPcXVIB9BEF75vCrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=64gjXI
-        hv/+g283uK3HI1Fy6VCqL/A34oMNdA2BrGOz4=; b=kmSpfRPsS/4s5V9AxcP3tq
-        6O0I+QZfYcEC9/0B+V8P8lznnN82Q/flYNTwhFkfetilxr/zlAnt5Zxl1SsXNE5F
-        IWNJXtZsRDPvWUS/OzYWHoGwImEX0+spE0nmyl2jUsPviNz0YG5pqaZA5P/pJonb
-        1Qj7KNLrNGH8H5poklrRVzMTEZXh/mc2Hz5yipbK7ClREB8taIOsw/sif/YKUHuG
-        eu6pYbXaXfY2/Zq3/sc5R9CPyxzJMXNpHlMaYPuKKcTOtcg422Lj9XRkGNCuw/2K
-        gnNZuuLFXTj/XTVPPKmoXUoa29CP6zRUwT/GmM4w0PSyJjAAUE18s0DquDOVkF2Q
-        ==
-X-ME-Sender: <xms:3Y92YDqZ5ag3wcVlNl4UXUSj2_5xyofxtNtTPZmIsO21YUYGXNFASg>
-    <xme:3Y92YLM1KKqVCsTPpRQBLIKep2l-8OK-b8lU6SUb9pdLwO8z_dxF0i29hdgdnUNkj
-    a9TS6pTgiu-TxcDZlg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeltddgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgv
-    rhcujfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvg
-    htqeenucggtffrrghtthgvrhhnpeehhfehfffgheelgeeuudelhefgvdefveekudevjeev
-    jeevvefggefguddufeeuveenucfkphepuddujedrvddtrdejuddrvddvkeenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehpvghtvghrrdhhuhht
-    thgvrhgvrhesfihhohdqthdrnhgvth
-X-ME-Proxy: <xmx:3Y92YGodEd2js7xKNzSWFi2rN3eVDhKabvvOtJsb8gR-OuImWAxgFQ>
-    <xmx:3Y92YIeWI9JDuxMiceK_-5AbpMaM6PFdOVI26iQk5pYiwCE8_I6WwQ>
-    <xmx:3Y92YETBJZs0fUENrGIiR4rSOiXiggKYWi-ftHDjMqNoBi0maf9QBg>
-    <xmx:3Y92YLGTs3Sir_Qd3Y8rL6mSW8UpcqQpoKBZ4iBVcU5j-A05wvDMwg>
-Received: from koala (117-20-71-228.751447.bne.nbn.aussiebb.net [117.20.71.228])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E271524005C;
-        Wed, 14 Apr 2021 02:46:50 -0400 (EDT)
-Date:   Wed, 14 Apr 2021 16:46:44 +1000
-From:   Peter Hutterer <peter.hutterer@who-t.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Rob Herring <robh@kernel.org>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/3] Input: add driver for the Hycon HY46XX touchpanel
- series
-Message-ID: <YHaP1Fzsi5pSaEq3@koala>
-References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
- <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
- <20210413144446.2277817-4-giulio.benetti@benettiengineering.com>
- <YHaBJ6MX9c28MUQY@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHaBJ6MX9c28MUQY@google.com>
+        Wed, 14 Apr 2021 02:48:09 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE195C061574;
+        Tue, 13 Apr 2021 23:47:48 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p12so13713400pgj.10;
+        Tue, 13 Apr 2021 23:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=gwv5x6G6JJ9YN0KJM8SBzss+XRBm/4eYU9zWQJ9tAVw=;
+        b=rz2u7gNrybHVnGHQWsSuv+iamFtXnVQPtIoieaY6PdCj42qg9cdLtQUVUgAlIjzkCq
+         jMWhHFqQZq2S5JHPwArn6bIdqp6Wbcx0g5FjmjFPkW9+LCWB14luo0dTzP7DxIsTcXz9
+         Q0P9RI6x3OzQPkO5yIctFNDvDHjHpcBq52GVpgl+oFF54H+bjc8EfFPUVWcHXHqdUgqg
+         tyQeiGAK+PAswX5c/rYCJnGaeV2suDvLxYHiOfxU9Myq5D40XkBVjmLKYOeGIk+nWb0r
+         CvRTA7uAzxGddl0v1K5PpTqBneFhjsTty0a4KAsae8oGXaUU/fsYllwXCUgQDOk1jP34
+         OzLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gwv5x6G6JJ9YN0KJM8SBzss+XRBm/4eYU9zWQJ9tAVw=;
+        b=ObRSw4rbhz51Qh6BwYaILZgi8XRuQeB1dlgFPWzQBQa4mlGLon44QzeJKRG89LHCqp
+         N3LkrrdR8T3YV8HLDEntj+Nlb4Vykk64HFkVZC/g97z/WRGgxbkx0V/+Je1mcu1YcMw7
+         bb11E2zspfGLdU7LlHBwd3BdwzeuQV8In/OU2xqPq7o08oHPcL00gJEVck1jXVWxapls
+         ajOhC+/Jd1a/+gbsEMnDEIa43TpXHdIM30oObhzS0A3kLoVZXNxisGbsD43MO3rjjKLr
+         unYwEXRjGSYQCkVMuNmRKFNnng2HUKWBE94DKcryDDaBGx3XHOE85up8iHDDIzNB94SN
+         VBFw==
+X-Gm-Message-State: AOAM533/XsYx2QFhxLORT0uMZ0OFcN+yiMJShY+vEBFYg+PxCgRg4HBb
+        TRP4FwjCrpaW3DJM81jFbNyLmdltg7BEJWSE
+X-Google-Smtp-Source: ABdhPJxxih+hUbVYY+DjX6fDZ+p5zvJI2xBrensWhcBJKA6pNE86088BqCCj5AEt5pStuR6cICEMjg==
+X-Received: by 2002:a63:d556:: with SMTP id v22mr3639061pgi.310.1618382868560;
+        Tue, 13 Apr 2021 23:47:48 -0700 (PDT)
+Received: from mi-OptiPlex-7060.mioffice.cn ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id c15sm14084913pfi.207.2021.04.13.23.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 23:47:48 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guangqing Zhu <zhuguangqing83@gmail.com>
+Subject: [PATCH] power: supply: cpcap-battery: fix invalid usage of list cursor
+Date:   Wed, 14 Apr 2021 14:47:24 +0800
+Message-Id: <20210414064724.27068-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:44:07PM -0700, Dmitry Torokhov wrote:
-> Hi Giulio,
-> 
-> On Tue, Apr 13, 2021 at 04:44:46PM +0200, Giulio Benetti wrote:
-> > +
-> > +	input_mt_report_pointer_emulation(tsdata->input, true);
-> 
-> For touchscreens it does not make much sense to report BTN_DOUBLETAP,
-> BTN_TRIPLETAP, etc, events (they are really for touchpads), so I changed
-> this to
-> 
-> 	input_mt_report_pointer_emulation(tsdata->input, false);
-> 
-> to only report ABS_X, ABS_Y, and BTN_TOUCH, and applied.
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-Can you expand on this please, just to make sure I'm not misinterpreting
-those codes? Those bits are just for how many fingers are down (but without
-position), dropping those bits means you restrict the device to a pure
-single-touch screen. Or am I missing something here?
+Fix invalid usage of a list_for_each_entry in cpcap_battery_irq_thread().
+When list is empty or if the list is completely traversed (without breaking
+from the loop on one of the entries) then the list cursor does not point
+to a valid entry and therefore should not be used. "if (!d)" will never
+happen, maybe we should use "if (&d->node == &ddata->irq_list)".
 
-then again, MT support has been in the kernel for long enough that by now
-everything should understand it, so there's a certain "meh" factor.
+Fixes: 874b2adbed125 ("power: supply: cpcap-battery: Add a battery driver")
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+---
+ drivers/power/supply/cpcap-battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-   Peter
+diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
+index 6d5bcdb9f45d..8169dc71a786 100644
+--- a/drivers/power/supply/cpcap-battery.c
++++ b/drivers/power/supply/cpcap-battery.c
+@@ -786,7 +786,7 @@ static irqreturn_t cpcap_battery_irq_thread(int irq, void *data)
+ 			break;
+ 	}
+ 
+-	if (!d)
++	if (&d->node == &ddata->irq_list)
+ 		return IRQ_NONE;
+ 
+ 	latest = cpcap_battery_latest(ddata);
+-- 
+2.17.1
+
