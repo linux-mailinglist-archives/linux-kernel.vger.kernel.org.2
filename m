@@ -2,99 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AF535F166
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2720835F16B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhDNKSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:18:49 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54881 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233507AbhDNKSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:18:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UVXj3bU_1618395500;
-Received: from 30.21.164.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UVXj3bU_1618395500)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 18:18:20 +0800
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
- <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com>
- <CAJfpegsurP8JshxFah0vCwBQicc0ijRnGyLeZZ-4tio6BHqEzQ@mail.gmail.com>
- <0fdb09fa-9b0f-1115-2540-6016ce664370@linux.alibaba.com>
- <CAJfpegvTX9rS0D6TXUUz3urrPFHng_1OntSWah+CU-7Fo5F-7g@mail.gmail.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <495c1637-8d63-6620-ca76-e77f61ae11cf@linux.alibaba.com>
-Date:   Wed, 14 Apr 2021 18:18:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233645AbhDNKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:22:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232733AbhDNKWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E1F46117A;
+        Wed, 14 Apr 2021 10:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618395744;
+        bh=KA6724okTE2CpHULyMpW1ZjVGtQMPmErIzkHAUK2lpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GyC9pnwLIyRCZDbrXCzGwl8JmZZb8X8qvicfrOBnodAqH7lI3CMFa7FsY144pZ+Xh
+         6Cwuck3RvnsZn9s4K39RFGhLqGTjC4nWmNb2mBou6zssFJC7vpKN7Arl+M/dTVkDPD
+         lxvVxFnb1ti5cpp/1CqznNnDrPygvNGtBFUPILca30MvCJFnjNN4qv/dj038IL0s+Z
+         NRJST/Xww2F765ocnykFPiGQ6fg47Pl5ljR8dWl1MQRWCOn9CNMlOiSF2IHGuwX8/b
+         EjnKrGgZAGSsEJOxMt8C7Or6gIORKacPJSyPo1DN0iYyGuh4bK55zInTdwvvw59m7v
+         tku9hYRo48jhA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A14FC40647; Wed, 14 Apr 2021 07:22:19 -0300 (-03)
+Date:   Wed, 14 Apr 2021 07:22:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Subject: Re: [PATCH v7 2/4] libperf: Add evsel mmap support
+Message-ID: <YHbCWytH5ek0C/an@kernel.org>
+References: <20210413171606.1825808-1-robh@kernel.org>
+ <20210413171606.1825808-3-robh@kernel.org>
+ <YHXlXMd2Bp+90851@kernel.org>
+ <CAL_JsqJfCNuvavU1xVUBxRFDopfsLW+E0kZXH8oZ2pmCDybPpA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJfpegvTX9rS0D6TXUUz3urrPFHng_1OntSWah+CU-7Fo5F-7g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJfCNuvavU1xVUBxRFDopfsLW+E0kZXH8oZ2pmCDybPpA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2021/4/14 17:47, Miklos Szeredi 写道:
-> On Wed, Apr 14, 2021 at 11:22 AM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
->>
->>
->>
->> 在 2021/4/14 17:02, Miklos Szeredi 写道:
->>> On Wed, Apr 14, 2021 at 10:42 AM Baolin Wang
->>> <baolin.wang@linux.alibaba.com> wrote:
->>>
->>>> Sorry I missed this patch before, and I've tested this patch, it seems
->>>> can solve the deadlock issue I met before.
->>>
->>> Great, thanks for testing.
->>>
->>>> But look at this patch in detail, I think this patch only reduced the
->>>> deadlock window, but did not remove the possible deadlock scenario
->>>> completely like I explained in the commit log.
->>>>
->>>> Since the fuse_fill_write_pages() can still lock the partitail page in
->>>> your patch, and will be wait for the partitail page waritehack is
->>>> completed if writeback is set in fuse_send_write_pages().
->>>>
->>>> But at the same time, a writeback worker thread may be waiting for
->>>> trying to lock the partitail page to write a bunch of dirty pages by
->>>> fuse_writepages().
->>>
->>> As you say, fuse_fill_write_pages() will lock a partial page.  This
->>> page cannot become dirty, only after being read completely, which
->>> first requires the page lock.  So dirtying this page can only happen
->>> after the writeback of the fragment was completed.
->>
->> What I mean is the writeback worker had looked up the dirty pages in
->> write_cache_pages() and stored them into a temporary pagevec, then try
->> to lock dirty page one by one and write them.
->>
->> For example, suppose it looked up 2 dirty pages (named page 1 and page
->> 2), and writed down page 1 by fuse_writepages_fill(), unlocked page 1.
->> Then try to lock page 2.
->>
->> At the same time, suppose the fuse_fill_write_pages() will write the
->> same page 1 and partitail page 2, and it will lock partital page 2 and
->> wait for the page 1's writeback is completed. But page 1's writeback can
->> not be completed, since the writeback worker is waiting for locking page
->> 2, which was already locked by fuse_fill_write_pages().
+Em Tue, Apr 13, 2021 at 02:07:57PM -0500, Rob Herring escreveu:
+> On Tue, Apr 13, 2021 at 1:39 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > --- a/tools/lib/perf/evsel.c
+> > > +int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+> > > +{
+> > > +     int ret, cpu, thread;
+> > Where is the counterpart?
 > 
-> How would page2 become not uptodate, when it was already collected by
-> write_cache_pages()?  I.e. page2 is a dirty page, hence it must be
-> uptodate, and fuse_writepages_fill() will not keep it locked.
+> I was assuming implicitly unmapped when closing the fd(s), but looks
+> like it's when exiting the process only.
+> 
+> I.e. perf_evsel__munmap(), and it should be
+> > called if perf_evsel__mmap() fails, right?
+> 
+> If perf_evsel__mmap() fails, the caller shouldn't have to do anything
+> WRT mmap, right? But if the perf_mmap__mmap() call fails, we do need
+> some internal clean-up. I'll fix both.
 
-Read your patch carefully again, now I realized you are right, and your 
-patch can solve the deadlock issue I met. Please feel free to add my 
-tested-by tag for your patch. Thanks.
+You're right, thanks!
 
-Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+- Arnaldo
