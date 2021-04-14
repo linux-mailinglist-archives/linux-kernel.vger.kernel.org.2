@@ -2,348 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B7035F418
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77DD35F430
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbhDNMkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351054AbhDNMkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:40:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99BB5613D7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618403986;
-        bh=q9HRKwYca+Eb8GDca62sBmxr0+zNiVzB1jezF++Bt+A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HHYntxCaHe1EBofjW5Cbupc5Mj1DNeL3uQ9ET9WH+i0ugvcquo0QAhffFubXxEeVC
-         YBNuXSe9whcliOqiKGzFtK/ZMUkeagUl02+8pzu19J35grDk6UxbWf8+FgbXWJSA8b
-         kP0KqjGRyytMZTBZ2vDWJzwHez/qDv9mya92ECR8TlKxaSgmEsr6uRX8HlDX67VamE
-         ogddVXmnwfHFqTh0jyRpvrLSCPhd/Zf5jIAoog4OVI/Z7WwgkjPtlbbMllGTL95YC+
-         /Cifm3g3ZuKEAM1n5huPtjxHR/UtHcXGRn5FzFFPN1Jv43vjP5rT8SLGDwa/b2S9Yd
-         a+R+SPUHlaM/w==
-Received: by mail-lj1-f175.google.com with SMTP id r22so12401367ljc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:39:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533nPcAefu0IDtFe4PBRFWAKZJaaU8sUQodgHsWCwqK55BxAeWl8
-        Ih4fU3OZpbZGefvBX4GDevqJon9scMckW0e8k1g=
-X-Google-Smtp-Source: ABdhPJxyExM+1aHwYM5jLATwYeCO3fhsjmoWghmRwZUKi//xh6Qkclk632DTU98uRp/7jjRbuHOgdmr2FTAe2Nd0W2k=
-X-Received: by 2002:a2e:9084:: with SMTP id l4mr23289456ljg.498.1618403984812;
- Wed, 14 Apr 2021 05:39:44 -0700 (PDT)
+        id S1351072AbhDNMom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:44:42 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2856 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350776AbhDNMob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 08:44:31 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FL28W3vwzz689s1;
+        Wed, 14 Apr 2021 20:38:51 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 14 Apr 2021 14:44:08 +0200
+Received: from localhost (10.52.122.47) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 14 Apr
+ 2021 13:44:07 +0100
+Date:   Wed, 14 Apr 2021 13:42:40 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     <bpeled@marvell.com>
+CC:     <thomas.petazzoni@bootlin.com>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <sebastian.hesselbarth@gmail.com>, <gregory.clement@bootlin.com>,
+        <andrew@lunn.ch>, <robh+dt@kernel.org>, <mw@semihalf.com>,
+        <jaz@semihalf.com>, <kostap@marvell.com>, <nadavh@marvell.com>,
+        <stefanc@marvell.com>, <oferh@marvell.com>
+Subject: Re: =?UTF-8?Q?[=E2=80=9DPATCH=E2=80=9D?= 2/5] PCI: armada8k: Add
+ link-down handle
+Message-ID: <20210414134240.000057b4@Huawei.com>
+In-Reply-To: <1618241456-27200-3-git-send-email-bpeled@marvell.com>
+References: <1618241456-27200-1-git-send-email-bpeled@marvell.com>
+        <1618241456-27200-3-git-send-email-bpeled@marvell.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
- <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
- <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net> <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
- <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 14 Apr 2021 20:39:33 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
-Message-ID: <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.122.47]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 6:16 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Apr 14, 2021 at 11:05:24AM +0200, Peter Zijlstra wrote:
->
-> > That made me look at the qspinlock code, and queued_spin_*lock() uses
-> > atomic_try_cmpxchg_acquire(), which means any arch that uses qspinlock
-> > and has RCpc atomics will give us massive pain.
-> >
-> > Current archs using qspinlock are: x86, arm64, power, sparc64, mips and
-> > openrisc (WTF?!).
-> >
-> > Of those, x86 and sparc are TSO archs with SC atomics, arm64 has RCsc
-> > atomics, power has RCtso atomics (and is the arch we all hate for having
-> > RCtso locks).
-> >
-> > Now MIPS has all sorts of ill specified barriers, but last time looked
-> > at it it didn't actually use any of that and stuck to using smp_mb(), so
-> > it will have RCsc atomics.
-> >
-> > /me goes look at wth openrisc is..  doesn't even appear to have
-> > asm/barrier.h :-/ Looking at wikipedia it also doesn't appear to
-> > actually have hardware ...
->
-> FWIW this is broken, anything SMP *MUST* define mb(), at the very least.
->
-> > I'm thinking openrisc is a prime candidate for this ticket_lock.h we're
-> > all talking about.
->
-> How's this then? Compile tested only on openrisc/simple_smp_defconfig.
-I've tested it on csky SMP*4 hw (860) & riscv SMP*4 hw (c910) and it's okay.
+On Mon, 12 Apr 2021 18:30:53 +0300
+<bpeled@marvell.com> wrote:
 
-Hope you can keep
-typedef struct {
-        union {
-                atomic_t lock;
-                struct __raw_tickets {
-#ifdef __BIG_ENDIAN
-                        u16 next;
-                        u16 owner;
-#else
-                        u16 owner;
-                        u16 next;
-#endif
-                } tickets;
-        };
-} arch_spinlock_t;
+> From: Ben Peled <bpeled@marvell.com>
+> 
+> In PCIE ISR routine caused by RST_LINK_DOWN
+> we schedule work to handle the link-down procedure.
+> Link-down procedure will:
+> 1. Remove PCIe bus
+> 2. Reset the MAC
+> 3. Reconfigure link back up
+> 4. Rescan PCIe bus
+> 
+> Signed-off-by: Ben Peled <bpeled@marvell.com>
 
-Using owner & next is much more readable.
+Trivial comment inline.
 
->
+Also, something odd with quotes around PATCH in the title you probably
+want to clean up.
+
 > ---
->  arch/openrisc/Kconfig                      |  1 -
->  arch/openrisc/include/asm/Kbuild           |  5 +-
->  arch/openrisc/include/asm/spinlock.h       |  3 +-
->  arch/openrisc/include/asm/spinlock_types.h |  2 +-
->  include/asm-generic/qspinlock.h            | 30 +++++++++++
->  include/asm-generic/ticket-lock-types.h    | 11 ++++
->  include/asm-generic/ticket-lock.h          | 86 ++++++++++++++++++++++++++++++
->  7 files changed, 131 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-> index 591acc5990dc..1858cf309f1f 100644
-> --- a/arch/openrisc/Kconfig
-> +++ b/arch/openrisc/Kconfig
-> @@ -32,7 +32,6 @@ config OPENRISC
->         select HAVE_DEBUG_STACKOVERFLOW
->         select OR1K_PIC
->         select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
-> -       select ARCH_USE_QUEUED_SPINLOCKS
->         select ARCH_USE_QUEUED_RWLOCKS
->         select OMPIC if SMP
->         select ARCH_WANT_FRAME_POINTERS
-> diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
-> index ca5987e11053..cb260e7d73db 100644
-> --- a/arch/openrisc/include/asm/Kbuild
-> +++ b/arch/openrisc/include/asm/Kbuild
-> @@ -1,9 +1,8 @@
->  # SPDX-License-Identifier: GPL-2.0
->  generic-y += extable.h
->  generic-y += kvm_para.h
-> -generic-y += mcs_spinlock.h
-> -generic-y += qspinlock_types.h
-> -generic-y += qspinlock.h
-> +generic-y += ticket-lock.h
-> +generic-y += ticket-lock-types.h
->  generic-y += qrwlock_types.h
->  generic-y += qrwlock.h
->  generic-y += user.h
-> diff --git a/arch/openrisc/include/asm/spinlock.h b/arch/openrisc/include/asm/spinlock.h
-> index a8940bdfcb7e..0b839ed1f3a0 100644
-> --- a/arch/openrisc/include/asm/spinlock.h
-> +++ b/arch/openrisc/include/asm/spinlock.h
-> @@ -15,8 +15,7 @@
->  #ifndef __ASM_OPENRISC_SPINLOCK_H
->  #define __ASM_OPENRISC_SPINLOCK_H
->
-> -#include <asm/qspinlock.h>
-> -
-> +#include <asm/ticket-lock.h>
->  #include <asm/qrwlock.h>
->
->  #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
-> diff --git a/arch/openrisc/include/asm/spinlock_types.h b/arch/openrisc/include/asm/spinlock_types.h
-> index 7c6fb1208c88..58ea31fa65ce 100644
-> --- a/arch/openrisc/include/asm/spinlock_types.h
-> +++ b/arch/openrisc/include/asm/spinlock_types.h
-> @@ -1,7 +1,7 @@
->  #ifndef _ASM_OPENRISC_SPINLOCK_TYPES_H
->  #define _ASM_OPENRISC_SPINLOCK_TYPES_H
->
-> -#include <asm/qspinlock_types.h>
-> +#include <asm/ticket-lock-types.h>
->  #include <asm/qrwlock_types.h>
->
->  #endif /* _ASM_OPENRISC_SPINLOCK_TYPES_H */
-> diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
-> index d74b13825501..a7a1296b0b4d 100644
-> --- a/include/asm-generic/qspinlock.h
-> +++ b/include/asm-generic/qspinlock.h
-> @@ -2,6 +2,36 @@
->  /*
->   * Queued spinlock
->   *
-> + * A 'generic' spinlock implementation that is based on MCS locks. An
-> + * architecture that's looking for a 'generic' spinlock, please first consider
-> + * ticket-lock.h and only come looking here when you've considered all the
-> + * constraints below and can show your hardware does actually perform better
-> + * with qspinlock.
-> + *
-> + *
-> + * It relies on atomic_*_release()/atomic_*_acquire() to be RCsc (or no weaker
-> + * than RCtso if you're power), where regular code only expects atomic_t to be
-> + * RCpc.
-> + *
-> + * It relies on a far greater (compared to ticket-lock.h) set of atomic
-> + * operations to behave well together, please audit them carefully to ensure
-> + * they all have forward progress. Many atomic operations may default to
-> + * cmpxchg() loops which will not have good forward progress properties on
-> + * LL/SC architectures.
-> + *
-> + * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
-> + * do. Carefully read the patches that introduced queued_fetch_set_pending_acquire().
-> + *
-> + * It also heavily relies on mixed size atomic operations, in specific it
-> + * requires architectures to have xchg16; something which many LL/SC
-> + * architectures need to implement as a 32bit and+or in order to satisfy the
-> + * forward progress guarantees mentioned above.
-> + *
-> + * Further reading on mixed size atomics that might be relevant:
-> + *
-> + *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
-> + *
-> + *
->   * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
->   * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
->   *
-> diff --git a/include/asm-generic/ticket-lock-types.h b/include/asm-generic/ticket-lock-types.h
-> new file mode 100644
-> index 000000000000..829759aedda8
-> --- /dev/null
-> +++ b/include/asm-generic/ticket-lock-types.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+>  drivers/pci/controller/dwc/pcie-armada8k.c | 68 ++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-armada8k.c b/drivers/pci/controller/dwc/pcie-armada8k.c
+> index b2278b1..4eb8607 100644
+> --- a/drivers/pci/controller/dwc/pcie-armada8k.c
+> +++ b/drivers/pci/controller/dwc/pcie-armada8k.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/resource.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/of_irq.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/regmap.h>
+>  
+>  #include "pcie-designware.h"
+>  
+> @@ -33,6 +35,9 @@ struct armada8k_pcie {
+>  	struct clk *clk_reg;
+>  	struct phy *phy[ARMADA8K_PCIE_MAX_LANES];
+>  	unsigned int phy_count;
+> +	struct regmap *sysctrl_base;
+> +	u32 mac_rest_bitmask;
+> +	struct work_struct recover_link_work;
+>  };
+>  
+>  #define PCIE_VENDOR_REGS_OFFSET		0x8000
+> @@ -73,6 +78,8 @@ struct armada8k_pcie {
+>  #define AX_USER_DOMAIN_MASK		0x3
+>  #define AX_USER_DOMAIN_SHIFT		4
+>  
+> +#define UNIT_SOFT_RESET_CONFIG_REG	0x268
 > +
-> +#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
-> +#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
-> +
-> +#include <linux/types.h>
-> +typedef atomic_t arch_spinlock_t;
-> +
-> +#define __ARCH_SPIN_LOCK_UNLOCKED      ATOMIC_INIT(0)
-> +
-> +#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
-> diff --git a/include/asm-generic/ticket-lock.h b/include/asm-generic/ticket-lock.h
-> new file mode 100644
-> index 000000000000..3f0d53e21a37
-> --- /dev/null
-> +++ b/include/asm-generic/ticket-lock.h
-> @@ -0,0 +1,86 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + * 'Generic' ticket-lock implementation.
-> + *
-> + * It relies on atomic_fetch_add() having well defined forward progress
-> + * guarantees under contention. If your architecture cannot provide this, stick
-> + * to a test-and-set lock.
-> + *
-> + * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
-> + * sub-word of the value. This is generally true for anything LL/SC although
-> + * you'd be hard pressed to find anything useful in architecture specifications
-> + * about this. If your architecture cannot do this you might be better off with
-> + * a test-and-set.
-> + *
-> + * It further assumes atomic_*_release() + atomic_*_acquire() is RCpc and hence
-> + * uses atomic_fetch_add() which is SC to create an RCsc lock.
-> + *
-> + * The implementation uses smp_cond_load_acquire() to spin, so if the
-> + * architecture has WFE like instructions to sleep instead of poll for word
-> + * modifications be sure to implement that (see ARM64 for example).
-> + *
-> + */
-> +
-> +#ifndef __ASM_GENERIC_TICKET_LOCK_H
-> +#define __ASM_GENERIC_TICKET_LOCK_H
-> +
-> +#include <linux/atomic.h>
-> +#include <asm/ticket-lock-types.h>
-> +
-> +static __always_inline void ticket_lock(arch_spinlock_t *lock)
+>  #define to_armada8k_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  static void armada8k_pcie_disable_phys(struct armada8k_pcie *pcie)
+> @@ -224,6 +231,49 @@ static int armada8k_pcie_host_init(struct pcie_port *pp)
+>  
+>  	return 0;
+>  }
+> +static void armada8k_pcie_recover_link(struct work_struct *ws)
 > +{
-> +       u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
-atomic_fetch_add_acquire ?
-
-> +       u16 ticket = val >> 16;
+> +	struct armada8k_pcie *pcie = container_of(ws, struct armada8k_pcie, recover_link_work);
+> +	struct pcie_port *pp = &pcie->pci->pp;
+> +	struct pci_bus *bus = pp->bridge->bus;
+> +	struct pci_dev *root_port;
+> +	int ret;
 > +
-> +       if (ticket == (u16)val)
-> +               return;
+> +	root_port = pci_get_slot(bus, 0);
+> +	if (!root_port) {
+> +		dev_err(pcie->pci->dev, "failed to get root port\n");
+> +		return;
+> +	}
+> +	pci_lock_rescan_remove();
+> +	pci_stop_and_remove_bus_device(root_port);
+> +	/*
+> +	 * Sleep needed to make sure all pcie transactions and access
+> +	 * are flushed before resetting the mac
+> +	 */
+> +	msleep(100);
 > +
-> +       atomic_cond_read_acquire(lock, ticket == (u16)VAL);
+> +	/* Reset mac */
+> +	regmap_update_bits_base(pcie->sysctrl_base, UNIT_SOFT_RESET_CONFIG_REG,
+> +				pcie->mac_rest_bitmask, 0, NULL, false, true);
+> +	udelay(1);
+> +	regmap_update_bits_base(pcie->sysctrl_base, UNIT_SOFT_RESET_CONFIG_REG,
+> +				pcie->mac_rest_bitmask, pcie->mac_rest_bitmask,
+> +				NULL, false, true);
+> +	udelay(1);
+> +	ret = armada8k_pcie_host_init(pp);
+> +	if (ret) {
+> +		dev_err(pcie->pci->dev, "failed to initialize host: %d\n", ret);
+> +		pci_unlock_rescan_remove();
+> +		pci_dev_put(root_port);
+> +		return;
+> +	}
+> +
+> +	bus = NULL;
+> +	while ((bus = pci_find_next_bus(bus)) != NULL)
+> +		pci_rescan_bus(bus);
+> +	pci_unlock_rescan_remove();
+> +	pci_dev_put(root_port);
 > +}
+>  
+>  static irqreturn_t armada8k_pcie_irq_handler(int irq, void *arg)
+>  {
+> @@ -262,6 +312,9 @@ static irqreturn_t armada8k_pcie_irq_handler(int irq, void *arg)
+>  		 * initiate a link retrain. If link retrains were
+>  		 * possible, that is.
+>  		 */
+> +		if (pcie->sysctrl_base && pcie->mac_rest_bitmask)
+> +			schedule_work(&pcie->recover_link_work);
 > +
-> +static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
-> +{
-> +       u32 old = atomic_read(lock);
+>  		dev_dbg(pci->dev, "%s: link went down\n", __func__);
+>  	}
+>  
+> @@ -330,6 +383,8 @@ static int armada8k_pcie_probe(struct platform_device *pdev)
+>  
+>  	pcie->pci = pci;
+>  
+> +	INIT_WORK(&pcie->recover_link_work, armada8k_pcie_recover_link);
 > +
-> +       if ((old >> 16) != (old & 0xffff))
-> +               return false;
-> +
-> +       return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, for RCsc */
-> +}
-> +
-> +static __always_inline void ticket_unlock(arch_spinlock_t *lock)
-> +{
-> +       u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
-> +       u32 val = atomic_read(lock);
-> +
-> +       smp_store_release(ptr, (u16)val + 1);
-> +}
-> +
-> +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
-> +{
-> +       u32 val = atomic_read(lock);
-> +
-> +       return ((val >> 16) != (val & 0xffff));
-I perfer:
-return !arch_spin_value_unlocked(READ_ONCE(*lock));
-> +}
-> +
-> +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
-> +{
-> +       u32 val = atomic_read(lock);
-> +
-> +       return (s16)((val >> 16) - (val & 0xffff)) > 1;
-How big-endian ?
+>  	pcie->clk = devm_clk_get(dev, NULL);
+>  	if (IS_ERR(pcie->clk))
+>  		return PTR_ERR(pcie->clk);
+> @@ -357,6 +412,19 @@ static int armada8k_pcie_probe(struct platform_device *pdev)
+>  		goto fail_clkreg;
+>  	}
+>  
+> +	pcie->sysctrl_base = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+> +						       "marvell,system-controller");
+> +	if (IS_ERR(pcie->sysctrl_base)) {
+> +		dev_warn(dev, "failed to find marvell,system-controller\n");
+> +		pcie->sysctrl_base = 0x0;
 
-return (tickets.next - tickets.owner) > 1;
+= NULL; ?
 
-> +}
+> +	}
 > +
-> +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
-> +{
-> +       return !ticket_is_locked(&lock);
-Are you sure to let ticket_is_locked->atomic_read(lock) again, the
-lock has contained all information?
+> +	ret = of_property_read_u32(pdev->dev.of_node, "marvell,mac-reset-bit-mask",
+> +				   &pcie->mac_rest_bitmask);
+> +	if (ret < 0) {
+> +		dev_warn(dev, "couldn't find mac reset bit mask: %d\n", ret);
+> +		pcie->mac_rest_bitmask = 0x0;
+> +	}
+>  	ret = armada8k_pcie_setup_phys(pcie);
+>  	if (ret)
+>  		goto fail_clkreg;
 
-return lock.tickets.owner == lock.tickets.next;
-
-> +}
-> +
-> +#define arch_spin_lock(l)              ticket_lock(l)
-> +#define arch_spin_trylock(l)           ticket_trylock(l)
-> +#define arch_spin_unlock(l)            ticket_unlock(l)
-> +#define arch_spin_is_locked(l)         ticket_is_locked(l)
-> +#define arch_spin_is_contended(l)      ticket_is_contended(l)
-> +#define arch_spin_value_unlocked(l)    ticket_value_unlocked(l)
-> +
-> +#endif /* __ASM_GENERIC_TICKET_LOCK_H */
-
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
