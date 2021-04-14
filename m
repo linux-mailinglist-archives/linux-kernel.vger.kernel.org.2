@@ -2,72 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0791435F999
+	by mail.lfdr.de (Postfix) with ESMTP id 52A5A35F99A
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348631AbhDNRNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:13:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:3013 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347495AbhDNRNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:13:14 -0400
-IronPort-SDR: YLQjkXNT7SumxBiEW/sDGaq/DOcaiuHfUblZtFKyF/mUcJ89lwaAc/nxRIBBjInUGHyEkGRVfB
- AdQX+9DlKVGA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181811952"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="181811952"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:12:52 -0700
-IronPort-SDR: vRh3F02xob3Jgmtzot2IaYvLGE9q9HNXdPRw8cFWkH010gRIJxVldoBaCj8waeKtXM+BrFb3Ku
- 1BkG+TNTjjig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="382428039"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 14 Apr 2021 10:12:51 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S1349252AbhDNRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348918AbhDNRNp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:13:45 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372B6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:13:23 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id w23so24621589edx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=hRWa134yVdeu+HkfPMiwB6/8Nw4vcn7mYJDdehe4HJ4=;
+        b=oXUTj9N075M3AlDHDjkFxiWKo9+YDjdUmItJOSJ/8WXGovn+fhujMCelIQmAwBbeUh
+         th8oZwubkaWxphvZjeGdwJRmOfuJqguTb+JOpx83faA0M8k5JBT65JdADFXDMW6FU48I
+         NPtYDpbzZqefRsel0ur0/cP8OFMp1bGH/NDlO/bVbQha4MJWK6+/CwS/iaQYewGpN0Uz
+         BlN9ttwDwJk3l4cfMOzosjKlwQFEaif/E7loCBr7WogPgPrc+MU8dCvO1LtK2T3Wu3+U
+         X2prr8ECl6lgLRER48NseO815dNEZuPAAdm2bSkcsdjEUq6wX+YDxBof97Il//Ew/hai
+         bdAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hRWa134yVdeu+HkfPMiwB6/8Nw4vcn7mYJDdehe4HJ4=;
+        b=AKWTKYVC+XkTlYjGEfCC+z530BNsJdUgz67VH1s0Bqq3/k4TlznSgjoSYsnbEcOzkO
+         OOJ01Hs97xJ5DqtwckgW4OWENWZPu5WgDZ9PAI+g80AAvIESdXVP+uCYoAt3/DHRjyfd
+         0VOxfrEYw62pefd5ZuvaJus+mFPIyBMBWdNK5MTK5XCRg6WI0nAg6JpT/IJ/yuHBdtRJ
+         UrSUdQKOs4OdAYEnSCVYZS7FSC93xCnwq1JTRH7mZgzsZrQxQpwz93GNMT9oG+RN1iZG
+         Hf4K5eWICSWXxPOJVJg36PcCjokanSR9yUxutJqzrCyd0EJCY6sIdrs47BgBDekIqzWJ
+         wePQ==
+X-Gm-Message-State: AOAM531bWIDRxjX0lq2Ej1TsJgmix5x0isRa02WkT/YW+R2QlnYuj3QY
+        o68Xj+I85dMjrDHZQw0pyd4iDH8lNCSKtA==
+X-Google-Smtp-Source: ABdhPJyA9YeM1Vnc5BKJklfSEchAh0hBEqRbFRYD8j5Dwv9WLERLmGrljF/gTyLinbHTenSgwZkkfw==
+X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr41786271edb.97.1618420401827;
+        Wed, 14 Apr 2021 10:13:21 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id o20sm151297eds.65.2021.04.14.10.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 10:13:21 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 18:13:19 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: [PATCH 7/7] intel_th: pci: Add Alder Lake-M support
-Date:   Wed, 14 Apr 2021 20:12:51 +0300
-Message-Id: <20210414171251.14672-8-alexander.shishkin@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick
+ with const
+Message-ID: <20210414171319.GQ4869@dell>
+References: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
+ <20210326145129.GB2916463@dell>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326145129.GB2916463@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the Trace Hub in Alder Lake-M PCH.
+On Fri, 26 Mar 2021, Lee Jones wrote:
 
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.14+
----
- drivers/hwtracing/intel_th/pci.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> On Fri, 26 Mar 2021, Andy Shevchenko wrote:
+> 
+> > As Linus rightfully noticed, the driver plays dirty trick with const,
+> > i.e. it assigns a place holder data structure to the const field
+> > in the MFD cell and then drops the const by explicit casting. This is
+> > not how it should be.
+> > 
+> > Assign local pointers of the cell and resource to the respective
+> > non-const place holders in the intel_quark_i2c_setup() and
+> > intel_quark_gpio_setup().
+> > 
+> > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> > v2: eliminated bar parameter (Lee)
+> >  drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
+> >  1 file changed, 12 insertions(+), 14 deletions(-)
+> 
+> Neat.
+> 
+> Applied, thanks.
 
-diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
-index a756c995fc7a..7da4f298ed01 100644
---- a/drivers/hwtracing/intel_th/pci.c
-+++ b/drivers/hwtracing/intel_th/pci.c
-@@ -273,6 +273,11 @@ static const struct pci_device_id intel_th_pci_id_table[] = {
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x51a6),
- 		.driver_data = (kernel_ulong_t)&intel_th_2x,
- 	},
-+	{
-+		/* Alder Lake-M */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x54a6),
-+		.driver_data = (kernel_ulong_t)&intel_th_2x,
-+	},
- 	{
- 		/* Alder Lake CPU */
- 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x466f),
+Am I still missing patches from you Andy?
+
+I get:
+
+ make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc' allmodconfig
+ make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+ /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_i2c_setup':
+ /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:181:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   struct resource *res = intel_quark_i2c_res;
+                          ^~~~~~~~~~~~~~~~~~~
+ /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_gpio_setup':
+ /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:203:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   struct resource *res = intel_quark_gpio_res;
+                          ^~~~~~~~~~~~~~~~~~~~
+
+Link to the build (see: build.log):
+
+  https://builds.tuxbuild.com/1rAMovpd041jvsjfQ538kW3nvYK/
+
 -- 
-2.30.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
