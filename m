@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7737635F9A8
+	by mail.lfdr.de (Postfix) with ESMTP id C257635F9A9
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349570AbhDNRR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234029AbhDNRR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:17:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8715C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:17:04 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 18so24658052edx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=adirat-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=rFkkjxqHpWb5oS2G5iwZaP+zKzf4ZbCevn2f+ZXYmBQ=;
-        b=XDPQzlWAmTGGDU0UUms3P6TvEyasewv9bVvRbyQsLQllL6bIh+ShaUDY3kLUc+ANmV
-         kKdJZnhuZez1381X4UWFyINleqoxjjUhOBTN5cncba0mz/disFhLJk/exy/ZwCYCUZ3x
-         JddJAdlkp/RwxxuNkIVzKITJaQOxOLDK7YIalTx6qPnyapvomvN1fsC76VNaZkZv8ndt
-         YEDYbpYSiWdqIPRK9R5l1/YNi6GCDz6i4Pkm6xBfneHtNAfmIRQNv417yLx3IBz2H783
-         5i/kdnMNw3IiDrsHP347RV7IowGyq6bExbb7VubQL3H7lN/CXYpDS4bzySMO+3nLrNVf
-         N3kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=rFkkjxqHpWb5oS2G5iwZaP+zKzf4ZbCevn2f+ZXYmBQ=;
-        b=R1GylovKeosYAE8sJ7VBMik4LqJJImCdCHJkf2rGqY5cUlILjT57MzPAUIWy5QVaY3
-         Wg98p1rT0bSukz9uQ7w7HIUK36QM/445mi9rb1PCNxDFDlZwDkSWcAFIoeyF4OsJASyY
-         kgFIufWjH6xvPVg05rMCShl5EKeLshcz4BcVEPENpguh7lX5m6913MYvUkQ3RX10ofGf
-         pCX8n3NrEZ9i1LEwJt8e0trYbXDG5YxLXG640wSkgu0YvgKTJJcl6xCTGjhrvrQ6v/fa
-         nejSXDvzEPpjGILQuW/KuzXaQsMvwef79pcP85o0BKHI1QOyXsWiLzqzb+ZalP1wAOQ0
-         Fijg==
-X-Gm-Message-State: AOAM533qfGJfcquJl07sOF5bKocx/FNSuBPauerCi6roocbAw9J7qTAx
-        U7KHuGVv5c7ukR8SZwU9PSW1zJxCTwdsGEitfNs=
-X-Google-Smtp-Source: ABdhPJxPS4Z3wTzfaWJwh+M5g6HZt1gMnX7j4nwwg8Rteb6I1kI1rWraEiYgKObVNIiY4j/Exqhijw==
-X-Received: by 2002:aa7:d341:: with SMTP id m1mr41865073edr.120.1618420623380;
-        Wed, 14 Apr 2021 10:17:03 -0700 (PDT)
-Received: from ryzen9 ([79.119.97.29])
-        by smtp.gmail.com with ESMTPSA id g25sm141343edp.95.2021.04.14.10.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 10:17:02 -0700 (PDT)
-From:   Ioan-Adrian Ratiu <adi@adirat.com>
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        Alessandro Grassi <alessandro@aggro.it>,
-        986561@bugs.debian.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Bug#986561: linux: Regression in drivers/hid/hid-dr.c causing
- horizontal D-pad to malfunction on SNES joystick
-In-Reply-To: <YHb2Dt24465WcN1r@eldamar.lan>
-References: <161779964431.889220.2857033195611862828.reportbug@malacoda>
- <YHb2Dt24465WcN1r@eldamar.lan>
-Date:   Wed, 14 Apr 2021 20:17:01 +0300
-Message-ID: <87o8eg946q.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
+        id S233670AbhDNRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:18:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:59278 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233753AbhDNRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:18:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CF5811B3;
+        Wed, 14 Apr 2021 10:17:45 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E0033F73B;
+        Wed, 14 Apr 2021 10:17:43 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
+        yu.c.chen@intel.com
+Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
+In-Reply-To: <20210414052151.GB21236@xsang-OptiPlex-9020>
+References: <20210414052151.GB21236@xsang-OptiPlex-9020>
+Date:   Wed, 14 Apr 2021 18:17:38 +0100
+Message-ID: <87im4on5u5.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, 14 Apr 2021, Salvatore Bonaccorso <carnil@debian.org> 
-wrote:
-> Hi Ioan-Adrian, 
-> 
-> On Wed, Apr 07, 2021 at 02:47:24PM +0200, Alessandro Grassi 
-> wrote: 
->> Source: linux Severity: normal Tags: upstream X-Debbugs-Cc: 
->> alessandro@aggro.it  Greetings,  I am encountering the issue 
->> described in this thread[1], using a gamepad identified as 
->> "DragonRise" with USB ID 0079:0011.   The joypad works as 
->> intended except for the D-pad: up and down are detected in 
->> jstest (though misinterpreted: the input graph shows the points 
->> in the left up/down corners instead of the center), the left 
->> and right buttons are completely ignored.   Running 
->> 'input-events' shows events 0/127 and 255/127 on up and down 
->> respectively, nothing at all on left and right.   I was able to 
->> identify that the misbehaviour was caused by this commit[2] on 
->> the kernel source tree. To determine this I have rebuilt the 
->> Debian kernel using hid-dr.c from the previous commit[3] and 
->> loaded hid-dr.ko manually, with which the gamepad worked as 
->> intended. I have replaced the file again with the one from the 
->> breaking commit iself ([2]) and the behaviour was again broken. 
->> Furthermore, to confirm that that was the breaking commit, I 
->> have commented line 315 (the input mapping one in the struct) 
->> from the current Debian source tree and rebuilt it, the joypad 
->> works as it should.   Regards, Alessandro  [1]: 
->> https://retropie.org.uk/forum/topic/25657/controler-issue-no-left-and-right-not-working-at-all 
->> [2]: 
->> https://github.com/torvalds/linux/commit/e15944099870f374ca7efc62f98cf23ba272ef43 
->> [3]: 
->> https://github.com/torvalds/linux/commit/313726cad3b68039c8e4dcad5a2840a0d375678c 
-> 
-> A user in Debian reported that e15944099870 ("HID: hid-dr: add 
-> input mapping for axis selection") introduced a regression, 
-> described above. 
-> 
-> Does this ring some bell to you? 
-
-Unfortunately no and I do not have the HW to test anymore.
-
-It is possible that change introduced a regression on newer 
-"DragonRise" gamepads and maybe that mapping logic needs to be a 
-bit more complex, depending on the HW differences.
-
-Sorry I can't be more helpful,
-Adrian
-
+On 14/04/21 13:21, kernel test robot wrote:
+> Greeting,
 >
-> Regards,
-> Salvatore
+> FYI, we noticed a -13.8% regression of stress-ng.vm-segv.ops_per_sec due to commit:
+>
+>
+> commit: 38ac256d1c3e6b5155071ed7ba87db50a40a4b58 ("[PATCH v5 1/3] sched/fair: Ignore percpu threads for imbalance pulls")
+> url: https://github.com/0day-ci/linux/commits/Valentin-Schneider/sched-fair-load-balance-vs-capacity-margins/20210408-060830
+> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 0a2b65c03e9b47493e1442bf9c84badc60d9bffb
+>
+> in testcase: stress-ng
+> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
+> with following parameters:
+>
+>       nr_threads: 10%
+>       disk: 1HDD
+>       testtime: 60s
+>       fs: ext4
+>       class: os
+>       test: vm-segv
+>       cpufreq_governor: performance
+>       ucode: 0x5003006
+>
+>
+
+That's almost exactly the same result as [1], which is somewhat annoying
+for me because I wasn't able to reproduce those results back then. Save
+from scrounging the exact same machine to try this out, I'm not sure what's
+the best way forward. I guess I can re-run the workload on whatever
+machines I have and try to spot any potentially problematic pattern in the
+trace...
+
+[1]: http://lore.kernel.org/r/20210223023004.GB25487@xsang-OptiPlex-9020
