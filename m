@@ -2,158 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C8035F659
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E7C35F65F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349834AbhDNOmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:42:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:57390 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232380AbhDNOmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:42:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6939BED1;
-        Wed, 14 Apr 2021 07:41:50 -0700 (PDT)
-Received: from [10.57.47.202] (unknown [10.57.47.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A2F23F694;
-        Wed, 14 Apr 2021 07:41:48 -0700 (PDT)
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-To:     coresight@lists.linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
-Date:   Wed, 14 Apr 2021 17:41:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1351809AbhDNOmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:42:19 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:28636 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349875AbhDNOmS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:42:18 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-186-m3nor2MZPjeBIWMoTKeI3A-1; Wed, 14 Apr 2021 15:41:53 +0100
+X-MC-Unique: m3nor2MZPjeBIWMoTKeI3A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 15:41:52 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 14 Apr 2021 15:41:52 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tom Talpey' <tom@talpey.com>, Jason Gunthorpe <jgg@nvidia.com>
+CC:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        "Jack Wang" <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        "Michael Guralnik" <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "Santosh Shilimkar" <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: RE: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Thread-Topic: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Thread-Index: AQHXLWixzqpV3HG00U+6H5w8s2gjs6qtuZCggAZdLuKAAAS+kA==
+Date:   Wed, 14 Apr 2021 14:41:52 +0000
+Message-ID: <c2318ee1464a4d1c8439699cb0652d12@AcuMS.aculab.com>
+References: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+ <20210406114952.GH7405@nvidia.com>
+ <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+ <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
+ <4b02d1b2-be0e-0d1d-7ac3-38d32e44e77e@talpey.com>
+ <1FA38618-E245-4C53-BF49-6688CA93C660@oracle.com>
+ <7b9e7d9c-13d7-0d18-23b4-0d94409c7741@talpey.com>
+ <f71b24433f4540f0a13133111a59dab8@AcuMS.aculab.com>
+ <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
+ <7deadc67-650c-ea15-722b-a1d77d38faba@talpey.com>
+ <20210412224843.GQ7405@nvidia.com>
+ <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
+In-Reply-To: <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogVG9tIFRhbHBleQ0KPiBTZW50OiAxNCBBcHJpbCAyMDIxIDE1OjE2DQo+IA0KPiBPbiA0
+LzEyLzIwMjEgNjo0OCBQTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiA+IE9uIE1vbiwgQXBy
+IDEyLCAyMDIxIGF0IDA0OjIwOjQ3UE0gLTA0MDAsIFRvbSBUYWxwZXkgd3JvdGU6DQo+ID4NCj4g
+Pj4gU28gdGhlIGlzc3VlIGlzIG9ubHkgaW4gdGVzdGluZyBhbGwgdGhlIHByb3ZpZGVycyBhbmQg
+cGxhdGZvcm1zLA0KPiA+PiB0byBiZSBzdXJlIHRoaXMgbmV3IGJlaGF2aW9yIGlzbid0IHRpY2ts
+aW5nIGFueXRoaW5nIHRoYXQgd2VudA0KPiA+PiB1bm5vdGljZWQgYWxsIGFsb25nLCBiZWNhdXNl
+IG5vIFJETUEgcHJvdmlkZXIgZXZlciBpc3N1ZWQgUk8uDQo+ID4NCj4gPiBUaGUgbWx4NSBldGhl
+cm5ldCBkcml2ZXIgaGFzIHJ1biBpbiBSTyBtb2RlIGZvciBhIGxvbmcgdGltZSwgYW5kIGl0DQo+
+ID4gb3BlcmF0ZXMgaW4gYmFzaWNhbGx5IHRoZSBzYW1lIHdheSBhcyBSRE1BLiBUaGUgaXNzdWVz
+IHdpdGggSGFzd2VsbA0KPiA+IGhhdmUgYmVlbiB3b3JrZWQgb3V0IHRoZXJlIGFscmVhZHkuDQo+
+ID4NCj4gPiBUaGUgb25seSBvcGVuIHF1ZXN0aW9uIGlzIGlmIHRoZSBVTFBzIGhhdmUgZXJyb3Jz
+IGluIHRoZWlyDQo+ID4gaW1wbGVtZW50YXRpb24sIHdoaWNoIEkgZG9uJ3QgdGhpbmsgd2UgY2Fu
+IGZpbmQgb3V0IHVudGlsIHdlIGFwcGx5DQo+ID4gdGhpcyBzZXJpZXMgYW5kIHBlb3BsZSBzdGFy
+dCBydW5uaW5nIHRoZWlyIHRlc3RzIGFnZ3Jlc3NpdmVseS4NCj4gDQo+IEkgYWdyZWUgdGhhdCB0
+aGUgY29yZSBSTyBzdXBwb3J0IHNob3VsZCBnbyBpbi4gQnV0IHR1cm5pbmcgaXQgb24NCj4gYnkg
+ZGVmYXVsdCBmb3IgYSBVTFAgc2hvdWxkIGJlIHRoZSBkZWNpc2lvbiBvZiBlYWNoIFVMUCBtYWlu
+dGFpbmVyLg0KPiBJdCdzIGEgaHVnZSByaXNrIHRvIHNoaWZ0IGFsbCB0aGUgc3RvcmFnZSBkcml2
+ZXJzIG92ZXJuaWdodC4gSG93DQo+IGRvIHlvdSBwcm9wb3NlIHRvIGVuc3VyZSB0aGUgYWdncmVz
+c2l2ZSB0ZXN0aW5nIGhhcHBlbnM/DQo+IA0KPiBPbmUgdGhpbmcgdGhhdCB3b3JyaWVzIG1lIGlz
+IHRoZSBwYXRjaDAyIG9uLWJ5LWRlZmF1bHQgZm9yIHRoZSBkbWFfbGtleS4NCj4gVGhlcmUncyBu
+byB3YXkgZm9yIGEgVUxQIHRvIHByZXZlbnQgSUJfQUNDRVNTX1JFTEFYRURfT1JERVJJTkcNCj4g
+ZnJvbSBiZWluZyBzZXQgaW4gX19pYl9hbGxvY19wZCgpLg0KDQpXaGF0IGlzIGEgVUxQIGluIHRo
+aXMgY29udGV4dD8NCg0KSSd2ZSBwcmVzdW1lZCB0aGF0IHRoaXMgaXMgYWxsIGFib3V0IGdldHRp
+bmcgUENJZSB0YXJnZXRzIChpZSBjYXJkcykNCnRvIHNldCB0aGUgUk8gKHJlbGF4ZWQgb3JkZXJp
+bmcpIGJpdCBpbiBzb21lIG9mIHRoZSB3cml0ZSBUTFAgdGhleQ0KZ2VuZXJhdGUgZm9yIHdyaXRp
+bmcgdG8gaG9zdCBtZW1vcnk/DQoNClNvIHdoYXRldmVyIGRyaXZlciBpbml0aWFsaXNlcyB0aGUg
+dGFyZ2V0IG5lZWRzIHRvIGNvbmZpZ3VyZSB3aGF0ZXZlcg0KdGFyZ2V0LXNwZWNpZmljIHJlZ2lz
+dGVyIGVuYWJsZXMgdGhlIFJPIHRyYW5zZmVycyB0aGVtc2VsdmVzLg0KDQpBZnRlciB0aGF0IHRo
+ZXJlIGNvdWxkIGJlIGZsYWdzIGluIHRoZSBQQ0llIGNvbmZpZyBzcGFjZSBvZiB0aGUgdGFyZ2V0
+DQphbmQgYW55IGJyaWRnZXMgdGhhdCBjbGVhciB0aGUgUk8gZmxhZy4NCg0KVGhlcmUgY291bGQg
+YWxzbyBiZSBmbGFncyBpbiB0aGUgYnJpZGdlcyBhbmQgcm9vdCBjb21wbGV4IHRvIGlnbm9yZQ0K
+dGhlIFJPIGZsYWcgZXZlbiBpZiBpdCBpcyBzZXQuDQoNClRoZW4gdGhlIExpbnV4IGtlcm5lbCBj
+YW4gaGF2ZSBvcHRpb24ocykgdG8gdGVsbCB0aGUgZHJpdmVyIG5vdA0KdG8gZW5hYmxlIFJPIC0g
+ZXZlbiB0aG91Z2ggdGhlIGRyaXZlciBiZWxpZXZlcyBpdCBzaG91bGQgYWxsIHdvcmsuDQpUaGlz
+IGNvdWxkIGJlIGEgc2luZ2xlIGdsb2JhbCBmbGFnLCBvciBmaW4tZ3JhaW5lZCBpbiBzb21lIHdh
+eS4NCg0KU28gd2hhdCBleGFjdGx5IGlzIHRoaXMgcGF0Y2ggc2VyaWVzIGRvaW5nPw0KDQoJRGF2
+aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
+IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
+ODYgKFdhbGVzKQ0K
 
-For this change, I also tried removing the setting of PERF_SAMPLE_TIME in cs_etm__synth_events(). In theory, this would remove the sorting when opening the file, but the change doesn't affect when the built-in events are saved to the inject file. Resulting in events like MMAP and COMM with timestamps, but the synthesised events without. This results in the same issue of the synthesised events appearing before the COMM and MMAP events. If it was possible to somehow tell perf to remove timestamps from built-in events, removing PERF_SAMPLE_TIME would probably be the right solution, because we don't set sample.time.
-
-For Arm v8.4 we will have the kernel time in the etm timestamps, so an if can be added to switch between this behaviour and the next (more correct) one depending on the hardware. 
-
-On the subject of timestamps, but not related to this change, some combinations of timestamp options aren't working. For example:
-
-    perf record -e cs_etm/time,@tmc_etr0/u --per-thread
-or  perf record -e cs_etm/@tmc_etr0/u --timestamp --per-thread
-
-These don't work because of the assumption that etm->timeless_decoding == --per-thread
-and kernel timestamps enabled (/time/ or --timestamp) == etm timestamps enabled (/timestamp/), which isn't necessarily true.
-
-This can be made to work with a few code changes for cs_etm/time,timestamp/u --per-thread, but cs_etm/time/u --per-thread could be a bit more work. Changes involved would be using "per_cpu_mmaps" in some places instead of etm->timeless_decoding, and also setting etm->timeless_decoding based on whether there are any etm timestamps, not kernel ones. Although to search for any etm timestamp would involve a full decode ahead of time which might not be feasible (or maybe just checking the options, although that's not how it's done in cs_etm__is_timeless_decoding() currently).
-
-Or, we could force /time/ and /timestamp/ options to always be enabled together in the record stage. 
-
-
-Thanks
-James
-
-On 14/04/2021 17:39, James Clark wrote:
-> The following attribute is set when synthesising samples in
-> timed decoding mode:
-> 
->     attr.sample_type |= PERF_SAMPLE_TIME;
-> 
-> This results in new samples that appear to have timestamps but
-> because we don't assign any timestamps to the samples, when the
-> resulting inject file is opened again, the synthesised samples
-> will be on the wrong side of the MMAP or COMM events.
-> 
-> For example this results in the samples being associated with
-> the perf binary, rather than the target of the record:
-> 
->     perf record -e cs_etm/@tmc_etr0/u top
->     perf inject -i perf.data -o perf.inject --itrace=i100il
->     perf report -i perf.inject
-> 
-> Where 'Command' == perf should show as 'top':
-> 
->     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
->     # ........  .......  ....................  ......................  ......................  ..................
->     #
->         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
-> 
-> If the perf.data file is opened directly with perf, without the
-> inject step, then this already works correctly because the
-> events are synthesised after the COMM and MMAP events and
-> no second sorting happens. Re-sorting only happens when opening
-> the perf.inject file for the second time so timestamps are
-> needed.
-> 
-> Using the timestamp from the AUX record mirrors the current
-> behaviour when opening directly with perf, because the events
-> are generated on the call to cs_etm__process_queues().
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Co-developed-by: Al Grant <al.grant@arm.com>
-> Signed-off-by: Al Grant <al.grant@arm.com>
-> ---
->  tools/perf/util/cs-etm.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index c25da2ffa8f3..d0fa9dce47f1 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
->  	u8 sample_instructions;
->  
->  	int num_cpu;
-> +	u64 latest_kernel_timestamp;
->  	u32 auxtrace_type;
->  	u64 branches_sample_type;
->  	u64 branches_id;
-> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
->  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
->  	event->sample.header.size = sizeof(struct perf_event_header);
->  
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->  	sample.ip = addr;
->  	sample.pid = tidq->pid;
->  	sample.tid = tidq->tid;
-> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
->  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
->  	event->sample.header.size = sizeof(struct perf_event_header);
->  
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->  	sample.ip = ip;
->  	sample.pid = tidq->pid;
->  	sample.tid = tidq->tid;
-> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
->  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
->  		return cs_etm__process_switch_cpu_wide(etm, event);
->  
-> -	if (!etm->timeless_decoding &&
-> -	    event->header.type == PERF_RECORD_AUX)
-> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
-> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
->  		return cs_etm__process_queues(etm);
-> +	}
->  
->  	return 0;
->  }
-> 
