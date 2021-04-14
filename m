@@ -2,153 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3781135EAA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B9335EA8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhDNCMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:12:16 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:43602 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229769AbhDNCMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:12:12 -0400
-X-Greylist: delayed 912 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Apr 2021 22:12:09 EDT
-Received: from BJHW-Mail-Ex10.internal.baidu.com (unknown [10.127.64.33])
-        by Forcepoint Email with ESMTPS id C3A7721787E3E2184197;
-        Wed, 14 Apr 2021 09:56:32 +0800 (CST)
-Received: from BJHW-MAIL-EX17.internal.baidu.com (10.127.64.19) by
- BJHW-Mail-Ex10.internal.baidu.com (10.127.64.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 14 Apr 2021 09:56:32 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
- BJHW-MAIL-EX17.internal.baidu.com (10.127.64.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Wed, 14 Apr 2021 09:56:32 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
- BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2176.009;
- Wed, 14 Apr 2021 09:56:32 +0800
-From:   "Chu,Kaiping" <chukaiping@baidu.com>
-To:     David Rientjes <rientjes@google.com>
-CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUgY29t?=
- =?gb2312?Q?paction_order_configurable?=
-Thread-Topic: [PATCH] mm/compaction:let proactive compaction order
- configurable
-Thread-Index: AQHXL8lZcaEIrraHzUCH0C8T1IQ/zaqzP1Vw
-Date:   Wed, 14 Apr 2021 01:56:32 +0000
-Message-ID: <af3e414730584a9fadf06483ad020dff@baidu.com>
-References: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
- <e57c2db3-11f-4d1b-b5cc-8a9e112af34@google.com>
-In-Reply-To: <e57c2db3-11f-4d1b-b5cc-8a9e112af34@google.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.194.34]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S239438AbhDNCBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhDNCBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 22:01:49 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE33C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:01:27 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id y32so13278435pga.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=KdzJGtbQKMM6WovwoQdkjGUf5Ve7opMXsRdxXEuGt3o=;
+        b=aLI/RIROmUMi3ydioh2HN1kPYgyUQiUlXEBvMHyruO5qAy6N5m2O081qsEqViXebn8
+         mtoUBuWkBGyj8c7eyh/iJOtZzrBfQiq2tb1mpjka66qO4C6xCHNyngpEIfG8bcewB17+
+         2lGeYWO6FfDybSD+5UcHlvn+SVtLyMJRq0rVQmmPgjliU43e/wk+eMdbWzbCNr2MQgP+
+         VoYAT+b+h8x17t4uavo5BxEZVjMTdf6/mXLbLZDFQ/IVHnJyHZqlPqN7FHQeGpcs7kSC
+         hJtZm7hzP1v23afXdJAuUnOVOi/XIXu5J3zkjBG02zq+JGAS7KW3ZqY0ihXHoTf0dGEB
+         JoIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=KdzJGtbQKMM6WovwoQdkjGUf5Ve7opMXsRdxXEuGt3o=;
+        b=fqXM3pW/UZB8oq83MGowVZP9/HauKmBsqA5xG7HYgmjOzMcHSjAaIluODCmeRkklUT
+         a/ULduzMeMsBNiDBSiLWrDKjot0UX+5e+e5Lg+PTz7U1Z8NXUpA12T/H6us/PpocDM4S
+         kCOBYjraJxfo0DcQgfSCYzSCH92ejTGU5uhYe1KuR9E8tku1hMczPKhiNWJojTceaHXQ
+         5rnp/R2kId4cmL770a/rm3jG8YtfnpbhguVuoHq6/GMs9cPhvMbz36M7/Opj+aNSxP7M
+         F5ZWumTvxPqcRQXuKgw59WNUjUMc61CACiBAfjBCnRFKrB6cYrXJk9YzUt0QVSfNUhE9
+         WFpw==
+X-Gm-Message-State: AOAM531CaYl+kRfEGwzireKu7HHvNyiMcpqlQpKfDXNQ9gFM3VzkLUBo
+        o3wK0TGLGadonOZAYHZ8h/uSKtElYsY=
+X-Google-Smtp-Source: ABdhPJyjMTVIofFw6yPVpUTmU6h8P2cKeEpO2QgNpRYonh3f5mixQfrTzTRCIRkV9uYgNRuKaM1Ixw==
+X-Received: by 2002:a63:30c1:: with SMTP id w184mr34535722pgw.230.1618365686734;
+        Tue, 13 Apr 2021 19:01:26 -0700 (PDT)
+Received: from localhost (193-116-90-211.tpgi.com.au. [193.116.90.211])
+        by smtp.gmail.com with ESMTPSA id i18sm5039212pfq.168.2021.04.13.19.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 19:01:26 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 12:01:21 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when
+ possible
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Paul Mackerras <paulus@samba.org>
+References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
+        <20210412215428.GM26583@gate.crashing.org>
+        <ecb1b1a5-ae92-e8a3-6490-26341edfbccb@csgroup.eu>
+        <20210413215803.GT26583@gate.crashing.org>
+In-Reply-To: <20210413215803.GT26583@gate.crashing.org>
 MIME-Version: 1.0
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex10_2021-04-14 09:56:32:776
+Message-Id: <1618365589.67fxh7cot9.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmllbnRqZXMsDQpJbiBvdXIgY2FzZSB3ZSBkb24ndCBjYXJlIGFib3V0IHRoZSBhbGxvY2F0
-aW9uIGRlbGF5IG9mIHRyYW5zcGFyZW50IGh1Z2UgcGFnZXMsIGJ1dCB0aGUgcHJvYWN0aXZlIGNv
-bXBhY3Rpb24gaXMgcmVhbGx5IHVzZWZ1bCB0byB1cy4gSWYgbm8gcHJvYWN0aXZlIGNvbXBhY3Rp
-b24gY3VycmVudGx5IGtlcm5lbCB3aWxsIGRvIG1lbW9yeSBjb21wYWN0aW9uIG9ubHkgd2hlbiB0
-aGUgYWxsb2NhdGlvbiBvZiBoaWdoIG9yZGVyIG1lbW9yeSB3aWxsIGZhaWwsIHdoaWxlIHRoaXMg
-aXMgdG9vIGxhdGUuIFdoZW4gdGhlIG1hY2hpbmUgaXMgaW4gaGVhdnkgbG9hZCwgbWFueSBwcm9j
-ZXNzZXMgbWF5YmUgdHJpZ2dlciBjb21wYWN0aW9uIGF0IHRoZSBzYW1lIHRpbWUsIHRoaXMgd2ls
-bCBsZWFkIHRvIHNlcmlvdXMgbG9jayBjb250ZW50aW9uLCBhbmQgd2lsbCBtYWtlIHRoZSBtYWNo
-aW5lIHZlcnkgc2xvd2x5Lg0KRG8gcHJvYWN0aXZlIGNvbXBhY3Rpb24gZnJvbSB0aW1lIHRvIHRp
-bWUgd2lsbCBrZWVwIHRoZSBmcmFnbWVudCBpbmRleCBhdCBsb3cgbGV2ZWwsIGFuZCByZWR1Y2Ug
-c29mdCBsb2NrdXAgcmF0ZS4NClRoZSBvcmRlciBvZiAzIG9yIDQgaXMgb25seSBhbiBleHBlcmll
-bmNlIHZhbHVlLCB3ZSBtYXkgY2hhbmdlIGl0IGFjY29yZGluZyB0byBtYWNoaW5lIGxvYWQuDQoN
-CkJSLA0KQ2h1IEthaXBpbmcNCg0KLS0tLS3Tyrz+1K28/i0tLS0tDQq3orz+yMs6IERhdmlkIFJp
-ZW50amVzIDxyaWVudGplc0Bnb29nbGUuY29tPiANCreiy83KsbzkOiAyMDIxxOo01MIxM8jVIDI6
-MjYNCsrVvP7IyzogQ2h1LEthaXBpbmcgPGNodWthaXBpbmdAYmFpZHUuY29tPg0Ks63LzTogbWNn
-cm9mQGtlcm5lbC5vcmc7IGtlZXNjb29rQGNocm9taXVtLm9yZzsgeXphaWtpbkBnb29nbGUuY29t
-OyBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtbW1Aa3ZhY2sub3JnDQrW98zi
-OiBSZTogW1BBVENIXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUgY29tcGFjdGlvbiBvcmRl
-ciBjb25maWd1cmFibGUNCg0KT24gTW9uLCAxMiBBcHIgMjAyMSwgY2h1a2FpcGluZyB3cm90ZToN
-Cg0KPiBDdXJyZW50bHkgdGhlIHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVyIGlzIGZpeGVkIHRv
-IA0KPiBDT01QQUNUSU9OX0hQQUdFX09SREVSKDkpLCBpdCdzIE9LIGluIG1vc3QgbWFjaGluZXMg
-d2l0aCBsb3RzIG9mIA0KPiBub3JtYWwgNEtCIG1lbW9yeSwgYnV0IGl0J3MgdG9vIGhpZ2ggZm9y
-IHRoZSBtYWNoaW5lcyB3aXRoIHNtYWxsIA0KPiBub3JtYWwgbWVtb3J5LCBmb3IgZXhhbXBsZSB0
-aGUgbWFjaGluZXMgd2l0aCBtb3N0IG1lbW9yeSBjb25maWd1cmVkIGFzIA0KPiAxR0IgaHVnZXRs
-YmZzIGh1Z2UgcGFnZXMuIEluIHRoZXNlIG1hY2hpbmVzIHRoZSBtYXggb3JkZXIgb2YgZnJlZSAN
-Cj4gcGFnZXMgaXMgb2Z0ZW4gYmVsb3cgOSwgYW5kIGl0J3MgYWx3YXlzIGJlbG93IDkgZXZlbiB3
-aXRoIGhhcmQgDQo+IGNvbXBhY3Rpb24uIFRoaXMgd2lsbCBsZWFkIHRvIHByb2FjdGl2ZSBjb21w
-YWN0aW9uIGJlIHRyaWdnZXJlZCB2ZXJ5IA0KPiBmcmVxdWVudGx5LiBJbiB0aGVzZSBtYWNoaW5l
-cyB3ZSBvbmx5IGNhcmUgYWJvdXQgb3JkZXIgb2YgMyBvciA0Lg0KPiBUaGlzIHBhdGNoIGV4cG9y
-dCB0aGUgb2RlciB0byBwcm9jIGFuZCBsZXQgaXQgY29uZmlndXJhYmxlIGJ5IHVzZXIsIA0KPiBh
-bmQgdGhlIGRlZmF1bHQgdmFsdWUgaXMgc3RpbGwgQ09NUEFDVElPTl9IUEFHRV9PUkRFUi4NCj4g
-DQoNCkknbSBjdXJpb3VzIHdoeSB5b3UgaGF2ZSBwcm9hY3RpdmUgY29tcGFjdGlvbiBlbmFibGVk
-IGF0IGFsbCBpbiB0aGlzIGNhc2U/DQoNClRoZSBvcmRlci05IHRocmVzaG9sZCBpcyBsaWtlbHkg
-dG8gb3B0aW1pemUgZm9yIGh1Z2VwYWdlIGF2YWlsYWJpbGl0eSwgYnV0IGluIHlvdXIgc2V0dXAg
-aXQgYXBwZWFycyB0aGF0J3Mgbm90IGEgZ29hbC4NCg0KU28gd2hhdCBiZW5lZml0IGRvZXMgcHJv
-YWN0aXZlIGNvbXBhY3Rpb24gcHJvdmlkZSBpZiBvbmx5IGRvbmUgZm9yIG9yZGVyLTMgb3Igb3Jk
-ZXItND8NCg0KPiBTaWduZWQtb2ZmLWJ5OiBjaHVrYWlwaW5nIDxjaHVrYWlwaW5nQGJhaWR1LmNv
-bT4NCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCB8ICAgIDEgKw0KPiAga2Vy
-bmVsL3N5c2N0bC5jICAgICAgICAgICAgfCAgIDEwICsrKysrKysrKysNCj4gIG1tL2NvbXBhY3Rp
-b24uYyAgICAgICAgICAgIHwgICAgNyArKysrLS0tDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDE1IGlu
-c2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC9jb21wYWN0aW9uLmggYi9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCANCj4gaW5kZXgg
-ZWQ0MDcwZS4uMTUxY2NkMSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9jb21wYWN0aW9u
-LmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9jb21wYWN0aW9uLmgNCj4gQEAgLTgzLDYgKzgzLDcg
-QEAgc3RhdGljIGlubGluZSB1bnNpZ25lZCBsb25nIGNvbXBhY3RfZ2FwKHVuc2lnbmVkIGludCAN
-Cj4gb3JkZXIpICAjaWZkZWYgQ09ORklHX0NPTVBBQ1RJT04gIGV4dGVybiBpbnQgc3lzY3RsX2Nv
-bXBhY3RfbWVtb3J5OyAgDQo+IGV4dGVybiB1bnNpZ25lZCBpbnQgc3lzY3RsX2NvbXBhY3Rpb25f
-cHJvYWN0aXZlbmVzczsNCj4gK2V4dGVybiB1bnNpZ25lZCBpbnQgc3lzY3RsX2NvbXBhY3Rpb25f
-b3JkZXI7DQo+ICBleHRlcm4gaW50IHN5c2N0bF9jb21wYWN0aW9uX2hhbmRsZXIoc3RydWN0IGN0
-bF90YWJsZSAqdGFibGUsIGludCB3cml0ZSwNCj4gIAkJCXZvaWQgKmJ1ZmZlciwgc2l6ZV90ICps
-ZW5ndGgsIGxvZmZfdCAqcHBvcyk7ICBleHRlcm4gaW50IA0KPiBzeXNjdGxfZXh0ZnJhZ190aHJl
-c2hvbGQ7IGRpZmYgLS1naXQgYS9rZXJuZWwvc3lzY3RsLmMgDQo+IGIva2VybmVsL3N5c2N0bC5j
-IGluZGV4IDYyZmJkMDkuLjI3N2RmMzEgMTAwNjQ0DQo+IC0tLSBhL2tlcm5lbC9zeXNjdGwuYw0K
-PiArKysgYi9rZXJuZWwvc3lzY3RsLmMNCj4gQEAgLTExNCw2ICsxMTQsNyBAQA0KPiAgc3RhdGlj
-IGludCBfX21heWJlX3VudXNlZCBuZWdfb25lID0gLTE7ICBzdGF0aWMgaW50IF9fbWF5YmVfdW51
-c2VkIA0KPiB0d28gPSAyOyAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBmb3VyID0gNDsNCj4g
-K3N0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgdGVuID0gMTA7DQo+ICBzdGF0aWMgdW5zaWduZWQg
-bG9uZyB6ZXJvX3VsOw0KPiAgc3RhdGljIHVuc2lnbmVkIGxvbmcgb25lX3VsID0gMTsNCj4gIHN0
-YXRpYyB1bnNpZ25lZCBsb25nIGxvbmdfbWF4ID0gTE9OR19NQVg7IEBAIC0yODcxLDYgKzI4NzIs
-MTUgQEAgaW50IA0KPiBwcm9jX2RvX3N0YXRpY19rZXkoc3RydWN0IGN0bF90YWJsZSAqdGFibGUs
-IGludCB3cml0ZSwNCj4gIAkJLmV4dHJhMgkJPSAmb25lX2h1bmRyZWQsDQo+ICAJfSwNCj4gIAl7
-DQo+ICsJCS5wcm9jbmFtZSAgICAgICA9ICJjb21wYWN0aW9uX29yZGVyIiwNCj4gKwkJLmRhdGEg
-ICAgICAgICAgID0gJnN5c2N0bF9jb21wYWN0aW9uX29yZGVyLA0KPiArCQkubWF4bGVuICAgICAg
-ICAgPSBzaXplb2Yoc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIpLA0KPiArCQkubW9kZSAgICAgICAg
-ICAgPSAwNjQ0LA0KPiArCQkucHJvY19oYW5kbGVyICAgPSBwcm9jX2RvaW50dmVjX21pbm1heCwN
-Cj4gKwkJLmV4dHJhMSAgICAgICAgID0gU1lTQ1RMX1pFUk8sDQo+ICsJCS5leHRyYTIgICAgICAg
-ICA9ICZ0ZW4sDQo+ICsJfSwNCj4gKwl7DQo+ICAJCS5wcm9jbmFtZQk9ICJleHRmcmFnX3RocmVz
-aG9sZCIsDQo+ICAJCS5kYXRhCQk9ICZzeXNjdGxfZXh0ZnJhZ190aHJlc2hvbGQsDQo+ICAJCS5t
-YXhsZW4JCT0gc2l6ZW9mKGludCksDQo+IGRpZmYgLS1naXQgYS9tbS9jb21wYWN0aW9uLmMgYi9t
-bS9jb21wYWN0aW9uLmMgaW5kZXggZTA0ZjQ0Ny4uYTE5Mjk5NiANCj4gMTAwNjQ0DQo+IC0tLSBh
-L21tL2NvbXBhY3Rpb24uYw0KPiArKysgYi9tbS9jb21wYWN0aW9uLmMNCj4gQEAgLTE5MjUsMTYg
-KzE5MjUsMTYgQEAgc3RhdGljIGJvb2wga3N3YXBkX2lzX3J1bm5pbmcocGdfZGF0YV90IA0KPiAq
-cGdkYXQpDQo+ICANCj4gIC8qDQo+ICAgKiBBIHpvbmUncyBmcmFnbWVudGF0aW9uIHNjb3JlIGlz
-IHRoZSBleHRlcm5hbCBmcmFnbWVudGF0aW9uIHdydCB0byANCj4gdGhlDQo+IC0gKiBDT01QQUNU
-SU9OX0hQQUdFX09SREVSLiBJdCByZXR1cm5zIGEgdmFsdWUgaW4gdGhlIHJhbmdlIFswLCAxMDBd
-Lg0KPiArICogc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIuIEl0IHJldHVybnMgYSB2YWx1ZSBpbiB0
-aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ICAgKi8NCj4gIHN0YXRpYyB1bnNpZ25lZCBpbnQgZnJhZ21l
-bnRhdGlvbl9zY29yZV96b25lKHN0cnVjdCB6b25lICp6b25lKSAgew0KPiAtCXJldHVybiBleHRm
-cmFnX2Zvcl9vcmRlcih6b25lLCBDT01QQUNUSU9OX0hQQUdFX09SREVSKTsNCj4gKwlyZXR1cm4g
-ZXh0ZnJhZ19mb3Jfb3JkZXIoem9uZSwgc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIpOw0KPiAgfQ0K
-PiAgDQo+ICAvKg0KPiAgICogQSB3ZWlnaHRlZCB6b25lJ3MgZnJhZ21lbnRhdGlvbiBzY29yZSBp
-cyB0aGUgZXh0ZXJuYWwgDQo+IGZyYWdtZW50YXRpb24NCj4gLSAqIHdydCB0byB0aGUgQ09NUEFD
-VElPTl9IUEFHRV9PUkRFUiBzY2FsZWQgYnkgdGhlIHpvbmUncyBzaXplLiBJdA0KPiArICogd3J0
-IHRvIHRoZSBzeXNjdGxfY29tcGFjdGlvbl9vcmRlciBzY2FsZWQgYnkgdGhlIHpvbmUncyBzaXpl
-LiBJdA0KPiAgICogcmV0dXJucyBhIHZhbHVlIGluIHRoZSByYW5nZSBbMCwgMTAwXS4NCj4gICAq
-DQo+ICAgKiBUaGUgc2NhbGluZyBmYWN0b3IgZW5zdXJlcyB0aGF0IHByb2FjdGl2ZSBjb21wYWN0
-aW9uIGZvY3VzZXMgb24gDQo+IGxhcmdlciBAQCAtMjY2Niw2ICsyNjY2LDcgQEAgc3RhdGljIHZv
-aWQgY29tcGFjdF9ub2Rlcyh2b2lkKQ0KPiAgICogYmFja2dyb3VuZC4gSXQgdGFrZXMgdmFsdWVz
-IGluIHRoZSByYW5nZSBbMCwgMTAwXS4NCj4gICAqLw0KPiAgdW5zaWduZWQgaW50IF9fcmVhZF9t
-b3N0bHkgc3lzY3RsX2NvbXBhY3Rpb25fcHJvYWN0aXZlbmVzcyA9IDIwOw0KPiArdW5zaWduZWQg
-aW50IF9fcmVhZF9tb3N0bHkgc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIgPSANCj4gK0NPTVBBQ1RJ
-T05fSFBBR0VfT1JERVI7DQo+ICANCj4gIC8qDQo+ICAgKiBUaGlzIGlzIHRoZSBlbnRyeSBwb2lu
-dCBmb3IgY29tcGFjdGluZyBhbGwgbm9kZXMgdmlhDQo+IC0tDQo+IDEuNy4xDQo+IA0KPiANCg==
+Excerpts from Segher Boessenkool's message of April 14, 2021 7:58 am:
+> On Tue, Apr 13, 2021 at 06:33:19PM +0200, Christophe Leroy wrote:
+>> Le 12/04/2021 =C3=A0 23:54, Segher Boessenkool a =C3=A9crit=C2=A0:
+>> >On Thu, Apr 08, 2021 at 03:33:44PM +0000, Christophe Leroy wrote:
+>> >>For clear bits, on 32 bits 'rlwinm' can be used instead or 'andc' for
+>> >>when all bits to be cleared are consecutive.
+>> >
+>> >Also on 64-bits, as long as both the top and bottom bits are in the low
+>> >32-bit half (for 32 bit mode, it can wrap as well).
+>>=20
+>> Yes. But here we are talking about clearing a few bits, all other ones m=
+ust=20
+>> remain unchanged. An rlwinm on PPC64 will always clear the upper part,=20
+>> which is unlikely what we want.
+>=20
+> No, it does not.  It takes the low 32 bits of the source reg, duplicated
+> to the top half as well, then rotated, then ANDed with the mask (which
+> can wrap around).  This isn't very often very useful, but :-)
+>=20
+> (One useful operation is splatting 32 bits to both halves of a 64-bit
+> register, which is just rlwinm d,s,0,1,0).
+>=20
+> If you only look at the low 32 bits, it does exactly the same as on
+> 32-bit implementations.
+>=20
+>> >>For the time being only
+>> >>handle the single bit case, which we detect by checking whether the
+>> >>mask is a power of two.
+>> >
+>> >You could look at rs6000_is_valid_mask in GCC:
+>> >   <https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/rs6000=
+/rs6000.c;h=3D48b8efd732b251c059628096314848305deb0c0b;hb=3DHEAD#l11148>
+>> >used by rs6000_is_valid_and_mask immediately after it.  You probably
+>> >want to allow only rlwinm in your case, and please note this checks if
+>> >something is a valid mask, not the inverse of a valid mask (as you
+>> >want here).
+>>=20
+>> This check looks more complex than what I need. It is used for both rlw.=
+..=20
+>> and rld..., and it calculates the operants.  The only thing I need is to=
+=20
+>> validate the mask.
+>=20
+> It has to do exactly the same thing for rlwinm as for all 64-bit
+> variants (rldicl, rldicr, rldic).
+>=20
+> One side effect of calculation the bit positions with exact_log2 is that
+> that returns negative if the argument is not a power of two.
+>=20
+> Here is a simpler way, that handles all cases:  input in "u32 val":
+>=20
+> 	if (!val)
+> 		return nonono;
+> 	if (val & 1)
+> 		val =3D ~val;	// make the mask non-wrapping
+> 	val +=3D val & -val;	// adding the low set bit should result in
+> 				// at most one bit set
+> 	if (!(val & (val - 1)))
+> 		return okidoki_all_good;
+>=20
+>> I found a way: By anding the mask with the complement of itself rotated =
+by=20
+>> left bits to 1, we identify the transitions from 0 to 1. If the result i=
+s a=20
+>> power of 2, it means there's only one transition so the mask is as expec=
+ted.
+>=20
+> That does not handle all cases (it misses all bits set at least).  Which
+> isn't all that interesting of course, but is a valid mask (but won't
+> clear any bits, so not too interesting for your specific case :-) )
+
+Would be nice if we could let the compiler deal with it all...
+
+static inline unsigned long lr(unsigned long *mem)
+{
+        unsigned long val;
+
+        /*
+         * This doesn't clobber memory but want to avoid memory operations
+         * moving ahead of it
+         */
+        asm volatile("ldarx     %0, %y1" : "=3Dr"(val) : "Z"(*mem) : "memor=
+y");
+
+        return val;
+}
+
+static inline bool stc(unsigned long *mem, unsigned long val)
+{
+        /*
+         * This doesn't really clobber memory but same as above, also can't
+         * specify output in asm goto.
+         */
+        asm volatile goto(
+                "stdcx. %0, %y1 \n\t"
+                "bne-   %l[fail]        \n\t"
+                : : "r"(val), "Z"(*mem) : "cr0", "memory" : fail);
+
+        return true;
+fail: __attribute__((cold))
+        return false;
+}
+
+static inline void atomic_add(unsigned long *mem, unsigned long val)
+{
+        unsigned long old, new;
+
+        do {
+                old =3D lr(mem);
+                new =3D old + val;
+        } while (unlikely(!stc(mem, new)));
+}
+
