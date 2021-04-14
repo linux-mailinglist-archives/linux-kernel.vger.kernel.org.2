@@ -2,78 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C257635F9A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B6435F9AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhDNRSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:18:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:59278 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233753AbhDNRSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:18:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CF5811B3;
-        Wed, 14 Apr 2021 10:17:45 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E0033F73B;
-        Wed, 14 Apr 2021 10:17:43 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     0day robot <lkp@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
-        yu.c.chen@intel.com
-Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
-In-Reply-To: <20210414052151.GB21236@xsang-OptiPlex-9020>
-References: <20210414052151.GB21236@xsang-OptiPlex-9020>
-Date:   Wed, 14 Apr 2021 18:17:38 +0100
-Message-ID: <87im4on5u5.mognet@arm.com>
+        id S1349715AbhDNRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:20:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54090 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232359AbhDNRUG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:20:06 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618420784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jJtu21/9foT+QNiwv3C3gjPou7M8V3FS1zdC8cROlQo=;
+        b=K+tRj/Nx3upTDelOmH/DdHFlb2DXXGnU/l4qDG3EMuq4NNgZFN0LL/1OhrotxXHg8MjCcE
+        T2ILNN3buva3TEos4phTCQlSAGANbK/Xv8EbRGwHSdn5C4FN48FWjMRNuMoO+Pnwq2gSRZ
+        aPu+yISC1ofcwkH23MrCalB4ooHhvIkiF0up6ptFhK9WJovMSKfUX+NqSC9S03Sc19IfdD
+        JFxYFJUlhe3W8d3iykBuzW+tfU38swZDT/j8IVTAyOvmjx95Vr3C6YSsWR63tfNh8WM3N0
+        Ai2wbLwqAN/aT5tjaQYKt5Hp5yxMlIli9ujr70abv6LxiXF7nNn1GaK9VjC5Hg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618420784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jJtu21/9foT+QNiwv3C3gjPou7M8V3FS1zdC8cROlQo=;
+        b=Ab/uSholFzHpg20UZMZoIq3f53CtBdvcYSuzlj0MEt3GWp5TkAeci0sdmkvOZWa71nkIFD
+        k1lS52SXXectlEBQ==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>
+Subject: Re: [PATCH v2] hrtimer: avoid retrigger_next_event IPI
+In-Reply-To: <20210413170431.GA16190@fuller.cnet>
+References: <20210407135301.GA16985@fuller.cnet> <87o8en4k9a.ffs@nanos.tec.linutronix.de> <20210409165146.GA40118@fuller.cnet> <87lf9q4lue.ffs@nanos.tec.linutronix.de> <20210413170431.GA16190@fuller.cnet>
+Date:   Wed, 14 Apr 2021 19:19:43 +0200
+Message-ID: <874kg8wzps.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/21 13:21, kernel test robot wrote:
-> Greeting,
->
-> FYI, we noticed a -13.8% regression of stress-ng.vm-segv.ops_per_sec due to commit:
->
->
-> commit: 38ac256d1c3e6b5155071ed7ba87db50a40a4b58 ("[PATCH v5 1/3] sched/fair: Ignore percpu threads for imbalance pulls")
-> url: https://github.com/0day-ci/linux/commits/Valentin-Schneider/sched-fair-load-balance-vs-capacity-margins/20210408-060830
-> base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 0a2b65c03e9b47493e1442bf9c84badc60d9bffb
->
-> in testcase: stress-ng
-> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> with following parameters:
->
->       nr_threads: 10%
->       disk: 1HDD
->       testtime: 60s
->       fs: ext4
->       class: os
->       test: vm-segv
->       cpufreq_governor: performance
->       ucode: 0x5003006
->
->
+Marcelo,
 
-That's almost exactly the same result as [1], which is somewhat annoying
-for me because I wasn't able to reproduce those results back then. Save
-from scrounging the exact same machine to try this out, I'm not sure what's
-the best way forward. I guess I can re-run the workload on whatever
-machines I have and try to spot any potentially problematic pattern in the
-trace...
+On Tue, Apr 13 2021 at 14:04, Marcelo Tosatti wrote:
+> Setting the realtime clock triggers an IPI to all CPUs to reprogram
+> hrtimers.
 
-[1]: http://lore.kernel.org/r/20210223023004.GB25487@xsang-OptiPlex-9020
+s/hrtimers/clock event device/
+
+> However, only realtime and TAI clocks have their offsets updated
+> (and therefore potentially require a reprogram).
+>
+> Check if it only has monotonic active timers, and in that case
+
+boottime != monotonic 
+
+> update the realtime and TAI base offsets remotely, skipping the IPI.
+
+Something like this perhaps:
+
+Instead of sending an IPI unconditionally, check each per CPU hrtimer base
+whether it has active timers in the CLOCK_REALTIME and CLOCK_TAI bases. If
+that's not the case, update the realtime and TAI base offsets remotely and
+skip the IPI. This ensures that any subsequently armed timers on
+CLOCK_REALTIME and CLOCK_TAI are evaluated with the correct offsets.
+
+Hmm?
+
+> +#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME)|		\
+
+Missing space between ) and |
+
+> +			 (1U << HRTIMER_BASE_REALTIME_SOFT)|	\
+> +			 (1U << HRTIMER_BASE_TAI)|		\
+> +			 (1U << HRTIMER_BASE_TAI_SOFT))
+> +
+> +static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
+> +{
+> +	unsigned int active = 0;
+> +
+> +	if (cpu_base->softirq_activated)
+> +		return true;
+> +
+> +	active = cpu_base->active_bases & HRTIMER_ACTIVE_SOFT;
+> +
+> +	active = active | (cpu_base->active_bases & HRTIMER_ACTIVE_HARD);
+> +
+> +	if ((active & CLOCK_SET_BASES) == 0)
+> +		return false;
+> +
+> +	return true;
+
+That's a pretty elaborate way of writing:
+
+       return (cpu_base->active_bases & CLOCK_SET_BASES) != 0;
+
+> +}
+> +
+>  /*
+>   * Clock realtime was set
+>   *
+> @@ -885,9 +907,31 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+>  void clock_was_set(void)
+>  {
+>  #ifdef CONFIG_HIGH_RES_TIMERS
+> -	/* Retrigger the CPU local events everywhere */
+> -	on_each_cpu(retrigger_next_event, NULL, 1);
+> +	cpumask_var_t mask;
+> +	int cpu;
+> +
+> +	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
+> +		on_each_cpu(retrigger_next_event, NULL, 1);
+> +		goto set_timerfd;
+> +	}
+> +
+> +	/* Avoid interrupting CPUs if possible */
+> +	preempt_disable();
+
+That preempt disable is only required around the function call, for the
+loop cpus_read_lock() is sufficient.
+
+> +	for_each_online_cpu(cpu) {
+> +		unsigned long flags;
+> +		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
+> +
+> +		raw_spin_lock_irqsave(&cpu_base->lock, flags);
+> +		if (need_reprogram_timer(cpu_base))
+> +			cpumask_set_cpu(cpu, mask);
+> +		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
+> +	}
+> +
+> +	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
+> +	preempt_enable();
+> +	free_cpumask_var(mask);
+>  #endif
+> +set_timerfd:
+
+My brain compiler tells me that with CONFIG_HIGH_RES_TIMERS=n a real
+compiler will emit a warning about a defined, but unused label....
+
+>  	timerfd_clock_was_set();
+>  }
+
+Thanks,
+
+        tglx
