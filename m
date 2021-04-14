@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0623A35EF4E
+	by mail.lfdr.de (Postfix) with ESMTP id E908C35EF51
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349983AbhDNIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349976AbhDNIO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:14:29 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA72C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:14:06 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z1so22593834edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=60MgZkgdupIaq4FjE6yGCb3EuEbMNyi/9UEBc0w0nvM=;
-        b=H96J3fXR0tGnZfOtZM2BuIKNda6VczXUgKYfOdRvfQe+lEge5tZpP2SaCBEuqxA3rT
-         R0uIfxI6va1nia/Zv5/8OmjRzApNQY+7AdGpjdLMDe+SBbUdKu6sysOf008B6PBfA6Ua
-         Zv500YeaTJ+onlB8bARq+fRHM5UZ5VTr9M+7u0gmR+J+SumG7sgJqgAJ/09+Ezr02tYy
-         35W6wvDG0z3KnuKQCxCWPd4abtj4CIJtmmAkJ7qP3RWa+mg5cMeFIkDlno/Vvg22SXoQ
-         l+nYWsWZh79AwcyBRRD1aAnWRdsxBQP2bEWtnNFCsZGBE7kmS1la82AqsbN3s0rjZXO7
-         VnBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=60MgZkgdupIaq4FjE6yGCb3EuEbMNyi/9UEBc0w0nvM=;
-        b=M53N+9y7hjJEXk/cQuiS0gmhb/dK1IJXC+grOug1uRuwqvheuRz55ECucpcFG4Zw/d
-         TYEhYtoSdSX/ud3KdZy8Wl3GUM08pqMPEuPYQOl4kbOpKiA8VX/L3ttV+hMVXajGTmao
-         VOQZGLNf3XkMi5PZqTZpOUWpYXvK+zFKBkyxv4YCXmz/alQgFrn+lU9N6YDBhkRyDihE
-         NheVPD56k8vrS1631oJncz0A6kJkRrVn4QeLaCX6U3FPH1BnUSSq2Sk9HovE46FlmGat
-         57kYF90d/ibeRV24CCKdhHW1e0g3aSUEebC5Vrr6z3ETm/Bbri+nzFEMryOHLj97RCCR
-         lScQ==
-X-Gm-Message-State: AOAM533F70NqRmf2qKPcXI/6hyYyghzXft+3Btjlg3Y/M1v2DxRECGDd
-        QRgNGLip0PNBbVpzm2Vo5bhWfQ==
-X-Google-Smtp-Source: ABdhPJz/W4uA9Mok7bPfdy6oPcWnQcZgojvLSJtHh2dDav1IjtMz1LGIHMZCfkf6m9sXzwtxHqJnLg==
-X-Received: by 2002:a05:6402:94b:: with SMTP id h11mr33648969edz.180.1618388045582;
-        Wed, 14 Apr 2021 01:14:05 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id e12sm11240556edv.11.2021.04.14.01.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:14:05 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 09:14:03 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 2/2] i2c: designware: Get rid of legacy platform data
-Message-ID: <20210414081403.GD4869@dell>
-References: <20210331154851.8456-1-andriy.shevchenko@linux.intel.com>
- <20210331154851.8456-3-andriy.shevchenko@linux.intel.com>
- <20210406104927.GA3532@ninjato>
+        id S1349961AbhDNIOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348355AbhDNIOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:14:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA6D261222;
+        Wed, 14 Apr 2021 08:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618388067;
+        bh=eyJvos0Ftnqm8tRluK8Dm6HkcCy4KxqjxYjQabzApjU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ohPsIJtmb1nHNgk4p25enpaiSwEL5mVy8OlZyhSkK3KzL0pRHNAXNIPMy9acIS/nC
+         pJ8Uue1PJNxrrvC7YgoCOG8eJmKX0vpK576Jk6msgzgqhXY5stgDtPyF6TZAB4b8D/
+         FJQfygBdfM8cVnOSCxkJRX1tI7BhkoSmzGDxrJoRb4NYPWU3rD41exsEgOK2uo7QSG
+         BFy1g8Tgu6Ha+xyIVoQpjj5FswPUWNbKlYRApmldfX/7n3c43YKzUPwloMQbVh8r/v
+         8kwafZ/bRYlLkgsvQ71oKtbzWOvGega/jCmegWZZkJ4GJQMC4FvooKfa2X2BD6//0V
+         m+VSVezor1f9g==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>, caleb@connolly.tech,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sm8150: add i2c nodes
+In-Reply-To: <20210408161953.26298-3-caleb@connolly.tech>
+References: <20210408161953.26298-3-caleb@connolly.tech>
+Date:   Wed, 14 Apr 2021 11:14:19 +0300
+Message-ID: <874kg9p9k4.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210406104927.GA3532@ninjato>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 06 Apr 2021, Wolfram Sang wrote:
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, Mar 31, 2021 at 06:48:51PM +0300, Andy Shevchenko wrote:
-> > Platform data is a legacy interface to supply device properties
-> > to the driver. In this case we don't have anymore in-kernel users
-> > for it. Just remove it for good.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Acked-by: Wolfram Sang <wsa@kernel.org>
+Caleb Connolly <caleb@connolly.tech> writes:
 
-Do you require an immutable branch?
+> Tested on the OnePlus 7 Pro (including DMA).
+>
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> Reviewed-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Tested on Microsoft Surface Duo (DTS will be sent after -rc1)
+
+Tested-by: Felipe Balbi <balbi@kernel.org>
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmB2pFsRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYJng//f6Mm+/zbynbZedGD4wKL8FFeaOV82DhY
+jNyxofB6UgLAUU2nj6hDGFJ+1Tt/+roi1SPfePBlh5xJkUW3osUZ9uHfBO1EdRHS
+NZ/0U2BVy6Rufzrf8xtXml8WBBnOHp3Qnh0TTyRR0dIPiCLlBFQnsNVs6qD2Kd4k
+1VCmSKE6r6RQecZUubED7wmPL2VuoewRuInuF4ICvO8lLS6GXLohI5vysDD96nK/
+AaWw/4hCnIwU6tXgKnl6GfZIRrfwI5G2rRyBJH9wr2/HhmRuKOuyX2y89AycNpBH
+J4lv2r8hALd0+wp9HkfctDEcT1TDuPWwm/A7x2b6XH5Uv6DPiqoo+1F5LMgzY4t9
+waDfdjtCXHa9Kd4OY8w5AnMdfbhmK/dHpRE6SS9D8K/UGeA8GHRlS9WKMyleC6HY
+DPtJqjJO6K9ma/TJKKONsGFr66nn6T1JzglMAcQ3RVP4gEbljfr6i3KPpGjHQ8ik
+aWL8azCk6qapafkWCJpaXeEKuCwj4NjY22wC1JfYSqXUWomll1V1qO17eQuAP80b
+ELZw8cqi4Pki70YjY2QWHFnMjw4ZuHrNN8m9YxgBWKPA82aNaejuJOoglOkgzuOT
+h10ZK7i9+nb4JIr1NZmrQf2dwKdR3HdeOPKEXCkq26W3q2tMe1kZVRR0YwWYaEy7
+v0sQpjls5OI=
+=vuvI
+-----END PGP SIGNATURE-----
+--=-=-=--
