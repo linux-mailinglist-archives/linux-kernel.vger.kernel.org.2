@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0CF35FBC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AA935FBC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhDNTm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:42:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27758 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234993AbhDNTmY (ORCPT
+        id S1347795AbhDNTmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:42:36 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:34198 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235066AbhDNTme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:42:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618429322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yabYzh4cj6LIMrN9G97xSgLjHLEzr2USN5EFIehOUuc=;
-        b=XWu/W9zNsUch7eKaivqBiatkVfxuZ4Hj2o/JCfOYLI0qXiv1b69UqMb0zMgIBHX+rvmOy+
-        1TfC7pqssKcjYI+9JEbZ5BYfUNGJ5Mo6q9fph0nDspfTDzcI2mdq9Zm8NGfkyZToE8Y3pv
-        d4y1vCKO+0nhThxZQ9aAj7BebV6qzDw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-8tbCLW4hMAWToOB92QjbSw-1; Wed, 14 Apr 2021 15:42:00 -0400
-X-MC-Unique: 8tbCLW4hMAWToOB92QjbSw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D495A1008060;
-        Wed, 14 Apr 2021 19:41:54 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 21B355D6BA;
-        Wed, 14 Apr 2021 19:41:33 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 21:41:32 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     brouer@redhat.com, Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Wed, 14 Apr 2021 15:42:34 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lWlOV-0004hX-Kt; Wed, 14 Apr 2021 15:41:47 -0400
+Message-ID: <db2f6f81d30945eb296c4dcc9824b1ad353cc777.camel@surriel.com>
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+From:   Rik van Riel <riel@surriel.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        SeongJae Park <sj38.park@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
         Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210414214132.74f721dd@carbon>
-In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <20210409223801.104657-3-mcroce@linux.microsoft.com>
-        <20210410154824.GZ2531743@casper.infradead.org>
-        <YHHPbQm2pn2ysth0@enceladus>
-        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-        <YHHuE7g73mZNrMV4@enceladus>
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Kernel Page Reclaim v2 <page-reclaim@google.com>
+Date:   Wed, 14 Apr 2021 15:41:46 -0400
+In-Reply-To: <CAOUHufaRXbDHbEro1uE1CHvpWB4U67iroj0hT8CkUEOSAddzYQ@mail.gmail.com>
+References: <20210413075155.32652-1-sjpark@amazon.de>
+         <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+         <20210413231436.GF63242@dread.disaster.area>
+         <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
+         <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
+         <20210414155130.GU3762101@tassilo.jf.intel.com>
+         <e0ad1b48a1ad0b6d3a1e79129f397ddb6c32fe35.camel@surriel.com>
+         <CAOUHufaRXbDHbEro1uE1CHvpWB4U67iroj0hT8CkUEOSAddzYQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-d7+pZEnMCdzHhTJvagz0"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 21:27:31 +0300
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
 
-> On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
->
-> > On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
-> > <ilias.apalodimas@linaro.org> wrote:  
-> > >
-> > > Hi Matthew
-> > >
-> > > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:  
-> > > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:  
-> > > > > This is needed by the page_pool to avoid recycling a page not allocated
-> > > > > via page_pool.  
-> > > >
-> > > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> > > > be if you use page->_mapcount (ie mapping it to userspace).  
-> > >
-> > > Interesting!
-> > > Please keep in mind this was written ~2018 and was stale on my branches for
-> > > quite some time.  So back then I did try to use PageType, but had not free
-> > > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-> > > be much much cleaner.  Should we go and define a new PG_pagepool?
-> > >
-> > 
-> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > can not be used.  
-> 
-> Yes it can, since it's going to be used as your default allocator for
-> payloads, which might end up on an SKB.
+--=-d7+pZEnMCdzHhTJvagz0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure we want or should "allow" page_pool be used for TCP RX
-zerocopy.
-For several reasons.
+On Wed, 2021-04-14 at 13:14 -0600, Yu Zhao wrote:
+> On Wed, Apr 14, 2021 at 9:59 AM Rik van Riel <riel@surriel.com>
+> wrote:
+> > On Wed, 2021-04-14 at 08:51 -0700, Andi Kleen wrote:
+> > > >    2) It will not scan PTE tables under non-leaf PMD entries
+> > > > that
+> > > > do not
+> > > >       have the accessed bit set, when
+> > > >       CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG=3Dy.
+> > >=20
+> > > This assumes  that workloads have reasonable locality. Could
+> > > there
+> > > be a worst case where only one or two pages in each PTE are used,
+> > > so this PTE skipping trick doesn't work?
+> >=20
+> > Databases with large shared memory segments shared between
+> > many processes come to mind as a real-world example of a
+> > worst case scenario.
+>=20
+> Well, I don't think you two are talking about the same thing. Andi
+> was
+> focusing on sparsity. Your example seems to be about sharing, i.e.,
+> ihgh mapcount. Of course both can happen at the same time, as I
+> tested
+> here:
+> https://lore.kernel.org/linux-mm/YHFuL%2FDdtiml4biw@google.com/#t
+>=20
+> I'm skeptical that shared memory used by databases is that sparse,
+> i.e., one page per PTE table, because the extremely low locality
+> would
+> heavily penalize their performance. But my knowledge in databases is
+> close to zero. So feel free to enlighten me or just ignore what I
+> said.
 
-(1) This implies mapping these pages page to userspace, which AFAIK
-means using page->mapping and page->index members (right?).
+A database may have a 200GB shared memory segment,
+and a worker task that gets spun up to handle a
+query might access only 1MB of memory to answer
+that query.
 
-(2) It feels wrong (security wise) to keep the DMA-mapping (for the
-device) and also map this page into userspace.
+That memory could be from anywhere inside the
+shared memory segment. Maybe some of the accesses
+are more dense, and others more sparse, who knows?
 
-(3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-zerocopy will bump the refcnt, which means the page_pool will not
-recycle the page when it see the elevated refcnt (it will instead
-release its DMA-mapping).
+A lot of the locality
+will depend on how memory
+space inside the shared memory segment is reclaimed
+and recycled inside the database.
 
-(4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-page->private for tricks.  And our patch [3/5] use page->private for
-storing xdp_mem_info.
+--=20
+All Rights Reversed.
 
-IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-call page_pool_release_page() to release its DMA-mapping.
+--=-d7+pZEnMCdzHhTJvagz0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
+-----BEGIN PGP SIGNATURE-----
 
-> > [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/  
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB3RXsACgkQznnekoTE
+3oOQKgf/cHYeGYL+vEGo2ujR7QJ1IO0KzWQoVv9TjWcfYctiTXl+jzYf/fuyBLqh
+Hk+VhgI+jxkQljbjg7Tha183gQRlykdjrghGI8ojQFkNIy1sNRH/JYAeiuqcw/zZ
+3YUJhxS7WFczgI7KQ5+iLXFTQebr+UQE/LwfS+FW9gTYVg8OwizIfeQdCowQoiAt
+qDbaVKQRClFyGYL7m3FKa84SodEXFf0JIY+qPrTqOWMwH93liO0rQhMNJIcw9XBx
+Vd6Ns18YXOCk2tUlv9lVMVBPM+cM7PxFDPjgaZf+L5N2B7z/H2A4UsijUn1ZDe9U
+RzcIQ9rtP3HF0tD/lwW4C0pnBLAwLg==
+=BeNw
+-----END PGP SIGNATURE-----
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+--=-d7+pZEnMCdzHhTJvagz0--
 
