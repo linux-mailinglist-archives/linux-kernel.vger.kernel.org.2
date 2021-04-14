@@ -2,191 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6657035F487
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F5F35F48E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351125AbhDNNIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:08:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351122AbhDNNIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:08:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618405699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MB7Ot9cl8Zex6E9GFGi3H9hwXIbZ5RJWUQJFa9P2goI=;
-        b=Zbjg9ovG+d9/9vGV8RaTM7HKCscUH32eZ6VaEugqu4QcDn5B1Udm2ck1qlsW5RLkunawcD
-        iLyy34jFd1Myy0LuNutj9Pkj3jPjj1aSPYJRMZLeuNh1Lz0CqiuAwjyjwOnmu01hUC/lQY
-        ke+wLmHPhEQ2B+lVdaOzGCbmYCh4VjQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B14ACAFC1;
-        Wed, 14 Apr 2021 13:08:19 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 15:08:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v4 08/13] mm/mempolicy: Create a page allocator for policy
-Message-ID: <YHbpQ2xpTVChY718@dhcp22.suse.cz>
-References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
- <1615952410-36895-9-git-send-email-feng.tang@intel.com>
+        id S1351143AbhDNNKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351149AbhDNNKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:10:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89E7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OxdMAk1LmEqVZwUMYasw5A7Q8hQ+IixVw/lGbUnnOh0=; b=sbxUAR1Ou6zsfaam6Yge0tIitq
+        WUZqtRbnE6R5XHVcG880KxETwVIsTvEHS/9EJ4RuB8KgS2NCFb74vtv7LLFOX5muyUB7y0PBtjrD+
+        uOsGjA33PLJukmCX8phq1CKCbb6xtqwTQAjLuOJIZlBH/LkLwjz860+HGdcFTaSoZRVRipRLMM116
+        WEpGCEz2gJGFDrrWua9F8wO1Xi5LhjVHCNviO+o4caKjdagtlFlkTQeNwVUvoobcBmCdElN4XFNvI
+        71tRGEzgEL0eW4wwERVBXTFJ65qo7aNjPl0uCAx9OyoK/0Op3nxNbCgmfXo7oqleltXqtPfoIKlDO
+        PKlyfuKA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWfFy-0078jp-Vr; Wed, 14 Apr 2021 13:08:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8071B30015A;
+        Wed, 14 Apr 2021 15:08:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4AAF02065A47D; Wed, 14 Apr 2021 15:08:34 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 15:08:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>
+Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
+Message-ID: <YHbpUtIWaaP1Qod1@hirez.programming.kicks-ass.net>
+References: <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
+ <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+ <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
+ <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+ <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
+ <YHbmXXvuG442ZDfN@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615952410-36895-9-git-send-email-feng.tang@intel.com>
+In-Reply-To: <YHbmXXvuG442ZDfN@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-03-21 11:40:05, Feng Tang wrote:
-> From: Ben Widawsky <ben.widawsky@intel.com>
-> 
-> Add a helper function which takes care of handling multiple preferred
-> nodes. It will be called by future patches that need to handle this,
-> specifically VMA based page allocation, and task based page allocation.
-> Huge pages don't quite fit the same pattern because they use different
-> underlying page allocation functions. This consumes the previous
-> interleave policy specific allocation function to make a one stop shop
-> for policy based allocation.
-> 
-> With this, MPOL_PREFERRED_MANY's semantic is more like MPOL_PREFERRED
-> that it will first try the preferred node/nodes, and fallback to all
-> other nodes when first try fails. Thanks to Michal Hocko for suggestions
-> on this.
-> 
-> For now, only interleaved policy will be used so there should be no
-> functional change yet. However, if bisection points to issues in the
-> next few commits, it was likely the fault of this patch.
+On Wed, Apr 14, 2021 at 02:55:57PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 14, 2021 at 08:39:33PM +0800, Guo Ren wrote:
 
-I am not sure this is helping much. Let's see in later patches but I
-would keep them separate and rather create a dedicated function for the
-new policy allocation mode.
+> > > + * It further assumes atomic_*_release() + atomic_*_acquire() is RCpc and hence
+> > > + * uses atomic_fetch_add() which is SC to create an RCsc lock.
+> 
+> This ^^^ then vvv
+> 
+> > > +static __always_inline void ticket_lock(arch_spinlock_t *lock)
+> > > +{
+> > > +       u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
+> > atomic_fetch_add_acquire ?
+> 
+> Then we must rely on the arch to implement RCsc atomics. And I for one
+> can never tell wth Risc-V actually does.
 
-> Similar functionality is offered via policy_node() and
-> policy_nodemask(). By themselves however, neither can achieve this
-> fallback style of sets of nodes.
-> 
-> [ Feng: for the first try, add NOWARN flag, and skip the direct reclaim
->   to speedup allocation in some case ]
-> 
-> Link: https://lore.kernel.org/r/20200630212517.308045-9-ben.widawsky@intel.com
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> ---
->  mm/mempolicy.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++------------
->  1 file changed, 52 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index d945f29..d21105b 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2187,22 +2187,60 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
->  	return ret;
->  }
->  
-> -/* Allocate a page in interleaved policy.
-> -   Own path because it needs to do special accounting. */
-> -static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
-> -					unsigned nid)
-> +/* Handle page allocation for all but interleaved policies */
-> +static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
-> +				       unsigned int order, int preferred_nid)
->  {
->  	struct page *page;
-> +	gfp_t gfp_mask = gfp;
->  
-> -	page = __alloc_pages(gfp, order, nid);
-> -	/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
-> -	if (!static_branch_likely(&vm_numa_stat_key))
-> +	if (pol->mode == MPOL_INTERLEAVE) {
-> +		page = __alloc_pages(gfp, order, preferred_nid);
-> +		/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
-> +		if (!static_branch_likely(&vm_numa_stat_key))
-> +			return page;
-> +		if (page && page_to_nid(page) == preferred_nid) {
-> +			preempt_disable();
-> +			__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
-> +			preempt_enable();
-> +		}
->  		return page;
-> -	if (page && page_to_nid(page) == nid) {
-> -		preempt_disable();
-> -		__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
-> -		preempt_enable();
->  	}
-> +
-> +	VM_BUG_ON(preferred_nid != NUMA_NO_NODE);
-> +
-> +	preferred_nid = numa_node_id();
-> +
-> +	/*
-> +	 * There is a two pass approach implemented here for
-> +	 * MPOL_PREFERRED_MANY. In the first pass we try the preferred nodes
-> +	 * but allow the allocation to fail. The below table explains how
-> +	 * this is achieved.
-> +	 *
-> +	 * | Policy                        | preferred nid | nodemask   |
-> +	 * |-------------------------------|---------------|------------|
-> +	 * | MPOL_DEFAULT                  | local         | NULL       |
-> +	 * | MPOL_PREFERRED                | best          | NULL       |
-> +	 * | MPOL_INTERLEAVE               | ERR           | ERR        |
-> +	 * | MPOL_BIND                     | local         | pol->nodes |
-> +	 * | MPOL_PREFERRED_MANY           | best          | pol->nodes |
-> +	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
-> +	 * +-------------------------------+---------------+------------+
-> +	 */
-> +	if (pol->mode == MPOL_PREFERRED_MANY) {
-> +		gfp_mask |=  __GFP_NOWARN;
-> +
-> +		/* Skip direct reclaim, as there will be a second try */
-> +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
-> +	}
-> +
-> +	page = __alloc_pages_nodemask(gfp_mask, order,
-> +				      policy_node(gfp, pol, preferred_nid),
-> +				      policy_nodemask(gfp, pol));
-> +
-> +	if (unlikely(!page && pol->mode == MPOL_PREFERRED_MANY))
-> +		page = __alloc_pages_nodemask(gfp, order, preferred_nid, NULL);
-> +
->  	return page;
->  }
->  
-> @@ -2244,8 +2282,8 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
->  		unsigned nid;
->  
->  		nid = interleave_nid(pol, vma, addr, PAGE_SHIFT + order);
-> +		page = alloc_pages_policy(pol, gfp, order, nid);
->  		mpol_cond_put(pol);
-> -		page = alloc_page_interleave(gfp, order, nid);
->  		goto out;
->  	}
->  
-> @@ -2329,7 +2367,8 @@ struct page *alloc_pages_current(gfp_t gfp, unsigned order)
->  	 * nor system default_policy
->  	 */
->  	if (pol->mode == MPOL_INTERLEAVE)
-> -		page = alloc_page_interleave(gfp, order, interleave_nodes(pol));
-> +		page = alloc_pages_policy(pol, gfp, order,
-> +					  interleave_nodes(pol));
->  	else
->  		page = __alloc_pages_nodemask(gfp, order,
->  				policy_node(gfp, pol, numa_node_id()),
-> -- 
-> 2.7.4
+Anyway, if we can mandate that atomic acquire/release is RCsc, then yes
+we can do that but then we also need:
 
--- 
-Michal Hocko
-SUSE Labs
+#define smp_mb__after_spinlock()	smp_mb__after_atomic()
+
+But currently atomic acquire/release is not RCsc (at the very least
+Power does RCtso -- and power gets to deal with any and all pain caused
+by that).
