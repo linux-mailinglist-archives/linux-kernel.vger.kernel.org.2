@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE0135FBE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523B535FBFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353507AbhDNTvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234955AbhDNTvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:51:08 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7953C061574;
-        Wed, 14 Apr 2021 12:50:46 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id v72so2750972ybe.11;
-        Wed, 14 Apr 2021 12:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KYlm7QJNdb4JnhGTMGRomUPh4aAvt7AdM3SQppwmFQM=;
-        b=NA/LNzHuNEZosNIqBZP0SH2adQEhB6bQguQXseEhYnkGVZyhZfztxieK1rL8LA1N7t
-         rkwrXGd47OGgEb9eAGDaG+lWxyiYDl25LYPH+5/sJ4/d8CaRbRNZZiceqEJGOMXRmIoy
-         br3Q1SsYOEcA1ZtnlLA9u9UDOvG8gNVPg5uiIxIGF/9d8hB2fvtgHGFqSTcx6m14E2CQ
-         +ilR3RNgJJa6QTzd2ZUSZfswKdiKvTxQ+7+OsDzbKhWT0NsbBN2h62erP8YMsuU3vzlJ
-         BCd+V14DEsHqX8ZynYp0lpP8YjZPnArk9Ycz4oZXc0eBK7NZzU8m4j4JX01sZpKOv7p9
-         +Zxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KYlm7QJNdb4JnhGTMGRomUPh4aAvt7AdM3SQppwmFQM=;
-        b=XhhVPh96delW1Q0ry4Bk5KQIF501dS11ui2aiJfPHAh5P9uawrhJgOwxZJfQDW++t8
-         3igSS07WuWJJM9ei9QFk0qy+/y5n31VT3jgL9ApM8R2HerR4Sezzzv2oByHE7JcL4Gyb
-         I5sJUIkyQtZqsdPx1LIs6naKD0AOpRbEwv94YGmKLu2Gjkdxst0PENx3b5L0U7G+bl5w
-         9zBjz7lhHqKge/MH3rHYMWF/6DeflM2xjawkGEX1VnPvuu0zTnkIIVbumPQmRAxLpG1Q
-         33d8UHfShMxHy4dr2nQ9j1heAG8j1SGTE8h6LNaeO55FiymLst3zAmZVks5DZt7UqDdn
-         /T1w==
-X-Gm-Message-State: AOAM5312e4JqsKsVrCLyy6O9Axm4jNOy6ia8QddIoxmcudchc5SBdufy
-        nHaeEJzBciyhcPQlyaUPV95hLsYTA90sIDAUZaA=
-X-Google-Smtp-Source: ABdhPJyc5WdBgAwpcNaT4ZnVDVccWaCGIXvnyziVT2JDu6RWbr+K0E9wplZIpWP5+MopFoA+ItsxBPpTnrjSy7xTFmE=
-X-Received: by 2002:a25:6803:: with SMTP id d3mr46864038ybc.422.1618429846183;
- Wed, 14 Apr 2021 12:50:46 -0700 (PDT)
+        id S1353514AbhDNTzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:55:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24033 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234221AbhDNTzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:55:04 -0400
+IronPort-SDR: YJXZP66igMd6NYI1XTDQ3+PnEpZqOTM7e0KSD7A77EU1vzbGGfzVha9S0Hbexmnc2qcYQuooCH
+ 0Ojy/xDkAedg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194746787"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="194746787"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:54:42 -0700
+IronPort-SDR: uIZik0HELf6Ho3DWaXwnW3kA6Ctv6iworPDgFeoiw1dnpyGBAWNEhcwykydtS0eKggA0Ft5qUW
+ +pbAFTtA8o+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="424883201"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 14 Apr 2021 12:54:38 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 36FC712A; Wed, 14 Apr 2021 22:54:54 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?UTF-8?q?Ga=C3=ABtan=20Andr=C3=A9?= <rvlander@gaetanandre.eu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Denis Ciocca <denis.ciocca@st.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v1 1/7] iio: accel: st_accel: Move platform data from header to C file
+Date:   Wed, 14 Apr 2021 22:54:48 +0300
+Message-Id: <20210414195454.84183-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-8-ojeda@kernel.org>
- <CAHk-=wiVY56LzwV_G075NEFwsdf-p7GOTy_cB7-UU9b=49rB1g@mail.gmail.com>
-In-Reply-To: <CAHk-=wiVY56LzwV_G075NEFwsdf-p7GOTy_cB7-UU9b=49rB1g@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 14 Apr 2021 21:50:35 +0200
-Message-ID: <CANiq72=VnWEdh2uuwH2JM6ZhrEVDiQisnNBQGX-qwPnTitcR=g@mail.gmail.com>
-Subject: Re: [PATCH 07/13] Rust: Kernel crate
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 9:31 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Again, excuse my lack of internal Rust knowledge, but when do these
-> end up being an issue?
->
-> If the Rust compiler ends up doing hidden allocations, and they then
-> cause panics, then one of the main *points* of Rustification is
-> entirely broken. That's 100% the opposite of being memory-safe at
-> build time.
+Platform data is solely used by one file. Don't share it with others.
 
-Of course! What happens here is that we use, for the moment, `alloc`,
-which is part of the Rust standard library. However, we will be
-customizing/rewriting `alloc` as needed to customize its types (things
-like `Box`, `Vec`, etc.) so that we can do things like pass allocation
-flags, ensure we always have fallible allocations, perhaps reuse some
-of the kernel data structures, etc.
+While at it, drop unneeded anymore __maybe_unused and fix kernel doc
+to avoid warning:
 
-Cheers,
-Miguel
+  st_accel_core.c:1079: error: Cannot parse struct or union!
+
+by converting to a simple comment. It is described at the declaration.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/iio/accel/st_accel.h      | 8 --------
+ drivers/iio/accel/st_accel_core.c | 5 +++++
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/iio/accel/st_accel.h b/drivers/iio/accel/st_accel.h
+index 5d356288e001..181ebe79c4eb 100644
+--- a/drivers/iio/accel/st_accel.h
++++ b/drivers/iio/accel/st_accel.h
+@@ -62,14 +62,6 @@ enum st_accel_type {
+ #define LIS2DE12_ACCEL_DEV_NAME		"lis2de12"
+ #define LIS2HH12_ACCEL_DEV_NAME		"lis2hh12"
+ 
+-/**
+-* struct st_sensors_platform_data - default accel platform data
+-* @drdy_int_pin: default accel DRDY is available on INT1 pin.
+-*/
+-static __maybe_unused const struct st_sensors_platform_data default_accel_pdata = {
+-	.drdy_int_pin = 1,
+-};
+-
+ const struct st_sensor_settings *st_accel_get_settings(const char *name);
+ int st_accel_common_probe(struct iio_dev *indio_dev);
+ void st_accel_common_remove(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
+index 43c50167d220..a1bd7e3b912e 100644
+--- a/drivers/iio/accel/st_accel_core.c
++++ b/drivers/iio/accel/st_accel_core.c
+@@ -983,6 +983,11 @@ static const struct st_sensor_settings st_accel_sensors_settings[] = {
+ 
+ };
+ 
++/* Default accel DRDY is available on INT1 pin */
++static const struct st_sensors_platform_data default_accel_pdata = {
++	.drdy_int_pin = 1,
++};
++
+ static int st_accel_read_raw(struct iio_dev *indio_dev,
+ 			struct iio_chan_spec const *ch, int *val,
+ 							int *val2, long mask)
+-- 
+2.30.2
+
