@@ -2,133 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA9D35F64F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8273235F64D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349738AbhDNOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:40:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:57334 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348349AbhDNOkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:40:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1875A11D4;
-        Wed, 14 Apr 2021 07:39:43 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.47.202])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 875223F694;
-        Wed, 14 Apr 2021 07:39:40 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to preserve ordering
-Date:   Wed, 14 Apr 2021 17:39:19 +0300
-Message-Id: <20210414143919.12605-2-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210414143919.12605-1-james.clark@arm.com>
-References: <20210414143919.12605-1-james.clark@arm.com>
+        id S1349151AbhDNOkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:40:05 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:61568
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233936AbhDNOjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:39:52 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AKyHtCaqWOi4LOXVnh17Oa/waV5rKeYIsi2QD?=
+ =?us-ascii?q?101hICF9WMqeisyogbAnxQb54QxhPE0ItNicNMC7Kk/02oVy5eAqV4uKfA6jg2?=
+ =?us-ascii?q?ewKZEn0I2K+VzdMgnf0sIY6qt6aah5D7TLfD1HpOL3+hOxHdpl4PTvysCVrNzT?=
+ =?us-ascii?q?xXtsUg1mApsIhztRMQqVHlZ7QwNLH/MCZfmhz/BarDmtc2l/VKqGL0QCNtKum/?=
+ =?us-ascii?q?T2jp78JTYJCxk7gTP+7w+A2frKVyKV2RoTSFp0rIsK+2KtqWPE2pk=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,222,1613430000"; 
+   d="scan'208";a="378655164"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 16:39:20 +0200
+Date:   Wed, 14 Apr 2021 16:39:20 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] Re: [PATCH 1/2] staging: media: atomisp: pci:
+ Correct identation in block of conditional statements in file
+ atomisp_v4l2.c
+In-Reply-To: <20210414143011.GV6021@kadam>
+Message-ID: <alpine.DEB.2.22.394.2104141638140.25259@hadrien>
+References: <cover.1618409028.git.alinesantanacordeiro@gmail.com> <0ef18a36d6905628fa596fd5e0a32fdb9c6a8ada.1618409028.git.alinesantanacordeiro@gmail.com> <20210414143011.GV6021@kadam>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following attribute is set when synthesising samples in
-timed decoding mode:
 
-    attr.sample_type |= PERF_SAMPLE_TIME;
 
-This results in new samples that appear to have timestamps but
-because we don't assign any timestamps to the samples, when the
-resulting inject file is opened again, the synthesised samples
-will be on the wrong side of the MMAP or COMM events.
+On Wed, 14 Apr 2021, Dan Carpenter wrote:
 
-For example this results in the samples being associated with
-the perf binary, rather than the target of the record:
+> On Wed, Apr 14, 2021 at 11:06:02AM -0300, Aline Santana Cordeiro wrote:
+> > Correct identation in block of conditional statements.
+> > The function "v4l2_device_unregister_subdev()" depends on
+> > the results of the macro function "list_for_each_entry_safe()".
+> >
+> > Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+> > ---
+> >  drivers/staging/media/atomisp/pci/atomisp_v4l2.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > index 0295e2e..6d853f4 100644
+> > --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> > @@ -1178,7 +1178,7 @@ static void atomisp_unregister_entities(struct atomisp_device *isp)
+> >  		atomisp_mipi_csi2_unregister_entities(&isp->csi2_port[i]);
+> >
+> >  	list_for_each_entry_safe(sd, next, &isp->v4l2_dev.subdevs, list)
+> > -	v4l2_device_unregister_subdev(sd);
+> > +		v4l2_device_unregister_subdev(sd);
+> >
+>
+> It's really more common to use curly braces for list_for_each() one
+> liners.
+>
+> 	list_for_each_entry_safe(sd, next, &isp->v4l2_dev.subdevs, list) {
+> 		v4l2_device_unregister_subdev(sd);
+> 	}
 
-    perf record -e cs_etm/@tmc_etr0/u top
-    perf inject -i perf.data -o perf.inject --itrace=i100il
-    perf report -i perf.inject
+A quick test with grep shows 4000 lines containing list_for_each that
+contain no {, out of 15000 lines containing list_for_each in all.
 
-Where 'Command' == perf should show as 'top':
+julia
 
-    # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
-    # ........  .......  ....................  ......................  ......................  ..................
-    #
-        31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
 
-If the perf.data file is opened directly with perf, without the
-inject step, then this already works correctly because the
-events are synthesised after the COMM and MMAP events and
-no second sorting happens. Re-sorting only happens when opening
-the perf.inject file for the second time so timestamps are
-needed.
-
-Using the timestamp from the AUX record mirrors the current
-behaviour when opening directly with perf, because the events
-are generated on the call to cs_etm__process_queues().
-
-Signed-off-by: James Clark <james.clark@arm.com>
-Co-developed-by: Al Grant <al.grant@arm.com>
-Signed-off-by: Al Grant <al.grant@arm.com>
----
- tools/perf/util/cs-etm.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index c25da2ffa8f3..d0fa9dce47f1 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
- 	u8 sample_instructions;
- 
- 	int num_cpu;
-+	u64 latest_kernel_timestamp;
- 	u32 auxtrace_type;
- 	u64 branches_sample_type;
- 	u64 branches_id;
-@@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
- 	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
- 	event->sample.header.size = sizeof(struct perf_event_header);
- 
-+	if (!etm->timeless_decoding)
-+		sample.time = etm->latest_kernel_timestamp;
- 	sample.ip = addr;
- 	sample.pid = tidq->pid;
- 	sample.tid = tidq->tid;
-@@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
- 	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
- 	event->sample.header.size = sizeof(struct perf_event_header);
- 
-+	if (!etm->timeless_decoding)
-+		sample.time = etm->latest_kernel_timestamp;
- 	sample.ip = ip;
- 	sample.pid = tidq->pid;
- 	sample.tid = tidq->tid;
-@@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
- 	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
- 		return cs_etm__process_switch_cpu_wide(etm, event);
- 
--	if (!etm->timeless_decoding &&
--	    event->header.type == PERF_RECORD_AUX)
-+	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
-+		etm->latest_kernel_timestamp = sample_kernel_timestamp;
- 		return cs_etm__process_queues(etm);
-+	}
- 
- 	return 0;
- }
--- 
-2.28.0
-
+>
+> regards,
+> dan carpenter
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210414143011.GV6021%40kadam.
+>
