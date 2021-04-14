@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1C035F744
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C8435F747
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbhDNPKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39392 "EHLO mail.kernel.org"
+        id S1348640AbhDNPKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:10:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34043 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhDNPKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:10:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AF1361132;
-        Wed, 14 Apr 2021 15:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618413000;
-        bh=ZWvJN4HVnHD0g7ZiqQ+fUQ0ZaA8fRAMztyQFEK4IEkE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YP3AjKElNyLCXGOxF4lZ35QmWabWZH8iqTASwD2E9ov/mgqcYT2GjIGH47BNQath8
-         pV8ZO+/fDUKTunxNwlWjN7Hz+73+u9ZuQBl3Z53gtM0gzm9wV1hcmvLtuYvWs/K4QQ
-         ng878uyuBLgA61AdeGIJ1O4aBiA0U2smHVhW6zvE=
-Date:   Wed, 14 Apr 2021 17:09:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v4 2/3] usb: typec: tcpm: Allow slow charging loops to
- comply to pSnkStby
-Message-ID: <YHcFxReUDYpbe+4s@kroah.com>
-References: <20210414142656.63749-1-badhri@google.com>
- <20210414142656.63749-2-badhri@google.com>
+        id S1347174AbhDNPKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:10:50 -0400
+IronPort-SDR: NkDhiYHKCsFU6mMTtgc+ob3kbqTChbOI5OILWBpnTrHT9QmHqDCCq+g28k13zjkroyNbOi4xC/
+ 5+hrXqpWEWFQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194768016"
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="194768016"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:10:15 -0700
+IronPort-SDR: aZgfj1IxVxNFY4kP4MSWfZpcXsUtzUBNLWl3hJsxLJLj+ikwlVn8HR4DMtE2tvqdF3Qwf5aEub
+ KrF5E0pVhirg==
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="399211281"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:10:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWh9e-0041hY-Mt; Wed, 14 Apr 2021 18:10:10 +0300
+Date:   Wed, 14 Apr 2021 18:10:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next v2 0/5] net: pch: fix and a few cleanups
+Message-ID: <YHcF0kqenD5Si66Z@smile.fi.intel.com>
+References: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414142656.63749-2-badhri@google.com>
+In-Reply-To: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 07:26:55AM -0700, Badhri Jagan Sridharan wrote:
-> When a PD charger advertising Rp-3.0 is connected to a sink port, the
-> sink port current limit would 3A, during SNK_DISCOVERY, till power
-> negotiation starts. Once the negotiation starts the power limit needs
-> to drop down to pSnkStby(500mA @ 5V) and to negotiated current limit
-> once the explicit contract is in place. Not all charging loops can ramp
-> up to 3A and drop down to 500mA within tSnkStdby which is 15ms. The port
-> partner might hard reset if tSnkStdby is not met.
+On Thu, Mar 25, 2021 at 07:34:07PM +0200, Andy Shevchenko wrote:
+> The series provides one fix (patch 1) for GPIO to be able to wait for
+> the GPIO driver to appear. This is separated from the conversion to
+> the GPIO descriptors (patch 2) in order to have a possibility for
+> backporting. Patches 3 and 4 fix a minor warnings from Sparse while
+> moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
 > 
-> To solve this problem, this patch introduces slow-charger-loop which
-> when set makes the port request PD_P_SNK_STDBY_MW upon entering
-> SNK_DISCOVERY(instead of 3A or the 1.5A during SNK_DISCOVERY) and the
-> actual currrent limit after RX of PD_CTRL_PSRDY for PD link or during
-> SNK_READY for non-pd link.
+> Tested on Intel Minnowboard (v1).
+
+Guys, it has been already the report from kbuild bot (sparse warnings), which
+should be fixed by this series (at least partially if not completely).
+
+Please, apply this as soon as it's possible.
+Or tell me what's wrong with the series.
+
+Thanks!
+
+> Since v2:
+> - added a few cleanups on top of the fix
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
-> Changes since V3:
-> * Added reviewed-by tag from Heikki
+> Andy Shevchenko (5):
+>   net: pch_gbe: Propagate error from devm_gpio_request_one()
+>   net: pch_gbe: Convert to use GPIO descriptors
+>   net: pch_gbe: use readx_poll_timeout_atomic() variant
+>   net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
+>   net: pch_gbe: remove unneeded MODULE_VERSION() call
+> 
+>  .../net/ethernet/oki-semi/pch_gbe/pch_gbe.h   |   2 -
+>  .../oki-semi/pch_gbe/pch_gbe_ethtool.c        |   2 +
+>  .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  | 103 +++++++++---------
+>  3 files changed, 54 insertions(+), 53 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
 
-No need to add reviewed-by tags, my tools pick that up already.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Patches 1 and 2 now queued up.
 
-thanks,
-
-greg k-h
