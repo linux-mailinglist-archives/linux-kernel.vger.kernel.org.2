@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C663135F4F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF3335F4F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351413AbhDNNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:36:06 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45506 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1351378AbhDNNfs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:35:48 -0400
-X-UUID: 8c21c94900f54db6b8428728ce1fc712-20210414
-X-UUID: 8c21c94900f54db6b8428728ce1fc712-20210414
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <rex-bc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1886880383; Wed, 14 Apr 2021 21:35:23 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 14 Apr 2021 21:35:22 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 14 Apr 2021 21:35:22 +0800
-From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
-To:     <chunkuang.hu@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Rex-BC Chen <rex-bc.chen@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [v2,PATCH 3/3] drm/mediatek: dpi: add bus format negotiation
-Date:   Wed, 14 Apr 2021 21:35:16 +0800
-Message-ID: <1618407316-10042-4-git-send-email-rex-bc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1618407316-10042-1-git-send-email-rex-bc.chen@mediatek.com>
-References: <1618407316-10042-1-git-send-email-rex-bc.chen@mediatek.com>
+        id S233720AbhDNNjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351415AbhDNNjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80488611AD;
+        Wed, 14 Apr 2021 13:38:50 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 15:38:47 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Subject: Re: [PATCH] Documentation: syscalls: add a note about  ABI-agnostic
+ types
+Message-ID: <20210414133847.2gwws46ktuqxkghu@wittgenstein>
+References: <20210409204304.1273139-1-yury.norov@gmail.com>
+ <20210414044020.GA44464@yury-ThinkPad>
+ <20210414081422.5a9d0c4b@coco.lan>
+ <20210414084605.pdlnjkwa3h47jxno@wittgenstein>
+ <YHa52ddAzcRGOB/m@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YHa52ddAzcRGOB/m@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the atomic_get_output_bus_fmts, atomic_get_input_bus_fmts to negotiate
-the possible output and input formats for the current mode and monitor,
-and use the negotiated formats in a basic atomic_check callback.
+On Wed, Apr 14, 2021 at 12:46:01PM +0300, Mike Rapoport wrote:
+> On Wed, Apr 14, 2021 at 10:46:05AM +0200, Christian Brauner wrote:
+> > On Wed, Apr 14, 2021 at 08:14:22AM +0200, Mauro Carvalho Chehab wrote:
+> > > Em Tue, 13 Apr 2021 21:40:20 -0700
+> > > Yury Norov <yury.norov@gmail.com> escreveu:
+> > > 
+> > > > Ping?
+> > > > 
+> > > > On Fri, Apr 09, 2021 at 01:43:04PM -0700, Yury Norov wrote:
+> > > > > Recently added memfd_secret() syscall had a flags parameter passed
+> > > > > as unsigned long, which requires creation of compat entry for it.
+> > > > > It was possible to change the type of flags to unsigned int and so
+> > > > > avoid bothering with compat layer.
+> > > > > 
+> > > > > https://www.spinics.net/lists/linux-mm/msg251550.html
+> > > > > 
+> > > > > Documentation/process/adding-syscalls.rst doesn't point clearly about
+> > > > > preference of ABI-agnostic types. This patch adds such notification.
+> > > > > 
+> > > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > > > > ---
+> > > > >  Documentation/process/adding-syscalls.rst | 7 +++++++
+> > > > >  1 file changed, 7 insertions(+)
+> > > > > 
+> > > > > diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/process/adding-syscalls.rst
+> > > > > index 9af35f4ec728..46add16edf14 100644
+> > > > > --- a/Documentation/process/adding-syscalls.rst
+> > > > > +++ b/Documentation/process/adding-syscalls.rst
+> > > > > @@ -172,6 +172,13 @@ arguments (i.e. parameter 1, 3, 5), to allow use of contiguous pairs of 32-bit
+> > > > >  registers.  (This concern does not apply if the arguments are part of a
+> > > > >  structure that's passed in by pointer.)
+> > > > >  
+> > > > > +Whenever possible, try to use ABI-agnostic types for passing parameters to
+> > > > > +a syscall in order to avoid creating compat entry for it. Linux supports two
+> > > > > +ABI models - ILP32 and LP64. 
+> > > 
+> > > > > + The types like ``void *``, ``long``, ``size_t``,
+> > > > > +``off_t`` have different size in those ABIs;
+> > > 
+> > > In the case of pointers, the best is to use __u64. The pointer can then
+> > > be read on Kernelspace with something like this:
+> > > 
+> > > 	static inline void __user *media_get_uptr(__u64 arg)
+> > > 	{
+> > > 		return (void __user *)(uintptr_t)arg;
+> > > 	}
+> > > 
+> > > 
+> > > > > types like ``char`` and  ``int``
+> > > > > +have the same size and don't require a compat layer support. For flags, it's
+> > > > > +always better to use ``unsigned int``.
+> > > > > +
+> > > 
+> > > I don't think this is true for all compilers on userspace, as the C
+> > > standard doesn't define how many bits an int/unsigned int has. 
+> > > So, even if this is today's reality, things may change in the future.
+> > > 
+> > > For instance, I remember we had to replace "int" and "enum" by "__u32" 
+> > > and "long" by "__u64" at the media uAPI in the past, when we start
+> > > seeing x86_64 Kernels with 32-bits userspace and when cameras started 
+> > > being supported on arm32.
+> > > 
+> > > We did have some real bugs with "enum", as, on that time, some
+> > > compilers (gcc, I guess) were optimizing them to have less than
+> > > 32 bits on certain architectures, when it fits.
+> > 
+> > Fwiw, Aleksa and I have written extended syscall documentation
+> > documenting the agreement that we came to in a dedicated session with a
+> > wide range of kernel folks during Linux Plumbers last year. We simply
+> > never had time to actually send this series but fwiw here it is. It also
+> > mentions the use of correct types. If people feel it's worth it I can
+> > send as a proper series:
+> 
+> Yes, please.
 
-Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_dpi.c | 89 ++++++++++++++++++++++++++++--
- 1 file changed, 84 insertions(+), 5 deletions(-)
+Ok, I'll try to fix the commit messages and send it out.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 76431fe849b8..b4e9c6c8d706 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -536,6 +536,87 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
- 	return 0;
- }
- 
-+#define MAX_OUTPUT_SEL_FORMATS	2
-+
-+static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					unsigned int *num_output_fmts)
-+{
-+	struct drm_display_mode *mode = &crtc_state->mode;
-+	u32 *output_fmts;
-+	struct mtk_dpi *dpi = bridge_to_dpi(bridge);
-+
-+	*num_output_fmts = 0;
-+
-+	output_fmts = kcalloc(MAX_OUTPUT_SEL_FORMATS, sizeof(*output_fmts),
-+			      GFP_KERNEL);
-+	if (!output_fmts)
-+		return NULL;
-+
-+	/* Default 8bit RGB fallback */
-+	if (dpi->conf->dual_edge) {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_2X12_LE;
-+		output_fmts[1] =  MEDIA_BUS_FMT_RGB888_2X12_BE;
-+		*num_output_fmts = 2;
-+	} else {
-+		output_fmts[0] =  MEDIA_BUS_FMT_RGB888_1X24;
-+		*num_output_fmts = 1;
-+	}
-+
-+	return output_fmts;
-+}
-+
-+#define MAX_INPUT_SEL_FORMATS	1
-+
-+static u32 *mtk_dpi_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-+					struct drm_bridge_state *bridge_state,
-+					struct drm_crtc_state *crtc_state,
-+					struct drm_connector_state *conn_state,
-+					u32 output_fmt,
-+					unsigned int *num_input_fmts)
-+{
-+	u32 *input_fmts;
-+
-+	*num_input_fmts = 0;
-+
-+	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
-+			     GFP_KERNEL);
-+	if (!input_fmts)
-+		return NULL;
-+
-+	*num_input_fmts = 1;
-+	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
-+
-+	return input_fmts;
-+}
-+
-+static int mtk_dpi_bridge_atomic_check(struct drm_bridge *bridge,
-+				       struct drm_bridge_state *bridge_state,
-+				       struct drm_crtc_state *crtc_state,
-+				       struct drm_connector_state *conn_state)
-+{
-+	struct mtk_dpi *dpi = bridge->driver_private;
-+	unsigned int out_bus_format;
-+
-+	out_bus_format = bridge_state->output_bus_cfg.format;
-+
-+	dev_dbg(dpi->dev, "input format 0x%04x, output format 0x%04x\n",
-+		bridge_state->input_bus_cfg.format,
-+		bridge_state->output_bus_cfg.format);
-+
-+	dpi->ddr_edge_sel = (out_bus_format == MEDIA_BUS_FMT_RGB888_2X12_LE) ?
-+		 		true : false;
-+
-+	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
-+	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
-+	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
-+	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
-+
-+	return 0;
-+}
-+
- static int mtk_dpi_bridge_attach(struct drm_bridge *bridge,
- 				 enum drm_bridge_attach_flags flags)
- {
-@@ -574,6 +655,9 @@ static const struct drm_bridge_funcs mtk_dpi_bridge_funcs = {
- 	.mode_set = mtk_dpi_bridge_mode_set,
- 	.disable = mtk_dpi_bridge_disable,
- 	.enable = mtk_dpi_bridge_enable,
-+	.atomic_check = mtk_dpi_bridge_atomic_check,
-+	.atomic_get_output_bus_fmts = mtk_dpi_bridge_atomic_get_output_bus_fmts,
-+	.atomic_get_input_bus_fmts = mtk_dpi_bridge_atomic_get_input_bus_fmts,
- };
- 
- void mtk_dpi_start(struct device *dev)
-@@ -620,11 +704,6 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 	}
- 	drm_connector_attach_encoder(dpi->connector, &dpi->encoder);
- 
--	dpi->bit_num = MTK_DPI_OUT_BIT_NUM_8BITS;
--	dpi->channel_swap = MTK_DPI_OUT_CHANNEL_SWAP_RGB;
--	dpi->yc_map = MTK_DPI_OUT_YC_MAP_RGB;
--	dpi->color_format = MTK_DPI_COLOR_FORMAT_RGB;
--
- 	return 0;
- 
- err_cleanup:
--- 
-2.18.0
-
+Christian
