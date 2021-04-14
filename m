@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8273035F0C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317B435F0D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350413AbhDNJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:25:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350373AbhDNJY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:24:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618392275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eU2ARRKP2HKvM+HAl1bRPX/7KV3rG7+C5uUtQ33atXM=;
-        b=IGgGnIQtjcrIzFVumv1YMozZ6hq3GY17VTmUjGWyzKv4uT67rU/hjhLEcBTyrE9Zhyx0jR
-        kEPfF1i9Euyvldus/fo4V4iS0STdYp/aVRUQgQ8AM+AaUOwUjyb+wz6d3TQ33Js2M28Q82
-        g3v7PveyPuDVZ9u3lhscBZJ21+IPvwA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8BC63ACC4;
-        Wed, 14 Apr 2021 09:24:35 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 11:24:34 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [PATCH 2/7] mm: memcontrol: bail out early when !mm in
- get_mem_cgroup_from_mm
-Message-ID: <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-3-songmuchun@bytedance.com>
+        id S231891AbhDNJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:27:01 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2851 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235651AbhDNJ0e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:26:34 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FKxfq5LpTz681qN;
+        Wed, 14 Apr 2021 17:16:19 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 14 Apr 2021 11:26:11 +0200
+Received: from localhost (10.47.83.55) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 14 Apr
+ 2021 10:26:10 +0100
+Date:   Wed, 14 Apr 2021 10:24:43 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-acpi@vger.kernel.org>, <ira.weiny@intel.com>,
+        <vishal.l.verma@intel.com>, <alison.schofield@intel.com>,
+        <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/7] cxl/mem: Get rid of @cxlm.base
+Message-ID: <20210414102443.000071a7@Huawei.com>
+In-Reply-To: <20210413161726.tz7rg46krrekk3lp@intel.com>
+References: <20210407222625.320177-1-ben.widawsky@intel.com>
+        <20210407222625.320177-5-ben.widawsky@intel.com>
+        <20210408182635.00003997@Huawei.com>
+        <20210413161726.tz7rg46krrekk3lp@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413065153.63431-3-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.83.55]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-04-21 14:51:48, Muchun Song wrote:
-> When mm is NULL, we do not need to hold rcu lock and call css_tryget for
-> the root memcg. And we also do not need to check !mm in every loop of
-> while. So bail out early when !mm.
+On Tue, 13 Apr 2021 09:17:26 -0700
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-mem_cgroup_charge and other callers unconditionally drop the reference
-so how come this does not underflow reference count?
- 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/memcontrol.c | 21 ++++++++++-----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
+> On 21-04-08 18:26:35, Jonathan Cameron wrote:
+> > On Wed, 7 Apr 2021 15:26:22 -0700
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >   
+> > > @cxlm.base only existed to support holding the base found in the
+> > > register block mapping code, and pass it along to the register setup
+> > > code. Now that the register setup function has all logic around managing
+> > > the registers, from DVSEC to iomapping up to populating our CXL specific
+> > > information, it is easy to turn the @base values into local variables
+> > > and remove them from our device driver state.
+> > > 
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
+> > 
+> > Patch is basically fine, but I do wonder if you could avoid the
+> > nasty casting in and out of __iomem in the error paths.
+> > 
+> > It's a common enough idiom though so I'm not htat fussed.
+> > 
+> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >   
+> > > ---
+> > >  drivers/cxl/mem.c | 24 +++++++++++-------------
+> > >  drivers/cxl/mem.h |  2 --
+> > >  2 files changed, 11 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index 04b4f7445083..60b95c524c3e 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -922,11 +922,10 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev)
+> > >  	return cxlm;
+> > >  }
+> > >  
+> > > -static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
+> > > +static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
+> > >  {
+> > >  	struct pci_dev *pdev = cxlm->pdev;
+> > >  	struct device *dev = &pdev->dev;
+> > > -	void __iomem *regs;
+> > >  	u64 offset;
+> > >  	u8 bar;
+> > >  	int rc;
+> > > @@ -938,20 +937,18 @@ static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
+> > >  	if (pci_resource_len(pdev, bar) < offset) {
+> > >  		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+> > >  			&pdev->resource[bar], (unsigned long long)offset);
+> > > -		return -ENXIO;
+> > > +		return (void __iomem *)ERR_PTR(-ENXIO);
+> > >  	}
+> > >  
+> > >  	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
+> > >  	if (rc) {
+> > >  		dev_err(dev, "failed to map registers\n");
+> > > -		return rc;
+> > > +		return (void __iomem *)ERR_PTR(rc);  
+> > 
+> > The casting is fairly horrible, perhaps just pass in
+> > a void __iomem ** and pass base back through that?
+> >   
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f229de925aa5..9cbfff59b171 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -901,20 +901,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
->  	if (mem_cgroup_disabled())
->  		return NULL;
->  
-> +	/*
-> +	 * Page cache insertions can happen without an
-> +	 * actual mm context, e.g. during disk probing
-> +	 * on boot, loopback IO, acct() writes etc.
-> +	 */
-> +	if (unlikely(!mm))
-> +		return root_mem_cgroup;
-> +
->  	rcu_read_lock();
->  	do {
-> -		/*
-> -		 * Page cache insertions can happen without an
-> -		 * actual mm context, e.g. during disk probing
-> -		 * on boot, loopback IO, acct() writes etc.
-> -		 */
-> -		if (unlikely(!mm))
-> +		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> +		if (unlikely(!memcg))
->  			memcg = root_mem_cgroup;
-> -		else {
-> -			memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
-> -			if (unlikely(!memcg))
-> -				memcg = root_mem_cgroup;
-> -		}
->  	} while (!css_tryget(&memcg->css));
->  	rcu_read_unlock();
->  	return memcg;
-> -- 
-> 2.11.0
+> TIL: IOMEM_ERR_PTR. Would that suffice?
 
--- 
-Michal Hocko
-SUSE Labs
+Definitely.  Didn't know about that!
+
+Jonathan
+
