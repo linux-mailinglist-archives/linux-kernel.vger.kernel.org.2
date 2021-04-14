@@ -2,212 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCD835FBA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B1935FBAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353392AbhDNT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        id S1353402AbhDNTbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353385AbhDNT2Z (ORCPT
+        with ESMTP id S1353397AbhDNTbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:28:25 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2478EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:28:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id w23so17330090ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:28:03 -0700 (PDT)
+        Wed, 14 Apr 2021 15:31:53 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120C6C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:31:29 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u4so24503795ljo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VfAx85OkCJIVXcb4Xjg0l17/YI2UWnOD3N2GZROAX/g=;
-        b=Lif9KjvpplLZV4pQxvTvW1JCFouT7uzPDBHPdpvLA/mhzajjriwDMXI+rq7SU5aoqk
-         K8LqGT8hx7N9vl6bUzP7+vX1fuhPtbzq1SC07nLp9mSZJH30jtPAqZ9ZsGd1GThr1Ubw
-         OH/zZkf73jUW4Qh9FzpqHh4S50s7EaliB3cBsGWPfKp6zfB+6lTJzDeQE2+dVltLDKPm
-         p03V9WxiVICfIinQQ4EY9YqJwyCZv5MlcC4Wud5OgoTNYZT/3+3MbzbGBz1d8Glx8EFN
-         L+84rN/qP3Lx6j0G85EJ4LhIilauIVT61gbeFpWXoan25i2+9ss3sMxF8VxYXTJE8a57
-         Sg8w==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8tmkl21nBTrgg+zi0wiLnvNOnvLGFNGElqoYB3gSO4k=;
+        b=fcsPK/9hZwnNtEOdCgJlxw05JK+JnScQC6KTDZz/6X9MVaflY6Jqqe4mj4BbDYGIn6
+         D5cRaqLVGf110aJOYDRuUskjfvklEd0pqbbD6FIOHNNLHu3Y3CC1Te8apRSktxKYlGWX
+         ozpACYQ9P5BsjDg3WbdRsGj5aS6Iw1MmwYSsk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VfAx85OkCJIVXcb4Xjg0l17/YI2UWnOD3N2GZROAX/g=;
-        b=kvfN/yHFYS2kROpAzquvl9Y8xcuBRv2795PlUnl2PUZfvcsVRHMVnmoa2C3ckcscPi
-         nPUrKK+ZuR1zbvPuccNQErQXnxEi9hwQKuGVWdKpvjBKkPM/Sd996U3+pvuBGXwV8Vf6
-         Xkno/wy+6MNp2tA2jIvWw/hOQhnlhdUsY3Sd/pfEvct5lKhZgQmtiLyk0w4yv7B7TTtp
-         Pkzb3jkYsFKCUfjz37Umd1n0dm2knv4OtU+AWZDTUCqIIOXIdc014dPmZGNtlAF86VOD
-         5Fof9KzttrxBDXAvbluwY8/NLokfOHF4N1wveYCge3udTiHohF5bVUVm3Qp5ZLQwHfdg
-         8ubg==
-X-Gm-Message-State: AOAM530KxifzxNQfGuCmwxkOgr4Ay5JMMWqxDudvAaNi2FZQH8fzTYtG
-        h4VWwwlTBp4j8zJk5HI/cbc=
-X-Google-Smtp-Source: ABdhPJxCXkzUieoHXKPtiDeavfywnXCA0vKVb9IPpIg4hI+3LI4uH+bWJSeeTmS1Wg1v5R/IdTZCxA==
-X-Received: by 2002:a17:906:724b:: with SMTP id n11mr455008ejk.338.1618428481883;
-        Wed, 14 Apr 2021 12:28:01 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id gn3sm259049ejc.2.2021.04.14.12.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 12:28:01 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [Outreachy kernel] [PATCH v3 2/2] staging: rtl8723bs: Remove everything related with LedBlink
-Date:   Wed, 14 Apr 2021 21:27:50 +0200
-Message-Id: <20210414192750.4974-3-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210414192750.4974-1-fmdefrancesco@gmail.com>
-References: <20210414192750.4974-1-fmdefrancesco@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8tmkl21nBTrgg+zi0wiLnvNOnvLGFNGElqoYB3gSO4k=;
+        b=jO2TSOjRp7JfxGU0t2t9hABO1jas5EhEaG+xk+3hsMbVQ6X/cQaKq/Dd/4cno/7QuE
+         DbUJk6pwf2Rrt/ycZqviBfYU/nRnOEN9LoHLHy0K5EkUrS/L2ZxdmCyXGLVYgDcg1uwV
+         oQtcoGN5MjOWjASk4uqjVZsPCv/UwRsfJWdAUpYxUQimVeBkIeMz1QvKL7MbV5DYBLb0
+         CpQnPlwwIkknAhwN7qHdlq+En53w2TviGYID8NGZlG2WPXn9xzpsVIHr24D7kiA0trUh
+         L51fnb7Qhm/vs1XrgC365FZmHiI+DrKmjNz4LZoxgx0LLYFLQxAHC/RNUNvLRZv6sDf2
+         kbAw==
+X-Gm-Message-State: AOAM533zmpGK//kvemA1ZJzSl0yt1aX8OhHzbVGLUpd0iFG5rToIlbf6
+        Qq8UJAh6XKkyHDxT8bPy3ZaRc0H77/iZ1kuA
+X-Google-Smtp-Source: ABdhPJw76IsggHxtavMX4oZ6fGvp+yOwkwKyBou5xLO3+yzPll8rw+49hjKKeFjVLRsJsjAIyAooXQ==
+X-Received: by 2002:a05:651c:386:: with SMTP id e6mr24242286ljp.468.1618428687133;
+        Wed, 14 Apr 2021 12:31:27 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id k6sm157165lfm.216.2021.04.14.12.31.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 12:31:26 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id a25so11208613ljm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:31:26 -0700 (PDT)
+X-Received: by 2002:a2e:8893:: with SMTP id k19mr9184503lji.465.1618428685906;
+ Wed, 14 Apr 2021 12:31:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-8-ojeda@kernel.org>
+In-Reply-To: <20210414184604.23473-8-ojeda@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 14 Apr 2021 12:31:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiVY56LzwV_G075NEFwsdf-p7GOTy_cB7-UU9b=49rB1g@mail.gmail.com>
+Message-ID: <CAHk-=wiVY56LzwV_G075NEFwsdf-p7GOTy_cB7-UU9b=49rB1g@mail.gmail.com>
+Subject: Re: [PATCH 07/13] Rust: Kernel crate
+To:     ojeda@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed struct LedBlink_param. Removed LedBlink entries in
-rtw_cmd_callback[] and in wlancmds[]. Everything related to LedBlink is
-not anymore needed. Removed extra blank lines in the two mentioned
-arrays and changend the numbers set in comments for having them in line
-with the shift.
+On Wed, Apr 14, 2021 at 11:47 AM <ojeda@kernel.org> wrote:
+>
+> +#[alloc_error_handler]
+> +fn oom(_layout: Layout) -> ! {
+> +    panic!("Out of memory!");
+> +}
+> +
+> +#[no_mangle]
+> +pub fn __rust_alloc_error_handler(_size: usize, _align: usize) -> ! {
+> +    panic!("Out of memory!");
+> +}
 
-Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Again, excuse my lack of internal Rust knowledge, but when do these
+end up being an issue?
 
-Changes from v2: Added this patch as 2/2.
-Changes from v1: No changes.
+If the Rust compiler ends up doing hidden allocations, and they then
+cause panics, then one of the main *points* of Rustification is
+entirely broken. That's 100% the opposite of being memory-safe at
+build time.
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c    | 27 ++++++---------------
- drivers/staging/rtl8723bs/include/rtw_cmd.h | 14 +++--------
- 2 files changed, 11 insertions(+), 30 deletions(-)
+An allocation failure in some random driver must never ever be
+something that the compiler just turns into a panic. It must be
+something that is caught and handled synchronously and results in an
+ENOMEM error return.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index f82dbd4f4c3d..a74e6846f2df 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -22,7 +22,6 @@ static struct _cmd_callback rtw_cmd_callback[] = {
- 	{GEN_CMD_CODE(_Write_EEPROM), NULL},
- 	{GEN_CMD_CODE(_Read_EFUSE), NULL},
- 	{GEN_CMD_CODE(_Write_EFUSE), NULL},
--
- 	{GEN_CMD_CODE(_Read_CAM),	NULL},	/*10*/
- 	{GEN_CMD_CODE(_Write_CAM),	 NULL},
- 	{GEN_CMD_CODE(_setBCNITV), NULL},
-@@ -33,7 +32,6 @@ static struct _cmd_callback rtw_cmd_callback[] = {
- 	{GEN_CMD_CODE(_SetOpMode), NULL},
- 	{GEN_CMD_CODE(_SiteSurvey), &rtw_survey_cmd_callback}, /*18*/
- 	{GEN_CMD_CODE(_SetAuth), NULL},
--
- 	{GEN_CMD_CODE(_SetKey), NULL},	/*20*/
- 	{GEN_CMD_CODE(_SetStaKey), &rtw_setstaKey_cmdrsp_callback},
- 	{GEN_CMD_CODE(_SetAssocSta), &rtw_setassocsta_cmdrsp_callback},
-@@ -44,7 +42,6 @@ static struct _cmd_callback rtw_cmd_callback[] = {
- 	{GEN_CMD_CODE(_SetDataRate), NULL},
- 	{GEN_CMD_CODE(_GetDataRate), NULL},
- 	{GEN_CMD_CODE(_SetPhyInfo), NULL},
--
- 	{GEN_CMD_CODE(_GetPhyInfo), NULL}, /*30*/
- 	{GEN_CMD_CODE(_SetPhy), NULL},
- 	{GEN_CMD_CODE(_GetPhy), NULL},
-@@ -55,7 +52,6 @@ static struct _cmd_callback rtw_cmd_callback[] = {
- 	{GEN_CMD_CODE(_JoinbssRpt), NULL},
- 	{GEN_CMD_CODE(_SetRaTable), NULL},
- 	{GEN_CMD_CODE(_GetRaTable), NULL},
--
- 	{GEN_CMD_CODE(_GetCCXReport), NULL}, /*40*/
- 	{GEN_CMD_CODE(_GetDTMReport),	NULL},
- 	{GEN_CMD_CODE(_GetTXRateStatistics), NULL},
-@@ -67,24 +63,19 @@ static struct _cmd_callback rtw_cmd_callback[] = {
- 	{GEN_CMD_CODE(_SwitchAntenna), NULL},
- 	{GEN_CMD_CODE(_SetCrystalCap), NULL},
- 	{GEN_CMD_CODE(_SetSingleCarrierTx), NULL},	/*50*/
--
- 	{GEN_CMD_CODE(_SetSingleToneTx), NULL}, /*51*/
- 	{GEN_CMD_CODE(_SetCarrierSuppressionTx), NULL},
- 	{GEN_CMD_CODE(_SetContinuousTx), NULL},
- 	{GEN_CMD_CODE(_SwitchBandwidth), NULL},		/*54*/
- 	{GEN_CMD_CODE(_TX_Beacon), NULL},/*55*/
--
- 	{GEN_CMD_CODE(_Set_MLME_EVT), NULL},/*56*/
- 	{GEN_CMD_CODE(_Set_Drv_Extra), NULL},/*57*/
- 	{GEN_CMD_CODE(_Set_H2C_MSG), NULL},/*58*/
- 	{GEN_CMD_CODE(_SetChannelPlan), NULL},/*59*/
--	{GEN_CMD_CODE(_LedBlink), NULL},/*60*/
--
--	{GEN_CMD_CODE(_SetChannelSwitch), NULL},/*61*/
--	{GEN_CMD_CODE(_TDLS), NULL},/*62*/
--	{GEN_CMD_CODE(_ChkBMCSleepq), NULL}, /*63*/
--
--	{GEN_CMD_CODE(_RunInThreadCMD), NULL},/*64*/
-+	{GEN_CMD_CODE(_SetChannelSwitch), NULL},/*60*/
-+	{GEN_CMD_CODE(_TDLS), NULL},/*61*/
-+	{GEN_CMD_CODE(_ChkBMCSleepq), NULL}, /*62*/
-+	{GEN_CMD_CODE(_RunInThreadCMD), NULL},/*63*/
- };
- 
- static struct cmd_hdl wlancmds[] = {
-@@ -144,17 +135,13 @@ static struct cmd_hdl wlancmds[] = {
- 	GEN_MLME_EXT_HANDLER(0, NULL)
- 	GEN_MLME_EXT_HANDLER(0, NULL)
- 	GEN_MLME_EXT_HANDLER(sizeof(struct Tx_Beacon_param), tx_beacon_hdl) /*55*/
--
- 	GEN_MLME_EXT_HANDLER(0, mlme_evt_hdl) /*56*/
- 	GEN_MLME_EXT_HANDLER(0, rtw_drvextra_cmd_hdl) /*57*/
--
- 	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
- 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
--	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
--
--	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelSwitch_param), set_csa_hdl) /*61*/
--	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*62*/
--	GEN_MLME_EXT_HANDLER(0, chk_bmc_sleepq_hdl) /*63*/
-+	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelSwitch_param), set_csa_hdl) /*60*/
-+	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*61*/
-+	GEN_MLME_EXT_HANDLER(0, chk_bmc_sleepq_hdl) /*62*/
- 	GEN_MLME_EXT_HANDLER(sizeof(struct RunInThread_param), run_in_thread_hdl) /*63*/
- };
- 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_cmd.h b/drivers/staging/rtl8723bs/include/rtw_cmd.h
-index 517ae3b51386..28d2d2732374 100644
---- a/drivers/staging/rtl8723bs/include/rtw_cmd.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_cmd.h
-@@ -537,11 +537,6 @@ struct SetChannelPlan_param {
- 	u8 channel_plan;
- };
- 
--/*H2C Handler index: 60 */
--struct LedBlink_param {
--	void *pLed;
--};
--
- /*H2C Handler index: 61 */
- struct SetChannelSwitch_param {
- 	u8 new_ch_no;
-@@ -709,13 +704,12 @@ enum {
- 	GEN_CMD_CODE(_Set_H2C_MSG), /*58*/
- 
- 	GEN_CMD_CODE(_SetChannelPlan), /*59*/
--	GEN_CMD_CODE(_LedBlink), /*60*/
- 
--	GEN_CMD_CODE(_SetChannelSwitch), /*61*/
--	GEN_CMD_CODE(_TDLS), /*62*/
--	GEN_CMD_CODE(_ChkBMCSleepq), /*63*/
-+	GEN_CMD_CODE(_SetChannelSwitch), /*60*/
-+	GEN_CMD_CODE(_TDLS), /*61*/
-+	GEN_CMD_CODE(_ChkBMCSleepq), /*62*/
- 
--	GEN_CMD_CODE(_RunInThreadCMD), /*64*/
-+	GEN_CMD_CODE(_RunInThreadCMD), /*63*/
- 
- 	MAX_H2CCMD
- };
--- 
-2.31.1
+So the fact that the core patches have these kinds of
 
+    panic!("Out of memory!");
+
+things in them as part of just the support infrastructure makes me go
+"Yeah, that's fundamentally wrong".
+
+And if this is some default that is called only when the Rust code
+doesn't have error handling, then once again - I think it needs to be
+a *build-time* failure, not a runtime one. Because having unsafe code
+that will cause a panic only under very special situations that are
+hard to trigger is about the worst possible case.
+
+             Linus
