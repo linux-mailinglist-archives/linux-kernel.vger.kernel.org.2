@@ -2,115 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1C635FBD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A052E35FBD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353472AbhDNTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347936AbhDNTp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:45:58 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A347C061574;
-        Wed, 14 Apr 2021 12:45:35 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 56B9FC725CF;
-        Wed, 14 Apr 2021 21:45:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1618429534;
-        bh=NcyhMGkK4f3s6Jb75I3zSLqjm8FszWSB9VvtZQdYA3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=INppUTN2R41mVczgBPa/SGaLm4kMSUW/fkHjLuCQy8DdAGjP1F0Oi0y0493qiBvyq
-         LRWYeFvSQ7JBCfMiQxaL3JMJlcSvw1bHeXRRKto+25h47bjQ+XJTMqin9Wrr8Mnn6M
-         UHU9V5yd1/scDbBE2aMGNlHkS65az6/QRYyoe6hM=
-Date:   Wed, 14 Apr 2021 21:45:32 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
-Message-ID: <YHdGXG3PbsmicK7U@workstation.tuxnet>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
- <YHR3wP4Fk3jidnri@workstation.tuxnet>
- <20210412201019.vouxx4daumusrcvr@pengutronix.de>
- <YHWKehtYFSaHt1hC@workstation.tuxnet>
- <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
- <YHbbaiwK9Tasb7NF@workstation.tuxnet>
- <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
+        id S1349253AbhDNTrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345326AbhDNTrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:47:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE4C61166;
+        Wed, 14 Apr 2021 19:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618429616;
+        bh=KuVnof+r6hRvfkV5hg/I5cwh0JERg3t7/JNTMJrdSTU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=p2YWWgqeuaUlwXSjE+9RjYo6AkX/3oCNfYq3ioiwSV7R0sxpHPIt20Ga7XSFNMCSh
+         XgegTcjDDAIzr5H7h/M1HtT+jjBFAwroDtoyKn4PGWjy8kV0tFVjRjPGgUYJp8tvM1
+         YCJJsT5diCCVcVk5CUsFN/4OWtj76Vfe/a3arc1qn4zv/V++A95RozAlLIwpCC6Wlm
+         pKqrc5jVG6kJex/vpwUH+MhYKBflGCTm3rHWBznlJ9Gqn5tOGYNh8CdhG4zIYgD27J
+         tlNSvXrqXAXZ/x7klLcCJ346XrpXZS6RYCT8/KMy0RG22jqIYtR58mL6z2wKyGCTB/
+         R/Pl+wkbw6v3w==
+Date:   Wed, 14 Apr 2021 14:46:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Subject: Re: [PATCH v10 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+Message-ID: <20210414194654.GA2526782@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
+In-Reply-To: <1617985338-19648-4-git-send-email-hayashi.kunihiko@socionext.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 09:21:31PM +0200, Uwe Kleine-König wrote:
-> On Wed, Apr 14, 2021 at 02:09:14PM +0200, Clemens Gruber wrote:
-> > Hi Uwe,
-> > 
-> > On Tue, Apr 13, 2021 at 09:38:18PM +0200, Uwe Kleine-König wrote:
-> > > Hello Clemens,
-> > > 
-> > > On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
-> > > > On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-König wrote:
-> > > > > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
-> > > > > > With your suggested round-down, the example with frequency of 200 Hz
-> > > > > > would no longer result in 30 but 29 and that contradicts the datasheet.
-> > > > > 
-> > > > > Well, with PRESCALE = 30 we get a frequency of 196.88 Hz and with
-> > > > > PRESCALE = 29 we get a frequency of 203.45 Hz. So no matter if you pick
-> > > > > 29 or 30, you don't get 200 Hz. And which of the two possible values is
-> > > > > the better one depends on the consumer, no matter what rounding
-> > > > > algorithm the data sheet suggests. Also note that the math here contains
-> > > > > surprises you don't expect at first. For example, what PRESCALE value
-> > > > > would you pick to get 284 Hz? [If my mail was a video, I'd suggest to
-> > > > > press Space now to pause and let you think first :-)] The data sheet's
-> > > > > formula suggests:
-> > > > > 
-> > > > > 	round(25 MHz / (4096 * 284)) - 1 = 20
-> > > > > 
-> > > > > The resulting frequency when picking PRESCALE = 20 is 290.644 Hz (so an
-> > > > > error of 6.644 Hz). If instead you pick PRESCALE = 21 you get 277.433 Hz
-> > > > > (error = 6.567 Hz), so 21 is the better choice.
-> > > > > 
-> > > > > Exercise for the reader:
-> > > > >  What is the correct formula to really determine the PRESCALE value that
-> > > > >  yields the best approximation (i.e. minimizing
-> > > > >  abs(real_freq - target_freq)) for a given target_freq?
-> > > 
-> > > I wonder if you tried this.
-> > 
-> > We could calculate both round-up and round-down and decide which one is
-> > closer to "real freq" (even though that is not the actual frequency but
-> > just our backwards-calculated frequency).
+On Sat, Apr 10, 2021 at 01:22:18AM +0900, Kunihiko Hayashi wrote:
+> This patch adds misc interrupt handler to detect and invoke PME/AER event.
 > 
-> Yeah, the backwards-calculated frequency is the best assumption we
-> have.
+> In UniPhier PCIe controller, PME/AER signals are assigned to the same
+> signal as MSI by the internal logic. These signals should be detected by
+> the internal register, however, DWC MSI handler can't handle these signals.
 > 
-> > But I can't give you a formula with minimized abs(real_freq-target_freq)
-> > Is it a different round point than 0.5 and maybe relative to f ?
-> > 
-> > Please enlighten us :-)
+> DWC MSI handler calls .msi_host_isr() callback function, that detects
+> PME/AER signals using the internal register and invokes the interrupt
+> with PME/AER vIRQ numbers.
 > 
-> Sorry, I cannot. I spend ~20 min today after lunch with pencil and
-> paper, but without success. I was aware that it isn't trivial and this
-> is the main reason I established round-down as default for new drivers
-> instead of round-nearest.
+> These vIRQ numbers is obtained by uniphier_pcie_port_get_irq() function,
+> that finds the device that matches PME/AER from the devices associated
+> with Root Port, and returns its vIRQ number.
 
-Oh, I thought you already solved it. I tried too for a while but was
-unsuccessful. Not trivial indeed!
+Why do you use the term "vIRQ"?  What exactly is a vIRQ?  It seems no
+different than the simple "irq" as stored in pci_dev.irq or
+pcie_device.irq and passed to generic_handle_irq().  "virq" is also
+used in the patch, so if you change one, please change the other as
+well.
 
-But regarding you establishing round-down: Wouldn't it be even better if
-the driver did what I suggested above, namely calculate backwards from
-both the rounded-up as well as the rounded-down prescale value and then
-write the one with the smallest abs(f_target - f_real) to the register?
-
-Clemens
+Bjorn
