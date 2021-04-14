@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF37E35EB30
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C37A35EB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241583AbhDNDBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 23:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbhDNDBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:01:11 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A42C061574;
-        Tue, 13 Apr 2021 20:00:50 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWVlo-005BFK-Gg; Wed, 14 Apr 2021 03:00:48 +0000
-Date:   Wed, 14 Apr 2021 03:00:48 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, matthew.wilcox@oracle.com,
-        khlebnikov@yandex-team.ru
-Subject: Re: [PATCH RFC 1/6] dcache: sweep cached negative dentries to the
- end of list of siblings
-Message-ID: <YHZa4PWnWfUqkARi@zeniv-ca.linux.org.uk>
-References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
- <1611235185-1685-2-git-send-email-gautham.ananthakrishna@oracle.com>
+        id S243417AbhDNDBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:01:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:8507 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242332AbhDNDBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 23:01:17 -0400
+IronPort-SDR: osedgeyVcgYWZD8n9ZMWFGyk7DMIN/8IFuQSbuGFL5E8v0HZ3jHimUw4fVN7L9J2Aa2Bud3Pzg
+ 1cyjm0sqoGKA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="194664623"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="194664623"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:00:56 -0700
+IronPort-SDR: fXScKB/ywknplN1St0lrxW+tlSh+sIleiY23QVpHHBfz31pU69vzx4yWcWZ6l9uhlTt9co7XZK
+ 9Z4nIFT/1yuA==
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="418118465"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:00:52 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     mgorman@suse.de, kirill.shutemov@linux.intel.com, ziy@nvidia.com,
+        mhocko@suse.com, hughd@google.com, gerald.schaefer@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [v2 PATCH 6/7] mm: migrate: check mapcount for THP instead of
+ ref count
+References: <20210413212416.3273-1-shy828301@gmail.com>
+        <20210413212416.3273-7-shy828301@gmail.com>
+Date:   Wed, 14 Apr 2021 11:00:50 +0800
+In-Reply-To: <20210413212416.3273-7-shy828301@gmail.com> (Yang Shi's message
+        of "Tue, 13 Apr 2021 14:24:15 -0700")
+Message-ID: <87k0p5sh7h.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611235185-1685-2-git-send-email-gautham.ananthakrishna@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:49:40PM +0530, Gautham Ananthakrishna wrote:
-> From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> 
-> For disk filesystems result of every negative lookup is cached, content of
-> directories is usually cached too. Production of negative dentries isn't
-> limited with disk speed. It's really easy to generate millions of them if
-> system has enough memory. Negative dentries are linked into siblings list
-> along with normal positive dentries. Some operations walks dcache tree but
-> looks only for positive dentries: most important is fsnotify/inotify.
-> 
-> This patch moves negative dentries to the end of list at final dput() and
-> marks with flag which tells that all following dentries are negative too.
-> Reverse operation is required before instantiating negative dentry.
+Yang Shi <shy828301@gmail.com> writes:
 
-> +static void sweep_negative(struct dentry *dentry)
-> +{
-> +	struct dentry *parent;
+> The generic migration path will check refcount, so no need check refcount here.
+> But the old code actually prevents from migrating shared THP (mapped by multiple
+> processes), so bail out early if mapcount is > 1 to keep the behavior.
+
+What prevents us from migrating shared THP?  If no, why not just remove
+the old refcount checking?
+
+Best Regards,
+Huang, Ying
+
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/migrate.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index a72994c68ec6..dc7cc7f3a124 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2067,6 +2067,10 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  
+>  	VM_BUG_ON_PAGE(compound_order(page) && !PageTransHuge(page), page);
+>  
+> +	/* Do not migrate THP mapped by multiple processes */
+> +	if (PageTransHuge(page) && page_mapcount(page) > 1)
+> +		return 0;
 > +
-> +	if (!d_is_tail_negative(dentry)) {
-> +		parent = lock_parent(dentry);
-> +		if (!parent)
-> +			return;
-> +
-> +		if (!d_count(dentry) && d_is_negative(dentry) &&
-> +		    !d_is_tail_negative(dentry)) {
-> +			dentry->d_flags |= DCACHE_TAIL_NEGATIVE;
-> +			list_move_tail(&dentry->d_child, &parent->d_subdirs);
-> +		}
-> +
-> +		spin_unlock(&parent->d_lock);
-> +	}
-> +}
-
-Ugh...  So when dput() drives the refcount down to 0 you hit lock_parent()
-and only then bother to check if the sucker had been negative in the first
-place?
-
-> @@ -1970,6 +2021,8 @@ void d_instantiate(struct dentry *entry, struct inode * inode)
->  {
->  	BUG_ON(!hlist_unhashed(&entry->d_u.d_alias));
->  	if (inode) {
-> +		if (d_is_tail_negative(entry))
-> +			recycle_negative(entry);
->  		security_d_instantiate(entry, inode);
->  		spin_lock(&inode->i_lock);
->  		__d_instantiate(entry, inode);
-
-Wait a bloody minute.  What about d_instantiate_new() right next to it?
+>  	/* Avoid migrating to a node that is nearly full */
+>  	if (!migrate_balanced_pgdat(pgdat, compound_nr(page)))
+>  		return 0;
+> @@ -2074,18 +2078,6 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  	if (isolate_lru_page(page))
+>  		return 0;
+>  
+> -	/*
+> -	 * migrate_misplaced_transhuge_page() skips page migration's usual
+> -	 * check on page_count(), so we must do it here, now that the page
+> -	 * has been isolated: a GUP pin, or any other pin, prevents migration.
+> -	 * The expected page count is 3: 1 for page's mapcount and 1 for the
+> -	 * caller's pin and 1 for the reference taken by isolate_lru_page().
+> -	 */
+> -	if (PageTransHuge(page) && page_count(page) != 3) {
+> -		putback_lru_page(page);
+> -		return 0;
+> -	}
+> -
+>  	page_lru = page_is_file_lru(page);
+>  	mod_node_page_state(page_pgdat(page), NR_ISOLATED_ANON + page_lru,
+>  				thp_nr_pages(page));
