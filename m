@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D81435F3EE
+	by mail.lfdr.de (Postfix) with ESMTP id C8BE635F3EF
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351011AbhDNMgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:36:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37718 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350978AbhDNMg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:36:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618403765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BPj9B9SI4Ii5RY6ovJjvLP89Qdf3fZd8sHO2I12+bSw=;
-        b=cMvH2/xxG6eTwNesTzBHQJXQfbBR5vJQe4iZ4aMBnyhJgZM4DmVdekaQWeQeFAPGwN6O6p
-        26hsd4rpQLgC2/3KCpNiD2qePZj1n5tDRMGGZ+odKrBRe+GHYKCySXsEyy00mNs67FfwQb
-        vxRS3INgwIaJqK1E11agYdniGC9WzDw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-aA_1HIK1Pxi8LIgBXzxJxA-1; Wed, 14 Apr 2021 08:36:04 -0400
-X-MC-Unique: aA_1HIK1Pxi8LIgBXzxJxA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C26383DD20;
-        Wed, 14 Apr 2021 12:36:03 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.196.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BAFF45D9CC;
-        Wed, 14 Apr 2021 12:36:00 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, x86@kernel.org,
-        Lenny Szubowicz <lszubowi@redhat.com>,
-        Mohamed Aboubakr <mabouba@amazon.com>,
-        Xiaoyi Chen <cxiaoyi@amazon.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] x86/kvm: Unify kvm_pv_guest_cpu_reboot() with kvm_guest_cpu_offline()
-Date:   Wed, 14 Apr 2021 14:35:44 +0200
-Message-Id: <20210414123544.1060604-6-vkuznets@redhat.com>
-In-Reply-To: <20210414123544.1060604-1-vkuznets@redhat.com>
-References: <20210414123544.1060604-1-vkuznets@redhat.com>
+        id S1351038AbhDNMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:37:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350988AbhDNMgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 08:36:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D899613C7;
+        Wed, 14 Apr 2021 12:36:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618403770;
+        bh=W8hZgGPrD8etDnaCxdxfCu2/xsJL8cgjruuafsxuso4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mEL5EqktkPiD9D+IQ3bPF25l7TsKspbjBedHpBtjTwHaH0gK/4rNJMqXOtc8rQWt1
+         mxUi1M2Zhp1ocB3gL1l3AOPodPMbis89ZxE2b/HBrGg8FKLAgl1NW66kn42dYYpj5N
+         HwnDMRrrAuQ8c3W8aSpbVp6XpU9Z6gi2ocZZ1zojXftgxZ6V0AV5XN7ppusjDOvRFA
+         WZKvDJK+i060RwJ9E8Vu5kUryFPeXEn35OjJYqQaUUjZy24dfqO4/Vmq07XJNg4E5F
+         M98PPRx5ufEg/EI8sz9nx9b+dvsjtOTtk27HIDlkuL5RubGzu9JZGDrVmfYlGM6xyO
+         9LYOPnY2jkE3A==
+Date:   Wed, 14 Apr 2021 13:35:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
+ checks
+Message-ID: <20210414123548.GC4535@sirena.org.uk>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210409120859.GA51636@C02TD0UTHF1T.local>
+ <20210409213741.kqmwyajoppuqrkge@treble>
+ <20210412173617.GE5379@sirena.org.uk>
+ <d92ec07e-81e1-efb8-b417-d1d8a211ef7f@linux.microsoft.com>
+ <20210413110255.GB5586@sirena.org.uk>
+ <714e748c-bb79-aa9a-abb5-cf5e677e847b@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
+Content-Disposition: inline
+In-Reply-To: <714e748c-bb79-aa9a-abb5-cf5e677e847b@linux.microsoft.com>
+X-Cookie: George Orwell was an optimist.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify the code by making PV features shutdown happen in one place.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kernel/kvm.c | 42 +++++++++++++++++-------------------------
- 1 file changed, 17 insertions(+), 25 deletions(-)
+--TYecfFk8j8mZq+dy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 1754b7c3f754..7da7bea96745 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -384,31 +384,6 @@ static void kvm_disable_steal_time(void)
- 	wrmsr(MSR_KVM_STEAL_TIME, 0, 0);
- }
- 
--static void kvm_pv_guest_cpu_reboot(void *unused)
--{
--	/*
--	 * We disable PV EOI before we load a new kernel by kexec,
--	 * since MSR_KVM_PV_EOI_EN stores a pointer into old kernel's memory.
--	 * New kernel can re-enable when it boots.
--	 */
--	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
--		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
--	kvm_pv_disable_apf();
--	kvm_disable_steal_time();
--}
--
--static int kvm_pv_reboot_notify(struct notifier_block *nb,
--				unsigned long code, void *unused)
--{
--	if (code == SYS_RESTART)
--		on_each_cpu(kvm_pv_guest_cpu_reboot, NULL, 1);
--	return NOTIFY_DONE;
--}
--
--static struct notifier_block kvm_pv_reboot_nb = {
--	.notifier_call = kvm_pv_reboot_notify,
--};
--
- static u64 kvm_steal_clock(int cpu)
- {
- 	u64 steal;
-@@ -664,6 +639,23 @@ static struct syscore_ops kvm_syscore_ops = {
- 	.resume		= kvm_resume,
- };
- 
-+static void kvm_pv_guest_cpu_reboot(void *unused)
-+{
-+	kvm_guest_cpu_offline(true);
-+}
-+
-+static int kvm_pv_reboot_notify(struct notifier_block *nb,
-+				unsigned long code, void *unused)
-+{
-+	if (code == SYS_RESTART)
-+		on_each_cpu(kvm_pv_guest_cpu_reboot, NULL, 1);
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block kvm_pv_reboot_nb = {
-+	.notifier_call = kvm_pv_reboot_notify,
-+};
-+
- /*
-  * After a PV feature is registered, the host will keep writing to the
-  * registered memory location. If the guest happens to shutdown, this memory
--- 
-2.30.2
+On Wed, Apr 14, 2021 at 05:23:38AM -0500, Madhavan T. Venkataraman wrote:
+> On 4/13/21 6:02 AM, Mark Brown wrote:
+> > On Mon, Apr 12, 2021 at 02:55:35PM -0500, Madhavan T. Venkataraman wrot=
+e:
 
+> >> 3. We are going to assume that the reliable unwinder is only for livep=
+atch purposes
+> >>    and will only be invoked on a task that is not currently running. T=
+he task either
+> >=20
+> > The reliable unwinder can also be invoked on itself.
+
+> I have not called out the self-directed case because I am assuming that t=
+he reliable unwinder
+> is only used for livepatch. So, AFAICT, this is applicable to the task th=
+at performs the
+> livepatch operation itself. In this case, there should be no unreliable f=
+unctions on the
+> self-directed stack trace (otherwise, livepatching would always fail).
+
+Someone might've added a probe of some kind which upsets things so
+there's a possibility things might fail.  Like you say there's no way a
+system in such a state can succesfully apply a live patch but we might
+still run into that situation.
+
+> >> I suggest we do (3) first. Then, review the assembly functions to do (=
+1). Then, review the
+> >> remaining ones to see which ones must be blacklisted, if any.
+
+> > I'm not clear what the concrete steps you're planning to do first are
+> > there - your 3 seems like a statement of assumptions.  For flagging
+> > functions I do think it'd be safer to default to assuming that all
+> > SYM_CODE functions can't be unwound reliably rather than only explicitly
+> > listing ones that cause problems.
+
+> They are not assumptions. They are true statements. But I probably did no=
+t do a good
+> job of explaining. But Josh sent out a patch that updates the documentati=
+on that
+> explains what I said a lot better.
+
+You say true statements, I say assumptions :)
+
+--TYecfFk8j8mZq+dy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB24aQACgkQJNaLcl1U
+h9BYGAf9GM7SFhyqwsiwsjyKKhLQaHG+b/LiSgJ0iKN6/7a/tRaC5WBnJVrk5dLG
+WWC+hea0n3zdWT/kFu8AuBq0GHnVIZuMVav43Lu0VhBQxilRa1ySjLCgRbs+ePtj
+4d31quaeFknkZVXXqsLE/42IozRJi9RFLWzPXUqUhkSELGi+Jl6zY8uYm1QonmMX
+I+iE5E0T8dg9FwmfRUPVs48jYlk3pYpmWxDF0P/vWmVJC3ffF6/Lbr4VIOHCyBSk
+rYBKmjZJZuNowGKoV8JHv4aLizk6Coq02br3534NMEUBIYOl9b9oFjkE0QvJOfor
+8GiML6l1Qo5EHbfsZmRmIfWe0S6AZA==
+=XOVC
+-----END PGP SIGNATURE-----
+
+--TYecfFk8j8mZq+dy--
