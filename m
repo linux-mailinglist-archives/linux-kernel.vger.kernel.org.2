@@ -2,243 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E3135EE83
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6CB35EE88
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349744AbhDNHgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbhDNHgi (ORCPT
+        id S1349769AbhDNHhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:37:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51420 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349754AbhDNHhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:36:38 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2905C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:36:17 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id x27so9443041qvd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=GaUGA4fr6Hw6htKmvc7pRm7Mf4SEh3Stb6wYmhoZJYc=;
-        b=t0yPWPJIsk9iay3f2CjEur5aS0g5HrDnPX5DO68Ja7IQekWawUZ544b0fSkQYco7be
-         vnU8kr7YEkZZt0eiWIBefJDSkXm89cJnISEiJnzeLqJ2gYwCKGkqbmo5OEK6ZIU0/65J
-         Z+HFrJbiWfQgfszDKlJzeJHq4TfMBN1/WOyY8irdBKlaajGyw7t2MYab1icBCkowu1DV
-         /U4Cz8JuXbckAMNKyI8IMicKc7kS2vcMomPSJLfPMT9t91R3mnL5QAeEtMgJ+Bk4xlGy
-         M9FcaRdMqMJw8s8Wb+SgS6ciO+ppLJtYXq7rFqkYcEi39Cur0r+ZoEv5GmOWjAFPN5ly
-         6nHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=GaUGA4fr6Hw6htKmvc7pRm7Mf4SEh3Stb6wYmhoZJYc=;
-        b=HWcui7IA+8Uo/7KMN6v42U7lSqgA76SI9zFIpiPvEXZJQ+UmfqPcpEysZg98jmwDsT
-         uHqBNWWoVnSG6JG5CLCoDImdrS0ZvBOxFwqxrgYtTSTn2jdTLeyGzkcmfhd4X089CPno
-         G460OE5Fj2H/unvSWPQI4v4RflocfuAlTvG/ZbeoIo21PRp7377KtDwxvnHjeSKMoiJE
-         653Sjb5kokSf9tpKza7S66h1rFHwmgxClX4OFZtAyWObjlbKrrv2YKwBR/wL7EJDZpqT
-         XEuoOZnuiqC20T0HJ8gyiIEedmrQv3jtUTp8Xxe08bE3LdQOOnfnILozjeFFNmaMjFc8
-         pFHQ==
-X-Gm-Message-State: AOAM532YSQQvTqcLWAx176B3P5z9cAG9Z6nJPUmB+mpYPb9dL8oLw4Xs
-        963etodCag6azadPV7EuZeLBgQ==
-X-Google-Smtp-Source: ABdhPJxl9GxGuvaLQKw76GkIfp3TxDRuj1LQ00uhUWr/sPOtwhRd5P7jxvFf1th4NEo5xR6Mn6Yu4A==
-X-Received: by 2002:ad4:4c4a:: with SMTP id cs10mr14099368qvb.14.1618385776565;
-        Wed, 14 Apr 2021 00:36:16 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o29sm1922309qtl.8.2021.04.14.00.36.14
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 14 Apr 2021 00:36:16 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 00:36:13 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v2 3/9] userfaultfd/shmem: support minor fault registration
- for shmem
-In-Reply-To: <20210413051721.2896915-4-axelrasmussen@google.com>
-Message-ID: <alpine.LSU.2.11.2104132351350.9086@eggly.anvils>
-References: <20210413051721.2896915-1-axelrasmussen@google.com> <20210413051721.2896915-4-axelrasmussen@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Wed, 14 Apr 2021 03:37:04 -0400
+Date:   Wed, 14 Apr 2021 07:36:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618385802;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EhG6yeO7qUBOcTbfLkvq3N6y048F47lyYY/h7j+ClSw=;
+        b=E5JYcrvgsNJJ82rYicVBYxqD3PcFxi1Ew4v8Z+dGBuq/3CMCKn6O3qA2ZoCCQNhLSCgsJS
+        YZgebZfB2a6Q5VYOc8wiswRq7q1P1utq0eNuViaXkvJg0SemRFF9MVuqCcHDApNPO3ZH9l
+        7TxO23gfjrB40PE7lltuxkm44Jn+eNWzjp5J5kg8GEPgDzkQEMU1JGVmVhBtZfuTNGp9tQ
+        NXQ5FUQ4duJuV4eBDqIjImSZbauDkImd02zexfQbTMzVLNA3qrR7sCWfjHpmE5rGFv4KFF
+        1CIKi/fg1ELX8xXcliTtkBNJFIrLuXlTt1j6YfheL4J1+FOwpxl60L2A9wOFXw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618385802;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EhG6yeO7qUBOcTbfLkvq3N6y048F47lyYY/h7j+ClSw=;
+        b=+u0ppabOu5v7QeHwJ97Z1Ba85OXPAE7n4hkukGEMfE8DpI8VLb3n7LkPrmgGipauFNuufQ
+        EORG4MKZKz9wFfAA==
+From:   "tip-bot2 for Jan Kiszka" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/pat: Do not compile stubbed functions when
+ X86_PAT is off
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com>
+References: <a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <161838580104.29796.1278445228759289660.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021, Axel Rasmussen wrote:
+The following commit has been merged into the x86/cleanups branch of tip:
 
-> This patch allows shmem-backed VMAs to be registered for minor faults.
-> Minor faults are appropriately relayed to userspace in the fault path,
-> for VMAs with the relevant flag.
-> 
-> This commit doesn't hook up the UFFDIO_CONTINUE ioctl for shmem-backed
-> minor faults, though, so userspace doesn't yet have a way to resolve
-> such faults.
+Commit-ID:     16854b567dff767e5ec5e6dc23021271136733a5
+Gitweb:        https://git.kernel.org/tip/16854b567dff767e5ec5e6dc23021271136733a5
+Author:        Jan Kiszka <jan.kiszka@siemens.com>
+AuthorDate:    Mon, 26 Oct 2020 18:39:06 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 14 Apr 2021 08:21:41 +02:00
 
-This is a very odd way to divide up the series: an "Intermission"
-half way through the implementation of MINOR/CONTINUE: this 3/9
-makes little sense without the 4/9 to mm/userfaultfd.c which follows.
+x86/pat: Do not compile stubbed functions when X86_PAT is off
 
-But, having said that, I won't object and Peter did not object, and
-I don't know of anyone else looking here: it will only give each of
-us more trouble to insist on repartitioning the series, and it's the
-end state that's far more important to me and to all of us.
+Those are already provided by linux/io.h as stubs.
 
-And I'll even seize on it, to give myself an intermission after
-this one, until tomorrow (when I'll look at 4/9 and 9/9 - but
-shall not look at the selftests ones at all).
+The conflict remains invisible until someone would pull linux/io.h into
+memtype.c. This fixes a build error when this file is used outside of
+the kernel tree.
 
-Most of this is okay, except the mm/shmem.c part; and I've just now
-realized that somewhere (whether in this patch or separately) there
-needs to be an update to Documentation/admin-guide/mm/userfaultfd.rst
-(admin-guide? how weird, but not this series' business to correct).
+  [ bp: Massage commit message. ]
 
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  fs/userfaultfd.c                 |  6 +++---
->  include/uapi/linux/userfaultfd.h |  7 ++++++-
->  mm/memory.c                      |  8 +++++---
->  mm/shmem.c                       | 10 +++++++++-
->  4 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index 14f92285d04f..9f3b8684cf3c 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -1267,8 +1267,7 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
->  	}
->  
->  	if (vm_flags & VM_UFFD_MINOR) {
-> -		/* FIXME: Add minor fault interception for shmem. */
-> -		if (!is_vm_hugetlb_page(vma))
-> +		if (!(is_vm_hugetlb_page(vma) || vma_is_shmem(vma)))
->  			return false;
->  	}
->  
-> @@ -1941,7 +1940,8 @@ static int userfaultfd_api(struct userfaultfd_ctx *ctx,
->  	/* report all available features and ioctls to userland */
->  	uffdio_api.features = UFFD_API_FEATURES;
->  #ifndef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
-> -	uffdio_api.features &= ~UFFD_FEATURE_MINOR_HUGETLBFS;
-> +	uffdio_api.features &=
-> +		~(UFFD_FEATURE_MINOR_HUGETLBFS | UFFD_FEATURE_MINOR_SHMEM);
->  #endif
->  	uffdio_api.ioctls = UFFD_API_IOCTLS;
->  	ret = -EFAULT;
-> diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-> index bafbeb1a2624..159a74e9564f 100644
-> --- a/include/uapi/linux/userfaultfd.h
-> +++ b/include/uapi/linux/userfaultfd.h
-> @@ -31,7 +31,8 @@
->  			   UFFD_FEATURE_MISSING_SHMEM |		\
->  			   UFFD_FEATURE_SIGBUS |		\
->  			   UFFD_FEATURE_THREAD_ID |		\
-> -			   UFFD_FEATURE_MINOR_HUGETLBFS)
-> +			   UFFD_FEATURE_MINOR_HUGETLBFS |	\
-> +			   UFFD_FEATURE_MINOR_SHMEM)
->  #define UFFD_API_IOCTLS				\
->  	((__u64)1 << _UFFDIO_REGISTER |		\
->  	 (__u64)1 << _UFFDIO_UNREGISTER |	\
-> @@ -185,6 +186,9 @@ struct uffdio_api {
->  	 * UFFD_FEATURE_MINOR_HUGETLBFS indicates that minor faults
->  	 * can be intercepted (via REGISTER_MODE_MINOR) for
->  	 * hugetlbfs-backed pages.
-> +	 *
-> +	 * UFFD_FEATURE_MINOR_SHMEM indicates the same support as
-> +	 * UFFD_FEATURE_MINOR_HUGETLBFS, but for shmem-backed pages instead.
->  	 */
->  #define UFFD_FEATURE_PAGEFAULT_FLAG_WP		(1<<0)
->  #define UFFD_FEATURE_EVENT_FORK			(1<<1)
-> @@ -196,6 +200,7 @@ struct uffdio_api {
->  #define UFFD_FEATURE_SIGBUS			(1<<7)
->  #define UFFD_FEATURE_THREAD_ID			(1<<8)
->  #define UFFD_FEATURE_MINOR_HUGETLBFS		(1<<9)
-> +#define UFFD_FEATURE_MINOR_SHMEM		(1<<10)
->  	__u64 features;
->  
->  	__u64 ioctls;
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 4e358601c5d6..cc71a445c76c 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3972,9 +3972,11 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
->  	 * something).
->  	 */
->  	if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT > 1) {
-> -		ret = do_fault_around(vmf);
-> -		if (ret)
-> -			return ret;
-> +		if (likely(!userfaultfd_minor(vmf->vma))) {
-> +			ret = do_fault_around(vmf);
-> +			if (ret)
-> +				return ret;
-> +		}
->  	}
->  
->  	ret = __do_fault(vmf);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index b72c55aa07fc..3f48cb5e8404 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1785,7 +1785,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->   * vm. If we swap it in we mark it dirty since we also free the swap
->   * entry since a page cannot live in both the swap and page cache.
->   *
-> - * vmf and fault_type are only supplied by shmem_fault:
-> + * vma, vmf, and fault_type are only supplied by shmem_fault:
->   * otherwise they are NULL.
->   */
->  static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
-> @@ -1820,6 +1820,14 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  
->  	page = pagecache_get_page(mapping, index,
->  					FGP_ENTRY | FGP_HEAD | FGP_LOCK, 0);
-> +
-> +	if (page && vma && userfaultfd_minor(vma)) {
-> +		unlock_page(page);
-> +		put_page(page);
-> +		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
-> +		return 0;
-> +	}
-> +
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com
+---
+ arch/x86/mm/pat/memtype.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Okay, Peter persuaded you to move that up here: where indeed it
-does look better than the earlier "swapped" version.
-
-But will crash on swap as it's currently written: it needs to say
-		if (!xa_is_value(page)) {
-			unlock_page(page);
-			put_page(page);
-		}
-
-I did say before that it's more robust to return from the swap
-case after doing the shmem_swapin_page(). But I might be slowly
-realizing that the ioctl to add the pte (in 4/9) will do its
-shmem_getpage_gfp(), and that will bring in the swap if user
-did not already do so: so I was wrong to claim more robustness
-the other way, this placement should be fine. I think.
-
->  	if (xa_is_value(page)) {
->  		error = shmem_swapin_page(inode, index, &page,
->  					  sgp, gfp, vma, fault_type);
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index 6084d14..3112ca7 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -800,6 +800,7 @@ void memtype_free_io(resource_size_t start, resource_size_t end)
+ 	memtype_free(start, end);
+ }
+ 
++#ifdef CONFIG_X86_PAT
+ int arch_io_reserve_memtype_wc(resource_size_t start, resource_size_t size)
+ {
+ 	enum page_cache_mode type = _PAGE_CACHE_MODE_WC;
+@@ -813,6 +814,7 @@ void arch_io_free_memtype_wc(resource_size_t start, resource_size_t size)
+ 	memtype_free_io(start, start + size);
+ }
+ EXPORT_SYMBOL(arch_io_free_memtype_wc);
++#endif
+ 
+ pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+ 				unsigned long size, pgprot_t vma_prot)
