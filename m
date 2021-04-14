@@ -2,85 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C3235FB57
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A06335FB61
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351805AbhDNTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:08:45 -0400
-Received: from mga14.intel.com ([192.55.52.115]:12463 "EHLO mga14.intel.com"
+        id S234801AbhDNTMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:12:42 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22337 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346306AbhDNTIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:08:43 -0400
-IronPort-SDR: kKFhk/85/RobLfCGWxU3/buJaQBXPdf1pQ3cC5WEP0g/6EM5mqHonGoTxfhwWpFFW+rnupClUt
- T+P3djqovIcA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194278294"
+        id S234378AbhDNTMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:12:40 -0400
+IronPort-SDR: R5N/FHnBdgfYqbba85zyWnoCARHy21qItLk8cK+o3/yFRN8ebzioT3qzsmtkvV0C2rBTv61v0z
+ UGQ17Lg4bWUw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191528850"
 X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="194278294"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:08:21 -0700
-IronPort-SDR: z6Ri1ebOTvWmj4PEWaqchvSi7jLBHlRCzk7MYia5l70Ebpg+H3Jn5ONHVaVpa6hrEkbekUY7PA
- wok4FEiA+01A==
+   d="scan'208";a="191528850"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:12:18 -0700
+IronPort-SDR: SbYrAMIG0Pb5MgtqhxeBJpGZ5CVAn0NP4DKcBnM/d5K0ofKcYtCFFtu2VekZBRLaP7vDrMnuI/
+ Fu0AbuuX1m2w==
 X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="424867041"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:08:21 -0700
-Date:   Wed, 14 Apr 2021 12:09:50 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     Mark Brown <broonie@kernel.org>
-cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yilun.xu@intel.com, jdelvare@suse.com, linux@roeck-us.net,
-        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
-        russell.h.weight@intel.com, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] spi: Add DFL bus driver for Altera SPI Master
-In-Reply-To: <20210414141816.GD4535@sirena.org.uk>
-Message-ID: <alpine.DEB.2.22.394.2104141203480.482712@rhweight-WRK1>
-References: <20210413225835.459662-1-matthew.gerlach@linux.intel.com> <20210413225835.459662-2-matthew.gerlach@linux.intel.com> <20210414141816.GD4535@sirena.org.uk>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+   d="scan'208";a="532880222"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:12:17 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWkvu-00455M-5i; Wed, 14 Apr 2021 22:12:14 +0300
+Date:   Wed, 14 Apr 2021 22:12:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
+Message-ID: <YHc+jpfOX9xiZLMh@smile.fi.intel.com>
+References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+ <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+ <YHcnckePpKDujCU+@kroah.com>
+ <YHcqxMLR44laX2PZ@smile.fi.intel.com>
+ <YHc68v7keeITnA3K@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHc68v7keeITnA3K@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 08:56:50PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 14, 2021 at 08:47:48PM +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 14, 2021 at 07:33:38PM +0200, Greg Kroah-Hartman wrote:
+> > > On Wed, Apr 14, 2021 at 08:12:46PM +0300, Alexander Shishkin wrote:
+
+...
+
+> > Nothing, just will require additional export_uuid() / import_uuid() call.
+> 
+> Isn't that the "correct way" here?
+
+I agree that it is better, yes.
+
+> > > > -	generate_random_uuid(pn->uuid.b);
+> > > 
+> > > Ok, that's not good, but that looks to be a flaw in the
+> > > generate_random_uuid() api, not this driver implementation.
+> > > 
+> > > I don't understand why this change is needed?
+> > 
+> > Using raw buffer APIs against uuid_t / guid_t.
+> 
+> So you want to do that, or you do not want to do that?  Totally
+> confused,
+
+It is matter of consistency, so two possibilities here:
+- use types _and_ APIs for raw buffer (this patch)
+- use types _and_ APIs for uuid_t (suggested in this discussion)
+
+Currently it uses uuid_t type _and_ raw buffer APIs — inconsistency.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On Wed, 14 Apr 2021, Mark Brown wrote:
-
-> On Tue, Apr 13, 2021 at 03:58:34PM -0700, matthew.gerlach@linux.intel.com wrote:
->
->> +++ b/drivers/spi/spi-altera-dfl.c
->> @@ -0,0 +1,222 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * DFL bus driver for Altera SPI Master
->> + *
->
-> Please make the entire comment a C++ one so things look more
-> intentional.
-
-Ok, I'll change it in the next revision.
-
->
->> +	memset(&pdevinfo, 0, sizeof(pdevinfo));
->> +
->> +	pdevinfo.name = "subdev_spi_altera";
->> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
->> +	pdevinfo.parent = dev;
->> +	pdevinfo.data = &pdata;
->> +	pdevinfo.size_data = sizeof(pdata);
->> +
->> +	return platform_device_register_full(&pdevinfo);
->
-> Don't create a platform device here, extend the spi-altera driver to
-> register with both DFL and platform buses.
->
-
-Are you suggesting something like the SPI driver for the Designware 
-controller where there is spi-dw-core.c and bus specific code like 
-spi-dw-pci.c and spi-dw-mmioc.c?
-
-Thanks for the review.
-
-Matthew
