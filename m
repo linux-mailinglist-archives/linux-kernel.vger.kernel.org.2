@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9240D35FC68
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B91B35FC6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbhDNUOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:14:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348186AbhDNUOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:14:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4FBF61177;
-        Wed, 14 Apr 2021 20:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618431232;
-        bh=pjYXcJSJfnY3qBJHkeakI7NfbOgpLhAxUI1E81NIjo8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hLv3Ib10bDmBqFSKlEZPpNJezJ0auMwkgvRwCY69qwsJZZrMfYubt9nR3sPB2RdiC
-         OD0xYvbOZrb1yyXmE2TV+bRyhSHixzd0RY/Kv86yi6XM+eWC/RnuaYLtB/nHnacIIb
-         cMnp8SLoMASnI1D4A5Ry6Dd8WNLwvoqP2RGC2TUD+9n6wjzFJfxbzGlGIcp550/tAZ
-         NNejaTj/mykj4n9EZB+bei0FCt4r3QrIMzpV5FXZJ9hVVWlO9h4h8391W0dkQ0yhP1
-         afDjvWy6bw4pCeUpnJh6KgJTt19fuKcBy7AO/OpXIOQu8B3NyC5ewUYDNrvkrlvbKi
-         ru7dWmfnXZtNA==
-Date:   Wed, 14 Apr 2021 15:14:03 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2][next] iommu/vt-d: Fix out-bounds-warning in
- intel_svm_page_response()
-Message-ID: <20210414201403.GA392764@embeddedor>
+        id S1345674AbhDNUPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233973AbhDNUPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:15:41 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEABC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:15:19 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id m18so8568069plc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LMn4fRwscQ/SJvwZ2LjbT42lX4Wost4d9Na2ULpirlU=;
+        b=TqH0puN1wxvV9PRIQzZzH+0TMRpojPhI54y5C12M9KuJRQVjtTXxetefGc2E0238zC
+         t6QRQN57CMW9wqEdxIKdLLLFZUQRYGNaUlZMbgAcueEikTnS+nQirDXZXrSbb/8Ye/Zv
+         Yr+vhKv3RUfE7PYz0A3THFwX+EDGV2hMWP+QFEYQYwlmv5l2kOcn3DAGB0xzEf75EhIH
+         glhYz87YtCc2ShAz5u17L7LUizjhAsfutRjj+7YHnrkZJ8mCiEAhpC7prFZafU8ALfQl
+         qGYy252nuL8bPV4QAweOnpasQvQQ7+qDXiXRBJirZdRIUIlaBYpxxejIZhZD98LYdzGg
+         CfOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LMn4fRwscQ/SJvwZ2LjbT42lX4Wost4d9Na2ULpirlU=;
+        b=A94Xr3tUO888FyF49fgU0JVJ1x4oxS7eNJ8l57GlQS0Bk9F6AddniH9MfsGc3BBNgr
+         qqZ9AetxH37W+f87IdydDtNMt5KYCEsL2cIS2aALJR2OppOY97EY7G58uXXR5rq8ulU/
+         +M4jfVEPBjqlL1dcP3TcmmUp615Z866xDkSV/8pkzcwHB8E7HQMEuFX0GCb+SBEaQV3/
+         ZC5H+TaDwCyPVnHrueQIizzm5eLBCo/A1CXqj2KyuA5wcwSPVoU1dxk6UwbAf43LYuzA
+         MeY3FfGEDPStB0rnRtUFtp1GKFp5Fx9sYAU3/LgiZ+lBjg0IOQAIvNos6Gx5VdMkPnGS
+         hF8g==
+X-Gm-Message-State: AOAM531f/5MG90G+9Yf+vkJHBoCQ45tgLByVnnSa/cr/YszfID0EQfVt
+        6S8RmyJMH6una/W95vzJWdZxu4Erm6ZaGvrHUyzD0w==
+X-Google-Smtp-Source: ABdhPJzy6Rpb327sBb0x/Zl1tf0U0NLDoXiUdSLgNSDIUf2B23x8sSBULWUzuP9Efwy9sM7R6gaRoivG8E7X1Pm+bgE=
+X-Received: by 2002:a17:90a:ce8d:: with SMTP id g13mr5311217pju.85.1618431319245;
+ Wed, 14 Apr 2021 13:15:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+ <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+ <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
+ <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+ <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+ <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+ <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+ <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+ <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
+ <feed2c13dbe34279a03929a588c46c67@AcuMS.aculab.com> <CAOFY-A21tjC5dWwM0W0aXHij40kKj2JNo5Nq4X8mBZZdKwr+AA@mail.gmail.com>
+ <2c6885b0241d4127b8cb7e38abbbe1e5@AcuMS.aculab.com> <CANn89iJj9254GORTsabwv6ZBPWzebR4iYAj9VYxuOZSrF99fNg@mail.gmail.com>
+ <1e5576a1a5b24cb0b1d53b9bb22d528e@AcuMS.aculab.com> <CANn89iKmUJRf3FNuk6BhC06Qt-C_RuYfxPUm-1Ho0ztL0KJsLg@mail.gmail.com>
+ <CAOFY-A1Nff_99-V+W-xyhq3g4kvqXPzM3eWAQV2WpzrxPfjeFw@mail.gmail.com> <CANn89iK_mRog=vN4krT_86_CfWBWAz1w8c3Tr51xbdS5V45ATg@mail.gmail.com>
+In-Reply-To: <CANn89iK_mRog=vN4krT_86_CfWBWAz1w8c3Tr51xbdS5V45ATg@mail.gmail.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Wed, 14 Apr 2021 13:15:08 -0700
+Message-ID: <CAOFY-A2JZTuthaOMs5Edrkjz2YjnsQTt_YF=RA8F4x1MXb3mjQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a couple of calls to memcpy() with simple assignments in order
-to fix the following out-of-bounds warning:
+On Wed, Apr 14, 2021 at 10:35 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Wed, Apr 14, 2021 at 7:15 PM Arjun Roy <arjunroy@google.com> wrote:
+> >
+> > On Wed, Apr 14, 2021 at 9:10 AM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Wed, Apr 14, 2021 at 6:08 PM David Laight <David.Laight@aculab.com> wrote:
+> > > >
+> > > > From: Eric Dumazet
+> > > > > Sent: 14 April 2021 17:00
+> > > > ...
+> > > > > > Repeated unsafe_get_user() calls are crying out for an optimisation.
+> > > > > > You get something like:
+> > > > > >         failed = 0;
+> > > > > >         copy();
+> > > > > >         if (failed) goto error;
+> > > > > >         copy();
+> > > > > >         if (failed) goto error;
+> > > > > > Where 'failed' is set by the fault handler.
+> > > > > >
+> > > > > > This could be optimised to:
+> > > > > >         failed = 0;
+> > > > > >         copy();
+> > > > > >         copy();
+> > > > > >         if (failed) goto error;
+> > > > > > Even if it faults on every invalid address it probably
+> > > > > > doesn't matter - no one cares about that path.
+> > > > >
+> > > > >
+> > > > > On which arch are you looking at ?
+> > > > >
+> > > > > On x86_64 at least, code generation is just perfect.
+> > > > > Not even a conditional jmp, it is all handled by exceptions (if any)
+> > > > >
+> > > > > stac
+> > > > > copy();
+> > > > > copy();
+> > > > > clac
+> > > > >
+> > > > >
+> > > > > <out_of_line>
+> > > > > efault_end: do error recovery.
+> > > >
+> > > > It will be x86_64.
+> > > > I'm definitely seeing repeated tests of (IIRC) %rdx.
+> > > >
+> > > > It may well be because the compiler isn't very new.
+> > > > Will be an Ubuntu build of 9.3.0.
+> > > > Does that support 'asm goto with outputs' - which
+> > > > may be the difference.
+> > > >
+> > >
+> > > Yep, probably. I am using some recent clang version.
+> > >
+> >
+> > On x86-64 I can confirm, for me it (4 x unsafe_get_user()) compiles
+> > down to stac + lfence + 8 x mov + clac as straight line code. And
+> > results in roughly a 5%-10% speedup over copy_from_user().
+> >
+>
+> But rseq_get_rseq_cs() would still need three different copies,
+> with 3 stac+lfence+clac sequences.
+>
+> Maybe we need to enclose all __rseq_handle_notify_resume() operations
+> in a single section.
+>
+>
 
-drivers/iommu/intel/svm.c:1198:4: warning: 'memcpy' offset [25, 32] from the object at 'desc' is out of the bounds of referenced subobject 'qw2' with type 'long long unsigned int' at offset 16 [-Warray-bounds]
+To provide a bit of further exposition on this point, if you do 4x
+unsafe_get_user() recall I mentioned a 5-10% improvement. On the other
+hand, 4x normal get_user() I saw something like a 100% (ie. doubling
+of sys time measured) regression.
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy(). This causes a legitimate compiler warning because memcpy()
-overruns the length of &desc.qw2 and &resp.qw2, respectively.
+I assume that's the fault of multiple stac+clac.
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
+-Arjun
 
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Fix another instance of this same issue in prq_event_thread().
-
- drivers/iommu/intel/svm.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 5165cea90421..332365ec3195 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1020,9 +1020,10 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 			resp.qw2 = 0;
- 			resp.qw3 = 0;
- 
--			if (req->priv_data_present)
--				memcpy(&resp.qw2, req->priv_data,
--				       sizeof(req->priv_data));
-+			if (req->priv_data_present) {
-+				resp.qw2 = req->priv_data[0];
-+				resp.qw3 = req->priv_data[1];
-+			}
- 			qi_submit_sync(iommu, &resp, 1, 0);
- 		}
- prq_advance:
-@@ -1194,9 +1195,10 @@ int intel_svm_page_response(struct device *dev,
- 		desc.qw1 = QI_PGRP_IDX(prm->grpid) | QI_PGRP_LPIG(last_page);
- 		desc.qw2 = 0;
- 		desc.qw3 = 0;
--		if (private_present)
--			memcpy(&desc.qw2, prm->private_data,
--			       sizeof(prm->private_data));
-+		if (private_present) {
-+			desc.qw2 = prm->private_data[0];
-+			desc.qw3 = prm->private_data[1];
-+		}
- 
- 		qi_submit_sync(iommu, &desc, 1, 0);
- 	}
--- 
-2.27.0
-
+>
+>
+>
+>
+>
+> > -Arjun
+> >
+> >
+> > > >         David
+> > > >
+> > > > -
+> > > > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> > > > Registration No: 1397386 (Wales)
