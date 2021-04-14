@@ -2,114 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAF735EB04
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F72135EB06
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345895AbhDNCkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S1346341AbhDNCkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345683AbhDNCka (ORCPT
+        with ESMTP id S1345944AbhDNCkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:40:30 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2BAC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:40:09 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id cm5-20020a17090afa05b029014dcddf9939so9336842pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=qaeiP4TcmkgXReccF8JNSG63nl5JyNyZTFgqbhXpA8w=;
-        b=Inaem3hvoh6bBnQ/t6s8zhXAyDUbPjoohiMB3we9nLNBh9OKJSk3yK1ERidnzbCHKZ
-         8av0rHQJyFviHs3ODvVWEuBu5GgTUa02STo6Z1Vh0ois97JRYkWHQyptVwRgwoRqqdlp
-         jJfbzKXePPrVxhP0YSvbNs9AJ1lvAxYtAyPxAdzq66BU8IVKBGZXLTzI+mc7OlKjsF3l
-         b/8UvlKL+4XI5AlKBqS5QDBKrFGMW3hzsYog3y+O+yWhQpaO4jb6Q+GJFGG3CnCXY5zb
-         LebyUhmGy0RY2GgthKz/nGW7bfOuMWsmoe1FNMfsvD7Fw+fNnuPNXzEdftYUUZVvApUC
-         0olw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=qaeiP4TcmkgXReccF8JNSG63nl5JyNyZTFgqbhXpA8w=;
-        b=a85mBz9AbEU5BvV96oyFW95oM/XiAr8jkIKkO0KHqOJM2NAJxzIpE+q8IXsUwE+rf4
-         Chvp13/YB11l9tr4M+mroRvTyNkEWukRWN9Jf6dTStvSp4Fl0OeD888tr1jS5uDHNoDf
-         3r8isDisvchjgAHFBIo7sjNA/MeJV2fx8n4ptKX9Y2ZH6kMpaM+xktPIy8h1j4uuBUnP
-         6iY3FODA9wIKcVfhMnQDBktdTwrqgXA2ix3sYU/lyzHfAWDxKt9hSxVmskXlEzV6hfRx
-         PN+3Yg0DKe0OXsPVUhkEmHflKCBq+sRItrFGtwsl5WCBBGQ2XcCVTm4VKgraI8+sas1J
-         q5qA==
-X-Gm-Message-State: AOAM532FZhijYtgh3TgLD82RMkY+bXcyt/8eM9hvjGcfIrJtQCX7e7Wy
-        j9+M7BsEdK+XAXT80OWBygpk+3zCiXk=
-X-Google-Smtp-Source: ABdhPJwPV18N9xjx5dwA3igxAJiFUaZL/VMUHoyaPfs+7PbKnBAcBE9xSAnWOXyldokRvRo3Bqkk4S2P2pk=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:91dd:58ac:7590:aa21])
- (user=badhri job=sendgmr) by 2002:a62:4d86:0:b029:252:c889:2dd8 with SMTP id
- a128-20020a624d860000b0290252c8892dd8mr1790835pfb.41.1618368009191; Tue, 13
- Apr 2021 19:40:09 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 19:40:00 -0700
-In-Reply-To: <20210414024000.4175263-1-badhri@google.com>
-Message-Id: <20210414024000.4175263-3-badhri@google.com>
-Mime-Version: 1.0
-References: <20210414024000.4175263-1-badhri@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v3 3/3] dt-bindings:: connector: Add slow-charger-loop definition
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 13 Apr 2021 22:40:47 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE41C061574;
+        Tue, 13 Apr 2021 19:40:26 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWVS1-005B4L-DP; Wed, 14 Apr 2021 02:40:21 +0000
+Date:   Wed, 14 Apr 2021 02:40:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, matthew.wilcox@oracle.com,
+        khlebnikov@yandex-team.ru
+Subject: Re: [PATCH RFC 0/6] fix the negative dentres bloating system memory
+ usage
+Message-ID: <YHZWFQp8seUUxHe9@zeniv-ca.linux.org.uk>
+References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows PMIC charger loops which are slow(i.e. cannot meet the
-15ms deadline) to still comply to pSnkStby i.e Maximum power
-that can be consumed by sink while in Sink Standby state as defined
-in 7.4.2 Sink Electrical Parameters of USB Power Delivery Specification
-Revision 3.0, Version 1.2.
+On Thu, Jan 21, 2021 at 06:49:39PM +0530, Gautham Ananthakrishna wrote:
 
-This patch introduces slow-charger-loop which when set makes
-the port request PD_P_SNK_STDBY_MW(2.5W i.e 500mA@5V) upon entering
-SNK_DISCOVERY (instead of 3A or the 1.5A during SNK_DISCOVERY) and the
-actual currrent limit after RX of PD_CTRL_PSRDY for PD link or during
-SNK_READY for non-pd link.
+> We tested this patch set recently and found it limiting negative dentry to a
+> small part of total memory. The following is the test result we ran on two
+> types of servers, one is 256G memory with 24 CPUS and another is 3T memory
+> with 384 CPUS. The test case is using a lot of processes to generate negative
+> dentry in parallel, the following is the test result after 72 hours, the
+> negative dentry number is stable around that number even after running longer
+> for much longer time. Without the patch set, in less than half an hour 197G was
+> taken by negative dentry on 256G system, in 1 day 2.4T was taken on 3T system.
+> 
+> system memory   neg-dentry-number   neg-dentry-mem-usage
+> 256G            55259084            10.6G
+> 3T              202306756           38.8G
+> 
+> For perf test, we ran the following, and no regression found.
+> 
+> 1. create 1M negative dentry and then touch them to convert them to positive
+>    dentry
+> 
+> 2. create 10K/100K/1M files
+> 
+> 3. remove 10K/100K/1M files
+> 
+> 4. kernel compile
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-Changes since V2:
-To address Rob's comments
-* Updated commit and the binding description.
-* Updated subject as well.
----
- .../devicetree/bindings/connector/usb-connector.yaml   | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-index b6daedd62516..32509b98142e 100644
---- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-+++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-@@ -197,6 +197,16 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     enum: [1, 2, 3]
- 
-+  slow-charger-loop:
-+    description: Allows PMIC charger loops which are slow(i.e. cannot meet the 15ms deadline) to
-+      still comply to pSnkStby i.e Maximum power that can be consumed by sink while in Sink Standby
-+      state as defined in 7.4.2 Sink Electrical Parameters of USB Power Delivery Specification
-+      Revision 3.0, Version 1.2. When the property is set, the port requests pSnkStby(2.5W -
-+      5V@500mA) upon entering SNK_DISCOVERY(instead of 3A or the 1.5A, Rp current advertised, during
-+      SNK_DISCOVERY) and the actual currrent limit after reception of PS_Ready for PD link or during
-+      SNK_READY for non-pd link.
-+    type: boolean
-+
- required:
-   - compatible
- 
--- 
-2.31.1.295.g9ea45b61b8-goog
-
+Good for you; how would that work for thinner boxen, though?  I agree that if you
+have 8M hash buckets your "no more than 3 unused negatives per bucket" is generous
+enough for everything, but that's less obvious for something with e.g 4 or 8 gigs.
+And believe it or not, there are real-world boxen like that ;-)
