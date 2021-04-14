@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156B635F593
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0FD35F5A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351664AbhDNNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:51:28 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:54239 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349084AbhDNNvV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:51:21 -0400
-X-Originating-IP: 93.61.96.190
-Received: from uno.LocalDomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E265A60010;
-        Wed, 14 Apr 2021 13:50:56 +0000 (UTC)
-From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/5] arm64: dts: renesas: Enable GMSL on R8A77970 V3M Eagle
-Date:   Wed, 14 Apr 2021 15:51:23 +0200
-Message-Id: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
-X-Mailer: git-send-email 2.31.1
+        id S1349188AbhDNNwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:52:10 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52161 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351702AbhDNNwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:52:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FL3mG2lZMz9sX5;
+        Wed, 14 Apr 2021 23:51:26 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618408286;
+        bh=0ZHHhWHIWZ3sCbWllT/QqDes1z9nCDYXTSwDbroDug0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AdTKeTifOhH12mtMIFYRQnemQ6jf0L5qUPLj6Kt20HQ7HIL9fzOZv7kTc4f8YbQ7I
+         0lYBovbB90Hre8GRyovABbkyZc3xS33d0EBFjC5Qz8kWbla3a9/j6IRE0itR87vpaa
+         QAviHaYmafXHKPMqGnQR6z+zUmlNooY9Y9IwD2BqIvhz46Fbsp8L2oXRVLGj7CkKyI
+         Sc5U4paviDDExzjcHy7Bd+DmOvQFMTv6h8LABBsRrw6oUV16wdfwEp/dyjJ6gH7VQp
+         +As4N7kylslFSrETbFqjboBTGR9ZhpRJXW5w7R4w/PZ6nE2aRv3D7IFtuKtMwCUS1u
+         G8rnAN9WaxUaA==
+Date:   Wed, 14 Apr 2021 23:51:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the drivers-x86
+ tree
+Message-ID: <20210414235123.4ebcd479@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-   this series follows
-https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=448427
-but implements a different way of handling the regulator-gpio_controller
-circular dependency which is hunting us.
+--Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As suggested during review of v2 by Laurent, instead of using a gpio-hog to
-force the MAX9286 gpio line that controls the remote cameras power, this series
-introduces a new vendor property that allows to declare that the camera power
-is controlled by the MAX9286 chip, instead than relying on a canonical supply,
-which is impossible to establish as consumer of the gpio controller registered
-by the driver.
+Hi all,
 
-The series introduces the new property and add support for parsing it in the
-driver.
+Commit
 
-The DTS changes that follow are identical to v2, and comments there have not
-been addressed waiting for a validation of patches 1 and 2.
+  ff57cfaa3d68 ("platform/x86: pmc_atom: Match all Beckhoff Automation bayt=
+rail boards with critclk_systems DMI table")
 
-Thanks
-   j
+is missing a Signed-off-by from its committer.
 
-Jacopo Mondi (2):
-  dt-bindings: media: max9286: Define 'maxim,gpio-poc'
-  media: i2c: max9286: Use "maxim,gpio-poc" property
+--=20
+Cheers,
+Stephen Rothwell
 
-Kieran Bingham (3):
-  arm64: dts: renesas: eagle: Enable MAX9286
-  arm64: dts: renesas: eagle: Add GMSL .dtsi
-  arm64: dts: renesas: eagle: Include eagle-gmsl
+--Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
- .../bindings/media/i2c/maxim,max9286.yaml     |  53 ++++-
- arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi   | 186 ++++++++++++++++++
- .../arm64/boot/dts/renesas/r8a77970-eagle.dts | 122 ++++++++++++
- drivers/media/i2c/max9286.c                   | 125 +++++++++---
- 4 files changed, 456 insertions(+), 30 deletions(-)
- create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+-----BEGIN PGP SIGNATURE-----
 
---
-2.31.1
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB281sACgkQAVBC80lX
+0GzCcgf9E/42ltlfr3LxUfO1LBojjC3c+69V+7zG+tRvIS2/gZwt2rYIIrcS5aS3
+cwDPXy3zRRzmEki00qOcBqpnFaixhTps5GcOYQlRRyCPC1LXusOFC7vrljjNuCRM
+yY+I6eVNDVWbGhesL7gS1YZjIwXrLb70SpXvVdpHLZ7CLTud5Scxipmv4kHT/19r
+j9mb4TmT5DsPzoaUVPHwEHCuAjMkysGcMQggr9TvtAffwngWEDZb9sAV6OlYy/dx
+pOLbnnHzjVUTjXgm6XkIdj0eYwZgBNVNOSQeOwJdghr2/r1g3mqnAPVD31p/sAA2
+Koi9kX5laYaaO3pYu215LrcDIcxGqg==
+=34t8
+-----END PGP SIGNATURE-----
 
+--Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ--
