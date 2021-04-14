@@ -2,109 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CEB35EA3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2F235EA42
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbhDNBPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 21:15:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56433 "EHLO mga18.intel.com"
+        id S242793AbhDNBSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 21:18:17 -0400
+Received: from mga05.intel.com ([192.55.52.43]:13088 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233131AbhDNBP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 21:15:29 -0400
-IronPort-SDR: dikCzMP0PNn8/yjq5SQy/L0E7x7MyxuADzo7mvnfDY0hx5xdl6XqLm9eSi2v3hNPfezllVHC7Z
- KI9+yvjTwLAQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="182049681"
+        id S231983AbhDNBSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 21:18:16 -0400
+IronPort-SDR: /38Fmp4TnEtcqdR4a3wEmuP+pv8SlcuzXp3ZPhSfCqNIFWO/yllveqe6cgIc/yHZdFOs1XNRAW
+ tVZ2islxaCmg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279850521"
 X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="182049681"
+   d="scan'208";a="279850521"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 18:15:03 -0700
-IronPort-SDR: B4Xn+ZbkfFXtRWDT1D22DdiC7dqMvOjORm2cMGVAjqXfjXpgDCqJXbv1L9qZJyaejdM7jB+PSf
- jjVnvVXsLz/A==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 18:17:55 -0700
+IronPort-SDR: FdDLUHla0g04zOeCMteLz5CYLoP3B8ENkU2tWAe3ITen9tISFv/JAFqoBg5dmPltYdm9Y8euU1
+ oX0eOkxT57rQ==
 X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="424498356"
-Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.254.189.132])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 13 Apr 2021 18:15:01 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     linux-sgx@vger.kernel.org, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc:     dave.hansen@intel.com, "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8] x86/sgx: Maintain encl->refcount for each
- encl->mm_list entry
-References: <20210207221401.29933-1-jarkko@kernel.org>
-Date:   Tue, 13 Apr 2021 20:15:09 -0500
+   d="scan'208";a="424499263"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 18:17:51 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+        <20210408130820.48233-2-linmiaohe@huawei.com>
+        <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
+Date:   Wed, 14 Apr 2021 09:17:47 +0800
+In-Reply-To: <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com> (Miaohe Lin's
+        message of "Tue, 13 Apr 2021 20:39:24 +0800")
+Message-ID: <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.01te3jzwwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
-In-Reply-To: <20210207221401.29933-1-jarkko@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 07 Feb 2021 16:14:01 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-> This has been shown in tests:
+> On 2021/4/12 15:24, Huang, Ying wrote:
+>> "Huang, Ying" <ying.huang@intel.com> writes:
+>> 
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>>>> patch adds the percpu_ref support for later fixup.
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  include/linux/swap.h |  2 ++
+>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
+>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>> index 144727041e78..849ba5265c11 100644
+>>>> --- a/include/linux/swap.h
+>>>> +++ b/include/linux/swap.h
+>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>>>   * The in-memory structure used to track swap areas.
+>>>>   */
+>>>>  struct swap_info_struct {
+>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>>>  	signed short	prio;		/* swap priority of this type */
+>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
+>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>>>  	struct file *swap_file;		/* seldom referenced */
+>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>>>> +	struct completion comp;		/* seldom referenced */
+>>>>  #ifdef CONFIG_FRONTSWAP
+>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>>> index 149e77454e3c..724173cd7d0c 100644
+>>>> --- a/mm/swapfile.c
+>>>> +++ b/mm/swapfile.c
+>>>> @@ -39,6 +39,7 @@
+>>>>  #include <linux/export.h>
+>>>>  #include <linux/swap_slots.h>
+>>>>  #include <linux/sort.h>
+>>>> +#include <linux/completion.h>
+>>>>  
+>>>>  #include <asm/tlbflush.h>
+>>>>  #include <linux/swapops.h>
+>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
+>>>>  	spin_unlock(&si->lock);
+>>>>  }
+>>>>  
+>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>>>> +{
+>>>> +	struct swap_info_struct *si;
+>>>> +
+>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>>>> +	complete(&si->comp);
+>>>> +	percpu_ref_exit(&si->users);
+>>>
+>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
+>>> get_swap_device(), better to add comments there.
+>> 
+>> I just noticed that the comments of percpu_ref_tryget_live() says,
+>> 
+>>  * This function is safe to call as long as @ref is between init and exit.
+>> 
+>> While we need to call get_swap_device() almost at any time, so it's
+>> better to avoid to call percpu_ref_exit() at all.  This will waste some
+>> memory, but we need to follow the API definition to avoid potential
+>> issues in the long term.
 >
-> [  +0.000008] WARNING: CPU: 3 PID: 7620 at kernel/rcu/srcutree.c:374  
-> cleanup_srcu_struct+0xed/0x100
+> I have to admit that I'am not really familiar with percpu_ref. So I read the
+> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
+> be called after exit now. But you're right we need to follow the API definition
+> to avoid potential issues in the long term.
 >
-> This is essentially a use-after free, although SRCU notices it as
-> an SRCU cleanup in an invalid context.
+>> 
+>> And we need to call percpu_ref_init() before insert the swap_info_struct
+>> into the swap_info[].
 >
-The comments in code around this warning indicate a potential memory leak.
-Not sure how use-after-free come into play. Anyway, this fix seems to work  
-for the warning above.
+> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
+> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
+> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
+> or percpu_ref_resurrect() will do the work.
+>
+> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
+> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
+> Maybe I could do this in alloc_swap_info()?
 
-However, I still have doubts on another potential race. See below.
+Yes.  In alloc_swap_info(), you can distinguish newly allocated and
+reused swap_info_struct.
 
+>> 
+>>>> +}
+>>>> +
+>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>>>  {
+>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>>>  	 */
+>>>> -	synchronize_rcu();
+>>>> +	percpu_ref_reinit(&p->users);
+>>>
+>>> Although the effect is same, I think it's better to use
+>>> percpu_ref_resurrect() here to improve code readability.
+>> 
+>> Check the original commit description for commit eb085574a752 "mm, swap:
+>> fix race between swapoff and some swap operations" and discussion email
+>> thread as follows again,
+>> 
+>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
+>> 
+>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
+>> smp_load_acquire() in get_swap_device().  Now we will use
+>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
+>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
+>> ACQUIRE semantics.  Per my understanding, we need to change
+>> percpu_ref_tryget_live() for that.
+>> 
+>
+> Do you mean the below scene is possible?
+>
+> cpu1
+> swapon()
+>   ...
+>   percpu_ref_init
+>   ...
+>   setup_swap_info
+>   /* smp_store_release() is inside percpu_ref_reinit */
+>   percpu_ref_reinit
 
-> diff --git a/arch/x86/kernel/cpu/sgx/driver.c  
-> b/arch/x86/kernel/cpu/sgx/driver.c
-> index f2eac41bb4ff..8ce6d8371cfb 100644
-> --- a/arch/x86/kernel/cpu/sgx/driver.c
-> +++ b/arch/x86/kernel/cpu/sgx/driver.c
-> @@ -72,6 +72,9 @@ static int sgx_release(struct inode *inode, struct  
-> file *file)
->  		synchronize_srcu(&encl->srcu);
->  		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
->  		kfree(encl_mm);
+spin_unlock() has RELEASE semantics already.
 
-Note here you are freeing the encl_mm, outside protection of  
-encl->refcount.
+>   ...
+>
+> cpu2
+> get_swap_device()
+>   /* ignored  smp_rmb() */
+>   percpu_ref_tryget_live
 
-> +
-> +		/* 'encl_mm' is gone, put encl_mm->encl reference: */
-> +		kref_put(&encl->refcount, sgx_encl_release);
->  	}
-> 	kref_put(&encl->refcount, sgx_encl_release);
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c  
-> b/arch/x86/kernel/cpu/sgx/encl.c
-> index 20a2dd5ba2b4..7449ef33f081 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -473,6 +473,9 @@ static void sgx_mmu_notifier_free(struct  
-> mmu_notifier *mn)
->  {
->  	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm,  
-> mmu_notifier);
-> +	/* 'encl_mm' is going away, put encl_mm->encl reference: */
-> +	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
-> +
->  	kfree(encl_mm);
+Some kind of ACQUIRE is required here to guarantee the refcount is
+checked before fetching the other fields of swap_info_struct.  I have
+sent out a RFC patch to mailing list to discuss this.
 
-Could this access to and kfree of encl_mm possibly be after the  
-kfree(encl_mm) noted above?
+>   ...
+>
+> There is indeed missing smp_rmb() in percpu_ref_tryget_live. So I think the above
+> scene possible and we should fix this.
+>
+>>>>  	spin_lock(&swap_lock);
+>>>>  	spin_lock(&p->lock);
+>>>>  	_enable_swap_info(p);
+>>>> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>>>  	spin_unlock(&p->lock);
+>>>>  	spin_unlock(&swap_lock);
+>>>> +
+>>>> +	percpu_ref_kill(&p->users);
+>>>>  	/*
+>>>>  	 * wait for swap operations protected by get/put_swap_device()
+>>>>  	 * to complete
+>>>>  	 */
+>>>> -	synchronize_rcu();
+>>>> +	wait_for_completion(&p->comp);
+>>>
+>>> Better to move percpu_ref_kill() after the comments.  And maybe revise
+>>> the comments.
+>> 
+>> After reading the original commit description as above, I found that we
+>> need synchronize_rcu() here to protect the accessing to the swap cache
+>> data structure.  Because there's call_rcu() during percpu_ref_kill(), it
+>> appears OK to keep the synchronize_rcu() here.  And we need to revise
+>> the comments to make it clear what is protected by which operation.
+>> 
+>
+> Per my understanding, percpu_ref->data->release is called only after the refcnt
+> reaches 0, including a full grace period has elapsed or refcnt won't be 0.
+> wait_for_completion() is used for waiting the last refcnt being released. So
+> synchronize_rcu() is not necessary here?
 
-Also is there a reason we do kfree(encl_mm) in notifier_free not directly  
-in notifier_release?
+Then we will depends on the implementation of percpu_ref.  If it changed
+its implementation, it may take long to find out we need to change the
+code here.  I guess in most cases, even adding a synchronize_rcu() here,
+we still only need to wait for one grace period.  So the overhead to
+call synchronize_rcu() is low here.  And the code is easier to be
+maintained.
 
-Thanks
-Haitao
+Best Regards,
+Huang, Ying
