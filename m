@@ -2,141 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0086035F7F3
+	by mail.lfdr.de (Postfix) with ESMTP id 745C835F7F4
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350268AbhDNPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S1343889AbhDNPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343889AbhDNPhU (ORCPT
+        with ESMTP id S233054AbhDNPhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:37:20 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F64C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:36:57 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id sd23so23437375ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:36:57 -0700 (PDT)
+        Wed, 14 Apr 2021 11:37:47 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8499EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:37:24 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id m9so7574486wrx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f1Y5+4VG6CJZgdx4UWOh8zx7QoiyJatpZDoj3QFWUTQ=;
-        b=piifReYeJ7FkLTHElIuXKecxeioDin2ZIZeegb8sFHRXjwXt1JAz67On69HayK6LXp
-         WXnsqQdz0qMTdsYaz13CI4Ps5BUZMZoSo+ctENjK/Msqg3CfNLwgy1l0yGqQX0h3RXr/
-         bar7RE5EEh7Om2DAWmBxCbhpHXRQQvpp0WGF7W+UiN3onvUnaYrGza5MqgJL4vQ2xwrm
-         UF23oOWmUZWXUvuCSV8Vv+PwJJ6l2bHk8N/LurpMl9GqeGYxZJl+M89fltT0zEin7GUW
-         7yjZkoUHPaefPgIiBu8hKc54YgcQExl6vbEdxrwHPGepZyWC7NlIXAyvR07dtK8dQaoG
-         G0rg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1hAkF6uQknso9XK+xsWSjedRJvb6wjAXtp/pbQAjABE=;
+        b=EvX3F8wO1sVldTauDFFkVpHnThxjQp+z/IkvzXEQlX1pe40orPGvmbYEKeev2z+7Xc
+         6BG2jtNbebgSQjRufagQS4F2IrG4IJOUSDJ5Se5ym7MyK8nRTwgtBUJB3euNfAbtL8Mi
+         3Vpw5zjhTaxCpI4+hshvjuHlM2LBqWLcRsY7WsaZl4y4yy1DNZuKHCP9e+iwqpYX76LG
+         7okaxva6gHCE/vCv4OhQRnY+Vhz2c648Ss1qAi4NJ7HL8nYiLjA3llfQK8dhwRJjl63M
+         YeDsb98l5Tz883pquuOdsW1dsCDdZWP4v5s4aR3m5fH3n7E2ZiIGqMQA2xjPF/pJ4Syu
+         ErJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f1Y5+4VG6CJZgdx4UWOh8zx7QoiyJatpZDoj3QFWUTQ=;
-        b=fhbZkYUpYAmK2PYTRKjkhGiL45yeoCsDTHjcfQWZzoshHAKg1w/+2WTQZ0seF5EQU0
-         ZL7T3s8lZEQgiHPTRVooQLQfGSXcjeF6mg3bPVr9p/HYNHSHcS/oiMI/GF1i6hq6/+Za
-         2dhIfkx11wCxksxUEPYJSXHY9FsazHzV3OsYyS7bgXQOy/zIiyVlThQ8jf4fXxotWlCM
-         gCtxxW+wfNT4b2FOlam/xJhU2Q4n4tYyc4yB76Oir7xINP61HU7Er+JG0nBxZfw385nf
-         WQ7ojPL+DVaIo4rM0AcKrHEb6PY3NS/hwqdQiworUwuWP5lKyiY/QG0qL4eTstRsBtgD
-         mxXA==
-X-Gm-Message-State: AOAM532NRCtUFZtDtdNS1s4XC2zZytvXTb6+rwn3XoKpO7/3aebUQiGz
-        EN8DYbt1iY7Ya0NR1SQPItY=
-X-Google-Smtp-Source: ABdhPJz/ztdQYwfO6w1xd3uWCzCPiq1t76zGTPKMWBjS1uCJxfpa/klwJrm+tbjyMWJ5of0/aiFt+Q==
-X-Received: by 2002:a17:907:629e:: with SMTP id nd30mr38150830ejc.407.1618414616155;
-        Wed, 14 Apr 2021 08:36:56 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id t1sm12190317eds.53.2021.04.14.08.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 08:36:55 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Remove useless led_blink_hdl()
-Date:   Wed, 14 Apr 2021 17:36:54 +0200
-Message-ID: <4318909.BRL0aILv4p@linux.local>
-In-Reply-To: <20210414132414.GE6048@kadam>
-References: <20210414115243.32716-1-fmdefrancesco@gmail.com> <20210414132414.GE6048@kadam>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1hAkF6uQknso9XK+xsWSjedRJvb6wjAXtp/pbQAjABE=;
+        b=i1pbqIWFv1LHo+4vgszTwATOAkoJTrPSrwR4niR4Sx7UyeAwiB8soDuY9rCRWuJmCB
+         Qtfq3OZAIGu+gBIYbmXwGeKagPub2aTr2oM8KRbh5ZNY72IofStAiNkfRhTpp7xWauiS
+         vFYwQeR8fehmNdFockA0p3i4vwrWduJim3DKEgb5VU0CuNVwL59npz/9Zy5o2n0xJLjU
+         63pZnfVIFhUliUx8EmFwkjizbvnAngdy4S0uPpwggOz9ejyee6Z6Rhh91sv91zGjdanh
+         PgdgN4PZ/jRVosVMTVb74OWPTZ/sS8nPeOSuWxlmxY+IxQK/K2Q6S+cgodJicoxjuu6c
+         PaZg==
+X-Gm-Message-State: AOAM530OQzl6fKC7VriSejs12zbfuf1DGCVm931MLp+gBQaWS1wqAUNe
+        9phxNXWW1PnwnGHY+bNh92WSBw==
+X-Google-Smtp-Source: ABdhPJzIeSQmioyjZMS7P6mdUfGqW8tzHZ3e0kdnEp/GlBwX30sKpco/2AkaSWNywQiFZUQ3AITpmA==
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr13876075wrn.178.1618414642498;
+        Wed, 14 Apr 2021 08:37:22 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:49d:95f:49d5:fff7? ([2a01:e0a:90c:e290:49d:95f:49d5:fff7])
+        by smtp.gmail.com with ESMTPSA id g3sm15176270wrp.46.2021.04.14.08.37.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 08:37:21 -0700 (PDT)
+Subject: Re: [PATCH v3 2/3] drm: bridge: add it66121 driver
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>, paul@crapouillou.net,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Phong LE <ple@baylibre.com>
+References: <20210412154648.3719153-1-narmstrong@baylibre.com>
+ <20210412154648.3719153-3-narmstrong@baylibre.com>
+ <CAG3jFysFb+y6ymXsBQatuwtPEYRTBnWTku0EpmNyR2gR5a=Y2w@mail.gmail.com>
+ <3266977b-9d19-c81d-6fd7-b6fa0714b1ef@baylibre.com>
+ <CAG3jFysp+3__TfEyvKSf47q3nYsdRSbkb9LxX2pcJr356yAgKw@mail.gmail.com>
+ <911c73a8-47e8-0bae-2bdd-9eb217b25094@baylibre.com>
+ <YHak0zr0o0thq/fu@pendragon.ideasonboard.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <9f7e7ca9-5c34-91cc-07ab-1a65caf92eac@baylibre.com>
+Date:   Wed, 14 Apr 2021 17:37:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <YHak0zr0o0thq/fu@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, April 14, 2021 3:24:14 PM CEST Dan Carpenter wrote:
-> On Wed, Apr 14, 2021 at 01:52:43PM +0200, Fabio M. De Francesco wrote:
-> > Removed the led_blink_hdl() function (declaration and definition).
-> > Declared dummy_function() in include/rtw_mlme_ext.h and defined it in
-> > core/rtw_cmd.c. Changed the second parameter of GEN_MLME_EXT_HANDLER
-> > macro to make use of dummy_function().
-> > 
-> > Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 4 +++-
-> >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
-> >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 3 ++-
-> >  3 files changed, 5 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > 0297fbad7bce..7b6102a2bb2c 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > @@ -87,6 +87,8 @@ static struct _cmd_callback rtw_cmd_callback[] = {
-> > 
-> >  	{GEN_CMD_CODE(_RunInThreadCMD), NULL},/*64*/
-> >  
-> >  };
-> > 
-> > +u8 dummy_functioni(struct adapter *var0, u8 *var1) { return 0; }
-> > +
-> > 
-> >  static struct cmd_hdl wlancmds[] = {
-> >  
-> >  	GEN_DRV_CMD_HANDLER(0, NULL) /*0*/
-> >  	GEN_DRV_CMD_HANDLER(0, NULL)
-> > 
-> > @@ -150,7 +152,7 @@ static struct cmd_hdl wlancmds[] = {
-> > 
-> >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
-> >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param),
-> >  	set_chplan_hdl) /*59*/> 
-> > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), 
-led_blink_hdl)
-> > /*60*/ +	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param),
-> > dummy_function) /*60*/
-> No, no.  Don't create a dummy function. Do it like so:
+On 14/04/2021 10:16, Laurent Pinchart wrote:
+> Hi Neil,
 > 
-> 	GEN_DRV_CMD_HANDLER(0, NULL) /* 60 */
+> On Wed, Apr 14, 2021 at 10:08:46AM +0200, Neil Armstrong wrote:
+>> On 14/04/2021 10:06, Robert Foss wrote:
+>>> On Wed, 14 Apr 2021 at 08:13, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>>>> Le 13/04/2021 à 22:21, Robert Foss a écrit :
+>>>>> Hey Neil & Phong,
+>>>>>
+>>>>> Thanks for submitting this series!
+>>>>>
+>>>>>> +
+>>>>>> +static const struct drm_bridge_funcs it66121_bridge_funcs = {
+>>>>>> +       .attach = it66121_bridge_attach,
+>>>>>> +       .enable = it66121_bridge_enable,
+>>>>>> +       .disable = it66121_bridge_disable,
+>>>>>> +       .mode_set = it66121_bridge_mode_set,
+>>>>>> +       .mode_valid = it66121_bridge_mode_valid,
+>>>>>> +       .detect = it66121_bridge_detect,
+>>>>>> +       .get_edid = it66121_bridge_get_edid,
+>>>>>> +       .atomic_get_output_bus_fmts = it66121_bridge_atomic_get_output_bus_fmts,
+>>>>>> +       .atomic_get_input_bus_fmts = it66121_bridge_atomic_get_input_bus_fmts,
+>>>>>> +};
+>>>>>
+>>>>> I would like to see an implementation of HPD, since it is supported by
+>>>>> the hardware[1] (and required by the documentation). IRQ status bit 0
+>>>>> seems to be the responsible for notifying us about hot plug detection
+>>>>> events.
+>>>>
+>>>> It's implemented in the IRQ handler with the IT66121_INT_STATUS1_HPD_STATUS event.
+>>>
+>>> I didn't even get that far :)
+>>>
+>>> Either way, the HPD support should be exposed in drm_bridge_funcs
+>>> (.hpd_enable, .hpd_disable (and possibly .hpd_notify)) and
+>>> drm_bridge.ops (DRM_BRIDGE_OP_HPD).
+>>
+>> Indeed I forgot these calls in the NO_CONNECTOR implementation...
 > 
-> regards,
-> dan carpenter
->
-I'm replying late because I didn't want to blindly use that solution; I 
-mean that I wanted to understand why I can simply put 0 and NULL into that 
-macro. I had seen it made in other lines that initialize wlancmds[] 
-elements, but I wasn't sure if it could work for the specific slot where 
-the pointer to led_blinck_hdl was supposed to be placed.
+> For new bridges, you should no implement connector creation, only the
+> DRM_BRIDGE_ATTACH_NO_CONNECTOR case should be supported.
+> 
 
-Now I think that it is why, in this case, cmd_hdl would be set to NULL by 
-the call to wlancmds[pcmd->cmdcode].h2cfuns and the cmd_hdl() function 
-wouldn't be called because cmd_hdl is tested within an "if" statement.
+Right, time to make a clean bridge-only implementation then !
 
-Therefore a simple GEN_DRV_CMD_HANDLER(0, NULL) at slot number would be the 
-simplest and most obvious solution.
+Thanks for your feedbacks,
 
-Is the above argument sound?
-
-Thanks for your kind help,
-
-Fabio
-
-
-
+Neil
