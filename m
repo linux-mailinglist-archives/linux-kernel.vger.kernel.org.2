@@ -2,278 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5877835F666
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F337A35F64E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351838AbhDNOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:44:55 -0400
-Received: from mga02.intel.com ([134.134.136.20]:53050 "EHLO mga02.intel.com"
+        id S1349539AbhDNOkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:40:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:57318 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232060AbhDNOot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:44:49 -0400
-IronPort-SDR: AUUoMhTQInf/w6xtmeh94IGqwi6SUUk2XnkF+see0S6OXHi+liQqHhM3B4Ho+sDSaTqCBEVIvi
- rr1AUpzLF2nQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181775105"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="181775105"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 07:44:23 -0700
-IronPort-SDR: 3viz7qrRAYUYnhI/s8U7s0tCIu2N2zVuDWJISCNQqLOvgFjfoTbeji/lh49TKIfADw5H4veA/C
- oWWOMwFi9PEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="452478799"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Apr 2021 07:44:23 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, ak@linux.intel.com, mark.rutland@arm.com,
-        luto@amacapital.net, eranian@google.com, namhyung@kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V4 2/2] perf/x86: Reset the dirty counter to prevent the leak for an RDPMC task
-Date:   Wed, 14 Apr 2021 07:36:30 -0700
-Message-Id: <1618410990-21383-2-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618410990-21383-1-git-send-email-kan.liang@linux.intel.com>
-References: <1618410990-21383-1-git-send-email-kan.liang@linux.intel.com>
+        id S1348200AbhDNOkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:40:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 077C7113E;
+        Wed, 14 Apr 2021 07:39:40 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.47.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 759063F694;
+        Wed, 14 Apr 2021 07:39:37 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     coresight@lists.linaro.org
+Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] perf cs-etm: Refactor timestamp variable names
+Date:   Wed, 14 Apr 2021 17:39:18 +0300
+Message-Id: <20210414143919.12605-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Remove ambiguity in variable names relating to timestamps.
+A later commit will save the sample kernel timestamp in one
+of the etm structs, so name all elements appropriately to
+avoid confusion.
 
-The counter value of a perf task may leak to another RDPMC task.
-For example, a perf stat task as below is running on CPU 0.
+This is also removes some ambiguity arising from the fact
+that the --timestamp argument to perf record refers to
+sample kernel timestamps, and the /timestamp/ event modifier
+refers to etm timestamps, so the term is overloaded.
 
-    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
-
-In the meantime, an RDPMC task, which is also running on CPU 0, may read
-the GP counters periodically. (The RDPMC task creates a fixed event,
-but read four GP counters.)
-
-    $ taskset -c 0 ./rdpmc_read_all_counters
-    index 0x0 value 0x8001e5970f99
-    index 0x1 value 0x8005d750edb6
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-    index 0x0 value 0x8002358e48a5
-    index 0x1 value 0x8006bd1e3bc9
-    index 0x2 value 0x0
-    index 0x3 value 0x0
-
-It is a potential security issue. Once the attacker knows what the other
-thread is counting. The PerfMon counter can be used as a side-channel to
-attack cryptosystems.
-
-The counter value of the perf stat task leaks to the RDPMC task because
-perf never clears the counter when it's stopped.
-
-Two methods were considered to address the issue.
-- Unconditionally reset the counter in x86_pmu_del(). It can bring extra
-  overhead even when there is no RDPMC task running.
-- Only reset the un-assigned dirty counters when the RDPMC task is
-  scheduled in. The method is implemented here.
-
-The dirty counter is a counter, on which the assigned event has been
-deleted, but the counter is not reset. To track the dirty counters,
-add a 'dirty' variable in the struct cpu_hw_events.
-
-The current code doesn't reset the counter when the assigned event is
-deleted. Set the corresponding bit in the 'dirty' variable in
-x86_pmu_del(), if the RDPMC feature is available on the system.
-
-The security issue can only be found with an RDPMC task. The event for
-an RDPMC task requires the mmap buffer. This can be used to detect an
-RDPMC task. Once the event is detected in the event_mapped(), enable
-sched_task(), which is invoked in each context switch. Add a check in
-the sched_task() to clear the dirty counters, when the RDPMC task is
-scheduled in. Only the current un-assigned dirty counters are reset,
-bacuase the RDPMC assigned dirty counters will be updated soon.
-
-The RDPMC instruction is also supported on the older platforms. Add
-sched_task() for the core_pmu. The core_pmu doesn't support large PEBS
-and LBR callstack, the intel_pmu_pebs/lbr_sched_task() will be ignored.
-
-The RDPMC is not Intel-only feature. Add the dirty counters clear code
-in the X86 generic code.
-
-After applying the patch,
-
-        $ taskset -c 0 ./rdpmc_read_all_counters
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-        index 0x0 value 0x0
-        index 0x1 value 0x0
-        index 0x2 value 0x0
-        index 0x3 value 0x0
-
-Performance
-
-The performance of a context switch only be impacted when there are two
-or more perf users and one of the users must be an RDPMC user. In other
-cases, there is no performance impact.
-
-The worst-case occurs when there are two users: the RDPMC user only
-applies one counter; while the other user applies all available
-counters. When the RDPMC task is scheduled in, all the counters, other
-than the RDPMC assigned one, have to be reset.
-
-Here is the test result for the worst-case.
-
-The test is implemented on an Ice Lake platform, which has 8 GP
-counters and 3 fixed counters (Not include SLOTS counter).
-
-The lat_ctx is used to measure the context switching time.
-
-    lat_ctx -s 128K -N 1000 processes 2
-
-I instrument the lat_ctx to open all 8 GP counters and 3 fixed
-counters for one task. The other task opens a fixed counter and enable
-RDPMC.
-
-Without the patch:
-The context switch time is 4.97 us
-
-With the patch:
-The context switch time is 5.16 us
-
-There is ~4% performance drop for the context switching time in the
-worst-case.
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: James Clark <james.clark@arm.com>
 ---
-Changes since V3:
-- Fix warnings reported by kernel test robot <lkp@intel.com>
-- Move bitmap_empty() check after clearing assigned counters.
-  It should be very likely that the cpuc->dirty is non-empty.
-  Move it after the clearing can skip the for_each_set_bit() and
-  bitmap_zero(). 
+ .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 ++++----
+ tools/perf/util/cs-etm.c                      | 42 +++++++++----------
+ tools/perf/util/cs-etm.h                      |  4 +-
+ 3 files changed, 31 insertions(+), 33 deletions(-)
 
-The V2 can be found here.
-https://lore.kernel.org/lkml/20200821195754.20159-3-kan.liang@linux.intel.com/
-
-Changes since V2:
-- Unconditionally set cpuc->dirty. The worst case for an RDPMC task is
-  that we may have to clear all counters for the first time in
-  x86_pmu_event_mapped. After that, the sched_task() will clear/update
-  the 'dirty'. Only the real 'dirty' counters are clear. For a non-RDPMC
-  task, it's harmless to unconditionally set the cpuc->dirty.
-- Remove the !is_sampling_event() check
-- Move the code into X86 generic file, because RDPMC is not a Intel-only
-  feature.
-
-Changes since V1:
-- Drop the old method, which unconditionally reset the counter in
-  x86_pmu_del().
-  Only reset the dirty counters when a RDPMC task is sheduled in.
-
- arch/x86/events/core.c       | 47 ++++++++++++++++++++++++++++++++++++++++++++
- arch/x86/events/perf_event.h |  1 +
- 2 files changed, 48 insertions(+)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index dd9f3c2..e34eb72 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1585,6 +1585,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		goto do_del;
- 
-+	__set_bit(event->hw.idx, cpuc->dirty);
-+
- 	/*
- 	 * Not a TXN, therefore cleanup properly.
- 	 */
-@@ -2304,12 +2306,46 @@ static int x86_pmu_event_init(struct perf_event *event)
- 	return err;
- }
- 
-+static void x86_pmu_clear_dirty_counters(void)
-+{
-+	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-+	int i;
-+
-+	 /* Don't need to clear the assigned counter. */
-+	for (i = 0; i < cpuc->n_events; i++)
-+		__clear_bit(cpuc->assign[i], cpuc->dirty);
-+
-+	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
-+		return;
-+
-+	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
-+		/* Metrics and fake events don't have corresponding HW counters. */
-+		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
-+			continue;
-+		else if (i >= INTEL_PMC_IDX_FIXED)
-+			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
-+		else
-+			wrmsrl(x86_pmu_event_addr(i), 0);
-+	}
-+
-+	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
-+}
-+
- static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+index 059bcec3f651..055cb93eca59 100644
+--- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
++++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+@@ -276,13 +276,13 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
+ 				  const uint8_t trace_chan_id)
  {
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return;
+ 	/* No timestamp packet has been received, nothing to do */
+-	if (!packet_queue->timestamp)
++	if (!packet_queue->etm_timestamp)
+ 		return OCSD_RESP_CONT;
  
- 	/*
-+	 * Enable sched_task() for the RDPMC task,
-+	 * and clear the existing dirty counters.
-+	 */
-+	if (x86_pmu.sched_task && event->hw.target) {
-+		perf_sched_cb_inc(event->ctx->pmu);
-+		x86_pmu_clear_dirty_counters();
-+	}
-+
-+	/*
- 	 * This function relies on not being called concurrently in two
- 	 * tasks in the same mm.  Otherwise one task could observe
- 	 * perf_rdpmc_allowed > 1 and return all the way back to
-@@ -2331,6 +2367,9 @@ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *m
- 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
- 		return;
+-	packet_queue->timestamp = packet_queue->next_timestamp;
++	packet_queue->etm_timestamp = packet_queue->next_etm_timestamp;
  
-+	if (x86_pmu.sched_task && event->hw.target)
-+		perf_sched_cb_dec(event->ctx->pmu);
-+
- 	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
- 		on_each_cpu_mask(mm_cpumask(mm), cr4_update_pce, NULL, 1);
- }
-@@ -2436,6 +2475,14 @@ static const struct attribute_group *x86_pmu_attr_groups[] = {
- static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
- {
- 	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
-+
-+	/*
-+	 * If a new task has the RDPMC enabled, clear the dirty counters
-+	 * to prevent the potential leak.
-+	 */
-+	if (sched_in && ctx && READ_ONCE(x86_pmu.attr_rdpmc) &&
-+	    current->mm && atomic_read(&current->mm->context.perf_rdpmc_allowed))
-+		x86_pmu_clear_dirty_counters();
- }
+ 	/* Estimate the timestamp for the next range packet */
+-	packet_queue->next_timestamp += packet_queue->instr_count;
++	packet_queue->next_etm_timestamp += packet_queue->instr_count;
+ 	packet_queue->instr_count = 0;
  
- static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 54a340e..e855f20 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -228,6 +228,7 @@ struct cpu_hw_events {
+ 	/* Tell the front end which traceid_queue needs attention */
+@@ -308,8 +308,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+ 	 * Function do_soft_timestamp() will report the value to the front end,
+ 	 * hence asking the decoder to keep decoding rather than stopping.
  	 */
- 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
- 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
-+	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
- 	int			enabled;
+-	if (packet_queue->timestamp) {
+-		packet_queue->next_timestamp = elem->timestamp;
++	if (packet_queue->etm_timestamp) {
++		packet_queue->next_etm_timestamp = elem->timestamp;
+ 		return OCSD_RESP_CONT;
+ 	}
  
- 	int			n_events; /* the # of events in the below arrays */
+@@ -320,8 +320,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+ 	 * which instructions started by subtracting the number of instructions
+ 	 * executed to the timestamp.
+ 	 */
+-	packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
+-	packet_queue->next_timestamp = elem->timestamp;
++	packet_queue->etm_timestamp = elem->timestamp - packet_queue->instr_count;
++	packet_queue->next_etm_timestamp = elem->timestamp;
+ 	packet_queue->instr_count = 0;
+ 
+ 	/* Tell the front end which traceid_queue needs attention */
+@@ -334,8 +334,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+ static void
+ cs_etm_decoder__reset_timestamp(struct cs_etm_packet_queue *packet_queue)
+ {
+-	packet_queue->timestamp = 0;
+-	packet_queue->next_timestamp = 0;
++	packet_queue->etm_timestamp = 0;
++	packet_queue->next_etm_timestamp = 0;
+ 	packet_queue->instr_count = 0;
+ }
+ 
+diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+index 7e63e7dedc33..c25da2ffa8f3 100644
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -38,8 +38,6 @@
+ #include <tools/libc_compat.h>
+ #include "util/synthetic-events.h"
+ 
+-#define MAX_TIMESTAMP (~0ULL)
+-
+ struct cs_etm_auxtrace {
+ 	struct auxtrace auxtrace;
+ 	struct auxtrace_queues queues;
+@@ -86,7 +84,7 @@ struct cs_etm_queue {
+ 	struct cs_etm_decoder *decoder;
+ 	struct auxtrace_buffer *buffer;
+ 	unsigned int queue_nr;
+-	u8 pending_timestamp;
++	u8 pending_timestamp_chan_id;
+ 	u64 offset;
+ 	const unsigned char *buf;
+ 	size_t buf_len, buf_used;
+@@ -208,7 +206,7 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
+ 	 * be more than one channel per cs_etm_queue, we need to specify
+ 	 * what traceID queue needs servicing.
+ 	 */
+-	etmq->pending_timestamp = trace_chan_id;
++	etmq->pending_timestamp_chan_id = trace_chan_id;
+ }
+ 
+ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+@@ -216,22 +214,22 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+ {
+ 	struct cs_etm_packet_queue *packet_queue;
+ 
+-	if (!etmq->pending_timestamp)
++	if (!etmq->pending_timestamp_chan_id)
+ 		return 0;
+ 
+ 	if (trace_chan_id)
+-		*trace_chan_id = etmq->pending_timestamp;
++		*trace_chan_id = etmq->pending_timestamp_chan_id;
+ 
+ 	packet_queue = cs_etm__etmq_get_packet_queue(etmq,
+-						     etmq->pending_timestamp);
++						     etmq->pending_timestamp_chan_id);
+ 	if (!packet_queue)
+ 		return 0;
+ 
+ 	/* Acknowledge pending status */
+-	etmq->pending_timestamp = 0;
++	etmq->pending_timestamp_chan_id = 0;
+ 
+ 	/* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
+-	return packet_queue->timestamp;
++	return packet_queue->etm_timestamp;
+ }
+ 
+ static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
+@@ -814,7 +812,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+ 	int ret = 0;
+ 	unsigned int cs_queue_nr;
+ 	u8 trace_chan_id;
+-	u64 timestamp;
++	u64 etm_timestamp;
+ 	struct cs_etm_queue *etmq = queue->priv;
+ 
+ 	if (list_empty(&queue->head) || etmq)
+@@ -854,7 +852,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+ 
+ 		/*
+ 		 * Run decoder on the trace block.  The decoder will stop when
+-		 * encountering a timestamp, a full packet queue or the end of
++		 * encountering an ETM timestamp, a full packet queue or the end of
+ 		 * trace for that block.
+ 		 */
+ 		ret = cs_etm__decode_data_block(etmq);
+@@ -865,10 +863,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+ 		 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
+ 		 * the timestamp calculation for us.
+ 		 */
+-		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
++		etm_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+ 
+ 		/* We found a timestamp, no need to continue. */
+-		if (timestamp)
++		if (etm_timestamp)
+ 			break;
+ 
+ 		/*
+@@ -892,7 +890,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+ 	 * queue and will be processed in cs_etm__process_queues().
+ 	 */
+ 	cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
+-	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
++	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, etm_timestamp);
+ out:
+ 	return ret;
+ }
+@@ -2221,7 +2219,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+ 	int ret = 0;
+ 	unsigned int cs_queue_nr, queue_nr;
+ 	u8 trace_chan_id;
+-	u64 timestamp;
++	u64 etm_timestamp;
+ 	struct auxtrace_queue *queue;
+ 	struct cs_etm_queue *etmq;
+ 	struct cs_etm_traceid_queue *tidq;
+@@ -2283,9 +2281,9 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+ 		if (ret)
+ 			goto out;
+ 
+-		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
++		etm_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+ 
+-		if (!timestamp) {
++		if (!etm_timestamp) {
+ 			/*
+ 			 * Function cs_etm__decode_data_block() returns when
+ 			 * there is no more traces to decode in the current
+@@ -2308,7 +2306,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+ 		 * this queue/traceID.
+ 		 */
+ 		cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
+-		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
++		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, etm_timestamp);
+ 	}
+ 
+ out:
+@@ -2380,7 +2378,7 @@ static int cs_etm__process_event(struct perf_session *session,
+ 				 struct perf_tool *tool)
+ {
+ 	int err = 0;
+-	u64 timestamp;
++	u64 sample_kernel_timestamp;
+ 	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
+ 						   struct cs_etm_auxtrace,
+ 						   auxtrace);
+@@ -2394,11 +2392,11 @@ static int cs_etm__process_event(struct perf_session *session,
+ 	}
+ 
+ 	if (sample->time && (sample->time != (u64) -1))
+-		timestamp = sample->time;
++		sample_kernel_timestamp = sample->time;
+ 	else
+-		timestamp = 0;
++		sample_kernel_timestamp = 0;
+ 
+-	if (timestamp || etm->timeless_decoding) {
++	if (sample_kernel_timestamp || etm->timeless_decoding) {
+ 		err = cs_etm__update_queues(etm);
+ 		if (err)
+ 			return err;
+diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+index 36428918411e..b300f6fa19cc 100644
+--- a/tools/perf/util/cs-etm.h
++++ b/tools/perf/util/cs-etm.h
+@@ -171,8 +171,8 @@ struct cs_etm_packet_queue {
+ 	u32 head;
+ 	u32 tail;
+ 	u32 instr_count;
+-	u64 timestamp;
+-	u64 next_timestamp;
++	u64 etm_timestamp;
++	u64 next_etm_timestamp;
+ 	struct cs_etm_packet packet_buffer[CS_ETM_PACKET_MAX_BUFFER];
+ };
+ 
 -- 
-2.7.4
+2.28.0
 
