@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0233B35EDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA5535EDA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349328AbhDNGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348255AbhDNGra (ORCPT
+        id S1349319AbhDNGrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:47:17 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:32783 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348255AbhDNGrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:47:30 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22A0C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:47:08 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so31444508lfh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o7YUQsFXpVVzDPEGdF/U6Rn3Tg4j4C3osu9eHf3orK8=;
-        b=XFdPNvxHWkKqyNvtRYRixrne43Ud5Nv45e7x2J2k1gwoawHyEst2zAorc/4jV6vHD1
-         oyXh7R900sVsURqzY9z5CF9GdkWfPWZBTZqjaLkdE+ZOtopofHjjAdYzCXioCmykjnvF
-         +1pYiMxqkkSP8v9lYZAzGbskYFWnEcuw7NyeylG0jbp/LC0agt2r/lo+yHJ8bwLCYupV
-         eb/9FJUNPS1ay4ujpaR1YQfm4qOxruB9WA0oGJjROfcSRJex5azES4JtqykbhYmKt8rW
-         QA2UEneBNegtkiA4ckUfJ6uBsw1Q555Bx3vZ97CDQps9ybNI3bz1X40h03mZHwgE56hC
-         npqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o7YUQsFXpVVzDPEGdF/U6Rn3Tg4j4C3osu9eHf3orK8=;
-        b=hr3GXogBxF0tA0sHivVtZyfCQJr2h2uAsCV6C9TBsYPmobWlkGMFxsmShWas61SjqU
-         3mSj2jpjc7Msm/YqqoiVfetA58qS5/P9YW43O0/PM3b7u1Buggu6p8eDIp9mNzSZ3Mmp
-         jcOhqp/aPakn5NzhyH6wvrefTLDjjMBxSKQ0DHewFkx1Jr99BlKDjtEKWS3jnDLU9zC8
-         94lSsYLudF2hgyzeZr0ojDkh5dRCBprPmFg8OyJz4w8vpX93HJDyZAW7JtsHcGQJ0Pic
-         c9XIajaxvVExQMktSaAFAi+mUiC85UQrkWipPKy20RZtQfXZswvR97lRO4J3cu40J98L
-         1T9w==
-X-Gm-Message-State: AOAM5339qnXpYJ8ObB9YsTlYVpyNbRqT9ndprX6PSjFMalGhc3/rQHk/
-        1zENlvVc7SeGKCgWuOAVGxR+c+Dwvcr5oMx0g7OwIQ==
-X-Google-Smtp-Source: ABdhPJzLne3z/hFVoU9gPpwPkGPHfCAenskPK5svCrkqJUaNsYIIt5zqjrr8wnjLp78YEG8UCr7QefSS/zpN7U3t21g=
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr24510963lfu.356.1618382827311;
- Tue, 13 Apr 2021 23:47:07 -0700 (PDT)
+        Wed, 14 Apr 2021 02:47:15 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 2787B177F;
+        Wed, 14 Apr 2021 02:46:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 14 Apr 2021 02:46:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=64gjXIhv/+g283uK3HI1Fy6VCqL
+        /A34oMNdA2BrGOz4=; b=SMaCRGz/2atN6NqYrJ7F7wtHeKeBu0pQtw6+0+gxgrv
+        jNqGUiEsy9osUhvQazpqF2fAcobI4KnuqEWNBgPfyKGpkBtICKwziz398aDmFxzm
+        u7gidnodlPnFNrVdsAIAfQNWAYC00b0OCWGnJ5A02WVuJIJsCzXo1fZkWNLtUsf/
+        XRapJVw1mBCRMgQLUlVCoKVb/szbct8avqt1lc+QuHRq37yyvMuu6Esw8CDovf38
+        jxM7c6MZECEefHH5sfVT581pvi/7y+/vdCRcs0GrHqbIgEE6c9GFhbs91cvKQC0L
+        9pFn6la4Zb2Dr/qno7G6U5A7TmnPcXVIB9BEF75vCrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=64gjXI
+        hv/+g283uK3HI1Fy6VCqL/A34oMNdA2BrGOz4=; b=kmSpfRPsS/4s5V9AxcP3tq
+        6O0I+QZfYcEC9/0B+V8P8lznnN82Q/flYNTwhFkfetilxr/zlAnt5Zxl1SsXNE5F
+        IWNJXtZsRDPvWUS/OzYWHoGwImEX0+spE0nmyl2jUsPviNz0YG5pqaZA5P/pJonb
+        1Qj7KNLrNGH8H5poklrRVzMTEZXh/mc2Hz5yipbK7ClREB8taIOsw/sif/YKUHuG
+        eu6pYbXaXfY2/Zq3/sc5R9CPyxzJMXNpHlMaYPuKKcTOtcg422Lj9XRkGNCuw/2K
+        gnNZuuLFXTj/XTVPPKmoXUoa29CP6zRUwT/GmM4w0PSyJjAAUE18s0DquDOVkF2Q
+        ==
+X-ME-Sender: <xms:3Y92YDqZ5ag3wcVlNl4UXUSj2_5xyofxtNtTPZmIsO21YUYGXNFASg>
+    <xme:3Y92YLM1KKqVCsTPpRQBLIKep2l-8OK-b8lU6SUb9pdLwO8z_dxF0i29hdgdnUNkj
+    a9TS6pTgiu-TxcDZlg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeltddgudduvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgv
+    rhcujfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvg
+    htqeenucggtffrrghtthgvrhhnpeehhfehfffgheelgeeuudelhefgvdefveekudevjeev
+    jeevvefggefguddufeeuveenucfkphepuddujedrvddtrdejuddrvddvkeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehpvghtvghrrdhhuhht
+    thgvrhgvrhesfihhohdqthdrnhgvth
+X-ME-Proxy: <xmx:3Y92YGodEd2js7xKNzSWFi2rN3eVDhKabvvOtJsb8gR-OuImWAxgFQ>
+    <xmx:3Y92YIeWI9JDuxMiceK_-5AbpMaM6PFdOVI26iQk5pYiwCE8_I6WwQ>
+    <xmx:3Y92YETBJZs0fUENrGIiR4rSOiXiggKYWi-ftHDjMqNoBi0maf9QBg>
+    <xmx:3Y92YLGTs3Sir_Qd3Y8rL6mSW8UpcqQpoKBZ4iBVcU5j-A05wvDMwg>
+Received: from koala (117-20-71-228.751447.bne.nbn.aussiebb.net [117.20.71.228])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E271524005C;
+        Wed, 14 Apr 2021 02:46:50 -0400 (EDT)
+Date:   Wed, 14 Apr 2021 16:46:44 +1000
+From:   Peter Hutterer <peter.hutterer@who-t.net>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Rob Herring <robh@kernel.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] Input: add driver for the Hycon HY46XX touchpanel
+ series
+Message-ID: <YHaP1Fzsi5pSaEq3@koala>
+References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+ <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
+ <20210413144446.2277817-4-giulio.benetti@benettiengineering.com>
+ <YHaBJ6MX9c28MUQY@google.com>
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com>
-In-Reply-To: <20210414055217.543246-1-avagin@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 14 Apr 2021 08:46:40 +0200
-Message-ID: <CAG48ez0jfsS=gKN0Vo_VS2EvvMBvEr+QNz0vDKPeSAzsrsRwPQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHaBJ6MX9c28MUQY@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 7:59 AM Andrei Vagin <avagin@gmail.com> wrote:
-> We already have process_vm_readv and process_vm_writev to read and write
-> to a process memory faster than we can do this with ptrace. And now it
-> is time for process_vm_exec that allows executing code in an address
-> space of another process. We can do this with ptrace but it is much
-> slower.
->
-> =3D Use-cases =3D
+On Tue, Apr 13, 2021 at 10:44:07PM -0700, Dmitry Torokhov wrote:
+> Hi Giulio,
+> 
+> On Tue, Apr 13, 2021 at 04:44:46PM +0200, Giulio Benetti wrote:
+> > +
+> > +	input_mt_report_pointer_emulation(tsdata->input, true);
+> 
+> For touchscreens it does not make much sense to report BTN_DOUBLETAP,
+> BTN_TRIPLETAP, etc, events (they are really for touchpads), so I changed
+> this to
+> 
+> 	input_mt_report_pointer_emulation(tsdata->input, false);
+> 
+> to only report ABS_X, ABS_Y, and BTN_TOUCH, and applied.
 
-It seems to me like your proposed API doesn't really fit either one of
-those usecases well...
+Can you expand on this please, just to make sure I'm not misinterpreting
+those codes? Those bits are just for how many fingers are down (but without
+position), dropping those bits means you restrict the device to a pure
+single-touch screen. Or am I missing something here?
 
-> Here are two known use-cases. The first one is =E2=80=9Capplication kerne=
-l=E2=80=9D
-> sandboxes like User-mode Linux and gVisor. In this case, we have a
-> process that runs the sandbox kernel and a set of stub processes that
-> are used to manage guest address spaces. Guest code is executed in the
-> context of stub processes but all system calls are intercepted and
-> handled in the sandbox kernel. Right now, these sort of sandboxes use
-> PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
-> significantly speed them up.
+then again, MT support has been in the kernel for long enough that by now
+everything should understand it, so there's a certain "meh" factor.
 
-In this case, since you really only want an mm_struct to run code
-under, it seems weird to create a whole task with its own PID and so
-on. It seems to me like something similar to the /dev/kvm API would be
-more appropriate here? Implementation options that I see for that
-would be:
-
-1. mm_struct-based:
-      a set of syscalls to create a new mm_struct,
-      change memory mappings under that mm_struct, and switch to it
-2. pagetable-mirroring-based:
-      like /dev/kvm, an API to create a new pagetable, mirror parts of
-      the mm_struct's pagetables over into it with modified permissions
-      (like KVM_SET_USER_MEMORY_REGION),
-      and run code under that context.
-      page fault handling would first handle the fault against mm->pgd
-      as normal, then mirror the PTE over into the secondary pagetables.
-      invalidation could be handled with MMU notifiers.
-
-> Another use-case is CRIU (Checkpoint/Restore in User-space). Several
-> process properties can be received only from the process itself. Right
-> now, we use a parasite code that is injected into the process. We do
-> this with ptrace but it is slow, unsafe, and tricky.
-
-But this API will only let you run code under the *mm* of the target
-process, not fully in the context of a target *task*, right? So you
-still won't be able to use this for accessing anything other than
-memory? That doesn't seem very generically useful to me.
-
-Also, I don't doubt that anything involving ptrace is kinda tricky,
-but it would be nice to have some more detail on what exactly makes
-this slow, unsafe and tricky. Are there API additions for ptrace that
-would make this work better? I imagine you're thinking of things like
-an API for injecting a syscall into the target process without having
-to first somehow find an existing SYSCALL instruction in the target
-process?
-
-> process_vm_exec can
-> simplify the process of injecting a parasite code and it will allow
-> pre-dump memory without stopping processes. The pre-dump here is when we
-> enable a memory tracker and dump the memory while a process is continue
-> running. On each interaction we dump memory that has been changed from
-> the previous iteration. In the final step, we will stop processes and
-> dump their full state. Right now the most effective way to dump process
-> memory is to create a set of pipes and splice memory into these pipes
-> from the parasite code. With process_vm_exec, we will be able to call
-> vmsplice directly. It means that we will not need to stop a process to
-> inject the parasite code.
-
-Alternatively you could add splice support to /proc/$pid/mem or add a
-syscall similar to process_vm_readv() that splices into a pipe, right?
+Cheers,
+   Peter
