@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4039C35FDCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA99A35FDD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhDNWaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:30:21 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42314 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231207AbhDNWaT (ORCPT
+        id S233430AbhDNWeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhDNWeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:30:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618439397; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ycvz7iaQnBHv11QQ3ZVNlWNQgHE9WgMCqAYSdxqayII=; b=XzMJLXZfGRNaM+c/cS/U/VK2u26b2eaogkvWVyXt/NIqptYtcS5bDZj7ezIzPQRxelr5V9OT
- /8nj97etrKPtT0QU5MshIHPyAIiGBnG7xmTMlORGtTnuHdTHWoDXdKt6mqjPXjz6F7KGUjxk
- 2qT84b5gkpZqB6TCrqsvdFtn2Y0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60776ce287ce1fbb56ef3c10 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Apr 2021 22:29:54
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C2C8BC433C6; Wed, 14 Apr 2021 22:29:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8DB80C433C6;
-        Wed, 14 Apr 2021 22:29:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8DB80C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH] usb: dwc3: gadget: Avoid canceling current request for queuing error
-Date:   Wed, 14 Apr 2021 15:29:48 -0700
-Message-Id: <1618439388-20427-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 14 Apr 2021 18:34:04 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA20C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:33:43 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D75EB806A8;
+        Thu, 15 Apr 2021 10:33:37 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1618439617;
+        bh=7nc3TQcKPpfX1+s1yCS19CZYBLrQB6PiruQ4DSd6ViM=;
+        h=From:To:Cc:Subject:Date;
+        b=Mp19iBHK3KcJnseJuih7Q/KYE34k4Lt38jtZ+wuG6vBY2YFKOSiJZYtNlAHRCjKMD
+         9r6tVyML7jGjQXOF2gGMGKkSHuYco0lQatNRQ0Hg+nZHWNcF85ovAnfncnutlyNwNs
+         BVk9isY7TNjYRAvR5Bfi+PXgWcd1iTZ/vtO4oTlO49fjmm0xi37NnzOjHN+KaTA4FV
+         Ch0R9BQuwimJlcT2okUnCo4oCLah+bYa6N34yu2CQ05Vf+GeCiHnEHMfBvj/ELnJVB
+         oOQJXbXr1UqwV92MVqmMs093KKDk29tATGOYJo7nyTepA+XSVCpVygaC2OJodzRHVn
+         j1BkrR+q7qzqQ==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60776dc10000>; Thu, 15 Apr 2021 10:33:37 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 5395E13EEED;
+        Thu, 15 Apr 2021 10:33:58 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id ADFEB28945B; Thu, 15 Apr 2021 10:33:37 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v4 0/6] i2c: mpc: Refactor to improve responsiveness
+Date:   Thu, 15 Apr 2021 10:33:19 +1200
+Message-Id: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=3YhXtTcJ-WEA:10 a=Zw7mqUMjS5TGmT_OfjYA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error is received when issuing a start or update transfer
-command, the error handler will stop all active requests (including
-the current USB request), and call dwc3_gadget_giveback() to notify
-function drivers of the requests which have been stopped.  Avoid
-having to cancel the current request which is trying to be queued, as
-the function driver will handle the EP queue error accordingly.
-Simply unmap the request as it was done before, and allow previously
-started transfers to be cleaned up.
+I've tested on T2081 and P2041 based systems with a number of i2c and smb=
+us
+devices.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/usb/dwc3/gadget.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I've included some clean ups provided by Andy Shevchenko to make applying=
+ the
+series easier.
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index e1b04c97..4200775 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1399,6 +1399,11 @@ static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
- 		if (ret == -EAGAIN)
- 			return ret;
- 
-+		/* Avoid canceling current request, as it has not been started */
-+		if (req->trb)
-+			memset(req->trb, 0, sizeof(struct dwc3_trb));
-+		dwc3_gadget_del_and_unmap_request(dep, req, ret);
-+
- 		dwc3_stop_active_transfer(dep, true, true);
- 
- 		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Andy Shevchenko (4):
+  i2c: mpc: Use devm_clk_get_optional()
+  i2c: mpc: Remove CONFIG_PM_SLEEP ifdeffery
+  i2c: mpc: Use device_get_match_data() helper
+  i2c: mpc: Drop duplicate message from devm_platform_ioremap_resource()
+
+Chris Packham (2):
+  i2c: mpc: Interrupt driven transfer
+  i2c: mpc: Update license and copyright
+
+ drivers/i2c/busses/i2c-mpc.c | 492 +++++++++++++++++++----------------
+ 1 file changed, 262 insertions(+), 230 deletions(-)
+
+--=20
+2.31.1
 
