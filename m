@@ -2,225 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC9D35F02A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9CF35F02E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350197AbhDNIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244803AbhDNIuY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:50:24 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89A2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:50:02 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id u17so30223685ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZKYXCW0j+tTrQuAe8GIX4MEDkI/Cgjtmucn5a1qWgnA=;
-        b=EtzQmMnWkL9LGHP1xGfw8p/DZJHC3KSpHtK/JHwSEmR3o4kpZp14SR9OVGBDEMubYm
-         jw3rYntByVaJlrcYnVuPk0Sa7+wqEMAXiSMvhWnuaa8nJ5xqG2fGzAzVJpH+C1iTHosR
-         6sdemFHCEE2VoXAyeT5qpHClVPjzv7zof/6ZEEICUFLcfFqStL/TbXxhNmBl2sNka1W2
-         rg2pVYNT275NoZ/x92zf1Xd5xO9SGwJcoHcyPsPKnGu3CmBOJ0wH+7C7i8io7GIZFI+Z
-         O9FOwtVyTQTgD/lBP1x9V4p7FMynRV6wlwi8ATh8SjhcIf6jVIFZ3ufeDHKrwLkDSG2L
-         wE2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZKYXCW0j+tTrQuAe8GIX4MEDkI/Cgjtmucn5a1qWgnA=;
-        b=khdwFo+StUFQhIHWvYx4FQ9gRr4kPXrVF08AsZ7KcGUzhYuBZhgXFxP3nvRSaezDE+
-         cr2GwxlOVO+B8ze9ZRadSU7dzDBeuojUY+6lvNkZvw22wf7Ac9JBRFXskHzPetjcjraV
-         7+QQfcUZ0OeQ6KGsZpg7Io7awqcy7PaqmBvGJ9t3Xl7CA6TDe/muKnzYpQBq6mNIng7h
-         QcqAypQejkm4MemXZFUrvT4qnSxOBA9WbRI6s5AVNBSJDtXjSlv45KkTK6/ntyBMCX7O
-         dsqn7EzdLMxoI191/Vr0IEGF3xpzPFKEXqbF43P3hauPx2dSmCLezKRNRxkZYgK0T8nD
-         ZUnA==
-X-Gm-Message-State: AOAM532uUJRSty7L1dAM90Z/NCaSodHQQp1i1zGdfdbYQrdGDii4Xi4q
-        zQZ8MSxpqNgLWZ0TTWlm+TlRdqwbdW3Kh1aK2ethog==
-X-Google-Smtp-Source: ABdhPJz07DLU4OSds5Pwbn/zKcqDlfMXGhdWu97oY4cH/MvHnhkjhIzqsupkE+5Ut4u5NUb5khWLRg==
-X-Received: by 2002:a17:906:aad9:: with SMTP id kt25mr35924599ejb.364.1618390201527;
-        Wed, 14 Apr 2021 01:50:01 -0700 (PDT)
-Received: from localhost.localdomain ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id y16sm11146038edc.62.2021.04.14.01.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:50:01 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, linux@deviqon.com,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        Thomas Deutschmann <whissi@gentoo.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] iio: hid-sensors: select IIO_TRIGGERED_BUFFER under HID_SENSOR_IIO_TRIGGER
-Date:   Wed, 14 Apr 2021 11:49:55 +0300
-Message-Id: <20210414084955.260117-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.30.2
+        id S1350228AbhDNIvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:51:35 -0400
+Received: from mail-eopbgr10062.outbound.protection.outlook.com ([40.107.1.62]:12531
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244803AbhDNIva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:51:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VW7e4leQ2fbzjaln2elNQYkB19WrflSg7H28fYvWm99PPQMHsLaMgkjH10O/pEQKVqfcbeBr3l45czEkz+89MV3XC6yY2BYde2g3oojjWj7FRyxqox+5BX3n3H4JYKK71dzOOcNQD22ya0YUmljXOveaRkZFWfFbD24eWGB2MWR8YluniOx4x+G9X3oPw52kGoAWu801AhWrDSewDgQ2QhZMO19OIM25LUJHfISBYbgRa5RhYlbPGUceGs+WWipkKLWr5uxVw40JKdnpyjH5bvuD+22W8AuWI3BjjxUgYmYafd6UZh7rCCW3IjqedXC3HU5qwN9Kz0cfdx6lhfJhgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mx1QdB2ZN/64wkELiRcmmvwEB1lEeVXIVNcd6m0XY6s=;
+ b=h3yVqQNf2HeA999RqcuiLk5fe41yN45v9wlaDAXKO28N+2rch4qNZo55SvFTk9OhU0qw6a0xIxCBMLSsDU2dw0/iTFJg6cogds4uUqeNA7ltRNGDAb6c+BDGe2qU70CGP4HQcjfmrkdaPopBrs3p0Z71F0sKDeoIwqz+0eTl1dWekZQeeOBEe8mJW5N+jk/juJVbDgQiK7iPv9RF64oDgkWYDcBE/pcG41x1qf+L3au1QpLcyxSvQk0tAFobRyFqfm3B3KtCd1MlaZqsmQZLY3ekZa8E8KZK2UG+s0UZZtjpA/iPcwAEhF0PqXrDnT0POfJNnuPNr145eC8ZgQx8SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mx1QdB2ZN/64wkELiRcmmvwEB1lEeVXIVNcd6m0XY6s=;
+ b=TGDvlLtyUgys+3CXQUNidqKJHsbpqn8hTH/tyIC3mnkkX5vX1nMKFrLQVJ7PW4UmEh+H4WGxP6Uza64zBJVRwO5UOS4W1fSCmYccXYivl717sjH+iARZvbq/LXzdFzjDQLPAUUX/f8GT+M2TJ/aMt6xpg+VdrXfx3Mb9uj8u9DM=
+Received: from DB7PR04MB5322.eurprd04.prod.outlook.com (2603:10a6:10:1f::15)
+ by DBBPR04MB7691.eurprd04.prod.outlook.com (2603:10a6:10:201::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 14 Apr
+ 2021 08:51:06 +0000
+Received: from DB7PR04MB5322.eurprd04.prod.outlook.com
+ ([fe80::942e:77ac:a38c:98d6]) by DB7PR04MB5322.eurprd04.prod.outlook.com
+ ([fe80::942e:77ac:a38c:98d6%7]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
+ 08:51:06 +0000
+From:   "Sahil Malhotra (OSS)" <sahil.malhotra@oss.nxp.com>
+To:     "Sahil Malhotra (OSS)" <sahil.malhotra@oss.nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+CC:     "Sahil Malhotra (OSS)" <sahil.malhotra@oss.nxp.com>,
+        Michael Walle <michael@walle.cc>, Leo Li <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/FREESCALE LAYERSCAPE ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] arm64: dts: ls1028a-rdb: enable optee node
+Thread-Topic: [PATCH] arm64: dts: ls1028a-rdb: enable optee node
+Thread-Index: AQHXJXQnzbSzAJafl0miFlDq4Bz3Q6qzy6/Q
+Date:   Wed, 14 Apr 2021 08:51:05 +0000
+Message-ID: <DB7PR04MB53224FF04ABFBD166124664E824E9@DB7PR04MB5322.eurprd04.prod.outlook.com>
+References: <20210330145027.16897-1-sahil.malhotra@oss.nxp.com>
+In-Reply-To: <20210330145027.16897-1-sahil.malhotra@oss.nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oss.nxp.com; dkim=none (message not signed)
+ header.d=none;oss.nxp.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [49.36.225.114]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 27078ea8-922d-49a0-9241-08d8ff2270e9
+x-ms-traffictypediagnostic: DBBPR04MB7691:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBBPR04MB7691D67524534A66F772888CC34E9@DBBPR04MB7691.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NzbhRI2ZO2cf/57p1d8fPQLUnYiCgbRc8vfE7cRQC/hU8kzqeYWydGwI0HxyZx+ARgqp0mBWO9daAGa7oBtKQTznM7gV3WK5Qe/U8x87XgsgzwSDslePjSbyy4/xAhgancenwDa2QmpcYdS1pFp7U44Z4UeURJfoQNbMNcXQmTrdeI7PLeyTVJQM/LE23aOE3lVdPcijwh+0w47Dbo84+9qNpZyPsqTRQLICUUJY953QuSqPRv111UKDRBpa8rmQ28mCxcjObvkkTV8HJbmRG1C2UVnO4Lbwlync6d8pfAzS2VTNrvKjuzH8+lZBNddHqAqE6a/QP3I0xj4s9UMRbGn8O/IfMPRiyV1XTPsTytifBvlk0aYu/1GZKyQ0oJvMYyP+HpRjhxGqRCqtp9ssB7rGZOQNYoGm05256Rp+yeXTt4mvb9tKWBkh9v5Xr1x6WNPeJjPeJfA0F/fEUTaf04yBkegFiqMynB8yhyqqlSq3JAsZfPI6oNyU9kbqFg3Z2Xe6/jCU2c216HQnoLzboMOEnRQYEYN6e0nXzPFXt/KchHCNkZA2oq9/qzo/dJ+14IjhWXTVT5dGo+OyinrDFl8cvwZ+JQYhrtNj8fUslUM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5322.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(366004)(346002)(39850400004)(38100700002)(5660300002)(122000001)(26005)(186003)(8936002)(8676002)(2906002)(478600001)(52536014)(316002)(86362001)(7696005)(83380400001)(71200400001)(110136005)(4326008)(54906003)(55016002)(6506007)(66446008)(64756008)(9686003)(66946007)(66556008)(66476007)(53546011)(33656002)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?isRzBLNkQQRsjZbNm0z52kKchdZB2AdyKKChsCkaIV/LqC06q5oEL74X8Iq5?=
+ =?us-ascii?Q?/C2rr0AvwrUaFjZ2eCHozzqC4OKRGVjhJ8y+Vd9Ia4yRtkGusrTIFjhJR/Vc?=
+ =?us-ascii?Q?udnY39Auy7qX3E/+uaKq80GqSPstGcRQ3coNqIBC+NQtzRwBZt1fAWsGSjMc?=
+ =?us-ascii?Q?mPvFxdtzZJzs8DuR6vI5t1VdWVrJ4SvHVsSzAu/J9gGnhr+q9KuqBMH9/JRV?=
+ =?us-ascii?Q?wVntvg7cJB/aXARWHDpHWed0XM/DOSf7VTev6rf8Qv/oywzS/N/prDW9r0Rz?=
+ =?us-ascii?Q?SVxt3RQzIbIUfnGvZlpZYGYo+MAFRe73J3psMb8y6fvZ6baoiD1/ltX+Bldo?=
+ =?us-ascii?Q?jyLsVNvMVgwXmh/pCCg6ptibxTf5YEGyR70CECq8gpRySa1dXm0eviekIM9g?=
+ =?us-ascii?Q?gJquOrp7d7pAfxMIkmjFoWEdQD4OSCZSwDjc034QrnhT7vgfiXDkEBRaeSkj?=
+ =?us-ascii?Q?VBMVgyu87fefiKkrQsuMx+AFYbXXVtNvFrY8D+RjALCpETQ5v8LTXrvBZP8v?=
+ =?us-ascii?Q?yU95SvdVKaeuS099bkO3BzexSJQfLSTouxZqPeXLWD4BcP1JjiCgv1i/EbZc?=
+ =?us-ascii?Q?PIYd3lPCRzWBO9Al2DQi3IFBneZFr/TfS2v3G8o2C/ShlLDGAywg/RasE1km?=
+ =?us-ascii?Q?zYOofuFnv0wcEEvV9O5pLOaJaAxpN3axw6vNvJNshO1BTr3pWBQGv+M+377U?=
+ =?us-ascii?Q?yTU2OcXEegS9zd0aD9q6bqTyDJ4eQ3Jf6rXLGn1yXgTqUiZY0LWcBIrpjBcA?=
+ =?us-ascii?Q?FVbmH5bc830NqXYS9Weelyymu1uy8UkT9Vwvwz4o7+jlgM5YuhIOQKgUgiSx?=
+ =?us-ascii?Q?AuH0ZhFBQNXqOIvfSVZVQZD06LLZuZPKXErddneRQeFkbsIMaus/qgJyeq3n?=
+ =?us-ascii?Q?WiNPmOZX2E+JHHHIjLo/uJL9Px4ofMC/unzG3AiHvSus+r003bESL62E1JD+?=
+ =?us-ascii?Q?8eDSOaujYmu+f243O/ryqeZUQXGn255qGJGrTqLw0gOtbB4O17nH9+iriWab?=
+ =?us-ascii?Q?49IrcTm6RmpNjWSyR8LHGZ0dSu2N8Je7MTQ5viF9CsJ2wMzmyIEGqWxnas16?=
+ =?us-ascii?Q?4gXAvOkD3oAKx8rr/ak5ofQIUb49ZyzkSOW3UK1bZ8ROnQ4gJT82S8UdZfHZ?=
+ =?us-ascii?Q?jduIcMofVIiQSWOEsVWYJPhjCcFE/KJqG5GOr3sUjVuTYmjIS/bj67XTVNea?=
+ =?us-ascii?Q?zRFKn1S4iB1MxmpgTdYHCRNDPJse9xQIvUBGXy0qo6Pi0+8npKL9yRguHaf+?=
+ =?us-ascii?Q?xbCuzxS7ZANsnF+A/MzfQx6NUl4OBbo91EoZD8WXfjRijBWEKTCKQFn05ObT?=
+ =?us-ascii?Q?A/JNRfBlGzIK4te2+7LQTsZx?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5322.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27078ea8-922d-49a0-9241-08d8ff2270e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2021 08:51:05.9922
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FZg1NF//UP4FriLxQTNFLJ9KqXfs5d+Ue645wTqIvyfiV2duZt7+QFqhFrjc5toE5rNeBmQaYCmQlz1eyzV1hw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7691
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During commit 067fda1c065ff ("iio: hid-sensors: move triggered buffer
-setup into hid_sensor_setup_trigger"), the
-iio_triggered_buffer_{setup,cleanup}() functions got moved under the
-hid-sensor-trigger module.
+Hi Shawn, Michael,
 
-The above change works fine, if any of the sensors get built. However, when
-only the common hid-sensor-trigger module gets built (and none of the
-drivers), then the IIO_TRIGGERED_BUFFER symbol isn't selected/enforced.
+Just a friendly reminder to have a look at this patch.
 
-Previously, each driver would enforce/select the IIO_TRIGGERED_BUFFER
-symbol. With this change the HID_SENSOR_IIO_TRIGGER (for the
-hid-sensor-trigger module) will enforce that IIO_TRIGGERED_BUFFER gets
-selected.
+Regards,
+Sahil Malhotra
 
-All HID sensor drivers select the HID_SENSOR_IIO_TRIGGER symbol. So, this
-change removes the IIO_TRIGGERED_BUFFER enforcement from each driver.
+-----Original Message-----
+From: Sahil Malhotra <sahil.malhotra@oss.nxp.com>=20
+Sent: Tuesday, March 30, 2021 8:20 PM
+To: shawnguo@kernel.org
+Cc: Sahil Malhotra (OSS) <sahil.malhotra@oss.nxp.com>; Sahil Malhotra <sahi=
+l.malhotra@nxp.com>; Michael Walle <michael@walle.cc>; Leo Li <leoyang.li@n=
+xp.com>; Rob Herring <robh+dt@kernel.org>; moderated list:ARM/FREESCALE LAY=
+ERSCAPE ARM ARCHITECTURE <linux-arm-kernel@lists.infradead.org>; open list:=
+OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetree@vger.kernel.or=
+g>; open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: dts: ls1028a-rdb: enable optee node
 
-Fixes: 067fda1c065ff ("iio: hid-sensors: move triggered buffer setup into hid_sensor_setup_trigger")
-Reported-by: Thomas Deutschmann <whissi@gentoo.org>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+From: Sahil Malhotra <sahil.malhotra@nxp.com>
+
+optee node was disabled by default, enabling it for ls1028a-rdb.
+
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
 ---
- drivers/iio/accel/Kconfig              | 1 -
- drivers/iio/common/hid-sensors/Kconfig | 1 +
- drivers/iio/gyro/Kconfig               | 1 -
- drivers/iio/humidity/Kconfig           | 1 -
- drivers/iio/light/Kconfig              | 2 --
- drivers/iio/magnetometer/Kconfig       | 1 -
- drivers/iio/orientation/Kconfig        | 2 --
- drivers/iio/pressure/Kconfig           | 1 -
- drivers/iio/temperature/Kconfig        | 1 -
- 9 files changed, 1 insertion(+), 10 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts | 4 ++++
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi    | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-index cceda3cecbcf..8b1723635cce 100644
---- a/drivers/iio/accel/Kconfig
-+++ b/drivers/iio/accel/Kconfig
-@@ -229,7 +229,6 @@ config DMARD10
- config HID_SENSOR_ACCEL_3D
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID Accelerometers 3D"
-diff --git a/drivers/iio/common/hid-sensors/Kconfig b/drivers/iio/common/hid-sensors/Kconfig
-index 24d492567336..2a3dd3b907be 100644
---- a/drivers/iio/common/hid-sensors/Kconfig
-+++ b/drivers/iio/common/hid-sensors/Kconfig
-@@ -19,6 +19,7 @@ config HID_SENSOR_IIO_TRIGGER
- 	tristate "Common module (trigger) for all HID Sensor IIO drivers"
- 	depends on HID_SENSOR_HUB && HID_SENSOR_IIO_COMMON && IIO_BUFFER
- 	select IIO_TRIGGER
-+	select IIO_TRIGGERED_BUFFER
- 	help
- 	  Say yes here to build trigger support for HID sensors.
- 	  Triggers will be send if all requested attributes were read.
-diff --git a/drivers/iio/gyro/Kconfig b/drivers/iio/gyro/Kconfig
-index 5824f2edf975..20b5ac7ab66a 100644
---- a/drivers/iio/gyro/Kconfig
-+++ b/drivers/iio/gyro/Kconfig
-@@ -111,7 +111,6 @@ config FXAS21002C_SPI
- config HID_SENSOR_GYRO_3D
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID Gyroscope 3D"
-diff --git a/drivers/iio/humidity/Kconfig b/drivers/iio/humidity/Kconfig
-index 6549fcf6db69..2de5494e7c22 100644
---- a/drivers/iio/humidity/Kconfig
-+++ b/drivers/iio/humidity/Kconfig
-@@ -52,7 +52,6 @@ config HID_SENSOR_HUMIDITY
- 	tristate "HID Environmental humidity sensor"
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	help
-diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
-index 33ad4dd0b5c7..917f9becf9c7 100644
---- a/drivers/iio/light/Kconfig
-+++ b/drivers/iio/light/Kconfig
-@@ -256,7 +256,6 @@ config ISL29125
- config HID_SENSOR_ALS
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID ALS"
-@@ -270,7 +269,6 @@ config HID_SENSOR_ALS
- config HID_SENSOR_PROX
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID PROX"
-diff --git a/drivers/iio/magnetometer/Kconfig b/drivers/iio/magnetometer/Kconfig
-index 5d4ffd66032e..74ad5701c6c2 100644
---- a/drivers/iio/magnetometer/Kconfig
-+++ b/drivers/iio/magnetometer/Kconfig
-@@ -95,7 +95,6 @@ config MAG3110
- config HID_SENSOR_MAGNETOMETER_3D
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID Magenetometer 3D"
-diff --git a/drivers/iio/orientation/Kconfig b/drivers/iio/orientation/Kconfig
-index a505583cc2fd..396cbbb867f4 100644
---- a/drivers/iio/orientation/Kconfig
-+++ b/drivers/iio/orientation/Kconfig
-@@ -9,7 +9,6 @@ menu "Inclinometer sensors"
- config HID_SENSOR_INCLINOMETER_3D
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID Inclinometer 3D"
-@@ -20,7 +19,6 @@ config HID_SENSOR_INCLINOMETER_3D
- config HID_SENSOR_DEVICE_ROTATION
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID Device Rotation"
-diff --git a/drivers/iio/pressure/Kconfig b/drivers/iio/pressure/Kconfig
-index 689b978db4f9..fc0d3cfca418 100644
---- a/drivers/iio/pressure/Kconfig
-+++ b/drivers/iio/pressure/Kconfig
-@@ -79,7 +79,6 @@ config DPS310
- config HID_SENSOR_PRESS
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	tristate "HID PRESS"
-diff --git a/drivers/iio/temperature/Kconfig b/drivers/iio/temperature/Kconfig
-index c5482983f568..f20ae3c963cb 100644
---- a/drivers/iio/temperature/Kconfig
-+++ b/drivers/iio/temperature/Kconfig
-@@ -45,7 +45,6 @@ config HID_SENSOR_TEMP
- 	tristate "HID Environmental temperature sensor"
- 	depends on HID_SENSOR_HUB
- 	select IIO_BUFFER
--	select IIO_TRIGGERED_BUFFER
- 	select HID_SENSOR_IIO_COMMON
- 	select HID_SENSOR_IIO_TRIGGER
- 	help
--- 
-2.30.2
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts b/arch/arm64=
+/boot/dts/freescale/fsl-ls1028a-rdb.dts
+index 41ae6e7675ba..1bdf0104d492 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
+@@ -274,6 +274,10 @@
+ 	status =3D "okay";
+ };
+=20
++&optee {
++	status =3D "okay";
++};
++
+ &sai4 {
+ 	status =3D "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/bo=
+ot/dts/freescale/fsl-ls1028a.dtsi
+index 262fbad8f0ec..fb155ac192b1 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -92,7 +92,7 @@
+ 	};
+=20
+ 	firmware {
+-		optee {
++		optee: optee  {
+ 			compatible =3D "linaro,optee-tz";
+ 			method =3D "smc";
+ 			status =3D "disabled";
+--=20
+2.17.1
 
