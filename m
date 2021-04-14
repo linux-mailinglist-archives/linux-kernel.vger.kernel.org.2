@@ -2,130 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B7435F2FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8034035F308
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhDNL4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhDNL4a (ORCPT
+        id S233834AbhDNL5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:57:10 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44504 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhDNL5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:56:30 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91D3C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:56:06 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id d21so3231565edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hx2ElfME/z8t2NqHuq0is1lt5Hwbga3+EmXPk/bu8jE=;
-        b=DWo11BYUP8M2RRCHuP8NVoIUVaZdHxvf5gQUYMCSsF+3FuNm57QzXEZcai5Rz0tOOo
-         SbjF++30ZWPKeE5ll0FuVJdbnC6en6luhn4Srsw0nzGczA/5kOLisn07OBSuyU4dZxRn
-         VA64IxWARI5+cNZO1Gpuzf/roH+cBpRBVTJdejQt5W9JrR4IlCALwHfffinSr2UyHkil
-         qxsEo35IATHxRBKkw2RZFaVCbU++Ou4BlBSalUywvyrmHI7vFrB5bXCM1E5ca49UqJsq
-         uPEylfZj+pQ5RnNAzRX75L24L3VACUzpB9eOBEiA/pU28RYTNcsgrRrzCb+ZaVdCccSG
-         HZEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hx2ElfME/z8t2NqHuq0is1lt5Hwbga3+EmXPk/bu8jE=;
-        b=lJ7EzyiS8RcqZrFfT6sGjsSxkjB3SAaMfvW709x13khupsLmX+Oy+8+lNcgxHWPMKP
-         M5dGH4+xT5xJIpD2KIyOwSSXOpqEv9XjsKM5OLn8r2XHSE2hFuNYY/VhEB6xPy0dVgc5
-         gTxGLFE9pZZsvFOR7bHNBtCmma6X4pB3EUUNl2xpiqWCJYJlWop7Eq/k1RS88S75RqEX
-         wGH2zFoMUlkmRT8suz6Kq1DZYjMXwYMcPY1PYiqsAsVgRW1moOF6ozpiv0/e9gVJxRos
-         FKnxu5xC6ueh09Od8L3nrKdiD23Dy2LGlHJG3v1O2StQJtJQ0KIq2lrkOYZLFSiUbdC9
-         E7NA==
-X-Gm-Message-State: AOAM531NiuaulxdSbAfs5fzke8Q+2MK8fMG7mKLXZwnA/8F8fFNxwCjd
-        xDZw42ZDXqTQgmPNgncKO2Dbdw==
-X-Google-Smtp-Source: ABdhPJw6QJVw35RGBrDVlA3MmikqiMsQbKDlIXm2vu0RmVXh/7v7wkWwJa8DqtuBoq9uM+i77OTQzQ==
-X-Received: by 2002:a05:6402:1051:: with SMTP id e17mr40827551edu.42.1618401365504;
-        Wed, 14 Apr 2021 04:56:05 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
-        by smtp.gmail.com with ESMTPSA id z4sm11158884edb.97.2021.04.14.04.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 04:56:05 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 14:56:02 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <YHbYUvOYedojZAoB@apalos.home>
-References: <20210410205246.507048-1-willy@infradead.org>
- <20210410205246.507048-2-willy@infradead.org>
- <20210411114307.5087f958@carbon>
- <20210411103318.GC2531743@casper.infradead.org>
- <20210412011532.GG2531743@casper.infradead.org>
- <20210414101044.19da09df@carbon>
- <20210414115052.GS2531743@casper.infradead.org>
+        Wed, 14 Apr 2021 07:57:08 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 6212B1F4226E
+Subject: Re: [PATCH v7 4/4] fs: unicode: Add utf8 module and a unicode layer
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, drosen@google.com, yuchao0@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com, ebiggers@google.com
+References: <20210407144845.53266-1-shreeya.patel@collabora.com>
+ <20210407144845.53266-5-shreeya.patel@collabora.com>
+ <875z0wvbhj.fsf@collabora.com>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+Message-ID: <df4cff9b-86b3-0d6c-e757-46659a93910c@collabora.com>
+Date:   Wed, 14 Apr 2021 17:26:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414115052.GS2531743@casper.infradead.org>
+In-Reply-To: <875z0wvbhj.fsf@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:50:52PM +0100, Matthew Wilcox wrote:
-> On Wed, Apr 14, 2021 at 10:10:44AM +0200, Jesper Dangaard Brouer wrote:
-> > Yes, indeed! - And very frustrating.  It's keeping me up at night.
-> > I'm dreaming about 32 vs 64 bit data structures. My fitbit stats tell
-> > me that I don't sleep well with these kind of dreams ;-)
-> 
-> Then you're going to love this ... even with the latest patch, there's
-> still a problem.  Because dma_addr_t is still 64-bit aligned _as a type_,
-> that forces the union to be 64-bit aligned (as we already knew and worked
-> around), but what I'd forgotten is that forces the entirety of struct
-> page to be 64-bit aligned.  Which means ...
-> 
->         /* size: 40, cachelines: 1, members: 4 */
->         /* padding: 4 */
->         /* forced alignments: 1 */
->         /* last cacheline: 40 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> .. that we still have a hole!  It's just moved from being at offset 4
-> to being at offset 36.
-> 
-> > That said, I think we need to have a quicker fix for the immediate
-> > issue with 64-bit bit dma_addr on 32-bit arch and the misalignment hole
-> > it leaves[3] in struct page.  In[3] you mention ppc32, does it only
-> > happens on certain 32-bit archs?
-> 
-> AFAICT it happens on mips32, ppc32, arm32 and arc.  It doesn't happen
-> on x86-32 because dma_addr_t is 32-bit aligned.
-> 
-> Doing this fixes it:
-> 
-> +++ b/include/linux/types.h
-> @@ -140,7 +140,7 @@ typedef u64 blkcnt_t;
->   * so they don't care about the size of the actual bus addresses.
->   */
->  #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
-> -typedef u64 dma_addr_t;
-> +typedef u64 __attribute__((aligned(sizeof(void *)))) dma_addr_t;
->  #else
->  typedef u32 dma_addr_t;
->  #endif
-> 
-> > I'm seriously considering removing page_pool's support for doing/keeping
-> > DMA-mappings on 32-bit arch's.  AFAIK only a single driver use this.
-> 
-> ... if you're going to do that, then we don't need to do this.
 
-FWIW I already proposed that to Matthew in private a few days ago...
-II am not even sure the AM572x has that support.  I'd much prefer getting rid
-of it as well, instead of overcomplicating the struct for a device noone is
-going to need.
+On 09/04/21 12:40 am, Gabriel Krisman Bertazi wrote:
+> Shreeya Patel <shreeya.patel@collabora.com> writes:
+>
+>> utf8data.h_shipped has a large database table which is an auto-generated
+>> decodification trie for the unicode normalization functions.
+>> It is not necessary to load this large table in the kernel if no
+>> filesystem is using it, hence make UTF-8 encoding loadable by converting
+>> it into a module.
+>>
+>> Modify the file called unicode-core which will act as a layer for
+>> unicode subsystem. It will load the UTF-8 module and access it's functions
+>> whenever any filesystem that needs unicode is mounted.
+>> Currently, only UTF-8 encoding is supported but if any other encodings
+>> are supported in future then the layer file would be responsible for
+>> loading the desired encoding module.
+>>
+>> Also, indirect calls using function pointers are slow, use static calls to
+>> avoid overhead caused in case of repeated indirect calls. Static calls
+>> improves the performance by directly calling the functions as opposed to
+>> indirect calls.
+>>
+>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+>> ---
+>> Changes in v7
+>>    - Update the help text in Kconfig
+>>    - Handle the unicode_load_static_call function failure by decrementing
+>>      the reference.
+>>    - Correct the code for handling built-in utf8 option as well.
+>>    - Correct the synchronization for accessing utf8mod.
+>>    - Make changes to unicode_unload() for handling the situation where
+>>      utf8mod != NULL and um == NULL.
+>>
+>> Changes in v6
+>>    - Add spinlock to protect utf8mod and avoid NULL pointer
+>>      dereference.
+>>    - Change the static call function names for being consistent with
+>>      kernel coding style.
+>>    - Merge the unicode_load_module function with unicode_load as it is
+>>      not really needed to have a separate function.
+>>    - Use try_then_module_get instead of module_get to avoid loading the
+>>      module even when it is already loaded.
+>>    - Improve the commit message.
+>>
+>> Changes in v5
+>>    - Rename global variables and default static call functions for better
+>>      understanding
+>>    - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+>>      enabled provided UNICODE_UTF8 is enabled.
+>>    - Improve the documentation for Kconfig
+>>    - Improve the commit message.
+>>   
+>> Changes in v4
+>>    - Return error from the static calls instead of doing nothing and
+>>      succeeding even without loading the module.
+>>    - Remove the complete usage of utf8_ops and use static calls at all
+>>      places.
+>>    - Restore the static calls to default values when module is unloaded.
+>>    - Decrement the reference of module after calling the unload function.
+>>    - Remove spinlock as there will be no race conditions after removing
+>>      utf8_ops.
+>>
+>> Changes in v3
+>>    - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+>>      in ext4 and f2fs filesystems
+>>    - Return error if strscpy() returns value < 0
+>>    - Correct the conditions to prevent NULL pointer dereference while
+>>      accessing functions via utf8_ops variable.
+>>    - Add spinlock to avoid race conditions.
+>>    - Use static_call() for preventing speculative execution attacks.
+>>
+>> Changes in v2
+>>    - Remove the duplicate file from the last patch.
+>>    - Make the wrapper functions inline.
+>>    - Remove msleep and use try_module_get() and module_put()
+>>      for ensuring that module is loaded correctly and also
+>>      doesn't get unloaded while in use.
+>>    - Resolve the warning reported by kernel test robot.
+>>    - Resolve all the checkpatch.pl warnings.
+>>
+>>   fs/unicode/Kconfig        |  26 +++-
+>>   fs/unicode/Makefile       |   5 +-
+>>   fs/unicode/unicode-core.c | 297 ++++++++++++++------------------------
+>>   fs/unicode/unicode-utf8.c | 264 +++++++++++++++++++++++++++++++++
+>>   include/linux/unicode.h   |  96 ++++++++++--
+>>   5 files changed, 483 insertions(+), 205 deletions(-)
+>>   create mode 100644 fs/unicode/unicode-utf8.c
+>>
+>> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+>> index 2c27b9a5cd6c..0c69800a2a37 100644
+>> --- a/fs/unicode/Kconfig
+>> +++ b/fs/unicode/Kconfig
+>> @@ -2,13 +2,31 @@
+>>   #
+>>   # UTF-8 normalization
+>>   #
+>> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
+>> +# is enabled. This config option adds the unicode subsystem layer which loads
+>> +# the UTF-8 module whenever any filesystem needs it.
+>>   config UNICODE
+>> -	bool "UTF-8 normalization and casefolding support"
+>> +	bool
+>> +
+>> +config UNICODE_UTF8
+>> +	tristate "UTF-8 module"
+> "UTF-8 module" is the text that will appear in menuconfig and other
+> configuration utilities.  This string not very helpful to describe what
+> this code is about or why it is different from NLS_utf8.  People come to
+> this option looking for the case-insensitive feature in ext4, so I'd
+> prefer to keep the mention to 'casefolding'. or even improve the
+> original a bit to say:
+>
+> tristate: "UTF-8 support for native Case-Insensitive filesystems"
+>
+> Other than these and what Eric mentioned, the code looks good to me.
 
-Cheers
-/Ilias
+
+Thanks Gabriel and Eric for your reviews.
+
+
+>    I
+> gave this series a try and it seems to work fine.
+>
+> It does raise a new warning, though
+>
+> /home/krisman/src/linux/fs/unicode/unicode-core.c: In function ‘unicode_load’:
+> /home/krisman/src/linux/include/linux/kmod.h:28:8: warning: the omitted middle operand in ‘?:’ will always be ‘true’, suggest explicit middle operand [-Wparentheses]
+>     28 |  ((x) ?: (__request_module(true, mod), (x)))
+>        |        ^
+> /home/krisman/src/linux/fs/unicode/unicode-core.c:123:7: note: in expansion of macro ‘try_then_request_module’
+>    123 |  if (!try_then_request_module(utf8mod_get(), "utf8")) {
+>
+> But in this specific case, i think gcc is just being silly. What would
+> be the right way to avoid it?
+
+
+There are two possible things that we can do here to suppress the warning
+
+1. Disable the warning using pragma with something like this :-
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wparentheses"
+     if(!try_then_request_module(utf8mod_get(), "utf8"))
+#pragma GCC diagnostic pop
+
+
+2. Add the following in fs/unicode/Makefile
+
+KBUILD_CFLAGS += $(call cc-disable-warning, parentheses)
+But this would disable the warning for the complete unicode subsystem 
+which doesn't seem to be right.
+It would also disable some other crucial warning generated by Wparantheses.
+
+What do you think about the first option? I am not sure if this is the 
+right way to fix this.
+
+
