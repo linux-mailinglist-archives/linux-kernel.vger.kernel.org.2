@@ -2,161 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AC135ED0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E8235ED11
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349160AbhDNGO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349113AbhDNGOa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:14:30 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A29C06138D;
-        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id d10so13654082pgf.12;
-        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LqBjgru/kZiv2kgZDvT4GDl1IMrvGcwQ/GofAyAsCoI=;
-        b=ILVyUIH8LNRoWIsR8w+ffysuuD7sGt7bSRwJ5vSEBW1HE/UDmLzroSVgfI3YaQqbDG
-         rfzopRxQEczTvaUNt5pl6+bQLK1wo0B82wV+SWiwJryyP85zX9BhNRmLo/fJcM87KGa2
-         2xW5mR6ut6SHPbls0SEsmGzp0fjcm9lefFszcXAnIXYnJyGlSbv2ZBK1kRsqDoN0DJrW
-         TMIgz5GSKQfjWz/08rwLLzPHbpdS45WLN+HeWBvPWXVQjEAUr2e+aA7H0JvhdWLGLixT
-         THqqH5JF7Xq4b7f6gL6OARny5WCOORGXr1MaTcAS9Zywg1sm+3NYRQJKy8tzWwF3g+Iu
-         IPxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=LqBjgru/kZiv2kgZDvT4GDl1IMrvGcwQ/GofAyAsCoI=;
-        b=ZuZdVJGJ5EGNdXC/tYxyxme5C2kgmCny8JAXTt/LEY/Rp739X9zGeexGHjS0VoOOoQ
-         D6BXFmPWR6Wu0VLrp8Te/muxUMrDPCvl7K3Xepm4kyCyhQu5HLsBEtEJKNCafwPEZ+ex
-         pcRBOB1WNIaEIvRIuZ8ztto1BRVDFJGZJV33Fp42EUdq/4RJrUTzPh2XWl+E+lP64ILU
-         zQ4iUJ5/32FQ1tINjPnwjQvffP1G5fV+8F2LEXkfi88xepAlaSnnqGaAxpt5P7Sv2rMS
-         BqGau6QzrNHXMjjvtRS29SO3+qBcR0Wi5LSMthIxuDS9bjA3FwT6495gU8h8VEyKHGLS
-         zVKg==
-X-Gm-Message-State: AOAM532EPpRxPsDV/owPSdb2GBoVeECwBOAaeX+t1nuv0auLrOfQClRu
-        Pt2aUc/ucR/xmXQkaK9GBDI=
-X-Google-Smtp-Source: ABdhPJxZJd6FW5aeYTCVQO81obZYLNmzCqikb4NF3fjOEO6+8Uuo6fjuWAE7hyZL6xN5nqFskaLxrw==
-X-Received: by 2002:a65:62d7:: with SMTP id m23mr36562496pgv.244.1618380847472;
-        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id d17sm13629071pfn.60.2021.04.13.23.14.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     robh+dt@kernel.org, shawnguo@kernel.org, krzk@kernel.org,
-        linux@rempel-privat.de, s.riedmueller@phytec.de,
-        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
-        arnd@arndb.de, olof@lixom.net, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        prabhakar.csengg@gmail.com, mchehab@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v1 3/3] media: i2c: ov2659: Add clk_prepare_enable(), clk_disable_unprepare() to handle xvclk
-Date:   Wed, 14 Apr 2021 14:13:47 +0800
-Message-Id: <1618380827-16056-4-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618380827-16056-1-git-send-email-dillon.minfei@gmail.com>
-References: <1618380827-16056-1-git-send-email-dillon.minfei@gmail.com>
+        id S1349190AbhDNGPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349130AbhDNGOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:14:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A0B60FD8;
+        Wed, 14 Apr 2021 06:14:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618380870;
+        bh=QUwhG1aEuYUYzpTX5r+cTxe2OtqIgKW7ZzBKXbUv0qE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=thusl7s/bxHLGdsAmgh+pH+X9REzuDPhBdzVl1RfGWSvGH0esOhhO4XNPANmqOQLX
+         xamcSotJXglVS6YhmGa8nLoVDcdUwC9bE7FdYX4hue7yEiFXhVHGvqenqDq4roJ6Sc
+         A/YaT/EFd2fN8q12udBhBJFgvTs2S7aVxIb5BWB7OGt4h3U1q/VY9pjyQP+55c0wM0
+         cb76MI26cMoEf8s1YmbLXaz2CzB5NnsRRPIUJdvCYB/GoxzXCFkwc2Sz28M9a/PWXq
+         EBIy9On512F83Z+NtuJzgkiz0e+LXrm9oQqDMTxYRYQNG3ppWwoONaNrqKxXlfs+ph
+         bmu4zyqOrQALQ==
+Date:   Wed, 14 Apr 2021 08:14:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH] Documentation: syscalls: add a note about  ABI-agnostic
+ types
+Message-ID: <20210414081422.5a9d0c4b@coco.lan>
+In-Reply-To: <20210414044020.GA44464@yury-ThinkPad>
+References: <20210409204304.1273139-1-yury.norov@gmail.com>
+        <20210414044020.GA44464@yury-ThinkPad>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+Em Tue, 13 Apr 2021 21:40:20 -0700
+Yury Norov <yury.norov@gmail.com> escreveu:
 
-For power save purpose, xvclk might not be always on.
-need add clk_prepare_enable(), clk_disable_unprepare() at driver
-side to set xvclk on/off at proper stage.
+> Ping?
+> 
+> On Fri, Apr 09, 2021 at 01:43:04PM -0700, Yury Norov wrote:
+> > Recently added memfd_secret() syscall had a flags parameter passed
+> > as unsigned long, which requires creation of compat entry for it.
+> > It was possible to change the type of flags to unsigned int and so
+> > avoid bothering with compat layer.
+> > 
+> > https://www.spinics.net/lists/linux-mm/msg251550.html
+> > 
+> > Documentation/process/adding-syscalls.rst doesn't point clearly about
+> > preference of ABI-agnostic types. This patch adds such notification.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  Documentation/process/adding-syscalls.rst | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/Documentation/process/adding-syscalls.rst b/Documentation/process/adding-syscalls.rst
+> > index 9af35f4ec728..46add16edf14 100644
+> > --- a/Documentation/process/adding-syscalls.rst
+> > +++ b/Documentation/process/adding-syscalls.rst
+> > @@ -172,6 +172,13 @@ arguments (i.e. parameter 1, 3, 5), to allow use of contiguous pairs of 32-bit
+> >  registers.  (This concern does not apply if the arguments are part of a
+> >  structure that's passed in by pointer.)
+> >  
+> > +Whenever possible, try to use ABI-agnostic types for passing parameters to
+> > +a syscall in order to avoid creating compat entry for it. Linux supports two
+> > +ABI models - ILP32 and LP64. 
 
-Add following changes:
-- add 'struct clk *clk' in 'struct ov2659'
-- enable xvclk in ov2659_power_on()
-- disable xvclk in ov2659_power_off()
+> > + The types like ``void *``, ``long``, ``size_t``,
+> > +``off_t`` have different size in those ABIs;
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
- drivers/media/i2c/ov2659.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+In the case of pointers, the best is to use __u64. The pointer can then
+be read on Kernelspace with something like this:
 
-diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
-index 42f64175a6df..fb78a1cedc03 100644
---- a/drivers/media/i2c/ov2659.c
-+++ b/drivers/media/i2c/ov2659.c
-@@ -204,6 +204,7 @@ struct ov2659 {
- 	struct i2c_client *client;
- 	struct v4l2_ctrl_handler ctrls;
- 	struct v4l2_ctrl *link_frequency;
-+	struct clk *clk;
- 	const struct ov2659_framesize *frame_size;
- 	struct sensor_register *format_ctrl_regs;
- 	struct ov2659_pll_ctrl pll;
-@@ -1270,6 +1271,8 @@ static int ov2659_power_off(struct device *dev)
- 
- 	gpiod_set_value(ov2659->pwdn_gpio, 1);
- 
-+	clk_disable_unprepare(ov2659->clk);
-+
- 	return 0;
- }
- 
-@@ -1278,9 +1281,17 @@ static int ov2659_power_on(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct ov2659 *ov2659 = to_ov2659(sd);
-+	int ret;
- 
- 	dev_dbg(&client->dev, "%s:\n", __func__);
- 
-+	ret = clk_prepare_enable(ov2659->clk);
-+	if (ret) {
-+		dev_err(&client->dev, "%s: failed to enable clock\n",
-+			__func__);
-+		return ret;
-+	}
-+
- 	gpiod_set_value(ov2659->pwdn_gpio, 0);
- 
- 	if (ov2659->resetb_gpio) {
-@@ -1425,7 +1436,6 @@ static int ov2659_probe(struct i2c_client *client)
- 	const struct ov2659_platform_data *pdata = ov2659_get_pdata(client);
- 	struct v4l2_subdev *sd;
- 	struct ov2659 *ov2659;
--	struct clk *clk;
- 	int ret;
- 
- 	if (!pdata) {
-@@ -1440,11 +1450,11 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->pdata = pdata;
- 	ov2659->client = client;
- 
--	clk = devm_clk_get(&client->dev, "xvclk");
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
-+	ov2659->clk = devm_clk_get(&client->dev, "xvclk");
-+	if (IS_ERR(ov2659->clk))
-+		return PTR_ERR(ov2659->clk);
- 
--	ov2659->xvclk_frequency = clk_get_rate(clk);
-+	ov2659->xvclk_frequency = clk_get_rate(ov2659->clk);
- 	if (ov2659->xvclk_frequency < 6000000 ||
- 	    ov2659->xvclk_frequency > 27000000)
- 		return -EINVAL;
-@@ -1506,7 +1516,9 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->frame_size = &ov2659_framesizes[2];
- 	ov2659->format_ctrl_regs = ov2659_formats[0].format_ctrl_regs;
- 
--	ov2659_power_on(&client->dev);
-+	ret = ov2659_power_on(&client->dev);
-+	if (ret < 0)
-+		goto error;
- 
- 	ret = ov2659_detect(sd);
- 	if (ret < 0)
--- 
-2.7.4
+	static inline void __user *media_get_uptr(__u64 arg)
+	{
+		return (void __user *)(uintptr_t)arg;
+	}
 
+
+> > types like ``char`` and  ``int``
+> > +have the same size and don't require a compat layer support. For flags, it's
+> > +always better to use ``unsigned int``.
+> > +
+
+I don't think this is true for all compilers on userspace, as the C
+standard doesn't define how many bits an int/unsigned int has. 
+So, even if this is today's reality, things may change in the future.
+
+For instance, I remember we had to replace "int" and "enum" by "__u32" 
+and "long" by "__u64" at the media uAPI in the past, when we start
+seeing x86_64 Kernels with 32-bits userspace and when cameras started 
+being supported on arm32.
+
+We did have some real bugs with "enum", as, on that time, some
+compilers (gcc, I guess) were optimizing them to have less than
+32 bits on certain architectures, when it fits.
+
+Thanks,
+Mauro
