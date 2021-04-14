@@ -2,78 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0FD35F5A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7941335F59D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349188AbhDNNwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:52:10 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52161 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351702AbhDNNwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:52:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FL3mG2lZMz9sX5;
-        Wed, 14 Apr 2021 23:51:26 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618408286;
-        bh=0ZHHhWHIWZ3sCbWllT/QqDes1z9nCDYXTSwDbroDug0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AdTKeTifOhH12mtMIFYRQnemQ6jf0L5qUPLj6Kt20HQ7HIL9fzOZv7kTc4f8YbQ7I
-         0lYBovbB90Hre8GRyovABbkyZc3xS33d0EBFjC5Qz8kWbla3a9/j6IRE0itR87vpaa
-         QAviHaYmafXHKPMqGnQR6z+zUmlNooY9Y9IwD2BqIvhz46Fbsp8L2oXRVLGj7CkKyI
-         Sc5U4paviDDExzjcHy7Bd+DmOvQFMTv6h8LABBsRrw6oUV16wdfwEp/dyjJ6gH7VQp
-         +As4N7kylslFSrETbFqjboBTGR9ZhpRJXW5w7R4w/PZ6nE2aRv3D7IFtuKtMwCUS1u
-         G8rnAN9WaxUaA==
-Date:   Wed, 14 Apr 2021 23:51:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the drivers-x86
- tree
-Message-ID: <20210414235123.4ebcd479@canb.auug.org.au>
+        id S1351548AbhDNNvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:51:35 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35867 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349137AbhDNNvX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:51:23 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.LocalDomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 0281B6000C;
+        Wed, 14 Apr 2021 13:50:58 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/5] dt-bindings: media: max9286: Define 'maxim,gpio-poc'
+Date:   Wed, 14 Apr 2021 15:51:24 +0200
+Message-Id: <20210414135128.180980-2-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Define a new vendor property in the maxim,max9286 binding schema.
 
-Hi all,
+The new property allows to declare that the remote camera
+power-over-coax is controlled by one of the MAX9286 gpio lines.
 
-Commit
+As it is currently not possible to establish a regulator as consumer
+of the MAX9286 gpio controller for this purpose, the property allows to
+declare that the camera power is controlled by the MAX9286 directly.
 
-  ff57cfaa3d68 ("platform/x86: pmc_atom: Match all Beckhoff Automation bayt=
-rail boards with critclk_systems DMI table")
+The property accepts a gpio-index (0 or 1) and one line polarity
+flag as defined by dt-bindings/gpio/gpio.h.
 
-is missing a Signed-off-by from its committer.
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+---
+ .../bindings/media/i2c/maxim,max9286.yaml     | 53 ++++++++++++++++++-
+ 1 file changed, 52 insertions(+), 1 deletion(-)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+index ee16102fdfe7..480a491f3744 100644
+--- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+@@ -70,6 +70,24 @@ properties:
+       a remote serializer whose high-threshold noise immunity is not enabled
+       is 100000 micro volts
+ 
++  maxim,gpio-poc:
++    $ref: '/schemas/types.yaml#/definitions/uint32-array'
++    minItems: 2
++    maxItems: 2
++    description: |
++      Identifier of gpio line that controls Power over Coax to the cameras and
++      the associated polarity flag (GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW)
++      as defined in <include/dt-bindings/gpio/gpio.h>.
++
++      When the remote cameras power is controlled by one of the MAX9286 gpio
++      lines, this property has to be used to specify which line among the two
++      available ones controls the remote camera power enablement.
++
++      When this property is used it is not possible to register a gpio
++      controller as the gpio lines are controlled directly by the MAX9286 and
++      not available for consumers, nor the 'poc-supply' property should be
++      specified.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+@@ -182,7 +200,6 @@ required:
+   - reg
+   - ports
+   - i2c-mux
+-  - gpio-controller
+ 
+ additionalProperties: false
+ 
+@@ -327,4 +344,38 @@ examples:
+           };
+         };
+       };
++
++      /*
++       * Example of a deserializer that controls the camera Power over Coax
++       * through one of its gpio lines.
++       */
++      gmsl-deserializer@6c {
++        compatible = "maxim,max9286";
++        reg = <0x6c>;
++        enable-gpios = <&gpio 14 GPIO_ACTIVE_HIGH>;
++
++        /*
++         * The remote camera power is controlled by MAX9286 GPIO line #0.
++         * No 'poc-supply' nor 'gpio-controller' are specified.
++         */
++        maxim,gpio-poc = <0 GPIO_ACTIVE_LOW>;
++
++        /*
++         * Do not describe connections as they're the same as in the previous
++         * example.
++         */
++        ports {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          port@4 {
++            reg = <4>;
++          };
++        };
++
++        i2c-mux {
++          #address-cells = <1>;
++          #size-cells = <0>;
++        };
++      };
+     };
+-- 
+2.31.1
 
---Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB281sACgkQAVBC80lX
-0GzCcgf9E/42ltlfr3LxUfO1LBojjC3c+69V+7zG+tRvIS2/gZwt2rYIIrcS5aS3
-cwDPXy3zRRzmEki00qOcBqpnFaixhTps5GcOYQlRRyCPC1LXusOFC7vrljjNuCRM
-yY+I6eVNDVWbGhesL7gS1YZjIwXrLb70SpXvVdpHLZ7CLTud5Scxipmv4kHT/19r
-j9mb4TmT5DsPzoaUVPHwEHCuAjMkysGcMQggr9TvtAffwngWEDZb9sAV6OlYy/dx
-pOLbnnHzjVUTjXgm6XkIdj0eYwZgBNVNOSQeOwJdghr2/r1g3mqnAPVD31p/sAA2
-Koi9kX5laYaaO3pYu215LrcDIcxGqg==
-=34t8
------END PGP SIGNATURE-----
-
---Sig_/J0lqY1GHuTJe9E7Z8SfkbPZ--
