@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8CF35FCAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B5435FCBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244085AbhDNUaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:30:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243809AbhDNUaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:30:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB62F61090;
-        Wed, 14 Apr 2021 20:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618432191;
-        bh=0/g8QgxcPByWv4b4UdJd4FLad687IHnLM2vVf0ZWjRY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bqtXXI6cAJ95seHOi/o4nAFhJ6cmvJJ3iQYMhPzjIWkExHdlx8qW3SiuEYaM0ZbZI
-         SqlG/khazIjpgkFsNZeYJE0YqMrUJBpSpOb/xeXncRBxBxvk8HcF5jTAdCcBeYu7UA
-         dqeZ3w4s4t1e9PzpKaAW9T5x3oV5xw05JxqA4W/nk8pXWO/6lnOH4YGoyD3Y5hOxOK
-         OLkp3g6pY7ZhKS3tdc02Vjmlo9GL43D5mcxMnU+nN507gzFgo8NFsOTj8RiIGfH3EY
-         3jGFfEVngjqnmqUHYKFS/ghGTuTXbRfPGslgr+/4hS6QkesNPAlwppYYSbuFF52+4J
-         /QjLAfgysF3YQ==
-Date:   Wed, 14 Apr 2021 23:29:42 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC/RFT PATCH 2/3] arm64: decouple check whether pfn is normal
- memory from pfn_valid()
-Message-ID: <YHdQtmuxpqi4wCE/@kernel.org>
-References: <20210407172607.8812-1-rppt@kernel.org>
- <20210407172607.8812-3-rppt@kernel.org>
- <4a788546-b854-fd35-644a-f1d9075a9a78@arm.com>
- <9c0956f0-494e-5c6b-bdc2-d4213afd5e2f@redhat.com>
+        id S244538AbhDNUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:34:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50449 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231483AbhDNUeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:34:24 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lWmD3-0007QZ-LA
+        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 20:34:01 +0000
+Received: by mail-ej1-f71.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so219361ejb.18
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x2hO5DXMeLJZo3Sq4pJYNG0FO8H5GrNmCBQcI+p7buM=;
+        b=hHEgzp1W6hUAJX7kYCPOX/rHNDC/xuUZBJQCq1i72LfqJswyqk9E+FW2O94US+fnyP
+         1Xo2YRnIAWM6Ir9+R1wdlAhfY/9O0ro8vVLmfix4qkZqrlm76lltYrWb9AnJgg/aD1Py
+         AdD9FIaigO5HviKYZl36RN5YqA8aVYXDUKqXPkQbT/xzqJJ3BELyjAlpimqqGFszdvs3
+         XeTbsVSxRr0LvN5TUKxcTEGa5+ba34NhiWHFhORsjEu0NdX4g+of7JrBkPnP2h0p5D6H
+         9hasKTlpsIhYc7FUD9404Qnu+4NPMmMnExymyqzkvjLBAx3cZ+nWrtTH2plf93eOhRjF
+         e2ig==
+X-Gm-Message-State: AOAM530zJvzaVWczQ6LejipvaLc0XlfOlbbvqDLQxLChodEeQSG2Kg8Q
+        opxZC3viEsB9ehFVUKJ3ODFTEL49gYuyf0wZcT/IjGPsy+pJXFrsNsXHUsQIYf6S7rQew2uGLnA
+        0mZ/APUg3CKcF5zOthG/aYWVbiWjyHVBbb/Wqm2wo4w==
+X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr72094edd.168.1618432441434;
+        Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8Z5ptlAYigxFNCd5S/xT8AwrP3ue/ADlxR9AJcWKfkq3TLq+hwkPI3X1JJfIFB9MPghvAVg==
+X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr72086edd.168.1618432441295;
+        Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id q6sm372209ejt.51.2021.04.14.13.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 13:34:00 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: [PATCH 1/3] spi: s3c64xx: simplify getting of_device_id match data
+Date:   Wed, 14 Apr 2021 22:33:41 +0200
+Message-Id: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c0956f0-494e-5c6b-bdc2-d4213afd5e2f@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:58:26PM +0200, David Hildenbrand wrote:
-> On 08.04.21 07:14, Anshuman Khandual wrote:
-> > 
-> > On 4/7/21 10:56 PM, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > 
-> > > The intended semantics of pfn_valid() is to verify whether there is a
-> > > struct page for the pfn in question and nothing else.
-> > 
-> > Should there be a comment affirming this semantics interpretation, above the
-> > generic pfn_valid() in include/linux/mmzone.h ?
-> > 
-> > > 
-> > > Yet, on arm64 it is used to distinguish memory areas that are mapped in the
-> > > linear map vs those that require ioremap() to access them.
-> > > 
-> > > Introduce a dedicated pfn_is_memory() to perform such check and use it
-> > > where appropriate.
-> > > 
-> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > > ---
-> > >   arch/arm64/include/asm/memory.h | 2 +-
-> > >   arch/arm64/include/asm/page.h   | 1 +
-> > >   arch/arm64/kvm/mmu.c            | 2 +-
-> > >   arch/arm64/mm/init.c            | 6 ++++++
-> > >   arch/arm64/mm/ioremap.c         | 4 ++--
-> > >   arch/arm64/mm/mmu.c             | 2 +-
-> > >   6 files changed, 12 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> > > index 0aabc3be9a75..7e77fdf71b9d 100644
-> > > --- a/arch/arm64/include/asm/memory.h
-> > > +++ b/arch/arm64/include/asm/memory.h
-> > > @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
-> > >   #define virt_addr_valid(addr)	({					\
-> > >   	__typeof__(addr) __addr = __tag_reset(addr);			\
-> > > -	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
-> > > +	__is_lm_address(__addr) && pfn_is_memory(virt_to_pfn(__addr));	\
-> > >   })
-> > >   void dump_mem_limit(void);
-> > > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> > > index 012cffc574e8..32b485bcc6ff 100644
-> > > --- a/arch/arm64/include/asm/page.h
-> > > +++ b/arch/arm64/include/asm/page.h
-> > > @@ -38,6 +38,7 @@ void copy_highpage(struct page *to, struct page *from);
-> > >   typedef struct page *pgtable_t;
-> > >   extern int pfn_valid(unsigned long);
-> > > +extern int pfn_is_memory(unsigned long);
-> > >   #include <asm/memory.h>
-> > > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > > index 8711894db8c2..ad2ea65a3937 100644
-> > > --- a/arch/arm64/kvm/mmu.c
-> > > +++ b/arch/arm64/kvm/mmu.c
-> > > @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
-> > >   static bool kvm_is_device_pfn(unsigned long pfn)
-> > >   {
-> > > -	return !pfn_valid(pfn);
-> > > +	return !pfn_is_memory(pfn);
-> > >   }
-> > >   /*
-> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > > index 3685e12aba9b..258b1905ed4a 100644
-> > > --- a/arch/arm64/mm/init.c
-> > > +++ b/arch/arm64/mm/init.c
-> > > @@ -258,6 +258,12 @@ int pfn_valid(unsigned long pfn)
-> > >   }
-> > >   EXPORT_SYMBOL(pfn_valid);
-> > > +int pfn_is_memory(unsigned long pfn)
-> > > +{
-> > > +	return memblock_is_map_memory(PFN_PHYS(pfn));
-> > > +}
-> > > +EXPORT_SYMBOL(pfn_is_memory);> +
-> > 
-> > Should not this be generic though ? There is nothing platform or arm64
-> > specific in here. Wondering as pfn_is_memory() just indicates that the
-> > pfn is linear mapped, should not it be renamed as pfn_is_linear_memory()
-> > instead ? Regardless, it's fine either way.
-> 
-> TBH, I dislike (generic) pfn_is_memory(). It feels like we're mixing
-> concepts.
+Use of_device_get_match_data() to make the code slightly smaller and to
+remove the of_device_id table forward declaration.
 
-Yeah, at the moment NOMAP is very much arm specific so I'd keep it this way
-for now.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/spi/spi-s3c64xx.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
->  NOMAP memory vs !NOMAP memory; even NOMAP is some kind of memory
-> after all. pfn_is_map_memory() would be more expressive, although still
-> sub-optimal.
->
-> We'd actually want some kind of arm64-specific pfn_is_system_memory() or the
-> inverse pfn_is_device_memory() -- to be improved.
-
-In my current version (to be posted soon) I've started with
-pfn_lineary_mapped() but then ended up with pfn_mapped() to make it
-"upward" compatible with architectures that use direct rather than linear
-map :)
-
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index dfa7c91e13aa..c6d7641ea342 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -15,6 +15,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/gpio.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ 
+ #include <linux/platform_data/spi-s3c64xx.h>
+@@ -1048,17 +1049,12 @@ static struct s3c64xx_spi_info *s3c64xx_spi_parse_dt(struct device *dev)
+ }
+ #endif
+ 
+-static const struct of_device_id s3c64xx_spi_dt_match[];
+-
+ static inline struct s3c64xx_spi_port_config *s3c64xx_spi_get_port_config(
+ 						struct platform_device *pdev)
+ {
+ #ifdef CONFIG_OF
+-	if (pdev->dev.of_node) {
+-		const struct of_device_id *match;
+-		match = of_match_node(s3c64xx_spi_dt_match, pdev->dev.of_node);
+-		return (struct s3c64xx_spi_port_config *)match->data;
+-	}
++	if (pdev->dev.of_node)
++		return (struct s3c64xx_spi_port_config *)of_device_get_match_data(&pdev->dev);
+ #endif
+ 	return (struct s3c64xx_spi_port_config *)
+ 			 platform_get_device_id(pdev)->driver_data;
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
