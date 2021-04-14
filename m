@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFF635F17F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703BC35F188
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhDNK2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55646 "EHLO mail.kernel.org"
+        id S233846AbhDNKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:33:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42510 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232235AbhDNK2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:28:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DFE1613BB;
-        Wed, 14 Apr 2021 10:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618396093;
-        bh=inLOHc4mEA6C0jmfnEWMrWnf4KZT+SYwxR2duFTHKco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZzFHRemJebaD9YD5jVtByERtwtXJd3I9oEx+xDcAe5U6ZwAXcVcfxU/sZCNm5IA8/
-         s6YuJMnHMHrUHprR8iZt5AKNXb5qCpJcGg8e0sClB5Op7TlZ8XL+8PiOcPoZddqtN2
-         mL2vZHZMhiVOKJ7f+lHHN/LS4qo9zqwY8/7EVhgg=
-Date:   Wed, 14 Apr 2021 12:28:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     julia.lawall@inria.fr, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] staging: rtl8723bs: replace DBG_871X_SEL_NL with
- netdev_dbg()
-Message-ID: <YHbDu8LtSzR8Vj6y@kroah.com>
-References: <cover.1618325614.git.fabioaiuto83@gmail.com>
- <a798262b8e1dacf225dd42f2863243c543667d5f.1618325614.git.fabioaiuto83@gmail.com>
- <YHanGdS1Kc/4zq4q@kroah.com>
- <20210414094340.GB3931@agape.jhs>
+        id S232235AbhDNKdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:33:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618396379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4f9XVi08AUnEb2K13TH7oU76g65kV0XAZJ7MmHU+byU=;
+        b=XJoXRkrBRwgetqxmgVhqJJnDosEI+hw98nimjUD/azguCxCfnAsanFB0n1WnfBjldlCycy
+        8LL0mCJn39fjzqkr5pgIkTIFdSR3j0magWQP+mu76o6BvXE0ucE7oI73WU2fWznLqbv2N3
+        4HqLfTjic1B2W+lEIlipjfUaMtz4Gus=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CDF50AF31;
+        Wed, 14 Apr 2021 10:32:59 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 12:32:58 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/7] mm,hugetlb: Clear HPageFreed outside of the lock
+Message-ID: <YHbE2q/Otrdx1cgK@dhcp22.suse.cz>
+References: <20210413104747.12177-1-osalvador@suse.de>
+ <20210413104747.12177-4-osalvador@suse.de>
+ <YHWbPjgPpsLoqGvL@dhcp22.suse.cz>
+ <b8f36340-df56-1180-2a14-7b20cc1a0cda@oracle.com>
+ <YHaF5efHcJJ71UP9@dhcp22.suse.cz>
+ <20210414074132.GB20401@linux>
+ <YHansW/OnNT6/i9d@dhcp22.suse.cz>
+ <20210414100147.GD20886@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414094340.GB3931@agape.jhs>
+In-Reply-To: <20210414100147.GD20886@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:43:41AM +0200, Fabio Aiuto wrote:
-> On Wed, Apr 14, 2021 at 10:26:01AM +0200, Greg KH wrote:
-> > > -	DBG_871X_SEL_NL(sel, "%10s %16s %8s %10s %11s %14s\n",
-> > > -			"TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base",
-> > > -			"ForceEDCCA", "AdapEn_RSSI", "IGI_LowerBound");
-> > > -	DBG_871X_SEL_NL(sel, "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
-> > > -			(u8)odm->TH_L2H_ini,
-> > > -			odm->TH_EDCCA_HL_diff,
-> > > -			odm->IGI_Base,
-> > > -			odm->ForceEDCCA,
-> > > -			odm->AdapEn_RSSI,
-> > > -			odm->IGI_LowerBound
-> > > -	);
-> > > +	netdev_dbg(adapter->pnetdev, "%10s %16s %8s %10s %11s %14s\n",
-> > > +		   "TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base", "ForceEDCCA",
-> > > +		   "AdapEn_RSSI", "IGI_LowerBound");netdev_dbg(adapter->pnetdev,
-> > > +							       "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
-> > > +							       (u8)odm->TH_L2H_ini,
-> > > +							       odm->TH_EDCCA_HL_diff,
-> > > +							       odm->IGI_Base,
-> > > +							       odm->ForceEDCCA,
-> > > +							       odm->AdapEn_RSSI,
-> > > +							       odm->IGI_LowerBound);
-> > 
-> > Something went wrong with this change :(
+On Wed 14-04-21 12:01:47, Oscar Salvador wrote:
+> On Wed, Apr 14, 2021 at 10:28:33AM +0200, Michal Hocko wrote:
+> > You are right it doesn't do it there. But all struct pages, even those
+> > that are allocated by the bootmem allocator should initialize its struct
+> > pages. They would be poisoned otherwise, right? I would have to look at
+> > the exact code path but IIRC this should be around the time bootmem
+> > allocator state transitions to the page allocator.
 > 
-> thanks Greg, I sent an example to Julia, that reproduce the problem.
-> As soon as it gets fixed I will send you a v2.
+> Ok, you are right.
+> struct pages are initialized a bit earlier through:
+> 
+> start_kernel
+>  setup_arch
+>   paging_init
+>    zone_sizes_init
+>     free_area_init
+>      free_area_init_node
+>       free_area_init_core
+>        memmap_init_zone
+>         memmap_init_range
+>          __init_single_page
+> 
+> While the allocation of bootmem hugetlb happens
+> 
+> start_kernel
+>  parse_args
+>   ...
+>    hugepages_setup
+>     ...
+>      hugetlb_hstate_alloc_pages
+>       __alloc_bootmem_huge_page
+> 
+> which is after the setup_arch() call.
 
-You can fix it up yourself "by hand" for now, no need to wait for a tool
-fix :)
+Thanks for pulling those paths. It is always painful to crawl that code.
+
+> So by the time we get the page from __alloc_bootmem_huge_page(), fields are
+> zeroed.
+> I thought we might get in trouble because memblock_alloc_try_nid_raw() calls
+> page_init_poison() which poisons the chunk with 0xff,e.g:
+> 
+> [    1.955471] boot: ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
+> [    1.955476] boot: ffffffffffffffff ffffffffffffffff ffffffffffffffff ffffffffffffffff
+> 
+>  but it seems that does not the memmap struct page.
+
+Well, to be precise it does the very same thing with memamp struct pages
+but that is before the initialization code you have pointed out above.
+In this context it just poisons the allocated content which is the GB
+page storage.
+
+> I checked, and when we get there in __alloc_bootmem_huge_page, page->private is
+> still zeroed, so I guess it should be safe to assume that we do not really need
+> to clear the flag in __prep_new_huge_page() routine?
+
+It would be quite nasty if the struct pages content would be undefined.
+Maybe that is possible but then I would rather stick the initialization
+into __alloc_bootmem_huge_page.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
