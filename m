@@ -2,147 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9D835F027
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC9D35F02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350187AbhDNItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:49:45 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45150 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1345437AbhDNItl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:49:41 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax7ch_rHZgjukHAA--.10739S2;
-        Wed, 14 Apr 2021 16:49:05 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next] bpf: Fix some invalid links in bpf_devel_QA.rst
-Date:   Wed, 14 Apr 2021 16:49:01 +0800
-Message-Id: <1618390141-4817-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Ax7ch_rHZgjukHAA--.10739S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUKrWfJr1fWF13Cw4xtFb_yoWrCF4xpa
-        1fGr1akr18XF13Wwn7GrWUurySqas3GFWUCF18Jr95Zw1jvryktr1IgrWfXa98Jr909ay3
-        Za4SkryYka18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfU8Z2-UUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1350197AbhDNIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244803AbhDNIuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:50:24 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89A2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:50:02 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id u17so30223685ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZKYXCW0j+tTrQuAe8GIX4MEDkI/Cgjtmucn5a1qWgnA=;
+        b=EtzQmMnWkL9LGHP1xGfw8p/DZJHC3KSpHtK/JHwSEmR3o4kpZp14SR9OVGBDEMubYm
+         jw3rYntByVaJlrcYnVuPk0Sa7+wqEMAXiSMvhWnuaa8nJ5xqG2fGzAzVJpH+C1iTHosR
+         6sdemFHCEE2VoXAyeT5qpHClVPjzv7zof/6ZEEICUFLcfFqStL/TbXxhNmBl2sNka1W2
+         rg2pVYNT275NoZ/x92zf1Xd5xO9SGwJcoHcyPsPKnGu3CmBOJ0wH+7C7i8io7GIZFI+Z
+         O9FOwtVyTQTgD/lBP1x9V4p7FMynRV6wlwi8ATh8SjhcIf6jVIFZ3ufeDHKrwLkDSG2L
+         wE2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZKYXCW0j+tTrQuAe8GIX4MEDkI/Cgjtmucn5a1qWgnA=;
+        b=khdwFo+StUFQhIHWvYx4FQ9gRr4kPXrVF08AsZ7KcGUzhYuBZhgXFxP3nvRSaezDE+
+         cr2GwxlOVO+B8ze9ZRadSU7dzDBeuojUY+6lvNkZvw22wf7Ac9JBRFXskHzPetjcjraV
+         7+QQfcUZ0OeQ6KGsZpg7Io7awqcy7PaqmBvGJ9t3Xl7CA6TDe/muKnzYpQBq6mNIng7h
+         QcqAypQejkm4MemXZFUrvT4qnSxOBA9WbRI6s5AVNBSJDtXjSlv45KkTK6/ntyBMCX7O
+         dsqn7EzdLMxoI191/Vr0IEGF3xpzPFKEXqbF43P3hauPx2dSmCLezKRNRxkZYgK0T8nD
+         ZUnA==
+X-Gm-Message-State: AOAM532uUJRSty7L1dAM90Z/NCaSodHQQp1i1zGdfdbYQrdGDii4Xi4q
+        zQZ8MSxpqNgLWZ0TTWlm+TlRdqwbdW3Kh1aK2ethog==
+X-Google-Smtp-Source: ABdhPJz07DLU4OSds5Pwbn/zKcqDlfMXGhdWu97oY4cH/MvHnhkjhIzqsupkE+5Ut4u5NUb5khWLRg==
+X-Received: by 2002:a17:906:aad9:: with SMTP id kt25mr35924599ejb.364.1618390201527;
+        Wed, 14 Apr 2021 01:50:01 -0700 (PDT)
+Received: from localhost.localdomain ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id y16sm11146038edc.62.2021.04.14.01.50.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 01:50:01 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        Thomas Deutschmann <whissi@gentoo.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] iio: hid-sensors: select IIO_TRIGGERED_BUFFER under HID_SENSOR_IIO_TRIGGER
+Date:   Wed, 14 Apr 2021 11:49:55 +0300
+Message-Id: <20210414084955.260117-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist some errors "404 Not Found" when I click the link
-of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-in the documentation "HOWTO interact with BPF subsystem" [4].
+During commit 067fda1c065ff ("iio: hid-sensors: move triggered buffer
+setup into hid_sensor_setup_trigger"), the
+iio_triggered_buffer_{setup,cleanup}() functions got moved under the
+hid-sensor-trigger module.
 
-Use correct link of "MAINTAINERS" and just remove the links of
-"samples/bpf/" and "selftests" because there are not related
-documentations.
+The above change works fine, if any of the sensors get built. However, when
+only the common hid-sensor-trigger module gets built (and none of the
+drivers), then the IIO_TRIGGERED_BUFFER symbol isn't selected/enforced.
 
-[1] https://www.kernel.org/doc/html/MAINTAINERS
-[2] https://www.kernel.org/doc/html/samples/bpf/
-[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+Previously, each driver would enforce/select the IIO_TRIGGERED_BUFFER
+symbol. With this change the HID_SENSOR_IIO_TRIGGER (for the
+hid-sensor-trigger module) will enforce that IIO_TRIGGERED_BUFFER gets
+selected.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+All HID sensor drivers select the HID_SENSOR_IIO_TRIGGER symbol. So, this
+change removes the IIO_TRIGGERED_BUFFER enforcement from each driver.
+
+Fixes: 067fda1c065ff ("iio: hid-sensors: move triggered buffer setup into hid_sensor_setup_trigger")
+Reported-by: Thomas Deutschmann <whissi@gentoo.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- Documentation/bpf/bpf_devel_QA.rst | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ drivers/iio/accel/Kconfig              | 1 -
+ drivers/iio/common/hid-sensors/Kconfig | 1 +
+ drivers/iio/gyro/Kconfig               | 1 -
+ drivers/iio/humidity/Kconfig           | 1 -
+ drivers/iio/light/Kconfig              | 2 --
+ drivers/iio/magnetometer/Kconfig       | 1 -
+ drivers/iio/orientation/Kconfig        | 2 --
+ drivers/iio/pressure/Kconfig           | 1 -
+ drivers/iio/temperature/Kconfig        | 1 -
+ 9 files changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 2ed89ab..4fd4c8c 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -29,7 +29,7 @@ list:
- This may also include issues related to XDP, BPF tracing, etc.
- 
- Given netdev has a high volume of traffic, please also add the BPF
--maintainers to Cc (from kernel MAINTAINERS_ file):
-+maintainers to Cc (from kernel :ref:`MAINTAINERS <maintainers>` file):
- 
- * Alexei Starovoitov <ast@kernel.org>
- * Daniel Borkmann <daniel@iogearbox.net>
-@@ -217,11 +217,11 @@ page run by David S. Miller on net-next that provides guidance:
- Q: Verifier changes and test cases
- ----------------------------------
- Q: I made a BPF verifier change, do I need to add test cases for
--BPF kernel selftests_?
-+BPF kernel selftests?
- 
- A: If the patch has changes to the behavior of the verifier, then yes,
- it is absolutely necessary to add test cases to the BPF kernel
--selftests_ suite. If they are not present and we think they are
-+selftests suite. If they are not present and we think they are
- needed, then we might ask for them before accepting any changes.
- 
- In particular, test_verifier.c is tracking a high number of BPF test
-@@ -234,11 +234,11 @@ be subject to change.
- 
- Q: samples/bpf preference vs selftests?
- ---------------------------------------
--Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
--selftests_ ?
-+Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
-+selftests?
- 
--A: In general, we prefer additions to BPF kernel selftests_ rather than
--`samples/bpf/`_. The rationale is very simple: kernel selftests are
-+A: In general, we prefer additions to BPF kernel selftests rather than
-+``samples/bpf/``. The rationale is very simple: kernel selftests are
- regularly run by various bots to test for kernel regressions.
- 
- The more test cases we add to BPF selftests, the better the coverage
-@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
- not that BPF kernel selftests cannot demo how a specific feature can
- be used.
- 
--That said, `samples/bpf/`_ may be a good place for people to get started,
-+That said, ``samples/bpf/`` may be a good place for people to get started,
- so it might be advisable that simple demos of features could go into
--`samples/bpf/`_, but advanced functional and corner-case testing rather
-+``samples/bpf/``, but advanced functional and corner-case testing rather
- into kernel selftests.
- 
- If your sample looks like a test case, then go for BPF kernel selftests
-@@ -413,7 +413,7 @@ Testing patches
- Q: How to run BPF selftests
- ---------------------------
- A: After you have booted into the newly compiled kernel, navigate to
--the BPF selftests_ suite in order to test BPF functionality (current
-+the BPF selftests suite in order to test BPF functionality (current
- working directory points to the root of the cloned git tree)::
- 
-   $ cd tools/testing/selftests/bpf/
-@@ -645,10 +645,7 @@ when:
- 
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _MAINTAINERS: ../../MAINTAINERS
- .. _netdev-FAQ: ../networking/netdev-FAQ.rst
--.. _samples/bpf/: ../../samples/bpf/
--.. _selftests: ../../tools/testing/selftests/bpf/
- .. _Documentation/dev-tools/kselftest.rst:
-    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
- .. _Documentation/bpf/btf.rst: btf.rst
+diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
+index cceda3cecbcf..8b1723635cce 100644
+--- a/drivers/iio/accel/Kconfig
++++ b/drivers/iio/accel/Kconfig
+@@ -229,7 +229,6 @@ config DMARD10
+ config HID_SENSOR_ACCEL_3D
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID Accelerometers 3D"
+diff --git a/drivers/iio/common/hid-sensors/Kconfig b/drivers/iio/common/hid-sensors/Kconfig
+index 24d492567336..2a3dd3b907be 100644
+--- a/drivers/iio/common/hid-sensors/Kconfig
++++ b/drivers/iio/common/hid-sensors/Kconfig
+@@ -19,6 +19,7 @@ config HID_SENSOR_IIO_TRIGGER
+ 	tristate "Common module (trigger) for all HID Sensor IIO drivers"
+ 	depends on HID_SENSOR_HUB && HID_SENSOR_IIO_COMMON && IIO_BUFFER
+ 	select IIO_TRIGGER
++	select IIO_TRIGGERED_BUFFER
+ 	help
+ 	  Say yes here to build trigger support for HID sensors.
+ 	  Triggers will be send if all requested attributes were read.
+diff --git a/drivers/iio/gyro/Kconfig b/drivers/iio/gyro/Kconfig
+index 5824f2edf975..20b5ac7ab66a 100644
+--- a/drivers/iio/gyro/Kconfig
++++ b/drivers/iio/gyro/Kconfig
+@@ -111,7 +111,6 @@ config FXAS21002C_SPI
+ config HID_SENSOR_GYRO_3D
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID Gyroscope 3D"
+diff --git a/drivers/iio/humidity/Kconfig b/drivers/iio/humidity/Kconfig
+index 6549fcf6db69..2de5494e7c22 100644
+--- a/drivers/iio/humidity/Kconfig
++++ b/drivers/iio/humidity/Kconfig
+@@ -52,7 +52,6 @@ config HID_SENSOR_HUMIDITY
+ 	tristate "HID Environmental humidity sensor"
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	help
+diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
+index 33ad4dd0b5c7..917f9becf9c7 100644
+--- a/drivers/iio/light/Kconfig
++++ b/drivers/iio/light/Kconfig
+@@ -256,7 +256,6 @@ config ISL29125
+ config HID_SENSOR_ALS
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID ALS"
+@@ -270,7 +269,6 @@ config HID_SENSOR_ALS
+ config HID_SENSOR_PROX
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID PROX"
+diff --git a/drivers/iio/magnetometer/Kconfig b/drivers/iio/magnetometer/Kconfig
+index 5d4ffd66032e..74ad5701c6c2 100644
+--- a/drivers/iio/magnetometer/Kconfig
++++ b/drivers/iio/magnetometer/Kconfig
+@@ -95,7 +95,6 @@ config MAG3110
+ config HID_SENSOR_MAGNETOMETER_3D
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID Magenetometer 3D"
+diff --git a/drivers/iio/orientation/Kconfig b/drivers/iio/orientation/Kconfig
+index a505583cc2fd..396cbbb867f4 100644
+--- a/drivers/iio/orientation/Kconfig
++++ b/drivers/iio/orientation/Kconfig
+@@ -9,7 +9,6 @@ menu "Inclinometer sensors"
+ config HID_SENSOR_INCLINOMETER_3D
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID Inclinometer 3D"
+@@ -20,7 +19,6 @@ config HID_SENSOR_INCLINOMETER_3D
+ config HID_SENSOR_DEVICE_ROTATION
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID Device Rotation"
+diff --git a/drivers/iio/pressure/Kconfig b/drivers/iio/pressure/Kconfig
+index 689b978db4f9..fc0d3cfca418 100644
+--- a/drivers/iio/pressure/Kconfig
++++ b/drivers/iio/pressure/Kconfig
+@@ -79,7 +79,6 @@ config DPS310
+ config HID_SENSOR_PRESS
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	tristate "HID PRESS"
+diff --git a/drivers/iio/temperature/Kconfig b/drivers/iio/temperature/Kconfig
+index c5482983f568..f20ae3c963cb 100644
+--- a/drivers/iio/temperature/Kconfig
++++ b/drivers/iio/temperature/Kconfig
+@@ -45,7 +45,6 @@ config HID_SENSOR_TEMP
+ 	tristate "HID Environmental temperature sensor"
+ 	depends on HID_SENSOR_HUB
+ 	select IIO_BUFFER
+-	select IIO_TRIGGERED_BUFFER
+ 	select HID_SENSOR_IIO_COMMON
+ 	select HID_SENSOR_IIO_TRIGGER
+ 	help
 -- 
-2.1.0
+2.30.2
 
