@@ -2,159 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B904C35ED38
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E388B35ED3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349226AbhDNGZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:25:30 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40146 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1347804AbhDNGZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:25:25 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT8u8inZg+9sHAA--.14819S2;
-        Wed, 14 Apr 2021 14:25:01 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: pgtable: Add swp pte related macros definition and check
-Date:   Wed, 14 Apr 2021 14:25:00 +0800
-Message-Id: <1618381500-31258-1-git-send-email-tangyouling@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxT8u8inZg+9sHAA--.14819S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4kAr1rXFWxAFW5AryfCrg_yoW7JF13pw
-        nxCFZIqrWrAFWxKr4fJF1FqF1fZw4UGr17WFZI9w4DJa4jgas5JFW29r43JryvqFWvv343
-        u3yDtrn8urW3AFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF1l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bz1v-UUUUU=
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+        id S233394AbhDNGa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:30:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52907 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231831AbhDNGaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:30:55 -0400
+Received: from 1-171-231-81.dynamic-ip.hinet.net ([1.171.231.81] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lWZ2f-0007lr-7U; Wed, 14 Apr 2021 06:30:26 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Imre Deak <imre.deak@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/i915/dp: Use slow and wide link training for DPCP rev < 1.4
+Date:   Wed, 14 Apr 2021 14:29:50 +0800
+Message-Id: <20210414063011.996773-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add definitions for the bit masks/shifts/sizes, and implement
-MAX_SWAPFILES_CHECK() such that we fail to build if we are
-unable to properly encode the swp type field.
+Screen flickers on Innolux panel when clock rate 540000 is in use.
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+According to the panel vendor, though clock rate 540000 is advertised,
+but the max clock rate it really supports is 270000.
+
+So use slow and wide training for panels with DPCP rev < 1.4 to resolve
+the issue. User also confirmed the new strategy doesn't introduce
+regression on XPS 9380.
+
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3384
+References: https://gitlab.freedesktop.org/drm/intel/-/issues/272
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- arch/mips/include/asm/pgtable-32.h | 32 ++++++++++++++++++++------------
- arch/mips/include/asm/pgtable-64.h | 18 +++++++++++++++---
- 2 files changed, 35 insertions(+), 15 deletions(-)
+ drivers/gpu/drm/i915/display/intel_dp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
-index 6c0532d..3ec12ce 100644
---- a/arch/mips/include/asm/pgtable-32.h
-+++ b/arch/mips/include/asm/pgtable-32.h
-@@ -201,9 +201,8 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
- #if defined(CONFIG_CPU_R3K_TLB)
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 775d89b6c3fc..ca73e2179659 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -1461,12 +1461,12 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
+ 	    intel_dp_can_bigjoiner(intel_dp))
+ 		pipe_config->bigjoiner = true;
  
- /* Swap entries must have VALID bit cleared. */
--#define __swp_type(x)			(((x).val >> 10) & 0x1f)
--#define __swp_offset(x)			((x).val >> 15)
--#define __swp_entry(type,offset)	((swp_entry_t) { ((type) << 10) | ((offset) << 15) })
-+#define __SWP_TYPE_SHIFT	10
-+
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
- 
-@@ -212,18 +211,16 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
- #if defined(CONFIG_XPA)
- 
- /* Swap entries must have VALID and GLOBAL bits cleared. */
--#define __swp_type(x)			(((x).val >> 4) & 0x1f)
--#define __swp_offset(x)			 ((x).val >> 9)
--#define __swp_entry(type,offset)	((swp_entry_t)  { ((type) << 4) | ((offset) << 9) })
-+#define __SWP_TYPE_SHIFT	4
-+
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { (pte).pte_high })
- #define __swp_entry_to_pte(x)		((pte_t) { 0, (x).val })
- 
- #elif defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
- 
- /* Swap entries must have VALID and GLOBAL bits cleared. */
--#define __swp_type(x)			(((x).val >> 2) & 0x1f)
--#define __swp_offset(x)			 ((x).val >> 7)
--#define __swp_entry(type, offset)	((swp_entry_t)  { ((type) << 2) | ((offset) << 7) })
-+#define __SWP_TYPE_SHIFT	2
-+
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { (pte).pte_high })
- #define __swp_entry_to_pte(x)		((pte_t) { 0, (x).val })
- 
-@@ -235,9 +232,8 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
-  *      _PAGE_GLOBAL at bit 6
-  *      _PAGE_VALID at bit 7
-  */
--#define __swp_type(x)			(((x).val >> 8) & 0x1f)
--#define __swp_offset(x)			 ((x).val >> 13)
--#define __swp_entry(type,offset)	((swp_entry_t)	{ ((type) << 8) | ((offset) << 13) })
-+#define __SWP_TYPE_SHIFT	8
-+
- #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
- 
-@@ -245,4 +241,16 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
- 
- #endif /* defined(CONFIG_CPU_R3K_TLB) */
- 
-+#define __SWP_TYPE_BITS		5
-+#define __SWP_TYPE_MASK		((1UL << __SWP_TYPE_BITS) - 1)
-+#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
-+
-+#define MAX_SWAPFILES_CHECK()	\
-+	BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
-+
-+#define __swp_type(x)			(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
-+#define __swp_offset(x)			((x).val >> __SWP_OFFSET_SHIFT)
-+#define __swp_entry(type,offset)	((swp_entry_t) { ((type) << __SWP_TYPE_SHIFT) | \
-+						((offset) << __SWP_OFFSET_SHIFT) })
-+
- #endif /* _ASM_PGTABLE_32_H */
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index 1e7d6ce..d064444 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -330,15 +330,27 @@ extern void pgd_init(unsigned long page);
- extern void pud_init(unsigned long page, unsigned long pagetable);
- extern void pmd_init(unsigned long page, unsigned long pagetable);
- 
-+#define __SWP_TYPE_SHIFT	16
-+#define __SWP_TYPE_BITS		8
-+#define __SWP_TYPE_MASK		((1UL << __SWP_TYPE_BITS) - 1)
-+#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
-+
-+#define MAX_SWAPFILES_CHECK()	\
-+	BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
-+
- /*
-  * Non-present pages:  high 40 bits are offset, next 8 bits type,
-  * low 16 bits zero.
-  */
- static inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
--{ pte_t pte; pte_val(pte) = (type << 16) | (offset << 24); return pte; }
-+{
-+	pte_t pte;
-+	pte_val(pte) = (type << __SWP_TYPE_SHIFT) | (offset << __SWP_OFFSET_SHIFT);
-+	return pte;
-+}
- 
--#define __swp_type(x)		(((x).val >> 16) & 0xff)
--#define __swp_offset(x)		((x).val >> 24)
-+#define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
-+#define __swp_offset(x)		((x).val >> __SWP_OFFSET_SHIFT)
- #define __swp_entry(type, offset) ((swp_entry_t) { pte_val(mk_swap_pte((type), (offset))) })
- #define __pte_to_swp_entry(pte) ((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+-	if (intel_dp_is_edp(intel_dp))
++	if (intel_dp_is_edp(intel_dp) && intel_dp->dpcd[DP_DPCD_REV] > 0x13)
+ 		/*
+-		 * Optimize for fast and narrow. eDP 1.3 section 3.3 and eDP 1.4
+-		 * section A.1: "It is recommended that the minimum number of
+-		 * lanes be used, using the minimum link rate allowed for that
+-		 * lane configuration."
++		 * Optimize for fast and narrow on DP 1.4. eDP 1.3 section 3.3
++		 * and eDP 1.4 section A.1: "It is recommended that the minimum
++		 * number of lanes be used, using the minimum link rate allowed
++		 * for that lane configuration."
+ 		 *
+ 		 * Note that we fall back to the max clock and lane count for eDP
+ 		 * panels that fail with the fast optimal settings (see
 -- 
-2.1.0
+2.30.2
 
