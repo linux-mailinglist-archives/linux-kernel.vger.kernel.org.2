@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B8735F1F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9110735F203
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239428AbhDNLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:12:16 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:51287 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhDNLMM (ORCPT
+        id S1348764AbhDNLOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:14:06 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:5632 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346172AbhDNLN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:12:12 -0400
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13EBBnhj073324;
-        Wed, 14 Apr 2021 20:11:50 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Wed, 14 Apr 2021 20:11:49 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13EBBhIP073266
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 14 Apr 2021 20:11:49 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samo Pogacnik <samo_pogacnik@t-2.net>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <YGx59PEq2Y015YdK@alley>
- <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
- <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
- <YG24F9Kx+tjxhh8G@kroah.com>
- <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
- <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
- <YHQkeZVs3pmyie9e@kroah.com>
- <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
- <YHQ3Zy9gRdZsu77w@kroah.com>
- <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-Message-ID: <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-Date:   Wed, 14 Apr 2021 20:11:40 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 14 Apr 2021 07:13:56 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 14 Apr 2021 04:13:35 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Apr 2021 04:13:33 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Apr 2021 16:43:06 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 3C86E47ED; Wed, 14 Apr 2021 16:43:05 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kgunda@codeaurora.org, satya priya <skakit@codeaurora.org>
+Subject: [RESEND PATCH V3 0/5] Add PMIC DT files for sc7280
+Date:   Wed, 14 Apr 2021 16:42:58 +0530
+Message-Id: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/14 9:45, Tetsuo Handa wrote:
-> On 2021/04/12 21:04, Greg Kroah-Hartman wrote:
->>> Since syzkaller is a fuzzer, syzkaller happily opens /dev/ttyprintk from
->>> multiple threads. Should we update syzkaller to use CONFIG_TTY_PRINTK=n ?
->>
->> Why?  Can you not hit the same tty code paths from any other tty driver
->> being open multiple times?  Why is ttyprintk somehow "special" here?
-> 
-> I found a simplified reproducer. If we call ioctl(TIOCVHANGUP) on /dev/ttyprintk ,
-> "struct ttyprintk_port tpk_port".port.count cannot be decremented by
-> tty_port_close() from tpk_close() due to tty_hung_up_p() == true when
-> close() is called. As a result, tty->count and port count gets out of sync.
-> 
-> Then, when /dev/ttyprintk is opened again and then closed without calling
-> ioctl(TIOCVHANGUP), this message is printed due to tty_hung_up_p() == false.
-> 
-> If I replace /dev/ttyprintk with /dev/ttyS0 in the reproducer shown above,
-> this message is not printed.
-> 
+Hi All,
 
-The difference between /dev/ttyS0 and /dev/ttyprintk is that
-the former provides uart_hangup() as "struct tty_operations"->hangup
-while the latter does not provide "struct tty_operations"->hangup .
+Resending V3 as there was a mistake earlier, changes in patches 4 and 5
+got clubbed unknowingly. Apologies for that.
 
-It seems to me that below patch avoids this message, but I'm not familiar
-with tty code. Is this fix correct? Don't we need to enforce all drivers
-to provide "struct tty_operations"->hangup in order to reset port count ?
+Thanks,
+Satya Priya
 
-diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-index 6a0059e508e3..ff3b9a41b91b 100644
---- a/drivers/char/ttyprintk.c
-+++ b/drivers/char/ttyprintk.c
-@@ -158,12 +158,26 @@ static int tpk_ioctl(struct tty_struct *tty,
- 	return 0;
- }
- 
-+/*
-+ * TTY operations hangup function.
-+ */
-+static void tpk_hangup(struct tty_struct *tty)
-+{
-+	struct ttyprintk_port *tpkp = tty->driver_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&tpkp->port.lock, flags);
-+	tpkp->port.count = 0;
-+	spin_unlock_irqrestore(&tpkp->port.lock, flags);
-+}
-+
- static const struct tty_operations ttyprintk_ops = {
- 	.open = tpk_open,
- 	.close = tpk_close,
- 	.write = tpk_write,
- 	.write_room = tpk_write_room,
- 	.ioctl = tpk_ioctl,
-+	.hangup = tpk_hangup,
- };
- 
- static const struct tty_port_operations null_ops = { };
+Add PM7325 DT file with gpio and temp-alarm nodes.
+For PM8350C, PMR735A and PMK8350 add the required peripherals
+as the base DT files are already added [1].
+[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=489011&state=%2A&archive=both
+
+Changes in V2:
+ - As per Matthias comments:
+   - I've Split the patch into per-PMIC patches and one sc7280 patch
+   - Removed 2nd critical point, thermal-governer property
+   - s/pm8325_tz/pm7325_temp_alarm and s/pm7325_temp_alarm/pm7325_thermal
+   - Fixed few other minor errors.
+
+ - As per Bjorn's comments, replaced '_' with '-' in node names and moved
+   DT files inclusion to board dts.
+
+Changes in V3:
+ - As per Matthias comments, changed commit text, modified critical interrupt
+   node name like <name>-crit for all pmics.
+ - Moved pmk8350_vadc channel nodes to idp dts, as it is not guaranteed that
+   a board with the pmk8350 will always have the other 3 PMICs
+
+satya priya (5):
+  arm64: dts: qcom: pm7325: Add pm7325 base dts file
+  arm64: dts: qcom: pm8350c: Add temp-alarm support
+  arm64: dts: qcom: pmr735a: Add temp-alarm support
+  arm64: dts: qcom: pmk8350: Add PMIC peripherals for pmk8350
+  arm64: dts: qcom: sc7280: Include PMIC DT files for sc7280
+
+ arch/arm64/boot/dts/qcom/pm7325.dtsi    | 53 +++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/pm8350c.dtsi   | 32 ++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/pmk8350.dtsi   | 55 ++++++++++++++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/pmr735a.dtsi   | 32 ++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts | 30 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    |  3 ++
+ 6 files changed, 202 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
