@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7184D35F779
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445EF35F77B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350308AbhDNPRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:17:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31968 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233872AbhDNPQh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:16:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618413376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wi7Vsx7fsiQc/wyHgFKatT0Y76VokmNc3vRxm+hzn58=;
-        b=fEu6G6pCohb57qVIZklaq6LD/rZu9kusgy5MWz391QSDPF+FqdNeM+iqoAUampdf1nzvAi
-        ENF4jftCI5Tmfv3i5TtBmQkw3yAWI2eK8wnXcw9uKVQlSazJTiC1w1Ojy+9l19FHgPir4d
-        ObdZdKLRsjTrhp6qZ2KSO0GBJciujrQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-Hs1X6Xa4Pq-5YG-OUq2auw-1; Wed, 14 Apr 2021 11:16:14 -0400
-X-MC-Unique: Hs1X6Xa4Pq-5YG-OUq2auw-1
-Received: by mail-wr1-f71.google.com with SMTP id k1-20020adfd2210000b02901040d1dbcaeso1211625wrh.17
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:16:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=wi7Vsx7fsiQc/wyHgFKatT0Y76VokmNc3vRxm+hzn58=;
-        b=jidQQ1um3SUU9lqzJ8t0v0u/FfTu6lYCq4875eG3Q0srh5s4iodbuOICajCIuvUFVl
-         XmX7pmlUYrlpZ6JqVgZViWKKUz2jLylE7Tta17jLAjf9pzPH3JHAaNAF7HPmzCMtkacm
-         597vOr6X0vmNJNpHePb23BICwufZInsMHoyLaLWjip9dEB1wyAG2cQpJwNnyvEekfTwn
-         NQSvGWaSQhxHRpisvxeLchgUYi/549z7FIWXHuLm2j6lV4XF6bcsk2ym95XQF25gG+K7
-         Se4M0UEMs65Q44EXNjivqrG2gyGB7r020OXz1/DF5uVIrmXhOElMfVbtYYzpyqJSkiOR
-         ZSXw==
-X-Gm-Message-State: AOAM532MAziK0Z1rYURL4gz+Btn4bto4w00nPc0iaxnbxVYw+w0+Bkb4
-        GDq1CVqXY/cc9XausylhlHd7EcluTh1KVA7HjX20MVcBE/94+QbVXwvZjzSPDP73Rw2zCBAG/IV
-        uCkCeqEqWaySzDyjLhAT7AEl2QjrI63v0GZ5mvepgkyJrPYATt654QL0ynVfvTDd8GzJAIvBn
-X-Received: by 2002:a1c:4b13:: with SMTP id y19mr3695859wma.12.1618413372982;
-        Wed, 14 Apr 2021 08:16:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy35JMmK9bF2B+eF87l+y5GGmoAQLNqebx4EHnd7JjEV1/GA3x6z5GH9wCqSz0nLPLczE/QXQ==
-X-Received: by 2002:a1c:4b13:: with SMTP id y19mr3695830wma.12.1618413372675;
-        Wed, 14 Apr 2021 08:16:12 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6470.dip0.t-ipconnect.de. [91.12.100.112])
-        by smtp.gmail.com with ESMTPSA id r2sm9575003wrt.79.2021.04.14.08.16.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 08:16:12 -0700 (PDT)
-Subject: Re: [PATCHv2] mm/mmap.c: lines in __do_munmap repeat logic of inlined
- find_vma_intersection
-To:     Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210408034632.r5nor5akqo5o3aus@monty>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <459c338e-bd9b-fb27-5d6f-f217b684a9e3@redhat.com>
-Date:   Wed, 14 Apr 2021 17:16:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1350443AbhDNPSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350372AbhDNPR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:17:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8758761090;
+        Wed, 14 Apr 2021 15:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618413457;
+        bh=v8Xbl+/XiWU8+Qjdj9ZlACtpEdUTj7rXvqg1K4XJsMg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PSL6YZi/FSK7VEzsN5ckfAEd1p8ExkQl71+MCcO9yAqcbCvSmI9Nuj1FosNXx0b8u
+         k9HrXNlVKkMqCdxsGLexut/J/+cWyivvjVKTrTZa0dV8kAnyKTrdXhpAl6aR5hi/Ed
+         sGM6IiaWFuwH5vPVZFwxTRKJSjd3YJrn3Hnq4c/+M9+VZy9Qw0IiaaVeird3WlYMHb
+         +wgIoxiKYAbeUhx6PQRcQLYN4UcRa0Y4LEYqIqTLL8rmlP6PxizSJWGokc3qJsRKWu
+         Efj091ZGewkSMDKhsy5JNlURafPv4McZLY1Ubi892W7Cb2Xlip0ctqUiiLeRpCqaAO
+         tLaLueM0Cxi3g==
+Date:   Wed, 14 Apr 2021 20:47:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Phy <linux-phy@lists.infradead.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: [GIT PULL]: Generic phy updates for v5.13 -second round
+Message-ID: <YHcHjYv8HIaODa5t@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-In-Reply-To: <20210408034632.r5nor5akqo5o3aus@monty>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iOBHsqrKwZ88MQYQ"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.21 05:46, Gonzalo Matias Juarez Tello wrote:
-> Some lines in __do_munmap used the same logic as find_vma_intersection
-> (which is inlined) instead of directly using that function.
-> 
-> (Can't believe I made a typo in the first one, compiled this one,
-> sorry first patch kinda nervous for some reason)
-> 
-> Signed-off-by: Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>
-> ---
->   mm/mmap.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 3f287599a7a3..1b29f8bf8344 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2823,15 +2823,10 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
->   	arch_unmap(mm, start, end);
->   
->   	/* Find the first overlapping VMA */
-> -	vma = find_vma(mm, start);
-> +	vma = find_vma_intersection(mm, start, end);
->   	if (!vma)
->   		return 0;
->   	prev = vma->vm_prev;
-> -	/* we have  start < vma->vm_end  */
-> -
-> -	/* if it doesn't overlap, we have nothing.. */
-> -	if (vma->vm_start >= end)
-> -		return 0;
->   
->   	/*
->   	 * If we need to split any vma, do it now to save pain later.
-> 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+--iOBHsqrKwZ88MQYQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Thanks,
+Hi Greg,
 
-David / dhildenb
+As promised, here are some minor fixes for earlier pull request. This
+includes fixes which came in after the request was sent
 
+The following changes since commit cbc336c09b6d6dfb24d20c955599123308fa2fe2:
+
+  phy: fix resource_size.cocci warnings (2021-04-06 10:39:20 +0530)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
+for-5.13-second
+
+for you to fetch changes up to 8a6b85b14f082d266b0312562f7372e1a8f5dfb3:
+
+  phy: Revert "phy: ti: j721e-wiz: add missing of_node_put" (2021-04-12 10:=
+35:05 +0530)
+
+----------------------------------------------------------------
+phy-for-5.13 second pull
+
+Driver fixes for:
+  - Revert wrong of_node_put patch and add missing header for ti j721e driv=
+er
+  - use-after-free fix for twl4030
+
+----------------------------------------------------------------
+Shixin Liu (1):
+      phy: ti: j721e-wiz: Add missing include linux/slab.h
+
+Vinod Koul (1):
+      phy: Revert "phy: ti: j721e-wiz: add missing of_node_put"
+
+Yang Yingliang (1):
+      phy: phy-twl4030-usb: Fix possible use-after-free in twl4030_usb_remo=
+ve()
+
+ drivers/phy/ti/phy-j721e-wiz.c   | 2 +-
+ drivers/phy/ti/phy-twl4030-usb.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Thanks
+--=20
+~Vinod
+
+--iOBHsqrKwZ88MQYQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmB3B4wACgkQfBQHDyUj
+g0fHdg/+KifY6R3l4DswCvw9fV/fv564wV8NQUit90aAxXI5Jj6eV9v64DpmR69C
+hWRByQnbcfUzBo2BRgyz3G7RdL9HA9z2NU+jl4qg5hsEengktZZxDnJ0NxlqYMEe
+ZSgRiDpb2HAjmNvFwshG8x5bdlS9Tn+qLm9yNBsrqcf1Y5Bpmkg9+TvVGzep2Wx2
+LNgz2Jny14Ne+BvPvLeiO7/Kt5yFydyRoUXwUhpy65pZeOhD+PPk9M91YjwUmjD8
+bgIKcjhk9DI9N9X89dnLcC/3Ne9Dbf21gGHiNMzSHjTxN91oN/QPp+8YlbeZxWFe
+UWMKIQb8BX0knwLVEpAXuUP5vNkHRqSyskUMcxyDGrKhU29felMQaZy6h44b74kx
+Eqypz887nDUDNpL+mtIGUYHbzo2ki1vZeAy5lOJLX0xMAGcJZoeCDHxZZGBhmRCz
+ctmD8CuAa38wTNA+/+MMI9WUVRQyXgY1xkEj7RsBqFndU0niHg5dPtMotm4KsonS
+qSe/4j3g02kW78yETIhzeTswjJE4OunpeSISeN0SR8BfeOuuK+rczonHPMuyLY2M
+NVba+mfUXhpl4vRfX5rCgexcXv4+KKTYfHBUPrUW5pOuskqpgjPYwgjbRqiBBcHE
+EtLatigD2SdBE2k3y4MVRO8b5qlhD2DO6b4/v8T7JoqUoqgxpSQ=
+=+bj7
+-----END PGP SIGNATURE-----
+
+--iOBHsqrKwZ88MQYQ--
