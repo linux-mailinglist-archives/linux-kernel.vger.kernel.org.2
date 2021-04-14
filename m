@@ -2,95 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784DB35EDD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4242735EDD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349496AbhDNGw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349480AbhDNGwp (ORCPT
+        id S1349536AbhDNGxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:53:51 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:47569 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349501AbhDNGx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:52:45 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3668AC061756;
-        Tue, 13 Apr 2021 23:52:23 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w10so13728610pgh.5;
-        Tue, 13 Apr 2021 23:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=L4FIt3A4S0ABg8WN/VlydR1MHCToc62/wiiwBXWyDrQ=;
-        b=P600k4txh0uTl6Z+W/F02nbyMxyyDkuHKm5T4s7pLmYBrFoF/WmvaFvvUj//GRQV+s
-         a7UuLUMPIW+RxidyxTfCcLAIRnl+SdQuJS340biIpwFvUOiiHLwwpASHMik4cvYqnWeJ
-         0CJL5CUfM9jzELZZ3YpanHjBsBvgnXQoFdsB6D+a1Um+S4ucvqkgPbg1+UJd14DPS/rN
-         W9ueqoPQvXEtBim2u57olABjg9+yXdmRVjlMqLHFLGvIlMkoI3yNWN1L0vmyA2TPrH8y
-         utJYELVO/LqkkysYeY3wZkMjLS9b6jTbqTTCDhAkvvKC3VULfpYiMotPq0mVoKUg81On
-         ayFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=L4FIt3A4S0ABg8WN/VlydR1MHCToc62/wiiwBXWyDrQ=;
-        b=RDWsAH+bLzULboCSYB/Tsj3pVIkh1iMuoSfDvx5wv362H18dnIyeBDdrF5vNHWkUdI
-         bvQG+fPRRMc+aUjZyc04mAsbGrkbUHtgRp/ct7sLxwua5QxFjOIh8jzyPXJS9Yua9LTP
-         6tCmwVkpXCmKGVsRzcbgLfUNDiBjuvz9/RHAm2tNX/JMap/+iq8eFmS5pUHWrcs7BvD1
-         pp1ghw/TzRTQ1DrvwJD6mAwfBFJbYcYv9UYo+6ZcWIN+D/2xPwsu65hFVV+qAhrPenbt
-         d3bPCyApykCOHnNjZSBxstOkJpDLGx15aoJd+yaLyxV9fzD0l2y4GOmZ90fOQDbrqYaX
-         K+Hg==
-X-Gm-Message-State: AOAM533yIaAyrTGogi9oKhjWwETY72vRWLftoGp/FUAYeW6pM7lTpBbJ
-        BuqucuqtcaXcDnWYL3QL/po=
-X-Google-Smtp-Source: ABdhPJzwcuZxktQXRNqmqorOi+XRVx5xp8eQ4VQA9YsmaGQYV8CEPuLuBPcMwcgPcYAfVZiHtCpLhQ==
-X-Received: by 2002:a63:d556:: with SMTP id v22mr3653632pgi.310.1618383142841;
-        Tue, 13 Apr 2021 23:52:22 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id r11sm3775736pjp.46.2021.04.13.23.52.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Apr 2021 23:52:22 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     krzysztof.kozlowski@canonical.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, krzk@kernel.org, linux@rempel-privat.de,
-        s.riedmueller@phytec.de, matthias.schiffer@ew.tq-group.com,
-        leoyang.li@nxp.com, arnd@arndb.de, olof@lixom.net,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        prabhakar.csengg@gmail.com, mchehab@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v2 4/4] dt-bindings: add dasheng vendor prefix
-Date:   Wed, 14 Apr 2021 14:51:57 +0800
-Message-Id: <1618383117-17179-5-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618383117-17179-1-git-send-email-dillon.minfei@gmail.com>
-References: <1618383117-17179-1-git-send-email-dillon.minfei@gmail.com>
+        Wed, 14 Apr 2021 02:53:29 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UVWI.CM_1618383179;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVWI.CM_1618383179)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 14 Apr 2021 14:53:06 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     ayush.sawal@chelsio.com
+Cc:     vinay.yadav@chelsio.com, rohitm@chelsio.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] crypto: chelsio - remove unused function
+Date:   Wed, 14 Apr 2021 14:52:57 +0800
+Message-Id: <1618383177-9832-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+Fix the following clang warning:
 
-Add vendor prefix for DaSheng, Inc.
+drivers/crypto/chelsio/chcr_algo.c:129:19: warning: unused function
+'is_ofld_imm' [-Wunused-function].
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-v2: new add
+ drivers/crypto/chelsio/chcr_algo.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index f6064d84a424..4ec28488c963 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -309,6 +309,8 @@ patternProperties:
-     description: DPTechnics
-   "^dragino,.*":
-     description: Dragino Technology Co., Limited
-+  "^ds,.*":
-+    description: DaSheng, Inc.
-   "^dserve,.*":
-     description: dServe Technology B.V.
-   "^dynaimage,.*":
+diff --git a/drivers/crypto/chelsio/chcr_algo.c b/drivers/crypto/chelsio/chcr_algo.c
+index f5a3366..c04cb49 100644
+--- a/drivers/crypto/chelsio/chcr_algo.c
++++ b/drivers/crypto/chelsio/chcr_algo.c
+@@ -126,11 +126,6 @@ static inline struct uld_ctx *ULD_CTX(struct chcr_context *ctx)
+ 	return container_of(ctx->dev, struct uld_ctx, dev);
+ }
+ 
+-static inline int is_ofld_imm(const struct sk_buff *skb)
+-{
+-	return (skb->len <= SGE_MAX_WR_LEN);
+-}
+-
+ static inline void chcr_init_hctx_per_wr(struct chcr_ahash_req_ctx *reqctx)
+ {
+ 	memset(&reqctx->hctx_wr, 0, sizeof(struct chcr_hctx_per_wr));
 -- 
-2.7.4
+1.8.3.1
 
