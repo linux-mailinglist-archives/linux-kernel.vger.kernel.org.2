@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EEB35EB3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8ACE35EB51
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346110AbhDNDHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 23:07:38 -0400
-Received: from mga11.intel.com ([192.55.52.93]:30051 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232009AbhDNDHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:07:36 -0400
-IronPort-SDR: Dj36Kk0F3AtI2rCG2dS6kJ76bzk29TxRpsFZyaXTBhLEwfB1GeQ+yWbxAL0yg9aLlI2UEubti/
- kgasSXG2fQHA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="191366729"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="191366729"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:07:16 -0700
-IronPort-SDR: nfYdZJdWr+G5ruAziZvyH8xhXpBkhwlBcobjlFSF8Sx6yeougdyhXKj59V60HFwL1QKVYBlk9o
- WvI3lIxUeJxQ==
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="418120340"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 20:07:12 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
-        <20210408130820.48233-3-linmiaohe@huawei.com>
-        <87o8ejug76.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <e72bb6a2-6aff-0d6c-3e56-562b4fb53285@huawei.com>
-Date:   Wed, 14 Apr 2021 11:07:10 +0800
-In-Reply-To: <e72bb6a2-6aff-0d6c-3e56-562b4fb53285@huawei.com> (Miaohe Lin's
-        message of "Wed, 14 Apr 2021 10:55:52 +0800")
-Message-ID: <87eefdsgwx.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S232943AbhDNDNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhDNDNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 23:13:37 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1D2C061574;
+        Tue, 13 Apr 2021 20:12:50 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so2320306pjb.0;
+        Tue, 13 Apr 2021 20:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fhzJXag0MgkeERLQw7fwgTTLcexMxRw26VdF4LhuleQ=;
+        b=Hh3pRhf8wPcxqp/UcS84bf1IxfWOHUUlJpJtpf1ENaA/ba52PIrrUMXHwOvCz7l111
+         u+2jadQFZXkY7veHjQDaevPOEFwgNjmVdZ5JxwFN6Lc2hpOfRcRwNPd35+M+6YuHoBJC
+         s4zh/xf3fYvizCQJ6y5msTlqTziaFK+4sxHX2XJFbnM2aqv6m4eCaO1iDonsF8dE5vBL
+         lAdXD7r43tM8unpmaevt6VX+RY4g/tS2CH87yc/hdjFC8iZZKgFZW3Fht++753kFDrwN
+         BkNY3fQSGw/Yvu2OAES8iwP27R8j63XjzoN1yfz8hVlpU6ow3U9Pvf4pUu+dDQiyP51e
+         4LmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fhzJXag0MgkeERLQw7fwgTTLcexMxRw26VdF4LhuleQ=;
+        b=lojUJHqTqdd50mHvosmvRAxvAC2aq1vTSxOvoKryOY84g7HD9uO3x/cJy1SVRgUvcG
+         M9u/5ByK/yPW/6hLboSzj4QDDT11PdS06wsGL4Chi1Xboa91GSVCJKblKUthjJHMpk3R
+         IbZQfTAs83oWw7Wg8hONuAKCFeveaEAgkF5j2AatfBs0An0sdNt9mtdoUl/7s2c4X3oC
+         7yIhaPtTI3Oi8ERfi30iKMx0kxa6jpnDa2E6pVcSTBO/InO4JMKjjwfuioqZW96u18hd
+         u4MUZAfHpYFLkiI1XTEWlE7135LiMaqLMp5xii1c7SQneruznIb1mjlqf7N9GKLYP0ol
+         xPag==
+X-Gm-Message-State: AOAM5330k8Ud4cq3qMNtjCjZVdTxqhWnZT4hZaAFEsSj4I9KVIwnKH/o
+        fIVkZXoIwXWdfLYme/nuFk4=
+X-Google-Smtp-Source: ABdhPJw5UWpLIIrff4YKIQPJiJSLCmmSNF5m51zEs94yK4VWtXsneKsJk0RfQSvkxXbajXbjNjiUjA==
+X-Received: by 2002:a17:90a:9404:: with SMTP id r4mr1068735pjo.64.1618369969722;
+        Tue, 13 Apr 2021 20:12:49 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id d17sm13971605pfo.117.2021.04.13.20.12.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Apr 2021 20:12:49 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH v2 0/8] MIPS: fixes for PCI legacy drivers (rt2880, rt3883)
+Date:   Tue, 13 Apr 2021 20:12:32 -0700
+Message-Id: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+One major fix for rt2880-pci in the first patch - fixes breakage that
+existed since v4.14.
 
-> On 2021/4/13 9:27, Huang, Ying wrote:
->> Miaohe Lin <linmiaohe@huawei.com> writes:
->> 
->>> When I was investigating the swap code, I found the below possible race
->>> window:
->>>
->>> CPU 1					CPU 2
->>> -----					-----
->>> do_swap_page
->>>   synchronous swap_readpage
->>>     alloc_page_vma
->>> 					swapoff
->>> 					  release swap_file, bdev, or ...
->>>       swap_readpage
->>> 	check sis->flags is ok
->>> 	  access swap_file, bdev...[oops!]
->>> 					    si->flags = 0
->>>
->>> Using current get/put_swap_device() to guard against concurrent swapoff for
->>> swap_readpage() looks terrible because swap_readpage() may take really long
->>> time. And this race may not be really pernicious because swapoff is usually
->>> done when system shutdown only. To reduce the performance overhead on the
->>> hot-path as much as possible, it appears we can use the percpu_ref to close
->>> this race window(as suggested by Huang, Ying).
->>>
->>> Fixes: 235b62176712 ("mm/swap: add cluster lock")
->> 
->> This isn't the commit that introduces the race.  You can use `git blame`
->> find out the correct commit.  For this it's commit 0bcac06f27d7 "mm,
->> swap: skip swapcache for swapin of synchronous device".
->> 
->
-> Sorry about it! What I refer to is commit eb085574a752 ("mm, swap: fix race between
-> swapoff and some swap operations"). And I think this commit does not fix the race
-> condition completely, so I reuse the Fixes tag inside it.
->
->> And I suggest to merge 1/5 and 2/5 to make it easy to get the full
->> picture.
->> 
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>  include/linux/swap.h |  2 +-
->>>  mm/memory.c          | 10 ++++++++++
->>>  mm/swapfile.c        | 28 +++++++++++-----------------
->>>  3 files changed, 22 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 849ba5265c11..9066addb57fd 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -513,7 +513,7 @@ sector_t swap_page_sector(struct page *page);
->>>  
->>>  static inline void put_swap_device(struct swap_info_struct *si)
->>>  {
->>> -	rcu_read_unlock();
->>> +	percpu_ref_put(&si->users);
->>>  }
->>>  
->>>  #else /* CONFIG_SWAP */
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index cc71a445c76c..8543c47b955c 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>  {
->>>  	struct vm_area_struct *vma = vmf->vma;
->>>  	struct page *page = NULL, *swapcache;
->>> +	struct swap_info_struct *si = NULL;
->>>  	swp_entry_t entry;
->>>  	pte_t pte;
->>>  	int locked;
->>> @@ -3339,6 +3340,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>  	}
->>>  
->>>
->> 
->> I suggest to add comments here as follows (words copy from Matthew Wilcox)
->> 
->> 	/* Prevent swapoff from happening to us */
->
-> Ok.
->
->> 
->>> +	si = get_swap_device(entry);
->>> +	/* In case we raced with swapoff. */
->>> +	if (unlikely(!si))
->>> +		goto out;
->>> +
->> 
->> Because we wrap the whole do_swap_page() with get/put_swap_device()
->> now.  We can remove several get/put_swap_device() for function called by
->> do_swap_page().  That can be another optimization patch.
->
-> I tried to remove several get/put_swap_device() for function called
-> by do_swap_page() only before I send this series. But it seems they have
-> other callers without proper get/put_swap_device().
+Other more minor fixes, cleanups, and improvements that either free up
+memory, make dmesg messages clearer, or remove redundant dmesg output.
 
-Then we need to revise these callers instead.  Anyway, can be another
-series.
+v2:
+- Do not use internal pci-rt2880 config read and write functions after
+  the device has been registered with the PCI subsystem to avoid races.
+  Use safe pci_bus_{read,write}_config_{d}word wrappers instead.
 
-Best Regards,
-Huang, Ying
+Ilya Lipnitskiy (8):
+  MIPS: pci-rt2880: fix slot 0 configuration
+  MIPS: pci-rt2880: remove unneeded locks
+  MIPS: pci-rt3883: trivial: remove unused variable
+  MIPS: pci-rt3883: more accurate DT error messages
+  MIPS: pci-legacy: stop using of_pci_range_to_resource
+  MIPS: pci-legacy: remove redundant info messages
+  MIPS: pci-legacy: remove busn_resource field
+  MIPS: pci-legacy: use generic pci_enable_resources
+
+ arch/mips/include/asm/pci.h |  1 -
+ arch/mips/pci/pci-legacy.c  | 57 ++++++-------------------------------
+ arch/mips/pci/pci-rt2880.c  | 50 ++++++++++++++++----------------
+ arch/mips/pci/pci-rt3883.c  | 10 ++-----
+ 4 files changed, 35 insertions(+), 83 deletions(-)
+
+-- 
+2.31.1
+
