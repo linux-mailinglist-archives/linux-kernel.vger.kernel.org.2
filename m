@@ -2,51 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF06735F09F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B018C35F0BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346814AbhDNJSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:18:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32804 "EHLO mail.kernel.org"
+        id S1350288AbhDNJYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:24:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:26128 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232598AbhDNJST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:18:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F786120E;
-        Wed, 14 Apr 2021 09:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618391878;
-        bh=YN96Uvkmgg+8I+8iRLeSEq1aMXpTalv1GdPru8xyO7Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YjknrE2Prr25xzO2uF6pxrBcxKn2ZoyjaxX60Anp0N/ApYQGnkGuip0Qc8Sxw0Ffy
-         BNge6Tgn9ZkNecje3Ss60PstXP/pxqVGg3qd8+uIqCQSiEmukTve6rRidrragDU1fU
-         QCg1qJCuuikCP80023OUTMZYhQaAeLjlTCV5dBMs=
-Date:   Wed, 14 Apr 2021 11:17:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] software node: Allow node addition to already existing
- device
-Message-ID: <YHazQ33v4PY8kRHd@kroah.com>
-References: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
- <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
+        id S1348525AbhDNJYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:24:23 -0400
+IronPort-SDR: 9NukotK7CH+/DmWwoyCqcSiSwBwbBmVqv2rSSjlr51e4eD/V4hitCydUj0dg+wHz9BwveCcoD9
+ AoB7Ptz6X+gw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="174709601"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="174709601"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 02:24:02 -0700
+IronPort-SDR: iwdI7HnwIdnS0XlZHIxJCGkdcBm6ktLjaxolmmcNJxNuTmEHqlfrEgIYa+k7RMCKwDvIiA5KNa
+ Z+jFF7kXoWxw==
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="424648438"
+Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.240.193.73])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 02:23:59 -0700
+From:   Zhu Lingshan <lingshan.zhu@intel.com>
+To:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
+        leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH 0/3] vDPA/ifcvf: enables Intel C5000X-PL virtio-blk
+Date:   Wed, 14 Apr 2021 17:18:29 +0800
+Message-Id: <20210414091832.5132-1-lingshan.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:13:35PM +0300, Heikki Krogerus wrote:
-> +Greg
-> 
-> Sorry about that. Should I resend this?
+This series enabled Intel FGPA SmartNIC C5000X-PL virtio-blk for vDPA.
 
-No worries, I can pick it up, thanks
+This series requires:
+Stefano's vdpa block patchset: https://lkml.org/lkml/2021/3/15/2113
+my patchset to enable Intel FGPA SmartNIC C5000X-PL virtio-net for vDPA:
+https://lkml.org/lkml/2021/3/17/432
 
-`b4` really is nice to use :)
+Thanks!
 
-greg k-h
+Zhu Lingshan (3):
+  vDPA/ifcvf: deduce VIRTIO device ID when probe
+  vDPA/ifcvf: enable Intel C5000X-PL virtio-block for vDPA
+  vDPA/ifcvf: get_config_size should return dev specific config size
+
+ drivers/vdpa/ifcvf/ifcvf_base.h | 18 +++++++++++++-
+ drivers/vdpa/ifcvf/ifcvf_main.c | 43 ++++++++++++++++++++++-----------
+ 2 files changed, 46 insertions(+), 15 deletions(-)
+
+-- 
+2.27.0
+
