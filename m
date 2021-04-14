@@ -2,111 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0550F35F891
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634D835F894
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352747AbhDNP7l convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Apr 2021 11:59:41 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34975 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351163AbhDNP7k (ORCPT
+        id S1351156AbhDNQBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231517AbhDNQBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:59:40 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-231-gB8-kn-7OJerCywESBUe9A-2; Wed, 14 Apr 2021 16:59:15 +0100
-X-MC-Unique: gB8-kn-7OJerCywESBUe9A-2
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 16:59:12 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 14 Apr 2021 16:59:12 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Guo Ren <guoren@kernel.org>
-CC:     =?iso-8859-1?Q?Christoph_M=FCllner?= <christophm30@gmail.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "Arnd Bergmann" <arnd@arndb.de>, Jonas Bonn <jonas@southpole.se>,
-        "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>
-Subject: RE: [RFC][PATCH] locking: Generic ticket-lock
-Thread-Topic: [RFC][PATCH] locking: Generic ticket-lock
-Thread-Index: AQHXMS3QDy7Ki/2OMUKsa3pFr4OLI6q0KzPA
-Date:   Wed, 14 Apr 2021 15:59:12 +0000
-Message-ID: <9b3bbe8f20e14a7b91dc85737ecb99c0@AcuMS.aculab.com>
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
- <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
- <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
- <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
- <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
- <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
- <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
- <YHbmXXvuG442ZDfN@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHbmXXvuG442ZDfN@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 14 Apr 2021 12:01:02 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D8EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:00:41 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id p3so2039986ybk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=icceXVoPey4hMt6vHFEzNzy5qaMXyxl72j1WHxQLBeE=;
+        b=SnmTAeeU+ZxSI3sl84I4BZ480EHA7xilNiFAKbf/Urg7hd/dlTXoWKACukEfT326H6
+         vdNgczLU2Wq45TxJGYYmr1nEfR5buOSaDV4NiX/VkcgcPVr27tlsMzyhKokbWB0SJ6YQ
+         2vk9lz7suoYHqd183IMIBJ19WJeB1q/i1E+hxW6D4TBa2vnTmGOVsalv3EBAblhaamlR
+         4G8eSyl9DJwAW1Dsrazip5mbfI9xfxta2AnNWtoOXJzf8+esgi93OWUlOaeNx6QhIzBu
+         IwF5WO8X9nZ4GTtyNQLmtWIBFa33NNxUnjWrRBmLFj5hhbIi2q0uDLcdjHegTBz4PNXm
+         z38w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=icceXVoPey4hMt6vHFEzNzy5qaMXyxl72j1WHxQLBeE=;
+        b=uQWgKexuqlSEIDuybbL5IEzamGegYQIMXmkA/2WzCMIAJRV6G6x1vmex+f67FSzANt
+         42q9RP1WGg4P2ri564KcZsUkk2c+tPKwO3IgvboTsyat9Fk1+nDvwI1c+JNI+XlIHd5d
+         OQe3OyQ3pIVXww3M3eMnCuAHblyyGtF1EKSpYzp3+9z8RKxRo31XRDtwBc6qpLmRmkH2
+         MEEjOPfq6pzGs62ftBgY2WcRQXZyqg+V/UfrULFsC7qOcNWLqzw+h8Tqlhw0kVFXODwj
+         674NbSyGnZA2CB40sLAHAuVG/LYh8+AZV77psBMhVQv64bwAVZf0wvT9sEo2opfMIPos
+         T3Wg==
+X-Gm-Message-State: AOAM533lYduI1TVYti6haZnzGRykUrz6msHBDW8bQonSt5mDu8RugLQz
+        xQtwatlXzXAUg8e83YVimfH7sgvZFwJ9qjCpCCcJJA==
+X-Google-Smtp-Source: ABdhPJx87DRSnJEwPvZspIxNmmiq00LhnbziJGX6aMxsS55kOJowmbp1K3DbUX7u6Nrzy5bK1JoVYD5LnmTqf0wT8kE=
+X-Received: by 2002:a25:4244:: with SMTP id p65mr24750079yba.452.1618416039979;
+ Wed, 14 Apr 2021 09:00:39 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+ <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+ <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
+ <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+ <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+ <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+ <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+ <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+ <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
+ <feed2c13dbe34279a03929a588c46c67@AcuMS.aculab.com> <CAOFY-A21tjC5dWwM0W0aXHij40kKj2JNo5Nq4X8mBZZdKwr+AA@mail.gmail.com>
+ <2c6885b0241d4127b8cb7e38abbbe1e5@AcuMS.aculab.com>
+In-Reply-To: <2c6885b0241d4127b8cb7e38abbbe1e5@AcuMS.aculab.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 14 Apr 2021 18:00:28 +0200
+Message-ID: <CANn89iJj9254GORTsabwv6ZBPWzebR4iYAj9VYxuOZSrF99fNg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Arjun Roy <arjunroy@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 14 April 2021 13:56
-> 
-> > I've tested it on csky SMP*4 hw (860) & riscv SMP*4 hw (c910) and it's okay.
-> 
-> W00t :-)
-> 
-> > Hope you can keep
-> > typedef struct {
-> >         union {
-> >                 atomic_t lock;
-> >                 struct __raw_tickets {
-> > #ifdef __BIG_ENDIAN
-> >                         u16 next;
-> >                         u16 owner;
-> > #else
-> >                         u16 owner;
-> >                         u16 next;
-> > #endif
-> >                 } tickets;
-> >         };
-> > } arch_spinlock_t;
+On Wed, Apr 14, 2021 at 9:55 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Arjun Roy
+> > Sent: 13 April 2021 23:04
 > >
-> > Using owner & next is much more readable.
-> 
-> That almost doubles the line-count of the thing ;-)
+> > On Tue, Apr 13, 2021 at 2:19 PM David Laight <David.Laight@aculab.com> wrote:
+> > >
+> > > > If we're special-casing 64-bit architectures anyways - unrolling the
+> > > > 32B copy_from_user() for struct rseq_cs appears to be roughly 5-10%
+> > > > savings on x86-64 when I measured it (well, in a microbenchmark, not
+> > > > in rseq_get_rseq_cs() directly). Perhaps that could be an additional
+> > > > avenue for improvement here.
+> > >
+> > > The killer is usually 'user copy hardening'.
+> > > It significantly slows down sendmsg() and recvmsg().
+> > > I've got measurable performance improvements by
+> > > using __copy_from_user() when the buffer since has
+> > > already been checked - but isn't a compile-time constant.
+> > >
+> > > There is also scope for using _get_user() when reading
+> > > iovec[] (instead of copy_from_user()) and doing all the
+> > > bound checks (etc) in the loop.
+> > > That gives a measurable improvement for writev("/dev/null").
+> > > I must sort those patches out again.
+> > >
+> > >         David
+> > >
+> >
+> > In this case I mean replacing copy_from_user(rseq_cs, urseq_cs,
+> > sizeof(*rseq_cs)) with  4 (x8B=32 total) unsafe_get_user() (wrapped in
+> > user_read_access_begin/end()) which I think would just bypass user
+> > copy hardening (as far as I can tell).
+>
+> Yes that is one advantage over any of the get_user() calls.
+> You also lose all the 'how shall we optimise this' checks
+> in copy_from_user().
+>
+> Repeated unsafe_get_user() calls are crying out for an optimisation.
+> You get something like:
+>         failed = 0;
+>         copy();
+>         if (failed) goto error;
+>         copy();
+>         if (failed) goto error;
+> Where 'failed' is set by the fault handler.
+>
+> This could be optimised to:
+>         failed = 0;
+>         copy();
+>         copy();
+>         if (failed) goto error;
+> Even if it faults on every invalid address it probably
+> doesn't matter - no one cares about that path.
 
-And relies on the compiler not ever spilling it to stack.
-Which it is much more likely to do that for the version
-that uses shifts.
 
-Have you checked what happens with -O0 ?
-I don't think that is banned by the build system.
+On which arch are you looking at ?
 
-	David
+On x86_64 at least, code generation is just perfect.
+Not even a conditional jmp, it is all handled by exceptions (if any)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+stac
+copy();
+copy();
+clac
 
+
+<out_of_line>
+efault_end: do error recovery.
+
+
+
+>
+> I've not really looked at how it could be achieved though.
+>
+> It might be that the 'asm goto with outputs' variant
+> manages to avoid the compare and jump.
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
