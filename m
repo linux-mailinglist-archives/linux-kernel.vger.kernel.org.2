@@ -2,248 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB1335FAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F2B35FAE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352291AbhDNSnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:43:47 -0400
-Received: from mail-eopbgr760127.outbound.protection.outlook.com ([40.107.76.127]:30854
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231288AbhDNSnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:43:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W5lkPR3n4RwPUCp6yCiq325PSQhwDTRC2gUkmjeU0iFduTtr5rNeRfMOAh8N3DuYHJAAXK4ZLPhI9IqF/K4xARSfWm7kV+O8XGt7AfOvRQd+h+Glc+us7EJtFAu84syvL2+Nz4DlxgybRENbzHCi723ijr7WHr5MKeENwfUFeWk8pAU+2ORgNcsljh3TBZBI/mVUec8zsFjn4KL0IJlWk6ZnA4NVLV+ZNQtp64G2qKvjXFSzJ4fyIyp4a2fuXFhQBk4Mys5Ul0HjK/63g2LIxiyHfJXNo7x90DvBolm8mVKA6jEzNT6QJL4WAyYssE5qAS0Sg8nWIJyYar95SlFQ/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xq2ul2zYbhxKYlC19aZ9PAjUgqo3uirfY6P/PELRVo4=;
- b=Dpy+yVsrQVrd1WLM5+nA9lChAPfKCCJF0GilQr/uHCE+j/J1MG+CR+V2+K/05/z5CCwmmOQiFl+NyL1jX7MTUtvafNOqb4AT82OanGUEpnmC6oXlxA0lOelCO/d0bVDLIQCP09C5IOz0u7CKOSNVZwwD+ldN3hVmnN6ew2XaIkQMGMSHskZe3aY4F3g9yPUPluGyXCS4B6N1hEhh3nc+yXZoN/Y+GovseRvsiKQY87iB3qEkgRk4tzhQDcheh+ATbwvhgA/lQQZHqDeWnZ6NxWud23ZRG62xjED6i9trLV8Ndmv4WbIamrbJpNHHX9fh27izzFWkdAZHBa72DTg/9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xq2ul2zYbhxKYlC19aZ9PAjUgqo3uirfY6P/PELRVo4=;
- b=DDuFV67p9+/lYBMRZ7I3ZhSMWS8UrRz5MVekb7k1U8Ur9MOjn7kIZKxZ7Kmq6uEKBF9d60lrRn4Ew0Ng9eOBc9KlSmEpcOBSHRsWX777FVertwdU5zrslvpghx3NgJd9Ey+69LQfvLyQ6eHIx86HznIpqvRjp45ealiKbTuMXL8=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MWHPR21MB0766.namprd21.prod.outlook.com (2603:10b6:300:76::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.2; Wed, 14 Apr
- 2021 18:43:19 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f%4]) with mapi id 15.20.4042.017; Wed, 14 Apr 2021
- 18:43:19 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH v2 3/3] Drivers: hv: vmbus: Check for pending channel
- interrupts before taking a CPU offline
-Thread-Topic: [PATCH v2 3/3] Drivers: hv: vmbus: Check for pending channel
- interrupts before taking a CPU offline
-Thread-Index: AQHXMT8SvHT8x+MMrkOGlI7J8353+aq0VPuQ
-Date:   Wed, 14 Apr 2021 18:43:19 +0000
-Message-ID: <MWHPR21MB15931F523196BCE9E23293E4D74E9@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210414150118.2843-1-parri.andrea@gmail.com>
- <20210414150118.2843-4-parri.andrea@gmail.com>
-In-Reply-To: <20210414150118.2843-4-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=85ffc388-eac9-48e9-9b99-770daac6b918;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-14T18:26:51Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 060f1160-700b-46f7-ae2b-08d8ff752c55
-x-ms-traffictypediagnostic: MWHPR21MB0766:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR21MB076663E0BFF5FA6024C0CEF6D74E9@MWHPR21MB0766.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bbyMz28N1OwWfieYmYItfBh0oJIKYBipr/fB8TaosYDEENvI7hSPaAftVxPD9dAtnelG42sb0HQAaB67PnRP2LCA/NkhB/y6CU4c+QnWtFUqqbHuT5nKld2gyrT3cO2SBMxRz09TXxc/FHi/FhLHUOX+UCr4zOLkb12jatJDRzTPIuDR0HKyleSeI+6W7cB5ImQU80Llb96Z3zFDY33DNpHopD+kThW4y3B1a1v2cY+JyRieEIUlDz00N5jTjdLReLR3Qvck+zps2umFOi413SRC5SHBlALZTUlDn+xZZ1hnYk2jorFa7K5/ieEkOSRLDEijgL9g1De67d9l96YPIchmMC/NlUBw6W0iZtqLKJ47UcEGJuD9bqf7brcSkKJDojKjcwZPn4tz+IbP1tEFrL7j2dkQtUp0UUcHHDChLK58T5UyXqnSywibegJqZRmIBDhGD58O1GbNs5Cm3fUTq0j/dxRygRT3vYxsxhSimHcxze6cQETK59o4SUR6lZjq2h8o4sP4YV8bL0nC/Fno8aZRb29MR7zlb3BEGFHVGZYmD/nPJflmw2f+80U7q5Ksf/a49jiHMgRvpFo3Q3aIBaMlnnSI7ZFafcpnqAr38UY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(39860400002)(376002)(5660300002)(122000001)(478600001)(8936002)(76116006)(2906002)(33656002)(26005)(38100700002)(52536014)(186003)(10290500003)(8676002)(316002)(110136005)(83380400001)(7696005)(71200400001)(66556008)(66476007)(6506007)(82960400001)(82950400001)(64756008)(66446008)(66946007)(55016002)(9686003)(4326008)(86362001)(54906003)(8990500004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?lVElmx0bxXnAPHdxZtrlO2VJilIWJ3vTdwBTRSzaWfLbRrsrJZZcWQ13cHs3?=
- =?us-ascii?Q?/4tEUyuKKkfnA7k901lSQIzOTybcv9why/hIwzAj8EvmJetgQN9kViIZzWyb?=
- =?us-ascii?Q?yl+ctNW4XsCaAhJxEyIjBR0lkEwXAKMgDXgd/0v47Pr9+0F/3A9g8mYhyf1e?=
- =?us-ascii?Q?piKv31wPPdZki5PAGXecOCvtHmjEUHi3i7u94Iq8jXeT0M34rKZGV7b9U00h?=
- =?us-ascii?Q?vKIAa5NX97Q7StW1QIFD2PgYcXi+nEDavVoBTNViLvSh1YPRDnx/mXKNdL74?=
- =?us-ascii?Q?cBMLXx6/9PirEbvmKE7v/5JLiXEnay4Qs2KYYkPJG2AukMd0abj1mOOXO/9A?=
- =?us-ascii?Q?Z0luMFFMLOhoyVbgHpjA4nhIMPth6dAOJ9G+/HqZOgiOxZSeUV+GNJCPZkP1?=
- =?us-ascii?Q?ZjYIaOmLTrlp7RdBNF9RD2CQAY42lHDOjQmnmGBU2JTwOSzpzqpDC1jufm5B?=
- =?us-ascii?Q?3cx8zWnOnu38mS7K2x7hhnfGgCOnuqSsLL/uo9S7AzMpU1kzdsEeynCzoelE?=
- =?us-ascii?Q?N4Bhy6qOvRAaM8cLAUpHAWIt0f7NNzXN5NE3MkB6LD2fVlyPMFDvcdMAqBKr?=
- =?us-ascii?Q?YvTNlQlRrhkOIvYAiMWXxKe+ZKQvcLeLjHHQyO9Hcy5uJBrswnDX+gMC7l3t?=
- =?us-ascii?Q?Btp+2IhvXYsSJKAivv8RqekjmwYhL0HFgKaDNJFm6j6OXw/rHkaYExq2ye0F?=
- =?us-ascii?Q?F5YxUB0rUZD72qply9Vrc8MaoW5sNymVFEboNlQQQybn87T+jk45wqhZ5/mU?=
- =?us-ascii?Q?Oyfx3ztSPUUdNakaVrLdKJOsCU9h2rLRa9wSuyPNq4ftGx0EyD63G9KfC1kH?=
- =?us-ascii?Q?ZxSi7vWeGyJRybqvlj7s/NFIi5obvFYe3kwPvIyBAr8N8y1iYYeXCIK+8XdW?=
- =?us-ascii?Q?B+zs2g1fRFRYgNkc3H5/B3G91iguUV3dkxn+uaVS8ce3RFMMELXAsk917wCe?=
- =?us-ascii?Q?96upDJ92sWVprqj+r71kieDqJ+wlXIdJAh0RT7oIybka5Nw+2jLeUIucEi7e?=
- =?us-ascii?Q?2FNqV+D5j7CCPtxe3R0/HNWTEhfmWyieZmoaYfvmq0EATdUqXnbyYUQ/0vjs?=
- =?us-ascii?Q?qGkcRHp3CzZM7d7FZqCznPJB9AT7O+RdxybpvDDYkDUgeyfC2J1NrCyUHMhB?=
- =?us-ascii?Q?pGfbT0Zdt7xwxTjmlzS+N9X2hu8aLWTb/BdKhAolrtoWObK8v14p5dP/QTFY?=
- =?us-ascii?Q?02NbcYa+w/onkGlq9L2sxHpa+qV915L4+0OWXiXeyF1Yhbj7x+4gbaTN+emD?=
- =?us-ascii?Q?sPhcerqKHrYxV8NYKmKTR4KBYR10YvGwj+PRH3T4iO/iqP0Cg0yM7MM+LKC/?=
- =?us-ascii?Q?EBw73tzx0QtmDEg8o8clBlqk?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1352759AbhDNSpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231288AbhDNSps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:45:48 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:45:25 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id w4so17105687wrt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FFpeLrhMRSdhJjwJx9ecxuPIGzNMIfh4rcmuAZslJ+Q=;
+        b=Sx/j0bN4OrtpNE53iwqgZgaw1DFQ+JAZmUdABSI/p4AjJG8qwTXufwtPlTZ/SqA5al
+         7PzjBnQeyTP5433vmjKhTkbOPesbNIugbNOjCxqPCRVYtQ7bvLJybRuPUVrvnJ3oPMQw
+         z125pIPCJKN9j3JVv6Pqah0rwr85YO7UeYH2BoIZDEf2TJPZ/ZazG3kFmPllpO5CVLFf
+         QZfRjCbHiilOOmb5i87VjEFD28hFQj5BAgYUhBs+bdTPPWPPlpIMCTZ5rVZlBqGW+brk
+         2RvQ2pzWYsm/4qXVMB8xtW3vQhwY12Gzsz0eQhhxrRGTZPk6L3WZ9xT0KnMUs6bzY7AW
+         z/nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FFpeLrhMRSdhJjwJx9ecxuPIGzNMIfh4rcmuAZslJ+Q=;
+        b=saCBZX2VY01Qrw9rsiUjLGz/sF1SYC3t6jvoEh+KcDKOhVL9BvjXZE/CuVU7wl82Ob
+         ZurYJLFJb8YqKVP5yg7RoNiSZED/2+OyFD0nUT5dN/8BjKTDc9mRSn/P9BfIHzSU23x6
+         Czp4YZfBw3AP9uZ3Mt8By5dbZIEjhSCO5Cwbyn6B1dxp9UripfywxwqRDC3A11Rz61f1
+         QWYvoXMIZBzX37GaxCGMrQgJzfliCZGilUCILq9wSrkvFa/KpwFFH+ib07UT4Qx0BzzB
+         ISC1i9Dj98kf5DZoJd71EgbZZopq1Q3FH/m7AZtoqibnVfFb6XrJMDbqFE/Au7BuNqj1
+         rT9A==
+X-Gm-Message-State: AOAM5310MwheDrBIevUR9RLunIw3Qxyp/zOYtsGYThybPa6SkTa5PvT6
+        F+ke5gtpTs7ZAqdjUGxCRNZoneR0kb+01ZCPaqLEMQ==
+X-Google-Smtp-Source: ABdhPJymPOy/aXX6oaknlaD0xZPd9W+iv0ifBqXzMjbxPFg71rQLLZ64GYMYoSEB5mAo3bHcPkvPIgZ+BVL6o9zPjVA=
+X-Received: by 2002:adf:9148:: with SMTP id j66mr44600646wrj.124.1618425924205;
+ Wed, 14 Apr 2021 11:45:24 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 060f1160-700b-46f7-ae2b-08d8ff752c55
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2021 18:43:19.1944
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rBx0rSEEdgJRGV8rIMuX1WseIQOezS4yYh+gBHkb1TgvrZ7Q7tPtk3IqxnvYbYYE8ainsD7fZ0Eb4O5TBFz8a/mmfk8sm8GAP79CsLS7hF0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0766
+References: <20210413075155.32652-1-sjpark@amazon.de> <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+ <20210413231436.GF63242@dread.disaster.area> <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
+ <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
+ <87tuo9qtmd.fsf@yhuang6-desk1.ccr.corp.intel.com> <CAOUHufbk=TVOpEOvTNRBe0uoOWNZ=wf3umQ628ZFZ=QYhNqsHA@mail.gmail.com>
+ <87lf9lqnit.fsf@yhuang6-desk1.ccr.corp.intel.com> <93308ea276cfe7997c29ce7132516e830e8fec40.camel@surriel.com>
+In-Reply-To: <93308ea276cfe7997c29ce7132516e830e8fec40.camel@surriel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Wed, 14 Apr 2021 12:45:12 -0600
+Message-ID: <CAOUHufY_++Zr3uN=RCjj22qZHE=650eihyAFWnaPSSC3jS1Xhg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+To:     Rik van Riel <riel@surriel.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        SeongJae Park <sj38.park@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>, Andi Kleen <ak@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Kernel Page Reclaim v2 <page-reclaim@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Wednesday, Ap=
-ril 14, 2021 8:01 AM
->=20
-> Check that enough time has passed such that the modify channel message
-> has been processed before taking a CPU offline.
->=20
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
->  drivers/hv/hv.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->=20
-> diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-> index 3e6ff83adff42..dc9aa1130b22f 100644
-> --- a/drivers/hv/hv.c
-> +++ b/drivers/hv/hv.c
-> @@ -15,6 +15,7 @@
->  #include <linux/hyperv.h>
->  #include <linux/random.h>
->  #include <linux/clockchips.h>
-> +#include <linux/delay.h>
->  #include <linux/interrupt.h>
->  #include <clocksource/hyperv_timer.h>
->  #include <asm/mshyperv.h>
-> @@ -292,6 +293,41 @@ void hv_synic_disable_regs(unsigned int cpu)
->  		disable_percpu_irq(vmbus_irq);
->  }
->=20
-> +#define HV_MAX_TRIES 3
-> +/*
-> + * Scan the event flags page of 'this' CPU looking for any bit that is s=
-et.  If we find one
-> + * bit set, then wait for a few milliseconds.  Repeat these steps for a =
-maximum of 3 times.
-> + * Return 'true', if there is still any set bit after this operation; 'f=
-alse', otherwise.
-> + *
-> + * If a bit is set, that means there is a pending channel interrupt.  Th=
-e expectation is
-> + * that the normal interrupt handling mechanism will find and process th=
-e channel
-> interrupt
-> + * "very soon", and in the process clear the bit.
-> + */
-> +static bool hv_synic_event_pending(void)
-> +{
-> +	struct hv_per_cpu_context *hv_cpu =3D this_cpu_ptr(hv_context.cpu_conte=
-xt);
-> +	union hv_synic_event_flags *event =3D
-> +		(union hv_synic_event_flags *)hv_cpu->synic_event_page +
-> VMBUS_MESSAGE_SINT;
-> +	unsigned long *recv_int_page =3D event->flags; /* assumes VMBus version=
- >=3D
-> VERSION_WIN8 */
-> +	bool pending;
-> +	u32 relid;
-> +	int tries =3D 0;
-> +
-> +retry:
-> +	pending =3D false;
-> +	for_each_set_bit(relid, recv_int_page, HV_EVENT_FLAGS_COUNT) {
-> +		/* Special case - VMBus channel protocol messages */
-> +		if (relid =3D=3D 0)
-> +			continue;
-> +		pending =3D true;
-> +		break;
-> +	}
-> +	if (pending && tries++ < HV_MAX_TRIES) {
-> +		usleep_range(10000, 20000);
-> +		goto retry;
-> +	}
-> +	return pending;
-> +}
->=20
->  int hv_synic_cleanup(unsigned int cpu)
->  {
-> @@ -336,6 +372,19 @@ int hv_synic_cleanup(unsigned int cpu)
->  	if (channel_found && vmbus_connection.conn_state =3D=3D CONNECTED)
->  		return -EBUSY;
->=20
-> +	if (vmbus_proto_version >=3D VERSION_WIN10_V4_1) {
-> +		/*
-> +		 * channel_found =3D=3D false means that any channels that were previo=
-usly
-> +		 * assigned to the CPU have been reassigned elsewhere with a call of
-> +		 * vmbus_send_modifychannel().  Scan the event flags page looking for
-> +		 * bits that are set and waiting with a timeout for vmbus_chan_sched()
-> +		 * to process such bits.  If bits are still set after this operation
-> +		 * and VMBus is connected, fail the CPU offlining operation.
-> +		 */
-> +		if (hv_synic_event_pending() && vmbus_connection.conn_state =3D=3D CON=
-NECTED)
-> +			return -EBUSY;
-> +	}
-> +
+On Wed, Apr 14, 2021 at 7:52 AM Rik van Riel <riel@surriel.com> wrote:
+>
+> On Wed, 2021-04-14 at 16:27 +0800, Huang, Ying wrote:
+> > Yu Zhao <yuzhao@google.com> writes:
+> >
+> > > On Wed, Apr 14, 2021 at 12:15 AM Huang, Ying <ying.huang@intel.com>
+> > > wrote:
+> > > >
+> > > NUMA Optimization
+> > > -----------------
+> > > Support NUMA policies and per-node RSS counters.
+> > >
+> > > We only can move forward one step at a time. Fair?
+> >
+> > You don't need to implement that now definitely.  But we can discuss
+> > the
+> > possible solution now.
+>
+> That was my intention, too. I want to make sure we don't
+> end up "painting ourselves into a corner" by moving in some
+> direction we have no way to get out of.
+>
+> The patch set looks promising, but we need some plan to
+> avoid the worst case behaviors that forced us into rmap
+> based scanning initially.
 
-Perhaps the test for conn_state =3D=3D CONNECTED could be factored out as f=
-ollows.  If we're
-not CONNECTED (i.e., in the panic or kexec path) we should be able to also =
-skip the search
-for channels that are bound to the CPU since we will ignore the result anyw=
-ay.
+Hi Rik,
 
-	if (vmbus_connection.conn_state !=3D CONNECTED)
-		goto always_cleanup;
+By design, we voluntarily fall back to the rmap when page tables of a
+process are too sparse. At the moment, we have
 
-	if (cpu =3D=3D VMBUS_CONNECT_CPU)
-		return -EBUSY;
+bool should_skip_mm()
+{
+    ...
+    /* leave the legwork to the rmap if mapped pages are too sparse */
+    if (RSS < mm_pgtables_bytes(mm) / PAGE_SIZE)
+        return true;
+    ....
+}
 
-	[Code to search for channels that are bound to the CPU we're about to clea=
-n up]
-=09
-	if (channel_found)
-		return -EBUSY;
+So yes, I agree we have more work to do in this direction, the
+fallback should be per VMA and NUMA aware. Note that once the fallback
+happens, it shares the same path with the existing implementation.
 
-	/*
-	 * channel_found =3D=3D false means that any channels that were previously
-	 * assigned to the CPU have been reassigned elsewhere with a call of
-	 * vmbus_send_modifychannel().  Scan the event flags page looking for
-	 * bits that are set and waiting with a timeout for vmbus_chan_sched()
-	 * to process such bits.  If bits are still set after this operation
-	 * and VMBus is connected, fail the CPU offlining operation.
-	 */
-	if (vmbus_proto_version >=3D VERSION_WIN10_V4_1 && hv_synic_event_pending(=
-))
-		return -EBUSY;
+Probably I should have clarified that this patchset does not replace
+the rmap with page table scanning. It conditionally uses page table
+scanning when it thinks most of the pages on a system could have been
+referenced, i.e., when it thinks walking the rmap would be less
+efficient, based on generations.
 
-always_cleanup:
+It *unconditionally* walks the rmap to scan each of the pages it
+eventually tries to evict, because scanning page tables for a small
+batch of pages it wants to evict is too costly.
 
->  	hv_stimer_legacy_cleanup(cpu);
->=20
->  	hv_synic_disable_regs(cpu);
-> --
-> 2.25.1
+One of the simple ways to look at how the mixture of page table
+scanning and the rmap works is:
+  1) it scans page tables (but might fallback to the rmap) to
+deactivate pages from the active list to the inactive list, when the
+inactive list becomes empty
+  2) it walks the rmap (not page table scanning) when it evicts
+individual pages from the inactive list.
+Does it make sense?
 
+I fully agree "the mixture" is currently statistically decided, and it
+must be made worst-case scenario proof.
+
+> > Note that it's possible that only some processes are bound to some
+> > NUMA
+> > nodes, while other processes aren't bound.
+>
+> For workloads like PostgresQL or Oracle, it is common
+> to have maybe 70% of memory in a large shared memory
+> segment, spread between all the NUMA nodes, and mapped
+> into hundreds, if not thousands, of processes in the
+> system.
+
+I do plan to reach out to the PostgreSQL community and ask for help to
+benchmark this patchset. Will keep everybody posted.
+
+> Now imagine we have an 8 node system, and memory
+> pressure in the DMA32 zone of node 0.
+>
+> How will the current VM behave?
+
+At the moment, we don't plan to make the DMA32 zone reclaim a
+priority. Rather, I'd suggest
+  1) stay with the existing implementation
+  2) boost the watermark for DMA32
+
+> What will the virtual scanning need to do?
+
+The high priority items are:
+
+To-do List
+==========
+KVM Optimization
+----------------
+Support shadow page table scanning.
+
+NUMA Optimization
+-----------------
+Support NUMA policies and per-node RSS counters.
+
+We are just trying to focus our resources on the trending use cases. Reasonable?
+
+> If we can come up with a solution to make virtual
+> scanning scale for that kind of workload, great.
+
+It won't be easy, but IMO nothing worth doing is easy :)
+
+> If not ... if it turns out most of the benefits of
+> the multigeneratinal LRU framework come from sorting
+> the pages into multiple LRUs, and from being able
+> to easily reclaim unmapped pages before having to
+> scan mapped ones, could it be an idea to implement
+> that first, independently from virtual scanning?
+
+This option is on the table considering the possibilities
+  1) there are unforeseeable problems we couldn't solve
+  2) sorting pages alone has demonstrated its standalone value
+
+I guess 2) alone will help people heavily using page cache. Google
+isn't one of them though. Personally I'm neutral (at least trying to
+be), and my goal is to accommodate everybody as best as I can.
+
+> I am all for improving
+> our page reclaim system, I
+> just want to make sure we don't revisit the old traps
+> that forced us where we are today :)
+
+Yeah, I do see your concerns and we need more data. Any suggestions on
+benchmarks you'd be interested in?
+
+Thanks.
