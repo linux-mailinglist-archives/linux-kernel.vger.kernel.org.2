@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C1C35EF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEA135EF03
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349872AbhDNICu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:02:50 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:56155 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349857AbhDNICo (ORCPT
+        id S1349890AbhDNIEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhDNIDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:02:44 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id WaTYlzhQ4nzKoWaTblZqxd; Wed, 14 Apr 2021 10:02:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618387340; bh=eLYWvFJsLRWSZnDgFC4HWwA6Ar/qN3NYs7CsRsakJ4A=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=JneEJWiXKH+P9ZzWyyxbtrHQc7c7FRECZhXacg2tiJ8c37MC+o3y7NmDVvxN1vmfv
-         kZNuLUZq7smq4FxM5yCjgUXlJiX/4vBCIukm6+G7zLcJFoF8r7A3tEEyiNXFe0QaJB
-         8QT4ngpkQk+1OT45vYbbYqkYLV3Zb5/wFBfnZBIe+ZiaOPir4t4Hkip7kBnLG+uo2D
-         pD9Bb6P5vtAPFD4tRRXOA369m8OSODK6XeSTLM4CcnXCB7nuqdlI27C2uGOMgSxIVy
-         TfrMR9mBI7Eh6nk9eICYMVkAjdNxtoCC8YaXOXIsDzg/u/MeK6UfNhuRoWYSmNRM/6
-         Lj+2G2PaaCKDg==
-Subject: Re: [PATCH] staging: media: omap4iss: Remove unused macro functions
-To:     ascordeiro <alinesantanacordeiro@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-References: <20210412134253.GA19402@focaruja>
- <03549d0e-04d9-6d37-93e3-c09b29ce53aa@xs4all.nl>
- <4e2f52124b29b3ed6c3f7f645f067c503c7cf4cf.camel@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <ba6a1424-a624-f808-bc9e-477e75348844@xs4all.nl>
-Date:   Wed, 14 Apr 2021 10:02:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Wed, 14 Apr 2021 04:03:20 -0400
+X-Greylist: delayed 103955 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 14 Apr 2021 01:02:57 PDT
+Received: from office2.cesnet.cz (office2.cesnet.cz [IPv6:2001:718:1:101::144:244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB5CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:02:53 -0700 (PDT)
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by office2.cesnet.cz (Postfix) with ESMTPSA id E113440006D;
+        Wed, 14 Apr 2021 10:02:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesnet.cz;
+        s=office2-2020; t=1618387370;
+        bh=VL+3Khe0pTD/l2rOSGRuJdOoL2SvZynD8rVDjpFMxG4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=k+LZ1KkbwicpSivb9kbGRF54c5MYAbcKOPXglu7THalVBLwgXPGnqkQnPjwLU5ETY
+         f3DJptZHGoyL19FK/fHyhjbwgaN0ToLVVIHIP7w43lUIb8yjxq66ayZ8r8tcpEn1OS
+         tcMJj7gJJAutzdvR4iz7xh3X69frbiVyxH2eX9N4Y/PK0Q3klZejR60PHO/pz5i7VC
+         7CLuo/dcXj+7Z3tXPAQn3AdFW23Qs8XbGE/AyBksJmPrgu/Q/ZBng9mByMUkSFSwCq
+         aLMsNEe42XvX91HXPkzgJ2nY9vPshhzw0LUOn11D7PcJus7XrDBokfNx2txSHDkYX+
+         5bBoIogzn6NGw==
+Received: by mail-pg1-f177.google.com with SMTP id q10so13837449pgj.2;
+        Wed, 14 Apr 2021 01:02:50 -0700 (PDT)
+X-Gm-Message-State: AOAM530Ra2GSXAYKwP0WXVEM0nzFAgisCBrLErtAKL5hyZKXjBXeQt/z
+        DqHNwFh7MBo0XvdWtN/aNDx2ipb9k0iJs9CEvlM=
+X-Google-Smtp-Source: ABdhPJy+0298vwEUg05EWx7t5fB0g2In9DE2gbsBf5kChy0/MbPy1qlZcfKQpji0MJ3w6Y2k+XZ62DsKCbGfmQs38lw=
+X-Received: by 2002:a63:2404:: with SMTP id k4mr1212088pgk.381.1618387369456;
+ Wed, 14 Apr 2021 01:02:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4e2f52124b29b3ed6c3f7f645f067c503c7cf4cf.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfPEoSb3gkMUCu+Uq81wGwtZ/9iDWgot0m+ucFtrCGFCLCRdXzORvsQtiqQu/qnGppW25ZArUKwbFCd+uHaj+RObUzQPh93z75uMYjXNJ2CjPLZXOE6my
- zcGb0PG0MwEw6iH60BNGNQSwG5aLTkv1chA199lHguSNM2ew46xyoZWg9mG0TSmHryy64x/vAYMZaR6fL/JTqqu23ZcW3bm4eYGe1kvLdoD4XVtuf3nxgyyK
- sbOXs8al7ebDZ94BO1ihAn5ZGlBjl01LK8vopdSRBBRUN0hYZ6wmsK5n50PNzMPWZQMIzYF+9SD0dmKTn+bbTkPNOYhxibDiPXeTF8CxNp2ktjoiD+3LM6a/
- Oa0WaK6Mx3g4TnvjqzzAQlNBp6+bE7QDtZHZDHJDmuGOcKaosWIo6iNaOxyKz9nijE+GOGu8AtaWvDCIE2hM/kyIrj4eD6/UcDR0/xXrgpU0JF3fXoMxt6eT
- n323txK4PzWYQqYsAShUq7M5CEky9FnLiR26xA==
+References: <20210329143833.1047539-1-kubernat@cesnet.cz> <20210414001308.3434548-1-kubernat@cesnet.cz>
+ <20210414032902.GA242591@roeck-us.net>
+In-Reply-To: <20210414032902.GA242591@roeck-us.net>
+From:   =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>
+Date:   Wed, 14 Apr 2021 10:02:37 +0200
+X-Gmail-Original-Message-ID: <CABKa3npPWguWVF-b4KmVCDFGLDE3m78WV+B7M5E=XYBjwfDZrQ@mail.gmail.com>
+Message-ID: <CABKa3npPWguWVF-b4KmVCDFGLDE3m78WV+B7M5E=XYBjwfDZrQ@mail.gmail.com>
+Subject: Re: [PATCH v5] hwmon: Add driver for fsp-3y PSUs and PDUs
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/2021 20:21, ascordeiro wrote:
-> Em ter, 2021-04-13 às 17:06 +0200, Hans Verkuil escreveu:
->> On 12/04/2021 15:42, Aline Santana Cordeiro wrote:
->>> Remove unused macro functions "to_iss_device()", "to_device()",
->>> and "v4l2_dev_to_iss_device(dev)".
->>
->> 'git grep to_iss_device drivers/staging/omap4iss' gives me lots of
->> hits!
->> Same for to_device. Only v4l2_dev_to_iss_device appears to be unused.
->>
->> Regards,
->>
->>         Hans
->>
-> This command is really helpful, I didin't know. 
-> Thank you for the tip.
-> 
-> May I send a v2 removing just v4l2_dev_to_iss_device?
+st 14. 4. 2021 v 5:29 odes=C3=ADlatel Guenter Roeck <linux@roeck-us.net> na=
+psal:
+>
+> On Wed, Apr 14, 2021 at 02:13:06AM +0200, V=C3=A1clav Kubern=C3=A1t wrote=
+:
+> > This patch adds support for these devices:
+> > - YH-5151E - the PDU
+> > - YM-2151E - the PSU
+> >
+> > The device datasheet says that the devices support PMBus 1.2, but in my
+> > testing, a lot of the commands aren't supported and if they are, they
+> > sometimes behave strangely or inconsistently. For example, writes to th=
+e
+> > PAGE command requires using PEC, otherwise the write won't work and the
+> > page won't switch, even though, the standard says that PEC is optional.
+> > On the other hand, writes to SMBALERT don't require PEC. Because of
+> > this, the driver is mostly reverse engineered with the help of a tool
+> > called pmbus_peek written by David Brownell (and later adopted by my
+> > colleague Jan Kundr=C3=A1t).
+> >
+> > The device also has some sort of a timing issue when switching pages,
+> > which is explained further in the code.
+> >
+> > Because of this, the driver support is limited. It exposes only the
+> > values, that have been tested to work correctly.
+> >
+> > Signed-off-by: V=C3=A1clav Kubern=C3=A1t <kubernat@cesnet.cz>
+>
+> checkpatch says:
+>
+> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+> #108: FILE: Documentation/hwmon/fsp-3y.rst:1:
+> +Kernel driver fsp3y
+>
+> WARNING: line length of 137 exceeds 100 columns
+> #409: FILE: drivers/hwmon/pmbus/fsp-3y.c:225:
+> +               dev_warn(&client->dev, "Device mismatch: Configured %s (%=
+d), detected %d\n", id->name, (int)id->driver_data, data->chip);
+>
+> Please fix and resubmit.
+>
 
-Sure, that's fine.
+Done.
 
-Regards,
+V=C3=A1clav
 
-	Hans
-
-> 
-> Thank you in advance,
-> Aline
-> 
->>>
->>> Signed-off-by: Aline Santana Cordeiro <
->>> alinesantanacordeiro@gmail.com>
->>> ---
->>>  drivers/staging/media/omap4iss/iss.h | 8 --------
->>>  1 file changed, 8 deletions(-)
->>>
->>> diff --git a/drivers/staging/media/omap4iss/iss.h
->>> b/drivers/staging/media/omap4iss/iss.h
->>> index b88f952..a354d5f 100644
->>> --- a/drivers/staging/media/omap4iss/iss.h
->>> +++ b/drivers/staging/media/omap4iss/iss.h
->>> @@ -29,11 +29,6 @@
->>>  
->>>  struct regmap;
->>>  
->>> -#define to_iss_device(ptr_module)                              \
->>> -       container_of(ptr_module, struct iss_device, ptr_module)
->>> -#define
->>> to_device(ptr_module)                                          \
->>> -       (to_iss_device(ptr_module)->dev)
->>> -
->>>  enum iss_mem_resources {
->>>         OMAP4_ISS_MEM_TOP,
->>>         OMAP4_ISS_MEM_CSI2_A_REGS1,
->>> @@ -119,9 +114,6 @@ struct iss_device {
->>>         unsigned int isp_subclk_resources;
->>>  };
->>>  
->>> -#define v4l2_dev_to_iss_device(dev) \
->>> -       container_of(dev, struct iss_device, v4l2_dev)
->>> -
->>>  int omap4iss_get_external_info(struct iss_pipeline *pipe,
->>>                                struct media_link *link);
->>>  
->>>
->>
-> 
-> 
-
+> Thanks,
+> Guenter
