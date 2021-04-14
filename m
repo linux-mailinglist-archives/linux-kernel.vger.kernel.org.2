@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C71635F1C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A36135F1C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbhDNKxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232196AbhDNKxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:53:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 278C56128E;
-        Wed, 14 Apr 2021 10:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618397568;
-        bh=0c0DKD6R3exJ1ALKp0ZnNiJTJMmJ82AFfIDhibBbQjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I95/MfzqPZi2LAE9J5fOO9WSTnWTyfy69u8Wc3KSUCHKmGBnsSLoNdW77oZjEhZjX
-         uchIecdDVJ3c/lgVimaE/bb9MGQrGdrdmcMwEWo7QQGN2LBgSaZzVvDn5mxww96L3X
-         SerzpWT62JdHYGTy5E4UHQmX0eLLw1fjYioBRZHQaeA+VZbbMpjULZvzcQCMix2VaP
-         kMe+XIkHFIWAY26ow7MO2mBfTAqrr1/JdsfDIxy+298L774pN7pPizaJzV4TlOA+9d
-         0eIebquwDJBQmkzkJERq8BpUS8cRSITFDLwA7kqPJj1xSY9NwpjDx74O52mg5ySx5J
-         Rh0g6QwlpFmBQ==
-Date:   Wed, 14 Apr 2021 13:52:45 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Raoul Strackx <raoul.strackx@fortanix.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
-Message-ID: <YHbJfXqyhtUb1AKw@kernel.org>
-References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+        id S234590AbhDNKx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234300AbhDNKxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:53:50 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E8AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:53:27 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 7FA4022236;
+        Wed, 14 Apr 2021 12:53:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1618397605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L12OIt8faTtdsv0KBp9p7wm1ybDfWS+RvgRsDf4XGCM=;
+        b=RqzM4M2eO8ZJhmk441yK9ehFa5PBvQCO0zSg1P6d3psTOFaqN9v6xN4pHz7YFiVt7mrGTG
+        i4pPm1E3KXa7KM0PYbnZyZywco0iy+/rytm8IaXnOjE7M6ODqZuk+6pePPSrcbRKU+QDh2
+        m90ct6flthNBhnjSlCvL18I9D7dPF8I=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 14 Apr 2021 12:53:24 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: macronix: Add block protection support to
+ mx25u6435f
+In-Reply-To: <CAATdQgCYoeEKfvQPNUxzMA+o4Xwtt80SoMmfweTAB1MCijyC6A@mail.gmail.com>
+References: <20210413120210.3671536-1-ikjn@chromium.org>
+ <51761f1db840c51bad17f5f275b4ce1a@walle.cc>
+ <CAATdQgCYoeEKfvQPNUxzMA+o4Xwtt80SoMmfweTAB1MCijyC6A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <a74478aa6fa248f6b6243366055ddd52@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:59:56AM +0200, Raoul Strackx wrote:
-> Creation of an SGX enclave consists of three steps. First, a new enclave
-> environment is created by the ECREATE leaf function. Some enclave settings
-> are specified at this step by passing an SGX Enclave Control Structure
-> (SECS) that contains the enclave MRENCLAVE, MRSIGNER, etc. This
-> instruction also starts a cryptographic log of the enclave being built.
-> (This log should eventually result in the MRENCLAVE.) Second, pages are
-> added to the enclave. The EADD leaf function copies 4KB data to an empty
-> EPC page. The cryptographic log records (among other properties) the
-> location and access rights of the page being added. It _does not_ include
-> an entry of the page content. When the enclave writer wishes to ensure the
-> content of (a part of) the enclave page as well, she must use the EEXTEND
-> leaf function. Extending the enclave cryptographic log can only be done
-> per 256 bytes. Extending the log with a full 4K page thus requires 16
-> invocations of the EEXTEND leaf function. It is however up to the enclave
-> developer to decide if and how enclave memory is added to the 
-> cryptographic log. EEXTEND functions may be issued only for relevant parts
-> of an enclave page, may happen only after all pages have been added, and
-> so on. Finally, the enclave is finalized by the EINIT leaf function. Any
-> new invocations of the EADD or EEXTEND leaf functions will result in a
-> fault. With EINIT a number of checks are performed as well. The 
-> cryptographic hash of the final cryptographic log is compared to the
-> MRENCLAVE field of the SECS structure passed to the ECREATE leaf function
-> (see step one). The signature (MRSIGNER) over this MRENCLAVE is verified
-> as well. When all checks pass, the enclave loading is complete and it
-> enters the executable state.
+Hi,
 
-Who do you expect to read this paragraph, seriously?
+Am 2021-04-14 08:53, schrieb Ikjoon Jang:
+> On Tue, Apr 13, 2021 at 8:26 PM Michael Walle <michael@walle.cc> wrote:
+>> Am 2021-04-13 14:02, schrieb Ikjoon Jang:
+>> > This patch adds block protection support to Macronix mx25u6432f and
+>> > mx25u6435f. Two different chips share the same JEDEC ID while only
+>> > mx25u6423f support section protections. And two chips have slightly
+>> > different definitions of BP bits than generic (ST Micro)
+>> > implementation.
+>> 
+>> What is different compared to the current implementation? Could you 
+>> give
+>> an example?
+> 
+> Two chips have different definitions on BP and  T/B bits.
+> - 35f has 4 BPs without T/B, BP3 behaves like T/B bit.
 
-> The SGX driver currently only supports extending the cryptographic log as
-> part of the EADD leaf function and _must_ cover complete 4K pages.
-> Enclaves not constructed within these constraints, currently cannot be
-> loaded on the Linux platform. Trying to do so will result in a different
-> cryptographic log; the MRENCLAVE specified at enclave creation time will
-> not match the cryptographic log kept by the processor and EINIT will fail.
-> This poses practical problems:
-> - The current driver does not fully support all possible SGXv1 enclaves.
->   It creates a separation between enclaves that run everywhere and
->   enclaves that run everywhere, except on Linux. This includes enclaves
->   already in use on other systems today.
-> - It limits optimizations loaders are able to perform. For example, by
->   only measuring relevant parts of enclave pages, load time can be
->   minimized.
-> 
-> This patch set adds a new ioctl to enable userspace to execute EEXTEND
-> leaf functions per 256 bytes of enclave memory. With this patch in place,
-> Linux will be able to build all valid SGXv1 enclaves.
-> 
-> See additional discussion at:
-> https://lore.kernel.org/linux-sgx/20200220221038.GA26618@linux.intel.com/
-> T/#m93597f53d354201e72e26d93a968f167fcdf5930
-> 
-> 
-> Raoul Strackx (3):
->   x86/sgx: Adding eextend ioctl
->   x86/sgx: Fix compatibility issue with OPENSSL < 1.1.0
->   x86/sgx: eextend ioctl selftest
-> 
->  arch/x86/include/uapi/asm/sgx.h         | 11 +++++
->  arch/x86/kernel/cpu/sgx/ioctl.c         | 81 ++++++++++++++++++++++++++++-----
->  tools/testing/selftests/sgx/defines.h   |  1 +
->  tools/testing/selftests/sgx/load.c      | 57 +++++++++++++++++++----
->  tools/testing/selftests/sgx/main.h      |  1 +
->  tools/testing/selftests/sgx/sigstruct.c | 43 ++++++++---------
->  6 files changed, 154 insertions(+), 40 deletions(-)
-> 
-> -- 
-> 2.7.4
-> 
-> 
+See below.
 
-/Jarkko
+> - 32f has 4 BPs plus T/B on CR.
+
+Ok, so this scheme looks like what we have right now, only that the
+TB bit is OTP and at a different place, right?
+
+> 
+> # MX25U6435F
+> 
+>  BPs | BP3=0 | BP3=1
+> ---------------------
+>  000 | None  | 1/2
+>  001 | 1/128 | 3/4
+>  010 | 1/64  | 7/8
+>  011 | 1/32  | 15/16
+>  100 | 1/16  | 31/32
+>  101 | 1/8   | 63/64
+>  110 | 1/4   | 127/128
+>  111 | 1/2   | All
+> 
+> # MX25U6432F
+> 
+>   BPs | T/B=0 | T/B=1
+> ---------------------
+>  0000 | None  | None
+>  0001 | 1/128 | 1/128
+>  0010 | 1/64  | 1/64
+>  0011 | 1/32  | 1/32
+>  0100 | 1/16  | 1/16
+>  0101 | 1/8   | 1/8
+>  0110 | 1/4   | 1/4
+>  0111 | 1/2   | 1/2
+>  1xxx | All   | All
+> 
+> It seems that 35f has a unique definition on bottom protections than 
+> others.
+
+Oh my.. That looks more like an invert and the top protection is also
+different. That is, if you'd treat BP3 as T/B, then BP[2:0] = 111
+should be "lock all", but it is rather lock half.. I just looked at
+the mx25u3235f back then. There it looked correct. But now it looks
+like the top protection scheme clips on the lower end (i.e. always
+starts with 1 block), where on the current supported scheme, we clip
+on the upper end (i.e. we start with protect all and walk backwards).
+
+> Assuming there's no way to distinguish between mx25u6435f and 32f,
+> This patch simply takes the common parts only - BP[2:0]
+> without using T/B or BP3 at all.
+
+You could look for differences in the SFDP and then distiguish them
+during probe and set the corresponding flags. Where the flags would
+need to be implemented first. I wouldn't have a problem with saying
+we just support top protection for the MX25U6435F but then we'd need
+to make sure the BP3 is set to 0.
+
+If you want to read out the SFDP, see here:
+https://patchwork.ozlabs.org/project/linux-mtd/list/?series=235475
+
+> But the current swp implementation implies that "BP with all ones"
+> is to be 'all' protection while in this approach it's 1/2,
+> A hidden BP3 should be involved for 'all' protection.
+
+Yes, so the MX25U6432F needs to have the 4bit BP flag set and the
+MX25U6435F seems to be completely different. Doh..
+
+>> > So this patch defines a new spi_nor_locking_ops only for macronix
+>> > until this could be merged into a generic swp implementation.
+>> 
+>> TBH, I don't really like the code duplication and I'd presume that it
+>> won't ever be merged with the generic code.
+> 
+> Agree, I hope I could make a more generalized version into swp.c.
+> 
+> Honestly I expected that I just needed to add one line of 
+> SPI_NOR_HAS_LOCK
+> to flash_info to support mx256432f (this was the main purpose of my 
+> patch)
+> before I read the datasheets. :)
+> 
+>> 
+>> You also assume that both the WPSEL and T/B bit are 0, which might not
+>> be true. Please note that both are write-once, thus should only be 
+>> read.
+> 
+> yep, that also should be considered,
+> I'm thinking just not to support WPSEL=1 case for now.
+
+which is ok, but we should make sure it is not set at all. Now the
+question is what do we do if it is set? I'd say just don't register the
+locking ops and log a message.
+
+-michael
