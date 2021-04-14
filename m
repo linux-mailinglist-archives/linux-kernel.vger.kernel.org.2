@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3187835FA18
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9F635FA1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351195AbhDNRva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34204 "EHLO mail.kernel.org"
+        id S1351238AbhDNRwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:52:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15557 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351076AbhDNRv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:51:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEFD06121E;
-        Wed, 14 Apr 2021 17:51:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618422667;
-        bh=L91rvimOeNnMBAtgfvMuBl6PMf48osTpkcfJfYNf/Ko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bv2bVc7Gww8cnl36F7mCL0FIsBbV7kyaEA4yN0zHeaZpLhkI18bnDMmBt/1kHBVDs
-         Y38NL4scoLwrcgzAoWLF/iW4/xpg4EcH3894Yj6C3jkM6uxESyk+HFU+mWju6aX+Ue
-         ndRXQh7l+5zR0fibHPNVAB0BB7J/PVW0l/fJPNuo=
-Date:   Wed, 14 Apr 2021 19:51:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH 15/20] kbuild: parisc: use common install script
-Message-ID: <YHcriObDPauSbfYd@kroah.com>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-16-gregkh@linuxfoundation.org>
- <CAK7LNATkQfwqr9-G5KwGmWDeG81Wn0eb3ZVxopJjxCq18S28=Q@mail.gmail.com>
- <5e16a94b-7383-3ec5-949f-f4c5d2c812f5@gmx.de>
+        id S1346877AbhDNRwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:52:49 -0400
+IronPort-SDR: J5tqTA2H1yNMVqUxV5daem6T5t50V43x16EiGp8o7+vxjB0Ntuzx3fL7U4VdIaXy581KpmRCbg
+ 03w6c/doKrpA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191511511"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="191511511"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:52:27 -0700
+IronPort-SDR: fzdiGQ25Qcw0t82oJ6AL7KPIFj2V0HRkBYxcgWKMkSxq+UyrNMeJk9xGVl5bwrr4mYYiZWfnAF
+ yNeN5GtNTNAg==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="461307271"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:52:26 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWjgd-00443E-6S; Wed, 14 Apr 2021 20:52:23 +0300
+Date:   Wed, 14 Apr 2021 20:52:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick
+ with const
+Message-ID: <YHcr144krHDay72g@smile.fi.intel.com>
+References: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
+ <20210326145129.GB2916463@dell>
+ <20210414171319.GQ4869@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5e16a94b-7383-3ec5-949f-f4c5d2c812f5@gmx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414171319.GQ4869@dell>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 06:30:59PM +0200, Helge Deller wrote:
-> On 4/7/21 1:23 PM, Masahiro Yamada wrote:
-> > On Wed, Apr 7, 2021 at 2:34 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > The common scripts/install.sh script will now work for parisc, all that
-> > > is needed is to add the compressed image type to it.  So add that file
-> > > type check, and then we can remove the two different copies of the
-> > > parisc install.sh script that were only different by one line and have
-> > > the arch call the common install script.
-> > > 
-> > > Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> > > Cc: Helge Deller <deller@gmx.de>
-> > > Cc: linux-parisc@vger.kernel.org
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > ---
-> > >   arch/parisc/Makefile        |  4 +--
-> > >   arch/parisc/boot/Makefile   |  2 +-
-> > >   arch/parisc/boot/install.sh | 65 ------------------------------------
-> > >   arch/parisc/install.sh      | 66 -------------------------------------
-> > >   scripts/install.sh          |  1 +
-> > >   5 files changed, 4 insertions(+), 134 deletions(-)
-> > >   delete mode 100644 arch/parisc/boot/install.sh
-> > >   delete mode 100644 arch/parisc/install.sh
-> > > 
-> > > diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-> > > index 7d9f71aa829a..296d8ab8e2aa 100644
-> > > --- a/arch/parisc/Makefile
-> > > +++ b/arch/parisc/Makefile
-> > > @@ -164,10 +164,10 @@ vmlinuz: vmlinux
-> > >   endif
-> > > 
-> > >   install:
-> > > -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
-> > > +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
-> > >                          $(KERNELRELEASE) vmlinux System.map "$(INSTALL_PATH)"
-> > >   zinstall:
-> > > -       $(CONFIG_SHELL) $(srctree)/arch/parisc/install.sh \
-> > > +       $(CONFIG_SHELL) $(srctree)/scripts/install.sh \
-> > >                          $(KERNELRELEASE) vmlinuz System.map "$(INSTALL_PATH)"
-> > > 
-> > >   CLEAN_FILES    += lifimage
-> > > diff --git a/arch/parisc/boot/Makefile b/arch/parisc/boot/Makefile
-> > > index 61f44142cfe1..ad2611929aee 100644
-> > > --- a/arch/parisc/boot/Makefile
-> > > +++ b/arch/parisc/boot/Makefile
-> > > @@ -17,5 +17,5 @@ $(obj)/compressed/vmlinux: FORCE
-> > >          $(Q)$(MAKE) $(build)=$(obj)/compressed $@
-> > > 
-> > >   install: $(CONFIGURE) $(obj)/bzImage
-> > > -       sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/bzImage \
-> > > +       sh -x  $(srctree)/scripts/install.sh $(KERNELRELEASE) $(obj)/bzImage \
-> > >                System.map "$(INSTALL_PATH)"
-> > 
-> > 
-> > 
-> > As far as I understood, there is no way to invoke this 'install' target
-> > in arch/parisc/boot/Makefile since everything is done
-> > by arch/parisc/Makefile.
-> > 
-> > Can we remove this 'install' rule entirely?
+On Wed, Apr 14, 2021 at 06:13:19PM +0100, Lee Jones wrote:
+> On Fri, 26 Mar 2021, Lee Jones wrote:
 > 
-> Yes, I think it can go in arch/parisc/boot/Makefile.
+> > On Fri, 26 Mar 2021, Andy Shevchenko wrote:
+> > 
+> > > As Linus rightfully noticed, the driver plays dirty trick with const,
+> > > i.e. it assigns a place holder data structure to the const field
+> > > in the MFD cell and then drops the const by explicit casting. This is
+> > > not how it should be.
+> > > 
+> > > Assign local pointers of the cell and resource to the respective
+> > > non-const place holders in the intel_quark_i2c_setup() and
+> > > intel_quark_gpio_setup().
+> > > 
+> > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > > v2: eliminated bar parameter (Lee)
+> > >  drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
+> > >  1 file changed, 12 insertions(+), 14 deletions(-)
+> > 
+> > Neat.
+> > 
+> > Applied, thanks.
+> 
+> Am I still missing patches from you Andy?
 
-It's already there today, so I'll delete the rule from
-arch/parisc/Makefile in my next round.
+Patches for fixes should be applied to for-next as well. I don't know why with
+my patches it diverged.
 
-thanks,
+I have already commented on this when kbuild bot complained.
 
-greg k-h
+So,
+
+	git checkout for-mfd-next
+	git merge for-mfd-fixes
+
+or equivalent (cherry-pick) will fix that.
+
+> I get:
+> 
+>  make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc' allmodconfig
+>  make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+>  /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_i2c_setup':
+>  /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:181:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>    struct resource *res = intel_quark_i2c_res;
+>                           ^~~~~~~~~~~~~~~~~~~
+>  /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c: In function 'intel_quark_gpio_setup':
+>  /builds/linux/drivers/mfd/intel_quark_i2c_gpio.c:203:25: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+>    struct resource *res = intel_quark_gpio_res;
+>                           ^~~~~~~~~~~~~~~~~~~~
+> 
+> Link to the build (see: build.log):
+> 
+>   https://builds.tuxbuild.com/1rAMovpd041jvsjfQ538kW3nvYK/
+> 
+> -- 
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
