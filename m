@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE0735F150
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A403F35F15D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhDNKNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:13:14 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:47620 "EHLO mail.skyhub.de"
+        id S232989AbhDNKQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:16:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57884 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232631AbhDNKNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:13:10 -0400
-Received: from zn.tnic (p200300ec2f0e8f0047b5d8db40ec11d2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:47b5:d8db:40ec:11d2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A0D021EC0528;
-        Wed, 14 Apr 2021 12:12:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618395168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=v5HUY65OS78ET9NFUwXyXqIOqxRqJhTJ7DiNehOvsA4=;
-        b=RLeFPTKrvHtvaFERYcN8XC52g3wEm7k4DwS6AYJnuoN3Fa0h+ssGq1e/w04BP0lfeeejkt
-        MkUVJAyxPy6m7LbMD1Kukk60nerb9KyLenIMkWrfVmJB5B8J3uZmWyrICZDCZzYf6LXPEO
-        3QHxyMi4wTomiOkxRs9v3XriVFHWRB0=
-Date:   Wed, 14 Apr 2021 12:12:50 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Florian Weimer <fweimer@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H. J. Lu" <hjl.tools@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
- signal stack overflow
-Message-ID: <20210414101250.GD10709@zn.tnic>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
- <20210316065215.23768-6-chang.seok.bae@intel.com>
- <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
- <20210325185435.GB32296@zn.tnic>
- <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
- <20210326103041.GB25229@zn.tnic>
- <DB68C825-25F9-48F9-AFAD-4F6C7DCA11F8@intel.com>
+        id S232032AbhDNKQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:16:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618395342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e6wKF//P88U/M+zDwsZ3xJTgPUSQgjspEx6v7dGglkw=;
+        b=XixLXnku8keACsrXdywnzaLMPxitUWW1MLzpGkLuHry2mV4ONud24MzYd5uB9jGT5g4crA
+        PLg3P0NDpplSNVmjWSGBluS2VEspTZBk8K8hs5ue6yPgvuJJBehN6DpNUPg0MMq1ZDZRd9
+        WWWPyYawUhyJQ5vKR5Ep41hOxAMG+X0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3DA79AF4F;
+        Wed, 14 Apr 2021 10:15:42 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 12:15:40 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
+Subject: Re: [External] Re: [PATCH 2/7] mm: memcontrol: bail out early when
+ !mm in get_mem_cgroup_from_mm
+Message-ID: <YHbAzL9ls6EBsB3L@dhcp22.suse.cz>
+References: <20210413065153.63431-1-songmuchun@bytedance.com>
+ <20210413065153.63431-3-songmuchun@bytedance.com>
+ <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
+ <CAMZfGtVpUW1=Zvys7J=gW1xqkuUVLuPYcQbwJoe=TEkBa6qqQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DB68C825-25F9-48F9-AFAD-4F6C7DCA11F8@intel.com>
+In-Reply-To: <CAMZfGtVpUW1=Zvys7J=gW1xqkuUVLuPYcQbwJoe=TEkBa6qqQw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:30:23PM +0000, Bae, Chang Seok wrote:
-> On Mar 26, 2021, at 03:30, Borislav Petkov <bp@alien8.de> wrote:
-> > On Thu, Mar 25, 2021 at 09:56:53PM -0700, Andy Lutomirski wrote:
-> >> We really ought to have a SIGSIGFAIL signal that's sent, double-fault
-> >> style, when we fail to send a signal.
-> > 
-> > Yeap, we should be able to tell userspace that we couldn't send a
-> > signal, hohumm.
+On Wed 14-04-21 18:04:35, Muchun Song wrote:
+> On Wed, Apr 14, 2021 at 5:24 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 13-04-21 14:51:48, Muchun Song wrote:
+> > > When mm is NULL, we do not need to hold rcu lock and call css_tryget for
+> > > the root memcg. And we also do not need to check !mm in every loop of
+> > > while. So bail out early when !mm.
+> >
+> > mem_cgroup_charge and other callers unconditionally drop the reference
+> > so how come this does not underflow reference count?
 > 
-> Hi Boris,
-> 
-> Let me clarify some details as preparing to include this in a revision.
-> 
-> So, IIUC, a number needs to be assigned for this new SIGFAIL. At a glance, not
-> sure which one to pick there in signal.h -- 1-31 fully occupied and the rest
-> for 33 different real-time signals.
-> 
-> Also, perhaps, force_sig(SIGFAIL) here, instead of return -1 -- to die with
-> SIGSEGV.
+> For the root memcg, the CSS_NO_REF flag is set, so css_get
+> and css_put do not get or put reference.
 
-I think this needs to be decided together with userspace people so that
-they can act accordingly and whether it even makes sense to them.
+Ohh, right you are. I must have forgot about that special case. I am
+pretty sure I (and likely few more) will stumble over that in the future
+again. A small comment explaining that the reference can be safely
+ignore would be helpful.
 
-Florian, any suggestions?
+Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Subthread starts here:
-
-https://lkml.kernel.org/r/CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com
-
-Thx.
+Thanks!
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
