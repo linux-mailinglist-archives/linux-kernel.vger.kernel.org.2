@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FC735FA23
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF3035FA2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351391AbhDNR54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbhDNR5z (ORCPT
+        id S1351533AbhDNSAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:00:21 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:37687 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234303AbhDNSAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:57:55 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79198C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:57:33 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id i190so14253471pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bAj/sTVeT3EOEooCD0PWAEK0DFdv0I+bmfSZB33mtXg=;
-        b=YKlFCQU3jURALAoms83ymQ5gvp6uDIeOmXii2ecYlnaY3CnAEQDKyFe11bMpij/ofF
-         bvcE6c0NQt8C52+fZhUpCcVnJ56ADwd3GERCw21jztW8ge7H6iLIBzEFVgznlUdxw7pO
-         GnB2RNc+cUijVVBbHPc7yLqNlFJ0AMoPT8e7fYGjW9FbSCPVJ1tcmkf670aGeGhzLbfn
-         G7uKAmN10uawEXHZM3WXgk4wuHT9TNL3FcnnsWId9Lb1R0zD2t6EvnECYZh87Y/ILFFp
-         hF4BFmzeV/oh2/ylAWDVPXzudMJtVFR4Jeu2zXoaWZZYomQ6zGjEFAKEctcmfEEhgTAR
-         Li3Q==
+        Wed, 14 Apr 2021 14:00:18 -0400
+Received: by mail-vs1-f53.google.com with SMTP id 2so10774755vsh.4;
+        Wed, 14 Apr 2021 10:59:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bAj/sTVeT3EOEooCD0PWAEK0DFdv0I+bmfSZB33mtXg=;
-        b=Y+d5Jg9K/z4py7zDKsb8LJJ+sn013gIKQBuYWhDtBpr4qSuEIFmGgWgSUagRZtwWiO
-         i8hjoZefsrLDcuriR9ypnTSu7wwWyYNqjC23m0LAXhjA9ynVIJxl0QXQOYs/Wv255J3a
-         r4+QTSSRlCZ4sveBL9pW7OGa7uEDqiR0GEmx+HjXMtpJxbUh1FB8MD8V1fjYMT/XnpFJ
-         N1BLwSSrt8UgOfyoN5IroUS7R9fEmhODcygcv5W6oRWcFhDymo4Q/MfP9xIclrQjt5lW
-         3nq2ZMIv4RBdKA0o9KAqamQOFOUCUT6kODPg4PcZam7/4/Ns5Bz/h/Wikk3hH9Qsza6f
-         1nBA==
-X-Gm-Message-State: AOAM533e7CA24Xyk5sZCVkHLj4zpRcYpMGC4vR5fjXZCUQzXfO6bmFoA
-        7GuNiURGE202t2hkM0M2WKf/QQ==
-X-Google-Smtp-Source: ABdhPJw2RarwNWS5+8HnwKiSHGAsEixnrKltiKCAYoveloZrH9siPOcI5DSj1R2t10EAC+2caMUGjQ==
-X-Received: by 2002:a63:c60a:: with SMTP id w10mr37908204pgg.421.1618423052870;
-        Wed, 14 Apr 2021 10:57:32 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id r26sm110056pfq.17.2021.04.14.10.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 10:57:32 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 17:57:28 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Tokarev <mjt@tls.msk.ru>
-Subject: Re: [RFC PATCH 0/7] KVM: Fix tick-based vtime accounting on x86
-Message-ID: <YHctCJDfeTq4zCVn@google.com>
-References: <20210413182933.1046389-1-seanjc@google.com>
- <87wnt4vkij.ffs@nanos.tec.linutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrQhYoofWK1qIE+Puebb8490xY7FtwOJErFPSvGIMtY=;
+        b=shBio9KXJcxBAmzKpdwcUWISMSsYL8M3tQO4z507KY7PgFMkaEswmzkin+rxfTFEUw
+         gE4FBQTec8Moz+tuk7xwCZCQ694Dh34mYn1t3vrNYsTp6XtEo/yIyTOEObyybO6aZjIV
+         +skifyO2nWsM3Z3ijX7gtDpYLtrtzg1JcaveBJzpODOGN1jTKKSRu1aEEGN4IlnfJbct
+         HDplDg8Oc8YQmB06F4JvM8/oyHSW8KbX3UCwkBx7/t2JOamu5s6mlW8VE7omAkYl9bCY
+         w1K2Og6Ug5L+vhdghyXYyoYkr0GknFN1TD18kRjMYxcz+FPdZERqV7nRsbZQvmly1iK3
+         7FQg==
+X-Gm-Message-State: AOAM531LqaKLI8iIRXD0m1UWr3iM/H2WaoPWUOy+C92HVyEXlTNx93N6
+        YjP0GApOe3SOjqCOX6O3o7/nOGUzO3Vp2eRPr8yBXqhjj/o=
+X-Google-Smtp-Source: ABdhPJyeOsV8TPzm4qfYRpIEOQxrAj6kXLid0sqN/BtkYP2cUAkLDMXrOtYnopbrTca5CncxrQqmj9wtMiDHf/+FZD8=
+X-Received: by 2002:a67:80c4:: with SMTP id b187mr29655934vsd.42.1618423195054;
+ Wed, 14 Apr 2021 10:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnt4vkij.ffs@nanos.tec.linutronix.de>
+References: <20210412132619.7896-1-aford173@gmail.com> <20210412132619.7896-2-aford173@gmail.com>
+ <CAMuHMdU5RfTGs3SCvJX9epKBLOo6o1BQMng49RjrBn+P7QOSeg@mail.gmail.com> <CAHCN7xKp1Lp+KAHwo_GobZoDKQCV9_7Yx2ZNKmTzkkShRBzm_Q@mail.gmail.com>
+In-Reply-To: <CAHCN7xKp1Lp+KAHwo_GobZoDKQCV9_7Yx2ZNKmTzkkShRBzm_Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Apr 2021 19:59:43 +0200
+Message-ID: <CAMuHMdUhwyR8F6PeE1WEtaEtEPrnm0qFtGJ1rGqTJDYSotK8PA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] net: ethernet: ravb: Enable optional refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021, Thomas Gleixner wrote:
-> On Tue, Apr 13 2021 at 11:29, Sean Christopherson wrote:
-> > This is an alternative to Wanpeng's series[*] to fix tick-based accounting
-> > on x86.  The approach for fixing the bug is identical: defer accounting
-> > until after tick IRQs are handled.  The difference is purely in how the
-> > context tracking and vtime code is refactored in order to give KVM the
-> > hooks it needs to fix the x86 bug.
-> >
-> > x86 compile tested only, hence the RFC.  If folks like the direction and
-> > there are no unsolvable issues, I'll cross-compile, properly test on x86,
-> > and post an "official" series.
-> 
-> I like the final outcome of this, but we really want a small set of
-> patches first which actually fix the bug and is easy to backport and
-> then the larger consolidation on top.
-> 
-> Can you sort that out with Wanpeng please?
+Hi Adam,
 
-Will do.
+On Wed, Apr 14, 2021 at 3:08 PM Adam Ford <aford173@gmail.com> wrote:
+> On Tue, Apr 13, 2021 at 2:33 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Mon, Apr 12, 2021 at 3:27 PM Adam Ford <aford173@gmail.com> wrote:
+> > > For devices that use a programmable clock for the AVB reference clock,
+> > > the driver may need to enable them.  Add code to find the optional clock
+> > > and enable it when available.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > >
+> > > ---
+> > > V4:  Eliminate the NULL check when disabling refclk, and add a line
+> > >      to disable the refclk if there is a failure after it's been
+> > >      initialized.
+> >
+> > Thanks for the update!
+> >
+> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > > @@ -2148,6 +2148,13 @@ static int ravb_probe(struct platform_device *pdev)
+> > >                 goto out_release;
+> > >         }
+> > >
+> > > +       priv->refclk = devm_clk_get_optional(&pdev->dev, "refclk");
+> > > +       if (IS_ERR(priv->refclk)) {
+> > > +               error = PTR_ERR(priv->refclk);
+> > > +               goto out_release;
+> >
+> > Note that this will call clk_disable_unprepare() in case of failure, which is
+> > fine, as that function is a no-op in case of a failed clock.
+>
+> Geert,
+>
+> A bot reported that if I jump to out_release may try to free a clock
+> if some instances where priv isn't defined.
+
+As priv is allocated using alloc_etherdev_mqs(), priv->refclk is
+NULL initially, but priv itself may indeed not be initialized when the first
+"goto out_release" is taken.  Sorry for missing that.
+
+> Currently, the priv->clk isn't freed either.  I have heard some
+> back-and-forth discussions in other threads on whether or not devm
+> functions auto free or not.
+
+The devm_clk_get_optional() will be undone automatically, so there
+is no need to handle that explicitly.
+
+> I'm fine with sending a V5 to make the free for the refclock happen
+> only when the priv has successfully initialized.  Should I also add
+
+As this patch has been applied to net-next, you''ll have to send
+a follow-up fix patch, not a v5.
+
+> one for freeing priv->clk and change all the other goto out_release
+> commands to point to this new section?
+
+No, not for priv->clk, due to devm_*().
+
+> I am thinking it would like something like:
+>
+> free_refclk:
+>     clk_disable_unprepare(priv->refclk);
+
+OK.
+
+> free_clk;
+>     clk_disable_unprepare(priv->clk);
+
+NAK, as priv->clk is not enabled in ravb_probe().
+
+> out_release:
+>     free_netdev(ndev);
+>     ....
+
+OK.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
