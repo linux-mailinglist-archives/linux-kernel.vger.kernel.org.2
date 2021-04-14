@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B142335EE2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EA535EE30
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348600AbhDNHMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        id S1349376AbhDNHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbhDNHMO (ORCPT
+        with ESMTP id S232540AbhDNHNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:12:14 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1229CC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:11:53 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id x19so1039540lfa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/CFTfILqfJh5uZk6ReeOGhwZDRZhRj/gI7BOPGIeuu4=;
-        b=Ih3QkoGW6dkE+rXyOwP4ao/9lIPJbwBxfFDiITcYDglNyNW4ozmCUE6sM+j4hXhtmt
-         1mTyXcRZftRi3EipiP5sIRj+x/JukCRPAQiB7sZpnFsigQ2DxAa1NokHVweKb2MLi2r1
-         91+5Rmj2tlfk9wQJRusvqaa0+d63OxThayYY+9cCHLhehRTPbEaxKLnfM8R5gG1tlqor
-         ACqJs5StaiB+ULWhBnL0if0KoglJmF9iN2VltskeaMx5X0cP0Aali/ptqcQ6ZwdP3rkb
-         YafI1n/DOffqqkgIMd7WuVyzmWZpxmrmHgAvgBjwEWQOdlpY5m1os6yxIwiWOUe3mRzX
-         yb3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/CFTfILqfJh5uZk6ReeOGhwZDRZhRj/gI7BOPGIeuu4=;
-        b=R1Tc66frXLumiyHZY+f5H66ACM9hoXl6hG/p8LRlgBndGVa0tR6dQGZGNhGnA82JEf
-         QDzk8sVspDq4PjiQgo3VifcvNiy8swIMhVoEm4PKNuvSyOzhUAggtEU8YrMItlCsn3me
-         gUfuCawLqbaA1mGwUGMVgAPqa8CHvp6yYEVgSFpxQ/VdcK2YuZoD0p/fVY5AV2UFLXRB
-         H6wQ3PxB0vZ3Se+IXbQJuH4Y9g8vJg2KZS140u1D0Qv/wS9HnlfGsWwCdj5pPLstmGup
-         lD5aC1or3Zynl/BJUpyGM0tJfbjTunaO6v9PC8vwOsLXPuRGSY1IBIocLE5m78/gvtPV
-         yg9Q==
-X-Gm-Message-State: AOAM530NAVHxSiUEyQpsJaUz1GIYtMva6r3dnxyCcC0j2BmRmI7QYhc+
-        F7r5E1RocysDi1DahzQE4bt8LJCOshXRjCx4PEPlZw==
-X-Google-Smtp-Source: ABdhPJyRD6M9c5CzR26D4lnJ+lAfjNKiSfM3cwZUqVk5EHpM9X2TvdMGJJFd5lSQ8gWC+dHxSnOziysRgZ17wmp1mAk=
-X-Received: by 2002:ac2:529c:: with SMTP id q28mr13761428lfm.586.1618384311564;
- Wed, 14 Apr 2021 00:11:51 -0700 (PDT)
+        Wed, 14 Apr 2021 03:13:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1953C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=An14/uOqbqNoXgdc/38xhaX2pUyQaWxdG5rXPJLeQks=; b=TV5R9U9xdDbt7CRwEoSCyZYiOR
+        Y+6nfwVug7s0CbXABCNGsc2/AA8WmS4YI+kgjzL1a90a+GI+CVMYQHfaErbZ/MQyZ+WkaHEQdEnGM
+        LZNisTazY0LKtQknZbiC+7esPdaHta40rRZo8xWHCl9MVDjnY/HukwjHtK5Kp0oNNFRYO2OijElgI
+        nrU09Wcdk8ZHhO91XMd3JEUN1Hq9uoCABhF4+M7dOSp0HfJSaiO/MYAKl6lDqJR1o3AMXk+zCr4IX
+        keJEusjdBCJALm29e3UX/3vsNc6iXEmDYsase2JabqIghSUJliEoqF7tUYtlFVk3YvZ8aU22FPP/U
+        6epD1hxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWZhF-006mws-Az; Wed, 14 Apr 2021 07:12:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94431300033;
+        Wed, 14 Apr 2021 09:12:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7EED4203D395C; Wed, 14 Apr 2021 09:12:20 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 09:12:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     qianjun.kernel@gmail.com
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/1] sched/fair:Reduce unnecessary check preempt in
+ the sched tick
+Message-ID: <YHaV1CGkbUgbp2ek@hirez.programming.kicks-ass.net>
+References: <20210414022229.5469-1-qianjun.kernel@gmail.com>
 MIME-Version: 1.0
-References: <20210414025138.480085-1-julianbraha@gmail.com>
-In-Reply-To: <20210414025138.480085-1-julianbraha@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 14 Apr 2021 09:11:40 +0200
-Message-ID: <CACRpkdb3o+jA0EfRzz82zG-QdvU4=xZMVFRnJfs==LCtE93vOQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers: pinctrl: qcom: fix Kconfig dependency on GPIOLIB
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414022229.5469-1-qianjun.kernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 4:51 AM Julian Braha <julianbraha@gmail.com> wrote:
+On Wed, Apr 14, 2021 at 10:22:29AM +0800, qianjun.kernel@gmail.com wrote:
+> From: jun qian <qianjun.kernel@gmail.com>
+> 
+> As you are already set the TIF_NEED_RESCHED, there is no need
+> to check resched again.
 
-> When PINCTRL_MSM is enabled, and GPIOLIB is disabled,
-> Kbuild gives the following warning:
->
-> WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
->   Depends on [n]: GPIOLIB [=n]
->   Selected by [y]:
->   - PINCTRL_MSM [=y] && PINCTRL [=y] && (ARCH_QCOM || COMPILE_TEST [=y])
->
-> This is because PINCTRL_MSM selects GPIOLIB_IRQCHIP,
-> without selecting or depending on GPIOLIB, despite
-> GPIOLIB_IRQCHIP depending on GPIOLIB. Having PINCTRL_MSM
-> select GPIOLIB will cause a recursive dependency error.
->
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Still no justification; does this actually help anything?
 
-Patch applied.
+> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> ---
+>  kernel/sched/fair.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 794c2cb945f8..1a69b5fffe4a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4360,19 +4360,26 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>  {
+>  	unsigned long ideal_runtime, delta_exec;
+>  	struct sched_entity *se;
+> +	struct rq *rq = rq_of(cfs_rq);
+>  	s64 delta;
+>  
+>  	ideal_runtime = sched_slice(cfs_rq, curr);
+>  	delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
+>  	if (delta_exec > ideal_runtime) {
+> -		resched_curr(rq_of(cfs_rq));
+> +		if (!test_tsk_need_resched(rq->curr))
+> +			resched_curr(rq_of(cfs_rq));
+>  		/*
+>  		 * The current task ran long enough, ensure it doesn't get
+>  		 * re-elected due to buddy favours.
+>  		 */
+>  		clear_buddies(cfs_rq, curr);
+>  		return;
+> -	}
+> +	/*
+> +	 * If here with TIF_NEED_RESCHED already set from the early entity_tick,
+> +	 * there is no need to check again.
+> +	 */
+> +	} else if (test_tsk_need_resched(rq->curr))
+> +		return;
 
-Yours,
-Linus Walleij
+This is horrific style. And, afaict, completely unnecessary.
