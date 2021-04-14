@@ -2,155 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9DE35FC58
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A9935FC5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhDNUKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
+        id S234413AbhDNUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhDNUKW (ORCPT
+        with ESMTP id S234185AbhDNUKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:10:22 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA56C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:10:00 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id u20so24586834lja.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MwY/uAWZw4+Qy6L6BtNeYzKjt04mgG0Fmf5rVKjnxzQ=;
-        b=ap3ig7KYnUhag1Gtyu8ju+wZN22X7hJAeGqlif08J6E2FDFZMStFf0J+i5MbXtUumS
-         IzvuAZFclh341ng8JxtdEr2qW9XrlIZXWpjDZb+qgeWbwxE6vWjjGEB/geNPjXxIQclW
-         dFI4IOTCs3fPKR1aHOm/iysJwoR+8kqUtA8mHyxoGySRQcfS+VCb+rZZM7/xiyt/HPID
-         YrSMrjX8rYbjzs5DbiCl29ZXCTZgvVac75YJkITMzGqfEU5saeopAsgC9TvzTPv5274g
-         cWQSom8PzYIEavCa1VDFHlyvioElMYcPnc9kDFdKK4GiYGWLDyOfnxPxwWSmPE8IQGU+
-         dUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MwY/uAWZw4+Qy6L6BtNeYzKjt04mgG0Fmf5rVKjnxzQ=;
-        b=uKeC/Vlnkx++qnycUKs/IAHSnzywh7zcSeukllFcXpjjyaOu07ftAMIsMbfXo6L7OC
-         P6cUuKPsrlyXdz91p/ppyX8u7WYQBq4J50HsjAggh4xfRbtmSwV3hcV+D2pouYpRQWxU
-         4gLM9/bo0i+iyArTriqTe0nzGZWokNdUbMaGtpX2S+sIVV4x8xBod0jQ27r044hywzvk
-         pjJibJFib7hkieATh3xrc0QobcnAFnwQcHeMRqxBz4vNmwED2WQhNgAImytv6uWh/WHq
-         QJ/2tjjIr/p/OyKQLg11EZ4vbxOjHazuyJL1JzGSmGSYbxUMY9MaSoPi+dTUfM317jMT
-         0nUA==
-X-Gm-Message-State: AOAM530xvW744ovMhbsDHj8WdKTEHOaLaspju90mMFF5YrSncwphJBXW
-        a2vwZOVDu0k/6QKS8z/VbEPVVlji6oSd3m/WFKwfKQ==
-X-Google-Smtp-Source: ABdhPJyGzh1aNLsj+H9I9o7DUJdlV5HTtBeAeDM8vjbeZYpt4QAwg2dIXYbLUIkqdF+ZPGeN9DUBYbygk+wOkt8Am2g=
-X-Received: by 2002:a2e:8084:: with SMTP id i4mr25644098ljg.122.1618430998695;
- Wed, 14 Apr 2021 13:09:58 -0700 (PDT)
+        Wed, 14 Apr 2021 16:10:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B217C061574;
+        Wed, 14 Apr 2021 13:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RdrSYmxrLKuHAzw6nooCGrkMrEjM1wycFBXE5loudB8=; b=fKsblUD9gH4QeoNAtZQYxJk9jp
+        7PoepJNhCBYWifx72f41Epnl6UIylf9hBL4NQmAiZD+Ww/w0pSJpWoKIMBiAHCeO96oUCgTTGoSqf
+        NWq1lzxLTDQVJnowksqRP3yxFWIFq3QNV6E8aD1ROaEp6xUdV/qr+04V90Rkg1oW2m0JO+13qZOwW
+        hOw7oHI4U6JocyO8vtUXgSfdsCgTGNqhkCBipfqXcdChvkTQzgOhHAe7PPpINnTpWkud0gThW7WUF
+        pwBjg02AuEjISX+WmicO8ofOsu4xhc50rN3ik7ELaU3kV9PO7MS6JD9YhFYe1hOix6suu18z2J1QF
+        8N5vi6bg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWlph-007a31-Jo; Wed, 14 Apr 2021 20:09:57 +0000
+Date:   Wed, 14 Apr 2021 21:09:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <20210414200953.GX2531743@casper.infradead.org>
+References: <20210414184604.23473-1-ojeda@kernel.org>
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
-In-Reply-To: <20210414214132.74f721dd@carbon>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 14 Apr 2021 13:09:47 -0700
-Message-ID: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414184604.23473-1-ojeda@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-[...]
-> > >
-> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > can not be used.
-> >
-> > Yes it can, since it's going to be used as your default allocator for
-> > payloads, which might end up on an SKB.
->
-> I'm not sure we want or should "allow" page_pool be used for TCP RX
-> zerocopy.
-> For several reasons.
->
-> (1) This implies mapping these pages page to userspace, which AFAIK
-> means using page->mapping and page->index members (right?).
->
+On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+>   - Manish Goregaokar implemented the fallible `Box`, `Arc`, and `Rc`
+>     allocator APIs in Rust's `alloc` standard library for us.
 
-No, only page->_mapcount is used.
+There's a philosophical point to be discussed here which you're skating
+right over!  Should rust-in-the-linux-kernel provide the same memory
+allocation APIs as the rust-standard-library, or should it provide a Rusty
+API to the standard-linux-memory-allocation APIs?  You seem to be doing
+both ... there was a wrapper around alloc_pages() in the Binder patches,
+and then you talk about Box, Arc and Rc here.
 
-> (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> device) and also map this page into userspace.
->
+Maybe there's some details about when one can use one kind of API and
+when to use another.  But I fear that we'll have Rust code at interrupt
+level trying to use allocators which assume that they can sleep, and
+things will go badly wrong.
 
-I think this is already the case i.e pages still DMA-mapped and also
-mapped into userspace.
-
-> (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> zerocopy will bump the refcnt, which means the page_pool will not
-> recycle the page when it see the elevated refcnt (it will instead
-> release its DMA-mapping).
-
-Yes this is right but the userspace might have already consumed and
-unmapped the page before the driver considers to recycle the page.
-
->
-> (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-> page->private for tricks.  And our patch [3/5] use page->private for
-> storing xdp_mem_info.
->
-> IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-> call page_pool_release_page() to release its DMA-mapping.
->
-
-I will let TCP RX zerocopy experts respond to this but from my high
-level code inspection, I didn't see page->private usage.
+By the way, I don't think that Rust necessarily has to conform to the
+current way that Linux works.  If this prompted us to track the current
+context (inside spinlock, handling interrupt, performing writeback, etc)
+and do away with (some) GFP flags, that's not the end of the world.
+We're already moving in that direction to a certain extent with the
+scoped memory allocation APIs to replace GFP_NOFS / GFP_NOIO.
