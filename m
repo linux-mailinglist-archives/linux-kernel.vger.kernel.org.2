@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1832035FEB6
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF4735FEB7
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhDOACf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:02:35 -0400
+        id S230300AbhDOACk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:02:40 -0400
 Received: from mga01.intel.com ([192.55.52.88]:63049 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhDOACc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:02:32 -0400
-IronPort-SDR: z5iD4hHyv+EKjuHMz6bZQmV1QnM00JKbDDHpCzKz7zX7wq+nVqR4JdiCwvv/a3APrGRaqMVRnW
- 8AWEOoqNT/TQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215260302"
+        id S230429AbhDOACd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 20:02:33 -0400
+IronPort-SDR: /d+sh4qb7bdWu4iye/hGRXFYw2GUQBnlV1UxDfbdoR4u58ej8rY8JFMNtLD6QVaIcRkHN8qXH0
+ 6i+t6cCHkZ/A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215260305"
 X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="215260302"
+   d="scan'208";a="215260305"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:02:10 -0700
-IronPort-SDR: 0W/ObdFvMxgnO0vIC43wsSQj2EoLW1Qz24fPIK4Q4nOBjcwdW5waaSjwcOIQengnl6CNuFKkRI
- /RI1aL1Eqf/w==
+IronPort-SDR: f7FiFk0yD5IXI0t0iOY3dxvX7bZN5VVh0ueuQI8FqA/xdwRryRkB+B113TojbZSSUhDK+UIPn/
+ gSBXp1mRvX2g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="461415812"
+   d="scan'208";a="461415814"
 Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
   by orsmga001.jf.intel.com with ESMTP; 14 Apr 2021 17:02:10 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -36,324 +36,191 @@ Cc:     Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
         Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
         zhangfei.gao@linaro.org, vkoul@kernel.org,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v2 1/2] iommu/sva: Tighten SVA bind API with explicit flags
-Date:   Wed, 14 Apr 2021 08:27:56 -0700
-Message-Id: <1618414077-28808-2-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v2 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Date:   Wed, 14 Apr 2021 08:27:57 -0700
+Message-Id: <1618414077-28808-3-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The void* drvdata parameter isn't really used in iommu_sva_bind_device()
-API, the current IDXD code "borrows" the drvdata for a VT-d private flag
-for supervisor SVA usage.
+The mm parameter in iommu_sva_bind_device() is intended for privileged
+process perform bind() on behalf of other processes. This use case has
+yet to be materialized, let alone potential security implications of
+adding kernel hooks without explicit user consent.
+In addition, with the agreement that IOASID allocation shall be subject
+cgroup limit. It will be inline with misc cgroup proposal if IOASID
+allocation as part of the SVA bind is limited to the current task.
 
-Supervisor/Privileged mode request is a generic feature. It should be
-promoted from the VT-d vendor driver to the generic code.
-
-This patch replaces void* drvdata with a unsigned int flags parameter
-and adjusts callers accordingly.
-
+Link: https://lore.kernel.org/linux-iommu/20210303160205.151d114e@jacob-builder/
 Link: https://lore.kernel.org/linux-iommu/YFhiMLR35WWMW%2FHu@myrica/
-Suggested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/dma/idxd/cdev.c                       |  2 +-
- drivers/dma/idxd/init.c                       |  7 +++----
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  5 ++++-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  4 ++--
- drivers/iommu/intel/svm.c                     | 14 ++++----------
- drivers/iommu/iommu.c                         |  9 ++++++---
- drivers/misc/uacce/uacce.c                    |  2 +-
- include/linux/intel-iommu.h                   |  2 +-
- include/linux/intel-svm.h                     | 17 ++---------------
- include/linux/iommu.h                         | 19 ++++++++++++++++---
- 10 files changed, 40 insertions(+), 41 deletions(-)
+ drivers/dma/idxd/cdev.c       |  2 +-
+ drivers/dma/idxd/init.c       |  2 +-
+ drivers/iommu/iommu-sva-lib.c | 11 +++++++----
+ drivers/iommu/iommu.c         | 20 +++++++++++++-------
+ drivers/misc/uacce/uacce.c    |  2 +-
+ include/linux/iommu.h         |  3 +--
+ 6 files changed, 24 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 0db9b82ed8cf..21ec82bc47b6 100644
+index 21ec82bc47b6..8c3347c8930c 100644
 --- a/drivers/dma/idxd/cdev.c
 +++ b/drivers/dma/idxd/cdev.c
 @@ -103,7 +103,7 @@ static int idxd_cdev_open(struct inode *inode, struct file *filp)
  	filp->private_data = ctx;
  
  	if (device_pasid_enabled(idxd)) {
--		sva = iommu_sva_bind_device(dev, current->mm, NULL);
-+		sva = iommu_sva_bind_device(dev, current->mm, 0);
+-		sva = iommu_sva_bind_device(dev, current->mm, 0);
++		sva = iommu_sva_bind_device(dev, 0);
  		if (IS_ERR(sva)) {
  			rc = PTR_ERR(sva);
  			dev_err(dev, "pasid allocation failed: %d\n", rc);
 diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 085a0c3b62c6..82a0985ad6dc 100644
+index 82a0985ad6dc..a92fa625f3b5 100644
 --- a/drivers/dma/idxd/init.c
 +++ b/drivers/dma/idxd/init.c
-@@ -14,7 +14,6 @@
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/device.h>
- #include <linux/idr.h>
--#include <linux/intel-svm.h>
- #include <linux/iommu.h>
- #include <uapi/linux/idxd.h>
- #include <linux/dmaengine.h>
-@@ -300,13 +299,13 @@ static struct idxd_device *idxd_alloc(struct pci_dev *pdev)
+@@ -305,7 +305,7 @@ static int idxd_enable_system_pasid(struct idxd_device *idxd)
  
- static int idxd_enable_system_pasid(struct idxd_device *idxd)
- {
--	int flags;
-+	unsigned int flags;
- 	unsigned int pasid;
- 	struct iommu_sva *sva;
+ 	flags = IOMMU_SVA_BIND_SUPERVISOR;
  
--	flags = SVM_FLAG_SUPERVISOR_MODE;
-+	flags = IOMMU_SVA_BIND_SUPERVISOR;
- 
--	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, &flags);
-+	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
+-	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
++	sva = iommu_sva_bind_device(&idxd->pdev->dev, flags);
  	if (IS_ERR(sva)) {
  		dev_warn(&idxd->pdev->dev,
  			 "iommu sva bind failed: %ld\n", PTR_ERR(sva));
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-index bb251cab61f3..145ceb2fc5da 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-@@ -354,12 +354,15 @@ __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm)
- }
+diff --git a/drivers/iommu/iommu-sva-lib.c b/drivers/iommu/iommu-sva-lib.c
+index bd41405d34e9..6e3d1a010d47 100644
+--- a/drivers/iommu/iommu-sva-lib.c
++++ b/drivers/iommu/iommu-sva-lib.c
+@@ -12,13 +12,13 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
  
- struct iommu_sva *
--arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
-+arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, unsigned int flags)
- {
- 	struct iommu_sva *handle;
- 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
- 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+ /**
+  * iommu_sva_alloc_pasid - Allocate a PASID for the mm
+- * @mm: the mm
+  * @min: minimum PASID value (inclusive)
+  * @max: maximum PASID value (inclusive)
+  *
+- * Try to allocate a PASID for this mm, or take a reference to the existing one
+- * provided it fits within the [@min, @max] range. On success the PASID is
+- * available in mm->pasid, and must be released with iommu_sva_free_pasid().
++ * Try to allocate a PASID for the current mm, or take a reference to the
++ * existing one provided it fits within the [@min, @max] range. On success
++ * the PASID is available in the current mm->pasid, and must be released with
++ * iommu_sva_free_pasid().
+  * @min must be greater than 0, because 0 indicates an unused mm->pasid.
+  *
+  * Returns 0 on success and < 0 on error.
+@@ -28,6 +28,9 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
+ 	int ret = 0;
+ 	ioasid_t pasid;
  
-+	if (flags)
-+		return ERR_PTR(-EINVAL);
-+
- 	if (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
- 		return ERR_PTR(-EINVAL);
- 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index f985817c967a..b971d4dcf090 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -711,7 +711,7 @@ bool arm_smmu_master_sva_enabled(struct arm_smmu_master *master);
- int arm_smmu_master_enable_sva(struct arm_smmu_master *master);
- int arm_smmu_master_disable_sva(struct arm_smmu_master *master);
- struct iommu_sva *arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm,
--				    void *drvdata);
-+				    unsigned int flags);
- void arm_smmu_sva_unbind(struct iommu_sva *handle);
- u32 arm_smmu_sva_get_pasid(struct iommu_sva *handle);
- void arm_smmu_sva_notifier_synchronize(void);
-@@ -742,7 +742,7 @@ static inline int arm_smmu_master_disable_sva(struct arm_smmu_master *master)
- }
- 
- static inline struct iommu_sva *
--arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
-+arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, unsigned int flags)
- {
- 	return ERR_PTR(-ENODEV);
- }
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 574a7e657a9a..d4840821f7b5 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -486,12 +486,9 @@ intel_svm_bind_mm(struct device *dev, unsigned int flags,
- 	} else
- 		pasid_max = 1 << 20;
- 
--	/* Bind supervisor PASID shuld have mm = NULL */
--	if (flags & SVM_FLAG_SUPERVISOR_MODE) {
--		if (!ecap_srs(iommu->ecap) || mm) {
--			pr_err("Supervisor PASID with user provided mm.\n");
--			return -EINVAL;
--		}
-+	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && !ecap_srs(iommu->ecap)) {
-+		pr_err("Supervisor PASID not supported.\n");
++	if (mm != current->mm)
 +		return -EINVAL;
- 	}
- 
- 	if (!(flags & SVM_FLAG_PRIVATE_PASID)) {
-@@ -1059,11 +1056,10 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 
- #define to_intel_svm_dev(handle) container_of(handle, struct intel_svm_dev, sva)
- struct iommu_sva *
--intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
-+intel_svm_bind(struct device *dev, struct mm_struct *mm, unsigned int flags)
- {
- 	struct iommu_sva *sva = ERR_PTR(-EINVAL);
- 	struct intel_svm_dev *sdev = NULL;
--	unsigned int flags = 0;
- 	int ret;
- 
- 	/*
-@@ -1071,8 +1067,6 @@ intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
- 	 * It will require shared SVM data structures, i.e. combine io_mm
- 	 * and intel_svm etc.
- 	 */
--	if (drvdata)
--		flags = *(unsigned int *)drvdata;
- 	mutex_lock(&pasid_mutex);
- 	ret = intel_svm_bind_mm(dev, flags, NULL, mm, &sdev);
- 	if (ret)
++
+ 	if (min == INVALID_IOASID || max == INVALID_IOASID ||
+ 	    min == 0 || max < min)
+ 		return -EINVAL;
 diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d0b0a15dba84..eefa541d8674 100644
+index eefa541d8674..5bbc35c395a6 100644
 --- a/drivers/iommu/iommu.c
 +++ b/drivers/iommu/iommu.c
-@@ -2962,6 +2962,7 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-  * iommu_sva_bind_device() - Bind a process address space to a device
+@@ -23,6 +23,7 @@
+ #include <linux/property.h>
+ #include <linux/fsl/mc.h>
+ #include <linux/module.h>
++#include <linux/sched/mm.h>
+ #include <trace/events/iommu.h>
+ 
+ static struct kset *iommu_group_kset;
+@@ -2959,15 +2960,14 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+ 
+ /**
+- * iommu_sva_bind_device() - Bind a process address space to a device
++ * iommu_sva_bind_device() - Bind the current process address space to a device
   * @dev: the device
-  * @mm: the mm to bind, caller must hold a reference to it
-+ * @flags: options for the bind operation defined as IOMMU_SVA_BIND_*
+- * @mm: the mm to bind, caller must hold a reference to it
+  * @flags: options for the bind operation defined as IOMMU_SVA_BIND_*
   *
   * Create a bond between device and address space, allowing the device to access
   * the mm using the returned PASID. If a bond already exists between @device and
-@@ -2974,7 +2975,7 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+- * @mm, it is returned and an additional reference is taken. Caller must call
+- * iommu_sva_unbind_device() to release each reference.
++ * the current mm, it is returned and an additional reference is taken. Caller
++ * must call iommu_sva_unbind_device() to release each reference.
+  *
+  * iommu_dev_enable_feature(dev, IOMMU_DEV_FEAT_SVA) must be called first, to
+  * initialize the required SVA features.
+@@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
   * On error, returns an ERR_PTR value.
   */
  struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
-+iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
+-iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
++iommu_sva_bind_device(struct device *dev, unsigned int flags)
  {
  	struct iommu_group *group;
++	struct mm_struct *mm = NULL;
  	struct iommu_sva *handle = ERR_PTR(-EINVAL);
-@@ -2987,6 +2988,9 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
- 	if (!group)
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 
+@@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
  		return ERR_PTR(-ENODEV);
  
-+	/* Supervisor SVA does not need the current mm */
-+	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
-+		return ERR_PTR(-EINVAL);
+ 	/* Supervisor SVA does not need the current mm */
+-	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
+-		return ERR_PTR(-EINVAL);
++	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
++		mm = get_task_mm(current);
++		if (!mm)
++			return ERR_PTR(-EINVAL);
++	}
  	/* Ensure device count and domain don't change while we're binding */
  	mutex_lock(&group->mutex);
  
-@@ -2999,8 +3003,7 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
- 	if (iommu_group_device_count(group) != 1)
+@@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
  		goto out_unlock;
  
--	handle = ops->sva_bind(dev, mm, drvdata);
--
-+	handle = ops->sva_bind(dev, mm, flags);
+ 	handle = ops->sva_bind(dev, mm, flags);
++	if (mm)
++		mmput(mm);
  out_unlock:
  	mutex_unlock(&group->mutex);
  	iommu_group_put(group);
 diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index d07af4edfcac..27e0e04dfcab 100644
+index 27e0e04dfcab..da4401a3d8f5 100644
 --- a/drivers/misc/uacce/uacce.c
 +++ b/drivers/misc/uacce/uacce.c
 @@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
  	if (!(uacce->flags & UACCE_DEV_SVA))
  		return 0;
  
--	handle = iommu_sva_bind_device(uacce->parent, current->mm, NULL);
-+	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
+-	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
++	handle = iommu_sva_bind_device(uacce->parent, 0);
  	if (IS_ERR(handle))
  		return PTR_ERR(handle);
  
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 1bc46b88711a..cdff752aacdd 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -757,7 +757,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			  struct iommu_gpasid_bind_data *data);
- int intel_svm_unbind_gpasid(struct device *dev, u32 pasid);
- struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct *mm,
--				 void *drvdata);
-+				 unsigned int flags);
- void intel_svm_unbind(struct iommu_sva *handle);
- u32 intel_svm_get_pasid(struct iommu_sva *handle);
- int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
-diff --git a/include/linux/intel-svm.h b/include/linux/intel-svm.h
-index 39d368a810b8..ef6b75326a2b 100644
---- a/include/linux/intel-svm.h
-+++ b/include/linux/intel-svm.h
-@@ -30,30 +30,17 @@ struct svm_dev_ops {
-  * if there is no other way to do so. It should be used sparingly, if at all.
-  */
- #define SVM_FLAG_PRIVATE_PASID		(1<<0)
--
--/*
-- * The SVM_FLAG_SUPERVISOR_MODE flag requests a PASID which can be used only
-- * for access to kernel addresses. No IOTLB flushes are automatically done
-- * for kernel mappings; it is valid only for access to the kernel's static
-- * 1:1 mapping of physical memory — not to vmalloc or even module mappings.
-- * A future API addition may permit the use of such ranges, by means of an
-- * explicit IOTLB flush call (akin to the DMA API's unmap method).
-- *
-- * It is unlikely that we will ever hook into flush_tlb_kernel_range() to
-- * do such IOTLB flushes automatically.
-- */
--#define SVM_FLAG_SUPERVISOR_MODE	(1<<1)
- /*
-  * The SVM_FLAG_GUEST_MODE flag is used when a PASID bind is for guest
-  * processes. Compared to the host bind, the primary differences are:
-  * 1. mm life cycle management
-  * 2. fault reporting
-  */
--#define SVM_FLAG_GUEST_MODE		(1<<2)
-+#define SVM_FLAG_GUEST_MODE		(1<<1)
- /*
-  * The SVM_FLAG_GUEST_PASID flag is used when a guest has its own PASID space,
-  * which requires guest and host PASID translation at both directions.
-  */
--#define SVM_FLAG_GUEST_PASID		(1<<3)
-+#define SVM_FLAG_GUEST_PASID		(1<<2)
- 
- #endif /* __INTEL_SVM_H__ */
 diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 5e7fe519430a..ba81cec0b086 100644
+index ba81cec0b086..4e846950a6b9 100644
 --- a/include/linux/iommu.h
 +++ b/include/linux/iommu.h
-@@ -164,6 +164,19 @@ enum iommu_dev_features {
- 
- #define IOMMU_PASID_INVALID	(-1U)
- 
-+/*
-+ * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be used only
-+ * for access to kernel addresses. No IOTLB flushes are automatically done
-+ * for kernel mappings; it is valid only for access to the kernel's static
-+ * 1:1 mapping of physical memory — not to vmalloc or even module mappings.
-+ * A future API addition may permit the use of such ranges, by means of an
-+ * explicit IOTLB flush call (akin to the DMA API's unmap method).
-+ *
-+ * It is unlikely that we will ever hook into flush_tlb_kernel_range() to
-+ * do such IOTLB flushes automatically.
-+ */
-+#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)
-+
- #ifdef CONFIG_IOMMU_API
- 
- /**
-@@ -287,7 +300,7 @@ struct iommu_ops {
- 	int (*aux_get_pasid)(struct iommu_domain *domain, struct device *dev);
- 
- 	struct iommu_sva *(*sva_bind)(struct device *dev, struct mm_struct *mm,
--				      void *drvdata);
-+				      unsigned int flags);
- 	void (*sva_unbind)(struct iommu_sva *handle);
- 	u32 (*sva_get_pasid)(struct iommu_sva *handle);
- 
-@@ -640,7 +653,7 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
+@@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
+ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
  
  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
- 					struct mm_struct *mm,
--					void *drvdata);
-+					unsigned int flags);
+-					struct mm_struct *mm,
+ 					unsigned int flags);
  void iommu_sva_unbind_device(struct iommu_sva *handle);
  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
- 
-@@ -1015,7 +1028,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+@@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
  }
  
  static inline struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
-+iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
+-iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
++iommu_sva_bind_device(struct device *dev, unsigned int flags)
  {
  	return NULL;
  }
