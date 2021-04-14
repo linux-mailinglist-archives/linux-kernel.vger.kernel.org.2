@@ -2,652 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EC935FDAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C0035FDA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhDNWSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhDNWSe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:18:34 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9B0C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:18:11 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so35900331lfh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aizIZg70s6/VHTBVselH9PnfIOGDfWH/MzY7uQIPbQc=;
-        b=ZZxLYvjCYtcqL2Md1286s9j6YfeJUVT8GmtYAXOb4pAiQKdq+zpv7mT7h+03Cui58T
-         /fy9fpC3rMh11n0Lo31iWYzqeQogJfdt+QXFBDn1/x7mssFH+g+08GBvTo7wPTMEbmaw
-         LWYvFaMAFESK9Nv7ENQItsyBtpq9zwW6qGjJBW+1K0S5g7elRcSKY95ntu5ee7yAlnPO
-         Q9jOEKMw5pNlDCNpSEgP4haEeveazbvb6SIZ+d+jZXOz0MkmwU69ve101UNUvmkF1+a6
-         PwffMYvKw62BEX/qqRODXYZDPfqrED6b5P+a2ogdpgKAkOz5FUkJUPGr2h8HrQA4UnIy
-         Oqwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aizIZg70s6/VHTBVselH9PnfIOGDfWH/MzY7uQIPbQc=;
-        b=tqtfsQ3scoqXwzT/fwAiegdG1ViQ7aJtHxpVny7VNgqfzfDDmeDBLsfuD8PZXoxYHq
-         4aCLos8xwLDN0hwiweLxL9TiZXrFwF2oWZcFPfbP5cVz6JIBUfCH1SBBYpDF3zVLRPny
-         sbF4N+Y/Fx0ZP6iJ5ExoINgY/8CKWjlyQwhAQu4yaG3KhOd+rPtfVdgBNpp/EcB0sQt4
-         KIuRMChm8iKsZm+BIYMt6jMtCzKbWetbnir9z/200hrrAjHememRLCOg5fSnCY/ZHgfw
-         csYtkDbyW1yN2R3+E2HAgF0ydroFzkThwGyc5DjoKfv6vfD9uRcv4gWgkZTqMK146xJS
-         AriA==
-X-Gm-Message-State: AOAM532IAdP70LU9ltgeFyRBa7UDPKtpAqW0/0ARRx+6EDHyTlWbARJd
-        BpxWjMAlSH/iT2VQFv5fZNYONbOt83XyQMsxYkig7w==
-X-Google-Smtp-Source: ABdhPJwZjow5SRWiOXM+2E1IsUW7zvXjLjsaG5nAZtmk+7lFhPd2w1HOp14BOOqObwBuIdZWNtz04jK9fg9IsdDmgqE=
-X-Received: by 2002:a05:6512:985:: with SMTP id w5mr251209lft.122.1618438689736;
- Wed, 14 Apr 2021 15:18:09 -0700 (PDT)
+        id S231624AbhDNWSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:18:32 -0400
+Received: from mail-oln040092073043.outbound.protection.outlook.com ([40.92.73.43]:42151
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230234AbhDNWS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 18:18:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQO2hpZJVf65MAX7om644cBgr1vdykeunrSoXED/oyojwBbNoAlWtc3/rfsR7uLJNkVF06wgWi7gUL1X5gk1yPHqKVK30QiZq4yHjzj/FYF1D4r/wEYm1/aa2bN9l7MesGpBhVR5DXyPSIvJMXxkBepCFoC6Zn86lk+KwdWe0FgrHEAi9ptIsu5yLnAf21J3K96F9Ijef5/PnHvRZmn+qDzMIXjSFfKnck1Zs0KVRLZ55y4+iRHBvmZt/OraNRtVh+teFa2TvYg90ULEqSJKpVjH1jfZ1SWnZowlga2FrJJy6LYlttjWFyf6VTyaZkiKSfgWiUDkz5V7JspDV+MZlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UhcT3dZLj/p9CJ6eN6hxOzdfsepQlnq9NnZXGCJM+k8=;
+ b=QPviCX/hEkdLrvfZw+q7O2qhFGturPU0RwWMUN94JCG9gLOSDQJztSqGj0zHMNpe9vZAlJglnNr390xplfwwlttTaPzFVqOa3sSAO7i00heA80ZhGeHd1uhsTtAIku5P1rw8iH1QBHkvj3xSDQIQBO77cq67OVa1hHT0YDl8/YZtRxVDRPoTpoTi/ZtKwgnttYlUjsjC9M5uwh+mUisOxtiWGRStu1Hc+IQKkp5QpRJw5ZaRSxuSB2Ls8j8zCJRauokIrdKd6LCciSnp5h2mNub3LKCBwZxZSKqPTkr+D5SIMG1A48zqozZoGzCy2ItkS3i9jMytUa9/xB82NCaslQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DB3EUR04FT013.eop-eur04.prod.protection.outlook.com
+ (2a01:111:e400:7e0c::40) by
+ DB3EUR04HT026.eop-eur04.prod.protection.outlook.com (2a01:111:e400:7e0c::316)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 14 Apr
+ 2021 22:18:02 +0000
+Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
+ (2a01:111:e400:7e0c::45) by DB3EUR04FT013.mail.protection.outlook.com
+ (2a01:111:e400:7e0c::277) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
+ Transport; Wed, 14 Apr 2021 22:18:02 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:B62BCDE701C88EAFDD72F781FADAA687E8AC69FE8825CE5760C3FF450B74CCCB;UpperCasedChecksum:B7D2F1CBD8BE753586966D38A4778280E15B5D6820BA3B59CEEE6541ABF1162A;SizeAsReceived:9180;Count:47
+Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
+ ([fe80::948b:987c:566b:198e]) by VI1PR09MB2638.eurprd09.prod.outlook.com
+ ([fe80::948b:987c:566b:198e%5]) with mapi id 15.20.4042.018; Wed, 14 Apr 2021
+ 22:18:02 +0000
+Subject: Re: [PATCH 2/2] iommu/amd: Remove performance counter
+ pre-initialization test
+To:     "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will@kernel.org, jsnitsel@redhat.com,
+        pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
+        Tj <ml.linux@elloe.vision>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Alex Hung <1917203@bugs.launchpad.net>
+References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
+ <20210409085848.3908-3-suravee.suthikulpanit@amd.com>
+ <VI1PR09MB26380EED406F2F08ACB6B5BBC7729@VI1PR09MB2638.eurprd09.prod.outlook.com>
+ <add9d575-191e-d7a6-e3e1-dfc7ea7f35c8@amd.com>
+From:   David Coe <david.coe@live.co.uk>
+Message-ID: <VI1PR09MB2638CE523F2E7E2DF4A6B087C74E9@VI1PR09MB2638.eurprd09.prod.outlook.com>
+Date:   Wed, 14 Apr 2021 23:18:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <add9d575-191e-d7a6-e3e1-dfc7ea7f35c8@amd.com>
+Content-Type: multipart/mixed;
+ boundary="------------D7C2E3FC4E03C0F3D4199D22"
+Content-Language: en-GB
+X-TMN:  [5AQtz071NitM55wFWhJjJMULmurJP+6o]
+X-ClientProxiedBy: LO4P123CA0297.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:196::14) To VI1PR09MB2638.eurprd09.prod.outlook.com
+ (2603:10a6:803:7b::27)
+X-Microsoft-Original-Message-ID: <cbd87524-cecb-1adc-b508-730546aee73e@live.co.uk>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-11-ojeda@kernel.org>
-In-Reply-To: <20210414184604.23473-11-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Apr 2021 15:17:57 -0700
-Message-ID: <CAKwvOdmXNAm+TcypR0dCayp9bJ7RFcgLx5sB8_2MfzO31T3PJg@mail.gmail.com>
-Subject: Re: [PATCH 10/13] Documentation: Rust general information
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.6] (90.246.218.100) by LO4P123CA0297.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:196::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21 via Frontend Transport; Wed, 14 Apr 2021 22:18:01 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 47
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: da0c652e-4677-418b-ba96-08d8ff932b03
+X-MS-TrafficTypeDiagnostic: DB3EUR04HT026:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rJJ3973SqnIFhKCq2nU5HjP+PQMAQxarTX7CIWGgLZkuQvdfRT3fNbyDv8P+Dcr/vECgXwBId+I8gj7d5sJU1IFbqTCB7gePx9htglsXdL/dRx3NbQKVI7RjFK8Rj4J+mGPwqmyuVGwqMVNrFqWwU9dpNZADN7TneNScPy3AJskoBH+r8cnK7pPoMvpjpdsq5myPBFag5ZYbrGTfXIH+4kyhGxcOQT2ois29vhTrOTGjUmCqM02dEIb8A/nFmqe4vJeFtH/3mWwYJ820bOdnhM0x8Y6VcxlrWKwgiO6dlNyhKi15Y3c10Ssp7nurz89Jn88Jb+DSg2uzZlzgsaPV3FqT9ppyUM58qZfZC8r85evGF2cGeSeko0B2k6Ve40UuAM59iLn8AHnSMF4z/oF0Sw==
+X-MS-Exchange-AntiSpam-MessageData: sshzfl07htqrAh7QyPCDVk1ezfQXWkPTXYL182yEA1u+qZO8kNhaolSlmDPUwO7QIyXll93KQEWSI1WV2cz+fD41uMCd4ylwCiGNisyvAcjPTu9ITlat31XpJ2xPII7ihmZM0SZsLbyiJBMTLuEyeA==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da0c652e-4677-418b-ba96-08d8ff932b03
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 22:18:02.2653
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: DB3EUR04FT013.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3EUR04HT026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:50 AM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Most of the documentation for Rust is written within the source code
-> itself, as it is idiomatic for Rust projects. This applies to both
-> the shared infrastructure at `rust/` as well as any other Rust module
-> (e.g. drivers) written across the kernel.
->
-> These documents are general information that do not fit particularly
-> well in the source code, like the quick start guide.
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Co-developed-by: Finn Behrens <me@kloenk.de>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
-> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
->  Documentation/doc-guide/kernel-doc.rst |   3 +
->  Documentation/index.rst                |   1 +
->  Documentation/rust/arch-support.rst    |  29 ++++
->  Documentation/rust/coding.rst          |  92 +++++++++++
->  Documentation/rust/docs.rst            | 109 +++++++++++++
->  Documentation/rust/index.rst           |  20 +++
->  Documentation/rust/quick-start.rst     | 203 +++++++++++++++++++++++++
->  7 files changed, 457 insertions(+)
->  create mode 100644 Documentation/rust/arch-support.rst
->  create mode 100644 Documentation/rust/coding.rst
->  create mode 100644 Documentation/rust/docs.rst
->  create mode 100644 Documentation/rust/index.rst
->  create mode 100644 Documentation/rust/quick-start.rst
->
-> diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
-> index 79aaa55d6bcf..c655fdb9c042 100644
-> --- a/Documentation/doc-guide/kernel-doc.rst
-> +++ b/Documentation/doc-guide/kernel-doc.rst
-> @@ -11,6 +11,9 @@ when it is embedded in source files.
->     reasons. The kernel source contains tens of thousands of kernel-doc
->     comments. Please stick to the style described here.
->
-> +.. note:: kernel-doc does not cover Rust code: please see
-> +   :ref:`Documentation/rust/docs.rst <rust_docs>` instead.
-> +
->  The kernel-doc structure is extracted from the comments, and proper
->  `Sphinx C Domain`_ function and type descriptions with anchors are
->  generated from them. The descriptions are filtered for special kernel-doc
-> diff --git a/Documentation/index.rst b/Documentation/index.rst
-> index 31f2adc8542d..3e7c43a48e68 100644
-> --- a/Documentation/index.rst
-> +++ b/Documentation/index.rst
-> @@ -82,6 +82,7 @@ merged much easier.
->     maintainer/index
->     fault-injection/index
->     livepatch/index
-> +   rust/index
->
->
->  Kernel API documentation
-> diff --git a/Documentation/rust/arch-support.rst b/Documentation/rust/arch-support.rst
-> new file mode 100644
-> index 000000000000..d72ab2f8fa46
-> --- /dev/null
-> +++ b/Documentation/rust/arch-support.rst
-> @@ -0,0 +1,29 @@
-> +.. _rust_arch_support:
-> +
-> +Arch Support
-> +============
-> +
-> +Currently, the Rust compiler (``rustc``) uses LLVM for code generation,
-> +which limits the supported architectures we can target. In addition, support
-> +for building the kernel with LLVM/Clang varies (see :ref:`kbuild_llvm`),
-> +which ``bindgen`` relies on through ``libclang``.
-> +
-> +Below is a general summary of architectures that currently work. Level of
-> +support corresponds to ``S`` values in the ``MAINTAINERS`` file.
-> +
-> +.. list-table::
-> +   :widths: 10 10 10
-> +   :header-rows: 1
-> +
-> +   * - Architecture
-> +     - Level of support
-> +     - Constraints
-> +   * - ``arm64``
-> +     - Maintained
-> +     - None
-> +   * - ``powerpc``
-> +     - Maintained
-> +     - ``ppc64le`` only, ``RUST_OPT_LEVEL >= 2``
-> +   * - ``x86``
-> +     - Maintained
-> +     - ``x86_64`` only
-> diff --git a/Documentation/rust/coding.rst b/Documentation/rust/coding.rst
-> new file mode 100644
-> index 000000000000..46da5fb0974c
-> --- /dev/null
-> +++ b/Documentation/rust/coding.rst
-> @@ -0,0 +1,92 @@
-> +.. _rust_coding:
-> +
-> +Coding
-> +======
-> +
-> +This document describes how to write Rust code in the kernel.
-> +
-> +
-> +Coding style
-> +------------
-> +
-> +The code is automatically formatted using the ``rustfmt`` tool. This is very
-> +good news!
-> +
-> +- If you contribute from time to time to the kernel, you do not need to learn
-> +  and remember one more style guide. You will also need less patch roundtrips
-> +  to land a change.
-> +
-> +- If you are a reviewer or a maintainer, you will not need to spend time on
-> +  pointing out style issues anymore.
-> +
-> +.. note:: Conventions on comments and documentation are not checked by
-> +  ``rustfmt``. Thus we still need to take care of those: please see
-> +  :ref:`Documentation/rust/docs.rst <rust_docs>`.
-> +
-> +We use the tool's default settings. This means we are following the idiomatic
-> +Rust style. For instance, we use 4 spaces for indentation rather than tabs.
-> +
-> +Typically, you will want to instruct your editor/IDE to format while you type,
-> +when you save or at commit time. However, if for some reason you want
-> +to reformat the entire kernel Rust sources at some point, you may run::
-> +
-> +       make rustfmt
-> +
-> +To check if everything is formatted (printing a diff otherwise), e.g. if you
-> +have configured a CI for a tree as a maintainer, you may run::
-> +
-> +       make rustfmtcheck
-> +
-> +Like ``clang-format`` for the rest of the kernel, ``rustfmt`` works on
-> +individual files, and does not require a kernel configuration. Sometimes it may
-> +even work with broken code.
-> +
-> +
-> +Extra lints
-> +-----------
-> +
-> +While ``rustc`` is a very helpful compiler, some extra lints and analysis are
-> +available via ``clippy``, a Rust linter. To enable it, pass ``CLIPPY=1`` to
-> +the same invocation you use for compilation, e.g.::
-> +
-> +       make ARCH=... CROSS_COMPILE=... CC=... -j... CLIPPY=1
-> +
-> +At the moment, we do not enforce a "clippy-free" compilation, so you can treat
-> +the output the same way as the extra warning levels for C, e.g. like ``W=2``.
-> +Still, we use the default configuration, which is relatively conservative, so
-> +it is a good idea to read any output it may produce from time to time and fix
-> +the pointed out issues. The list of enabled lists will be likely tweaked over
-> +time, and extra levels may end up being introduced, e.g. ``CLIPPY=2``.
-> +
-> +
-> +Abstractions vs. bindings
-> +-------------------------
-> +
-> +We don't have abstractions for all the kernel internal APIs and concepts,
-> +but we would like to expand coverage as time goes on. Unless there is
-> +a good reason not to, always use the abstractions instead of calling
-> +the C bindings directly.
-> +
-> +If you are writing some code that requires a call to an internal kernel API
-> +or concept that isn't abstracted yet, consider providing an (ideally safe)
-> +abstraction for everyone to use.
-> +
-> +
-> +Conditional compilation
-> +-----------------------
-> +
-> +Rust code has access to conditional compilation based on the kernel
-> +configuration:
-> +
-> +.. code-block:: rust
-> +
-> +       #[cfg(CONFIG_X)]      // `CONFIG_X` is enabled (`y` or `m`)
-> +       #[cfg(CONFIG_X="y")]  // `CONFIG_X` is enabled as a built-in (`y`)
-> +       #[cfg(CONFIG_X="m")]  // `CONFIG_X` is enabled as a module   (`m`)
-> +       #[cfg(not(CONFIG_X))] // `CONFIG_X` is disabled
-> +
-> +
-> +Documentation
-> +-------------
-> +
-> +Please see :ref:`Documentation/rust/docs.rst <rust_docs>`.
-> diff --git a/Documentation/rust/docs.rst b/Documentation/rust/docs.rst
-> new file mode 100644
-> index 000000000000..58c5f98ccb35
-> --- /dev/null
-> +++ b/Documentation/rust/docs.rst
-> @@ -0,0 +1,109 @@
-> +.. _rust_docs:
-> +
-> +Docs
-> +====
-> +
-> +Rust kernel code is not documented like C kernel code (i.e. via kernel-doc).
-> +Instead, we use the usual system for documenting Rust code: the ``rustdoc``
-> +tool, which uses Markdown (a *very* lightweight markup language).
-> +
-> +This document describes how to make the most out of the kernel documentation
-> +for Rust.
-> +
-> +
-> +Reading the docs
-> +----------------
-> +
-> +An advantage of using Markdown is that it attempts to make text look almost as
-> +you would have written it in plain text. This makes the documentation quite
-> +pleasant to read even in its source form.
-> +
-> +However, the generated HTML docs produced by ``rustdoc`` provide a *very* nice
-> +experience, including integrated instant search, clickable items (types,
-> +functions, constants, etc. -- including to all the standard Rust library ones
-> +that we use in the kernel, e.g. ``core``), categorization, links to the source
-> +code, etc.
-> +
-> +Like for the rest of the kernel documentation, pregenerated HTML docs for
-> +the libraries (crates) inside ``rust/`` that are used by the rest of the kernel
-> +are available at `kernel.org`_.
-> +
-> +// TODO: link when ready
+--------------D7C2E3FC4E03C0F3D4199D22
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Was this TODO meant to be removed, or is it still pending? If pending,
-on what? Being able to link back on itself if/once merged?
+Hi again!
 
-> +
-> +.. _kernel.org: http://kernel.org/
-> +
-> +Otherwise, you can generate them locally. This is quite fast (same order as
-> +compiling the code itself) and you do not need any special tools or environment.
-> +This has the added advantage that they will be tailored to your particular
-> +kernel configuration. To generate them, simply use the ``rustdoc`` target with
-> +the same invocation you use for compilation, e.g.::
-> +
-> +       make ARCH=... CROSS_COMPILE=... CC=... -j... rustdoc
-> +
-> +
-> +Writing the docs
-> +----------------
-> +
-> +If you already know Markdown, learning how to write Rust documentation will be
-> +a breeze. If not, understanding the basics is a matter of minutes reading other
-> +code. There are also many guides available out there, a particularly nice one
-> +is at `GitHub`_.
-> +
-> +.. _GitHub: https://guides.github.com/features/mastering-markdown/#syntax
-> +
-> +This is how a well-documented Rust function may look like (derived from the Rust
-> +standard library)::
-> +
-> +       /// Returns the contained [`Some`] value, consuming the `self` value,
-> +       /// without checking that the value is not [`None`].
-> +       ///
-> +       /// # Safety
-> +       ///
-> +       /// Calling this method on [`None`] is *[undefined behavior]*.
-> +       ///
-> +       /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
-> +       ///
-> +       /// # Examples
-> +       ///
-> +       /// ```
-> +       /// let x = Some("air");
-> +       /// assert_eq!(unsafe { x.unwrap_unchecked() }, "air");
-> +       /// ```
-> +       pub unsafe fn unwrap_unchecked(self) -> T {
-> +               match self {
-> +                       Some(val) => val,
-> +
-> +                       // SAFETY: the safety contract must be upheld by the caller.
-> +                       None => unsafe { hint::unreachable_unchecked() },
-> +               }
-> +       }
-> +
-> +This example showcases a few ``rustdoc`` features and some common conventions
-> +(that we also follow in the kernel):
-> +
-> +* The first paragraph must be a single sentence briefly describing what
-> +  the documented item does. Further explanations must go in extra paragraphs.
-> +
-> +* ``unsafe`` functions must document the preconditions needed for a call to be
-> +  safe under a ``Safety`` section.
-> +
-> +* While not shown here, if a function may panic, the conditions under which
-> +  that happens must be described under a ``Panics`` section.
+For completeness, I'm attaching results for the revert+update patch 
+running the Ubuntu 21.04β kernel 5.11.0-14 on a Ryzen 4700U laptop.
 
-Consider if the docs need any change here based on behavior related to
-Panics based on feedback thus far in the thread.
+The enormous amd_iommu running stats aren't always there, as they nearly 
+always are on the the 2400G desktop, but they do turn up (depending on 
+what the machine's been doing).
 
-> +
-> +* If providing examples of usage would help readers, they must be written in
-> +  a section called ``Examples``.
-> +
-> +* Rust items (functions, types, constants...) will be automatically linked
-> +  (``rustdoc`` will find out the URL for you).
-> +
-> +* Following the Rust standard library conventions, any ``unsafe`` block must be
-> +  preceded by a ``SAFETY`` comment describing why the code inside is sound.
-> +
-> +  While sometimes the reason might look trivial and therefore unneeded, writing
-> +  these comments is not just a good way of documenting what has been taken into
-> +  account, but also that there are no *extra* implicit constraints.
-> +
-> +To learn more about how to write documentation for Rust and extra features,
-> +please take a look at the ``rustdoc`` `book`_.
-> +
-> +.. _book: https://doc.rust-lang.org/rustdoc/how-to-write-documentation.html
-> diff --git a/Documentation/rust/index.rst b/Documentation/rust/index.rst
-> new file mode 100644
-> index 000000000000..257cf2b200b8
-> --- /dev/null
-> +++ b/Documentation/rust/index.rst
-> @@ -0,0 +1,20 @@
-> +Rust
-> +====
-> +
-> +Documentation related to Rust within the kernel. If you are starting out,
-> +read the :ref:`Documentation/rust/quick-start.rst <rust_quick_start>` guide.
-> +
-> +.. toctree::
-> +    :maxdepth: 1
-> +
-> +    quick-start
-> +    coding
-> +    docs
-> +    arch-support
-> +
-> +.. only::  subproject and html
-> +
-> +   Indices
-> +   =======
-> +
-> +   * :ref:`genindex`
-> diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
-> new file mode 100644
-> index 000000000000..42367e4365c3
-> --- /dev/null
-> +++ b/Documentation/rust/quick-start.rst
-> @@ -0,0 +1,203 @@
-> +.. _rust_quick_start:
-> +
-> +Quick Start
-> +===========
-> +
-> +This document describes how to get started with kernel development in Rust.
-> +If you have worked previously with Rust, this will only take a moment.
-> +
-> +Please note that, at the moment, a very restricted subset of architectures
-> +is supported, see :doc:`/rust/arch-support`.
-> +
-> +
-> +Requirements: Building
-> +----------------------
-> +
-> +This section explains how to fetch the tools needed for building.
-> +
-> +Some of these requirements might be available from your Linux distribution
-> +under names like ``rustc``, ``rust-src``, ``rust-bindgen``, etc. However,
-> +at the time of writing, they are likely to not be recent enough.
-> +
-> +
-> +rustc
-> +*****
-> +
-> +A recent *nightly* Rust toolchain (with, at least, ``rustc``) is required,
-> +e.g. ``nightly-2021-02-20``. Our goal is to use a stable toolchain as soon
-> +as possible, but for the moment we depend on a handful of nightly features.
-> +
-> +If you are using ``rustup``, run::
-> +
-> +    rustup default nightly-2021-02-20
-> +
-> +Please avoid the very latest nightlies (>= nightly-2021-03-05) until
-> +https://github.com/Rust-for-Linux/linux/issues/135 is resolved.
+Be very interested in your thoughts on their relevance!
 
-That link has a comment that this was fixed.  Is the comment now stale?
-
-> +
-> +Otherwise, fetch a standalone installer or install ``rustup`` from:
-> +
-> +    https://www.rust-lang.org
-> +
-> +
-> +Rust standard library source
-> +****************************
-> +
-> +The Rust standard library source is required because the build system will
-> +cross-compile ``core`` and ``alloc``.
-> +
-> +If you are using ``rustup``, run::
-> +
-> +    rustup component add rust-src
-> +
-> +Otherwise, if you used a standalone installer, you can clone the Rust
-> +repository into the installation folder of your nightly toolchain::
-> +
-> +    git clone --recurse-submodules https://github.com/rust-lang/rust $(rustc --print sysroot)/lib/rustlib/src/rust
-> +
-> +
-> +libclang
-> +********
-> +
-> +``libclang`` (part of LLVM) is used by ``bindgen`` to understand the C code
-> +in the kernel, which means you will need a recent LLVM installed; like when
-> +you compile the kernel with ``CC=clang`` or ``LLVM=1``.
-> +
-> +Your Linux distribution is likely to have a suitable one available, so it is
-> +best if you check that first.
-> +
-> +There are also some binaries for several systems and architectures uploaded at:
-> +
-> +    https://releases.llvm.org/download.html
-> +
-> +For Debian-based distributions, you can also fetch them from:
-> +
-> +    https://apt.llvm.org
-> +
-> +Otherwise, building LLVM takes quite a while, but it is not a complex process:
-> +
-> +    https://llvm.org/docs/GettingStarted.html#getting-the-source-code-and-building-llvm
-
-Perhaps worth another cross reference to :ref:`kbuild_llvm`?
-https://www.kernel.org/doc/html/latest/kbuild/llvm.html#getting-llvm
-Perhaps amend that then link to it from here?
-
-> +
-> +
-> +bindgen
-> +*******
-> +
-> +The bindings to the C side of the kernel are generated at build time using
-> +the ``bindgen`` tool. A recent version should work, e.g. ``0.56.0``.
-
-Avoid terms like recent and modern.  Otherwise in a few years 0.56.0
-will be archaic, not recent, and you'll need to update your docs.  So
-bindgen does not distribute libclang?
-
-> +
-> +Install it via (this will build the tool from source)::
-> +
-> +    cargo install --locked --version 0.56.0 bindgen
-> +
-> +
-> +Requirements: Developing
-> +------------------------
-> +
-> +This section explains how to fetch the tools needed for developing. That is,
-> +if you only want to build the kernel, you do not need them.
-> +
-> +
-> +rustfmt
-> +*******
-> +
-> +The ``rustfmt`` tool is used to automatically format all the Rust kernel code,
-> +including the generated C bindings (for details, please see
-> +:ref:`Documentation/rust/coding.rst <rust_coding>`).
-> +
-> +If you are using ``rustup``, its ``default`` profile already installs the tool,
-> +so you should be good to go. If you are using another profile, you can install
-> +the component manually::
-> +
-> +    rustup component add rustfmt
-> +
-> +The standalone installers also come with ``rustfmt``.
-> +
-> +
-> +clippy
-> +******
-> +
-> +``clippy`` is a Rust linter. Installing it allows you to get extra warnings
-> +for Rust code passing ``CLIPPY=1`` to ``make`` (for details, please see
-> +:ref:`Documentation/rust/coding.rst <rust_coding>`).
-> +
-> +If you are using ``rustup``, its ``default`` profile already installs the tool,
-> +so you should be good to go. If you are using another profile, you can install
-> +the component manually::
-> +
-> +    rustup component add clippy
-> +
-> +The standalone installers also come with ``clippy``.
-> +
-> +
-> +rustdoc
-> +*******
-> +
-> +If you install the ``rustdoc`` tool, then you will be able to generate pretty
-> +HTML documentation for Rust code, including for the libraries (crates) inside
-> +``rust/`` that are used by the rest of the kernel (for details, please see
-> +:ref:`Documentation/rust/docs.rst <rust_docs>`).
-> +
-> +If you are using ``rustup``, its ``default`` profile already installs the tool,
-> +so you should be good to go. If you are using another profile, you can install
-> +the component manually::
-> +
-> +    rustup component add rustdoc
-> +
-> +The standalone installers also come with ``rustdoc``.
-> +
-> +
-> +Configuration
-> +-------------
-> +
-> +``Rust support`` (``CONFIG_RUST``) needs to be enabled in the ``General setup``
-> +menu. The option is only shown if the build system can locate ``rustc``.
-> +In turn, this will make visible the rest of options that depend on Rust.
-> +
-> +Afterwards, go to::
-> +
-> +    Kernel hacking
-> +      -> Sample kernel code
-> +           -> Rust samples
-> +
-> +And enable some sample modules either as built-in or as loadable.
-> +
-> +
-> +Building
-> +--------
-> +
-> +Building a kernel with Clang or a complete LLVM toolchain is the best supported
-> +setup at the moment. That is::
-> +
-> +    make ARCH=... CROSS_COMPILE=... CC=clang -j...
-> +
-> +or::
-> +
-> +    make ARCH=... CROSS_COMPILE=... LLVM=1 -j...
-
-Please reorder; prefer LLVM=1 to CC=clang.  Probably worth another
-cross reference to :ref:`kbuild_llvm`.
-
-> +
-> +Using GCC also works for some configurations, but it is *very* experimental at
-> +the moment.
-> +
-> +
-> +Hacking
-> +-------
-> +
-> +If you want to dive deeper, take a look at the source code of the samples
-> +at ``samples/rust/``, the Rust support code under ``rust/`` and
-> +the ``Rust hacking`` menu under ``Kernel hacking``.
-> +
-> +If you use GDB/Binutils and Rust symbols aren't getting demangled, the reason
-> +is your toolchain doesn't support Rust's new v0 mangling scheme yet. There are
-
-"new" as in changed, or "new" as in Rust previously did not mangle symbols?
-
-> +a few ways out:
-> +
-> +  - If you don't mind building your own tools, we provide the following fork
-> +    with the support cherry-picked from GCC on top of very recent releases:
-> +
-> +        https://github.com/Rust-for-Linux/binutils-gdb/releases/tag/gdb-10.1-release-rust
-> +        https://github.com/Rust-for-Linux/binutils-gdb/releases/tag/binutils-2_35_1-rust
-> +
-> +  - If you only need GDB and can enable ``CONFIG_DEBUG_INFO``, do so:
-> +    some versions of GDB (e.g. vanilla GDB 10.1) are able to use
-> +    the pre-demangled names embedded in the debug info.
-> +
-> +  - If you don't need loadable module support, you may compile without
-> +    the ``-Zsymbol-mangling-version=v0`` flag. However, we don't maintain
-> +    support for that, so avoid it unless you are in a hurry.
-> --
-> 2.17.1
->
-
+Best regards,
 
 -- 
-Thanks,
-~Nick Desaulniers
+David
+
+--------------D7C2E3FC4E03C0F3D4199D22
+Content-Type: text/plain; charset=UTF-8;
+ name="4700U-5.11.0-14.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="4700U-5.11.0-14.txt"
+
+JCBzdWRvIGRtZXNnIHwgZ3JlcCBJT01NVQpbICAgIDAuNDk4NTkzXSBwY2kgMDAwMDowMDowMC4y
+OiBBTUQtVmk6IElPTU1VIHBlcmZvcm1hbmNlIGNvdW50ZXJzIHN1cHBvcnRlZApbICAgIDAuNTAw
+NTA3XSBwY2kgMDAwMDowMDowMC4yOiBBTUQtVmk6IEZvdW5kIElPTU1VIGNhcCAweDQwClsgICAg
+MC41MDIwMTFdIHBlcmYvYW1kX2lvbW11OiBEZXRlY3RlZCBBTUQgSU9NTVUgIzAgKDIgYmFua3Ms
+IDQgY291bnRlcnMvYmFuaykuClsgICAgMS4xMTMxOTVdIEFNRC1WaTogQU1EIElPTU1VdjIgZHJp
+dmVyIGJ5IEpvZXJnIFJvZWRlbCA8anJvZWRlbEBzdXNlLmRlPgoKCiQgc3VkbyBwZXJmIGxpc3Qg
+fCBncmVwIGlvbW11CiAgYW1kX2lvbW11XzAvY21kX3Byb2Nlc3NlZC8gICAgICAgICAgICAgICAg
+ICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvY21kX3Byb2Nlc3NlZF9p
+bnYvICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAv
+aWduX3JkX3dyX21taW9fMWZmOGgvICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRd
+CiAgYW1kX2lvbW11XzAvaW50X2R0ZV9oaXQvICAgICAgICAgICAgICAgICAgICAgICAgICAgW0tl
+cm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvaW50X2R0ZV9taXMvICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX2R0ZV9oaXQv
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11
+XzAvbWVtX2R0ZV9taXMvICAgICAgICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZl
+bnRdCiAgYW1kX2lvbW11XzAvbWVtX2lvbW11X3RsYl9wZGVfaGl0LyAgICAgICAgICAgICAgICAg
+W0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX2lvbW11X3RsYl9wZGVfbWlzLyAg
+ICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX2lvbW11
+X3RsYl9wdGVfaGl0LyAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lv
+bW11XzAvbWVtX2lvbW11X3RsYl9wdGVfbWlzLyAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUg
+ZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX3Bhc3NfZXhjbC8gICAgICAgICAgICAgICAgICAgICAg
+ICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX3Bhc3NfcHJldHJhbnMvICAg
+ICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX3Bh
+c3NfdW50cmFucy8gICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1k
+X2lvbW11XzAvbWVtX3RhcmdldF9hYm9ydC8gICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQ
+TVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvbWVtX3RyYW5zX3RvdGFsLyAgICAgICAgICAgICAgICAg
+ICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvcGFnZV90YmxfcmVhZF9nc3Qv
+ICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvcGFn
+ZV90YmxfcmVhZF9uc3QvICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAg
+YW1kX2lvbW11XzAvcGFnZV90YmxfcmVhZF90b3QvICAgICAgICAgICAgICAgICAgICAgW0tlcm5l
+bCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvc21pX2Jsay8gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvc21pX3JlY3YvICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAv
+dGxiX2ludi8gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRd
+CiAgYW1kX2lvbW11XzAvdmFwaWNfaW50X2d1ZXN0LyAgICAgICAgICAgICAgICAgICAgICAgW0tl
+cm5lbCBQTVUgZXZlbnRdCiAgYW1kX2lvbW11XzAvdmFwaWNfaW50X25vbl9ndWVzdC8gICAgICAg
+ICAgICAgICAgICAgW0tlcm5lbCBQTVUgZXZlbnRdCiAgaW50ZWxfaW9tbXU6Ym91bmNlX21hcF9z
+ZyAgICAgICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW50ZWxfaW9t
+bXU6Ym91bmNlX21hcF9zaW5nbGUgICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZl
+bnRdCiAgaW50ZWxfaW9tbXU6Ym91bmNlX3VubWFwX3NpbmdsZSAgICAgICAgICAgICAgICAgICAg
+W1RyYWNlcG9pbnQgZXZlbnRdCiAgaW50ZWxfaW9tbXU6bWFwX3NnICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW50ZWxfaW9tbXU6bWFwX3Npbmds
+ZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW50ZWxf
+aW9tbXU6dW5tYXBfc2cgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQg
+ZXZlbnRdCiAgaW50ZWxfaW9tbXU6dW5tYXBfc2luZ2xlICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW9tbXU6YWRkX2RldmljZV90b19ncm91cCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW9tbXU6YXR0YWNoX2Rldmlj
+ZV90b19kb21haW4gICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW9t
+bXU6ZGV0YWNoX2RldmljZV9mcm9tX2RvbWFpbiAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9p
+bnQgZXZlbnRdCiAgaW9tbXU6aW9fcGFnZV9mYXVsdCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW9tbXU6bWFwICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAgaW9tbXU6cmVtb3ZlX2Rl
+dmljZV9mcm9tX2dyb3VwICAgICAgICAgICAgICAgICAgICAgW1RyYWNlcG9pbnQgZXZlbnRdCiAg
+aW9tbXU6dW5tYXAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgW1RyYWNl
+cG9pbnQgZXZlbnRdCgokIHN1ZG8gcGVyZiBzdGF0IC1lICdhbWRfaW9tbXVfMC9jbWRfcHJvY2Vz
+c2VkLywgYW1kX2lvbW11XzAvY21kX3Byb2Nlc3NlZF9pbnYvLCBhbWRfaW9tbXVfMC9pZ25fcmRf
+d3JfbW1pb18xZmY4aC8sIGFtZF9pb21tdV8wL2ludF9kdGVfaGl0LywgYW1kX2lvbW11XzAvaW50
+X2R0ZV9taXMvLCBhbWRfaW9tbXVfMC9tZW1fZHRlX2hpdC8sIGFtZF9pb21tdV8wL21lbV9kdGVf
+bWlzLywgYW1kX2lvbW11XzAvbWVtX2lvbW11X3RsYl9wZGVfaGl0LywgYW1kX2lvbW11XzAvbWVt
+X2lvbW11X3RsYl9wZGVfbWlzLywgYW1kX2lvbW11XzAvbWVtX2lvbW11X3RsYl9wdGVfaGl0Lywg
+YW1kX2lvbW11XzAvbWVtX2lvbW11X3RsYl9wdGVfbWlzLywgYW1kX2lvbW11XzAvbWVtX3Bhc3Nf
+ZXhjbC8sIGFtZF9pb21tdV8wL21lbV9wYXNzX3ByZXRyYW5zLywgYW1kX2lvbW11XzAvbWVtX3Bh
+c3NfdW50cmFucy8sIGFtZF9pb21tdV8wL21lbV90YXJnZXRfYWJvcnQvLCBhbWRfaW9tbXVfMC9t
+ZW1fdHJhbnNfdG90YWwvLCBhbWRfaW9tbXVfMC9wYWdlX3RibF9yZWFkX2dzdC8sIGFtZF9pb21t
+dV8wL3BhZ2VfdGJsX3JlYWRfbnN0LywgYW1kX2lvbW11XzAvcGFnZV90YmxfcmVhZF90b3QvLCBh
+bWRfaW9tbXVfMC9zbWlfYmxrLywgYW1kX2lvbW11XzAvc21pX3JlY3YvLCBhbWRfaW9tbXVfMC90
+bGJfaW52LywgYW1kX2lvbW11XzAvdmFwaWNfaW50X2d1ZXN0LywgYW1kX2lvbW11XzAvdmFwaWNf
+aW50X25vbl9ndWVzdC8nIHNsZWVwIDEwCgpQZXJmb3JtYW5jZSBjb3VudGVyIHN0YXRzIGZvciAn
+c3lzdGVtIHdpZGUnOgoKICAgICAgICAgICAgICAgIDMwICAgICAgYW1kX2lvbW11XzAvY21kX3By
+b2Nlc3NlZC8gICAgICAgICAgICAgKDMzLjMxJSkKICAgICAgICAgICAgICAgIDE3ICAgICAgIGFt
+ZF9pb21tdV8wL2NtZF9wcm9jZXNzZWRfaW52LyAgICAgICAgKDMzLjM0JSkKICAgICAgICAgICAg
+ICAgICAwICAgICAgIGFtZF9pb21tdV8wL2lnbl9yZF93cl9tbWlvXzFmZjhoLyAgICAgKDMzLjM2
+JSkKICAgICAgICAgICAgICAgMzc0ICAgICAgIGFtZF9pb21tdV8wL2ludF9kdGVfaGl0LyAgICAg
+ICAgICAgICAgKDMzLjM5JSkKICAgICAgICAgICAgICAgIDI5ICAgICAgIGFtZF9pb21tdV8wL2lu
+dF9kdGVfbWlzLyAgICAgICAgICAgICAgKDMzLjQ0JSkKICAgICAgICAgICAgICAgMzk0ICAgICAg
+IGFtZF9pb21tdV8wL21lbV9kdGVfaGl0LyAgICAgICAgICAgICAgKDMzLjQ2JSkKICAgICAgICAg
+ICAgIDksMTE3ICAgICAgIGFtZF9pb21tdV8wL21lbV9kdGVfbWlzLyAgICAgICAgICAgICAgKDMz
+LjQ1JSkKICAgICAgICAgICAgICAgICA1ICAgICAgIGFtZF9pb21tdV8wL21lbV9pb21tdV90bGJf
+cGRlX2hpdC8gICAgKDMzLjQ2JSkKICAgICAgICAgICAgICAgODE5ICAgICAgIGFtZF9pb21tdV8w
+L21lbV9pb21tdV90bGJfcGRlX21pcy8gICAgKDMzLjQyJSkKICAgICAgICAgICAgICAgICAyICAg
+ICAgIGFtZF9pb21tdV8wL21lbV9pb21tdV90bGJfcHRlX2hpdC8gICAgKDMzLjM5JSkKICAgICAg
+ICAgICAgIDEsMDEyICAgICAgIGFtZF9pb21tdV8wL21lbV9pb21tdV90bGJfcHRlX21pcy8gICAg
+KDMzLjM3JSkKICAgICAgICAgICAgICAgICAwICAgICAgIGFtZF9pb21tdV8wL21lbV9wYXNzX2V4
+Y2wvICAgICAgICAgICAgKDMzLjM0JSkKICAgICAgICAgICAgICAgICAwICAgICAgIGFtZF9pb21t
+dV8wL21lbV9wYXNzX3ByZXRyYW5zLyAgICAgICAgKDMzLjI5JSkKICAgICAgICAgICAgIDEsNTUz
+ICAgICAgIGFtZF9pb21tdV8wL21lbV9wYXNzX3VudHJhbnMvICAgICAgICAgKDMzLjI4JSkKICAg
+ICAgICAgICAgICAgICAwICAgICAgIGFtZF9pb21tdV8wL21lbV90YXJnZXRfYWJvcnQvICAgICAg
+ICAgKDMzLjI4JSkKICAgICAgICAgICAgMzksMjA3ICAgICAgIGFtZF9pb21tdV8wL21lbV90cmFu
+c190b3RhbC8gICAgICAgICAgKDMzLjI3JSkKICAgICAgICAgICAgICAgICAwICAgICAgIGFtZF9p
+b21tdV8wL3BhZ2VfdGJsX3JlYWRfZ3N0LyAgICAgICAgKDMzLjI3JSkKICAgICAgICAgICAgIDEs
+NjI1ICAgICAgIGFtZF9pb21tdV8wL3BhZ2VfdGJsX3JlYWRfbnN0LyAgICAgICAgKDMzLjI3JSkK
+ICAgICAgICAgICAgICAgOTAxICAgICAgIGFtZF9pb21tdV8wL3BhZ2VfdGJsX3JlYWRfdG90LyAg
+ICAgICAgKDMzLjI3JSkKICAgICAgICAgICAgICAgICAwICAgICAgIGFtZF9pb21tdV8wL3NtaV9i
+bGsvICAgICAgICAgICAgICAgICAgKDMzLjclKQogICAgICAgICAgICAgICAgIDAgICAgICAgYW1k
+X2lvbW11XzAvc21pX3JlY3YvICAgICAgICAgICAgICAgICAoMzMuMjglKQogICAgICAgICAgICAg
+ICAgIDAgICAgICAgYW1kX2lvbW11XzAvdGxiX2ludi8gICAgICAgICAgICAgICAgICAoMzMuMjcl
+KQogICAgICAgICAgICAgICAgIDAgICAgICAgYW1kX2lvbW11XzAvdmFwaWNfaW50X2d1ZXN0LyAg
+ICAgICAgICAoMzMuMjclKQogICAgICAgICAgICAgICA0MjAgICAgICAgYW1kX2lvbW11XzAvdmFw
+aWNfaW50X25vbl9ndWVzdC8gICAgICAoMzMuMjclKQoKICAgICAgMTAuMDAzMDA0MDk2IHNlY29u
+ZHMgdGltZSBlbGFwc2VkCgoK
+
+--------------D7C2E3FC4E03C0F3D4199D22--
