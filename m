@@ -2,133 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A57835FC44
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0D35FC4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347764AbhDNUFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:05:04 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.216]:45015 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233425AbhDNUE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:04:58 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 091F2D738BB
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:04:20 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id WlkJl9FAGL7DmWlkJlM7Ba; Wed, 14 Apr 2021 15:04:20 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=I55bdEFQX4moo7BAVIRls7hGJWpEXoU8cYRMSjJc/ns=; b=SpJOcVLYwguf8IF31YAypIuX5M
-        zt7P8mqVXdcqQ7CdS4VxwIPQIdU1El+WOZH/z4clqIC0tra3ff7o1vX9915F8qeX4CphNwuzJOAxl
-        CCYzMEEaQnxbZhYvimw8ZGh4O9MQ9xDRdM2DzkIRNSnAwX3dOV1akmqN9ITjTk56o2VlgwQt0A6KX
-        f/6qimDjq+bQ5JmmJmW4ztGacvkxNy0vnsmc658IIncahYUXeV+XabjEJD0DaKUeeatjdJQ8dP2UW
-        MeR+MIQDyHp0pb5fR4ucU1WVKhnuE2g5Eop6sp7cYV2ex6Q+hSVo9UCGcK3R7ywECgPqh+DcjtWZ1
-        zF8JXocw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60882 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lWlkG-000GGN-IV; Wed, 14 Apr 2021 15:04:16 -0500
-Subject: Re: [PATCH][next] iommu/vt-d: Fix out-bounds-warning in
- intel_svm_page_response()
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210413195409.GA322376@embeddedor>
- <61b37f83-eb9e-cf81-c5e6-ca322f76f490@linux.intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <4ffdd120-d46d-f44e-ba66-000e95fc9b1a@embeddedor.com>
-Date:   Wed, 14 Apr 2021 15:04:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234639AbhDNUHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:07:02 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16953 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230493AbhDNUG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:06:56 -0400
+IronPort-SDR: Px7SQbTyzPb7O9Qw7eH65/9SHqBd4q+6usabJHiOKB3cWh3XuiUxf+uIhdlmr+Fj7UUXNEDGio
+ TqduC6O/5e3w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194289909"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="194289909"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 13:06:34 -0700
+IronPort-SDR: /F/n8F7lMm7e3GOVharWdu5rWXP8oSpLWbns0yEtrIrJZjMsOoYOhObCXE3k+ZJHuJvBwiCMCE
+ GPLVAO67U3gg==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="532893966"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 13:06:32 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 66643204F8;
+        Wed, 14 Apr 2021 23:06:30 +0300 (EEST)
+Date:   Wed, 14 Apr 2021 23:06:30 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     ascordeiro <alinesantanacordeiro@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH] staging: media: atomisp: pci: Format multi-line comments
+ according to coding-style in file atomisp_cmd.c
+Message-ID: <20210414200630.GE3@paasikivi.fi.intel.com>
+References: <20210414182755.GA2799@focaruja>
+ <20210414183325.GD3@paasikivi.fi.intel.com>
+ <fae832b2555f1d971b45fcdfe34952aa03a42e4d.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <61b37f83-eb9e-cf81-c5e6-ca322f76f490@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lWlkG-000GGN-IV
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60882
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+In-Reply-To: <fae832b2555f1d971b45fcdfe34952aa03a42e4d.camel@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Balou,
-
-On 4/14/21 00:24, Lu Baolu wrote:
-> Hi Gustavo,
+On Wed, Apr 14, 2021 at 03:55:42PM -0300, ascordeiro wrote:
+> Em qua, 2021-04-14 às 21:33 +0300, Sakari Ailus escreveu:
+> > Hi Aline,
+> > 
+> > Thanks for the patch.
+> > 
+> > On Wed, Apr 14, 2021 at 03:27:55PM -0300, Aline Santana Cordeiro
+> > wrote:
+> > > Format multi-line comments according to the coding-style.
+> > > Issue detected by checkpatch.pl.
+> > > 
+> > > Signed-off-by: Aline Santana Cordeiro <
+> > > alinesantanacordeiro@gmail.com>
+> > > ---
+> > >  drivers/staging/media/atomisp/pci/atomisp_cmd.c | 109
+> > > ++++++++++++++----------
+> > >  1 file changed, 65 insertions(+), 44 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > > b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > > index 592ea99..6113785 100644
+> > > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+> > > @@ -67,7 +67,8 @@
+> > >   * At 15fps this means 133ms. We set the timeout a bit longer.
+> > >   * Each flash driver is supposed to set its own timeout, but
+> > >   * just in case someone else changed the timeout, we set it
+> > > - * here to make sure we don't damage the flash hardware. */
+> > > + * here to make sure we don't damage the flash hardware.
+> > > + */
+> > >  #define FLASH_TIMEOUT 800 /* ms */
+> > >  
+> > >  union host {
+> > > @@ -562,7 +563,8 @@ irqreturn_t atomisp_isr(int irq, void *dev)
+> > >                          * and driver needs to keep old
+> > > sequence_temp value.
+> > >                          * NOTE: There is assumption here that ISP
+> > > will not
+> > >                          * start processing next frame from sensor
+> > > before old
+> > > -                        * one is completely done. */
+> > > +                        * one is completely done.
+> > > +                        */
+> > >                         if (atomic_read(&asd->sequence) ==
+> > > atomic_read(
+> > >                                 &asd->sequence_temp))
+> > >                                 atomic_set(&asd->sequence_temp,
+> > > @@ -1247,7 +1249,8 @@ void atomisp_buf_done(struct
+> > > atomisp_sub_device *asd, int error,
+> > >  
+> > >         if (IS_ISP2401) {
+> > >                 /* If there are no buffers queued then
+> > 
+> > This should begin with:
+> > 
+> >                 /*
+> >                  *
+> > 
+> > And the same for the rest. Apart from this the patch seems fine.
+> > 
+> Hi Sakari,
 > 
-> On 4/14/21 3:54 AM, Gustavo A. R. Silva wrote:
->> Replace call to memcpy() with just a couple of simple assignments in
->> order to fix the following out-of-bounds warning:
->>
->> drivers/iommu/intel/svm.c:1198:4: warning: 'memcpy' offset [25, 32] from the object at 'desc' is out of the bounds of referenced subobject 'qw2' with type
->> 'long long unsigned int' at offset 16 [-Warray-bounds]
->>
->> The problem is that the original code is trying to copy data into a
->> couple of struct members adjacent to each other in a single call to
->> memcpy(). This causes a legitimate compiler warning because memcpy()
->> overruns the length of &desc.qw2.
->>
->> This helps with the ongoing efforts to globally enable -Warray-bounds
->> and get us closer to being able to tighten the FORTIFY_SOURCE routines
->> on memcpy().
->>
->> Link: https://github.com/KSPP/linux/issues/109
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->> Â  drivers/iommu/intel/svm.c | 7 ++++---
->> Â  1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->> index 5165cea90421..65909f504c50 100644
->> --- a/drivers/iommu/intel/svm.c
->> +++ b/drivers/iommu/intel/svm.c
->> @@ -1194,9 +1194,10 @@ int intel_svm_page_response(struct device *dev,
->> Â Â Â Â Â Â Â Â Â  desc.qw1 = QI_PGRP_IDX(prm->grpid) | QI_PGRP_LPIG(last_page);
->> Â Â Â Â Â Â Â Â Â  desc.qw2 = 0;
->> Â Â Â Â Â Â Â Â Â  desc.qw3 = 0;
->> -Â Â Â Â Â Â Â  if (private_present)
->> -Â Â Â Â Â Â Â Â Â Â Â  memcpy(&desc.qw2, prm->private_data,
->> -Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  sizeof(prm->private_data));
+> I'm going to send a v2 correcting all the multi-line comments that are
+> not beginning like this.
 > 
-> The same memcpy() is used in multiple places in this file. Did they
-> compile the same warnings? Or there are multiple patches to fix them
-> one by one?
+> Besides, there are single line comments with different styles, a few
+> like this:
+> 
+> case 1:				/* comment */
+> 
+> and the other like this:
+> 				/*
+> case2:				 * comment
+>  				 */
+> 
+> Should I standardize these ones to the first case?
 
-I just see one more instance of this same case:
+The first one is preferred for multi-line comments. But please keep under
+80 characters per line.
 
-1023                         if (req->priv_data_present)
-1024                                 memcpy(&resp.qw2, req->priv_data,
-1025                                        sizeof(req->priv_data));
+> 
+> Thank you for yout attention,
 
-I missed it and I'll address it in v2. Do you see another one?
+You're welcome!
 
-Thanks for the feedback!
---
-Gustavo
+-- 
+Kind regards,
 
+Sakari Ailus
