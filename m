@@ -2,196 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFECD35EC86
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A25C35EC98
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347756AbhDNFwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 01:52:22 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:33401 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347569AbhDNFwU (ORCPT
+        id S1348085AbhDNFzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 01:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233304AbhDNFzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 01:52:20 -0400
-Received: by mail-lf1-f47.google.com with SMTP id w8so22677523lfr.0;
-        Tue, 13 Apr 2021 22:51:58 -0700 (PDT)
+        Wed, 14 Apr 2021 01:55:15 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AF3C061574;
+        Tue, 13 Apr 2021 22:54:54 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id y2so9491533plg.5;
+        Tue, 13 Apr 2021 22:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3SS7TfLcX3MlIeFX8w3xQCLk3KlSKpLv7cvdIhmhAbc=;
+        b=ryrnYW3p7SbZXMlLv9/ra9F8bIuoQScZP8/IV4eEUXZJOgKi6d17pjW9ydO2tX7sG3
+         WM+wB6LxDHlLBoaQ/Zg1IssqZF2qTiFs7X2rU28fUOWr2KJ9Bu+9JKO5VGTSciz8MuG0
+         4Mo1WbZMAOVvV1tR17zDsXH0EnN1f8eWXZQEQQHBOIF3uq3Z/pTEMIiqB0r5P58R69gH
+         pNx7edjzHG6ifFSfqF+c/9TRL8fNKHbPMhNW+s0c1MPvaDL2t0xFEQIDvSfuEpfbgl/c
+         gzMzkiPnavry8jrMjHFmtJqpNVbHV/7nfPYuDLpgA5edMNZQCdBdwE5abkAi+/6VhUpO
+         xMhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J7crRi/h8pPP48l770iPX9pdtxPTTqKfvzb9h8aF7ts=;
-        b=DBetRYSAYrvxkeku5Y8FSYJFhmz/yUYModq2GHZ1G5/wzs4xUwCWckUxfq5o/4tVIs
-         lW91Paf5/nCc6SwEvGaj4/ojOHWdN0lsIkOsKU4upJRNbPDVY1wVNAovBKoNeJSxSUIq
-         aD87eZv2+Q6jTANmzbT6qjXI/6lNpvpCuK6YU2M3odlfA0UR2qnMv/Hg4xEujKaPA671
-         IgdEw7ZsfR+5PIhN4VPJBTZkOORTdgaiq0SmyRZx9IP3BWJnNyDLPirEZLd854ge0A1Q
-         jJIucSK6tyFbUL0gJkERHMH9vfv/HazLO8FbyoPNQPJW30Z/ck2CXmE1yywvN09dpIz3
-         M/9w==
-X-Gm-Message-State: AOAM531aTnRkR2ZkDAADMCVTFf6z7fMzXWrm5tS6HxfO8Vn+PljfYc1d
-        Ak0P+u88g+aifISm4g42rFA=
-X-Google-Smtp-Source: ABdhPJyqTcTw+IiTldrqdYI3IsyT0FSJzQXkDjFfn9L+wdSuHRldsKvDoCL6pJpn7ZLIK315R39BBw==
-X-Received: by 2002:ac2:4e83:: with SMTP id o3mr13196668lfr.616.1618379518193;
-        Tue, 13 Apr 2021 22:51:58 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id h17sm1059001lfu.153.2021.04.13.22.51.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3SS7TfLcX3MlIeFX8w3xQCLk3KlSKpLv7cvdIhmhAbc=;
+        b=hACWXQldygsqbNYHkAFJ7aMz5vLYhTS/Cnsuip0JakSUMbVCHB6ODenHicbrmpkmbd
+         WXQ03rhBVUNan1R7gQsPSaKe7wFZGVzliC43IP4iy6D5xU+At0vs66aXAX2Ous+GYXA5
+         1jo1V61w1rU7Xqgb7BjfpfDMnciW5dtUJgVo8CGRWLs5VGOOwZCfJX1l4rFBoSR7V7XK
+         M43lhLYdPksZjcobPR97D5h5alXkfMdT3FJsEp+wGn2QusLhzvc8fa3R3wC0sFvVhTAj
+         tZOSxSJILDCgGjVy3H/tPdVFxCHBInun6WvsZ4oib0TCHgvmN6pAy5sRohyVkhgZQnWR
+         a3Pw==
+X-Gm-Message-State: AOAM5307v7gpDxdz9DvfRnLSeZ4JFsZ4kZJJ7A5GYP1mIhKjdf9nI6Y8
+        Uge52jnKwb9NHNJYEEhG38K/FsmZgXpvbahq
+X-Google-Smtp-Source: ABdhPJz8mixwYF1iRmYLcpc7Q+i79Q2AdDqqW3lovuPkYLGs61jcUK2d5F0vgOQn1ifaPyACOC6ewA==
+X-Received: by 2002:a17:903:2309:b029:e7:1063:e6aa with SMTP id d9-20020a1709032309b02900e71063e6aamr36310484plh.52.1618379693978;
+        Tue, 13 Apr 2021 22:54:53 -0700 (PDT)
+Received: from laptop.hsd1.wa.comcast.net ([2601:600:8500:5f14:d627:c51e:516e:a105])
+        by smtp.gmail.com with ESMTPSA id u17sm13728969pfm.113.2021.04.13.22.54.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 22:51:57 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 08:51:51 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: [PATCH v7 1/9] dt_bindings: Add protection limit properties
-Message-ID: <169aee95444042a7557e630a028e86f1aed0dd62.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
+        Tue, 13 Apr 2021 22:54:53 -0700 (PDT)
+From:   Andrei Vagin <avagin@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/4 POC] Allow executing code and syscalls in another address space
+Date:   Tue, 13 Apr 2021 22:52:13 -0700
+Message-Id: <20210414055217.543246-1-avagin@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support specifying protection/error/warning limits for regulator
-over current, over temperature and over/under voltage.
+We already have process_vm_readv and process_vm_writev to read and write
+to a process memory faster than we can do this with ptrace. And now it
+is time for process_vm_exec that allows executing code in an address
+space of another process. We can do this with ptrace but it is much
+slower.
 
-Most of the PMICs support only "protection" feature but few
-setups do also support error/warning level indications.
+= Use-cases =
 
-On many ICs most of the protection limits can't actually be set.
-But for example the ampere limit for over-current protection on ROHM
-BD9576 can be configured - or feature can be completely disabled.
+Here are two known use-cases. The first one is “application kernel”
+sandboxes like User-mode Linux and gVisor. In this case, we have a
+process that runs the sandbox kernel and a set of stub processes that
+are used to manage guest address spaces. Guest code is executed in the
+context of stub processes but all system calls are intercepted and
+handled in the sandbox kernel. Right now, these sort of sandboxes use
+PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
+significantly speed them up.
 
-Provide limit setting for all protections/errors for the sake of
-the completeness and do that using own properties for all so that
-not all users would need to set all levels when only one or few are
-supported.
+Another use-case is CRIU (Checkpoint/Restore in User-space). Several
+process properties can be received only from the process itself. Right
+now, we use a parasite code that is injected into the process. We do
+this with ptrace but it is slow, unsafe, and tricky. process_vm_exec can
+simplify the process of injecting a parasite code and it will allow
+pre-dump memory without stopping processes. The pre-dump here is when we
+enable a memory tracker and dump the memory while a process is continue
+running. On each interaction we dump memory that has been changed from
+the previous iteration. In the final step, we will stop processes and
+dump their full state. Right now the most effective way to dump process
+memory is to create a set of pipes and splice memory into these pipes
+from the parasite code. With process_vm_exec, we will be able to call
+vmsplice directly. It means that we will not need to stop a process to
+inject the parasite code.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+= How it works =
 
----
-No changes since RFC-v2
----
- .../bindings/regulator/regulator.yaml         | 82 +++++++++++++++++++
- 1 file changed, 82 insertions(+)
+process_vm_exec has two modes:
 
-diff --git a/Documentation/devicetree/bindings/regulator/regulator.yaml b/Documentation/devicetree/bindings/regulator/regulator.yaml
-index 6d0bc9cd4040..a6ae9ecae5cc 100644
---- a/Documentation/devicetree/bindings/regulator/regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/regulator.yaml
-@@ -117,6 +117,88 @@ properties:
-     description: Enable over current protection.
-     type: boolean
- 
-+  regulator-oc-protection-microamp:
-+    description: Set over current protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted.
-+
-+  regulator-oc-error-microamp:
-+    description: Set over current error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested.
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted.
-+
-+  regulator-oc-warn-microamp:
-+    description: Set over current warning limit. This is a limit where hardware
-+      is assumed still to be functional but approaching limit where it gets
-+      damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted.
-+
-+  regulator-ov-protection-microvolt:
-+    description: Set over voltage protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted. Limit is given as microvolt offset from
-+      voltage set to regulator.
-+
-+  regulator-ov-error-microvolt:
-+    description: Set over voltage error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted. Limit
-+      is given as microvolt offset from voltage set to regulator.
-+
-+  regulator-ov-warn-microvolt:
-+    description: Set over voltage warning limit. This is a limit where hardware
-+      is assumed still to be functional but approaching limit where it gets
-+      damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted. Limit is given as microvolt
-+      offset from voltage set to regulator.
-+
-+  regulator-uv-protection-microvolt:
-+    description: Set over under voltage protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted. Limit is given as microvolt offset from
-+      voltage set to regulator.
-+
-+  regulator-uv-error-microvolt:
-+    description: Set under voltage error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted. Limit
-+      is given as microvolt offset from voltage set to regulator.
-+
-+  regulator-uv-warn-microvolt:
-+    description: Set over under voltage warning limit. This is a limit where
-+      hardware is assumed still to be functional but approaching limit where
-+      it gets damaged. Recovery actions should be initiated. Zero can be passed
-+      to disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted. Limit is given as microvolt
-+      offset from voltage set to regulator.
-+
-+  regulator-temp-protection-kelvin:
-+    description: Set over temperature protection limit. This is a limit where
-+      hardware performs emergency shutdown. Zero can be passed to disable
-+      protection and value '1' indicates that protection should be enabled but
-+      limit setting can be omitted.
-+
-+  regulator-temp-error-kelvin:
-+    description: Set over temperature error limit. This is a limit where part of
-+      the hardware propably is malfunctional and damage prevention is requested
-+      Zero can be passed to disable error detection and value '1' indicates
-+      that detection should be enabled but limit setting can be omitted.
-+
-+  regulator-temp-warn-kelvin:
-+    description: Set over temperature warning limit. This is a limit where
-+      hardware is assumed still to be functional but approaching limit where it
-+      gets damaged. Recovery actions should be initiated. Zero can be passed to
-+      disable detection and value '1' indicates that detection should
-+      be enabled but limit setting can be omitted.
-+
-   regulator-active-discharge:
-     description: |
-       tristate, enable/disable active discharge of regulators. The values are:
+* Execute code in an address space of a target process and stop on any
+  signal or system call.
+
+* Execute a system call in an address space of a target process.
+
+int process_vm_exec(pid_t pid, struct sigcontext uctx,
+		    unsigned long flags, siginfo_t siginfo,
+		    sigset_t  *sigmask, size_t sizemask)
+
+PID - target process identification. We can consider to use pidfd
+instead of PID here.
+
+sigcontext contains a process state with what the process will be
+resumed after switching the address space and then when a process will
+be stopped, its sate will be saved back to sigcontext.
+
+siginfo is information about a signal that has interrupted the process.
+If a process is interrupted by a system call, signfo will contain a
+synthetic siginfo of the SIGSYS signal.
+
+sigmask is a set of signals that process_vm_exec returns via signfo.
+
+# How fast is it
+
+In the fourth patch, you can find two benchmarks that execute a function
+that calls system calls in a loop. ptrace_vm_exe uses ptrace to trap
+system calls, proces_vm_exec uses the process_vm_exec syscall to do the
+same thing.
+
+ptrace_vm_exec:   1446 ns/syscall
+ptrocess_vm_exec:  289 ns/syscall
+
+PS: This version is just a prototype. Its goal is to collect the initial
+feedback, to discuss the interfaces, and maybe to get some advice on
+implementation..
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+
+Andrei Vagin (4):
+  signal: add a helper to restore a process state from sigcontex
+  arch/x86: implement the process_vm_exec syscall
+  arch/x86: allow to execute syscalls via process_vm_exec
+  selftests: add tests for process_vm_exec
+
+ arch/Kconfig                                  |  15 ++
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/entry/common.c                       |  19 +++
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/x86/include/asm/sigcontext.h             |   2 +
+ arch/x86/kernel/Makefile                      |   1 +
+ arch/x86/kernel/process_vm_exec.c             | 160 ++++++++++++++++++
+ arch/x86/kernel/signal.c                      | 125 ++++++++++----
+ include/linux/entry-common.h                  |   2 +
+ include/linux/process_vm_exec.h               |  17 ++
+ include/linux/sched.h                         |   7 +
+ include/linux/syscalls.h                      |   6 +
+ include/uapi/asm-generic/unistd.h             |   4 +-
+ include/uapi/linux/process_vm_exec.h          |   8 +
+ kernel/entry/common.c                         |   2 +-
+ kernel/fork.c                                 |   9 +
+ kernel/sys_ni.c                               |   2 +
+ .../selftests/process_vm_exec/Makefile        |   7 +
+ tools/testing/selftests/process_vm_exec/log.h |  26 +++
+ .../process_vm_exec/process_vm_exec.c         | 105 ++++++++++++
+ .../process_vm_exec/process_vm_exec_fault.c   | 111 ++++++++++++
+ .../process_vm_exec/process_vm_exec_syscall.c |  81 +++++++++
+ .../process_vm_exec/ptrace_vm_exec.c          | 111 ++++++++++++
+ 23 files changed, 785 insertions(+), 37 deletions(-)
+ create mode 100644 arch/x86/kernel/process_vm_exec.c
+ create mode 100644 include/linux/process_vm_exec.h
+ create mode 100644 include/uapi/linux/process_vm_exec.h
+ create mode 100644 tools/testing/selftests/process_vm_exec/Makefile
+ create mode 100644 tools/testing/selftests/process_vm_exec/log.h
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
+ create mode 100644 tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
+
 -- 
-2.25.4
+2.29.2
 
-
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
