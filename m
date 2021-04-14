@@ -2,269 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CB635FEA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E16735FEA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhDNXxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 19:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhDNXxm (ORCPT
+        id S230185AbhDNXyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 19:54:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55830 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhDNXym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:53:42 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A23C061574;
-        Wed, 14 Apr 2021 16:53:20 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5503451E;
-        Thu, 15 Apr 2021 01:53:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618444398;
-        bh=lb/5uK5Hz+6mXrJKlBYecFPOMdTJOWf7T+AFNN7/dTA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fOaFXiQgI6togrI1PNbO4TAMEchlEfr5ZoEHLWSD/X3DqQxVJfMqbtYqlJj73/p2L
-         H/73m61VPg8G74H7I36icFF7DGQyRH4t8s0dOi+/R50dgJivBFk3orG8e3BdQ9RaiV
-         CFvBLY+8JPlKUH2XXlRRNZ9J3KHP2n1GhDXEOjnA=
-Date:   Thu, 15 Apr 2021 02:53:17 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Wed, 14 Apr 2021 19:54:42 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618444458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qsvcj0n9frkh6dJnqzTyQUWd/b4Iv/TVMWQmBRti16w=;
+        b=hqmyZ9Oy3zes5zgAYiyuHeGq0Q/yzfkB+PK37i6hVkvcNc++JAeCi8m7XtEvPONLSe90My
+        DzLXQxcqKmOjqOTw5gKfzppUKObY4rlyUSSRk++uI5PINbUhKFFPGhyqKB1fdQqe0pmUWJ
+        z50DyljBcEgJjmkRYoBLX1Zltav1jBwa9KQ70Dgh5Aj+8yGh1kqPznEL3++MZoUN9MBvdb
+        2yf+lvZnIDcLeKBXvdukaZVrFweqnkZDsBi9b5+208aZQ5sE5TzmVcC5GOfDGeh81zOSjj
+        hacskuIOgpLQMsAKYgeVZX6Lv+H9M1T/r/yqKwxVb/jDf/0kOqQbzyiw0xC+Cw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618444458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qsvcj0n9frkh6dJnqzTyQUWd/b4Iv/TVMWQmBRti16w=;
+        b=0C3EtLASdZbkGgu6MQOc1VqsFz078AhwzJDYw1gCl6lheLH3mlT3dgdKamxhgQAFOpuPka
+        Hi4Zv9YSzxCV5VDA==
+To:     paulmck@kernel.org, Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] arm64: dts: renesas: eagle: Add GMSL .dtsi
-Message-ID: <YHeAbbyc2oURne3G@pendragon.ideasonboard.com>
-References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
- <20210414135128.180980-5-jacopo+renesas@jmondi.org>
+Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it has been spawned
+In-Reply-To: <20210414181158.GU4510@paulmck-ThinkPad-P17-Gen-1>
+References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2> <87czuz1tbc.ffs@nanos.tec.linutronix.de> <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1> <20210414071322.nz64kow4sp4nwzmy@linutronix.de> <20210414085757.GA1917@pc638.lan> <20210414181158.GU4510@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 15 Apr 2021 01:54:18 +0200
+Message-ID: <87tuo8v2vp.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210414135128.180980-5-jacopo+renesas@jmondi.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo and Kieran,
+Paul,
 
-Thank you for the patch.
+On Wed, Apr 14 2021 at 11:11, Paul E. McKenney wrote:
+> On Wed, Apr 14, 2021 at 10:57:57AM +0200, Uladzislau Rezki wrote:
+>> On Wed, Apr 14, 2021 at 09:13:22AM +0200, Sebastian Andrzej Siewior wrote:
+>> At the same time Paul made another patch:
+>> 
+>> softirq: Don't try waking ksoftirqd before it has been spawned
+>> 
+>> it allows us to keep RCU-tasks initialization before even
+>> early_initcall() where it is now and let our rcu-self-test
+>> to be completed without any hanging.
+>
+> In short, this window of time in which it is not possible to reliably
+> wait on a softirq handler has caused trouble, just as several other
+> similar boot-sequence time windows have caused trouble in the past.
+> It therefore makes sense to just eliminate this problem, and prevent
+> future developers from facing inexplicable silent boot-time hangs.
+>
+> We can move the spawning of ksoftirqd kthreads earlier, but that
+> simply narrows the window.  It does not eliminate the problem.
+>
+> I can easily believe that this might have -rt consequences that need
+> attention.  For your amusement, I will make a few guesses as to what
+> these might be:
+>
+> o	Back-of-interrupt softirq handlers degrade real-time response.
+> 	This should not be a problem this early in boot, and once the
+> 	ksoftirqd kthreads are spawned, there will never be another
+> 	back-of-interrupt softirq handler in kernels that have
+> 	force_irqthreads set, which includes -rt kernels.
 
-On Wed, Apr 14, 2021 at 03:51:27PM +0200, Jacopo Mondi wrote:
-> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> Describe the FAKRA connector available on Eagle board that allows
-> connecting GMSL camera modules such as IMI RDACM20 and RDACM21.
-> 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi | 186 ++++++++++++++++++++
->  1 file changed, 186 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
-> new file mode 100644
-> index 000000000000..1836bca1e8b2
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
-> @@ -0,0 +1,186 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Device Tree Source (overlay) for the Eagle V3M GMSL connectors
-> + *
-> + * Copyright (C) 2017 Ideas on Board <kieran.bingham@ideasonboard.com>
-> + * Copyright (C) 2021 Jacopo Mondi <jacopo+renesas@jmondi.org>
-> + *
-> + * This overlay allows you to define GMSL cameras connected to the FAKRA
-> + * connectors on the Eagle-V3M (or compatible) board.
-> + *
-> + * The following cameras are currently supported:
-> + *    "imi,rdacm20"
-> + *    "imi,rdacm21"
-> + */
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +
-> +/*
-> + * Select which cameras are in use:
-> + * #define EAGLE_CAMERA0_RDACM20
-> + * #define EAGLE_CAMERA0_RDACM21
-> + *
-> + * The two camera modules are configured with different image formats
-> + * and cannot be mixed.
-> + */
-> +#define EAGLE_CAMERA0_RDACM21
-> +#define EAGLE_CAMERA1_RDACM21
-> +#define EAGLE_CAMERA2_RDACM21
-> +#define EAGLE_CAMERA3_RDACM21
+Not a problem obviously.
 
-To avoid possible errors, I'd use one macro to set the camera model, and
-another macro to select the ports. The second could be a bitmask if
-desired.
+> o	That !__this_cpu_read(ksoftirqd) check remains at runtime, even
+> 	though it always evaluates to false.  I would be surprised if
+> 	this overhead is measurable at the system level, but if it is,
+> 	static branches should take care of this.
 
-These macros should be defined in the file that includes this file, not
-here.
+Agreed.
 
-> +
-> +/* Set the compatible string based on the camera model. */
-> +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA1_RDACM21) || \
-> +    defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA3_RDACM21)
-> +#define EAGLE_CAMERA_MODEL	"imi,rdacm21"
-> +#define EAGLE_USE_RDACM21
-> +#elif defined(EAGLE_CAMERA0_RDACM20) || defined(EAGLE_CAMERA1_RDACM20) || \
-> +      defined(EAGLE_CAMERA2_RDACM20) || defined(EAGLE_CAMERA3_RDACM20)
-> +#define EAGLE_CAMERA_MODEL	"imi,rdacm20"
-> +#define EAGLE_USE_RDACM20
-> +#endif
-> +
-> +/* Define which cameras are available. */
-> +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA0_RDACM20)
-> +#define EAGLE_USE_CAMERA_0
-> +#endif
-> +
-> +#if defined(EAGLE_CAMERA1_RDACM21) || defined(EAGLE_CAMERA1_RDACM20)
-> +#define EAGLE_USE_CAMERA_1
-> +#endif
-> +
-> +#if defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA2_RDACM20)
-> +#define EAGLE_USE_CAMERA_2
-> +#endif
-> +
-> +#if defined(EAGLE_CAMERA3_RDACM21) || defined(EAGLE_CAMERA3_RDACM20)
-> +#define EAGLE_USE_CAMERA_3
-> +#endif
-> +
-> +/* Define the endpoint links. */
-> +#ifdef EAGLE_USE_CAMERA_0
-> +&max9286_in0 {
-> +	remote-endpoint = <&fakra_con0>;
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_1
-> +&max9286_in1 {
-> +	remote-endpoint = <&fakra_con1>;
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_2
-> +&max9286_in2 {
-> +	remote-endpoint = <&fakra_con2>;
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_3
-> +&max9286_in3 {
-> +	remote-endpoint = <&fakra_con3>;
-> +};
-> +#endif
-> +
-> +/* Populate the GMSL i2c-mux bus with camera nodes. */
-> +#if defined(EAGLE_USE_RDACM21) || defined(EAGLE_USE_RDACM20)
-> +
-> +#ifdef EAGLE_USE_CAMERA_0
-> +&vin0 {
-> +	status = "okay";
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_1
-> +&vin1 {
-> +	status = "okay";
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_2
-> +&vin2 {
-> +	status = "okay";
-> +};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_3
-> +&vin3 {
-> +	status = "okay";
-> +};
-> +#endif
-> +
-> +&gmsl {
-> +
-> +	status = "okay";
-> +	maxim,reverse-channel-microvolt = <100000>;
-> +
-> +	i2c-mux {
-> +#ifdef EAGLE_USE_CAMERA_0
-> +		i2c@0 {
-> +			status = "okay";
-> +
-> +			camera@51 {
-> +				compatible = EAGLE_CAMERA_MODEL;
-> +				reg = <0x51>, <0x61>;
-> +
-> +				port {
-> +					fakra_con0: endpoint {
-> +						remote-endpoint = <&max9286_in0>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_1
-> +		i2c@1 {
-> +			status = "okay";
-> +
-> +			camera@52 {
-> +				compatible = EAGLE_CAMERA_MODEL;
-> +				reg = <0x52>, <0x62>;
-> +
-> +				port {
-> +					fakra_con1: endpoint {
-> +						remote-endpoint = <&max9286_in1>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_2
-> +		i2c@2 {
-> +			status = "okay";
-> +
-> +			camera@53 {
-> +				compatible = EAGLE_CAMERA_MODEL;
-> +				reg = <0x53>, <0x63>;
-> +
-> +				port {
-> +					fakra_con2: endpoint {
-> +						remote-endpoint = <&max9286_in2>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +#endif
-> +
-> +#ifdef EAGLE_USE_CAMERA_3
-> +		i2c@3 {
-> +			status = "okay";
-> +
-> +			camera@54 {
-> +				compatible = EAGLE_CAMERA_MODEL;
-> +				reg = <0x54>, <0x64>;
-> +
-> +				port {
-> +					fakra_con3: endpoint {
-> +						remote-endpoint = <&max9286_in3>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +#endif
-> +	};
-> +};
-> +#endif
+> o	There might be a -rt lockdep check that isn't happy with
+> 	back-of-interrupt softirq handlers.  But such a lockdep check
+> 	could be conditioned on __this_cpu_read(ksoftirqd), thus
+> 	preventing it from firing during that short window at boot time.
 
--- 
-Regards,
+It's not like there are only a handful of lockdep invocations which need
+to be taken care of. The lockdep checks are mostly inside of lock
+operations and if lockdep has recorded back-of-interrupt context once
+during boot it will complain about irqs enabled context usage later on
+no matter what.
 
-Laurent Pinchart
+If you can come up with a reasonable implementation of that without
+losing valuable lockdep coverage and without creating a major mess in
+the code then I'm all ears.
+
+But lockdep is just one of the problems
+
+> o	The -rt kernels might be using locks to implement things like
+> 	local_bh_disable(), in which case back-of-interrupt softirq
+> 	handlers could result in self-deadlock.  This could be addressed
+> 	by disabling bh the old way up to the time that the ksoftirqd
+> 	kthreads are created.  Because these are created while the system
+> 	is running on a single CPU (right?), a simple flag (or static
+> 	branch) could be used to switch this behavior into lock-only
+> 	mode long before the first real-time application can be spawned.
+
+That has absolutely nothing to do with the first real-time application
+at all and just looking at the local_bh_disable() part does not cut it
+either.
+
+The point is that the fundamental assumption of RT to break the non-rt
+semantics of interrupts and soft interrupts in order to rely on always
+thread context based serialization is going down the drain with that.
+
+Surely we can come up with yet another pile of horrible hacks to work
+around that, which in turn will cause more problems than they solve.
+
+But what for? Just to make it possible to issue rcu_whatever() during
+early boot just because?
+
+Give me _one_ serious technical reason why this is absolutely required
+and why the accidental misplacement which might happen due to
+unawareness, sloppyness or incompetence is reason enough to create a
+horrible clusterfail just for purely academic reasons.
+
+None of the usecases at hand did have any reason to depend on the early
+boot behaviour of softirqs and unless you can come up with something
+really compelling the proper solution is to revert this commit and add
+the following instead:
+
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -74,7 +74,10 @@ static void wakeup_softirqd(void)
+ 	/* Interrupts are disabled: no need to stop preemption */
+ 	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
+ 
+-	if (tsk && tsk->state != TASK_RUNNING)
++	if (WARN_ON_ONCE(!tsk))
++		return;
++
++	if (tsk->state != TASK_RUNNING)
+ 		wake_up_process(tsk);
+ }
+ 
+which will trigger on any halfways usefull CI infrastructure which cares
+about the !default use cases of the kernel.
+
+Putting a restriction like that onto the early boot process is not the
+end of the world and might teach people who think that their oh so
+important stuff is not that important at all especially not during the
+early boot phase which is fragile enough already.
+
+There is absolutely no need to proliferate cargo cult programming.
+
+Keep It Simple ...
+
+> So my turn.  Did I miss anything?
+
+Maybe :)
+
+Thanks,
+
+        tglx
