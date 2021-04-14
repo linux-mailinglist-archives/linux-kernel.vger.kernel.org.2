@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE8B35F5AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5216B35F5AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbhDNNzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:55:51 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:44694 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhDNNzt (ORCPT
+        id S233661AbhDNN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:56:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38162 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233463AbhDNNz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:55:49 -0400
-Received: by mail-oi1-f181.google.com with SMTP id e66so5361070oif.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:55:28 -0700 (PDT)
+        Wed, 14 Apr 2021 09:55:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618408537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DY+SJmwqzy9pScD0ZnL49s9+9nX3murcsvXTUnJnDjs=;
+        b=Q9WaVJTesQh0knvmvR8Lp4wdXJsbaikWrb6FU+Two6rXuDNKUvd2pFG2wO11u/OObEa62g
+        kpJllAg+qeOoMyfkYnMjUAukm42vcQoy937xBr4ykx019n7eZz5Wa+O7KPjjhtCJs9uvuk
+        2qTdsSItBaO4D9L8sXZ9vjpbjj0A3lc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372-VALcrbiiPqiimw6BLekMJA-1; Wed, 14 Apr 2021 09:55:33 -0400
+X-MC-Unique: VALcrbiiPqiimw6BLekMJA-1
+Received: by mail-ed1-f69.google.com with SMTP id d27-20020a50f69b0000b02903827b61b783so3404207edn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:55:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ygW7Y65vTGdNrKvd3IqSOUFhu0nUjAAUwu38bD6lMsg=;
-        b=eBtvr4fDRv4QLoyW7gzRdFfRnFHjn2cWtF02oX5QbOwQ11/wPtwyQZw1c79ZWekeFN
-         a3GfMkrAs8xBOvQUwjWNr8AiL3HMGPiPHqXn82nHURRUjr/kFgpB/k40JU0eV708F88s
-         VUkBH2PQsdro47/VdSl4lRXutKtiCnrQO3p8KXSWCyoSx68kgSubgmbylJL5m784cUdR
-         pVYtQg4Ajs/KrFt9aBRpz5jREjhk5UM/QCozZZdYi45nHXM4u4kRl1h1LTWoOG7wlCx7
-         wlfESMtBj9JcBVLrjSrXmKui5p79XIaYq0L+HjQBXmhP9B3tR1t+iojPtKrFdP8Nzc53
-         Eoow==
-X-Gm-Message-State: AOAM532UDjWONeSHg3xSNaggUdU+QWjjaxOrniT9qJCIvzNbiA6N+pm9
-        f8WdI49+tc9LmEUneemUuYKae+hzxg==
-X-Google-Smtp-Source: ABdhPJzYu8oC6yjlWl3YieIDUJ08MnRI14+kL1+dtSXuy8xm5ha1sTX5idQ4ykdZEwGdeqV8w0vRbg==
-X-Received: by 2002:aca:df08:: with SMTP id w8mr2534923oig.126.1618408527949;
-        Wed, 14 Apr 2021 06:55:27 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id y2sm3154007ooa.10.2021.04.14.06.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 06:55:27 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH] phy: Allow a NULL phy name for devm_phy_get()
-Date:   Wed, 14 Apr 2021 08:55:25 -0500
-Message-Id: <20210414135525.3535787-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        bh=DY+SJmwqzy9pScD0ZnL49s9+9nX3murcsvXTUnJnDjs=;
+        b=Z73H/WK1OjYYOJNlNJKVhGzl8mRWfL++s3v9sjYH8Kue6wQQRk31fCUNxEHSL+/S7t
+         33hthhsqxV4PU9YNaYv8xqWNfGIY4D+dPXGwa9ZzwKFraHXUoH9zVSQK4wwoTm+SeWgF
+         n1NUfcV8Z/0aHn3ROtdhboQKJ2KbgS8iglIEzf/bJHcZcuKBJk6YYPViZZP39UguyfoD
+         CTOXZSDp/SWYDQN7CCMaA0BdQ48uY0r1JtLjGif0hLqRYLP3lox7vpF6r/TN6M5+/zbH
+         4pS+/h5mhEJMj4j7T6HcMKx+ivyg5rnktUFIEXKsn8zQYt1XbPJGlgfJN9Lpa2XhskuQ
+         G7SQ==
+X-Gm-Message-State: AOAM530r2Nc6qSrnsvtYG13mX06lp1b7+NIHEKiQQmNDP7pR6qK1KRl9
+        rLHQ3qBtrUIFzmOCOsbeMEMyf6G/ZQEqqPlOEMfyyrMOFk0OvIYrbPWGB2MOA97CxKjYAJKEXB2
+        qzNei7EvLZlbrRe+WPmeQ2kwU
+X-Received: by 2002:a17:906:86c2:: with SMTP id j2mr26675966ejy.257.1618408532134;
+        Wed, 14 Apr 2021 06:55:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzvAeULmVyhZcKCCs1PkUpgfyjPG3yNQyDn6Hf9TfUDPIgW/x7gMwVao60zmdm7CknTuj9Jw==
+X-Received: by 2002:a17:906:86c2:: with SMTP id j2mr26675952ejy.257.1618408532010;
+        Wed, 14 Apr 2021 06:55:32 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id n3sm9857238ejj.113.2021.04.14.06.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 06:55:31 -0700 (PDT)
+Subject: Re: linux-next: Signed-off-by missing for commit in the drivers-x86
+ tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210414235123.4ebcd479@canb.auug.org.au>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <b96a2e6a-3752-a7c6-a78a-3ec0d9301b0e@redhat.com>
+Date:   Wed, 14 Apr 2021 15:55:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414235123.4ebcd479@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a single PHY, there's no reason to have a phy-names entry in DT.
-The DT specific get functions allow for this already, but devm_phy_get()
-WARNs in this case. Other subsystems also don't warn in their get
-functions. Let's drop the WARN for DT case in devm_phy_get().
+Hi,
 
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-Note that I think the device_link_add later on is now redundant with 
-fw_devlinks. If so, this can be simplified to just calling of_phy_get() 
-for DT case.
+On 4/14/21 3:51 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commit
+> 
+>   ff57cfaa3d68 ("platform/x86: pmc_atom: Match all Beckhoff Automation baytrail boards with critclk_systems DMI table")
+> 
+> is missing a Signed-off-by from its committer.
 
- drivers/phy/phy-core.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+My bad I somehow forgot to pass -s to "git am", this is fixed now.
 
-diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-index 71cb10826326..3e4971253ec1 100644
---- a/drivers/phy/phy-core.c
-+++ b/drivers/phy/phy-core.c
-@@ -667,16 +667,18 @@ struct phy *phy_get(struct device *dev, const char *string)
- 	struct phy *phy;
- 	struct device_link *link;
- 
--	if (string == NULL) {
--		dev_WARN(dev, "missing string\n");
--		return ERR_PTR(-EINVAL);
--	}
--
- 	if (dev->of_node) {
--		index = of_property_match_string(dev->of_node, "phy-names",
--			string);
-+		if (string)
-+			index = of_property_match_string(dev->of_node, "phy-names",
-+				string);
-+		else
-+			index = 0;
- 		phy = _of_phy_get(dev->of_node, index);
- 	} else {
-+		if (string == NULL) {
-+			dev_WARN(dev, "missing string\n");
-+			return ERR_PTR(-EINVAL);
-+		}
- 		phy = phy_find(dev, string);
- 	}
- 	if (IS_ERR(phy))
--- 
-2.27.0
+Regards,
+
+Hans
 
