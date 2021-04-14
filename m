@@ -2,298 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D2235F8F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35E335F8F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352705AbhDNQZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:25:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:62957 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhDNQZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:25:23 -0400
-IronPort-SDR: 8FiUePjvQvdziojlqTAzDhMPXLIYvWzRx7TSgqOzzCzzTPYy785/nE4/d8Rd4xR8Jt7Rermuxo
- 29lc47Y4H78A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181800138"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="181800138"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:25:00 -0700
-IronPort-SDR: 2pBh8imAzVDFjnVwjF2nCDf4qjnx0nqVoB8Ne081AA8QSnzZS1ERIfk5heFTyWuHwtwh0BjD3i
- DHYZaJNn/A8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="522046876"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2021 09:24:58 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 41473279; Wed, 14 Apr 2021 19:25:15 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v3 4/4] devres: Enable trace events
-Date:   Wed, 14 Apr 2021 19:25:11 +0300
-Message-Id: <20210414162511.59466-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210414162511.59466-1-andriy.shevchenko@linux.intel.com>
-References: <20210414162511.59466-1-andriy.shevchenko@linux.intel.com>
+        id S1352711AbhDNQZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhDNQZp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:25:45 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A04C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:25:22 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id r12so32351004ejr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:25:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=iP7KGYih0ScL9NDo4YHcxu5ievJ0k08+ogShzicxdcI=;
+        b=yicn4QCpRAW4psE8yFGxsrVdKLQvpoxJJILCW/xOysKBCPsxr04f1+yIOBoiq+en/W
+         AWHC0EojiRGsfCu+UHy8BPb4ZhIXU35KpFPh5aBgTpazizLnf8v9YMSDpBCBHjEiCwU5
+         ZYoQuxKqArnLxcEgorwAJh5ZJMbTPx4wfa+M3Q4YmoXrhHJ2EciAqZ0f0DT8jGTKT/Ov
+         C/Cfr7ICwGgn8KMVRf4Aim/5svCUIxJV6cgfVG79ztVHkuXdY8kjbyhUpeaPbOcBh3Xh
+         IpvR3LKXHoEteLXkQh+Xtuxb1mpn4kEDXdToZzaeKz1guV7RVsssfms+/nB58C1POa2A
+         sy6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iP7KGYih0ScL9NDo4YHcxu5ievJ0k08+ogShzicxdcI=;
+        b=rVWWuAPIHnOQPL6NzB3amTekVia1bZ5dzpfKNzz82MJvpRLZF+At6v4YrGKOtnWOK+
+         LAQSpMEd70CcVh2jlDQ0IXLk/yC+0lpbDaJoI4Tkcvo5aiecf9reWS16ixW0ht3EQnXI
+         Ecml/yBoUFN18fkY0OptpCTersLBpht3wutianpnGUW2iFmTnh/TeX1oRm2S3KTw3Ww4
+         kv2CxPDERKdJj436g6CABq5ykXbhMC6R2nQHTnZov6BKrPJBHMqUQeXaL62N7H2UcfSL
+         +wNSHOOwfK1lWl57H6YZNDVrCAN5lK/dftfHAb8SUP/aqKQ/U+tb5mZ1n05BDFGYqc1B
+         qGcQ==
+X-Gm-Message-State: AOAM533XrMEXy5Zg14lBi2I7V5G3FLuugbHQUbmxRZHUXa0iLUZ4kAT9
+        VOs7gQAqTCUEyQsIEq7WkiVVOQ==
+X-Google-Smtp-Source: ABdhPJzj/VkYQmA6hewZS4HCBdddVZJyTjlKToqN7L4xUMN2MR0fcKB4SBKxRtX20NtKVUNqOb1ZeQ==
+X-Received: by 2002:a17:906:a103:: with SMTP id t3mr39048501ejy.334.1618417521254;
+        Wed, 14 Apr 2021 09:25:21 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id u4sm19631ejf.11.2021.04.14.09.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 09:25:20 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 17:25:18 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Russ Weight <russell.h.weight@intel.com>,
+        linux-kernel@vger.kernel.org, lgoncalv@redhat.com,
+        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
+Subject: Re: [PATCH v9 1/1] mfd: intel-m10-bmc: support for MAX10 BMC Secure
+ Updates
+Message-ID: <20210414162518.GP4869@dell>
+References: <20210412195329.241357-1-russell.h.weight@intel.com>
+ <20210412195329.241357-2-russell.h.weight@intel.com>
+ <c7044c0a-b3fb-837d-137f-fdb9b1d42847@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7044c0a-b3fb-837d-137f-fdb9b1d42847@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases the printf() mechanism is too heavy and can't be used.
-For example, when debugging a race condition involving devres API.
-When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
-otherwise it's quite visible with a useful information being collected.
+On Wed, 14 Apr 2021, Tom Rix wrote:
 
-Enable trace events for devres part of the driver core.
+> 
+> On 4/12/21 12:53 PM, Russ Weight wrote:
+> > Add macros and definitions required by the MAX10 BMC
+> > Secure Update driver.
+> > 
+> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > Acked-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> > v9:
+> >    - Rebased on next-20210412
+> > v8:
+> >    - Previously patch 1/6 in "Intel MAX10 BMC Secure Update Driver"
+> >    - Rebased on next-20210121
+> > v7:
+> >    - No change
+> > v6:
+> >    - No change
+> > v5:
+> >    - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
+> > v4:
+> >    - No change
+> > v3:
+> >    - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
+> >      Update driver"
+> >    - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+> >      underlying functions will be called directly.
+> > v2:
+> >    - These functions and macros were previously distributed among
+> >      the patches that needed them. They are now grouped together
+> >      in a single patch containing changes to the Intel MAX10 BMC
+> >      driver.
+> >    - Added DRBL_ prefix to some definitions
+> >    - Some address definitions were moved here from the .c files that
+> >      use them.
+> > ---
+> >   include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
+> >   1 file changed, 85 insertions(+)
+> > 
+> > diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> > index c4eb38c13eda..f0044b14136e 100644
+> > --- a/include/linux/mfd/intel-m10-bmc.h
+> > +++ b/include/linux/mfd/intel-m10-bmc.h
+> > @@ -16,6 +16,9 @@
+> >   #define M10BMC_FLASH_END		0x1fffffff
+> >   #define M10BMC_MEM_END			M10BMC_FLASH_END
+> > +#define M10BMC_STAGING_BASE		0x18000000
+> > +#define M10BMC_STAGING_SIZE		0x3800000
+> > +
+> >   /* Register offset of system registers */
+> >   #define NIOS2_FW_VERSION		0x0
+> >   #define M10BMC_MAC_LOW			0x10
+> > @@ -33,6 +36,88 @@
+> >   #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
+> >   #define M10BMC_VER_LEGACY_INVALID	0xffffffff
+> > +/* Secure update doorbell register, in system register region */
+> > +#define M10BMC_DOORBELL			0x400
+> 
+> To be consistent with the existing register #defines,
+> 
+> The bit values for the register should follow the register and have a
+> M10BMC_ prefix
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v3: always assign name and size for the resource
- drivers/base/Makefile  |  3 +++
- drivers/base/devres.c  | 47 +++++++++++++++--------------------
- drivers/base/trace.c   | 10 ++++++++
- drivers/base/trace.h   | 56 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/device.h |  9 -------
- 5 files changed, 89 insertions(+), 36 deletions(-)
- create mode 100644 drivers/base/trace.c
- create mode 100644 drivers/base/trace.h
+This patch has been through 9 revisions and has been merged already.
 
-diff --git a/drivers/base/Makefile b/drivers/base/Makefile
-index 8b93a7f291ec..ef8e44a7d288 100644
---- a/drivers/base/Makefile
-+++ b/drivers/base/Makefile
-@@ -30,3 +30,6 @@ obj-y			+= test/
- 
- ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
- 
-+# define_trace.h needs to know how to find our header
-+CFLAGS_trace.o		:= -I$(src)
-+obj-$(CONFIG_TRACING)	+= trace.o
-diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-index dee48858663f..eaa9a5cd1db9 100644
---- a/drivers/base/devres.c
-+++ b/drivers/base/devres.c
-@@ -14,14 +14,13 @@
- #include <asm/sections.h>
- 
- #include "base.h"
-+#include "trace.h"
- 
- struct devres_node {
- 	struct list_head		entry;
- 	dr_release_t			release;
--#ifdef CONFIG_DEBUG_DEVRES
- 	const char			*name;
- 	size_t				size;
--#endif
- };
- 
- struct devres {
-@@ -43,10 +42,6 @@ struct devres_group {
- 	/* -- 8 pointers */
- };
- 
--#ifdef CONFIG_DEBUG_DEVRES
--static int log_devres = 0;
--module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
--
- static void set_node_dbginfo(struct devres_node *node, const char *name,
- 			     size_t size)
- {
-@@ -54,7 +49,11 @@ static void set_node_dbginfo(struct devres_node *node, const char *name,
- 	node->size = size;
- }
- 
--static void devres_log(struct device *dev, struct devres_node *node,
-+#ifdef CONFIG_DEBUG_DEVRES
-+static int log_devres = 0;
-+module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
-+
-+static void devres_dbg(struct device *dev, struct devres_node *node,
- 		       const char *op)
- {
- 	if (unlikely(log_devres))
-@@ -62,10 +61,16 @@ static void devres_log(struct device *dev, struct devres_node *node,
- 			op, node, node->name, node->size);
- }
- #else /* CONFIG_DEBUG_DEVRES */
--#define set_node_dbginfo(node, n, s)	do {} while (0)
--#define devres_log(dev, node, op)	do {} while (0)
-+#define devres_dbg(dev, node, op)	do {} while (0)
- #endif /* CONFIG_DEBUG_DEVRES */
- 
-+static void devres_log(struct device *dev, struct devres_node *node,
-+		       const char *op)
-+{
-+	trace_devres_log(dev, op, node, node->name, node->size);
-+	devres_dbg(dev, node, op);
-+}
-+
- /*
-  * Release functions for devres group.  These callbacks are used only
-  * for identification.
-@@ -134,26 +139,13 @@ static void replace_dr(struct device *dev,
- 	list_replace(&old->entry, &new->entry);
- }
- 
--#ifdef CONFIG_DEBUG_DEVRES
--void * __devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
--		      const char *name)
--{
--	struct devres *dr;
--
--	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
--	if (unlikely(!dr))
--		return NULL;
--	set_node_dbginfo(&dr->node, name, size);
--	return dr->data;
--}
--EXPORT_SYMBOL_GPL(__devres_alloc_node);
--#else
- /**
-- * devres_alloc_node - Allocate device resource data
-+ * __devres_alloc_node - Allocate device resource data
-  * @release: Release function devres will be associated with
-  * @size: Allocation size
-  * @gfp: Allocation flags
-  * @nid: NUMA node
-+ * @name: Name of the resource
-  *
-  * Allocate devres of @size bytes.  The allocated area is zeroed, then
-  * associated with @release.  The returned pointer can be passed to
-@@ -162,17 +154,18 @@ EXPORT_SYMBOL_GPL(__devres_alloc_node);
-  * RETURNS:
-  * Pointer to allocated devres on success, NULL on failure.
-  */
--void * devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid)
-+void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
-+			  const char *name)
- {
- 	struct devres *dr;
- 
- 	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
- 	if (unlikely(!dr))
- 		return NULL;
-+	set_node_dbginfo(&dr->node, name, size);
- 	return dr->data;
- }
--EXPORT_SYMBOL_GPL(devres_alloc_node);
--#endif
-+EXPORT_SYMBOL_GPL(__devres_alloc_node);
- 
- /**
-  * devres_for_each_res - Resource iterator
-diff --git a/drivers/base/trace.c b/drivers/base/trace.c
-new file mode 100644
-index 000000000000..b24b0a309c4a
---- /dev/null
-+++ b/drivers/base/trace.c
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Device core Trace Support
-+ * Copyright (C) 2021, Intel Corporation
-+ *
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+
-+#define CREATE_TRACE_POINTS
-+#include "trace.h"
-diff --git a/drivers/base/trace.h b/drivers/base/trace.h
-new file mode 100644
-index 000000000000..3192e18f877e
---- /dev/null
-+++ b/drivers/base/trace.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Device core Trace Support
-+ * Copyright (C) 2021, Intel Corporation
-+ *
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM dev
-+
-+#if !defined(__DEV_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __DEV_TRACE_H
-+
-+#include <linux/device.h>
-+#include <linux/tracepoint.h>
-+#include <linux/types.h>
-+
-+DECLARE_EVENT_CLASS(devres,
-+	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
-+	TP_ARGS(dev, op, node, name, size),
-+	TP_STRUCT__entry(
-+		__string(devname, dev_name(dev))
-+		__field(struct device *, dev)
-+		__field(const char *, op)
-+		__field(void *, node)
-+		__field(const char *, name)
-+		__field(size_t, size)
-+	),
-+	TP_fast_assign(
-+		__assign_str(devname, dev_name(dev));
-+		__entry->op = op;
-+		__entry->node = node;
-+		__entry->name = name;
-+		__entry->size = size;
-+	),
-+	TP_printk("%s %3s %p %s (%zu bytes)", __get_str(devname),
-+		  __entry->op, __entry->node, __entry->name, __entry->size)
-+);
-+
-+DEFINE_EVENT(devres, devres_log,
-+	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
-+	TP_ARGS(dev, op, node, name, size)
-+);
-+
-+#endif /* __DEV_TRACE_H */
-+
-+/* this part has to be here */
-+
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE trace
-+
-+#include <trace/define_trace.h>
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 38a2071cf776..3769cce77e2c 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -165,21 +165,12 @@ void device_remove_bin_file(struct device *dev,
- typedef void (*dr_release_t)(struct device *dev, void *res);
- typedef int (*dr_match_t)(struct device *dev, void *res, void *match_data);
- 
--#ifdef CONFIG_DEBUG_DEVRES
- void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp,
- 			  int nid, const char *name) __malloc;
- #define devres_alloc(release, size, gfp) \
- 	__devres_alloc_node(release, size, gfp, NUMA_NO_NODE, #release)
- #define devres_alloc_node(release, size, gfp, nid) \
- 	__devres_alloc_node(release, size, gfp, nid, #release)
--#else
--void *devres_alloc_node(dr_release_t release, size_t size,
--			gfp_t gfp, int nid) __malloc;
--static inline void *devres_alloc(dr_release_t release, size_t size, gfp_t gfp)
--{
--	return devres_alloc_node(release, size, gfp, NUMA_NO_NODE);
--}
--#endif
- 
- void devres_for_each_res(struct device *dev, dr_release_t release,
- 			 dr_match_t match, void *match_data,
+Any changes will have to be submitted as subsequent patches.
+
 -- 
-2.30.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
