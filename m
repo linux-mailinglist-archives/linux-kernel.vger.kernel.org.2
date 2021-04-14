@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0357F35F4B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D470F35F4B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351261AbhDNNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhDNNUh (ORCPT
+        id S1351271AbhDNNVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:21:42 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:20894 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229450AbhDNNVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:20:37 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDE7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:20:16 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id u200so1797916vku.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IX7qcrEu6HFQSyp3w8KMyWeid0wzPn8mCOmpMPv5Pjs=;
-        b=ntdQ5YG1Gr5915B2/+DC5gbp2HzxCQkyXazZ+/W0Lfn/znpyilVyJvxBJO2wGCOJLD
-         s1hxzdX+wZfmByqC1JppV6mb2abxvk8BFw96p6Gph1yfoBtZCDFnbdJq5UlcIY9IkBc5
-         bNOZwXfKXnisVQ0i5xV4CqTO1g3rgnF0Oet0E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IX7qcrEu6HFQSyp3w8KMyWeid0wzPn8mCOmpMPv5Pjs=;
-        b=Dk3FivWXgygJ9Pc/YUwOxV0ZKSDkx8ocyx7dnCQ4XuBfapLGP2tFiFEWQNCnyrg6gy
-         SGGfajc0EmWC2RdpbZfrv1mWNQ/sA269KWdjYcOGkS5Sz5ciGEUUsrtevb/DMcKZ+yBG
-         AMSPtA4B6WQakoYXT7sKJyk/hYWMyqNlsmV3GdfYLVQXtZxyPFoQ/zmmh0dGvVWtztZp
-         fxF6h0GSy4J9C6bzC70JeowATmbVlaPh9EECo74ngc9F56ft/LiShq22FjsB9YD39KYq
-         wc0FMeXOKTQRBI9sFF79V0nDwrWCs8RaRtGxzlSwYIeUSdKVxUMXI+TcUf55R+USRJr+
-         bBzA==
-X-Gm-Message-State: AOAM531cq9QliykqBFMfXwG1xxmhIWrTi7wp62DvArf+RnUPEs4SNdZF
-        wA/IVVBatvl22tv1GRGRdCvRZELr4k8KVV42tCQU9A==
-X-Google-Smtp-Source: ABdhPJy90G4eb02i87Z4ecltuTLzpFoMFuaOOkxblpV3zDET8ldycNjqEruoINsaIBmJaCBGEE/YHFjkiFdwojQ+lbk=
-X-Received: by 2002:a1f:99cc:: with SMTP id b195mr5541459vke.19.1618406415804;
- Wed, 14 Apr 2021 06:20:15 -0700 (PDT)
+        Wed, 14 Apr 2021 09:21:40 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13EDG1vZ020128;
+        Wed, 14 Apr 2021 06:21:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pfpt0220;
+ bh=Qy9aN4zLoLRY1HY2tMboGlxdf3jeP2pyWyXffE/TaE8=;
+ b=KdPby2kGgSfG2THoRM8xoKD6VFgsAKlRJwezjO5mFbcUK2tjyWOX3A50ukoJBi6Rxm1s
+ b57hD8j3bEFIeC4LDSqUPkiwMTyHiz58encmU+0M1gS9PN4IDXooFRT/uSBnhdbBSWDd
+ Xou33maOWxDdj371yfvG8yl2bxoGQ+SoFAsQaioQ83HaCs7LC7ToayY8+GdIOEgMktVD
+ 0Umpfdg6wfAP4RZRWVTaATKxxpQQLYCCXZPBX2X3xuj5vRhP7VjvDYsex12kAuVIlNiA
+ g5E+FwvYJ3k4+jqJ6nyUojN61cJxzlnmBJkPM7OQ1bEC1KS1m5e9spympHT8URsqbsHw Og== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 37wqtm1sv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 14 Apr 2021 06:21:03 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Apr
+ 2021 06:21:01 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Apr 2021 06:21:01 -0700
+Received: from nw-bp.marvell.com (nw-bp.marvell.com [10.5.24.22])
+        by maili.marvell.com (Postfix) with ESMTP id B67013F7040;
+        Wed, 14 Apr 2021 06:20:57 -0700 (PDT)
+From:   <bpeled@marvell.com>
+To:     <thomas.petazzoni@bootlin.com>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <sebastian.hesselbarth@gmail.com>, <gregory.clement@bootlin.com>,
+        <andrew@lunn.ch>, <robh+dt@kernel.org>, <mw@semihalf.com>,
+        <jaz@semihalf.com>, <kostap@marvell.com>, <nadavh@marvell.com>,
+        <stefanc@marvell.com>, <oferh@marvell.com>,
+        Ben Peled <bpeled@marvell.com>
+Subject: =?UTF-8?q?=5B=E2=80=9DPATCH=E2=80=9D=20v2=200/5=5D=20Asynchronous=20linkdown=20recovery?=
+Date:   Wed, 14 Apr 2021 16:20:49 +0300
+Message-ID: <1618406454-7953-1-git-send-email-bpeled@marvell.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com> <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <CA+a=Yy4Ea6Vn7md2KxGc_Tkxx04Ck-JCBL7qz-JWecJ9W2nT_g@mail.gmail.com>
-In-Reply-To: <CA+a=Yy4Ea6Vn7md2KxGc_Tkxx04Ck-JCBL7qz-JWecJ9W2nT_g@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 14 Apr 2021 15:20:04 +0200
-Message-ID: <CAJfpegtXJ=waad2SNtru90Nn6f4yOkRD5Pot9K-13z249PjFgg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Peng Tao <bergwolf@gmail.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: JttZFIy73utjp4IY9FEVPP5pgpeWZPY4
+X-Proofpoint-GUID: JttZFIy73utjp4IY9FEVPP5pgpeWZPY4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-14_07:2021-04-14,2021-04-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 2:22 PM Peng Tao <bergwolf@gmail.com> wrote:
->
+From: Ben Peled <bpeled@marvell.com>
 
-> > --- a/fs/fuse/file.c
-> > +++ b/fs/fuse/file.c
-> > @@ -1117,17 +1117,12 @@ static ssize_t fuse_send_write_pages(str
-> >       count = ia->write.out.size;
-> >       for (i = 0; i < ap->num_pages; i++) {
-> >               struct page *page = ap->pages[i];
-> > +             bool page_locked = ap->page_locked && (i == ap->num_pages - 1);
-> Any reason for just handling the last locked page in the page array?
-> To be specific, it look like the first page in the array can also be
-> partial dirty and locked?
+The following patches implement the required procedure to handle and recover from asynchronous PCIE link down events on Armada SoCs.
 
-In that case the first partial page will be locked, and it'll break
-out of the loop...
+The procedure is defined as the following:
+1) Prevent new access to the PCI-E I/F by disabling the LTSSM
+2) Flush all pending transaction/access to the PCI-E I/F
+3) HW reset the PCIE end point device (based on board support)
+4) Reset the PCIE MAC
+5) Reinitialize the PCIE root complex and enable the LTSSM
 
-> >
-> > -             if (!err && !offset && count >= PAGE_SIZE)
-> > -                     SetPageUptodate(page);
-> > -
-> > -             if (count > PAGE_SIZE - offset)
-> > -                     count -= PAGE_SIZE - offset;
-> > -             else
-> > -                     count = 0;
-> > -             offset = 0;
-> > -
-> > -             unlock_page(page);
-> > +             if (err)
-> > +                     ClearPageUptodate(page);
-> > +             if (page_locked)
-> > +                     unlock_page(page);
-> >               put_page(page);
-> >       }
-> >
-> > @@ -1191,6 +1186,16 @@ static ssize_t fuse_fill_write_pages(str
-> >               if (offset == PAGE_SIZE)
-> >                       offset = 0;
-> >
-> > +             /* If we copied full page, mark it uptodate */
-> > +             if (tmp == PAGE_SIZE)
-> > +                     SetPageUptodate(page);
-> > +
-> > +             if (PageUptodate(page)) {
-> > +                     unlock_page(page);
-> > +             } else {
-> > +                     ap->page_locked = true;
-> > +                     break;
+The execution of this procedure is triggered by the PCIE RST_LINK_DOWN interrupt
 
-... here, and send it as a separate WRITE request.
+v1 --> v2
+- Add missing device reset to link-down handle
 
-So the multi-page case with a partial & non-uptodate head page will
-always result in the write request being split into two (even if
-there's no partial tail page).
+Ben Peled (5):
+  PCI: armada8k: Disable LTSSM on link down interrupts
+  PCI: armada8k: Add link-down handle
+  dt-bindings: pci: add system controller and MAC reset bit to    
+    Armada 7K/8K controller bindings
+  arm64: dts: marvell: add pcie mac reset to pcie
+  PCI: armada8k: add device reset to link-down handle
 
-Thanks,
-Miklos
+ Documentation/devicetree/bindings/pci/pci-armada8k.txt |   6 +
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi          |   7 ++
+ drivers/pci/controller/dwc/pcie-armada8k.c             | 127 ++++++++++++++++++++
+ 3 files changed, 140 insertions(+)
+
+-- 
+2.7.4
+
