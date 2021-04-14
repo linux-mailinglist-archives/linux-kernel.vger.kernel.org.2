@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448E835F8F4
+	by mail.lfdr.de (Postfix) with ESMTP id B458535F8F5
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352713AbhDNQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhDNQ0p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:26:45 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C312C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:26:20 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id u17so32359008ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7OJ5/q27rVQyMJMOKx5XsjrMcpogAT1Y8irqV1uKSxE=;
-        b=nZJiQUOjb34oGOxyGs8MPrzzBpINEaVqRnwnQlby3J29ZlZ2LSD+RySg/Em1usx/sp
-         VBK0JbsrcRrXtuDOhdLMWmFY6LgzU0M6QaaU8WoaImzFI4CKqOFK1JrAP0WCyW/2hupo
-         Y1jCnX4zRNDAlYQ91iTrV2Z0rolLlrV5hTsarOY7velbj2TE31ngP89BS2CFogI0lFmX
-         wtCS3p6NgPyLU267rbHlsAVf7mS34XhhHUx8qk1qor69S/3fx1hg6lCg7eLUw65IDKHA
-         o1ag3yhq5Q51sdXKtj0m+Nks9Gkv7RoGHXT8QgPR2/P/L+CZDl0T+A1sp1vNR8wsHr9m
-         zx2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7OJ5/q27rVQyMJMOKx5XsjrMcpogAT1Y8irqV1uKSxE=;
-        b=cUli5h6kHj6EkZSOZV5AvS/XOC6DCfoDCbwPzb+5KmjrfaetiC/s63FvQkJfCPUstR
-         wp9FoVMhR6qXIW6/bCqshhSPiM0p5mMBLdDSAFs/zO4hlD+HbrOSmaxU/Oy+MSfcuhw3
-         CjZ+mCI2cg+eRzt8pMgTyF0ppJyRI7J6c6uTMWc4dYP+cOt/ei8cfbcV6UMNAW4CXqTS
-         925ZhY7j0boDH/tH5t6CtXRKIN6pfTo29KC40iqfZcz+ABCHfhPUESN3wnViW864P1t/
-         reFLvOXe/y6auUNRPUQA5ePh5NIXlG7IZAk9sxXj9nBWEmaPBMKt7S53BBZIqzNH2zBA
-         INLA==
-X-Gm-Message-State: AOAM5332QQOWHjY03I7QnNsp/npOOrLXnFYw9fusBwCIgMVQdhvX+2TK
-        vreH3UOD+Rd0s48pCyJH40o=
-X-Google-Smtp-Source: ABdhPJwYhgLyWRyMP6WBDuERSnqYTcUVjV949pj88yA1MgehFGue4mztsNvAkffFSHyBSdPJd/UZ6g==
-X-Received: by 2002:a17:906:a385:: with SMTP id k5mr6548344ejz.148.1618417579300;
-        Wed, 14 Apr 2021 09:26:19 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id s17sm20803ejx.10.2021.04.14.09.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 09:26:18 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless led_blink_hdl()
-Date:   Wed, 14 Apr 2021 18:26:14 +0200
-Message-Id: <20210414162614.14867-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S1352722AbhDNQ0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:26:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40528 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233964AbhDNQ0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:26:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 15DB5AF0E;
+        Wed, 14 Apr 2021 16:26:26 +0000 (UTC)
+Subject: Re: [PATCH 04/11] mm/vmstat: Inline NUMA event counter updates
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210414133931.4555-1-mgorman@techsingularity.net>
+ <20210414133931.4555-5-mgorman@techsingularity.net>
+ <6b25af48-9c6e-2c55-03d5-763de4aba149@suse.cz>
+Message-ID: <411a753f-ce03-389d-9a9f-93d17b284862@suse.cz>
+Date:   Wed, 14 Apr 2021 18:26:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <6b25af48-9c6e-2c55-03d5-763de4aba149@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
-the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
-change has not unwanted side effects because the code in rtw_cmd.c checks
-if the function pointer is valid before using it.
+On 4/14/21 6:20 PM, Vlastimil Babka wrote:
+> On 4/14/21 3:39 PM, Mel Gorman wrote:
+>> __count_numa_event is small enough to be treated similarly to
+>> __count_vm_event so inline it.
+>> 
+>> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+>> ---
+>>  include/linux/vmstat.h | 9 +++++++++
+>>  mm/vmstat.c            | 9 ---------
+>>  2 files changed, 9 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+>> index fc14415223c5..dde4dec4e7dd 100644
+>> --- a/include/linux/vmstat.h
+>> +++ b/include/linux/vmstat.h
+>> @@ -237,6 +237,15 @@ static inline unsigned long zone_page_state_snapshot(struct zone *zone,
+>>  }
+>>  
+>>  #ifdef CONFIG_NUMA
+>> +/* See __count_vm_event comment on why raw_cpu_inc is used. */
+>> +static inline void
+>> +__count_numa_event(struct zone *zone, enum numa_stat_item item)
+>> +{
+>> +	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+>> +
+>> +	raw_cpu_inc(pzstats->vm_numa_event[item]);
+>> +}
+>> +
+>>  extern void __count_numa_event(struct zone *zone, enum numa_stat_item item);
 
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Ah, but the line above should be removed.
 
-Changes since v1: Corrected a bad solution to this issue that made use of
-an unnecessary dummy function.
-
- drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
- drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
- 3 files changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 0297fbad7bce..f82dbd4f4c3d 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
- 
- 	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
- 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
--	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
-+	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
- 
- 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelSwitch_param), set_csa_hdl) /*61*/
- 	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*62*/
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 873d3792ac8e..963ea80083c8 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -6189,15 +6189,6 @@ u8 set_chplan_hdl(struct adapter *padapter, unsigned char *pbuf)
- 	return	H2C_SUCCESS;
- }
- 
--u8 led_blink_hdl(struct adapter *padapter, unsigned char *pbuf)
--{
--
--	if (!pbuf)
--		return H2C_PARAMETERS_ERROR;
--
--	return	H2C_SUCCESS;
--}
--
- u8 set_csa_hdl(struct adapter *padapter, unsigned char *pbuf)
- {
- 	return	H2C_REJECTED;
-diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-index 5e6cf63956b8..472818c5fd83 100644
---- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-@@ -745,7 +745,6 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf);
- u8 tx_beacon_hdl(struct adapter *padapter, unsigned char *pbuf);
- u8 set_ch_hdl(struct adapter *padapter, u8 *pbuf);
- u8 set_chplan_hdl(struct adapter *padapter, unsigned char *pbuf);
--u8 led_blink_hdl(struct adapter *padapter, unsigned char *pbuf);
- u8 set_csa_hdl(struct adapter *padapter, unsigned char *pbuf);	/* Kurt: Handling DFS channel switch announcement ie. */
- u8 tdls_hdl(struct adapter *padapter, unsigned char *pbuf);
- u8 run_in_thread_hdl(struct adapter *padapter, u8 *pbuf);
--- 
-2.31.1
+>>  extern unsigned long sum_zone_node_page_state(int node,
+>>  					      enum zone_stat_item item);
+>> diff --git a/mm/vmstat.c b/mm/vmstat.c
+>> index 63bd84d122c0..b853df95ed0c 100644
+>> --- a/mm/vmstat.c
+>> +++ b/mm/vmstat.c
+>> @@ -902,15 +902,6 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
+>>  #endif
+>>  
+>>  #ifdef CONFIG_NUMA
+>> -/* See __count_vm_event comment on why raw_cpu_inc is used. */
+>> -void __count_numa_event(struct zone *zone,
+>> -				 enum numa_stat_item item)
+>> -{
+>> -	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
+>> -
+>> -	raw_cpu_inc(pzstats->vm_numa_event[item]);
+>> -}
+>> -
+>>  /*
+>>   * Determine the per node value of a stat item. This function
+>>   * is called frequently in a NUMA machine, so try to be as
+>> 
+> 
 
