@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B7035EED7
+	by mail.lfdr.de (Postfix) with ESMTP id DEA0A35EED9
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhDNHy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:54:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37224 "EHLO mail.kernel.org"
+        id S1348061AbhDNHyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:54:45 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14888 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhDNHy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8515601FE;
-        Wed, 14 Apr 2021 07:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618386845;
-        bh=softkseoAUjSpfEYL5jTXDTAaQzfx1q8W/S1QvzexdU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nAd0M7Ghe4MpoE/UYqEqLI4Yqu+L7uf0vZSf79kF9Xvi1dW/74tN6M4X48QilRwTs
-         XOFsssOjSte8LARsOtr/OXc0PWTx4L2mhftu4t5rSwvjUQm+fztrOJK2wDgQZ7xoa1
-         aj2KNEQMCxQySGu/thro2BJtSioSIlmgQjtE6wPOU+d9z3ZYjlejzClrPz++Z0oq5r
-         i3tTMusCcJSyDDiPxgA83aAqjibqaoHNz7C+D+QHe55hREAOiHYwlc0FWKuwbdc27I
-         ekVByzbArRbTRo0JEG0ALnYICKISnB3Lq9FzA/Px+OgrEaIGwdGPkUlcxKNNAXMcmi
-         V7iLOVwdEuBGQ==
-Date:   Wed, 14 Apr 2021 09:54:02 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Tony Lindgren <tony@atomide.com>,
-        Vignesh R <vigneshr@ti.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: omap: Fix rumtime PM imbalance on error
-Message-ID: <20210414075402.GB2180@ninjato>
-References: <20210407033030.13419-1-dinghao.liu@zju.edu.cn>
+        id S231773AbhDNHyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:54:44 -0400
+IronPort-SDR: 4ATP3Qw3fKUM3dXekhWRU+yt9osC1Wq4EPkMuwNWhQY3V83ToxX5xEWzEMlza9C1McIr0j/lvz
+ zNCyarmgXvsg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="192464777"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="192464777"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:54:23 -0700
+IronPort-SDR: 5bmzrv8VKf7pRh8hYbaN4SopfadCf6F+GYPl3OPs1BMJVECIQpZ0GkQDBwbLr7leGovQjFwi+t
+ W+ga6pAX5Kbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="521905132"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2021 00:54:21 -0700
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] software node: Allow node addition to already existing device
+Date:   Wed, 14 Apr 2021 10:54:38 +0300
+Message-Id: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eJnRUKwClWJh1Khz"
-Content-Disposition: inline
-In-Reply-To: <20210407033030.13419-1-dinghao.liu@zju.edu.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If the node is added to an already exiting device, the node
+needs to be also linked to the device separately.
 
---eJnRUKwClWJh1Khz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This will make sure the reference count is kept in balance
+also when the node is injected to a device afterwards.
 
-On Wed, Apr 07, 2021 at 11:30:30AM +0800, Dinghao Liu wrote:
-> pm_runtime_get_sync() will increase the rumtime PM counter
-> even it returns an error. Thus a pairing decrement is needed
-> to prevent refcount leak. Fix this by replacing this API with
-> pm_runtime_resume_and_get(), which will not change the runtime
-> PM counter on error.
->=20
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: e68d0119e328 ("software node: Introduce device_add_software_node()")
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ drivers/base/swnode.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Thanks, yet I applied this series now:
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 740333629b420..3cc11b813f28c 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -1045,6 +1045,7 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
+ 	}
+ 
+ 	set_secondary_fwnode(dev, &swnode->fwnode);
++	software_node_notify(dev, KOBJ_ADD);
+ 
+ 	return 0;
+ }
+@@ -1118,8 +1119,8 @@ int software_node_notify(struct device *dev, unsigned long action)
+ 
+ 	switch (action) {
+ 	case KOBJ_ADD:
+-		ret = sysfs_create_link(&dev->kobj, &swnode->kobj,
+-					"software_node");
++		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
++					       "software_node");
+ 		if (ret)
+ 			break;
+ 
+-- 
+2.30.2
 
-http://patchwork.ozlabs.org/project/linux-i2c/list/?series=3D217733&state=
-=3D*
-
-
---eJnRUKwClWJh1Khz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB2n5oACgkQFA3kzBSg
-KbbBlw/+KCP1394QbnoxEQGcMIhDmtwcitwfT54WE700oJeB1WtGe3RzHA5VGVw2
-IxgXsHdHkq5VNKi+xZvXBiddrxuogegsRQQpOcttdfWpUclOCDoxfSgWbFVN7p9+
-VoNYezUGHnnwP0GIZyfaJLT0yNM4kotK3ye+sNVA/YqUXlXQe1dSemksXi5HtCGJ
-90GoYm6VNUlgMXC/kDUZojFvkBV1FNQtt/lpvmNNCDcIrUSA5P74M1Y7QPc67/wy
-x8HoN2vlOC4yy3nConWQGDjQ4CuGgtEbqBnuomvyAEExkaYUIiuqyyDPm6duAabK
-p02JT/SKoe4pCPO3fd4OzpUsLbOiIUIVrZA43f2O05EGMEe5wYxtw7CFZY0iYLhf
-GDygfBF1IhGxWB6NXQawjuQ/Ot8mbQik6IYT4loBPLqeUiMjdnsmhUoLS+fhJzSk
-YlSQG73g7ukgs0H6j8k+a70+/GKkkuiiKf0u1h4aBb2wi4qJLmDPaoaXme4p2gDN
-VJZTTQgTwoWmWwVFWDr0KfBVOWfOkTUyebwtrIs0m2efjOrqrcEyA9pAb/IlwR/o
-X69dOX7d5ZXlB3YmDC79l2wcAFWJYKucEvPfB97Z6WX5uMfgAG5+ZNm/iAYo1rx6
-nUMWBgP0A5TIfImCgW0rTrtRsR+qEfIs6CZl1EfSrS38VZwyVXA=
-=gj+A
------END PGP SIGNATURE-----
-
---eJnRUKwClWJh1Khz--
