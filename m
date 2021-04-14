@@ -2,235 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2013935EB2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF37E35EB30
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239141AbhDNC4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:56:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15675 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbhDNC4R (ORCPT
+        id S241583AbhDNDBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232921AbhDNDBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:56:17 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKn8Z4f4bzpXYs;
-        Wed, 14 Apr 2021 10:53:02 +0800 (CST)
-Received: from [10.174.176.162] (10.174.176.162) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 10:55:52 +0800
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-3-linmiaohe@huawei.com>
- <87o8ejug76.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <e72bb6a2-6aff-0d6c-3e56-562b4fb53285@huawei.com>
-Date:   Wed, 14 Apr 2021 10:55:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 13 Apr 2021 23:01:11 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A42C061574;
+        Tue, 13 Apr 2021 20:00:50 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWVlo-005BFK-Gg; Wed, 14 Apr 2021 03:00:48 +0000
+Date:   Wed, 14 Apr 2021 03:00:48 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, matthew.wilcox@oracle.com,
+        khlebnikov@yandex-team.ru
+Subject: Re: [PATCH RFC 1/6] dcache: sweep cached negative dentries to the
+ end of list of siblings
+Message-ID: <YHZa4PWnWfUqkARi@zeniv-ca.linux.org.uk>
+References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+ <1611235185-1685-2-git-send-email-gautham.ananthakrishna@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <87o8ejug76.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.162]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611235185-1685-2-git-send-email-gautham.ananthakrishna@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/13 9:27, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
+On Thu, Jan 21, 2021 at 06:49:40PM +0530, Gautham Ananthakrishna wrote:
+> From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 > 
->> When I was investigating the swap code, I found the below possible race
->> window:
->>
->> CPU 1					CPU 2
->> -----					-----
->> do_swap_page
->>   synchronous swap_readpage
->>     alloc_page_vma
->> 					swapoff
->> 					  release swap_file, bdev, or ...
->>       swap_readpage
->> 	check sis->flags is ok
->> 	  access swap_file, bdev...[oops!]
->> 					    si->flags = 0
->>
->> Using current get/put_swap_device() to guard against concurrent swapoff for
->> swap_readpage() looks terrible because swap_readpage() may take really long
->> time. And this race may not be really pernicious because swapoff is usually
->> done when system shutdown only. To reduce the performance overhead on the
->> hot-path as much as possible, it appears we can use the percpu_ref to close
->> this race window(as suggested by Huang, Ying).
->>
->> Fixes: 235b62176712 ("mm/swap: add cluster lock")
+> For disk filesystems result of every negative lookup is cached, content of
+> directories is usually cached too. Production of negative dentries isn't
+> limited with disk speed. It's really easy to generate millions of them if
+> system has enough memory. Negative dentries are linked into siblings list
+> along with normal positive dentries. Some operations walks dcache tree but
+> looks only for positive dentries: most important is fsnotify/inotify.
 > 
-> This isn't the commit that introduces the race.  You can use `git blame`
-> find out the correct commit.  For this it's commit 0bcac06f27d7 "mm,
-> swap: skip swapcache for swapin of synchronous device".
-> 
+> This patch moves negative dentries to the end of list at final dput() and
+> marks with flag which tells that all following dentries are negative too.
+> Reverse operation is required before instantiating negative dentry.
 
-Sorry about it! What I refer to is commit eb085574a752 ("mm, swap: fix race between
-swapoff and some swap operations"). And I think this commit does not fix the race
-condition completely, so I reuse the Fixes tag inside it.
+> +static void sweep_negative(struct dentry *dentry)
+> +{
+> +	struct dentry *parent;
+> +
+> +	if (!d_is_tail_negative(dentry)) {
+> +		parent = lock_parent(dentry);
+> +		if (!parent)
+> +			return;
+> +
+> +		if (!d_count(dentry) && d_is_negative(dentry) &&
+> +		    !d_is_tail_negative(dentry)) {
+> +			dentry->d_flags |= DCACHE_TAIL_NEGATIVE;
+> +			list_move_tail(&dentry->d_child, &parent->d_subdirs);
+> +		}
+> +
+> +		spin_unlock(&parent->d_lock);
+> +	}
+> +}
 
-> And I suggest to merge 1/5 and 2/5 to make it easy to get the full
-> picture.
-> 
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  include/linux/swap.h |  2 +-
->>  mm/memory.c          | 10 ++++++++++
->>  mm/swapfile.c        | 28 +++++++++++-----------------
->>  3 files changed, 22 insertions(+), 18 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index 849ba5265c11..9066addb57fd 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -513,7 +513,7 @@ sector_t swap_page_sector(struct page *page);
->>  
->>  static inline void put_swap_device(struct swap_info_struct *si)
->>  {
->> -	rcu_read_unlock();
->> +	percpu_ref_put(&si->users);
->>  }
->>  
->>  #else /* CONFIG_SWAP */
->> diff --git a/mm/memory.c b/mm/memory.c
->> index cc71a445c76c..8543c47b955c 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>  {
->>  	struct vm_area_struct *vma = vmf->vma;
->>  	struct page *page = NULL, *swapcache;
->> +	struct swap_info_struct *si = NULL;
->>  	swp_entry_t entry;
->>  	pte_t pte;
->>  	int locked;
->> @@ -3339,6 +3340,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>  	}
->>  
->>
-> 
-> I suggest to add comments here as follows (words copy from Matthew Wilcox)
-> 
-> 	/* Prevent swapoff from happening to us */
+Ugh...  So when dput() drives the refcount down to 0 you hit lock_parent()
+and only then bother to check if the sucker had been negative in the first
+place?
 
-Ok.
+> @@ -1970,6 +2021,8 @@ void d_instantiate(struct dentry *entry, struct inode * inode)
+>  {
+>  	BUG_ON(!hlist_unhashed(&entry->d_u.d_alias));
+>  	if (inode) {
+> +		if (d_is_tail_negative(entry))
+> +			recycle_negative(entry);
+>  		security_d_instantiate(entry, inode);
+>  		spin_lock(&inode->i_lock);
+>  		__d_instantiate(entry, inode);
 
-> 
->> +	si = get_swap_device(entry);
->> +	/* In case we raced with swapoff. */
->> +	if (unlikely(!si))
->> +		goto out;
->> +
-> 
-> Because we wrap the whole do_swap_page() with get/put_swap_device()
-> now.  We can remove several get/put_swap_device() for function called by
-> do_swap_page().  That can be another optimization patch.
-
-I tried to remove several get/put_swap_device() for function called
-by do_swap_page() only before I send this series. But it seems they have
-other callers without proper get/put_swap_device().
-
-> 
->>  	delayacct_set_flag(DELAYACCT_PF_SWAPIN);
->>  	page = lookup_swap_cache(entry, vma, vmf->address);
->>  	swapcache = page;
->> @@ -3514,6 +3520,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>  unlock:
->>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
->>  out:
->> +	if (si)
->> +		put_swap_device(si);
->>  	return ret;
->>  out_nomap:
->>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
->> @@ -3525,6 +3533,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>  		unlock_page(swapcache);
->>  		put_page(swapcache);
->>  	}
->> +	if (si)
->> +		put_swap_device(si);
->>  	return ret;
->>  }
->>  
->> diff --git a/mm/swapfile.c b/mm/swapfile.c
->> index 724173cd7d0c..01032c72ceae 100644
->> --- a/mm/swapfile.c
->> +++ b/mm/swapfile.c
->> @@ -1280,18 +1280,12 @@ static unsigned char __swap_entry_free_locked(struct swap_info_struct *p,
->>   * via preventing the swap device from being swapoff, until
->>   * put_swap_device() is called.  Otherwise return NULL.
->>   *
->> - * The entirety of the RCU read critical section must come before the
->> - * return from or after the call to synchronize_rcu() in
->> - * enable_swap_info() or swapoff().  So if "si->flags & SWP_VALID" is
->> - * true, the si->map, si->cluster_info, etc. must be valid in the
->> - * critical section.
->> - *
->>   * Notice that swapoff or swapoff+swapon can still happen before the
->> - * rcu_read_lock() in get_swap_device() or after the rcu_read_unlock()
->> - * in put_swap_device() if there isn't any other way to prevent
->> - * swapoff, such as page lock, page table lock, etc.  The caller must
->> - * be prepared for that.  For example, the following situation is
->> - * possible.
->> + * percpu_ref_tryget_live() in get_swap_device() or after the
->> + * percpu_ref_put() in put_swap_device() if there isn't any other way
->> + * to prevent swapoff, such as page lock, page table lock, etc.  The
->> + * caller must be prepared for that.  For example, the following
->> + * situation is possible.
->>   *
->>   *   CPU1				CPU2
->>   *   do_swap_page()
->> @@ -1319,21 +1313,21 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->>  	si = swp_swap_info(entry);
->>  	if (!si)
->>  		goto bad_nofile;
->> -
->> -	rcu_read_lock();
->>  	if (data_race(!(si->flags & SWP_VALID)))
-> 
-> We can delete SWP_VALID, that is used together with RCU solution.
-
-Will do.
-
-> 
->> -		goto unlock_out;
->> +		goto out;
->> +	if (!percpu_ref_tryget_live(&si->users))
->> +		goto out;
->>  	offset = swp_offset(entry);
->>  	if (offset >= si->max)
->> -		goto unlock_out;
->> +		goto put_out;
->>  
->>  	return si;
->>  bad_nofile:
->>  	pr_err("%s: %s%08lx\n", __func__, Bad_file, entry.val);
->>  out:
->>  	return NULL;
->> -unlock_out:
->> -	rcu_read_unlock();
->> +put_out:
->> +	percpu_ref_put(&si->users);
->>  	return NULL;
->>  }
-> 
-
-Many thanks.
-
-> Best Regards,
-> Huang, Ying
-> .
-> 
-
+Wait a bloody minute.  What about d_instantiate_new() right next to it?
