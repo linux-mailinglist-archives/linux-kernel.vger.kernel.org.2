@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373DE35EC51
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887DD35EC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347429AbhDNFp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 01:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S1347487AbhDNFr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 01:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347366AbhDNFpt (ORCPT
+        with ESMTP id S1347492AbhDNFry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 01:45:49 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D786AC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 22:45:28 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id u8so14606181qtq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 22:45:28 -0700 (PDT)
+        Wed, 14 Apr 2021 01:47:54 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43382C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 22:47:33 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id 66so9762180vsk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 22:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HuJxIR2Vrwi/GT+ihhswEEVFoPc3SOlf/Ryp9WXFdGY=;
-        b=qiMfUCeq8jVFRYBk+a7N+afSn80ZE6L00ud7EtXnexDUINcEqAct2+zx4SBIFW9564
-         b3nhsNrvJkfcwXhXVxh1ol4MpYXx05i9I9I8SOBqTmUN8lsIOo/JdhxUpfzLLnkrqlDG
-         QzLWQhjuMVu9GvyhqbRwmkeDikm8YDj51WB9173/b70clft6UOxotrUJjPpjma7a3lv6
-         4+Zf2F4yc2o3z3+5AZILzpSlZxuVTLzLYD3VfUvhIwPk14hB7hMo39ZeYddYbd84lJ6k
-         tsN7/3+GktCQkCli45D1c+Vlm71dyuQA0KMJp8kJiTJbUiaBsz18gM3YeRwrbvAPIbBX
-         iv0Q==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=tVM5T7WD+9isttd9BfiogfhskbumHL+3BbGPYht13nQ=;
+        b=jmASpZXaYtVDVAS0rSRFBxoRqNjXSAxuK/tHeNfdRXLkTUWuKy1PdBM5ZHS1vgrSZu
+         DeXgCiGMZ0UvNtn6dMvT1DWS3CjwPTXC8XxNiK8MZW7gbPAMPmIskS2FzDH8crbCwWy8
+         XUsy0kp97jP968CKK2VVloEbSqCDPZl0V9PesHT50Gn9PD22mZSf98gVwyFC9g/oTB1D
+         VtFztYKAaacC4Cms9+3wBVoCNI57iNyhoQOYFHm0e8sLpzGFqixlG5g2YD3ZErz8pUqd
+         CymziIRcoD/STAkwKH/hjtb6P38EZTsrCvwLuPFIiaOzNKuTWXWXPl16hYtuk1Z3o7Nd
+         2KEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HuJxIR2Vrwi/GT+ihhswEEVFoPc3SOlf/Ryp9WXFdGY=;
-        b=qEM6kTty5BHFH0zhnx8GitzwrDvqt2yIGqgf+F6kHymZkSNjLyU4OVDLEFgNLcmmXZ
-         6/TAfkJC9mx72inhQfjUUFlcRUHrgWET3mgnNeEEn0FKlE3HDB6DU/uElQqNVAfL4ROR
-         qgjkgK/i1Rft2i2TtPdoiXKvpttRYpskziXbuCcALWCMHsSw9zCl//SFZoOi3I/AWQBE
-         7TJAqIVArR40uFk7QhgjcMnsETxtBtYt3JNHplVGBDJMrYq50GgD+8NoE2qyLDoJo2Lr
-         i/L5bQvuqTMFs23B9s0Wv1wZEwaMNbIm098pNbE6q1JiW1ThNLnmqdMBZpg1M+F+KcY1
-         Fltw==
-X-Gm-Message-State: AOAM532rvgUfZ59r/1ozX1at3j9LWrycs53C2fUv4EKKiKsQ2IIlP3Q/
-        BtYCHvm49C0F6OVWuOcmkzMmbsmpKmhz29wO0mNidQ==
-X-Google-Smtp-Source: ABdhPJz9BJrrUyL37nW6ECgf9eah2cTAPtH27QkThs1x3ikas9uTaxjoIG/q2FM/PF9WbynH3TxSJSmZrhlCjnmfxIA=
-X-Received: by 2002:ac8:110d:: with SMTP id c13mr33362682qtj.337.1618379127178;
- Tue, 13 Apr 2021 22:45:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=tVM5T7WD+9isttd9BfiogfhskbumHL+3BbGPYht13nQ=;
+        b=lN4mkTO+A7zeTI1/aw4edo2X0abXt+og34BvVA0dpLAHMWlGIQt4Tf8sCOZG41UPRn
+         0bFPSzIJfIcnpqdF3lFeXh9J/LM5Hl8u52iX06wswO8nRCDZ/nkHKpne3cemcDjmfK0M
+         lvx/8Sj9EjCt9YgEYLua4kUHloQXivs3vvbejqRoRCfvYuHvzinRoxPx4F8OgdmYyom3
+         ongsiyn+0ozbZGe1WScOLay5jPqIKDpGea4tXNR6haF8cH/41Tgo+vcoyggPxCF6gmxc
+         Bu98G9JxRiRPRG7cNsdLbo/mu+O1Y2gfXivRltN7MFnQoADOaTpOPIvXOyBMolo+zUJL
+         +rsA==
+X-Gm-Message-State: AOAM532kXlg/FJu1XYHI0NOqTVjLV6PTEO4NJisAQ4myALxuUOl5z8sY
+        aLYZMOSc5jBgflcbUe5YQWxkVvvbdt48FoP76mOdJg==
+X-Google-Smtp-Source: ABdhPJwUyuq5Fq6ZWADQ1wCKWabArk1S2Rv0hXbduq6NJ4GnWBcSmvdgqW11he9RBhqmVXU2OilGHXfwnHm+9ibrOYA=
+X-Received: by 2002:a67:71c6:: with SMTP id m189mr25897205vsc.12.1618379252321;
+ Tue, 13 Apr 2021 22:47:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000301a4d05bfe14b8f@google.com>
-In-Reply-To: <000000000000301a4d05bfe14b8f@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 14 Apr 2021 07:45:15 +0200
-Message-ID: <CACT4Y+ZT2m7t+o9=VYCE32U_1aUVJXRp_5KgJSdEZC1YXy=qgA@mail.gmail.com>
-Subject: Re: [syzbot] unexpected kernel reboot (4)
-To:     syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
+From:   Jue Wang <juew@google.com>
+Date:   Tue, 13 Apr 2021 22:47:21 -0700
+Message-ID: <CAPcxDJ6xx00Gjn6DxoMpdJ7UjNeJUp2613jqGRm7ZZeuMNeSjQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mce/copyin: fix to not SIGBUS when copying from user
+ hits poison
+To:     bp@alien8.de
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        naoya.horiguchi@nec.com, tony.luck@intel.com, x86@kernel.org,
+        yaoaili@kingsoft.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:27 PM syzbot
-<syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    89698bec Merge tag 'm68knommu-for-v5.12-rc7' of git://git=
-...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1243fcfed0000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Db234ddbbe2953=
-747
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9ce030d4c89856b=
-27619
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D173e92fed00=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1735da2ed0000=
-0
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com
->
-> output_len: 0x000000000e74eb68
-> kernel_total_size: 0x000000000f226000
-> needed_size: 0x000000000f400000
-> trampoline_32bit: 0x000000000009d000
-> Decompressing Linux... Parsing ELF... done.
-> Booting the kernel.
+On Tue, 13 Apr 2021 12:07:22 +0200, Petkov, Borislav wrote:
 
-+linux-input
+>> KVM apparently passes a machine check into the guest.
 
-The reproducer connects some USB HID device and communicates with the drive=
-r.
-Previously we observed reboots because HID devices can trigger reboot
-SYSRQ, but we disable it with "CONFIG_MAGIC_SYSRQ is not set".
-How else can a USB device reboot the machine? Is it possible to disable it?
-I don't see any direct includes of <linux/reboot.h> in drivers/usb/*
+> Ah, there it is:
 
-r0 =3D syz_usb_connect$hid(0x0, 0x36,
-&(0x7f0000000000)=3DANY=3D[@ANYBLOB=3D"1201000000000e40260933334100001b0001=
-0902240001000000000904000001030100000921100000012201000905810308"],
-0x0)
-syz_usb_control_io(r0, 0x0, 0x0)
-syz_usb_control_io$hid(r0, &(0x7f0000001440)=3D{0x24, 0x0, 0x0,
-&(0x7f0000000040)=3D{0x0, 0x22, 0x1, {[@local]}}, 0x0}, 0x0)
-syz_usb_ep_write(r0, 0x0, 0xfd,
-&(0x7f0000000b80)=3D"34981a23c3490d163907e65ff758478e74cd7dc073700ebf655f1c=
-e3394018ade882075917a36a30ad3594f98282ea729f3620534fd655c69ebec66aa7397e843=
-ee79879e825e6a31a189616c611912dee259ab9d8ff1566c90ae8985ec380bcab6b8265695f=
-7b76654377adab6b1930de1f44060000000000000021f50f1dd3fff126f862f378ef2deb2d4=
-331b9bcb3f394062133b4bb44a7f168473f7ca3d9945bfb4c456b22428a7a11d5d7df1fcc4f=
-7ffad0e526d34321fb6aedfb5dd4fc6797cba2cf45369daea9f0953bf1a8343aa7548f3f981=
-7c6a1bedde9dcaa4b8eed4a493828384fc9ccb7d230967ea0cb2003076ac7d9f386a5fbaec3=
-92")
+> static void kvm_send_hwpoison_signal(unsigned long address, struct task_struct *tsk)
+> {
+>         send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, PAGE_SHIFT, tsk);
+> }
+
+This path is when EPT #PF finds accesses to a hwpoisoned page and
+sends SIGBUS to user space (KVM exits into user space) with the same
+semantic as if regular #PF found access to a hwpoisoned page.
+
+The KVM_X86_SET_MCE ioctl actually injects a machine check into the guest.
+
+We are in process to launch a product with MCE recovery capability in
+a KVM based virtualization product and plan to expand the scope of the
+application of it in the near future.
+
+> So what I'm missing with all this fun is, yeah, sure, we have this
+> facility out there but who's using it? Is anyone even using it at all?
+
+The in-memory database and analytical domain are definitely using it.
+A couple examples:
+SAP HANA - as we've tested and planned to launch as a strategic
+enterprise use case with MCE recovery capability in our product
+SQL server - https://support.microsoft.com/en-us/help/2967651/inf-sql-server-may-display-memory-corruption-and-recovery-errors
 
 
-
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+Cheers,
+-Jue
