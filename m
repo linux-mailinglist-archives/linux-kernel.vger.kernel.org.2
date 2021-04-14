@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9AA35FEAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F89735FEB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhDOABT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:01:19 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.147]:29629 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230291AbhDOABS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:01:18 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 9D9E4400DB5FB
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:00:53 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id WpRFlLVsFmJLsWpRFlo3Pn; Wed, 14 Apr 2021 19:00:53 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uQWSJpEDStKyMPkezWD8yO/86/YEs02AMX0F1l0RKbc=; b=f8crfTXNvmmt7lwYVGK+zqY3fL
-        k3fA6vID4H3ijXbasgIqQJz7S36UR9CqNM9IHiZq9rZiQ6M0WGTo1J0fth70NOhuADTEZumXmOHPE
-        n/ldNl85y5ZV0XMwGv8gPyr+ZSESK3sEokFoyA0H/iOiMzcHduVe0f7iWhHKYIsAPURcV28aeTdik
-        1iUNkW/2vu1gyp97tQvg9lLCYijn9dPcJGma9nfqqZBgtf3LPppLiooEBM+74uVpzvWajbnmaIhJF
-        lqN2O5brYp6RMNcZhQOHTXeAhqb8vjJHKyzlEiJ7gXgzLVpg+CdzUWm1W5l+p3vWRBN8NndIN1mqZ
-        32opyyTw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:37926 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lWpRC-0043fC-6L; Wed, 14 Apr 2021 19:00:50 -0500
-Subject: Re: [PATCH v2 0/2][next] wl3501_cs: Fix out-of-bounds warnings
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <cover.1617226663.git.gustavoars@kernel.org>
- <9e0972ef-4d42-3896-d92b-01113c445775@embeddedor.com>
- <87eefdl5p2.fsf@codeaurora.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <1cf06338-76da-5109-4099-2db79c31e6bb@embeddedor.com>
-Date:   Wed, 14 Apr 2021 19:00:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230452AbhDOACd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:02:33 -0400
+Received: from mga01.intel.com ([192.55.52.88]:63049 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230346AbhDOACc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 20:02:32 -0400
+IronPort-SDR: FpM/KF6LHKJj0bdY10CI5Rn2n7yZ0/xeMAsU2/mKPRv5i+jIUNQzSmtIMIVqEf5Hf9IRfLPXFF
+ gnAkFWBoPpHA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215260300"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="215260300"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:02:10 -0700
+IronPort-SDR: gzweu2Lq5EAvp9QHVB6sL26GIzb2BZtG7XWDtK1xA0XGSL/+zEmRcydXarQGaH9wUmifsSw0d6
+ UA7HwCMmlKmQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="461415805"
+Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
+  by orsmga001.jf.intel.com with ESMTP; 14 Apr 2021 17:02:10 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v2 0/2] Simplify and restrict IOMMU SVA APIs
+Date:   Wed, 14 Apr 2021 08:27:55 -0700
+Message-Id: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <87eefdl5p2.fsf@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lWpRC-0043fC-6L
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:37926
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A couple of small changes to simplify and restrict SVA APIs. The motivation
+is to make PASID allocation palatable for cgroup consumptions. Misc cgroup
+is merged for v5.13, it can be extended for IOASID as another scalar
+resource.
+
+I have not tested on ARM platforms due to availability. Would appreciate
+if someone could help with the testing on ARM.
+
+Thanks,
+
+Jacob
+
+ChangeLog:
+V2
+	- retained mm argument in iommu_sva_alloc_pasid()
+	- keep generic supervisor flag separated from vt-d's SRE
+	- move flag declaration out of CONFIG_IOMMU_API
 
 
-On 4/14/21 01:51, Kalle Valo wrote:
-> "Gustavo A. R. Silva" <gustavo@embeddedor.com> writes:
-> 
->> Friendly ping: could somebody give us some feedback or take
->> this series, please?
-> 
-> First patch 2 comment needs to be resolved.
+Jacob Pan (2):
+  iommu/sva: Tighten SVA bind API with explicit flags
+  iommu/sva: Remove mm parameter from SVA bind API
 
-Done:
+ drivers/dma/idxd/cdev.c                       |  2 +-
+ drivers/dma/idxd/init.c                       |  7 +++---
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  5 +++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  4 ++--
+ drivers/iommu/intel/svm.c                     | 14 ++++-------
+ drivers/iommu/iommu-sva-lib.c                 | 11 +++++----
+ drivers/iommu/iommu.c                         | 23 +++++++++++++------
+ drivers/misc/uacce/uacce.c                    |  2 +-
+ include/linux/intel-iommu.h                   |  2 +-
+ include/linux/intel-svm.h                     | 17 ++------------
+ include/linux/iommu.h                         | 20 ++++++++++++----
+ 11 files changed, 57 insertions(+), 50 deletions(-)
 
-https://lore.kernel.org/lkml/cover.1618442265.git.gustavoars@kernel.org/
 
-Thanks
---
-Gustavo
+base-commit: e49d033bddf5b565044e2abe4241353959bc9120
+-- 
+2.25.1
+
