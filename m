@@ -2,330 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974DB35ED35
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B904C35ED38
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347687AbhDNGZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:25:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39386 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhDNGZV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:25:21 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13E6OgMg087065;
-        Wed, 14 Apr 2021 01:24:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618381482;
-        bh=Tatg9a6e94y6CMD2F/1h6q8KcihISkNKSKxCVmDchLg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=POFmz0mINczFqTmRV4tMH4wqLntuBNuF7Ziamx3V0VWlQyvjPGVjC4DTuCSSfFyv/
-         JVlWXxsGi8rvC/p5ZaS3B3uDydfg0V1D0WmXNz+pz8n7wceB9lZFd6hV2eOoXO/+yp
-         axzDhfIOSxbf8j6rhpC8WgRSgO59dNtlZxbFjnSA=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13E6OgW4109341
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 14 Apr 2021 01:24:42 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
- Apr 2021 01:24:42 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 14 Apr 2021 01:24:42 -0500
-Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13E6Oa7I097401;
-        Wed, 14 Apr 2021 01:24:37 -0500
-Subject: Re: [PATCH 2/4] phy: phy-can-transceiver: Add support for generic CAN
- transceiver driver
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20210409134056.18740-1-a-govindraju@ti.com>
- <20210409134056.18740-3-a-govindraju@ti.com>
- <fe0a8a9b-35c6-8f23-5968-0b14abb6078d@pengutronix.de>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <a7c72056-8d3d-f9ba-b8f0-868a4926a7d6@ti.com>
-Date:   Wed, 14 Apr 2021 11:54:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <fe0a8a9b-35c6-8f23-5968-0b14abb6078d@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1349226AbhDNGZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:25:30 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40146 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347804AbhDNGZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:25:25 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT8u8inZg+9sHAA--.14819S2;
+        Wed, 14 Apr 2021 14:25:01 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: pgtable: Add swp pte related macros definition and check
+Date:   Wed, 14 Apr 2021 14:25:00 +0800
+Message-Id: <1618381500-31258-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxT8u8inZg+9sHAA--.14819S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4kAr1rXFWxAFW5AryfCrg_yoW7JF13pw
+        nxCFZIqrWrAFWxKr4fJF1FqF1fZw4UGr17WFZI9w4DJa4jgas5JFW29r43JryvqFWvv343
+        u3yDtrn8urW3AFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF1l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bz1v-UUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Add definitions for the bit masks/shifts/sizes, and implement
+MAX_SWAPFILES_CHECK() such that we fail to build if we are
+unable to properly encode the swp type field.
 
-On 12/04/21 3:48 pm, Marc Kleine-Budde wrote:
-> On 4/9/21 3:40 PM, Aswath Govindraju wrote:
->> The driver adds support for generic CAN transceivers. Currently
->> the modes supported by this driver are standby and normal modes for TI
->> TCAN1042 and TCAN1043 CAN transceivers.
->>
->> The transceiver is modelled as a phy with pins controlled by gpios, to put
->> the transceiver in various device functional modes. It also gets the phy
->> attribute max_link_rate for the usage of m_can drivers.
-> 
-> This driver should be independent of CAN driver, so you should not mention a
-> specific driver here.
-> 
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/include/asm/pgtable-32.h | 32 ++++++++++++++++++++------------
+ arch/mips/include/asm/pgtable-64.h | 18 +++++++++++++++---
+ 2 files changed, 35 insertions(+), 15 deletions(-)
 
-I will substitute m_can with can in the respin.
-
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>  drivers/phy/Kconfig               |   9 ++
->>  drivers/phy/Makefile              |   1 +
->>  drivers/phy/phy-can-transceiver.c | 140 ++++++++++++++++++++++++++++++
->>  3 files changed, 150 insertions(+)
->>  create mode 100644 drivers/phy/phy-can-transceiver.c
->>
->> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
->> index 54c1f2f0985f..51902b629fc6 100644
->> --- a/drivers/phy/Kconfig
->> +++ b/drivers/phy/Kconfig
->> @@ -61,6 +61,15 @@ config USB_LGM_PHY
->>  	  interface to interact with USB GEN-II and USB 3.x PHY that is part
->>  	  of the Intel network SOC.
->>  
->> +config PHY_CAN_TRANSCEIVER
->> +	tristate "CAN transceiver PHY"
->> +	select GENERIC_PHY
->> +	help
->> +	  This option enables support for CAN transceivers as a PHY. This
->> +	  driver provides function for putting the transceivers in various
->> +	  functional modes using gpios and sets the attribute max link
->> +	  rate, for mcan drivers.
->> +
->>  source "drivers/phy/allwinner/Kconfig"
->>  source "drivers/phy/amlogic/Kconfig"
->>  source "drivers/phy/broadcom/Kconfig"
->> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
->> index adac1b1a39d1..9c66101c9605 100644
->> --- a/drivers/phy/Makefile
->> +++ b/drivers/phy/Makefile
->> @@ -9,6 +9,7 @@ obj-$(CONFIG_PHY_LPC18XX_USB_OTG)	+= phy-lpc18xx-usb-otg.o
->>  obj-$(CONFIG_PHY_XGENE)			+= phy-xgene.o
->>  obj-$(CONFIG_PHY_PISTACHIO_USB)		+= phy-pistachio-usb.o
->>  obj-$(CONFIG_USB_LGM_PHY)		+= phy-lgm-usb.o
->> +obj-$(CONFIG_PHY_CAN_TRANSCEIVER)	+= phy-can-transceiver.o
->>  obj-y					+= allwinner/	\
->>  					   amlogic/	\
->>  					   broadcom/	\
->> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
->> new file mode 100644
->> index 000000000000..14496f6e1666
->> --- /dev/null
->> +++ b/drivers/phy/phy-can-transceiver.c
->> @@ -0,0 +1,140 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * phy-can-transceiver.c - phy driver for CAN transceivers
->> + *
->> + * Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com
->> + *
->> + */
->> +#include<linux/phy/phy.h>
->> +#include<linux/platform_device.h>
->> +#include<linux/module.h>
->> +#include<linux/gpio.h>
->> +#include<linux/gpio/consumer.h>
->> +
->> +struct can_transceiver_data {
->> +	u32 flags;
->> +#define STB_PRESENT	BIT(0)
->> +#define EN_PRESENT	BIT(1)
-> 
-> please add a common prefix to the defines
-
-I will add a common prefix(GPIO) in the respin.
-
-> 
->> +};
->> +
->> +struct can_transceiver_phy {
->> +	struct phy *generic_phy;
->> +	struct gpio_desc *standby_gpio;
->> +	struct gpio_desc *enable_gpio;
->> +};
->> +
->> +/* Power on function */
->> +static int can_transceiver_phy_power_on(struct phy *phy)
->> +{
->> +	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
->> +
->> +	if (can_transceiver_phy->standby_gpio)
->> +		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
->> +	if (can_transceiver_phy->enable_gpio)
->> +		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 1);
-> 
-> Please add a newline before the return.
-> 
-
-Will make this change in the respin.
-
->> +	return 0;
->> +}
->> +
->> +/* Power off function */
->> +static int can_transceiver_phy_power_off(struct phy *phy)
->> +{
->> +	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
->> +
->> +	if (can_transceiver_phy->standby_gpio)
->> +		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
->> +	if (can_transceiver_phy->enable_gpio)
->> +		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
-> 
-> same here
-> 
-
-Will make this change in the respin
-
->> +	return 0;
->> +}
->> +
->> +static const struct phy_ops can_transceiver_phy_ops = {
->> +	.power_on	= can_transceiver_phy_power_on,
->> +	.power_off	= can_transceiver_phy_power_off,
->> +	.owner		= THIS_MODULE,
->> +};
->> +
->> +static const struct can_transceiver_data tcan1042_drvdata = {
->> +	.flags = STB_PRESENT,
->> +};
->> +
->> +static const struct can_transceiver_data tcan1043_drvdata = {
->> +	.flags = STB_PRESENT | EN_PRESENT,
->> +};
->> +
->> +static const struct of_device_id can_transceiver_phy_ids[] = {
->> +	{
->> +		.compatible = "ti,tcan1042",
->> +		.data = &tcan1042_drvdata
->> +	},
->> +	{
->> +		.compatible = "ti,tcan1043",
->> +		.data = &tcan1043_drvdata
->> +	},
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(of, can_transceiver_phy_ids);
->> +
->> +int can_transceiver_phy_probe(struct platform_device *pdev)
->> +{
->> +	struct phy_provider *phy_provider;
->> +	struct device *dev = &pdev->dev;
->> +	struct can_transceiver_phy *can_transceiver_phy;
->> +	const struct can_transceiver_data *drvdata;
->> +	const struct of_device_id *match;
->> +	struct phy *phy;
->> +	struct gpio_desc *standby_gpio;
->> +	struct gpio_desc *enable_gpio;
->> +	u32 max_bitrate = 0;
->> +
->> +	can_transceiver_phy = devm_kzalloc(dev, sizeof(struct can_transceiver_phy), GFP_KERNEL);
-> 
-> error handling?
-> 
-
-Will add this in the respin.
-
->> +
->> +	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
->> +	drvdata = match->data;
->> +
->> +	phy = devm_phy_create(dev, dev->of_node,
->> +			      &can_transceiver_phy_ops);
->> +	if (IS_ERR(phy)) {
->> +		dev_err(dev, "failed to create can transceiver phy\n");
->> +		return PTR_ERR(phy);
->> +	}
->> +
->> +	device_property_read_u32(dev, "max-bitrate", &max_bitrate);
->> +	phy->attrs.max_link_rate = max_bitrate / 1000000;
-> 
-> The problem is, there are CAN transceivers with a max of 83.3 kbit/s or 125 kbit/s.
-> 
-
-The only way that I was able to find for this is to add a phy attribute
-"max_bit_rate" in include/linux/phy/phy.h. Would this be an acceptable
-solution ?
-
->> +	can_transceiver_phy->generic_phy = phy;
->> +
->> +	if (drvdata->flags & STB_PRESENT) {
->> +		standby_gpio = devm_gpiod_get(dev, "standby",   GPIOD_OUT_LOW);
-> 
-> please use only one space after the ",".
-
-Will correct this in respin.
-
-> Why do you request the gpio standby low?
-
-While probing the transceiver has to be in standby state and only after
-calling the power on does the transceiver go to enable state. This was
-the reason behind requesting gpio standby low.
-
-Thank you for for review.
-
-Regards,
-Aswath
-
-> 
->> +		if (IS_ERR(standby_gpio))
->> +			return PTR_ERR(standby_gpio);
->> +		can_transceiver_phy->standby_gpio = standby_gpio;
->> +	}
->> +
->> +	if (drvdata->flags & EN_PRESENT) {
->> +		enable_gpio = devm_gpiod_get(dev, "enable",   GPIOD_OUT_LOW);
->> +		if (IS_ERR(enable_gpio))
->> +			return PTR_ERR(enable_gpio);
->> +		can_transceiver_phy->enable_gpio = enable_gpio;
->> +	}
->> +
->> +	phy_set_drvdata(can_transceiver_phy->generic_phy, can_transceiver_phy);
->> +
->> +	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
->> +
->> +	return PTR_ERR_OR_ZERO(phy_provider);
->> +}
->> +
->> +static struct platform_driver can_transceiver_phy_driver = {
->> +	.probe = can_transceiver_phy_probe,
->> +	.driver = {
->> +		.name = "can-transceiver-phy",
->> +		.of_match_table = can_transceiver_phy_ids,
->> +	},
->> +};
->> +
->> +module_platform_driver(can_transceiver_phy_driver);
->> +
->> +MODULE_AUTHOR("Faiz Abbas <faiz_abbas@ti.com>");
->> +MODULE_AUTHOR("Aswath Govindraju <a-govindraju@ti.com>");
->> +MODULE_DESCRIPTION("CAN TRANSCEIVER PHY driver");
->> +MODULE_LICENSE("GPL v2");
->>
-> 
-> marc
-> 
+diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
+index 6c0532d..3ec12ce 100644
+--- a/arch/mips/include/asm/pgtable-32.h
++++ b/arch/mips/include/asm/pgtable-32.h
+@@ -201,9 +201,8 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
+ #if defined(CONFIG_CPU_R3K_TLB)
+ 
+ /* Swap entries must have VALID bit cleared. */
+-#define __swp_type(x)			(((x).val >> 10) & 0x1f)
+-#define __swp_offset(x)			((x).val >> 15)
+-#define __swp_entry(type,offset)	((swp_entry_t) { ((type) << 10) | ((offset) << 15) })
++#define __SWP_TYPE_SHIFT	10
++
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+ 
+@@ -212,18 +211,16 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
+ #if defined(CONFIG_XPA)
+ 
+ /* Swap entries must have VALID and GLOBAL bits cleared. */
+-#define __swp_type(x)			(((x).val >> 4) & 0x1f)
+-#define __swp_offset(x)			 ((x).val >> 9)
+-#define __swp_entry(type,offset)	((swp_entry_t)  { ((type) << 4) | ((offset) << 9) })
++#define __SWP_TYPE_SHIFT	4
++
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { (pte).pte_high })
+ #define __swp_entry_to_pte(x)		((pte_t) { 0, (x).val })
+ 
+ #elif defined(CONFIG_PHYS_ADDR_T_64BIT) && defined(CONFIG_CPU_MIPS32)
+ 
+ /* Swap entries must have VALID and GLOBAL bits cleared. */
+-#define __swp_type(x)			(((x).val >> 2) & 0x1f)
+-#define __swp_offset(x)			 ((x).val >> 7)
+-#define __swp_entry(type, offset)	((swp_entry_t)  { ((type) << 2) | ((offset) << 7) })
++#define __SWP_TYPE_SHIFT	2
++
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { (pte).pte_high })
+ #define __swp_entry_to_pte(x)		((pte_t) { 0, (x).val })
+ 
+@@ -235,9 +232,8 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
+  *      _PAGE_GLOBAL at bit 6
+  *      _PAGE_VALID at bit 7
+  */
+-#define __swp_type(x)			(((x).val >> 8) & 0x1f)
+-#define __swp_offset(x)			 ((x).val >> 13)
+-#define __swp_entry(type,offset)	((swp_entry_t)	{ ((type) << 8) | ((offset) << 13) })
++#define __SWP_TYPE_SHIFT	8
++
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+ 
+@@ -245,4 +241,16 @@ static inline pte_t pfn_pte(unsigned long pfn, pgprot_t prot)
+ 
+ #endif /* defined(CONFIG_CPU_R3K_TLB) */
+ 
++#define __SWP_TYPE_BITS		5
++#define __SWP_TYPE_MASK		((1UL << __SWP_TYPE_BITS) - 1)
++#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
++
++#define MAX_SWAPFILES_CHECK()	\
++	BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
++
++#define __swp_type(x)			(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
++#define __swp_offset(x)			((x).val >> __SWP_OFFSET_SHIFT)
++#define __swp_entry(type,offset)	((swp_entry_t) { ((type) << __SWP_TYPE_SHIFT) | \
++						((offset) << __SWP_OFFSET_SHIFT) })
++
+ #endif /* _ASM_PGTABLE_32_H */
+diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
+index 1e7d6ce..d064444 100644
+--- a/arch/mips/include/asm/pgtable-64.h
++++ b/arch/mips/include/asm/pgtable-64.h
+@@ -330,15 +330,27 @@ extern void pgd_init(unsigned long page);
+ extern void pud_init(unsigned long page, unsigned long pagetable);
+ extern void pmd_init(unsigned long page, unsigned long pagetable);
+ 
++#define __SWP_TYPE_SHIFT	16
++#define __SWP_TYPE_BITS		8
++#define __SWP_TYPE_MASK		((1UL << __SWP_TYPE_BITS) - 1)
++#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
++
++#define MAX_SWAPFILES_CHECK()	\
++	BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
++
+ /*
+  * Non-present pages:  high 40 bits are offset, next 8 bits type,
+  * low 16 bits zero.
+  */
+ static inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
+-{ pte_t pte; pte_val(pte) = (type << 16) | (offset << 24); return pte; }
++{
++	pte_t pte;
++	pte_val(pte) = (type << __SWP_TYPE_SHIFT) | (offset << __SWP_OFFSET_SHIFT);
++	return pte;
++}
+ 
+-#define __swp_type(x)		(((x).val >> 16) & 0xff)
+-#define __swp_offset(x)		((x).val >> 24)
++#define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
++#define __swp_offset(x)		((x).val >> __SWP_OFFSET_SHIFT)
+ #define __swp_entry(type, offset) ((swp_entry_t) { pte_val(mk_swap_pte((type), (offset))) })
+ #define __pte_to_swp_entry(pte) ((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+-- 
+2.1.0
 
