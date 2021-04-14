@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC18535FA7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34DB35FA7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352549AbhDNSMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
+        id S1352573AbhDNSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbhDNSMO (ORCPT
+        with ESMTP id S234332AbhDNSMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:12:14 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A28FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:52 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id bx20so23680554edb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:52 -0700 (PDT)
+        Wed, 14 Apr 2021 14:12:15 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A71C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:53 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id mh2so11252885ejb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FdEVCrFFwemRGVz8oNJR0sYV8NDQMun9Dnn10s4aLrk=;
-        b=T5Jffb63JPVd5H0yM+DB8OtbI31ZzfgIBRp9fcT7nfWp6tb8FNg+hZ0h0U/CvFCFTP
-         UU32/JF/zBkzp4sdCgyGbO8tVdQkrqSieOquzuHbLfEQxrfHCw+lXIPgP5bpC0xXQ+KQ
-         2iHgJJscQrmwvOtLFb/xZUcPSiL+EYipYKzdiK32DIud48Jc+Uriq7EbVsAi/o0zvdfb
-         QNZfF8EdtT/7OjHrZKQ++TNxJNwoXLUJ9Asfu/x5R+Pr6VrmV01PPKaxt9ivn3ApLC9X
-         M5/X9kPyaSxRFJDemHQUMkKVzpHQJF0EhpWq6w4Yyl7bjtYjM/9BNgJC1cVR9NEzjZn9
-         nRsg==
+        bh=WsTnlZ0JLtuPnbO60j2rczl2/gLE7x7tVgm20+EM1Dc=;
+        b=v7SNGemTBhWQrAoIapsNidlHLFQnZx+bRnGVs+M17pVLVxst/gNZb3SmwiskAjL8lg
+         ygF1ZxYy+vpP/GQgmtBbIe/A8oz4faap+35tlxfg6yhC2EsaoLFn2bw3qc2sKJs5uO4W
+         HNT3QE++OG9CbZCcW9Wo4ljeZmkpJobpEhaq1Cz7flYijDpgGUl+nYEiuX8zFX0thYOt
+         iOt/aKuDWC/6WtGfEzIsI6KbEtXv2sXF0oB5s4lKuZcBAr+MeH9C9dpWGvCVhyo/x3LV
+         iECHTLWDZakB/vTl7nfioZOhPE98eoXt1dSaXLaYSmliBFmEt5nSm0OXycJB74HD/drA
+         wVOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FdEVCrFFwemRGVz8oNJR0sYV8NDQMun9Dnn10s4aLrk=;
-        b=SFCgMGkLnMPn0880AkZs7pm9a6ILF7Cyksh5PNWNQYuYBY6zdPzVo+4/0JeMhnqgwG
-         VLbky7NvD64NCq9kUrrprj6uVrofvnU9g5y3eZb6bl9haehGV3CudDwAoBZk7JNyV6vx
-         rIJXi1OGRwB40RL4t9iNJELFeq9JnMEpaWnNCAWOa6h2rzw0SH2EOxCxmpT2urVwXVRm
-         HceegtRkG7d6ytUd9mziMUHotvagaWED+76jTwQ3WMYMTO+nCz7VHyEGqnHKaqMiju8z
-         fHqf5LCMnJOLy3IvPgCnRi9DNbWxu6Cvu78LGPrZGcw+MytiBSo7BuIjnNhLIUkDDqwY
-         6F+w==
-X-Gm-Message-State: AOAM533b6vqUUaIpca6dB7RISS9vT7YGGuYZ5lZcTAeYpXXYXf8fVD5d
-        FIJRQU3oMxmzGVE1JqoG1MVVdA==
-X-Google-Smtp-Source: ABdhPJzZK1BMaZwOXlSvNJiNdKQ3vu6LUN5MeljFZ+3mC/R1f+ruoi0sqd5K7L6WqjLGqGercAGrgg==
-X-Received: by 2002:aa7:d588:: with SMTP id r8mr191546edq.318.1618423911399;
-        Wed, 14 Apr 2021 11:11:51 -0700 (PDT)
+        bh=WsTnlZ0JLtuPnbO60j2rczl2/gLE7x7tVgm20+EM1Dc=;
+        b=P35WS2rN8IvbMzyU4oPgqRQshxV76m3QJfrrEnPwA6zB739cHM/ry7vlQCTR5Ii+LI
+         oyB0UYZA1mToluThiI17eGVzqqTlhbwrWmjJSUD00ttgZkSHvQ8GqihANBuGuay6Uig6
+         0rYO78X/miyKpXhWiPB6BMU1XWtX3QzxCGLgbk4HHNtxMOeahf9M1bHQygYpiQmXzG/c
+         s9ukNbopct9y5AJ+Its0MqHAV/3OEGrASEc27e2Tq6gpuHN7wjHWD8Ajpvp6OWZgMPn5
+         btzQhl0pDQ5D23hlqXgvpg86woa2Q+P1xWXEBQKKkXwxNtd1/IylkMlEm96i2/HsEOn4
+         EJdA==
+X-Gm-Message-State: AOAM5323feSiQXrC6cKK75o8KSo4+Dw4uXxG33CYGi7ndxEVygAgftHu
+        yNrvhULZzOieGXDoWP7zIY1QPA==
+X-Google-Smtp-Source: ABdhPJyQJ/Sxa/NX2STNIxTSUi4KKDzaHuSnMl08NYq4KrdAtMi3M+xDBFVTkst+RtqDwC4ChkPzzA==
+X-Received: by 2002:a17:906:430f:: with SMTP id j15mr115016ejm.543.1618423912323;
+        Wed, 14 Apr 2021 11:11:52 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.50
+        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:11:50 -0700 (PDT)
+        Wed, 14 Apr 2021 11:11:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ross Schmidt <ross.schm.dev@gmail.com>,
         linux-staging@lists.linux.dev
-Subject: [PATCH 16/57] staging: rtl8723bs: core: rtw_sta_mgt: Remove unused variable 'psta'
-Date:   Wed, 14 Apr 2021 19:10:48 +0100
-Message-Id: <20210414181129.1628598-17-lee.jones@linaro.org>
+Subject: [PATCH 17/57] staging: rtl8723bs: core: rtw_sta_mgt: Return error value directly
+Date:   Wed, 14 Apr 2021 19:10:49 +0100
+Message-Id: <20210414181129.1628598-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210414181129.1628598-1-lee.jones@linaro.org>
 References: <20210414181129.1628598-1-lee.jones@linaro.org>
@@ -69,36 +69,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c: In function ‘kfree_all_stainfo’:
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c:128:19: warning: variable ‘psta’ set but not used [-Wunused-but-set-variable]
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c: In function ‘rtw_init_bcmc_stainfo’:
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c:512:6: warning: variable ‘res’ set but not used [-Wunused-but-set-variable]
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Ross Schmidt <ross.schm.dev@gmail.com>
 Cc: linux-staging@lists.linux.dev
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-index 85663182b388a..7b631a6b258a1 100644
+index 7b631a6b258a1..233febc145983 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-@@ -119,7 +119,6 @@ void kfree_all_stainfo(struct sta_priv *pstapriv);
- void kfree_all_stainfo(struct sta_priv *pstapriv)
+@@ -497,7 +497,6 @@ struct sta_info *rtw_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
+ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
  {
- 	struct list_head	*plist, *phead;
--	struct sta_info *psta = NULL;
+ 	struct sta_info *psta;
+-	u32 res = _SUCCESS;
+ 	NDIS_802_11_MAC_ADDRESS	bcast_addr = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
  
- 	spin_lock_bh(&pstapriv->sta_hash_lock);
+ 	struct	sta_priv *pstapriv = &padapter->stapriv;
+@@ -505,15 +504,12 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
  
-@@ -127,7 +126,6 @@ void kfree_all_stainfo(struct sta_priv *pstapriv)
- 	plist = get_next(phead);
+ 	psta = rtw_alloc_stainfo(pstapriv, bcast_addr);
  
- 	while (phead != plist) {
--		psta = container_of(plist, struct sta_info, list);
- 		plist = get_next(plist);
- 	}
+-	if (!psta) {
+-		res = _FAIL;
+-		goto exit;
+-	}
++	if (!psta)
++		return _FAIL;
+ 
+ 	/*  default broadcast & multicast use macid 1 */
+ 	psta->mac_id = 1;
+ 
+-exit:
+ 	return _SUCCESS;
+ }
  
 -- 
 2.27.0
