@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E0035FAA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4C735FA80
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353014AbhDNSQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352637AbhDNSM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:12:59 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C5BC06138F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:36 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id d21so4718267edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jmlhXWCJ2XtgAisEDgZm+I/z8Zj5LaHUfk+sYMxcX0w=;
-        b=bOAvcIZAx8MOa6fUzYOC2qnQqsEY/wNrNKN0j9q60ttjRFNTKqOtTPBFvFLk5jMegz
-         I3SBkmJJHF++9ARM3n/hh5FxIiZEtOTb26ZpaL0i37wJvQyzRMM+0UFCtTb5EmabDo6P
-         OaD+/5jPY+KBtLE+9dMZOJJz3c8/XhHnGoBJdXVzScs5hEiPd6OknaLf3uqBW6y4tL9o
-         8CTx+TTOlzGscPKFlBrBmvfoBz91Dt1+x6dyUBbJFEqcE3q0bcTj6X1dlQF0Q+vGZDFz
-         v/BtzKMbVpyCtTgWbrB/CUTI6MzGw5fsiZbwA+0BvFxxjSE1W5Y/2Pbr7vNetMK7oRVs
-         mGHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jmlhXWCJ2XtgAisEDgZm+I/z8Zj5LaHUfk+sYMxcX0w=;
-        b=U9xep45ZOao0ZXakLSisKMG9yRWyVubrUUuspFkH6vV3A2Erj9BP3um1UfIFYV+5Bq
-         aXl2qCpcNZQXdU2MoCJlRNTWKNcX10DuPzIJ9659iL5+G9JtXKJ4/02iItv6MGOoJZLI
-         liUXcFv5G15vhz01bS1AsuNzpKgk7E8GNCWcuQZ5RGbIMgLXgmtbWcWNeNQdSwa3UJR5
-         Fzu6SbgbvGwUCGYARa62XUaWA4INli4RTQOm1nHmHcUiJjrNIQ7OFaAieMGfUSXxqJDB
-         etKpDbJnEJr56a4qLekSLvDD0X6IVM++ut1zMRetkRaFQhoNObjvnPkMUIFEYcZxsVPS
-         9GnQ==
-X-Gm-Message-State: AOAM531ffz8XY/E/FBdbdrQV32CaUHogoHWLXqPmXqUCnb/pt96DADqE
-        membwjMoMWQX6bu7nI9FmnAHguKGM/05/w==
-X-Google-Smtp-Source: ABdhPJyu1Xkaqc4ETAAc2G9Mc6AemDVEQqBB8EZH2Dy2YGiwN5k0QZNSXO5TO34emzUN45TL+VNl8A==
-X-Received: by 2002:aa7:c247:: with SMTP id y7mr156227edo.305.1618423954858;
-        Wed, 14 Apr 2021 11:12:34 -0700 (PDT)
-Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.12.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:12:34 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>, Stanley@BB.SD3,
-        linux-staging@lists.linux.dev
-Subject: [PATCH 57/57] staging: rtl8723bs: hal: sdio_halinit: Remove unused variable 'ret'
-Date:   Wed, 14 Apr 2021 19:11:29 +0100
-Message-Id: <20210414181129.1628598-58-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210414181129.1628598-1-lee.jones@linaro.org>
-References: <20210414181129.1628598-1-lee.jones@linaro.org>
+        id S1352643AbhDNSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349712AbhDNSMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:12:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96A7660234;
+        Wed, 14 Apr 2021 18:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618423918;
+        bh=+c25Y4lDJcUngMFCC6ehdjOCkVWMv90Bo8T+0YkkilI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Uro1rPB7OX1rRbCXFncmETAarK+DNK+/496vYdPqUJvMFHpBuW+Wf0ovsdpy7mVaM
+         PnkjhY0t2/dTwkQjvjrCIrQqI0mX0IRQRBOiw99CWQ5hK2D7vGbXdWRaCLPS1O+t2l
+         LIvCGZRddxnylagqhwcLPV/J/kgxGY2WmmEeQPq6oReD5ngAXBhwhCkNBJeFutt7YQ
+         SQkBjD1fBkgghIZ2Tl1uJC4EC+Om/35UGJQqRfzm4ZAJuJi8hdkoC8hmDK8hoicAME
+         7LihOcC82f+eMCkAQxsFsOhAN3T672EJs8OAdsi3zTiS2b0iKfJThVp8BojT+RJImI
+         ylrY8yw9pky5w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4DF3C5C23EB; Wed, 14 Apr 2021 11:11:58 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 11:11:58 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it
+ has been spawned
+Message-ID: <20210414181158.GU4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
+ <87czuz1tbc.ffs@nanos.tec.linutronix.de>
+ <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
+ <20210414071322.nz64kow4sp4nwzmy@linutronix.de>
+ <20210414085757.GA1917@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414085757.GA1917@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Wed, Apr 14, 2021 at 10:57:57AM +0200, Uladzislau Rezki wrote:
+> On Wed, Apr 14, 2021 at 09:13:22AM +0200, Sebastian Andrzej Siewior wrote:
+> > On 2021-04-12 11:36:45 [-0700], Paul E. McKenney wrote:
+> > > > Color me confused. I did not follow the discussion around this
+> > > > completely, but wasn't it agreed on that this rcu torture muck can wait
+> > > > until the threads are brought up?
+> > > 
+> > > Yes, we can cause rcutorture to wait.  But in this case, rcutorture
+> > > is just the messenger, and making it wait would simply be ignoring
+> > > the message.  The message is that someone could invoke any number of
+> > > things that wait on a softirq handler's invocation during the interval
+> > > before ksoftirqd has been spawned.
+> > 
+> > My memory on this is that the only user, that required this early
+> > behaviour, was kprobe which was recently changed to not need it anymore.
+> > Which makes the test as the only user that remains. Therefore I thought
+> > that this test will be moved to later position (when ksoftirqd is up and
+> > running) and that there is no more requirement for RCU to be completely
+> > up that early in the boot process.
+> > 
+> > Did I miss anything?
+> > 
+> Seems not. Let me wrap it up a bit though i may miss something:
+> 
+> 1) Initially we had an issue with booting RISV because of:
+> 
+> 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+> 
+> i.e. a developer decided to move initialization of kprobe at
+> early_initcall() phase. Since kprobe uses synchronize_rcu_tasks()
+> a system did not boot due to the fact that RCU-tasks were setup
+> at core_initcall() step. It happens later in this chain.
+> 
+> To address that issue, we had decided to move RCU-tasks setup
+> to before early_initcall() and it worked well:
+> 
+> https://lore.kernel.org/lkml/20210218083636.GA2030@pc638.lan/T/
+> 
+> 2) After that fix you reported another issue. If the kernel is run
+> with "threadirqs=1" - it did not boot also. Because ksoftirqd does
+> not exist by that time, thus our early-rcu-self test did not pass.
+> 
+> 3) Due to (2), Masami Hiramatsu proposed to fix kprobes by delaying
+> kprobe optimization and it also addressed initial issue:
+> 
+> https://lore.kernel.org/lkml/20210219112357.GA34462@pc638.lan/T/
+> 
+> At the same time Paul made another patch:
+> 
+> softirq: Don't try waking ksoftirqd before it has been spawned
+> 
+> it allows us to keep RCU-tasks initialization before even
+> early_initcall() where it is now and let our rcu-self-test
+> to be completed without any hanging.
 
- drivers/staging/rtl8723bs/hal/sdio_halinit.c: In function ‘CardDisableRTL8723BSdio’:
- drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/sdio_halinit.c: In function ‘CardDisableRTL8723BSdio’:
- drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/sdio_halinit.c: In function ‘CardDisableRTL8723BSdio’:
- drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/sdio_halinit.c: In function ‘CardDisableRTL8723BSdio’:
- drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
- drivers/staging/rtl8723bs/hal/sdio_halinit.c: In function ‘CardDisableRTL8723BSdio’:
- drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+In short, this window of time in which it is not possible to reliably
+wait on a softirq handler has caused trouble, just as several other
+similar boot-sequence time windows have caused trouble in the past.
+It therefore makes sense to just eliminate this problem, and prevent
+future developers from facing inexplicable silent boot-time hangs.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc: Stanley@BB.SD3
-Cc: linux-staging@lists.linux.dev
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/staging/rtl8723bs/hal/sdio_halinit.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+We can move the spawning of ksoftirqd kthreads earlier, but that
+simply narrows the window.  It does not eliminate the problem.
 
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-index f6d734dd1a24f..60d3d6d1ba678 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-@@ -878,10 +878,9 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
- {
- 	u8 u1bTmp;
- 	u8 bMacPwrCtrlOn;
--	u8 ret = _FAIL;
- 
- 	/*  Run LPS WL RFOFF flow */
--	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
-+	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
- 
- 	/* 	==== Reset digital sequence   ====== */
- 
-@@ -909,9 +908,8 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
- 	/* 	==== Reset digital sequence end ====== */
- 
- 	bMacPwrCtrlOn = false;	/*  Disable CMD53 R/W */
--	ret = false;
- 	rtw_hal_set_hwreg(padapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
--	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
-+	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
- }
- 
- static u32 rtl8723bs_hal_deinit(struct adapter *padapter)
--- 
-2.27.0
+I can easily believe that this might have -rt consequences that need
+attention.  For your amusement, I will make a few guesses as to what
+these might be:
 
+o	Back-of-interrupt softirq handlers degrade real-time response.
+	This should not be a problem this early in boot, and once the
+	ksoftirqd kthreads are spawned, there will never be another
+	back-of-interrupt softirq handler in kernels that have
+	force_irqthreads set, which includes -rt kernels.
+
+o	That !__this_cpu_read(ksoftirqd) check remains at runtime, even
+	though it always evaluates to false.  I would be surprised if
+	this overhead is measurable at the system level, but if it is,
+	static branches should take care of this.
+
+o	There might be a -rt lockdep check that isn't happy with
+	back-of-interrupt softirq handlers.  But such a lockdep check
+	could be conditioned on __this_cpu_read(ksoftirqd), thus
+	preventing it from firing during that short window at boot time.
+
+o	The -rt kernels might be using locks to implement things like
+	local_bh_disable(), in which case back-of-interrupt softirq
+	handlers could result in self-deadlock.  This could be addressed
+	by disabling bh the old way up to the time that the ksoftirqd
+	kthreads are created.  Because these are created while the system
+	is running on a single CPU (right?), a simple flag (or static
+	branch) could be used to switch this behavior into lock-only
+	mode long before the first real-time application can be spawned.
+
+So my turn.  Did I miss anything?
+
+							Thanx, Paul
