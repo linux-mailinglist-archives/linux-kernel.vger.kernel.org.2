@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231A035F30A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5C135F360
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348987AbhDNL5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbhDNL5f (ORCPT
+        id S1350829AbhDNMT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:19:29 -0400
+Received: from elektron.elka.pw.edu.pl ([194.29.160.103]:39776 "EHLO
+        elektron.elka.pw.edu.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233113AbhDNMTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:57:35 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E888C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:57:12 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id l8so10192792vsj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzbLJJzdVatWgDfJz2ZZ1Lv5UzxGtXQuOI1FrNqTbkE=;
-        b=VQ4gp9rlip34pGr7jx9IKm0jVOGMV7Ht8tFoasoB90S6Pub2HPVW88RmORxiXeJjFM
-         S/rWcMWz3pUoLB6h+5VLnps7dA94+o03/0V25Jy/QX5i5YAfzXQEEoLyCr+nj03HDoFL
-         yiUZfx8PatrfT6Xt9BQx6h/2/nIXy1nNZ4BbI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzbLJJzdVatWgDfJz2ZZ1Lv5UzxGtXQuOI1FrNqTbkE=;
-        b=N8me9KC4Q3gRmlToq0FiEAB4wVp8gC4zBOTHjFNeDLZDNLy3CD/S1GBegT2upQh8Mw
-         h94nSRh43cEZvFkytNCHrq5cLipnvqRcy/D/XV1MDuPsFlZKKkebTdmla0PCSMXws97B
-         kAITmLeE/uPdRWk83/hnUllKtc0LiSYAW4n/nu3IED+Rv7WHQ57/W2/TqisyoVdKALN2
-         /pciVbc3vAVgwV9TTQ0UYTY5xZUXwXQNF1qQRhqvgvMM0CSD8gErHc/SZCmx3rttj1MU
-         IiOzH5E4fMjKKjLWAjPhMFfZ/tH1JVc3ST9vqm2HIAq0lqglqR79BUdLd/88zk3Bpv89
-         nWYA==
-X-Gm-Message-State: AOAM532tQSrgwbGmoHdFppD0C43p9PxxR08Y6sT3FGNTnuz9YsjGVFeu
-        iaMJf6AWDfa703aUb4piYEklqhclLw9tgfUImxXGRw==
-X-Google-Smtp-Source: ABdhPJydu9VDVLIxO1JsC2e18nwwFO5YtRyww3UMaWYWTS+xXWf4ATouL7wCLTlL/8nyvW7zHu+kF2ww7AeQDXWMvL0=
-X-Received: by 2002:a67:6a85:: with SMTP id f127mr27341297vsc.9.1618401431913;
- Wed, 14 Apr 2021 04:57:11 -0700 (PDT)
+        Wed, 14 Apr 2021 08:19:21 -0400
+X-Greylist: delayed 1253 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Apr 2021 08:19:20 EDT
+Received: from [172.19.1.1] (095160103141.warszawa.vectranet.pl [95.160.103.141])
+        (Authenticated sender: wzabolot@elektron.elka.pw.edu.pl)
+        by elektron.elka.pw.edu.pl (Postfix) with ESMTPSA id 7DBCF68005B;
+        Wed, 14 Apr 2021 13:58:03 +0200 (CEST)
+To:     LKML <linux-kernel@vger.kernel.org>
+From:   wzab@ise.pw.edu.pl
+Subject: Proposal of improvement for DMA - direct passing of hugepages to the
+ SG list
+Cc:     linux-fpga@vger.kernel.org
+Message-ID: <6c7a1cff-3ad6-0a75-c45b-ce437ea156ef@elektron.elka.pw.edu.pl>
+Date:   Wed, 14 Apr 2021 13:58:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210325151823.572089-1-vgoyal@redhat.com>
-In-Reply-To: <20210325151823.572089-1-vgoyal@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 14 Apr 2021 13:57:01 +0200
-Message-ID: <CAJfpegvU9zjT7qV=Rj4ok4kfYz-9BPhjp+xKz9odfSWaFxshyA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] fuse: Fix clearing SGID when access ACL is set
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Luis Henriques <lhenriques@suse.de>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Seth Forshee <seth.forshee@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 4:19 PM Vivek Goyal <vgoyal@redhat.com> wrote:
->
->
-> Hi,
->
-> This is V2 of the patchset. Posted V1 here.
->
-> https://lore.kernel.org/linux-fsdevel/20210319195547.427371-1-vgoyal@redhat.com/
->
-> Changes since V1:
->
-> - Dropped the helper to determine if SGID should be cleared and open
->   coded it instead. I will follow up on helper separately in a different
->   patch series. There are few places already which open code this, so
->   for now fuse can do the same. Atleast I can make progress on this
->   and virtiofs can enable ACL support.
->
-> Luis reported that xfstests generic/375 fails with virtiofs. Little
-> debugging showed that when posix access acl is set that in some
-> cases SGID needs to be cleared and that does not happen with virtiofs.
->
-> Setting posix access acl can lead to mode change and it can also lead
-> to clear of SGID. fuse relies on file server taking care of all
-> the mode changes. But file server does not have enough information to
-> determine whether SGID should be cleared or not.
->
-> Hence this patch series add support to send a flag in SETXATTR message
-> to tell server to clear SGID.
+Hi,
 
-Changed it to have a single extended structure for the request, which
-is how this has always been handled in the fuse API.
+I'm working both on DMA engines implementations in FPGA and their Linux 
+drivers.
+Now I need to create an engine that takes the hugepages-backed buffer 
+allocated
+by the user-space application and passes it to the device.
+My current solution:
 
-The ABI is unchanged, but you'll need to update the userspace part
-according to the API change.  Otherwise looks good.
+https://forums.xilinx.com/t5/Embedded-Linux/How-to-pass-efficiently-the-hugepages-backed-buffer-to-the-BM/m-p/1229340/highlight/true#M49777
+or https://stackoverflow.com/a/67065962/1735409
 
-Applied and pushed to fuse.git#for-next.
+uses the get_user_pages_fast function, to create the kernel mapping,
+and then uses sg_alloc_table_from_pages to build sg_table for it.
 
-Thanks,
-Miklos
+I have verified that the created sg_table has one entry for each individual
+hugepage (so I can efficiently map it for my SG-capable DMA device).
+
+The disadvantage of that solution is that I need to create and keep a 
+huge set
+of standard-size pages. Because the "struct page" occupies between 56 and 80
+bytes, I get the overhead up to 80/4096 which is approx. 2%.
+
+The open question is if I can free those pages as soon as the sg_table
+is created? (As far as I know, the hugepages are locked automatically).
+Of course it is unclear what happens if the application crashes and its 
+mmaped
+hugepage-based buffer gets freed. Will the driver be notified about 
+closing the
+file so that it can disable DMA before that memory can be taken for other
+purposes?
+
+To be sure that it doesn't happen maybe it is good to keep those pages 
+locked
+in the kernel as well.
+The big improvement would be if we could have the get_user_hugepages_fast
+function. The user should be allowed to create a smaller number of page 
+structs.
+The function should check if the requested region really consists of 
+hugepages
+and return an error if it doesn't.
+
+Another important fact is that we don't need a kernel mapping for those 
+pages
+at all. So it would be good to have yet another function:
+sg_alloc_table_from_user_pages
+which should take an additional "flag" argument enabling the user to decide
+if the area used consists of normal pages or of hugepages.
+
+The function should return an error in  case if the flag does not match the
+properties of the region. Of course the function should also lock the pages,
+and sg_free_table should unlock them (protecting against the danger
+of application crash, that I described above).
+
+As a temporary workaround, is it possible to "manually" walk the pages
+creating the application-delivered buffer, verify that they are hugepages,
+lock them and create the sg_table?
+What functions/macros should be used for that to ensure that the implemented
+solution be portable and keeps working in a reasonable number of future 
+versions
+of the Linux kernel?
+
+I'll appreciate comments, suggestions and considering of the above proposal.
+With best regards,
+Wojtek
+
+-- 
+Wojciech M Zabolotny, PhD, DSc
+Institute of Electronic Systems
+Faculty of Electronics and Information Technology
+Warsaw University of Technology
