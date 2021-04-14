@@ -2,156 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2428D35F494
+	by mail.lfdr.de (Postfix) with ESMTP id 9576435F495
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhDNNNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbhDNNMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:12:30 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D4DC06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:12:01 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id m3so23637054edv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vRUDKBR7RwkkTXgZ+sUsbwVfdbHWNU9ESm88Dqvkblg=;
-        b=Z78a49v7+PWNoXCt2G+P7mD5Bje1NVfIXaUAnp/s74Fh0tMgIh5qZLBKAIfvh2LuoQ
-         rB+FjCghvIxW9JSkWdnMIjzY7Jhr8eaooqoR4PLDASf0hnBF5hVXTKvV6LP0j9Q7Pr+a
-         xEVRnnF7rHB4Ae5KkvtrhT59u5W0nzZuPeEoQ/61nBkwErKhPyBNHwJZj0qmq0WmHjxq
-         HsL2RinDYvbidfZq2/2UDkrBIJE94fkYg9+EaYxgTgclLH0nbp5Utk8EuktnT3SDxhGp
-         6+z8tJpqbNFmQhnySe7pXth1q/I5D8S4ZYlieBmpQlGRY8V0g7Pd4cEhfpokQyDQ4bCm
-         tfyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vRUDKBR7RwkkTXgZ+sUsbwVfdbHWNU9ESm88Dqvkblg=;
-        b=IdPpBaR0AOQU3qVUMy8GXkN54YmKMNvU6ZCrIiK20RUHkHyi0oQdCRh2f1NK8YRIx5
-         69iV5qHe+Hr6RzkbPpcW6A46u7kRoETFeL0IkM6LsuKz3WA90K+U2tuGRtvYnliTpK3L
-         7zYmw1NmCLdnENOT+k80DdDHvGWPEV01oujfZNqy9TgKYeK0T4xuRKzartAuUuXcitEM
-         kmtVjncjjJgc+3faDnpIpoVc1eQHxGosvjzjye4WGHaF/vr+MJsF2VlmhjLIW2+EQy+g
-         /Bd2H69OMvRDXZYCQxneWF9v9vx3YwIvGcsvIalu5m2QUqtTaQ7VgrIGgsPaPYmsjFwJ
-         TMHQ==
-X-Gm-Message-State: AOAM5305mnrE8TXau6mqexLqe9elBMs6/KxU0SaSzBPHkPBN5bfCSy0J
-        GU6I/ZWKtWWuBOmu9tJWoIX96g==
-X-Google-Smtp-Source: ABdhPJwn/rS2SfHF2VYdBHuVepuPkQv9wfCzaDCvZDOk0dS2tnN1gLRWPu+ZHWIj0/0V1hUU231VXg==
-X-Received: by 2002:a05:6402:42c8:: with SMTP id i8mr40924106edc.386.1618405920522;
-        Wed, 14 Apr 2021 06:12:00 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id 1sm1095942ejt.95.2021.04.14.06.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 06:12:00 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 14:11:58 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: [GIT PULL] Immutable branch between MFD, Clock, GPIO, Regulator and
- RTC due for the v5.13 merge window
-Message-ID: <20210414131158.GN4869@dell>
-References: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1346792AbhDNNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233652AbhDNNMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:12:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A685C61132;
+        Wed, 14 Apr 2021 13:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618405946;
+        bh=rBpwZWHONd/pVnqDvMG+U/0SeZ4Pw7B4WEWon7jG2Hw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SOj77SGYaroWYhk4SYOtl/kHErlyYsfASXsCKn5chVa/5239+Jjp4g/rqqvOShbxk
+         6jRHB7aj3eCfnd8bzULlQeMNmkbDRDwOxCtfMA6ExWPAUeYIw+YmTkvkwDfOmDGE/D
+         wbf/WxP56ZSOK5WeH7kM2OMZEMNXk0iYk6UVw6peA+3DBy7/nx//M8K0pLK1OJU5u1
+         CemzRIptuE7oUvFESUCJUb06ShEBBfF+xLd5Ho6VvmQCaIM2BZgA0IGI2wc6/KCqb/
+         0qP1gs/EP2VRqyCE7/Nomcg4cnRhmi08NooBcSCcy/0ZM6Bykbmy2+pcrmoJo48Xho
+         d/Ec85ANpSLXA==
+Date:   Wed, 14 Apr 2021 16:12:23 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kprobes: Simplify alloc_insn_page() with
+ __vmalloc_node_range
+Message-ID: <YHbqN0B5QnpWtzc/@kernel.org>
+References: <20210413180231.19b72601@xhacker.debian>
+ <20210413220030.d1cbbc63659dcbc52876696d@kernel.org>
+ <20210414152728.418a41fb@xhacker.debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <20210414152728.418a41fb@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please note that this PR will break your build unless you have the
-required Regulator API update.
+On Wed, Apr 14, 2021 at 03:27:28PM +0800, Jisheng Zhang wrote:
+> Jisheng Zhang wrote:
+> 
+> > 
+> > 
+> > Hi,  
+> 
+> Hi
+> 
+> > 
+> > On Tue, 13 Apr 2021 18:03:24 +0800
+> > Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> >   
+> > > Use the __vmalloc_node_range() to simplify x86's alloc_insn_page() 
+> > > implementation.  
+> > 
+> > Have you checked this is equivarent to the original code on all 
+> > architecture? IIRC, some arch has a special module_alloc(),  
+> 
+> > Indeed, this isn't equivarent to the original code. FWICT, the differences on x86 are:
+> 
+> > 1) module_alloc() allocates a special vmalloc range
+> > 2) module_alloc() randomizes the return address via. module_load_offset()
+> > 3) module_alloc() also supports kasan instrumentation by kasan_module_alloc()
+> 
+> > But I'm not sure whether the above differences are useful for kprobes ss
+> > insn slot page or not. Take 1) for example, special range in module_alloc
+> > is due to relative jump limitation, modules need to call kernel .text. does
+> > kprobes ss ins slot needs this limitation too?
+> 
+> Oops, I found this wonderful thread:
+> https://www.lkml.org/lkml/2020/7/28/1413
+> 
+> So kprobes ss ins slot page "must be in the range of relative branching only
+> for x86 and arm"
+> 
+> And Jarkko's "arch/x86: kprobes: Remove MODULES dependency" series look
+> much better. The last version is v5, I'm not sure whether Jarkko will
+> send new version to mainline the series.
 
- fb8fee9efdcf0 regulator: Add regmap helper for ramp-delay setting
- e3baacf542756 regulator: helpers: Export helper voltage listing
+Ya, I got really busy with upstreaming SGX. That's why this was left out
+(but luckily SGX got finally into upstream).
 
-Pull at your peril! :)
+Thanks for reminding. Any motivation to pick it up and continue where I
+left of?
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/ib-mfd-clk-gpio-regulator-rtc-v5.13
-
-for you to fetch changes up to 5a8a64d9a38b9d3794f9f5e153fc0358b858cc24:
-
-  MAINTAINERS: Add ROHM BD71815AGW (2021-04-14 10:21:43 +0100)
-
-----------------------------------------------------------------
-Immutable branch between MFD, Clock, GPIO, Regulator and RTC due for the v5.13 merge window
-
-----------------------------------------------------------------
-Matti Vaittinen (16):
-      rtc: bd70528: Do not require parent data
-      mfd: bd718x7: simplify by cleaning unnecessary device data
-      dt_bindings: bd71828: Add clock output mode
-      dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
-      dt_bindings: mfd: Add ROHM BD71815 PMIC
-      mfd: Add ROHM BD71815 ID
-      mfd: Sort ROHM chip ID list for better readability
-      mfd: Support for ROHM BD71815 PMIC core
-      gpio: Support ROHM BD71815 GPOs
-      regulator: rohm-regulator: linear voltage support
-      regulator: rohm-regulator: Support SNVS HW state.
-      regulator: bd718x7, bd71828: Use ramp-delay helper
-      regulator: Support ROHM BD71815 regulators
-      clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
-      rtc: bd70528: Support RTC on ROHM BD71815
-      MAINTAINERS: Add ROHM BD71815AGW
-
- .../devicetree/bindings/mfd/rohm,bd71815-pmic.yaml | 201 +++++++
- .../devicetree/bindings/mfd/rohm,bd71828-pmic.yaml |   6 +
- .../bindings/regulator/rohm,bd71815-regulator.yaml | 116 ++++
- MAINTAINERS                                        |   3 +
- drivers/clk/clk-bd718x7.c                          |   9 +-
- drivers/gpio/Kconfig                               |  10 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-bd71815.c                        | 185 ++++++
- drivers/mfd/Kconfig                                |  15 +-
- drivers/mfd/rohm-bd71828.c                         | 486 +++++++++++----
- drivers/mfd/rohm-bd718x7.c                         |  43 +-
- drivers/regulator/Kconfig                          |  11 +
- drivers/regulator/Makefile                         |   1 +
- drivers/regulator/bd71815-regulator.c              | 652 +++++++++++++++++++++
- drivers/regulator/bd71828-regulator.c              |  51 +-
- drivers/regulator/bd718x7-regulator.c              |  60 +-
- drivers/regulator/rohm-regulator.c                 |  23 +-
- drivers/rtc/Kconfig                                |   6 +-
- drivers/rtc/rtc-bd70528.c                          | 104 ++--
- include/linux/mfd/rohm-bd71815.h                   | 562 ++++++++++++++++++
- include/linux/mfd/rohm-bd71828.h                   |   3 +
- include/linux/mfd/rohm-bd718x7.h                   |  13 -
- include/linux/mfd/rohm-generic.h                   |  15 +-
- 23 files changed, 2286 insertions(+), 290 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
- create mode 100644 drivers/gpio/gpio-bd71815.c
- create mode 100644 drivers/regulator/bd71815-regulator.c
- create mode 100644 include/linux/mfd/rohm-bd71815.h
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+/Jarkko
