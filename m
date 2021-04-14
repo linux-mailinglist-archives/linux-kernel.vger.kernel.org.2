@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445EF35F77B
+	by mail.lfdr.de (Postfix) with ESMTP id B5A7E35F77C
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350443AbhDNPSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:18:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350372AbhDNPR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:17:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8758761090;
-        Wed, 14 Apr 2021 15:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618413457;
-        bh=v8Xbl+/XiWU8+Qjdj9ZlACtpEdUTj7rXvqg1K4XJsMg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PSL6YZi/FSK7VEzsN5ckfAEd1p8ExkQl71+MCcO9yAqcbCvSmI9Nuj1FosNXx0b8u
-         k9HrXNlVKkMqCdxsGLexut/J/+cWyivvjVKTrTZa0dV8kAnyKTrdXhpAl6aR5hi/Ed
-         sGM6IiaWFuwH5vPVZFwxTRKJSjd3YJrn3Hnq4c/+M9+VZy9Qw0IiaaVeird3WlYMHb
-         +wgIoxiKYAbeUhx6PQRcQLYN4UcRa0Y4LEYqIqTLL8rmlP6PxizSJWGokc3qJsRKWu
-         Efj091ZGewkSMDKhsy5JNlURafPv4McZLY1Ubi892W7Cb2Xlip0ctqUiiLeRpCqaAO
-         tLaLueM0Cxi3g==
-Date:   Wed, 14 Apr 2021 20:47:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Phy <linux-phy@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [GIT PULL]: Generic phy updates for v5.13 -second round
-Message-ID: <YHcHjYv8HIaODa5t@vkoul-mobl.Dlink>
+        id S1351878AbhDNPSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:18:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41331 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350422AbhDNPSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:18:04 -0400
+Received: from mail-ej1-f70.google.com ([209.85.218.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lWhGw-0002im-KX
+        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 15:17:42 +0000
+Received: by mail-ej1-f70.google.com with SMTP id l25so538173ejr.16
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:17:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kfcPhmhTdK2FMhaZokOecDc4Tx+X+Ot5TvToWRx2lBk=;
+        b=XYRoi+F59+88LEm8+ux2sAhL48H5pFVi3PH0prnb5EwplSfDK10OwhXpjJ71ODQuDV
+         ABDfLleH1yi3QUTaFIiFIJ9tq3RNp9tQ8z6ot+NA2KB4nuXWsfS+J0Y5bnRhLYIYFWtP
+         28kkIybvs5ilgELJ16QRaSN+9HNsd3i48LDpWgj9XwfcNNOOmZ0ovq9/m/aEIky6IFsg
+         KKUg+JLiSq3qJsRQWksb/VMQTZUFv5BgMvV2WXfAVddDy4RHuYh7Xo0pqWV9alJC0Sn7
+         BF2vDgSerVXCPWSqGiEX2WqAMHzN4dA9FZBF6YGwbaF+cmJS57bIdFx9T6lHgDu2qo5R
+         ou6A==
+X-Gm-Message-State: AOAM533YdNUaSNtriG2+cWjsZ2V9nOSmglgpqbddA3IaZJj3tUveVOxe
+        p6oCXMTcKKPwElUTQx1Zq6TzHgpn1i5TvIZHEC6EBmtf/w2oQwredLJ6Gj4bZbJrNlDohsEb122
+        2BsWBAP6Zwx8b/UONW1cpDKCBFbRaWqWDTf4mhfsBXQ==
+X-Received: by 2002:a17:906:c7ca:: with SMTP id dc10mr18984214ejb.294.1618413462003;
+        Wed, 14 Apr 2021 08:17:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJww4LZWkop8/QH04cQnq21mbuppuNTF7N1mSZTl9IH3GDtIqGlSU0aYkEzPKTWpEM0YEVziJA==
+X-Received: by 2002:a17:906:c7ca:: with SMTP id dc10mr18984195ejb.294.1618413461861;
+        Wed, 14 Apr 2021 08:17:41 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id p3sm6376513ejd.65.2021.04.14.08.17.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 08:17:41 -0700 (PDT)
+Subject: Re: drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26:
+ sparse: sparse: incorrect type in argument 1 (different address spaces)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <202104140604.hH9CHHBR-lkp@intel.com>
+ <CAHp75VdRNGNscyONgVsMqw9F_DQ_noK5dE4d8mexq=4t_2xTXg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <36cae99e-6a23-ab6f-62a7-5fca4ffc040d@canonical.com>
+Date:   Wed, 14 Apr 2021 17:17:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iOBHsqrKwZ88MQYQ"
-Content-Disposition: inline
+In-Reply-To: <CAHp75VdRNGNscyONgVsMqw9F_DQ_noK5dE4d8mexq=4t_2xTXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/04/2021 16:53, Andy Shevchenko wrote:
+> On Wed, Apr 14, 2021 at 10:21 AM kernel test robot <lkp@intel.com> wrote:
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   eebe426d32e1a10ac7c35f8ffab5f818c32a2454
+>> commit: 8f28ca6bd8211214faf717677bbffe375c2a6072 iomap: constify ioreadX() iomem argument (as in generic implementation)
+>> date:   8 months ago
+>> config: alpha-randconfig-s032-20210414 (attached as .config)
+>> compiler: alpha-linux-gcc (GCC) 9.3.0
+>> reproduce:
+>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>         chmod +x ~/bin/make.cross
+>>         # apt-get install sparse
+>>         # sparse version: v0.6.3-280-g2cd6d34e-dirty
+>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8f28ca6bd8211214faf717677bbffe375c2a6072
+>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>         git fetch --no-tags linus master
+>>         git checkout 8f28ca6bd8211214faf717677bbffe375c2a6072
+>>         # save the attached .config to linux build tree
+>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> I believe after my patch series [1] at least part of this will be
+> gone. Can you confirm?
 
---iOBHsqrKwZ88MQYQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Have in mind that the warnings were there since beginning. My patch only
+changed the warning contents (-> const) thus robot sees it as a new issue.
 
-Hi Greg,
+> [1]: https://lore.kernel.org/netdev/20210325173412.82911-1-andriy.shevchenko@linux.intel.com/T/#u
 
-As promised, here are some minor fixes for earlier pull request. This
-includes fixes which came in after the request was sent
+You convert the reg to "iomem", so it seems that yes, your series should
+fix it.
 
-The following changes since commit cbc336c09b6d6dfb24d20c955599123308fa2fe2:
 
-  phy: fix resource_size.cocci warnings (2021-04-06 10:39:20 +0530)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-for-5.13-second
-
-for you to fetch changes up to 8a6b85b14f082d266b0312562f7372e1a8f5dfb3:
-
-  phy: Revert "phy: ti: j721e-wiz: add missing of_node_put" (2021-04-12 10:=
-35:05 +0530)
-
-----------------------------------------------------------------
-phy-for-5.13 second pull
-
-Driver fixes for:
-  - Revert wrong of_node_put patch and add missing header for ti j721e driv=
-er
-  - use-after-free fix for twl4030
-
-----------------------------------------------------------------
-Shixin Liu (1):
-      phy: ti: j721e-wiz: Add missing include linux/slab.h
-
-Vinod Koul (1):
-      phy: Revert "phy: ti: j721e-wiz: add missing of_node_put"
-
-Yang Yingliang (1):
-      phy: phy-twl4030-usb: Fix possible use-after-free in twl4030_usb_remo=
-ve()
-
- drivers/phy/ti/phy-j721e-wiz.c   | 2 +-
- drivers/phy/ti/phy-twl4030-usb.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---iOBHsqrKwZ88MQYQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmB3B4wACgkQfBQHDyUj
-g0fHdg/+KifY6R3l4DswCvw9fV/fv564wV8NQUit90aAxXI5Jj6eV9v64DpmR69C
-hWRByQnbcfUzBo2BRgyz3G7RdL9HA9z2NU+jl4qg5hsEengktZZxDnJ0NxlqYMEe
-ZSgRiDpb2HAjmNvFwshG8x5bdlS9Tn+qLm9yNBsrqcf1Y5Bpmkg9+TvVGzep2Wx2
-LNgz2Jny14Ne+BvPvLeiO7/Kt5yFydyRoUXwUhpy65pZeOhD+PPk9M91YjwUmjD8
-bgIKcjhk9DI9N9X89dnLcC/3Ne9Dbf21gGHiNMzSHjTxN91oN/QPp+8YlbeZxWFe
-UWMKIQb8BX0knwLVEpAXuUP5vNkHRqSyskUMcxyDGrKhU29felMQaZy6h44b74kx
-Eqypz887nDUDNpL+mtIGUYHbzo2ki1vZeAy5lOJLX0xMAGcJZoeCDHxZZGBhmRCz
-ctmD8CuAa38wTNA+/+MMI9WUVRQyXgY1xkEj7RsBqFndU0niHg5dPtMotm4KsonS
-qSe/4j3g02kW78yETIhzeTswjJE4OunpeSISeN0SR8BfeOuuK+rczonHPMuyLY2M
-NVba+mfUXhpl4vRfX5rCgexcXv4+KKTYfHBUPrUW5pOuskqpgjPYwgjbRqiBBcHE
-EtLatigD2SdBE2k3y4MVRO8b5qlhD2DO6b4/v8T7JoqUoqgxpSQ=
-=+bj7
------END PGP SIGNATURE-----
-
---iOBHsqrKwZ88MQYQ--
+Best regards,
+Krzysztof
