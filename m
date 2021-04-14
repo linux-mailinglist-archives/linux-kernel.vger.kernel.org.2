@@ -2,148 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A194B35FB44
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93BC35FB48
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353315AbhDNS7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:59:49 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:17217 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353232AbhDNS7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:59:44 -0400
-IronPort-SDR: KIWzP4toUh/CiydRtKEl01nq++iAdko/FpaMgLqtLTQK1+cnDeuFO0uMXdXBXKKTRZuZUBjSUE
- otDxayb0MkazJL5F3UY6glEhy5rK5ps7o2E90rVAZ/uin9kDjsHmJM1r3n8zcfLv7WK1hDFgeo
- e4h9Il7z4UmKFCIK6eO9aQoLAqiYAF+Y04f6Ov2cjxSRpZ4tA1EYP+DEsU1yu+on1UHRRqq8c7
- EdfCAm9lGPS3kIN2USYMmA08tNJxZ+U3TJpJP6pv3ThNQtAUAZIoOm71KKSHk/6B+ICRTLbASx
- s1o=
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="29750618"
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by labrats.qualcomm.com with ESMTP; 14 Apr 2021 11:59:16 -0700
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 14 Apr 2021 11:59:15 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 92687)
-        id C49E22115D; Wed, 14 Apr 2021 11:59:15 -0700 (PDT)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        adrian.hunter@intel.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>, Yue Hu <huyue2@yulong.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v18 2/2] ufs: sysfs: Resume the proper scsi device
-Date:   Wed, 14 Apr 2021 11:58:28 -0700
-Message-Id: <4745814f5fa37d49e969c2ffb1b4df401dbc98e7.1618426513.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1618426513.git.asutoshd@codeaurora.org>
-References: <cover.1618426513.git.asutoshd@codeaurora.org>
-In-Reply-To: <cover.1618426513.git.asutoshd@codeaurora.org>
-References: <cover.1618426513.git.asutoshd@codeaurora.org>
+        id S1353193AbhDNTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhDNTAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D9B61222;
+        Wed, 14 Apr 2021 18:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618426794;
+        bh=LYYO4HZeiyflbXu22XRjrSqjKF1aopb6IFR/toz6BrE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FY4OSukw42A9w7mugJGLbvz/lUKmexZF/yWDTt2BWAbYW83VLNwWl0kylYrgH2skv
+         fzEq1f8xFrKkCmep36ljW9SZr7v/N8bcUw8FBFCmSQLoJO5e5o4Sq+qBwEkdHcTOIs
+         izaI3KuImeeCevmPFysG6ltEyNIZSkaEvmqRUW2WYHXXoyUweNGV5jUz2uNBTbqLQ2
+         JMoTP/zW++fruQbMxXh2pOH5E2tnZYreKPVfwUDQPQjdoSw0r33bWOgA/RBM293BgP
+         si6IhZObIvHGAMj1LCO3cIXqzWGWmWCvatDVrTlCeIp6yTMT6HY7f153kJ9uwh+ocd
+         P0/+CF6HuvFgw==
+Date:   Wed, 14 Apr 2021 11:59:48 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH 03/13] Makefile: Generate CLANG_FLAGS even in GCC builds
+Message-ID: <YHc7pHjwmDJrkXqZ@archlinux-ax161>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <20210414184604.23473-4-ojeda@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414184604.23473-4-ojeda@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resumes the actual scsi device the unit descriptor of which
-is being accessed instead of the hba alone.
+Hi Miguel,
 
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+On Wed, Apr 14, 2021 at 08:45:54PM +0200, ojeda@kernel.org wrote:
+> From: Miguel Ojeda <ojeda@kernel.org>
+> 
+> To support Rust under GCC-built kernels, we need to save the flags that
+> would have been passed if the kernel was being compiled with Clang.
+> 
+> The reason is that bindgen -- the tool we use to generate Rust bindings
+> to the C side of the kernel -- relies on libclang to parse C. Ideally:
+> 
+>   - bindgen would support a GCC backend (requested at [1]),
+> 
+>   - or the Clang driver would be perfectly compatible with GCC,
+>     including plugins. Unlikely, of course, but perhaps a big
+>     subset of configs may be possible to guarantee to be kept
+>     compatible nevertheless.
+> 
+> This is also the reason why GCC builds are very experimental and some
+> configurations may not work (e.g. GCC_PLUGIN_RANDSTRUCT). However,
+> we keep GCC builds working (for some example configs) in the CI
+> to avoid diverging/regressing further, so that we are better prepared
+> for the future when a solution might become available.
+> 
+> [1] https://github.com/rust-lang/rust-bindgen/issues/1949
+> 
+> Link: https://github.com/Rust-for-Linux/linux/issues/167
+> 
+> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Co-developed-by: Finn Behrens <me@kloenk.de>
+> Signed-off-by: Finn Behrens <me@kloenk.de>
+> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  Makefile | 27 ++++++++++++++++-----------
+>  1 file changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index d4784d181123..9c75354324ed 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -559,26 +559,31 @@ ifdef building_out_of_srctree
+>  	{ echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
+>  endif
+>  
+> -# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> -# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> -# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> -# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> -CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
+> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
+>  
+> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>  ifneq ($(CROSS_COMPILE),)
+> -CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +TENTATIVE_CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index d7c3cff..4d9d4d8 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -245,9 +245,9 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	ufshcd_rpm_get_sync(hba);
- 	res = ufshcd_wb_toggle(hba, wb_enable);
--	pm_runtime_put_sync(hba->dev);
-+	ufshcd_rpm_put_sync(hba);
- out:
- 	up(&hba->host_sem);
- 	return res < 0 ? res : count;
-@@ -297,10 +297,10 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	ufshcd_rpm_get_sync(hba);
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
--	pm_runtime_put_sync(hba->dev);
-+	ufshcd_rpm_put_sync(hba);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
-@@ -678,7 +678,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		up(&hba->host_sem);					\
- 		return -ENOMEM;						\
- 	}								\
--	pm_runtime_get_sync(hba->dev);					\
-+	ufshcd_rpm_get_sync(hba);					\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
- 		0, 0, desc_buf, &desc_len);				\
-@@ -695,7 +695,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 		goto out;						\
- 	ret = sysfs_emit(buf, "%s\n", desc_buf);			\
- out:									\
--	pm_runtime_put_sync(hba->dev);					\
-+	ufshcd_rpm_put_sync(hba);					\
- 	kfree(desc_buf);						\
- 	up(&hba->host_sem);						\
- 	return ret;							\
-@@ -744,10 +744,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	ufshcd_rpm_get_sync(hba);					\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
--	pm_runtime_put_sync(hba->dev);					\
-+	ufshcd_rpm_put_sync(hba);					\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -813,10 +813,10 @@ static ssize_t _name##_show(struct device *dev,				\
- 	}								\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	ufshcd_rpm_get_sync(hba);					\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
--	pm_runtime_put_sync(hba->dev);					\
-+	ufshcd_rpm_put_sync(hba);					\
- 	if (ret) {							\
- 		ret = -EINVAL;						\
- 		goto out;						\
-@@ -964,10 +964,10 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 		goto out;
- 	}
- 
--	pm_runtime_get_sync(hba->dev);
-+	ufshcd_rpm_get_sync(hba);
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
--	pm_runtime_put_sync(hba->dev);
-+	ufshcd_rpm_put_sync(hba);
- 	if (ret) {
- 		ret = -EINVAL;
- 		goto out;
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Shuffling this around will cause this issue (I never saw you CC'd on the
+thread).
 
+https://lore.kernel.org/r/f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de/
+
+Perhaps that patch should be added to this series?
+
+> -CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> +TENTATIVE_CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>  GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+>  endif
+>  ifneq ($(GCC_TOOLCHAIN),)
+> -CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
+> +TENTATIVE_CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
+>  endif
+>  ifneq ($(LLVM_IAS),1)
+> -CLANG_FLAGS	+= -no-integrated-as
+> +TENTATIVE_CLANG_FLAGS	+= -no-integrated-as
+>  endif
+> -CLANG_FLAGS	+= -Werror=unknown-warning-option
+> +
+> +export TENTATIVE_CLANG_FLAGS
+> +
+> +# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
+> +# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
+> +# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
+> +# and from include/config/auto.conf.cmd to detect the compiler upgrade.
+> +CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
+> +
+> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> +CLANG_FLAGS	+= $(TENTATIVE_CLANG_FLAGS)
+>  KBUILD_CFLAGS	+= $(CLANG_FLAGS)
+>  KBUILD_AFLAGS	+= $(CLANG_FLAGS)
+>  export CLANG_FLAGS
+> -- 
+> 2.17.1
+> 
