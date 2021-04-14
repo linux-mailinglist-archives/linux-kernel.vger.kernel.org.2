@@ -2,307 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7B835EF59
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC3B35EF53
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350000AbhDNIPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S1349974AbhDNIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349993AbhDNIPr (ORCPT
+        with ESMTP id S1349965AbhDNIPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:15:47 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2F9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:15:26 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id a7so588373qvx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:15:26 -0700 (PDT)
+        Wed, 14 Apr 2021 04:15:00 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A530C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:14:39 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x7so18929354wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=AgMaVIscO++7auf6j4FLvgrPACtR9LdIw5C1d+MACFs=;
-        b=ff4pFRJqwVZW8nsKGLkvzB4oHNxsMvh2embvkpElPGEOJsCCU0wEgWoXEB2JDRD765
-         z8e4cjzxAZbqFC3i8wgnv8tbqXqIZYmF8vD301f1coqJvpCKb8eFbktRg1+WrJHW3Ouc
-         qWy/rWB2HjxCrG/+MTRBfJ2yCXdr3fB98p8nX6kRNAO69qTwIgcYivzwKO7FgxCURqny
-         ti/tshk++i15GDO99bWrLNvt/HcJONBRJwIqUZ7oWw+oTaUFPBR1qYdHUleqyXTDoY2V
-         xTn7B8htI+2KdumXaWrbNIBRXkNTUtvigLefukSXUigsSqwydJ50kx110u3IJAXWyTFk
-         SV2Q==
+        bh=AzOeHUL5hWREqhzcyblXs0nwBc2sByyKR9pZRnAp0AI=;
+        b=0FmOSwJTluFKGhZXB4mnmPu/678q4lQVbHX5xKkleebC4yuu2Roe12fLkCO4z4yT0w
+         9zQnJRSNRxWV7DsOe/mDJfw6sCW6yvcK5nYcIaYEikqylBLKWTu9WezbOY6XfpeUvmGk
+         ijGprdgw8ZPAAa3PNPNMzFtK3LmpzC8QnGoQTVjxDFD+9Kfh8pGdZu2HqsG7FU0xK3Az
+         ADi19P7BqgzRRJRkrTO9rUEiO/VFiUTfRPduRqqoK6zKyUtDPFEZjmgWKod/zNgNXhOm
+         C6vAj/2HUQp4/3ro+DWNtg1dL2U35wOqw1bPMFoaSwWDKqdqC2RTXXD/w0fy6+iKziKk
+         TWUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=AgMaVIscO++7auf6j4FLvgrPACtR9LdIw5C1d+MACFs=;
-        b=YX6LTjqHCyl57LlKxF3Y5R4nKiQs0R9F/uTxgjNFxKkT4ZDTIrdzdifR5eks/LLHrs
-         K9kVejp1M0UQD98kAfzhzUmH9jnR9mkUaDida1rYf/mkjyL9gGvSKXDmpVIruUcayou0
-         TWuHLRiNOE/vYVpkRUtg2qkS95wJLOXYMEGIfCOxlFfL9oyX8fkjlcjJCQqvWuLlrtga
-         /TQ2NIcfoq1Op+j3T3yONMA7H50uZAnaucDQsxv/0GVn1wFrSUG/SD043HPbNz99cOwL
-         bgZ+6pRTusH/RSofz88XrDswmmTwhTGunaHqB8mfwF/Xhknb5B3zEt44S8vPWXTUyZZ/
-         RmcQ==
-X-Gm-Message-State: AOAM533zSi+DjFMRcbwMG9U1l7pcQNb1oIcKEpIM9umpVOPuFWA57vov
-        6K8BxUz25UxnzPyAkjr9ZbZFkYTLExWkQw==
-X-Google-Smtp-Source: ABdhPJyabAs4UuXw1jcjxpjLl3apM8l1LDZJ7sbIT+HdhZzAVluRCmTDonUBQFOw/YrIdzycEi12sUgV0yKYmA==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:d6a:902e:c89c:e274])
- (user=davidgow job=sendgmr) by 2002:a05:6214:252d:: with SMTP id
- gg13mr19433456qvb.24.1618388125955; Wed, 14 Apr 2021 01:15:25 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 01:14:29 -0700
-Message-Id: <20210414081428.337494-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v2] Documentation: dev-tools: Add Testing Overview
-From:   David Gow <davidgow@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>, linux-doc@vger.kernel.org,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=AzOeHUL5hWREqhzcyblXs0nwBc2sByyKR9pZRnAp0AI=;
+        b=DK2GSrgEciguHAop4zC3VkzxJ+ogmF8KPIn/wHyTpNQfXgWT1cJJ+jXbqMnN4FYR33
+         jLp8o829Z5Y69s0yMzbvouFQ+faM1whwNiRb/ZiyOmmNb2BmmBeqFK1vD1FgbKbjvpe0
+         nik1Adn/y6lWn8tAezJpodwrnK3zGlPToelXMp/pGffR024BF6Ytsk448PuTgz1p7y6x
+         DKA3DZ8tYbkiNgDiqL+5bjOVbTVp9qqTBE/2mYDTwEXsUrVL8ZtKl6LZU9+KWE8jFok2
+         mK/iGbDJtC43x++y90bNZuLPfgrItTQr8mFhnDfpclC7PXaPkZpXY2QEo1mEKNMh9fUP
+         hL5g==
+X-Gm-Message-State: AOAM533N7ZCbaCXuzL8cL2HRdFlpnfWYHgAefM0hJRO9takkXdwfeBut
+        UHjyLUXWy+bUEGNe+4D03nFudvT1ZpMBcXVe
+X-Google-Smtp-Source: ABdhPJzv2P3PwzGpjC5Oyj4tupZbVhAGn5ScmnavLeXSMF+c6aZxXfPaA4hgLXQ1YSsw26NNBLO+hw==
+X-Received: by 2002:a05:6000:1091:: with SMTP id y17mr14291716wrw.270.1618388077948;
+        Wed, 14 Apr 2021 01:14:37 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:49d:95f:49d5:fff7? ([2a01:e0a:90c:e290:49d:95f:49d5:fff7])
+        by smtp.gmail.com with ESMTPSA id d5sm27606092wrx.0.2021.04.14.01.14.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 01:14:37 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] dt-bindings: display: bridge: add it66121 bindings
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     a.hajda@samsung.com, paul@crapouillou.net, robert.foss@linaro.org,
+        devicetree@vger.kernel.org, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Phong LE <ple@baylibre.com>
+References: <20210412154648.3719153-1-narmstrong@baylibre.com>
+ <20210412154648.3719153-2-narmstrong@baylibre.com>
+ <YHXA0KFylvC7FDbK@pendragon.ideasonboard.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <7111ccdf-ff64-f959-a652-623fa89ffe87@baylibre.com>
+Date:   Wed, 14 Apr 2021 10:14:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <YHXA0KFylvC7FDbK@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel now has a number of testing and debugging tools, and we've
-seen a bit of confusion about what the differences between them are.
+On 13/04/2021 18:03, Laurent Pinchart wrote:
+> Hi Neil,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Apr 12, 2021 at 05:46:46PM +0200, Neil Armstrong wrote:
+>> From: Phong LE <ple@baylibre.com>
+>>
+>> Add the ITE bridge HDMI it66121 bindings.
+>>
+>> Signed-off-by: Phong LE <ple@baylibre.com>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  .../bindings/display/bridge/ite,it66121.yaml  | 123 ++++++++++++++++++
+>>  1 file changed, 123 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+>> new file mode 100644
+>> index 000000000000..61ed6dc7740b
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
+>> @@ -0,0 +1,123 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/display/bridge/ite,it66121.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: ITE it66121 HDMI bridge Device Tree Bindings
+>> +
+>> +maintainers:
+>> +  - Phong LE <ple@baylibre.com>
+>> +  - Neil Armstrong <narmstrong@baylibre.com>
+>> +
+>> +description: |
+>> +  The IT66121 is a high-performance and low-power single channel HDMI
+>> +  transmitter, fully compliant with HDMI 1.3a, HDCP 1.2 and backward compatible
+>> +  to DVI 1.0 specifications.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: ite,it66121
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +    description: base I2C address of the device
+> 
+> You can drop the description.
 
-Add a basic documentation outlining the testing tools, when to use each,
-and how they interact.
+Done
 
-This is a pretty quick overview rather than the idealised "kernel
-testing guide" that'd probably be optimal, but given the number of times
-questions like "When do you use KUnit and when do you use Kselftest?"
-are being asked, it seemed worth at least having something. Hopefully
-this can form the basis for more detailed documentation later.
+> 
+>> +
+>> +  reset-gpios:
+>> +    maxItems: 1
+>> +    description: GPIO connected to active low reset
+>> +
+>> +  vrf12-supply:
+>> +    description: Regulator for 1.2V analog core power.
+>> +
+>> +  vcn33-supply:
+>> +    description: Regulator for 3.3V digital core power.
+>> +
+>> +  vcn18-supply:
+>> +    description: Regulator for 1.8V IO core power.
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  ports:
+>> +    $ref: /schemas/graph.yaml#/properties/ports
+>> +
+>> +    properties:
+>> +      port@0:
+>> +        $ref: /schemas/graph.yaml#/$defs/port-base
+>> +        unevaluatedProperties: false
+>> +        description: DPI input port.
+>> +
+>> +        properties:
+>> +          endpoint:
+>> +            $ref: /schemas/graph.yaml#/$defs/endpoint-base
+>> +            unevaluatedProperties: false
+>> +
+>> +            properties:
+>> +              bus-width:
+>> +                description:
+>> +                  Endpoint bus width.
+>> +                enum:
+>> +                  - 12  # 12 data lines connected and dual-edge mode
+>> +                  - 24  # 24 data lines connected and single-edge mode
+>> +                default: 24
+>> +
+>> +      port@1:
+>> +        $ref: /schemas/graph.yaml#/properties/port
+>> +        description: HDMI Connector port.
+>> +
+>> +    required:
+>> +      - port@0
+>> +      - port@1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - reset-gpios
+>> +  - vrf12-supply
+>> +  - vcn33-supply
+>> +  - vcn18-supply
+>> +  - interrupts
+>> +  - ports
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2c {
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+> 
+> It's customary to indent DT examples with 4 spaces.
 
-Signed-off-by: David Gow <davidgow@google.com>
----
-Thanks, everyone, for the comments on the doc. I've made a few of the
-suggested changes. Please let me know what you think!
+Done
 
--- David
+> 
+>> +
+>> +      it66121hdmitx: it66121hdmitx@4c {
+>> +        compatible = "ite,it66121";
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&ite_pins_default>;
+>> +        vcn33-supply = <&mt6358_vcn33_wifi_reg>;
+>> +        vcn18-supply = <&mt6358_vcn18_reg>;
+>> +        vrf12-supply = <&mt6358_vrf12_reg>;
+>> +        reset-gpios = <&pio 160 1 /* GPIO_ACTIVE_LOW */>;
+> 
+> You can #include the necessary headers at the top of the example, and
+> use GPIO_ACTIVE_LOW and IRQ_TYPE_LEVEL_LOW to replace the numerical
+> values.
 
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20210410070529.4113432-1-davidgow@g=
-oogle.com/
-- Note KUnit's speed and that one should provide selftests for syscalls
-- Mention lockdep as a Dynamic Analysis Tool
-- Refer to "Dynamic Analysis Tools" instead of "Sanitizers"
-- A number of minor formatting tweaks and rewordings for clarity.
+Done
 
-Not changed:
-- I haven't included an exhaustive list of differences, advantages, etc,
-  between KUnit and kselftest: for now, the doc continues to focus on
-  the difference between 'in-kernel' and 'userspace' testing here.
-- Similarly, I'm not linking out to docs defining and describing "Unit"
-  tests versus "End-to-end" tests. None of the existing documentation
-  elsewhere quite matches what we do in the kernel perfectly, so it
-  seems less confusing to focus on the 'in-kernel'/'userspace'
-  distinction, and leave other definitions as a passing mention for
-  those who are already familiar with the concepts.
-- I haven't linked to any talk videos here: a few of them are linked on
-  (e.g.) the KUnit webpage, but I wanted to keep the Kernel documentation
-  more self-contained for now. No objection to adding them in a follow-up
-  patch if people feel strongly about it, though.
-- The link from index.rst to this doc is unchanged. I personally think
-  that the link is prominent enough there: it's the first link, and
-  shows up a few times. One possibility if people disagreed would be to
-  merge this page with the index, but given not all dev-tools are going
-  to be testing-related, it seemed a bit arrogant. :-)
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
- Documentation/dev-tools/index.rst            |   3 +
- Documentation/dev-tools/testing-overview.rst | 117 +++++++++++++++++++
- 2 files changed, 120 insertions(+)
- create mode 100644 Documentation/dev-tools/testing-overview.rst
+Thanks,
+Neil
 
-diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/in=
-dex.rst
-index 1b1cf4f5c9d9..f590e5860794 100644
---- a/Documentation/dev-tools/index.rst
-+++ b/Documentation/dev-tools/index.rst
-@@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents have =
-been pulled
- together without any significant effort to integrate them into a coherent
- whole; patches welcome!
-=20
-+A brief overview of testing-specific tools can be found in :doc:`testing-o=
-verview`.
-+
- .. class:: toc-title
-=20
- 	   Table of contents
-@@ -14,6 +16,7 @@ whole; patches welcome!
- .. toctree::
-    :maxdepth: 2
-=20
-+   testing-overview
-    coccinelle
-    sparse
-    kcov
-diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/d=
-ev-tools/testing-overview.rst
-new file mode 100644
-index 000000000000..ce36a8cdf6b5
---- /dev/null
-+++ b/Documentation/dev-tools/testing-overview.rst
-@@ -0,0 +1,117 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+Kernel Testing Guide
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+
-+There are a number of different tools for testing the Linux kernel, so kno=
-wing
-+when to use each of them can be a challenge. This document provides a roug=
-h
-+overview of their differences, and how they fit together.
-+
-+
-+Writing and Running Tests
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+
-+The bulk of kernel tests are written using either the kselftest or KUnit
-+frameworks. These both provide infrastructure to help make running tests a=
-nd
-+groups of tests easier, as well as providing helpers to aid in writing new
-+tests.
-+
-+If you're looking to verify the behaviour of the Kernel =E2=80=94 particul=
-arly specific
-+parts of the kernel =E2=80=94 then you'll want to use KUnit or kselftest.
-+
-+
-+The Difference Between KUnit and kselftest
-+------------------------------------------
-+
-+KUnit (Documentation/dev-tools/kunit/index.rst) is an entirely in-kernel s=
-ystem
-+for "white box" testing: because test code is part of the kernel, it can a=
-ccess
-+internal structures and functions which aren't exposed to userspace.
-+
-+KUnit tests therefore are best written against small, self-contained parts
-+of the kernel, which can be tested in isolation. This aligns well with the
-+concept of 'unit' testing.
-+
-+For example, a KUnit test might test an individual kernel function (or eve=
-n a
-+single codepath through a function, such as an error handling case), rathe=
-r
-+than a feature as a whole.
-+
-+This also makes KUnit tests very fast to build and run, allowing them to b=
-e
-+run frequently as part of the development process.
-+
-+There is a KUnit test style guide which may give further pointers in
-+Documentation/dev-tools/kunit/style.rst
-+
-+
-+kselftest (Documentation/dev-tools/kselftest.rst), on the other hand, is
-+largely implemented in userspace, and tests are normal userspace scripts o=
-r
-+programs.
-+
-+This makes it easier to write more complicated tests, or tests which need =
-to
-+manipulate the overall system state more (e.g., spawning processes, etc.).
-+However, it's not possible to call kernel functions directly from kselftes=
-t.
-+This means that only kernel functionality which is exposed to userspace so=
-mhow
-+(e.g. by a syscall, device, filesystem, etc.) can be tested with kselftest=
-.  To
-+work around this, some tests include a companion kernel module which expos=
-es
-+more information or functionality. If a test runs mostly or entirely withi=
-n the
-+kernel, however,  KUnit may be the more appropriate tool.
-+
-+kselftest is therefore suited well to tests of whole features, as these wi=
-ll
-+expose an interface to userspace, which can be tested, but not implementat=
-ion
-+details. This aligns well with 'system' or 'end-to-end' testing.
-+
-+For example, all new system calls should be accompanied by kselftest tests=
-.
-+
-+Code Coverage Tools
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+The Linux Kernel supports two different code coverage measurement tools. T=
-hese
-+can be used to verify that a test is executing particular functions or lin=
-es
-+of code. This is useful for determining how much of the kernel is being te=
-sted,
-+and for finding corner-cases which are not covered by the appropriate test=
-.
-+
-+:doc:`gcov` is GCC's coverage testing tool, which can be used with the ker=
-nel
-+to get global or per-module coverage. Unlike KCOV, it does not record per-=
-task
-+coverage. Coverage data can be read from debugfs, and interpreted using th=
-e
-+usual gcov tooling.
-+
-+:doc:`kcov` is a feature which can be built in to the kernel to allow
-+capturing coverage on a per-task level. It's therefore useful for fuzzing =
-and
-+other situations where information about code executed during, for example=
-, a
-+single syscall is useful.
-+
-+
-+Dynamic Analysis Tools
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+The kernel also supports a number of dynamic analysis tools, which attempt=
- to
-+detect classes of issues when the occur in a running kernel. These typical=
-ly
-+look for undefined behaviour of some kind, such as invalid memory accesses=
-,
-+concurrency issues such as data races, or other undefined behaviour like
-+integer overflows.
-+
-+Some of these tools are listed below:
-+
-+* kmemleak detects possible memory leaks. See
-+  Documentation/dev-tools/kmemleak.rst
-+* KASAN detects invalid memory accesses such as out-of-bounds and
-+  use-after-free errors. See Documentation/dev-tools/kasan.rst
-+* UBSAN detects behaviour that is undefined by the C standard, like intege=
-r
-+  overflows. See Documentation/dev-tools/ubsan.rst
-+* KCSAN detects data races. See Documentation/dev-tools/kcsan.rst
-+* KFENCE is a low-overhead detector of memory issues, which is much faster=
- than
-+  KASAN and can be used in production. See Documentation/dev-tools/kfence.=
-rst
-+* lockdep is a locking correctness validator. See
-+  Documentation/locking/lockdep-design.rst
-+* There are several other pieces of debug instrumentation in the kernel, m=
-any
-+  of which can be found in lib/Kconfig.debug
-+
-+These tools tend to test the kernel as a whole, and do not "pass" like
-+kselftest or KUnit tests. They can be combined with KUnit or kselftest by
-+running tests on a kernel with a sanitizer enabled: you can then be sure
-+that none of these errors are occurring during the test.
-+
-+Some of these tools integrate with KUnit or kselftest and will
-+automatically fail tests if an issue is detected.
-+
---=20
-2.31.1.295.g9ea45b61b8-goog
+> 
+>> +        interrupt-parent = <&pio>;
+>> +        interrupts = <4 8 /* IRQ_TYPE_LEVEL_LOW */>;
+>> +        reg = <0x4c>;
+>> +
+>> +        ports {
+>> +          #address-cells = <1>;
+>> +          #size-cells = <0>;
+>> +
+>> +          port@0 {
+>> +            reg = <0>;
+>> +            it66121_in: endpoint {
+>> +              bus-width = <12>;
+>> +              remote-endpoint = <&display_out>;
+>> +            };
+>> +          };
+>> +
+>> +          port@1 {
+>> +            reg = <1>;
+>> +            hdmi_conn_out: endpoint {
+>> +              remote-endpoint = <&hdmi_conn_in>;
+>> +            };
+>> +          };
+>> +        };
+>> +      };
+>> +    };
+> 
 
