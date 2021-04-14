@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3732C35EE73
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E99435EE75
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349762AbhDNH3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:29:37 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:18314 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349556AbhDNH3e (ORCPT
+        id S1349679AbhDNH3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348679AbhDNH3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:29:34 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id A5D1680042A;
-        Wed, 14 Apr 2021 15:29:06 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V2] watchdog: mtk: support pre-timeout when the bark irq is available
-Date:   Wed, 14 Apr 2021 15:28:58 +0800
-Message-Id: <1618385339-3527-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUsdTFZCHU8aTxgaTh9LQktVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzI6LSo5SD8JHhwhTTc5LiEX
-        Ey1PCyFVSlVKTUpDSENOSE9MSElLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5LVUpMTVVJSUJZV1kIAVlBT0JKTDcG
-X-HM-Tid: 0a78cf48a173b03akuuua5d1680042a
+        Wed, 14 Apr 2021 03:29:42 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAA5C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:29:20 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id l14so19329196ljb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mgKOIRuIsQ8kXdRwlwTu4ZZZzpH+5A4kyMAN1OTQ7hU=;
+        b=aNINOsqBxC30qOUx5fl3WkPA5Mk9aMiC33A0aee3DD/EKIpXcqYPHs1UKb4VPk6jNr
+         FKD55JILqObGYbRQIqW268PwVx0Ynzi/ficbdm4U+Z6+Zsvwl6rtpJGshQlubNEsqu0w
+         UqryakdXf/ATlSn3A5/0qDKPZBH3ak3Ibc8uxlLQo7mbpQViaJj5GFYYtNmULdjy3yoQ
+         3vut1tg+ZpzRt+HbrRGIESXFvB+3EUQ+8DU1MZE6sF1ReMYBiPNHm1rS8F6c4hYmUFWy
+         SekA+BHgu5vimnblEKRcYRYOfe50jg90GKM5eaM0MDiu2WYV9ZfShS8lon8kPLwItAPa
+         qNlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mgKOIRuIsQ8kXdRwlwTu4ZZZzpH+5A4kyMAN1OTQ7hU=;
+        b=UfdExajJtp0LSGWwhEGmmkecuO8Fpyl2QyR/8y3oIGzbfDd6BF/f8P1LY+6GK9H2PT
+         i6qaJwUQIHBkwBUstijljHA8Xfu0owq5tBPHCDkWltfi7BHmNP11I8DbKID9vTnzR8oF
+         grdSJHwiDT6nP7hc+3o51tNThmBu4/6K9a5XGElGhzGWaivYuzkn4rfgGX/P63LJPXKm
+         5ux+cs5keEdGinOCzgiEqKbN33GLAURWIeVhpe2ZkdekSP15M1R2ue9EcyPMdWF/FzXH
+         BaMR8LqpsREQKwAHvG/wlfWa/7u6wqAHoAet6idW9FAnMVciJ6ub4M9f3LNdYuNFFS0R
+         uv4w==
+X-Gm-Message-State: AOAM5332WJkYiVw6PQc0XLvfmKYSgH3g99M/C6rhV3aEWN0TkjHgtWmN
+        InNvt05i1F6GZyzVm9IJM0SOwsuothEkIGPUAzbWjQ==
+X-Google-Smtp-Source: ABdhPJwGUEe1Q2DKoTdI1PeRAGjLOJHFbrqRHykxPfSLYQ0BB18t1lAwqeZ29W3m27G4qK8f5DlU6ZV2wgRLZ48W4jU=
+X-Received: by 2002:a2e:a54c:: with SMTP id e12mr7593893ljn.326.1618385358966;
+ Wed, 14 Apr 2021 00:29:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210411133030.1663936-1-pgwipeout@gmail.com>
+In-Reply-To: <20210411133030.1663936-1-pgwipeout@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 14 Apr 2021 09:29:08 +0200
+Message-ID: <CACRpkdYU0qsNf=AonKR6MZg_oPNXkFnX7f2n9K4oZRBFDdtRow@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] gpio-rockchip driver
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Tao Huang <huangtao@rock-chips.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the bark interrupt as the pretimeout notifier if available.
+On Sun, Apr 11, 2021 at 3:30 PM Peter Geis <pgwipeout@gmail.com> wrote:
 
-By default, the pretimeout notification shall occur one second earlier
-than the timeout.
+> Separate gpio driver from pinctrl driver, and support v2 controller.
+>
+> Tested on rk3566-quartz64 prototype board.
+>
+> Patch History:
+> V2 - Rebase to latest linux-next.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
 
-V2:
-- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled
+This does not apply to the pin control tree, the problem with basing stuff
+on -next is that it sometimes does not apply to any development tree
+and now that happened (because of conflicts in the GPIO tree).
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/watchdog/mtk_wdt.c | 57 ++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 52 insertions(+), 5 deletions(-)
+You can either resend this based on the pinctrl "devel" branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
+... or you can wait until kernel v5.13-rc1 is out and then we can merge
+it, but it might even require rebasing after that.
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993..b0ec933
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -25,6 +25,7 @@
- #include <linux/reset-controller.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
-+#include <linux/interrupt.h>
- 
- #define WDT_MAX_TIMEOUT		31
- #define WDT_MIN_TIMEOUT		1
-@@ -234,18 +235,41 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
- 	void __iomem *wdt_base = mtk_wdt->wdt_base;
- 	int ret;
- 
--	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
-+	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
- 	if (ret < 0)
- 		return ret;
- 
- 	reg = ioread32(wdt_base + WDT_MODE);
--	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	reg &= ~WDT_MODE_IRQ_EN;
-+	if (wdt_dev->pretimeout)
-+		reg |= WDT_MODE_IRQ_EN;
-+	else
-+		reg &= ~WDT_MODE_IRQ_EN;
- 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
- 	iowrite32(reg, wdt_base + WDT_MODE);
- 
- 	return 0;
- }
- 
-+static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
-+				   unsigned int timeout)
-+{
-+	wdd->pretimeout = timeout;
-+	return mtk_wdt_start(wdd);
-+}
-+
-+static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-+{
-+	struct watchdog_device *wdd = arg;
-+if (IS_ENABLED(CONFIG_WATCHDOG_PRETIMEOUT_GOV))
-+	watchdog_notify_pretimeout(wdd);
-+else
-+	//panic by decault instead of WDT_SWRST;
-+	panic("MTk Watchdog bark!\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
- static const struct watchdog_info mtk_wdt_info = {
- 	.identity	= DRV_NAME,
- 	.options	= WDIOF_SETTIMEOUT |
-@@ -253,12 +277,21 @@ static const struct watchdog_info mtk_wdt_info = {
- 			  WDIOF_MAGICCLOSE,
- };
- 
-+static const struct watchdog_info mtk_wdt_pt_info = {
-+	.identity	= DRV_NAME,
-+	.options	= WDIOF_SETTIMEOUT |
-+			  WDIOF_PRETIMEOUT |
-+			  WDIOF_KEEPALIVEPING |
-+			  WDIOF_MAGICCLOSE,
-+};
-+
- static const struct watchdog_ops mtk_wdt_ops = {
- 	.owner		= THIS_MODULE,
- 	.start		= mtk_wdt_start,
- 	.stop		= mtk_wdt_stop,
- 	.ping		= mtk_wdt_ping,
- 	.set_timeout	= mtk_wdt_set_timeout,
-+	.set_pretimeout	= mtk_wdt_set_pretimeout,
- 	.restart	= mtk_wdt_restart,
- };
- 
-@@ -267,7 +300,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_wdt_dev *mtk_wdt;
- 	const struct mtk_wdt_data *wdt_data;
--	int err;
-+	int err, irq;
- 
- 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
- 	if (!mtk_wdt)
-@@ -279,7 +312,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	if (IS_ERR(mtk_wdt->wdt_base))
- 		return PTR_ERR(mtk_wdt->wdt_base);
- 
--	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq > 0) {
-+		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-+								&mtk_wdt->wdt_dev);
-+		if (err)
-+			return err;
-+
-+		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
-+		mtk_wdt->wdt_dev.pretimeout = 1;
-+	} else {
-+		if (irq == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+
-+		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
-+	}
-+
- 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
- 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
- 	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
-@@ -360,7 +408,6 @@ static struct platform_driver mtk_wdt_driver = {
- };
- 
- module_platform_driver(mtk_wdt_driver);
--
- module_param(timeout, uint, 0);
- MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds");
- 
--- 
-2.7.4
-
+Yours,
+Linus Walleij
