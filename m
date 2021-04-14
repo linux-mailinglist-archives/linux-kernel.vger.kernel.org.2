@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FBD35FB9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B787A35FBA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbhDNT0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S235016AbhDNT1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhDNT0C (ORCPT
+        with ESMTP id S230318AbhDNT1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:26:02 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01C8C061574;
-        Wed, 14 Apr 2021 12:25:40 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id 20so6747542pll.7;
-        Wed, 14 Apr 2021 12:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KpLOFoYfcHiJCEdbxKTdXhAPH70ztnzVmclf6+HcyKc=;
-        b=Q2rpGYCZu6fcLua1Gy3C3msvUvuIABOekDOGgskk2jj3PWoMrSQ/wVOESzgeP6FpXP
-         w+lzkE2D0nBfdTtaYca32OIUfKpPd2/SAXa7vYogp6T+4X7Njs+oAXrgXRG94TgM/LgN
-         hzFa4EvNsw9TZMY8bsHXQ8s0aUO5082L5hjPYjDCw2v90EpSojmcKGuSRE+el+c3MUKF
-         kKHIOB3KMTIjP2cr/KwXf2UZjO/lAgq60cfSq11kRn4X6qwhoSUnLC58f06rL29RCpQo
-         FjVVAIL9JfP3oXdr8Jm9Hsj8T2P/w02qu1owpqIVIuF2koJwX58wB15mUxGFb8fNoTsk
-         C0XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KpLOFoYfcHiJCEdbxKTdXhAPH70ztnzVmclf6+HcyKc=;
-        b=n5qAtXPw5rlqPS2QtMwPHwuZEMVVwunAxYJfXDIJbApPFe62ZCkmOa0w9eevFdcesd
-         kFwyk1g8/xD24i/8kuOX4IlJZtxhYXBZsHayv577RqidMePAYayjldCNG1N45HQCc9XD
-         VIj1oPBMJ1t5zc2Zd9e67I/GpisbUjIha8E4/1sdzZ8/12t7jaajzsHrN1+p1vKaQtpx
-         jOHDXkExVzTRjjHCwYqfnR66YY3BSGh1b4Rq//hmE7RVXIcJ91W1jIibBLmHsl3+nQXD
-         yUUTniDYZ56wQ+s+jXKGE7zjZYNvwy2eM1CbtixbZ6ZkmEtUcX1+vcb+AC/nqyfxv/fZ
-         Er0g==
-X-Gm-Message-State: AOAM530jr2dN6xkeAhhZ0yu6Q5rmQxWx4bA7Hh49TsaKi6JCxHfhoCTG
-        9pzeGrif8lBW8dVJlGiXnbqgsQ7QIiFimw==
-X-Google-Smtp-Source: ABdhPJz93KXn1rbP+KYjOKNWk+IK6exmdiFZYY5gf+skoogwzYMgSlMGcsdXvXs4SEjivvX24nDuOw==
-X-Received: by 2002:a17:90b:302:: with SMTP id ay2mr5216317pjb.84.1618428339999;
-        Wed, 14 Apr 2021 12:25:39 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a089:d8d9:c36b:b907:6d78])
-        by smtp.googlemail.com with ESMTPSA id d26sm188652pfo.162.2021.04.14.12.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 12:25:39 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] scripts: kernel-doc: improve parsing for kernel-doc comments syntax
-Date:   Thu, 15 Apr 2021 00:55:29 +0530
-Message-Id: <20210414192529.9080-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 14 Apr 2021 15:27:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B682C061574;
+        Wed, 14 Apr 2021 12:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=4+1wd2pK7CXY/M3KV/UrvShdnppGdq/Gmh3jx1eH2uk=; b=V38veh0ZV+GJTzNvuppo+TnfmG
+        +YAEeyyCSpWLmXom4TZxQadG8btsAH7f4u6Qwf0wek/LetPwrWMBMwvjrWEYs7UjjEZksCrpdf0+R
+        S1gHNfzcABdBis/UMk5bAk/1mJtG6Btz5JdMKtNYM6stCqMFahtOd1fYZSJ23bMedmgc0pJDALQhR
+        EpbNYsrDTGUwl/h4a2DcbMQIMcqvOUiyS1saP6sriN2cC5uVDOO5FvWgVJ01URq+j7b6arBXs3zws
+        11fH8api7CEMImDjHqHMptTd6EKf8n4RNr9wqVPoyn0NjC1xyKsGPDeS5OJv5BUIpMIB/GjR5zika
+        dds9ppZA==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWlAE-007XJv-So; Wed, 14 Apr 2021 19:27:09 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Subject: [PATCH] uml: fix W=1 missing-include-dirs warnings
+Date:   Wed, 14 Apr 2021 12:26:57 -0700
+Message-Id: <20210414192657.17764-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kernel-doc does not identify some cases of probable kernel
-doc comments, for e.g. pointer used as declaration type for identifier,
-space separated identifier, etc.
+Currently when using "W=1" with UML builds, there are over 700 warnings
+like so:
 
-Some example of these cases in files can be:
-i)" *  journal_t * jbd2_journal_init_dev() - creates and initialises a journal structure"
-in fs/jbd2/journal.c
+  CC      arch/um/drivers/stderr_console.o
+cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
 
-ii) "*      dget, dget_dlock -      get a reference to a dentry" in
-include/linux/dcache.h
+but arch/um/ does not have include/uapi/ at all, so don't
+include arch/um/include/uapi/ in USERINCLUDE for UML.
 
-iii) "  * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t"
-in include/linux/seqlock.h
-
-Also improve identification for non-kerneldoc comments. For e.g.,
-
-i) " *	The following functions allow us to read data using a swap map"
-in kernel/power/swap.c does follow the kernel-doc like syntax, but the
-content inside does not adheres to the expected format.
-
-Improve parsing by adding support for these probable attempts to write
-kernel-doc comment.
-
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Link: https://lore.kernel.org/lkml/87mtujktl2.fsf@meer.lwn.net
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: linux-kbuild@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 ---
- scripts/kernel-doc | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ Makefile |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 888913528185..37665aa41e6b 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -2110,17 +2110,25 @@ sub process_name($$) {
-     } elsif (/$doc_decl/o) {
- 	$identifier = $1;
- 	my $is_kernel_comment = 0;
--	if (/^\s*\*\s*([\w\s]+?)(\(\))?\s*([-:].*)?$/) {
-+	my $decl_start = qr{\s*\*};
-+	my $fn_type = qr{\w+\s*\*\s*}; # i.e. pointer declaration type, foo * bar() - desc
-+	my $parenthesis = qr{\(\w*\)};
-+	my $decl_end = qr{[-:].*};
-+	if (/^$decl_start\s*([\w\s]+?)$parenthesis?\s*$decl_end?$/) {
- 	    $identifier = $1;
--	    $decl_type = 'function';
--	    $identifier =~ s/^define\s+//;
--	    $is_kernel_comment = 1;
- 	}
- 	if ($identifier =~ m/^(struct|union|enum|typedef)\b\s*(\S*)/) {
- 	    $decl_type = $1;
- 	    $identifier = $2;
- 	    $is_kernel_comment = 1;
- 	}
-+	elsif (/^$decl_start\s*$fn_type?(\w+)\s*$parenthesis?\s*$decl_end?$/ ||	# i.e. foo()
-+	    /^$decl_start\s*$fn_type?(\w+.*)$parenthesis?\s*$decl_end$/) {	# i.e. static void foo() - description; or misspelt identifier
-+	    $identifier = $1;
-+	    $decl_type = 'function';
-+	    $identifier =~ s/^define\s+//;
-+	    $is_kernel_comment = 1;
-+	}
- 	$identifier =~ s/\s+$//;
+Option 2: change the setting of USERINCLUDE. This could alter
+	(a) build times and
+	(b) which header files get used: if there are multiple
+	    header files named foobar.h in the $(USERINCLUDE)
+	    subdirectories, this Option changes the order in which
+	    they would be found.
+
+- linux-next-20210413.orig/Makefile
++ linux-next-20210413/Makefile
+@@ -501,13 +501,16 @@ LDFLAGS_vmlinux =
  
- 	$state = STATE_BODY;
--- 
-2.17.1
+ # Use USERINCLUDE when you must reference the UAPI directories only.
+ USERINCLUDE    := \
+-		-I$(srctree)/arch/$(SRCARCH)/include/uapi \
+ 		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
+ 		-I$(srctree)/include/uapi \
+ 		-I$(objtree)/include/generated/uapi \
+                 -include $(srctree)/include/linux/compiler-version.h \
+                 -include $(srctree)/include/linux/kconfig.h
+ 
++ifneq ($(ARCH),um)
++USERINCLUDE    += -I$(srctree)/arch/$(SRCARCH)/include/uapi
++endif
++
+ # Use LINUXINCLUDE when you must reference the include/ directory.
+ # Needed to be compatible with the O= option
+ LINUXINCLUDE    := \
 
+Option 3: modify scripts/Makefile.extrawarn not to set
+	-Wmissing-include-dirs for arch=um. I think that this is not
+	a good idea: it could cause valid problem reports not to be
+	reported.
+
+Option 4: simply mkdir arch/um/include/uapi
+	That's what I did first, just as a test, and it works.
+
+--- linux-next-20210413.orig/Makefile
++++ linux-next-20210413/Makefile
+@@ -500,6 +500,15 @@ AFLAGS_KERNEL	=
+ LDFLAGS_vmlinux =
+ 
+ # Use USERINCLUDE when you must reference the UAPI directories only.
++# Note: arch/um/ does not have an include/uapi/ subdir.
++ifeq ($(ARCH),um)
++USERINCLUDE    := \
++		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
++		-I$(srctree)/include/uapi \
++		-I$(objtree)/include/generated/uapi \
++                -include $(srctree)/include/linux/compiler-version.h \
++                -include $(srctree)/include/linux/kconfig.h
++else
+ USERINCLUDE    := \
+ 		-I$(srctree)/arch/$(SRCARCH)/include/uapi \
+ 		-I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
+@@ -507,6 +516,7 @@ USERINCLUDE    := \
+ 		-I$(objtree)/include/generated/uapi \
+                 -include $(srctree)/include/linux/compiler-version.h \
+                 -include $(srctree)/include/linux/kconfig.h
++endif
+ 
+ # Use LINUXINCLUDE when you must reference the include/ directory.
+ # Needed to be compatible with the O= option
