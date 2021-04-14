@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594E935FA10
+	by mail.lfdr.de (Postfix) with ESMTP id D46B635FA11
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350949AbhDNRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:48:20 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6222 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347548AbhDNRsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:48:16 -0400
-IronPort-SDR: AnoPP3E8d8vjuCFMEndTITgHT+dwOzSascGcx/YUxg/Du1uMpERIaey9szqUB3RS59/4OjlELe
- nfuHJhFsc0KQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181819973"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="181819973"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:47:52 -0700
-IronPort-SDR: 03bq64kSY2elvsiAhmZgjE30QST8Yse36lzk12d1PYG9635GKYhu/hTLN6NQ1hEWUkcv7cK4Mz
- HGyppFRHgvlg==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="522073477"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:47:50 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lWjcC-0043yy-8l; Wed, 14 Apr 2021 20:47:48 +0300
-Date:   Wed, 14 Apr 2021 20:47:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        id S1347303AbhDNRtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:49:18 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:47230 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231452AbhDNRtG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:49:06 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13EHdYWC043994;
+        Wed, 14 Apr 2021 17:48:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=HpsPfG3dgRu67rJ7Rw8s1KmFBUqhfcWR/OSxIk8jiwU=;
+ b=I0hCfbN1GpVxuLXLXnYNXeqrn5P8s3h1gke4g8ziarpJpa6Nz/ZkwVCIPIAS2riXvY2r
+ wtoqDkERTZ9GH2dn1MqnC7UpvyPL9empLzffDqxDYDu14TdzFVlWTQwJxZiB6pK2mPkQ
+ K0jaoyAdij3OeRrIsEUc9zfHjlNL7awd57MZOYpAj44SBwYrXNygS6nJyeUu89XNJule
+ j0EcxADx5rmLbWZbmrXhKaVllp0jREDjrTOTTgW3FE61RSSInVDu7deiS5Txb+HL3OQJ
+ NAzCxh3IbUGNnMl1rhQNLo/vF/jLHMZOEDlT85Mml5zjbrBW+yzXS2ycSZP8zpAyD7qV HA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 37u1hbkewb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 17:48:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13EHkQru145753;
+        Wed, 14 Apr 2021 17:48:22 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 37unxyrcrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 17:48:22 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13EHmGaD025249;
+        Wed, 14 Apr 2021 17:48:17 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Apr 2021 10:48:16 -0700
+Date:   Wed, 14 Apr 2021 20:48:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-Message-ID: <YHcqxMLR44laX2PZ@smile.fi.intel.com>
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
- <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
- <YHcnckePpKDujCU+@kroah.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless
+ led_blink_hdl()
+Message-ID: <20210414174809.GX6021@kadam>
+References: <20210414162614.14867-1-fmdefrancesco@gmail.com>
+ <YHcfud6Fpsi9Weac@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHcnckePpKDujCU+@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YHcfud6Fpsi9Weac@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140117
+X-Proofpoint-GUID: o3mUut_22WPQN0w9TGZLK8N6eJWbi3z_
+X-Proofpoint-ORIG-GUID: o3mUut_22WPQN0w9TGZLK8N6eJWbi3z_
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ clxscore=1031 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140116
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 07:33:38PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 14, 2021 at 08:12:46PM +0300, Alexander Shishkin wrote:
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Apr 14, 2021 at 07:00:41PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 14, 2021 at 06:26:14PM +0200, Fabio M. De Francesco wrote:
+> > Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
+> > the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
+> > change has not unwanted side effects because the code in rtw_cmd.c checks
+> > if the function pointer is valid before using it.
 > > 
-> > It appears that uuid_t use in STM code abuses UUID API.
-> 
-> How is it being abused?
-
-We are using it against the buffer that is u8, and neither uuid_t nor guid_t.
-
-> Moreover,
-> > this type is only useful when we parse user input. Due to above
-> > replace uuid_t with u8 uuid[16] and use uuid_t only when parse
-> > user input.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > > ---
-> >  drivers/hwtracing/stm/p_sys-t.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
 > > 
-> > diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
-> > index 360b5c03df95..04d13b3785d3 100644
-> > --- a/drivers/hwtracing/stm/p_sys-t.c
-> > +++ b/drivers/hwtracing/stm/p_sys-t.c
-> > @@ -76,7 +76,7 @@ enum sys_t_message_string_subtype {
-> >  				 MIPI_SYST_SEVERITY(MAX))
+> > Changes since v1: Corrected a bad solution to this issue that made use of
+> > an unnecessary dummy function.
+> > 
+> >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
+> >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
+> >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
+> >  3 files changed, 1 insertion(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > index 0297fbad7bce..f82dbd4f4c3d 100644
+> > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > @@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
 > >  
-> >  struct sys_t_policy_node {
-> > -	uuid_t		uuid;
-> > +	u8		uuid[UUID_SIZE];
+> >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
+> >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
+> > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
+> > +	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
 > 
-> This feels wrong, what is wrong with the uuid_t type usage here?
+> Better, but you really do not need to keep this here, right?  Remove the
+> "led blink command" entirely, you didn't do that here.
 
-Nothing, just will require additional export_uuid() / import_uuid() call.
+No, this is right.  We have to put a NULL function pointer in the array
+or the indexing will be off.  But Fabio is correct that the struct
+type should be removed.
 
-> >  	bool		do_len;
-> >  	unsigned long	ts_interval;
-> >  	unsigned long	clocksync_interval;
-> > @@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
-> >  {
-> >  	struct sys_t_policy_node *pn = priv;
-> >  
-> > -	generate_random_uuid(pn->uuid.b);
-> 
-> Ok, that's not good, but that looks to be a flaw in the
-> generate_random_uuid() api, not this driver implementation.
-> 
-> I don't understand why this change is needed?
-
-Using raw buffer APIs against uuid_t / guid_t.
-
-We can import_uuid() first and call uuid_gen() against it. Will it work for
-you?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+regards,
+dan carpenter
 
