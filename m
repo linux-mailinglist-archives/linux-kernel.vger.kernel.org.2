@@ -2,159 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A87E35F885
+	by mail.lfdr.de (Postfix) with ESMTP id 857E535F886
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351106AbhDNPzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:55:11 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:44744 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347376AbhDNPzA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:55:00 -0400
-Received: by mail-ot1-f45.google.com with SMTP id t17-20020a9d77510000b0290287a5143b41so8532009otl.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:54:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DjdlDe1r8PWcI8CJTWfGrTFm/qYeuvm3S8MlLSmS6yU=;
-        b=kHAbeOZMdanUc2nBKdDgxJN9yGWfPaM0UFki7OKI08jDhccfFR+FMBFY5w3kKcHToI
-         HaFsk9NwZkjbM6P31CGX3XSw5lx75LkhLdQG8lnrnH2tuVOI1uv5XrkANrzAc/P2AIQp
-         KxI7GIfBkKmyQh+g7C69ttWeX2w3uuBUG+aJu9XujLEju6Ze9Ht5HYioH98ly7w8HSXH
-         Q37zhlotJQK2ANzNAqiyYOL/8lqWu+J7Zq3kxfqR00wmfG0XP5D9XO/E48C8AchBb41M
-         7+zHZB50yZe/tpVZrQxaKyH9yPZ1iu+OPbTyjQrGhWIpxYPJnIWXer5kds3JhO/CFRtP
-         DlzA==
-X-Gm-Message-State: AOAM5338l6LH1QpLsUkR9y963jPWEzQCh+dV7/Q9b/li44KyuRkQTlNk
-        fZjB5/RhIFrmY79lKZgv3WO3WOec4Q==
-X-Google-Smtp-Source: ABdhPJzUGWUK7q1izTsmNH5ER4HjcyBuN/A2hXiR/JbPezOW0su8IpafPsMmONhRZqvu0MQ9gEVcTQ==
-X-Received: by 2002:a05:6830:1c6d:: with SMTP id s13mr22171652otg.183.1618415677923;
-        Wed, 14 Apr 2021 08:54:37 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id x14sm41830otk.32.2021.04.14.08.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 08:54:25 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S233958AbhDNPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:55:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:58278 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352498AbhDNPzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:55:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97E4A11B3;
+        Wed, 14 Apr 2021 08:54:59 -0700 (PDT)
+Received: from [10.57.27.217] (unknown [10.57.27.217])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12BFB3F73B;
+        Wed, 14 Apr 2021 08:54:56 -0700 (PDT)
+Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org
+Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Subject: [PATCH v8 1/4] tools/include: Add an initial math64.h
-Date:   Wed, 14 Apr 2021 10:54:09 -0500
-Message-Id: <20210414155412.3697605-2-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210414155412.3697605-1-robh@kernel.org>
-References: <20210414155412.3697605-1-robh@kernel.org>
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414143919.12605-1-james.clark@arm.com>
+ <20210414143919.12605-2-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <d6b39eca-4f19-bace-ca3d-f36549caa51c@arm.com>
+Date:   Wed, 14 Apr 2021 16:54:55 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an initial math64.h similar to linux/math64.h with functions
-mul_u64_u64_div64() and mul_u64_u32_shr(). This isn't a direct copy of
-include/linux/math64.h as that doesn't define mul_u64_u64_div64().
+On 14/04/2021 15:39, James Clark wrote:
+> The following attribute is set when synthesising samples in
+> timed decoding mode:
+> 
+>      attr.sample_type |= PERF_SAMPLE_TIME;
+> 
+> This results in new samples that appear to have timestamps but
+> because we don't assign any timestamps to the samples, when the
+> resulting inject file is opened again, the synthesised samples
+> will be on the wrong side of the MMAP or COMM events.
+> 
+> For example this results in the samples being associated with
+> the perf binary, rather than the target of the record:
+> 
+>      perf record -e cs_etm/@tmc_etr0/u top
+>      perf inject -i perf.data -o perf.inject --itrace=i100il
+>      perf report -i perf.inject
+> 
+> Where 'Command' == perf should show as 'top':
+> 
+>      # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
+>      # ........  .......  ....................  ......................  ......................  ..................
+>      #
+>          31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
+> 
+> If the perf.data file is opened directly with perf, without the
+> inject step, then this already works correctly because the
+> events are synthesised after the COMM and MMAP events and
+> no second sorting happens. Re-sorting only happens when opening
+> the perf.inject file for the second time so timestamps are
+> needed.
+> 
+> Using the timestamp from the AUX record mirrors the current
+> behaviour when opening directly with perf, because the events
+> are generated on the call to cs_etm__process_queues().
 
-Implementation was written by Peter Zilkstra based on linux/math64.h
-and div64.h[1]. The original implementation was not optimal on arm64 as
-__int128 division is not optimal with a call out to __udivti3, so I
-dropped the __int128 variant of mul_u64_u64_div64().
+I would add the following here to clarify the situation :
 
-[1] https://lore.kernel.org/lkml/20200322101848.GF2452@worktop.programming.kicks-ass.net/
+"The ETM trace could optionally contain time stamps, but there is
+no way to correlate this with the kernel time. So, the best available
+time value is that of the AUX_RECORD header. This patch uses
+the timestamp from the header for all the samples. The ordering of the
+samples are implicit in the trace and thus is fine with respect to
+relative ordering."
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- tools/include/linux/math64.h | 75 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 tools/include/linux/math64.h
 
-diff --git a/tools/include/linux/math64.h b/tools/include/linux/math64.h
-new file mode 100644
-index 000000000000..4ad45d5943dc
---- /dev/null
-+++ b/tools/include/linux/math64.h
-@@ -0,0 +1,75 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MATH64_H
-+#define _LINUX_MATH64_H
-+
-+#include <linux/types.h>
-+
-+#ifdef __x86_64__
-+static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
-+{
-+	u64 q;
-+
-+	asm ("mulq %2; divq %3" : "=a" (q)
-+				: "a" (a), "rm" (b), "rm" (c)
-+				: "rdx");
-+
-+	return q;
-+}
-+#define mul_u64_u64_div64 mul_u64_u64_div64
-+#endif
-+
-+#ifdef __SIZEOF_INT128__
-+static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
-+{
-+	return (u64)(((unsigned __int128)a * b) >> shift);
-+}
-+
-+#else
-+
-+#ifdef __i386__
-+static inline u64 mul_u32_u32(u32 a, u32 b)
-+{
-+	u32 high, low;
-+
-+	asm ("mull %[b]" : "=a" (low), "=d" (high)
-+			 : [a] "a" (a), [b] "rm" (b) );
-+
-+	return low | ((u64)high) << 32;
-+}
-+#else
-+static inline u64 mul_u32_u32(u32 a, u32 b)
-+{
-+	return (u64)a * b;
-+}
-+#endif
-+
-+static inline u64 mul_u64_u32_shr(u64 a, u32 b, unsigned int shift)
-+{
-+	u32 ah, al;
-+	u64 ret;
-+
-+	al = a;
-+	ah = a >> 32;
-+
-+	ret = mul_u32_u32(al, b) >> shift;
-+	if (ah)
-+		ret += mul_u32_u32(ah, b) << (32 - shift);
-+
-+	return ret;
-+}
-+
-+#endif	/* __SIZEOF_INT128__ */
-+
-+#ifndef mul_u64_u64_div64
-+static inline u64 mul_u64_u64_div64(u64 a, u64 b, u64 c)
-+{
-+	u64 quot, rem;
-+
-+	quot = a / c;
-+	rem = a % c;
-+
-+	return quot * b + (rem * b) / c;
-+}
-+#endif
-+
-+#endif /* _LINUX_MATH64_H */
--- 
-2.27.0
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Co-developed-by: Al Grant <al.grant@arm.com>
+> Signed-off-by: Al Grant <al.grant@arm.com>
 
+nit: The preferred order is your S-o-B at the end (i.e of the sender)
+
+> ---
+>   tools/perf/util/cs-etm.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index c25da2ffa8f3..d0fa9dce47f1 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
+>   	u8 sample_instructions;
+>   
+>   	int num_cpu;
+> +	u64 latest_kernel_timestamp;
+>   	u32 auxtrace_type;
+>   	u64 branches_sample_type;
+>   	u64 branches_id;
+> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
+>   	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
+>   	event->sample.header.size = sizeof(struct perf_event_header);
+>   
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>   	sample.ip = addr;
+>   	sample.pid = tidq->pid;
+>   	sample.tid = tidq->tid;
+> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
+>   	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
+>   	event->sample.header.size = sizeof(struct perf_event_header);
+>   
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>   	sample.ip = ip;
+>   	sample.pid = tidq->pid;
+>   	sample.tid = tidq->tid;
+> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
+>   	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
+>   		return cs_etm__process_switch_cpu_wide(etm, event);
+>   
+> -	if (!etm->timeless_decoding &&
+> -	    event->header.type == PERF_RECORD_AUX)
+
+Might want to add a comment here ,
+
+	/*
+	 * Record the latest kernel timestamp available in the header
+	 * for samples.
+	 */
+
+> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
+> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
+>   		return cs_etm__process_queues(etm);
+> +	}
+>   
+>   	return 0;
+>   }
+> 
+
+This is the best effort thing we could do to get things working.
+
+With the comments addressed:
+
+Acked-by: Suzuki K Poulos <suzuki.poulose@arm.com>
