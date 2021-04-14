@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE18035F0AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109DF35F0BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347617AbhDNJVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:21:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60074 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhDNJUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:20:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618392025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mr3scI/YTtt7ex3orLLYYw+pW4lHQUrTP1/LVJpZfoM=;
-        b=odp2cs3oBeu4/nv5hFcVVVM+v8y5f7n9+IxPU37m5dVSeAFfRwLsTVeuh12rWg3yWR4hFy
-        uWPRvHKtgnQvNur1pwxkK7GOdz4WpdFSd49qg7j4J4TSjwLq2jN7htiwSQCrk8ajYQ3p1/
-        DEByuGHjeF8BnVGL0mHfPhKVuIbtc0w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0940AE37;
-        Wed, 14 Apr 2021 09:20:24 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 11:20:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [PATCH 1/7] mm: memcontrol: fix page charging in page replacement
-Message-ID: <YHaz2MgbX3nk8Am8@dhcp22.suse.cz>
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-2-songmuchun@bytedance.com>
+        id S1348618AbhDNJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:23:12 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2850 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348526AbhDNJXI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:23:08 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FKxZq4rnxz6893H;
+        Wed, 14 Apr 2021 17:12:51 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 14 Apr 2021 11:22:43 +0200
+Received: from localhost (10.47.83.55) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 14 Apr
+ 2021 10:22:42 +0100
+Date:   Wed, 14 Apr 2021 10:21:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, Linux PCI <linux-pci@vger.kernel.org>,
+        "Linux ACPI" <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "Vishal L Verma" <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/8] cxl/mem: Move some definitions to mem.h
+Message-ID: <20210414102115.00001f09@Huawei.com>
+In-Reply-To: <CAPcyv4iueMDPxcEuLg=NKydkRL+xmEn-udHjKYB493iTQShaAg@mail.gmail.com>
+References: <161728744224.2474040.12854720917440712854.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <161728744762.2474040.11009693084215696415.stgit@dwillia2-desk3.amr.corp.intel.com>
+        <20210406173845.00000bec@Huawei.com>
+        <CAPcyv4h4z9Y_Zbzk_jiZXs6+gPAbdw0UJHW5NvTaM2ZcvJ6ftw@mail.gmail.com>
+        <CAPcyv4iueMDPxcEuLg=NKydkRL+xmEn-udHjKYB493iTQShaAg@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413065153.63431-2-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.83.55]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-04-21 14:51:47, Muchun Song wrote:
-> The pages aren't accounted at the root level, so do not charge the page
-> to the root memcg in page replacement. Although we do not display the
-> value (mem_cgroup_usage) so there shouldn't be any actual problem, but
-> there is a WARN_ON_ONCE in the page_counter_cancel(). Who knows if it
-> will trigger? So it is better to fix it.
+On Tue, 13 Apr 2021 17:42:37 -0700
+Dan Williams <dan.j.williams@intel.com> wrote:
+
+> On Tue, Apr 13, 2021 at 5:18 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > On Tue, Apr 6, 2021 at 10:47 AM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:  
+> > >
+> > > On Thu, 1 Apr 2021 07:30:47 -0700
+> > > Dan Williams <dan.j.williams@intel.com> wrote:
+> > >  
+> > > > In preparation for sharing cxl.h with other generic CXL consumers,
+> > > > move / consolidate some of the memory device specifics to mem.h.
+> > > >
+> > > > Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>  
+> > >
+> > > Hi Dan,
+> > >
+> > > Would be good to see something in this patch description saying
+> > > why you chose to have mem.h rather than push the defines down
+> > > into mem.c (which from the current code + patch set looks like
+> > > the more logical thing to do).  
+> >
+> > The main motivation was least privilege access to memory-device
+> > details, so they had to move out of cxl.h. As to why move them in to a
+> > new mem.h instead of piling more into mem.c that's just a personal
+> > organizational style choice to aid review. I tend to go to headers
+> > first and read data structure definitions before reading the
+> > implementation, and having that all in one place is cleaner than
+> > interspersed with implementation details in the C code. It's all still
+> > private to drivers/cxl/ so I don't see any "least privilege" concerns
+> > with moving it there.
+> >
+> > Does that satisfy your concern?
+> >
+> > If yes, I'll add the above to v3.  
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Oh, another thing it helps is the information content of diffstats to
+> distinguish definition changes from implementation development.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+I go the other way style wise, but agree it doesn't really matter for
+local headers included from few other files.  Adding a above to
+comment will at least avoid anyone else (or forgetful me) raising question on v3.
 
-> ---
->  mm/memcontrol.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 64ada9e650a5..f229de925aa5 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6806,9 +6806,11 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
->  	/* Force-charge the new page. The old one will be freed soon */
->  	nr_pages = thp_nr_pages(newpage);
->  
-> -	page_counter_charge(&memcg->memory, nr_pages);
-> -	if (do_memsw_account())
-> -		page_counter_charge(&memcg->memsw, nr_pages);
-> +	if (!mem_cgroup_is_root(memcg)) {
-> +		page_counter_charge(&memcg->memory, nr_pages);
-> +		if (do_memsw_account())
-> +			page_counter_charge(&memcg->memsw, nr_pages);
-> +	}
->  
->  	css_get(&memcg->css);
->  	commit_charge(newpage, memcg);
-> -- 
-> 2.11.0
-
--- 
-Michal Hocko
-SUSE Labs
+Jonathan
