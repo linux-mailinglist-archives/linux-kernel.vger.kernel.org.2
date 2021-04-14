@@ -2,215 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD1E35F1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E6535F1E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346667AbhDNK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:59:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42308 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343757AbhDNK7T (ORCPT
+        id S1343835AbhDNLH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:07:59 -0400
+Received: from ms11p00im-qufo17281301.me.com ([17.58.38.50]:54934 "EHLO
+        ms11p00im-qufo17281301.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239428AbhDNLH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:59:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618397937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rs2PlOx2xiUIBK9k56hAPqdrqHZQ9ahIYUEPYnsCJD4=;
-        b=gaBRz5uiVPAGbXE2SRiJzDhsNiDYZX6vnCuelr/LDueWLVqhU4XMBANAHtw6WcfiFnsP6t
-        U4wXfDXEOraUR6oj0GfdTnqqqDYjRvhXVE5K33/LyehHRcbpioArIL8jmjYRaUkOZYoWtJ
-        o14cW2gL2maq1cL34+UraX+ILyMSPx8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-afeA1wY5O5uXG_oos8WqWA-1; Wed, 14 Apr 2021 06:58:53 -0400
-X-MC-Unique: afeA1wY5O5uXG_oos8WqWA-1
-Received: by mail-ed1-f69.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so1346600eds.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:58:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Rs2PlOx2xiUIBK9k56hAPqdrqHZQ9ahIYUEPYnsCJD4=;
-        b=mo5D7yHdqpLJ95+zmf1CS0F7x6wye5eOHfUE24tD8qTc2cUTyeHFpzg4wtWlkpybhf
-         WD6rW9eaX+c7RU52HKDmXFF+xw5uHS5jNH9uGd8Zg+eVCt7Z/gKG3/uNip5euFrvvEng
-         xOUF7/BBK7RXqm0TXoIgBlW+HJpZhhG66dhtj8Zh9ySMHQ1LdEEWDBS1UOcGHtmwqnLY
-         v/ZeExiQ5EdgNmw4vkS0b4F7dvW0ANdXdyNLESImkIEjJO3wC5Y2yYANHhkpGQPGa1L7
-         9w1NKPUwm3HkWdQ7iGREqDqCNJb7XJfIZirW+ggMoUmV//iguzaTC/Pv7elc2dKVon17
-         jC1Q==
-X-Gm-Message-State: AOAM532IWRSv6AJySqGAqHYRZ7fqKIGllh+1OVKFsDlajgWvGKULNjzM
-        h772ZMznNtChGRuJmeCVCfuvpGqXG4dLCj65yhBI7Oiolk3Zdag2olYOxiK9VPtcK5/Xmg5JO94
-        7vQI/iRa7C19bDT6OtsjfefiS
-X-Received: by 2002:a17:906:c7c3:: with SMTP id dc3mr25448727ejb.107.1618397932093;
-        Wed, 14 Apr 2021 03:58:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCjw34YtxrVVL0DYTRyA3gVeSzc6JEjgugOoRuwH7v7SeRzgMLzV/QtDBxhy9IU7IiN5uHMw==
-X-Received: by 2002:a17:906:c7c3:: with SMTP id dc3mr25448688ejb.107.1618397931666;
-        Wed, 14 Apr 2021 03:58:51 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id c16sm9866499ejx.81.2021.04.14.03.58.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 03:58:50 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1B5021804E8; Wed, 14 Apr 2021 12:58:50 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
-References: <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
- <20210402190806.nhcgappm3iocvd3d@apollo>
- <20210403174721.vg4wle327wvossgl@ast-mbp>
- <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
- <87blar4ti7.fsf@toke.dk>
- <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 14 Apr 2021 12:58:50 +0200
-Message-ID: <874kg9m8t1.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Wed, 14 Apr 2021 07:07:56 -0400
+X-Greylist: delayed 385 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Apr 2021 07:07:56 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1618398065; bh=ZKNU4MFJCFZ68zwNzFkvcR0uLuahhthVh9QAMOTrRvU=;
+        h=From:To:Subject:Date:Message-Id;
+        b=Prk10Uy8zRC729W7z5U+ZF8O3uwR7vWAT4Oo0pSSpF8NWBudCLWKNDWd+HEfMf6k9
+         3QvNSDZ9ZIMjzQEZvmSc9tJ7lgTq99sGw5KUQNAubwMu09qtQ42LRlkk06zxf2M1wO
+         X+rs0xa7Qm/jS0rCNYOXjzoIoO1+/kZHVXT3agqdhU+BZJNdqOV87WjZ4q8Fwgg3+b
+         SKFH4OUZJYu7DmCiUOx853ZUF7l3qzXijAhNRvD/zM6yKD1Le7JCZO49fuxdZl3hBM
+         oAG7s0ouEoEVMMP/4tFmHGhxqkrPMWRRGAmJRyZ+xjwtb0SBisAnQTJx+JerKZWbA8
+         dvPsumHly2tNw==
+Received: from pek-xsong2-d1.wrs.com (unknown [60.247.85.82])
+        by ms11p00im-qufo17281301.me.com (Postfix) with ESMTPSA id C003FAC01AC;
+        Wed, 14 Apr 2021 11:00:45 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        hbathini@linux.ibm.com, rppt@kernel.org, akpm@linux-foundation.org,
+        mahesh@linux.ibm.com, nathan@kernel.org, sourabhjain@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        mikey@neuling.org, haren@linux.ibm.com, alistair@popple.id.au,
+        jniethe5@gmail.com, peterz@infradead.org, leobras.c@gmail.com,
+        walken@google.com, atrajeev@linux.vnet.ibm.com,
+        maddy@linux.ibm.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, aik@ozlabs.ru
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] powerpc/traps: Enhance readability for trap types
+Date:   Wed, 14 Apr 2021 19:00:33 +0800
+Message-Id: <1618398033-13025-1-git-send-email-sxwjean@me.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.391,18.0.761,17.0.607.475.0000000_definitions?=
+ =?UTF-8?Q?=3D2021-04-14=5F03:2021-04-13=5F02,2021-04-14=5F03,2020-04-07?=
+ =?UTF-8?Q?=5F01_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=896
+ clxscore=1011 suspectscore=0 spamscore=0 malwarescore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2104140076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+From: Xiongwei Song <sxwjean@gmail.com>
 
-> On Tue, Apr 6, 2021 at 3:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
->> > <alexei.starovoitov@gmail.com> wrote:
->> >>
->> >> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wro=
-te:
->> >> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
->> >> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gm=
-ail.com> wrote:
->> >> > > > [...]
->> >> > >
->> >> > > All of these things are messy because of tc legacy. bpf tried to =
-follow tc style
->> >> > > with cls and act distinction and it didn't quite work. cls with
->> >> > > direct-action is the only
->> >> > > thing that became mainstream while tc style attach wasn't really =
-addressed.
->> >> > > There were several incidents where tc had tens of thousands of pr=
-ogs attached
->> >> > > because of this attach/query/index weirdness described above.
->> >> > > I think the only way to address this properly is to introduce bpf=
-_link style of
->> >> > > attaching to tc. Such bpf_link would support ingress/egress only.
->> >> > > direction-action will be implied. There won't be any index and qu=
-ery
->> >> > > will be obvious.
->> >> >
->> >> > Note that we already have bpf_link support working (without support=
- for pinning
->> >> > ofcourse) in a limited way. The ifindex, protocol, parent_id, prior=
-ity, handle,
->> >> > chain_index tuple uniquely identifies a filter, so we stash this in=
- the bpf_link
->> >> > and are able to operate on the exact filter during release.
->> >>
->> >> Except they're not unique. The library can stash them, but something =
-else
->> >> doing detach via iproute2 or their own netlink calls will detach the =
-prog.
->> >> This other app can attach to the same spot a different prog and now
->> >> bpf_link__destroy will be detaching somebody else prog.
->> >>
->> >> > > So I would like to propose to take this patch set a step further =
-from
->> >> > > what Daniel said:
->> >> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
->> >> > > and make this proposed api to return FD.
->> >> > > To detach from tc ingress/egress just close(fd).
->> >> >
->> >> > You mean adding an fd-based TC API to the kernel?
->> >>
->> >> yes.
->> >
->> > I'm totally for bpf_link-based TC attachment.
->> >
->> > But I think *also* having "legacy" netlink-based APIs will allow
->> > applications to handle older kernels in a much nicer way without extra
->> > dependency on iproute2. We have a similar situation with kprobe, where
->> > currently libbpf only supports "modern" fd-based attachment, but users
->> > periodically ask questions and struggle to figure out issues on older
->> > kernels that don't support new APIs.
->>
->> +1; I am OK with adding a new bpf_link-based way to attach TC programs,
->> but we still need to support the netlink API in libbpf.
->>
->> > So I think we'd have to support legacy TC APIs, but I agree with
->> > Alexei and Daniel that we should keep it to the simplest and most
->> > straightforward API of supporting direction-action attachments and
->> > setting up qdisc transparently (if I'm getting all the terminology
->> > right, after reading Quentin's blog post). That coincidentally should
->> > probably match how bpf_link-based TC API will look like, so all that
->> > can be abstracted behind a single bpf_link__attach_tc() API as well,
->> > right? That's the plan for dealing with kprobe right now, btw. Libbpf
->> > will detect the best available API and transparently fall back (maybe
->> > with some warning for awareness, due to inherent downsides of legacy
->> > APIs: no auto-cleanup being the most prominent one).
->>
->> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
->> high-level API auto-detect. That way users can also still use the
->> netlink attach function if they don't want the fd-based auto-close
->> behaviour of bpf_link.
->
-> So I thought a bit more about this, and it feels like the right move
-> would be to expose only higher-level TC BPF API behind bpf_link. It
-> will keep the API complexity and amount of APIs that libbpf will have
-> to support to the minimum, and will keep the API itself simple:
-> direct-attach with the minimum amount of input arguments. By not
-> exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
-> design discussion, as we now can keep as much info as needed inside
-> bpf_link_tc (which will embed bpf_link internally as well) to support
-> detachment and possibly some additional querying, if needed.
+Define macros to list ppc interrupt types in interttupt.h, replace the
+reference of the trap hex values with these macros.
 
-But then there would be no way for the caller to explicitly select a
-mechanism? I.e., if I write a BPF program using this mechanism targeting
-a 5.12 kernel, I'll get netlink attachment, which can stick around when
-I do bpf_link__disconnect(). But then if the kernel gets upgraded to
-support bpf_link for TC programs I'll suddenly transparently get
-bpf_link and the attachments will go away unless I pin them. This
-seems... less than ideal?
+Referred the hex numbers in arch/powerpc/kernel/exceptions-64e.S,
+arch/powerpc/kernel/exceptions-64s.S, arch/powerpc/kernel/head_*.S,
+arch/powerpc/kernel/head_booke.h and arch/powerpc/include/asm/kvm_asm.h.
 
-If we expose the low-level API I can elect to just use this if I know I
-want netlink behaviour, but if bpf_program__attach_tc() is the only API
-available it would at least need a flag to enforce one mode or the other
-(I can see someone wanting to enforce kernel bpf_link semantics as well,
-so a flag for either mode seems reasonable?).
+v4-v5:
+* Delete unnecessary #ifdef.
+* Move INTERRUPT_* macros to interttupt.h, classify for different cpu
+  types. Drop traps.h.
+* Directly define INTERRUPT_MACHINE_CHECK with 0x200.
 
--Toke
+v3-v4:
+Fix compile issue:
+arch/powerpc/kernel/process.c:1473:14: error: 'INTERRUPT_MACHINE_CHECK' undeclared (first use in this function); did you mean 'TAINT_MACHINE_CHECK'?
+Reported-by: kernel test robot <lkp@intel.com>
+
+v2-v3:
+Correct the prefix of trap macros with INTERRUPT_, the previous prefix
+is TRAP_, which is not precise. This is suggested by Segher Boessenkool
+and Nicholas Piggin.
+
+v1-v2:
+Define more trap macros to replace more trap hexs in code, not just for
+the __show_regs function. This is suggested by Christophe Leroy.
+
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+---
+ arch/powerpc/include/asm/interrupt.h  | 48 +++++++++++++++++++++++++--
+ arch/powerpc/kernel/fadump.c          |  2 +-
+ arch/powerpc/kernel/interrupt.c       |  2 +-
+ arch/powerpc/kernel/process.c         |  4 ++-
+ arch/powerpc/kernel/traps.c           |  6 ++--
+ arch/powerpc/kexec/crash.c            |  3 +-
+ arch/powerpc/mm/book3s64/hash_utils.c |  4 +--
+ arch/powerpc/mm/fault.c               | 16 ++++-----
+ arch/powerpc/perf/core-book3s.c       |  5 +--
+ arch/powerpc/xmon/xmon.c              | 20 +++++++----
+ 10 files changed, 81 insertions(+), 29 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index 05e7fc4ffb50..86daf1242088 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -9,6 +9,46 @@
+ #include <asm/kprobes.h>
+ #include <asm/runlatch.h>
+ 
++/* BookE/4xx */
++#define INTERRUPT_CRITICAL_INPUT  0x100
++
++/* BookE */
++#define INTERRUPT_DEBUG           0xd00
++#ifdef CONFIG_BOOKE
++#define INTERRUPT_PERFMON         0x260
++#define INTERRUPT_DOORBELL        0x280
++#endif
++
++/* BookS/4xx/8xx */
++#define INTERRUPT_MACHINE_CHECK   0x200
++
++/* BookS/8xx */
++#define INTERRUPT_SYSTEM_RESET    0x100
++
++/* BookS */
++#define INTERRUPT_DATA_SEGMENT    0x380
++#define INTERRUPT_INST_SEGMENT    0x480
++#define INTERRUPT_TRACE           0xd00
++#define INTERRUPT_H_DATA_STORAGE  0xe00
++#define INTERRUPT_H_FAC_UNAVAIL   0xf80
++#ifdef CONFIG_PPC_BOOK3S
++#define INTERRUPT_DOORBELL        0xa00
++#define INTERRUPT_PERFMON         0xf00
++#endif
++
++/* BookE/BookS/4xx/8xx */
++#define INTERRUPT_DATA_STORAGE    0x300
++#define INTERRUPT_INST_STORAGE    0x400
++#define INTERRUPT_ALIGNMENT       0x600
++#define INTERRUPT_PROGRAM         0x700
++#define INTERRUPT_SYSCALL         0xc00
++
++/* BookE/BookS/44x */
++#define INTERRUPT_FP_UNAVAIL      0x800
++
++/* BookE/BookS/44x/8xx */
++#define INTERRUPT_DECREMENTER     0x900
++
+ static inline void nap_adjust_return(struct pt_regs *regs)
+ {
+ #ifdef CONFIG_PPC_970_NAP
+@@ -70,7 +110,7 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+ 		 * CT_WARN_ON comes here via program_check_exception,
+ 		 * so avoid recursion.
+ 		 */
+-		if (TRAP(regs) != 0x700)
++		if (TRAP(regs) != INTERRUPT_PROGRAM)
+ 			CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
+ 	}
+ #endif
+@@ -175,7 +215,8 @@ static inline void interrupt_nmi_enter_prepare(struct pt_regs *regs, struct inte
+ 	/* Don't do any per-CPU operations until interrupt state is fixed */
+ #endif
+ 	/* Allow DEC and PMI to be traced when they are soft-NMI */
+-	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260) {
++	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
++	    TRAP(regs) != INTERRUPT_PERFMON) {
+ 		state->ftrace_enabled = this_cpu_get_ftrace_enabled();
+ 		this_cpu_set_ftrace_enabled(0);
+ 	}
+@@ -204,7 +245,8 @@ static inline void interrupt_nmi_exit_prepare(struct pt_regs *regs, struct inter
+ 	 */
+ 
+ #ifdef CONFIG_PPC64
+-	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260)
++	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
++	    TRAP(regs) != INTERRUPT_PERFMON)
+ 		this_cpu_set_ftrace_enabled(state->ftrace_enabled);
+ 
+ #ifdef CONFIG_PPC_BOOK3S_64
+diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+index eddf362caedc..b55b4c23f3b6 100644
+--- a/arch/powerpc/kernel/fadump.c
++++ b/arch/powerpc/kernel/fadump.c
+@@ -728,7 +728,7 @@ void crash_fadump(struct pt_regs *regs, const char *str)
+ 	 * If we came in via system reset, wait a while for the secondary
+ 	 * CPUs to enter.
+ 	 */
+-	if (TRAP(&(fdh->regs)) == 0x100) {
++	if (TRAP(&(fdh->regs)) == INTERRUPT_SYSTEM_RESET) {
+ 		msecs = CRASH_TIMEOUT;
+ 		while ((atomic_read(&cpus_in_fadump) < ncpus) && (--msecs > 0))
+ 			mdelay(1);
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index c4dd4b8f9cfa..9e0f02980494 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -456,7 +456,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 	 * CT_WARN_ON comes here via program_check_exception,
+ 	 * so avoid recursion.
+ 	 */
+-	if (TRAP(regs) != 0x700)
++	if (TRAP(regs) != INTERRUPT_PROGRAM)
+ 		CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+ 	kuap = kuap_get_and_assert_locked();
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index b966c8e0cead..53792a999cbb 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1469,7 +1469,9 @@ static void __show_regs(struct pt_regs *regs)
+ 	trap = TRAP(regs);
+ 	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
+ 		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
+-	if (trap == 0x200 || trap == 0x300 || trap == 0x600) {
++	if (trap == INTERRUPT_MACHINE_CHECK ||
++	    trap == INTERRUPT_DATA_STORAGE ||
++	    trap == INTERRUPT_ALIGNMENT) {
+ 		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+ 			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
+ 		else
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index efba99870691..a9b11ba77c4d 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -221,7 +221,7 @@ static void oops_end(unsigned long flags, struct pt_regs *regs,
+ 	/*
+ 	 * system_reset_excption handles debugger, crash dump, panic, for 0x100
+ 	 */
+-	if (TRAP(regs) == 0x100)
++	if (TRAP(regs) == INTERRUPT_SYSTEM_RESET)
+ 		return;
+ 
+ 	crash_fadump(regs, "die oops");
+@@ -289,7 +289,7 @@ void die(const char *str, struct pt_regs *regs, long err)
+ 	/*
+ 	 * system_reset_excption handles debugger, crash dump, panic, for 0x100
+ 	 */
+-	if (TRAP(regs) != 0x100) {
++	if (TRAP(regs) != INTERRUPT_SYSTEM_RESET) {
+ 		if (debugger(regs))
+ 			return;
+ 	}
+@@ -1682,7 +1682,7 @@ DEFINE_INTERRUPT_HANDLER(facility_unavailable_exception)
+ 	u8 status;
+ 	bool hv;
+ 
+-	hv = (TRAP(regs) == 0xf80);
++	hv = (TRAP(regs) == INTERRUPT_H_FAC_UNAVAIL);
+ 	if (hv)
+ 		value = mfspr(SPRN_HFSCR);
+ 	else
+diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
+index c9a889880214..0196d0c211ac 100644
+--- a/arch/powerpc/kexec/crash.c
++++ b/arch/powerpc/kexec/crash.c
+@@ -24,6 +24,7 @@
+ #include <asm/smp.h>
+ #include <asm/setjmp.h>
+ #include <asm/debug.h>
++#include <asm/interrupt.h>
+ 
+ /*
+  * The primary CPU waits a while for all secondary CPUs to enter. This is to
+@@ -336,7 +337,7 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
+ 	 * If we came in via system reset, wait a while for the secondary
+ 	 * CPUs to enter.
+ 	 */
+-	if (TRAP(regs) == 0x100)
++	if (TRAP(regs) == INTERRUPT_SYSTEM_RESET)
+ 		mdelay(PRIMARY_TIMEOUT);
+ 
+ 	crash_kexec_prepare_cpus(crashing_cpu);
+diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
+index 7719995323c3..ab49216c0ef3 100644
+--- a/arch/powerpc/mm/book3s64/hash_utils.c
++++ b/arch/powerpc/mm/book3s64/hash_utils.c
+@@ -1145,7 +1145,7 @@ unsigned int hash_page_do_lazy_icache(unsigned int pp, pte_t pte, int trap)
+ 
+ 	/* page is dirty */
+ 	if (!test_bit(PG_dcache_clean, &page->flags) && !PageReserved(page)) {
+-		if (trap == 0x400) {
++		if (trap == INTERRUPT_INST_STORAGE) {
+ 			flush_dcache_icache_page(page);
+ 			set_bit(PG_dcache_clean, &page->flags);
+ 		} else
+@@ -1545,7 +1545,7 @@ DEFINE_INTERRUPT_HANDLER_RET(__do_hash_fault)
+ 	if (user_mode(regs) || (region_id == USER_REGION_ID))
+ 		access &= ~_PAGE_PRIVILEGED;
+ 
+-	if (TRAP(regs) == 0x400)
++	if (TRAP(regs) == INTERRUPT_INST_STORAGE)
+ 		access |= _PAGE_EXEC;
+ 
+ 	err = hash_page_mm(mm, ea, access, TRAP(regs), flags);
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 0c0b1c2cfb49..25523f371c79 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -197,7 +197,7 @@ static int mm_fault_error(struct pt_regs *regs, unsigned long addr,
+ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ 			     unsigned long address, bool is_write)
+ {
+-	int is_exec = TRAP(regs) == 0x400;
++	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+ 
+ 	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+ 	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+@@ -391,7 +391,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	struct vm_area_struct * vma;
+ 	struct mm_struct *mm = current->mm;
+ 	unsigned int flags = FAULT_FLAG_DEFAULT;
+- 	int is_exec = TRAP(regs) == 0x400;
++	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+ 	int is_user = user_mode(regs);
+ 	int is_write = page_fault_is_write(error_code);
+ 	vm_fault_t fault, major = 0;
+@@ -588,20 +588,20 @@ void __bad_page_fault(struct pt_regs *regs, int sig)
+ 	/* kernel has accessed a bad area */
+ 
+ 	switch (TRAP(regs)) {
+-	case 0x300:
+-	case 0x380:
+-	case 0xe00:
++	case INTERRUPT_DATA_STORAGE:
++	case INTERRUPT_DATA_SEGMENT:
++	case INTERRUPT_H_DATA_STORAGE:
+ 		pr_alert("BUG: %s on %s at 0x%08lx\n",
+ 			 regs->dar < PAGE_SIZE ? "Kernel NULL pointer dereference" :
+ 			 "Unable to handle kernel data access",
+ 			 is_write ? "write" : "read", regs->dar);
+ 		break;
+-	case 0x400:
+-	case 0x480:
++	case INTERRUPT_INST_STORAGE:
++	case INTERRUPT_INST_SEGMENT:
+ 		pr_alert("BUG: Unable to handle kernel instruction fetch%s",
+ 			 regs->nip < PAGE_SIZE ? " (NULL pointer?)\n" : "\n");
+ 		break;
+-	case 0x600:
++	case INTERRUPT_ALIGNMENT:
+ 		pr_alert("BUG: Unable to handle kernel unaligned access at 0x%08lx\n",
+ 			 regs->dar);
+ 		break;
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 766f064f00fb..2ae6126ac8f2 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -17,6 +17,7 @@
+ #include <asm/firmware.h>
+ #include <asm/ptrace.h>
+ #include <asm/code-patching.h>
++#include <asm/interrupt.h>
+ 
+ #ifdef CONFIG_PPC64
+ #include "internal.h"
+@@ -168,7 +169,7 @@ static bool regs_use_siar(struct pt_regs *regs)
+ 	 * they have not been setup using perf_read_regs() and so regs->result
+ 	 * is something random.
+ 	 */
+-	return ((TRAP(regs) == 0xf00) && regs->result);
++	return ((TRAP(regs) == INTERRUPT_PERFMON) && regs->result);
+ }
+ 
+ /*
+@@ -347,7 +348,7 @@ static inline void perf_read_regs(struct pt_regs *regs)
+ 	 * hypervisor samples as well as samples in the kernel with
+ 	 * interrupts off hence the userspace check.
+ 	 */
+-	if (TRAP(regs) != 0xf00)
++	if (TRAP(regs) != INTERRUPT_PERFMON)
+ 		use_siar = 0;
+ 	else if ((ppmu->flags & PPMU_NO_SIAR))
+ 		use_siar = 0;
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 3fe37495f63d..62544a7ab437 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -54,6 +54,7 @@
+ #include <asm/code-patching.h>
+ #include <asm/sections.h>
+ #include <asm/inst.h>
++#include <asm/interrupt.h>
+ 
+ #ifdef CONFIG_PPC64
+ #include <asm/hvcall.h>
+@@ -605,7 +606,7 @@ static int xmon_core(struct pt_regs *regs, int fromipi)
+ 			 * debugger break (IPI). This is similar to
+ 			 * crash_kexec_secondary().
+ 			 */
+-			if (TRAP(regs) != 0x100 || !wait_for_other_cpus(ncpus))
++			if (TRAP(regs) !=  INTERRUPT_SYSTEM_RESET || !wait_for_other_cpus(ncpus))
+ 				smp_send_debugger_break();
+ 
+ 			wait_for_other_cpus(ncpus);
+@@ -615,7 +616,7 @@ static int xmon_core(struct pt_regs *regs, int fromipi)
+ 
+ 		if (!locked_down) {
+ 			/* for breakpoint or single step, print curr insn */
+-			if (bp || TRAP(regs) == 0xd00)
++			if (bp || TRAP(regs) == INTERRUPT_TRACE)
+ 				ppc_inst_dump(regs->nip, 1, 0);
+ 			printf("enter ? for help\n");
+ 		}
+@@ -684,7 +685,7 @@ static int xmon_core(struct pt_regs *regs, int fromipi)
+ 		disable_surveillance();
+ 		if (!locked_down) {
+ 			/* for breakpoint or single step, print current insn */
+-			if (bp || TRAP(regs) == 0xd00)
++			if (bp || TRAP(regs) == INTERRUPT_TRACE)
+ 				ppc_inst_dump(regs->nip, 1, 0);
+ 			printf("enter ? for help\n");
+ 		}
+@@ -1769,9 +1770,12 @@ static void excprint(struct pt_regs *fp)
+ 	printf("    sp: %lx\n", fp->gpr[1]);
+ 	printf("   msr: %lx\n", fp->msr);
+ 
+-	if (trap == 0x300 || trap == 0x380 || trap == 0x600 || trap == 0x200) {
++	if (trap == INTERRUPT_DATA_STORAGE ||
++	    trap == INTERRUPT_DATA_SEGMENT ||
++	    trap == INTERRUPT_ALIGNMENT ||
++	    trap == INTERRUPT_MACHINE_CHECK) {
+ 		printf("   dar: %lx\n", fp->dar);
+-		if (trap != 0x380)
++		if (trap != INTERRUPT_DATA_SEGMENT)
+ 			printf(" dsisr: %lx\n", fp->dsisr);
+ 	}
+ 
+@@ -1785,7 +1789,7 @@ static void excprint(struct pt_regs *fp)
+ 		       current->pid, current->comm);
+ 	}
+ 
+-	if (trap == 0x700)
++	if (trap == INTERRUPT_PROGRAM)
+ 		print_bug_trap(fp);
+ 
+ 	printf(linux_banner);
+@@ -1846,7 +1850,9 @@ static void prregs(struct pt_regs *fp)
+ 	printf("ctr = "REG"   xer = "REG"   trap = %4lx\n",
+ 	       fp->ctr, fp->xer, fp->trap);
+ 	trap = TRAP(fp);
+-	if (trap == 0x300 || trap == 0x380 || trap == 0x600)
++	if (trap == INTERRUPT_DATA_STORAGE ||
++	    trap == INTERRUPT_DATA_SEGMENT ||
++	    trap == INTERRUPT_ALIGNMENT)
+ 		printf("dar = "REG"   dsisr = %.8lx\n", fp->dar, fp->dsisr);
+ }
+ 
+-- 
+2.26.1
 
