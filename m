@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A332A35FA39
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8BC135FA44
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351955AbhDNSG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237770AbhDNSGZ (ORCPT
+        id S1352286AbhDNSHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:07:01 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:34308 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352231AbhDNSGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:06:25 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2BCC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:06:02 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id l4so32751104ejc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T7wAnr/gJYaABznT6fzPw36DcxU7yZSqfUQF8WwNLo8=;
-        b=EwzB6QAacn/mbirKbhS1czQH4EG6r34NUMNKPmtniN48MdVyipYWQfnfs/3K4GkqtK
-         wgzAdqi7/47/LHooFNvulal0JLYFNFcUyzi3cE9uxslaLg4GRneHlWejzcSFA/8uOgKf
-         7BJv3WTxITqE2KjvG+CI+L+2ICa48LiHJ6WQRazeL+FIzMvScWMUw/ROioTt0uV+lJhN
-         e+TYdFpGl6MAc4OUO6hr0rMkMgwj9w0mY5qY3U4mKkNMMDL+AuTxvDBgp+QCoV1uAw6M
-         4oT/kq7j76zZA0MMdFMVtP/DHYzNmW8Rpdgs8sqKQ287hEO+Z9tGTlk2NVFPVYM76xAF
-         bojg==
+        Wed, 14 Apr 2021 14:06:54 -0400
+Received: by mail-ua1-f51.google.com with SMTP id s2so6687834uap.1;
+        Wed, 14 Apr 2021 11:06:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T7wAnr/gJYaABznT6fzPw36DcxU7yZSqfUQF8WwNLo8=;
-        b=D2ZTPB3gCghedIrVsc40PZSJNFzAUKBloZhO8IPYNbK5Q6+tAphrvu6iyMGVM6u512
-         WRdgNwvG/TLD0JLhRn4K7Ne77y9onKieDJHDTdC/8QgXWGxryZTBL+l09BqZK+VN+hoS
-         qaAOA4xVOlOnquapXZyBW7VCDeuT7/SJb8o+gwUGLuYG/cy40qbGTNT9UGu5mMbX9u3c
-         vf/IPtK+C8MC0wldwTl65HPoxUY0jf7/1iMhjkDkGPSoe7J8MYrb5l06BWtUD2iZpQLh
-         VAR9jRE4xYqlhGTExw4v8WbpZI9MS/6WVG3WKJSEjjV6XIGtH0X1TVQ8iZG9SUNftsh4
-         zR9g==
-X-Gm-Message-State: AOAM532ye4DHC3gY96akbIfQnOD06LmPP8LjvHJ66qfExHhdXNd12How
-        vOQLAlhW/dwQ9J0wShz6sK4=
-X-Google-Smtp-Source: ABdhPJz7jRQXrsM9+YGvwXMSpxqKfK538x0frrzj4SwPexIDJ2Bnn6nczDa6RNYuyvPUlz/G8u394w==
-X-Received: by 2002:a17:906:f759:: with SMTP id jp25mr140120ejb.228.1618423561145;
-        Wed, 14 Apr 2021 11:06:01 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id t1sm254377eds.53.2021.04.14.11.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:06:00 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless led_blink_hdl()
-Date:   Wed, 14 Apr 2021 20:05:59 +0200
-Message-ID: <7427098.3VjF5iJQtU@linux.local>
-In-Reply-To: <YHcs70RdhaBBZv0i@kroah.com>
-References: <20210414162614.14867-1-fmdefrancesco@gmail.com> <20210414174809.GX6021@kadam> <YHcs70RdhaBBZv0i@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ddZGfKqAYJDSmmTLgKzl1rH2bdN0rcG8HZTEhXiTMnU=;
+        b=n3dP8ciU/K9e+trEaq8hDq9aGdvoWJ9rmD4p4v4ZOgG3wj3scTnJ2lW4m/gXG7O9p2
+         I+CzjeUgG7pzM88mDXhDl8i0BchObUT3JFeN52qx4ykqK1C6HpR8GN41h1lQDN+ZApzE
+         yiYSaZ2/NZyYh/7/mcAVjoJgtKDHzXHtw3XjG4G4iSswpS0w2z8qY09GomeAfFYJH60x
+         AxXoOz/sAULGM9hwvoyp0+ZFIzpzOQ00OFYnGdaNxKOmVFsB5hqeo1jPe6BKiXWbuPhL
+         483JO2NF9WI5PyZ5f27+sAF4Cg8Sl0Af1Zs5jdkLpxEDItR8UzK0AYVsBD67KbKX44y4
+         faiA==
+X-Gm-Message-State: AOAM531eaUuKbbBJ1IIXqznUFmfOp8IOUNUUXrm2Xopq3oJwV4mvJwwt
+        UlKgiRtoyIGXhRcB50e5bm+3zqRgLHG8nYmgXQE=
+X-Google-Smtp-Source: ABdhPJyQPiBIV7uNy1l3QbwhYpaInf6c0VDMaKzClso+F1JYYipmeo7WYJuYhq6oSfUqeWVNS7cdTumYrdOqNv8F0h8=
+X-Received: by 2002:ab0:6306:: with SMTP id a6mr28267964uap.2.1618423590460;
+ Wed, 14 Apr 2021 11:06:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com>
+In-Reply-To: <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Apr 2021 20:06:18 +0200
+Message-ID: <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, April 14, 2021 7:57:03 PM CEST Greg Kroah-Hartman wrote:
-> On Wed, Apr 14, 2021 at 08:48:09PM +0300, Dan Carpenter wrote:
-> > On Wed, Apr 14, 2021 at 07:00:41PM +0200, Greg Kroah-Hartman wrote:
-> > > On Wed, Apr 14, 2021 at 06:26:14PM +0200, Fabio M. De Francesco 
-wrote:
-> > > > Removed useless led_blink_hdl() prototype and definition. In
-> > > > wlancmds[]
-> > > > the slot #60 is now set to NULL using the macro
-> > > > GEN_MLME_EXT_HANDLER. This change has not unwanted side effects
-> > > > because the code in rtw_cmd.c checks if the function pointer is
-> > > > valid before using it.
-> > > > 
-> > > > Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> > > > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > ---
-> > > > 
-> > > > Changes since v1: Corrected a bad solution to this issue that made
-> > > > use of an unnecessary dummy function.
-> > > > 
-> > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
-> > > >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
-> > > >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
-> > > >  3 files changed, 1 insertion(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > > > 0297fbad7bce..f82dbd4f4c3d 100644
-> > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > @@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
-> > > > 
-> > > >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
-> > > >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param),
-> > > >  	set_chplan_hdl) /*59*/> > > 
-> > > > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param),
-> > > > led_blink_hdl) /*60*/ +	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
-> > > 
-> > > Better, but you really do not need to keep this here, right?  Remove
-> > > the
-> > > "led blink command" entirely, you didn't do that here.
-> > 
-> > No, this is right.  We have to put a NULL function pointer in the array
-> > or the indexing will be off.  But Fabio is correct that the struct
-> > type should be removed.
-> 
-> The indexing can be off, just remove the other place where the "command"
-> is in the index and all is good as rebuilding will fix it.  These are
-> not external "values" we have to keep stable.
-> 
-> This has been done for other drivers exactly like this, there are loads
-> of "odd" commands in there that should not be.
-> 
-> thanks,
-> 
-> greg k-h
-I'm not sure if this task is so close related to deserve a v3 or if I 
-should make a new v1 patch with a different "Subject".
+Hi Yicong,
 
-Thanks,
+On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+> On 2021/4/13 20:26, Geert Uytterhoeven wrote:
+> > The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+> > Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+> > Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+> > about this driver when configuring a kernel without Hisilicon platform
+> > or ACPI firmware support.
+>
+> this is a public IP which doesn't specifically depend on ARCH_HISI. I'm
+> not sure all the platform this IP on has ARCH_HISI configured. The driver
+> will not be compiled by default config. This is not correct to have
+> this dependence.
 
-Fabio
+Thanks for your answer!
 
+I guess it's still fine to add a dependency on ACPI?
 
+Thanks again!
 
+> > Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > ---
+> >  drivers/i2c/busses/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> > index b5b4e0d0ff4dd0bc..3ead6d9e130b2ebc 100644
+> > --- a/drivers/i2c/busses/Kconfig
+> > +++ b/drivers/i2c/busses/Kconfig
+> > @@ -647,7 +647,7 @@ config I2C_HIGHLANDER
+> >
+> >  config I2C_HISI
+> >       tristate "HiSilicon I2C controller"
+> > -     depends on ARM64 || COMPILE_TEST
+> > +     depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
+> >       help
+> >         Say Y here if you want to have Hisilicon I2C controller support
+> >         available on the Kunpeng Server.
+\
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
