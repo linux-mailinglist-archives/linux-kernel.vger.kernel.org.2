@@ -2,73 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191FE35EBA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AA735EBA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhDNEJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 00:09:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229436AbhDNEIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 00:08:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC82F61154;
-        Wed, 14 Apr 2021 04:08:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618373294;
-        bh=Z+UFwSwbY5ODpHNEo1Xqlqvm4gPb50y3Q5DfZe0rBQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpk/NEetYX72BKqsyciatQVIc+LHjsR3P6Sf/Lpt9FmnBFLMt7miUWdYoOgDIx/k7
-         8dWC5UDHAN4UjaIWPu3VTp8ikH4MkMyp3smEHvkIlLbeL615mvetSMU8Od3imYFdoI
-         d5HJUZEi6YNU1h79dBhe/NEuWMZUKdmkniRW+lcdk3owjidbnjlN2cEq29ryz2rVtu
-         C8OHLP69qIb7Jy/f3kDXwY56hbzuSDQPQmX9tq2CkZr3hR0I9feZ+igDJquKqkdSMn
-         a4s6hTqHYBmb3CpDz0BkIWYjpXQ9m1LhRxj1druJrwTQGBTq1XWadxDUosTAgj5GN3
-         hChOcujmL+Uhw==
-Date:   Wed, 14 Apr 2021 09:38:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        pierre-louis.bossart@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        sanyog.r.kale@intel.com, bard.liao@intel.com
-Subject: Re: [PATCH v2 2/3] soundwire: Intel: introduce DMI quirks for HP
- Spectre x360 Convertible
-Message-ID: <YHZqqjUSJvYxhEw6@vkoul-mobl.Dlink>
-References: <20210302075105.11515-1-yung-chuan.liao@linux.intel.com>
- <20210302075105.11515-3-yung-chuan.liao@linux.intel.com>
- <de65866a-bb8f-f5c6-2829-42b561f282f7@intel.com>
+        id S229980AbhDNEKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 00:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhDNEKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 00:10:36 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4529C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 21:10:14 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id c18so15963110iln.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 21:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BfBGy8Yjf622hEsLPL0euFEYhmGYjI65aq2CkoFxksU=;
+        b=gaqwnz0n5ktQWMAR6GUh67tY0+vU2ECa2S8DW9gXDDHQBQp/UJJTM66iUmVEI3h/4d
+         iCeK4K5f9KIGn7u742v9Ur3POyPIT4HGMx0tg4k69wBouXSqM5/H+zoDWJSa0nIkQMkc
+         ICrEjBHu8JAC0FHiOvWSGJn9JKTwCFjzw3suwFrz7hsiJpa8jB1/R3RL0mmBeZS6odJm
+         uq+C/qaecpBNCCpfP+1iaS4Uw8SMQQwE2t/lrFWNajOA3+0HXaRPMmYn6JJ9W/iEgdA0
+         VDQa0Q2BFE/owfDF1XM+N995pw87dcrhamuwULRWN4o8CwgerYKURrtlYVpi5dylMftZ
+         4YaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BfBGy8Yjf622hEsLPL0euFEYhmGYjI65aq2CkoFxksU=;
+        b=ZPrVeEezMWcaRxdW8PSCSqytm1zroomyq4YO/X7kzwC5QCxZwY4xH+Eqnyq9v1ZixC
+         LIACtzkHybyFFu7fC0LTLho146YjjMtCTpC+qZ+tAC6jixHkzM5xI+mpgCKAfHMGZRxU
+         cTxCDrHs4LPrPfZK7Sk0mAb1QnGNn0RSdvXCgaOBZVSNBg2GTwW/GO/wuqBonQKWvgmk
+         Qko+6y8+J1Ja6bu4Q0bfH3qg4VaCAlFXh/yGObLK1bli3iBTXD6kSeWDJh1A+eH74IFH
+         kLSgwMlMhMm55SW6IuYzk8l6buWWTcgsg9Rx21Ckh0hoffIrZHsJFEk7xZ9qS6FqeWll
+         syEg==
+X-Gm-Message-State: AOAM530Y5j6RtRuBRSq6wqFWgO+nQDpEpqQ7k9kMVU/cZw7Ee89q/mVj
+        WgfrusKIRv9dGwH1ZEHzmQGU/W9qXGE8ccBXQlU=
+X-Google-Smtp-Source: ABdhPJxUocboW/oi/HGLZgF7NMHzkDKiYPJLk5mOsQGEHiCzofuHzwWPdnneE2nGE1x/ARjDYAagHwl4mHrtwtyhDoY=
+X-Received: by 2002:a05:6e02:cad:: with SMTP id 13mr24168966ilg.77.1618373414160;
+ Tue, 13 Apr 2021 21:10:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de65866a-bb8f-f5c6-2829-42b561f282f7@intel.com>
+References: <20210410173331.57949-1-ilya.lipnitskiy@gmail.com> <CAMhs-H_GVj1DnhutUBo=Sdr38A8h9WnaJ7KX_-ge550qbujP7w@mail.gmail.com>
+In-Reply-To: <CAMhs-H_GVj1DnhutUBo=Sdr38A8h9WnaJ7KX_-ge550qbujP7w@mail.gmail.com>
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Date:   Tue, 13 Apr 2021 21:10:02 -0700
+Message-ID: <CALCv0x3qc5MVP0fm3HWD2CF27tX8z=g1A9T+yR15teU3jgOg6Q@mail.gmail.com>
+Subject: Re: [PATCH] staging: mt7621-pci: stop using of_pci_range_to_resource
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Siddhant Gupta <siddhantgupta416@gmail.com>,
+        Selvakumar Elangovan <selvakumar16197@gmail.com>,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-04-21, 14:37, Dave Hansen wrote:
-> On 3/1/21 11:51 PM, Bard Liao wrote:
-> > +++ b/drivers/soundwire/dmi-quirks.c
-> > @@ -0,0 +1,66 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-> > +// Copyright(c) 2021 Intel Corporation.
-> 
-> It looks like this is already in intel-next, so this may be moot.  But,
-> is there a specific reason this is dual licensed?  If so, can you please
-> include information about the license choice in the cover letter of any
-> future version?
+Hi Sergio,
 
-The soundwire module from Intel and core soundwire core was always dual
-licensed, so it kind of followed that..
+Just as an aside, are you planning to move staging/mt7621-pci into
+arch/mips/pci at some point? This driver seems more maintained (by
+you!) than many in-tree drivers...
 
-> If there is no specific reason for this contribution to be dual
-> licensed, please make it GPL-2.0 only.
+Ilya
 
-This module, I would say NO. Unless someone from Intel disagree..
-Pierre/Bard..?
-
-If all agree I dont see a reason why this cant be updated to GPL only.
-
-Thanks
--- 
-~Vinod
+On Sat, Apr 10, 2021 at 12:23 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Ilya,
+>
+> On Sat, Apr 10, 2021 at 7:33 PM Ilya Lipnitskiy
+> <ilya.lipnitskiy@gmail.com> wrote:
+> >
+> > The logic here was already overriding the erroneous IO addresses
+> > returned from of_pci_range_to_resource, which is the bulk of the logic.
+> >
+> > So stop using it altogether and initialize the fields explicitly, as
+> > done in aeba3731b150 ("powerpc/pci: Fix IO space breakage after
+> > of_pci_range_to_resource() change").
+> >
+> > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> > Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  drivers/staging/mt7621-pci/pci-mt7621.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+>
+> Looks good to me, thanks! I have also tested this in gnubee pc1
+> platform with no regressions at all when io bars are assigned:
+>
+> [   16.378956] mt7621-pci 1e140000.pcie: host bridge /pcie@1e140000 ranges:
+> [   16.392405] mt7621-pci 1e140000.pcie:      MEM
+> 0x0060000000..0x006fffffff -> 0x0000000000
+> [   16.408796] mt7621-pci 1e140000.pcie:       IO
+> 0x001e160000..0x001e16ffff -> 0x0000000000
+> [   16.425264] mt7621-pci-phy 1e149000.pcie-phy: PHY for 0xbe149000
+> (dual port = 1)
+> [   16.440452] mt7621-pci-phy 1e14a000.pcie-phy: PHY for 0xbe14a000
+> (dual port = 0)
+> [   16.678713] mt7621-pci 1e140000.pcie: PCIE0 enabled
+> [   16.688435] mt7621-pci 1e140000.pcie: PCIE1 enabled
+> [   16.698160] mt7621-pci 1e140000.pcie: PCIE2 enabled
+> [   16.707886] mt7621-pci 1e140000.pcie: PCI coherence region base:
+> 0x60000000, mask/settings: 0xf0000002
+> [   16.726623] mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
+> [   16.739309] pci_bus 0000:00: root bus resource [io  0x1e160000-0x1e16ffff]
+> [   16.753008] pci_bus 0000:00: root bus resource [mem 0x60000000-0x6fffffff]
+> [   16.766709] pci_bus 0000:00: root bus resource [bus 00-ff]
+> [   16.777649] pci_bus 0000:00: root bus resource [mem
+> 0x60000000-0x6fffffff] (bus address [0x00000000-0x0fffffff])
+> [   16.797986] pci 0000:00:00.0: [0e8d:0801] type 01 class 0x060400
+> [   16.809973] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+> [   16.822467] pci 0000:00:00.0: reg 0x14: initial BAR value 0x00000000 invalid
+> [   16.836511] pci 0000:00:00.0: reg 0x14: [mem size 0x00010000]
+> [   16.848048] pci 0000:00:00.0: supports D1
+> [   16.856051] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
+> [   16.867943] pci 0000:00:01.0: [0e8d:0801] type 01 class 0x060400
+> [   16.879960] pci 0000:00:01.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+> [   16.892454] pci 0000:00:01.0: reg 0x14: initial BAR value 0x00000000 invalid
+> [   16.906497] pci 0000:00:01.0: reg 0x14: [mem size 0x00010000]
+> [   16.918040] pci 0000:00:01.0: supports D1
+> [   16.926031] pci 0000:00:01.0: PME# supported from D0 D1 D3hot
+> [   16.937903] pci 0000:00:02.0: [0e8d:0801] type 01 class 0x060400
+> [   16.949915] pci 0000:00:02.0: reg 0x10: [mem 0x00000000-0x7fffffff]
+> [   16.962412] pci 0000:00:02.0: reg 0x14: initial BAR value 0x00000000 invalid
+> [   16.976466] pci 0000:00:02.0: reg 0x14: [mem size 0x00010000]
+> [   16.987991] pci 0000:00:02.0: supports D1
+> [   16.995986] pci 0000:00:02.0: PME# supported from D0 D1 D3hot
+> [   17.008716] pci 0000:00:00.0: bridge configuration invalid ([bus
+> 00-00]), reconfiguring
+> [   17.024695] pci 0000:00:01.0: bridge configuration invalid ([bus
+> 00-00]), reconfiguring
+> [   17.040654] pci 0000:00:02.0: bridge configuration invalid ([bus
+> 00-00]), reconfiguring
+> [   17.056868] pci 0000:01:00.0: [1b21:0611] type 00 class 0x010185
+> [   17.068882] pci 0000:01:00.0: reg 0x10: [io  0x0000-0x0007]
+> [   17.080003] pci 0000:01:00.0: reg 0x14: [io  0x0000-0x0003]
+> [   17.091115] pci 0000:01:00.0: reg 0x18: [io  0x0000-0x0007]
+> [   17.102238] pci 0000:01:00.0: reg 0x1c: [io  0x0000-0x0003]
+> [   17.113350] pci 0000:01:00.0: reg 0x20: [io  0x0000-0x000f]
+> [   17.124463] pci 0000:01:00.0: reg 0x24: initial BAR value 0x00000000 invalid
+> [   17.138508] pci 0000:01:00.0: reg 0x24: [mem size 0x00000200]
+> [   17.150115] pci 0000:01:00.0: 2.000 Gb/s available PCIe bandwidth,
+> limited by 2.5 GT/s PCIe x1 link at 0000:00:00.0 (capable of 4.000
+> Gb/s with 5.0 GT/s PCIe x1 link)
+> [   17.204594] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+> [   17.215109] pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
+> [   17.227257] pci 0000:00:00.0:   bridge window [mem 0x60000000-0x600fffff]
+> [   17.240785] pci 0000:00:00.0:   bridge window [mem
+> 0x60000000-0x600fffff pref]
+> [   17.255183] pci_bus 0000:01: busn_res: [bus 01-ff] end is updated to 01
+> [   17.268648] pci 0000:02:00.0: [1b21:0611] type 00 class 0x010185
+> [   17.280671] pci 0000:02:00.0: reg 0x10: [io  0x0000-0x0007]
+> [   17.291785] pci 0000:02:00.0: reg 0x14: [io  0x0000-0x0003]
+> [   17.302898] pci 0000:02:00.0: reg 0x18: [io  0x0000-0x0007]
+> [   17.314012] pci 0000:02:00.0: reg 0x1c: [io  0x0000-0x0003]
+> [   17.325127] pci 0000:02:00.0: reg 0x20: [io  0x0000-0x000f]
+> [   17.336241] pci 0000:02:00.0: reg 0x24: initial BAR value 0x00000000 invalid
+> [   17.350279] pci 0000:02:00.0: reg 0x24: [mem size 0x00000200]
+> [   17.361893] pci 0000:02:00.0: 2.000 Gb/s available PCIe bandwidth,
+> limited by 2.5 GT/s PCIe x1 link at 0000:00:01.0 (capable of 4.000
+> Gb/s with 5.0 GT/s PCIe x1 link)
+> [   17.414591] pci 0000:00:01.0: PCI bridge to [bus 02-ff]
+> [   17.425063] pci 0000:00:01.0:   bridge window [io  0x0000-0x0fff]
+> [   17.437206] pci 0000:00:01.0:   bridge window [mem 0x60000000-0x600fffff]
+> [   17.450733] pci 0000:00:01.0:   bridge window [mem
+> 0x60000000-0x600fffff pref]
+> [   17.465130] pci_bus 0000:02: busn_res: [bus 02-ff] end is updated to 02
+> [   17.478583] pci 0000:03:00.0: [1b21:0611] type 00 class 0x010185
+> [   17.490604] pci 0000:03:00.0: reg 0x10: [io  0x0000-0x0007]
+> [   17.501717] pci 0000:03:00.0: reg 0x14: [io  0x0000-0x0003]
+> [   17.512831] pci 0000:03:00.0: reg 0x18: [io  0x0000-0x0007]
+> [   17.523945] pci 0000:03:00.0: reg 0x1c: [io  0x0000-0x0003]
+> [   17.535060] pci 0000:03:00.0: reg 0x20: [io  0x0000-0x000f]
+> [   17.546174] pci 0000:03:00.0: reg 0x24: initial BAR value 0x00000000 invalid
+> [   17.560211] pci 0000:03:00.0: reg 0x24: [mem size 0x00000200]
+> [   17.571825] pci 0000:03:00.0: 2.000 Gb/s available PCIe bandwidth,
+> limited by 2.5 GT/s PCIe x1 link at 0000:00:02.0 (capable of 4.000
+> Gb/s with 5.0 GT/s PCIe x1 link)
+> [   17.624582] pci 0000:00:02.0: PCI bridge to [bus 03-ff]
+> [   17.635043] pci 0000:00:02.0:   bridge window [io  0x0000-0x0fff]
+> [   17.647188] pci 0000:00:02.0:   bridge window [mem 0x60000000-0x600fffff]
+> [   17.660710] pci 0000:00:02.0:   bridge window [mem
+> 0x60000000-0x600fffff pref]
+> [   17.675104] pci_bus 0000:03: busn_res: [bus 03-ff] end is updated to 03
+> [   17.688358] pci 0000:00:00.0: BAR 0: no space for [mem size 0x80000000]
+> [   17.701534] pci 0000:00:00.0: BAR 0: failed to assign [mem size 0x80000000]
+> [   17.715406] pci 0000:00:01.0: BAR 0: no space for [mem size 0x80000000]
+> [   17.728585] pci 0000:00:01.0: BAR 0: failed to assign [mem size 0x80000000]
+> [   17.742456] pci 0000:00:02.0: BAR 0: no space for [mem size 0x80000000]
+> [   17.755638] pci 0000:00:02.0: BAR 0: failed to assign [mem size 0x80000000]
+> [   17.769514] pci 0000:00:00.0: BAR 8: assigned [mem 0x60000000-0x600fffff]
+> [   17.783039] pci 0000:00:00.0: BAR 9: assigned [mem
+> 0x60100000-0x601fffff pref]
+> [   17.797429] pci 0000:00:01.0: BAR 8: assigned [mem 0x60200000-0x602fffff]
+> [   17.810958] pci 0000:00:01.0: BAR 9: assigned [mem
+> 0x60300000-0x603fffff pref]
+> [   17.825360] pci 0000:00:02.0: BAR 8: assigned [mem 0x60400000-0x604fffff]
+> [   17.838886] pci 0000:00:02.0: BAR 9: assigned [mem
+> 0x60500000-0x605fffff pref]
+> [   17.853279] pci 0000:00:00.0: BAR 1: assigned [mem 0x60600000-0x6060ffff]
+> [   17.866814] pci 0000:00:01.0: BAR 1: assigned [mem 0x60610000-0x6061ffff]
+> [   17.880346] pci 0000:00:02.0: BAR 1: assigned [mem 0x60620000-0x6062ffff]
+> [   17.893880] pci 0000:00:00.0: BAR 7: assigned [io  0x1e160000-0x1e160fff]
+> [   17.907410] pci 0000:00:01.0: BAR 7: assigned [io  0x1e161000-0x1e161fff]
+> [   17.920935] pci 0000:00:02.0: BAR 7: assigned [io  0x1e162000-0x1e162fff]
+> [   17.934474] pci 0000:01:00.0: BAR 5: assigned [mem 0x60000000-0x600001ff]
+> [   17.948008] pci 0000:01:00.0: BAR 4: assigned [io  0x1e160000-0x1e16000f]
+> [   17.961542] pci 0000:01:00.0: BAR 0: assigned [io  0x1e160010-0x1e160017]
+> [   17.975072] pci 0000:01:00.0: BAR 2: assigned [io  0x1e160018-0x1e16001f]
+> [   17.988605] pci 0000:01:00.0: BAR 1: assigned [io  0x1e160020-0x1e160023]
+> [   18.002138] pci 0000:01:00.0: BAR 3: assigned [io  0x1e160024-0x1e160027]
+> [   18.015673] pci 0000:00:00.0: PCI bridge to [bus 01]
+> [   18.025572] pci 0000:00:00.0:   bridge window [io  0x1e160000-0x1e160fff]
+> [   18.039096] pci 0000:00:00.0:   bridge window [mem 0x60000000-0x600fffff]
+> [   18.052623] pci 0000:00:00.0:   bridge window [mem
+> 0x60100000-0x601fffff pref]
+> [   18.067026] pci 0000:02:00.0: BAR 5: assigned [mem 0x60200000-0x602001ff]
+> [   18.080562] pci 0000:02:00.0: BAR 4: assigned [io  0x1e161000-0x1e16100f]
+> [   18.094092] pci 0000:02:00.0: BAR 0: assigned [io  0x1e161010-0x1e161017]
+> [   18.107625] pci 0000:02:00.0: BAR 2: assigned [io  0x1e161018-0x1e16101f]
+> [   18.121158] pci 0000:02:00.0: BAR 1: assigned [io  0x1e161020-0x1e161023]
+> [   18.134694] pci 0000:02:00.0: BAR 3: assigned [io  0x1e161024-0x1e161027]
+> [   18.148225] pci 0000:00:01.0: PCI bridge to [bus 02]
+> [   18.158117] pci 0000:00:01.0:   bridge window [io  0x1e161000-0x1e161fff]
+> [   18.171643] pci 0000:00:01.0:   bridge window [mem 0x60200000-0x602fffff]
+> [   18.185170] pci 0000:00:01.0:   bridge window [mem
+> 0x60300000-0x603fffff pref]
+> [   18.199591] pci 0000:03:00.0: BAR 5: assigned [mem 0x60400000-0x604001ff]
+> [   18.213127] pci 0000:03:00.0: BAR 4: assigned [io  0x1e162000-0x1e16200f]
+> [   18.226664] pci 0000:03:00.0: BAR 0: assigned [io  0x1e162010-0x1e162017]
+> [   18.240199] pci 0000:03:00.0: BAR 2: assigned [io  0x1e162018-0x1e16201f]
+> [   18.253751] pci 0000:03:00.0: BAR 1: assigned [io  0x1e162020-0x1e162023]
+> [   18.267286] pci 0000:03:00.0: BAR 3: assigned [io  0x1e162024-0x1e162027]
+> [   18.280814] pci 0000:00:02.0: PCI bridge to [bus 03]
+> [   18.290713] pci 0000:00:02.0:   bridge window [io  0x1e162000-0x1e162fff]
+> [   18.304243] pci 0000:00:02.0:   bridge window [mem 0x60400000-0x604fffff]
+> [   18.317773] pci 0000:00:02.0:   bridge window [mem
+> 0x60500000-0x605fffff pref]
+>
+> Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>
+> Best regards,
+>     Sergio Paracuellos
