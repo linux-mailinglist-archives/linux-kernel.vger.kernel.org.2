@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B8F35F1E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5CC35F1EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241931AbhDNLHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
+        id S1345576AbhDNLIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239043AbhDNLHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:07:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4354E6103D;
-        Wed, 14 Apr 2021 11:07:09 +0000 (UTC)
+        id S239428AbhDNLII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:08:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BD1A6103D;
+        Wed, 14 Apr 2021 11:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618398429;
-        bh=ZlTh2XvxkZonmGp/oGDLggXooibLHwOMf9vMHpzG0nU=;
+        s=k20201202; t=1618398467;
+        bh=fp4lQztsNG/Z1CQUfIxUw9+Sv3sdaVopx3+oJQp1PI0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b6g4OwY63Se22iXul2XqqLsp0DBe0DE/8UuUvf7vvq4AyPrFzTSQ9pxONb3mBp1lM
-         3n9WZNkayxJ6wC+jzseXBhRH3boDwjvdrGGR+c/q2NGZHYqE5ol4s8FoF7mlDRnaFp
-         EPloIshbs+ZNK/ebgwWC3i54ORXekLxxvRq5De8INJI9aKKRmkMueVEgd6eNtvG7rX
-         hgLx6KEBlKJRRq+kPu/KZSg+fZtANgUNKHiq2f5PFjB8/hQ1zUKuk6a//dzurNh6M/
-         ISGyy4odlmv5Cn60RfWgjbqpzhhTfnZBTn+x0isobwFmGzJiZihutBSKB8/o4jkiG0
-         wsnsg+brlFgXg==
-Date:   Wed, 14 Apr 2021 14:07:07 +0300
+        b=O7mb4fLhexO3tpqRmWk/PqQWFURwVwFN08AAHLoYUaWG5sb5LssosCnbTBULY/MaW
+         uL8Q5PHDdrrlFlGCUfVnG/UCEfaGZNx15PblylhNI7hiw55Td4coLqKxOUVj7uu2QL
+         s1rUd21wp1e+t0cF/Znox/UttPff54wY0vjW2WEkYI9nAA432tNu97PknXUlLSsmVI
+         afIv7tGOioWiBjFOrX0j/ylSitsd9zPRbdyxbKT9H2JxYTbFf+Cxtu58JWkZYkkXRA
+         aRQslMoQRozJZjcDkOqkLatVFQXH6QssLSHOOp/RHO8I+JQfFaGp0NWeu9Rj3uzFY8
+         hoCfwPeOqkcFg==
+Date:   Wed, 14 Apr 2021 14:07:44 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jethro Beekman <jethro@fortanix.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Raoul Strackx <raoul.strackx@fortanix.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
-Message-ID: <YHbM29ko8YUDywky@kernel.org>
-References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
- <a05d07dc-1623-012c-5120-e30f64decae7@intel.com>
- <f3366028-286a-8543-0604-3db6799364b5@fortanix.com>
- <ae4b4271-9e74-99e6-fa59-369863c891b5@intel.com>
- <29cbfb1b-848a-2e14-5c0f-5d39d372bfcf@fortanix.com>
- <1c8f5c58-6cea-7f43-81ed-fa165af2b59d@intel.com>
- <4e478984-e692-3b6a-771b-8eb73f6d82a7@fortanix.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from
+ kzalloc call
+Message-ID: <YHbNAFMdQO0/ugHE@kernel.org>
+References: <20210412160101.1627882-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e478984-e692-3b6a-771b-8eb73f6d82a7@fortanix.com>
+In-Reply-To: <20210412160101.1627882-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:01:39PM +0200, Jethro Beekman wrote:
-> On 2021-04-12 18:47, Dave Hansen wrote:
-> > On 4/12/21 9:41 AM, Jethro Beekman wrote:
-> >> Yes this still doesn't let one execute all possible ECREATE, EADD, EEXTEND, EINIT sequences.
-> > 
-> > OK, so we're going in circles now.
-> > 
-> > I don't believe we necessarily *WANT* or need Linux to support "all
-> > possible ECREATE, EADD, EEXTEND, EINIT sequences".  Yet, it's what is
-> > being used to justify this series without any other justification.
-> > 
-> > It's going to be a different story if you bring me a real enclave that
-> > *REALLY* wants to do this for good reasons.
-> > 
+On Mon, Apr 12, 2021 at 05:01:01PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> It's still not clear to me what your motivations are for trying to keep Linux incompatible with the rest of the world.
-
-What specifically are you referring as the "rest of the world"?
-
-That would be mean that there is reviewable workload "out there".
+> The kzalloc call can return null with the GFP_KERNEL flag so
+> add a null check and exit via a new error exit label. Use the
+> same exit error label for another error path too.
+> 
+> Addresses-Coverity: ("Dereference null return value")
+> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys framework")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+ 
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
 /Jarkko
