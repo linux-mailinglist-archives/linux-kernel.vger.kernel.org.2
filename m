@@ -2,147 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9E035F323
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF2135F32B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350664AbhDNMGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233651AbhDNMGf (ORCPT
+        id S1350691AbhDNMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:09:36 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42242 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350681AbhDNMJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:06:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB40C061574;
-        Wed, 14 Apr 2021 05:06:13 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e8f000d8b3334e5756a5b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:d8b:3334:e575:6a5b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0ACE51EC0258;
-        Wed, 14 Apr 2021 14:06:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618401971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0bOwwcL9Kvry/JIj9MWAQh0BzulfnML/XsdeCNjF41M=;
-        b=EsuYHJF3Mmmb93XzYTaMkibkCmffFwBslbVFH03vanOMA4FczPFO8Se8D0necJ6pPRe4eC
-        vlU/Opqz1DYiJYhxQRuxEwS6CSX+TH9OaavRMct5Wi5VSGSGX30KGZnJI+9F2RmPi4TjgY
-        WkJ4fvykBHrcHCYEHYJPvusUTO96L9k=
-Date:   Wed, 14 Apr 2021 14:06:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "H. J. Lu" <hjl.tools@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
- signal stack overflow
-Message-ID: <20210414120608.GE10709@zn.tnic>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
- <20210316065215.23768-6-chang.seok.bae@intel.com>
- <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
- <20210325185435.GB32296@zn.tnic>
- <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
- <20210326103041.GB25229@zn.tnic>
- <DB68C825-25F9-48F9-AFAD-4F6C7DCA11F8@intel.com>
- <20210414101250.GD10709@zn.tnic>
- <87o8eh9k7w.fsf@oldenburg.str.redhat.com>
+        Wed, 14 Apr 2021 08:09:31 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C1CE120B8001;
+        Wed, 14 Apr 2021 05:09:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C1CE120B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618402150;
+        bh=v0ULWuQjUPYwa15zeI0R/EsTera5cyCTMJvOs4xIdvc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=RA8ZE1f1UgKRggZIoza2duaJ2xS8CVO+xzv6iBgiZXQQAv5rEjZLdF3FvjOPvpGt7
+         TH9zkAHuPVcUc42Jbb6Zbkgnj1Hc/fTh9zTYtN2h9i5um49c8FSMDxn42qf5Y/9HDW
+         25Pkf0xjwxKl1OmhsCw1t7adgnxBObu7r3TMjaQA=
+Subject: Re: [RFC PATCH v2 1/1] arm64: Implement stack trace termination
+ record
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <659f3d5cc025896ba4c49aea431aa8b1abc2b741>
+ <20210402032404.47239-1-madvenka@linux.microsoft.com>
+ <20210402032404.47239-2-madvenka@linux.microsoft.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <dfa80040-8ac2-3694-4f69-a10b0e5dd959@linux.microsoft.com>
+Date:   Wed, 14 Apr 2021 07:09:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210402032404.47239-2-madvenka@linux.microsoft.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87o8eh9k7w.fsf@oldenburg.str.redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 01:30:43PM +0200, Florian Weimer wrote:
-> Is this discussion about better behavior (at least diagnostics) for
-> existing applications, without any code changes?  Or an alternative
-> programming model?
+Hi Mark Rutland, Mark Brown,
 
-Former.
+Could you take a look at this version for proper stack termination and let me know
+what you think?
 
-> Does noavx512 acutally reduce the XSAVE size to AVX2 levels?
+Thanks!
 
-Yeah.
+Madhavan
 
-> Or would you need noxsave?
-
-I don't think so.
-
-> One possibility is that the sigaltstack size check prevents application
-> from running which work just fine today because all they do is install a
-> stack overflow handler, and stack overflow does not actually happen.
-
-So sigaltstack(2) says in the NOTES:
-
-       Functions  called  from  a signal handler executing on an alternate signal stack
-       will also use the alternate signal stack.  (This also applies  to  any  handlers
-       invoked for other signals while the process is executing on the alternate signal
-       stack.)  Unlike the standard stack, the system does not automatically extend the
-       alternate  signal  stack.   Exceeding the allocated size of the alternate signal
-       stack will lead to unpredictable results.
-
-> So if sigaltstack fails and the application checks the result of the
-> system call, it probably won't run at all. Shifting the diagnostic to
-> the pointer where the signal would have to be delivered is perhaps the
-> only thing that can be done.
-
-So using the example from the same manpage:
-
-       The most common usage of an alternate signal stack is to handle the SIGSEGV sig‐
-       nal that is generated if the space available for the normal process stack is ex‐
-       hausted: in this case, a signal handler for SIGSEGV cannot  be  invoked  on  the
-       process stack; if we wish to handle it, we must use an alternate signal stack.
-
-and considering these "unpredictable results" would it make sense or
-even be at all possible to return SIGFAIL from that SIGSEGV signal
-handler which should run on the sigaltstack but that sigaltstack
-overflows?
-
-I think we wanna be able to tell the process through that previously
-registered SIGSEGV handler which is supposed to run on the sigaltstack,
-that that stack got overflowed.
-
-Or is this use case obsolete and this is not what people do at all?
-
-> As for SIGFAIL in particular, I don't think there are any leftover
-> signal numbers.  It would need a prctl to assign the signal number, and
-> I'm not sure if there is a useful programming model because signals do
-> not really compose well even today.  SIGFAIL adds another point where
-> libraries need to collaborate, and we do not have a mechanism for that.
-> (This is about what Rich Felker termed “library-safe code”, proper
-> maintenance of process-wide resources such as the current directory.)
-
-Oh fun.
-
-I guess if Linux goes and does something, people would adopt it and
-it'll become standard. :-P
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+On 4/1/21 10:24 PM, madvenka@linux.microsoft.com wrote:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+> 
+> Reliable stacktracing requires that we identify when a stacktrace is
+> terminated early. We can do this by ensuring all tasks have a final
+> frame record at a known location on their task stack, and checking
+> that this is the final frame record in the chain.
+> 
+> Kernel Tasks
+> ============
+> 
+> All tasks except the idle task have a pt_regs structure right after the
+> task stack. This is called the task pt_regs. The pt_regs structure has a
+> special stackframe field. Make this stackframe field the final frame in the
+> task stack. This needs to be done in copy_thread() which initializes a new
+> task's pt_regs and initial CPU context.
+> 
+> For the idle task, there is no task pt_regs. For our purpose, we need one.
+> So, create a pt_regs just like other kernel tasks and make
+> pt_regs->stackframe the final frame in the idle task stack. This needs to be
+> done at two places:
+> 
+> 	- On the primary CPU, the boot task runs. It calls start_kernel()
+> 	  and eventually becomes the idle task for the primary CPU. Just
+> 	  before start_kernel() is called, set up the final frame.
+> 
+> 	- On each secondary CPU, a startup task runs that calls
+> 	  secondary_startup_kernel() and eventually becomes the idle task
+> 	  on the secondary CPU. Just before secondary_start_kernel() is
+> 	  called, set up the final frame.
+> 
+> User Tasks
+> ==========
+> 
+> User tasks are initially set up like kernel tasks when they are created.
+> Then, they return to userland after fork via ret_from_fork(). After that,
+> they enter the kernel only on an EL0 exception. (In arm64, system calls are
+> also EL0 exceptions). The EL0 exception handler stores state in the task
+> pt_regs and calls different functions based on the type of exception. The
+> stack trace for an EL0 exception must end at the task pt_regs. So, make
+> task pt_regs->stackframe as the final frame in the EL0 exception stack.
+> 
+> In summary, task pt_regs->stackframe is where a successful stack trace ends.
+> 
+> Stack trace termination
+> =======================
+> 
+> In the unwinder, terminate the stack trace successfully when
+> task_pt_regs(task)->stackframe is reached. For stack traces in the kernel,
+> this will correctly terminate the stack trace at the right place.
+> 
+> However, debuggers terminate the stack trace when FP == 0. In the
+> pt_regs->stackframe, the PC is 0 as well. So, stack traces taken in the
+> debugger may print an extra record 0x0 at the end. While this is not
+> pretty, this does not do any harm. This is a small price to pay for
+> having reliable stack trace termination in the kernel.
+> 
+> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+> ---
+>  arch/arm64/kernel/entry.S      |  8 +++++---
+>  arch/arm64/kernel/head.S       | 29 +++++++++++++++++++++++------
+>  arch/arm64/kernel/process.c    |  5 +++++
+>  arch/arm64/kernel/stacktrace.c | 10 +++++-----
+>  4 files changed, 38 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index a31a0a713c85..e2dc2e998934 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -261,16 +261,18 @@ alternative_else_nop_endif
+>  	stp	lr, x21, [sp, #S_LR]
+>  
+>  	/*
+> -	 * For exceptions from EL0, terminate the callchain here.
+> +	 * For exceptions from EL0, terminate the callchain here at
+> +	 * task_pt_regs(current)->stackframe.
+> +	 *
+>  	 * For exceptions from EL1, create a synthetic frame record so the
+>  	 * interrupted code shows up in the backtrace.
+>  	 */
+>  	.if \el == 0
+> -	mov	x29, xzr
+> +	stp	xzr, xzr, [sp, #S_STACKFRAME]
+>  	.else
+>  	stp	x29, x22, [sp, #S_STACKFRAME]
+> -	add	x29, sp, #S_STACKFRAME
+>  	.endif
+> +	add	x29, sp, #S_STACKFRAME
+>  
+>  #ifdef CONFIG_ARM64_SW_TTBR0_PAN
+>  alternative_if_not ARM64_HAS_PAN
+> diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+> index 840bda1869e9..743c019a42c7 100644
+> --- a/arch/arm64/kernel/head.S
+> +++ b/arch/arm64/kernel/head.S
+> @@ -393,6 +393,23 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+>  	ret	x28
+>  SYM_FUNC_END(__create_page_tables)
+>  
+> +	/*
+> +	 * The boot task becomes the idle task for the primary CPU. The
+> +	 * CPU startup task on each secondary CPU becomes the idle task
+> +	 * for the secondary CPU.
+> +	 *
+> +	 * The idle task does not require pt_regs. But create a dummy
+> +	 * pt_regs so that task_pt_regs(idle_task)->stackframe can be
+> +	 * set up to be the final frame on the idle task stack just like
+> +	 * all the other kernel tasks. This helps the unwinder to
+> +	 * terminate the stack trace at a well-known stack offset.
+> +	 */
+> +	.macro setup_final_frame
+> +	sub	sp, sp, #PT_REGS_SIZE
+> +	stp	xzr, xzr, [sp, #S_STACKFRAME]
+> +	add	x29, sp, #S_STACKFRAME
+> +	.endm
+> +
+>  /*
+>   * The following fragment of code is executed with the MMU enabled.
+>   *
+> @@ -447,9 +464,9 @@ SYM_FUNC_START_LOCAL(__primary_switched)
+>  #endif
+>  	bl	switch_to_vhe			// Prefer VHE if possible
+>  	add	sp, sp, #16
+> -	mov	x29, #0
+> -	mov	x30, #0
+> -	b	start_kernel
+> +	setup_final_frame
+> +	bl	start_kernel
+> +	nop
+>  SYM_FUNC_END(__primary_switched)
+>  
+>  	.pushsection ".rodata", "a"
+> @@ -606,14 +623,14 @@ SYM_FUNC_START_LOCAL(__secondary_switched)
+>  	cbz	x2, __secondary_too_slow
+>  	msr	sp_el0, x2
+>  	scs_load x2, x3
+> -	mov	x29, #0
+> -	mov	x30, #0
+> +	setup_final_frame
+>  
+>  #ifdef CONFIG_ARM64_PTR_AUTH
+>  	ptrauth_keys_init_cpu x2, x3, x4, x5
+>  #endif
+>  
+> -	b	secondary_start_kernel
+> +	bl	secondary_start_kernel
+> +	nop
+>  SYM_FUNC_END(__secondary_switched)
+>  
+>  SYM_FUNC_START_LOCAL(__secondary_too_slow)
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 325c83b1a24d..906baa232a89 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -437,6 +437,11 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+>  	}
+>  	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
+>  	p->thread.cpu_context.sp = (unsigned long)childregs;
+> +	/*
+> +	 * For the benefit of the unwinder, set up childregs->stackframe
+> +	 * as the final frame for the new task.
+> +	 */
+> +	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
+>  
+>  	ptrace_hw_copy_thread(p);
+>  
+> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> index ad20981dfda4..72f5af8c69dc 100644
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -44,16 +44,16 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>  	unsigned long fp = frame->fp;
+>  	struct stack_info info;
+>  
+> -	/* Terminal record; nothing to unwind */
+> -	if (!fp)
+> +	if (!tsk)
+> +		tsk = current;
+> +
+> +	/* Final frame; nothing to unwind */
+> +	if (fp == (unsigned long) task_pt_regs(tsk)->stackframe)
+>  		return -ENOENT;
+>  
+>  	if (fp & 0xf)
+>  		return -EINVAL;
+>  
+> -	if (!tsk)
+> -		tsk = current;
+> -
+>  	if (!on_accessible_stack(tsk, fp, &info))
+>  		return -EINVAL;
+>  
+> 
