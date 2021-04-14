@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7EE35EC0A
+	by mail.lfdr.de (Postfix) with ESMTP id 56FBA35EC0B
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344378AbhDNEwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 00:52:37 -0400
-Received: from mga06.intel.com ([134.134.136.31]:49534 "EHLO mga06.intel.com"
+        id S1347034AbhDNEwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 00:52:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54262 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230249AbhDNEwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 00:52:34 -0400
-IronPort-SDR: 2qg1xaUUbKJo2YTJYp7WHSh47BaoDiTh/TULRisj6pWdMDVXWn203io8run5nSRs3iKG6BSe05
- P4GJ/7VnQy6A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255883474"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="255883474"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 21:52:13 -0700
-IronPort-SDR: hD7jZmxvV4oQS+zzYg876CkhM3Jzhj6SACLcZkWLM+ON8C8EIqi1iEETR/3EfYOfWmPoF40MXE
- taL+Tpuf7dyA==
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="418148853"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 21:52:11 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>, stable@vger.kernel.org
-Subject: [char-misc-next] mei: me: add Alder Lake P device id.
-Date:   Wed, 14 Apr 2021 07:52:00 +0300
-Message-Id: <20210414045200.3498241-1-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.26.3
+        id S230249AbhDNEwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 00:52:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 606BDB01D;
+        Wed, 14 Apr 2021 04:52:22 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 06:52:19 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 6/7] mm: Make alloc_contig_range handle in-use hugetlb
+ pages
+Message-ID: <YHZ1A8Wi43DcEv98@localhost.localdomain>
+References: <20210413104747.12177-1-osalvador@suse.de>
+ <20210413104747.12177-7-osalvador@suse.de>
+ <722f9a5e-ef0a-508a-e58a-6c3eacb5d1bd@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <722f9a5e-ef0a-508a-e58a-6c3eacb5d1bd@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Alder Lake P device ID.
+On Tue, Apr 13, 2021 at 03:48:53PM -0700, Mike Kravetz wrote:
+> The label free_new is:
+> 
+> free_new:
+>         spin_unlock_irq(&hugetlb_lock);
+>         __free_pages(new_page, huge_page_order(h));
+> 
+>         return ret;
+> 
+> So, we are locking and immediately unlocking without any code in
+> between.  Usually, I don't like like multiple labels before return.
+> However, perhaps we should add another to avoid this unnecessary
+> cycle.  On the other hand, this is an uncommon race condition so the
+> simple code may be acceptable.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
- drivers/misc/mei/hw-me-regs.h | 1 +
- drivers/misc/mei/pci-me.c     | 1 +
- 2 files changed, 2 insertions(+)
+I guess we could have something like:
 
-diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
-index 14be76d4c2e6..cb34925e10f1 100644
---- a/drivers/misc/mei/hw-me-regs.h
-+++ b/drivers/misc/mei/hw-me-regs.h
-@@ -105,6 +105,7 @@
+ free_new:
+         spin_unlock_irq(&hugetlb_lock);
+ free_new_nolock:
+         __free_pages(new_page, huge_page_order(h));
  
- #define MEI_DEV_ID_ADP_S      0x7AE8  /* Alder Lake Point S */
- #define MEI_DEV_ID_ADP_LP     0x7A60  /* Alder Lake Point LP */
-+#define MEI_DEV_ID_ADP_P      0x51E0  /* Alder Lake Point P */
- 
- /*
-  * MEI HW Section
-diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-index a7e179626b63..c3393b383e59 100644
---- a/drivers/misc/mei/pci-me.c
-+++ b/drivers/misc/mei/pci-me.c
-@@ -111,6 +111,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
- 
- 	{MEI_PCI_DEVICE(MEI_DEV_ID_ADP_S, MEI_ME_PCH15_CFG)},
- 	{MEI_PCI_DEVICE(MEI_DEV_ID_ADP_LP, MEI_ME_PCH15_CFG)},
-+	{MEI_PCI_DEVICE(MEI_DEV_ID_ADP_P, MEI_ME_PCH15_CFG)},
- 
- 	/* required last entry */
- 	{0, }
+         return ret;
+
+And let the retry go to there without locking. But as you said, the
+racecondition is rare enough, so I am not sure if this buys us much.
+But I can certainly add it if you feel strong about it.
+
+
 -- 
-2.26.3
-
+Oscar Salvador
+SUSE L3
