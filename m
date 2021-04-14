@@ -2,215 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB3A35E9F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C2835E9F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348174AbhDNAY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 20:24:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhDNAYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A833613B6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618359845;
-        bh=xovKbGed2hWLO46ZuqrlITDm4dbGTaznZbIgqZ9WyXg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=APFSIBF7YveeiBYs2S0tL7Kh5qTOGxIRIdVCDSczSi4HEc41sLIm2c947gDziZGah
-         TwFcbRmvki3xpDLJc125eZEr6aUv9hxXafSBQSgfsrDmuJ3C+WD8195HBLh3hmJJYI
-         sjXtoFm+OI6GWEfCVzh7w62AlW8Y7rrpAgvpKXhbUN3WIvBsm39W0oJ4Dv9xd8czDT
-         tSaMtB5pNO3TfDTxwij0gD/49rfzWrSpFfO7YQpMDLe7js9YZWPAfCaTNdvcQyqn4Y
-         E9CmQWO8Ow9/lk3xRX2T6NGwQ+n64bKbcDdQWCPSQsQ+0ZYre1hmST2ry+Wt/vVK0C
-         UpcMlWI2b858w==
-Received: by mail-lf1-f51.google.com with SMTP id e14so17440266lfn.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:24:05 -0700 (PDT)
-X-Gm-Message-State: AOAM531kKhDkdBK3dhLmN4OHgMkp8OzQ12gQETHaK7K8afp/yhwGnqmw
-        ByCEr7I1fmSHaxOx45FTayXiiRCouibOj3AqkWI=
-X-Google-Smtp-Source: ABdhPJygo3R6B8xRNxS/T5OobQlEyh5OWixS+23KYstwEOK86NT5oa4jvbiep9TH6hZHgQWozKwBlPTidWdfKXC3uEg=
-X-Received: by 2002:a05:6512:3ca7:: with SMTP id h39mr25005082lfv.346.1618359843478;
- Tue, 13 Apr 2021 17:24:03 -0700 (PDT)
+        id S1348197AbhDNAZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 20:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhDNAZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 20:25:51 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5EEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:25:30 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id x12so7904917ejc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ofSqlHpW6OFplG5zBNJarpd/OG8vwHX3fcGfky7GKO0=;
+        b=dxa74v3bbEU8fPB51j4N5OHFA0e4Jood31bfZu3Zyw+E9i26JicVK/KgeU+5fNAg2R
+         hSulCM6IKyOz2B4C9YqptpLd7jOX5eMmaIAlICeYa59pPmOuk7INhA4gyDD0NJSvxq+z
+         qqqipidRUa3pzJQp+TrJ5mFRD6GkdgzysqvlcDRc3Pn4vLdVH4m7qVAwTzN3mcGc0dfE
+         CT43k1TkupQmXY9+uX3i0ovCNDI7or0OG+BqM6b0F9lzL4Py6cwdOcD6/pK8uSEnaI+f
+         nSORpiArXm7CR6JxjpHDw/v7FuZkwj8I0Ozaw5P3OoSzsJ2umPB6vuiOrlrkaNmTN9Qd
+         DK0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ofSqlHpW6OFplG5zBNJarpd/OG8vwHX3fcGfky7GKO0=;
+        b=LgZLyOQGjwemt2qkDg0DLI6dcHzcZzB77UdZx2Vv/2sxTcjyhAoK/wrAqeFiroGatA
+         W9iilC0PNgTGPlLoc8qXCDdjHNRXSpM01GFN79Sb0RpqoioKBvk51bJL+BLjxkl15aOq
+         tpZ3GvrgvKvsexntMj7IpBqqyN3eRw7pU64MU4U7BhZWC440agLt1u8AAliHKUylYlI9
+         OOJ0cx9YpK1E0V1DKBaTagFoQmrGdzpQrMYk2MND+LWzujP4GKlTd7uBxdzR/Da/aV4V
+         +kVp5OnC5ZoLMHIijhWuOUEFJllBkC+jToIZO4ZmuhJ0TZ97Pl7zV9rpwuceFytIw78Y
+         NL3Q==
+X-Gm-Message-State: AOAM530MKwp52ewCGaeGmxIzUB/lrvDtXEAIhVi5AiMIWNDuNGaHohLo
+        fpeKxv5T9qmrhZQAqMSHw8iSljDLU3J2mg==
+X-Google-Smtp-Source: ABdhPJy0BUl4RrFrc9k9cPCpOdUZLP6TpkPG1lvGIQ9mPa7qxUPKGeayiqVMHMog6Eu3xDz83f2KQA==
+X-Received: by 2002:a17:906:b2d8:: with SMTP id cf24mr13040066ejb.305.1618359929195;
+        Tue, 13 Apr 2021 17:25:29 -0700 (PDT)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id t1sm10622650edy.6.2021.04.13.17.25.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 17:25:28 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id y204so8257762wmg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:25:27 -0700 (PDT)
+X-Received: by 2002:a7b:cb05:: with SMTP id u5mr230396wmj.183.1618359927443;
+ Tue, 13 Apr 2021 17:25:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <CAHB2gtTmGt=V4cUgbt3zGgi+y5h0f5ON0n+MdRC8P=su670qhQ@mail.gmail.com>
- <20210413093059.GB15806@arm.com>
-In-Reply-To: <20210413093059.GB15806@arm.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 14 Apr 2021 08:23:51 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSa8KO_iPn=05-YCHmAKNDkoESvATw+e434GY9eYy1LDw@mail.gmail.com>
-Message-ID: <CAJF2gTSa8KO_iPn=05-YCHmAKNDkoESvATw+e434GY9eYy1LDw@mail.gmail.com>
-Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20210413054733.36363-1-mst@redhat.com> <20210413054733.36363-2-mst@redhat.com>
+ <CA+FuTSe_SjUY4JxR6G9b8a0nx-MfQOkLdHJSzmjpuRG4BvsVPw@mail.gmail.com>
+ <20210413153951-mutt-send-email-mst@kernel.org> <CA+FuTSd7qagJAN0wpvudvi2Rvxn-SvQaBZ1SU9rwdb1x0j1s3g@mail.gmail.com>
+ <20210413180830-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210413180830-mutt-send-email-mst@kernel.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 13 Apr 2021 20:24:48 -0400
+X-Gmail-Original-Message-ID: <CA+FuTScdzwb1pi=-ms+QNMboJsqOdNddUdqTznbMzRo7PQ3bFg@mail.gmail.com>
+Message-ID: <CA+FuTScdzwb1pi=-ms+QNMboJsqOdNddUdqTznbMzRo7PQ3bFg@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 1/4] virtio: fix up virtio_disable_cb
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, Wei Wang <weiwan@google.com>,
+        David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 5:31 PM Catalin Marinas <catalin.marinas@arm.com> w=
-rote:
->
-> On Tue, Apr 13, 2021 at 11:22:40AM +0200, Christoph M=C3=BCllner wrote:
-> > On Tue, Apr 13, 2021 at 10:03 AM Peter Zijlstra <peterz@infradead.org> =
-wrote:
-> > > On Mon, Apr 12, 2021 at 11:54:55PM +0200, Christoph M=C3=BCllner wrot=
-e:
-> > > > On Mon, Apr 12, 2021 at 7:33 PM Palmer Dabbelt <palmer@dabbelt.com>=
- wrote:
-> > > > > My plan is to add a generic ticket-based lock, which can be selec=
-ted at
-> > > > > compile time.  It'll have no architecture dependencies (though it=
-'ll
-> > > > > likely have some hooks for architectures that can make this go fa=
-ster).
-> > > > > Users can then just pick which spinlock flavor they want, with th=
-e idea
-> > > > > being that smaller systems will perform better with ticket locks =
-and
-> > > > > larger systems will perform better with queued locks.  The main g=
-oal
-> > > > > here is to give the less widely used architectures an easy way to=
- have
-> > > > > fair locks, as right now we've got a lot of code duplication beca=
-use any
-> > > > > architecture that wants ticket locks has to do it themselves.
-> > > >
-> > > > In the case of LL/SC sequences, we have a maximum of 16 instruction=
-s
-> > > > on RISC-V. My concern with a pure-C implementation would be that
-> > > > we cannot guarantee this (e.g. somebody wants to compile with -O0)
-> > > > and I don't know of a way to abort the build in case this limit exc=
-eeds.
-> > > > Therefore I have preferred inline assembly for OpenSBI (my initial =
-idea
-> > > > was to use closure-like LL/SC macros, where you can write the loop
-> > > > in form of C code).
 > > >
-> > > For ticket locks you really only needs atomic_fetch_add() and
-> > > smp_store_release() and an architectural guarantees that the
-> > > atomic_fetch_add() has fwd progress under contention and that a sub-w=
-ord
-> > > store (through smp_store_release()) will fail the SC.
 > > >
-> > > Then you can do something like:
+> > > but even yours is also fixed I think.
 > > >
-> > > void lock(atomic_t *lock)
-> > > {
-> > >         u32 val =3D atomic_fetch_add(1<<16, lock); /* SC, gives us RC=
-sc */
-> > >         u16 ticket =3D val >> 16;
-> > >
-> > >         for (;;) {
-> > >                 if (ticket =3D=3D (u16)val)
-> > >                         break;
-> > >                 cpu_relax();
-> > >                 val =3D atomic_read_acquire(lock);
-> > >         }
-> > > }
-> > >
-> > > void unlock(atomic_t *lock)
-> > > {
-> > >         u16 *ptr =3D (u16 *)lock + (!!__BIG_ENDIAN__);
-> > >         u32 val =3D atomic_read(lock);
-> > >
-> > >         smp_store_release(ptr, (u16)val + 1);
-> > > }
-> > >
-> > > That's _almost_ as simple as a test-and-set :-) It isn't quite optima=
-l
-> > > on x86 for not being allowed to use a memop on unlock, since its bein=
-g
-> > > forced into a load-store because of all the volatile, but whatever.
+> > > The common point is that a single spurious interrupt is not a problem.
+> > > The problem only exists if there are tons of spurious interrupts with no
+> > > real ones. For this to trigger, we keep polling the ring and while we do
+> > > device keeps firing interrupts. So just disable interrupts while we
+> > > poll.
 > >
-> > What about trylock()?
-> > I.e. one could implement trylock() without a loop, by letting
-> > trylock() fail if the SC fails.
-> > That looks safe on first view, but nobody does this right now.
-I think it's safe for riscv LR/SC, because in spec A 8.3 section:
-"As a consequence of the eventuality guarantee, if some harts in an
-execution environment are executing constrained LR/SC loops, and no
-other harts or devices in the execution environment execute an
-unconditional store or AMO to that reservation set, then at least one
-hart will eventually exit its constrained LR/SC loop."
-
-So it guarantees LR/SC pair:
-
-CPU0                   CPU1
-=3D=3D=3D=3D=3D=3D=3D             =3D=3D=3D=3D=3D=3D=3D
-LR addr1
-                            LR addr1
-                            SC addr1 // guarantee success.
-SC addr1
-
-But not guarantee, another hart unconditional store (which I mentioned befo=
-re):
-u32 a =3D 0x55aa66bb;
-u16 *ptr =3D &a;
-
-CPU0                       CPU1
-=3D=3D=3D=3D=3D=3D=3D=3D=3D             =3D=3D=3D=3D=3D=3D=3D=3D=3D
-xchg16(ptr, new)     while(1)
-                                    WRITE_ONCE(*(ptr + 1), x);
-
-
-
+> > But the main change in this patch is to turn some virtqueue_disable_cb
+> > calls into no-ops.
 >
-> Not familiar with RISC-V but I'd recommend that a trylock only fails if
-> the lock is locked (after LR). A SC may fail for other reasons
-> (cacheline eviction; depending on the microarchitecture) even if the
-> lock is unlocked. At least on arm64 we had this issue with an
-> implementation having a tendency to always fail the first STXR.
+> Well this was not the design. This is the main change:
+>
+>
+> @@ -739,7 +742,10 @@ static void virtqueue_disable_cb_split(struct virtqueue *_vq)
+>
+>         if (!(vq->split.avail_flags_shadow & VRING_AVAIL_F_NO_INTERRUPT)) {
+>                 vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
+> -               if (!vq->event)
+> +               if (vq->event)
+> +                       /* TODO: this is a hack. Figure out a cleaner value to write. */
+> +                       vring_used_event(&vq->split.vring) = 0x0;
+> +               else
+>                         vq->split.vring.avail->flags =
+>                                 cpu_to_virtio16(_vq->vdev,
+>                                                 vq->split.avail_flags_shadow);
+>
+>
+> IIUC previously when event index was enabled (vq->event) virtqueue_disable_cb_split
+> was a nop. Now it sets index to 0x0 (which is a hack, but good enough
+> for testing I think).
 
-I think it's a broken implementation for riscv. SC couldn't fail by
-cache line bouncing and only could fail by another real write.
-That means the HW implementation should use a per-hart address monitor
-not just grab the cache line into the exclusive state without lockdown
-the SNOOP channel.
-I think the implementation of LR/SC you mentioned is a gambling style
-but broke the riscv spec.
+So now tx interrupts will really be suppressed even in event-idx mode.
 
-Is the patch of Will's would fix up the problem you mentioned?
-----
-commit 9bb17be062de6f5a9c9643258951aa0935652ec3
-Author: Will Deacon <will.deacon@arm.com>
-Date:   Tue Jul 2 14:54:33 2013 +0100
+And what is the purpose of suppressing this operation if
+event_triggered, i.e., after an interrupt occurred? You mention " if
+using event index with a packed ring, and if being called from a
+callback, we actually do disable interrupts which is unnecessary." Can
+you elaborate? Also, even if unnecessary, does it matter? The
+operation itself seems fairly cheap.
 
-    ARM: locks: prefetch the destination word for write prior to strex
+These should probably be two separate patches.
 
-    The cost of changing a cacheline from shared to exclusive state can be
-    significant, especially when this is triggered by an exclusive store,
-    since it may result in having to retry the transaction.
+There is also a third case, split ring without event index. That
+behaves more like packed ring, I suppose.
 
-    This patch prefixes our {spin,read,write}_[try]lock implementations wit=
-h
-    pldw instructions (on CPUs which support them) to try and grab the line
-    in exclusive state from the start. arch_rwlock_t is changed to avoid
-    using a volatile member, since this generates compiler warnings when
-    falling back on the __builtin_prefetch intrinsic which expects a const
-    void * argument.
 
-    Acked-by: Nicolas Pitre <nico@linaro.org>
-    Signed-off-by: Will Deacon <will.deacon@arm.com>
-----
-
-In the end, I want to conclude my suggestions here:
- - Using ticket-lock as default
- - Using ARCH_USE_QUEUED_SPINLOCKS_XCHG32 for riscv qspinlock
- - Disable xhg16/cmxchg16 and any sub-word atomic primitive in riscv
-
---
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+> > I don't understand how that helps reduce spurious
+> > interrupts, as if anything, it keeps interrupts enabled for longer.
