@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F56A35EFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E0735EFC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350113AbhDNIfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:35:34 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:63303 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350077AbhDNIfU (ORCPT
+        id S1350142AbhDNIfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:35:44 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16911 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350116AbhDNIfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:35:20 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 14 Apr 2021 01:34:59 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Apr 2021 01:34:56 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Apr 2021 14:04:30 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 9D6C14EF8; Wed, 14 Apr 2021 14:04:28 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     mka@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org, satya priya <skakit@codeaurora.org>
-Subject: [PATCH V3 5/5] arm64: dts: qcom: sc7280: Include PMIC DT files for sc7280
-Date:   Wed, 14 Apr 2021 14:04:26 +0530
-Message-Id: <1618389266-5990-6-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618389266-5990-1-git-send-email-skakit@codeaurora.org>
-References: <1618389266-5990-1-git-send-email-skakit@codeaurora.org>
+        Wed, 14 Apr 2021 04:35:32 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKwj851vkzkk2r;
+        Wed, 14 Apr 2021 16:33:16 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 14 Apr 2021 16:35:00 +0800
+Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
+To:     Ben Gardon <bgardon@google.com>
+References: <20200828081157.15748-1-zhukeqian1@huawei.com>
+ <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
+ <YGzxzsRlqouaJv6a@google.com>
+ <CANgfPd8g3o2mJZi8rtR6jBNeYJTNWR0LTEcD2PeNLJk9JTz4CQ@mail.gmail.com>
+ <ff6a2cbb-7b18-9528-4e13-8728966e8c84@huawei.com>
+ <CANgfPd_h509o3kQGEQjuy2tzqnQ+toR4snJVAug=N2TULce3ag@mail.gmail.com>
+CC:     Sean Christopherson <seanjc@google.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        <wanghaibin.wang@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <f09aabf2-a94c-9176-098f-fee810b99d0c@huawei.com>
+Date:   Wed, 14 Apr 2021 16:35:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <CANgfPd_h509o3kQGEQjuy2tzqnQ+toR4snJVAug=N2TULce3ag@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include pm7325, pm8350c, pmk8350 and pmr735a DT files. Add
-channel nodes for pmk8350_vadc. Also, add the thermal_zones
-node in dtsi.
+Hi Ben,
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/pmk8350.dtsi   |  6 ++++++
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 30 ++++++++++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    |  3 +++
- 3 files changed, 39 insertions(+)
+On 2021/4/14 0:43, Ben Gardon wrote:
+> On Tue, Apr 13, 2021 at 2:39 AM Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2021/4/13 1:19, Ben Gardon wrote:
+>>> On Tue, Apr 6, 2021 at 4:42 PM Sean Christopherson <seanjc@google.com> wrote:
+>>>>
+>>>> +Ben
+>>>>
+>>>> On Tue, Apr 06, 2021, Keqian Zhu wrote:
+>>>>> Hi Paolo,
+>>>>>
+>>>>> I plan to rework this patch and do full test. What do you think about this idea
+>>>>> (enable dirty logging for huge pages lazily)?
+>>>>
+>>>> Ben, don't you also have something similar (or maybe the exact opposite?) in the
+>>>> hopper?  This sounds very familiar, but I can't quite connect the dots that are
+>>>> floating around my head...
+>>>
+>>> Sorry for the late response, I was out of office last week.
+>> Never mind, Sean has told to me. :)
+>>
+>>>
+>>> Yes, we have two relevant features I'd like to reconcile somehow:
+>>> 1.) Large page shattering - Instead of clearing a large TDP mapping,
+>>> flushing the TLBs, then replacing it with an empty TDP page table, go
+>>> straight from the large mapping to a fully pre-populated table. This
+>>> is slightly slower because the table needs to be pre-populated, but it
+>>> saves many vCPU page faults.
+>>> 2.) Eager page splitting - split all large mappings down to 4k when
+>>> enabling dirty logging, using large page shattering. This makes
+>>> enabling dirty logging much slower, but speeds up the first round (and
+>>> later rounds) of gathering / clearing the dirty log and reduces the
+>>> number of vCPU page faults. We've prefered to do this when enabling
+>>> dirty logging because it's a little less perf-sensitive than the later
+>>> passes where latency and convergence are critical.
+>> OK, I see. I think the lock stuff is an important part, so one question is that
+>> the shattering process is designed to be locked (i.e., protect mapping) or lock-less?
+>>
+>> If it's locked, vCPU thread may be blocked for a long time (For arm, there is a
+>> mmu_lock per VM). If it's lock-less, how can we ensure the synchronization of
+>> mapping?
+> 
+> The TDP MMU for x86 could do it under the MMU read lock, but the
+> legacy / shadow x86 MMU and other architectures would need the whole
+> MMU lock.
+> While we do increase the time required to address a large SPTE, we can
+> completely avoid the vCPU needing the MMU lock on an access to that
+> SPTE as the translation goes straight from a large, writable SPTE, to
+> a 4k spte with either the d bit cleared or write protected. If it's
+> write protected, the fault can (at least on x86) be resolved without
+> the MMU lock.
+That's sounds good! In terms of lock, x86 is better than arm64. For arm64,
+we must hold whole MMU lock both for split large page or change permission
+for 4K page.
 
-diff --git a/arch/arm64/boot/dts/qcom/pmk8350.dtsi b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-index dee5384..bbd9fa7 100644
---- a/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pmk8350.dtsi
-@@ -3,6 +3,12 @@
-  * Copyright (c) 2021, Linaro Limited
-  */
- 
-+#include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmr735b.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/input/linux-event-codes.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/spmi/spmi.h>
- 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 950ecb2..9293502 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -8,6 +8,10 @@
- /dts-v1/;
- 
- #include "sc7280.dtsi"
-+#include "pm7325.dtsi"
-+#include "pm8350c.dtsi"
-+#include "pmk8350.dtsi"
-+#include "pmr735a.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. sc7280 IDP platform";
-@@ -22,6 +26,32 @@
- 	};
- };
- 
-+&pmk8350_vadc {
-+		pm8350_die_temp {
-+			reg = <PM8350_ADC7_DIE_TEMP>;
-+			label = "pm8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmk8350_die_temp {
-+			reg = <PMK8350_ADC7_DIE_TEMP>;
-+			label = "pmk8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmr735a_die_temp {
-+			reg = <PMR735A_ADC7_DIE_TEMP>;
-+			label = "pmr735a_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmr735b_die_temp {
-+			reg = <PMR735B_ADC7_DIE_TEMP>;
-+			label = "pmr735b_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 39cf0be..0f4fd33 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -605,4 +605,7 @@
- 			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
- 	};
-+
-+	thermal_zones: thermal-zones {
-+	};
- };
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+> 
+> When I'm able to put together a large page shattering series, I'll do
+> some performance analysis and see how it changes things, but that part
+OK.
 
+> is sort of orthogonal to this change. The more I think about it, the
+> better the init-all-set approach for large pages sounds, compared to
+> eager splitting. I'm definitely in support of this patch and am happy
+> to help review when you send out the v2 with TDP MMU support and such.
+Thanks a lot. :)
+
+> 
+>>
+>>>
+>>> Large page shattering can happen in the NPT page fault handler or the
+>>> thread enabling dirty logging / clearing the dirty log, so it's
+>>> more-or-less orthogonal to this patch.
+>>>
+>>> Eager page splitting on the other hand takes the opposite approach to
+>>> this patch, frontloading as much of the work to enable dirty logging
+>>> as possible. Which approach is better is going to depend a lot on the
+>>> guest workload, your live migration constraints, and how the
+>>> user-space hypervisor makes use of KVM's growing number of dirty
+>>> logging options. In our case, the time to migrate a VM is usually less
+>>> of a concern than the performance degradation the guest experiences,
+>>> so we want to do everything we can to minimize vCPU exits and exit
+>>> latency.
+>> Yes, make sense to me.
+>>
+>>>
+>>> I think this is a reasonable change in principle if we're not write
+>>> protecting 4k pages already, but it's hard to really validate all the
+>>> performance implications. With this change we'd move pretty much all
+>>> the work to the first pass of clearing the dirty log, which is
+>>> probably an improvement since it's much more granular. The downside is
+>> Yes, at least split large page lazily is better than current logic.
+>>
+>>> that we do more work when we'd really like to be converging the dirty
+>>> set as opposed to earlier when we know all pages are dirty anyway.
+>> I think the dirty collecting procedure is not affected, do I miss something?
+> 
+> Oh yeah, good point. Since the splitting of large SPTEs is happening
+> in the vCPU threads it wouldn't slow dirty log collection at all. We
+> would have to do slightly more work to write protect the large SPTEs
+> that weren't written to, but that's a relatively small amount of work.
+Indeed.
+
+
+BRs,
+Keqian
