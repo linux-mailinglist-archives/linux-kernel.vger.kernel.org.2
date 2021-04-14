@@ -2,211 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A9235F5B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1546535F5BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351767AbhDNN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S1349275AbhDNODY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349256AbhDNN7Q (ORCPT
+        with ESMTP id S1347931AbhDNODU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:59:16 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5D1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:58:55 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id a36so12550859ljq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 06:58:55 -0700 (PDT)
+        Wed, 14 Apr 2021 10:03:20 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC52C061574;
+        Wed, 14 Apr 2021 07:02:57 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id g5so24898783ejx.0;
+        Wed, 14 Apr 2021 07:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a3TW/VUxpoop3CV7OBSruiVlDrYQhCUzznkHnE/1dpw=;
-        b=hCqPhJEbqW3DalT0QlHdxLYYZmZltgIWVbrVJdZyEBC/vsvXuhAJSx0lxbfxV9or2G
-         fVLnv84ZewjwDGufJ/Si72WQU2XPW8RakxXyRNTmkHjWY+7IcXC8AR59TxJdzY4wzFBO
-         IqCZflBvHojbxtZdyqwpuYfqDCjFsrIqH9ld0jFl6quEiJd2tahRPgTUyRqi2DG895mz
-         oqvhH1h8ebWRKEMx6Xp8Uu90WmgyaNYJddcAH6zuR3+1ehRk5FYS2X18BtbnK1Fw8yPX
-         kBFs+ctV6Ert/VRhSY8GW+c/KCAcVveBrUyhYyPMYP/2O8dyGvDEFWlLtEMzo8k0sALT
-         tdLA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+GL0bccGhF91/pU0CPQ6qtX8Mn4OD4Tg1yHw5xduEWU=;
+        b=tnH66VIyebcluU9CPeDU5Hedp3SS10cqLRjieIC4ZenpTzwFHHmNes1RW8/ano6Xaw
+         zIjNTpgh2k3wLxCkpZLnKyEJ8PnyTUFU8OB5Y3ljllMjMnRqumeD6G5HraKIh+pzvENs
+         31pBkbnxvZBaIIIvlZEQi4Rv74ZZD3tQbFuWCIs0YcYagtu3QEGC5VLMxXKqcUh5UPKZ
+         fjFctkoZRwSzGvUR6ZKhDUPGLKr0djtj9akmrdTiLw61YOG8VV0OC2vJuC9Ja8xngNd1
+         8SD+NoIcTqpyWxd6Hpsf0OL480p/in32zNYzXoq2zkcaUXAK+SA4iqvZ7hZvmpKTMlnb
+         rDvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a3TW/VUxpoop3CV7OBSruiVlDrYQhCUzznkHnE/1dpw=;
-        b=c1g2aHkLgeEgk2qSZM7G0xLj9Dbsob6wQRbokGKea0/Oa1E+cWxgnZm4e+aQ6iakyv
-         7OZvKz1lCrIl/ag2dKJLABEghR3fcmtyS7wwIZwNDZ7vRh0sFpgbk/YXBwg8Kb6qnGOm
-         FUrih29BgB9Q1o3sr4b0Ub/xFdmBln3BGaRlnswIMcyrL97rXkKhWC6AsFwyxXDn4ujo
-         T8q60voSqvgXD5h5v/eVpyfTSFH+PWw29/1eI8zYnjHmpVxLi0ZhJlC3EnOh9ahinCAs
-         G+AiqkhLBM2kTkAXFRl2mOJG0JvWBwnPHJEXeF4eMELUSeIIViiVATSJTXX+jp8B9sZz
-         k4TA==
-X-Gm-Message-State: AOAM5315woYoNkrG8MImf7TCzCIcl1H4mh0fVPawXnjLAZRHWUg1MVmX
-        oOyl6Q/nLy9nNqmaa1Rx1T6JRkuufOq1Ao1lPgZ9TQ==
-X-Google-Smtp-Source: ABdhPJzXiYnByYOweKPqo5V02GydcVPisdDJJyVyHIX7nHY7WjJeSeDlPhH97SgaPRAM81x4DVGA8rFaYsqMb0kpCNA=
-X-Received: by 2002:a2e:7607:: with SMTP id r7mr10786299ljc.226.1618408733362;
- Wed, 14 Apr 2021 06:58:53 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=+GL0bccGhF91/pU0CPQ6qtX8Mn4OD4Tg1yHw5xduEWU=;
+        b=BkTyn3mjpIcEJ9qQU4zw7qpqETQcT6u58MBIvLQtVWUiv1bTT7HyvlnvaUO3nsU9WW
+         rJpAG2UZffBSpsMurnnv4SoRLzRakVXUt7+afy9NkB4YmtYXxWIksfA1Mijhz+pd4APW
+         yXOz3mYpvD6U0WtjBMvGFEaQFKa+NppXzIeP+m+jgXLL9uttzQufP2E2XkCmkOm+vQG3
+         SjwA4ojvU0HMJYRePiiPRNNGWuATeD/W9Nh13aV0zWUc+Ysgks+w91R2m+HY66EBp2a2
+         xiVm31dRKLsfT96x2r5eD1ijGOcswvzt9UYDUdJ7kTqmB0JuPqN11gQX0XUJ4viutVeR
+         /XHA==
+X-Gm-Message-State: AOAM533KzsgKyd9+DiDyiA2vlzU+aFMD/DS1aw3OXmWkNx2OccFHvV44
+        7vnzUrPJKrGj3YWtQBz6/nbZyNXAWuGMrirx
+X-Google-Smtp-Source: ABdhPJx8TOQ+k0C+9gneWM2Hdv4seRQWa2vVPD8QUJlImcMvToSYrr9QAB7KMUkHy/q/3GJla8+0iA==
+X-Received: by 2002:a17:906:5902:: with SMTP id h2mr37444466ejq.416.1618408976154;
+        Wed, 14 Apr 2021 07:02:56 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id b22sm11618323edv.96.2021.04.14.07.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 07:02:55 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Wed, 14 Apr 2021 16:02:54 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Alessandro Grassi <alessandro@aggro.it>, 986561@bugs.debian.org,
+        Ioan-Adrian Ratiu <adi@adirat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Bug#986561: linux: Regression in drivers/hid/hid-dr.c causing
+ horizontal D-pad to malfunction on SNES joystick
+Message-ID: <YHb2Dt24465WcN1r@eldamar.lan>
+References: <161779964431.889220.2857033195611862828.reportbug@malacoda>
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <87blahb1pr.fsf@oldenburg.str.redhat.com>
- <CAG48ez2z0a4x2GfHv9L0HmO1-uzsKtfOF40erPb8ADR-m+itbg@mail.gmail.com> <874kg99hwf.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <874kg99hwf.fsf@oldenburg.str.redhat.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 14 Apr 2021 15:58:25 +0200
-Message-ID: <CAG48ez02UDn_yeLuLF4c=kX0=h2Qq8Fdb0cer1yN8atbXSNjkQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org,
-        Andrei Vagin <avagin@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161779964431.889220.2857033195611862828.reportbug@malacoda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- On Wed, Apr 14, 2021 at 2:20 PM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Jann Horn:
->
-> > On Wed, Apr 14, 2021 at 12:27 PM Florian Weimer <fweimer@redhat.com> wrote:
-> >>
-> >> * Andrei Vagin:
-> >>
-> >> > We already have process_vm_readv and process_vm_writev to read and write
-> >> > to a process memory faster than we can do this with ptrace. And now it
-> >> > is time for process_vm_exec that allows executing code in an address
-> >> > space of another process. We can do this with ptrace but it is much
-> >> > slower.
-> >> >
-> >> > = Use-cases =
-> >>
-> >> We also have some vaguely related within the same address space: running
-> >> code on another thread, without modifying its stack, while it has signal
-> >> handlers blocked, and without causing system calls to fail with EINTR.
-> >> This can be used to implement certain kinds of memory barriers.
-> >
-> > That's what the membarrier() syscall is for, right? Unless you don't
-> > want to register all threads for expedited membarrier use?
->
-> membarrier is not sufficiently powerful for revoking biased locks, for
-> example.
+Hi Ioan-Adrian,
 
-But on Linux >=5.10, together with rseq, it is, right? Then lock
-acquisition could look roughly like this, in pseudo-C (yes, I know,
-real rseq doesn't quite look like that, you'd need inline asm for that
-unless the compiler adds special support for this):
+On Wed, Apr 07, 2021 at 02:47:24PM +0200, Alessandro Grassi wrote:
+> Source: linux
+> Severity: normal
+> Tags: upstream
+> X-Debbugs-Cc: alessandro@aggro.it
+> 
+> Greetings,
+> 
+> I am encountering the issue described in this thread[1], using a gamepad identified as "DragonRise" with USB ID 0079:0011.
+> 
+> The joypad works as intended except for the D-pad: up and down are detected in jstest (though misinterpreted: the input graph shows the points in the left up/down corners instead of the center), the left and right buttons are completely ignored.
+> 
+> Running 'input-events' shows events 0/127 and 255/127 on up and down respectively, nothing at all on left and right.
+> 
+> I was able to identify that the misbehaviour was caused by this commit[2] on the kernel source tree. To determine this I have rebuilt the Debian kernel using hid-dr.c from the previous commit[3] and loaded hid-dr.ko manually, with which the gamepad worked as intended. I have replaced the file again with the one from the breaking commit iself ([2]) and the behaviour was again broken.
+> 
+> Furthermore, to confirm that that was the breaking commit, I have commented line 315 (the input mapping one in the struct) from the current Debian source tree and rebuilt it, the joypad works as it should.
+> 
+> Regards,
+> Alessandro
+> 
+> [1]: https://retropie.org.uk/forum/topic/25657/controler-issue-no-left-and-right-not-working-at-all
+> [2]: https://github.com/torvalds/linux/commit/e15944099870f374ca7efc62f98cf23ba272ef43
+> [3]: https://github.com/torvalds/linux/commit/313726cad3b68039c8e4dcad5a2840a0d375678c
 
+A user in Debian reported that e15944099870 ("HID: hid-dr: add input
+mapping for axis selection") introduced a regression, described above.
 
-enum local_state {
-  STATE_FREE_OR_BIASED,
-  STATE_LOCKED
-};
-#define OWNER_LOCKBIT (1U<<31)
-#define OWNER_WAITER_BIT (1U<<30) /* notify futex when OWNER_LOCKBIT
-is cleared */
-struct biased_lock {
-  unsigned int owner_with_lockbit;
-  enum local_state local_state;
-};
+Does this ring some bell to you?
 
-void lock(struct biased_lock *L) {
-  unsigned int my_tid = THREAD_SELF->tid;
-  RSEQ_SEQUENCE_START(); // restart here on failure
-  if (READ_ONCE(L->owner) == my_tid) {
-    if (READ_ONCE(L->local_state) == STATE_LOCKED) {
-      RSEQ_SEQUENCE_END();
-      /*
-       * Deadlock, abort execution.
-       * Note that we are not necessarily actually *holding* the lock;
-       * this can also happen if we entered a signal handler while we
-       * were in the process of acquiring the lock.
-       * But in that case it could just as well have happened that we
-       * already grabbed the lock, so the caller is wrong anyway.
-       */
-      fatal_error();
-    }
-    RSEQ_COMMIT(L->local_state = STATE_LOCKED);
-    return; /* fastpath success */
-  }
-  RSEQ_SEQUENCE_END();
-
-  /* slowpath */
-  /* acquire and lock owner field */
-  unsigned int old_owner_with_lockbit;
-  while (1) {
-    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
-    if (old_owner_with_lockbit & OWNER_LOCKBIT) {
-      if (!__sync_bool_compare_and_swap (&L->owner_with_lockbit,
-old_owner_with_lockbit, my_tid | OWNER_LOCKBIT | OWNER_WAITER_BIT))
-       continue;
-      futex(&L->owner_with_lockbit, FUTEX_WAIT,
-old_owner_with_lockbit, NULL, NULL, 0);
-      continue;
-    } else {
-      if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
-old_owner_with_lockbit, my_tid | OWNER_LOCKBIT))
-        break;
-    }
-  }
-
-  /*
-   * ensure old owner won't lock local_state anymore.
-   * we only have to worry about the owner that directly preceded us here;
-   * it will have done this step for the owners that preceded it before clearing
-   * the LOCKBIT; so if we were the old owner, we don't have to sync.
-   */
-  if (old_owner_with_lockbit != my_tid) {
-    if (membarrier(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ, 0, 0))
-      fatal_error();
-  }
-
-  /*
-   * As soon as the lock becomes STATE_FREE_OR_BIASED, we own it; but
-   * at this point it might still be locked.
-   */
-  while (READ_ONCE(L->local_state) == STATE_LOCKED) {
-    futex(&L->local_state, FUTEX_WAIT, STATE_LOCKED, NULL, NULL, 0);
-  }
-
-  /* OK, now the lock is biased to us and we can grab it. */
-  WRITE_ONCE(L->local_state, STATE_LOCKED);
-
-  /* drop lockbit */
-  unsigned int old_owner_with_lockbit;
-  while (1) {
-    old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
-    if (__sync_bool_compare_and_swap (&L->owner_with_lockbit,
-old_owner_with_lockbit, my_tid))
-      break;
-  }
-  if (old_owner_with_lockbit & OWNER_WAITER_BIT)
-    futex(&L->owner_with_lockbit, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
-}
-
-void unlock(struct biased_lock *L) {
-  unsigned int my_tid = THREAD_SELF->tid;
-
-  /*
-   * If we run before the membarrier(), the lock() path will immediately
-   * see the lock as uncontended, and we don't need to call futex().
-   * If we run after the membarrier(), the ->owner_with_lockbit read
-   * here will observe the new owner and we'll wake the futex.
-   */
-  RSEQ_SEQUENCE_START();
-  unsigned int old_owner_with_lockbit = READ_ONCE(L->owner_with_lockbit);
-  RSEQ_COMMIT(WRITE_ONCE(L->local_state, STATE_FREE_OR_BIASED));
-  if (old_owner_with_lockbit != my_tid)
-    futex(&L->local_state, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
-}
+Regards,
+Salvatore
