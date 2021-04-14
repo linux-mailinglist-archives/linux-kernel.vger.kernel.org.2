@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D02335F77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE36A35F78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351947AbhDNPTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:19:17 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:39044 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352042AbhDNPTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:19:14 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 943F3D2AA9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:18:52 +0100 (IST)
-Received: (qmail 27104 invoked from network); 14 Apr 2021 15:18:52 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Apr 2021 15:18:52 -0000
-Date:   Wed, 14 Apr 2021 16:18:50 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 04/11] mm/vmstat: Convert NUMA statistics to basic NUMA
- counters
-Message-ID: <20210414151850.GG3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-5-mgorman@techsingularity.net>
- <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+        id S234117AbhDNPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:25:11 -0400
+Received: from gate.crashing.org ([63.228.1.57]:38657 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232358AbhDNPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:25:05 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13EFJM4R012182;
+        Wed, 14 Apr 2021 10:19:22 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13EFJLFh012181;
+        Wed, 14 Apr 2021 10:19:21 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 14 Apr 2021 10:19:21 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when possible
+Message-ID: <20210414151921.GW26583@gate.crashing.org>
+References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu> <20210412215428.GM26583@gate.crashing.org> <ecb1b1a5-ae92-e8a3-6490-26341edfbccb@csgroup.eu> <20210413215803.GT26583@gate.crashing.org> <1618365589.67fxh7cot9.astroid@bobo.none> <20210414122409.GV26583@gate.crashing.org> <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:56:45PM +0200, Vlastimil Babka wrote:
-> On 4/7/21 10:24 PM, Mel Gorman wrote:
-> > NUMA statistics are maintained on the zone level for hits, misses, foreign
-> > etc but nothing relies on them being perfectly accurate for functional
-> > correctness. The counters are used by userspace to get a general overview
-> > of a workloads NUMA behaviour but the page allocator incurs a high cost to
-> > maintain perfect accuracy similar to what is required for a vmstat like
-> > NR_FREE_PAGES. There even is a sysctl vm.numa_stat to allow userspace to
-> > turn off the collection of NUMA statistics like NUMA_HIT.
-> > 
-> > This patch converts NUMA_HIT and friends to be NUMA events with similar
-> > accuracy to VM events. There is a possibility that slight errors will be
-> > introduced but the overall trend as seen by userspace will be similar.
-> > Note that while these counters could be maintained at the node level that
-> > it would have a user-visible impact.
+On Wed, Apr 14, 2021 at 02:42:51PM +0200, Christophe Leroy wrote:
+> Le 14/04/2021 à 14:24, Segher Boessenkool a écrit :
+> >On Wed, Apr 14, 2021 at 12:01:21PM +1000, Nicholas Piggin wrote:
+> >>Would be nice if we could let the compiler deal with it all...
+> >>
+> >>static inline unsigned long lr(unsigned long *mem)
+> >>{
+> >>         unsigned long val;
+> >>
+> >>         /*
+> >>          * This doesn't clobber memory but want to avoid memory 
+> >>          operations
+> >>          * moving ahead of it
+> >>          */
+> >>         asm volatile("ldarx     %0, %y1" : "=r"(val) : "Z"(*mem) : 
+> >>         "memory");
+> >>
+> >>         return val;
+> >>}
+> >
+> >(etc.)
+> >
+> >That can not work reliably: the compiler can put random instructions
+> >between the larx and stcx. this way, and you then do not have guaranteed
+> >forward progress anymore.  It can put the two in different routines
+> >(after inlining and other interprocedural optimisations), duplicate
+> >them, make a different number of copies of them, etc.
+> >
+> >Nothing of that is okay if you want to guarantee forward progress on all
+> >implementations, and also not if you want to have good performance
+> >everywhere (or anywhere even).  Unfortunately you have to write all
+> >larx/stcx. loops as one block of assembler, so that you know exactly
+> >what instructions will end up in your binary.
+> >
+> >If you don't, it will fail mysteriously after random recompilations, or
+> >have performance degradations, etc.  You don't want to go there :-)
+> >
 > 
-> I guess this kind of inaccuracy is fine. I just don't like much
-> fold_vm_zone_numa_events() which seems to calculate sums of percpu counters and
-> then assign the result to zone counters for immediate consumption, which differs
-> from other kinds of folds in vmstat that reset the percpu counters to 0 as they
-> are treated as diffs to the global counters.
+> Could the kernel use GCC builtin atomic functions instead ?
 > 
+> https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
 
-The counters that are diffs fit inside an s8 and they are kept limited
-because their "true" value is sometimes critical -- e.g. NR_FREE_PAGES
-for watermark checking. So the level of drift has to be controlled and
-the drift should not exist potentially forever so it gets updated
-periodically.
+Certainly that should work fine for the simpler cases that the atomic
+operations are meant to provide.  But esp. for not-so-simple cases the
+kernel may require some behaviour provided by the existing assembler
+implementation, and not by the atomic builtins.
 
-The inaccurate counters are only exported to userspace. There is no need
-to update them every few seconds so fold_vm_zone_numa_events() is only
-called when a user cares but you raise a raise a valid below.
+I'm not saying this cannot work, just that some serious testing will be
+needed.  If it works it should be the best of all worlds, so then it is
+a really good idea yes :-)
 
-> So it seems that this intermediate assignment to zone counters (using
-> atomic_long_set() even) is unnecessary and this could mimic sum_vm_events() that
-> just does the summation on a local array?
-> 
 
-The atomic is unnecessary for sure but using a local array is
-problematic because of your next point.
-
-> And probably a bit more serious is that vm_events have vm_events_fold_cpu() to
-> deal with a cpu going away, but after your patch the stats counted on a cpu just
-> disapepar from the sums as it goes offline as there's no such thing for the numa
-> counters.
-> 
-
-That is a problem I missed. Even if zonestats was preserved on
-hot-remove, fold_vm_zone_numa_events would not be reading the CPU so
-hotplug events jump all over the place.
-
-So some periodic folding is necessary. I would still prefer not to do it
-by time but it could be done only on overflow or when a file like
-/proc/vmstat is read. I'll think about it a bit more and see what I come
-up with.
-
-Thanks!
-
--- 
-Mel Gorman
-SUSE Labs
+Segher
