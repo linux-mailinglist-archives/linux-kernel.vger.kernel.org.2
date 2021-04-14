@@ -2,144 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D73D35EA7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FFC35EA7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349020AbhDNBiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 21:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345994AbhDNBiH (ORCPT
+        id S1345105AbhDNBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 21:37:59 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:35000 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229648AbhDNBhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 21:38:07 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73584C061756;
-        Tue, 13 Apr 2021 18:37:47 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so4271313ook.2;
-        Tue, 13 Apr 2021 18:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oPpNub0x+LlxaW1pwDR4JCfKjMoHmPl4Y2gZyA8yXlU=;
-        b=hb89ZLS7XGn9p6/IQ3ARbB44mCMtTx4Zb+sy9TMH8ajohYZiXxzrhXK7fIDDfVVClU
-         qG+VPSYqBfyBeeo17NN/rWnJls/XSIrbIuastNqB23SEOLP3ZcuPgZ+zaemsa2lEm5VK
-         tvIbjAM8Z/iperVJeXbR9BbCCBRtyaSbc4L9wyOuheB9Bzth2SBIno19lD9+rUMRR6jF
-         DIcIfLo8nnTQDRQM2wJNrH+OZDgywo4v6kASLrfYoKB7zaASTejOdL6hfqYDsEaID/PZ
-         VqfwzqLVBxPPLgsXbd1U61Sq266S3c5iz9GuUvMTTFMSgfG+Ubcf0PcPH4vomMmLuCV4
-         BLBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oPpNub0x+LlxaW1pwDR4JCfKjMoHmPl4Y2gZyA8yXlU=;
-        b=GJxg56ow1GpF13SWySOIktsIfuLJmGmAHa74NhCegA28S2oAgO6PYw2qJXQJDfVLdw
-         ZS+sr73W3ldQPneYYw7PGmPkW5RtdzDbqo2BWlKloXA12pueJPV9R+kvK82vT+Cbbv5W
-         na2h6aO9VDUfmBDVgE3tbNfwrLpeeu9u/cb7KQ1LfeOS66rCdbJPfbDK8KwVZuUcV20Z
-         k68ETL/zZDkhlFmW4mzV/HQKE8/OsmDR2SgkwiqbHuicA/JcyydIiagdEYNJU4w1PodR
-         jWBV3+HPKgzGnWfbBXJZGHNmF92VnefWaDI7MYkeTNyXRiDdE0QOVRNuU9gKqD65lGMt
-         ELHA==
-X-Gm-Message-State: AOAM533/6ES7dK4Nipo4kvEiUJx5y+qklNWbCQJm9PqWpewTrRH0f86f
-        thFzWM5S136wqDjc3Kyl9+IBhS8nnQlrlSCnP+M=
-X-Google-Smtp-Source: ABdhPJzIhIzU0JDW2KqMzbOHnshkFNf0Y8ES8z75edQSXwAPyOM2ngKQOMK3lwvc42C647oky87ox4Nct7r3Esi/nmA=
-X-Received: by 2002:a4a:e797:: with SMTP id x23mr22962494oov.24.1618364266860;
- Tue, 13 Apr 2021 18:37:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
- <20210413025011.1251-1-kerneljasonxing@gmail.com> <20210413091812.0000383d@intel.com>
-In-Reply-To: <20210413091812.0000383d@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Wed, 14 Apr 2021 09:37:10 +0800
-Message-ID: <CAL+tcoBHdVa8eJQVYK4aQj+XWAgcN8VOaL558z=2YuHSa8mbKQ@mail.gmail.com>
-Subject: Re: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv mode
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        intel-wired-lan@lists.osuosl.org
+        Tue, 13 Apr 2021 21:37:55 -0400
+X-UUID: 65210f5ef41043fa85cbaca9054473f9-20210414
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ERZ0727hmIntUzrC532APuxYAnO+KGvUIEmZ+WhJ4bg=;
+        b=V0IxJGNu79lCmEr+yS4pCIiSLXo2p/RunrDC6CBO/RGt0jJ76sABb5ffxEurcNJaruzI9czfNSvqs4yU4GVBqR1F6BBBbSZUIoElHCMC3Ag41nsAljeGHAmIMnzEopTWKmJ7nv+yvMcyKpsOGIaEPDW2XrCCJk20bJJ21POT5jc=;
+X-UUID: 65210f5ef41043fa85cbaca9054473f9-20210414
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1914948888; Wed, 14 Apr 2021 09:37:28 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Apr
+ 2021 09:37:26 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Apr 2021 09:37:25 +0800
+Message-ID: <1618364244.32225.21.camel@mhfsdcap03>
+Subject: Re: [RESEND] i2c: mediatek: Get device clock-stretch time via dts
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
+Date:   Wed, 14 Apr 2021 09:37:24 +0800
+In-Reply-To: <20210413201740.GC2751@kunai>
+References: <1615622664-15032-1-git-send-email-qii.wang@mediatek.com>
+         <20210406194856.GF3122@kunai> <1617797706.32076.1.camel@mhfsdcap03>
+         <20210407181936.GA1614@kunai> <1618228994.32225.3.camel@mhfsdcap03>
+         <20210413201740.GC2751@kunai>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: BDCD7573E06B32ECD29F8904F8F2797A0FA403DEDB2F512640FACE4A5C84AC0A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:27 AM Jesse Brandeburg
-<jesse.brandeburg@intel.com> wrote:
->
-> kerneljasonxing@gmail.com wrote:
->
-> > From: Jason Xing <xingwanli@kuaishou.com>
->
-> Hi Jason,
->
-> Sorry, I missed this on the first time: Added intel-wired-lan,
-> please include on any future submissions for Intel drivers.
-> get-maintainers script might help here?
->
+T24gVHVlLCAyMDIxLTA0LTEzIGF0IDIyOjE3ICswMjAwLCBXb2xmcmFtIFNhbmcgd3JvdGU6DQo+
+IE9uIE1vbiwgQXByIDEyLCAyMDIxIGF0IDA4OjAzOjE0UE0gKzA4MDAsIFFpaSBXYW5nIHdyb3Rl
+Og0KPiA+IEkgY2FuJ3Qgc2VlIHRoZSByZWxhdGlvbnNoaXAgYmV0d2VlbiAiaTJjLXNjbC1mYWxs
+aW5nLXRpbWUtbnMiIGFuZCBjbG9jaw0KPiA+IHN0cmV0Y2hpbmcsIGlzIHRoZXJlIGEgcGFyYW1l
+dGVyIHJlbGF0ZWQgdG8gY2xvY2sgc3RyZXRjaGluZz8NCj4gDQo+ICggeW91IHdyb3RlICJpMmMt
+c2NsLWZhbGxpbmctdGltZS1ucyIgYWJvdmUsIGRpZG4ndCB5b3UgbWVhbg0KPiAiaTJjLXNjbC1p
+bnRlcm5hbC1kZWxheS1ucyIgaW5zdGVhZD8gKQ0KPiANCg0KSSBhbSBzb3JyeSwgSSBoYXZlIGNv
+bmZ1c2VkIHlvdXIgY29tbWVudCB3aXRoIGxram9vbidzIGNvbW1lbnQgaW4gdGhlDQpsYXN0IG1h
+aWwuIHdoYXQgSSBhY3R1YWxseSB3YW50IHRvIHNheSBpcyAiaTJjLXNjbC1pbnRlcm5hbC1kZWxh
+eS1ucyIuDQoNCj4gTm90IHlldCwgYW5kIEkgd29uZGVyIGlmIHRoZXJlIGNhbiBiZSBvbmUuIElu
+IEkyQyAobm90IFNNQnVzKSwgZGV2aWNlcw0KPiBhcmUgYWxsb3dlZCB0byBzdHJldGNoIHRoZSBj
+bG9jayBhcyBsb25nIGFzIHRoZXkgd2FudCwgc28gd2hhdCBzaG91bGQgYmUNCj4gc3BlY2lmaWVk
+IGhlcmU/DQo+IA0KPiBJIHN1Z2dlc3RlZWQgImludGVybmFsLWRlbGF5IiBiZWNhdXNlIEFGQUlV
+IHlvdXIgaGFyZHdhcmUgbmVlZHMgdGhpcw0KPiBkZWxheSB0byBiZSBhYmxlIHRvIGNvcGUgd2l0
+aCBjbG9jayBzdHJldGNoaW5nLg0KPiANCg0KSWYgdGhlcmUgaXMgbm90IGEgbWF4aW11bSB2YWx1
+ZSBmb3IgY2xvY2sgc3RyZXRjaGluZywNCiJpMmMtc2NsLWludGVybmFsLWRlbGF5LW5zIiBzaG91
+bGQgYmUgYSBnb29kIGNob2ljZSBmb3Igb3VyIGhhcmR3YXJlLA0KYWx0aG91Z2ggaXQgbWF5YmUg
+bm90IGZvciBjbG9jayBzdHJldGNoaW5nLg0KDQo+ID4gSWYgeW91IHRoaW5rIGJvdGggb2YgdGhl
+bSB3aWxsIGFmZmVjdCB0aGUgYWMtdGltaW5nIG9mIFNDTCwgYXQgdGhpcw0KPiA+IHBvaW50LCAi
+aTJjLXNjbC1mYWxsaW5nLXRpbWUtbnMiIG1heWJlIGEgZ29vZCBjaG9pY2UuDQo+IA0KPiBEbyB5
+b3UgbWVhbiAiaTJjLXNjbC1mYWxsaW5nLXRpbWUtbnMiIG9yICJpMmMtc2NsLWludGVybmFsLWRl
+bGF5LW5zIj8NCj4gDQoNCiJpMmMtc2NsLWludGVybmFsLWRlbGF5LW5zIiBpcyBiZXR0ZXIuDQoN
+ClRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQpRaWkNCg0KDQo=
 
-Hi, Jesse
-
-In the first patch, I did send to intel-wired-lan but it told me that
-it is open for the member only, so
-I got rid of it in this patch v2.
-
-> >
-> > Fix this panic by adding more rules to calculate the value of @rss_size_max
-> > which could be used in allocating the queues when bpf is loaded, which,
-> > however, could cause the failure and then trigger the NULL pointer of
-> > vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-> > cpus are online and then allocates 256 queues on the machine with 32 cpus
-> > online actually.
-> >
-> > Once the load of bpf begins, the log will go like this "failed to get
-> > tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-> > failed".
-> >
-> > Thus, I attach the key information of the crash-log here.
-> >
-> > BUG: unable to handle kernel NULL pointer dereference at
-> > 0000000000000000
-> > RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-> > Call Trace:
-> > [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-> > [2160294.717666]  dev_xdp_install+0x4f/0x70
-> > [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-> > [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-> > [2160294.718705]  do_setlink+0xac7/0xe70
-> > [2160294.719035]  ? __nla_parse+0xed/0x120
-> > [2160294.719365]  rtnl_newlink+0x73b/0x860
-> >
-> > Fixes: 41c445ff0f48 ("i40e: main driver core")
-> >
->
-> This Fixes line should be connected to the Sign offs with
-> no linefeeds between.
->
-> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
->
-> Did Shujin contribute to this patch? Why are they signing off? If
-> they developed this patch with you, it should say:
-> Co-developed-by: Shujin ....
-> Signed-off-by: Shujin ...
-> Signed-off-by: Jason ...
->
-
-Well, yes, I will add a Co-developed-by label later.
-
-> Your signature should be last if you sent the patch. The sign-offs are
-> like a chain of custody, please review
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
->
-
-Thanks so much for your detailed instructions. I'm about to correct
-them all together and then resend the patch v3.
-
-Jason
-
-> Thanks,
->  Jesse
