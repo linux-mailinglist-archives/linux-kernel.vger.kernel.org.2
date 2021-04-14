@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E060035E9E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E59935E9DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbhDNAJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 20:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54328 "EHLO mail.kernel.org"
+        id S233053AbhDNAHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 20:07:34 -0400
+Received: from mga06.intel.com ([134.134.136.31]:42281 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhDNAJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:09:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBEFD61246;
-        Wed, 14 Apr 2021 00:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618358951;
-        bh=SGCsWnJBFU+PxLaU3qadL12J+jaWNLTDyWNJnKddMuc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JQWxh+Jv8A+tHVoORVEKiKYEGfSjDj7APbD58NkbftuWe1MQqhlRmP/IbE0iccbQ1
-         lYUy7OS684VJX6qxq1LqiFiveFCZThNcNa88D/CcNphXPlAX3LovLn0xpQDDJp8V1c
-         7YQDeS50IkM3fxJfZ5vF8fJvu7fs86rL9A4rantLO4FLc/E83n4zD1feiKvxO5ozFv
-         6t2LIr8pPTOpefrbj/9aGIbOmbHt1SbIHgMJamS0/iPX4bfBfarrx5aZKoljGjPMQl
-         +qTsO7LCvMqynuO+a3pRpMJzBtxLwsAlGvPJfzrAALPyHwad+xdct3aQtiR7Bsmyen
-         IKI14eVl/DqSw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] arm64: alternatives: Move length validation in alternative_{insn,endif}
-Date:   Tue, 13 Apr 2021 17:08:04 -0700
-Message-Id: <20210414000803.662534-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
+        id S230070AbhDNAHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 20:07:31 -0400
+IronPort-SDR: AfFx6q/Te3qg7RmDF9I3bEAJ8zViktndb4XZlcLMzg32YC8tfYlY/UXdAjM59dMVbPAunhTDnR
+ 3tMRh30fTqbQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="255844718"
+X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
+   d="scan'208";a="255844718"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 17:07:10 -0700
+IronPort-SDR: FW1+JDWFnnCJ0F8zcxYqh84SmkButXavMRcYvhG1wXMabDT20sJ6bofo8dJAA+BWwsfPAENdxM
+ KRJBoeT0uySg==
+X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
+   d="scan'208";a="424475892"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 17:07:09 -0700
+Date:   Tue, 13 Apr 2021 17:09:47 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <20210413170947.35ba9267@jacob-builder>
+In-Reply-To: <20210409110305.6b0471d9@jacob-builder>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YHAoY9+w2ebYZ7VV@myrica>
+        <20210409110305.6b0471d9@jacob-builder>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-set atomically"), LLVM's integrated assembler fails to build entry.S:
+Hi Jean,
 
-<instantiation>:5:7: error: expected assembly-time absolute expression
- .org . - (664b-663b) + (662b-661b)
-      ^
-<instantiation>:6:7: error: expected assembly-time absolute expression
- .org . - (662b-661b) + (664b-663b)
-      ^
+On Fri, 9 Apr 2021 11:03:05 -0700, Jacob Pan
+<jacob.jun.pan@linux.intel.com> wrote:
 
-The root cause is LLVM's assembler has a one-pass design, meaning it
-cannot figure out these instruction lengths when the .org directive is
-outside of the subsection that they are in, which was changed by the
-.arch_extension directive added in the above commit.
+> > problems:
+> > 
+> > * We don't have a use-case for binding the mm of a remote process (and
+> >   it's supposedly difficult for device drivers to do it securely). So
+> > OK, we remove the mm argument from iommu_sva_bind_device() and use the
+> >   current mm. But the IOMMU driver isn't going to do
+> > get_task_mm(current) every time it needs the mm being bound, it will
+> > take it from iommu_sva_bind_device(). Likewise iommu_sva_alloc_pasid()
+> > shouldn't need to bother with get_task_mm().
+> > 
+> > * cgroup accounting for IOASIDs needs to be on the current task.
+> > Removing the mm parameter from iommu_sva_alloc_pasid() doesn't help
+> > with that. Sure it indicates that iommu_sva_alloc_pasid() needs a
+> > specific task context but that's only for cgroup purpose, and I'd
+> > rather pass the cgroup down from iommu_sva_bind_device() anyway (but am
+> > fine with keeping it within ioasid_alloc() for now). Plus it's an
+> > internal helper, easy for us to check that the callers are doing the
+> > right thing. 
+> With the above split, we really just have one allocation function:
+> ioasid_alloc(), so it can manage current cgroup accounting within. Would
+> this work?
+After a few attempts, I don't think the split can work better. I will
+restore the mm parameter and add a warning if mm != current->mm.
 
-Apply the same fix from commit 966a0acce2fc ("arm64/alternatives: move
-length validation inside the subsection") to the alternative_endif
-macro, shuffling the .org directives so that the length validation
-happen will always happen in the same subsections. alternative_insn has
-not shown any issue yet but it appears that it could have the same issue
-in the future so just preemptively change it.
+Thanks,
 
-Cc: stable@vger.kernel.org
-Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1347
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-Apologies if my explanation or terminology is off, I am only now getting
-more familiar with assembly.
-
- arch/arm64/include/asm/alternative-macros.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/include/asm/alternative-macros.h b/arch/arm64/include/asm/alternative-macros.h
-index 5df500dcc627..8a078fc662ac 100644
---- a/arch/arm64/include/asm/alternative-macros.h
-+++ b/arch/arm64/include/asm/alternative-macros.h
-@@ -97,9 +97,9 @@
- 	.popsection
- 	.subsection 1
- 663:	\insn2
--664:	.previous
--	.org	. - (664b-663b) + (662b-661b)
-+664:	.org	. - (664b-663b) + (662b-661b)
- 	.org	. - (662b-661b) + (664b-663b)
-+	.previous
- 	.endif
- .endm
- 
-@@ -169,11 +169,11 @@
-  */
- .macro alternative_endif
- 664:
-+	.org	. - (664b-663b) + (662b-661b)
-+	.org	. - (662b-661b) + (664b-663b)
- 	.if .Lasm_alt_mode==0
- 	.previous
- 	.endif
--	.org	. - (664b-663b) + (662b-661b)
--	.org	. - (662b-661b) + (664b-663b)
- .endm
- 
- /*
-
-base-commit: 738fa58ee1328481d1d7889e7c430b3401c571b9
--- 
-2.31.1.272.g89b43f80a5
-
+Jacob
