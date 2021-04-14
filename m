@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1053535F17A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFF635F17F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbhDNK1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:27:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232235AbhDNK1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:27:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618396047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vMLyJy+yuIUeQ69Nie1nVj2ps7AR8ETn5DL2B4VvFQI=;
-        b=JE8ws063FQoAIwfFCDHiF/5SIqJ3/seymoUwLVt6tG8bCgvywBs+lpMpOMSw5rUkaTAR48
-        +fgCULGhpQ2aRwrJZsUmMhKLrCYOCrGxvBcn70v1puUM5AfHy86XguuiGi7syzviuB+yd3
-        f9qdlaoajc2vXhH+V9iYVLmaF4Q2Wj4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-qkYKl8RuMciGaPIHYwMLdg-1; Wed, 14 Apr 2021 06:27:23 -0400
-X-MC-Unique: qkYKl8RuMciGaPIHYwMLdg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EEBE8030C4;
-        Wed, 14 Apr 2021 10:27:20 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-148.ams2.redhat.com [10.36.112.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A5D41A86B;
-        Wed, 14 Apr 2021 10:27:14 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-References: <20210414055217.543246-1-avagin@gmail.com>
-Date:   Wed, 14 Apr 2021 12:27:28 +0200
-In-Reply-To: <20210414055217.543246-1-avagin@gmail.com> (Andrei Vagin's
-        message of "Tue, 13 Apr 2021 22:52:13 -0700")
-Message-ID: <87blahb1pr.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S233731AbhDNK2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232235AbhDNK2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:28:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DFE1613BB;
+        Wed, 14 Apr 2021 10:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618396093;
+        bh=inLOHc4mEA6C0jmfnEWMrWnf4KZT+SYwxR2duFTHKco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZzFHRemJebaD9YD5jVtByERtwtXJd3I9oEx+xDcAe5U6ZwAXcVcfxU/sZCNm5IA8/
+         s6YuJMnHMHrUHprR8iZt5AKNXb5qCpJcGg8e0sClB5Op7TlZ8XL+8PiOcPoZddqtN2
+         mL2vZHZMhiVOKJ7f+lHHN/LS4qo9zqwY8/7EVhgg=
+Date:   Wed, 14 Apr 2021 12:28:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     julia.lawall@inria.fr, joe@perches.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] staging: rtl8723bs: replace DBG_871X_SEL_NL with
+ netdev_dbg()
+Message-ID: <YHbDu8LtSzR8Vj6y@kroah.com>
+References: <cover.1618325614.git.fabioaiuto83@gmail.com>
+ <a798262b8e1dacf225dd42f2863243c543667d5f.1618325614.git.fabioaiuto83@gmail.com>
+ <YHanGdS1Kc/4zq4q@kroah.com>
+ <20210414094340.GB3931@agape.jhs>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414094340.GB3931@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andrei Vagin:
+On Wed, Apr 14, 2021 at 11:43:41AM +0200, Fabio Aiuto wrote:
+> On Wed, Apr 14, 2021 at 10:26:01AM +0200, Greg KH wrote:
+> > > -	DBG_871X_SEL_NL(sel, "%10s %16s %8s %10s %11s %14s\n",
+> > > -			"TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base",
+> > > -			"ForceEDCCA", "AdapEn_RSSI", "IGI_LowerBound");
+> > > -	DBG_871X_SEL_NL(sel, "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
+> > > -			(u8)odm->TH_L2H_ini,
+> > > -			odm->TH_EDCCA_HL_diff,
+> > > -			odm->IGI_Base,
+> > > -			odm->ForceEDCCA,
+> > > -			odm->AdapEn_RSSI,
+> > > -			odm->IGI_LowerBound
+> > > -	);
+> > > +	netdev_dbg(adapter->pnetdev, "%10s %16s %8s %10s %11s %14s\n",
+> > > +		   "TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base", "ForceEDCCA",
+> > > +		   "AdapEn_RSSI", "IGI_LowerBound");netdev_dbg(adapter->pnetdev,
+> > > +							       "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
+> > > +							       (u8)odm->TH_L2H_ini,
+> > > +							       odm->TH_EDCCA_HL_diff,
+> > > +							       odm->IGI_Base,
+> > > +							       odm->ForceEDCCA,
+> > > +							       odm->AdapEn_RSSI,
+> > > +							       odm->IGI_LowerBound);
+> > 
+> > Something went wrong with this change :(
+> 
+> thanks Greg, I sent an example to Julia, that reproduce the problem.
+> As soon as it gets fixed I will send you a v2.
 
-> We already have process_vm_readv and process_vm_writev to read and write
-> to a process memory faster than we can do this with ptrace. And now it
-> is time for process_vm_exec that allows executing code in an address
-> space of another process. We can do this with ptrace but it is much
-> slower.
->
-> = Use-cases =
-
-We also have some vaguely related within the same address space: running
-code on another thread, without modifying its stack, while it has signal
-handlers blocked, and without causing system calls to fail with EINTR.
-This can be used to implement certain kinds of memory barriers.  It is
-also necessary to implement set*id with POSIX semantics in userspace.
-(Linux only changes the current thread credentials, POSIX requires
-process-wide changes.)  We currently use a signal for set*id, but it has
-issues (it can be blocked, the signal could come from somewhere, etc.).
-We can't use signals for barriers because of the EINTR issue, and
-because the signal context is stored on the stack.
-
-Thanks,
-Florian
-
+You can fix it up yourself "by hand" for now, no need to wait for a tool
+fix :)
