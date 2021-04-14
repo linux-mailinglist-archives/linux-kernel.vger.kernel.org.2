@@ -2,132 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC5535F15E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4795735F15F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhDNKQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:16:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:54358 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232032AbhDNKQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:16:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E88611B3;
-        Wed, 14 Apr 2021 03:15:58 -0700 (PDT)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 91D153F73B;
-        Wed, 14 Apr 2021 03:15:57 -0700 (PDT)
-Subject: Re: arch/arm64/kvm/perf.c:58:36: error: implicit declaration of
- function 'perf_num_counters'
-To:     Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Marc Zyngier <maz@kernel.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <202103262006.nHFq086E-lkp@intel.com>
- <20210413200057.ankb4e26ytgal7ev@archlinux-ax161>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <9bdf177a-8fe2-effc-be88-3b65fe175292@arm.com>
-Date:   Wed, 14 Apr 2021 11:16:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233284AbhDNKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232032AbhDNKRM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 06:17:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D58C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0omPnYBeaoI7eMYvINJ4IJnincxCXlGbXpJ5sA0RtMY=; b=XBCVhe+CZnxGk+4dnD7EXr9Bof
+        VPvqAZFsUgXIR4UJiySG6awDr+TrXpjsK0cXZ0xXlHA6RknUXiw3gd/RLdJeBEF2kPYnDp1fYomtn
+        l71yGdGOrZ5BbiAx9iMz3GlPnyi3kRRas8jyNhdI0SD4En2seVcwysTSB8L5TrnnMWoU/+ngGncLw
+        FkEpZE/TpAUp+9OVflNDrYu6ofI+5u35Czyn6FwhRmD6LKwQw+h019bE4L697cUvDF3Xjr9rTr4wt
+        eoFPoNHn8Yni/vHTIc6aEt9tcrmGRzmzJA439vLjOfacoj+WJUTfh1U6bhJI0IJ669zP4rXz0QM9H
+        t6b8ak1w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWcZc-00CFYe-4K; Wed, 14 Apr 2021 10:16:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDD9430021C;
+        Wed, 14 Apr 2021 12:16:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D7A51203CF7D0; Wed, 14 Apr 2021 12:16:38 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 12:16:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com
+Subject: [RFC][PATCH] locking: Generic ticket-lock
+Message-ID: <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
+ <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+ <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210413200057.ankb4e26ytgal7ev@archlinux-ax161>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Apr 14, 2021 at 11:05:24AM +0200, Peter Zijlstra wrote:
 
-On 4/13/21 9:00 PM, Nathan Chancellor wrote:
-> On Fri, Mar 26, 2021 at 08:27:13PM +0800, kernel test robot wrote:
->> Hi Marc,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   db24726bfefa68c606947a86132591568a06bfb4
->> commit: 6b5b368fccd7109b052e45af8ba1464c8d140a49 KVM: arm64: Turn kvm_arm_support_pmu_v3() into a static key
->> date:   3 weeks ago
->> config: arm64-randconfig-r005-20210326 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project f490a5969bd52c8a48586f134ff8f02ccbb295b3)
->> reproduce (this is a W=1 build):
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # install arm64 cross compiling tool for clang build
->>         # apt-get install binutils-aarch64-linux-gnu
->>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6b5b368fccd7109b052e45af8ba1464c8d140a49
->>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>         git fetch --no-tags linus master
->>         git checkout 6b5b368fccd7109b052e45af8ba1464c8d140a49
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>>> arch/arm64/kvm/perf.c:58:36: error: implicit declaration of function 'perf_num_counters' [-Werror,-Wimplicit-function-declaration]
->>            if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0)
->>                                              ^
->>    1 error generated.
->>
->>
->> vim +/perf_num_counters +58 arch/arm64/kvm/perf.c
->>
->>     50	
->>     51	int kvm_perf_init(void)
->>     52	{
->>     53		/*
->>     54		 * Check if HW_PERF_EVENTS are supported by checking the number of
->>     55		 * hardware performance counters. This could ensure the presence of
->>     56		 * a physical PMU and CONFIG_PERF_EVENT is selected.
->>     57		 */
->>   > 58		if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0)
->>     59			static_branch_enable(&kvm_arm_pmu_available);
->>     60	
->>     61		return perf_register_guest_info_callbacks(&kvm_guest_cbs);
->>     62	}
->>     63	
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> I just ran into this again. It is not a clang specific issue, it
-> reproduces quite easily with arm64 defconfig minus CONFIG_PERF_EVENTS
-> and gcc 10.3.0:
->
-> arch/arm64/kvm/perf.c: In function 'kvm_perf_init':
-> arch/arm64/kvm/perf.c:58:36: error: implicit declaration of function
-> 'perf_num_counters'; did you mean 'dec_mm_counter'?
-> [-Werror=implicit-function-declaration]
->    58 |  if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0)
->       |                                    ^~~~~~~~~~~~~~~~~
->       |                                    dec_mm_counter
-> cc1: some warnings being treated as errors
+> That made me look at the qspinlock code, and queued_spin_*lock() uses
+> atomic_try_cmpxchg_acquire(), which means any arch that uses qspinlock
+> and has RCpc atomics will give us massive pain.
+> 
+> Current archs using qspinlock are: x86, arm64, power, sparc64, mips and
+> openrisc (WTF?!).
+> 
+> Of those, x86 and sparc are TSO archs with SC atomics, arm64 has RCsc
+> atomics, power has RCtso atomics (and is the arch we all hate for having
+> RCtso locks).
+> 
+> Now MIPS has all sorts of ill specified barriers, but last time looked
+> at it it didn't actually use any of that and stuck to using smp_mb(), so
+> it will have RCsc atomics.
+> 
+> /me goes look at wth openrisc is..  doesn't even appear to have
+> asm/barrier.h :-/ Looking at wikipedia it also doesn't appear to
+> actually have hardware ...
 
-I was also able to reproduce it with gcc 10.2.0. I think the problem is that the
-perf_num_counters() declaration is guarded by CONFIG_PERF_EVENTS (in
-include/linux/perf_event.h), the implementation is in drivers/perf/arm_pmu.c,
-which depends on CONFIG_ARM_PMU, but CONFIG_ARM_PMU=y doesn't select
-CONFIG_PERF_EVENTS. So we end up in a situation where we have the implementation
-of perf_num_counters(), but no prototype (CONFIG_ARM_PMU=y, CONFIG_PERF_EVENTS is
-not set).
+FWIW this is broken, anything SMP *MUST* define mb(), at the very least.
 
-Thanks,
+> I'm thinking openrisc is a prime candidate for this ticket_lock.h we're
+> all talking about.
 
-Alex
+How's this then? Compile tested only on openrisc/simple_smp_defconfig.
 
->
-> I am not sure what the cleanest solution would be for providing a static
-> inline version of perf_num_counters() would be, as only arm64 actually
-> uses it (sh and s390 define it but it does not appear to be used) but it
-> is only available through CONFIG_ARM_PMU instead of just
-> CONFIG_PERF_EVENTS like the other two architectures mentioned above.
->
-> Cheers,
-> Nathan
+---
+ arch/openrisc/Kconfig                      |  1 -
+ arch/openrisc/include/asm/Kbuild           |  5 +-
+ arch/openrisc/include/asm/spinlock.h       |  3 +-
+ arch/openrisc/include/asm/spinlock_types.h |  2 +-
+ include/asm-generic/qspinlock.h            | 30 +++++++++++
+ include/asm-generic/ticket-lock-types.h    | 11 ++++
+ include/asm-generic/ticket-lock.h          | 86 ++++++++++++++++++++++++++++++
+ 7 files changed, 131 insertions(+), 7 deletions(-)
+
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index 591acc5990dc..1858cf309f1f 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -32,7 +32,6 @@ config OPENRISC
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select OR1K_PIC
+ 	select CPU_NO_EFFICIENT_FFS if !OPENRISC_HAVE_INST_FF1
+-	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select OMPIC if SMP
+ 	select ARCH_WANT_FRAME_POINTERS
+diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
+index ca5987e11053..cb260e7d73db 100644
+--- a/arch/openrisc/include/asm/Kbuild
++++ b/arch/openrisc/include/asm/Kbuild
+@@ -1,9 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += mcs_spinlock.h
+-generic-y += qspinlock_types.h
+-generic-y += qspinlock.h
++generic-y += ticket-lock.h
++generic-y += ticket-lock-types.h
+ generic-y += qrwlock_types.h
+ generic-y += qrwlock.h
+ generic-y += user.h
+diff --git a/arch/openrisc/include/asm/spinlock.h b/arch/openrisc/include/asm/spinlock.h
+index a8940bdfcb7e..0b839ed1f3a0 100644
+--- a/arch/openrisc/include/asm/spinlock.h
++++ b/arch/openrisc/include/asm/spinlock.h
+@@ -15,8 +15,7 @@
+ #ifndef __ASM_OPENRISC_SPINLOCK_H
+ #define __ASM_OPENRISC_SPINLOCK_H
+ 
+-#include <asm/qspinlock.h>
+-
++#include <asm/ticket-lock.h>
+ #include <asm/qrwlock.h>
+ 
+ #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
+diff --git a/arch/openrisc/include/asm/spinlock_types.h b/arch/openrisc/include/asm/spinlock_types.h
+index 7c6fb1208c88..58ea31fa65ce 100644
+--- a/arch/openrisc/include/asm/spinlock_types.h
++++ b/arch/openrisc/include/asm/spinlock_types.h
+@@ -1,7 +1,7 @@
+ #ifndef _ASM_OPENRISC_SPINLOCK_TYPES_H
+ #define _ASM_OPENRISC_SPINLOCK_TYPES_H
+ 
+-#include <asm/qspinlock_types.h>
++#include <asm/ticket-lock-types.h>
+ #include <asm/qrwlock_types.h>
+ 
+ #endif /* _ASM_OPENRISC_SPINLOCK_TYPES_H */
+diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
+index d74b13825501..a7a1296b0b4d 100644
+--- a/include/asm-generic/qspinlock.h
++++ b/include/asm-generic/qspinlock.h
+@@ -2,6 +2,36 @@
+ /*
+  * Queued spinlock
+  *
++ * A 'generic' spinlock implementation that is based on MCS locks. An
++ * architecture that's looking for a 'generic' spinlock, please first consider
++ * ticket-lock.h and only come looking here when you've considered all the
++ * constraints below and can show your hardware does actually perform better
++ * with qspinlock.
++ *
++ *
++ * It relies on atomic_*_release()/atomic_*_acquire() to be RCsc (or no weaker
++ * than RCtso if you're power), where regular code only expects atomic_t to be
++ * RCpc.
++ *
++ * It relies on a far greater (compared to ticket-lock.h) set of atomic
++ * operations to behave well together, please audit them carefully to ensure
++ * they all have forward progress. Many atomic operations may default to
++ * cmpxchg() loops which will not have good forward progress properties on
++ * LL/SC architectures.
++ *
++ * One notable example is atomic_fetch_or_acquire(), which x86 cannot (cheaply)
++ * do. Carefully read the patches that introduced queued_fetch_set_pending_acquire().
++ *
++ * It also heavily relies on mixed size atomic operations, in specific it
++ * requires architectures to have xchg16; something which many LL/SC
++ * architectures need to implement as a 32bit and+or in order to satisfy the
++ * forward progress guarantees mentioned above.
++ *
++ * Further reading on mixed size atomics that might be relevant:
++ *
++ *   http://www.cl.cam.ac.uk/~pes20/popl17/mixed-size.pdf
++ *
++ *
+  * (C) Copyright 2013-2015 Hewlett-Packard Development Company, L.P.
+  * (C) Copyright 2015 Hewlett-Packard Enterprise Development LP
+  *
+diff --git a/include/asm-generic/ticket-lock-types.h b/include/asm-generic/ticket-lock-types.h
+new file mode 100644
+index 000000000000..829759aedda8
+--- /dev/null
++++ b/include/asm-generic/ticket-lock-types.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __ASM_GENERIC_TICKET_LOCK_TYPES_H
++#define __ASM_GENERIC_TICKET_LOCK_TYPES_H
++
++#include <linux/types.h>
++typedef atomic_t arch_spinlock_t;
++
++#define __ARCH_SPIN_LOCK_UNLOCKED	ATOMIC_INIT(0)
++
++#endif /* __ASM_GENERIC_TICKET_LOCK_TYPES_H */
+diff --git a/include/asm-generic/ticket-lock.h b/include/asm-generic/ticket-lock.h
+new file mode 100644
+index 000000000000..3f0d53e21a37
+--- /dev/null
++++ b/include/asm-generic/ticket-lock.h
+@@ -0,0 +1,86 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * 'Generic' ticket-lock implementation.
++ *
++ * It relies on atomic_fetch_add() having well defined forward progress
++ * guarantees under contention. If your architecture cannot provide this, stick
++ * to a test-and-set lock.
++ *
++ * It also relies on atomic_fetch_add() being safe vs smp_store_release() on a
++ * sub-word of the value. This is generally true for anything LL/SC although
++ * you'd be hard pressed to find anything useful in architecture specifications
++ * about this. If your architecture cannot do this you might be better off with
++ * a test-and-set.
++ *
++ * It further assumes atomic_*_release() + atomic_*_acquire() is RCpc and hence
++ * uses atomic_fetch_add() which is SC to create an RCsc lock.
++ *
++ * The implementation uses smp_cond_load_acquire() to spin, so if the
++ * architecture has WFE like instructions to sleep instead of poll for word
++ * modifications be sure to implement that (see ARM64 for example).
++ *
++ */
++
++#ifndef __ASM_GENERIC_TICKET_LOCK_H
++#define __ASM_GENERIC_TICKET_LOCK_H
++
++#include <linux/atomic.h>
++#include <asm/ticket-lock-types.h>
++
++static __always_inline void ticket_lock(arch_spinlock_t *lock)
++{
++	u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
++	u16 ticket = val >> 16;
++
++	if (ticket == (u16)val)
++		return;
++
++	atomic_cond_read_acquire(lock, ticket == (u16)VAL);
++}
++
++static __always_inline bool ticket_trylock(arch_spinlock_t *lock)
++{
++	u32 old = atomic_read(lock);
++
++	if ((old >> 16) != (old & 0xffff))
++		return false;
++
++	return atomic_try_cmpxchg(lock, &old, old + (1<<16)); /* SC, for RCsc */
++}
++
++static __always_inline void ticket_unlock(arch_spinlock_t *lock)
++{
++	u16 *ptr = (u16 *)lock + __is_defined(__BIG_ENDIAN);
++	u32 val = atomic_read(lock);
++
++	smp_store_release(ptr, (u16)val + 1);
++}
++
++static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
++{
++	u32 val = atomic_read(lock);
++
++	return ((val >> 16) != (val & 0xffff));
++}
++
++static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
++{
++	u32 val = atomic_read(lock);
++
++	return (s16)((val >> 16) - (val & 0xffff)) > 1;
++}
++
++static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
++{
++	return !ticket_is_locked(&lock);
++}
++
++#define arch_spin_lock(l)		ticket_lock(l)
++#define arch_spin_trylock(l)		ticket_trylock(l)
++#define arch_spin_unlock(l)		ticket_unlock(l)
++#define arch_spin_is_locked(l)		ticket_is_locked(l)
++#define arch_spin_is_contended(l)	ticket_is_contended(l)
++#define arch_spin_value_unlocked(l)	ticket_value_unlocked(l)
++
++#endif /* __ASM_GENERIC_TICKET_LOCK_H */
