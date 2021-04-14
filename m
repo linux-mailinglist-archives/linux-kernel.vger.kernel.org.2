@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4E435EAE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377BA35EAE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244971AbhDNCal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:30:41 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:53626 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbhDNCai (ORCPT
+        id S239682AbhDNCce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:32:34 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:43126 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231423AbhDNCcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:30:38 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lWVHk-0002fD-KE; Tue, 13 Apr 2021 22:29:44 -0400
-Message-ID: <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-From:   Rik van Riel <riel@surriel.com>
-To:     Dave Chinner <david@fromorbit.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     SeongJae Park <sj38.park@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        page-reclaim@google.com
-Date:   Tue, 13 Apr 2021 22:29:44 -0400
-In-Reply-To: <20210413231436.GF63242@dread.disaster.area>
-References: <20210413075155.32652-1-sjpark@amazon.de>
-         <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
-         <20210413231436.GF63242@dread.disaster.area>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-F++cZhSa2Af2JhhC9Dpg"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+        Tue, 13 Apr 2021 22:32:33 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E2QMj9063285;
+        Wed, 14 Apr 2021 02:30:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=w6C5CtiBnXdjgKEXIjAFsIoL+gLxujYJkEUCd/DEkqE=;
+ b=AnHgQGespbOtXpgfo4hpU1xuzKDoFd+9fu6cGkCEAcERDAYam8dJTA5Jaw+fmOVDGgqI
+ 72neJ3vY0c1ICt2Z70wptFghoiKi7GNpMLS6jZewClNINB/Lcs5xXw/DN8UQredSSK/K
+ +e+pZvuFdlaugfhIQmEi5J+b0YGUb8FE81eKN+LHzKE3EO3bs4Bkxxhkhx6bO58UTOpv
+ KYCi2aNvLYWYjVOgmfG0SikXgg8IiJVp4aNEAnlC3J13c+1x3Owq+2F4wQ+YgcwMiA3F
+ wehjiErqikczxC3t66xaK+Ri34EoucTZrlygfFCFIaJgeXn2hKoZHsfdShTHu4mwToJ6 bA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 37u1hbh0m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 02:30:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E2PVFF055389;
+        Wed, 14 Apr 2021 02:30:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 37unst8pth-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 02:30:45 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13E2Uh9g028709;
+        Wed, 14 Apr 2021 02:30:43 GMT
+Received: from [10.39.235.234] (/10.39.235.234)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Apr 2021 02:30:43 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [External] : Re: [PATCH v14 4/6] locking/qspinlock: Introduce
+ starvation avoidance into CNA
+From:   Alex Kogan <alex.kogan@oracle.com>
+In-Reply-To: <20210413212203.GT3762101@tassilo.jf.intel.com>
+Date:   Tue, 13 Apr 2021 22:30:41 -0400
+Cc:     linux@armlinux.org.uk, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>, arnd@arndb.de,
+        longman@redhat.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7902C919-9624-48C9-89C3-D390A9FF78AB@oracle.com>
+References: <20210401153156.1165900-1-alex.kogan@oracle.com>
+ <20210401153156.1165900-5-alex.kogan@oracle.com>
+ <87mtu2vhzz.fsf@linux.intel.com>
+ <CA1141EF-76A8-47A9-97B9-3CB2FC246B1A@oracle.com>
+ <20210413212203.GT3762101@tassilo.jf.intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104140016
+X-Proofpoint-GUID: 0wVLpAsklsLLbRASaJbeaA4Y4iHpN-OR
+X-Proofpoint-ORIG-GUID: 0wVLpAsklsLLbRASaJbeaA4Y4iHpN-OR
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-F++cZhSa2Af2JhhC9Dpg
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2021-04-14 at 09:14 +1000, Dave Chinner wrote:
-> On Tue, Apr 13, 2021 at 10:13:24AM -0600, Jens Axboe wrote:
+> On Apr 13, 2021, at 5:22 PM, Andi Kleen <ak@linux.intel.com> wrote:
 >=20
-> > The initial posting of this patchset did no better, in fact it did
-> > a bit
-> > worse. Performance dropped to the same levels and kswapd was using
-> > as
-> > much CPU as before, but on top of that we also got excessive
-> > swapping.
-> > Not at a high rate, but 5-10MB/sec continually.
-> >=20
-> > I had some back and forths with Yu Zhao and tested a few new
-> > revisions,
-> > and the current series does much better in this regard. Performance
-> > still dips a bit when page cache fills, but not nearly as much, and
-> > kswapd is using less CPU than before.
+>>> ms granularity seems very coarse grained for this. Surely
+>>> at some point of spinning you can afford a ktime_get? But ok.
+>> We are reading time when we are at the head of the (main) queue, but
+>> don=E2=80=99t have the lock yet. Not sure about the latency of =
+ktime_get(), but
+>> anything reasonably fast but not necessarily precise should work.
 >=20
-> Profiles would be interesting, because it sounds to me like reclaim
-> *might* be batching page cache removal better (e.g. fewer, larger
-> batches) and so spending less time contending on the mapping tree
-> lock...
+> Actually cpu_clock / sched_clock (see my other email). These should
+> be fast without corner cases and also monotonic.
+I see, thanks.
+
 >=20
-> IOWs, I suspect this result might actually be a result of less lock
-> contention due to a change in batch processing characteristics of
-> the new algorithm rather than it being a "better" algorithm...
+>>=20
+>>> Could you turn that into a moduleparm which can be changed at =
+runtime?
+>>> Would be strange to have to reboot just to play with this parameter
+>> Yes, good suggestion, thanks.
+>>=20
+>>> This would also make the code a lot shorter I guess.
+>> So you don=E2=80=99t think we need the command-line parameter, just =
+the module_param?
+>=20
+> module_params can be changed at the command line too, so yes.
+Got it, thanks again.
 
-That seems quite likely to me, given the issues we have
-had with virtual scan reclaim algorithms in the past.
-
-SeongJae, what is this algorithm supposed to do when faced
-with situations like this:
-1) Running on a system with 8 NUMA nodes, and
-memory
-   pressure in one of those nodes.
-2) Running PostgresQL or Oracle, with hundreds of
-   processes mapping the same (very large) shared
-   memory segment.
-
-How do you keep your algorithm from falling into the worst
-case virtual scanning scenarios that were crippling the
-2.4 kernel 15+ years ago on systems with just a few GB of
-memory?
-
---=20
-All Rights Reversed.
-
---=-F++cZhSa2Af2JhhC9Dpg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB2U5gACgkQznnekoTE
-3oPxNggArWAg3BKjFNFCqV6hmRJcPb8OiTUU7M6upcMdSo+qTt5ivPbR1oqnHCc4
-9B41LFwOhK4jc2LThte6bsSVL3GkPTia9RC5oXouoUiwJdp56vhc6fFnWcXqjJTJ
-M2E8mu4iJKq7nDGYqz/w212PB93qDfyv00newmUFybKj6VaJoJf2iR7WLjpU4wjK
-SNXJct21QO7AftDHPGYsXmSqVK4vQrodF0b9Pl5CVvfida/SJk0da762a9R8KwqF
-pIBWVmGNBD7pZWp7xwvYff0OnIt/5n43O2ZdOhKOwRa6H2jEdaAB3IvsQSknBTJF
-FO+6mbmBscAP3jwlbHf2DddcgZKh5A==
-=0Yad
------END PGP SIGNATURE-----
-
---=-F++cZhSa2Af2JhhC9Dpg--
+=E2=80=94 Alex
 
