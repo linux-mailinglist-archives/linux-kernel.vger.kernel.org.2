@@ -2,124 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8E935F031
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BF835F032
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350237AbhDNIwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242680AbhDNIwH (ORCPT
+        id S231940AbhDNI51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:57:27 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21378 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229999AbhDNI5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:52:07 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164E0C061574;
-        Wed, 14 Apr 2021 01:51:44 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id f195-20020a1c1fcc0000b029012eb88126d7so135840wmf.3;
-        Wed, 14 Apr 2021 01:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SgTS99h3WWD1mgPszmFTe76jbtJ46MHLnHqqyUGMuQ0=;
-        b=Fz3NGIt8XnWPoiQNLlgvGgX2zguCjrxyGfrDYuF67IXU+FZYfc/tiRpU77lhKHmR+B
-         sbeGhmDqhAZbhQv9kVpJY4uPqOEl4AjbKZFXYm7h41WNRqGQV+WQ97QPuEcPevy0OY0u
-         CtyfYljhV2GcKG8co/lTtfA+ozOx0Bxz3O7EGIQs2ok02dhlqZ3DyVlshbwOPt1rSbEf
-         t9HTVsNly+wFUgSYAfLL90J0Mz42RoQZTlcLgkfeRX8R0H95Rg41dri5Hq5vwlcP+j0k
-         M1P6eHlbm+CQ7e6HqU69sfwL5fnIUx8chtXdLPbE+eOyXd/4PNFUM9sOOJPdqBLNbsfy
-         0Ckg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SgTS99h3WWD1mgPszmFTe76jbtJ46MHLnHqqyUGMuQ0=;
-        b=FHIJpTi082NIdUbfz62wpVLmwS7NY6ntkHSZyhEf61XfuZLCa+h9JWo96yrWonc6yO
-         RZqXIsGMIrSbepzSthoiAAKJs12spA7nXeRGyQnAmvExQ9A3yLZi+oIK+3e3lTiqg4Ey
-         mdkyKQE3mbYdjGKsERQCv1KtL5/pwO9RjY8mXXD8Fw2o36P4zUGHTt/UHj7r7ftkwbKm
-         hI+FVShrwR8Zqy9usV6pNbzb7ZcfsLdd+41cbnt1aCpwlLQYLisIdnUyVHWm3bR+YqN5
-         jekPMMdoY5q7Tv8FlLQBJWhKzJkm539IuT0I4VSC9M3yaRmoYq5FG8q/DJPDKDJQbBWa
-         Jnpg==
-X-Gm-Message-State: AOAM532BMPtdVXl5QV2DJjYMyWGSDwsCe8Ii5oAkGm6Vxa05zhpiMYdl
-        pzAx7xZMJ+M6n0vheF9AkAQ=
-X-Google-Smtp-Source: ABdhPJzlsoMGmtNqfM+N+3qmXD8myVkzGZ3TeNQOfQEJ9Qx9NmrcG6bRpvhCGDTiQPkNkLctsN4FAQ==
-X-Received: by 2002:a05:600c:1548:: with SMTP id f8mr1898048wmg.81.1618390302777;
-        Wed, 14 Apr 2021 01:51:42 -0700 (PDT)
-Received: from ziggy.stardust ([37.223.140.37])
-        by smtp.gmail.com with ESMTPSA id v14sm22498881wrd.48.2021.04.14.01.51.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 01:51:42 -0700 (PDT)
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <1618226325-31927-1-git-send-email-yongqiang.niu@mediatek.com>
- <CABb+yY1b9wD0hoBx=aYzpLcF-=EEG4QTrV68sZj8+rtf5J1aJQ@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v2, 0/5] Revert "mailbox: mediatek: remove implementation
- related to atomic_exec"
-Message-ID: <1d946d1c-1626-33ed-26ba-f840729d63e7@gmail.com>
-Date:   Wed, 14 Apr 2021 10:51:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 14 Apr 2021 04:57:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1618390615; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=bMUx/A/kUlwgCyUPSy4Ho88R4JFA/QzVjCDV0j/EiGWBDSNZVzAIUO3lWO5ZFJ711w7C3y/7QEPCN4BzDqvshu4FSz4snQiw5XlwDwLcRiyLObqUHNpPPMgvwB+S6Ud7yPpoUuSrwLLrupmxY9QAkojQerC7pMuDYhQm61Shvt8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1618390615; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=olVU/cxS9e+IukR6nNhPDZKEZL23u7UepX1VMbr2NRg=; 
+        b=lNjo0CRUivU3ukSRLgLGWd/ek4uRzziCYD9bxmxyTReJcyQQz3aG93RhwCMqEL6XEel4mgvovR8J0Bdc2BCNkB0dC7IlZjVnBxc9d+21C7XK6DTgFzKNQDYJWcsCqQfapjZrN6FpE0st+MWQNYzjxFwZjNwaPzpg6ur0/t81Q64=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1618390615;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=olVU/cxS9e+IukR6nNhPDZKEZL23u7UepX1VMbr2NRg=;
+        b=eNi8ySCjN+cFWfN+vAhDqxzgOw/Np6VwbY3LCqD5N7NP2V6KKP1bQufs1vJsVzZr
+        V3CIYns8VXrzIS/YQdpt7TMIQWrBirpN0EENIpp/XaTT73hetAEJFdNLIRJ62KFCN1V
+        ym8u3Bmdo94geaLLCK2bczpqVwtUsCcvDvs6P+/A=
+Received: from localhost.localdomain (49.207.201.215 [49.207.201.215]) by mx.zohomail.com
+        with SMTPS id 1618390613494448.2878525995242; Wed, 14 Apr 2021 01:56:53 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Junyong Sun <sunjy516@gmail.com>
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] firmware_loader: fix use-after-free in firmware_fallback_sysfs
+Date:   Wed, 14 Apr 2021 14:24:05 +0530
+Message-Id: <20210414085406.1842-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CABb+yY1b9wD0hoBx=aYzpLcF-=EEG4QTrV68sZj8+rtf5J1aJQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This use-after-free happens when a fw_priv object has been freed but
+hasn't been removed from the pending list (pending_fw_head). The next
+time fw_load_sysfs_fallback tries to insert into the list, it ends up
+accessing the pending_list member of the previoiusly freed fw_priv.
 
+The root cause here is that all code paths that abort the fw load
+don't delete it from the pending list. For example:
 
-On 12/04/2021 17:29, Jassi Brar wrote:
-> On Mon, Apr 12, 2021 at 6:18 AM Yongqiang Niu
-> <yongqiang.niu@mediatek.com> wrote:
->>
->> This series base linux 5.12-rc2
->> these patches will cause home ui flick when cursor moved,
->> there is no fix solution yet, revert these patches first.
->>
->> change since v1:
->> add mtk-gce.txt and dts modification
->>
->> Yongqiang Niu (5):
->>   Revert "drm/mediatek: Make sure previous message done or be aborted
->>     before send"
->>   Revert "mailbox: mediatek: remove implementation related to
->>     atomic_exec"
->>   Revert "dt-bindings: mailbox: mtk-gce: fix incorrect mbox-cells value"
->>   Revert "arm64: dts: mediatek: mt8183: fix gce incorrect mbox-cells
->>     value"
->>   arm64: dts: mediatek: mt8183: add gce information for mmsys
->>
->>  .../devicetree/bindings/mailbox/mtk-gce.txt        |  2 +-
->>  arch/arm64/boot/dts/mediatek/mt8183.dtsi           |  5 +-
->>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c            |  1 -
->>  drivers/mailbox/mtk-cmdq-mailbox.c                 | 80 +++++++++++++++++++---
->>  4 files changed, 76 insertions(+), 12 deletions(-)
->>
-> Please break the patchsets (this and the other 3) into mailbox only
-> and platform specific ones.
-> Also, it would help if there are some acked/reviewed by some mtk folks
-> especially when reverting patches.
-> 
+	_request_firmware()
+	  -> fw_abort_batch_reqs()
+	      -> fw_state_aborted()
 
-I'd prefer to have DT and mailbox patches together as otherwise the burden on me
-to find out which patches in the driver are needed, and to check if these got
-accepted, gets higher.
+To fix this, delete the fw_priv from the list in __fw_set_state() if
+the new state is DONE or ABORTED. This way, all aborts will remove
+the fw_priv from the list. Accordingly, remove calls to list_del_init
+that were being made before calling fw_state_(aborted|done).
 
-Regards,
-Matthias
+Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
+list if it is already aborted. Instead, just jump out and return early.
+
+Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
+Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+
+Changes in v3:
+Modified the patch to incorporate suggestions by Luis Chamberlain in
+order to fix the root cause instead of applying a "band-aid" kind of
+fix.
+https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
+
+Changes in v2:
+1. Fixed 1 error and 1 warning (in the commit message) reported by
+checkpatch.pl. The error was regarding the format for referring to
+another commit "commit <sha> ("oneline")". The warning was for line
+longer than 75 chars. 
+
+---
+ drivers/base/firmware_loader/fallback.c | 8 ++++++--
+ drivers/base/firmware_loader/firmware.h | 6 +++++-
+ drivers/base/firmware_loader/main.c     | 2 ++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+index 91899d185e31..73581b6998b4 100644
+--- a/drivers/base/firmware_loader/fallback.c
++++ b/drivers/base/firmware_loader/fallback.c
+@@ -94,7 +94,6 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
+ 	if (fw_sysfs_done(fw_priv))
+ 		return;
+ 
+-	list_del_init(&fw_priv->pending_list);
+ 	fw_state_aborted(fw_priv);
+ }
+ 
+@@ -280,7 +279,6 @@ static ssize_t firmware_loading_store(struct device *dev,
+ 			 * Same logic as fw_load_abort, only the DONE bit
+ 			 * is ignored and we set ABORT only on failure.
+ 			 */
+-			list_del_init(&fw_priv->pending_list);
+ 			if (rc) {
+ 				fw_state_aborted(fw_priv);
+ 				written = rc;
+@@ -513,6 +511,11 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
+ 	}
+ 
+ 	mutex_lock(&fw_lock);
++	if (fw_state_is_aborted(fw_priv)) {
++		mutex_unlock(&fw_lock);
++		retval = -EAGAIN;
++		goto out;
++	}
+ 	list_add(&fw_priv->pending_list, &pending_fw_head);
+ 	mutex_unlock(&fw_lock);
+ 
+@@ -540,6 +543,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
+ 	} else if (fw_priv->is_paged_buf && !fw_priv->data)
+ 		retval = -ENOMEM;
+ 
++out:
+ 	device_del(f_dev);
+ err_put_dev:
+ 	put_device(f_dev);
+diff --git a/drivers/base/firmware_loader/firmware.h b/drivers/base/firmware_loader/firmware.h
+index 63bd29fdcb9c..36bdb413c998 100644
+--- a/drivers/base/firmware_loader/firmware.h
++++ b/drivers/base/firmware_loader/firmware.h
+@@ -117,8 +117,12 @@ static inline void __fw_state_set(struct fw_priv *fw_priv,
+ 
+ 	WRITE_ONCE(fw_st->status, status);
+ 
+-	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED)
++	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED) {
++#ifdef CONFIG_FW_LOADER_USER_HELPER
++		list_del_init(&fw_priv->pending_list);
++#endif
+ 		complete_all(&fw_st->completion);
++	}
+ }
+ 
+ static inline void fw_state_aborted(struct fw_priv *fw_priv)
+diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+index 4fdb8219cd08..68c549d71230 100644
+--- a/drivers/base/firmware_loader/main.c
++++ b/drivers/base/firmware_loader/main.c
+@@ -783,8 +783,10 @@ static void fw_abort_batch_reqs(struct firmware *fw)
+ 		return;
+ 
+ 	fw_priv = fw->priv;
++	mutex_lock(&fw_lock);
+ 	if (!fw_state_is_aborted(fw_priv))
+ 		fw_state_aborted(fw_priv);
++	mutex_unlock(&fw_lock);
+ }
+ 
+ /* called from request_firmware() and request_firmware_work_func() */
+-- 
+2.26.2
+
