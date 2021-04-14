@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C6A35F426
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0125A35F42D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhDNMnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:43:18 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:51148 "EHLO pegase1.c-s.fr"
+        id S233858AbhDNMnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233225AbhDNMnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:43:16 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FL2F84yKmz9txVV;
-        Wed, 14 Apr 2021 14:42:52 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id nM2lXP3VZmSI; Wed, 14 Apr 2021 14:42:52 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FL2F83Ygfz9txVT;
-        Wed, 14 Apr 2021 14:42:52 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B6208B7C6;
-        Wed, 14 Apr 2021 14:42:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id G6vVtpZps7WL; Wed, 14 Apr 2021 14:42:53 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4F3858B7C0;
-        Wed, 14 Apr 2021 14:42:52 +0200 (CEST)
-Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when
- possible
-To:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Paul Mackerras <paulus@samba.org>
-References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu>
- <20210412215428.GM26583@gate.crashing.org>
- <ecb1b1a5-ae92-e8a3-6490-26341edfbccb@csgroup.eu>
- <20210413215803.GT26583@gate.crashing.org>
- <1618365589.67fxh7cot9.astroid@bobo.none>
- <20210414122409.GV26583@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu>
-Date:   Wed, 14 Apr 2021 14:42:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210414122409.GV26583@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S233671AbhDNMnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 08:43:22 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2FBE61155;
+        Wed, 14 Apr 2021 12:43:01 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lWerD-007QuU-MK; Wed, 14 Apr 2021 13:42:59 +0100
+Date:   Wed, 14 Apr 2021 13:42:53 +0100
+Message-ID: <871rbdt4tu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+In-Reply-To: <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+        <871rbeo7wf.wl-maz@kernel.org>
+        <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+        <87y2dmmggt.wl-maz@kernel.org>
+        <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+        <87tuoambdb.wl-maz@kernel.org>
+        <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: pgwipeout@gmail.com, tglx@linutronix.de, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 14/04/2021 à 14:24, Segher Boessenkool a écrit :
-> On Wed, Apr 14, 2021 at 12:01:21PM +1000, Nicholas Piggin wrote:
->> Would be nice if we could let the compiler deal with it all...
->>
->> static inline unsigned long lr(unsigned long *mem)
->> {
->>          unsigned long val;
->>
->>          /*
->>           * This doesn't clobber memory but want to avoid memory operations
->>           * moving ahead of it
->>           */
->>          asm volatile("ldarx     %0, %y1" : "=r"(val) : "Z"(*mem) : "memory");
->>
->>          return val;
->> }
+On Wed, 14 Apr 2021 12:41:20 +0100,
+Peter Geis <pgwipeout@gmail.com> wrote:
 > 
-> (etc.)
+> On Tue, Apr 13, 2021 at 11:51 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Tue, 13 Apr 2021 16:03:51 +0100,
+> > Peter Geis <pgwipeout@gmail.com> wrote:
+> > >
+> > > On Tue, Apr 13, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > [...]
+> >
+> > > > What happens if you hack all the allocations to happen in the low 4GB
+> > > > of the PA space?
+> > >
+> > > It seems to work correctly.
+> > > The downstream hacks used GFP_DMA32 which gets discarded by
+> > > kmalloc_fix_flags on certain allocations.
+> > > Switching to GFP_DMA seems to have satisfied it, but it feels wrong
+> > > using this code.
+> > > Need to check the corner cases to make sure I'm not missing something.
+> >
+> > The problem is that GFP_DMA doesn't always mean the same thing.
+> > Overall, we need to hear from Rockchip about the exact nature of the
+> > problem, and then we *may* be able to work something out.
 > 
-> That can not work reliably: the compiler can put random instructions
-> between the larx and stcx. this way, and you then do not have guaranteed
-> forward progress anymore.  It can put the two in different routines
-> (after inlining and other interprocedural optimisations), duplicate
-> them, make a different number of copies of them, etc.
+> From what I've read, GFP_DMA allocates as low as possible, while
+> GFP_DMA32 ensures it's in the 32 bit address range, am I understanding
+> this correctly?
+
+ZONE_DMA{,32} aren't necessarily selected, and can vary in size (some
+equally broken systems can only DMA over 30bits...).
+
+> Is there a reason GFP_DMA is permitted while GFP_DMA32 is not, aside
+> from backwards compatibility?  (I saw the notes about how we aren't
+> really supposed to rely on these flags)
+
+They are completely independent, and they can either be selected or
+not. And plenty of systems do not have any memory in the low
+4GB. FWIW, one of my main machines has its first byte of RAM at 1TB.
+
+Which means that supporting this system is going to require some very
+specific handling.
+
+> I've also confirmed that their disabling shareability and caching is
+> necessary.
+
+Confirmed how? For which tables? We really cannot guess this kind of
+thing.
+
+> > I'd also like to understand whether it is broken because you happen to
+> > have pre-release silicon that will never make it into the wild, or if
+> > this is the real thing that is going to ship on millions of devices.
 > 
-> Nothing of that is okay if you want to guarantee forward progress on all
-> implementations, and also not if you want to have good performance
-> everywhere (or anywhere even).  Unfortunately you have to write all
-> larx/stcx. loops as one block of assembler, so that you know exactly
-> what instructions will end up in your binary.
-> 
-> If you don't, it will fail mysteriously after random recompilations, or
-> have performance degradations, etc.  You don't want to go there :-)
-> 
+> My understanding is these chips are samples prior to the full
+> production run, but we are waiting on official comment from Rockchip
+> about this particular errata.
 
-Could the kernel use GCC builtin atomic functions instead ?
+OK. Please let me know once you get a full description of the problem
+from Rockchip. We will also need an official erratum number for this
+if this is to be worked around in mainline.
 
-https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
+	M.
 
-
+-- 
+Without deviation from the norm, progress is not possible.
