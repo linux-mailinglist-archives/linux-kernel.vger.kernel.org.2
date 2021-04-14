@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B0735FCAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8CF35FCAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243578AbhDNUaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbhDNUaD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:30:03 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDB3C061574;
-        Wed, 14 Apr 2021 13:29:41 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id o10so23577775ybb.10;
-        Wed, 14 Apr 2021 13:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k5+3Zcx9SbPgbtideyuztneS+UphA/WZENqotqNybCo=;
-        b=Cne8wDCv8xZzPpyCejigmMiiK72EAolmihHlFf9BvT8vNS3TOvJxdileV9kq6EHAuw
-         VnHgybuoHRVZvpFWbGNpMMGIs1iez2Zx3L4MHfeJut6MubGEk2AyFRMdQkoDxgtANUEb
-         c12uupBh/lkfvh0tacVFI2Nws1flG0+KEp5i5OojS6ohzRCfuL4by3KgLvTO7tMx2IpW
-         FFRK75R+v0hvl2qfxOEiQrw4YXslAx9BhoZ90GB3JckIYPLtYzdEtLU7KkXJsUXahbW8
-         gAgG3VuRuPd/NXFGYIQDS69m6nW2CF4SQxg7Qgwj9mBkB0kCB/r7+RnHhLEYcMN5MN9a
-         xtLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k5+3Zcx9SbPgbtideyuztneS+UphA/WZENqotqNybCo=;
-        b=AbUa5KDIXOT7HPpK21LgkjpXlgd0kA89ktwZrzj0usxYig0e6Ka0JbJ5ITf9p27ohQ
-         CG5dGb9y20LOnF1F5+yPvXHBLHXxCOYmjPt86rG7sFztpfNkfhtC0q/yWI1Ml6tMbwRv
-         bzYRTSut6Cvevs6FeVApNkIWDM2RE0pK5JHqG/ARouyUk+hdBH4EXHvD7fwcvI7W6uX4
-         baWvE06jNO7J5oo3R/AfsN6t8ej6F9itTywh49YhqD1H1LaSwMEPtB3C/cJ36W6NkED8
-         dA9Ty/H7tHbQhv9cESZ4JnGSZjDGqXHEUfIGUIp4rlCVuhLHXIGeV9ysDxifccOtOmbZ
-         FIlw==
-X-Gm-Message-State: AOAM531XyCTEmR+DpOIusDBPGnICIBbCvfzrTwnBvumH5uZ+EO8A3JjA
-        2wztItPIfxO+hjwrmyRunfNtZ2ikhsMbj862i9VEkcXd3rQJrA==
-X-Google-Smtp-Source: ABdhPJx+qxrzB0uaHK8kY8gSFqvwpxqkk7bZ5pRKgT+ZXeNYlXZYhUhnTXTIBXR9Mh7x3yiMfLT8aahFZ7vqwW1PY+E=
-X-Received: by 2002:a25:cfc2:: with SMTP id f185mr36810340ybg.26.1618432180677;
- Wed, 14 Apr 2021 13:29:40 -0700 (PDT)
+        id S244085AbhDNUaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243809AbhDNUaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:30:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB62F61090;
+        Wed, 14 Apr 2021 20:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618432191;
+        bh=0/g8QgxcPByWv4b4UdJd4FLad687IHnLM2vVf0ZWjRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bqtXXI6cAJ95seHOi/o4nAFhJ6cmvJJ3iQYMhPzjIWkExHdlx8qW3SiuEYaM0ZbZI
+         SqlG/khazIjpgkFsNZeYJE0YqMrUJBpSpOb/xeXncRBxBxvk8HcF5jTAdCcBeYu7UA
+         dqeZ3w4s4t1e9PzpKaAW9T5x3oV5xw05JxqA4W/nk8pXWO/6lnOH4YGoyD3Y5hOxOK
+         OLkp3g6pY7ZhKS3tdc02Vjmlo9GL43D5mcxMnU+nN507gzFgo8NFsOTj8RiIGfH3EY
+         3jGFfEVngjqnmqUHYKFS/ghGTuTXbRfPGslgr+/4hS6QkesNPAlwppYYSbuFF52+4J
+         /QjLAfgysF3YQ==
+Date:   Wed, 14 Apr 2021 23:29:42 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC/RFT PATCH 2/3] arm64: decouple check whether pfn is normal
+ memory from pfn_valid()
+Message-ID: <YHdQtmuxpqi4wCE/@kernel.org>
+References: <20210407172607.8812-1-rppt@kernel.org>
+ <20210407172607.8812-3-rppt@kernel.org>
+ <4a788546-b854-fd35-644a-f1d9075a9a78@arm.com>
+ <9c0956f0-494e-5c6b-bdc2-d4213afd5e2f@redhat.com>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414200953.GX2531743@casper.infradead.org>
-In-Reply-To: <20210414200953.GX2531743@casper.infradead.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 14 Apr 2021 22:29:29 +0200
-Message-ID: <CANiq72khBa2GcB6-PHM3A44Y90d6vzYAS=BVpk3nT4B6u+NVDw@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c0956f0-494e-5c6b-bdc2-d4213afd5e2f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:10 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Apr 14, 2021 at 05:58:26PM +0200, David Hildenbrand wrote:
+> On 08.04.21 07:14, Anshuman Khandual wrote:
+> > 
+> > On 4/7/21 10:56 PM, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > The intended semantics of pfn_valid() is to verify whether there is a
+> > > struct page for the pfn in question and nothing else.
+> > 
+> > Should there be a comment affirming this semantics interpretation, above the
+> > generic pfn_valid() in include/linux/mmzone.h ?
+> > 
+> > > 
+> > > Yet, on arm64 it is used to distinguish memory areas that are mapped in the
+> > > linear map vs those that require ioremap() to access them.
+> > > 
+> > > Introduce a dedicated pfn_is_memory() to perform such check and use it
+> > > where appropriate.
+> > > 
+> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > ---
+> > >   arch/arm64/include/asm/memory.h | 2 +-
+> > >   arch/arm64/include/asm/page.h   | 1 +
+> > >   arch/arm64/kvm/mmu.c            | 2 +-
+> > >   arch/arm64/mm/init.c            | 6 ++++++
+> > >   arch/arm64/mm/ioremap.c         | 4 ++--
+> > >   arch/arm64/mm/mmu.c             | 2 +-
+> > >   6 files changed, 12 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> > > index 0aabc3be9a75..7e77fdf71b9d 100644
+> > > --- a/arch/arm64/include/asm/memory.h
+> > > +++ b/arch/arm64/include/asm/memory.h
+> > > @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+> > >   #define virt_addr_valid(addr)	({					\
+> > >   	__typeof__(addr) __addr = __tag_reset(addr);			\
+> > > -	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
+> > > +	__is_lm_address(__addr) && pfn_is_memory(virt_to_pfn(__addr));	\
+> > >   })
+> > >   void dump_mem_limit(void);
+> > > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+> > > index 012cffc574e8..32b485bcc6ff 100644
+> > > --- a/arch/arm64/include/asm/page.h
+> > > +++ b/arch/arm64/include/asm/page.h
+> > > @@ -38,6 +38,7 @@ void copy_highpage(struct page *to, struct page *from);
+> > >   typedef struct page *pgtable_t;
+> > >   extern int pfn_valid(unsigned long);
+> > > +extern int pfn_is_memory(unsigned long);
+> > >   #include <asm/memory.h>
+> > > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > > index 8711894db8c2..ad2ea65a3937 100644
+> > > --- a/arch/arm64/kvm/mmu.c
+> > > +++ b/arch/arm64/kvm/mmu.c
+> > > @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+> > >   static bool kvm_is_device_pfn(unsigned long pfn)
+> > >   {
+> > > -	return !pfn_valid(pfn);
+> > > +	return !pfn_is_memory(pfn);
+> > >   }
+> > >   /*
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index 3685e12aba9b..258b1905ed4a 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -258,6 +258,12 @@ int pfn_valid(unsigned long pfn)
+> > >   }
+> > >   EXPORT_SYMBOL(pfn_valid);
+> > > +int pfn_is_memory(unsigned long pfn)
+> > > +{
+> > > +	return memblock_is_map_memory(PFN_PHYS(pfn));
+> > > +}
+> > > +EXPORT_SYMBOL(pfn_is_memory);> +
+> > 
+> > Should not this be generic though ? There is nothing platform or arm64
+> > specific in here. Wondering as pfn_is_memory() just indicates that the
+> > pfn is linear mapped, should not it be renamed as pfn_is_linear_memory()
+> > instead ? Regardless, it's fine either way.
+> 
+> TBH, I dislike (generic) pfn_is_memory(). It feels like we're mixing
+> concepts.
+
+Yeah, at the moment NOMAP is very much arm specific so I'd keep it this way
+for now.
+
+>  NOMAP memory vs !NOMAP memory; even NOMAP is some kind of memory
+> after all. pfn_is_map_memory() would be more expressive, although still
+> sub-optimal.
 >
-> On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
-> >   - Manish Goregaokar implemented the fallible `Box`, `Arc`, and `Rc`
-> >     allocator APIs in Rust's `alloc` standard library for us.
->
-> There's a philosophical point to be discussed here which you're skating
-> right over!  Should rust-in-the-linux-kernel provide the same memory
-> allocation APIs as the rust-standard-library, or should it provide a Rusty
-> API to the standard-linux-memory-allocation APIs?  You seem to be doing
-> both ... there was a wrapper around alloc_pages() in the Binder patches,
-> and then you talk about Box, Arc and Rc here.
+> We'd actually want some kind of arm64-specific pfn_is_system_memory() or the
+> inverse pfn_is_device_memory() -- to be improved.
 
-Please see my reply to Linus. The Rust standard library team is doing
-work on allocators, fallible allocations, etc., but that is very much
-a WIP. We hope that our usage and needs inform them in their design.
+In my current version (to be posted soon) I've started with
+pfn_lineary_mapped() but then ended up with pfn_mapped() to make it
+"upward" compatible with architectures that use direct rather than linear
+map :)
 
-Manish Goregaokar implemented the `try_reserve` feature since he knew
-we wanted to have fallible allocations etc. (I was not really involved
-in that, perhaps somebody else can comment); but we will have to
-replace `alloc` anyway in the near feature, and we wanted to give
-Manish credit for advancing the state of the art there nevertheless.
-
-> Maybe there's some details about when one can use one kind of API and
-> when to use another.  But I fear that we'll have Rust code at interrupt
-> level trying to use allocators which assume that they can sleep, and
-> things will go badly wrong.
-
-Definitely. In fact, we want to have all public functions exposed by
-Rust infrastructure tagged with the context they can work in, etc.
-Ideally, we could propose a language feature like "colored `unsafe`"
-so that one can actually inform the compiler that a function is only
-safe in some contexts, e.g. `unsafe(interrupt)`. But language features
-are a moonshot, for the moment we want to go with the annotation in
-the doc-comment, like we do with the `Safety` preconditions and type
-invariants.
-
-Cheers,
-Miguel
+-- 
+Sincerely yours,
+Mike.
