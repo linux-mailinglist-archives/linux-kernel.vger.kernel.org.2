@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200B35F28A
+	by mail.lfdr.de (Postfix) with ESMTP id BD68835F28B
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350493AbhDNL3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S1346583AbhDNL3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbhDNL3G (ORCPT
+        with ESMTP id S1343964AbhDNL3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:29:06 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5354C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:44 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id o22-20020a1ca5160000b0290126af94672aso1974298wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:44 -0700 (PDT)
+        Wed, 14 Apr 2021 07:29:10 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCB8C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:46 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id i3-20020adffc030000b02900ffd75bf10aso936888wrr.14
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=btwVZVIkoVW0S9+I18X0VVI6S1SmB7cJxLrTXtQjEgc=;
-        b=rmfzsKjsORQVG0A/P/4DnlOPiA7eHUncCKQJCktEmlUFXyCptqgaqhH9bipn2+9zrE
-         F/Qv1LBsK4qsbejl+B6IH86V50xLS3FeGBsryPt3ghht+hkbdUX6B3KH9PCO1Gz4UgvS
-         Lg7OQklvavKlay2jZ6pqkRuDJy8Ecf4LJq0u+oORcImoRvo9B51f7Rkoq7lXILcENAke
-         6dBzxPAi3A8zfjIUaqdlkYFA2QrsIaYtARYh0DBqc4nq+zIAemy8KSgZvtATdniS8hYb
-         JILaSacNoySwkBd9pHvB+nba0yO7OOT7irX/sFDgtZW9fKxipqXXaF10R67lPE/UOuGZ
-         DeDA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=VkOAwUtZ9qQlBvfTOOD6U+Kd6iuYzrcUXQ5MLQjL3Vk=;
+        b=vw/WsGYwcg3V6fgb6+UpR6Q15BByBnR9HfL2yOI4vfEug+KXzYobTC1Zpr8wmWpg6B
+         cRDjsqfrXgxfZH6+DAeEmF0I136WvJoOecQ1tMIdX37Rq2J2ZMAXdMwzBbuzw6QWlo1H
+         BdYUrsTePab2tpDL670jQ2blnmCXmqKDrAL6AR4TtpfGvCJH6J+UYcOzJTlf+F+5Utbq
+         q6ueoRMAuRcbhRLj1C9lZH6LEmK81dmxxHYQMTcjwh5Y39UHm4A6Q2E4mbn0YvYW+hQS
+         VoNZ+kb0oomzWX0mRNjdNb4tm8xdPY4yts0mc7pkJzNX9ebqhCOYtIJ6JYk7JDxeUilG
+         NTFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=btwVZVIkoVW0S9+I18X0VVI6S1SmB7cJxLrTXtQjEgc=;
-        b=n5mzTp0MBLlxDCruNCbQodGPSZvLtzsZIyG91bnSsP3bqfz+6CJ/CjgYXMMKym448H
-         c6ujqvTx1tWhRcD+B7eJBIs1YNItR+JEzrnG5PGav6PpOshsbvKiT3GXGPttzMULeDng
-         NpM4DH/s+/1/oLfCx2FaRnN8RrS3e0XRSohgeWzhFu0XS22JA9xLG7Yi2e5HWUlCek3P
-         5YCdROsp/mdhEF4tQtDLcTFDG/qPr6YSVmYJ2k7U/23wOpnXRA2VQkmFy3btP1qeZYdh
-         8Z3FrafXSa3wxaWiWdXWofYbm/ZOxug1yKypU5Ipx9D57N6TkD1uP5rQEbLnOhDrfENA
-         sMTg==
-X-Gm-Message-State: AOAM530sT6NttstWKXXyUBf8X5jzhERd+P600j3speJ9tBZ6As1jgbCz
-        0JRvKp2KL3nxl3qPqu5UJtZ5D11rDg==
-X-Google-Smtp-Source: ABdhPJwx/YUJHGP9FFwM9nMy7yp0o2uDWVADgFjefOG962tU4yuO7IQUBOq9g2y1ty3xUnZ3so9IZVyGtA==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=VkOAwUtZ9qQlBvfTOOD6U+Kd6iuYzrcUXQ5MLQjL3Vk=;
+        b=c3Si/ZK83iwagdKkXpxOiTvHSgP9zGq1owynr0fBzYxgnZ5qViRDTRMuq/08SB2RBm
+         8lLAKYh749Fgx+wO2Nv68Cvig9s4sypKVLLQPBds/zDL9m/g0rXhsruJFmYYLEmpeuo9
+         89spLc5w26x3Wxy3L7q4L8xplit0ZGfj9vXnsjuQX/DFwOjSs0JGP6kLfLLIt2EW3uO0
+         Si/vbq8l20i4csMgyaqATLhMWc/xKWcxLaChEQqypR5xOPzFd0qGOnZAqZ6nuDi+DkyK
+         fM5bv4wp0BzFuCb+N4H5NUMWi78XWYb7PpEocoY+j+jaMH4ZrEQCIehyVg7umLT7Dcy8
+         lzug==
+X-Gm-Message-State: AOAM533no6OyGC2/IRYYEdm3vWuKgssfOrpKu7c+WRzyyzrz/V8YWHS3
+        lZAP+Uyo9wWxnRfokRh3FYYw+0XPDA==
+X-Google-Smtp-Source: ABdhPJx+fmVeZ8di+ClCYJADr4FSujA94daf3kIFsEJ9mpuqBs6N4pj6BRHFYy096IGhDpPVt7R9U/ykig==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:4051:8ddb:9de4:c1bb])
- (user=elver job=sendgmr) by 2002:a05:600c:3641:: with SMTP id
- y1mr2603071wmq.65.1618399723368; Wed, 14 Apr 2021 04:28:43 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 13:28:16 +0200
-Message-Id: <20210414112825.3008667-1-elver@google.com>
+ (user=elver job=sendgmr) by 2002:a05:600c:4b92:: with SMTP id
+ e18mr2621686wmp.150.1618399725592; Wed, 14 Apr 2021 04:28:45 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 13:28:17 +0200
+In-Reply-To: <20210414112825.3008667-1-elver@google.com>
+Message-Id: <20210414112825.3008667-2-elver@google.com>
 Mime-Version: 1.0
+References: <20210414112825.3008667-1-elver@google.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH 0/9] kcsan: Add support for reporting observed value changes
+Subject: [PATCH 1/9] kcsan: Simplify value change detection
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     mark.rutland@arm.com, will@kernel.org, dvyukov@google.com,
@@ -58,66 +62,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for showing observed value changes in reports.
-Several clean up and refactors of KCSAN reporting code are done as a
-pre-requisite. An example of the new KCSAN reports:
+From: Mark Rutland <mark.rutland@arm.com>
 
-	==================================================================
-	BUG: KCSAN: data-race in test_kernel_read / test_kernel_write
+In kcsan_setup_watchpoint() we store snapshots of a watched value into a
+union of u8/u16/u32/u64 sized fields, modify this in place using a
+consistent field, then later check for any changes via the u64 field.
 
-	write to 0xffffffffc009a628 of 8 bytes by task 487 on cpu 0:
-	 test_kernel_write+0x1d/0x30
-	 access_thread+0x89/0xd0
-	 kthread+0x23e/0x260
-	 ret_from_fork+0x22/0x30
+We can achieve the safe effect more simply by always treating the field
+as a u64, as smaller values will be zero-extended. As the values are
+zero-extended, we don't need to truncate the access_mask when we apply
+it, and can always apply the full 64-bit access_mask to the 64-bit
+value.
 
-	read to 0xffffffffc009a628 of 8 bytes by task 488 on cpu 6:
-	 test_kernel_read+0x10/0x20
-	 access_thread+0x89/0xd0
-	 kthread+0x23e/0x260
-	 ret_from_fork+0x22/0x30
+Finally, we can store the two snapshots and calculated difference
+separately, which makes the code a little easier to read, and will
+permit reporting the old/new values in subsequent patches.
 
-	value changed: 0x00000000000009a6 -> 0x00000000000009b2
+There should be no functional change as a result of this patch.
 
-	Reported by Kernel Concurrency Sanitizer on:
-	CPU: 6 PID: 488 Comm: access_thread Not tainted 5.12.0-rc2+ #1
-	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-	==================================================================
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ kernel/kcsan/core.c | 40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
-On one hand this will help better understand "race of unknown origin"
-(one stack trace only) reports, but also provides more information to
-better understand normal data race reports like above where KCSAN also
-detected a value change.
-
-Changelog
----------
-
-This series was originally prepared courtesy of Mark Rutland in
-September 2020. Because KCSAN had a few minor changes since the original
-draft of the series, it required a rebase and re-test. To not be
-forgotten and get these changes in sooner than later, Mark kindly agreed
-to me adopting the series and doing the rebase, a few minor tweaks, and
-finally re-test.
-
-Marco Elver (1):
-  kcsan: Document "value changed" line
-
-Mark Rutland (8):
-  kcsan: Simplify value change detection
-  kcsan: Distinguish kcsan_report() calls
-  kcsan: Refactor passing watchpoint/other_info
-  kcsan: Fold panic() call into print_report()
-  kcsan: Refactor access_info initialization
-  kcsan: Remove reporting indirection
-  kcsan: Remove kcsan_report_type
-  kcsan: Report observed value changes
-
- Documentation/dev-tools/kcsan.rst |  88 +++++++---------
- kernel/kcsan/core.c               |  53 ++++------
- kernel/kcsan/kcsan.h              |  39 ++++---
- kernel/kcsan/report.c             | 169 ++++++++++++++++--------------
- 4 files changed, 162 insertions(+), 187 deletions(-)
-
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 45c821d4e8bd..d360183002d6 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -407,12 +407,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	const bool is_write = (type & KCSAN_ACCESS_WRITE) != 0;
+ 	const bool is_assert = (type & KCSAN_ACCESS_ASSERT) != 0;
+ 	atomic_long_t *watchpoint;
+-	union {
+-		u8 _1;
+-		u16 _2;
+-		u32 _4;
+-		u64 _8;
+-	} expect_value;
++	u64 old, new, diff;
+ 	unsigned long access_mask;
+ 	enum kcsan_value_change value_change = KCSAN_VALUE_CHANGE_MAYBE;
+ 	unsigned long ua_flags = user_access_save();
+@@ -468,19 +463,19 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	 * Read the current value, to later check and infer a race if the data
+ 	 * was modified via a non-instrumented access, e.g. from a device.
+ 	 */
+-	expect_value._8 = 0;
++	old = 0;
+ 	switch (size) {
+ 	case 1:
+-		expect_value._1 = READ_ONCE(*(const u8 *)ptr);
++		old = READ_ONCE(*(const u8 *)ptr);
+ 		break;
+ 	case 2:
+-		expect_value._2 = READ_ONCE(*(const u16 *)ptr);
++		old = READ_ONCE(*(const u16 *)ptr);
+ 		break;
+ 	case 4:
+-		expect_value._4 = READ_ONCE(*(const u32 *)ptr);
++		old = READ_ONCE(*(const u32 *)ptr);
+ 		break;
+ 	case 8:
+-		expect_value._8 = READ_ONCE(*(const u64 *)ptr);
++		old = READ_ONCE(*(const u64 *)ptr);
+ 		break;
+ 	default:
+ 		break; /* ignore; we do not diff the values */
+@@ -506,33 +501,30 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	 * racy access.
+ 	 */
+ 	access_mask = get_ctx()->access_mask;
++	new = 0;
+ 	switch (size) {
+ 	case 1:
+-		expect_value._1 ^= READ_ONCE(*(const u8 *)ptr);
+-		if (access_mask)
+-			expect_value._1 &= (u8)access_mask;
++		new = READ_ONCE(*(const u8 *)ptr);
+ 		break;
+ 	case 2:
+-		expect_value._2 ^= READ_ONCE(*(const u16 *)ptr);
+-		if (access_mask)
+-			expect_value._2 &= (u16)access_mask;
++		new = READ_ONCE(*(const u16 *)ptr);
+ 		break;
+ 	case 4:
+-		expect_value._4 ^= READ_ONCE(*(const u32 *)ptr);
+-		if (access_mask)
+-			expect_value._4 &= (u32)access_mask;
++		new = READ_ONCE(*(const u32 *)ptr);
+ 		break;
+ 	case 8:
+-		expect_value._8 ^= READ_ONCE(*(const u64 *)ptr);
+-		if (access_mask)
+-			expect_value._8 &= (u64)access_mask;
++		new = READ_ONCE(*(const u64 *)ptr);
+ 		break;
+ 	default:
+ 		break; /* ignore; we do not diff the values */
+ 	}
+ 
++	diff = old ^ new;
++	if (access_mask)
++		diff &= access_mask;
++
+ 	/* Were we able to observe a value-change? */
+-	if (expect_value._8 != 0)
++	if (diff != 0)
+ 		value_change = KCSAN_VALUE_CHANGE_TRUE;
+ 
+ 	/* Check if this access raced with another. */
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
