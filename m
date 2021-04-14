@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDACA35F6E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E6F35F6E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243701AbhDNOwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S230160AbhDNOy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350095AbhDNOvo (ORCPT
+        with ESMTP id S1349698AbhDNOyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:51:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78596C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d8so10232565plh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
+        Wed, 14 Apr 2021 10:54:22 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2370BC06135F;
+        Wed, 14 Apr 2021 07:52:34 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so6777889pjb.4;
+        Wed, 14 Apr 2021 07:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0f1yRWivcg5wQEbGqXPrGa6vWe7+yI6CnScm8BKrOXM=;
-        b=GMp7JY7KV9+C/G92RdzQXM1EdpBV/CchvizI/V9Rl6NATzXRvScvm5DqvzOlxZefSw
-         K38lN8vuLA8/44nzXSkhr/bv0EzkOvz0qsxv0ihzQkrjTaZs7HI2LXE7KWSyVV0el0/E
-         9lm4pKpbmp3G6eszp8Rr2lzbGUZywcoPllowYPXFgXEggVD2Tt0V6pa4kDbzdVvYOtXu
-         NTynYwE15sz2/3cwd6W9KmD2keoIn7uHQo6edSza/PmuboGtkLgbHZo8EaTIYGJs5XsX
-         sXQgqJQPEfxMaNUc8zxwXv82U2nFsXN8l4pfjQ6vT6NoiDmAM/+knTxaj4QACHOHrSI8
-         eVgw==
+        h=from:date:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4XkoYmFRvVingy29s62AE9pk1GqT7aCUqM2F6T8eWVM=;
+        b=DyzuIz36gghGh4Pb3zLXl9BcGYmCU8qvrO4YeLUK28ps26SIYJpJsPTAy41zxtetxQ
+         5+W1/6kjnMpXSTZbe8NWTLWTv3v5hkfGPvcJclPuTcSMKiMm61BSUQOzlQgtkVjHEGEz
+         QFz1qefcFcd4qzw8IvJJeGfSyqy4jt/R4vo/W51ByR380cyRXUOEWAplygfaJFIwyhcg
+         +OJlJ3OEEI/LVu5SeteTtt0kfLDgKjEL7iz6Ut2Yrx+AB0TFIrIofTZ0McKL8V+7Ufcz
+         H4pwouzMEbU4docKvhHRe9syXcZCAk1GRMo45tWmLLE2oZ61Q0VuC5B5Rpr8vjNVP+tV
+         fd3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0f1yRWivcg5wQEbGqXPrGa6vWe7+yI6CnScm8BKrOXM=;
-        b=FYGASpfU8kZ9ClgAKmSN8OGPAG5vZeZ8FVMomBlfObWJrg2bieoFiOY1konlWu73X0
-         RVp1ZkBgBzX9okTNU5XzU4LUXNzCFRBjIwREDIXq1P/Y2gMBhzuS6N1nsK1mXDAOY1Mh
-         pqo29suI3XwJi425W7wah2EO7pRvNhkIhNzsn9HWeIeJk8l4VS4zjZEgLVCB+6Tdlm0y
-         q1lQ9QZwDpk586G40vPyKPG3BXrZq8gUsG+6c1YFBRn7IcXRdCgv7YPdsjGVZSY20nFc
-         wKcqzgvjvlDZ0E6YF918PTlPj7v4AsclhWF6m17C79Jjeg7/GHZLC7qmXaevXBBA5Mo5
-         VbvQ==
-X-Gm-Message-State: AOAM533OGkMfGB4bDvHXcnVMjr+9c6P13lDgn9awsgMhtdUozvmxzF/i
-        6awvLHTQGTJFlGCDmVeGzGy06h+eyaexeA==
-X-Google-Smtp-Source: ABdhPJy6nS3DZqN9rRxKPIxlJr7UaPzNPqUID4YYB0NrdZ4Da19lEFMdSIImOmNOYY6GRIAvEjxzJA==
-X-Received: by 2002:a17:903:1d2:b029:ea:e375:6a57 with SMTP id e18-20020a17090301d2b02900eae3756a57mr19026603plh.31.1618411882083;
-        Wed, 14 Apr 2021 07:51:22 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id h18sm17268953pgj.51.2021.04.14.07.51.21
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4XkoYmFRvVingy29s62AE9pk1GqT7aCUqM2F6T8eWVM=;
+        b=BRHmSComEwj292g5CX5pFAu0q/KAE6mNbWlIjupcsSRBp9MOcbtwA+CwuvK6FFV8hO
+         I8VrVmXUY1oa75rJpAIq8hfH5AUpqQ9WypfI8/P3FA813gkUo1GthdjdCGZSZCkKBg0M
+         nbkDcUeMQWa59f4w18EfD+ljzONjviFYLXm2eNPkWFIH2SwjePXHHIh+25ohqaMsKDTp
+         OQG4mBvKjMfRUq8sA7l7C9EuBl4qyqhEYhSWadIfoPoEc6eFmGCgGB9T8reWLY1DAfWi
+         D8auM1TAGZwTVUW5+W1rCQriBz5eE/SkAlD9UNmMtxBIr8eKZwVjybrlvLIfQoYq7el3
+         IdEA==
+X-Gm-Message-State: AOAM533JUmy9mD1uZXHpsPkLBVqBPtoU19YUSU+y4b+Y3ayktuF2opsG
+        8NvfDjzarQsE/+svT9dQwmg=
+X-Google-Smtp-Source: ABdhPJxLe4e3ArNLjIvLa46OtcJYqVPrwLT/5Pq8idpyDrx0xtUMIBXQOG/IjgfkpMbzcIBVAJl8/A==
+X-Received: by 2002:a17:90a:fb89:: with SMTP id cp9mr3959882pjb.47.1618411953609;
+        Wed, 14 Apr 2021 07:52:33 -0700 (PDT)
+Received: from slime ([139.198.121.254])
+        by smtp.gmail.com with ESMTPSA id e13sm7639837pfd.64.2021.04.14.07.52.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 07:51:21 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 07:51:19 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Chen Jun <chenjun102@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        rui.xiang@huawei.com, John Stultz <john.stultz@linaro.org>
-Subject: Re: [PATCH v2] time: Fix overwrite err unexpected in clock_adjtime32
-Message-ID: <20210414145119.GB9318@hoboy.vegasvil.org>
-References: <20210414030449.90692-1-chenjun102@huawei.com>
+        Wed, 14 Apr 2021 07:52:33 -0700 (PDT)
+From:   xiaojun.zhao141@gmail.com
+X-Google-Original-From: <xiaojunzhao141@gmail.com>
+Date:   Wed, 14 Apr 2021 22:52:28 +0800
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     xiaojun.zhao141@gmail.com, josef@toxicpanda.com,
+        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: the qemu-nbd process automatically exit with the commit
+ 43347d56c 'livepatch: send a fake signal to all blocking tasks'
+Message-ID: <20210414225228.436ae00d@slime>
+In-Reply-To: <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz>
+References: <20210414115548.0cdb529b@slime>
+        <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414030449.90692-1-chenjun102@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 03:04:49AM +0000, Chen Jun wrote:
-> the correct error is covered by put_old_timex32.
-> 
-> Fixes: 3a4d44b61625 ("ntp: Move adjtimex related compat syscalls to native counterparts")
-> Signed-off-by: Chen Jun <chenjun102@huawei.com>
+On Wed, 14 Apr 2021 13:27:43 +0200 (CEST)
+Miroslav Benes <mbenes@suse.cz> wrote:
 
-Reviewed-by: Richard Cochran <richardcochran@gmail.com>
+> Hi,
+> 
+> On Wed, 14 Apr 2021, xiaojun.zhao141@gmail.com wrote:
+> 
+> > I found the qemu-nbd process(started with qemu-nbd -t -c /dev/nbd0
+> > nbd.qcow2) will automatically exit when I patched for functions of
+> > the nbd with livepatch.
+> > 
+> > The nbd relative source:
+> > static int nbd_start_device_ioctl(struct nbd_device *nbd, struct
+> > block_device *bdev)
+> > { struct nbd_config *config =
+> > nbd->config; int
+> > ret; 
+> >         ret =
+> > nbd_start_device(nbd); if
+> > (ret) return
+> > ret; 
+> >         if
+> > (max_part) bdev->bd_invalidated =
+> > 1;
+> > mutex_unlock(&nbd->config_lock); ret =
+> > wait_event_interruptible(config->recv_wq,
+> > atomic_read(&config->recv_threads) == 0); if
+> > (ret)
+> > sock_shutdown(nbd);
+> > flush_workqueue(nbd->recv_workq); 
+> >         mutex_lock(&nbd->config_lock);                                          
+> >         nbd_bdev_reset(bdev);                                                   
+> >         /* user requested, ignore socket errors
+> > */ if (test_bit(NBD_RT_DISCONNECT_REQUESTED,
+> > &config->runtime_flags)) ret =
+> > 0; if (test_bit(NBD_RT_TIMEDOUT,
+> > &config->runtime_flags)) ret =
+> > -ETIMEDOUT; return
+> > ret; }  
+> 
+> So my understanding is that ndb spawns a number
+> (config->recv_threads) of workqueue jobs and then waits for them to
+> finish. It waits interruptedly. Now, any signal would make
+> wait_event_interruptible() to return -ERESTARTSYS. Livepatch fake
+> signal is no exception there. The error is then propagated back to
+> the userspace. Unless a user requested a disconnection or there is
+> timeout set. How does the userspace then reacts to it? Is
+> _interruptible there because the userspace sends a signal in case of
+> NBD_RT_DISCONNECT_REQUESTED set? How does the userspace handles
+> ordinary signals? This all sounds a bit strange, but I may be missing
+> something easily.
+>
+Sorry, now I also don't know how the qemu-nbd handles these signals. I
+need to see its source.
+
+Thank you very much. 
+> > When the nbd waits for atomic_read(&config->recv_threads) == 0, the
+> > klp will send a fake signal to it then the qemu-nbd process exits.
+> > And the signal of sysfs to control this action was removed in the
+> > commit 10b3d52790e 'livepatch: Remove signal sysfs attribute'. Are
+> > there other ways to control this action? How?  
+> 
+> No, there is no way currently. We send a fake signal automatically.
+> 
+> Regards
+> Miroslav
+
