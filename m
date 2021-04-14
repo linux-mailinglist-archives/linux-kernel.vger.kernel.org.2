@@ -2,98 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05E435F0CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D2E35F0D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350474AbhDNJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232744AbhDNJZa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:25:30 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20D7C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id f8so22819893edd.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
-        b=gINN1R9lI5tCoYH2ZPewi+utvLw1oNr+AYOfDMNtw/hKaSHIjWFrbHQ2mEP/s050tD
-         g448CE9NUc6LD5cIHE915wtYMuh12ELdt/BZzVJtfcbRlcZzDt0CH8Ve04xqPwET4Rh5
-         BHdMYM5h1f/E2uWaCn6cX9rtXlGY2VM249gpU+JczEOZGYRnqBdk5vjJ2O5+ToJ3ERbh
-         U3FM3+/YLy3sEwiHrE30IVFtoFTTLn4R1GTNSu4oQJjn/xhueIXu1t9NC5c0QjPFa4VI
-         mHQlWeb7xSouf3EcOgTxrw7wUrUZIGalS4Ba2F808A+YtDSZwP171zeWniTOjTgCp8d7
-         ejDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
-        b=gwgJVZglVXyb/IWXt1NH8ogXoPpOScYxFmpDi4Nn0EgRgfuDggCkawclUdGuhXnSYU
-         LX/70ZDJCbtdFzL1xkecckPfkw/4lM6B88qMCxAnwRAOZZBHlvXroAX5GGn0ZAMKGVQB
-         FXF4I5tf7WFvfPeZQzb9ZQ3xomQtwu24dPGjLUT9WEVfzmDbBv48sVr99ufIFBT5kK4g
-         8gJtgyobGGS2tX3MHL3G1zKPnBKFsNoySDIdiaNjlY9iVdTqTw5ZiXRI3nOOgdw2JzKw
-         qTN53BPp1Li5dxBibIH1qgkVL7i3Gy26i0Iko6NPnjYMF2qXlgA/sNJ0ZNGJrlD2xqXt
-         C0IA==
-X-Gm-Message-State: AOAM530rGCHrMWdFhrRA/b01IadJdYMolZJfjvqE0kFkzh0QdkgEftPF
-        4qcth8bTe/mFN5KKewEkUOeQ7A==
-X-Google-Smtp-Source: ABdhPJwKI3fyWANihaNxRNJcYcXaOIyeXGZHEp2xOggKD3L098p3onGrqOxzTlf7HKaohGrVesV2FQ==
-X-Received: by 2002:aa7:c907:: with SMTP id b7mr40534459edt.37.1618392305540;
-        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:bfbf:e0a9:a746:c4b9])
-        by smtp.gmail.com with ESMTPSA id t14sm9473304ejc.121.2021.04.14.02.25.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
-To:     Nico Pache <npache@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     brendanhiggins@google.com, gregkh@linuxfoundation.org,
-        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
-        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
-        geert@linux-m68k.org, tytso@mit.edu,
-        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
-        broonie@kernel.org, davidgow@google.com, skhan@linuxfoundation.org,
-        mptcp@lists.linux.dev
-References: <cover.1618388989.git.npache@redhat.com>
- <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
-Message-ID: <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
-Date:   Wed, 14 Apr 2021 11:25:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235374AbhDNJ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:28:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40702 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232454AbhDNJ1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:27:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618392433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I4M0tkmcqKTvrAzd8ABxiVydKwG24FDTFmuy+1YGYSU=;
+        b=N2M1K3wQJyemuE66ZlLCYBTRJ2pc+RcYLwo5N9tkPh603oA31ldIeEXp6BXNizpFAFOEse
+        pFtZQU8P0YOdQ2927y6UOD31TXWlBHC+kEs6ZZSSL7a0BUNY6IHLj67f9mgmwRSPuWSXgM
+        E7PybdvZ0BB0zzmOTqEEM5/Qzl/8MwQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2D37FACC4;
+        Wed, 14 Apr 2021 09:27:13 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 11:27:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
+Subject: Re: [PATCH 3/7] mm: memcontrol: remove the pgdata parameter of
+ mem_cgroup_page_lruvec
+Message-ID: <YHa1cBEjXp09bLZW@dhcp22.suse.cz>
+References: <20210413065153.63431-1-songmuchun@bytedance.com>
+ <20210413065153.63431-4-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413065153.63431-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nico,
+On Tue 13-04-21 14:51:49, Muchun Song wrote:
+> All the callers of mem_cgroup_page_lruvec() just pass page_pgdat(page)
+> as the 2nd parameter to it (except isolate_migratepages_block()). But
+> for isolate_migratepages_block(), the page_pgdat(page) is also equal
+> to the local variable of @pgdat. So mem_cgroup_page_lruvec() do not
+> need the pgdat parameter. Just remove it to simplify the code.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On 14/04/2021 10:58, Nico Pache wrote:
-> Drop 'S' from end of CONFIG_MPTCP_KUNIT_TESTS inorder to adhear to the
-> KUNIT *_KUNIT_TEST config name format.
+I like this. Two arguments where one can be directly inferred from the
+first one can just lead to subtle bugs. In this case it even doesn't
+give any advantage for most callers.
 
-For MPTCP, we have multiple KUnit tests: crypto and token. That's why we 
-wrote TESTS with a S.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-I'm fine without S if we need to stick with KUnit' standard. But maybe 
-the standard wants us to split the two tests and create 
-MPTCP_TOKEN_KUNIT_TEST and MPTCP_TOKEN_KUNIT_TEST config?
+> ---
+>  include/linux/memcontrol.h | 10 +++++-----
+>  mm/compaction.c            |  2 +-
+>  mm/memcontrol.c            |  9 +++------
+>  mm/swap.c                  |  2 +-
+>  mm/workingset.c            |  2 +-
+>  5 files changed, 11 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index c960fd49c3e8..4f49865c9958 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -743,13 +743,12 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  /**
+>   * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+>   * @page: the page
+> - * @pgdat: pgdat of the page
+>   *
+>   * This function relies on page->mem_cgroup being stable.
+>   */
+> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> -						struct pglist_data *pgdat)
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+>  {
+> +	pg_data_t *pgdat = page_pgdat(page);
+>  	struct mem_cgroup *memcg = page_memcg(page);
+>  
+>  	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
+> @@ -1223,9 +1222,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  	return &pgdat->__lruvec;
+>  }
+>  
+> -static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> -						    struct pglist_data *pgdat)
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+>  {
+> +	pg_data_t *pgdat = page_pgdat(page);
+> +
+>  	return &pgdat->__lruvec;
+>  }
+>  
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index caa4c36c1db3..e7da342003dd 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1033,7 +1033,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>  		if (!TestClearPageLRU(page))
+>  			goto isolate_fail_put;
+>  
+> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +		lruvec = mem_cgroup_page_lruvec(page);
+>  
+>  		/* If we already hold the lock, we can skip some rechecking */
+>  		if (lruvec != locked) {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 9cbfff59b171..1f807448233e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1177,9 +1177,8 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+>  struct lruvec *lock_page_lruvec(struct page *page)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock(&lruvec->lru_lock);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> @@ -1190,9 +1189,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
+>  struct lruvec *lock_page_lruvec_irq(struct page *page)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock_irq(&lruvec->lru_lock);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> @@ -1203,9 +1201,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
+>  struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+>  {
+>  	struct lruvec *lruvec;
+> -	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+> diff --git a/mm/swap.c b/mm/swap.c
+> index a75a8265302b..e0d5699213cc 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -313,7 +313,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
+>  
+>  void lru_note_cost_page(struct page *page)
+>  {
+> -	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
+> +	lru_note_cost(mem_cgroup_page_lruvec(page),
+>  		      page_is_file_lru(page), thp_nr_pages(page));
+>  }
+>  
+> diff --git a/mm/workingset.c b/mm/workingset.c
+> index b7cdeca5a76d..4f7a306ce75a 100644
+> --- a/mm/workingset.c
+> +++ b/mm/workingset.c
+> @@ -408,7 +408,7 @@ void workingset_activation(struct page *page)
+>  	memcg = page_memcg_rcu(page);
+>  	if (!mem_cgroup_disabled() && !memcg)
+>  		goto out;
+> -	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+> +	lruvec = mem_cgroup_page_lruvec(page);
+>  	workingset_age_nonresident(lruvec, thp_nr_pages(page));
+>  out:
+>  	rcu_read_unlock();
+> -- 
+> 2.11.0
 
-In this case, we could eventually keep MPTCP_KUNIT_TESTS which will in 
-charge of selecting the two new ones.
-
-Up to the KUnit maintainers to decide ;-)
-
-Cheers,
-Matt
 -- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Michal Hocko
+SUSE Labs
