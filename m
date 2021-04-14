@@ -2,145 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAF535FA0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594E935FA10
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344284AbhDNRr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234304AbhDNRrX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:47:23 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D907DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:47:01 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id m20so1769386uah.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q97lT2gtlL/ZYrFbpq2z+qcIs3qeeq4P5EG52TEAcdM=;
-        b=FASsM6Mqt/GGPdEfPxH0BeAUtBP2LBxWtovEIAxVgZPiKATwrM0upW/rmS2tgAPLGW
-         tLDmP5USwnjCv+CG2k3l3djEKlvlTFqF89cW7lv20RbUF5NJQt2Eh702Ba0Le1xYFzFS
-         YSIe+HmENCrzrHUhgcRPg5vpyCxBOhlEiEk4Vgc3QyM0PDsKBaiPbZL84aqlMsYjXuqx
-         LBLoMT9lOX6TOf6eJskvSa3NdvMLVfR3fvxW+OeSjFGoPVjO1k27txBuXoToxTm5srBh
-         luyDjDc3beB2HX7FJm5KgFVtgMZQ3V1yKxHfr5c/vqsXlDKkTtN8XhReO6rveIvpVgaJ
-         jGHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q97lT2gtlL/ZYrFbpq2z+qcIs3qeeq4P5EG52TEAcdM=;
-        b=FWwJ2+ZRnEBcsYRBRKJu+qOIDVZl1QjUd0KQhVl1sjHFclHhiObbQq6WnSjUQugiv4
-         G46GLqcHcZqzBuuJZp98JPx5ohaYsb8zgR9A8ajpmMoF6kRRlJVwEHt7olw4Himm6IJE
-         Jtzvpt3+sqYwoOd4qIBnzlTMPlNyUc6UC+ojPqn2FzQUiYt+tepwa3SuVgtI1NkgwxYw
-         oUFrLCdEavTPa0PmgJeRg7YFqaORMd38IfT8qhs4VfOyhqkYtnJ8Bt9yI8hI6FA+ujj4
-         uF+4TInx++wwKheyzgaWT0s4g06h+dRVUKimxSLEHErCMNZLDEvLzRxSb0muwNcf71L3
-         C7OA==
-X-Gm-Message-State: AOAM532KqLC2o8iSZ7M6JCeGe9LinRMtwMjQGMqpxvPvwMfFFNU+Fkcc
-        S0fuDfDkKYirnrUtlFGL/aSYTOURka84LGYUzlAJTQ==
-X-Google-Smtp-Source: ABdhPJxOFhS7WC1rn9NAh8rEqbOu1jy+k//lbPl6ERVT8Ju5qO+Yh7E4m942OCFjR9GUQT4EjgwshKNKLwszoxpvB44=
-X-Received: by 2002:a9f:3728:: with SMTP id z37mr27839924uad.89.1618422420730;
- Wed, 14 Apr 2021 10:47:00 -0700 (PDT)
+        id S1350949AbhDNRsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:48:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6222 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347548AbhDNRsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:48:16 -0400
+IronPort-SDR: AnoPP3E8d8vjuCFMEndTITgHT+dwOzSascGcx/YUxg/Du1uMpERIaey9szqUB3RS59/4OjlELe
+ nfuHJhFsc0KQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181819973"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="181819973"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:47:52 -0700
+IronPort-SDR: 03bq64kSY2elvsiAhmZgjE30QST8Yse36lzk12d1PYG9635GKYhu/hTLN6NQ1hEWUkcv7cK4Mz
+ HGyppFRHgvlg==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="522073477"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 10:47:50 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWjcC-0043yy-8l; Wed, 14 Apr 2021 20:47:48 +0300
+Date:   Wed, 14 Apr 2021 20:47:48 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
+Message-ID: <YHcqxMLR44laX2PZ@smile.fi.intel.com>
+References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+ <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+ <YHcnckePpKDujCU+@kroah.com>
 MIME-Version: 1.0
-References: <20210414000803.662534-1-nathan@kernel.org>
-In-Reply-To: <20210414000803.662534-1-nathan@kernel.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 14 Apr 2021 10:46:49 -0700
-Message-ID: <CABCJKueJjOguo7-PUR1yhZm4sX4F7t-7ZMcjU8pAMBQyv6Pmnw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: alternatives: Move length validation in alternative_{insn,endif}
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHcnckePpKDujCU+@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+On Wed, Apr 14, 2021 at 07:33:38PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Apr 14, 2021 at 08:12:46PM +0300, Alexander Shishkin wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> > It appears that uuid_t use in STM code abuses UUID API.
+> 
+> How is it being abused?
 
-On Tue, Apr 13, 2021 at 5:09 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-> set atomically"), LLVM's integrated assembler fails to build entry.S:
->
-> <instantiation>:5:7: error: expected assembly-time absolute expression
->  .org . - (664b-663b) + (662b-661b)
->       ^
-> <instantiation>:6:7: error: expected assembly-time absolute expression
->  .org . - (662b-661b) + (664b-663b)
->       ^
->
-> The root cause is LLVM's assembler has a one-pass design, meaning it
-> cannot figure out these instruction lengths when the .org directive is
-> outside of the subsection that they are in, which was changed by the
-> .arch_extension directive added in the above commit.
->
-> Apply the same fix from commit 966a0acce2fc ("arm64/alternatives: move
-> length validation inside the subsection") to the alternative_endif
-> macro, shuffling the .org directives so that the length validation
-> happen will always happen in the same subsections. alternative_insn has
-> not shown any issue yet but it appears that it could have the same issue
-> in the future so just preemptively change it.
->
-> Cc: stable@vger.kernel.org
-> Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1347
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->
-> Apologies if my explanation or terminology is off, I am only now getting
-> more familiar with assembly.
->
->  arch/arm64/include/asm/alternative-macros.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/alternative-macros.h b/arch/arm64/include/asm/alternative-macros.h
-> index 5df500dcc627..8a078fc662ac 100644
-> --- a/arch/arm64/include/asm/alternative-macros.h
-> +++ b/arch/arm64/include/asm/alternative-macros.h
-> @@ -97,9 +97,9 @@
->         .popsection
->         .subsection 1
->  663:   \insn2
-> -664:   .previous
-> -       .org    . - (664b-663b) + (662b-661b)
-> +664:   .org    . - (664b-663b) + (662b-661b)
->         .org    . - (662b-661b) + (664b-663b)
-> +       .previous
->         .endif
->  .endm
->
-> @@ -169,11 +169,11 @@
->   */
->  .macro alternative_endif
->  664:
-> +       .org    . - (664b-663b) + (662b-661b)
-> +       .org    . - (662b-661b) + (664b-663b)
->         .if .Lasm_alt_mode==0
->         .previous
->         .endif
-> -       .org    . - (664b-663b) + (662b-661b)
-> -       .org    . - (662b-661b) + (664b-663b)
->  .endm
->
->  /*
+We are using it against the buffer that is u8, and neither uuid_t nor guid_t.
 
-Thank you for fixing these!
+> Moreover,
+> > this type is only useful when we parse user input. Due to above
+> > replace uuid_t with u8 uuid[16] and use uuid_t only when parse
+> > user input.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > ---
+> >  drivers/hwtracing/stm/p_sys-t.c | 16 ++++++++++------
+> >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
+> > index 360b5c03df95..04d13b3785d3 100644
+> > --- a/drivers/hwtracing/stm/p_sys-t.c
+> > +++ b/drivers/hwtracing/stm/p_sys-t.c
+> > @@ -76,7 +76,7 @@ enum sys_t_message_string_subtype {
+> >  				 MIPI_SYST_SEVERITY(MAX))
+> >  
+> >  struct sys_t_policy_node {
+> > -	uuid_t		uuid;
+> > +	u8		uuid[UUID_SIZE];
+> 
+> This feels wrong, what is wrong with the uuid_t type usage here?
 
-The patch looks correct to me, next-20210413 builds with LLVM_IAS=1
-after I applied it, and defconfig built with both Clang and gcc boots
-normally. Please feel free to add:
+Nothing, just will require additional export_uuid() / import_uuid() call.
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
+> >  	bool		do_len;
+> >  	unsigned long	ts_interval;
+> >  	unsigned long	clocksync_interval;
+> > @@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
+> >  {
+> >  	struct sys_t_policy_node *pn = priv;
+> >  
+> > -	generate_random_uuid(pn->uuid.b);
+> 
+> Ok, that's not good, but that looks to be a flaw in the
+> generate_random_uuid() api, not this driver implementation.
+> 
+> I don't understand why this change is needed?
 
-Sami
+Using raw buffer APIs against uuid_t / guid_t.
+
+We can import_uuid() first and call uuid_gen() against it. Will it work for
+you?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
