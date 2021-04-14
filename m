@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34DB35FA7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A159235FA7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352573AbhDNSNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
+        id S1352692AbhDNSNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbhDNSMP (ORCPT
+        with ESMTP id S1349470AbhDNSMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:12:15 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A71C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:53 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id mh2so11252885ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:53 -0700 (PDT)
+        Wed, 14 Apr 2021 14:12:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A61C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:55 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id g17so24106599edm.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 11:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WsTnlZ0JLtuPnbO60j2rczl2/gLE7x7tVgm20+EM1Dc=;
-        b=v7SNGemTBhWQrAoIapsNidlHLFQnZx+bRnGVs+M17pVLVxst/gNZb3SmwiskAjL8lg
-         ygF1ZxYy+vpP/GQgmtBbIe/A8oz4faap+35tlxfg6yhC2EsaoLFn2bw3qc2sKJs5uO4W
-         HNT3QE++OG9CbZCcW9Wo4ljeZmkpJobpEhaq1Cz7flYijDpgGUl+nYEiuX8zFX0thYOt
-         iOt/aKuDWC/6WtGfEzIsI6KbEtXv2sXF0oB5s4lKuZcBAr+MeH9C9dpWGvCVhyo/x3LV
-         iECHTLWDZakB/vTl7nfioZOhPE98eoXt1dSaXLaYSmliBFmEt5nSm0OXycJB74HD/drA
-         wVOw==
+        bh=/kTlqScRexjxeUZVlgvZgKV7vl/BLWE5sWlAi/z9T+Q=;
+        b=UnX1dURuJBfEb8qiyjhM/mtMEpvTY17r/4dIZB6g9PjoXxxZEEJ3E/3HriGhXCGVV/
+         LPlnEZknw8PnJuKX6LGQCpvU0MhNQQJUd01Mku5TewRTtKvNRC6q25eRtbkdy9nGVvAu
+         K6/gUIzYxnk2/Kmdj5z4FDAI/LKUDMzaIxm0tNzPJMYdMuBWA4gfXFoOmus2ufwG3YdN
+         PIDp/2arTT6BEQBSf6VA5232xLCaLf1HCeWDskwuJzA2+ZqExCcluQeGhJ9Y6H4OzQFo
+         tt5l8TDPQ257xn8sZBGeyqm2I+GPjZKKff0h4UMhb0fCirTEE/Idumnxrrnzm0JunCI8
+         5sXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WsTnlZ0JLtuPnbO60j2rczl2/gLE7x7tVgm20+EM1Dc=;
-        b=P35WS2rN8IvbMzyU4oPgqRQshxV76m3QJfrrEnPwA6zB739cHM/ry7vlQCTR5Ii+LI
-         oyB0UYZA1mToluThiI17eGVzqqTlhbwrWmjJSUD00ttgZkSHvQ8GqihANBuGuay6Uig6
-         0rYO78X/miyKpXhWiPB6BMU1XWtX3QzxCGLgbk4HHNtxMOeahf9M1bHQygYpiQmXzG/c
-         s9ukNbopct9y5AJ+Its0MqHAV/3OEGrASEc27e2Tq6gpuHN7wjHWD8Ajpvp6OWZgMPn5
-         btzQhl0pDQ5D23hlqXgvpg86woa2Q+P1xWXEBQKKkXwxNtd1/IylkMlEm96i2/HsEOn4
-         EJdA==
-X-Gm-Message-State: AOAM5323feSiQXrC6cKK75o8KSo4+Dw4uXxG33CYGi7ndxEVygAgftHu
-        yNrvhULZzOieGXDoWP7zIY1QPA==
-X-Google-Smtp-Source: ABdhPJyQJ/Sxa/NX2STNIxTSUi4KKDzaHuSnMl08NYq4KrdAtMi3M+xDBFVTkst+RtqDwC4ChkPzzA==
-X-Received: by 2002:a17:906:430f:: with SMTP id j15mr115016ejm.543.1618423912323;
-        Wed, 14 Apr 2021 11:11:52 -0700 (PDT)
+        bh=/kTlqScRexjxeUZVlgvZgKV7vl/BLWE5sWlAi/z9T+Q=;
+        b=GPIRGkL4oreFIVCPrNa3oX0FS761iWa7dNLT6fE4vLk5chrCAGL14WoIOVog6et4Ql
+         g8evnCKPOZxB0o8cPfR6NO/TowrPCk343M/zkRvWTWXb7LNsxoirmU0iHYFe1mOn1lR5
+         sBXBRv+o60eltGOZJsVgW8s6WF4z5SOiS3yqMcx7pAeHD7q3rwsSXgecsqRvooZdASzy
+         pgOEQ/ERVic60KD0/mT4EgxoCoLOq4JhPHmI62K0rkdZos6Jpk/e2HMurN5BzN9ctd8I
+         Eq8sUne2MdQZKirwkp0yz//1QiaCH2UYWP3B6xLjMk7R5vgmur3wLzHPm872CxPA+INB
+         ZpNw==
+X-Gm-Message-State: AOAM530i4n9bFCmQbDsz6Ar0YQRoiJ9+2L0YFELV7448BqLFqdzI1lhl
+        tYvotoUz+918ButG3ypoZJsh7w==
+X-Google-Smtp-Source: ABdhPJw0i4sbCFot3EhnDxTRytIMAMRuQMtK/zB1BawCSZq+ImOkK0sGSNzD/U1GzoF3XXiOPUff9g==
+X-Received: by 2002:a05:6402:b07:: with SMTP id bm7mr207395edb.82.1618423913409;
+        Wed, 14 Apr 2021 11:11:53 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.51
+        by smtp.gmail.com with ESMTPSA id v1sm279493eds.17.2021.04.14.11.11.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:11:51 -0700 (PDT)
+        Wed, 14 Apr 2021 11:11:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
         linux-staging@lists.linux.dev
-Subject: [PATCH 17/57] staging: rtl8723bs: core: rtw_sta_mgt: Return error value directly
-Date:   Wed, 14 Apr 2021 19:10:49 +0100
-Message-Id: <20210414181129.1628598-18-lee.jones@linaro.org>
+Subject: [PATCH 18/57] staging: octeon: ethernet-tx: Fix formatting issue in function header
+Date:   Wed, 14 Apr 2021 19:10:50 +0100
+Message-Id: <20210414181129.1628598-19-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210414181129.1628598-1-lee.jones@linaro.org>
 References: <20210414181129.1628598-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,47 +69,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c: In function ‘rtw_init_bcmc_stainfo’:
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c:512:6: warning: variable ‘res’ set but not used [-Wunused-but-set-variable]
+ drivers/staging/octeon/ethernet-tx.c:507: warning: bad line:
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Ross Schmidt <ross.schm.dev@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Kees Cook <keescook@chromium.org>
 Cc: linux-staging@lists.linux.dev
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/staging/octeon/ethernet-tx.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-index 7b631a6b258a1..233febc145983 100644
---- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-@@ -497,7 +497,6 @@ struct sta_info *rtw_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
- u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
- {
- 	struct sta_info *psta;
--	u32 res = _SUCCESS;
- 	NDIS_802_11_MAC_ADDRESS	bcast_addr = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
- 
- 	struct	sta_priv *pstapriv = &padapter->stapriv;
-@@ -505,15 +504,12 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
- 
- 	psta = rtw_alloc_stainfo(pstapriv, bcast_addr);
- 
--	if (!psta) {
--		res = _FAIL;
--		goto exit;
--	}
-+	if (!psta)
-+		return _FAIL;
- 
- 	/*  default broadcast & multicast use macid 1 */
- 	psta->mac_id = 1;
- 
--exit:
- 	return _SUCCESS;
- }
- 
+diff --git a/drivers/staging/octeon/ethernet-tx.c b/drivers/staging/octeon/ethernet-tx.c
+index 9c71ad5af7b98..1ad94c5060b52 100644
+--- a/drivers/staging/octeon/ethernet-tx.c
++++ b/drivers/staging/octeon/ethernet-tx.c
+@@ -504,7 +504,6 @@ int cvm_oct_xmit(struct sk_buff *skb, struct net_device *dev)
+  * cvm_oct_xmit_pow - transmit a packet to the POW
+  * @skb:    Packet to send
+  * @dev:    Device info structure
+-
+  * Returns Always returns zero
+  */
+ int cvm_oct_xmit_pow(struct sk_buff *skb, struct net_device *dev)
 -- 
 2.27.0
 
