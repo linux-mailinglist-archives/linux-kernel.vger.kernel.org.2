@@ -2,320 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D93C35F3B6
+	by mail.lfdr.de (Postfix) with ESMTP id E662B35F3B8
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350892AbhDNMZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbhDNMZn (ORCPT
+        id S1350904AbhDNMZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:25:58 -0400
+Received: from forward3-smtp.messagingengine.com ([66.111.4.237]:43931 "EHLO
+        forward3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230127AbhDNMZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:25:43 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E2FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:25:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id ba6so23459369edb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=devtank-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lr1X4qPtfOj8I8pn0HovtsnthddwkxztVDaDC8OO86E=;
-        b=Hhr4gSeUNYilkOpoDFPXl89lDs/S24n69zLy8pkb2U6TRTBPZMUETnygzMW/V1ZphJ
-         Ytjqmfs8IX1lc7vvxPPvOlo0dP8+7cCW36JcTRaVLQqTr7+nmd7BUaBubd4TzrtZ33YZ
-         wA0zYaQbqsWnuYvY81otQVY9eC5yqiOL6cDgIVoUyyZvhUhwru7Gg4S9YiEtyMGqblU9
-         CaBOEYynolKwi0U2386oHaylAxw1XJJfCyVibYqMlLlV8bfkjXZAva25Aa606d4GvM/R
-         mqonH8eMMG1LAzb6reu7OFWbD1sChGwUaqUsJdbT1gbtbXFljJp6EdMkUb1NIr2AwwZf
-         QZhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lr1X4qPtfOj8I8pn0HovtsnthddwkxztVDaDC8OO86E=;
-        b=uN+PBnt3by9Sx5rxTqr9kYgcAX3Qrfcor1RL0/KM+2bYrM4VrmlxWoDLqOL6SlvLNH
-         9Hp9OIDX64VIaHBmJ324ftqw04WSGdTQm0Ch19jHKvXCw1aVGu+4WY3B5oc4H7lsP6Y5
-         h5G4EkRO9+8cBquaPbndl5QxaSZ/F7WC/LmxdhXpY2il6Vh9MADgnISzojjWje4uyOHe
-         heqXbvb+DhOEJ2B/PKHxCkJLRQ09A5qMWGeWR0jBFIgRqbOCSNqts21HCeBJSMoU+cfQ
-         Q3fa2WLlhE4fY2rDl2JFMNwdk3ZcxfqhYkv5kXleeDZvwyaVAcZw0gaTvl+zgDzpl9Tl
-         +DHQ==
-X-Gm-Message-State: AOAM5316kcXVcW92yVrqybbbt9A52tdzGsy1F2VOYLCbe2VNrBPhdUR1
-        oNY7ZIoGzadCHXoDBTYx8ukxpg==
-X-Google-Smtp-Source: ABdhPJwxvN5/0WaRJ0EpLWLBmahI89lvzh6kWzPEqVO39YGewLL6PZ3PSTrqYmI2/7zLNtBMjHHODA==
-X-Received: by 2002:a05:6402:344e:: with SMTP id l14mr41306634edc.184.1618403120044;
-        Wed, 14 Apr 2021 05:25:20 -0700 (PDT)
-Received: from jabjoe-desktop.lan ([2a02:8010:673b:0:27d5:da8f:c244:7b8a])
-        by smtp.googlemail.com with ESMTPSA id h15sm9896917ejs.72.2021.04.14.05.25.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 05:25:19 -0700 (PDT)
-From:   Joe Burmeister <joe.burmeister@devtank.co.uk>
-To:     joe.burmeister@devtank.co.uk, Mark Brown <broonie@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Remove BCM2835 SPI chipselect limit.
-Date:   Wed, 14 Apr 2021 13:25:07 +0100
-Message-Id: <20210414122507.203348-1-joe.burmeister@devtank.co.uk>
-X-Mailer: git-send-email 2.30.2
+        Wed, 14 Apr 2021 08:25:45 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.nyi.internal (Postfix) with ESMTP id 7EFA01940C01;
+        Wed, 14 Apr 2021 08:25:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 14 Apr 2021 08:25:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=peMn3b
+        GHi1WbIZy2c9kwBJwQYy3D17/eXn3K+wzeHSM=; b=S+C98EjsHo22xiwKXPb9tm
+        Xfmwqg1UwG+P2LhIutjoRwGVpRw4tHvZtNrNLBM+w+EUxahbQbchhS4O6ARDxQ2a
+        dC60RqhXxVmcGVRyW/UrFnpxQF8q6iGFNLUvpgJk4XXFND+4oweu84Y+LrXjy1WK
+        bW3TXz9h8PFJ28P8ACGjiXpoCgzN3EixAhLX48iTZ2szKaBiwO0xD7lqbk4USW8d
+        E3i0cbATrqryoAo10hnRsYBTjXnXBa5yeIrhfU9aB8TGLN56UnL70f6dgMSUSost
+        BGuPDdPpWzLBkXh+4om9eo2rKw6hEfPhv4v755/bHWUTPa6addMeO9sqRg+jrWFQ
+        ==
+X-ME-Sender: <xms:Lt92YHPMc7NL4DX_WMuOIhm4tTxKSwv565gjokivgjsI9vuI9XyUtg>
+    <xme:Lt92YB979-3GezY6DNyIVFQvKKq_muVbpDaeaT-dDTSr4Kr5xQhaffqkNj6B2oJMv
+    zXw3_6mAaImDwZ12O8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeluddghedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvffujghfhfffkfggtgesthdtredttddttdenucfhrhhomhepffgrvhhiugcu
+    gfgumhhonhgushhonhcuoegurghvihgurdgvughmohhnughsohhnsehorhgrtghlvgdrtg
+    homheqnecuggftrfgrthhtvghrnhepheelfeefudeiudegudelgfetgeetkeelveeuieet
+    udelheejkeeileekveeukedtnecukfhppeekuddrudekjedrvdeirddvfeeknecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggrvhhiugdrvggu
+    mhhonhgushhonhesohhrrggtlhgvrdgtohhm
+X-ME-Proxy: <xmx:Lt92YGSe8QTMoMtraLlBprpQCDjQ-ny6kFi5u9z1MG0YUM06v7QtXw>
+    <xmx:Lt92YLu0QTBqkFyFsHvzdovQboOZl5yDU3h2hM6Qd8h4aH0pRGvbPw>
+    <xmx:Lt92YPe5AZcI-Gn8C23QQB8GcsDMv2oKSfJr98lLGPN_Vt9UtVX-xw>
+    <xmx:Mt92YF8YYrvsGBiVG1iZDjXB6GxYrZMBLOTwCo1lDW6SxvlRqy7fNHn6qo0>
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 64B6D108005C;
+        Wed, 14 Apr 2021 08:25:17 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 9b99a0ff;
+        Wed, 14 Apr 2021 12:25:15 +0000 (UTC)
+To:     Aaron Lewis <aaronlewis@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH 5/6] KVM: SVM: pass a proper reason in
+ kvm_emulate_instruction()
+In-Reply-To: <CAAAPnDGy2MZF2QVTTdNQgQC3Sh9mOjJx-cetn2nZ4cu6-h1Zvg@mail.gmail.com>
+References: <20210412130938.68178-1-david.edmondson@oracle.com>
+ <20210412130938.68178-6-david.edmondson@oracle.com>
+ <YHRvchkUSIeU8tRR@google.com> <cuno8eisbf9.fsf@oracle.com>
+ <CAAAPnDGy2MZF2QVTTdNQgQC3Sh9mOjJx-cetn2nZ4cu6-h1Zvg@mail.gmail.com>
+X-HGTTG: zarquon
+From:   David Edmondson <david.edmondson@oracle.com>
+X-Now-Playing: Floating Points - Elaenia: Nespole
+Date:   Wed, 14 Apr 2021 13:25:15 +0100
+Message-ID: <cun8s5lrr2s.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The limit of 4 chipselects for the BCM2835 was not required and also was
-not inforced. Without inforcement it was possible to make a device tree
-over this limit which would trample memory.
+On Tuesday, 2021-04-13 at 11:45:52 -07, Aaron Lewis wrote:
 
-The chipselect count is now obtained from the device tree and expanded
-if more devices are added.
+>>
+>> > Depending on what you're trying to do with the info, maybe there's a better
+>> > option.  E.g. Aaron is working on a series that includes passing pass the code
+>> > stream (instruction bytes) to userspace on emulation failure, though I'm not
+>> > sure if he's planning on providing the VM-Exit reason.
+>>
+>> Having the instruction stream will be good.
+>>
+>> Aaron: do you have anything to share now? In what time frame do you
+>> think you might submit patches?
+>
+> I should be able to have something out later this week.  There is no
+> exit reason as Sean indicated, so if that's important it will have to
+> be reworked afterwards.  For struct internal in kvm_run I use data[0]
+> for flags to indicate what's contained in the rest of it, I use
+> data[1] as the instruction size, and I use data[2,3] to store the
+> instruction bytes.  Hope that helps.
 
-Signed-off-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
----
- drivers/spi/spi-bcm2835.c | 114 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 101 insertions(+), 13 deletions(-)
+Thanks. I'll hang on to look at the patches before doing anything else.
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index aab6c7e5c114..4f215ec3bd1b 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -28,6 +28,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/gpio/machine.h> /* FIXME: using chip internals */
- #include <linux/gpio/driver.h> /* FIXME: using chip internals */
-+#include <linux/of_gpio.h>
- #include <linux/of_irq.h>
- #include <linux/spi/spi.h>
- 
-@@ -134,7 +135,8 @@ struct bcm2835_spi {
- 	int tx_prologue;
- 	int rx_prologue;
- 	unsigned int tx_spillover;
--	u32 prepare_cs[BCM2835_SPI_NUM_CS];
-+	unsigned int allocated_cs_num;
-+	u32 *prepare_cs;
- 
- 	struct dentry *debugfs_dir;
- 	u64 count_transfer_polling;
-@@ -147,9 +149,9 @@ struct bcm2835_spi {
- 	unsigned int rx_dma_active;
- 	struct dma_async_tx_descriptor *fill_tx_desc;
- 	dma_addr_t fill_tx_addr;
--	struct dma_async_tx_descriptor *clear_rx_desc[BCM2835_SPI_NUM_CS];
-+	struct dma_async_tx_descriptor **clear_rx_desc;
- 	dma_addr_t clear_rx_addr;
--	u32 clear_rx_cs[BCM2835_SPI_NUM_CS] ____cacheline_aligned;
-+	u32 *clear_rx_cs;
- };
- 
- #if defined(CONFIG_DEBUG_FS)
-@@ -859,14 +861,18 @@ static void bcm2835_dma_release(struct spi_controller *ctlr,
- 	if (ctlr->dma_tx) {
- 		dmaengine_terminate_sync(ctlr->dma_tx);
- 
--		if (bs->fill_tx_desc)
-+		if (bs->fill_tx_desc) {
- 			dmaengine_desc_free(bs->fill_tx_desc);
-+			bs->fill_tx_desc = NULL;
-+		}
- 
--		if (bs->fill_tx_addr)
-+		if (bs->fill_tx_addr) {
- 			dma_unmap_page_attrs(ctlr->dma_tx->device->dev,
- 					     bs->fill_tx_addr, sizeof(u32),
- 					     DMA_TO_DEVICE,
- 					     DMA_ATTR_SKIP_CPU_SYNC);
-+			bs->fill_tx_addr = 0;
-+		}
- 
- 		dma_release_channel(ctlr->dma_tx);
- 		ctlr->dma_tx = NULL;
-@@ -875,15 +881,19 @@ static void bcm2835_dma_release(struct spi_controller *ctlr,
- 	if (ctlr->dma_rx) {
- 		dmaengine_terminate_sync(ctlr->dma_rx);
- 
--		for (i = 0; i < BCM2835_SPI_NUM_CS; i++)
--			if (bs->clear_rx_desc[i])
-+		for (i = 0; i < bs->allocated_cs_num; i++)
-+			if (bs->clear_rx_desc[i]) {
- 				dmaengine_desc_free(bs->clear_rx_desc[i]);
-+				bs->clear_rx_desc[i] = NULL;
-+			}
- 
--		if (bs->clear_rx_addr)
-+		if (bs->clear_rx_addr) {
- 			dma_unmap_single(ctlr->dma_rx->device->dev,
- 					 bs->clear_rx_addr,
--					 sizeof(bs->clear_rx_cs),
-+					 sizeof(u32) * bs->allocated_cs_num,
- 					 DMA_TO_DEVICE);
-+			bs->clear_rx_addr = 0;
-+		}
- 
- 		dma_release_channel(ctlr->dma_rx);
- 		ctlr->dma_rx = NULL;
-@@ -978,7 +988,7 @@ static int bcm2835_dma_init(struct spi_controller *ctlr, struct device *dev,
- 
- 	bs->clear_rx_addr = dma_map_single(ctlr->dma_rx->device->dev,
- 					   bs->clear_rx_cs,
--					   sizeof(bs->clear_rx_cs),
-+					   sizeof(u32) * bs->allocated_cs_num,
- 					   DMA_TO_DEVICE);
- 	if (dma_mapping_error(ctlr->dma_rx->device->dev, bs->clear_rx_addr)) {
- 		dev_err(dev, "cannot map clear_rx_cs - not using DMA mode\n");
-@@ -987,7 +997,7 @@ static int bcm2835_dma_init(struct spi_controller *ctlr, struct device *dev,
- 		goto err_release;
- 	}
- 
--	for (i = 0; i < BCM2835_SPI_NUM_CS; i++) {
-+	for (i = 0; i < bs->allocated_cs_num; i++) {
- 		bs->clear_rx_desc[i] = dmaengine_prep_dma_cyclic(ctlr->dma_rx,
- 					   bs->clear_rx_addr + i * sizeof(u32),
- 					   sizeof(u32), 0,
-@@ -1209,6 +1219,48 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	struct gpio_chip *chip;
- 	u32 cs;
- 
-+	if (spi->chip_select >= bs->allocated_cs_num) {
-+		unsigned int new_allocated_cs_num = spi->chip_select + 1;
-+		void *new_prepare_cs, *new_clear_rx_desc, *new_clear_rx_cs;
-+		int err;
-+
-+		dev_info(&spi->dev, "Increasing CS count to %u\n",
-+			new_allocated_cs_num);
-+
-+		bcm2835_dma_release(ctlr, bs);
-+
-+		new_prepare_cs  = kmalloc_array(new_allocated_cs_num,
-+			sizeof(u32), GFP_KERNEL);
-+		new_clear_rx_desc = kmalloc_array(new_allocated_cs_num,
-+			sizeof(struct dma_async_tx_descriptor *), GFP_KERNEL);
-+		new_clear_rx_cs = kmalloc_array(new_allocated_cs_num,
-+			sizeof(u32), GFP_DMA);
-+
-+		if (!new_prepare_cs || !new_clear_rx_desc || !new_clear_rx_cs) {
-+			dev_err(&spi->dev, "Failed to allocate new CS arrays.\n");
-+			return -ENOMEM;
-+		}
-+
-+		memcpy(new_prepare_cs, bs->prepare_cs,
-+			bs->allocated_cs_num * sizeof(u32));
-+
-+		kfree(bs->prepare_cs);
-+		kfree(bs->clear_rx_desc);
-+		kfree(bs->clear_rx_cs);
-+
-+		bs->prepare_cs  = new_prepare_cs;
-+		bs->clear_rx_desc = new_clear_rx_desc;
-+		bs->clear_rx_cs = new_clear_rx_cs;
-+
-+		bs->allocated_cs_num = new_allocated_cs_num;
-+
-+		err = bcm2835_dma_init(ctlr, &spi->dev, bs);
-+		if (err) {
-+			dev_err(&spi->dev, "Failed to reinit DMA after CS count change.");
-+			return err;
-+		}
-+	}
-+
- 	/*
- 	 * Precalculate SPI slave's CS register value for ->prepare_message():
- 	 * The driver always uses software-controlled GPIO chip select, hence
-@@ -1233,7 +1285,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 						    BCM2835_SPI_CS_CLEAR_RX;
- 		dma_sync_single_for_device(ctlr->dma_rx->device->dev,
- 					   bs->clear_rx_addr,
--					   sizeof(bs->clear_rx_cs),
-+					   sizeof(u32) * bs->allocated_cs_num,
- 					   DMA_TO_DEVICE);
- 	}
- 
-@@ -1248,6 +1300,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	 */
- 	if (spi->cs_gpiod)
- 		return 0;
-+
- 	if (spi->chip_select > 1) {
- 		/* error in the case of native CS requested with CS > 1
- 		 * officially there is a CS2, but it is not documented
-@@ -1286,10 +1339,25 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	return 0;
- }
- 
-+
-+#ifdef CONFIG_OF
-+static int bcm2835_spi_get_num_chipselect(struct platform_device *pdev)
-+{
-+	return max_t(int, of_gpio_named_count(pdev->dev.of_node, "cs-gpios"), BCM2835_SPI_NUM_CS);
-+}
-+#else
-+static int bcm2835_spi_get_num_chipselect(struct platform_device *pdev)
-+{
-+	return BCM2835_SPI_NUM_CS;
-+}
-+#endif
-+
-+
- static int bcm2835_spi_probe(struct platform_device *pdev)
- {
- 	struct spi_controller *ctlr;
- 	struct bcm2835_spi *bs;
-+	int num_chipselect;
- 	int err;
- 
- 	ctlr = devm_spi_alloc_master(&pdev->dev, ALIGN(sizeof(*bs),
-@@ -1297,12 +1365,14 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 	if (!ctlr)
- 		return -ENOMEM;
- 
-+	num_chipselect = bcm2835_spi_get_num_chipselect(pdev);
-+
- 	platform_set_drvdata(pdev, ctlr);
- 
- 	ctlr->use_gpio_descriptors = true;
- 	ctlr->mode_bits = BCM2835_SPI_MODE_BITS;
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
--	ctlr->num_chipselect = BCM2835_SPI_NUM_CS;
-+	ctlr->num_chipselect = num_chipselect;
- 	ctlr->setup = bcm2835_spi_setup;
- 	ctlr->transfer_one = bcm2835_spi_transfer_one;
- 	ctlr->handle_err = bcm2835_spi_handle_err;
-@@ -1311,6 +1381,20 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 
- 	bs = spi_controller_get_devdata(ctlr);
- 	bs->ctlr = ctlr;
-+	bs->allocated_cs_num = num_chipselect;
-+
-+	bs->prepare_cs = kmalloc_array(num_chipselect, sizeof(u32), GFP_KERNEL);
-+	if (!bs->prepare_cs)
-+		return -ENOMEM;
-+
-+	bs->clear_rx_desc = kmalloc_array(num_chipselect,
-+		sizeof(struct dma_async_tx_descriptor *), GFP_KERNEL);
-+	if (!bs->clear_rx_desc)
-+		return -ENOMEM;
-+
-+	bs->clear_rx_cs = kmalloc_array(num_chipselect, sizeof(u32), GFP_DMA);
-+	if (!bs->clear_rx_cs)
-+		return -ENOMEM;
- 
- 	bs->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(bs->regs))
-@@ -1378,6 +1462,10 @@ static int bcm2835_spi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(bs->clk);
- 
-+	kfree(bs->prepare_cs);
-+	kfree(bs->clear_rx_desc);
-+	kfree(bs->clear_rx_cs);
-+
- 	return 0;
- }
- 
+dme.
 -- 
-2.30.2
-
+Tell me sweet little lies.
