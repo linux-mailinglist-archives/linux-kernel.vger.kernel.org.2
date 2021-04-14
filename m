@@ -2,190 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8C835F293
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EFF35F297
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350655AbhDNLaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350607AbhDNL31 (ORCPT
+        id S1350534AbhDNLbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:31:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51790 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232069AbhDNLbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:29:27 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B8BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:29:05 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id v65-20020a1cde440000b029012853a35ee7so2384939wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sgGFXp+rNeY0o6f3MUrh3kWdEuk4SzRpLTB8DWBZoJA=;
-        b=Mrg9DeYbsVFmqByT7WSz/VKUGSLUGKubp3ngSi2EXnW85azU37YqyHrgAp4XEg7t6p
-         B8/d3PnRVCjAr9dDtSGNtdAtDzAP32wWT2ZRXFPc6JJy2AohrbSbLXTMmeiXsgpkE8D5
-         Z86QdRaeYlDdc12oyGvuUNi8Jklf8ODdj3BzNxAwPcUuhyrkUGAR/4kczsdIwwz1UKUa
-         tEVDSv3XyrR0dhCsk8TbCWrhSPJUDqRAm1xbYtIhW016fsZFO0nzZStMHhQAJcId7GAm
-         yI5Nk80b683NXKuuG13xIgV+6fAWG/mWNibqEEotlUAXAPJp4Prinw6gGwQvgtc1kFfi
-         gDuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sgGFXp+rNeY0o6f3MUrh3kWdEuk4SzRpLTB8DWBZoJA=;
-        b=BDihkvxZck59FpinxWeKlD6Du/6c1n4Ng5LrO9hzFVSm9MzlpfcYIg3DWXV/J9Nrlf
-         kvKr1mH9MWkm5u3MI6RMUe3NHBWleyeFDspQ2Vtzd2O/irq023E4ym5sSE5PdujJja9n
-         jnhJIxVbJhuiADs2P780MCQilWvxOx8Cik4ZDOfLqp0936ufpejOE0t9nnKjc/2q1cq/
-         7m4/PlCWOVEBOeCDOExhm8jWLbwRy3XD6ocZqTtfXY7SG06phjXR5oMkmhncHy5TS3qW
-         I8zH2+SlkBBAAsHaF/5TeEaBYTlPLE/15G2VBHu1QTtvufdcBMicXw7Q3vhpQ4JxeQzf
-         dSAw==
-X-Gm-Message-State: AOAM533wN2U54uBPfIBeLIMPSNRDnzaQ2522Jaau4aEC8nmMeKzLBlJ1
-        cxDvIgkRPuOs6P32nmW7iXEaWeNO4A==
-X-Google-Smtp-Source: ABdhPJwxj9HuQe9V5alHTtBxsDQW+CPmtpfFjDxnZ6ILd8d45e0quLQISY1x9U9i6aurupX3oIs3k+djnQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:4051:8ddb:9de4:c1bb])
- (user=elver job=sendgmr) by 2002:a1c:f618:: with SMTP id w24mr2517462wmc.93.1618399744094;
- Wed, 14 Apr 2021 04:29:04 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 13:28:25 +0200
-In-Reply-To: <20210414112825.3008667-1-elver@google.com>
-Message-Id: <20210414112825.3008667-10-elver@google.com>
-Mime-Version: 1.0
-References: <20210414112825.3008667-1-elver@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH 9/9] kcsan: Document "value changed" line
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, paulmck@kernel.org
-Cc:     mark.rutland@arm.com, will@kernel.org, dvyukov@google.com,
-        glider@google.com, boqun.feng@gmail.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 14 Apr 2021 07:31:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618399846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LyIC5RGvBzIiVUIrXj69K0tPPcpcceqwQSx58Xx++U8=;
+        b=CrxBHDJ0hOuuE/x6a3Lwiiekj8z9k/zbbc80K9pfuirHdkWtUax3VAwVqV8GE/NUPgqRhM
+        0yyXoLaUEWiE/xHkmsdAsv3OdHZNO7HNm5LbN4wLMOLuEhZFI4Ld/RDwjz+iN6YhhMcMFG
+        wULTmkjUSGn1Ib5XsYVaoZ+UoLHBdSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-7XJ8A4JPOw6Z2S_tI1lLHw-1; Wed, 14 Apr 2021 07:30:42 -0400
+X-MC-Unique: 7XJ8A4JPOw6Z2S_tI1lLHw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22D1D80D6A8;
+        Wed, 14 Apr 2021 11:30:40 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-148.ams2.redhat.com [10.36.112.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32FC76F99C;
+        Wed, 14 Apr 2021 11:30:29 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Cooper, Andrew" <andrew.cooper3@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "H. J. Lu" <hjl.tools@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Jann Horn <jannh@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Carlos O'Donell <carlos@redhat.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
+ signal stack overflow
+References: <20210316065215.23768-1-chang.seok.bae@intel.com>
+        <20210316065215.23768-6-chang.seok.bae@intel.com>
+        <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
+        <20210325185435.GB32296@zn.tnic>
+        <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
+        <20210326103041.GB25229@zn.tnic>
+        <DB68C825-25F9-48F9-AFAD-4F6C7DCA11F8@intel.com>
+        <20210414101250.GD10709@zn.tnic>
+Date:   Wed, 14 Apr 2021 13:30:43 +0200
+In-Reply-To: <20210414101250.GD10709@zn.tnic> (Borislav Petkov's message of
+        "Wed, 14 Apr 2021 12:12:50 +0200")
+Message-ID: <87o8eh9k7w.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the example reports based on the latest reports generated by
-kcsan_test module, which now include the "value changed" line. Add a
-brief description of the "value changed" line.
+* Borislav Petkov:
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- Documentation/dev-tools/kcsan.rst | 88 ++++++++++++-------------------
- 1 file changed, 35 insertions(+), 53 deletions(-)
+> On Mon, Apr 12, 2021 at 10:30:23PM +0000, Bae, Chang Seok wrote:
+>> On Mar 26, 2021, at 03:30, Borislav Petkov <bp@alien8.de> wrote:
+>> > On Thu, Mar 25, 2021 at 09:56:53PM -0700, Andy Lutomirski wrote:
+>> >> We really ought to have a SIGSIGFAIL signal that's sent, double-fault
+>> >> style, when we fail to send a signal.
+>> >=20
+>> > Yeap, we should be able to tell userspace that we couldn't send a
+>> > signal, hohumm.
+>>=20
+>> Hi Boris,
+>>=20
+>> Let me clarify some details as preparing to include this in a revision.
+>>=20
+>> So, IIUC, a number needs to be assigned for this new SIGFAIL. At a glanc=
+e, not
+>> sure which one to pick there in signal.h -- 1-31 fully occupied and the =
+rest
+>> for 33 different real-time signals.
+>>=20
+>> Also, perhaps, force_sig(SIGFAIL) here, instead of return -1 -- to die w=
+ith
+>> SIGSEGV.
+>
+> I think this needs to be decided together with userspace people so that
+> they can act accordingly and whether it even makes sense to them.
+>
+> Florian, any suggestions?
 
-diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-index d85ce238ace7..ba059df10b7d 100644
---- a/Documentation/dev-tools/kcsan.rst
-+++ b/Documentation/dev-tools/kcsan.rst
-@@ -27,75 +27,57 @@ Error reports
- A typical data race report looks like this::
- 
-     ==================================================================
--    BUG: KCSAN: data-race in generic_permission / kernfs_refresh_inode
--
--    write to 0xffff8fee4c40700c of 4 bytes by task 175 on cpu 4:
--     kernfs_refresh_inode+0x70/0x170
--     kernfs_iop_permission+0x4f/0x90
--     inode_permission+0x190/0x200
--     link_path_walk.part.0+0x503/0x8e0
--     path_lookupat.isra.0+0x69/0x4d0
--     filename_lookup+0x136/0x280
--     user_path_at_empty+0x47/0x60
--     vfs_statx+0x9b/0x130
--     __do_sys_newlstat+0x50/0xb0
--     __x64_sys_newlstat+0x37/0x50
--     do_syscall_64+0x85/0x260
--     entry_SYSCALL_64_after_hwframe+0x44/0xa9
--
--    read to 0xffff8fee4c40700c of 4 bytes by task 166 on cpu 6:
--     generic_permission+0x5b/0x2a0
--     kernfs_iop_permission+0x66/0x90
--     inode_permission+0x190/0x200
--     link_path_walk.part.0+0x503/0x8e0
--     path_lookupat.isra.0+0x69/0x4d0
--     filename_lookup+0x136/0x280
--     user_path_at_empty+0x47/0x60
--     do_faccessat+0x11a/0x390
--     __x64_sys_access+0x3c/0x50
--     do_syscall_64+0x85/0x260
--     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-+    BUG: KCSAN: data-race in test_kernel_read / test_kernel_write
-+
-+    write to 0xffffffffc009a628 of 8 bytes by task 487 on cpu 0:
-+     test_kernel_write+0x1d/0x30
-+     access_thread+0x89/0xd0
-+     kthread+0x23e/0x260
-+     ret_from_fork+0x22/0x30
-+
-+    read to 0xffffffffc009a628 of 8 bytes by task 488 on cpu 6:
-+     test_kernel_read+0x10/0x20
-+     access_thread+0x89/0xd0
-+     kthread+0x23e/0x260
-+     ret_from_fork+0x22/0x30
-+
-+    value changed: 0x00000000000009a6 -> 0x00000000000009b2
- 
-     Reported by Kernel Concurrency Sanitizer on:
--    CPU: 6 PID: 166 Comm: systemd-journal Not tainted 5.3.0-rc7+ #1
--    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-+    CPU: 6 PID: 488 Comm: access_thread Not tainted 5.12.0-rc2+ #1
-+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-     ==================================================================
- 
- The header of the report provides a short summary of the functions involved in
- the race. It is followed by the access types and stack traces of the 2 threads
--involved in the data race.
-+involved in the data race. If KCSAN also observed a value change, the observed
-+old value and new value are shown on the "value changed" line respectively.
- 
- The other less common type of data race report looks like this::
- 
-     ==================================================================
--    BUG: KCSAN: data-race in e1000_clean_rx_irq+0x551/0xb10
--
--    race at unknown origin, with read to 0xffff933db8a2ae6c of 1 bytes by interrupt on cpu 0:
--     e1000_clean_rx_irq+0x551/0xb10
--     e1000_clean+0x533/0xda0
--     net_rx_action+0x329/0x900
--     __do_softirq+0xdb/0x2db
--     irq_exit+0x9b/0xa0
--     do_IRQ+0x9c/0xf0
--     ret_from_intr+0x0/0x18
--     default_idle+0x3f/0x220
--     arch_cpu_idle+0x21/0x30
--     do_idle+0x1df/0x230
--     cpu_startup_entry+0x14/0x20
--     rest_init+0xc5/0xcb
--     arch_call_rest_init+0x13/0x2b
--     start_kernel+0x6db/0x700
-+    BUG: KCSAN: data-race in test_kernel_rmw_array+0x71/0xd0
-+
-+    race at unknown origin, with read to 0xffffffffc009bdb0 of 8 bytes by task 515 on cpu 2:
-+     test_kernel_rmw_array+0x71/0xd0
-+     access_thread+0x89/0xd0
-+     kthread+0x23e/0x260
-+     ret_from_fork+0x22/0x30
-+
-+    value changed: 0x0000000000002328 -> 0x0000000000002329
- 
-     Reported by Kernel Concurrency Sanitizer on:
--    CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.3.0-rc7+ #2
--    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-+    CPU: 2 PID: 515 Comm: access_thread Not tainted 5.12.0-rc2+ #1
-+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-     ==================================================================
- 
- This report is generated where it was not possible to determine the other
- racing thread, but a race was inferred due to the data value of the watched
--memory location having changed. These can occur either due to missing
--instrumentation or e.g. DMA accesses. These reports will only be generated if
--``CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN=y`` (selected by default).
-+memory location having changed. These reports always show a "value changed"
-+line. A common reason for reports of this type are missing instrumentation in
-+the racing thread, but could also occur due to e.g. DMA accesses. Such reports
-+are shown only if ``CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN=y``, which is
-+enabled by default.
- 
- Selective analysis
- ~~~~~~~~~~~~~~~~~~
--- 
-2.31.1.295.g9ea45b61b8-goog
+Is this discussion about better behavior (at least diagnostics) for
+existing applications, without any code changes?  Or an alternative
+programming model?
+
+Does noavx512 acutally reduce the XSAVE size to AVX2 levels?  Or would
+you need noxsave?
+
+One possibility is that the sigaltstack size check prevents application
+from running which work just fine today because all they do is install a
+stack overflow handler, and stack overflow does not actually happen.  So
+if sigaltstack fails and the application checks the result of the system
+call, it probably won't run at all.  Shifting the diagnostic to the
+pointer where the signal would have to be delivered is perhaps the only
+thing that can be done.
+
+As for SIGFAIL in particular, I don't think there are any leftover
+signal numbers.  It would need a prctl to assign the signal number, and
+I'm not sure if there is a useful programming model because signals do
+not really compose well even today.  SIGFAIL adds another point where
+libraries need to collaborate, and we do not have a mechanism for that.
+(This is about what Rich Felker termed =E2=80=9Clibrary-safe code=E2=80=9D,=
+ proper
+maintenance of process-wide resources such as the current directory.)
+
+Thanks,
+Florian
 
