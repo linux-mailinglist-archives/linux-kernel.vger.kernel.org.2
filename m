@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE81835EACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F4335EAD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhDNC1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:27:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231379AbhDNC1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:27:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A21613D0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:27:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618367232;
-        bh=vR+xGgJ1ZvdzE9ADVoHb98+6LJMTwciDUAVKDrWvdhI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BHzyfHdblEjat8zBIbZgTT0PLHhMEb8vwhiy0IFBjsvH2dchUibRpAVrZM6KIdVeu
-         jfXYuT0yymaRrKXTBjPIrIoZzHIRP3Z5eNGMgrsR97ou4KqGrMyhpNeqwon7s7Mcvg
-         tbT8ELBtmzlmpxngU36zG+IkWbm3zZK0wQwzO3r77tq7TPpK90Ojt6cqSKIuo2+XUM
-         ynCMaPpYYdsPzWQzFx2OX94Hh/kitZLAx7yR8F/t7UpH/toS8ZvCkbzmBGzDk8PJDK
-         WkIo6V8prGyHnUIui/3cj0sNT82zGsyxSiF3BAtwbpOwsBm9WHpx36JRsunJPqrHJw
-         4Su1BFaczsHjQ==
-Received: by mail-lf1-f48.google.com with SMTP id w8so22084975lfr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:27:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530l53t/+TWFZdJ13Vqk/ENJhUabTq1RTmvB5Do8O/kcWoUP2xfc
-        q0iulUhm50fNLY+WTjcYXr/bWpxVd48S4O7fNNY=
-X-Google-Smtp-Source: ABdhPJy7VEgmZ+iMoGsQksNaDynISBuYMg7ywSL8k0F1mmkVV8QOLDpxORYNJaXvx2rEWbV2DYsQkOmJebE39XOxVM4=
-X-Received: by 2002:ac2:4e84:: with SMTP id o4mr1971646lfr.557.1618367230801;
- Tue, 13 Apr 2021 19:27:10 -0700 (PDT)
+        id S1346246AbhDNC3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:29:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231379AbhDNC33 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 22:29:29 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28B7C061574;
+        Tue, 13 Apr 2021 19:29:07 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id 6so15810815ilt.9;
+        Tue, 13 Apr 2021 19:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/mn/74iV+6uKnyBOoO1G0wW39k+gcEhhG6w26EMBHjI=;
+        b=IwsSJZfSF8fuOV0GZ4VaaFsmEGRHM0re6fHqpCO639VX+wtTfKVqXgJsPCCJ3qzOTJ
+         l3W4g5hkChtTjNb71xiE6TH8WSSsX7n64pSp+CV5kPYxMmgJy+WLE4glcdZgREb57fsf
+         YahFwyZoj66SlZMOCkynpT42bO+EqfNUelbRQKsv9zmSkT9uqHngreMvy/0a7rpNZSnw
+         60PLyOy6sdG6x6zCmBBx/66Pg2mToyTYNWTfo1PbqrVhco6TZFRLN06wPM/oZFSPWcFf
+         EU+wRCCqCH7u97R6I0+8eYe9Riq4jd5RVCed7vuUhsg1Tq9Q/ywJj/TMUPaNZr69Bm/q
+         ypfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/mn/74iV+6uKnyBOoO1G0wW39k+gcEhhG6w26EMBHjI=;
+        b=Xtk/A8bFydxlAkm+CVogHOpUTJva6jO/jpl0o0iYGjP47Bdu9PO0A5MLuHIyvk6cM+
+         uvmXhzfzqXNqh+95I7v2PL9v+QHL0CgIiy6yUqgZ0NMlUFA6DB0yhxcVuCY2aeuPLyMB
+         m6wTvHmO8o5JlULIvKEZiOnXFxwsflFGPceiwgPsi4lCsrWfUepIW7Tg08MpjIkmPqml
+         0R3II7RS+eAPYtqA43bYXI5GmltqiIC+tQHy4B9eP6R6u8vzI19mxyyogejo8N/19EJp
+         VYi8X/GDrrQM5+yoM8N4JrVIhWfl64akXG+m0Ce8SGneaYQKHyYxTqxCzZxypLm8dNAV
+         D9kQ==
+X-Gm-Message-State: AOAM5317iYTMR7eBdMC0nRLP6bqaoxkqxr4dbP19RWBQL968Ur1ggvds
+        q+u+5JzPvChnTqIbI3+PnplIpUieKwwDsxM4f/s=
+X-Google-Smtp-Source: ABdhPJyYbPrZh+XUB0O5XYeZ3YXbIs9/AkkcO2XBsQEwt3oJR3JA+ouv2Ni6PwKkk1LNGjIghPYnfO+qyXBjYWu3nuY=
+X-Received: by 2002:a05:6e02:1d16:: with SMTP id i22mr4491158ila.164.1618367347159;
+ Tue, 13 Apr 2021 19:29:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 14 Apr 2021 10:26:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
-Message-ID: <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20201127112114.3219360-1-pbonzini@redhat.com> <20201127112114.3219360-3-pbonzini@redhat.com>
+ <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
+ <YHS/BxMiO6I1VOEY@google.com> <CAJhGHyAcnwkCfTcnxXcgAHnF=wPbH2EDp7H+e74ce+oNOWJ=_Q@mail.gmail.com>
+ <80b013dc-0078-76f4-1299-3cff261ef7d8@redhat.com>
+In-Reply-To: <80b013dc-0078-76f4-1299-3cff261ef7d8@redhat.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Wed, 14 Apr 2021 10:28:55 +0800
+Message-ID: <CAJhGHyChfXdcAMzzD7P3aC8tnhFW5GvOt88vOY=D3pyb7hgNAA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
+ window request
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Filippo Sironi <sironi@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "v4.7+" <stable@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Peter,
+On Tue, Apr 13, 2021 at 8:15 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 13/04/21 13:03, Lai Jiangshan wrote:
+> > This patch claims that it has a place to
+> > stash the IRQ when EFLAGS.IF=0, but inject_pending_event() seams to ignore
+> > EFLAGS.IF and queues the IRQ to the guest directly in the first branch
+> > of using "kvm_x86_ops.set_irq(vcpu)".
+>
+> This is only true for pure-userspace irqchip.  For split-irqchip, in
+> which case the "place to stash" the interrupt is
+> vcpu->arch.pending_external_vector.
+>
+> For pure-userspace irqchip, KVM_INTERRUPT only cares about being able to
+> stash the interrupt in vcpu->arch.interrupt.injected.  It is indeed
+> wrong for userspace to call KVM_INTERRUPT if the vCPU is not ready for
+> interrupt injection, but KVM_INTERRUPT does not return an error.
 
-On Tue, Apr 13, 2021 at 4:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Apr 13, 2021 at 10:03:01AM +0200, Peter Zijlstra wrote:
->
-> > For ticket locks you really only needs atomic_fetch_add() and
-> > smp_store_release() and an architectural guarantees that the
-> > atomic_fetch_add() has fwd progress under contention and that a sub-word
-> > store (through smp_store_release()) will fail the SC.
-> >
-> > Then you can do something like:
-> >
-> > void lock(atomic_t *lock)
-> > {
-> >       u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
-> >       u16 ticket = val >> 16;
-> >
-> >       for (;;) {
-> >               if (ticket == (u16)val)
-> >                       break;
-> >               cpu_relax();
-> >               val = atomic_read_acquire(lock);
-> >       }
-Should it be?
-       for (;;) {
-               if (ticket == (u16)val) {
-                       __atomic_acquire_fence();
-                       break;
-               }
+Thanks for the reply.
 
->
-> A possibly better might be:
->
->         if (ticket == (u16)val)
->                 return;
-Should it be?
-         if (ticket == (u16)val) {
-                 __atomic_acquire_fence();
-                 return;
-         }
+May I ask what is the correct/practical way of using KVM_INTERRUPT ABI
+for pure-userspace irqchip.
+
+gVisor is indeed a pure-userspace irqchip, it will call KVM_INTERRUPT
+when kvm_run->ready_for_interrupt_injection=1 (along with other conditions
+unrelated to our discussion).
+
+https://github.com/google/gvisor/blob/a9441aea2780da8c93da1c73da860219f98438de/pkg/sentry/platform/kvm/bluepill_amd64_unsafe.go#L105
+
+if kvm_run->ready_for_interrupt_injection=1 when expection pending or
+EFLAGS.IF=0, it would be unexpected for gVisor.
+
+Thanks
+Lai
 
 >
->         atomic_cond_read_acquire(lock, ticket == (u16)VAL);
+> Ignoring the fact that this would be incorrect use of the API, are you
+> saying that the incorrect injection was not possible before this patch?
 >
-> Since that allows architectures to use WFE like constructs.
+> Paolo
 >
-> > }
-> >
-> > void unlock(atomic_t *lock)
-> > {
-> >       u16 *ptr = (u16 *)lock + (!!__BIG_ENDIAN__);
-> >       u32 val = atomic_read(lock);
-> >
-> >       smp_store_release(ptr, (u16)val + 1);
-> > }
-> >
-> > That's _almost_ as simple as a test-and-set :-) It isn't quite optimal
-> > on x86 for not being allowed to use a memop on unlock, since its being
-> > forced into a load-store because of all the volatile, but whatever.
-
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
