@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961D235EAA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0D235EAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhDNCK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        id S233185AbhDNCMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhDNCKy (ORCPT
+        with ESMTP id S230293AbhDNCM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:10:54 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC1FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:10:31 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id l11so1080634vsr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:10:31 -0700 (PDT)
+        Tue, 13 Apr 2021 22:12:29 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B0CC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:12:09 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id t25-20020a62ea190000b0290229c92857beso218388pfh.21
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rqpmVSMeGO85HYhXbbrqjAjjgDBDlXCmgwDZysFf8H8=;
-        b=RdORCPpEX/0RF83AbL12/OxNPbXJarx3Ud34+xQeNTgiFTGqcGKeYCW2CneDCwO2Bz
-         rvJeA8FX7uU31hBg3B2NKRJkxhDG+A/wzVxMjyyRnYsQgpry2re4Fgu9AEU8mX2xafbG
-         I6OvF8RMsH1dctjjmoil7BvwHaRimJdm14cb5NjJS6xENKH6xwUn5bAjaPEpv68ThqWw
-         3F6MIQ/DqZ/NLgkYAUjzDN7vppdXbcP0lkVtnbAsF+MiFLaON/hGoy7XmC5tHoePE/Dk
-         G2TrbtzicWEZX00Sxq+U+p/qzDAhaRbTZ2uJdD/B0V+zwsx12f6aieZe/J+hvzkim7Wm
-         B7Lg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=QUa/z4U+xYp/G6ZwVdnUBL+VTHMhfaT1zjq2fxbj/7Q=;
+        b=vAdefYf5Sh47eXDz0HifaA6qLGGbvsWRdAzn6yHn2k4XUW7KUw+JfcfJRvE8P//crG
+         Sgmp7y8ekRsm5ikghQ6lStVWvSR0wwmfgeD53kXUvvMCVZrkl4MiXg1O/rGz5Z5QKEP8
+         AdNnTpT8aD2+aZgH14j1GOl0gMRP0oSzlHTvI4vQcrVYIhw8qTyrefxC5fdqgNGy1vh3
+         d+37XRsWViJ1zbhq1KcE58PFwS+uLCo88C1SXNszjtpgPE4x+AV4uNV0qnDzGYWdGWXW
+         LVhbTvIFLMlfE10wBzbmGvI7cQNAO1JJNo8u0Qx0oxgPgrOcR1TOBIl9M2AYE2s/Zqns
+         NWIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rqpmVSMeGO85HYhXbbrqjAjjgDBDlXCmgwDZysFf8H8=;
-        b=bXo44bDHckNSATYqbaPc0zPIdcVJJT6l921TIZxY0gKo8H83ZBZi3kRsW/h7/WVX7a
-         vcNQk+bNxvU+OtzrBzjWf+6BuJOjgtqZ8q6NSmfXqTZjkg20M8Crv8q0jMWnKXynOlTl
-         Ovr0v/pNUb1jJjktHylD+8NRJYW7URpvHbNl+GMFHiizss/msJOWoc4DQ1bWMDkvQnEx
-         FyG+hVe4/TUqdLk+cN8IGzxHG4r7uacpDZiTWJIToqX1mJw8SpvQJllXbiKppxRArjgW
-         nd3p79R4+RJxhpO6D8VvB2s/OUkKQxDniRnjNdr1dOrfFHKkJgyMdNeEEBu4SPmWCMNg
-         CKBQ==
-X-Gm-Message-State: AOAM53116uDibFboHHsRQu4vu5AoZeke0thc2NvyRrH1T0LKVBA2gP/q
-        7CcHweTVAP/fKw5mxb1di0NqvPsnTQQvod5Kf/I=
-X-Google-Smtp-Source: ABdhPJyuoCoTLUa5as2KmtyQ19vrqLGgEe9aWttUwr+H+o46TCNFOC10lGRXQsXo/rurA+lNwDKvsaLh4/iZvdCRlMQ=
-X-Received: by 2002:a67:2c46:: with SMTP id s67mr5067774vss.13.1618366230123;
- Tue, 13 Apr 2021 19:10:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210413131842.44430-1-qianjun.kernel@gmail.com> <YHWpknBamqQz2rpJ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHWpknBamqQz2rpJ@hirez.programming.kicks-ass.net>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Wed, 14 Apr 2021 10:10:19 +0800
-Message-ID: <CAKc596J1eEqYjYy9dnK6VriGU6GE-7be-6Tq4VA5UUhCp3+ZMQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sched/fair:Reduce unnecessary check preempt in the
- sched tick
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=QUa/z4U+xYp/G6ZwVdnUBL+VTHMhfaT1zjq2fxbj/7Q=;
+        b=XWoUh3Y+TnvmAZyoc/J3dWwMMXcXjzPfsLL4BKgTfmtIJJaKkk0H0NUZ6L4+Pbl2Xf
+         GGzeVugtSdzhRvQyNKuJlwsxdZvg25WouJVGxf0cStXuEWGH5ffKkZ8NpoJ441uXD8lO
+         DCrCzHQqJ9EfieXn2hWPwi/+11sHNRQzbywra+QDOuV/UVKtcGM3MajHDqUWBliSW9cT
+         zDRBihyQw27FCVMTz4NE4K96dvJyxf/iYYMLTk3cMHNl+DNn8K0C957n9xjydAENFKgV
+         K1hUvi3x6DpdALoqc7S6Eh+rbjhiT70dbGIx70s/AOBptdN61XxW9tk7npD8ZQywUjbn
+         34JA==
+X-Gm-Message-State: AOAM533QPauvLK8B6PbxTo8OpG60zLPXW6DJ9HGEzk/ZqG+gtlKRdQIZ
+        GLFYhnES+OhiDx1UjxbMtjj6D3+U
+X-Google-Smtp-Source: ABdhPJyvIjeokt8cH+3b2Zm5WHCEdlTw1K78oXzATvdBO+NIY9SGQpr07F1MMWe0cxC58m94Wt2O0OIc
+X-Received: from lzye2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:6713])
+ (user=lzye job=sendgmr) by 2002:a17:90b:e98:: with SMTP id
+ fv24mr135137pjb.1.1618366328195; Tue, 13 Apr 2021 19:12:08 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 02:12:01 +0000
+Message-Id: <20210414021201.2462114-1-lzye@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH] [v5] Input: Add "Select" button to Microsoft Xbox One controller.
+From:   Chris Ye <lzye@google.com>
+To:     "=?UTF-8?q?=C5=81ukasz=20Patron?=" <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Chris Ye <lzye@google.com>, Lee Jones <lee.jones@linaro.org>,
+        "=?UTF-8?q?Olivier=20Cr=C3=AAte?=" <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trivial@kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8810:24=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue, Apr 13, 2021 at 09:18:42PM +0800, qianjun.kernel@gmail.com wrote:
-> > From: jun qian <qianjun.kernel@gmail.com>
-> >
-> > If it has been determined that the current cpu need resched in the
-> > early stage of for_each_sched_entity, then there is no need to check
-> > preempt in the subsequent se->parent entity_tick.
->
-> Right, but does it actually do anything, except increase linecount?
->
-> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> > ---
-> >  kernel/sched/fair.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 1a68a0536add..c0d135100d54 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -4352,8 +4352,13 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct=
- sched_entity *curr)
-> >  {
-> >       unsigned long ideal_runtime, delta_exec;
-> >       struct sched_entity *se;
-> > +     struct rq *rq =3D rq_of(cfs_rq);
-> >       s64 delta;
-> >
-> > +     /* If the TIF_NEED_RESCHED has been set, it is no need to check a=
-gain */
-> > +     if (test_tsk_need_resched(rq->curr))
-> > +             return;
-> > +
-> >       ideal_runtime =3D sched_slice(cfs_rq, curr);
-> >       delta_exec =3D curr->sum_exec_runtime - curr->prev_sum_exec_runti=
-me;
-> >       if (delta_exec > ideal_runtime) {
->
-> Also, I think that's placed wrong; this way we can mis clear_buddies().
+Add "Select" button input capability and input event mapping for
+Microsoft Xbox One controller. From product site this is also referred as
+"Share" button.
+Fixed Microsoft Xbox One controller select button not working under USB
+connection.
 
-thanks, i will modify it in the next version
+Signed-off-by: Chris Ye <lzye@google.com>
+---
+ drivers/input/joystick/xpad.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+index 9f0d07dcbf06..cfbf1747b205 100644
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -79,6 +79,7 @@
+ #define MAP_DPAD_TO_BUTTONS		(1 << 0)
+ #define MAP_TRIGGERS_TO_BUTTONS		(1 << 1)
+ #define MAP_STICKS_TO_NULL		(1 << 2)
++#define MAP_SELECT_BUTTON		(1 << 3)
+ #define DANCEPAD_MAP_CONFIG	(MAP_DPAD_TO_BUTTONS |			\
+ 				MAP_TRIGGERS_TO_BUTTONS | MAP_STICKS_TO_NULL)
+ 
+@@ -130,6 +131,7 @@ static const struct xpad_device {
+ 	{ 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0, XTYPE_XBOXONE },
+ 	{ 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE },
+ 	{ 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
++	{ 0x045e, 0x0b12, "Microsoft Xbox One X pad", MAP_SELECT_BUTTON, XTYPE_XBOXONE },
+ 	{ 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
+ 	{ 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
+ 	{ 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
+@@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
+ 	/* menu/view buttons */
+ 	input_report_key(dev, BTN_START,  data[4] & 0x04);
+ 	input_report_key(dev, BTN_SELECT, data[4] & 0x08);
++	if (xpad->mapping & MAP_SELECT_BUTTON)
++		input_report_key(dev, KEY_RECORD, data[22] & 0x01);
+ 
+ 	/* buttons A,B,X,Y */
+ 	input_report_key(dev, BTN_A,	data[4] & 0x10);
+@@ -1672,6 +1676,8 @@ static int xpad_init_input(struct usb_xpad *xpad)
+ 	    xpad->xtype == XTYPE_XBOXONE) {
+ 		for (i = 0; xpad360_btn[i] >= 0; i++)
+ 			input_set_capability(input_dev, EV_KEY, xpad360_btn[i]);
++		if (xpad->mapping & MAP_SELECT_BUTTON)
++			input_set_capability(input_dev, EV_KEY, KEY_RECORD);
+ 	} else {
+ 		for (i = 0; xpad_btn[i] >= 0; i++)
+ 			input_set_capability(input_dev, EV_KEY, xpad_btn[i]);
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
