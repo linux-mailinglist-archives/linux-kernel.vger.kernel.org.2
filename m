@@ -2,237 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C5835F887
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3919135F88A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352545AbhDNP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:56:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347344AbhDNP4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:56:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B655613A9;
-        Wed, 14 Apr 2021 15:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618415738;
-        bh=tecUr8uhzC+Qa4aSCGZEypxNiZC4HVhGBy0HhA02K8A=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=L9UiB8ZVorulnIEA/+4T7FTmvQb8JPbLKRxwoqFnlCImaztfk1rMVRaDPO7w4Vo5S
-         jxIComCRKJ7aaAQjLgP+3PPL/EWXrhKfvxpNbcN3n6LcIOD06t7NAzWMm3GvQ1afzi
-         kkNmQW1Cy7xS9cVlxQFWNUbule4h9uso7ZtRf2yun+zlr17i2N+ztzmQn/D2yg5myY
-         iDFPD9kA+HObu05AAfduOgAdY0DQL7lAt0xDizZ0L5ZjjCOygWqTTCzObLpNOMUQyV
-         yAgG2YMHVn0isYdwXGxmxvCkRVN60xff1jwbf20zQ63T0SuTucKsoM0ZBh834H2uB7
-         mCM3EeG16gw9w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2958A5C034B; Wed, 14 Apr 2021 08:55:38 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 08:55:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 1/2] srcu: Fix broken node geometry after early ssp init
-Message-ID: <20210414155538.GO4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210414132413.98062-1-frederic@kernel.org>
- <20210414132413.98062-2-frederic@kernel.org>
+        id S233508AbhDNP5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231705AbhDNP5C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:57:02 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC02C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:56:40 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so2814547wmq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hakvSth19CwFZlwh3YMNFY/spXWwZoBmln8dVIngfeE=;
+        b=kqd1G5z0GmuSbfpQML2emAiJnZ8ErF4Ml3gO7hMACxJU7U4LODHnQGoipPcWW8wQvc
+         t/bSuv3k42mx0hV7BXldowWUR2grG4rkTgSr0GMFBbvo3j+omXvQz0lYr80og2Amrev8
+         ZavAVJ3n8d4ioH+Sjf1NK6IKpVeYKG7vTXwQw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hakvSth19CwFZlwh3YMNFY/spXWwZoBmln8dVIngfeE=;
+        b=qkB2W3r5qYqzvDQpZD9Tdkmdp5bKqvzEzjRnYPnQPlO/ted+pmJm9trXCR101PE/cI
+         P3suLHxIsO8DLhHvJG+WA14LvCZwmFdetQjdOIwDCEL/kFVGwaIOrX4jiOiJ+Pza5XoW
+         +2EdD+zU6rezP/qj3+U/6Hm0KVwrTg/niN3EbCVTewj6alCa4zX5M2A0coikpRl1beZX
+         2k7wMB3b0+cz34KvOD9GqBVjGYouq0LXITqeKeNuC8KgQoUknJZ1mNbbXZADhrGzMcfn
+         NA0TdtFtPiyhjcA2DwbWvyp9y14V/UePtnfrPknOQpoN1mYfxkwgWjSkS+udsdIUPv7F
+         OHYQ==
+X-Gm-Message-State: AOAM533eUE0rE5cK+FALRX7JHZBwnsUunllq2koOxbABsRsh8VEBeHUu
+        BckFhqttEyTW2rC9k7YQ7fIAB2wrcLJtuw==
+X-Google-Smtp-Source: ABdhPJxDm4ArJeDTutVnC8hE1110UxbwPKrqMSxmdnsugIhkHTlRMAJAsLUSvTL933ggj4XLnddwGg==
+X-Received: by 2002:a7b:c1c5:: with SMTP id a5mr3670803wmj.54.1618415799574;
+        Wed, 14 Apr 2021 08:56:39 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:8b2a:41bd:9d62:10d5])
+        by smtp.gmail.com with ESMTPSA id s14sm20545578wrm.51.2021.04.14.08.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 08:56:39 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, jackmanb@chromium.org,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH] selftests/bpf: Fix the ASSERT_ERR_PTR macro
+Date:   Wed, 14 Apr 2021 17:56:32 +0200
+Message-Id: <20210414155632.737866-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414132413.98062-2-frederic@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 03:24:12PM +0200, Frederic Weisbecker wrote:
-> An ssp initialized before rcu_init_geometry() will have its snp hierarchy
-> based on CONFIG_NR_CPUS.
-> 
-> Once rcu_init_geometry() is called, the nodes distribution is shrinked
-> and optimized toward meeting the actual possible number of CPUs detected
-> on boot.
-> 
-> Later on, the ssp that was initialized before rcu_init_geometry() is
-> confused and sometimes refers to its initial CONFIG_NR_CPUS based node
-> hierarchy, sometimes to the new num_possible_cpus() based one instead.
-> For example each of its sdp->mynode remain backward and refer to the
-> early node leaves that may not exist anymore. On the other hand the
-> srcu_for_each_node_breadth_first() refers to the new node hierarchy.
-> 
-> There are at least two bad possible outcomes to this:
-> 
-> 1) a) A callback enqueued early on an sdp is recorded pending on
->       sdp->mynode->srcu_data_have_cbs in srcu_funnel_gp_start() with
->       sdp->mynode pointing to a deep leaf (say 3 levels).
-> 
->    b) The grace period ends after rcu_init_geometry() which shrinks the
->       nodes level to a single one. srcu_gp_end() walks through the new
->       snp hierarchy without ever reaching the old leaves so the callback
->       is never executed.
-> 
->    This is easily reproduced on an 8 CPUs machine with
->    CONFIG_NR_CPUS >= 32 and "rcupdate.rcu_self_test=1". The
->    srcu_barrier() after early tests verification never completes and
->    the boot hangs:
-> 
-> 	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
-> 	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
-> 	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> 	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
-> 	[ 5413.168099] Call Trace:
-> 	[ 5413.170555]  __schedule+0x36c/0x930
-> 	[ 5413.174057]  ? wait_for_completion+0x88/0x110
-> 	[ 5413.178423]  schedule+0x46/0xf0
-> 	[ 5413.181575]  schedule_timeout+0x284/0x380
-> 	[ 5413.185591]  ? wait_for_completion+0x88/0x110
-> 	[ 5413.189957]  ? mark_held_locks+0x61/0x80
-> 	[ 5413.193882]  ? mark_held_locks+0x61/0x80
-> 	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
-> 	[ 5413.202173]  ? wait_for_completion+0x88/0x110
-> 	[ 5413.206535]  wait_for_completion+0xb4/0x110
-> 	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
-> 	[ 5413.215610]  srcu_barrier+0x187/0x200
-> 	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
-> 	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
-> 	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
-> 	[ 5413.232700]  do_one_initcall+0x63/0x310
-> 	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
-> 	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
-> 	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
-> 	[ 5413.249273]  ? rest_init+0x250/0x250
-> 	[ 5413.252846]  kernel_init+0xa/0x110
-> 	[ 5413.256257]  ret_from_fork+0x22/0x30
-> 
-> 2) An ssp that gets initialized before rcu_init_geometry() and used
->    afterward will always have stale rdp->mynode references, resulting in
->    callbacks to be missed in srcu_gp_end(), just like in the previous
->    scenario.
-> 
-> Solve this with calling rcu_init_geometry() whenever an struct srcu_state
-> happens to be initialized before rcu_init(). This way we make sure the
-> RCU nodes hierarchy is properly built and distributed before the nodes
-> of a struct srcu_state are allocated.
-> 
-> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+It is just missing a ';'. This macro is not used by any test yet.
 
-Much much nicer, thank you!  Comments and questions interspersed.
+Signed-off-by: Florent Revest <revest@chromium.org>
+---
+ tools/testing/selftests/bpf/test_progs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index e87c8546230e..ee7e3b45182a 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -210,7 +210,7 @@ extern int test__join_cgroup(const char *path);
+ #define ASSERT_ERR_PTR(ptr, name) ({					\
+ 	static int duration = 0;					\
+ 	const void *___res = (ptr);					\
+-	bool ___ok = IS_ERR(___res)					\
++	bool ___ok = IS_ERR(___res);					\
+ 	CHECK(!___ok, (name), "unexpected pointer: %p\n", ___res);	\
+ 	___ok;								\
+ })
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> ---
->  kernel/rcu/rcu.h      |  3 +++
->  kernel/rcu/srcutree.c |  2 ++
->  kernel/rcu/tree.c     | 18 +++++++++++++++++-
->  3 files changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index 75ed367d5b60..24db97cbf76b 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -278,6 +278,7 @@ extern void resched_cpu(int cpu);
->  extern int rcu_num_lvls;
->  extern int num_rcu_lvl[];
->  extern int rcu_num_nodes;
-> +extern bool rcu_geometry_initialized;
-
-Can this be a static local variable inside rcu_init_geometry()?
-
-After all, init_srcu_struct() isn't called all that often, and its overhead
-is such that an extra function call and check is going to hurt it.  This
-of course requires removing __init from rcu_init_geometry(), but it is not
-all that large, so why not just remove the __init?
-
-But if we really are worried about reclaiming rcu_init_geometry()'s
-instructions (maybe we are?), then rcu_init_geometry() can be split
-into a function that just does the check (which is not __init) and the
-remainder of the function, which could remain __init.
-
->  static bool rcu_fanout_exact;
->  static int rcu_fanout_leaf;
->  
-> @@ -308,6 +309,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
->  	}
->  }
->  
-> +extern void rcu_init_geometry(void);
-> +
->  /* Returns a pointer to the first leaf rcu_node structure. */
->  #define rcu_first_leaf_node() (rcu_state.level[rcu_num_lvls - 1])
->  
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 108f9ca06047..05ca3c275af1 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -171,6 +171,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
->  		ssp->sda = alloc_percpu(struct srcu_data);
->  	if (!ssp->sda)
->  		return -ENOMEM;
-> +	if (!rcu_geometry_initialized)
-> +		rcu_init_geometry();
-
-With the suggested change above, this just becomes an unconditional call
-to rcu_init_geometry().
-
->  	init_srcu_struct_nodes(ssp);
->  	ssp->srcu_gp_seq_needed_exp = 0;
->  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 740f5cd34459..b1d6e60e08d1 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4556,17 +4556,33 @@ static void __init rcu_init_one(void)
->  	}
->  }
->  
-> +bool rcu_geometry_initialized __read_mostly;
-
-This could then go away.
-
-> +
->  /*
->   * Compute the rcu_node tree geometry from kernel parameters.  This cannot
->   * replace the definitions in tree.h because those are needed to size
->   * the ->node array in the rcu_state structure.
->   */
-> -static void __init rcu_init_geometry(void)
-> +void rcu_init_geometry(void)
->  {
->  	ulong d;
->  	int i;
-> +	static unsigned long old_nr_cpu_ids;
->  	int rcu_capacity[RCU_NUM_LVLS];
-
-And then rcu_geometry_initialized is declared static here.
-
-Or am I missing something?
-
-> +	if (rcu_geometry_initialized) {
-> +		/*
-> +		 * Arrange for warning if rcu_init_geometry() was called before
-> +		 * setup_nr_cpu_ids(). We may miss cases when
-> +		 * nr_cpus_ids == NR_CPUS but that shouldn't matter too much.
-> +		 */
-> +		WARN_ON_ONCE(old_nr_cpu_ids != nr_cpu_ids);
-> +		return;
-> +	}
-> +
-> +	old_nr_cpu_ids = nr_cpu_ids;
-> +	rcu_geometry_initialized = true;
-> +
->  	/*
->  	 * Initialize any unspecified boot parameters.
->  	 * The default values of jiffies_till_first_fqs and
-> -- 
-> 2.25.1
-> 
