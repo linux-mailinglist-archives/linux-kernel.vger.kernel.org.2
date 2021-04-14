@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659A335F497
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159C735F496
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351148AbhDNNNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:13:42 -0400
-Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:36773 "EHLO
-        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244296AbhDNNNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:13:40 -0400
-Received: from mxplan5.mail.ovh.net (unknown [10.109.146.192])
-        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 8FE409A41E62;
-        Wed, 14 Apr 2021 15:13:17 +0200 (CEST)
-Received: from kaod.org (37.59.142.106) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 14 Apr
- 2021 15:13:17 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-106R00692793ddd-07f1-4232-92a8-daead18c2131,
-                    38A808AD2D0D3C4A59D9F430F89D181E503BD305) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 90.89.73.13
-Subject: Re: [PATCH] genirq: reduce irqdebug bouncing cachelines
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Nicholas Piggin <npiggin@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20210402132037.574661-1-npiggin@gmail.com>
- <87im4u2vxx.ffs@nanos.tec.linutronix.de>
- <2dae4501-6f01-1b32-4b69-1dfc94c93425@kaod.org>
- <87wnt71xmm.ffs@nanos.tec.linutronix.de>
- <b299bb0c-2997-6f6f-8646-4a7ecb2c79c0@kaod.org>
- <87tuoax79f.ffs@nanos.tec.linutronix.de>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <8f7b2768-fe69-b1eb-8fc0-dc77a394ae99@kaod.org>
-Date:   Wed, 14 Apr 2021 15:13:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1347023AbhDNNNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:13:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244296AbhDNNNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:13:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67C826117A;
+        Wed, 14 Apr 2021 13:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618405996;
+        bh=zNA9BW02865jD8k52Q6N54fwSyrlqUjrgA0nHCv2pkI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PyEbhgQI0xBf5abd0ytIk3pw4a3AXrGR++kM9+ipEhfY2pDEh08X+ZwDGoCr7wyTi
+         Q3qWH3xz2LREosENHfPJzj8F59xQq1wlt/zJgvI7OOjCGQiQ8a2RxwQ2tfVQEe1PNz
+         Pzp6884eIBPqAp05rTqPI4MyOXj2mrxXexdDg4ok8jWNxc7HZ9fhWxgmKdSNNagwte
+         7+lKmghLwD7mk+FQNVh0Bffn0Fqjzfdc4JcHrRkNLYEUUfZ3xA53qUzjdSRXO1hX02
+         o4PUWEN1r/cdk0C+oi2FVeNPTg4cMEgQWvl5JCVQC136ooMDpzb37tb0tsCvaARAFv
+         ZYZ6ro/Rlkpcg==
+Date:   Wed, 14 Apr 2021 16:13:14 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kprobes: Simplify alloc_insn_page() with
+ __vmalloc_node_range
+Message-ID: <YHbqaiEYXpGZq3Cd@kernel.org>
+References: <20210413180231.19b72601@xhacker.debian>
+ <20210413220030.d1cbbc63659dcbc52876696d@kernel.org>
+ <20210414152728.418a41fb@xhacker.debian>
+ <20210414172258.e44302c4524644b92ce106ec@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87tuoax79f.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.106]
-X-ClientProxiedBy: DAG3EX1.mxp5.local (172.16.2.21) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 754c5738-ed00-444e-9a70-b76b5110eec9
-X-Ovh-Tracer-Id: 16892157780021054429
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudeluddgiedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopehtghhlgieslhhinhhuthhrohhnihigrdguvg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414172258.e44302c4524644b92ce106ec@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 10:24 PM, Thomas Gleixner wrote:
-> On Tue, Apr 13 2021 at 14:16, Cédric Le Goater wrote:
->>>> We could test irq_settings_no_debug() directly under handle_nested_irq() 
->>>> and handle_irq_event_percpu() to avoid calling note_interrupt(), just 
->>>> like we do for noirqdebug.
->>>
->>> We can do that, but then we should not just make it:
->>>
->>>    if (!irqnodebug && !irq_settings_no_debug(desc))
->>>    	note_interrupt(...);
->>>
->>> Instead have only one condition:
->>>
->>>    if (!irq_settings_no_debug(desc))
->>>    	note_interrupt(...);
->>>
->>> See the uncompiled delta patch below.
->>
->> I merged this second part with the first and gave IRQF_NO_DEBUG a try 
->> on P8 and P9 systems and all looked fine. I should send both patches 
->> after IRQF_NO_AUTOEN is merged in mainline.     
+On Wed, Apr 14, 2021 at 05:22:58PM +0900, Masami Hiramatsu wrote:
+> Hi Jisheng,
 > 
-> Does having that NODEBUG flag set on the IPI irqs make a measurable
-> difference or is it just too small to matter?
+> On Wed, 14 Apr 2021 15:27:28 +0800
+> Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> 
+> \
+> > > 
+> > > On Tue, 13 Apr 2021 18:03:24 +0800
+> > > Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+> > >   
+> > > > Use the __vmalloc_node_range() to simplify x86's alloc_insn_page() 
+> > > > implementation.  
+> > > 
+> > > Have you checked this is equivarent to the original code on all 
+> > > architecture? IIRC, some arch has a special module_alloc(),  
+> > 
+> > > Indeed, this isn't equivarent to the original code. FWICT, the differences on x86 are:
+> > 
+> > > 1) module_alloc() allocates a special vmalloc range
+> > > 2) module_alloc() randomizes the return address via. module_load_offset()
+> > > 3) module_alloc() also supports kasan instrumentation by kasan_module_alloc()
+> > 
+> > > But I'm not sure whether the above differences are useful for kprobes ss
+> > > insn slot page or not. Take 1) for example, special range in module_alloc
+> > > is due to relative jump limitation, modules need to call kernel .text. does
+> > > kprobes ss ins slot needs this limitation too?
+> > 
+> > Oops, I found this wonderful thread:
+> > https://www.lkml.org/lkml/2020/7/28/1413
+> > 
+> > So kprobes ss ins slot page "must be in the range of relative branching only
+> > for x86 and arm"
+> 
+> Yes, at this moment. (Not sure we can introduce similar feature on other arch too)
+> 
+> > 
+> > And Jarkko's "arch/x86: kprobes: Remove MODULES dependency" series look
+> > much better. The last version is v5, I'm not sure whether Jarkko will
+> > send new version to mainline the series.
+> 
+> I hope so. If module_alloc() itself is implemented on the generic text_alloc(),
+> I can replace the module_alloc() with text_alloc(). 
 
-It does not add much benefits on the 2s and 4s systems but I will give it 
-a try on bigger ones when I can grab them. Then we can decide if it is 
-worth merging. 
+I can of course look into this too. Right now in two vacation coming back
+end of this month.
 
-Thanks,
-
-C.
+/Jarkko
