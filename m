@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A5D35EF63
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B3335EF6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350050AbhDNISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350031AbhDNISE (ORCPT
+        id S1348376AbhDNIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:20:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39530 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231825AbhDNIUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:18:04 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217A1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:17:43 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id j5so17985465wrn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IyKB46K3ypu2aXeRH7albc1z58567mfbml07nO1sgOo=;
-        b=HS9I2ZyD+DjA11BE75D6pAP4oLe1mmo4yWYDiwgRrBuY8h3XJQRbMsYjE/+Et5NdaP
-         YeYVVQXNkGPXPth7tuNiiKui+BAm8Nfyq4vurYWoLJJv6O9KIyLSQNth48TvpAQR+j/Y
-         W4jOGMCkCcA7LzgRusWcFUFdhNQ63EDEXTrXxemW2VCNzkmz/z863L/cogV+LbDFS+3s
-         V+7zAxRFG0cNUwoTKnNXdgMEEy0gYJuh02tyPj+bkH22clyyOHyiwi9sIRXgCjqRQE7f
-         c0JcZG2u4BR1oL6pcvR7wby3auz/l5wOYMccweF/4YHGkV8ciAqVewI7ibA1gVKVC+y0
-         u8zg==
+        Wed, 14 Apr 2021 04:20:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618388415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BLl1W6zArQenlPXQjJdbyqEKbkXadZaxmjn+SStX0jE=;
+        b=FgdMBoahrwyvUOFqIpgN+trHWRBuXf83bDZ/7i0o6Tpk7p44GV5C9Qq7VPrYgZxU0Ac8lV
+        zAdX9eCv9o+ayyjlJ2W1qE4akaoHlVHw1+HOwmzPMBgkhSY7ncvf30LVqk3EYF6JcMBhTm
+        QFXUUft3LphNtHodj+z3TQUpkuWKeeE=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-7yOpF3DNM9S6AeoT-F62pg-1; Wed, 14 Apr 2021 04:20:14 -0400
+X-MC-Unique: 7yOpF3DNM9S6AeoT-F62pg-1
+Received: by mail-wr1-f70.google.com with SMTP id j16-20020adfd2100000b02901022328749eso714669wrh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:20:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IyKB46K3ypu2aXeRH7albc1z58567mfbml07nO1sgOo=;
-        b=kkvYKvadRXzUR8p3MqRx5hiwvFXXShKv21julx8uv/UcZpmNe0ZctcfaD6qYnI3YZG
-         KjVXlKAyJkGUBodlJ8XpbP+szViv5NARtJ12zEaaAhfyLqjxhaCiNa+yB8fC81ukRjv/
-         GFHzitT8Tr3IlFEZrkp+Ept/9VeaD9MqkTJVWNDI05H60NlGcE78yznJMHHQM/XeSONb
-         HHKJHJGHO2YGMey8VCKf8KRsKp3vvo0QXcMRxgmiIq8sH1YEtvgNOjNFQ4dqR/XQX+4q
-         v1edsbD1UJpNzy7Dzj5o5g8a9EVt1CHMZehHXdx+ik++F6JfnGGs54FuN6R3EbeGk9VE
-         Be8Q==
-X-Gm-Message-State: AOAM530ibMsZg/8NMzB295/zG+LGvF0vsrxM4P6n0rVODub99mojY7B/
-        ZSaiKk0flGHlfFff1NYvQn/gtoyugX8=
-X-Google-Smtp-Source: ABdhPJx2/Mvd2ETJCC6X7S3be8bRA59ZG8QpqD20+dWQh+z+jr4JsE19PTDzf5EPsGJs+SioVefGag==
-X-Received: by 2002:a5d:5291:: with SMTP id c17mr42232373wrv.110.1618388261701;
-        Wed, 14 Apr 2021 01:17:41 -0700 (PDT)
-Received: from agape ([5.171.25.35])
-        by smtp.gmail.com with ESMTPSA id q10sm770204wmc.31.2021.04.14.01.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:17:41 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: fix indentation issue introduced by long line split
-Date:   Wed, 14 Apr 2021 10:17:39 +0200
-Message-Id: <20210414081739.2990-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210413145712.GH6021@kadam>
-References: <20210413145712.GH6021@kadam>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BLl1W6zArQenlPXQjJdbyqEKbkXadZaxmjn+SStX0jE=;
+        b=jdjdQlBPm8nkclQH282k/taJPOPOrki8zu+WdCdgX2Ja4SAZYQuYby8qB3g/NB4e8o
+         TNjKmwqW7FaPS9h7JgoQep7lcU5crMZ7tU2G1JFLJrep7unO4/KK7xjO/fF7edpJT5hs
+         Wpm6XT7SBUFsrLmOrPE0vBHT3PcruPucKIVPbS/4YKPdK+K18UCEo47L7y04xDs+2zI/
+         8Eg4vwhhOgs4EEydc51rjwIdkSKm0bSxnQvWd8HnvrptHx6L7I5pjkL4YR53NiiOfOT2
+         bAVCrjnV0WKbnMjBbXopmf2YQoa2+JZonNL/HauF+wg7ilM/Y+0iuPAkg5B+BBSK7J5V
+         dbAg==
+X-Gm-Message-State: AOAM531FUwNxyZtDd4YtVlZBpPBzvAonTuBWYzf9Hwqe1PvvajLphHIf
+        HjB/UvT1F4i+5U8qICen29VcoG9jk7Ur6GHn+ifalGWdsq4kQhkHt5PCcgNwSrL6fxGA3kamTD0
+        0RW0WmPP/vlRXdIEuQxsFMoj6
+X-Received: by 2002:adf:f081:: with SMTP id n1mr23126407wro.137.1618388412878;
+        Wed, 14 Apr 2021 01:20:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxji2ZwHQ1jQIMNUiTrG2alVhGAtKpmBIuOmzOrODkPO9qH+K9aH6mfNqa8TgAhE29R1H9lRA==
+X-Received: by 2002:adf:f081:: with SMTP id n1mr23126383wro.137.1618388412680;
+        Wed, 14 Apr 2021 01:20:12 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6470.dip0.t-ipconnect.de. [91.12.100.112])
+        by smtp.gmail.com with ESMTPSA id s8sm22337947wrn.97.2021.04.14.01.20.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 01:20:12 -0700 (PDT)
+Subject: Re: [PATCH 02/10] mm/numa: automatically generate node migration
+ order
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Wei Xu <weixugc@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+ <20210401183219.DC1928FA@viggo.jf.intel.com>
+ <CAAPL-u8Jk-i-9-iSnU7_nb-k2ZMqdRk5c88d-M6Bi1rfv4kSLQ@mail.gmail.com>
+ <20210414080849.GA20886@linux>
+ <926bd5f9-bf05-2e01-26da-da3f66439d3b@redhat.com>
+ <20210414081444.GC20886@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <2c812afa-4c23-3fd5-2e6a-016127a8e488@redhat.com>
+Date:   Wed, 14 Apr 2021 10:20:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414081444.GC20886@linux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix indentation of last line in if condition.
+On 14.04.21 10:14, Oscar Salvador wrote:
+> On Wed, Apr 14, 2021 at 10:12:29AM +0200, David Hildenbrand wrote:
+>> My guest best is that fast class is something like HBM (High Bandwidth
 
-Fixes: af6afdb63f17 (staging: rtl8723bs: split long lines)
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+haha, whatever happened in that sentence: s/guest best/best guess/
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index f19a15a3924b..4cdc5802798d 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -621,7 +621,7 @@ unsigned int OnProbeReq(struct adapter *padapter, union recv_frame *precv_frame)
- _issue_probersp:
- 		if ((check_fwstate(pmlmepriv, _FW_LINKED) &&
- 		     pmlmepriv->cur_network.join_res) ||
--		     check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE))
-+		    check_fwstate(pmlmepriv, WIFI_ADHOC_MASTER_STATE))
- 			issue_probersp(padapter, get_sa(pframe), is_valid_p2p_probereq);
- 	}
- 
+>> Memory), medium class is ordinary RAM, slow class is PMEM.
+> 
+> I see, thanks for the hint David ;-)
+> 
+
+
 -- 
-2.20.1
+Thanks,
+
+David / dhildenb
 
