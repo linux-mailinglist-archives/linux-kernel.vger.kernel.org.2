@@ -2,351 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C95C35E9E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539A135E9EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346307AbhDNAML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 20:12:11 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25010 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhDNAMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:12:09 -0400
-IronPort-SDR: vwTP15XIOKiFHF+/ANqTzi7PiOuvbLtHRtT+n3MY3r4rjkUpnhQSUeJtY4qEtiOokl9SUD8zox
- v6/R9+id3q0g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="174632860"
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="174632860"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 17:11:48 -0700
-IronPort-SDR: DF2ZSG4aAHKBJH7sE7KlhMGSun+pulJxEIWIkDO2V5QhZbRN8Oume3unOAoJD4TdmcDZ4pAzNI
- aqDdY5OStS9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="611937187"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Apr 2021 17:11:48 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
-        by linux.intel.com (Postfix) with ESMTP id E3F4A580842;
-        Tue, 13 Apr 2021 17:11:44 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Cochran <richardcochran@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 1/1] net: stmmac: Add support for external trigger timestamping
-Date:   Wed, 14 Apr 2021 08:16:17 +0800
-Message-Id: <20210414001617.3490-1-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S231970AbhDNATL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 20:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232198AbhDNATH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 20:19:07 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E37C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:18:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id e7so21476281edu.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:18:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MPI7jDQhOaLsdgoyODIak4daTWQPVquNlAIVjshUjX0=;
+        b=ggHj9xzgiR4DK+Fy5LpeNQpZt9RCpTy9FWlCIRBv3+oZAIIO3QDp8pcdYPpv6G5OcI
+         v0E0pq9oMPx8udX8S87hsHt2uELmR3pHnuPQNJJXf33/zS1GDESpGSjX5bjXg11fSuOG
+         HU7cBM0fA/j/nYgzNCiRnN9JhRR5gTz8rsky4TxgwmpTp1f3mUaFu1CinQQsqtrTQX9A
+         akSIrHOMF+4MNIqBlCKvS08fKlwV67SBVFW0lUELzVfoP4vw/OYvsnNYsHIpsrcTtacD
+         LOieO7ygeOGSibHvAV39Gz5l5MnTj0Iv5RCrgWDn5MCDzRi537BwTCc42JLOg0pbil/m
+         jPMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MPI7jDQhOaLsdgoyODIak4daTWQPVquNlAIVjshUjX0=;
+        b=D1j35x2Qls2gkhFyKVwYjSVXQ9HMYqOEUZc9EhJeCoT31kHBBZMxCn59nG9DtSFQq4
+         1cXEKnsgH3ilrhhzdm4WkyQEmKDpyTvobriEe8PuG06QwqZ+dFzVzggsDK9ZnY8d0ny7
+         pRFk29WmhjklQPQY44VlBPRbJBtABx3x0dF6sGycHdYg2mYb4c//hB1Vplk5onMr05mE
+         YUUvYQUq7WKsbsksnMi+P2xsEt1uNJFnQ31dN7RQIYz3DBUSGiToaG2nHxvlVUIyMKSi
+         w8t7h2os3e8/63dh6fkhx712E3JtJIn0EpSpaXg8p6TuRVPnQXTRBTuTjm2rJALwxEpW
+         2ZJA==
+X-Gm-Message-State: AOAM5302rQHYEWoaXj/g78WsncgrTnODxEolnRAz1mFGWt69daBH0rY4
+        bDx0ZZd+TM+V/qihGI0kDo5B4Qm4pH2AXCvZDGuv7g==
+X-Google-Smtp-Source: ABdhPJw11vKjxLMHXeF0A+YJX5dBT5wKsozV/YUcKeX92UJ9vz2xcGop+8tt8w0BdEJyVGnvjIdgQYDu0h2EcyKcelg=
+X-Received: by 2002:a50:ff13:: with SMTP id a19mr34093851edu.300.1618359524532;
+ Tue, 13 Apr 2021 17:18:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <161728744224.2474040.12854720917440712854.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161728744762.2474040.11009693084215696415.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210406173845.00000bec@Huawei.com>
+In-Reply-To: <20210406173845.00000bec@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 13 Apr 2021 17:18:41 -0700
+Message-ID: <CAPcyv4h4z9Y_Zbzk_jiZXs6+gPAbdw0UJHW5NvTaM2ZcvJ6ftw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] cxl/mem: Move some definitions to mem.h
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tan Tee Min <tee.min.tan@intel.com>
+On Tue, Apr 6, 2021 at 10:47 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 1 Apr 2021 07:30:47 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > In preparation for sharing cxl.h with other generic CXL consumers,
+> > move / consolidate some of the memory device specifics to mem.h.
+> >
+> > Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> Hi Dan,
+>
+> Would be good to see something in this patch description saying
+> why you chose to have mem.h rather than push the defines down
+> into mem.c (which from the current code + patch set looks like
+> the more logical thing to do).
 
-The Synopsis MAC controller supports auxiliary snapshot feature that
-allows user to store a snapshot of the system time based on an external
-event.
+The main motivation was least privilege access to memory-device
+details, so they had to move out of cxl.h. As to why move them in to a
+new mem.h instead of piling more into mem.c that's just a personal
+organizational style choice to aid review. I tend to go to headers
+first and read data structure definitions before reading the
+implementation, and having that all in one place is cleaner than
+interspersed with implementation details in the C code. It's all still
+private to drivers/cxl/ so I don't see any "least privilege" concerns
+with moving it there.
 
-This patch add supports to the above mentioned feature. Users will be
-able to triggered capturing the time snapshot from user-space using
-application such as testptp or any other applications that uses the
-PTP_EXTTS_REQUEST ioctl request.
+Does that satisfy your concern?
 
-Cc: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
-Co-developed-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
----
-v3 -> v4:
-  - Group variable of same datatype together in oneline.
-  - Removed unnecessary mutex_unlock()
-  - Added mutex_destroy() on ptp_unregister().
-v2 -> v3:
-  - Flip ext_snapshot_en condition check for early return.
-v1 -> v2:
-  - Changed from pr_info() to netdev_dbg().
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 10 +++++
- drivers/net/ethernet/stmicro/stmmac/hwif.h    |  5 +++
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
- .../ethernet/stmicro/stmmac/stmmac_hwtstamp.c | 39 ++++++++++++++++++
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 40 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.h  |  1 +
- include/linux/stmmac.h                        |  2 +
- 8 files changed, 101 insertions(+), 1 deletion(-)
+If yes, I'll add the above to v3.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 60566598d644..ec140fc4a0f5 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -296,6 +296,13 @@ static int intel_crosststamp(ktime_t *device,
- 
- 	intel_priv = priv->plat->bsp_priv;
- 
-+	/* Both internal crosstimestamping and external triggered event
-+	 * timestamping cannot be run concurrently.
-+	 */
-+	if (priv->plat->ext_snapshot_en)
-+		return -EBUSY;
-+
-+	mutex_lock(&priv->aux_ts_lock);
- 	/* Enable Internal snapshot trigger */
- 	acr_value = readl(ptpaddr + PTP_ACR);
- 	acr_value &= ~PTP_ACR_MASK;
-@@ -321,6 +328,8 @@ static int intel_crosststamp(ktime_t *device,
- 	acr_value = readl(ptpaddr + PTP_ACR);
- 	acr_value |= PTP_ACR_ATSFC;
- 	writel(acr_value, ptpaddr + PTP_ACR);
-+	/* Release the mutex */
-+	mutex_unlock(&priv->aux_ts_lock);
- 
- 	/* Trigger Internal snapshot signal
- 	 * Create a rising edge by just toggle the GPO1 to low
-@@ -520,6 +529,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
- 
- 	plat->int_snapshot_num = AUX_SNAPSHOT1;
-+	plat->ext_snapshot_num = AUX_SNAPSHOT0;
- 
- 	plat->has_crossts = true;
- 	plat->crosststamp = intel_crosststamp;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 2b5022ef1e52..2cc91759b91f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -504,6 +504,8 @@ struct stmmac_ops {
- #define stmmac_fpe_irq_status(__priv, __args...) \
- 	stmmac_do_callback(__priv, mac, fpe_irq_status, __args)
- 
-+struct stmmac_priv;
-+
- /* PTP and HW Timer helpers */
- struct stmmac_hwtimestamp {
- 	void (*config_hw_tstamping) (void __iomem *ioaddr, u32 data);
-@@ -515,6 +517,7 @@ struct stmmac_hwtimestamp {
- 			       int add_sub, int gmac4);
- 	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
- 	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
-+	void (*timestamp_interrupt)(struct stmmac_priv *priv);
- };
- 
- #define stmmac_config_hw_tstamping(__priv, __args...) \
-@@ -531,6 +534,8 @@ struct stmmac_hwtimestamp {
- 	stmmac_do_void_callback(__priv, ptp, get_systime, __args)
- #define stmmac_get_ptptime(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
-+#define stmmac_timestamp_interrupt(__priv, __args...) \
-+	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
- 
- /* Helpers to manage the descriptors for chain and ring modes */
- struct stmmac_mode_ops {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index b8a42260066d..b6cd43eda7ac 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -250,6 +250,9 @@ struct stmmac_priv {
- 	int use_riwt;
- 	int irq_wake;
- 	spinlock_t ptp_lock;
-+	/* Protects auxiliary snapshot registers from concurrent access. */
-+	struct mutex aux_ts_lock;
-+
- 	void __iomem *mmcaddr;
- 	void __iomem *ptpaddr;
- 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-index 113c51bcc0b5..074e2cdfb0fa 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-@@ -12,8 +12,11 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/delay.h>
-+#include <linux/ptp_clock_kernel.h>
- #include "common.h"
- #include "stmmac_ptp.h"
-+#include "dwmac4.h"
-+#include "stmmac.h"
- 
- static void config_hw_tstamping(void __iomem *ioaddr, u32 data)
- {
-@@ -163,6 +166,41 @@ static void get_ptptime(void __iomem *ptpaddr, u64 *ptp_time)
- 	*ptp_time = ns;
- }
- 
-+static void timestamp_interrupt(struct stmmac_priv *priv)
-+{
-+	u32 num_snapshot, ts_status, tsync_int;
-+	struct ptp_clock_event event;
-+	unsigned long flags;
-+	u64 ptp_time;
-+	int i;
-+
-+	tsync_int = readl(priv->ioaddr + GMAC_INT_STATUS) & GMAC_INT_TSIE;
-+
-+	if (!tsync_int)
-+		return;
-+
-+	/* Read timestamp status to clear interrupt from either external
-+	 * timestamp or start/end of PPS.
-+	 */
-+	ts_status = readl(priv->ioaddr + GMAC_TIMESTAMP_STATUS);
-+
-+	if (!priv->plat->ext_snapshot_en)
-+		return;
-+
-+	num_snapshot = (ts_status & GMAC_TIMESTAMP_ATSNS_MASK) >>
-+		       GMAC_TIMESTAMP_ATSNS_SHIFT;
-+
-+	for (i = 0; i < num_snapshot; i++) {
-+		spin_lock_irqsave(&priv->ptp_lock, flags);
-+		get_ptptime(priv->ptpaddr, &ptp_time);
-+		spin_unlock_irqrestore(&priv->ptp_lock, flags);
-+		event.type = PTP_CLOCK_EXTTS;
-+		event.index = 0;
-+		event.timestamp = ptp_time;
-+		ptp_clock_event(priv->ptp_clock, &event);
-+	}
-+}
-+
- const struct stmmac_hwtimestamp stmmac_ptp = {
- 	.config_hw_tstamping = config_hw_tstamping,
- 	.init_systime = init_systime,
-@@ -171,4 +209,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
- 	.adjust_systime = adjust_systime,
- 	.get_systime = get_systime,
- 	.get_ptptime = get_ptptime,
-+	.timestamp_interrupt = timestamp_interrupt,
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index e3e22200a4fd..3a5ca5833ce1 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5687,6 +5687,8 @@ static void stmmac_common_interrupt(struct stmmac_priv *priv)
- 			else
- 				netif_carrier_off(priv->dev);
- 		}
-+
-+		stmmac_timestamp_interrupt(priv, priv);
- 	}
- }
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-index b164ae22e35f..4e86cdf2bc9f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-@@ -135,7 +135,10 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
- {
- 	struct stmmac_priv *priv =
- 	    container_of(ptp, struct stmmac_priv, ptp_clock_ops);
-+	void __iomem *ptpaddr = priv->ptpaddr;
-+	void __iomem *ioaddr = priv->hw->pcsr;
- 	struct stmmac_pps_cfg *cfg;
-+	u32 intr_value, acr_value;
- 	int ret = -EOPNOTSUPP;
- 	unsigned long flags;
- 
-@@ -159,6 +162,37 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
- 					     priv->systime_flags);
- 		spin_unlock_irqrestore(&priv->ptp_lock, flags);
- 		break;
-+	case PTP_CLK_REQ_EXTTS:
-+		priv->plat->ext_snapshot_en = on;
-+		mutex_lock(&priv->aux_ts_lock);
-+		acr_value = readl(ptpaddr + PTP_ACR);
-+		acr_value &= ~PTP_ACR_MASK;
-+		if (on) {
-+			/* Enable External snapshot trigger */
-+			acr_value |= priv->plat->ext_snapshot_num;
-+			acr_value |= PTP_ACR_ATSFC;
-+			netdev_dbg(priv->dev, "Auxiliary Snapshot %d enabled.\n",
-+				   priv->plat->ext_snapshot_num >>
-+				   PTP_ACR_ATSEN_SHIFT);
-+			/* Enable Timestamp Interrupt */
-+			intr_value = readl(ioaddr + GMAC_INT_EN);
-+			intr_value |= GMAC_INT_TSIE;
-+			writel(intr_value, ioaddr + GMAC_INT_EN);
-+
-+		} else {
-+			netdev_dbg(priv->dev, "Auxiliary Snapshot %d disabled.\n",
-+				   priv->plat->ext_snapshot_num >>
-+				   PTP_ACR_ATSEN_SHIFT);
-+			/* Disable Timestamp Interrupt */
-+			intr_value = readl(ioaddr + GMAC_INT_EN);
-+			intr_value &= ~GMAC_INT_TSIE;
-+			writel(intr_value, ioaddr + GMAC_INT_EN);
-+		}
-+		writel(acr_value, ptpaddr + PTP_ACR);
-+		mutex_unlock(&priv->aux_ts_lock);
-+		ret = 0;
-+		break;
-+
- 	default:
- 		break;
- 	}
-@@ -202,7 +236,7 @@ static struct ptp_clock_info stmmac_ptp_clock_ops = {
- 	.name = "stmmac ptp",
- 	.max_adj = 62500000,
- 	.n_alarm = 0,
--	.n_ext_ts = 0,
-+	.n_ext_ts = 0, /* will be overwritten in stmmac_ptp_register */
- 	.n_per_out = 0, /* will be overwritten in stmmac_ptp_register */
- 	.n_pins = 0,
- 	.pps = 0,
-@@ -237,8 +271,10 @@ void stmmac_ptp_register(struct stmmac_priv *priv)
- 		stmmac_ptp_clock_ops.max_adj = priv->plat->ptp_max_adj;
- 
- 	stmmac_ptp_clock_ops.n_per_out = priv->dma_cap.pps_out_num;
-+	stmmac_ptp_clock_ops.n_ext_ts = priv->dma_cap.aux_snapshot_n;
- 
- 	spin_lock_init(&priv->ptp_lock);
-+	mutex_init(&priv->aux_ts_lock);
- 	priv->ptp_clock_ops = stmmac_ptp_clock_ops;
- 
- 	priv->ptp_clock = ptp_clock_register(&priv->ptp_clock_ops,
-@@ -264,4 +300,6 @@ void stmmac_ptp_unregister(struct stmmac_priv *priv)
- 		pr_debug("Removed PTP HW clock successfully on %s\n",
- 			 priv->dev->name);
- 	}
-+
-+	mutex_destroy(&priv->aux_ts_lock);
- }
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-index f88727ce4d30..53172a439810 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-@@ -73,6 +73,7 @@
- #define	PTP_ACR_ATSEN1		BIT(5)	/* Auxiliary Snapshot 1 Enable */
- #define	PTP_ACR_ATSEN2		BIT(6)	/* Auxiliary Snapshot 2 Enable */
- #define	PTP_ACR_ATSEN3		BIT(7)	/* Auxiliary Snapshot 3 Enable */
-+#define	PTP_ACR_ATSEN_SHIFT	5	/* Auxiliary Snapshot shift */
- #define	PTP_ACR_MASK		GENMASK(7, 4)	/* Aux Snapshot Mask */
- #define	PMC_ART_VALUE0		0x01	/* PMC_ART[15:0] timer value */
- #define	PMC_ART_VALUE1		0x02	/* PMC_ART[31:16] timer value */
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index e338ef7abc00..97edb31d6310 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -238,6 +238,8 @@ struct plat_stmmacenet_data {
- 	struct pci_dev *pdev;
- 	bool has_crossts;
- 	int int_snapshot_num;
-+	int ext_snapshot_num;
-+	bool ext_snapshot_en;
- 	bool multi_msi_en;
- 	int msi_mac_vec;
- 	int msi_wol_vec;
--- 
-2.25.1
+> As a side note, docs for struct cxl_mem need a fix as they cover
+> enabled_commands which at somepoint got shortened to enabled_cmds
 
+Thanks, will fix.
