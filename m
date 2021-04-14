@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B458535F8F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3040435F8F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352722AbhDNQ0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:26:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40528 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233964AbhDNQ0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:26:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 15DB5AF0E;
-        Wed, 14 Apr 2021 16:26:26 +0000 (UTC)
-Subject: Re: [PATCH 04/11] mm/vmstat: Inline NUMA event counter updates
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20210414133931.4555-1-mgorman@techsingularity.net>
- <20210414133931.4555-5-mgorman@techsingularity.net>
- <6b25af48-9c6e-2c55-03d5-763de4aba149@suse.cz>
-Message-ID: <411a753f-ce03-389d-9a9f-93d17b284862@suse.cz>
-Date:   Wed, 14 Apr 2021 18:26:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <6b25af48-9c6e-2c55-03d5-763de4aba149@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1349406AbhDNQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:30:28 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:40546 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhDNQa0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:30:26 -0400
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 97BCB72C8B5;
+        Wed, 14 Apr 2021 19:30:03 +0300 (MSK)
+Received: from beacon.altlinux.org (unknown [193.43.10.250])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 7124F4A46E8;
+        Wed, 14 Apr 2021 19:30:03 +0300 (MSK)
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     "Dmitry V. Levin" <ldv@altlinux.org>,
+        Vitaly Chikunov <vt@altlinux.org>
+Subject: [PATCH] perf beauty: Fix fsconfig generator
+Date:   Wed, 14 Apr 2021 19:29:42 +0300
+Message-Id: <20210414162942.1660600-1-vt@altlinux.org>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 6:20 PM, Vlastimil Babka wrote:
-> On 4/14/21 3:39 PM, Mel Gorman wrote:
->> __count_numa_event is small enough to be treated similarly to
->> __count_vm_event so inline it.
->> 
->> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
->> ---
->>  include/linux/vmstat.h | 9 +++++++++
->>  mm/vmstat.c            | 9 ---------
->>  2 files changed, 9 insertions(+), 9 deletions(-)
->> 
->> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
->> index fc14415223c5..dde4dec4e7dd 100644
->> --- a/include/linux/vmstat.h
->> +++ b/include/linux/vmstat.h
->> @@ -237,6 +237,15 @@ static inline unsigned long zone_page_state_snapshot(struct zone *zone,
->>  }
->>  
->>  #ifdef CONFIG_NUMA
->> +/* See __count_vm_event comment on why raw_cpu_inc is used. */
->> +static inline void
->> +__count_numa_event(struct zone *zone, enum numa_stat_item item)
->> +{
->> +	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
->> +
->> +	raw_cpu_inc(pzstats->vm_numa_event[item]);
->> +}
->> +
->>  extern void __count_numa_event(struct zone *zone, enum numa_stat_item item);
+After gnulib update sed stopped matching `[[:space:]]*+' as before,
+causing the following compilation error:
 
-Ah, but the line above should be removed.
+  In file included from builtin-trace.c:719:
+  trace/beauty/generated/fsconfig_arrays.c:2:3: error: expected expression before ']' token
+      2 |  [] = "",
+	|   ^
+  trace/beauty/generated/fsconfig_arrays.c:2:3: error: array index in initializer not of integer type
+  trace/beauty/generated/fsconfig_arrays.c:2:3: note: (near initialization for 'fsconfig_cmds')
 
->>  extern unsigned long sum_zone_node_page_state(int node,
->>  					      enum zone_stat_item item);
->> diff --git a/mm/vmstat.c b/mm/vmstat.c
->> index 63bd84d122c0..b853df95ed0c 100644
->> --- a/mm/vmstat.c
->> +++ b/mm/vmstat.c
->> @@ -902,15 +902,6 @@ void drain_zonestat(struct zone *zone, struct per_cpu_zonestat *pzstats)
->>  #endif
->>  
->>  #ifdef CONFIG_NUMA
->> -/* See __count_vm_event comment on why raw_cpu_inc is used. */
->> -void __count_numa_event(struct zone *zone,
->> -				 enum numa_stat_item item)
->> -{
->> -	struct per_cpu_zonestat __percpu *pzstats = zone->per_cpu_zonestats;
->> -
->> -	raw_cpu_inc(pzstats->vm_numa_event[item]);
->> -}
->> -
->>  /*
->>   * Determine the per node value of a stat item. This function
->>   * is called frequently in a NUMA machine, so try to be as
->> 
-> 
+Fix this by correcting the regular expression used in the generator.
+Also, clean up the script by removing redundant egrep, xargs, and printf
+invocations.
+
+Fixes: d35293004a5e4 ("perf beauty: Add generator for fsconfig's 'cmd' arg values")
+Co-authored-by: Dmitry V. Levin <ldv@altlinux.org>
+Signed-off-by: Vitaly Chikunov <vt@altlinux.org>
+---
+ tools/perf/trace/beauty/fsconfig.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/trace/beauty/fsconfig.sh b/tools/perf/trace/beauty/fsconfig.sh
+index 83fb24df05c9f..cc76b2aa7a5af 100755
+--- a/tools/perf/trace/beauty/fsconfig.sh
++++ b/tools/perf/trace/beauty/fsconfig.sh
+@@ -10,8 +10,6 @@ fi
+ linux_mount=${linux_header_dir}/mount.h
+ 
+ printf "static const char *fsconfig_cmds[] = {\n"
+-regex='^[[:space:]]*+FSCONFIG_([[:alnum:]_]+)[[:space:]]*=[[:space:]]*([[:digit:]]+)[[:space:]]*,[[:space:]]*.*'
+-egrep $regex ${linux_mount} | \
+-	sed -r "s/$regex/\2 \1/g"	| \
+-	xargs printf "\t[%s] = \"%s\",\n"
++regex='^[[:space:]]*FSCONFIG_([[:alnum:]_]+)[[:space:]]*=[[:space:]]*([[:digit:]]+)[[:space:]]*,.*'
++sed -nr "s/$regex/\t[\2] = \"\1\",/p" ${linux_mount}
+ printf "};\n"
+-- 
+2.11.0
 
