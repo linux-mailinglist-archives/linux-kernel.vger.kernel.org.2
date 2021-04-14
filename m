@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BE935F527
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2D535F549
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351570AbhDNNnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:43:04 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:35500 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbhDNNnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:43:02 -0400
-Received: by mail-ot1-f47.google.com with SMTP id a2-20020a0568300082b029028d8118b91fso876238oto.2;
-        Wed, 14 Apr 2021 06:42:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HuL2RDhG4k62RO3tH9ljk4ol7fBjEx023kQ/T78JSCI=;
-        b=XsvAAVNGAT6fDnm7E00Nw0ZyqN9l3aDJGt7MfaqRulI3+W1/kyCXNqwPnyf4resYZ2
-         VF8yIXIbZu4I9USLkuS3UUuFvuBdsEm4SyOGudMSuiR42M7hccSuew7tTbq6WqytGdE9
-         DmE33O2bkrS/M4tWddEe9wYCbZOIvqlNiMDL/Tipqg2pUkYetErz4z4ilBKulE7/rUUF
-         CUcdWjRyWySpwyORbmAsqQaDwZRVIdNzaweml2dXOwLiUHbyKlpgppTb2P540Hl2ODII
-         6UtqUyxsd/+Y7a8hrkmUlvKwjmIOYN4GSD6VF0IhtpPU2JERjxZemcmKj+Pbx2ot/7pT
-         sHPw==
-X-Gm-Message-State: AOAM530IIewTvaHt1yEsqZB11BCI65UPAEa12Hb2TCP20Fr0yr/beSRn
-        bfOswBebNRvvt6bCixeqHptGmjD8Za7FOJxdHyY=
-X-Google-Smtp-Source: ABdhPJygmbUq89Ki6pQ2dKpnSUSbhtWKttyYPtgYEdzjekdY2mF+A685alXNi2VO2ZAZz0tTbQCU1QkLIN9t3SjHsA8=
-X-Received: by 2002:a9d:6951:: with SMTP id p17mr20180717oto.206.1618407759989;
- Wed, 14 Apr 2021 06:42:39 -0700 (PDT)
+        id S1351599AbhDNNoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:44:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351586AbhDNNoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:44:44 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B363A611AD;
+        Wed, 14 Apr 2021 13:44:23 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lWfob-007RSZ-Jm; Wed, 14 Apr 2021 14:44:21 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, nathan@kernel.org,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH 0/5] perf: oprofile spring cleanup
+Date:   Wed, 14 Apr 2021 14:44:04 +0100
+Message-Id: <20210414134409.1266357-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <vaWPnw1Txo_MD5Sf-BnMmq3pBTkITza0W5p_jAi8JIy3hBAbCsKPXZ5g5IHKYGqK6zLjzUNgJ59xMCHvhREBUq6Vc1105b8yCIVDgaPABqE=@protonmail.com>
- <dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info> <wqM80O49houE3ZJHpxjcrNxijZ_h9pMjxZU2OCL-ZpsdwMhIVFcGXZb9qe93r2AY0qd0dB-94ZVQaF-Xb-i-zqX5DIO5S4C6UTBpVkxvszA=@protonmail.com>
-In-Reply-To: <wqM80O49houE3ZJHpxjcrNxijZ_h9pMjxZU2OCL-ZpsdwMhIVFcGXZb9qe93r2AY0qd0dB-94ZVQaF-Xb-i-zqX5DIO5S4C6UTBpVkxvszA=@protonmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 14 Apr 2021 15:42:29 +0200
-Message-ID: <CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com>
-Subject: Re: "Reporting issues" document feedback
-To:     w4v3 <vv4v3@protonmail.com>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, mark.rutland@arm.com, will@kernel.org, dalias@libc.org, ysato@users.sourceforge.jp, peterz@infradead.org, acme@kernel.org, borntraeger@de.ibm.com, hca@linux.ibm.com, nathan@kernel.org, viresh.kumar@linaro.org, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 3:22 PM w4v3 <vv4v3@protonmail.com> wrote:
->
-> Hi Thorsten,
->
-> Thanks for the quick and illuminating response :)
->
-> > Links to your bug report and the thread on the mailing list would have
-> > helped here to understand better what's going on, but whatever, they are
-> > not that important.
->
-> Here you go: https://bugzilla.kernel.org/show_bug.cgi?id=212643
-> https://marc.info/?l=linux-acpi&m=161824910030600&w=2
->
-> > But it should, otherwise the subsystem should remove the line starting
-> > with B: ("bugs:" in the webview).
-> >
-> > Rafael might be able to clarify things.
->
-> > But afais it's appropriate there is a B: line: just a few weeks ago I
-> > took a quick look at bugzilla and ACPI bugs in particular, and back then
-> > most of the bug reports there got handled by the maintainers. That's why
-> > I assume you were just unlucky and your report fall through the cracks
-> > (but obviously I might be wrong here). And maybe your report even did
-> > help: the developer that fixed the issue might have seen both the bug
-> > entry and the mailed report, but simply forget to close the former.
->
-> Good to know. It does seem like many recent ACPI bug reports on bugzilla
-> have been processed by maintainers. Maybe it is the ACPI-subcomponent I
-> chose for the bug: in Config-Tables, only two other bugs were submitted
-> and they did not attract comments. Anyways, I understand now that it's
-> not an issue with the document so thanks for forwarding it to Rafael.
+This small series builds on top of the work that was started with [1].
 
-As a rule, ACPI bugs submitted through the BZ are processed by the
-ACPI team (not necessarily by me in person, though), but the response
-time may vary, so it's better to report urgent issues by sending
-e-mail to linux-acpi@vger.kernel.org.
+It recently became apparent that KVM/arm64 is the last bit of the
+kernel that still uses perf_num_counters().
 
-Definitely issues where table dumps or similar are requested are best
-handled in the BZ, so reporters can be asked to create a BZ entry for
-a bug reported by e-mail anyway.
+As I went ahead to address this, it became obvious that all traces of
+oprofile had been eradicated from all architectures but arm64, s390
+and sh (plus a bit of cruft in the core perf code). With KVM fixed,
+perf_num_counters() and perf_pmu_name() are finally gone.
 
-If you are interested in the history (ie. what issues were reported in
-the past), you need to look at both the BZ and the ml record.
+Thanks,
 
-HTH
+	M.
+
+[1] https://lore.kernel.org/lkml/20210215050618.hgftdmfmslbdrg3j@vireshk-i7
+
+Marc Zyngier (5):
+  KVM: arm64: Divorce the perf code from oprofile helpers
+  arm64: Get rid of oprofile leftovers
+  s390: Get rid of oprofile leftovers
+  sh: Get rid of oprofile leftovers
+  perf: Get rid of oprofile leftovers
+
+ arch/arm64/kvm/perf.c         |  7 +------
+ arch/arm64/kvm/pmu-emul.c     |  2 +-
+ arch/s390/kernel/perf_event.c | 21 ---------------------
+ arch/sh/kernel/perf_event.c   | 18 ------------------
+ drivers/perf/arm_pmu.c        | 30 ------------------------------
+ include/kvm/arm_pmu.h         |  4 ++++
+ include/linux/perf_event.h    |  2 --
+ kernel/events/core.c          |  5 -----
+ 8 files changed, 6 insertions(+), 83 deletions(-)
+
+-- 
+2.29.2
