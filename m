@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE36A35F78B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FA435F780
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234117AbhDNPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:25:11 -0400
-Received: from gate.crashing.org ([63.228.1.57]:38657 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232358AbhDNPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:25:05 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13EFJM4R012182;
-        Wed, 14 Apr 2021 10:19:22 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13EFJLFh012181;
-        Wed, 14 Apr 2021 10:19:21 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 14 Apr 2021 10:19:21 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v1 1/2] powerpc/bitops: Use immediate operand when possible
-Message-ID: <20210414151921.GW26583@gate.crashing.org>
-References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu> <20210412215428.GM26583@gate.crashing.org> <ecb1b1a5-ae92-e8a3-6490-26341edfbccb@csgroup.eu> <20210413215803.GT26583@gate.crashing.org> <1618365589.67fxh7cot9.astroid@bobo.none> <20210414122409.GV26583@gate.crashing.org> <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <daacce9f-1900-1034-980b-be5a58d6be09@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+        id S1350422AbhDNPUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232358AbhDNPUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:20:45 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C48FC061574;
+        Wed, 14 Apr 2021 08:20:24 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id e2so5987297plh.8;
+        Wed, 14 Apr 2021 08:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GjnyRXzQJs/ruevdN1h+ewCMUU5MROLW5faBjSTHYuk=;
+        b=r6ySV3uMl0D+g1EvD538J47qBPrk4NpMBZ08hqgf4Erzcekb/krnaZePTtMzchncG/
+         qN54me47vACgJUEe1jgJzTNhEhRKKWXbkxSYhcniON20hMC52HL82van9C0f7tNCEx0E
+         ieuQb4DM/upvYoTyCmmfj6+2zCjtjf7ySM+hThuVZjs0UDhhZZKJ53HjZluPTXgS+1JI
+         bM78EWw6rTQVw4/EhdX4EMXeS1ng4ucKJcohV95yRsghHehN0b7lA9J8dw7wY7dJxA1V
+         NhL/SVXwqiiZNiCscBNghbJDuc1ugVWjN05e9RLZW5V4k8GnhnoJS6Y8RX+uDNXUa5dY
+         1wnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GjnyRXzQJs/ruevdN1h+ewCMUU5MROLW5faBjSTHYuk=;
+        b=LhwuZFldjsRQF9Zc/L54mDT298sNxaGs/lLjfw1RCywfxOYh5RJdRPTjZgDO46+hyH
+         bPuvgDGZx+K4ZVhPEbnqVCOA+TzACZucdGQtT5yKYuKtnUpL7Rp08sS7lD0vRpuEyIJh
+         4tO/APACImWCN4m1+vUw7Ztfm155/K2e/WIMisI1/JYAxCbGfrr46fRvqsWJJI8Izh9d
+         NVplLf/c4d4oTxMjwGmNupC6e/6EP39L3dBpc9/XjfUBUQxJjbUj9nP4xUIRw3p4R/TV
+         1fEMMCcPrcQ5rbHkEvaX/Wqyn+mZQoKZWd/XmqQo2YSbZ1l9oZEH6Qa3/bT6m9bqLT3y
+         DNEQ==
+X-Gm-Message-State: AOAM531TomLDgGvSyVHlGlQvzVitXvS7iez8NNe8SMYgqkc/BRDmXB6X
+        5iANGvlZQF5bhLCbyQ35UDqDlnMAd8OJLPmM
+X-Google-Smtp-Source: ABdhPJwYkbx3moK6IBiDeaJUyG0vF+58FHQQ471qa5iiLWYh7LAIgbVq2JIXvpAZ7iENT8ayACk7jg==
+X-Received: by 2002:a17:90b:300f:: with SMTP id hg15mr4260680pjb.92.1618413623873;
+        Wed, 14 Apr 2021 08:20:23 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
+        by smtp.gmail.com with ESMTPSA id ir3sm5205971pjb.42.2021.04.14.08.20.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 08:20:23 -0700 (PDT)
+Subject: Re: [RFC V2 PATCH 8/12] UIO/Hyper-V: Not load UIO HV driver in the
+ isolation VM.
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, sunilmut@microsoft.com
+References: <20210413152217.3386288-1-ltykernel@gmail.com>
+ <20210413152217.3386288-9-ltykernel@gmail.com> <YHXAL+83iHPK8O/Q@kroah.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <e54446fb-f9d9-2768-f73f-01a94cf635ea@gmail.com>
+Date:   Wed, 14 Apr 2021 23:20:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <YHXAL+83iHPK8O/Q@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 02:42:51PM +0200, Christophe Leroy wrote:
-> Le 14/04/2021 à 14:24, Segher Boessenkool a écrit :
-> >On Wed, Apr 14, 2021 at 12:01:21PM +1000, Nicholas Piggin wrote:
-> >>Would be nice if we could let the compiler deal with it all...
-> >>
-> >>static inline unsigned long lr(unsigned long *mem)
-> >>{
-> >>         unsigned long val;
-> >>
-> >>         /*
-> >>          * This doesn't clobber memory but want to avoid memory 
-> >>          operations
-> >>          * moving ahead of it
-> >>          */
-> >>         asm volatile("ldarx     %0, %y1" : "=r"(val) : "Z"(*mem) : 
-> >>         "memory");
-> >>
-> >>         return val;
-> >>}
-> >
-> >(etc.)
-> >
-> >That can not work reliably: the compiler can put random instructions
-> >between the larx and stcx. this way, and you then do not have guaranteed
-> >forward progress anymore.  It can put the two in different routines
-> >(after inlining and other interprocedural optimisations), duplicate
-> >them, make a different number of copies of them, etc.
-> >
-> >Nothing of that is okay if you want to guarantee forward progress on all
-> >implementations, and also not if you want to have good performance
-> >everywhere (or anywhere even).  Unfortunately you have to write all
-> >larx/stcx. loops as one block of assembler, so that you know exactly
-> >what instructions will end up in your binary.
-> >
-> >If you don't, it will fail mysteriously after random recompilations, or
-> >have performance degradations, etc.  You don't want to go there :-)
-> >
+Hi Greg:
+	Thanks for your review.
+
+On 4/14/2021 12:00 AM, Greg KH wrote:
+> On Tue, Apr 13, 2021 at 11:22:13AM -0400, Tianyu Lan wrote:
+>> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+>>
+>> UIO HV driver should not load in the isolation VM for security reason.
 > 
-> Could the kernel use GCC builtin atomic functions instead ?
+> Why?  I need a lot more excuse than that.
+
+The reason is that ring buffers have been marked as visible to host.
+UIO driver will expose these buffers to user space and user space
+driver hasn't done some secure check for data from host. This
+is considered as insecure in isolation VM.
+
 > 
-> https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
+> Why would the vm allow UIO devices to bind to it if it was not possible?
+> Shouldn't the VM be handling this type of logic and not forcing all
+> individual hyperv drivers to do this?
+> 
+> This feels wrong...
 
-Certainly that should work fine for the simpler cases that the atomic
-operations are meant to provide.  But esp. for not-so-simple cases the
-kernel may require some behaviour provided by the existing assembler
-implementation, and not by the atomic builtins.
+Hypervisor exposes network and storage devices but can't prohibit guest
+from binding these devices to UIO driver.
 
-I'm not saying this cannot work, just that some serious testing will be
-needed.  If it works it should be the best of all worlds, so then it is
-a really good idea yes :-)
+You are right. This should not happen in the individual driver and will
+try handling this in the vmbus driver level.
 
 
-Segher
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
