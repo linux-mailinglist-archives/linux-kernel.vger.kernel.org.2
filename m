@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930BD35EB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E86B35EB65
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346862AbhDNDRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 23:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S1346937AbhDNDRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244296AbhDNDRK (ORCPT
+        with ESMTP id S1346896AbhDNDRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:17:10 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBDCC06138C
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:16:49 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id c12-20020a4ae24c0000b02901bad05f40e4so4297552oot.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:16:49 -0700 (PDT)
+        Tue, 13 Apr 2021 23:17:24 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2A0C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:17:03 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lt13so682698pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y50XFghg6HQfih5h4TykTs5BEOGp/ySwrLPAYyEdZXk=;
-        b=jnJOG/SM+QFMH16v5UorIVDpwY1Lo5BvRqF3BNYH4O0zJ6klP+Qd447YaHvje7cdA3
-         5oMmvIDx2XbSIKPgpF1/N2xk3IgjY8OCoKFVunB8kGbrY2x3BYjbNzQqSZdIUpQEPYXZ
-         KbIFUFa5GnYFjzbmi6cYsObd04QwbReZ7JyJRGLzRz7fkDCXKPuw/Lac/MWQdf74LuvG
-         RKAzzfxJrOQF5oKrOFfmqKJsz4b/5Pkf3A8Sw1XGo7SxN71bnoVtjr80yUlFOstQgCso
-         I9S0EargRRiDK5IoOQSkNDW1JfXhodeVICr6usAwy4pe4evHaexmvba/Ss7oai5yNbgI
-         VohA==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=UyWa4apo3TOwjYMjSQh4reAE84rIdbfCEBEygOg3904=;
+        b=dpee4gxvPllwyK85S+W/u7eMJLRfSQ+uwClt/aapdhbdlHZGhWOGPRlJePeQGICFEL
+         je7oTUk+b7fhD2sJ2AQTGcVkYsNvMoMyt05wpLo6FZv4lDwM3UhCzxvKiLBUWbWp6fMX
+         LuZuKnH3eWPDRtTUVlY7iNwkZDEuDuTNNirRc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y50XFghg6HQfih5h4TykTs5BEOGp/ySwrLPAYyEdZXk=;
-        b=smUDKHeWTWc2bO/N6DNDvwiltFQkbP/vXH+fG+ocnE2UuGHC5+nMxc1qyx4bHqfgrU
-         bfJpbPcuoRTuBX3UWvUgc7b0yIa4lnLBRpI+eRyiym60QoGZ8exCEbhe4j68/XE08n+e
-         agKhdhM15AF/OB6rdQW/xcvk4Iayt/FhQsxsedXFzWQvei+dtC4H1EM6FJ2ZgBOKPFrn
-         LUsZutQs5NM7eMujb90Ltk6T+yPF7J3CkOhbefu1MsucxCEN8q1OjYqzx7ccPRc4xlrN
-         zcmWzv/tsNnwodnxUwtqBNnJbQHrjkT6LmkvwUJ+DLdxguG3Zit8PhsgdiKoHASsR68S
-         6XSg==
-X-Gm-Message-State: AOAM530YA/Rb4jnrTUD1l3gZK2RF+klH59xIBUCMe7hW35UDGzDFrJ6o
-        BkOVtEy6DsisuifD85c869pFUA==
-X-Google-Smtp-Source: ABdhPJzX9DHwmA4K1nNEs55o1ZduYVHryNh72PqiJNZ5oNbukdg0pYlzFhkCKyL0WU65Lyv4xd7VLw==
-X-Received: by 2002:a4a:8247:: with SMTP id t7mr29206339oog.53.1618370208992;
-        Tue, 13 Apr 2021 20:16:48 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f129sm3365917oia.9.2021.04.13.20.16.48
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=UyWa4apo3TOwjYMjSQh4reAE84rIdbfCEBEygOg3904=;
+        b=FV53X9bQSduZYzmKkEvXJ98CghiUG75IarjEoPCLBg5RC2AT2Vu0RInXR/KyE2gA8P
+         j4UMZCk+yvvfwTcY+GAI52KaVmi97qzj56WWIEv5ulzFpT8ebA7caZ7HSXefFlVlugZb
+         DndUcsLqY3lgCgyuP04/bN3X9CgE/J9kgtUODsyJ6EysKETE5SiLR8LKjYoeWbepZJyp
+         MIoVEWOH29HBKNFh+s1/3YuM9uIskVrmRZs7n0/Uwxd/fwABuDd09tijjte2ZypBdenR
+         32d5/vGQysmGfVBTOx7O+mqxvZoo5BNcotoyEqtOw9/XLszCsMbk6qPO2PK0uQL/56L2
+         TkmA==
+X-Gm-Message-State: AOAM533rAR1DuzX3bp65k3oE/fugY6xoROUYQPyUwNBy+2Jr2sqEMz0Z
+        RVh9TClf+Yl4cyc6dtV3LEOljQ==
+X-Google-Smtp-Source: ABdhPJxG8gJn4/9Tdm2GnwnYN6cg36Ox7phGHtV14+oMYkxG3dWfNU0i/W1zwe2CYbxOe2Z31HRSWQ==
+X-Received: by 2002:a17:902:8f8d:b029:ea:e059:84a6 with SMTP id z13-20020a1709028f8db02900eae05984a6mr17306846plo.35.1618370223402;
+        Tue, 13 Apr 2021 20:17:03 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
+        by smtp.gmail.com with ESMTPSA id u24sm128634pga.78.2021.04.13.20.17.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 20:16:48 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 22:16:46 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] drivers: pinctrl: qcom: fix Kconfig dependency on
- GPIOLIB
-Message-ID: <20210414031646.GA1538589@yoga>
-References: <20210414025138.480085-1-julianbraha@gmail.com>
+        Tue, 13 Apr 2021 20:17:02 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414025138.480085-1-julianbraha@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1618355490-5292-1-git-send-email-khsieh@codeaurora.org>
+References: <1618355490-5292-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH v2 2/3] drm/msm/dp: do not re initialize of audio_comp at display_disable()
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Tue, 13 Apr 2021 20:17:01 -0700
+Message-ID: <161837022104.3764895.807226402876043006@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13 Apr 21:51 CDT 2021, Julian Braha wrote:
+Quoting Kuogee Hsieh (2021-04-13 16:11:30)
+> At dongle unplug, dp initializes audio_comp followed by sending disconnect
+> event notification to audio and to make sure audio had shutdown completely
+> by wait for audio completion notification at display_disable(). This patch
 
-> When PINCTRL_MSM is enabled, and GPIOLIB is disabled,
-> Kbuild gives the following warning:
-> 
-> WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
->   Depends on [n]: GPIOLIB [=n]
->   Selected by [y]:
->   - PINCTRL_MSM [=y] && PINCTRL [=y] && (ARCH_QCOM || COMPILE_TEST [=y])
-> 
-> This is because PINCTRL_MSM selects GPIOLIB_IRQCHIP,
-> without selecting or depending on GPIOLIB, despite
-> GPIOLIB_IRQCHIP depending on GPIOLIB. Having PINCTRL_MSM
-> select GPIOLIB will cause a recursive dependency error.
-> 
+Is this dp_display_disable()? Doubtful that display_disable() is the
+function we're talking about.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> will not re initialize audio_comp at display_disable() if audio shutdown
+> is triggered by dongle unplugged.
 
-> Signed-off-by: Julian Braha <julianbraha@gmail.com>
+This commit text seems to say the why before the what, where why is "dp
+initializes audio_comp followed by sending disconnect.." and the what is
+"this patch will no re-initialized audio_comp...". Can you reorder this
+so the what comes before the why?
+
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > ---
->  drivers/pinctrl/qcom/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-> index 6853a896c476..d42ac59875ab 100644
-> --- a/drivers/pinctrl/qcom/Kconfig
-> +++ b/drivers/pinctrl/qcom/Kconfig
-> @@ -3,7 +3,7 @@ if (ARCH_QCOM || COMPILE_TEST)
->  
->  config PINCTRL_MSM
->  	tristate "Qualcomm core pin controller driver"
-> -	depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> +	depends on GPIOLIB && (QCOM_SCM || !QCOM_SCM) #if QCOM_SCM=m this can't be =y
->  	select PINMUX
->  	select PINCONF
->  	select GENERIC_PINCONF
-> -- 
-> 2.27.0
-> 
+>  drivers/gpu/drm/msm/dp/dp_display.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
+/dp_display.c
+> index 0ba71c7..1d71c95 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -894,8 +894,10 @@ static int dp_display_disable(struct dp_display_priv=
+ate *dp, u32 data)
+>         /* wait only if audio was enabled */
+>         if (dp_display->audio_enabled) {
+>                 /* signal the disconnect event */
+> -               reinit_completion(&dp->audio_comp);
+> -               dp_display_handle_plugged_change(dp_display, false);
+> +               if (dp->hpd_state !=3D ST_DISCONNECT_PENDING) {
+> +                       reinit_completion(&dp->audio_comp);
+
+Why is this reinitialized here at all? Wouldn't it make more sense to
+initialize the completion once at cable plug in and then not initialize
+the completion anywhere else? Or initialize the completion whenever
+dp_display->audio_enabled is set to true and then only wait for the
+completion here if that boolean is true? Or initialize the completion
+when dp_display_handle_plugged_change() is passed true for the 'plugged'
+argument?
+
+I started reading the code and quickly got lost figuring out how
+dp_display_handle_plugged_change() worked and the interaction between
+the dp display code and the audio codec embedded in here. There seem to
+be a couple of conditions that cut off things early, like
+dp_display->audio_enabled and audio->engine_on. Why? Why does
+dp_display_signal_audio_complete() call complete_all() vs. just
+complete()? Please help! :(
+
+> +                       dp_display_handle_plugged_change(dp_display, fals=
+e);
+
+I think it's this way because dp_hpd_unplug_handle() is the function
+that sets the hpd_state to ST_DISCONNECT_PENDING and then reinitializes
+the completion (why?) and calls dp_display_handle_plugged_change(). So
+the commit text could say that reinitializing the completion again here
+at dp_display_disable() is racing with the audio code in the case that
+dp_hpd_unplug_handle() already called
+dp_display_handle_plugged_change() and it would make more sense. But the
+question still stands why that race even exists in the first place vs.
+initializing the completion variable in only one place unconditionally
+when the cable is connected, in dp_hpd_plug_handle() or
+dp_display_post_enable().
+
+> +               }
+>                 if (!wait_for_completion_timeout(&dp->audio_comp,
+>                                 HZ * 5))
+>                         DRM_ERROR("audio comp timeout\n");
