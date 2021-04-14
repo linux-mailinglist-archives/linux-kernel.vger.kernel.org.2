@@ -2,540 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A1035F7FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0C435F803
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhDNPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:40:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27328 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233528AbhDNPkh (ORCPT
+        id S1350301AbhDNPlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233528AbhDNPk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:40:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618414815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pi5yOQUDoReZsXwr9Sn8UurhM0qHhwzfJF8qj5AgWWw=;
-        b=YWiM5M5yqKtCub3qUeJ3eqBF/boyNC1+ZcKvOxhVLxFIG2pI+AwbveXVueJwDXY6xP8kwA
-        XyZg7gvbnqPMSqebF62x6EVZb7T4dfSL7Rb+kBHviux81X0DyQCZDSzS4DGdIv9yISM18b
-        NWqEiivxCk6PiBj5qsfeeXYdpRYvaKA=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-_psWLaNdP7utm56goOMWhw-1; Wed, 14 Apr 2021 11:40:14 -0400
-X-MC-Unique: _psWLaNdP7utm56goOMWhw-1
-Received: by mail-qt1-f197.google.com with SMTP id s20-20020ac85cd40000b029019d65c35b39so2184758qta.19
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:40:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Pi5yOQUDoReZsXwr9Sn8UurhM0qHhwzfJF8qj5AgWWw=;
-        b=LuiYY4r31dUmo2feHqxTE3pz4BGiZKQFtnxCUQNb7i+TsyViJZ4uHQ/iXYNZnG1ikA
-         Sw+1sVBOz4v7OSbKaMVB+O4IIUBYhf8QV39F9QeSIzvg1Tx3vM+v/YyWHW1S9QLVvKSh
-         ElEPdCZabvKdKX0BBI4fuXhZxbh1Bp5jSy/m+hPMTOHeEZswebMFnvHtIihRof1jCCDr
-         U3jSrOIPWcHliNK8ZAbhhZP+97KDT+M4GAVrK7032l9oUiA+cT/7P4LxXZ+nzeWXh+UC
-         o9UYgnTS/TDsNGDwy6va3ECbJfepmoJiYt2ifBmOgPtMqexnKey/LEffXxnAyd8DWm0w
-         lkdQ==
-X-Gm-Message-State: AOAM533WdK/sWX9IPoZv5qsA5yMp+fEtHq3ebebErMsDCXQ3aIhoqUHR
-        BZg22BW9AzSJI209l5QY5UP6VsjqWb9eg/ns2OXZnoqqBibC+MShU8RHriU3Ty/9N/IZokFk/Mg
-        cH4TTFm4xSup7ogtUvyDf/vfV
-X-Received: by 2002:a37:9cd8:: with SMTP id f207mr23703958qke.230.1618414813905;
-        Wed, 14 Apr 2021 08:40:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyY35VesErlxzK/29gR2uI8QR4WnSYD4fBVsD2tb8c8xNAedUoKAwTr+GjfzS/O/zwQqRPunQ==
-X-Received: by 2002:a37:9cd8:: with SMTP id f207mr23703929qke.230.1618414813622;
-        Wed, 14 Apr 2021 08:40:13 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s19sm12311648qks.130.2021.04.14.08.40.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 08:40:13 -0700 (PDT)
-Subject: Re: [PATCH V4 XRT Alveo 09/20] fpga: xrt: management physical
- function driver (root)
-To:     Max Zhen <max.zhen@xilinx.com>, Lizhi Hou <lizhi.hou@xilinx.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, sonal.santan@xilinx.com,
-        yliu@xilinx.com, michal.simek@xilinx.com, stefanos@xilinx.com,
-        devicetree@vger.kernel.org, mdf@kernel.org, robh@kernel.org
-References: <20210324052947.27889-1-lizhi.hou@xilinx.com>
- <20210324052947.27889-10-lizhi.hou@xilinx.com>
- <5ac8ef15-87b4-358b-0835-d41e3b88592b@redhat.com>
- <f38c7210-85aa-09af-9a52-ebb13ca3442e@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <9a1a3d6e-3a5d-2272-7235-d46d09589cf8@redhat.com>
-Date:   Wed, 14 Apr 2021 08:40:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 14 Apr 2021 11:40:56 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5558C061574;
+        Wed, 14 Apr 2021 08:40:32 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1lWhcr-0005bm-LX; Wed, 14 Apr 2021 17:40:21 +0200
+Date:   Wed, 14 Apr 2021 17:40:21 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] netfilter: nf_conntrack: Add conntrack helper for
+ ESP/IPsec
+Message-ID: <20210414154021.GE14932@breakpoint.cc>
+References: <20210414035327.31018-1-Cole.Dishington@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <f38c7210-85aa-09af-9a52-ebb13ca3442e@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414035327.31018-1-Cole.Dishington@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
+> Introduce changes to add ESP connection tracking helper to netfilter
+> conntrack. The connection tracking of ESP is based on IPsec SPIs. The
+> underlying motivation for this patch was to allow multiple VPN ESP
+> clients to be distinguished when using NAT.
+>
+> Added config flag CONFIG_NF_CT_PROTO_ESP to enable the ESP/IPsec
+> conntrack helper.
 
-On 4/9/21 11:50 AM, Max Zhen wrote:
-> Hi Tom,
->
->
-> On 3/31/21 6:03 AM, Tom Rix wrote:
->> On 3/23/21 10:29 PM, Lizhi Hou wrote:
->>> The PCIE device driver which attaches to management function on Alveo
->>> devices. It instantiates one or more group drivers which, in turn,
->>> instantiate platform drivers. The instantiation of group and platform
->>> drivers is completely dtb driven.
->>>
->>> Signed-off-by: Sonal Santan<sonal.santan@xilinx.com>
->>> Signed-off-by: Max Zhen<max.zhen@xilinx.com>
->>> Signed-off-by: Lizhi Hou<lizhi.hou@xilinx.com>
->>> ---
->>>   drivers/fpga/xrt/mgmt/root.c | 333 
->>> +++++++++++++++++++++++++++++++++++
->>>   1 file changed, 333 insertions(+)
->>>   create mode 100644 drivers/fpga/xrt/mgmt/root.c
->>>
->>> diff --git a/drivers/fpga/xrt/mgmt/root.c 
->>> b/drivers/fpga/xrt/mgmt/root.c
->>> new file mode 100644
->>> index 000000000000..f97f92807c01
->>> --- /dev/null
->>> +++ b/drivers/fpga/xrt/mgmt/root.c
->>> @@ -0,0 +1,333 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Xilinx Alveo Management Function Driver
->>> + *
->>> + * Copyright (C) 2020-2021 Xilinx, Inc.
->>> + *
->>> + * Authors:
->>> + *   Cheng Zhen<maxz@xilinx.com>
->>> + */
->>> +
->>> +#include <linux/module.h>
->>> +#include <linux/pci.h>
->>> +#include <linux/aer.h>
->>> +#include <linux/vmalloc.h>
->>> +#include <linux/delay.h>
->>> +
->>> +#include "xroot.h"
->>> +#include "xmgnt.h"
->>> +#include "metadata.h"
->>> +
->>> +#define XMGMT_MODULE_NAME    "xrt-mgmt"
->> ok
->>> +#define XMGMT_DRIVER_VERSION "4.0.0"
->>> +
->>> +#define XMGMT_PDEV(xm)               ((xm)->pdev)
->>> +#define XMGMT_DEV(xm) (&(XMGMT_PDEV(xm)->dev))
->>> +#define xmgmt_err(xm, fmt, args...)  \
->>> +     dev_err(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
->>> +#define xmgmt_warn(xm, fmt, args...) \
->>> +     dev_warn(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
->>> +#define xmgmt_info(xm, fmt, args...) \
->>> +     dev_info(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
->>> +#define xmgmt_dbg(xm, fmt, args...)  \
->>> +     dev_dbg(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
->>> +#define XMGMT_DEV_ID(_pcidev)                        \
->>> +     ({ typeof(_pcidev) (pcidev) = (_pcidev);        \
->>> +     ((pci_domain_nr((pcidev)->bus) << 16) | \
->>> +     PCI_DEVID((pcidev)->bus->number, 0)); })
->>> +
->>> +static struct class *xmgmt_class;
->>> +
->>> +/* PCI Device IDs */
->> add a comment on what a golden image is here something like
->>
->> /*
->>
->> * Golden image is preloaded on the device when it is shipped to 
->> customer.
->>
->> * Then, customer can load other shells (from Xilinx or some other 
->> vendor).
->>
->> * If something goes wrong with the shell, customer can always go back to
->>
->> * golden and start over again.
->>
->> */
->>
->
-> Will do.
->
->
->>> +#define PCI_DEVICE_ID_U50_GOLDEN 0xD020
->>> +#define PCI_DEVICE_ID_U50            0x5020
->>> +static const struct pci_device_id xmgmt_pci_ids[] = {
->>> +     { PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50_GOLDEN), 
->>> }, /* Alveo U50 (golden) */
->>> +     { PCI_DEVICE(PCI_VENDOR_ID_XILINX, PCI_DEVICE_ID_U50), }, /* 
->>> Alveo U50 */
->>> +     { 0, }
->>> +};
->>> +
->>> +struct xmgmt {
->>> +     struct pci_dev *pdev;
->>> +     void *root;
->>> +
->>> +     bool ready;
->>> +};
->>> +
->>> +static int xmgmt_config_pci(struct xmgmt *xm)
->>> +{
->>> +     struct pci_dev *pdev = XMGMT_PDEV(xm);
->>> +     int rc;
->>> +
->>> +     rc = pcim_enable_device(pdev);
->>> +     if (rc < 0) {
->>> +             xmgmt_err(xm, "failed to enable device: %d", rc);
->>> +             return rc;
->>> +     }
->>> +
->>> +     rc = pci_enable_pcie_error_reporting(pdev);
->>> +     if (rc)
->> ok
->>> +             xmgmt_warn(xm, "failed to enable AER: %d", rc);
->>> +
->>> +     pci_set_master(pdev);
->>> +
->>> +     rc = pcie_get_readrq(pdev);
->>> +     if (rc > 512)
->> 512 is magic number, change this to a #define
->
->
-> Will do.
->
->
->>> +             pcie_set_readrq(pdev, 512);
->>> +     return 0;
->>> +}
->>> +
->>> +static int xmgmt_match_slot_and_save(struct device *dev, void *data)
->>> +{
->>> +     struct xmgmt *xm = data;
->>> +     struct pci_dev *pdev = to_pci_dev(dev);
->>> +
->>> +     if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
->>> +             pci_cfg_access_lock(pdev);
->>> +             pci_save_state(pdev);
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static void xmgmt_pci_save_config_all(struct xmgmt *xm)
->>> +{
->>> +     bus_for_each_dev(&pci_bus_type, NULL, xm, 
->>> xmgmt_match_slot_and_save);
->> refactor expected in v5 when pseudo bus change happens.
->
->
-> There might be some mis-understanding here...
->
-> No matter how we reorganize our code (using platform_device bus type 
-> or defining our own bus type), it's a driver that drives a PCIE device 
-> after all. So, this mgmt/root.c must be a PCIE driver, which may 
-> interact with a whole bunch of IP drivers through a pseudo bus we are 
-> about to create.
->
-> What this code is doing here is completely of PCIE business (PCIE 
-> config space access). So, I think it is appropriate code in a PCIE 
-> driver.
->
-> The PCIE device we are driving is a multi-function device. The mgmt pf 
-> is of function 0, which, according to PCIE spec, can manage other 
-> functions on the same device. So, I think it's appropriate for mgmt pf 
-> driver (this root driver) to find it's peer function (through PCIE bus 
-> type) on the same device and do something about it in certain special 
-> cases.
->
-> Please let me know why you expect this code to be refactored and how 
-> you want it to be refactored. I might have missed something here...
->
-ok, i get it.
+Thanks for the effort to upstream out of tree code.
 
-thanks for the explanation.
+A couple of comments and questions below.
 
-Tom
+Preface: AFAIU this tracker aims to 'soft-splice' two independent
+ESP connections, i.e.:
 
->
->>> +}
->>> +
->>> +static int xmgmt_match_slot_and_restore(struct device *dev, void 
->>> *data)
->>> +{
->>> +     struct xmgmt *xm = data;
->>> +     struct pci_dev *pdev = to_pci_dev(dev);
->>> +
->>> +     if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
->>> +             pci_restore_state(pdev);
->>> +             pci_cfg_access_unlock(pdev);
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static void xmgmt_pci_restore_config_all(struct xmgmt *xm)
->>> +{
->>> +     bus_for_each_dev(&pci_bus_type, NULL, xm, 
->>> xmgmt_match_slot_and_restore);
->>> +}
->>> +
->>> +static void xmgmt_root_hot_reset(struct pci_dev *pdev)
->>> +{
->>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
->>> +     struct pci_bus *bus;
->>> +     u8 pci_bctl;
->>> +     u16 pci_cmd, devctl;
->>> +     int i, ret;
->>> +
->>> +     xmgmt_info(xm, "hot reset start");
->>> +
->>> +     xmgmt_pci_save_config_all(xm);
->>> +
->>> +     pci_disable_device(pdev);
->>> +
->>> +     bus = pdev->bus;
->> whitespace, all these nl's are not needed
->
->
-> Will remove them.
->
->
->>> +
->>> +     /*
->>> +      * When flipping the SBR bit, device can fall off the bus. 
->>> This is
->>> +      * usually no problem at all so long as drivers are working 
->>> properly
->>> +      * after SBR. However, some systems complain bitterly when the 
->>> device
->>> +      * falls off the bus.
->>> +      * The quick solution is to temporarily disable the SERR 
->>> reporting of
->>> +      * switch port during SBR.
->>> +      */
->>> +
->>> +     pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
->>> +     pci_write_config_word(bus->self, PCI_COMMAND, (pci_cmd & 
->>> ~PCI_COMMAND_SERR));
->>> +     pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
->>> +     pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, (devctl 
->>> & ~PCI_EXP_DEVCTL_FERE));
->>> +     pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
->>> +     pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl 
->>> | PCI_BRIDGE_CTL_BUS_RESET);
->> ok
->>> +     msleep(100);
->>> +     pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
->>> +     ssleep(1);
->>> +
->>> +     pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
->>> +     pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
->>> +
->>> +     ret = pci_enable_device(pdev);
->>> +     if (ret)
->>> +             xmgmt_err(xm, "failed to enable device, ret %d", ret);
->>> +
->>> +     for (i = 0; i < 300; i++) {
->>> +             pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
->>> +             if (pci_cmd != 0xffff)
->>> +                     break;
->>> +             msleep(20);
->>> +     }
->>> +     if (i == 300)
->>> +             xmgmt_err(xm, "time'd out waiting for device to be 
->>> online after reset");
->> time'd -> timed
->
->
-> Will do.
->
->
-> Thanks,
->
-> Max
->
->> Tom
->>
->>> +
->>> +     xmgmt_info(xm, "waiting for %d ms", i * 20);
->>> +     xmgmt_pci_restore_config_all(xm);
->>> +     xmgmt_config_pci(xm);
->>> +}
->>> +
->>> +static int xmgmt_create_root_metadata(struct xmgmt *xm, char 
->>> **root_dtb)
->>> +{
->>> +     char *dtb = NULL;
->>> +     int ret;
->>> +
->>> +     ret = xrt_md_create(XMGMT_DEV(xm), &dtb);
->>> +     if (ret) {
->>> +             xmgmt_err(xm, "create metadata failed, ret %d", ret);
->>> +             goto failed;
->>> +     }
->>> +
->>> +     ret = xroot_add_vsec_node(xm->root, dtb);
->>> +     if (ret == -ENOENT) {
->>> +             /*
->>> +              * We may be dealing with a MFG board.
->>> +              * Try vsec-golden which will bring up all hard-coded 
->>> leaves
->>> +              * at hard-coded offsets.
->>> +              */
->>> +             ret = xroot_add_simple_node(xm->root, dtb, 
->>> XRT_MD_NODE_VSEC_GOLDEN);
->>> +     } else if (ret == 0) {
->>> +             ret = xroot_add_simple_node(xm->root, dtb, 
->>> XRT_MD_NODE_MGMT_MAIN);
->>> +     }
->>> +     if (ret)
->>> +             goto failed;
->>> +
->>> +     *root_dtb = dtb;
->>> +     return 0;
->>> +
->>> +failed:
->>> +     vfree(dtb);
->>> +     return ret;
->>> +}
->>> +
->>> +static ssize_t ready_show(struct device *dev,
->>> +                       struct device_attribute *da,
->>> +                       char *buf)
->>> +{
->>> +     struct pci_dev *pdev = to_pci_dev(dev);
->>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
->>> +
->>> +     return sprintf(buf, "%d\n", xm->ready);
->>> +}
->>> +static DEVICE_ATTR_RO(ready);
->>> +
->>> +static struct attribute *xmgmt_root_attrs[] = {
->>> +     &dev_attr_ready.attr,
->>> +     NULL
->>> +};
->>> +
->>> +static struct attribute_group xmgmt_root_attr_group = {
->>> +     .attrs = xmgmt_root_attrs,
->>> +};
->>> +
->>> +static struct xroot_physical_function_callback xmgmt_xroot_pf_cb = {
->>> +     .xpc_hot_reset = xmgmt_root_hot_reset,
->>> +};
->>> +
->>> +static int xmgmt_probe(struct pci_dev *pdev, const struct 
->>> pci_device_id *id)
->>> +{
->>> +     int ret;
->>> +     struct device *dev = &pdev->dev;
->>> +     struct xmgmt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
->>> +     char *dtb = NULL;
->>> +
->>> +     if (!xm)
->>> +             return -ENOMEM;
->>> +     xm->pdev = pdev;
->>> +     pci_set_drvdata(pdev, xm);
->>> +
->>> +     ret = xmgmt_config_pci(xm);
->>> +     if (ret)
->>> +             goto failed;
->>> +
->>> +     ret = xroot_probe(pdev, &xmgmt_xroot_pf_cb, &xm->root);
->>> +     if (ret)
->>> +             goto failed;
->>> +
->>> +     ret = xmgmt_create_root_metadata(xm, &dtb);
->>> +     if (ret)
->>> +             goto failed_metadata;
->>> +
->>> +     ret = xroot_create_group(xm->root, dtb);
->>> +     vfree(dtb);
->>> +     if (ret)
->>> +             xmgmt_err(xm, "failed to create root group: %d", ret);
->>> +
->>> +     if (!xroot_wait_for_bringup(xm->root))
->>> +             xmgmt_err(xm, "failed to bringup all groups");
->>> +     else
->>> +             xm->ready = true;
->>> +
->>> +     ret = sysfs_create_group(&pdev->dev.kobj, 
->>> &xmgmt_root_attr_group);
->>> +     if (ret) {
->>> +             /* Warning instead of failing the probe. */
->>> +             xmgmt_warn(xm, "create xmgmt root attrs failed: %d", 
->>> ret);
->>> +     }
->>> +
->>> +     xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
->>> +     xmgmt_info(xm, "%s started successfully", XMGMT_MODULE_NAME);
->>> +     return 0;
->>> +
->>> +failed_metadata:
->>> +     xroot_remove(xm->root);
->>> +failed:
->>> +     pci_set_drvdata(pdev, NULL);
->>> +     return ret;
->>> +}
->>> +
->>> +static void xmgmt_remove(struct pci_dev *pdev)
->>> +{
->>> +     struct xmgmt *xm = pci_get_drvdata(pdev);
->>> +
->>> +     xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
->>> +     sysfs_remove_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
->>> +     xroot_remove(xm->root);
->>> +     pci_disable_pcie_error_reporting(xm->pdev);
->>> +     xmgmt_info(xm, "%s cleaned up successfully", XMGMT_MODULE_NAME);
->>> +}
->>> +
->>> +static struct pci_driver xmgmt_driver = {
->>> +     .name = XMGMT_MODULE_NAME,
->>> +     .id_table = xmgmt_pci_ids,
->>> +     .probe = xmgmt_probe,
->>> +     .remove = xmgmt_remove,
->>> +};
->>> +
->>> +static int __init xmgmt_init(void)
->>> +{
->>> +     int res = 0;
->>> +
->>> +     res = xmgmt_register_leaf();
->>> +     if (res)
->>> +             return res;
->>> +
->>> +     xmgmt_class = class_create(THIS_MODULE, XMGMT_MODULE_NAME);
->>> +     if (IS_ERR(xmgmt_class))
->>> +             return PTR_ERR(xmgmt_class);
->>> +
->>> +     res = pci_register_driver(&xmgmt_driver);
->>> +     if (res) {
->>> +             class_destroy(xmgmt_class);
->>> +             return res;
->>> +     }
->>> +
->>> +     return 0;
->>> +}
->>> +
->>> +static __exit void xmgmt_exit(void)
->>> +{
->>> +     pci_unregister_driver(&xmgmt_driver);
->>> +     class_destroy(xmgmt_class);
->>> +     xmgmt_unregister_leaf();
->>> +}
->>> +
->>> +module_init(xmgmt_init);
->>> +module_exit(xmgmt_exit);
->>> +
->>> +MODULE_DEVICE_TABLE(pci, xmgmt_pci_ids);
->>> +MODULE_VERSION(XMGMT_DRIVER_VERSION);
->>> +MODULE_AUTHOR("XRT Team<runtime@xilinx.com>");
->>> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
->>> +MODULE_LICENSE("GPL v2");
->
+saddr:spi1 -> daddr
+daddr:spi2 <- saddr
 
+So that we basically get this conntrack:
+
+saddr,daddr,spi1 (original)   daddr,saddr,spi2 (remote)
+
+This can't be done as-is, because we don't know spi2 at the time the
+first ESP packet is received.
+
+The solution implemented here is introduction of a 'virtual esp id',
+computed when first ESP packet is received, so conntrack really stores:
+
+saddr,daddr,ID (original)   daddr,saddr,ID (remote)
+
+Because the ID is never carried on the wire, this tracker hooks into
+pkt_to_tuple() infra so that the conntrack tuple gets populated
+as-needed.
+
+If I got that right, I think it would be good to place some description
+like this in the source code, this is unlike all the other trackers.
+
+> index 000000000000..2441e031c68e
+> --- /dev/null
+> +++ b/include/linux/netfilter/nf_conntrack_proto_esp.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _CONNTRACK_PROTO_ESP_H
+> +#define _CONNTRACK_PROTO_ESP_H
+> +#include <asm/byteorder.h>
+> +
+> +/* ESP PROTOCOL HEADER */
+> +
+> +struct esphdr {
+> +	__u32 spi;
+> +};
+> +
+> +struct nf_ct_esp {
+> +	unsigned int stream_timeout;
+> +	unsigned int timeout;
+> +};
+> +
+> +#ifdef __KERNEL__
+> +#include <net/netfilter/nf_conntrack_tuple.h>
+> +
+> +void destroy_esp_conntrack_entry(struct nf_conn *ct);
+> +
+> +bool esp_pkt_to_tuple(const struct sk_buff *skb, unsigned int dataoff,
+> +		      struct net *net, struct nf_conntrack_tuple *tuple);
+> +#endif /* __KERNEL__ */
+
+No need for the __KERNEL__, this header is not exposed to userspace
+(only those in include/uapi/).
+
+>  			struct {
+>  				__be16 key;
+>  			} gre;
+> +			struct {
+> +				__be16 spi;
+
+__be32 ?
+
+I now see that this "spi" seems to be allocated by the esp tracker.
+Maybe 'esp_id' or something like that?
+
+It doesn't appear to be related to the ESP header SPI value.
+
+> --- a/include/net/netns/conntrack.h
+> +++ b/include/net/netns/conntrack.h
+> @@ -69,6 +69,27 @@ struct nf_gre_net {
+>  };
+>  #endif
+>  
+> +#ifdef CONFIG_NF_CT_PROTO_ESP
+> +#define ESP_MAX_PORTS      1000
+> +#define HASH_TAB_SIZE  ESP_MAX_PORTS
+
+ESP? Ports?  Should this be 'slots'?  Maybe a comment helps, I don't
+expect to see ports in an ESP tracker.
+
+> +enum esp_conntrack {
+> +	ESP_CT_UNREPLIED,
+> +	ESP_CT_REPLIED,
+> +	ESP_CT_MAX
+> +};
+> +
+> +struct nf_esp_net {
+> +	rwlock_t esp_table_lock;
+
+This uses a rwlock but i only see writer locks being taken.
+So this either should use a spinlock, or reader-parts should
+take readlock, not wrlock.
+
+(but also see below).
+
+> +	struct hlist_head ltable[HASH_TAB_SIZE];
+> +	struct hlist_head rtable[HASH_TAB_SIZE];
+> +	/* Initial lookup for remote end until rspi is known */
+> +	struct hlist_head incmpl_rtable[HASH_TAB_SIZE];
+> +	struct _esp_table *esp_table[ESP_MAX_PORTS];
+> +	unsigned int esp_timeouts[ESP_CT_MAX];
+> +};
+
+This is large structure -- >32kb.
+
+Could this be moved to nf_conntrack_net?
+
+It would also be good to not allocate these hash slots until after conntrack
+is needed.
+
+The esp_timeouts[] can be kept to avoid module dep problems.
+
+(But also see below, I'm not sure homegrown hash table is the way to go).
+
+>  struct ct_pcpu {
+> diff --git a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h b/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+> index 64390fac6f7e..9bbd76c325d2 100644
+> --- a/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+> +++ b/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+> @@ -39,6 +39,9 @@ union nf_conntrack_man_proto {
+..
+> +#if 0
+> +#define ESP_DEBUG 1
+> +#define DEBUGP(format, args...) printk(KERN_DEBUG "%s: " format, __func__, ## args)
+> +#else
+> +#undef ESP_DEBUG
+> +#define DEBUGP(x, args...)
+> +#endif
+
+I suggest to get rid of all of DEBUGP(), either drop them, or, in cases
+where they are useful, switch to pr_debug().
+
+> +#define TEMP_SPI_START 1500
+> +#define TEMP_SPI_MAX   (TEMP_SPI_START + ESP_MAX_PORTS - 1)
+
+I think this could use an explanation.
+
+> +struct _esp_table {
+> +	/* Hash table nodes for each required lookup
+> +	 * lnode: l_spi, l_ip, r_ip
+> +	 * rnode: r_spi, r_ip
+> +	 * incmpl_rnode: r_ip
+> +	 */
+> +	struct hlist_node lnode;
+> +	struct hlist_node rnode;
+> +	struct hlist_node incmpl_rnode;
+> +
+> +	u32 l_spi;
+> +	u32 r_spi;
+> +	u32 l_ip;
+> +	u32 r_ip;
+
+Hmm, ipv4 only.  Could this be changed to also support ipv6?
+
+At least this should use 'union nf_inet_addr' or add a full
+struct nf_conntrack_tuple to get src/dst/+SPIs in one entry.
+
+> +	u16 tspi;
+
+Whats the tspi? (Might be clear later after reading the entire
+file, but for sure could use a comment).
+
+> +	unsigned long allocation_time;
+
+Perhaps use alloc_time_jiffies to make it clear what units are expected
+here.  Or, better yet, use 'u32 alloc_time_jiffies' and nfct_time_stamp,
+which is just 32bit jiffies (needs less space and is sufficient for
+'older/more recent than' logic.
+
+> +/* Allocate a free IPSEC table entry.
+> + * NOTE: The ESP entry table must be locked prior to calling this function.
+> + */
+> +struct _esp_table *alloc_esp_entry(struct net *net)
+> +{
+> +	struct nf_esp_net *net_esp = esp_pernet(net);
+> +	struct _esp_table **esp_table = net_esp->esp_table;
+> +	struct _esp_table *esp_entry = NULL;
+> +	int idx = 0;
+> +
+> +	/* Find the first unused slot */
+> +	for (; idx < ESP_MAX_PORTS; idx++) {
+> +		if (esp_table[idx])
+> +			continue;
+> +
+> +		esp_table[idx] = kmalloc(sizeof(*esp_entry), GFP_ATOMIC);
+> +		memset(esp_table[idx], 0, sizeof(struct _esp_table));
+
+Missing NULL/ENOMEM check.
+
+However, it would be nice to avoid this kmalloc completely, but so far I
+can't find a way, since this gets inserted/retrieved from pkt_to_tuple, before
+nf_conn is inserted/looked up.
+
+1. spi * 2 (local, remote)
+2. 3 node pointers for the tables (might be able to use only 2?)
+
+Thats 56 bytes total on x86_64, and would fit into the ct->proto storage
+(its a union, currently @ 60 bytes).
+
+The addresses are already stored in the nf_conn entry itself.
+
+Unfortunately I don't see a way to leverage this (we can't recurse/do
+lookups into the conntrack table either).
+
+> +static struct _esp_table *search_esp_entry_init_remote(struct nf_esp_net *net_esp,
+> +						       const u32 src_ip)
+> +{
+> +	struct _esp_table **esp_table = net_esp->esp_table;
+> +	struct _esp_table *esp_entry = NULL;
+> +	u32 hash = 0;
+> +	int first_entry = -1;
+> +
+> +	hash = calculate_hash(0, src_ip, 0);
+> +	hlist_for_each_entry(esp_entry, &net_esp->incmpl_rtable[hash],
+> +			     incmpl_rnode) {
+> +		DEBUGP("Checking against incmpl_rtable entry %x (%p) with l_spi %x r_spi %x r_ip %x\n",
+> +		       esp_entry->tspi, esp_entry, esp_entry->l_spi,
+> +		       esp_entry->r_spi, esp_entry->r_ip);
+> +		if (src_ip == esp_entry->r_ip && esp_entry->l_spi != 0 &&
+> +		    esp_entry->r_spi == 0) {
+> +			DEBUGP("Matches entry %x", esp_entry->tspi);
+> +			if (first_entry == -1) {
+> +				DEBUGP("First match\n");
+> +				first_entry = esp_entry->tspi - TEMP_SPI_START;
+> +			} else if (esp_table[first_entry]->allocation_time >
+> +				   esp_entry->allocation_time) {
+
+This needs time_after() etc. to avoid errors when jiffy counter wraps.
+Alternatively, look at nf_ct_is_expired(), copy that and use "nfct_time_stamp"
+instead of jiffies (its 32bit jiffies, even on 64bit to save space in
+nf_conn struct).
+
+> +struct _esp_table *search_esp_entry_by_spi(struct net *net, const __u32 spi,
+> +					   const __u32 src_ip, const __u32 dst_ip)
+> +{
+> +	struct nf_esp_net *net_esp = esp_pernet(net);
+> +	struct _esp_table *esp_entry = NULL;
+> +	u32 hash = 0;
+> +
+> +	/* Check for matching established session or repeated initial LAN side */
+> +	/* LAN side first */
+> +	hash = calculate_hash(spi, src_ip, dst_ip);
+> +	hlist_for_each_entry(esp_entry, &net_esp->ltable[hash], lnode) {
+> +		DEBUGP
+> +		    ("Checking against ltable entry %x (%p) with l_spi %x l_ip %x r_ip %x\n",
+> +		     esp_entry->tspi, esp_entry, esp_entry->l_spi,
+> +		     esp_entry->l_ip, esp_entry->r_ip);
+> +		if (spi == esp_entry->l_spi && src_ip == esp_entry->l_ip &&
+> +		    dst_ip == esp_entry->r_ip) {
+> +			/* When r_spi is set this is an established session. When not set it's
+> +			 * a repeated initial packet from LAN side. But both cases are treated
+> +			 * the same.
+> +			 */
+> +			DEBUGP("Matches entry %x", esp_entry->tspi);
+> +			return esp_entry;
+> +		}
+> +	}
+
+The first lookup should normally find an entry, correct?
+
+> +	/* Established remote side */
+> +	hash = calculate_hash(spi, src_ip, 0);
+> +	hlist_for_each_entry(esp_entry, &net_esp->rtable[hash], rnode) {
+> +		DEBUGP
+> +		    ("Checking against rtable entry %x (%p) with l_spi %x r_spi %x r_ip %x\n",
+> +		     esp_entry->tspi, esp_entry, esp_entry->l_spi,
+> +		     esp_entry->r_spi, esp_entry->r_ip);
+> +		if (spi == esp_entry->r_spi && src_ip == esp_entry->r_ip &&
+> +		    esp_entry->l_spi != 0) {
+[..]
+
+> +	/* Incomplete remote side */
+> +	esp_entry = search_esp_entry_init_remote(net_esp, src_ip);
+> +	if (esp_entry) {
+> +		esp_entry->r_spi = spi;
+> +		/* Remove entry from incmpl_rtable and add to rtable */
+> +		DEBUGP("Completing entry %x with remote SPI info",
+> +		       esp_entry->tspi);
+> +		hlist_del_init(&esp_entry->incmpl_rnode);
+> +		hash = calculate_hash(spi, src_ip, 0);
+> +		hlist_add_head(&esp_entry->rnode, &net_esp->rtable[hash]);
+> +		return esp_entry;
+> +	}
+> +
+> +	DEBUGP("No Entry\n");
+> +	return NULL;
+> +}
+> +
+> +/* invert esp part of tuple */
+> +bool nf_conntrack_invert_esp_tuple(struct nf_conntrack_tuple *tuple,
+> +				   const struct nf_conntrack_tuple *orig)
+> +{
+> +	tuple->dst.u.esp.spi = orig->dst.u.esp.spi;
+> +	tuple->src.u.esp.spi = orig->src.u.esp.spi;
+> +	return true;
+> +}
+> +
+> +/* esp hdr info to tuple */
+> +bool esp_pkt_to_tuple(const struct sk_buff *skb, unsigned int dataoff,
+> +		      struct net *net, struct nf_conntrack_tuple *tuple)
+> +{
+> +	struct nf_esp_net *net_esp = esp_pernet(net);
+> +	struct esphdr _esphdr, *esphdr;
+> +	struct _esp_table *esp_entry = NULL;
+> +	u32 spi = 0;
+> +
+> +	esphdr = skb_header_pointer(skb, dataoff, sizeof(_esphdr), &_esphdr);
+> +	if (!esphdr) {
+> +		/* try to behave like "nf_conntrack_proto_generic" */
+> +		tuple->src.u.all = 0;
+> +		tuple->dst.u.all = 0;
+> +		return true;
+> +	}
+> +	spi = ntohl(esphdr->spi);
+> +
+> +	DEBUGP("Enter pkt_to_tuple() with spi %x\n", spi);
+> +	/* check if esphdr has a new SPI:
+> +	 *   if no, update tuple with correct tspi;
+> +	 *   if yes, check if we have seen the source IP:
+> +	 *             if yes, update the ESP tables update the tuple with correct tspi
+> +	 *             if no, create a new entry
+> +	 */
+> +	write_lock_bh(&net_esp->esp_table_lock);
+
+So all CPUs serialize on this lock.  I'm concerned this will cause
+performance regression, ATM ESP is handled by generic tracker; after
+this is applied it will be handled here.
+
+At the very least this should use read lock only and upgrade to wrlock
+if needed only.
+
+> +	esp_entry = search_esp_entry_by_spi(net, spi, tuple->src.u3.ip,
+> +					    tuple->dst.u3.ip);
+> +	if (!esp_entry) {
+> +		u32 hash = 0;
+> +
+> +		esp_entry = alloc_esp_entry(net);
+> +		if (!esp_entry) {
+> +			DEBUGP("All entries in use\n");
+> +			write_unlock_bh(&net_esp->esp_table_lock);
+> +			return false;
+> +		}
+> +		esp_entry->l_spi = spi;
+> +		esp_entry->l_ip = tuple->src.u3.ip;
+> +		esp_entry->r_ip = tuple->dst.u3.ip;
+> +		/* Add entries to the hash tables */
+> +		hash = calculate_hash(spi, esp_entry->l_ip, esp_entry->r_ip);
+> +		hlist_add_head(&esp_entry->lnode, &net_esp->ltable[hash]);
+> +		hash = calculate_hash(0, 0, esp_entry->r_ip);
+> +		hlist_add_head(&esp_entry->incmpl_rnode,
+> +			       &net_esp->incmpl_rtable[hash]);
+> +	}
+> +
+> +	DEBUGP
+> +	    ("entry_info: tspi %u l_spi 0x%x r_spi 0x%x l_ip %x r_ip %x srcIP %x dstIP %x\n",
+> +	     esp_entry->tspi, esp_entry->l_spi, esp_entry->r_spi,
+> +	     esp_entry->l_ip, esp_entry->r_ip, tuple->src.u3.ip,
+> +	     tuple->dst.u3.ip);
+> +
+> +	tuple->dst.u.esp.spi = esp_entry->tspi;
+> +	tuple->src.u.esp.spi = esp_entry->tspi;
+> +	write_unlock_bh(&net_esp->esp_table_lock);
+> +	return true;
+> +}
+> +
+> +#ifdef CONFIG_NF_CONNTRACK_PROCFS
+> +/* print private data for conntrack */
+> +static void esp_print_conntrack(struct seq_file *s, struct nf_conn *ct)
+> +{
+> +	seq_printf(s, "timeout=%u, stream_timeout=%u ",
+> +		   (ct->proto.esp.timeout / HZ),
+> +		   (ct->proto.esp.stream_timeout / HZ));
+
+What is ct->proto.esp.{timeout,stream_timeout} for?
+I don't see where/how its used.
+
+> +/* Returns verdict for packet, and may modify conntrack */
+> +int nf_conntrack_esp_packet(struct nf_conn *ct, struct sk_buff *skb,
+> +			    unsigned int dataoff,
+> +			    enum ip_conntrack_info ctinfo,
+> +			    const struct nf_hook_state *state)
+> +{
+> +	unsigned int *timeouts = nf_ct_timeout_lookup(ct);
+> +#ifdef ESP_DEBUG
+> +	const struct iphdr *iph;
+> +	struct esphdr _esphdr, *esphdr;
+> +
+> +	iph = ip_hdr(skb);
+
+This will treat ipv6 as ipv4 header, no?
+
+> +	if (!timeouts)
+> +		timeouts = esp_pernet(nf_ct_net(ct))->esp_timeouts;
+> +
+> +	if (!nf_ct_is_confirmed(ct)) {
+> +		ct->proto.esp.stream_timeout = timeouts[ESP_CT_REPLIED];
+> +		ct->proto.esp.timeout = timeouts[ESP_CT_UNREPLIED];
+
+So first packet inits these, but apart from esp_print_conntrack() i see
+no readers.
+
+> +/* Called when a conntrack entry has already been removed from the hashes
+> + * and is about to be deleted from memory
+> + */
+> +void destroy_esp_conntrack_entry(struct nf_conn *ct)
+> +{
+> +	struct nf_conntrack_tuple *tuple = NULL;
+> +	enum ip_conntrack_dir dir;
+> +	u16 tspi = 0;
+> +	struct net *net = nf_ct_net(ct);
+> +	struct nf_esp_net *net_esp = esp_pernet(net);
+> +
+> +	write_lock_bh(&net_esp->esp_table_lock);
+> +
+> +	/* Probably all the ESP entries referenced in this connection are the same,
+> +	 * but the free function handles repeated frees, so best to do them all.
+> +	 */
+> +	for (dir = IP_CT_DIR_ORIGINAL; dir < IP_CT_DIR_MAX; dir++) {
+> +		tuple = nf_ct_tuple(ct, dir);
+> +
+> +		tspi = tuple->src.u.esp.spi;
+> +		if (tspi >= TEMP_SPI_START && tspi <= TEMP_SPI_MAX) {
+> +			DEBUGP("Deleting src tspi %x (dir %i)\n", tspi, dir);
+> +			esp_table_free_entry_by_tspi(net, tspi);
+> +		}
+> +		tuple->src.u.esp.spi = 0;
+> +		tspi = tuple->dst.u.esp.spi;
+> +		if (tspi >= TEMP_SPI_START && tspi <= TEMP_SPI_MAX) {
+> +			DEBUGP("Deleting dst tspi %x (dir %i)\n", tspi, dir);
+> +			esp_table_free_entry_by_tspi(net, tspi);
+> +		}
+> +		tuple->dst.u.esp.spi = 0;
+> +	}
+> +
+
+Questions:
+Could this use rhashtable(s) instead of the homegrown table?
+
+This would allow:
+ 1. use of shared rhashtables for the namespaces, since netns could be
+ part of key. That in turn avoids the need to allocate memory for each
+ different netns.
+ 2. automatically provides rcu-guarded read access & parallel inserts.
+
+Could this tracker store the current local and remove SPI as seen on
+wire?  It could be stored in the proto.esp stash so its not part of the
+hash key.
+
+That would allow to export/print it to userspace, so conntrack tool or
+/proc could show the real SPI used by local and remote.
+
+3. How hard is it to add ipv6 support?
+
+If its out-of-scope it could be restricted to NFPROTO_IPV4 and have
+generic-tracker behaviour for ipv6.
+
+I might have more questions later, I need to spend a bit more time on
+this.
