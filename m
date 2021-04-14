@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE33D35F2AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A0D35F2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbhDNLmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhDNLl4 (ORCPT
+        id S233717AbhDNLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:45:45 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41705 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233595AbhDNLpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:41:56 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FA5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:41:33 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o2so1740729qtr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vuwN2tps+A9iGF/qWHJo0OKDNEJp6OUg5buE8ubsh+M=;
-        b=lOa2FIKMpFcGcgOps89l43t3sEAOetiZcbF6/1KxJDlnOmuEOwaRkcD7cjK1bDrKVN
-         B1Y2gwmq0+eNEAE2/fYb3p8K5+P/gmzguNSWZOFlLYNMfIchgOyv5a/dBbgBEWQZnxRM
-         SRh59l2LYd3uXf4FI+xMiDn/Hh5DB06DliKIVfqcOJmNaSLf1czsSB8cD9JE3Fr3vERq
-         HPr8Vu3RMEu83moP+TTnH8KQymECCnSAND+vdd0g4rEzseJ69WeF+BffSb77smaP4inO
-         sqonwy40eLCYwq4jo28jHsandWRYysbHo5Zfld3O/8mUdtsv+8HxtzyQo1ggNVH9MR8A
-         ADKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vuwN2tps+A9iGF/qWHJo0OKDNEJp6OUg5buE8ubsh+M=;
-        b=gfAg+gANU902d0MEwymiNxm6aro7AY5Zyec6m/9YFle9f3gPo5yNuOe8UMX13hopgi
-         UPL814A7TmWOPyM84w1qDIIemG62Zr4DOtDXIyqWAkGMP06r2W0AOM137nudRymIR5Ah
-         gb5k8RDqpUUqact0BUoq7Vp9wvWJSHjq5TwRC7Rs53eo9DCWLAmPFj4gVTncGlx4NlQz
-         lmWsweaTY8u5MR2d+s/7ARCwtWca7C6ZR3DLl/zptF0ujv5okvM93FOKm68hYcoFZ6IM
-         u/yLZ1xSFCSM5YeTN0Na7D5+PCAZ5dKLOF9UCMgig65hm5KHv0KAGBr5mz7yP/24x07j
-         GGTw==
-X-Gm-Message-State: AOAM530QUKLzsSvyM4x6FPf+P0oM25zzIFG5ciFG4Dy6YZe5txoTCaLf
-        dDGQosY7qTqXQH6oaLY3nND9LBmbulvnZCq0UibdHheyj3gaGw==
-X-Google-Smtp-Source: ABdhPJwPl8i36Umu1G4a9Ow3HV4gVUZJJGNOLDjrXEAQWNZwCO9VlfZ0EiUu+OSe/wt+8nBBntLmteq+qo7uX83CN7o=
-X-Received: by 2002:a05:622a:216:: with SMTP id b22mr35132063qtx.263.1618400492664;
- Wed, 14 Apr 2021 04:41:32 -0700 (PDT)
+        Wed, 14 Apr 2021 07:45:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UVY-JZg_1618400680;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UVY-JZg_1618400680)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 14 Apr 2021 19:44:40 +0800
+Subject: Re: [PATCH] ocfs2/dlm: remove unused function
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, mark@fasheh.com,
+        akpm <akpm@linux-foundation.org>
+Cc:     jlbec@evilplan.org, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+References: <1618382761-5784-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <d5e3ba19-abac-891d-9e88-6d3a0cef931b@linux.alibaba.com>
+Date:   Wed, 14 Apr 2021 19:44:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
- <871rbeo7wf.wl-maz@kernel.org> <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
- <87y2dmmggt.wl-maz@kernel.org> <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
- <87tuoambdb.wl-maz@kernel.org>
-In-Reply-To: <87tuoambdb.wl-maz@kernel.org>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 14 Apr 2021 07:41:20 -0400
-Message-ID: <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
-Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1618382761-5784-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:51 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Tue, 13 Apr 2021 16:03:51 +0100,
-> Peter Geis <pgwipeout@gmail.com> wrote:
-> >
-> > On Tue, Apr 13, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> [...]
->
-> > > What happens if you hack all the allocations to happen in the low 4GB
-> > > of the PA space?
-> >
-> > It seems to work correctly.
-> > The downstream hacks used GFP_DMA32 which gets discarded by
-> > kmalloc_fix_flags on certain allocations.
-> > Switching to GFP_DMA seems to have satisfied it, but it feels wrong
-> > using this code.
-> > Need to check the corner cases to make sure I'm not missing something.
->
-> The problem is that GFP_DMA doesn't always mean the same thing.
-> Overall, we need to hear from Rockchip about the exact nature of the
-> problem, and then we *may* be able to work something out.
 
-From what I've read, GFP_DMA allocates as low as possible, while
-GFP_DMA32 ensures it's in the 32 bit address range, am I understanding
-this correctly?
-Is there a reason GFP_DMA is permitted while GFP_DMA32 is not, aside
-from backwards compatibility?
-(I saw the notes about how we aren't really supposed to rely on these flags)
 
-I've also confirmed that their disabling shareability and caching is necessary.
+On 4/14/21 2:46 PM, Jiapeng Chong wrote:
+> Fix the following clang warning:
+> 
+> fs/ocfs2/dlm/dlmrecovery.c:129:20: warning: unused function
+> 'dlm_reset_recovery' [-Wunused-function].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
->
-> I'd also like to understand whether it is broken because you happen to
-> have pre-release silicon that will never make it into the wild, or if
-> this is the real thing that is going to ship on millions of devices.
+Seems after commit ded2cf71419b ("ocfs2: dlm: fix recovery hung"),
+dlm_reset_recovery() no longer has any user.
 
-My understanding is these chips are samples prior to the full
-production run, but we are waiting on official comment from Rockchip
-about this particular errata.
+Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 
->
-> Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+> ---
+>  fs/ocfs2/dlm/dlmrecovery.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/fs/ocfs2/dlm/dlmrecovery.c b/fs/ocfs2/dlm/dlmrecovery.c
+> index 4b566e8..afc5173 100644
+> --- a/fs/ocfs2/dlm/dlmrecovery.c
+> +++ b/fs/ocfs2/dlm/dlmrecovery.c
+> @@ -126,13 +126,6 @@ static inline void __dlm_reset_recovery(struct dlm_ctxt *dlm)
+>  	dlm_set_reco_master(dlm, O2NM_INVALID_NODE_NUM);
+>  }
+>  
+> -static inline void dlm_reset_recovery(struct dlm_ctxt *dlm)
+> -{
+> -	spin_lock(&dlm->spinlock);
+> -	__dlm_reset_recovery(dlm);
+> -	spin_unlock(&dlm->spinlock);
+> -}
+> -
+>  /* Worker function used during recovery. */
+>  void dlm_dispatch_work(struct work_struct *work)
+>  {
+> 
