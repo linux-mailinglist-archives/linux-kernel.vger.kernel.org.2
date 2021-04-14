@@ -2,164 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857E535F886
+	by mail.lfdr.de (Postfix) with ESMTP id D0C5835F887
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhDNPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:55:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:58278 "EHLO foss.arm.com"
+        id S1352545AbhDNP4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:56:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352498AbhDNPzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:55:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97E4A11B3;
-        Wed, 14 Apr 2021 08:54:59 -0700 (PDT)
-Received: from [10.57.27.217] (unknown [10.57.27.217])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12BFB3F73B;
-        Wed, 14 Apr 2021 08:54:56 -0700 (PDT)
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d6b39eca-4f19-bace-ca3d-f36549caa51c@arm.com>
-Date:   Wed, 14 Apr 2021 16:54:55 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S1347344AbhDNP4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B655613A9;
+        Wed, 14 Apr 2021 15:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618415738;
+        bh=tecUr8uhzC+Qa4aSCGZEypxNiZC4HVhGBy0HhA02K8A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=L9UiB8ZVorulnIEA/+4T7FTmvQb8JPbLKRxwoqFnlCImaztfk1rMVRaDPO7w4Vo5S
+         jxIComCRKJ7aaAQjLgP+3PPL/EWXrhKfvxpNbcN3n6LcIOD06t7NAzWMm3GvQ1afzi
+         kkNmQW1Cy7xS9cVlxQFWNUbule4h9uso7ZtRf2yun+zlr17i2N+ztzmQn/D2yg5myY
+         iDFPD9kA+HObu05AAfduOgAdY0DQL7lAt0xDizZ0L5ZjjCOygWqTTCzObLpNOMUQyV
+         yAgG2YMHVn0isYdwXGxmxvCkRVN60xff1jwbf20zQ63T0SuTucKsoM0ZBh834H2uB7
+         mCM3EeG16gw9w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2958A5C034B; Wed, 14 Apr 2021 08:55:38 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 08:55:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 1/2] srcu: Fix broken node geometry after early ssp init
+Message-ID: <20210414155538.GO4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414132413.98062-1-frederic@kernel.org>
+ <20210414132413.98062-2-frederic@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414132413.98062-2-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2021 15:39, James Clark wrote:
-> The following attribute is set when synthesising samples in
-> timed decoding mode:
+On Wed, Apr 14, 2021 at 03:24:12PM +0200, Frederic Weisbecker wrote:
+> An ssp initialized before rcu_init_geometry() will have its snp hierarchy
+> based on CONFIG_NR_CPUS.
 > 
->      attr.sample_type |= PERF_SAMPLE_TIME;
+> Once rcu_init_geometry() is called, the nodes distribution is shrinked
+> and optimized toward meeting the actual possible number of CPUs detected
+> on boot.
 > 
-> This results in new samples that appear to have timestamps but
-> because we don't assign any timestamps to the samples, when the
-> resulting inject file is opened again, the synthesised samples
-> will be on the wrong side of the MMAP or COMM events.
+> Later on, the ssp that was initialized before rcu_init_geometry() is
+> confused and sometimes refers to its initial CONFIG_NR_CPUS based node
+> hierarchy, sometimes to the new num_possible_cpus() based one instead.
+> For example each of its sdp->mynode remain backward and refer to the
+> early node leaves that may not exist anymore. On the other hand the
+> srcu_for_each_node_breadth_first() refers to the new node hierarchy.
 > 
-> For example this results in the samples being associated with
-> the perf binary, rather than the target of the record:
+> There are at least two bad possible outcomes to this:
 > 
->      perf record -e cs_etm/@tmc_etr0/u top
->      perf inject -i perf.data -o perf.inject --itrace=i100il
->      perf report -i perf.inject
+> 1) a) A callback enqueued early on an sdp is recorded pending on
+>       sdp->mynode->srcu_data_have_cbs in srcu_funnel_gp_start() with
+>       sdp->mynode pointing to a deep leaf (say 3 levels).
 > 
-> Where 'Command' == perf should show as 'top':
+>    b) The grace period ends after rcu_init_geometry() which shrinks the
+>       nodes level to a single one. srcu_gp_end() walks through the new
+>       snp hierarchy without ever reaching the old leaves so the callback
+>       is never executed.
 > 
->      # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
->      # ........  .......  ....................  ......................  ......................  ..................
->      #
->          31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
+>    This is easily reproduced on an 8 CPUs machine with
+>    CONFIG_NR_CPUS >= 32 and "rcupdate.rcu_self_test=1". The
+>    srcu_barrier() after early tests verification never completes and
+>    the boot hangs:
 > 
-> If the perf.data file is opened directly with perf, without the
-> inject step, then this already works correctly because the
-> events are synthesised after the COMM and MMAP events and
-> no second sorting happens. Re-sorting only happens when opening
-> the perf.inject file for the second time so timestamps are
-> needed.
+> 	[ 5413.141029] INFO: task swapper/0:1 blocked for more than 4915 seconds.
+> 	[ 5413.147564]       Not tainted 5.12.0-rc4+ #28
+> 	[ 5413.151927] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> 	[ 5413.159753] task:swapper/0       state:D stack:    0 pid:    1 ppid:     0 flags:0x00004000
+> 	[ 5413.168099] Call Trace:
+> 	[ 5413.170555]  __schedule+0x36c/0x930
+> 	[ 5413.174057]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.178423]  schedule+0x46/0xf0
+> 	[ 5413.181575]  schedule_timeout+0x284/0x380
+> 	[ 5413.185591]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.189957]  ? mark_held_locks+0x61/0x80
+> 	[ 5413.193882]  ? mark_held_locks+0x61/0x80
+> 	[ 5413.197809]  ? _raw_spin_unlock_irq+0x24/0x50
+> 	[ 5413.202173]  ? wait_for_completion+0x88/0x110
+> 	[ 5413.206535]  wait_for_completion+0xb4/0x110
+> 	[ 5413.210724]  ? srcu_torture_stats_print+0x110/0x110
+> 	[ 5413.215610]  srcu_barrier+0x187/0x200
+> 	[ 5413.219277]  ? rcu_tasks_verify_self_tests+0x50/0x50
+> 	[ 5413.224244]  ? rdinit_setup+0x2b/0x2b
+> 	[ 5413.227907]  rcu_verify_early_boot_tests+0x2d/0x40
+> 	[ 5413.232700]  do_one_initcall+0x63/0x310
+> 	[ 5413.236541]  ? rdinit_setup+0x2b/0x2b
+> 	[ 5413.240207]  ? rcu_read_lock_sched_held+0x52/0x80
+> 	[ 5413.244912]  kernel_init_freeable+0x253/0x28f
+> 	[ 5413.249273]  ? rest_init+0x250/0x250
+> 	[ 5413.252846]  kernel_init+0xa/0x110
+> 	[ 5413.256257]  ret_from_fork+0x22/0x30
 > 
-> Using the timestamp from the AUX record mirrors the current
-> behaviour when opening directly with perf, because the events
-> are generated on the call to cs_etm__process_queues().
+> 2) An ssp that gets initialized before rcu_init_geometry() and used
+>    afterward will always have stale rdp->mynode references, resulting in
+>    callbacks to be missed in srcu_gp_end(), just like in the previous
+>    scenario.
+> 
+> Solve this with calling rcu_init_geometry() whenever an struct srcu_state
+> happens to be initialized before rcu_init(). This way we make sure the
+> RCU nodes hierarchy is properly built and distributed before the nodes
+> of a struct srcu_state are allocated.
+> 
+> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-I would add the following here to clarify the situation :
+Much much nicer, thank you!  Comments and questions interspersed.
 
-"The ETM trace could optionally contain time stamps, but there is
-no way to correlate this with the kernel time. So, the best available
-time value is that of the AUX_RECORD header. This patch uses
-the timestamp from the header for all the samples. The ordering of the
-samples are implicit in the trace and thus is fine with respect to
-relative ordering."
+							Thanx, Paul
 
-
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Co-developed-by: Al Grant <al.grant@arm.com>
-> Signed-off-by: Al Grant <al.grant@arm.com>
-
-nit: The preferred order is your S-o-B at the end (i.e of the sender)
-
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Uladzislau Rezki <urezki@gmail.com>
 > ---
->   tools/perf/util/cs-etm.c | 10 ++++++++--
->   1 file changed, 8 insertions(+), 2 deletions(-)
+>  kernel/rcu/rcu.h      |  3 +++
+>  kernel/rcu/srcutree.c |  2 ++
+>  kernel/rcu/tree.c     | 18 +++++++++++++++++-
+>  3 files changed, 22 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index c25da2ffa8f3..d0fa9dce47f1 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
->   	u8 sample_instructions;
->   
->   	int num_cpu;
-> +	u64 latest_kernel_timestamp;
->   	u32 auxtrace_type;
->   	u64 branches_sample_type;
->   	u64 branches_id;
-> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
->   	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
->   	event->sample.header.size = sizeof(struct perf_event_header);
->   
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->   	sample.ip = addr;
->   	sample.pid = tidq->pid;
->   	sample.tid = tidq->tid;
-> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
->   	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
->   	event->sample.header.size = sizeof(struct perf_event_header);
->   
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->   	sample.ip = ip;
->   	sample.pid = tidq->pid;
->   	sample.tid = tidq->tid;
-> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
->   	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
->   		return cs_etm__process_switch_cpu_wide(etm, event);
->   
-> -	if (!etm->timeless_decoding &&
-> -	    event->header.type == PERF_RECORD_AUX)
+> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> index 75ed367d5b60..24db97cbf76b 100644
+> --- a/kernel/rcu/rcu.h
+> +++ b/kernel/rcu/rcu.h
+> @@ -278,6 +278,7 @@ extern void resched_cpu(int cpu);
+>  extern int rcu_num_lvls;
+>  extern int num_rcu_lvl[];
+>  extern int rcu_num_nodes;
+> +extern bool rcu_geometry_initialized;
 
-Might want to add a comment here ,
+Can this be a static local variable inside rcu_init_geometry()?
 
-	/*
-	 * Record the latest kernel timestamp available in the header
-	 * for samples.
-	 */
+After all, init_srcu_struct() isn't called all that often, and its overhead
+is such that an extra function call and check is going to hurt it.  This
+of course requires removing __init from rcu_init_geometry(), but it is not
+all that large, so why not just remove the __init?
 
-> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
-> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
->   		return cs_etm__process_queues(etm);
+But if we really are worried about reclaiming rcu_init_geometry()'s
+instructions (maybe we are?), then rcu_init_geometry() can be split
+into a function that just does the check (which is not __init) and the
+remainder of the function, which could remain __init.
+
+>  static bool rcu_fanout_exact;
+>  static int rcu_fanout_leaf;
+>  
+> @@ -308,6 +309,8 @@ static inline void rcu_init_levelspread(int *levelspread, const int *levelcnt)
+>  	}
+>  }
+>  
+> +extern void rcu_init_geometry(void);
+> +
+>  /* Returns a pointer to the first leaf rcu_node structure. */
+>  #define rcu_first_leaf_node() (rcu_state.level[rcu_num_lvls - 1])
+>  
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 108f9ca06047..05ca3c275af1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -171,6 +171,8 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+>  		ssp->sda = alloc_percpu(struct srcu_data);
+>  	if (!ssp->sda)
+>  		return -ENOMEM;
+> +	if (!rcu_geometry_initialized)
+> +		rcu_init_geometry();
+
+With the suggested change above, this just becomes an unconditional call
+to rcu_init_geometry().
+
+>  	init_srcu_struct_nodes(ssp);
+>  	ssp->srcu_gp_seq_needed_exp = 0;
+>  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 740f5cd34459..b1d6e60e08d1 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4556,17 +4556,33 @@ static void __init rcu_init_one(void)
+>  	}
+>  }
+>  
+> +bool rcu_geometry_initialized __read_mostly;
+
+This could then go away.
+
+> +
+>  /*
+>   * Compute the rcu_node tree geometry from kernel parameters.  This cannot
+>   * replace the definitions in tree.h because those are needed to size
+>   * the ->node array in the rcu_state structure.
+>   */
+> -static void __init rcu_init_geometry(void)
+> +void rcu_init_geometry(void)
+>  {
+>  	ulong d;
+>  	int i;
+> +	static unsigned long old_nr_cpu_ids;
+>  	int rcu_capacity[RCU_NUM_LVLS];
+
+And then rcu_geometry_initialized is declared static here.
+
+Or am I missing something?
+
+> +	if (rcu_geometry_initialized) {
+> +		/*
+> +		 * Arrange for warning if rcu_init_geometry() was called before
+> +		 * setup_nr_cpu_ids(). We may miss cases when
+> +		 * nr_cpus_ids == NR_CPUS but that shouldn't matter too much.
+> +		 */
+> +		WARN_ON_ONCE(old_nr_cpu_ids != nr_cpu_ids);
+> +		return;
 > +	}
->   
->   	return 0;
->   }
+> +
+> +	old_nr_cpu_ids = nr_cpu_ids;
+> +	rcu_geometry_initialized = true;
+> +
+>  	/*
+>  	 * Initialize any unspecified boot parameters.
+>  	 * The default values of jiffies_till_first_fqs and
+> -- 
+> 2.25.1
 > 
-
-This is the best effort thing we could do to get things working.
-
-With the comments addressed:
-
-Acked-by: Suzuki K Poulos <suzuki.poulose@arm.com>
