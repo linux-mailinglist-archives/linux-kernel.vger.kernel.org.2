@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347C535FCD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B11D35FCC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347513AbhDNUrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:47:16 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:40119 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbhDNUrP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:47:15 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 842FDC15D0;
-        Wed, 14 Apr 2021 20:35:41 +0000 (UTC)
-X-Originating-IP: 50.39.163.217
-Received: from localhost (unknown [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A9393FF804;
-        Wed, 14 Apr 2021 20:35:15 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 13:35:13 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, ojeda@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YHdSATy9am21Tj4Z@localhost>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414200953.GX2531743@casper.infradead.org>
- <CAHk-=wgdhVW3+YFHG5Le=mZMYf3mGjgv1f-Td=254bj9fYd7fg@mail.gmail.com>
+        id S245698AbhDNUiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:38:23 -0400
+Received: from elvis.franken.de ([193.175.24.41]:50505 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230227AbhDNUiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:38:20 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lWmGp-0007TK-00; Wed, 14 Apr 2021 22:37:55 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C3C85C035A; Wed, 14 Apr 2021 22:36:56 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 22:36:56 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/7] net: korina: Fix MDIO functions
+Message-ID: <20210414203656.GA3382@alpha.franken.de>
+References: <20210413204818.23350-1-tsbogend@alpha.franken.de>
+ <20210413204818.23350-2-tsbogend@alpha.franken.de>
+ <YHdEJGhQlAVkSwWW@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgdhVW3+YFHG5Le=mZMYf3mGjgv1f-Td=254bj9fYd7fg@mail.gmail.com>
+In-Reply-To: <YHdEJGhQlAVkSwWW@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 01:21:52PM -0700, Linus Torvalds wrote:
-> On Wed, Apr 14, 2021 at 1:10 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > There's a philosophical point to be discussed here which you're skating
-> > right over!  Should rust-in-the-linux-kernel provide the same memory
-> > allocation APIs as the rust-standard-library, or should it provide a Rusty
-> > API to the standard-linux-memory-allocation APIs?
+On Wed, Apr 14, 2021 at 09:36:04PM +0200, Andrew Lunn wrote:
+> > +static int korina_mdio_wait(struct korina_private *lp)
+> > +{
+> > +	int timeout = 1000;
+> > +
+> > +	while ((readl(&lp->eth_regs->miimind) & 1) && timeout-- > 0)
+> > +		udelay(1);
+> > +
+> > +	if (timeout <= 0)
+> > +		return -1;
+> > +
+> > +	return 0;
 > 
-> Yeah, I think that the standard Rust API may simply not be acceptable
-> inside the kernel, if it has similar behavior to the (completely
-> broken) C++ "new" operator.
+> Using readl_poll_timeout_atomic() would be better.
+
+I'll have a look
+
 > 
-> So anything that does "panic!" in the normal Rust API model needs to
-> be (statically) caught, and never exposed as an actual call to
-> "panic()/BUG()" in the kernel.
+> 
+> > +}
+> > +
+> > +static int korina_mdio_read(struct net_device *dev, int phy, int reg)
+> >  {
+> >  	struct korina_private *lp = netdev_priv(dev);
+> >  	int ret;
+> >  
+> > -	mii_id = ((lp->rx_irq == 0x2c ? 1 : 0) << 8);
+> > +	if (korina_mdio_wait(lp))
+> > +		return -1;
+> 
+> This should really be -ETIMEDOUT
 
-Rust has both kinds of allocation APIs: you can call a method like
-`Box::new` that panics on allocation failure, or a method like
-`Box::try_new` that returns an error on allocation failure.
+ok.
 
-With some additional infrastructure that's still in progress, we could
-just not supply the former kind of methods at all, and *only* supply the
-latter, so that you're forced to handle allocation failure. That just
-requires introducing some further ability to customize the Rust standard
-library.
+> >  	dev->watchdog_timeo = TX_TIMEOUT;
+> >  	netif_napi_add(dev, &lp->napi, korina_poll, NAPI_POLL_WEIGHT);
+> >  
+> > -	lp->phy_addr = (((lp->rx_irq == 0x2c? 1:0) << 8) | 0x05);
+> >  	lp->mii_if.dev = dev;
+> > -	lp->mii_if.mdio_read = mdio_read;
+> > -	lp->mii_if.mdio_write = mdio_write;
+> > -	lp->mii_if.phy_id = lp->phy_addr;
+> > +	lp->mii_if.mdio_read = korina_mdio_read;
+> > +	lp->mii_if.mdio_write = korina_mdio_write;
+> > +	lp->mii_if.phy_id = 1;
+> >  	lp->mii_if.phy_id_mask = 0x1f;
+> >  	lp->mii_if.reg_num_mask = 0x1f;
+> 
+> You could also replace all the mii code with phylib.
 
-(There are some cases of methods in the standard library that don't have
-a `try_` equivalent, but we could fix that. Right now, for instance,
-there isn't a `try_` equivalent of every Vec method, and you're instead
-expected to call `try_reserve` to make sure you have enough memory
-first; however, that could potentially be changed.)
+that's on my todo.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
