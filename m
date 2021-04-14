@@ -2,53 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6087535EF43
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB1235EF47
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349931AbhDNIMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:12:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58858 "EHLO mx2.suse.de"
+        id S232251AbhDNINU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:13:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232318AbhDNILk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:11:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47A98B03F;
-        Wed, 14 Apr 2021 08:11:18 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 10:11:15 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH 02/10] mm/numa: automatically generate node migration
- order
-Message-ID: <20210414081115.GB20886@linux>
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183219.DC1928FA@viggo.jf.intel.com>
- <CAAPL-u8Jk-i-9-iSnU7_nb-k2ZMqdRk5c88d-M6Bi1rfv4kSLQ@mail.gmail.com>
- <20210414080849.GA20886@linux>
+        id S1349935AbhDNIMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:12:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3776128E;
+        Wed, 14 Apr 2021 08:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618387929;
+        bh=qpvi9YgbSNvAK7mKvo9Ce2AsQoRwog9SLpIlnYd26ro=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Cn9jzUl1j1g5w/52kMhvjpy+gXwxrftO2H7TshFdp9JKTCFTZgKI2wIcki1tTF8T7
+         7lNnPaTXfEjpCn7CXUXYXsQp1PqC7+0mZOMAk+E1YqJCS1BtjorZ+wwP7x2SGdcmfi
+         cWtdLvApPh578SYlTbygHPvcQ98U+c/Wm2ggP4n2n0OFZQhH6ABPkatFDdHH/zIR69
+         xMxLez6nzbP0RWyIe6gbmRBHLLlrb5NtgLCiUJcHrAaa05JMqI6nxx+TZ7c63gOL8h
+         0X27EA9R0Dvxg71ByZX1cSqEQTf/PQpoLaz5Akp3UHpbHAbyrDSuaTbocKDFr+aOM3
+         yNa4faJ26lpxw==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: Re: [PATCH v2] usb: dwc3: core: Add shutdown callback for dwc3
+In-Reply-To: <1618380209-20114-1-git-send-email-sanm@codeaurora.org>
+References: <1618380209-20114-1-git-send-email-sanm@codeaurora.org>
+Date:   Wed, 14 Apr 2021 11:12:02 +0300
+Message-ID: <877dl5p9nx.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414080849.GA20886@linux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:08:54AM +0200, Oscar Salvador wrote:
-> In Dave's example, list is created in a way that stays local to the socket,
-> and we go from the fast one to the slow one.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Or maybe it is just because find_next_best_node() does not know any better
-and creates the list that way?
+Sandeep Maheswaram <sanm@codeaurora.org> writes:
 
--- 
-Oscar Salvador
-SUSE L3
+> This patch adds a shutdown callback to USB DWC core driver to ensure that
+> it is properly shutdown in reboot/shutdown path. This is required
+> where SMMU address translation is enabled like on SC7180
+> SoC and few others. If the hardware is still accessing memory after
+> SMMU translation is disabled as part of SMMU shutdown callback in
+> system reboot or shutdown path, then IOVAs(I/O virtual address)
+> which it was using will go on the bus as the physical addresses which
+> might result in unknown crashes (NoC/interconnect errors).
+>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+
+Acked-by: Felipe Balbi <balbi@kernel.org>
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmB2o9IRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQYSfg/+P7+iJzxCwEPMx+ioEmfCiBsenhqHbTgt
+w/9Bt0Z3tnGnc7QQgZn4ohQf/hVLWTZyG7+PGgNwFVJJxJx9lqY3U5l+GGpGFuQw
+burUM7tYGDuoIwHQfbNT6kNP5Q6xh1gxXOBVXsf0+5vDOgqVIfYDGW49bcNGLczq
+g6YsO8cWepCistHlB2i55i40d+GgZgwRGKgpjXKHPMUNzIQlgPphfoIWvgJGqAoG
+wTe1IKjuM8cGVYJkDYEzAsU6fons25j22mt5Z8KeN/tfEmzkUdvE2q5P7UyTzXeL
+xM1Q8AfzYp4VNbsVU4+VCLS1HfTK5GJMEHHTFuxhKbEKB0vb3xJI36bvEFerf/is
+jNPJGD5vSpjaPUXCJwdcXkNSXjSNYVtEO/GqsaxzGBRs1BtHUybSjkMFRtmeZTEi
+LNUpk11eXQRymb+XPE0FuuwuxSQtsvkT9A0qOg+Z6yPJM9Kv9XNNT9WY8NAbI/9l
+8ty47gH6yz4UXHSU5pDT2XXM/8zdQB69AU15swi/1ot9ZTM5ohqJ2asH8oZ6LTfG
+y4hFNZ4y+vbrTuOTbKBe6i6MknrCasVWAGIrJoK3Yvr3Az5PKzR31aNOdbnqw+9Z
+zCi/rVxV+itbVzATX9mJx5k1anEoR3bKOcpG52Ah2W2+CuI8VY8FD4AMeb0lf7kp
+p2NO7FCOvOY=
+=hQbm
+-----END PGP SIGNATURE-----
+--=-=-=--
