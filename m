@@ -2,95 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A0B35F024
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9D835F027
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350185AbhDNIr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:47:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40084 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348601AbhDNIrz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:47:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E8jC7R064066;
-        Wed, 14 Apr 2021 08:47:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=KBUtWLkz6XRdoml4a0gFH5qOESW29nMkRyr4i70ZaHw=;
- b=Ts0fZ9XtcK9/CZwY2z+R6x0nLNtVsuQ4lSHQBZdluGmfuqyo/VvqItKqah6a3V9EWx5N
- aBh8W6jwAKk+7YjrU8EJqIjaJeW7zhoXKn4KlHQCo/SwbAc/LW3La5mxt+g9NzQMIQ3D
- q81ISbeDpRD4OaBlOIyrFy819GXRyaOPhaoDziYtXVvhfMqYfQuCEkPEoARot++an+/2
- 6IGGXIYnk7HBq0FkVzAmGFlGJ8z8TvE29LCDW6tO5p7GizGKilIj97QA5D8OGT3hIVFY
- NI4VgGlAf7qZOJpgY4ovrUfFLmwEKyBRir/HrGl15G88Wdo8yoImjgE7kx+iLiHLbwJ4 jA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 37u4nnhmty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 08:47:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E8kP8W167607;
-        Wed, 14 Apr 2021 08:47:19 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 37unxy31v7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 08:47:19 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13E8lHPo015234;
-        Wed, 14 Apr 2021 08:47:17 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Apr 2021 01:47:16 -0700
-Date:   Wed, 14 Apr 2021 11:47:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>, Borislav Petkov <bp@suse.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, colin.king@canonical.com
-Subject: Re: [PATCH] objtool: prevent memory leak in error paths
-Message-ID: <20210414084709.GT6021@kadam>
-References: <20210413204511.GA664936@LEGION>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413204511.GA664936@LEGION>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104140061
-X-Proofpoint-ORIG-GUID: 5-2-_FWmQgB-o7GhZetwdKeiufcnwoB1
-X-Proofpoint-GUID: 5-2-_FWmQgB-o7GhZetwdKeiufcnwoB1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104140061
+        id S1350187AbhDNItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:49:45 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45150 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1345437AbhDNItl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:49:41 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax7ch_rHZgjukHAA--.10739S2;
+        Wed, 14 Apr 2021 16:49:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] bpf: Fix some invalid links in bpf_devel_QA.rst
+Date:   Wed, 14 Apr 2021 16:49:01 +0800
+Message-Id: <1618390141-4817-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Ax7ch_rHZgjukHAA--.10739S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUKrWfJr1fWF13Cw4xtFb_yoWrCF4xpa
+        1fGr1akr18XF13Wwn7GrWUurySqas3GFWUCF18Jr95Zw1jvryktr1IgrWfXa98Jr909ay3
+        Za4SkryYka18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfU8Z2-UUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 01:45:11AM +0500, Muhammad Usama Anjum wrote:
-> Memory allocated by sym and sym->name isn't being freed if some error
-> occurs in elf_create_undef_symbol(). Free the sym and sym->name if error
-> is detected before returning NULL.
-> 
-> Addresses-Coverity: ("Prevent memory leak")
-> Fixes: 2f2f7e47f052 ("objtool: Add elf_create_undef_symbol()")
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
-> Only build has been tested.
-> 
+There exist some errors "404 Not Found" when I click the link
+of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
+in the documentation "HOWTO interact with BPF subsystem" [4].
 
-Just ignore leaks from the tools/ directory.  These things run and then
-exit and all the memory is freed.  #OldSchoolGarbageCollector
+Use correct link of "MAINTAINERS" and just remove the links of
+"samples/bpf/" and "selftests" because there are not related
+documentations.
 
-regards,
-dan carpenter
+[1] https://www.kernel.org/doc/html/MAINTAINERS
+[2] https://www.kernel.org/doc/html/samples/bpf/
+[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
+[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ Documentation/bpf/bpf_devel_QA.rst | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 2ed89ab..4fd4c8c 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -29,7 +29,7 @@ list:
+ This may also include issues related to XDP, BPF tracing, etc.
+ 
+ Given netdev has a high volume of traffic, please also add the BPF
+-maintainers to Cc (from kernel MAINTAINERS_ file):
++maintainers to Cc (from kernel :ref:`MAINTAINERS <maintainers>` file):
+ 
+ * Alexei Starovoitov <ast@kernel.org>
+ * Daniel Borkmann <daniel@iogearbox.net>
+@@ -217,11 +217,11 @@ page run by David S. Miller on net-next that provides guidance:
+ Q: Verifier changes and test cases
+ ----------------------------------
+ Q: I made a BPF verifier change, do I need to add test cases for
+-BPF kernel selftests_?
++BPF kernel selftests?
+ 
+ A: If the patch has changes to the behavior of the verifier, then yes,
+ it is absolutely necessary to add test cases to the BPF kernel
+-selftests_ suite. If they are not present and we think they are
++selftests suite. If they are not present and we think they are
+ needed, then we might ask for them before accepting any changes.
+ 
+ In particular, test_verifier.c is tracking a high number of BPF test
+@@ -234,11 +234,11 @@ be subject to change.
+ 
+ Q: samples/bpf preference vs selftests?
+ ---------------------------------------
+-Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
+-selftests_ ?
++Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
++selftests?
+ 
+-A: In general, we prefer additions to BPF kernel selftests_ rather than
+-`samples/bpf/`_. The rationale is very simple: kernel selftests are
++A: In general, we prefer additions to BPF kernel selftests rather than
++``samples/bpf/``. The rationale is very simple: kernel selftests are
+ regularly run by various bots to test for kernel regressions.
+ 
+ The more test cases we add to BPF selftests, the better the coverage
+@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
+ not that BPF kernel selftests cannot demo how a specific feature can
+ be used.
+ 
+-That said, `samples/bpf/`_ may be a good place for people to get started,
++That said, ``samples/bpf/`` may be a good place for people to get started,
+ so it might be advisable that simple demos of features could go into
+-`samples/bpf/`_, but advanced functional and corner-case testing rather
++``samples/bpf/``, but advanced functional and corner-case testing rather
+ into kernel selftests.
+ 
+ If your sample looks like a test case, then go for BPF kernel selftests
+@@ -413,7 +413,7 @@ Testing patches
+ Q: How to run BPF selftests
+ ---------------------------
+ A: After you have booted into the newly compiled kernel, navigate to
+-the BPF selftests_ suite in order to test BPF functionality (current
++the BPF selftests suite in order to test BPF functionality (current
+ working directory points to the root of the cloned git tree)::
+ 
+   $ cd tools/testing/selftests/bpf/
+@@ -645,10 +645,7 @@ when:
+ 
+ .. Links
+ .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
+-.. _MAINTAINERS: ../../MAINTAINERS
+ .. _netdev-FAQ: ../networking/netdev-FAQ.rst
+-.. _samples/bpf/: ../../samples/bpf/
+-.. _selftests: ../../tools/testing/selftests/bpf/
+ .. _Documentation/dev-tools/kselftest.rst:
+    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+ .. _Documentation/bpf/btf.rst: btf.rst
+-- 
+2.1.0
 
