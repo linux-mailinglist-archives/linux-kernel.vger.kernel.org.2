@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E1635FC13
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A7035FC16
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237383AbhDNT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:58:28 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:44916 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345147AbhDNT6W (ORCPT
+        id S1349615AbhDNT77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245471AbhDNT76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:58:22 -0400
-Received: by mail-oi1-f174.google.com with SMTP id e66so6543360oif.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:58:00 -0700 (PDT)
+        Wed, 14 Apr 2021 15:59:58 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8555C061574;
+        Wed, 14 Apr 2021 12:59:35 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id o10so23487477ybb.10;
+        Wed, 14 Apr 2021 12:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kk+4eaGKBse7wylWIAyXzwrFNlUikGMw6Cuy5HxWNJ4=;
+        b=nP5JvCXU1J2ZZl0o7Qp4jkJYQeiqEcXIedAawZSmc5SBQrAGieHpyzpJFJouqdXDJD
+         Nvdhmc9lnN06RL9pSJoxX+my+ginHSZaB5FXtdBerQ3/xhfLvJBVb+xZXWNOFKz/SCyR
+         dFfsDblIQUFV71fIbzvj0dVGf11ZKZm8ff0m2VETq/mQQODAGMF6wncCMF60vjdaNWfO
+         BVnNUlExAKpG9ukgorqKtubYuXLr8g/Ln4lFKC1KgPkRo+KZiJwblGulcTrqHuDhYBQ/
+         Od88hKCcQTGznXZ/w0t7WvtStfJw/O61GEpO/UkJGv3HIUFxPYwzVSFio6zUwdtqXqQD
+         /4yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nx0zRs2XybSWr9usv14o4OKWxqlO9Cwb/2Nflg0vIEA=;
-        b=UXHle3yb2X1DQ3hB0NzMzb5jNho6g9dEpfL7Pubkzvnfx0wi6prsL12x3uVKDTE3+v
-         C5aTFQ0D/j6xbD8ji/sYfQBAejpE2QJ2tASI7G78mrV9akR9NwPPv71HSouQRO/+ym6q
-         2DiNmuKyAmK6dhhQh+LYyMOfnEsMGXJCB+vK5pQM0sV72k2X9nWfBDIcu09ncs2o9PY2
-         ofI4GW55JKYsswwb7Y68zQa0Mall03bXvHfeXb5pwj84ewaA/4DrC5hf20BPoZU1lZxM
-         Pqy6XJBJKyRW0MGc3//05P8PfjbRaLYlADuS6ICco86JydiaI64AkWe4bemOyR10rJ2Z
-         vgCA==
-X-Gm-Message-State: AOAM532+YiKoSP3sheljcyzFHwV6oxdc4RZzMIildxTejUXb12wWObHw
-        kN1Zp3jS/+3Tmp119ufSnA==
-X-Google-Smtp-Source: ABdhPJydTdsoxzeBlDx8mN+iotXH2h8TeFrMXe+MxmVwCgvNPKItUZv2B0vCZdoJhczN9GW++8fPYg==
-X-Received: by 2002:aca:3286:: with SMTP id y128mr3578775oiy.145.1618430280254;
-        Wed, 14 Apr 2021 12:58:00 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id j8sm138743otj.49.2021.04.14.12.57.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 12:57:59 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH] libperf: xyarray: Add bounds checks to xyarray__entry()
-Date:   Wed, 14 Apr 2021 14:57:58 -0500
-Message-Id: <20210414195758.4078803-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kk+4eaGKBse7wylWIAyXzwrFNlUikGMw6Cuy5HxWNJ4=;
+        b=SheQC8Jf1b2NnbUn5y7PEqmMmfR+fMWZYrtawmS9+z0I5nXc7I/nlCjad2ta+bVcWZ
+         WoYfLXrt36eagR67Or2w6qZjN+BWLw/asdBzHE0O4Ad6CrcvEH3LQ9dfHlz+wjCfknKB
+         3OvJKuufPGEh7ifBmwTteVFuiqtS8CWJE07koBe4KI9Rjy1c+T9USOCM4LlrtTCNxQPo
+         f21TwcBXBils7gDtJJzTHeHRJMKapivZo4rw2nKT6KeB9kgExA+Tuz6z7gTGBwtBjS0x
+         Ra2NgYoDQO8ijut+7UcwVkz1fRCHhACmysHC8kDVibi+DNru+Y1pxjivnHWrXkaVivTq
+         EiLA==
+X-Gm-Message-State: AOAM531NYgoDX2e6HnCcytNYMB3sJ9pFttFPSJHREKVHlKj442kMhFqQ
+        QH6uBpa6RAMAnUd9vh6mJy+FIL962ZvZgNa1gPM=
+X-Google-Smtp-Source: ABdhPJxMTpTOTPwXq7WTQUYopUBdDbXy2nRjKNVN+LX3MWIuhhGD4BKdSoSlL3G/YWvruxJ08+j+TYuLJi66gh0p/hc=
+X-Received: by 2002:a25:81ce:: with SMTP id n14mr52455964ybm.33.1618430375276;
+ Wed, 14 Apr 2021 12:59:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-2-ojeda@kernel.org>
+ <20210414194454.GV2531743@casper.infradead.org>
+In-Reply-To: <20210414194454.GV2531743@casper.infradead.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 14 Apr 2021 21:59:24 +0200
+Message-ID: <CANiq72k1w8__rCAZs1NbVvB=gXp_AX9=H-KYbdoLCcmYFEWc_w@mail.gmail.com>
+Subject: Re: [PATCH 01/13] kallsyms: Support "big" kernel symbols (2-byte lengths)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xyarray__entry() is missing any bounds checking yet often the x and y
-parameters come from external callers. Add bounds checks and an
-unchecked __xyarray__entry().
+On Wed, Apr 14, 2021 at 9:45 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> How about doing something a bit more utf-8-like?
+>
+>         len = data[0];
+>         if (len == 0)
+>                 error
+>         else if (len < 128)
+>                 return len;
+>         else if (len < 192)
+>                 return 128 + (len - 128) * 256 + data[1];
+> ... that takes you all the way out to 16511 bytes.  You probably don't
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- tools/lib/perf/include/internal/xyarray.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+That would save some space and allow us to keep the 0 as an error, yeah.
 
-diff --git a/tools/lib/perf/include/internal/xyarray.h b/tools/lib/perf/include/internal/xyarray.h
-index 51e35d6c8ec4..f0896c00b494 100644
---- a/tools/lib/perf/include/internal/xyarray.h
-+++ b/tools/lib/perf/include/internal/xyarray.h
-@@ -18,11 +18,18 @@ struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size);
- void xyarray__delete(struct xyarray *xy);
- void xyarray__reset(struct xyarray *xy);
- 
--static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
-+static inline void *__xyarray__entry(struct xyarray *xy, int x, int y)
- {
- 	return &xy->contents[x * xy->row_size + y * xy->entry_size];
- }
- 
-+static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
-+{
-+	if (x >= xy->max_x || y >= xy->max_y)
-+		return NULL;
-+	return __xyarray__entry(xy, x, y);
-+}
-+
- static inline int xyarray__max_y(struct xyarray *xy)
- {
- 	return xy->max_y;
--- 
-2.27.0
+> Alternatively, if the symbols are really this long, perhaps we should not
+> do string matches.  A sha-1 (... or whatever ...) hash of the function
+> name is 160 bits.  Expressed as hex digits, that's 40 characters.
+> Expressed in base-64, it's 27 characters.  We'd also want a "pretty"
+> name to go along with the hash, but that seems preferable to printing
+> out a mangled-with-types-and-who-knows-what name.
 
+I have seen symbols up to ~300, but I don't think we will ever go up
+to more than, say, 1024, unless we start to go crazy with generics,
+namespaces and what not.
+
+Hashing could be a nice solution if they really grow, yeah.
+
+> If you have C-d-b, you don't also need S-o-b.
+
+Hmm... `submitting-patches.rst` keeps the S-o-b in the example they
+give, is it outdated?
+
+Cheers,
+Miguel
