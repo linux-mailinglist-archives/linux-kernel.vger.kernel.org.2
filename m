@@ -2,298 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF6135EBE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9719735EBEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhDNEdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 00:33:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57461 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230195AbhDNEd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 00:33:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618374788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=oQDjPtD3WvuvXM4eQvNcLKFd7+TjM2tF15O9Rwlosks=;
-        b=A3iuBkNGddfHDQ5iCY6ch8U9myFdeRAVFuWB+KIbqHUAjVnFjNg0I+H4cuPemW036OtB8a
-        +EQC5xDQznoiXMd3SqS3FhRlnrJ1KBpt2UjA+VkWH1gCj/Jd3jgxof/3HPIgP3O91Yl7YQ
-        fjuASQXaissyXcD7L64F7P2gXbTTig0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-9G43fYr3MiiCOGlw_JMOfg-1; Wed, 14 Apr 2021 00:33:07 -0400
-X-MC-Unique: 9G43fYr3MiiCOGlw_JMOfg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E28401006C83;
-        Wed, 14 Apr 2021 04:33:05 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-112-67.rdu2.redhat.com [10.10.112.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D65B310023BE;
-        Wed, 14 Apr 2021 04:33:04 +0000 (UTC)
-From:   Nico Pache <npache@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     brendanhiggins@google.com, gregkh@linuxfoundation.org,
-        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
-        rafael@kernel.org, npache@redhat.com,
-        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org
-Subject: [PATCH 2/2] m68k: update configs to match the proper KUNIT syntax
-Date:   Wed, 14 Apr 2021 00:33:03 -0400
-Message-Id: <20210414043303.1072552-2-npache@redhat.com>
+        id S230471AbhDNEfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 00:35:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230464AbhDNEe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 00:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D62611F2;
+        Wed, 14 Apr 2021 04:34:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618374875;
+        bh=f3YnIORksW8+J+Vt2XfZOI06xZ+OvPLAHyfAqfnEuqg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=aBm4s8t93rr6Vrztky/y09f0VrJfOO3xQbllY35FMWnrjirAbWzE8oVgkacuSYHBJ
+         6d8+EywN0MnBtwZan4UZHqI3adC0gWkGW++ofVXzxjzvXWTeQCSPP332L22XkSIB4c
+         V7EgY9zB2w1qTqVXTPfedJN9E0RgLoqoTNgmTp5TWgQp4oJlnWsllDwiyrUtbBzelF
+         ORdLnNXbR8z08MB9Fejm+qG2f0u2i6lxiop2utINI+yM0o0hhvHH5aArWPlaMiwTek
+         RUTzS2ecNWreXMJ9PSekkOlfK2US5k2+jXbfmfIuefiDYVKQ0Cc5/Ol7hEqETESrZm
+         xU1o2dGZ4jCPA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5098E5C23F6; Tue, 13 Apr 2021 21:34:35 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 21:34:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: [PATCH v8 clocksource] Do not mark clocks unstable due to delays for
+ v5.13
+Message-ID: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional changes other than CONFIG name changes
-Signed-off-by: Nico Pache <npache@redhat.com>
----
- arch/m68k/configs/amiga_defconfig    | 6 +++---
- arch/m68k/configs/apollo_defconfig   | 6 +++---
- arch/m68k/configs/atari_defconfig    | 6 +++---
- arch/m68k/configs/bvme6000_defconfig | 6 +++---
- arch/m68k/configs/hp300_defconfig    | 6 +++---
- arch/m68k/configs/mac_defconfig      | 6 +++---
- arch/m68k/configs/multi_defconfig    | 6 +++---
- arch/m68k/configs/mvme147_defconfig  | 6 +++---
- arch/m68k/configs/mvme16x_defconfig  | 6 +++---
- arch/m68k/configs/q40_defconfig      | 6 +++---
- arch/m68k/configs/sun3_defconfig     | 6 +++---
- arch/m68k/configs/sun3x_defconfig    | 6 +++---
- 12 files changed, 36 insertions(+), 36 deletions(-)
+Hello!
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 786656090c50..77cc4ff7ae3a 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -655,11 +655,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 9bb12be4a38e..86913bdb265b 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -611,11 +611,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 413232626d9d..6b5c35e7be44 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -633,11 +633,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 819cc70b06d8..8fbd238d9d29 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -604,11 +604,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 8f8d5968713b..dbebbc079611 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -613,11 +613,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index bf15e6c1c939..3ccafd1db067 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -636,11 +636,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 5466d48fcd9d..572c95f1c8d7 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -722,11 +722,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 93c305918838..a92d6c4ab9ff 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -603,11 +603,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index cacd6c617f69..e1dbe9208a92 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -604,11 +604,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 3ae421cb24a4..957aa0277c3c 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -622,11 +622,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 6da97e28c48e..ebe23c0414fb 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -605,11 +605,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index f54481bb789a..c913aa7635d8 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -605,11 +605,11 @@ CONFIG_TEST_BLACKHOLE_DEV=m
- CONFIG_FIND_BIT_BENCHMARK=m
- CONFIG_TEST_FIRMWARE=m
- CONFIG_TEST_SYSCTL=m
--CONFIG_BITFIELD_KUNIT=m
-+CONFIG_BITFIELD_KUNIT_TEST=m
- CONFIG_RESOURCE_KUNIT_TEST=m
--CONFIG_LINEAR_RANGES_TEST=m
-+CONFIG_LINEAR_RANGES_KUNIT_TEST=m
- CONFIG_CMDLINE_KUNIT_TEST=m
--CONFIG_BITS_TEST=m
-+CONFIG_BITS_KUNIT_TEST=m
- CONFIG_TEST_UDELAY=m
- CONFIG_TEST_STATIC_KEYS=m
- CONFIG_TEST_KMOD=m
--- 
-2.30.2
+If there is a sufficient delay between reading the watchdog clock and the
+clock under test, the clock under test will be marked unstable through no
+fault of its own.  This series checks for this, doing limited retries
+to get a good set of clock reads.  If the clock is marked unstable
+and is marked as being per-CPU, cross-CPU synchronization is checked.
+This series also provides delay injection, which may be enabled via
+kernel boot parameters to test the checking for delays.
 
+Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
+vCPU preemption.
+
+1.	Provide module parameters to inject delays in watchdog.
+
+2.	Retry clock read if long delays detected.
+
+3.	Check per-CPU clock synchronization when marked unstable.
+
+4.	Provide a module parameter to fuzz per-CPU clock checking.
+
+5.	Limit number of CPUs checked for clock synchronization.
+
+Changes since v7, based on Thomas Gleixner feedback:
+
+o	Fix embarrassing git-format-patch operator error.
+
+o	Merge pairwise clock-desynchronization checking into the checking
+	of per-CPU clock synchronization when marked unstable.
+
+o	Do selective per-CPU checking rather than blindly checking all
+	CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
+	to control this behavior, with the value -1 choosing the old
+	check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
+
+o	Fix the clock-desynchronization checking to avoid a potential
+	use-after-free error for dynamically allocated clocksource
+	structures.
+
+o	Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
+	clocksource skew checking.
+
+o	Update commit logs and do code-style updates.
+
+Changes since v5:
+
+o	Rebased to v5.12-rc5.
+
+Changes since v4:
+
+o	Rebased to v5.12-rc1.
+
+Changes since v3:
+
+o	Rebased to v5.11.
+
+o	Apply Randy Dunlap feedback.
+
+Changes since v2:
+
+o	Rebased to v5.11-rc6.
+
+o	Updated Cc: list.
+
+Changes since v1:
+
+o	Applied feedback from Rik van Riel.
+
+o	Rebased to v5.11-rc3.
+
+o	Stripped "RFC" from the subject lines.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |   26 +++
+ b/Documentation/admin-guide/kernel-parameters.txt |   22 ++
+ b/arch/x86/kernel/kvmclock.c                      |    2 
+ b/arch/x86/kernel/tsc.c                           |    3 
+ b/include/linux/clocksource.h                     |    2 
+ b/kernel/time/clocksource.c                       |   27 +++
+ kernel/time/clocksource.c                         |  171 +++++++++++++++++++++-
+ 7 files changed, 243 insertions(+), 10 deletions(-)
