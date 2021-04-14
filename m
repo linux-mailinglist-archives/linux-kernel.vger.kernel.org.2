@@ -2,155 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E0735EFC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BD435EFDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350142AbhDNIfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:35:44 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16911 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350116AbhDNIfc (ORCPT
+        id S1350168AbhDNIig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350151AbhDNIiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:35:32 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FKwj851vkzkk2r;
-        Wed, 14 Apr 2021 16:33:16 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 14 Apr 2021 16:35:00 +0800
-Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
-To:     Ben Gardon <bgardon@google.com>
-References: <20200828081157.15748-1-zhukeqian1@huawei.com>
- <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
- <YGzxzsRlqouaJv6a@google.com>
- <CANgfPd8g3o2mJZi8rtR6jBNeYJTNWR0LTEcD2PeNLJk9JTz4CQ@mail.gmail.com>
- <ff6a2cbb-7b18-9528-4e13-8728966e8c84@huawei.com>
- <CANgfPd_h509o3kQGEQjuy2tzqnQ+toR4snJVAug=N2TULce3ag@mail.gmail.com>
-CC:     Sean Christopherson <seanjc@google.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        <wanghaibin.wang@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <f09aabf2-a94c-9176-098f-fee810b99d0c@huawei.com>
-Date:   Wed, 14 Apr 2021 16:35:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 14 Apr 2021 04:38:21 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85241C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:37:58 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id a2-20020a0568300082b029028d8118b91fso188613oto.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PiBo43OFru+bDu0uJ6yuLMmVjzq0Az7R5lB0fiAm//I=;
+        b=XTy+w1bUUAQFN9swD0nRJtOWVb602f1PClQTxXfmtBVhcW9gBfZBTW8fdG6scCucET
+         CgcpWCAWbeprQUSRVGX9E104UzoreACyFgyh32CjIvSxuQC1SR2fiBAnUFX1/AgpFfYr
+         Qhny1WJ50LIoboImNyPOyT1II5zFs7N8uicLZKgkxGktrbim4gQlbwqXDkg1xrGdMROC
+         lTaM1QkHXEEySKBsoTf/RWvqse0Zh7peEOtU+wIX47OVCveLe2XWFgS41SWhdnGSV3p2
+         bhRDqTApd70l5iQ1Vw2+wLYtPR22DJF1whtxHokp2YdnOKzRh22X5NMVWzYOYBYiarFp
+         +cIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PiBo43OFru+bDu0uJ6yuLMmVjzq0Az7R5lB0fiAm//I=;
+        b=kTJJhu95LU713VwUAvwE7VH5m6ezqULAO+P9iHZnQ6CvA+DH1/2UadrE8r9zeo36H4
+         vHcCi/yRrtJ3XPJnv3E6GHCGrjaxcIbC4c8EKgpk9qjMfaOHB32qpLG+LIxfs8bVIqWR
+         MwSUV6fINsQVmxor6fA+MNZIPetu8l727Y4IbMdvKHVoLUz8VRvDZoTexGxHao1ks4jy
+         23EQ0HpzoTypgbbVWVakuRKT60A7CVdJENpUkeIwmmYyzEJIXwFOy5b5RTVguGQwzYJB
+         GKh+/HRSdanoUS5GXeP/xpx3KC4soIQrdCjtuy0exPoRyYUwyFBTreb1czNFDSXOd08O
+         lhfA==
+X-Gm-Message-State: AOAM533WzFz5Ir2q4YzIwsJhRn9qo4zh+5ooXZZHjz07+z90Apv9tG/p
+        aYQulIIqJZ0tD3/9eNGvBEg=
+X-Google-Smtp-Source: ABdhPJxZ+8mZFMagXaVma1kvisjVi5zf3Pi2LTacRvW5vrRJ5qOpw9T4GVM2FSWCjobVJ2k2t2CpXQ==
+X-Received: by 2002:a05:6830:2117:: with SMTP id i23mr10450350otc.331.1618389477980;
+        Wed, 14 Apr 2021 01:37:57 -0700 (PDT)
+Received: from localhost.localdomain ([50.236.19.102])
+        by smtp.gmail.com with ESMTPSA id r19sm284616oie.58.2021.04.14.01.37.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Apr 2021 01:37:57 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     bsingharora@gmail.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Josh Snyder <joshs@netflix.com>
+Subject: [PATCH] delayacct: clear right task's flag after blkio completes
+Date:   Wed, 14 Apr 2021 16:37:20 +0800
+Message-Id: <20210414083720.24083-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd_h509o3kQGEQjuy2tzqnQ+toR4snJVAug=N2TULce3ag@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
+When I was implementing a latency analyze tool by using task->delays and
+other things, I found there's issue in delayacct. The issue is it should
+clear the target's flag instead of current's in delayacct_blkio_end().
 
-On 2021/4/14 0:43, Ben Gardon wrote:
-> On Tue, Apr 13, 2021 at 2:39 AM Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>
->>
->>
->> On 2021/4/13 1:19, Ben Gardon wrote:
->>> On Tue, Apr 6, 2021 at 4:42 PM Sean Christopherson <seanjc@google.com> wrote:
->>>>
->>>> +Ben
->>>>
->>>> On Tue, Apr 06, 2021, Keqian Zhu wrote:
->>>>> Hi Paolo,
->>>>>
->>>>> I plan to rework this patch and do full test. What do you think about this idea
->>>>> (enable dirty logging for huge pages lazily)?
->>>>
->>>> Ben, don't you also have something similar (or maybe the exact opposite?) in the
->>>> hopper?  This sounds very familiar, but I can't quite connect the dots that are
->>>> floating around my head...
->>>
->>> Sorry for the late response, I was out of office last week.
->> Never mind, Sean has told to me. :)
->>
->>>
->>> Yes, we have two relevant features I'd like to reconcile somehow:
->>> 1.) Large page shattering - Instead of clearing a large TDP mapping,
->>> flushing the TLBs, then replacing it with an empty TDP page table, go
->>> straight from the large mapping to a fully pre-populated table. This
->>> is slightly slower because the table needs to be pre-populated, but it
->>> saves many vCPU page faults.
->>> 2.) Eager page splitting - split all large mappings down to 4k when
->>> enabling dirty logging, using large page shattering. This makes
->>> enabling dirty logging much slower, but speeds up the first round (and
->>> later rounds) of gathering / clearing the dirty log and reduces the
->>> number of vCPU page faults. We've prefered to do this when enabling
->>> dirty logging because it's a little less perf-sensitive than the later
->>> passes where latency and convergence are critical.
->> OK, I see. I think the lock stuff is an important part, so one question is that
->> the shattering process is designed to be locked (i.e., protect mapping) or lock-less?
->>
->> If it's locked, vCPU thread may be blocked for a long time (For arm, there is a
->> mmu_lock per VM). If it's lock-less, how can we ensure the synchronization of
->> mapping?
-> 
-> The TDP MMU for x86 could do it under the MMU read lock, but the
-> legacy / shadow x86 MMU and other architectures would need the whole
-> MMU lock.
-> While we do increase the time required to address a large SPTE, we can
-> completely avoid the vCPU needing the MMU lock on an access to that
-> SPTE as the translation goes straight from a large, writable SPTE, to
-> a 4k spte with either the d bit cleared or write protected. If it's
-> write protected, the fault can (at least on x86) be resolved without
-> the MMU lock.
-That's sounds good! In terms of lock, x86 is better than arm64. For arm64,
-we must hold whole MMU lock both for split large page or change permission
-for 4K page.
+When I git blame delayacct, I found there're some similar issues we have
+fixed in delayacct_blkio_end().
+'Commit c96f5471ce7d ("delayacct: Account blkio completion on the correct task")'
+fixed the issue that it should account blkio completion on the target
+task instead of current.
+'Commit b512719f771a ("delayacct: fix crash in delayacct_blkio_end() after delayacct init failure")'
+fixed the issue that it should check target task's delays instead of
+current task'. It seems that delayacct_blkio_{begin, end} are error prone.
+So I introduce a new paratmeter - the target task 'p' into these helpers,
+after that change, the callsite will specifilly set the right task, which
+should make it less error prone.
 
-> 
-> When I'm able to put together a large page shattering series, I'll do
-> some performance analysis and see how it changes things, but that part
-OK.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Josh Snyder <joshs@netflix.com>
+---
+ include/linux/delayacct.h | 20 ++++++++++----------
+ mm/memory.c               |  8 ++++----
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-> is sort of orthogonal to this change. The more I think about it, the
-> better the init-all-set approach for large pages sounds, compared to
-> eager splitting. I'm definitely in support of this patch and am happy
-> to help review when you send out the v2 with TDP MMU support and such.
-Thanks a lot. :)
+diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
+index 2d3bdcccf5eb..21651f946751 100644
+--- a/include/linux/delayacct.h
++++ b/include/linux/delayacct.h
+@@ -82,16 +82,16 @@ static inline int delayacct_is_task_waiting_on_io(struct task_struct *p)
+ 		return 0;
+ }
+ 
+-static inline void delayacct_set_flag(int flag)
++static inline void delayacct_set_flag(struct task_struct *p, int flag)
+ {
+-	if (current->delays)
+-		current->delays->flags |= flag;
++	if (p->delays)
++		p->delays->flags |= flag;
+ }
+ 
+-static inline void delayacct_clear_flag(int flag)
++static inline void delayacct_clear_flag(struct task_struct *p, int flag)
+ {
+-	if (current->delays)
+-		current->delays->flags &= ~flag;
++	if (p->delays)
++		p->delays->flags &= ~flag;
+ }
+ 
+ static inline void delayacct_tsk_init(struct task_struct *tsk)
+@@ -114,7 +114,7 @@ static inline void delayacct_tsk_free(struct task_struct *tsk)
+ 
+ static inline void delayacct_blkio_start(void)
+ {
+-	delayacct_set_flag(DELAYACCT_PF_BLKIO);
++	delayacct_set_flag(current, DELAYACCT_PF_BLKIO);
+ 	if (current->delays)
+ 		__delayacct_blkio_start();
+ }
+@@ -123,7 +123,7 @@ static inline void delayacct_blkio_end(struct task_struct *p)
+ {
+ 	if (p->delays)
+ 		__delayacct_blkio_end(p);
+-	delayacct_clear_flag(DELAYACCT_PF_BLKIO);
++	delayacct_clear_flag(p, DELAYACCT_PF_BLKIO);
+ }
+ 
+ static inline int delayacct_add_tsk(struct taskstats *d,
+@@ -166,9 +166,9 @@ static inline void delayacct_thrashing_end(void)
+ }
+ 
+ #else
+-static inline void delayacct_set_flag(int flag)
++static inline void delayacct_set_flag(struct task_struct *p, int flag)
+ {}
+-static inline void delayacct_clear_flag(int flag)
++static inline void delayacct_clear_flag(struct task_struct *p, int flag)
+ {}
+ static inline void delayacct_init(void)
+ {}
+diff --git a/mm/memory.c b/mm/memory.c
+index 550405fc3b5e..a013d32a6611 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3296,7 +3296,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	}
+ 
+ 
+-	delayacct_set_flag(DELAYACCT_PF_SWAPIN);
++	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
+ 	page = lookup_swap_cache(entry, vma, vmf->address);
+ 	swapcache = page;
+ 
+@@ -3347,7 +3347,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 					vmf->address, &vmf->ptl);
+ 			if (likely(pte_same(*vmf->pte, vmf->orig_pte)))
+ 				ret = VM_FAULT_OOM;
+-			delayacct_clear_flag(DELAYACCT_PF_SWAPIN);
++			delayacct_clear_flag(current, DELAYACCT_PF_SWAPIN);
+ 			goto unlock;
+ 		}
+ 
+@@ -3361,13 +3361,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		 * owner processes (which may be unknown at hwpoison time)
+ 		 */
+ 		ret = VM_FAULT_HWPOISON;
+-		delayacct_clear_flag(DELAYACCT_PF_SWAPIN);
++		delayacct_clear_flag(current, DELAYACCT_PF_SWAPIN);
+ 		goto out_release;
+ 	}
+ 
+ 	locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
+ 
+-	delayacct_clear_flag(DELAYACCT_PF_SWAPIN);
++	delayacct_clear_flag(current, DELAYACCT_PF_SWAPIN);
+ 	if (!locked) {
+ 		ret |= VM_FAULT_RETRY;
+ 		goto out_release;
+-- 
+2.18.2
 
-> 
->>
->>>
->>> Large page shattering can happen in the NPT page fault handler or the
->>> thread enabling dirty logging / clearing the dirty log, so it's
->>> more-or-less orthogonal to this patch.
->>>
->>> Eager page splitting on the other hand takes the opposite approach to
->>> this patch, frontloading as much of the work to enable dirty logging
->>> as possible. Which approach is better is going to depend a lot on the
->>> guest workload, your live migration constraints, and how the
->>> user-space hypervisor makes use of KVM's growing number of dirty
->>> logging options. In our case, the time to migrate a VM is usually less
->>> of a concern than the performance degradation the guest experiences,
->>> so we want to do everything we can to minimize vCPU exits and exit
->>> latency.
->> Yes, make sense to me.
->>
->>>
->>> I think this is a reasonable change in principle if we're not write
->>> protecting 4k pages already, but it's hard to really validate all the
->>> performance implications. With this change we'd move pretty much all
->>> the work to the first pass of clearing the dirty log, which is
->>> probably an improvement since it's much more granular. The downside is
->> Yes, at least split large page lazily is better than current logic.
->>
->>> that we do more work when we'd really like to be converging the dirty
->>> set as opposed to earlier when we know all pages are dirty anyway.
->> I think the dirty collecting procedure is not affected, do I miss something?
-> 
-> Oh yeah, good point. Since the splitting of large SPTEs is happening
-> in the vCPU threads it wouldn't slow dirty log collection at all. We
-> would have to do slightly more work to write protect the large SPTEs
-> that weren't written to, but that's a relatively small amount of work.
-Indeed.
-
-
-BRs,
-Keqian
