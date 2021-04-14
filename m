@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F3D35FCA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B0735FCAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349971AbhDNU1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:27:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232940AbhDNU1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:27:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 332FA61090;
-        Wed, 14 Apr 2021 20:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618432012;
-        bh=+tL5RoPUY0L+AS8fwgMWwYIbyeP9WumdPTZtx6+OaVs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rjtCFBiQsFK8cHVxOA+QVwj1EgsfDzZ7acAImmZ+sGbRsSc88oAGYdb/lwRWtclJZ
-         ez4qZbimFgknQsiGSFtPYZ7QhXpCqwL6DjHlFjT9Oca1blAW71NitTL6wl+ewOdtr4
-         ZEoqgXxqUpBFnOyOXw1t63J+NVCWGFQo97alxMqhupVSe3AFDXkk8Dn3fTuDukRIy2
-         eTeBtVk+XBOKrL6zJJhNTrsf9Q2lWG0+3uiqPPBtyKA2SYv8uFReX8pI03Tw4Jqckm
-         9uitz38zFCR5SCMziDPpyVfjT0H5oGIVdR/wWVkjRuh9mb9l4Kd2ldpKZS0HbLcAv1
-         Z1XNfwWHNIv5A==
-Date:   Wed, 14 Apr 2021 15:26:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Huang Guobin <huangguobin4@huawei.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] PCI: Use DEFINE_SPINLOCK() for spinlock
-Message-ID: <20210414202650.GA2534339@bjorn-Precision-5520>
+        id S243578AbhDNUaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhDNUaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:30:03 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDB3C061574;
+        Wed, 14 Apr 2021 13:29:41 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id o10so23577775ybb.10;
+        Wed, 14 Apr 2021 13:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k5+3Zcx9SbPgbtideyuztneS+UphA/WZENqotqNybCo=;
+        b=Cne8wDCv8xZzPpyCejigmMiiK72EAolmihHlFf9BvT8vNS3TOvJxdileV9kq6EHAuw
+         VnHgybuoHRVZvpFWbGNpMMGIs1iez2Zx3L4MHfeJut6MubGEk2AyFRMdQkoDxgtANUEb
+         c12uupBh/lkfvh0tacVFI2Nws1flG0+KEp5i5OojS6ohzRCfuL4by3KgLvTO7tMx2IpW
+         FFRK75R+v0hvl2qfxOEiQrw4YXslAx9BhoZ90GB3JckIYPLtYzdEtLU7KkXJsUXahbW8
+         gAgG3VuRuPd/NXFGYIQDS69m6nW2CF4SQxg7Qgwj9mBkB0kCB/r7+RnHhLEYcMN5MN9a
+         xtLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k5+3Zcx9SbPgbtideyuztneS+UphA/WZENqotqNybCo=;
+        b=AbUa5KDIXOT7HPpK21LgkjpXlgd0kA89ktwZrzj0usxYig0e6Ka0JbJ5ITf9p27ohQ
+         CG5dGb9y20LOnF1F5+yPvXHBLHXxCOYmjPt86rG7sFztpfNkfhtC0q/yWI1Ml6tMbwRv
+         bzYRTSut6Cvevs6FeVApNkIWDM2RE0pK5JHqG/ARouyUk+hdBH4EXHvD7fwcvI7W6uX4
+         baWvE06jNO7J5oo3R/AfsN6t8ej6F9itTywh49YhqD1H1LaSwMEPtB3C/cJ36W6NkED8
+         dA9Ty/H7tHbQhv9cESZ4JnGSZjDGqXHEUfIGUIp4rlCVuhLHXIGeV9ysDxifccOtOmbZ
+         FIlw==
+X-Gm-Message-State: AOAM531XyCTEmR+DpOIusDBPGnICIBbCvfzrTwnBvumH5uZ+EO8A3JjA
+        2wztItPIfxO+hjwrmyRunfNtZ2ikhsMbj862i9VEkcXd3rQJrA==
+X-Google-Smtp-Source: ABdhPJx+qxrzB0uaHK8kY8gSFqvwpxqkk7bZ5pRKgT+ZXeNYlXZYhUhnTXTIBXR9Mh7x3yiMfLT8aahFZ7vqwW1PY+E=
+X-Received: by 2002:a25:cfc2:: with SMTP id f185mr36810340ybg.26.1618432180677;
+ Wed, 14 Apr 2021 13:29:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617710797-48903-1-git-send-email-huangguobin4@huawei.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414200953.GX2531743@casper.infradead.org>
+In-Reply-To: <20210414200953.GX2531743@casper.infradead.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 14 Apr 2021 22:29:29 +0200
+Message-ID: <CANiq72khBa2GcB6-PHM3A44Y90d6vzYAS=BVpk3nT4B6u+NVDw@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 08:06:37PM +0800, Huang Guobin wrote:
-> From: Guobin Huang <huangguobin4@huawei.com>
-> 
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
+On Wed, Apr 14, 2021 at 10:10 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+> >   - Manish Goregaokar implemented the fallible `Box`, `Arc`, and `Rc`
+> >     allocator APIs in Rust's `alloc` standard library for us.
+>
+> There's a philosophical point to be discussed here which you're skating
+> right over!  Should rust-in-the-linux-kernel provide the same memory
+> allocation APIs as the rust-standard-library, or should it provide a Rusty
+> API to the standard-linux-memory-allocation APIs?  You seem to be doing
+> both ... there was a wrapper around alloc_pages() in the Binder patches,
+> and then you talk about Box, Arc and Rc here.
 
-Applied to pci/hotplug for v5.13, thanks!
+Please see my reply to Linus. The Rust standard library team is doing
+work on allocators, fallible allocations, etc., but that is very much
+a WIP. We hope that our usage and needs inform them in their design.
 
-> ---
->  drivers/pci/hotplug/cpqphp_nvram.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/cpqphp_nvram.c b/drivers/pci/hotplug/cpqphp_nvram.c
-> index 00cd2b43364f..7a65d427ac11 100644
-> --- a/drivers/pci/hotplug/cpqphp_nvram.c
-> +++ b/drivers/pci/hotplug/cpqphp_nvram.c
-> @@ -80,7 +80,7 @@ static u8 evbuffer[1024];
->  static void __iomem *compaq_int15_entry_point;
->  
->  /* lock for ordering int15_bios_call() */
-> -static spinlock_t int15_lock;
-> +static DEFINE_SPINLOCK(int15_lock);
->  
->  
->  /* This is a series of function that deals with
-> @@ -415,9 +415,6 @@ void compaq_nvram_init(void __iomem *rom_start)
->  		compaq_int15_entry_point = (rom_start + ROM_INT15_PHY_ADDR - ROM_PHY_ADDR);
->  
->  	dbg("int15 entry  = %p\n", compaq_int15_entry_point);
-> -
-> -	/* initialize our int15 lock */
-> -	spin_lock_init(&int15_lock);
->  }
->  
->  
-> 
+Manish Goregaokar implemented the `try_reserve` feature since he knew
+we wanted to have fallible allocations etc. (I was not really involved
+in that, perhaps somebody else can comment); but we will have to
+replace `alloc` anyway in the near feature, and we wanted to give
+Manish credit for advancing the state of the art there nevertheless.
+
+> Maybe there's some details about when one can use one kind of API and
+> when to use another.  But I fear that we'll have Rust code at interrupt
+> level trying to use allocators which assume that they can sleep, and
+> things will go badly wrong.
+
+Definitely. In fact, we want to have all public functions exposed by
+Rust infrastructure tagged with the context they can work in, etc.
+Ideally, we could propose a language feature like "colored `unsafe`"
+so that one can actually inform the compiler that a function is only
+safe in some contexts, e.g. `unsafe(interrupt)`. But language features
+are a moonshot, for the moment we want to go with the annotation in
+the doc-comment, like we do with the `Safety` preconditions and type
+invariants.
+
+Cheers,
+Miguel
