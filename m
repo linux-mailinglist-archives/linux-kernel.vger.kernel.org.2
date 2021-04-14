@@ -2,76 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A0D35F2B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E75335F2B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhDNLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:45:45 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41705 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233595AbhDNLpc (ORCPT
+        id S1348930AbhDNLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233595AbhDNLra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:45:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UVY-JZg_1618400680;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UVY-JZg_1618400680)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 19:44:40 +0800
-Subject: Re: [PATCH] ocfs2/dlm: remove unused function
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, mark@fasheh.com,
-        akpm <akpm@linux-foundation.org>
-Cc:     jlbec@evilplan.org, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-References: <1618382761-5784-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <d5e3ba19-abac-891d-9e88-6d3a0cef931b@linux.alibaba.com>
-Date:   Wed, 14 Apr 2021 19:44:40 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        Wed, 14 Apr 2021 07:47:30 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5110C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:47:09 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id r13so6350762pjf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FgIM2dWQlt+cv4L943XfP34jj5PrH6rrYLkFCRTYTi0=;
+        b=DB/1wQ31t1X7d1BmTWafb5soGIcAZW7EeQlYN7iUWatdl2tifjavlZgyOiqRkS59LQ
+         9z92O3u9GWzEgS4Wit0Ghnk8yqz4F97IHGylY6U9HTKOFwMSVs/0GQpsxmtEtz0xBzHJ
+         h7SyfSzOqzmN/FMc0xiyQUO55Yezq127oJPyo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FgIM2dWQlt+cv4L943XfP34jj5PrH6rrYLkFCRTYTi0=;
+        b=HErUXAUgEILkT/AL3wL76dhKpYVURwQtdCuOrqW1xG3CrjMOg8RusAq/6W/JlFmyHU
+         m6btaZM+TFjPWcvljvCowUfsKPx+E7MQZzZiOmJo1L0Cajvy5slSdYPeX0sDTPpbCNJh
+         7hHaC5VsWS6bfohexHceHZNBJA5UjStVEJTayqrG0Csg+h6Bdrou0fTA2KkZBoh7Q2ZB
+         HlnfKK464ySB7t0l/kIUN8Co44TQu+Fg2KcYtpKRPcUyRC00SFEowLxZZ8LfNgNs6p3j
+         hBnUkL6JBZ8+Ahr52woVe0QsA8G3ZJQCSKHG/IbjkyDZf3tJxwKb7vJ3LYC7T+gN+YRg
+         0lOA==
+X-Gm-Message-State: AOAM533Wl5LovWf4gJAjfhxkTCJilczbUsrJ4wqnf1Y2s3RRStLG7VD8
+        K04QwOBP/B23KbPihRj5qF0zWQMrWG3le03K9kQaJA==
+X-Google-Smtp-Source: ABdhPJxW8IoCR6BzsDM2zF8Qy/ZrQogXAnxRIFLoahMm6T2xWPDsJSN0tgrwBbEDlHGaIuGkJdvF008i3VshEqdHl7w=
+X-Received: by 2002:a17:90b:3b8c:: with SMTP id pc12mr3252713pjb.208.1618400828960;
+ Wed, 14 Apr 2021 04:47:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1618382761-5784-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210329094532.4165147-1-liushixin2@huawei.com>
+In-Reply-To: <20210329094532.4165147-1-liushixin2@huawei.com>
+From:   Sumit Saxena <sumit.saxena@broadcom.com>
+Date:   Wed, 14 Apr 2021 17:16:43 +0530
+Message-ID: <CAL2rwxoJTfLrD_a1sf+gkT1xdBrwOZj3seYq7W6=ETdb3MBJVw@mail.gmail.com>
+Subject: Re: [PATCH -next] scsi: megaraid_sas: Use DEFINE_SPINLOCK() for spinlock
+To:     Shixin Liu <liushixin2@huawei.com>
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000008925df05bfed4e8b"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--0000000000008925df05bfed4e8b
+Content-Type: text/plain; charset="UTF-8"
 
-
-On 4/14/21 2:46 PM, Jiapeng Chong wrote:
-> Fix the following clang warning:
-> 
-> fs/ocfs2/dlm/dlmrecovery.c:129:20: warning: unused function
-> 'dlm_reset_recovery' [-Wunused-function].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-
-Seems after commit ded2cf71419b ("ocfs2: dlm: fix recovery hung"),
-dlm_reset_recovery() no longer has any user.
-
-Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-
+On Mon, Mar 29, 2021 at 2:45 PM Shixin Liu <liushixin2@huawei.com> wrote:
+>
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+Acked-by: Sumit Saxena <sumit.saxena@broadcom.com>
+>
+> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
 > ---
->  fs/ocfs2/dlm/dlmrecovery.c | 7 -------
->  1 file changed, 7 deletions(-)
-> 
-> diff --git a/fs/ocfs2/dlm/dlmrecovery.c b/fs/ocfs2/dlm/dlmrecovery.c
-> index 4b566e8..afc5173 100644
-> --- a/fs/ocfs2/dlm/dlmrecovery.c
-> +++ b/fs/ocfs2/dlm/dlmrecovery.c
-> @@ -126,13 +126,6 @@ static inline void __dlm_reset_recovery(struct dlm_ctxt *dlm)
->  	dlm_set_reco_master(dlm, O2NM_INVALID_NODE_NUM);
->  }
->  
-> -static inline void dlm_reset_recovery(struct dlm_ctxt *dlm)
-> -{
-> -	spin_lock(&dlm->spinlock);
-> -	__dlm_reset_recovery(dlm);
-> -	spin_unlock(&dlm->spinlock);
-> -}
+>  drivers/scsi/megaraid/megaraid_sas_base.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+> index 4d4e9dbe5193..8ed347eebf07 100644
+> --- a/drivers/scsi/megaraid/megaraid_sas_base.c
+> +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+> @@ -213,7 +213,7 @@ static bool support_nvme_encapsulation;
+>  static bool support_pci_lane_margining;
+>
+>  /* define lock for aen poll */
+> -static spinlock_t poll_aen_lock;
+> +static DEFINE_SPINLOCK(poll_aen_lock);
+>
+>  extern struct dentry *megasas_debugfs_root;
+>  extern int megasas_blk_mq_poll(struct Scsi_Host *shost, unsigned int queue_num);
+> @@ -8934,8 +8934,6 @@ static int __init megasas_init(void)
+>          */
+>         pr_info("megasas: %s\n", MEGASAS_VERSION);
+>
+> -       spin_lock_init(&poll_aen_lock);
 > -
->  /* Worker function used during recovery. */
->  void dlm_dispatch_work(struct work_struct *work)
->  {
-> 
+>         support_poll_for_event = 2;
+>         support_device_change = 1;
+>         support_nvme_encapsulation = true;
+> --
+> 2.25.1
+>
+
+--0000000000008925df05bfed4e8b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+GmgWG68YahkDuVSTTt2beZdyMeDwq/KifJFo18EkhcL3e7rmDAh8SniUI/0o3HX6hrgdmUI1wSdz
+uIVL/m6Ok9mIl2U5kvguitOSC0bVaQPfNzlj+7PCKBECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZc3VtaXQuc2F4ZW5hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUNz+JSIXEXl2uQ4Utcnx7FnFi
+hhowDQYJKoZIhvcNAQELBQADggEBAL0HLbxgPSW4BFbbIMN3A/ifBg4Lzaph8ARJOnZpGQivo9jG
+kQOd95knQi9Lm95JlBAJZCqXXj7QS+dnE71tsFeHWcHNNxHrTSwn4Xi5EqaRjLC6g4IEPyZHWDrD
+zzJidgfwQvfZONkf4IXnnrIEFle+26/gPs2kOjCeLMo6XGkNC4HNla1ol1htToQaNN8974pCqwIC
+rTXcWqD03VkqSOo+oPP/NAgFAZVfpeuBoK2Xv8zYlrF49Q4hxgFpWhaiDsZUSdWIS7vg1ak1n+6L
+3aHRY/lheSkOn/uJWXsqsTDp613hVtOTEDsHSQK32yTGr8jN/oRQgJASuUqQFdD4VzAxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwoQTpBmhDxj9JoN1ow
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBrKq7zGKQ1r/bnJaat73yH9rHyBVehl
+6x7VzGlMpRYZMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDQx
+NDExNDcwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQCzEaVtiqig2sg16jbBf+l/WDUAK5cgpz9AwtEUIZS49crCoTYU
+xgOkWeVvC+vkVkP6lU208+9+Onp+QASa5+/de+bCug8xNedFsKcfFSrHl9Fq82Iq7t7OAzd1Bb3c
+9vIDwmd+3o0Vurqh6003MiXnHOKKIHQf2WhoiR4tR13I0/PNXpQwqj2Pa81NAcUjMpDR9pJ/SceR
+UEePdzI7YKu+FlxfJksxS2ujiYcXhnBqCTz1Os7BAYfoJ9tEpOPRyME9l3kJKUvkS9oXW490fTOz
+WREN43Ji0KKAM3siMPcVnJXeIQEnKJqrUrL1bdKEdQepb9Kefh2ozBoc7Ce6kvIC
+--0000000000008925df05bfed4e8b--
