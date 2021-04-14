@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A6835F173
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808FC35F17B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhDNKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:24:24 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:57078 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbhDNKYB (ORCPT
+        id S233678AbhDNK2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233585AbhDNK2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:24:01 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3F73C20B8001;
-        Wed, 14 Apr 2021 03:23:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3F73C20B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618395819;
-        bh=2n6Wi06DNnYRuQsmoByjue4YZC4V5R1VyHGjGFvafeY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=AiwclcPJYgn9yz4/zHbxTLy+p3zOAnrKUgTSJPCmdzwMYqpe+R/E5IMD0FBPnOpDF
-         J3WOuA3LVCdN/WWWuzJ1PnpK0DYtXYsmnQFMwRD0jWovmfqs7ilFA0xi2w4ggemzmt
-         zqxVwuYj2jZ7mmc4LDmEVgTag0Kfphwzo1MFT6QA=
-Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
- checks
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210409120859.GA51636@C02TD0UTHF1T.local>
- <20210409213741.kqmwyajoppuqrkge@treble>
- <20210412173617.GE5379@sirena.org.uk>
- <d92ec07e-81e1-efb8-b417-d1d8a211ef7f@linux.microsoft.com>
- <20210413110255.GB5586@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <714e748c-bb79-aa9a-abb5-cf5e677e847b@linux.microsoft.com>
-Date:   Wed, 14 Apr 2021 05:23:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 14 Apr 2021 06:28:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0412AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:27:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w8so9959698pfn.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YdDtxwykRriWWCupiB0//ekNGDTrs+ZxjP/xTLB7KZk=;
+        b=jLidrOjv0ctn8uJX4dLnhYcUS5tWY1Jk/06/1aA/a0juHiVQ7uIneJDh0cKeCB/qUz
+         3ygBiIHhdUmUxCrDQYzYTHCT4vnbl688CkjzJuuyMbQMs+14YY9MuvY/9+3yubO1tHY6
+         zdAydx6Eb3X/fuZt63JGyTE80BoOaJx3SwcruLISRMqAWlDSgQAxO6nluPC8HV0XKnJZ
+         YkeAFYEbBwu4+Rm2cYUdyJ6MsbQ8kjxdz1v7dtEOJWx2SlBkFzYaLaDdabt7sPR+ouFe
+         mO7QsgFhjrLrmV4lV0dpyuSOSzyRps8fpHZjZ0yweg3FH0gPnLN8liDo5pot3otvXpX3
+         Zz+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YdDtxwykRriWWCupiB0//ekNGDTrs+ZxjP/xTLB7KZk=;
+        b=LpISgmK47ngyxYUobJ8y8RYxxe8YefuN87KzScZnCCXyP/0xSoYeKgBsymQUi17Rd/
+         tcv6lOEjHQRoB/dRfHwjmN3Q23W3s5IPLDYvccKo+jSNIjq+sG6gHxSBRT0Qkx3S/04w
+         o/tovsCpzQYEzJw4Rwub1DY9k8e2iCdwA03wiTzf+KFP4zikQIqcXa0IIwMxBS/PKC8E
+         9tW0J8SRaZNWnwa3VB7SrANuY7RC/V5eP+W4LokfYN5QhqwubAXPqfJqsdLo0Huqy88n
+         QzP1oEbZ8LywslohgQ3O/9jGpinATADx+ULi2UfMAVeV0YZhCm4XjjW/BOZgkp45zopd
+         l9+w==
+X-Gm-Message-State: AOAM53179JwPq/AXPnQhCOUPY4caSE7yYTA5jQpv3Wn8V0JvLQKnz5IJ
+        YcdVGVvj2uvSLVCAj3YKstcBIgMZG1XITg==
+X-Google-Smtp-Source: ABdhPJxnBtm3wLL6EmGJPDTp26x+ueKb5gXI5A2qO1T/PSmlqmnJQpkJjZboGL5cvrliKjflTfNjFQ==
+X-Received: by 2002:a63:8c4a:: with SMTP id q10mr25838756pgn.106.1618396060346;
+        Wed, 14 Apr 2021 03:27:40 -0700 (PDT)
+Received: from vostro (173-228-88-28.dsl.dynamic.fusionbroadband.com. [173.228.88.28])
+        by smtp.gmail.com with ESMTPSA id z29sm1420521pga.52.2021.04.14.03.27.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 03:27:39 -0700 (PDT)
+Sender: Nikitas Angelinas <nikitasangelinas@gmail.com>
+Date:   Wed, 14 Apr 2021 03:26:21 -0700
+From:   Nikitas Angelinas <nikitas.angelinas@gmail.com>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/mutex: initialize osq lock in
+ __MUTEX_INITIALIZER()
+Message-ID: <YHbDTX9XNQYZ0UZl@vostro>
+References: <YGF+hDytO8r9Iv2o@vostro>
+ <20210329145055.GC4203@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20210413110255.GB5586@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329145055.GC4203@willie-the-truck>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/13/21 6:02 AM, Mark Brown wrote:
-> On Mon, Apr 12, 2021 at 02:55:35PM -0500, Madhavan T. Venkataraman wrote:
+On Mon, Mar 29, 2021 at 03:50:56PM +0100, Will Deacon wrote:
+> On Mon, Mar 29, 2021 at 12:15:16AM -0700, Nikitas Angelinas wrote:
+> > Since __MUTEX_INITIALIZER() is used on memory that is initialized to 0
+> > anyway this change should not have an effect, but it seems better to
+> > initialize osq explicitly for completeness, as done in other macros and
+> > functions that initialize mutex and rwsem.
+> > 
+> > Signed-off-by: Nikitas Angelinas <nikitas.angelinas@gmail.com>
+> > ---
+> >  include/linux/mutex.h | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> > index 515cff7..bff47f8 100644
+> > --- a/include/linux/mutex.h
+> > +++ b/include/linux/mutex.h
+> > @@ -129,10 +129,18 @@ do {									\
+> >  # define __DEP_MAP_MUTEX_INITIALIZER(lockname)
+> >  #endif
+> >  
+> > +#ifdef CONFIG_MUTEX_SPIN_ON_OWNER
+> > +# define __OSQ_MUTEX_INITIALIZER(lockname)			\
+> > +		, .osq = OSQ_LOCK_UNLOCKED
+> > +#else
+> > +# define __OSQ_MUTEX_INITIALIZER(lockname)
+> > +#endif
+> > +
+> >  #define __MUTEX_INITIALIZER(lockname) \
+> >  		{ .owner = ATOMIC_LONG_INIT(0) \
+> >  		, .wait_lock = __SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
+> >  		, .wait_list = LIST_HEAD_INIT(lockname.wait_list) \
+> > +		__OSQ_MUTEX_INITIALIZER(lockname) \
 > 
->>
->> OK. Just so I am clear on the whole picture, let me state my understanding so far.
->> Correct me if I am wrong.
+> You don't need the lockname parameter for this macro.
 > 
->> 1. We are hoping that we can convert a significant number of SYM_CODE functions to
->>    SYM_FUNC functions by providing them with a proper FP prolog and epilog so that
->>    we can get objtool coverage for them. These don't need any blacklisting.
-> 
-> I wouldn't expect to be converting lots of SYM_CODE to SYM_FUNC.  I'd
-> expect the overwhelming majority of SYM_CODE to be SYM_CODE because it's
-> required to be non standard due to some external interface - things like
-> the exception vectors, ftrace, and stuff around suspend/hibernate.  A
-> quick grep seems to confirm this.
-> 
+> Will
 
-OK. Fair enough.
+Hi,
 
->> 3. We are going to assume that the reliable unwinder is only for livepatch purposes
->>    and will only be invoked on a task that is not currently running. The task either
-> 
-> The reliable unwinder can also be invoked on itself.
-> 
+Please excuse this late reply.
 
-I have not called out the self-directed case because I am assuming that the reliable unwinder
-is only used for livepatch. So, AFAICT, this is applicable to the task that performs the
-livepatch operation itself. In this case, there should be no unreliable functions on the
-self-directed stack trace (otherwise, livepatching would always fail).
+I included the unnecessary lockname parameter as the counterpart macro in
+__RWSEM_INITIALIZER(), __RWSEM_OPT_INIT() and also __RWSEM_COUNT_INIT() do the
+same thing, thinking that was done on purpose, e.g. so that all macros used take
+a parameter in order to satisfy some dubious notion of symmetry; I realize this
+is not a good reason, of course.
 
->> 4. So, the only functions that will need blacklisting are the remaining SYM_CODE functions
->>    that might give up the CPU voluntarily. At this point, I am not even sure how
->>    many of these will exist. One hopes that all of these would have ended up as
->>    SYM_FUNC functions in (1).
-> 
-> There's stuff like ret_from_fork there.
-> 
+I'll send a v2, possibly in a series with changes to the aforementioned bits in
+rwsem, fwiw.
 
-OK. There would be a few functions that fit this category. I agree.
 
->> I suggest we do (3) first. Then, review the assembly functions to do (1). Then, review the
->> remaining ones to see which ones must be blacklisted, if any.
-> 
-> I'm not clear what the concrete steps you're planning to do first are
-> there - your 3 seems like a statement of assumptions.  For flagging
-> functions I do think it'd be safer to default to assuming that all
-> SYM_CODE functions can't be unwound reliably rather than only explicitly
-> listing ones that cause problems.
-> 
-
-They are not assumptions. They are true statements. But I probably did not do a good
-job of explaining. But Josh sent out a patch that updates the documentation that
-explains what I said a lot better.
-
-In any case, I have absolutely no problems in implementing your section idea. I will
-make an attempt to do that in version 3 of my patch series.
-
-Stay tuned.
-
-And, thanks for all the input. It is very helpful.
-
-Madhavan
+Cheers,
+Nikitas
