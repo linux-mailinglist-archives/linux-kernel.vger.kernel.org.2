@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22B135FB37
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1943835FB38
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 20:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353175AbhDNS4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 14:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbhDNS4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:56:10 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55839C061574;
-        Wed, 14 Apr 2021 11:55:47 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id h3so9673151qve.13;
-        Wed, 14 Apr 2021 11:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=OeVselHKPVLOZzCiq1K08wuQKbTOdMwo4rrb+WFfGok=;
-        b=lFCnI3hp3u4Er12GAIRoPmvUADqyOluplFCmLhhcA1pMyCvN8uXDqqBRLRFOlidy7C
-         CJZruXSU4BLU9OqaNUUpSFZurnqPU5hb/H695wM4wPWxe6MkllA7tlVmkz7gromzUMb/
-         C728BhxLQdAD5I8vsVv+axhY1MfsjVfTftkTsXav+T7xzEUJQN6snq7WfjJRRMQbfXJD
-         2FVfhEnrjQ04jyjJIWRYKKG3gACrKqjrxM3USPSAg3wU/8fYMnVJIeynLmhHqs8q+zO4
-         Iev9h6wXtUPn+B2m5lnubTvZfyC5EoyqniLu2lldL0eMiy0PLD2W98+MxtI9nAc8LH9Z
-         1x6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=OeVselHKPVLOZzCiq1K08wuQKbTOdMwo4rrb+WFfGok=;
-        b=MgnIdoZuGBwSBuOU1+NuBjRU74EXrxoVdyUA0Fio9zmH4XzUI3Z1rWgUqm9eZkkm8Y
-         t7ZcTurgMa6+2umTG5KPIiqjC5vbajoIrNng4qnSo0KM4qesdR+MeiqyHlQcUuuJdKyB
-         CVUMmvKxrPVmsED9mvzx1A3uDWRbdSYAGTDJBT8X9tJ2ICJvtUNqRHEl8nD6BX+/mIAe
-         6liqVuwt9hf5Z2p7QWMwiz47y2zGlSy6m65D4HjPHhU94hd21wt+L/VzxxlBDkKxxCjC
-         fb8e/GheTgAk7Y5erzCYiLcvfwqHJ0sLGHoRlmsNmfUSM7kNEtwWRpFIG63jlkuriajq
-         d7nQ==
-X-Gm-Message-State: AOAM533WoB74xg9lqmySSjUrmEydQfZsA493hAnx4jHrjkiwAWN7BT9i
-        iwI19523ESitanXSlKoOkpU=
-X-Google-Smtp-Source: ABdhPJxPjdO48mAHhc0Yfeh7RAPvqjOKezklCtvAm9WAh/pkkNf2x4r2npZxG766uML6g4JZzR6N+A==
-X-Received: by 2002:a05:6214:f27:: with SMTP id iw7mr40641329qvb.50.1618426546599;
-        Wed, 14 Apr 2021 11:55:46 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:66e0:478a:8197:7396? ([2001:1284:f016:a037:66e0:478a:8197:7396])
-        by smtp.gmail.com with ESMTPSA id x82sm259362qkb.0.2021.04.14.11.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:55:46 -0700 (PDT)
-Message-ID: <fae832b2555f1d971b45fcdfe34952aa03a42e4d.camel@gmail.com>
-Subject: Re: [PATCH] staging: media: atomisp: pci: Format multi-line
- comments according to coding-style in file atomisp_cmd.c
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Wed, 14 Apr 2021 15:55:42 -0300
-In-Reply-To: <20210414183325.GD3@paasikivi.fi.intel.com>
-References: <20210414182755.GA2799@focaruja>
-         <20210414183325.GD3@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        id S1353183AbhDNS5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 14:57:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233309AbhDNS5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:57:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7613608FC;
+        Wed, 14 Apr 2021 18:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618426613;
+        bh=p3tLoI1W999gvkPwHx3SIXj0hp7y62K3IG6+a/DlgTg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sIrwRXqtQKqDOgVLarJP5tde7bi9xdvtgd0Vnm+O16WlBakzQhsmopxiIiEArN7gL
+         lv0UdAeWoVWwwaw8hEDvJxt+8a3j0fijCwtqzcRtaJz3cHrkVONx2qTT2lZoeL2bQ6
+         VwQaCSXI4T1lqFfdn4LjJ+yujMedwyifWsN0zr2g=
+Date:   Wed, 14 Apr 2021 20:56:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
+Message-ID: <YHc68v7keeITnA3K@kroah.com>
+References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+ <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+ <YHcnckePpKDujCU+@kroah.com>
+ <YHcqxMLR44laX2PZ@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHcqxMLR44laX2PZ@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qua, 2021-04-14 às 21:33 +0300, Sakari Ailus escreveu:
-> Hi Aline,
-> 
-> Thanks for the patch.
-> 
-> On Wed, Apr 14, 2021 at 03:27:55PM -0300, Aline Santana Cordeiro
-> wrote:
-> > Format multi-line comments according to the coding-style.
-> > Issue detected by checkpatch.pl.
+On Wed, Apr 14, 2021 at 08:47:48PM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 14, 2021 at 07:33:38PM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 14, 2021 at 08:12:46PM +0300, Alexander Shishkin wrote:
+> > > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > 
+> > > It appears that uuid_t use in STM code abuses UUID API.
 > > 
-> > Signed-off-by: Aline Santana Cordeiro <
-> > alinesantanacordeiro@gmail.com>
-> > ---
-> >  drivers/staging/media/atomisp/pci/atomisp_cmd.c | 109
-> > ++++++++++++++----------
-> >  1 file changed, 65 insertions(+), 44 deletions(-)
+> > How is it being abused?
+> 
+> We are using it against the buffer that is u8, and neither uuid_t nor guid_t.
+
+And how should it be used?
+
+> > Moreover,
+> > > this type is only useful when we parse user input. Due to above
+> > > replace uuid_t with u8 uuid[16] and use uuid_t only when parse
+> > > user input.
+> > > 
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > > ---
+> > >  drivers/hwtracing/stm/p_sys-t.c | 16 ++++++++++------
+> > >  1 file changed, 10 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
+> > > index 360b5c03df95..04d13b3785d3 100644
+> > > --- a/drivers/hwtracing/stm/p_sys-t.c
+> > > +++ b/drivers/hwtracing/stm/p_sys-t.c
+> > > @@ -76,7 +76,7 @@ enum sys_t_message_string_subtype {
+> > >  				 MIPI_SYST_SEVERITY(MAX))
+> > >  
+> > >  struct sys_t_policy_node {
+> > > -	uuid_t		uuid;
+> > > +	u8		uuid[UUID_SIZE];
 > > 
-> > diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > index 592ea99..6113785 100644
-> > --- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > +++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
-> > @@ -67,7 +67,8 @@
-> >   * At 15fps this means 133ms. We set the timeout a bit longer.
-> >   * Each flash driver is supposed to set its own timeout, but
-> >   * just in case someone else changed the timeout, we set it
-> > - * here to make sure we don't damage the flash hardware. */
-> > + * here to make sure we don't damage the flash hardware.
-> > + */
-> >  #define FLASH_TIMEOUT 800 /* ms */
-> >  
-> >  union host {
-> > @@ -562,7 +563,8 @@ irqreturn_t atomisp_isr(int irq, void *dev)
-> >                          * and driver needs to keep old
-> > sequence_temp value.
-> >                          * NOTE: There is assumption here that ISP
-> > will not
-> >                          * start processing next frame from sensor
-> > before old
-> > -                        * one is completely done. */
-> > +                        * one is completely done.
-> > +                        */
-> >                         if (atomic_read(&asd->sequence) ==
-> > atomic_read(
-> >                                 &asd->sequence_temp))
-> >                                 atomic_set(&asd->sequence_temp,
-> > @@ -1247,7 +1249,8 @@ void atomisp_buf_done(struct
-> > atomisp_sub_device *asd, int error,
-> >  
-> >         if (IS_ISP2401) {
-> >                 /* If there are no buffers queued then
+> > This feels wrong, what is wrong with the uuid_t type usage here?
 > 
-> This should begin with:
+> Nothing, just will require additional export_uuid() / import_uuid() call.
+
+Isn't that the "correct way" here?
+
+> > >  	bool		do_len;
+> > >  	unsigned long	ts_interval;
+> > >  	unsigned long	clocksync_interval;
+> > > @@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
+> > >  {
+> > >  	struct sys_t_policy_node *pn = priv;
+> > >  
+> > > -	generate_random_uuid(pn->uuid.b);
+> > 
+> > Ok, that's not good, but that looks to be a flaw in the
+> > generate_random_uuid() api, not this driver implementation.
+> > 
+> > I don't understand why this change is needed?
 > 
->                 /*
->                  *
-> 
-> And the same for the rest. Apart from this the patch seems fine.
-> 
-Hi Sakari,
+> Using raw buffer APIs against uuid_t / guid_t.
 
-I'm going to send a v2 correcting all the multi-line comments that are
-not beginning like this.
+So you want to do that, or you do not want to do that?  Totally
+confused,
 
-Besides, there are single line comments with different styles, a few
-like this:
-
-case 1:				/* comment */
-
-and the other like this:
-				/*
-case2:				 * comment
- 				 */
-
-Should I standardize these ones to the first case?
-
-Thank you for yout attention,
-Aline
-
+greg k-h
