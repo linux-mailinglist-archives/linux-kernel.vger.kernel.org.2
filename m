@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2617035EFEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F2135EFFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350337AbhDNIko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
+        id S1350312AbhDNIkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350211AbhDNIjN (ORCPT
+        with ESMTP id S1350232AbhDNIj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:39:13 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02511C061345
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:23 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so12128617pjh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:22 -0700 (PDT)
+        Wed, 14 Apr 2021 04:39:29 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AC5C06134B
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id t22so13934165pgu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=plmO0AdMl820K1E1EewPUIFFIYm0UYQ8GWMNCMfiNMs=;
-        b=Y3NqiCd5rr7+LyVYEGOOOX4NYDJW2EOYrkF/TrtNRNqln3ctoJGKO0I0T0L0ApmQ3K
-         N06EZWoCDwWvTUJ2L4ngADfH2WBuwxd73m6NYcBOtrsQQI3F9MRZMHIb1Y80f3kIAKNC
-         j1j23aHDf+PkiUmZYXCsRhdPo49p+brePolV8=
+        bh=NtcyLr97vt7tBtf+Evf5JrbdU0JuK+5BO0OeaqqfGII=;
+        b=M2Qed2dqPK3r2F98RhSaRL4bhJ+/mwydP58V5jXiwgHzzCjhvHuA6DumjP2cVJF/PE
+         LpXbYiNhZZrcgzcxjfHV9MolbdoNxqDa+iBVipjy7/zVGTBS4fe7vwq1/dg8wzSWUt5+
+         lwVsSMsZUN5IC3SmEKK+a6EIiwtDNx4SUXIDQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=plmO0AdMl820K1E1EewPUIFFIYm0UYQ8GWMNCMfiNMs=;
-        b=PC3BWCag2hJoIxVeB83Yhgs11+qwsZKErhLhr68+OU71J2l3kbjFMEXLV6CUfo3e21
-         Pov2eKhw9qTqnsHDcxOPgf/b+zc8hRYms3bpefQABUUdZFvVbegjh2p2bjZuQnkNGNiQ
-         QqN+Wq7PvPc+2zRXBOClD6QK/i/h/7xslw3ChQTyDp5U68yNT9B/a8OkEphczD65F1+o
-         ikSa1OHy1WVYx3sBKyF2AlyShTr/peRvAfEbtfNdyXAnYQBF0ndtRsEXscYFfDYK2Tg8
-         /hjhPO8kcfVQBsYeEVWJ1Kske95kQhI4fqh5CQ0dgD2UILH01wSdB2xOlegoFJC19Pxv
-         qTNg==
-X-Gm-Message-State: AOAM533a0gJmd2bsgXv8i7E2Npt30NfakjzB2K/5trbfzqoIsWLdN/bC
-        XciaoPlmOxCGwaae1Ak1VJvx9g==
-X-Google-Smtp-Source: ABdhPJzlShITTMJUXTCs2zEaR/hzAirHlP9c/EZQo05/1A8Fi0UiYdumG++22lWtt4vLwGQbGoVQew==
-X-Received: by 2002:a17:90b:8d3:: with SMTP id ds19mr1590139pjb.197.1618389502547;
-        Wed, 14 Apr 2021 01:38:22 -0700 (PDT)
+        bh=NtcyLr97vt7tBtf+Evf5JrbdU0JuK+5BO0OeaqqfGII=;
+        b=hsIf0Kd/flRrA5x3zKpR0fhD3w+s9yjl/uK3K5hHtuiytb41E9FQzTw4KNwRGIO3ks
+         8qTxx6Y3AjFSfIdF/dTP3nl7phdtSEcZ4+HXPVPg9y1XxmHZINjjLdM29b68NqRzopQ5
+         rU1ZibkfqnuOkT4JkqjdWmwQIiOtd6a3pCGhfeBh9FkIpl2cL2kKcBz3fRb7jTtZlqZn
+         3+mg1wGdO7GuAT51YALhrxmzidddtgTY1a3DRzLisIO+iVAzvyliD1xC8j/bIUSKajqf
+         btjxsJ3axH7oObyNC784ijAFxROLk7b3yYnCE7yz4j3Iq6VMdsbvw1mq79fuTJKlBlUm
+         i6HQ==
+X-Gm-Message-State: AOAM530XaZdxSqSe1LxkE2ME6fJyaxEtYrspNVlyFZFdRIFydlT8WaaH
+        U+4dIKBUZH1l0oQKHMi+vUK2Ww==
+X-Google-Smtp-Source: ABdhPJwD4LQbePm4sDMFJpfH5dE5UMs7w65+Ap4I1G0x9cqB/s9fdo197WaPyYM+2axsd1BSLYd4ug==
+X-Received: by 2002:a63:4413:: with SMTP id r19mr35948254pga.75.1618389505195;
+        Wed, 14 Apr 2021 01:38:25 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:bae3:4af0:9792:1539])
-        by smtp.gmail.com with ESMTPSA id g24sm8901582pfh.164.2021.04.14.01.38.20
+        by smtp.gmail.com with ESMTPSA id g24sm8901582pfh.164.2021.04.14.01.38.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 01:38:22 -0700 (PDT)
+        Wed, 14 Apr 2021 01:38:24 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Wolfram Sang <wsa@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         Bibby Hsieh <bibby.hsieh@mediatek.com>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v18 3/5] i2c: mediatek: mt65xx: add optional vbus-supply
-Date:   Wed, 14 Apr 2021 16:38:07 +0800
-Message-Id: <20210414083809.1932133-4-hsinyi@chromium.org>
+Subject: [PATCH v18 4/5] misc: eeprom: at24: check suspend status before disable regulator
+Date:   Wed, 14 Apr 2021 16:38:08 +0800
+Message-Id: <20210414083809.1932133-5-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 In-Reply-To: <20210414083809.1932133-1-hsinyi@chromium.org>
 References: <20210414083809.1932133-1-hsinyi@chromium.org>
@@ -70,32 +70,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vbus-supply which provides power to SCL/SDA. Pass this regulator
-into core so it can be turned on/off for low power mode support.
+cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
+regulator in runtime suspend. If runtime suspend is called before
+regulator disable, it will results in regulator unbalanced disabling.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/misc/eeprom/at24.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 2ffd2f354d0a..82f2b6716005 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -1215,6 +1215,13 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 	i2c->adap.quirks = i2c->dev_comp->quirks;
- 	i2c->adap.timeout = 2 * HZ;
- 	i2c->adap.retries = 1;
-+	i2c->adap.bus_regulator = devm_regulator_get_optional(&pdev->dev, "vbus");
-+	if (IS_ERR(i2c->adap.bus_regulator)) {
-+		if (PTR_ERR(i2c->adap.bus_regulator) == -ENODEV)
-+			i2c->adap.bus_regulator = NULL;
-+		else
-+			return PTR_ERR(i2c->adap.bus_regulator);
-+	}
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 926408b41270..7a6f01ace78a 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client *client)
+ 	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+ 	if (IS_ERR(at24->nvmem)) {
+ 		pm_runtime_disable(dev);
+-		regulator_disable(at24->vcc_reg);
++		if (!pm_runtime_status_suspended(dev))
++			regulator_disable(at24->vcc_reg);
+ 		return PTR_ERR(at24->nvmem);
+ 	}
  
- 	ret = mtk_i2c_parse_dt(pdev->dev.of_node, i2c);
- 	if (ret)
+@@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client *client)
+ 	err = at24_read(at24, 0, &test_byte, 1);
+ 	if (err) {
+ 		pm_runtime_disable(dev);
+-		regulator_disable(at24->vcc_reg);
++		if (!pm_runtime_status_suspended(dev))
++			regulator_disable(at24->vcc_reg);
+ 		return -ENODEV;
+ 	}
+ 
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
