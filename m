@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826B835F463
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CC235F460
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350776AbhDNM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
+        id S1347154AbhDNM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240417AbhDNM5t (ORCPT
+        with ESMTP id S233716AbhDNM5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:57:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F4CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Xvv1QEzJPf3S0gZF7Gup5VVBeUBTNACCxNNuZgdPkBs=; b=CO3wZOW6Mfb25oRUOR2ACzdI6x
-        ILopvgZEOWCldFmiqIMGpnOEcMfpqhcSGI6VM16mkpHiqlYlibnvLdtR2xSwnSFm+tpoSoNM5wCI+
-        noKQBvj8QIaOygEsA1/oQNlm0SJ4egamJCByKHuIKCmlGEUlbWUrYYhnQDNC9gpN3n88faM9GeWlo
-        ds49BK+Ic3U52aJY98ydMPQodHo+tTUBP4nZJMQTp3AgPoJZsCVrNMSeWlYMZiImZ0K4ygFeVMNb9
-        IlsQsqDhLngnjh7QbSIL7DQ1hC8LIzUREfjJx073+i1A3xhhT6axXPUJCHsQHAhWmhSoEelCZv5Px
-        zJROLVMg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWf3n-00782E-9P; Wed, 14 Apr 2021 12:56:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D7F9C300222;
-        Wed, 14 Apr 2021 14:55:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA4532065A47C; Wed, 14 Apr 2021 14:55:57 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 14:55:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>
-Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
-Message-ID: <YHbmXXvuG442ZDfN@hirez.programming.kicks-ass.net>
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
- <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
- <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
- <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
- <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
- <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
- <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
+        Wed, 14 Apr 2021 08:57:00 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E99C061574;
+        Wed, 14 Apr 2021 05:56:38 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id E331F22236;
+        Wed, 14 Apr 2021 14:56:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1618404993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nIqcTyZ0aGklq+mdSHotuPklBOhZa+ud8+bN5Q5+CPw=;
+        b=VZL40Qx/ZFqrvlYpNa+CpUnri3A5IcdLrj+2SxpxVHAI8fYpizPcSIOU0o4IGsNgU2L8zb
+        buzdqfa91h/T+Kc3jCccsyXkXKwvO0deOpvm1xgmDARKkJkG9wKdcW8QSFZ/zWqZRgSGou
+        k2tTqyTzN0TuoPWxydGMvbSU0aMYGjo=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTRsQQ=RunxK6R9MfK70dULt=RJOXXGCOT9oDPEsBgvKtQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 14 Apr 2021 14:56:30 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, ath9k-devel@qca.qualcomm.com,
+        UNGLinuxDriver@microchip.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, lkp@intel.com,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH net-next v2 1/2] of: net: pass the dst buffer to
+ of_get_mac_address()
+In-Reply-To: <20210414053336.GQ6021@kadam>
+References: <20210414053336.GQ6021@kadam>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <cf5c86dd6492b9c1907ea69e2d660eb2@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:39:33PM +0800, Guo Ren wrote:
+Hi Dan,
 
-> I've tested it on csky SMP*4 hw (860) & riscv SMP*4 hw (c910) and it's okay.
-
-W00t :-)
-
-> Hope you can keep
-> typedef struct {
->         union {
->                 atomic_t lock;
->                 struct __raw_tickets {
-> #ifdef __BIG_ENDIAN
->                         u16 next;
->                         u16 owner;
-> #else
->                         u16 owner;
->                         u16 next;
-> #endif
->                 } tickets;
->         };
-> } arch_spinlock_t;
+Am 2021-04-14 07:33, schrieb Dan Carpenter:
+> url:
+> https://github.com/0day-ci/linux/commits/Michael-Walle/of-net-support-non-platform-devices-in-of_get_mac_address/20210406-234030
+> base:
+> https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+> cc0626c2aaed8e475efdd85fa374b497a7192e35
+> config: x86_64-randconfig-m001-20210406 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 > 
-> Using owner & next is much more readable.
-
-That almost doubles the line-count of the thing ;-)
-
-
-> > + * It further assumes atomic_*_release() + atomic_*_acquire() is RCpc and hence
-> > + * uses atomic_fetch_add() which is SC to create an RCsc lock.
-
-This ^^^ then vvv
-
-> > +static __always_inline void ticket_lock(arch_spinlock_t *lock)
-> > +{
-> > +       u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
-> atomic_fetch_add_acquire ?
-
-Then we must rely on the arch to implement RCsc atomics. And I for one
-can never tell wth Risc-V actually does.
-
-> > +static __always_inline int ticket_is_locked(arch_spinlock_t *lock)
-> > +{
-> > +       u32 val = atomic_read(lock);
-> > +
-> > +       return ((val >> 16) != (val & 0xffff));
-> I perfer:
-> return !arch_spin_value_unlocked(READ_ONCE(*lock));
-> > +}
-
-> > +}
-> > +
-> > +static __always_inline int ticket_value_unlocked(arch_spinlock_t lock)
-> > +{
-> > +       return !ticket_is_locked(&lock);
-> Are you sure to let ticket_is_locked->atomic_read(lock) again, the
-> lock has contained all information?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> return lock.tickets.owner == lock.tickets.next;
+> smatch warnings:
+> drivers/net/ethernet/xilinx/xilinx_axienet_main.c:2069 axienet_probe()
+> warn: passing a valid pointer to 'PTR_ERR'
+> 
+> vim +/PTR_ERR +2069 drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+> 
+> 522856cefaf09d Robert Hancock      2019-06-06  2060  	/* Check for
+> Ethernet core IRQ (optional) */
+> 522856cefaf09d Robert Hancock      2019-06-06  2061  	if (lp->eth_irq 
+> <= 0)
+> 522856cefaf09d Robert Hancock      2019-06-06  2062
+> 		dev_info(&pdev->dev, "Ethernet core IRQ not defined\n");
+> 522856cefaf09d Robert Hancock      2019-06-06  2063
+> 8a3b7a252dca9f Daniel Borkmann     2012-01-19  2064  	/* Retrieve the
+> MAC address */
+> 411b125c6ace1f Michael Walle       2021-04-06  2065  	ret =
+> of_get_mac_address(pdev->dev.of_node, mac_addr);
+> 411b125c6ace1f Michael Walle       2021-04-06  2066  	if (!ret) {
+> 411b125c6ace1f Michael Walle       2021-04-06  2067
+> 		axienet_set_mac_address(ndev, mac_addr);
+> 411b125c6ace1f Michael Walle       2021-04-06  2068  	} else {
+> d05a9ed5c3a773 Robert Hancock      2019-06-06 @2069
+> 		dev_warn(&pdev->dev, "could not find MAC address property: %ld\n",
+> d05a9ed5c3a773 Robert Hancock      2019-06-06  2070  			 
+> PTR_ERR(mac_addr));
+> 
+>   ^^^^^^^^^^^^^^^^^
+> This should print "ret".
 
-Yeah, I wrote then the wrong way around. Couldn't be bothered to go back
-when I figured it out.
+Thanks, this was fixed (in the now merged) v4. I forgot
+to add you to that huge CC list. Sorry for that.
 
-> > +
-> > +static __always_inline int ticket_is_contended(arch_spinlock_t *lock)
-> > +{
-> > +       u32 val = atomic_read(lock);
-> > +
-> > +       return (s16)((val >> 16) - (val & 0xffff)) > 1;
-> How big-endian ?
-
-How not? Endian-ness only matters when you go poke at sub-words, which
-the above does not. Only ticket_unlock() does and cares about that.
-
+-michael
