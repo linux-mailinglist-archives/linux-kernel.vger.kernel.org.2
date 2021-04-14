@@ -2,83 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B945535F0B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C8735F0C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348516AbhDNJWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:22:51 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:1060 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230247AbhDNJWq (ORCPT
+        id S236018AbhDNJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350359AbhDNJYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:22:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UVXq55I_1618392139;
-Received: from 30.21.164.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UVXq55I_1618392139)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 17:22:19 +0800
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
- <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com>
- <CAJfpegsurP8JshxFah0vCwBQicc0ijRnGyLeZZ-4tio6BHqEzQ@mail.gmail.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <0fdb09fa-9b0f-1115-2540-6016ce664370@linux.alibaba.com>
-Date:   Wed, 14 Apr 2021 17:22:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Wed, 14 Apr 2021 05:24:55 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A65C061574;
+        Wed, 14 Apr 2021 02:24:33 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94)
+        (envelope-from <benjamin@sipsolutions.net>)
+        id 1lWbl3-00BZS3-BF; Wed, 14 Apr 2021 11:24:25 +0200
+Message-ID: <c35e321fe3d3e6993c0d9a1ad638230a8f77866b.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
+ address space
+From:   Benjamin Berg <benjamin@sipsolutions.net>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Wed, 14 Apr 2021 11:24:19 +0200
+In-Reply-To: <9f8280540bbc6f3c857ac5749eeafcd145577da3.camel@sipsolutions.net>
+References: <20210414055217.543246-1-avagin@gmail.com>
+         <78cdee11-1923-595f-90d2-e236efbafa6a@cambridgegreys.com>
+         <9f8280540bbc6f3c857ac5749eeafcd145577da3.camel@sipsolutions.net>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-7RgkmP5TmgdmmPtYS/8k"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <CAJfpegsurP8JshxFah0vCwBQicc0ijRnGyLeZZ-4tio6BHqEzQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
+X-malware-bazaar-2: OK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-7RgkmP5TmgdmmPtYS/8k
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2021/4/14 17:02, Miklos Szeredi 写道:
-> On Wed, Apr 14, 2021 at 10:42 AM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
-> 
->> Sorry I missed this patch before, and I've tested this patch, it seems
->> can solve the deadlock issue I met before.
-> 
-> Great, thanks for testing.
-> 
->> But look at this patch in detail, I think this patch only reduced the
->> deadlock window, but did not remove the possible deadlock scenario
->> completely like I explained in the commit log.
->>
->> Since the fuse_fill_write_pages() can still lock the partitail page in
->> your patch, and will be wait for the partitail page waritehack is
->> completed if writeback is set in fuse_send_write_pages().
->>
->> But at the same time, a writeback worker thread may be waiting for
->> trying to lock the partitail page to write a bunch of dirty pages by
->> fuse_writepages().
-> 
-> As you say, fuse_fill_write_pages() will lock a partial page.  This
-> page cannot become dirty, only after being read completely, which
-> first requires the page lock.  So dirtying this page can only happen
-> after the writeback of the fragment was completed.
+On Wed, 2021-04-14 at 09:34 +0200, Johannes Berg wrote:
+> On Wed, 2021-04-14 at 08:22 +0100, Anton Ivanov wrote:
+> > On 14/04/2021 06:52, Andrei Vagin wrote:
+> > > We already have process_vm_readv and process_vm_writev to read and
+> > > write
+> > > to a process memory faster than we can do this with ptrace. And now
+> > > it
+> > > is time for process_vm_exec that allows executing code in an
+> > > address
+> > > space of another process. We can do this with ptrace but it is much
+> > > slower.
+> > >=20
+> > > =3D Use-cases =3D
+> > >=20
+> > > Here are two known use-cases. The first one is =E2=80=9Capplication k=
+ernel=E2=80=9D
+> > > sandboxes like User-mode Linux and gVisor. In this case, we have a
+> > > process that runs the sandbox kernel and a set of stub processes
+> > > that
+> > > are used to manage guest address spaces. Guest code is executed in
+> > > the
+> > > context of stub processes but all system calls are intercepted and
+> > > handled in the sandbox kernel. Right now, these sort of sandboxes
+> > > use
+> > > PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
+> > > significantly speed them up.
+> >=20
+> > Certainly interesting, but will require um to rework most of its
+> > memory=20
+> > management and we will most likely need extra mm support to make use
+> > of=20
+> > it in UML. We are not likely to get away just with one syscall there.
+>=20
+> Might help the seccomp mode though:
+>=20
+> https://patchwork.ozlabs.org/project/linux-um/list/?series=3D231980
 
-What I mean is the writeback worker had looked up the dirty pages in 
-write_cache_pages() and stored them into a temporary pagevec, then try 
-to lock dirty page one by one and write them.
+Hmm, to me it sounds like it replaces both ptrace and seccomp mode
+while completely avoiding the scheduling overhead that these techniques
+have. I think everything UML needs is covered:
 
-For example, suppose it looked up 2 dirty pages (named page 1 and page 
-2), and writed down page 1 by fuse_writepages_fill(), unlocked page 1. 
-Then try to lock page 2.
+ * The new API can do syscalls in the target memory space
+   (we can modify the address space)
+ * The new API can run code until the next syscall happens
+   (or a signal happens, which means SIGALRM for scheduling works)
+ * Single step tracing should work by setting EFLAGS
 
-At the same time, suppose the fuse_fill_write_pages() will write the 
-same page 1 and partitail page 2, and it will lock partital page 2 and 
-wait for the page 1's writeback is completed. But page 1's writeback can 
-not be completed, since the writeback worker is waiting for locking page 
-2, which was already locked by fuse_fill_write_pages().
+I think the memory management itself stays fundamentally the same. We
+just do the initial clone() using CLONE_STOPPED. We don't need any stub
+code/data and we have everything we need to modify the address space
+and run the userspace process.
 
-Does that make sense to you? Or I missed something else?
+Benjamin
+
+--=-7RgkmP5TmgdmmPtYS/8k
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAmB2tMMACgkQq6ZWhpmF
+Y3DHNw/+OI7BooddkdmPX1QVWLfOOcxDuyD/drcEgE5/m7sjUK4zdG+Va3SlAOC+
+Nq8D0N3vCjbjxmebMsNDLS47RIy6OaKrpl0iEZkokNIXVkH0tQrehKNLiKdN20cf
+Ktu6yNW+F1QT4DC/M9MHVvgRHzxxJb34beVdUXOCPcqKE1fMHAHorHRrJ2Pn6Z+2
+whcdWFKkD+k8dPcQ8SV+djNebYqK/8tkc/nnGbi/NXXJ05eLXqDRSgWMDPYQwqsV
+5ngFDYVCIqXS21nNjQaw1YbxevY4F58w82LLGoumMygx9VCYs6JCm7eWF2ommPuP
+DF4OdXD0/JTZOv0bPc7dZgB3YcpkL6KnBSj52Ps7AmVgtF8+pGc/syimY3cGVGsR
++2IbShWAFAS5oE04GVc53iRZaqLjO2gryPHqE3QGrcSMZzAxP3F6m6ne7exDvwJO
++aNbR3zcJWuFtcIgkhVSIBJRRNyQNsAovZypSuYNgCuJbNk7fYpYW8KEkf6PBhhJ
+aPLvTOEgreYeKknKl4P2NGpkr/dPjQZtucXQIu5+LflL4fFR61cqi6VskAhuDThj
+j2Zf8PvWVY5BqpnFSDHa1jucsWsIzthSZbh12NuYi8yRfiDMoUYfoB9dPbm7GfzK
+n1H6HwrMZzFSPXBGspLWzGGyStY0IqX/r+KpSWmQqcsH8s+5wDQ=
+=MzgV
+-----END PGP SIGNATURE-----
+
+--=-7RgkmP5TmgdmmPtYS/8k--
+
