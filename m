@@ -2,254 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3391235FE10
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F271835FE17
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236732AbhDNWwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:52:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46175 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233691AbhDNWwG (ORCPT
+        id S233732AbhDNW55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233371AbhDNW55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:52:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618440703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dtB6Wp5AVxplW2Z84nTCGyemptbqZUOzp8eUITEWE1E=;
-        b=iPXH8w/n5/egubsWRvXKqn0Ry0reIYEwT58n7VqKAWga77kSqjf2eIJJLQ7vFxb1p0SHpD
-        6OpZN1lXcj2k0k53P+zUj2Mpu4r3dQNBY6azbaEie8IoiBYaSioGkVvohz0HNvdCCVP014
-        zthh85/o+siG6kSV/mpqAbQY44A6Qt0=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-286-d0jK1SwjMDCDHP9hKjW_Uw-1; Wed, 14 Apr 2021 18:51:41 -0400
-X-MC-Unique: d0jK1SwjMDCDHP9hKjW_Uw-1
-Received: by mail-ej1-f71.google.com with SMTP id d16-20020a1709066410b0290373cd3ce7e6so310647ejm.14
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:51:41 -0700 (PDT)
+        Wed, 14 Apr 2021 18:57:57 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9681AC061574;
+        Wed, 14 Apr 2021 15:57:33 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 65so23984220ybc.4;
+        Wed, 14 Apr 2021 15:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rFtXRWOeNut3QLILsCIY8HpJ4Srwebx9VnJDfKrPSOw=;
+        b=tdV3Cc3axUyAXlfd05PvgGcSz2G5cCBiLzPV31WD/YZQAWPoQCYZcBacSnX19m8O/V
+         n3OYJ4CHd60/41iHCz/yoeEM2Y0v+0sJlCGJ5ShG3u98JKnVmFJOxKURgqXRHRUpr1OW
+         3n+C+8vWeGtFjcxWuWtQ1U36EaL5SdXWFpbvlT1ndCB0SsOs/SDJVdOikcyH0Naq6q2r
+         9ECFUubEeI8OwW0r3ADD8dUYPHu5pWIFCly8gsYKXcDE/l3k6nInsbq35Y9C8ELLqMCL
+         WbJ2NO6CqPb+YQTKAmOMTe5WUcOuVIv1p+rqwPS+j2nDTwJeC4nCJ6lYcv5cTvOQxZCb
+         7gZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=dtB6Wp5AVxplW2Z84nTCGyemptbqZUOzp8eUITEWE1E=;
-        b=UloIe5DrCnFOm7TFCFJgt9nQ0Thdj+qGPmNSBstVQYnyA+4xXo97nktrj3T1RColIF
-         bk98VxtlS6ltdo7xc9HNiomxOjOMCJMg5gCp4skqlc3JZ0ErHCpzyKHd8wxjIFyRWhlY
-         tSdFlmR/so3Y/Qf77jyJV79T0cIGeufPaJenCbZcp6JEnWMwUjpbGVv8E5wYqGkaj4xu
-         y5wEwPXZZj7cRAhNAJuUcsM9pbNsCR21zdA7ZHhWV7nRjQFKwslP/9QveQ5RRpydw11X
-         ECOa509icC7ydVp4KOyDsJrHDYTO6hlemnG1BT2UJ/ZOqEKsKd/pbLf0oTZhIkI50O5o
-         Ao0Q==
-X-Gm-Message-State: AOAM533RmRYbkMejBiJy1M8EUyO5xL5SN+NzPEQgyDd0faPDu/wDcTpW
-        KT7iYRMPLiX6w8S0fzehLSD1DiwS3yHko6/NmReVh8Yqmug7AHluXvdirs9qnot/GOZYDHcHEID
-        dOY5HTUSuYD1MkYsz5nQBTOW/
-X-Received: by 2002:a05:6402:270c:: with SMTP id y12mr597502edd.284.1618440699758;
-        Wed, 14 Apr 2021 15:51:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/Ha0YabHIRbKQeIodCU+bcTN5C7lPFVSR2jBVjzkZyW/0QqQvzy7nn33VIUTkoBF1km1Q8g==
-X-Received: by 2002:a05:6402:270c:: with SMTP id y12mr597457edd.284.1618440699361;
-        Wed, 14 Apr 2021 15:51:39 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k9sm126025eje.102.2021.04.14.15.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 15:51:38 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 087191806B3; Thu, 15 Apr 2021 00:51:38 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <CAEf4BzaEkzPeAXqmm5aEdQxnCkrqJTHcSu7afnV11+697KgZTQ@mail.gmail.com>
-References: <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
- <20210402190806.nhcgappm3iocvd3d@apollo>
- <20210403174721.vg4wle327wvossgl@ast-mbp>
- <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
- <87blar4ti7.fsf@toke.dk>
- <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
- <874kg9m8t1.fsf@toke.dk>
- <CAEf4BzaEkzPeAXqmm5aEdQxnCkrqJTHcSu7afnV11+697KgZTQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 15 Apr 2021 00:51:37 +0200
-Message-ID: <87wnt4jx8m.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rFtXRWOeNut3QLILsCIY8HpJ4Srwebx9VnJDfKrPSOw=;
+        b=sTgDqAmmQQa62KK1/piIEK4EGSFikP+2VZ0AvFpQx6EjiZ0yaZDiY25IHAO6+xHnqg
+         rwV9r6+zjpMYtsz2l/KTwyi3pkX4+nkAchocbsdFXQVkTLIYM8/0WbjpPY3O9g4koREg
+         GQo/InzRyzjFlJn0Z2LCbdOjB+24nFXfEmDd4PvL3CGm55+/isnIK1b6d6JYkELX7im/
+         mk3+1JX75BwaPb2boAE2XagN5f7kGZci91AoUes4dIkh8OTS2/NH0CkGZuEBCcVZyP2w
+         YOY23PAE4cTEeceoFyk3ke3435XJSirgUSUua0b4s439Ph79af1dzYt9u9vhKwvpd23Z
+         PvvQ==
+X-Gm-Message-State: AOAM531NUofCDnvb0kGUaNL+ESzFNPZG+fTSj669WKnMgMXB23qB06T1
+        b9l1ov/aPiPtbh72dssrwl58h1ZbNdWiPS5LrYg=
+X-Google-Smtp-Source: ABdhPJx0ndauyWN/XJNHKfSXZRGLsNq+d5TRVBgn0UoWYaJlrSGRC35isGrUhWrzEgvvX7QAvgxHGt8aKCuucHKP/I4=
+X-Received: by 2002:a25:dc46:: with SMTP id y67mr460314ybe.27.1618441052870;
+ Wed, 14 Apr 2021 15:57:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
+ <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com> <CABRcYmJvzcFySYS=U=xtfn4eG7yKpmET_yh-bZYrkYfJMdx_pw@mail.gmail.com>
+In-Reply-To: <CABRcYmJvzcFySYS=U=xtfn4eG7yKpmET_yh-bZYrkYfJMdx_pw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 14 Apr 2021 15:57:21 -0700
+Message-ID: <CAEf4Bza+rVCp=G5i97MuuBrTX+o1ZUBn3nzstssoS1KtE4F6vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Wed, Apr 14, 2021 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Tue, Apr 6, 2021 at 3:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->> >>
->> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> >>
->> >> > On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
->> >> > <alexei.starovoitov@gmail.com> wrote:
->> >> >>
->> >> >> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi =
-wrote:
->> >> >> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
->> >> >> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor=
-@gmail.com> wrote:
->> >> >> > > > [...]
->> >> >> > >
->> >> >> > > All of these things are messy because of tc legacy. bpf tried =
-to follow tc style
->> >> >> > > with cls and act distinction and it didn't quite work. cls with
->> >> >> > > direct-action is the only
->> >> >> > > thing that became mainstream while tc style attach wasn't real=
-ly addressed.
->> >> >> > > There were several incidents where tc had tens of thousands of=
- progs attached
->> >> >> > > because of this attach/query/index weirdness described above.
->> >> >> > > I think the only way to address this properly is to introduce =
-bpf_link style of
->> >> >> > > attaching to tc. Such bpf_link would support ingress/egress on=
-ly.
->> >> >> > > direction-action will be implied. There won't be any index and=
- query
->> >> >> > > will be obvious.
->> >> >> >
->> >> >> > Note that we already have bpf_link support working (without supp=
-ort for pinning
->> >> >> > ofcourse) in a limited way. The ifindex, protocol, parent_id, pr=
-iority, handle,
->> >> >> > chain_index tuple uniquely identifies a filter, so we stash this=
- in the bpf_link
->> >> >> > and are able to operate on the exact filter during release.
->> >> >>
->> >> >> Except they're not unique. The library can stash them, but somethi=
-ng else
->> >> >> doing detach via iproute2 or their own netlink calls will detach t=
-he prog.
->> >> >> This other app can attach to the same spot a different prog and now
->> >> >> bpf_link__destroy will be detaching somebody else prog.
->> >> >>
->> >> >> > > So I would like to propose to take this patch set a step furth=
-er from
->> >> >> > > what Daniel said:
->> >> >> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
->> >> >> > > and make this proposed api to return FD.
->> >> >> > > To detach from tc ingress/egress just close(fd).
->> >> >> >
->> >> >> > You mean adding an fd-based TC API to the kernel?
->> >> >>
->> >> >> yes.
->> >> >
->> >> > I'm totally for bpf_link-based TC attachment.
->> >> >
->> >> > But I think *also* having "legacy" netlink-based APIs will allow
->> >> > applications to handle older kernels in a much nicer way without ex=
-tra
->> >> > dependency on iproute2. We have a similar situation with kprobe, wh=
-ere
->> >> > currently libbpf only supports "modern" fd-based attachment, but us=
-ers
->> >> > periodically ask questions and struggle to figure out issues on old=
-er
->> >> > kernels that don't support new APIs.
->> >>
->> >> +1; I am OK with adding a new bpf_link-based way to attach TC program=
-s,
->> >> but we still need to support the netlink API in libbpf.
->> >>
->> >> > So I think we'd have to support legacy TC APIs, but I agree with
->> >> > Alexei and Daniel that we should keep it to the simplest and most
->> >> > straightforward API of supporting direction-action attachments and
->> >> > setting up qdisc transparently (if I'm getting all the terminology
->> >> > right, after reading Quentin's blog post). That coincidentally shou=
-ld
->> >> > probably match how bpf_link-based TC API will look like, so all that
->> >> > can be abstracted behind a single bpf_link__attach_tc() API as well,
->> >> > right? That's the plan for dealing with kprobe right now, btw. Libb=
-pf
->> >> > will detect the best available API and transparently fall back (may=
-be
->> >> > with some warning for awareness, due to inherent downsides of legacy
->> >> > APIs: no auto-cleanup being the most prominent one).
->> >>
->> >> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
->> >> high-level API auto-detect. That way users can also still use the
->> >> netlink attach function if they don't want the fd-based auto-close
->> >> behaviour of bpf_link.
->> >
->> > So I thought a bit more about this, and it feels like the right move
->> > would be to expose only higher-level TC BPF API behind bpf_link. It
->> > will keep the API complexity and amount of APIs that libbpf will have
->> > to support to the minimum, and will keep the API itself simple:
->> > direct-attach with the minimum amount of input arguments. By not
->> > exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
->> > design discussion, as we now can keep as much info as needed inside
->> > bpf_link_tc (which will embed bpf_link internally as well) to support
->> > detachment and possibly some additional querying, if needed.
->>
->> But then there would be no way for the caller to explicitly select a
->> mechanism? I.e., if I write a BPF program using this mechanism targeting
->> a 5.12 kernel, I'll get netlink attachment, which can stick around when
->> I do bpf_link__disconnect(). But then if the kernel gets upgraded to
->> support bpf_link for TC programs I'll suddenly transparently get
->> bpf_link and the attachments will go away unless I pin them. This
->> seems... less than ideal?
+On Wed, Apr 14, 2021 at 2:46 AM Florent Revest <revest@chromium.org> wrote:
 >
-> That's what we are doing with bpf_program__attach_kprobe(), though.
-> And so far I've only seen people (privately) saying how good it would
-> be to have bpf_link-based TC APIs, doesn't seem like anyone with a
-> realistic use case prefers the current APIs. So I suspect it's not
-> going to be a problem in practice. But at least I'd start there and
-> see how people are using it and if they need anything else.
-
-*sigh* - I really wish you would stop arbitrarily declaring your own use
-cases "realistic" and mine (implied) "unrealistic". Makes it really hard
-to have a productive discussion...
-
->> If we expose the low-level API I can elect to just use this if I know I
->> want netlink behaviour, but if bpf_program__attach_tc() is the only API
->> available it would at least need a flag to enforce one mode or the other
->> (I can see someone wanting to enforce kernel bpf_link semantics as well,
->> so a flag for either mode seems reasonable?).
+> On Wed, Apr 14, 2021 at 1:16 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
+> > > +static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+> > > +                                  struct bpf_reg_state *regs)
+> > > +{
+> > > +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
+> > > +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> > > +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
+> > > +       int err, fmt_map_off, num_args;
+> > > +       u64 fmt_addr;
+> > > +       char *fmt;
+> > > +
+> > > +       /* data must be an array of u64 */
+> > > +       if (data_len_reg->var_off.value % 8)
+> > > +               return -EINVAL;
+> > > +       num_args = data_len_reg->var_off.value / 8;
+> > > +
+> > > +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+> > > +        * and map_direct_value_addr is set.
+> > > +        */
+> > > +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
+> > > +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+> > > +                                                 fmt_map_off);
+> > > +       if (err)
+> > > +               return err;
+> > > +       fmt = (char *)fmt_addr + fmt_map_off;
+> > > +
+> >
+> > bot complained about lack of (long) cast before fmt_addr, please address
 >
-> Sophisticated enough users can also do feature detection to know if
-> it's going to work or not.
+> Will do.
+>
+> > > +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
+> > > +        * all of them to snprintf().
+> > > +        */
+> > > +       err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
+> > > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
+> > > +               BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
+> > > +               BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
+> > > +               BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
+> > > +               BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
+> > > +               BPF_CAST_FMT_ARG(11, args, mod));
+> > > +
+> > > +       put_fmt_tmp_buf();
+> >
+> > reading this for at least 3rd time, this put_fmt_tmp_buf() looks a bit
+> > out of place and kind of random. I think bpf_printf_cleanup() name
+> > pairs with bpf_printf_prepare() better.
+>
+> Yes, I thought it would be clever to name that function
+> put_fmt_tmp_buf() as a clear parallel to try_get_fmt_tmp_buf() but
+> because it only puts the buffer if it is used and because they get
+> called in two different contexts, it's after all maybe not such a
+> clever name... I'll revert to bpf_printf_cleanup(). Thank you for your
+> patience with my naming adventures! :)
+>
+> > > +
+> > > +       return err + 1;
+> >
+> > snprintf() already returns string length *including* terminating zero,
+> > so this is wrong
+>
+> lib/vsprintf.c says:
+>  * The return value is the number of characters which would be
+>  * generated for the given input, excluding the trailing null,
+>  * as per ISO C99.
+>
+> Also if I look at the "no arg" test case in the selftest patch.
+> "simple case" is asserted to return 12 which seems correct to me
+> (includes the terminating zero only once). Am I missing something ?
+>
 
-Sure, but that won't help if there's no API to pick the attach mode they
-want.
+no, you are right, but that means that bpf_trace_printk is broken, it
+doesn't do + 1 (which threw me off here), shall we fix that?
 
-> There are many ways to skin this cat. I'd prioritize bpf_link-based TC
-> APIs to be added with legacy TC API as a fallback.
+> However that makes me wonder whether it would be more appropriate to
+> return the value excluding the trailing null. On one hand it makes
+> sense to be coherent with other BPF helpers that include the trailing
+> zero (as discussed in patch v1), on the other hand the helper is
+> clearly named after the standard "snprintf" function and it's likely
+> that users will assume it works the same as the std snprintf.
 
-I'm fine with adding that; I just want the functions implementing the TC
-API to also be exported so users can use those if they prefer...
 
--Toke
-
+Having zero included simplifies BPF code tremendously for cases like
+bpf_probe_read_str(). So no, let's stick with including zero
+terminator in return size.
