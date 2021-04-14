@@ -2,145 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA3D35ED68
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07BD35ED6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhDNGo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        id S1345677AbhDNGol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345962AbhDNGoT (ORCPT
+        with ESMTP id S1346515AbhDNGoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:44:19 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E56CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:43:58 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id x11so20411412qkp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=xAItGVctj4Ym5XgJXrEHjFWuIEiXbFDkgH2LTVJTlqw=;
-        b=boogogHOP6aMxYaO4TKu7w6/UT0zb6tK49kFGEqd/tGljpv/chIVdkvDoZiKgvcWl3
-         uD72xEs3pGMozk801LATYIGOzSooQdo333X4M4rD3PNeWeoZ9/oX6LUPDbjvhVvQyG6/
-         nTt5wmIPnMoq8lxe0TYVtm4DE/rQlDzKDa0fCpcwtw5WUsLaifXWcqsMidIkzaY8/9og
-         +s8FqQNRmO6BXRBVpR03kz2epvzqQrKFmi5Hh/Dr9nzx9eIzWvOC83DKTQkse5T5QfKN
-         OwqGrAsqVhMbFN/3vaxP0hsIwcf4UGB3beOYirKF+LBu4y8XLIbOcMpkmguDaeVt3yZa
-         ZVXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=xAItGVctj4Ym5XgJXrEHjFWuIEiXbFDkgH2LTVJTlqw=;
-        b=CTOLF0SI4SZdVe53AFhXpxrGehBrYea7ouYOyIfF3HtmZrXQkcQJOf4iZp7GRym4ip
-         zyE5IH8sfaEVHLdpPwA+Or4TwA8MIgvHQnMsN82KPappO29DuKrvZBJ8ush3tSSyK4Ew
-         7Sk55Dw7bBAoV04XHtIqQ5xtEjsLkbm4C0HUWzeIHXpkO7dbYpe4h18hOSsLERXaS4ZU
-         x56MRFXzwuCb7euUa3yumHGt7PpHnkG3KbkbKhBl1p7zkOrnp1HTd9dGGSn309DbakaL
-         bVGTC4vm6EUlBhSrLK6RLdDoTBTb5GhrR6Bvz4Gf+/pN3kpsNgu0iOjVaKJYYZO+YIXe
-         Fptg==
-X-Gm-Message-State: AOAM533+pxNXX8wUNpxoY7RaeZOZvhwGeyWg4BdLGR+5kp5UCAem28ZL
-        oHkL2pdf2oly2DyIAx3xwb3kOQ==
-X-Google-Smtp-Source: ABdhPJyCbITTz5lmswPHeW0wVM8gnjbv6Zo4xmnNDnf/pa88GLZJNPjvZPoeIsTQcCXPoW3nk85tvw==
-X-Received: by 2002:ae9:e113:: with SMTP id g19mr34615511qkm.480.1618382637457;
-        Tue, 13 Apr 2021 23:43:57 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x22sm5174625qtq.93.2021.04.13.23.43.55
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 13 Apr 2021 23:43:57 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 23:43:41 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v2 1/9] userfaultfd/hugetlbfs: avoid including userfaultfd_k.h
- in hugetlb.h
-In-Reply-To: <20210413051721.2896915-2-axelrasmussen@google.com>
-Message-ID: <alpine.LSU.2.11.2104132336001.9086@eggly.anvils>
-References: <20210413051721.2896915-1-axelrasmussen@google.com> <20210413051721.2896915-2-axelrasmussen@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Wed, 14 Apr 2021 02:44:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CCEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=DVwBx6xKrHYcSk7q61RQ1LnpuWWRHj1O3Je+Oxa/4vg=; b=XqF/S6iLlGTUX2tqrt08p4+rHg
+        fbEXh8ilqCkm/ldI84h/JfXcK4NubhcB8lX+fF8xB1vaLU4l4CdxOQ4b0VzCj/NG1er/fQsTHf4Os
+        crcaQDs+Smvh7zfdIGOmMNKCgNdSOuhEcm+oxdYbEnwL98MmIzC57LNq6fmrOLBlgjdXHhrFADgJ6
+        AYjxS1CeRApiag1BA6IJgpsdaghlVroX0Vf9UDYP1394go91gkSUI3xPbM3QXNyfD5kokkmDftXGn
+        kFYxtcsdnrr7nsdwa9C2VbWEYdlqhl4zQ4H1OpE5z6Z2yXJpaLj+wCYz/9Phcj07kBtTdiZUubuAG
+        IKm4Ayyw==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWZFi-00BiGB-L4; Wed, 14 Apr 2021 06:43:55 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Subject: [PATCH 0/3] um: headers: fix various W=1 warnings
+Date:   Tue, 13 Apr 2021 23:43:47 -0700
+Message-Id: <20210414064350.3923-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021, Axel Rasmussen wrote:
+Fix a few W=1 warnings in arch/um/.
+Prompted by the "kernel test robot".
 
-> Minimizing header file inclusion is desirable. In this case, we can do
-> so just by forward declaring the enumeration our signature relies upon.
-> 
-> Reviewed-by: Peter Xu <peterx@redhat.com>
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  include/linux/hugetlb.h | 4 +++-
->  mm/hugetlb.c            | 1 +
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 09f1fd12a6fa..3f47650ab79b 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -11,7 +11,6 @@
->  #include <linux/kref.h>
->  #include <linux/pgtable.h>
->  #include <linux/gfp.h>
-> -#include <linux/userfaultfd_k.h>
->  
->  struct ctl_table;
->  struct user_struct;
-> @@ -135,6 +134,8 @@ void hugetlb_show_meminfo(void);
->  unsigned long hugetlb_total_pages(void);
->  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->  			unsigned long address, unsigned int flags);
-> +
-> +enum mcopy_atomic_mode;
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 
-Wrongly placed: the CONFIG_USERFAULTFD=y CONFIG_HUGETLB_PAGE=n build
-fails. Better place it up above with struct ctl_table etc.
+ [PATCH 1/3] um: pgtable.h: fix W=1 warning for empty body in 'do' statement
+ [PATCH 2/3] um: elf.h: fix W=1 warning for empty body in 'do' statement
+ [PATCH 3/3] um: stub_32.h: move 'inline' before 'void' to fix W=1 warning
 
->  #ifdef CONFIG_USERFAULTFD
->  int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
->  				struct vm_area_struct *dst_vma,
-> @@ -143,6 +144,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
->  				enum mcopy_atomic_mode mode,
->  				struct page **pagep);
->  #endif /* CONFIG_USERFAULTFD */
-> +
->  bool hugetlb_reserve_pages(struct inode *inode, long from, long to,
->  						struct vm_area_struct *vma,
->  						vm_flags_t vm_flags);
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 54d81d5947ed..b1652e747318 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -40,6 +40,7 @@
->  #include <linux/hugetlb_cgroup.h>
->  #include <linux/node.h>
->  #include <linux/page_owner.h>
-> +#include <linux/userfaultfd_k.h>
->  #include "internal.h"
->  
->  int hugetlb_max_hstate __read_mostly;
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
-> 
-> 
+ arch/um/include/asm/pgtable.h       |    2 +-
+ arch/x86/um/asm/elf.h               |    2 +-
+ arch/x86/um/shared/sysdep/stub_32.h |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
