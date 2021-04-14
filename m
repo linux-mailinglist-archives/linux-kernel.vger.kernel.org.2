@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F0035F68C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B56235F689
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351934AbhDNOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351910AbhDNOrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351916AbhDNOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 14 Apr 2021 10:47:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 507E061155;
-        Wed, 14 Apr 2021 14:46:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618411614;
-        bh=rs15LF3rKUgaMNwrFb8ZdV4uSTpiASPmNfBhf2NkQ8Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BlWgvxSQ2ZbOX8yA6z647CrPNNwHdGVIuyKWyZAmtLTGxcIfIADJz56cYeUX8yGPt
-         UaEwZ384GIUt45h9yTeGAJ9LCbrUnhSyzprk6G6IAgXjbxv/gr1rOt7repANA3QTUO
-         TYibzSlsDiR4I8QWliFjqdpDecZP8/yvHFn/fAXfdhLjRpAerflaNUloy9YkVOeMI5
-         qje6uKz0HDdsCddm6t+E2x7DET6ZMQ80eVDkVJN+CFhlpM2kBHvCLEVz4AJgx30n5P
-         0mQ5/XmpUHKnc9DYaddEvFdt6IHBaWlQb+AuaiTo9FyUara0+Lz5Ba0dqB/GejEixP
-         geBE7lYrdoXkw==
-From:   matthias.bgg@kernel.org
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Fabien Parent <fparent@baylibre.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349887AbhDNOrM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:47:12 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C695EC061574;
+        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d8so10224513plh.11;
+        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y3YNr7aga5ARelEpZRoG5kXAVCwy+EfMKJ2wZNKrO3k=;
+        b=ML7MiXkg3x7j3dPBKlrJ7xBHHkyhcHhmiaxYaU3LP1/NqUTiDaZBe2nNTkMu2xYXB8
+         07DEYWLN89VBdlJlZ1U45qTNI8zGXm4GNPHLrX/9Zdn+HGB0cVS87jjL16NHQgEiyUWi
+         LSUBLSFSTWnPL+wk0DjZvz4ue/VV9SBje41l44Vh1Z61PHjkTfbxD7iOEgA1JPxq1bfV
+         gvGP+C+LGUcSAwdsWcLOp8TtOyo0YeIBCuhTTjIBzeQxe0i+B15u0Agc6EyxWTt3Wp4g
+         penu+1PFSffsZGCSD9igYEXSSrpMH1Lje0MYdqEVhX7h5vY6StZr83+DjrLm2ZKCB27H
+         RMzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y3YNr7aga5ARelEpZRoG5kXAVCwy+EfMKJ2wZNKrO3k=;
+        b=qNmuFkFarvatsTV99q7+RGh5er2GXBqWkm1n6wxJuXFxW+nfA+f++KiIDuCLZePz8V
+         PaabXOl/g9recIJnUwZWUjUNfjHZIp8IPWxsgcpS4m9CMWBwMswLWa4WegXbpkFG4LwW
+         lVfKkAF6LZfUlL7Kj0dGL1bUgOZfxfpN7Dn/4iJE24knh82vbsw6pvq2Oi+KRuXU7I1r
+         19yjV5y3Jmqd3eTKyXUrdCbMxdcQjou1DC1TEYkLsWwlAe/fGez6iroESdCoooGSWuvk
+         b+qYpBS0Ju2SpSE8Vy+GRcrNgxUcsqNNKGsP0g3NuluYNYRwrEqQ7GgENLTdkJu+ZdXG
+         pC4Q==
+X-Gm-Message-State: AOAM533aXFWRw8lVOgZRwaiETlWib1z7RousxD3fh3gllbutDc4/bgvE
+        1h4heGf6NcKdGB68wFrUEUo=
+X-Google-Smtp-Source: ABdhPJxKK5K0A+ptCC6cs4HU1E95eLmtfVt+UNTJ9KhISNjDs3CWHt/5dPOuBfs//BQ59rrQGaAc7g==
+X-Received: by 2002:a17:90a:ff07:: with SMTP id ce7mr3956535pjb.0.1618411610372;
+        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id s17sm4879049pjn.44.2021.04.14.07.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 07:46:49 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 07:46:47 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: mt8183-kukui: fix dtbs_check warnings
-Date:   Wed, 14 Apr 2021 16:46:42 +0200
-Message-Id: <20210414144643.17435-3-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210414144643.17435-1-matthias.bgg@kernel.org>
-References: <20210414144643.17435-1-matthias.bgg@kernel.org>
+Subject: Re: [PATCH net-next v4 1/1] net: stmmac: Add support for external
+ trigger timestamping
+Message-ID: <20210414144647.GA9318@hoboy.vegasvil.org>
+References: <20210414001617.3490-1-vee.khee.wong@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414001617.3490-1-vee.khee.wong@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <matthias.bgg@gmail.com>
+On Wed, Apr 14, 2021 at 08:16:17AM +0800, Wong Vee Khee wrote:
+> From: Tan Tee Min <tee.min.tan@intel.com>
+> 
+> The Synopsis MAC controller supports auxiliary snapshot feature that
+> allows user to store a snapshot of the system time based on an external
+> event.
+> 
+> This patch add supports to the above mentioned feature. Users will be
+> able to triggered capturing the time snapshot from user-space using
+> application such as testptp or any other applications that uses the
+> PTP_EXTTS_REQUEST ioctl request.
+> 
+> Cc: Richard Cochran <richardcochran@gmail.com>
+> Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
+> Co-developed-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 
-The dsi children don't have any reg property, so we don't need address and
-size cells. This makes dtbs_check happy.
-
-CC: Hsin-Yi Wang <hsinyi@chromium.org>
-CC: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-CC: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-
----
-
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index ff56bcfa3370..f4dca6a33168 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -251,8 +251,7 @@ &cpu7 {
- 
- &dsi0 {
- 	status = "okay";
--	#address-cells = <1>;
--	#size-cells = <0>;
-+
- 	panel: panel@0 {
- 		/* compatible will be set in board dts */
- 		reg = <0>;
--- 
-2.30.2
-
+Acked-by: Richard Cochran <richardcochran@gmail.com>
