@@ -2,151 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10BE35EC03
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3A235EC05
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 06:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhDNEmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 00:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhDNEmZ (ORCPT
+        id S236743AbhDNEqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 00:46:49 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:35064 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhDNEqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 00:42:25 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C77C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 21:42:05 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id r20so21857569ljk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 21:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=boQU2MMoKZITSUuTZ9u7Ur1dr9594KKlp/l2Ec4ci6g=;
-        b=OXmXimrwWLRnv/c0WHoL4YdTYIo7nh2IXSH3569UBFovI9i3UHB1gn8Bv09ZQOIvOR
-         TM3hENR2aATfXhTh31H7fydNGhBG/MfZUKI9EJgDsMgGg5rU0dGVbQpqxuTV88WlHUPu
-         O9C3CZaQ9vQyXSyNd6iszxBfujvQ6ZKpqwdl4yfwK/F4M1Bh3gokS2HYNRDUljQzny5E
-         mIh7clpvkX4pyQvzhO8P7bhPIGspUuCQjEMOtVL0ucicS5VL1bBkpZ+nnSWVyt4ZASdf
-         kG2GihFDNWzFCpBp5NKREcwiaPZuynJS+IE0H6Y/XM+yJGM8jvuzDF8e39NIawLlZeVf
-         Dp2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=boQU2MMoKZITSUuTZ9u7Ur1dr9594KKlp/l2Ec4ci6g=;
-        b=VsR9jwY80PON/jkI97of0YAAY5z5xrGU2xB4TV8+p1GeGTsu4IHexhsb6QAsg1YGcv
-         b36zrjkkp70LUNdvwL01tVBx+G/x5E3Hyhib8gvJtNovHeMZlNA78cfXnJZosbRFocS+
-         IScgXA9YzXj4vnBiu6WjjWkkZKAMXOeiPbejVj0R09e43vw0KQHgt7ZusnOJkYuDnTV/
-         nD4O9SWg9kx82i4w9PVXf44UKEXR8W0oEzLkN2E+A1wcFdWicx9GKP6gOpJvlm1PnMtv
-         MsGV0hK0Fq+DpB3DYW/Emin65vFbHcwFbN4Uxgi2int9JEmz11JhIDe7ogVe3tKkARlL
-         zkkw==
-X-Gm-Message-State: AOAM533oHY/DJA1wjsj11rBNtaIaHePTeiWKy7JXzFrsiU/oV4Dp5/QZ
-        QuJbr5af51C7P3W3JdVd+s4S4s1G1ZLyaovuy1RQfQ==
-X-Google-Smtp-Source: ABdhPJzhEEU3PFDfyA39HxrKCbGBl2nHujmFShzAsmbHmtnCmz4KKLUO4tLF+jgOq0/kV1THJNmEKCgd4AyFIgQ5ANE=
-X-Received: by 2002:a2e:b4a5:: with SMTP id q5mr22868080ljm.7.1618375323366;
- Tue, 13 Apr 2021 21:42:03 -0700 (PDT)
+        Wed, 14 Apr 2021 00:46:47 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E4hxvi086440;
+        Wed, 14 Apr 2021 04:46:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=sBmVwPsNeAH002CQeWCF/beRIkPh7vCoNYOX97ndJSw=;
+ b=RRr2rJ6pDvOIiCYkItz04uDIiezUY5jFqUouHMBnwUVU7wvwPws5aOj+SZ5Wde/XVoVn
+ dXsc2/VcB8ukOhi3XfZzONNGLcm12kqbEIKmVNBBB39RdbhBnTkPb/K9AIcneL5vkElN
+ vovUyk244ONxAJXxxwMoyVo2jC+q4ElmhMyBfP+5RGdzgyQQxMT/u3NzzsrnK2p3dYrs
+ C55K5UWWesr+lnecDh5KTnv8Et7YiGrhUTVA/3Pf3zEqwrO8473QqO7z3DDFkxiUeYfR
+ 77vrN7aDEnF3NGZOI5VDMbFWFhDbNrPpg42klBoXZ83irSzEtI3wn4e6/JKmRe3ZrOcc ZA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 37u3erh2f4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 04:46:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E4aWKN044042;
+        Wed, 14 Apr 2021 04:46:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 37unkqfy2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 04:46:15 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13E4kEeQ030084;
+        Wed, 14 Apr 2021 04:46:14 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Apr 2021 21:46:13 -0700
+Date:   Wed, 14 Apr 2021 07:46:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Remove four
+ set but not used variables
+Message-ID: <20210414044607.GN6021@kadam>
+References: <20210413184222.19539-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-References: <20210413010252.2255812-1-lzye@google.com> <a2be79bcf1ce93096d6843a0856927cda65d4842.camel@hadess.net>
-In-Reply-To: <a2be79bcf1ce93096d6843a0856927cda65d4842.camel@hadess.net>
-From:   Chris Ye <lzye@google.com>
-Date:   Tue, 13 Apr 2021 21:41:52 -0700
-Message-ID: <CAFFudd+ULT9TLEeXZ43J2dhk3de7aMr1nX6swsD0A8uNC8TQQg@mail.gmail.com>
-Subject: Re: [PATCH] [v4] Input: Add "Select" button to Microsoft Xbox One controller.
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413184222.19539-1-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104140030
+X-Proofpoint-ORIG-GUID: SEk8t2KZyBBIMFyhEhdRw9-czFb0Vay5
+X-Proofpoint-GUID: SEk8t2KZyBBIMFyhEhdRw9-czFb0Vay5
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1031
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That line was using tab + 4 spaces on the left and was reformatted to
-use 2 tabs.
-If you don't like it I've uploaded patch v5 not touching that line.
+On Tue, Apr 13, 2021 at 08:42:22PM +0200, Fabio M. De Francesco wrote:
+> Removed four variables that were set but not used.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> index 77f8353c5ce5..fad6a3bfe07c 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> @@ -3199,12 +3199,10 @@ static void hw_var_set_mlme_join(struct adapter *padapter, u8 variable, u8 *val)
+>  
+>  void CCX_FwC2HTxRpt_8723b(struct adapter *padapter, u8 *pdata, u8 len)
+>  {
+> -	u8 seq_no;
+>  
+>  #define	GET_8723B_C2H_TX_RPT_LIFE_TIME_OVER(_Header)	LE_BITS_TO_1BYTE((_Header + 0), 6, 1)
+>  #define	GET_8723B_C2H_TX_RPT_RETRY_OVER(_Header)	LE_BITS_TO_1BYTE((_Header + 0), 7, 1)
+>  
+> -	seq_no = *(pdata+6);
+>  
+>  	if (GET_8723B_C2H_TX_RPT_RETRY_OVER(pdata) | GET_8723B_C2H_TX_RPT_LIFE_TIME_OVER(pdata)) {
 
+Now we have two blank lines in a row.  Please delete one.
 
-On Tue, Apr 13, 2021 at 5:34 AM Bastien Nocera <hadess@hadess.net> wrote:
->
-> On Tue, 2021-04-13 at 01:02 +0000, Chris Ye wrote:
-> > Add "Select" button input capability and input event mapping for
-> > Microsoft Xbox One controller. From product site this is also
-> > referred as
-> > "Share" button.
-> > Fixed Microsoft Xbox One controller select button not working under
-> > USB
-> > connection.
-> >
-> > Signed-off-by: Chris Ye <lzye@google.com>
-> > ---
-> >  drivers/input/joystick/xpad.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/input/joystick/xpad.c
-> > b/drivers/input/joystick/xpad.c
-> > index 9f0d07dcbf06..99cb8bb78570 100644
-> > --- a/drivers/input/joystick/xpad.c
-> > +++ b/drivers/input/joystick/xpad.c
-> > @@ -79,6 +79,7 @@
-> >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
-> >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
-> >  #define MAP_STICKS_TO_NULL             (1 << 2)
-> > +#define MAP_SELECT_BUTTON              (1 << 3)
-> >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
-> > |                  \
-> >                                 MAP_TRIGGERS_TO_BUTTONS |
-> > MAP_STICKS_TO_NULL)
-> >
-> > @@ -130,6 +131,7 @@ static const struct xpad_device {
-> >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
-> > XTYPE_XBOXONE },
-> >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0,
-> > XTYPE_XBOXONE },
-> >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
-> > MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
-> > +       { 0x045e, 0x0b12, "Microsoft Xbox One X pad",
-> > MAP_SELECT_BUTTON, XTYPE_XBOXONE },
-> >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360
-> > },
-> >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360
-> > },
-> >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360
-> > },
-> > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct
-> > usb_xpad *xpad, u16 cmd, unsigned char
-> >         /* menu/view buttons */
-> >         input_report_key(dev, BTN_START,  data[4] & 0x04);
-> >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
-> > +       if (xpad->mapping & MAP_SELECT_BUTTON)
-> > +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
-> >
-> >         /* buttons A,B,X,Y */
-> >         input_report_key(dev, BTN_A,    data[4] & 0x10);
-> > @@ -1669,9 +1673,11 @@ static int xpad_init_input(struct usb_xpad
-> > *xpad)
-> >
-> >         /* set up model-specific ones */
-> >         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
-> > XTYPE_XBOX360W ||
-> > -           xpad->xtype == XTYPE_XBOXONE) {
-> > +               xpad->xtype == XTYPE_XBOXONE) {
->
-> Why the indentation change here?
->
-> >                 for (i = 0; xpad360_btn[i] >= 0; i++)
-> >                         input_set_capability(input_dev, EV_KEY,
-> > xpad360_btn[i]);
-> > +               if (xpad->mapping & MAP_SELECT_BUTTON)
-> > +                       input_set_capability(input_dev, EV_KEY,
-> > KEY_RECORD);
-> >         } else {
-> >                 for (i = 0; xpad_btn[i] >= 0; i++)
-> >                         input_set_capability(input_dev, EV_KEY,
-> > xpad_btn[i]);
->
->
+regards,
+dan carpenter
+
