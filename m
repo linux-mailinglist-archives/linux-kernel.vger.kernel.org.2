@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EF435ED76
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2222F35ED77
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349302AbhDNGqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbhDNGq2 (ORCPT
+        id S1349312AbhDNGqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:46:37 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:33172 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349297AbhDNGqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:46:28 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CFBC061574;
-        Tue, 13 Apr 2021 23:46:06 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e8f005acf25a97a6c1ba1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:5acf:25a9:7a6c:1ba1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90B791EC03A0;
-        Wed, 14 Apr 2021 08:46:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618382762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qajLDFvAjN4vrpgqjvft79r59EaS59vt+FlFTgJ6tXA=;
-        b=R0rJgdvfm7210YHOaXgB5qyf3vYsUJO6RAV/1BWLT9SA4vex+uBnL3WOC/1GOGaZYn496Z
-        8eS/66RZJqfH1jSAkGgSrsIQ66sTUpUbwWQilbBEK38SkhFOWdpYRLXnjosXFjnjwEX+U/
-        0NraHyFYTBsHwARQD/akWvgl8JlmwF4=
-Date:   Wed, 14 Apr 2021 08:45:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Remove me from IDE/ATAPI section
-Message-ID: <20210414064559.GA10709@zn.tnic>
-References: <20210412090346.31213-1-bp@alien8.de>
- <20210414063925.GA1607069@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210414063925.GA1607069@infradead.org>
+        Wed, 14 Apr 2021 02:46:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UVWI-Bn_1618382763;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVWI-Bn_1618382763)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 14 Apr 2021 14:46:08 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mark@fasheh.com
+Cc:     jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ocfs2/dlm: remove unused function
+Date:   Wed, 14 Apr 2021 14:46:01 +0800
+Message-Id: <1618382761-5784-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 07:39:25AM +0100, Christoph Hellwig wrote:
-> On Mon, Apr 12, 2021 at 11:03:46AM +0200, Borislav Petkov wrote:
-> >  IDE/ATAPI DRIVERS
-> > -M:	Borislav Petkov <bp@alien8.de>
-> >  L:	linux-ide@vger.kernel.org
-> >  S:	Maintained
-> >  F:	Documentation/cdrom/ide-cd.rst
-> 
-> The Maintained should also become Orphaned then.
+Fix the following clang warning:
 
-Ok, will correct and push through tip this week.
+fs/ocfs2/dlm/dlmrecovery.c:129:20: warning: unused function
+'dlm_reset_recovery' [-Wunused-function].
 
-Thx.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/ocfs2/dlm/dlmrecovery.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
+diff --git a/fs/ocfs2/dlm/dlmrecovery.c b/fs/ocfs2/dlm/dlmrecovery.c
+index 4b566e8..afc5173 100644
+--- a/fs/ocfs2/dlm/dlmrecovery.c
++++ b/fs/ocfs2/dlm/dlmrecovery.c
+@@ -126,13 +126,6 @@ static inline void __dlm_reset_recovery(struct dlm_ctxt *dlm)
+ 	dlm_set_reco_master(dlm, O2NM_INVALID_NODE_NUM);
+ }
+ 
+-static inline void dlm_reset_recovery(struct dlm_ctxt *dlm)
+-{
+-	spin_lock(&dlm->spinlock);
+-	__dlm_reset_recovery(dlm);
+-	spin_unlock(&dlm->spinlock);
+-}
+-
+ /* Worker function used during recovery. */
+ void dlm_dispatch_work(struct work_struct *work)
+ {
 -- 
-Regards/Gruss,
-    Boris.
+1.8.3.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
