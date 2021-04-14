@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD68835F28B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EC335F28D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346583AbhDNL3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
+        id S1350642AbhDNL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343964AbhDNL3K (ORCPT
+        with ESMTP id S1350543AbhDNL3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:29:10 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCB8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:46 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id i3-20020adffc030000b02900ffd75bf10aso936888wrr.14
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:46 -0700 (PDT)
+        Wed, 14 Apr 2021 07:29:11 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6F3C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:48 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id p5so823912qvr.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:28:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=VkOAwUtZ9qQlBvfTOOD6U+Kd6iuYzrcUXQ5MLQjL3Vk=;
-        b=vw/WsGYwcg3V6fgb6+UpR6Q15BByBnR9HfL2yOI4vfEug+KXzYobTC1Zpr8wmWpg6B
-         cRDjsqfrXgxfZH6+DAeEmF0I136WvJoOecQ1tMIdX37Rq2J2ZMAXdMwzBbuzw6QWlo1H
-         BdYUrsTePab2tpDL670jQ2blnmCXmqKDrAL6AR4TtpfGvCJH6J+UYcOzJTlf+F+5Utbq
-         q6ueoRMAuRcbhRLj1C9lZH6LEmK81dmxxHYQMTcjwh5Y39UHm4A6Q2E4mbn0YvYW+hQS
-         VoNZ+kb0oomzWX0mRNjdNb4tm8xdPY4yts0mc7pkJzNX9ebqhCOYtIJ6JYk7JDxeUilG
-         NTFA==
+        bh=mMtpkoi7Dg1KI2BVOCvCvQkqmnY+V0ww8kwlTHqSHyQ=;
+        b=ZaPyMeCkuGUrEuXfuFpHu0vuIW42WqZyOyAqTAZad0QEZt52MwoQNefncM5i6DdEhY
+         wofZZj79o7BVkE06wj1dn80ne2ciLKmKAOrEBBIl2y56QTF+SWk5M+jEbegVVn6AiGix
+         4ccfQVtHnxgJSyWsapinxg6VBgRE+fXzCudwxGaQGOCx/ENcKRuxEzdYRK9DSDTJ1bnN
+         CCCqZKC4iDAPORo+lS/3pvFByAlSMmwaTHnEkjVmeOVB3vrKOTp/HX/H3q1XjJ2k2c4D
+         mSdzK4bZ1LBFlBlpeDx5mkg9QpB/hyqRevdMnCbAVviJgdSQb8y5gOGpHui3GR+6Qxae
+         wZOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=VkOAwUtZ9qQlBvfTOOD6U+Kd6iuYzrcUXQ5MLQjL3Vk=;
-        b=c3Si/ZK83iwagdKkXpxOiTvHSgP9zGq1owynr0fBzYxgnZ5qViRDTRMuq/08SB2RBm
-         8lLAKYh749Fgx+wO2Nv68Cvig9s4sypKVLLQPBds/zDL9m/g0rXhsruJFmYYLEmpeuo9
-         89spLc5w26x3Wxy3L7q4L8xplit0ZGfj9vXnsjuQX/DFwOjSs0JGP6kLfLLIt2EW3uO0
-         Si/vbq8l20i4csMgyaqATLhMWc/xKWcxLaChEQqypR5xOPzFd0qGOnZAqZ6nuDi+DkyK
-         fM5bv4wp0BzFuCb+N4H5NUMWi78XWYb7PpEocoY+j+jaMH4ZrEQCIehyVg7umLT7Dcy8
-         lzug==
-X-Gm-Message-State: AOAM533no6OyGC2/IRYYEdm3vWuKgssfOrpKu7c+WRzyyzrz/V8YWHS3
-        lZAP+Uyo9wWxnRfokRh3FYYw+0XPDA==
-X-Google-Smtp-Source: ABdhPJx+fmVeZ8di+ClCYJADr4FSujA94daf3kIFsEJ9mpuqBs6N4pj6BRHFYy096IGhDpPVt7R9U/ykig==
+        bh=mMtpkoi7Dg1KI2BVOCvCvQkqmnY+V0ww8kwlTHqSHyQ=;
+        b=kf0FiQ4GZuPbxA0ZTwnNS8umWyuVKtvwla7bPoYkJwFuFM8jmr2aw6lfPWIfHTdSe2
+         UDusXFnu+raKpqz1V1TNPflgIRY1lgyjhHYa3ZguUwYEe1PvKcGrd6WeuIGxMt9DCuVn
+         RoTlntNgxkKLT6MoOEA2AXB/rzE77qPtBUaqYEZupALVoGHbVY1TErJyjn7gp/Pfnbid
+         loU0ZeQVvnUT33+hFlNBwW2KxAAUxSPV7sCtFJB/WxvSeZStQiU5dqmoixdteZQSAqv5
+         Vy9fCQr+wkbmvz1oXJclHrxGo3yIFe7OmAfGFA8JYEQ+dpoDad4PHHXE/QW5J/jQihGT
+         BpTg==
+X-Gm-Message-State: AOAM531k5Ysp7mlqW/LZv0LZfQmtNu4E9eAf8TsXwiKIPnTVd8uooklz
+        lgQFe7hL1/3CbJIunUCwi0PQ263P6w==
+X-Google-Smtp-Source: ABdhPJygonIhCHuloKZW4R6VhI27UX+vRiQAVBm+aaZ0pobVDsj0B5S5LlTi3xqnIytztGQVwxl0q05+PQ==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:4051:8ddb:9de4:c1bb])
- (user=elver job=sendgmr) by 2002:a05:600c:4b92:: with SMTP id
- e18mr2621686wmp.150.1618399725592; Wed, 14 Apr 2021 04:28:45 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 13:28:17 +0200
+ (user=elver job=sendgmr) by 2002:a05:6214:248f:: with SMTP id
+ gi15mr37426775qvb.40.1618399727735; Wed, 14 Apr 2021 04:28:47 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 13:28:18 +0200
 In-Reply-To: <20210414112825.3008667-1-elver@google.com>
-Message-Id: <20210414112825.3008667-2-elver@google.com>
+Message-Id: <20210414112825.3008667-3-elver@google.com>
 Mime-Version: 1.0
 References: <20210414112825.3008667-1-elver@google.com>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH 1/9] kcsan: Simplify value change detection
+Subject: [PATCH 2/9] kcsan: Distinguish kcsan_report() calls
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, paulmck@kernel.org
 Cc:     mark.rutland@arm.com, will@kernel.org, dvyukov@google.com,
@@ -64,115 +64,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mark Rutland <mark.rutland@arm.com>
 
-In kcsan_setup_watchpoint() we store snapshots of a watched value into a
-union of u8/u16/u32/u64 sized fields, modify this in place using a
-consistent field, then later check for any changes via the u64 field.
+Currently kcsan_report() is used to handle three distinct cases:
 
-We can achieve the safe effect more simply by always treating the field
-as a u64, as smaller values will be zero-extended. As the values are
-zero-extended, we don't need to truncate the access_mask when we apply
-it, and can always apply the full 64-bit access_mask to the 64-bit
-value.
+* The caller hit a watchpoint when attempting an access. Some
+  information regarding the caller and access are recorded, but no
+  output is produced.
 
-Finally, we can store the two snapshots and calculated difference
-separately, which makes the code a little easier to read, and will
-permit reporting the old/new values in subsequent patches.
+* A caller which previously setup a watchpoint detected that the
+  watchpoint has been hit, and possibly detected a change to the
+  location in memory being watched. This may result in output reporting
+  the interaction between this caller and the caller which hit the
+  watchpoint.
+
+* A caller detected a change to a modification to a memory location
+  which wasn't detected by a watchpoint, for which there is no
+  information on the other thread. This may result in output reporting
+  the unexpected change.
+
+... depending on the specific case the caller has distinct pieces of
+information available, but the prototype of kcsan_report() has to handle
+all three cases. This means that in some cases we pass redundant
+information, and in others we don't pass all the information we could
+pass. This also means that the report code has to demux these three
+cases.
+
+So that we can pass some additional information while also simplifying
+the callers and report code, add separate kcsan_report_*() functions for
+the distinct cases, updating callers accordingly. As the watchpoint_idx
+is unused in the case of kcsan_report_unknown_origin(), this passes a
+dummy value into kcsan_report(). Subsequent patches will refactor the
+report code to avoid this.
 
 There should be no functional change as a result of this patch.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+[ elver@google.com: try to make kcsan_report_*() names more descriptive ]
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- kernel/kcsan/core.c | 40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+ kernel/kcsan/core.c   | 12 ++++--------
+ kernel/kcsan/kcsan.h  | 10 ++++++----
+ kernel/kcsan/report.c | 26 +++++++++++++++++++++++---
+ 3 files changed, 33 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 45c821d4e8bd..d360183002d6 100644
+index d360183002d6..6fe1513e1e6a 100644
 --- a/kernel/kcsan/core.c
 +++ b/kernel/kcsan/core.c
-@@ -407,12 +407,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	const bool is_write = (type & KCSAN_ACCESS_WRITE) != 0;
- 	const bool is_assert = (type & KCSAN_ACCESS_ASSERT) != 0;
- 	atomic_long_t *watchpoint;
--	union {
--		u8 _1;
--		u16 _2;
--		u32 _4;
--		u64 _8;
--	} expect_value;
-+	u64 old, new, diff;
- 	unsigned long access_mask;
- 	enum kcsan_value_change value_change = KCSAN_VALUE_CHANGE_MAYBE;
- 	unsigned long ua_flags = user_access_save();
-@@ -468,19 +463,19 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	 * Read the current value, to later check and infer a race if the data
- 	 * was modified via a non-instrumented access, e.g. from a device.
- 	 */
--	expect_value._8 = 0;
-+	old = 0;
- 	switch (size) {
- 	case 1:
--		expect_value._1 = READ_ONCE(*(const u8 *)ptr);
-+		old = READ_ONCE(*(const u8 *)ptr);
- 		break;
- 	case 2:
--		expect_value._2 = READ_ONCE(*(const u16 *)ptr);
-+		old = READ_ONCE(*(const u16 *)ptr);
- 		break;
- 	case 4:
--		expect_value._4 = READ_ONCE(*(const u32 *)ptr);
-+		old = READ_ONCE(*(const u32 *)ptr);
- 		break;
- 	case 8:
--		expect_value._8 = READ_ONCE(*(const u64 *)ptr);
-+		old = READ_ONCE(*(const u64 *)ptr);
- 		break;
- 	default:
- 		break; /* ignore; we do not diff the values */
-@@ -506,33 +501,30 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	 * racy access.
- 	 */
- 	access_mask = get_ctx()->access_mask;
-+	new = 0;
- 	switch (size) {
- 	case 1:
--		expect_value._1 ^= READ_ONCE(*(const u8 *)ptr);
--		if (access_mask)
--			expect_value._1 &= (u8)access_mask;
-+		new = READ_ONCE(*(const u8 *)ptr);
- 		break;
- 	case 2:
--		expect_value._2 ^= READ_ONCE(*(const u16 *)ptr);
--		if (access_mask)
--			expect_value._2 &= (u16)access_mask;
-+		new = READ_ONCE(*(const u16 *)ptr);
- 		break;
- 	case 4:
--		expect_value._4 ^= READ_ONCE(*(const u32 *)ptr);
--		if (access_mask)
--			expect_value._4 &= (u32)access_mask;
-+		new = READ_ONCE(*(const u32 *)ptr);
- 		break;
- 	case 8:
--		expect_value._8 ^= READ_ONCE(*(const u64 *)ptr);
--		if (access_mask)
--			expect_value._8 &= (u64)access_mask;
-+		new = READ_ONCE(*(const u64 *)ptr);
- 		break;
- 	default:
- 		break; /* ignore; we do not diff the values */
+@@ -380,9 +380,7 @@ static noinline void kcsan_found_watchpoint(const volatile void *ptr,
+ 
+ 	if (consumed) {
+ 		kcsan_save_irqtrace(current);
+-		kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_MAYBE,
+-			     KCSAN_REPORT_CONSUMED_WATCHPOINT,
+-			     watchpoint - watchpoints);
++		kcsan_report_set_info(ptr, size, type, watchpoint - watchpoints);
+ 		kcsan_restore_irqtrace(current);
+ 	} else {
+ 		/*
+@@ -558,8 +556,8 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 		if (is_assert && value_change == KCSAN_VALUE_CHANGE_TRUE)
+ 			atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ASSERT_FAILURES]);
+ 
+-		kcsan_report(ptr, size, type, value_change, KCSAN_REPORT_RACE_SIGNAL,
+-			     watchpoint - watchpoints);
++		kcsan_report_known_origin(ptr, size, type, value_change,
++					  watchpoint - watchpoints);
+ 	} else if (value_change == KCSAN_VALUE_CHANGE_TRUE) {
+ 		/* Inferring a race, since the value should not have changed. */
+ 
+@@ -568,9 +566,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 			atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ASSERT_FAILURES]);
+ 
+ 		if (IS_ENABLED(CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN) || is_assert)
+-			kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_TRUE,
+-				     KCSAN_REPORT_RACE_UNKNOWN_ORIGIN,
+-				     watchpoint - watchpoints);
++			kcsan_report_unknown_origin(ptr, size, type);
  	}
  
-+	diff = old ^ new;
-+	if (access_mask)
-+		diff &= access_mask;
-+
- 	/* Were we able to observe a value-change? */
--	if (expect_value._8 != 0)
-+	if (diff != 0)
- 		value_change = KCSAN_VALUE_CHANGE_TRUE;
+ 	/*
+diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
+index 9881099d4179..2ee43fd5d6a4 100644
+--- a/kernel/kcsan/kcsan.h
++++ b/kernel/kcsan/kcsan.h
+@@ -136,10 +136,12 @@ enum kcsan_report_type {
+ };
  
- 	/* Check if this access raced with another. */
+ /*
+- * Print a race report from thread that encountered the race.
++ * Notify the report code that a race occurred.
+  */
+-extern void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+-			 enum kcsan_value_change value_change,
+-			 enum kcsan_report_type type, int watchpoint_idx);
++void kcsan_report_set_info(const volatile void *ptr, size_t size, int access_type,
++			   int watchpoint_idx);
++void kcsan_report_known_origin(const volatile void *ptr, size_t size, int access_type,
++			       enum kcsan_value_change value_change, int watchpoint_idx);
++void kcsan_report_unknown_origin(const volatile void *ptr, size_t size, int access_type);
+ 
+ #endif /* _KERNEL_KCSAN_KCSAN_H */
+diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
+index 13dce3c664d6..5232bf218ea7 100644
+--- a/kernel/kcsan/report.c
++++ b/kernel/kcsan/report.c
+@@ -598,9 +598,9 @@ static noinline bool prepare_report(unsigned long *flags,
+ 	}
+ }
+ 
+-void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+-		  enum kcsan_value_change value_change,
+-		  enum kcsan_report_type type, int watchpoint_idx)
++static void kcsan_report(const volatile void *ptr, size_t size, int access_type,
++			 enum kcsan_value_change value_change,
++			 enum kcsan_report_type type, int watchpoint_idx)
+ {
+ 	unsigned long flags = 0;
+ 	const struct access_info ai = {
+@@ -645,3 +645,23 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+ out:
+ 	kcsan_enable_current();
+ }
++
++void kcsan_report_set_info(const volatile void *ptr, size_t size, int access_type,
++			   int watchpoint_idx)
++{
++	kcsan_report(ptr, size, access_type, KCSAN_VALUE_CHANGE_MAYBE,
++		     KCSAN_REPORT_CONSUMED_WATCHPOINT, watchpoint_idx);
++}
++
++void kcsan_report_known_origin(const volatile void *ptr, size_t size, int access_type,
++			       enum kcsan_value_change value_change, int watchpoint_idx)
++{
++	kcsan_report(ptr, size, access_type, value_change,
++		     KCSAN_REPORT_RACE_SIGNAL, watchpoint_idx);
++}
++
++void kcsan_report_unknown_origin(const volatile void *ptr, size_t size, int access_type)
++{
++	kcsan_report(ptr, size, access_type, KCSAN_VALUE_CHANGE_TRUE,
++		     KCSAN_REPORT_RACE_UNKNOWN_ORIGIN, 0);
++}
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
