@@ -2,247 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADC835FD0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697F135FD10
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhDNVST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:18:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:21136 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230465AbhDNVSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:18:17 -0400
-IronPort-SDR: jx9r/j6nRv7AgzzVQoY0UjD/YxwRZnUOD15bX6zZq2lyMveUc/xRleidnkmA7P+Lk6Ew6OZzOu
- qjwrGUJMir5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="174236545"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="174236545"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 14:17:55 -0700
-IronPort-SDR: ZOtcfsai3EFKRmMbSrXh28LlnXx+3kkgAap8KAK2gUGmy7gm7LxYNDtkV/bb3H+PH2o+TKUvz8
- MICFSBWf/dYg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="532912219"
-Received: from lkp-server02.sh.intel.com (HELO fa9c8fcc3464) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 14 Apr 2021 14:17:54 -0700
-Received: from kbuild by fa9c8fcc3464 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lWmtV-0000Ka-AJ; Wed, 14 Apr 2021 21:17:53 +0000
-Date:   Thu, 15 Apr 2021 05:17:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 16854b567dff767e5ec5e6dc23021271136733a5
-Message-ID: <60775bdf.LO5VqtJtw/FAPOdK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231593AbhDNVSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhDNVS2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 17:18:28 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50200C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:18:06 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C7EE7891AE;
+        Thu, 15 Apr 2021 09:17:59 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1618435079;
+        bh=jj0BPZvY3W5uUaK47/HeoEBDslu2QxZ23CCxkeSWl3M=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=HBDc8bXPHPzPLGC3CVGMne7f4OY49WAHJZln+8urA50ledu33Ode6phxm7CpeDlO1
+         yU9slimxy1vB6DrOyzaqlGsbxpN1BG/Hdhsl01UM78hUu5Mea5FPPmlmICBWXtN8ez
+         gqzsipYHEJCIYYQkNlHaBwotm0157C8ABI4ky5HHrMRo7LKnAnHh+77q8GcMfd5hMq
+         TkmiKF2I2Q1VLzz+ZM6bxTHYyaTCzjeQ2EYDy2azSHsTnV45vhbjkE6Y4Js1EBHV0K
+         LaiEV1hrAga7ouyj4jzDk4uD7IGWb2EvF11I9aB8K2UfhdFQhMb4yM/xS6ZbGHXpgY
+         kkuZdEUgx4Ovw==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60775c070001>; Thu, 15 Apr 2021 09:17:59 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 15 Apr 2021 09:17:59 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.015; Thu, 15 Apr 2021 09:17:59 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wsa@kernel.org" <wsa@kernel.org>
+Subject: Re: [PATCH v1 2/4] i2c: mpc: Remove CONFIG_PM_SLEEP ifdeffery
+Thread-Topic: [PATCH v1 2/4] i2c: mpc: Remove CONFIG_PM_SLEEP ifdeffery
+Thread-Index: AQHXMHKa81ZV92D9rkOWsO5qOgYw4qqyU4eAgADR4ICAAJfTgA==
+Date:   Wed, 14 Apr 2021 21:17:59 +0000
+Message-ID: <1a41249d-997e-9ba6-6e78-19f7d22463f4@alliedtelesis.co.nz>
+References: <20210413143756.60138-1-andriy.shevchenko@linux.intel.com>
+ <20210413143756.60138-2-andriy.shevchenko@linux.intel.com>
+ <c6bae18f-a83f-675d-78a3-a4441b8c46f3@alliedtelesis.co.nz>
+ <YHbcq31AVvuFq/9A@smile.fi.intel.com>
+In-Reply-To: <YHbcq31AVvuFq/9A@smile.fi.intel.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <62F8BE64B0A40C43998887F1ABC8A3CA@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=uBRA9nhwTqNYg-qt4OQA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 16854b567dff767e5ec5e6dc23021271136733a5  x86/pat: Do not compile stubbed functions when X86_PAT is off
-
-elapsed time: 729m
-
-configs tested: 185
-configs skipped: 136
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-arc                        vdk_hs38_defconfig
-sparc                            alldefconfig
-m68k                          sun3x_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                         bigsur_defconfig
-powerpc                 mpc8272_ads_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                      cm5200_defconfig
-mips                        maltaup_defconfig
-xtensa                    smp_lx200_defconfig
-mips                           rs90_defconfig
-arc                          axs101_defconfig
-mips                  cavium_octeon_defconfig
-mips                        jmr3927_defconfig
-xtensa                           alldefconfig
-xtensa                  cadence_csp_defconfig
-powerpc                       maple_defconfig
-arm                          ep93xx_defconfig
-mips                            e55_defconfig
-ia64                      gensparse_defconfig
-mips                           gcw0_defconfig
-arm                           corgi_defconfig
-sh                           se7724_defconfig
-powerpc                      obs600_defconfig
-arm                            mmp2_defconfig
-arc                        nsim_700_defconfig
-sh                          urquell_defconfig
-arm                       cns3420vb_defconfig
-powerpc                          g5_defconfig
-arm                         palmz72_defconfig
-mips                         tb0287_defconfig
-arm                          pxa3xx_defconfig
-sh                           se7722_defconfig
-powerpc                     ep8248e_defconfig
-sh                         ap325rxa_defconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-arm                         s3c2410_defconfig
-sh                          rsk7264_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                        spear6xx_defconfig
-mips                      bmips_stb_defconfig
-mips                          malta_defconfig
-arm                            zeus_defconfig
-mips                     cu1830-neo_defconfig
-arm                          gemini_defconfig
-microblaze                          defconfig
-riscv                          rv32_defconfig
-riscv                            alldefconfig
-arm                          exynos_defconfig
-xtensa                          iss_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                     ppa8548_defconfig
-arm                           h3600_defconfig
-powerpc                 mpc837x_mds_defconfig
-xtensa                              defconfig
-sh                   rts7751r2dplus_defconfig
-arm                      jornada720_defconfig
-alpha                            alldefconfig
-powerpc                   currituck_defconfig
-mips                          ath25_defconfig
-mips                            gpr_defconfig
-mips                           ci20_defconfig
-powerpc                 mpc836x_rdk_defconfig
-powerpc                    sam440ep_defconfig
-sh                          rsk7203_defconfig
-sh                            hp6xx_defconfig
-powerpc64                           defconfig
-powerpc                      arches_defconfig
-h8300                            alldefconfig
-powerpc                 mpc837x_rdb_defconfig
-arm                      tct_hammer_defconfig
-sh                           se7751_defconfig
-openrisc                    or1ksim_defconfig
-arm                         axm55xx_defconfig
-m68k                       m5475evb_defconfig
-mips                     decstation_defconfig
-powerpc                     tqm8548_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                      ppc64e_defconfig
-arm                          badge4_defconfig
-arm                         at91_dt_defconfig
-arm                        realview_defconfig
-m68k                       m5275evb_defconfig
-arc                           tb10x_defconfig
-powerpc                   motionpro_defconfig
-m68k                          hp300_defconfig
-sh                          landisk_defconfig
-mips                     loongson1b_defconfig
-sparc                            allyesconfig
-powerpc                      acadia_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                            q40_defconfig
-m68k                       m5249evb_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                    socrates_defconfig
-mips                           jazz_defconfig
-sh                        apsh4ad0a_defconfig
-um                            kunit_defconfig
-mips                         cobalt_defconfig
-powerpc                         ps3_defconfig
-powerpc                       eiger_defconfig
-powerpc                     mpc512x_defconfig
-arm                             pxa_defconfig
-arm                         hackkit_defconfig
-mips                     loongson1c_defconfig
-arc                        nsimosci_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210414
-i386                 randconfig-a006-20210414
-i386                 randconfig-a001-20210414
-i386                 randconfig-a005-20210414
-i386                 randconfig-a004-20210414
-i386                 randconfig-a002-20210414
-x86_64               randconfig-a014-20210414
-x86_64               randconfig-a015-20210414
-x86_64               randconfig-a011-20210414
-x86_64               randconfig-a013-20210414
-x86_64               randconfig-a012-20210414
-x86_64               randconfig-a016-20210414
-i386                 randconfig-a015-20210414
-i386                 randconfig-a014-20210414
-i386                 randconfig-a013-20210414
-i386                 randconfig-a012-20210414
-i386                 randconfig-a016-20210414
-i386                 randconfig-a011-20210414
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20210414
-x86_64               randconfig-a002-20210414
-x86_64               randconfig-a005-20210414
-x86_64               randconfig-a001-20210414
-x86_64               randconfig-a006-20210414
-x86_64               randconfig-a004-20210414
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+DQpPbiAxNS8wNC8yMSAxMjoxNCBhbSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOg0KPiBPbiBUdWUs
+IEFwciAxMywgMjAyMSBhdCAxMTo0MzoyNVBNICswMDAwLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0K
+Pj4gT24gMTQvMDQvMjEgMjozNyBhbSwgQW5keSBTaGV2Y2hlbmtvIHdyb3RlOg0KPj4+IFVzZSBf
+X21heWJlX3VudXNlZCBmb3IgdGhlIHN1c3BlbmQoKS9yZXN1bWUoKSBob29rcyBhbmQgZ2V0IHJp
+ZCBvZg0KPj4+IHRoZSBDT05GSUdfUE1fU0xFRVAgaWZkZWZmZXJ5IHRvIGltcHJvdmUgdGhlIGNv
+ZGUuDQo+PiBUaGlzIGhhcyBhIHRyaXZpYWwgY29uZmxpY3Qgd2l0aCBteSBzZXJpZXMgYmVjYXVz
+ZSBJJ20gYWxzbyB0b3VjaGluZw0KPj4gc3RydWN0IG1wY19pMmMuIGdpdCBhbSAtMyBzZWVtcyB0
+byBkZWFsIHdpdGggaXQgYnV0IHdvdWxkIGl0IGJlIGVhc2llcg0KPj4gaWYgSSBwaWNrZWQgdXAg
+dGhlc2UgNCBjaGFuZ2VzIGFuZCBpbmNsdWRlZCB0aGVtIHdpdGggbXkgbmV4dCBzdWJtaXNzaW9u
+Pw0KPiBJdCB3b3VsZCBiZSBpZGVhbCB0byBtZSENCk9LIEkndmUgcGlja2VkIHRoZW0gdXAuDQo+
+Pj4gLSNkZWZpbmUgTVBDX0kyQ19QTV9PUFMJKCZtcGNfaTJjX3BtX29wcykNCj4+PiAtI2Vsc2UN
+Cj4+PiAtI2RlZmluZSBNUENfSTJDX1BNX09QUwlOVUxMDQo+Pj4gLSNlbmRpZg0KPj4+ICAgIA0K
+Pj4+ICAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXBjX2kyY19kYXRhIG1wY19pMmNfZGF0YV81MTJ4
+ID0gew0KPj4+ICAgIAkuc2V0dXAgPSBtcGNfaTJjX3NldHVwXzUxMngsDQo+PiBUaGVyZSdzIGEg
+cmVmZXJlbmNlIHRvIE1QQ19JMkNfUE1fT1BTIGluIG1wY19pMmNfZHJpdmVyIHdoaWNoIG5lZWRz
+DQo+PiBjaGFuZ2luZyBJIHRoaW5rIHRoZSBmb2xsb3dpbmcgaXMgbmVlZGVkDQo+IFRydWUuIHNv
+cnJ5IHRoYXQgbXkgYnVpbGQgdGVzdCBoYWQgYmVlbiBicm9rZW4uDQo+IFRlbGwgbWUgaWYgeW91
+IHdhbnQgdjIgd2l0aCB0aGlzIGZpeGVkIG9yIHlvdSBtYXkgZm9sZCB0aGF0IGNoYW5nZSBzaW5j
+ZSB0aGUNCj4gYWJvdmUgYWdyZWVtZW50Lg0KPg0KSSBjYW4gZm9sZCB0aGUgZml4IGJlbG93IGlu
+LiBObyBuZWVkIGZvciBhIHYyIGZyb20geW91Lg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJj
+L2J1c3Nlcy9pMmMtbXBjLmMgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1wYy5jDQo+PiBpbmRl
+eCAxMzA4Zjc0OWRjNzUuLjdmZGUxMzQ3MmMwOSAxMDA2NDQNCj4+IC0tLSBhL2RyaXZlcnMvaTJj
+L2J1c3Nlcy9pMmMtbXBjLmMNCj4+ICsrKyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXBjLmMN
+Cj4+IEBAIC04NjIsNyArODYyLDcgQEAgc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXBj
+X2kyY19kcml2ZXIgPSB7DQo+PiAgIMKgwqDCoMKgwqDCoMKgIC5kcml2ZXIgPSB7DQo+PiAgIMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAubmFtZSA9IERSVl9OQU1FLA0KPj4gICDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLm9mX21hdGNoX3RhYmxlID0gbXBjX2kyY19vZl9t
+YXRjaCwNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5wbSA9IE1QQ19JMkNfUE1f
+T1BTLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLnBtID0gJm1wY19pMmNfcG1f
+b3BzLA0KPj4gICDCoMKgwqDCoMKgwqDCoCB9LA0KPj4gICDCoH07DQo+Pg0KPj4=
