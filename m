@@ -2,96 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20C735EC19
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A0B35EC22
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345143AbhDNFQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 01:16:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:50443 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230375AbhDNFQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 01:16:49 -0400
-IronPort-SDR: vzT9Y5k00UbXofXnel46hwqpXnxr3LIjLc/y1eWma/i5HQVp9YIQWUpEvvTGuhT+zds+dpf1rX
- 2/tN39lU8J3Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="191381225"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="191381225"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 22:16:28 -0700
-IronPort-SDR: zIn7yGIa9lzVw7ZoIYGOoRquID06vW5z2PwC0CI3JOuJq4rstXq9N4aywsatHcI9CZ5iyu8cpL
- mccfmSYC9/aw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="600664550"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 13 Apr 2021 22:16:25 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lWXt2-0001aE-Oi; Wed, 14 Apr 2021 05:16:24 +0000
-Date:   Wed, 14 Apr 2021 13:15:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     kbuild-all@lists.01.org, Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH] perf/core: fix memdup_user.cocci warnings
-Message-ID: <20210414051533.GA94059@4510e896ae82>
-References: <20210413044133.617921-2-namhyung@kernel.org>
+        id S1347223AbhDNFVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 01:21:36 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:29683 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347145AbhDNFVa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 01:21:30 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 8421C763B1;
+        Wed, 14 Apr 2021 08:21:06 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1618377666;
+        bh=oSPA1UM+2S78rshsSEmWZB4yTKUB4yLonrDG96WldRg=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=g+rY1yaen0YKSyRqOOcBFX/N607AzUoFKfBXImSWUw6jUjTb6IMd1vK515hdcnl09
+         SELQy8hUNUcSIzAfNnaSACnvuxPulKm6mR0GJfrp9k/LbIi5NzVeTUVBYB/828UA8C
+         Nh7h4VKUkhkr3IArux/jbyZrHsQcEbOs484lqyYEGuGfEB5wLGV4qV2Ccb9w1NW1/K
+         FnMGxy0cerWgg1mTAvfsVUSdkb1NP3MEpNY5qSeA4pL++uPz3CPB9eFro5uEpglSis
+         +KH3mN7K54oh6YjdrgeIHYWGHGhP9/2O+TZtBjyPXaEJTgCqBYu18FfQT6pYJ6JdGy
+         G+POcBBdxgS3g==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 6BBD3763A4;
+        Wed, 14 Apr 2021 08:21:05 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 14
+ Apr 2021 08:21:05 +0300
+Subject: Re: [RFC PATCH v8 11/19] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Alexander Popov <alex.popov@linux.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210413123954.3396314-1-arseny.krasnov@kaspersky.com>
+ <20210413124443.3403382-1-arseny.krasnov@kaspersky.com>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <97ebdfc1-1b73-1c49-f2fa-6daa2726c0a6@kaspersky.com>
+Date:   Wed, 14 Apr 2021 08:21:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413044133.617921-2-namhyung@kernel.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210413124443.3403382-1-arseny.krasnov@kaspersky.com>
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/14/2021 05:03:43
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 163086 [Apr 14 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/14/2021 05:06:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 14.04.2021 0:55:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/04/14 03:55:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/04/13 22:18:00 #16592176
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+I'll fix some issues of this patch found by kernel test robot
 
-kernel/events/core.c:5925:13-20: WARNING opportunity for memdup_user
-
- Use memdup_user rather than duplicating its implementation
- This is a little bit restricted to reduce false positives
-
-Generated by: scripts/coccinelle/api/memdup_user.cocci
-
-CC: Namhyung Kim <namhyung@kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-url:    https://github.com/0day-ci/linux/commits/Namhyung-Kim/perf-core-Sharing-events-with-multiple-cgroups/20210413-124251
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git cface0326a6c2ae5c8f47bd466f07624b3e348a7
-
- core.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5922,15 +5922,9 @@ static long _perf_ioctl(struct perf_even
- 
- 		cgrp_bufsz = nr_cgrps * sizeof(*cgrp_buf);
- 
--		cgrp_buf = kmalloc(cgrp_bufsz, GFP_KERNEL);
--		if (cgrp_buf == NULL)
--			return -ENOMEM;
--
--		if (copy_from_user(cgrp_buf, (u64 __user *)(arg + 8),
--				   cgrp_bufsz)) {
--			kfree(cgrp_buf);
--			return -EFAULT;
--		}
-+		cgrp_buf = memdup_user((u64 __user *)(arg + 8), cgrp_bufsz);
-+		if (IS_ERR(cgrp_buf))
-+			return PTR_ERR(cgrp_buf);
- 
- 		ret = perf_event_attach_cgroup_node(event, nr_cgrps, cgrp_buf);
- 
+On 13.04.2021 15:44, Arseny Krasnov wrote:
+> This adds transport callback and it's logic for SEQPACKET dequeue.
+> Callback fetches RW packets from rx queue of socket until whole record
+> is copied(if user's buffer is full, user is not woken up). This is done
+> to not stall sender, because if we wake up user and it leaves syscall,
+> nobody will send credit update for rest of record, and sender will wait
+> for next enter of read syscall at receiver's side. So if user buffer is
+> full, we just send credit update and drop data.
+>
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+> ---
+> v7 -> v8:
+>  - Things like SEQ_BEGIN, SEQ_END, 'msg_len' and 'msg_id' now removed.
+>    This callback fetches and copies RW packets to user's buffer, until
+>    last packet of message found(this packet is marked in 'flags' field
+>    of header).
+>
+>  include/linux/virtio_vsock.h            |  5 ++
+>  net/vmw_vsock/virtio_transport_common.c | 73 +++++++++++++++++++++++++
+>  2 files changed, 78 insertions(+)
+>
+> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> index dc636b727179..02acf6e9ae04 100644
+> --- a/include/linux/virtio_vsock.h
+> +++ b/include/linux/virtio_vsock.h
+> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>  			       struct msghdr *msg,
+>  			       size_t len, int flags);
+>  
+> +ssize_t
+> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+> +				   struct msghdr *msg,
+> +				   int flags,
+> +				   bool *msg_ready);
+>  s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>  s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>  
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 833104b71a1c..8492b8bd5df5 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -393,6 +393,67 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>  	return err;
+>  }
+>  
+> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+> +						 struct msghdr *msg,
+> +						 int flags,
+> +						 bool *msg_ready)
+> +{
+> +	struct virtio_vsock_sock *vvs = vsk->trans;
+> +	struct virtio_vsock_pkt *pkt;
+> +	int err = 0;
+> +	size_t user_buf_len = msg->msg_iter.count;
+> +
+> +	*msg_ready = false;
+> +	spin_lock_bh(&vvs->rx_lock);
+> +
+> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && err >= 0) {
+> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+> +
+> +		if (le16_to_cpu(pkt->hdr.op) == VIRTIO_VSOCK_OP_RW) {
+> +			size_t bytes_to_copy;
+> +			size_t pkt_len;
+> +
+> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+> +			bytes_to_copy = min(user_buf_len, pkt_len);
+> +
+> +			/* sk_lock is held by caller so no one else can dequeue.
+> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
+> +			 */
+> +			spin_unlock_bh(&vvs->rx_lock);
+> +
+> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy)) {
+> +				err = -EINVAL;
+> +				break;
+> +			}
+> +
+> +			spin_lock_bh(&vvs->rx_lock);
+> +
+> +			/* If user sets 'MSG_TRUNC' we return real length
+> +			 * of message.
+> +			 */
+> +			if (flags & MSG_TRUNC)
+> +				err += pkt_len;
+> +			else
+> +				err += bytes_to_copy;
+> +
+> +			user_buf_len -= bytes_to_copy;
+> +
+> +			if (pkt->hdr.flags & VIRTIO_VSOCK_SEQ_EOR)
+> +				*msg_ready = true;
+> +		}
+> +
+> +		virtio_transport_dec_rx_pkt(vvs, pkt);
+> +		list_del(&pkt->list);
+> +		virtio_transport_free_pkt(pkt);
+> +	}
+> +
+> +	spin_unlock_bh(&vvs->rx_lock);
+> +
+> +	virtio_transport_send_credit_update(vsk);
+> +
+> +	return err;
+> +}
+> +
+>  ssize_t
+>  virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+>  				struct msghdr *msg,
+> @@ -405,6 +466,18 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+>  }
+>  EXPORT_SYMBOL_GPL(virtio_transport_stream_dequeue);
+>  
+> +ssize_t
+> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+> +				   struct msghdr *msg,
+> +				   int flags, bool *msg_ready)
+> +{
+> +	if (flags & MSG_PEEK)
+> +		return -EOPNOTSUPP;
+> +
+> +	return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags, msg_ready);
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
+> +
+>  int
+>  virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>  			       struct msghdr *msg,
