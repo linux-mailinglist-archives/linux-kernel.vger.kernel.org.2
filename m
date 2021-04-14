@@ -2,150 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7C35F65F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B1235F664
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351809AbhDNOmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:42:19 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:28636 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349875AbhDNOmS (ORCPT
+        id S1351836AbhDNOoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349135AbhDNOoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:42:18 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-186-m3nor2MZPjeBIWMoTKeI3A-1; Wed, 14 Apr 2021 15:41:53 +0100
-X-MC-Unique: m3nor2MZPjeBIWMoTKeI3A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 15:41:52 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 14 Apr 2021 15:41:52 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tom Talpey' <tom@talpey.com>, Jason Gunthorpe <jgg@nvidia.com>
-CC:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        "Jack Wang" <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        "Michael Guralnik" <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Linux-Net <netdev@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "Santosh Shilimkar" <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: RE: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Thread-Topic: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-Thread-Index: AQHXLWixzqpV3HG00U+6H5w8s2gjs6qtuZCggAZdLuKAAAS+kA==
-Date:   Wed, 14 Apr 2021 14:41:52 +0000
-Message-ID: <c2318ee1464a4d1c8439699cb0652d12@AcuMS.aculab.com>
-References: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
- <20210406114952.GH7405@nvidia.com>
- <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
- <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
- <4b02d1b2-be0e-0d1d-7ac3-38d32e44e77e@talpey.com>
- <1FA38618-E245-4C53-BF49-6688CA93C660@oracle.com>
- <7b9e7d9c-13d7-0d18-23b4-0d94409c7741@talpey.com>
- <f71b24433f4540f0a13133111a59dab8@AcuMS.aculab.com>
- <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
- <7deadc67-650c-ea15-722b-a1d77d38faba@talpey.com>
- <20210412224843.GQ7405@nvidia.com>
- <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
-In-Reply-To: <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 14 Apr 2021 10:44:00 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E42BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:43:37 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id s16so15633640iog.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YZVZDpwAdidWFtU6RiI402UdeGUs8c1Nk5u1ItVyewM=;
+        b=N0AjO9bryWx3Ag8bLuoxEt2+guOISDaF9i5gzO9Mdr2w98+j+auDIXMUs1+g9TcBWQ
+         Ykb4bTkF84KkfPpSFPb5BeVj3H+PQIw/zX93Uc9T+BuNEztLex0ugwV3cnUo+gAKexar
+         ToZAcSDgTFWXrY1dzY3v9gfZE7H/QB6uJ4YB37pAqbhEkr2L9bvf7CrA4yUyvnoTSNMC
+         PWcreuW6WuUyCmW1WCfTg/it1+Lk9cOlxeuD3QUP8XrFQNKndOlho4PAfxD1VFePiP6e
+         T/ZMVg9ipP5x3FvwehDa3IM4KherTZWvlI3z+cImcyejFU7kvygHHwwykZkB+qC0iPru
+         gAZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YZVZDpwAdidWFtU6RiI402UdeGUs8c1Nk5u1ItVyewM=;
+        b=iJUUjdZLkS3ZcxmbAlp1Np6LNsqqBPegE1+fdBCKk8ufCDl/hSpLizSJaXMMZZ0jNa
+         /zfY5yxW5Xr//FGvBLmoKOeKU0O0lFGljCtC/sY2/f6BMhHZx70ujkzDSfdSP0EEUw7K
+         1B4tbzIHvt45ENDl/zLIzmWTRek8a9bfMyp3lQTCyxMpzltsiRMlbF1LfLMq1e5fUSwz
+         tFomtn/Wy+z11niqzNc154V9YDPv9o3xmpSI6c7kg6IFMyGGIu1DbSGY8owJsADTv/op
+         6W42jV+X3A5PJEMDGPmBtpm1bkfZSoHye1J+HDQmjeEJonQRIuz3a8j2BwZlsaEiJD5K
+         kgmg==
+X-Gm-Message-State: AOAM531NCyblNHoQyja3imb9E8qwHGwyE9IHkPBrNk5/tezZXnIkv0de
+        8m3gvmN+K31L/V3qMRdEnSFmWg==
+X-Google-Smtp-Source: ABdhPJzyjJzBMO59YSTbgba3MsXmD20jos+S+Jo0tu8a1CQqA2feVDd+7+Hmi9Ff/ONyb6f4ZP7E7g==
+X-Received: by 2002:a02:230d:: with SMTP id u13mr39458646jau.53.1618411416481;
+        Wed, 14 Apr 2021 07:43:36 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o6sm8264302ioa.21.2021.04.14.07.43.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 07:43:36 -0700 (PDT)
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     SeongJae Park <sj38.park@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Rik van Riel <riel@surriel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        page-reclaim@google.com
+References: <20210413075155.32652-1-sjpark@amazon.de>
+ <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+ <20210413231436.GF63242@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <91146ee7-3054-a81a-296e-e75c24f4e290@kernel.dk>
+Date:   Wed, 14 Apr 2021 08:43:36 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210413231436.GF63242@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVG9tIFRhbHBleQ0KPiBTZW50OiAxNCBBcHJpbCAyMDIxIDE1OjE2DQo+IA0KPiBPbiA0
-LzEyLzIwMjEgNjo0OCBQTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiA+IE9uIE1vbiwgQXBy
-IDEyLCAyMDIxIGF0IDA0OjIwOjQ3UE0gLTA0MDAsIFRvbSBUYWxwZXkgd3JvdGU6DQo+ID4NCj4g
-Pj4gU28gdGhlIGlzc3VlIGlzIG9ubHkgaW4gdGVzdGluZyBhbGwgdGhlIHByb3ZpZGVycyBhbmQg
-cGxhdGZvcm1zLA0KPiA+PiB0byBiZSBzdXJlIHRoaXMgbmV3IGJlaGF2aW9yIGlzbid0IHRpY2ts
-aW5nIGFueXRoaW5nIHRoYXQgd2VudA0KPiA+PiB1bm5vdGljZWQgYWxsIGFsb25nLCBiZWNhdXNl
-IG5vIFJETUEgcHJvdmlkZXIgZXZlciBpc3N1ZWQgUk8uDQo+ID4NCj4gPiBUaGUgbWx4NSBldGhl
-cm5ldCBkcml2ZXIgaGFzIHJ1biBpbiBSTyBtb2RlIGZvciBhIGxvbmcgdGltZSwgYW5kIGl0DQo+
-ID4gb3BlcmF0ZXMgaW4gYmFzaWNhbGx5IHRoZSBzYW1lIHdheSBhcyBSRE1BLiBUaGUgaXNzdWVz
-IHdpdGggSGFzd2VsbA0KPiA+IGhhdmUgYmVlbiB3b3JrZWQgb3V0IHRoZXJlIGFscmVhZHkuDQo+
-ID4NCj4gPiBUaGUgb25seSBvcGVuIHF1ZXN0aW9uIGlzIGlmIHRoZSBVTFBzIGhhdmUgZXJyb3Jz
-IGluIHRoZWlyDQo+ID4gaW1wbGVtZW50YXRpb24sIHdoaWNoIEkgZG9uJ3QgdGhpbmsgd2UgY2Fu
-IGZpbmQgb3V0IHVudGlsIHdlIGFwcGx5DQo+ID4gdGhpcyBzZXJpZXMgYW5kIHBlb3BsZSBzdGFy
-dCBydW5uaW5nIHRoZWlyIHRlc3RzIGFnZ3Jlc3NpdmVseS4NCj4gDQo+IEkgYWdyZWUgdGhhdCB0
-aGUgY29yZSBSTyBzdXBwb3J0IHNob3VsZCBnbyBpbi4gQnV0IHR1cm5pbmcgaXQgb24NCj4gYnkg
-ZGVmYXVsdCBmb3IgYSBVTFAgc2hvdWxkIGJlIHRoZSBkZWNpc2lvbiBvZiBlYWNoIFVMUCBtYWlu
-dGFpbmVyLg0KPiBJdCdzIGEgaHVnZSByaXNrIHRvIHNoaWZ0IGFsbCB0aGUgc3RvcmFnZSBkcml2
-ZXJzIG92ZXJuaWdodC4gSG93DQo+IGRvIHlvdSBwcm9wb3NlIHRvIGVuc3VyZSB0aGUgYWdncmVz
-c2l2ZSB0ZXN0aW5nIGhhcHBlbnM/DQo+IA0KPiBPbmUgdGhpbmcgdGhhdCB3b3JyaWVzIG1lIGlz
-IHRoZSBwYXRjaDAyIG9uLWJ5LWRlZmF1bHQgZm9yIHRoZSBkbWFfbGtleS4NCj4gVGhlcmUncyBu
-byB3YXkgZm9yIGEgVUxQIHRvIHByZXZlbnQgSUJfQUNDRVNTX1JFTEFYRURfT1JERVJJTkcNCj4g
-ZnJvbSBiZWluZyBzZXQgaW4gX19pYl9hbGxvY19wZCgpLg0KDQpXaGF0IGlzIGEgVUxQIGluIHRo
-aXMgY29udGV4dD8NCg0KSSd2ZSBwcmVzdW1lZCB0aGF0IHRoaXMgaXMgYWxsIGFib3V0IGdldHRp
-bmcgUENJZSB0YXJnZXRzIChpZSBjYXJkcykNCnRvIHNldCB0aGUgUk8gKHJlbGF4ZWQgb3JkZXJp
-bmcpIGJpdCBpbiBzb21lIG9mIHRoZSB3cml0ZSBUTFAgdGhleQ0KZ2VuZXJhdGUgZm9yIHdyaXRp
-bmcgdG8gaG9zdCBtZW1vcnk/DQoNClNvIHdoYXRldmVyIGRyaXZlciBpbml0aWFsaXNlcyB0aGUg
-dGFyZ2V0IG5lZWRzIHRvIGNvbmZpZ3VyZSB3aGF0ZXZlcg0KdGFyZ2V0LXNwZWNpZmljIHJlZ2lz
-dGVyIGVuYWJsZXMgdGhlIFJPIHRyYW5zZmVycyB0aGVtc2VsdmVzLg0KDQpBZnRlciB0aGF0IHRo
-ZXJlIGNvdWxkIGJlIGZsYWdzIGluIHRoZSBQQ0llIGNvbmZpZyBzcGFjZSBvZiB0aGUgdGFyZ2V0
-DQphbmQgYW55IGJyaWRnZXMgdGhhdCBjbGVhciB0aGUgUk8gZmxhZy4NCg0KVGhlcmUgY291bGQg
-YWxzbyBiZSBmbGFncyBpbiB0aGUgYnJpZGdlcyBhbmQgcm9vdCBjb21wbGV4IHRvIGlnbm9yZQ0K
-dGhlIFJPIGZsYWcgZXZlbiBpZiBpdCBpcyBzZXQuDQoNClRoZW4gdGhlIExpbnV4IGtlcm5lbCBj
-YW4gaGF2ZSBvcHRpb24ocykgdG8gdGVsbCB0aGUgZHJpdmVyIG5vdA0KdG8gZW5hYmxlIFJPIC0g
-ZXZlbiB0aG91Z2ggdGhlIGRyaXZlciBiZWxpZXZlcyBpdCBzaG91bGQgYWxsIHdvcmsuDQpUaGlz
-IGNvdWxkIGJlIGEgc2luZ2xlIGdsb2JhbCBmbGFnLCBvciBmaW4tZ3JhaW5lZCBpbiBzb21lIHdh
-eS4NCg0KU28gd2hhdCBleGFjdGx5IGlzIHRoaXMgcGF0Y2ggc2VyaWVzIGRvaW5nPw0KDQoJRGF2
-aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
-IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
-ODYgKFdhbGVzKQ0K
+On 4/13/21 5:14 PM, Dave Chinner wrote:
+> On Tue, Apr 13, 2021 at 10:13:24AM -0600, Jens Axboe wrote:
+>> On 4/13/21 1:51 AM, SeongJae Park wrote:
+>>> From: SeongJae Park <sjpark@amazon.de>
+>>>
+>>> Hello,
+>>>
+>>>
+>>> Very interesting work, thank you for sharing this :)
+>>>
+>>> On Tue, 13 Apr 2021 00:56:17 -0600 Yu Zhao <yuzhao@google.com> wrote:
+>>>
+>>>> What's new in v2
+>>>> ================
+>>>> Special thanks to Jens Axboe for reporting a regression in buffered
+>>>> I/O and helping test the fix.
+>>>
+>>> Is the discussion open?  If so, could you please give me a link?
+>>
+>> I wasn't on the initial post (or any of the lists it was posted to), but
+>> it's on the google page reclaim list. Not sure if that is public or not.
+>>
+>> tldr is that I was pretty excited about this work, as buffered IO tends
+>> to suck (a lot) for high throughput applications. My test case was
+>> pretty simple:
+>>
+>> Randomly read a fast device, using 4k buffered IO, and watch what
+>> happens when the page cache gets filled up. For this particular test,
+>> we'll initially be doing 2.1GB/sec of IO, and then drop to 1.5-1.6GB/sec
+>> with kswapd using a lot of CPU trying to keep up. That's mainline
+>> behavior.
+> 
+> I see this exact same behaviour here, too, but I RCA'd it to
+> contention between the inode and memory reclaim for the mapping
+> structure that indexes the page cache. Basically the mapping tree
+> lock is the contention point here - you can either be adding pages
+> to the mapping during IO, or memory reclaim can be removing pages
+> from the mapping, but we can't do both at once.
+> 
+> So we end up with kswapd spinning on the mapping tree lock like so
+> when doing 1.6GB/s in 4kB buffered IO:
+> 
+> -   20.06%     0.00%  [kernel]               [k] kswapd                                                                                                        ▒
+>    - 20.06% kswapd                                                                                                                                             ▒
+>       - 20.05% balance_pgdat                                                                                                                                   ▒
+>          - 20.03% shrink_node                                                                                                                                  ▒
+>             - 19.92% shrink_lruvec                                                                                                                             ▒
+>                - 19.91% shrink_inactive_list                                                                                                                   ▒
+>                   - 19.22% shrink_page_list                                                                                                                    ▒
+>                      - 17.51% __remove_mapping                                                                                                                 ▒
+>                         - 14.16% _raw_spin_lock_irqsave                                                                                                        ▒
+>                            - 14.14% do_raw_spin_lock                                                                                                           ▒
+>                                 __pv_queued_spin_lock_slowpath                                                                                                 ▒
+>                         - 1.56% __delete_from_page_cache                                                                                                       ▒
+>                              0.63% xas_store                                                                                                                   ▒
+>                         - 0.78% _raw_spin_unlock_irqrestore                                                                                                    ▒
+>                            - 0.69% do_raw_spin_unlock                                                                                                          ▒
+>                                 __raw_callee_save___pv_queued_spin_unlock                                                                                      ▒
+>                      - 0.82% free_unref_page_list                                                                                                              ▒
+>                         - 0.72% free_unref_page_commit                                                                                                         ▒
+>                              0.57% free_pcppages_bulk                                                                                                          ▒
+> 
+> And these are the processes consuming CPU:
+> 
+>    5171 root      20   0 1442496   5696   1284 R  99.7   0.0   1:07.78 fio
+>    1150 root      20   0       0      0      0 S  47.4   0.0   0:22.70 kswapd1
+>    1146 root      20   0       0      0      0 S  44.0   0.0   0:21.85 kswapd0
+>    1152 root      20   0       0      0      0 S  39.7   0.0   0:18.28 kswapd3
+>    1151 root      20   0       0      0      0 S  15.2   0.0   0:12.14 kswapd2
+
+Here's my profile when memory reclaim is active for the above mentioned
+test case. This is a single node system, so just kswapd. It's using around
+40-45% CPU:
+
+    43.69%  kswapd0  [kernel.vmlinux]  [k] xas_create
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               shrink_page_list
+               __delete_from_page_cache
+               xas_store
+               xas_create
+
+    16.88%  kswapd0  [kernel.vmlinux]  [k] queued_spin_lock_slowpath
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               |          
+                --16.82%--shrink_inactive_list
+                          |          
+                           --16.55%--shrink_page_list
+                                     |          
+                                      --16.26%--_raw_spin_lock_irqsave
+                                                queued_spin_lock_slowpath
+
+     9.89%  kswapd0  [kernel.vmlinux]  [k] shrink_page_list
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               shrink_page_list
+
+     5.46%  kswapd0  [kernel.vmlinux]  [k] xas_init_marks
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               shrink_page_list
+               |          
+                --5.41%--__delete_from_page_cache
+                          xas_init_marks
+
+     4.42%  kswapd0  [kernel.vmlinux]  [k] __delete_from_page_cache
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               |          
+                --4.40%--shrink_page_list
+                          __delete_from_page_cache
+
+     2.82%  kswapd0  [kernel.vmlinux]  [k] isolate_lru_pages
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               |          
+               |--1.43%--shrink_active_list
+               |          isolate_lru_pages
+               |          
+                --1.39%--shrink_inactive_list
+                          isolate_lru_pages
+
+     1.99%  kswapd0  [kernel.vmlinux]  [k] free_pcppages_bulk
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               shrink_page_list
+               free_unref_page_list
+               free_unref_page_commit
+               free_pcppages_bulk
+
+     1.79%  kswapd0  [kernel.vmlinux]  [k] _raw_spin_lock_irqsave
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               |          
+                --1.76%--shrink_node
+                          shrink_lruvec
+                          shrink_inactive_list
+                          |          
+                           --1.72%--shrink_page_list
+                                     _raw_spin_lock_irqsave
+
+     1.02%  kswapd0  [kernel.vmlinux]  [k] workingset_eviction
+            |
+            ---ret_from_fork
+               kthread
+               kswapd
+               balance_pgdat
+               shrink_node
+               shrink_lruvec
+               shrink_inactive_list
+               |          
+                --1.00%--shrink_page_list
+                          workingset_eviction
+
+> i.e. when memory reclaim kicks in, the read process has 20% less
+> time with exclusive access to the mapping tree to insert new pages.
+> Hence buffered read performance goes down quite substantially when
+> memory reclaim kicks in, and this really has nothing to do with the
+> memory reclaim LRU scanning algorithm.
+> 
+> I can actually get this machine to pin those 5 processes to 100% CPU
+> under certain conditions. Each process is spinning all that extra
+> time on the mapping tree lock, and performance degrades further.
+> Changing the LRU reclaim algorithm won't fix this - the workload is
+> solidly bound by the exclusive nature of the mapping tree lock and
+> the number of tasks trying to obtain it exclusively...
+
+I've seen way worse than the above as well, it's just my go-to easy test
+case for "man I wish buffered IO didn't suck so much".
+
+>> The initial posting of this patchset did no better, in fact it did a bit
+>> worse. Performance dropped to the same levels and kswapd was using as
+>> much CPU as before, but on top of that we also got excessive swapping.
+>> Not at a high rate, but 5-10MB/sec continually.
+>>
+>> I had some back and forths with Yu Zhao and tested a few new revisions,
+>> and the current series does much better in this regard. Performance
+>> still dips a bit when page cache fills, but not nearly as much, and
+>> kswapd is using less CPU than before.
+> 
+> Profiles would be interesting, because it sounds to me like reclaim
+> *might* be batching page cache removal better (e.g. fewer, larger
+> batches) and so spending less time contending on the mapping tree
+> lock...
+> 
+> IOWs, I suspect this result might actually be a result of less lock
+> contention due to a change in batch processing characteristics of
+> the new algorithm rather than it being a "better" algorithm...
+
+See above - let me know if you want to see more specific profiling as
+well.
+
+-- 
+Jens Axboe
 
