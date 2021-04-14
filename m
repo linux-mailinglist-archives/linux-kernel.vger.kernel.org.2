@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644AA35EE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524CB35EE38
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349593AbhDNHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:13:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51310 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349581AbhDNHNq (ORCPT
+        id S1349670AbhDNHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:14:16 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:48264 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349632AbhDNHOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:13:46 -0400
-Date:   Wed, 14 Apr 2021 09:13:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618384404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s1a8CshZw26m5BPo40fPgY70peR7b/oBo1WgNZJ84PU=;
-        b=tfoPDrMz+bDx6GEZ18qfSmD32hyCOd50f121Wj+M1N+AESll+NPKTJF8jLv2RPCaxXKegg
-        Qmj85Ehh8bOAwsEnwJ/iz6jAD4LdoA1J7qdCu3em3suVAWV7DKySDCGmpEHnue7IOOwTLp
-        IZyNN0oGroPATeyUUzKracVt5rWp0GI+K4tL8eYArpqV0i5yX1tCXJrSwM6R31I7wRMHF0
-        Cjqc5Jb6lIsy4oz9K6U5ScTtWg8lDKO2/XV2zpOBlE7V/OtBEkxLHjWFTnsC6yS6F2E9T9
-        5MJNV8r1iC5vyO5erEIAeOt+AGF1L/PnXHV2seu3P/lvdWI8nVCWcro6LnDuLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618384404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s1a8CshZw26m5BPo40fPgY70peR7b/oBo1WgNZJ84PU=;
-        b=/ji24/zUdBjSgpPBk3m4wRAgZ/rOTRnNiDW44YXS/9ETjOx6+6CyfN+OXZI6NdX9IRqo32
-        kaapHP+y/CBhTlBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it
- has been spawned
-Message-ID: <20210414071322.nz64kow4sp4nwzmy@linutronix.de>
-References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
- <87czuz1tbc.ffs@nanos.tec.linutronix.de>
- <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
+        Wed, 14 Apr 2021 03:14:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVWLSk6_1618384421;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVWLSk6_1618384421)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 14 Apr 2021 15:13:50 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     3chas3@gmail.com
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] atm: idt77252: remove unused function
+Date:   Wed, 14 Apr 2021 15:13:39 +0800
+Message-Id: <1618384419-39959-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-12 11:36:45 [-0700], Paul E. McKenney wrote:
-> > Color me confused. I did not follow the discussion around this
-> > completely, but wasn't it agreed on that this rcu torture muck can wait
-> > until the threads are brought up?
-> 
-> Yes, we can cause rcutorture to wait.  But in this case, rcutorture
-> is just the messenger, and making it wait would simply be ignoring
-> the message.  The message is that someone could invoke any number of
-> things that wait on a softirq handler's invocation during the interval
-> before ksoftirqd has been spawned.
+Fix the following clang warning:
 
-My memory on this is that the only user, that required this early
-behaviour, was kprobe which was recently changed to not need it anymore.
-Which makes the test as the only user that remains. Therefore I thought
-that this test will be moved to later position (when ksoftirqd is up and
-running) and that there is no more requirement for RCU to be completely
-up that early in the boot process.
+drivers/atm/idt77252.c:1787:1: warning: unused function
+'idt77252_fbq_level' [-Wunused-function].
 
-Did I miss anything?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/atm/idt77252.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> 
-> 							Thanx, Paul
+diff --git a/drivers/atm/idt77252.c b/drivers/atm/idt77252.c
+index 0c13cac..9e4bd75 100644
+--- a/drivers/atm/idt77252.c
++++ b/drivers/atm/idt77252.c
+@@ -1784,12 +1784,6 @@ static int idt77252_proc_read(struct atm_dev *dev, loff_t * pos,
+ /*****************************************************************************/
+ 
+ static __inline__ int
+-idt77252_fbq_level(struct idt77252_dev *card, int queue)
+-{
+-	return (readl(SAR_REG_STAT) >> (16 + (queue << 2))) & 0x0f;
+-}
+-
+-static __inline__ int
+ idt77252_fbq_full(struct idt77252_dev *card, int queue)
+ {
+ 	return (readl(SAR_REG_STAT) >> (16 + (queue << 2))) == 0x0f;
+-- 
+1.8.3.1
 
-Sebastian
