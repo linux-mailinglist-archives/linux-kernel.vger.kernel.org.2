@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D18035F86B
+	by mail.lfdr.de (Postfix) with ESMTP id 7855D35F86C
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352504AbhDNPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:51:32 -0400
-Received: from verein.lst.de ([213.95.11.211]:59466 "EHLO verein.lst.de"
+        id S1352413AbhDNPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:53:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:57417 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352488AbhDNPun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:50:43 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 10BD568C7B; Wed, 14 Apr 2021 17:50:17 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 17:50:16 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        konrad.wilk@oracle.com, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, joro@8bytes.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com
-Subject: Re: [Resend RFC PATCH V2 11/12] HV/Netvsc: Add Isolation VM
- support for netvsc driver
-Message-ID: <20210414155016.GE32045@lst.de>
-References: <20210414144945.3460554-1-ltykernel@gmail.com> <20210414144945.3460554-12-ltykernel@gmail.com>
+        id S1352431AbhDNPvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:51:10 -0400
+IronPort-SDR: wsKNU2pZUHE6XHGSr2aqnXbf4tQ7ZGn9xNRe/tUaPy2rIsAsyS+pc/T2E7WfnOz+qJ3aEWER+H
+ E9vW7RgxNV6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="255987397"
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="255987397"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:50:46 -0700
+IronPort-SDR: sGar3ZOMlBav4B9kq51Bfw5J0U8JPuqB8kFSdU8f74X7CDePN8jUeLeHUzLU5NIXuPAlnWH1bn
+ dAbXS77+5xOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="382400250"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
+  by orsmga003.jf.intel.com with ESMTP; 14 Apr 2021 08:50:43 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 2/2] perf intel-pt: Use aux_watermark
+In-Reply-To: <e8097eb7-66cb-432a-a799-2514b28ae48e@intel.com>
+References: <20210408153159.81880-1-alexander.shishkin@linux.intel.com>
+ <20210408153159.81880-3-alexander.shishkin@linux.intel.com>
+ <e8097eb7-66cb-432a-a799-2514b28ae48e@intel.com>
+Date:   Wed, 14 Apr 2021 18:50:42 +0300
+Message-ID: <87wnt4g90t.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414144945.3460554-12-ltykernel@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +struct dma_range {
-> +	dma_addr_t dma;
-> +	u32 mapping_size;
-> +};
+Adrian Hunter <adrian.hunter@intel.com> writes:
 
-That's a rather generic name that is bound to create a conflict sooner
-or later.
+> On 8/04/21 6:31 pm, Alexander Shishkin wrote:
+>> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+>> index a6420c647959..d00707faf547 100644
+>> --- a/tools/perf/arch/x86/util/intel-pt.c
+>> +++ b/tools/perf/arch/x86/util/intel-pt.c
+>> @@ -776,6 +776,10 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>>  		}
+>>  	}
+>>  
+>> +	if (opts->full_auxtrace)
+>> +		intel_pt_evsel->core.attr.aux_watermark =
+>> +		       opts->auxtrace_mmap_pages / 4 * page_size;
+>> +
+>
+> I would be explicit about the mode and put "/ 4" at the end
+> for the case auxtrace_mmap_pages is not a multiple of 4 (e.g. 2).
+> i.e.
+>
+> 	if (!opts->auxtrace_snapshot_mode && !opts->auxtrace_sample_mode) {
+> 		u32 aux_watermark = opts->auxtrace_mmap_pages * page_size / 4;
+>
+> 		intel_pt_evsel->core.attr.aux_watermark = aux_watermark;
+> 	}
 
->  #include "hyperv_net.h"
->  #include "netvsc_trace.h"
-> +#include "../../hv/hyperv_vmbus.h"
+Thank you! I'll do exactly that.
 
-Please move public interfaces out of the private header rather than doing
-this.
-
-> +	if (hv_isolation_type_snp()) {
-> +		area = get_vm_area(buf_size, VM_IOREMAP);
-
-Err, no.  get_vm_area is private a for a reason.
-
-> +		if (!area)
-> +			goto cleanup;
-> +
-> +		vaddr = (unsigned long)area->addr;
-> +		for (i = 0; i < buf_size / HV_HYP_PAGE_SIZE; i++) {
-> +			extra_phys = (virt_to_hvpfn(net_device->recv_buf + i * HV_HYP_PAGE_SIZE)
-> +				<< HV_HYP_PAGE_SHIFT) + ms_hyperv.shared_gpa_boundary;
-> +			ret |= ioremap_page_range(vaddr + i * HV_HYP_PAGE_SIZE,
-> +					   vaddr + (i + 1) * HV_HYP_PAGE_SIZE,
-> +					   extra_phys, PAGE_KERNEL_IO);
-> +		}
-> +
-> +		if (ret)
-> +			goto cleanup;
-
-And this is not something a driver should ever do.  I think you are badly
-reimplementing functionality that should be in the dma coherent allocator
-here.
+Regards,
+--
+Alex
