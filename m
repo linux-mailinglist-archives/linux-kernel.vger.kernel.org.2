@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C5935FB6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577CF35FB71
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352680AbhDNTPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60134 "EHLO mail.kernel.org"
+        id S230126AbhDNTQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:16:35 -0400
+Received: from mga01.intel.com ([192.55.52.88]:41716 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234378AbhDNTPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61B4C61220;
-        Wed, 14 Apr 2021 19:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618427699;
-        bh=FAgEyFazHYlkUuH6oBzBVSFblscpQVbM2nF7YBgIV8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s7ZnN4y6nYNdcFEA2hVf143U4jRwds/WtbJBNebOZ1mp7idLRh9SNDapGkKGjlTz+
-         Yj+KQEFuIt/SsDRCRlH7+zENQeITcEt2paak9Pd9VahyIqk4RdjbJKoZfB/RWvg9oj
-         cnpqfVwdd94LkhEXtlTuuWPiAFeFVIUKs3a0JNlnUwEAoGkPSj/zcnZ5ElnNIOkITM
-         mRxGQ3vFUehEl64NRknVew/orgfTlDj+em2/mhI+wLSzIeaJSe8KXL2ylcsYrsvz6+
-         Qg15LMSHKFTrbCy0zZm6C6AhUXNXpxIAX56eb/59up+9D8vIVXdzgeLFNNZE7FDe3J
-         hS86h3KhPFwuw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF90F40647; Wed, 14 Apr 2021 16:14:56 -0300 (-03)
-Date:   Wed, 14 Apr 2021 16:14:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     linux-kernel@vger.kernel.org, "Dmitry V. Levin" <ldv@altlinux.org>
-Subject: Re: [PATCH v2] perf beauty: Fix fsconfig generator
-Message-ID: <YHc/MIPBaCGJVFFl@kernel.org>
-References: <20210414182723.1670663-1-vt@altlinux.org>
- <YHc9nC6EYf/eP3GH@kernel.org>
+        id S1347863AbhDNTQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:16:27 -0400
+IronPort-SDR: sOEVM88M4j3KVm7PNFy07/Bf83Y0k45RswZ2VulBP5oVpwFtE49wqgFT1MpiMeMWJn2hztKlNC
+ nkzU22BbMvsw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215211993"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="215211993"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:16:06 -0700
+IronPort-SDR: 1zt3d8op+1asmS9HeqADSdgpMhHskIgdY2aMVRSdZ5sV+FVFy7SYATA/+eM6MGlQ+GVsQ6Sg+Y
+ Dnm2L2HA9/sw==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="461333436"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:16:04 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lWkzZ-00457j-Ut; Wed, 14 Apr 2021 22:16:01 +0300
+Date:   Wed, 14 Apr 2021 22:16:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
+Message-ID: <YHc/cQAmLLOXwLLB@smile.fi.intel.com>
+References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+ <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+ <YHcnckePpKDujCU+@kroah.com>
+ <YHcqxMLR44laX2PZ@smile.fi.intel.com>
+ <YHc68v7keeITnA3K@kroah.com>
+ <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHc9nC6EYf/eP3GH@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Apr 14, 2021 at 04:08:12PM -0300, Arnaldo Carvalho de Melo escreveu:
-> [root@6db6d5ad9661 perf]# tools/perf/trace/beauty/fsconfig.sh
-> static const char *fsconfig_cmds[] = {
-> 	[0] = "SET_FLAG",
-> 	[1] = "SET_STRING",
-> 	[2] = "SET_BINARY",
-> 	[3] = "SET_PATH",
-> 	[4] = "SET_PATH_EMPTY",
-> 	[5] = "SET_FD",
-> 	[6] = "CMD_CREATE",
-> 	[7] = "CMD_RECONFIGURE",
-> };
-> [root@6db6d5ad9661 perf]#
+On Wed, Apr 14, 2021 at 10:14:34PM +0300, Alexander Shishkin wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 > 
-> So I guess we can sweep thru tools/perf/trace/beauty/*.sh and simplify
-> things in other table generators?
+> >> Using raw buffer APIs against uuid_t / guid_t.
+> >
+> > So you want to do that, or you do not want to do that?  Totally
+> > confused,
 > 
-> Please consider this.
+> My understanding is that:
+> 1) generate_random_uuid() use is allegedly bad even though it's in their
+> header,
+> 2) poking directly at the byte array inside uuid_t is bad, even though,
+> again, header.
 > 
-> Thanks, applied.
+> It is, indeed, not ideal.
+> 
+> If agreeable, I'll update this patch to the below and respin the whole
+> series.
 
-Its in my tmp.perf/core branch, will go to the main one after what is in
-there passes my longish regression test suite,
+Below patch looks good to me, thanks!
 
-- Arnaldo
+> From 02340f8c7c17ace028040a35553c33cce8f3bce4 Mon Sep 17 00:00:00 2001
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Date: Wed, 22 Apr 2020 16:02:20 +0300
+> Subject: [PATCH] stm class: Use correct UUID APIs
+> 
+> It appears that the STM code didn't manage to accurately decypher the
+> delicate inner workings of an alternative thought process behind the
+> UUID API and directly called generate_random_uuid() that clearly needs
+> to be a static function in lib/uuid.c.
+> 
+> At the same time, said STM code is poking directly at the byte array
+> inside the uuid_t when it uses the UUID for its internal purposes.
+> 
+> Fix these two transgressions by using intended APIs instead.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> [ash: changed back to uuid_t and updated the commit message]
+> Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> ---
+>  drivers/hwtracing/stm/p_sys-t.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
+> index 360b5c03df95..8254971c02e7 100644
+> --- a/drivers/hwtracing/stm/p_sys-t.c
+> +++ b/drivers/hwtracing/stm/p_sys-t.c
+> @@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
+>  {
+>  	struct sys_t_policy_node *pn = priv;
+>  
+> -	generate_random_uuid(pn->uuid.b);
+> +	uuid_gen(&pn->uuid);
+>  }
+>  
+>  static int sys_t_output_open(void *priv, struct stm_output *output)
+> @@ -292,6 +292,7 @@ static ssize_t sys_t_write(struct stm_data *data, struct stm_output *output,
+>  	unsigned int m = output->master;
+>  	const unsigned char nil = 0;
+>  	u32 header = DATA_HEADER;
+> +	u8 uuid[UUID_SIZE];
+>  	ssize_t sz;
+>  
+>  	/* We require an existing policy node to proceed */
+> @@ -322,7 +323,8 @@ static ssize_t sys_t_write(struct stm_data *data, struct stm_output *output,
+>  		return sz;
+>  
+>  	/* GUID */
+> -	sz = stm_data_write(data, m, c, false, op->node.uuid.b, UUID_SIZE);
+> +	export_uuid(uuid, &op->node.uuid);
+> +	sz = stm_data_write(data, m, c, false, uuid, sizeof(op->node.uuid));
+>  	if (sz <= 0)
+>  		return sz;
+>  
+> -- 
+> 2.30.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
