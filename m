@@ -2,233 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92B135FE9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD93435FE9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhDNXtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 19:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhDNXtI (ORCPT
+        id S230044AbhDNXuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 19:50:01 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:39018 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhDNXt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:49:08 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E53C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:48:45 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u20so25077070lja.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sYrhQ+L0KHq4tveN5clEASWcQ37/wtC32tCYh0nBGLo=;
-        b=oVcontEvK+/+8MA7Pe0KxzkdxdTY9uAw/triIXdClbgN0AqR9y8J3vDKWQGZQognij
-         Dv00nHR4pwZKbHwSELVW5MrGADWTow2YAHFxLyIaZMUVnYn+HgFQ8m6I4nxQIIa6oaxR
-         vZ1zOvsFHhQpoJofcGiYwlm0N3C7yvAyenfpmab9wAukwMa/kcYewOhykPReLODnnHdD
-         B/UdliM0FMyAu1rYPLtGw/OMmDtd0yatWxtt6mS1EiYKE4B+p79g4b6MjsuD0Gv3Y+C0
-         z7Zo437En5Rw8m6Tf0iCuERtCSm0c+tBNu9xHU8I+jVxM5wFKHnusyAReqAdFalPdrTB
-         RNWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sYrhQ+L0KHq4tveN5clEASWcQ37/wtC32tCYh0nBGLo=;
-        b=QlMRStuueP0H/P+1REATnEcUSM7umhzwltNmgI9N3ww4hfIXZ0PqZ2ROEi32ls9cbg
-         qPwriWH4XnpKwaN/9823fsDXoBgjaoe51kPujRr0i2XAEP7h9QkFYulp57H4RyGm4DzN
-         ZWjVktgWT/6kcDQNN/zgB3QjpLUvjHA16z/fQf09n7NAIQ3kEqSPiVYthcm5BIoBd3cl
-         rfuxIxKPHCJd0U24nv8f0aM64FfpAykb2hJUXXgBoK1LrErUhkqoodJpz0rUmG2LXTZ8
-         vsdck1TI/BL/6mo5yhfuCF7WfqTztYQt0IjVAGQfgldR02pB8QhXD/pcal2oq7iS18u/
-         hs8g==
-X-Gm-Message-State: AOAM533xxi+3KCnTMsGPDRxyv+UbpMB8JoksII+p609bh2pwZSiDW4Fg
-        csuDqeBV24jy6aWw6o6FZI4q1ELv3IYg23vKXVQjaw==
-X-Google-Smtp-Source: ABdhPJxDm6QXae66Kp5wtL/ye/7TEOwYZKMxEQuOI5NmLFtK+zp9XBWYUFbSmyJLar215o9dcq4wZWgDF/OjIY+UAhA=
-X-Received: by 2002:a2e:5716:: with SMTP id l22mr239987ljb.244.1618444123676;
- Wed, 14 Apr 2021 16:48:43 -0700 (PDT)
+        Wed, 14 Apr 2021 19:49:56 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0668951E;
+        Thu, 15 Apr 2021 01:49:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618444173;
+        bh=maEzBvGMuDEyKhs1+ZmoEDGzwZUPGHCa9+Tdnfx7dms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sbIB5D5xur3u6Cqc0N/8J9oNg0xRMhxFDhp+EH21T8XckWld8byIfWpKBqFKPudRp
+         6hex2szYOlOGAiRsWUKF3i50KJF8diahCzY8wdcOuY/YrHJfcuv2ulFUEDtXKv9P9H
+         gNIfZP9A1gESq0M9NzHNLBnk/8HywNcgSHoGwBZI=
+Date:   Thu, 15 Apr 2021 02:49:32 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/5] arm64: dts: renesas: eagle: Enable MAX9286
+Message-ID: <YHd/jPcQC44DjGwV@pendragon.ideasonboard.com>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-4-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-3-ojeda@kernel.org>
-In-Reply-To: <20210414184604.23473-3-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Apr 2021 16:48:31 -0700
-Message-ID: <CAKwvOdk+Wya_mhVMPiiv1MVwCGX4DTZ2tX=AOm1-XGOYN5yMZg@mail.gmail.com>
-Subject: Re: [PATCH 02/13] kallsyms: Increase maximum kernel symbol length to 512
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210414135128.180980-4-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:48 AM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Rust symbols can become quite long due to namespacing introduced
-> by modules, types, traits, generics, etc. For instance, for:
->
->     pub mod my_module {
->         pub struct MyType;
->         pub struct MyGenericType<T>(T);
->
->         pub trait MyTrait {
->             fn my_method() -> u32;
->         }
->
->         impl MyTrait for MyGenericType<MyType> {
->             fn my_method() -> u32 {
->                 42
->             }
->         }
->     }
->
-> generates a symbol of length 96 when using the upcoming v0 mangling scheme:
->
->     _RNvXNtCshGpAVYOtgW1_7example9my_moduleINtB2_13MyGenericTypeNtB2_6MyTypeENtB2_7MyTrait9my_method
->
-> At the moment, Rust symbols may reach up to 300 in length.
-> Setting 512 as the maximum seems like a reasonable choice to
-> keep some headroom.
+Hi Jacopo and Kieran,
 
-What are the implications of this change for someone not using Rust?
-Does it change the binary size of vmlinux for a defconfig build, for
-example?
+Thank you for the patch.
 
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Co-developed-by: Finn Behrens <me@kloenk.de>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
-> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+On Wed, Apr 14, 2021 at 03:51:26PM +0200, Jacopo Mondi wrote:
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> 
+> Enable the MAX9286 GMSL deserializer on the Eagle-V3M board.
+> 
+> Connected cameras should be defined in a device-tree overlay or included
+> after these definitions.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
 > ---
->  include/linux/kallsyms.h            | 2 +-
->  kernel/livepatch/core.c             | 4 ++--
->  scripts/kallsyms.c                  | 2 +-
->  tools/include/linux/kallsyms.h      | 2 +-
->  tools/include/linux/lockdep.h       | 2 +-
->  tools/lib/perf/include/perf/event.h | 2 +-
->  tools/lib/symbol/kallsyms.h         | 2 +-
->  7 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> index 465060acc981..5cdc6903abca 100644
-> --- a/include/linux/kallsyms.h
-> +++ b/include/linux/kallsyms.h
-> @@ -14,7 +14,7 @@
->
->  #include <asm/sections.h>
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->  #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
->                          2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
->
-> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> index 335d988bd811..73874e5edfda 100644
-> --- a/kernel/livepatch/core.c
-> +++ b/kernel/livepatch/core.c
-> @@ -213,7 +213,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
->          * we use the smallest/strictest upper bound possible (56, based on
->          * the current definition of MODULE_NAME_LEN) to prevent overflows.
->          */
-> -       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 128);
-> +       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 512);
->
->         relas = (Elf_Rela *) relasec->sh_addr;
->         /* For each rela in this klp relocation section */
-> @@ -227,7 +227,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
->
->                 /* Format: .klp.sym.sym_objname.sym_name,sympos */
->                 cnt = sscanf(strtab + sym->st_name,
-> -                            ".klp.sym.%55[^.].%127[^,],%lu",
-> +                            ".klp.sym.%55[^.].%511[^,],%lu",
->                              sym_objname, sym_name, &sympos);
->                 if (cnt != 3) {
->                         pr_err("symbol %s has an incorrectly formatted name\n",
-> diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-> index bcdabee13aab..9bab5f55ade3 100644
-> --- a/scripts/kallsyms.c
-> +++ b/scripts/kallsyms.c
-> @@ -27,7 +27,7 @@
->
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
->
-> -#define KSYM_NAME_LEN          128
-> +#define KSYM_NAME_LEN          512
->
->  struct sym_entry {
->         unsigned long long addr;
-> diff --git a/tools/include/linux/kallsyms.h b/tools/include/linux/kallsyms.h
-> index efb6c3f5f2a9..5a37ccbec54f 100644
-> --- a/tools/include/linux/kallsyms.h
-> +++ b/tools/include/linux/kallsyms.h
-> @@ -6,7 +6,7 @@
->  #include <stdio.h>
->  #include <unistd.h>
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->
->  struct module;
->
-> diff --git a/tools/include/linux/lockdep.h b/tools/include/linux/lockdep.h
-> index e56997288f2b..d9c163f3ab24 100644
-> --- a/tools/include/linux/lockdep.h
-> +++ b/tools/include/linux/lockdep.h
-> @@ -47,7 +47,7 @@ static inline int debug_locks_off(void)
->
->  #define task_pid_nr(tsk) ((tsk)->pid)
->
-> -#define KSYM_NAME_LEN 128
-> +#define KSYM_NAME_LEN 512
->  #define printk(...) dprintf(STDOUT_FILENO, __VA_ARGS__)
->  #define pr_err(format, ...) fprintf (stderr, format, ## __VA_ARGS__)
->  #define pr_warn pr_err
-> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-> index d82054225fcc..f5c40325b441 100644
-> --- a/tools/lib/perf/include/perf/event.h
-> +++ b/tools/lib/perf/include/perf/event.h
-> @@ -93,7 +93,7 @@ struct perf_record_throttle {
+>  .../arm64/boot/dts/renesas/r8a77970-eagle.dts | 119 ++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+> index 874a7fc2730b..d2b6368d1e72 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+> +++ b/arch/arm64/boot/dts/renesas/r8a77970-eagle.dts
+> @@ -6,6 +6,8 @@
+>   * Copyright (C) 2017 Cogent Embedded, Inc.
+>   */
+>  
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+>  /dts-v1/;
+>  #include "r8a77970.dtsi"
+>  
+> @@ -188,6 +190,11 @@ i2c0_pins: i2c0 {
+>  		function = "i2c0";
+>  	};
+>  
+> +	i2c3_pins: i2c3 {
+> +		groups = "i2c3_a";
+> +		function = "i2c3";
+> +	};
+> +
+>  	qspi0_pins: qspi0 {
+>  		groups = "qspi0_ctrl", "qspi0_data4";
+>  		function = "qspi0";
+> @@ -266,6 +273,118 @@ &rwdt {
+>  	status = "okay";
 >  };
->
->  #ifndef KSYM_NAME_LEN
-> -#define KSYM_NAME_LEN 256
-> +#define KSYM_NAME_LEN 512
->  #endif
->
->  struct perf_record_ksymbol {
-> diff --git a/tools/lib/symbol/kallsyms.h b/tools/lib/symbol/kallsyms.h
-> index 72ab9870454b..542f9b059c3b 100644
-> --- a/tools/lib/symbol/kallsyms.h
-> +++ b/tools/lib/symbol/kallsyms.h
-> @@ -7,7 +7,7 @@
->  #include <linux/types.h>
->
->  #ifndef KSYM_NAME_LEN
-> -#define KSYM_NAME_LEN 256
-> +#define KSYM_NAME_LEN 512
->  #endif
->
->  static inline u8 kallsyms2elf_binding(char type)
-> --
-> 2.17.1
->
-
+>  
+> +&csi40 {
+> +	status = "okay";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +
+> +			csi40_in: endpoint {
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2 3 4>;
+> +				remote-endpoint = <&max9286_out0>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c3 {
+> +	pinctrl-0 = <&i2c3_pins>;
+> +	pinctrl-names = "default";
+> +
+> +	status = "okay";
+> +	clock-frequency = <400000>;
+> +
+> +	gmsl: gmsl-deserializer@48 {
+> +		compatible = "maxim,max9286";
+> +		reg = <0x48>;
+> +
+> +		maxim,gpio-poc = <0 GPIO_ACTIVE_LOW>;
+> +
+> +		/* eagle-pca9654-max9286-pwdn */
+> +		enable-gpios = <&io_expander 0 GPIO_ACTIVE_HIGH>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				max9286_in0: endpoint {
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				max9286_in1: endpoint {
+> +				};
+> +			};
+> +
+> +			port@2 {
+> +				reg = <2>;
+> +				max9286_in2: endpoint {
+> +				};
+> +			};
+> +
+> +			port@3 {
+> +				reg = <3>;
+> +				max9286_in3: endpoint {
+> +				};
+> +			};
+> +
+> +			port@4 {
+> +				reg = <4>;
+> +				max9286_out0: endpoint {
+> +					clock-lanes = <0>;
+> +					data-lanes = <1 2 3 4>;
+> +					remote-endpoint = <&csi40_in>;
+> +				};
+> +			};
+> +		};
+> +
+> +		i2c-mux {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			i2c@0 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <0>;
+> +
+> +				status = "disabled";
+> +			};
+> +
+> +			i2c@1 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <1>;
+> +
+> +				status = "disabled";
+> +			};
+> +
+> +			i2c@2 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <2>;
+> +
+> +				status = "disabled";
+> +			};
+> +
+> +			i2c@3 {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				reg = <3>;
+> +
+> +				status = "disabled";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &scif0 {
+>  	pinctrl-0 = <&scif0_pins>;
+>  	pinctrl-names = "default";
 
 -- 
-Thanks,
-~Nick Desaulniers
+Regards,
+
+Laurent Pinchart
