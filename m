@@ -2,120 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317B435F0D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05E435F0CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhDNJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:27:01 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2851 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235651AbhDNJ0e (ORCPT
+        id S1350474AbhDNJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232744AbhDNJZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:26:34 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FKxfq5LpTz681qN;
-        Wed, 14 Apr 2021 17:16:19 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 14 Apr 2021 11:26:11 +0200
-Received: from localhost (10.47.83.55) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 14 Apr
- 2021 10:26:10 +0100
-Date:   Wed, 14 Apr 2021 10:24:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-acpi@vger.kernel.org>, <ira.weiny@intel.com>,
-        <vishal.l.verma@intel.com>, <alison.schofield@intel.com>,
-        <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/7] cxl/mem: Get rid of @cxlm.base
-Message-ID: <20210414102443.000071a7@Huawei.com>
-In-Reply-To: <20210413161726.tz7rg46krrekk3lp@intel.com>
-References: <20210407222625.320177-1-ben.widawsky@intel.com>
-        <20210407222625.320177-5-ben.widawsky@intel.com>
-        <20210408182635.00003997@Huawei.com>
-        <20210413161726.tz7rg46krrekk3lp@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Wed, 14 Apr 2021 05:25:30 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20D7C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id f8so22819893edd.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
+        b=gINN1R9lI5tCoYH2ZPewi+utvLw1oNr+AYOfDMNtw/hKaSHIjWFrbHQ2mEP/s050tD
+         g448CE9NUc6LD5cIHE915wtYMuh12ELdt/BZzVJtfcbRlcZzDt0CH8Ve04xqPwET4Rh5
+         BHdMYM5h1f/E2uWaCn6cX9rtXlGY2VM249gpU+JczEOZGYRnqBdk5vjJ2O5+ToJ3ERbh
+         U3FM3+/YLy3sEwiHrE30IVFtoFTTLn4R1GTNSu4oQJjn/xhueIXu1t9NC5c0QjPFa4VI
+         mHQlWeb7xSouf3EcOgTxrw7wUrUZIGalS4Ba2F808A+YtDSZwP171zeWniTOjTgCp8d7
+         ejDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gHbX9CNZcLaiMHXNZmBKODRDqd/reEdwnJR9AYcgnvs=;
+        b=gwgJVZglVXyb/IWXt1NH8ogXoPpOScYxFmpDi4Nn0EgRgfuDggCkawclUdGuhXnSYU
+         LX/70ZDJCbtdFzL1xkecckPfkw/4lM6B88qMCxAnwRAOZZBHlvXroAX5GGn0ZAMKGVQB
+         FXF4I5tf7WFvfPeZQzb9ZQ3xomQtwu24dPGjLUT9WEVfzmDbBv48sVr99ufIFBT5kK4g
+         8gJtgyobGGS2tX3MHL3G1zKPnBKFsNoySDIdiaNjlY9iVdTqTw5ZiXRI3nOOgdw2JzKw
+         qTN53BPp1Li5dxBibIH1qgkVL7i3Gy26i0Iko6NPnjYMF2qXlgA/sNJ0ZNGJrlD2xqXt
+         C0IA==
+X-Gm-Message-State: AOAM530rGCHrMWdFhrRA/b01IadJdYMolZJfjvqE0kFkzh0QdkgEftPF
+        4qcth8bTe/mFN5KKewEkUOeQ7A==
+X-Google-Smtp-Source: ABdhPJwKI3fyWANihaNxRNJcYcXaOIyeXGZHEp2xOggKD3L098p3onGrqOxzTlf7HKaohGrVesV2FQ==
+X-Received: by 2002:aa7:c907:: with SMTP id b7mr40534459edt.37.1618392305540;
+        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:bfbf:e0a9:a746:c4b9])
+        by smtp.gmail.com with ESMTPSA id t14sm9473304ejc.121.2021.04.14.02.25.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 02:25:05 -0700 (PDT)
+To:     Nico Pache <npache@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     brendanhiggins@google.com, gregkh@linuxfoundation.org,
+        linux-ext4@vger.kernel.org, netdev@vger.kernel.org,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        geert@linux-m68k.org, tytso@mit.edu,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        broonie@kernel.org, davidgow@google.com, skhan@linuxfoundation.org,
+        mptcp@lists.linux.dev
+References: <cover.1618388989.git.npache@redhat.com>
+ <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+Message-ID: <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
+Date:   Wed, 14 Apr 2021 11:25:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.83.55]
-X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 09:17:26 -0700
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+Hi Nico,
 
-> On 21-04-08 18:26:35, Jonathan Cameron wrote:
-> > On Wed, 7 Apr 2021 15:26:22 -0700
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >   
-> > > @cxlm.base only existed to support holding the base found in the
-> > > register block mapping code, and pass it along to the register setup
-> > > code. Now that the register setup function has all logic around managing
-> > > the registers, from DVSEC to iomapping up to populating our CXL specific
-> > > information, it is easy to turn the @base values into local variables
-> > > and remove them from our device driver state.
-> > > 
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
-> > 
-> > Patch is basically fine, but I do wonder if you could avoid the
-> > nasty casting in and out of __iomem in the error paths.
-> > 
-> > It's a common enough idiom though so I'm not htat fussed.
-> > 
-> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >   
-> > > ---
-> > >  drivers/cxl/mem.c | 24 +++++++++++-------------
-> > >  drivers/cxl/mem.h |  2 --
-> > >  2 files changed, 11 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index 04b4f7445083..60b95c524c3e 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -922,11 +922,10 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev)
-> > >  	return cxlm;
-> > >  }
-> > >  
-> > > -static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
-> > > +static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
-> > >  {
-> > >  	struct pci_dev *pdev = cxlm->pdev;
-> > >  	struct device *dev = &pdev->dev;
-> > > -	void __iomem *regs;
-> > >  	u64 offset;
-> > >  	u8 bar;
-> > >  	int rc;
-> > > @@ -938,20 +937,18 @@ static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
-> > >  	if (pci_resource_len(pdev, bar) < offset) {
-> > >  		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> > >  			&pdev->resource[bar], (unsigned long long)offset);
-> > > -		return -ENXIO;
-> > > +		return (void __iomem *)ERR_PTR(-ENXIO);
-> > >  	}
-> > >  
-> > >  	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
-> > >  	if (rc) {
-> > >  		dev_err(dev, "failed to map registers\n");
-> > > -		return rc;
-> > > +		return (void __iomem *)ERR_PTR(rc);  
-> > 
-> > The casting is fairly horrible, perhaps just pass in
-> > a void __iomem ** and pass base back through that?
-> >   
-> 
-> TIL: IOMEM_ERR_PTR. Would that suffice?
+On 14/04/2021 10:58, Nico Pache wrote:
+> Drop 'S' from end of CONFIG_MPTCP_KUNIT_TESTS inorder to adhear to the
+> KUNIT *_KUNIT_TEST config name format.
 
-Definitely.  Didn't know about that!
+For MPTCP, we have multiple KUnit tests: crypto and token. That's why we 
+wrote TESTS with a S.
 
-Jonathan
+I'm fine without S if we need to stick with KUnit' standard. But maybe 
+the standard wants us to split the two tests and create 
+MPTCP_TOKEN_KUNIT_TEST and MPTCP_TOKEN_KUNIT_TEST config?
 
+In this case, we could eventually keep MPTCP_KUNIT_TESTS which will in 
+charge of selecting the two new ones.
+
+Up to the KUnit maintainers to decide ;-)
+
+Cheers,
+Matt
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
