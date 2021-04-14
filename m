@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F72135EB06
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A5835EB08
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346341AbhDNCkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345944AbhDNCkr (ORCPT
+        id S1346387AbhDNClQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:41:16 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:43685 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232053AbhDNClO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:40:47 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE41C061574;
-        Tue, 13 Apr 2021 19:40:26 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWVS1-005B4L-DP; Wed, 14 Apr 2021 02:40:21 +0000
-Date:   Wed, 14 Apr 2021 02:40:21 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Gautham Ananthakrishna <gautham.ananthakrishna@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, matthew.wilcox@oracle.com,
-        khlebnikov@yandex-team.ru
-Subject: Re: [PATCH RFC 0/6] fix the negative dentres bloating system memory
- usage
-Message-ID: <YHZWFQp8seUUxHe9@zeniv-ca.linux.org.uk>
-References: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
+        Tue, 13 Apr 2021 22:41:14 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVVa-W1_1618368044;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVVa-W1_1618368044)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 14 Apr 2021 10:40:53 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jansimon.moeller@gmx.de
+Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] leds: blinkm: remove unused variable
+Date:   Wed, 14 Apr 2021 10:40:42 +0800
+Message-Id: <1618368042-107692-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611235185-1685-1-git-send-email-gautham.ananthakrishna@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:49:39PM +0530, Gautham Ananthakrishna wrote:
+Fix the following gcc warning:
 
-> We tested this patch set recently and found it limiting negative dentry to a
-> small part of total memory. The following is the test result we ran on two
-> types of servers, one is 256G memory with 24 CPUS and another is 3T memory
-> with 384 CPUS. The test case is using a lot of processes to generate negative
-> dentry in parallel, the following is the test result after 72 hours, the
-> negative dentry number is stable around that number even after running longer
-> for much longer time. Without the patch set, in less than half an hour 197G was
-> taken by negative dentry on 256G system, in 1 day 2.4T was taken on 3T system.
-> 
-> system memory   neg-dentry-number   neg-dentry-mem-usage
-> 256G            55259084            10.6G
-> 3T              202306756           38.8G
-> 
-> For perf test, we ran the following, and no regression found.
-> 
-> 1. create 1M negative dentry and then touch them to convert them to positive
->    dentry
-> 
-> 2. create 10K/100K/1M files
-> 
-> 3. remove 10K/100K/1M files
-> 
-> 4. kernel compile
+drivers/leds/leds-blinkm.c:483:6: warning: variable ‘ret’ set but not
+used [-Wunused-but-set-variable].
 
-Good for you; how would that work for thinner boxen, though?  I agree that if you
-have 8M hash buckets your "no more than 3 unused negatives per bucket" is generous
-enough for everything, but that's less obvious for something with e.g 4 or 8 gigs.
-And believe it or not, there are real-world boxen like that ;-)
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/leds/leds-blinkm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/leds/leds-blinkm.c b/drivers/leds/leds-blinkm.c
+index b4e1fdf..bd7d0d5 100644
+--- a/drivers/leds/leds-blinkm.c
++++ b/drivers/leds/leds-blinkm.c
+@@ -480,9 +480,8 @@ static int blinkm_led_blue_set(struct led_classdev *led_cdev,
+ 
+ static void blinkm_init_hw(struct i2c_client *client)
+ {
+-	int ret;
+-	ret = blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
+-	ret = blinkm_transfer_hw(client, BLM_GO_RGB);
++	blinkm_transfer_hw(client, BLM_STOP_SCRIPT);
++	blinkm_transfer_hw(client, BLM_GO_RGB);
+ }
+ 
+ static int blinkm_test_run(struct i2c_client *client)
+-- 
+1.8.3.1
+
