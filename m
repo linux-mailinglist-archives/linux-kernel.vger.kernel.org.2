@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C245135F109
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2755D35F119
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346297AbhDNJsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:48:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233066AbhDNJs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:48:26 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B92FC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:48:04 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id d25so3427085vsp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VnkOL85Wb3szx9IKvjTA5WeF+yCa2dyNADfxmOIGTfg=;
-        b=I3pbr7j6o4PC0MV1kzxZXh7ZyZt0CNQ/5a2fYxdV0/rP7d/FCcro0YE6Et2K4cXqL1
-         Pxn45gU2vJ9SSEpRn1VV0HBc1J6F01j6LrlAKQFYBD1hwrNFTokMzWvAtTBi+IuTDXDZ
-         Obnr1zkzAE0Nv1bZFjvgVBMRJu1Bo633j4i7A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VnkOL85Wb3szx9IKvjTA5WeF+yCa2dyNADfxmOIGTfg=;
-        b=jdD7agzyG2Q5ZpT/+NORzNJvO9ZmhnUQzMfftQo+aWRFQmFxKXBsst8+Y6pFHGYPkk
-         N7H8Hs38nIH6U0Lv+BYxD90I7CnNxolAf/r/11njlUdWQG9zHTlfZ3EHU++UrAuBpE7W
-         Xc7jS1QydX80DemR4PdnxUVOSgtMEjcNu8Sr4sWs4x3NJcQDLUwfKTddRDz/twETha0X
-         tdQa7NM09ztZVAm2uEmsowLr+HEi04FePWim0jx1i+6HT4zMUaxUIdlp88EwMlqKCInB
-         Q/oI95st+PJyTcfc2tmcWu7pURiMhorEV1NtRIjhNIojwAcICXY1JaS4xsV3B78yrRnM
-         v5Bw==
-X-Gm-Message-State: AOAM530S2hJxgNTLPeOIS7gVGZA2qi944mpBMCSy1s9UH+a0P09pg4zU
-        SuMuzcyGYutspJqYeoR39a/Sh5DzwGOmDE5xRKXSRQ==
-X-Google-Smtp-Source: ABdhPJyNUHm+B00L1dGXSyJLzDxm0FvABnT09MYzPzsPt7kZy2ZJYAVo5PHUMpYkDgv8J+TYNvXWmbywHWjbi53Cx78=
-X-Received: by 2002:a67:b005:: with SMTP id z5mr27366996vse.47.1618393683121;
- Wed, 14 Apr 2021 02:48:03 -0700 (PDT)
+        id S232608AbhDNJzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:55:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38666 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231615AbhDNJzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:55:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0743CAD09;
+        Wed, 14 Apr 2021 09:54:56 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BA2B41F2B5F; Wed, 14 Apr 2021 11:54:55 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 11:54:55 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Khazhismel Kumykov <khazhy@google.com>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bfq: silence lockdep for bfqd/ioc lock inversion
+Message-ID: <20210414095455.GA29760@quack2.suse.cz>
+References: <20210319060015.3979352-1-khazhy@google.com>
 MIME-Version: 1.0
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com> <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com> <CAJfpegsurP8JshxFah0vCwBQicc0ijRnGyLeZZ-4tio6BHqEzQ@mail.gmail.com>
- <0fdb09fa-9b0f-1115-2540-6016ce664370@linux.alibaba.com>
-In-Reply-To: <0fdb09fa-9b0f-1115-2540-6016ce664370@linux.alibaba.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 14 Apr 2021 11:47:52 +0200
-Message-ID: <CAJfpegvTX9rS0D6TXUUz3urrPFHng_1OntSWah+CU-7Fo5F-7g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210319060015.3979352-1-khazhy@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:22 AM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
->
->
-> =E5=9C=A8 2021/4/14 17:02, Miklos Szeredi =E5=86=99=E9=81=93:
-> > On Wed, Apr 14, 2021 at 10:42 AM Baolin Wang
-> > <baolin.wang@linux.alibaba.com> wrote:
-> >
-> >> Sorry I missed this patch before, and I've tested this patch, it seems
-> >> can solve the deadlock issue I met before.
-> >
-> > Great, thanks for testing.
-> >
-> >> But look at this patch in detail, I think this patch only reduced the
-> >> deadlock window, but did not remove the possible deadlock scenario
-> >> completely like I explained in the commit log.
-> >>
-> >> Since the fuse_fill_write_pages() can still lock the partitail page in
-> >> your patch, and will be wait for the partitail page waritehack is
-> >> completed if writeback is set in fuse_send_write_pages().
-> >>
-> >> But at the same time, a writeback worker thread may be waiting for
-> >> trying to lock the partitail page to write a bunch of dirty pages by
-> >> fuse_writepages().
-> >
-> > As you say, fuse_fill_write_pages() will lock a partial page.  This
-> > page cannot become dirty, only after being read completely, which
-> > first requires the page lock.  So dirtying this page can only happen
-> > after the writeback of the fragment was completed.
->
-> What I mean is the writeback worker had looked up the dirty pages in
-> write_cache_pages() and stored them into a temporary pagevec, then try
-> to lock dirty page one by one and write them.
->
-> For example, suppose it looked up 2 dirty pages (named page 1 and page
-> 2), and writed down page 1 by fuse_writepages_fill(), unlocked page 1.
-> Then try to lock page 2.
->
-> At the same time, suppose the fuse_fill_write_pages() will write the
-> same page 1 and partitail page 2, and it will lock partital page 2 and
-> wait for the page 1's writeback is completed. But page 1's writeback can
-> not be completed, since the writeback worker is waiting for locking page
-> 2, which was already locked by fuse_fill_write_pages().
+On Thu 18-03-21 23:00:15, Khazhismel Kumykov wrote:
+> lockdep warns of circular locking due to inversion between
+> bfq_insert_requests and bfq_exit_icq. If we end freeing a request when
+> merging, we *may* grab an ioc->lock if that request is the last refcount
+> to that ioc. bfq_bio_merge also potentially could have this ordering.
+> bfq_exit_icq, conversely, grabs bfqd but is always called with ioc->lock
+> held.
+> 
+> bfq_exit_icq may either be called from put_io_context_active with ioc
+> refcount raised, ioc_release_fn after the last refcount was already
+> dropped, or ioc_clear_queue, which is only called while queue is
+> quiesced or exiting, so the inverted orderings should never conflict.
+> 
+> Fixes: aee69d78dec0 ("block, bfq: introduce the BFQ-v0 I/O scheduler as
+> an extra scheduler")
+> 
+> Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
 
-How would page2 become not uptodate, when it was already collected by
-write_cache_pages()?  I.e. page2 is a dirty page, hence it must be
-uptodate, and fuse_writepages_fill() will not keep it locked.
+I've just hit the same lockdep complaint. When looking at this another
+option to solve this complaint seemed to be to modify bfq_bio_merge() like:
 
-Your patch may make sense regardless, but it needs to have a clear
-analysis about why the  fuse_wait_on_page_writeback() was needed in
-the first place (it's not clear from the history) or why it's okay to
-move it.
+        ret = blk_mq_sched_try_merge(q, bio, nr_segs, &free);
+ 
++       spin_unlock_irq(&bfqd->lock);
+        if (free)
+                blk_mq_free_request(free);
+-       spin_unlock_irq(&bfqd->lock);
 
-Thanks,
-Miklos
+        return ret;
+
+to release request outside of bfqd->lock. Because AFAICT there's no good
+reason why we are actually freeing the request under bfqd->lock. And it
+would seem a bit safer than annotating-away the lockdep complaint (as much
+as I don't see a problem with your analysis). Paolo?
+
+								Honza
+> ---
+>  block/bfq-iosched.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> Noticed this lockdep running xfstests (generic/464) on top of a bfq
+> block device. I was also able to tease it out w/ binary trying to issue
+> requests that would end up merging while rapidly swapping the active
+> scheduler. As far as I could see, the deadlock would not actually occur,
+> so this patch opts to change lock class for the inverted case.
+> 
+> bfqd -> ioc :
+> [ 2995.524557] __lock_acquire+0x18f5/0x2660
+> [ 2995.524562] lock_acquire+0xb4/0x3a0
+> [ 2995.524565] _raw_spin_lock_irqsave+0x3f/0x60
+> [ 2995.524569] put_io_context+0x33/0x90.  -> ioc->lock grabbed
+> [ 2995.524573] blk_mq_free_request+0x51/0x140
+> [ 2995.524577] blk_put_request+0xe/0x10
+> [ 2995.524580] blk_attempt_req_merge+0x1d/0x30
+> [ 2995.524585] elv_attempt_insert_merge+0x56/0xa0
+> [ 2995.524590] blk_mq_sched_try_insert_merge+0x4b/0x60
+> [ 2995.524595] bfq_insert_requests+0x9e/0x18c0.    -> bfqd->lock grabbed
+> [ 2995.524598] blk_mq_sched_insert_requests+0xd6/0x2b0
+> [ 2995.524602] blk_mq_flush_plug_list+0x154/0x280
+> [ 2995.524606] blk_finish_plug+0x40/0x60
+> [ 2995.524609] ext4_writepages+0x696/0x1320
+> [ 2995.524614] do_writepages+0x1c/0x80
+> [ 2995.524621] __filemap_fdatawrite_range+0xd7/0x120
+> [ 2995.524625] sync_file_range+0xac/0xf0
+> [ 2995.524642] __x64_sys_sync_file_range+0x44/0x70
+> [ 2995.524646] do_syscall_64+0x31/0x40
+> [ 2995.524649] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> ioc -> bfqd
+> [ 2995.524490] _raw_spin_lock_irqsave+0x3f/0x60
+> [ 2995.524498] bfq_exit_icq+0xa3/0xe0 -> bfqd->lock grabbed
+> [ 2995.524512] put_io_context_active+0x78/0xb0 -> ioc->lock grabbed
+> [ 2995.524516] exit_io_context+0x48/0x50
+> [ 2995.524519] do_exit+0x7e9/0xdd0
+> [ 2995.524526] do_group_exit+0x54/0xc0
+> [ 2995.524530] __x64_sys_exit_group+0x18/0x20
+> [ 2995.524534] do_syscall_64+0x31/0x40
+> [ 2995.524537] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Another trace where we grab ioc -> bfqd through bfq_exit_icq is when
+> changing elevator
+>                -> #1 (&(&bfqd->lock)->rlock){-.-.}:
+> [  646.890820]        lock_acquire+0x9b/0x140
+> [  646.894868]        _raw_spin_lock_irqsave+0x3b/0x50
+> [  646.899707]        bfq_exit_icq_bfqq+0x47/0x1f0
+> [  646.904196]        bfq_exit_icq+0x21/0x30
+> [  646.908160]        ioc_destroy_icq+0xf3/0x130
+> [  646.912466]        ioc_clear_queue+0xb8/0x140
+> [  646.916771]        elevator_switch_mq+0xa4/0x3c0
+> [  646.921333]        elevator_switch+0x5f/0x340
+> 
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 95586137194e..cb50ac0ffe80 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -5027,7 +5027,14 @@ static void bfq_exit_icq_bfqq(struct bfq_io_cq *bic, bool is_sync)
+>  	if (bfqq && bfqd) {
+>  		unsigned long flags;
+>  
+> -		spin_lock_irqsave(&bfqd->lock, flags);
+> +		/* bfq_exit_icq is usually called with ioc->lock held, which is
+> +		 * inverse order from elsewhere, which may grab ioc->lock
+> +		 * under bfqd->lock if we merge requests and drop the last ioc
+> +		 * refcount. Since exit_icq is either called with a refcount,
+> +		 * or with queue quiesced, use a differnet lock class to
+> +		 * silence lockdep
+> +		 */
+> +		spin_lock_irqsave_nested(&bfqd->lock, flags, 1);
+>  		bfqq->bic = NULL;
+>  		bfq_exit_bfqq(bfqd, bfqq);
+>  		bic_set_bfqq(bic, NULL, is_sync);
+> -- 
+> 2.31.0.rc2.261.g7f71774620-goog
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
