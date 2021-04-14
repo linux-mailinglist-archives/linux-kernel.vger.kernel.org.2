@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B56235F689
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6073535F68D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351916AbhDNOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S1351939AbhDNOrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349887AbhDNOrM (ORCPT
+        with ESMTP id S1351910AbhDNOrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:47:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C695EC061574;
-        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d8so10224513plh.11;
-        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
+        Wed, 14 Apr 2021 10:47:23 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F92C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:47:02 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id i2so4432863vka.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y3YNr7aga5ARelEpZRoG5kXAVCwy+EfMKJ2wZNKrO3k=;
-        b=ML7MiXkg3x7j3dPBKlrJ7xBHHkyhcHhmiaxYaU3LP1/NqUTiDaZBe2nNTkMu2xYXB8
-         07DEYWLN89VBdlJlZ1U45qTNI8zGXm4GNPHLrX/9Zdn+HGB0cVS87jjL16NHQgEiyUWi
-         LSUBLSFSTWnPL+wk0DjZvz4ue/VV9SBje41l44Vh1Z61PHjkTfbxD7iOEgA1JPxq1bfV
-         gvGP+C+LGUcSAwdsWcLOp8TtOyo0YeIBCuhTTjIBzeQxe0i+B15u0Agc6EyxWTt3Wp4g
-         penu+1PFSffsZGCSD9igYEXSSrpMH1Lje0MYdqEVhX7h5vY6StZr83+DjrLm2ZKCB27H
-         RMzw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IWUmXHvIRv1Q6+KLmMzqs8rZ1xX3xtlUCsE3QMY698k=;
+        b=We+Ts2hHSHOHxeChgK8+e5GvO1bOhyJG3e8alHuvmBYg1sjXMvJXsRkvFie9C1LZ5Y
+         EYo/ZdeYgWsiQFijZBgILNIU+zp8sKNqeJuFd7RLh6wkDWCLVDkeBArt+EZ90dBvcAMD
+         z8E2Fb37ftMCoXc3LzC48d9ItTfC9IHb1XC+pQIc4C7xpTMO9sB3aQzRMvmw2G+F3khG
+         gxN9STH6BjecBbxq5JPWFNKu+xCCEaRNnQUFeDTADBoVPs3rVB9MzQBNvup8p+CotXyO
+         BabKwOG4lSUmSnjq4ge+yH4IVeMwCAUSnnwieSHf1c0AMTYpjtpzUnYZOgNv68oRG+gK
+         kIxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y3YNr7aga5ARelEpZRoG5kXAVCwy+EfMKJ2wZNKrO3k=;
-        b=qNmuFkFarvatsTV99q7+RGh5er2GXBqWkm1n6wxJuXFxW+nfA+f++KiIDuCLZePz8V
-         PaabXOl/g9recIJnUwZWUjUNfjHZIp8IPWxsgcpS4m9CMWBwMswLWa4WegXbpkFG4LwW
-         lVfKkAF6LZfUlL7Kj0dGL1bUgOZfxfpN7Dn/4iJE24knh82vbsw6pvq2Oi+KRuXU7I1r
-         19yjV5y3Jmqd3eTKyXUrdCbMxdcQjou1DC1TEYkLsWwlAe/fGez6iroESdCoooGSWuvk
-         b+qYpBS0Ju2SpSE8Vy+GRcrNgxUcsqNNKGsP0g3NuluYNYRwrEqQ7GgENLTdkJu+ZdXG
-         pC4Q==
-X-Gm-Message-State: AOAM533aXFWRw8lVOgZRwaiETlWib1z7RousxD3fh3gllbutDc4/bgvE
-        1h4heGf6NcKdGB68wFrUEUo=
-X-Google-Smtp-Source: ABdhPJxKK5K0A+ptCC6cs4HU1E95eLmtfVt+UNTJ9KhISNjDs3CWHt/5dPOuBfs//BQ59rrQGaAc7g==
-X-Received: by 2002:a17:90a:ff07:: with SMTP id ce7mr3956535pjb.0.1618411610372;
-        Wed, 14 Apr 2021 07:46:50 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:35:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id s17sm4879049pjn.44.2021.04.14.07.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 07:46:49 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 07:46:47 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v4 1/1] net: stmmac: Add support for external
- trigger timestamping
-Message-ID: <20210414144647.GA9318@hoboy.vegasvil.org>
-References: <20210414001617.3490-1-vee.khee.wong@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IWUmXHvIRv1Q6+KLmMzqs8rZ1xX3xtlUCsE3QMY698k=;
+        b=jOuiFafETxpSuZau7vR0HOeVL3kw9eIgmO58wvb77CyfrZjtVzX/X0bDuVmxDBWCSr
+         980LVa3ViZb4KbHrr8yhRwr8/8pHhNO7pdy8g3MR+OevDY7Ao+mRj78MIdnra0uB05Iy
+         270Sj9CVO/AcT/8SRd/J5G9S330NhPbuwuxf90KXEiK/A6h6f7kvwK9HMEPtkEYW1+Vu
+         lPDrIs17CCcFYI80HU3tV5kI+TIlAF546kzvl/y6YDkev+bUL1pu/dWZ9a2j0O0Jb5QS
+         LTzf9xNB80hcB0s/3BdUuP+/tR2RO92ZTlq3GHrom17rT//MJ/Kp6OVTuFmXHyw8WYmg
+         bGpA==
+X-Gm-Message-State: AOAM533RUFn43pI/QcM8JTlV2hq6ZE0Um6x8IACw3w+3EQVTtM4VsZMb
+        2YDtbEPrM6G4hrv3HofnfG3Nub7syO5+4uqdAKIw0kufnRA=
+X-Google-Smtp-Source: ABdhPJwMrqNfz/lL+mK0ZpoZqN/GaAVzoGMZ87EZV+WRQ+6NAX5jX91VGJjGg83awOurqZcMIyAgLFQiNtbr23HeAAk=
+X-Received: by 2002:a1f:53c7:: with SMTP id h190mr28473405vkb.19.1618411620871;
+ Wed, 14 Apr 2021 07:47:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414001617.3490-1-vee.khee.wong@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAPcxDJ6xx00Gjn6DxoMpdJ7UjNeJUp2613jqGRm7ZZeuMNeSjQ@mail.gmail.com>
+ <20210414131018.GG10709@zn.tnic>
+In-Reply-To: <20210414131018.GG10709@zn.tnic>
+From:   Jue Wang <juew@google.com>
+Date:   Wed, 14 Apr 2021 07:46:49 -0700
+Message-ID: <CAPcxDJ5q8=pwqsNV4ydSPJWp35f886n1TB7dWOx9cst=cb2myA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mce/copyin: fix to not SIGBUS when copying from user
+ hits poison
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, "Luck, Tony" <tony.luck@intel.com>,
+        x86 <x86@kernel.org>, yaoaili@kingsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:16:17AM +0800, Wong Vee Khee wrote:
-> From: Tan Tee Min <tee.min.tan@intel.com>
-> 
-> The Synopsis MAC controller supports auxiliary snapshot feature that
-> allows user to store a snapshot of the system time based on an external
-> event.
-> 
-> This patch add supports to the above mentioned feature. Users will be
-> able to triggered capturing the time snapshot from user-space using
-> application such as testptp or any other applications that uses the
-> PTP_EXTTS_REQUEST ioctl request.
-> 
-> Cc: Richard Cochran <richardcochran@gmail.com>
-> Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
-> Co-developed-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-> Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+On Wed, Apr 14, 2021 at 6:10 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Apr 13, 2021 at 10:47:21PM -0700, Jue Wang wrote:
+> > This path is when EPT #PF finds accesses to a hwpoisoned page and
+> > sends SIGBUS to user space (KVM exits into user space) with the same
+> > semantic as if regular #PF found access to a hwpoisoned page.
+> >
+> > The KVM_X86_SET_MCE ioctl actually injects a machine check into the guest.
+> >
+> > We are in process to launch a product with MCE recovery capability in
+> > a KVM based virtualization product and plan to expand the scope of the
+> > application of it in the near future.
+>
+> Any pointers to code or is this all non-public? Any text on what that
+> product does with the MCEs?
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+These are non-public at this point.
+
+User-facing docs and blog post are expected to be released towards the
+launch (i.e., in 3-4 months from now).
+>
+> > The in-memory database and analytical domain are definitely using it.
+> > A couple examples:
+> > SAP HANA - as we've tested and planned to launch as a strategic
+> > enterprise use case with MCE recovery capability in our product
+> > SQL server - https://support.microsoft.com/en-us/help/2967651/inf-sql-server-may-display-memory-corruption-and-recovery-errors
+>
+> Aha, so they register callbacks for the processes to exec on a memory
+> error. Good to know, thanks for those.
+My other 2 cents:
+
+I can see this is useful in other types of domains, e.g., on multi-tenant cloud
+servers where many VMs are collocated on the same host,
+with proper recovery + live migration, a single MCE would only affect a single
+VM at most.
+
+Another type of generic use case may be services that can tolerate
+abrupt crash,
+i.e., they periodically save checkpoints to persistent storage or are stateless
+services in nature and are managed by some process manager to automatically
+restart and resume from where the work was left at when crashed.
+
+Thanks,
+-Jue
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
