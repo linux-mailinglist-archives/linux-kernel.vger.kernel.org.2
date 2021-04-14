@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B26A35FB8D
+	by mail.lfdr.de (Postfix) with ESMTP id E27D635FB8E
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353323AbhDNTUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S1353333AbhDNTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353239AbhDNTTg (ORCPT
+        with ESMTP id S1353247AbhDNTTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:19:36 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CE1C06138F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:19:13 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id w186so6668620wmg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:19:13 -0700 (PDT)
+        Wed, 14 Apr 2021 15:19:38 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88F3C061343
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:19:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id b136-20020a1c1b8e0000b029012c69da2040so3724024wmb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CHjjd48PiwJLvff48z0RX7R6EM8TBwQvKJPGwesMVag=;
-        b=k1ipE0Bp5uFD3wV2ITFoV57FvVElThDwnxOP2kAEh+oBfaejMT+JTG5y/vyrggIf8b
-         ghgu0g+aBzTXL/hMtvDtHrE9+yA/Qn5s6vfWLR7ZggIKahJmK3D9+9x4VeUA3zAK7JaX
-         61K14z6mJX8Qy/fzkJ2ro/Hzo25sYYXUEjh8tjHIdXifae7GJREsXaQF51kyEGFJg6+U
-         yYNevmJdSEnEU+Rx+6C5/kbJYodxOHVPaYqxnzJVy1OAvGcUzZGnjG7VEwPWIw5IjBXF
-         tG1sHczgPJQ+ECUr9WBDvNF4KmxVg/+utAZ2YXOJ+f+UnJacDo/hZ5rdYVJIjuDv4+IM
-         IESw==
+        bh=2fs9yzgZefmIkPvtPeZDfAhTO9TS4pRwu9mbuRA3gso=;
+        b=xskKtKVs1VVBGxZ1M+P5OObpsddAfevle6FkX7M++GruAtxbUF1WtPSHXGSO9m6XWv
+         GWgk93I2jrmayP8/utJ/lrB30GnT1yGTnO6o4y5gZMwZFsgcIUpQNlE/1ncHcONu4oAv
+         c4JbIor6op5e9kanjPTq1ybBDIPX9g3Zntdt+VvLExPIZpNnG7OxhocEUzGsE6s4I+bE
+         6D6BvUJvjwJNE4mWoOGGICf7hA15uwY15xVlbhClhlS6zM1fp08oO6DDC05S+AM9BpiR
+         vGlSwiXl1iNhesXxHFbY2LX3vAgnBu0Dl8Xk1ZBxWoFBvcEpdNw7FRbDmKBYx9TCU4JB
+         Ligw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=CHjjd48PiwJLvff48z0RX7R6EM8TBwQvKJPGwesMVag=;
-        b=eXJMzo0RY5FIC0wyswjkXYlqjGYLQhyxh+0ELZOMsRU0ebgUyfyMm1G0+fllTOJVAp
-         W893TOmvCEuFDfr0OfSFW7nxwNVFhAeHHTqPLQWIgSkYJ1H4IF5gigGeUY9whQ8KBRxf
-         lxTnLQF86NbyRDNCLrZa7+K81DYlsZWW/C+DmjMUXgkBRZj0oeOFeaHWSAJZEm9F+FtY
-         oOB61eDAGyd6MYMZbQ6DWH9eiOgWzzDcrOvLJBjO4z/vJHJsxuqecVp1mknEsdzQRpz5
-         wXWMznk3ZlsJ6fwInRsr9NjinMThU9ILWfDqCDx/m3ZXEmPcUbMdWkIuYrVQ7INwRiqp
-         wqKQ==
-X-Gm-Message-State: AOAM530QE3T1FLoCoPNMyq98Hy5fZUtE3yuB+EMsd7U70gNbcX2yhz5i
-        qBxbgQuzIj6LhgY8A2z1rcYEUg==
-X-Google-Smtp-Source: ABdhPJzEYYVQ9ZFYCIE6Qdp+KNuOGdpkw6+13CWjcSD3HNDG+pARBKVs/2Ir21X+ltmefvlgI3Hdcw==
-X-Received: by 2002:a05:600c:24c:: with SMTP id 12mr4556865wmj.185.1618427952595;
-        Wed, 14 Apr 2021 12:19:12 -0700 (PDT)
+        bh=2fs9yzgZefmIkPvtPeZDfAhTO9TS4pRwu9mbuRA3gso=;
+        b=aJ3W4XQG6tCZTPgjq6r3TU96adXwIzhCmXgnrGO3w2JXZcvV7YpuF4FDzIrap6j4lq
+         N5MxsDNc6psonwA9Tebd0jLhNV0rXq/IyfvauLrmsaioYcb6cw2xtLpQ/irFQwBJEYeB
+         lG9HAvaRbL6fdB8ouzk/pBIL9AiyReXv5GuO40odEb5W4i9ziMSLjkN1G6A4//wD8kHH
+         Py5Wl8XY6cAETJOzR0wDgGzM4zY7v5qV81FJRQav2HcUc5DItWHqfOrh2nw8UoksDLbo
+         MhLq5NkawWV7XAel9yIiDtDk2EDTO/x8XUVzM0KBILi0NT2Wsh7SkmTyJ33FR6piJlID
+         cH/A==
+X-Gm-Message-State: AOAM5313X8Fvrs9luR/OLC6lgZUZlG2xXKKp0J/rvAmfbI/+vHxJdvEy
+        W0NtavDRnzMd/j98PZZkhE6bRw==
+X-Google-Smtp-Source: ABdhPJx2AaOdj5WpfZvbJav6Jv+ssiRUBQrj9NzjIQ1yDkRH36Kdxe9lOseZXKN04Q08XYfVT3PjmQ==
+X-Received: by 2002:a7b:c394:: with SMTP id s20mr4496532wmj.4.1618427953346;
+        Wed, 14 Apr 2021 12:19:13 -0700 (PDT)
 Received: from linaro.org ([2a00:23c5:6809:2201:546d:7d59:1703:bf96])
-        by smtp.gmail.com with ESMTPSA id a3sm327073wru.40.2021.04.14.12.19.11
+        by smtp.gmail.com with ESMTPSA id a3sm327073wru.40.2021.04.14.12.19.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 12:19:12 -0700 (PDT)
+        Wed, 14 Apr 2021 12:19:13 -0700 (PDT)
 From:   Mike Leach <mike.leach@linaro.org>
 To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
         mathieu.poirier@linaro.org, linux-doc@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
         alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         Mike Leach <mike.leach@linaro.org>
-Subject: [PATCH v7 08/10] coresight: config: Add preloaded configurations
-Date:   Wed, 14 Apr 2021 20:19:01 +0100
-Message-Id: <20210414191903.18349-9-mike.leach@linaro.org>
+Subject: [PATCH v7 09/10] coresight: syscfg: Add initial configfs support
+Date:   Wed, 14 Apr 2021 20:19:02 +0100
+Message-Id: <20210414191903.18349-10-mike.leach@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210414191903.18349-1-mike.leach@linaro.org>
 References: <20210414191903.18349-1-mike.leach@linaro.org>
@@ -65,320 +65,649 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preload set of configurations.
+Adds configfs subsystem and attributes to the configuration manager
+to enable the listing of loaded configurations and features.
 
-This patch creates a small set of preloaded configurations and features
-that are available immediately after coresight has been initialised.
-
-The current set provides a strobing feature for ETMv4, that creates a
-periodic sampling of trace by switching trace generation on and off
-using counters in the ETM.
-
-A configuration called "autofdo" is also provided that uses the 'strobing'
-feature and provides a couple of preset values, selectable on the perf
-command line.
+The default values of feature parameters can be accessed and altered
+from these attributes to affect all installed devices using the feature.
 
 Signed-off-by: Mike Leach <mike.leach@linaro.org>
 Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
  drivers/hwtracing/coresight/Makefile          |   3 +-
- .../hwtracing/coresight/coresight-cfg-afdo.c  | 153 ++++++++++++++++++
- .../coresight/coresight-cfg-preload.c         |  31 ++++
- .../coresight/coresight-cfg-preload.h         |  13 ++
- .../hwtracing/coresight/coresight-etm4x-cfg.h |  15 ++
- .../hwtracing/coresight/coresight-syscfg.c    |   9 ++
- .../hwtracing/coresight/coresight-syscfg.h    |   1 +
- 7 files changed, 224 insertions(+), 1 deletion(-)
- create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo.c
- create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.c
- create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.h
+ .../coresight/coresight-syscfg-configfs.c     | 396 ++++++++++++++++++
+ .../coresight/coresight-syscfg-configfs.h     |  45 ++
+ .../hwtracing/coresight/coresight-syscfg.c    |  76 ++++
+ .../hwtracing/coresight/coresight-syscfg.h    |   7 +
+ 5 files changed, 526 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.h
 
 diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
-index 9420d33b23ac..ad44f0fe3069 100644
+index ad44f0fe3069..b6c4a48140ec 100644
 --- a/drivers/hwtracing/coresight/Makefile
 +++ b/drivers/hwtracing/coresight/Makefile
-@@ -4,7 +4,8 @@
- #
+@@ -5,7 +5,8 @@
  obj-$(CONFIG_CORESIGHT) += coresight.o
  coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
--		coresight-sysfs.o coresight-syscfg.o coresight-config.o
-+		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
-+		coresight-cfg-preload.o coresight-cfg-afdo.o
+ 		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
+-		coresight-cfg-preload.o coresight-cfg-afdo.o
++		coresight-cfg-preload.o coresight-cfg-afdo.o \
++		coresight-syscfg-configfs.o
  obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
  coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
  		      coresight-tmc-etr.o
-diff --git a/drivers/hwtracing/coresight/coresight-cfg-afdo.c b/drivers/hwtracing/coresight/coresight-cfg-afdo.c
+diff --git a/drivers/hwtracing/coresight/coresight-syscfg-configfs.c b/drivers/hwtracing/coresight/coresight-syscfg-configfs.c
 new file mode 100644
-index 000000000000..84b31184252b
+index 000000000000..c547816b9000
 --- /dev/null
-+++ b/drivers/hwtracing/coresight/coresight-cfg-afdo.c
-@@ -0,0 +1,153 @@
++++ b/drivers/hwtracing/coresight/coresight-syscfg-configfs.c
+@@ -0,0 +1,396 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Copyright(C) 2020 Linaro Limited. All rights reserved.
++ * Copyright (c) 2020 Linaro Limited, All rights reserved.
 + * Author: Mike Leach <mike.leach@linaro.org>
 + */
 +
-+#include "coresight-config.h"
++#include <linux/configfs.h>
 +
-+/* ETMv4 includes and features */
-+#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
-+#include "coresight-etm4x-cfg.h"
++#include "coresight-syscfg-configfs.h"
 +
-+/* preload configurations and features */
++/* create a default ci_type. */
++static inline struct config_item_type *cscfg_create_ci_type(void)
++{
++	struct config_item_type *ci_type;
 +
-+/* preload in features for ETMv4 */
++	ci_type = devm_kzalloc(cscfg_device(), sizeof(*ci_type), GFP_KERNEL);
++	if (ci_type)
++		ci_type->ct_owner = THIS_MODULE;
 +
-+/* strobe feature */
-+static struct cscfg_parameter_desc strobe_params[] = {
-+	{
-+		.name = "window",
-+		.value = 5000,
-+	},
-+	{
-+		.name = "period",
-+		.value = 10000,
-+	},
++	return ci_type;
++}
++
++/* configurations sub-group */
++
++/* attributes for the config view group */
++static ssize_t cscfg_cfg_description_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_config *fs_config = container_of(to_config_group(item),
++							 struct cscfg_fs_config, group);
++
++	return scnprintf(page, PAGE_SIZE, "%s", fs_config->config_desc->description);
++}
++CONFIGFS_ATTR_RO(cscfg_cfg_, description);
++
++static ssize_t cscfg_cfg_feature_refs_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_config *fs_config = container_of(to_config_group(item),
++							 struct cscfg_fs_config, group);
++	const struct cscfg_config_desc *config_desc = fs_config->config_desc;
++	ssize_t ch_used = 0;
++	int i;
++
++	for (i = 0; i < config_desc->nr_feat_refs; i++)
++		ch_used += scnprintf(page + ch_used, PAGE_SIZE - ch_used,
++				     "%s\n", config_desc->feat_ref_names[i]);
++	return ch_used;
++}
++CONFIGFS_ATTR_RO(cscfg_cfg_, feature_refs);
++
++/* list preset values in order of features and params */
++static ssize_t cscfg_cfg_values_show(struct config_item *item, char *page)
++{
++	const struct cscfg_feature_desc *feat_desc;
++	const struct cscfg_config_desc *config_desc;
++	struct cscfg_fs_preset *fs_preset;
++	int i, j, val_idx, preset_idx;
++	ssize_t used = 0;
++
++	fs_preset = container_of(to_config_group(item), struct cscfg_fs_preset, group);
++	config_desc = fs_preset->config_desc;
++
++	if (!config_desc->nr_presets)
++		return 0;
++
++	preset_idx = fs_preset->preset_num - 1;
++
++	/* start index on the correct array line */
++	val_idx = config_desc->nr_total_params * preset_idx;
++
++	/*
++	 * A set of presets is the sum of all params in used features,
++	 * in order of declaration of features and params in the features
++	 */
++	for (i = 0; i < config_desc->nr_feat_refs; i++) {
++		feat_desc = cscfg_get_named_feat_desc(config_desc->feat_ref_names[i]);
++		for (j = 0; j < feat_desc->nr_params; j++) {
++			used += scnprintf(page + used, PAGE_SIZE - used,
++					  "%s.%s = 0x%llx ",
++					  feat_desc->name,
++					  feat_desc->params_desc[j].name,
++					  config_desc->presets[val_idx++]);
++		}
++	}
++	used += scnprintf(page + used, PAGE_SIZE - used, "\n");
++
++	return used;
++}
++CONFIGFS_ATTR_RO(cscfg_cfg_, values);
++
++static struct configfs_attribute *cscfg_config_view_attrs[] = {
++	&cscfg_cfg_attr_description,
++	&cscfg_cfg_attr_feature_refs,
++	NULL,
 +};
 +
-+static struct cscfg_regval_desc strobe_regs[] = {
-+	/* resource selectors */
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCRSCTLRn(2),
-+		.hw_info = ETM4_CFG_RES_SEL,
-+		.val32 = 0x20001,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCRSCTLRn(3),
-+		.hw_info = ETM4_CFG_RES_SEQ,
-+		.val32 = 0x20002,
-+	},
-+	/* strobe window counter 0 - reload from param 0 */
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_SAVE,
-+		.offset = TRCCNTVRn(0),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_PARAM,
-+		.offset = TRCCNTRLDVRn(0),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+		.val32 = 0,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCCNTCTLRn(0),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+		.val32 = 0x10001,
-+	},
-+	/* strobe period counter 1 - reload from param 1 */
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_SAVE,
-+		.offset = TRCCNTVRn(1),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_PARAM,
-+		.offset = TRCCNTRLDVRn(1),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+		.val32 = 1,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCCNTCTLRn(1),
-+		.hw_info = ETM4_CFG_RES_CTR,
-+		.val32 = 0x8102,
-+	},
-+	/* sequencer */
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCSEQEVRn(0),
-+		.hw_info = ETM4_CFG_RES_SEQ,
-+		.val32 = 0x0081,
-+	},
-+	{
-+		.type = CS_CFG_REG_TYPE_RESOURCE,
-+		.offset = TRCSEQEVRn(1),
-+		.hw_info = ETM4_CFG_RES_SEQ,
-+		.val32 = 0x0000,
-+	},
-+	/* view-inst */
-+	{
-+		.type = CS_CFG_REG_TYPE_STD | CS_CFG_REG_TYPE_VAL_MASK,
-+		.offset = TRCVICTLR,
-+		.val32 = 0x0003,
-+		.mask32 = 0x0003,
-+	},
-+	/* end of regs */
++static struct config_item_type cscfg_config_view_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_attrs = cscfg_config_view_attrs,
 +};
 +
-+struct cscfg_feature_desc strobe_etm4x = {
-+	.name = "strobing",
-+	.description = "Generate periodic trace capture windows.\n"
-+		       "parameter \'window\': a number of CPU cycles (W)\n"
-+		       "parameter \'period\': trace enabled for W cycles every period x W cycles\n",
-+	.match_flags = CS_CFG_MATCH_CLASS_SRC_ETM4,
-+	.nr_params = ARRAY_SIZE(strobe_params),
-+	.params_desc = strobe_params,
-+	.nr_regs = ARRAY_SIZE(strobe_regs),
-+	.regs_desc = strobe_regs,
++static struct configfs_attribute *cscfg_config_preset_attrs[] = {
++	&cscfg_cfg_attr_values,
++	NULL,
 +};
 +
-+/* create an autofdo configuration */
++static struct config_item_type cscfg_config_preset_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_attrs = cscfg_config_preset_attrs,
++};
 +
-+/* we will provide 9 sets of preset parameter values */
-+#define AFDO_NR_PRESETS	9
-+/* the total number of parameters in used features */
-+#define AFDO_NR_PARAMS	ARRAY_SIZE(strobe_params)
++static int cscfg_add_preset_groups(struct cscfg_fs_config *cfg_view)
++{
++	int preset_num;
++	struct cscfg_fs_preset *cfg_fs_preset;
++	struct cscfg_config_desc *config_desc = cfg_view->config_desc;
++	char name[CONFIGFS_ITEM_NAME_LEN];
 +
-+static const char *afdo_ref_names[] = {
-+	"strobing",
++	if (!config_desc->nr_presets)
++		return 0;
++
++	for (preset_num = 1; preset_num <= config_desc->nr_presets; preset_num++) {
++		cfg_fs_preset = devm_kzalloc(cscfg_device(),
++					     sizeof(struct cscfg_fs_preset), GFP_KERNEL);
++
++		if (!cfg_fs_preset)
++			return -ENOMEM;
++
++		snprintf(name, CONFIGFS_ITEM_NAME_LEN, "preset%d", preset_num);
++		cfg_fs_preset->preset_num = preset_num;
++		cfg_fs_preset->config_desc = cfg_view->config_desc;
++		config_group_init_type_name(&cfg_fs_preset->group, name,
++					    &cscfg_config_preset_type);
++		configfs_add_default_group(&cfg_fs_preset->group, &cfg_view->group);
++	}
++	return 0;
++}
++
++static struct config_group *cscfg_create_config_group(struct cscfg_config_desc *config_desc)
++{
++	struct cscfg_fs_config *cfg_view;
++	struct device *dev = cscfg_device();
++	int err;
++
++	if (!dev)
++		return ERR_PTR(-EINVAL);
++
++	cfg_view = devm_kzalloc(dev, sizeof(struct cscfg_fs_config), GFP_KERNEL);
++	if (!cfg_view)
++		return ERR_PTR(-ENOMEM);
++
++	cfg_view->config_desc = config_desc;
++	config_group_init_type_name(&cfg_view->group, config_desc->name, &cscfg_config_view_type);
++
++	/* add in a preset<n> dir for each preset */
++	err = cscfg_add_preset_groups(cfg_view);
++	if (err)
++		return ERR_PTR(err);
++
++	return &cfg_view->group;
++}
++
++/* attributes for features view */
++
++static ssize_t cscfg_feat_description_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_feature *fs_feat = container_of(to_config_group(item),
++							struct cscfg_fs_feature, group);
++
++	return scnprintf(page, PAGE_SIZE, "%s", fs_feat->feat_desc->description);
++}
++CONFIGFS_ATTR_RO(cscfg_feat_, description);
++
++static ssize_t cscfg_feat_matches_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_feature *fs_feat = container_of(to_config_group(item),
++							struct cscfg_fs_feature, group);
++	u32 match_flags = fs_feat->feat_desc->match_flags;
++	int used = 0;
++
++	if (match_flags & CS_CFG_MATCH_CLASS_SRC_ALL)
++		used = scnprintf(page, PAGE_SIZE, "SRC_ALL ");
++
++	if (match_flags & CS_CFG_MATCH_CLASS_SRC_ETM4)
++		used += scnprintf(page + used, PAGE_SIZE - used, "SRC_ETMV4 ");
++
++	used += scnprintf(page + used, PAGE_SIZE - used, "\n");
++	return used;
++}
++CONFIGFS_ATTR_RO(cscfg_feat_, matches);
++
++static ssize_t cscfg_feat_nr_params_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_feature *fs_feat = container_of(to_config_group(item),
++							struct cscfg_fs_feature, group);
++
++	return scnprintf(page, PAGE_SIZE, "%d\n", fs_feat->feat_desc->nr_params);
++}
++CONFIGFS_ATTR_RO(cscfg_feat_, nr_params);
++
++/* base feature desc attrib structures */
++static struct configfs_attribute *cscfg_feature_view_attrs[] = {
++	&cscfg_feat_attr_description,
++	&cscfg_feat_attr_matches,
++	&cscfg_feat_attr_nr_params,
++	NULL,
++};
++
++static struct config_item_type cscfg_feature_view_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_attrs = cscfg_feature_view_attrs,
++};
++
++static ssize_t cscfg_param_value_show(struct config_item *item, char *page)
++{
++	struct cscfg_fs_param *param_item = container_of(to_config_group(item),
++							 struct cscfg_fs_param, group);
++	u64 value = param_item->feat_desc->params_desc[param_item->param_idx].value;
++
++	return scnprintf(page, PAGE_SIZE, "0x%llx\n", value);
++}
++
++static ssize_t cscfg_param_value_store(struct config_item *item,
++				       const char *page, size_t size)
++{
++	struct cscfg_fs_param *param_item = container_of(to_config_group(item),
++							 struct cscfg_fs_param, group);
++	struct cscfg_feature_desc *feat_desc = param_item->feat_desc;
++	int param_idx = param_item->param_idx;
++	u64 value;
++	int err;
++
++	err = kstrtoull(page, 0, &value);
++	if (!err)
++		err = cscfg_update_feat_param_val(feat_desc, param_idx, value);
++
++	return err ? err : size;
++}
++CONFIGFS_ATTR(cscfg_param_, value);
++
++static struct configfs_attribute *cscfg_param_view_attrs[] = {
++	&cscfg_param_attr_value,
++	NULL,
++};
++
++static struct config_item_type cscfg_param_view_type = {
++	.ct_owner = THIS_MODULE,
++	.ct_attrs = cscfg_param_view_attrs,
 +};
 +
 +/*
-+ * set of presets leaves strobing window constant while varying period to allow
-+ * experimentation with mark / space ratios for various workloads
++ * configfs has far less functionality provided to add attributes dynamically than sysfs,
++ * and the show and store fns pass the enclosing config_item so the actual attribute cannot
++ * be determined. Therefore we add each item as a group directory, with a value attribute.
 + */
-+static u64 afdo_presets[AFDO_NR_PRESETS][AFDO_NR_PARAMS] = {
-+	{ 5000, 2 },
-+	{ 5000, 4 },
-+	{ 5000, 8 },
-+	{ 5000, 16 },
-+	{ 5000, 64 },
-+	{ 5000, 128 },
-+	{ 5000, 512 },
-+	{ 5000, 1024 },
-+	{ 5000, 4096 },
++static int cscfg_create_params_group_items(struct cscfg_feature_desc *feat_desc,
++					   struct config_group *params_group)
++{
++	struct device *dev = cscfg_device();
++	struct cscfg_fs_param *param_item;
++	int i;
++
++	/* parameter items - as groups with default_value attribute */
++	for (i = 0; i < feat_desc->nr_params; i++) {
++		param_item = devm_kzalloc(dev, sizeof(struct cscfg_fs_param), GFP_KERNEL);
++		if (!param_item)
++			return -ENOMEM;
++		param_item->feat_desc = feat_desc;
++		param_item->param_idx = i;
++		config_group_init_type_name(&param_item->group,
++					    feat_desc->params_desc[i].name,
++					    &cscfg_param_view_type);
++		configfs_add_default_group(&param_item->group, params_group);
++	}
++	return 0;
++}
++
++static struct config_group *cscfg_create_feature_group(struct cscfg_feature_desc *feat_desc)
++{
++	struct cscfg_fs_feature *feat_view;
++	struct config_item_type *params_group_type;
++	struct config_group *params_group = NULL;
++	struct device *dev = cscfg_device();
++	int item_err;
++
++	if (!dev)
++		return ERR_PTR(-EINVAL);
++
++	feat_view = devm_kzalloc(dev, sizeof(struct cscfg_fs_feature), GFP_KERNEL);
++	if (!feat_view)
++		return ERR_PTR(-ENOMEM);
++
++	if (feat_desc->nr_params) {
++		params_group = devm_kzalloc(dev, sizeof(struct config_group), GFP_KERNEL);
++		if (!params_group)
++			return ERR_PTR(-ENOMEM);
++
++		params_group_type = cscfg_create_ci_type();
++		if (!params_group_type)
++			return ERR_PTR(-ENOMEM);
++	}
++
++	feat_view->feat_desc = feat_desc;
++	config_group_init_type_name(&feat_view->group,
++				    feat_desc->name,
++				    &cscfg_feature_view_type);
++	if (params_group) {
++		config_group_init_type_name(params_group, "params", params_group_type);
++		configfs_add_default_group(params_group, &feat_view->group);
++		item_err = cscfg_create_params_group_items(feat_desc, params_group);
++		if (item_err)
++			return ERR_PTR(item_err);
++	}
++	return &feat_view->group;
++}
++
++static struct config_item_type cscfg_configs_type = {
++	.ct_owner = THIS_MODULE,
 +};
 +
-+struct cscfg_config_desc afdo_etm4x = {
-+	.name = "autofdo",
-+	.description = "Setup ETMs with strobing for autofdo\n"
-+	"Supplied presets allow experimentation with mark-space ratio for various loads\n",
-+	.nr_feat_refs = ARRAY_SIZE(afdo_ref_names),
-+	.feat_ref_names = afdo_ref_names,
-+	.nr_presets = AFDO_NR_PRESETS,
-+	.nr_total_params = AFDO_NR_PARAMS,
-+	.presets = &afdo_presets[0][0],
++static struct config_group cscfg_configs_grp = {
++	.cg_item = {
++		.ci_namebuf = "configurations",
++		.ci_type = &cscfg_configs_type,
++	},
 +};
 +
-+/* end of ETM4x configurations */
-+#endif	/* IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X) */
-diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.c b/drivers/hwtracing/coresight/coresight-cfg-preload.c
++/* add configuration to configurations group */
++int cscfg_configfs_add_config(struct cscfg_config_desc *config_desc)
++{
++	struct config_group *new_group;
++	int err;
++
++	new_group = cscfg_create_config_group(config_desc);
++	if (IS_ERR(new_group))
++		return PTR_ERR(new_group);
++	err =  configfs_register_group(&cscfg_configs_grp, new_group);
++	return err;
++}
++
++static struct config_item_type cscfg_features_type = {
++	.ct_owner = THIS_MODULE,
++};
++
++static struct config_group cscfg_features_grp = {
++	.cg_item = {
++		.ci_namebuf = "features",
++		.ci_type = &cscfg_features_type,
++	},
++};
++
++/* add feature to features group */
++int cscfg_configfs_add_feature(struct cscfg_feature_desc *feat_desc)
++{
++	struct config_group *new_group;
++	int err;
++
++	new_group = cscfg_create_feature_group(feat_desc);
++	if (IS_ERR(new_group))
++		return PTR_ERR(new_group);
++	err =  configfs_register_group(&cscfg_features_grp, new_group);
++	return err;
++}
++
++int cscfg_configfs_init(struct cscfg_manager *cscfg_mgr)
++{
++	struct configfs_subsystem *subsys;
++	struct config_item_type *ci_type;
++
++	if (!cscfg_mgr)
++		return -EINVAL;
++
++	ci_type = cscfg_create_ci_type();
++	if (!ci_type)
++		return -ENOMEM;
++
++	subsys = &cscfg_mgr->cfgfs_subsys;
++	config_item_set_name(&subsys->su_group.cg_item, CSCFG_FS_SUBSYS_NAME);
++	subsys->su_group.cg_item.ci_type = ci_type;
++
++	config_group_init(&subsys->su_group);
++	mutex_init(&subsys->su_mutex);
++
++	/* Add default groups to subsystem */
++	config_group_init(&cscfg_configs_grp);
++	configfs_add_default_group(&cscfg_configs_grp, &subsys->su_group);
++
++	config_group_init(&cscfg_features_grp);
++	configfs_add_default_group(&cscfg_features_grp, &subsys->su_group);
++
++	return configfs_register_subsystem(subsys);
++}
++
++void cscfg_configfs_release(struct cscfg_manager *cscfg_mgr)
++{
++	configfs_unregister_subsystem(&cscfg_mgr->cfgfs_subsys);
++}
+diff --git a/drivers/hwtracing/coresight/coresight-syscfg-configfs.h b/drivers/hwtracing/coresight/coresight-syscfg-configfs.h
 new file mode 100644
-index 000000000000..751af3710d56
+index 000000000000..7d6ffe35ca4c
 --- /dev/null
-+++ b/drivers/hwtracing/coresight/coresight-cfg-preload.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/drivers/hwtracing/coresight/coresight-syscfg-configfs.h
+@@ -0,0 +1,45 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Copyright(C) 2020 Linaro Limited. All rights reserved.
-+ * Author: Mike Leach <mike.leach@linaro.org>
++ * Coresight system configuration driver - support for configfs.
 + */
 +
-+#include "coresight-cfg-preload.h"
-+#include "coresight-config.h"
++#ifndef CORESIGHT_SYSCFG_CONFIGFS_H
++#define CORESIGHT_SYSCFG_CONFIGFS_H
++
++#include <linux/configfs.h>
 +#include "coresight-syscfg.h"
 +
-+/* Basic features and configurations pre-loaded on initialisation */
++#define CSCFG_FS_SUBSYS_NAME "cs-syscfg"
 +
-+static struct cscfg_feature_desc *preload_feats[] = {
-+#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
-+	&strobe_etm4x,
-+#endif
-+	NULL
++/* container for configuration view */
++struct cscfg_fs_config {
++	struct cscfg_config_desc *config_desc;
++	struct config_group group;
 +};
 +
-+static struct cscfg_config_desc *preload_cfgs[] = {
-+#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
-+	&afdo_etm4x,
-+#endif
-+	NULL
++/* container for feature view */
++struct cscfg_fs_feature {
++	struct cscfg_feature_desc *feat_desc;
++	struct config_group group;
 +};
 +
-+/* preload called on initialisation */
-+int cscfg_preload(void)
-+{
-+	return cscfg_load_config_sets(preload_cfgs, preload_feats);
-+}
-diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.h b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-new file mode 100644
-index 000000000000..21299e175477
---- /dev/null
-+++ b/drivers/hwtracing/coresight/coresight-cfg-preload.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright(C) 2020 Linaro Limited. All rights reserved.
-+ * Author: Mike Leach <mike.leach@linaro.org>
-+ */
++/* container for parameter view */
++struct cscfg_fs_param {
++	int param_idx;
++	struct cscfg_feature_desc *feat_desc;
++	struct config_group group;
++};
 +
-+/* declare preloaded configurations and features */
++/* container for preset view */
++struct cscfg_fs_preset {
++	int preset_num;
++	struct cscfg_config_desc *config_desc;
++	struct config_group group;
++};
 +
-+/* from coresight-cfg-afdo.c - etm 4x features */
-+#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
-+extern struct cscfg_feature_desc strobe_etm4x;
-+extern struct cscfg_config_desc afdo_etm4x;
-+#endif
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-cfg.h b/drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-index a204ad9a4792..32dab34c1dac 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-@@ -9,6 +9,21 @@
- #include "coresight-config.h"
- #include "coresight-etm4x.h"
- 
-+/* ETMv4 specific config defines */
++int cscfg_configfs_init(struct cscfg_manager *cscfg_mgr);
++void cscfg_configfs_release(struct cscfg_manager *cscfg_mgr);
++int cscfg_configfs_add_config(struct cscfg_config_desc *config_desc);
++int cscfg_configfs_add_feature(struct cscfg_feature_desc *feat_desc);
 +
-+/* resource IDs */
-+
-+#define ETM4_CFG_RES_CTR	0x001
-+#define ETM4_CFG_RES_CMP	0x002
-+#define ETM4_CFG_RES_CMP_PAIR0	0x003
-+#define ETM4_CFG_RES_CMP_PAIR1	0x004
-+#define ETM4_CFG_RES_SEL	0x005
-+#define ETM4_CFG_RES_SEL_PAIR0	0x006
-+#define ETM4_CFG_RES_SEL_PAIR1	0x007
-+#define ETM4_CFG_RES_SEQ	0x008
-+#define ETM4_CFG_RES_TS		0x009
-+#define ETM4_CFG_RES_MASK	0x00F
-+
- /* ETMv4 specific config functions */
- int etm4_cscfg_register(struct coresight_device *csdev);
- 
++#endif /* CORESIGHT_SYSCFG_CONFIGFS_H */
 diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-index b234e45c153f..41f742190639 100644
+index 41f742190639..180202402eb5 100644
 --- a/drivers/hwtracing/coresight/coresight-syscfg.c
 +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-@@ -709,8 +709,17 @@ int __init cscfg_init(void)
- 	INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
- 	atomic_set(&cscfg_mgr->sys_active_cnt, 0);
+@@ -9,6 +9,7 @@
+ #include "coresight-config.h"
+ #include "coresight-etm-perf.h"
+ #include "coresight-syscfg.h"
++#include "coresight-syscfg-configfs.h"
  
-+	/* preload built-in configurations */
-+	err = cscfg_preload();
+ /*
+  * cscfg_ API manages configurations and features for the entire coresight
+@@ -287,6 +288,72 @@ static int cscfg_load_config(struct cscfg_config_desc *config_desc)
+ 	return 0;
+ }
+ 
++/* get a feature descriptor by name */
++const struct cscfg_feature_desc *cscfg_get_named_feat_desc(const char *name)
++{
++	const struct cscfg_feature_desc *feat_desc = NULL, *feat_desc_item;
++
++	mutex_lock(&cscfg_mutex);
++
++	list_for_each_entry(feat_desc_item, &cscfg_mgr->feat_desc_list, item) {
++		if (strcmp(feat_desc_item->name, name) == 0) {
++			feat_desc = feat_desc_item;
++			break;
++		}
++	}
++
++	mutex_unlock(&cscfg_mutex);
++	return feat_desc;
++}
++
++/* called with cscfg_mutex held */
++static struct cscfg_feature_csdev *
++cscfg_csdev_get_feat_from_desc(struct coresight_device *csdev,
++			       struct cscfg_feature_desc *feat_desc)
++{
++	struct cscfg_feature_csdev *feat_csdev;
++
++	list_for_each_entry(feat_csdev, &csdev->feature_csdev_list, node) {
++		if (feat_csdev->feat_desc == feat_desc)
++			return feat_csdev;
++	}
++	return NULL;
++}
++
++int cscfg_update_feat_param_val(struct cscfg_feature_desc *feat_desc,
++				int param_idx, u64 value)
++{
++	int err = 0;
++	struct cscfg_feature_csdev *feat_csdev;
++	struct cscfg_registered_csdev *csdev_item;
++
++	mutex_lock(&cscfg_mutex);
++
++	/* check if any config active & return busy */
++	if (atomic_read(&cscfg_mgr->sys_active_cnt)) {
++		err = -EBUSY;
++		goto unlock_exit;
++	}
++
++	/* set the value */
++	if ((param_idx < 0) || (param_idx >= feat_desc->nr_params)) {
++		err = -EINVAL;
++		goto unlock_exit;
++	}
++	feat_desc->params_desc[param_idx].value = value;
++
++	/* update loaded instances.*/
++	list_for_each_entry(csdev_item, &cscfg_mgr->csdev_desc_list, item) {
++		feat_csdev = cscfg_csdev_get_feat_from_desc(csdev_item->csdev, feat_desc);
++		if (feat_csdev)
++			feat_csdev->params_csdev[param_idx].current_value = value;
++	}
++
++unlock_exit:
++	mutex_unlock(&cscfg_mutex);
++	return err;
++}
++
+ /**
+  * cscfg_load_config_sets - API function to load feature and config sets.
+  *
+@@ -308,6 +375,8 @@ int cscfg_load_config_sets(struct cscfg_config_desc **config_descs,
+ 	if (feat_descs) {
+ 		while (feat_descs[i]) {
+ 			err = cscfg_load_feat(feat_descs[i]);
++			if (!err)
++				err = cscfg_configfs_add_feature(feat_descs[i]);
+ 			if (err) {
+ 				pr_err("coresight-syscfg: Failed to load feature %s\n",
+ 				       feat_descs[i]->name);
+@@ -322,6 +391,8 @@ int cscfg_load_config_sets(struct cscfg_config_desc **config_descs,
+ 	if (config_descs) {
+ 		while (config_descs[i]) {
+ 			err = cscfg_load_config(config_descs[i]);
++			if (!err)
++				err = cscfg_configfs_add_config(config_descs[i]);
+ 			if (err) {
+ 				pr_err("coresight-syscfg: Failed to load configuration %s\n",
+ 				       config_descs[i]->name);
+@@ -691,6 +762,7 @@ static void cscfg_clear_device(void)
+ 	list_for_each_entry(cfg_desc, &cscfg_mgr->config_desc_list, item) {
+ 		etm_perf_del_symlink_cscfg(cfg_desc);
+ 	}
++	cscfg_configfs_release(cscfg_mgr);
+ 	device_unregister(cscfg_device());
+ 	mutex_unlock(&cscfg_mutex);
+ }
+@@ -704,6 +776,10 @@ int __init cscfg_init(void)
+ 	if (err)
+ 		return err;
+ 
++	err = cscfg_configfs_init(cscfg_mgr);
 +	if (err)
 +		goto exit_err;
 +
- 	dev_info(cscfg_device(), "CoreSight Configuration manager initialised");
- 	return 0;
-+
-+exit_err:
-+	cscfg_clear_device();
-+	return err;
- }
- 
- void cscfg_exit(void)
+ 	INIT_LIST_HEAD(&cscfg_mgr->csdev_desc_list);
+ 	INIT_LIST_HEAD(&cscfg_mgr->feat_desc_list);
+ 	INIT_LIST_HEAD(&cscfg_mgr->config_desc_list);
 diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
-index a52775890670..7bb8c8e497ba 100644
+index 7bb8c8e497ba..8d018efd6ead 100644
 --- a/drivers/hwtracing/coresight/coresight-syscfg.h
 +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
-@@ -56,6 +56,7 @@ struct cscfg_registered_csdev {
- /* internal core operations for cscfg */
+@@ -6,6 +6,7 @@
+ #ifndef CORESIGHT_SYSCFG_H
+ #define CORESIGHT_SYSCFG_H
+ 
++#include <linux/configfs.h>
+ #include <linux/coresight.h>
+ #include <linux/device.h>
+ 
+@@ -25,6 +26,7 @@
+  * @feat_desc_list:	List of feature descriptors to load into registered devices.
+  * @config_desc_list:	List of system configuration descriptors to load into registered devices.
+  * @sys_active_cnt:	Total number of active config descriptor references.
++ * @cfgfs_subsys:	configfs subsystem used to manage configurations.
+  */
+ struct cscfg_manager {
+ 	struct device dev;
+@@ -32,6 +34,7 @@ struct cscfg_manager {
+ 	struct list_head feat_desc_list;
+ 	struct list_head config_desc_list;
+ 	atomic_t sys_active_cnt;
++	struct configfs_subsystem cfgfs_subsys;
+ };
+ 
+ /* get reference to dev in cscfg_manager */
+@@ -57,6 +60,10 @@ struct cscfg_registered_csdev {
  int __init cscfg_init(void);
  void cscfg_exit(void);
-+int cscfg_preload(void);
+ int cscfg_preload(void);
++const struct cscfg_feature_desc *cscfg_get_named_feat_desc(const char *name);
++int cscfg_update_feat_param_val(struct cscfg_feature_desc *feat_desc,
++				int param_idx, u64 value);
++
  
  /* syscfg manager external API */
  int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
