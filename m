@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D3635FBD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1C635FBD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349278AbhDNTpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S1353472AbhDNTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347936AbhDNTpo (ORCPT
+        with ESMTP id S1347936AbhDNTp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:45:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A4EC061574;
-        Wed, 14 Apr 2021 12:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gli4OQgNBy4Y7eTH9cJneL6jzKQeus+YAS1EFmNv1Hg=; b=EQXXk6xBvoPl5/lwskuCNB/K2A
-        nf6fMzNmzNkwo1/Agd5C2Zg/hZcMWlUHj3lzqTFlal+axjZ0qdN0kZYU4qJYG1r7OnfGMEkVdif2z
-        EjlibfSI0HbuAG+lR9i82Wbzo3B7RxLKQCIsHiuy7eXOZN3Dgvk/WjtWJM17VG99RbYWcycMmZnXx
-        uCJiOd19nK8idbSXx5m6ShEptIIjtsrSL1FwoxptLrp68hixsxNJ3TfTUKI0j4nG5iuU27PHXiO71
-        3IQrzTaPTzHVw5ClbA5prDkRIJ89c0qIvmTvCgyIm9vQ6G7Uigrnc3bmBc95k41o/Z0CpEFG4sSOv
-        N3xrRztw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWlRW-007YIZ-3c; Wed, 14 Apr 2021 19:45:04 +0000
-Date:   Wed, 14 Apr 2021 20:44:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: Re: [PATCH 01/13] kallsyms: Support "big" kernel symbols (2-byte
- lengths)
-Message-ID: <20210414194454.GV2531743@casper.infradead.org>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414184604.23473-2-ojeda@kernel.org>
+        Wed, 14 Apr 2021 15:45:58 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A347C061574;
+        Wed, 14 Apr 2021 12:45:35 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 56B9FC725CF;
+        Wed, 14 Apr 2021 21:45:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1618429534;
+        bh=NcyhMGkK4f3s6Jb75I3zSLqjm8FszWSB9VvtZQdYA3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=INppUTN2R41mVczgBPa/SGaLm4kMSUW/fkHjLuCQy8DdAGjP1F0Oi0y0493qiBvyq
+         LRWYeFvSQ7JBCfMiQxaL3JMJlcSvw1bHeXRRKto+25h47bjQ+XJTMqin9Wrr8Mnn6M
+         UHU9V5yd1/scDbBE2aMGNlHkS65az6/QRYyoe6hM=
+Date:   Wed, 14 Apr 2021 21:45:32 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
+Message-ID: <YHdGXG3PbsmicK7U@workstation.tuxnet>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
+ <YHR3wP4Fk3jidnri@workstation.tuxnet>
+ <20210412201019.vouxx4daumusrcvr@pengutronix.de>
+ <YHWKehtYFSaHt1hC@workstation.tuxnet>
+ <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
+ <YHbbaiwK9Tasb7NF@workstation.tuxnet>
+ <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210414184604.23473-2-ojeda@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:45:52PM +0200, ojeda@kernel.org wrote:
-> Increasing to 255 is not enough in some cases, and therefore
-> we need to introduce 2-byte lengths to the symbol table. We call
-> these "big" symbols.
+On Wed, Apr 14, 2021 at 09:21:31PM +0200, Uwe Kleine-König wrote:
+> On Wed, Apr 14, 2021 at 02:09:14PM +0200, Clemens Gruber wrote:
+> > Hi Uwe,
+> > 
+> > On Tue, Apr 13, 2021 at 09:38:18PM +0200, Uwe Kleine-König wrote:
+> > > Hello Clemens,
+> > > 
+> > > On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
+> > > > On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-König wrote:
+> > > > > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
+> > > > > > With your suggested round-down, the example with frequency of 200 Hz
+> > > > > > would no longer result in 30 but 29 and that contradicts the datasheet.
+> > > > > 
+> > > > > Well, with PRESCALE = 30 we get a frequency of 196.88 Hz and with
+> > > > > PRESCALE = 29 we get a frequency of 203.45 Hz. So no matter if you pick
+> > > > > 29 or 30, you don't get 200 Hz. And which of the two possible values is
+> > > > > the better one depends on the consumer, no matter what rounding
+> > > > > algorithm the data sheet suggests. Also note that the math here contains
+> > > > > surprises you don't expect at first. For example, what PRESCALE value
+> > > > > would you pick to get 284 Hz? [If my mail was a video, I'd suggest to
+> > > > > press Space now to pause and let you think first :-)] The data sheet's
+> > > > > formula suggests:
+> > > > > 
+> > > > > 	round(25 MHz / (4096 * 284)) - 1 = 20
+> > > > > 
+> > > > > The resulting frequency when picking PRESCALE = 20 is 290.644 Hz (so an
+> > > > > error of 6.644 Hz). If instead you pick PRESCALE = 21 you get 277.433 Hz
+> > > > > (error = 6.567 Hz), so 21 is the better choice.
+> > > > > 
+> > > > > Exercise for the reader:
+> > > > >  What is the correct formula to really determine the PRESCALE value that
+> > > > >  yields the best approximation (i.e. minimizing
+> > > > >  abs(real_freq - target_freq)) for a given target_freq?
+> > > 
+> > > I wonder if you tried this.
+> > 
+> > We could calculate both round-up and round-down and decide which one is
+> > closer to "real freq" (even though that is not the actual frequency but
+> > just our backwards-calculated frequency).
 > 
-> In order to avoid increasing all lengths to 2 bytes (since most
-> of them only require 1 byte, including many Rust ones), we use
-> length zero to mark "big" symbols in the table.
+> Yeah, the backwards-calculated frequency is the best assumption we
+> have.
+> 
+> > But I can't give you a formula with minimized abs(real_freq-target_freq)
+> > Is it a different round point than 0.5 and maybe relative to f ?
+> > 
+> > Please enlighten us :-)
+> 
+> Sorry, I cannot. I spend ~20 min today after lunch with pencil and
+> paper, but without success. I was aware that it isn't trivial and this
+> is the main reason I established round-down as default for new drivers
+> instead of round-nearest.
 
-How about doing something a bit more utf-8-like?
+Oh, I thought you already solved it. I tried too for a while but was
+unsuccessful. Not trivial indeed!
 
-	len = data[0];
-	if (len == 0)
-		error
-	else if (len < 128)
-		return len;
-	else if (len < 192)
-		return 128 + (len - 128) * 256 + data[1];
-... that takes you all the way out to 16511 bytes.  You probably don't
-even need the third byte option.  But if you do ...
-	else if (len < 223)
-		return 16512 + (len - 192) * 256 * 256 +
-			data[1] * 256 + data[2];
-which takes you all the way out to 2,113,663 bytes and leaves 224-255 unused.
+But regarding you establishing round-down: Wouldn't it be even better if
+the driver did what I suggested above, namely calculate backwards from
+both the rounded-up as well as the rounded-down prescale value and then
+write the one with the smallest abs(f_target - f_real) to the register?
 
-Alternatively, if the symbols are really this long, perhaps we should not
-do string matches.  A sha-1 (... or whatever ...) hash of the function
-name is 160 bits.  Expressed as hex digits, that's 40 characters.
-Expressed in base-64, it's 27 characters.  We'd also want a "pretty"
-name to go along with the hash, but that seems preferable to printing
-out a mangled-with-types-and-who-knows-what name.
-
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-
-If you have C-d-b, you don't also need S-o-b.
-
+Clemens
