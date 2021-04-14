@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A9A35FCEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5117735FCF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhDNVDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:03:36 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12888 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhDNVDb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:03:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618434190; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=ZBsaLR2ssrAtJHLK4RRToa5+BuTVs/Oj8QEQl6/nf5c=; b=OUp62ByWo5CaRRoiysHkFYtrCd7WgTa2wT65d/vu+RhmgM9SYvb+y1K+rVrcrIQltII2NiGn
- NZyT6enEuOvGk4ktIN7qKqNwkRi/QW+gHRvDz4+nN809fTVkfhrQTUBQrjwQQ/+aEo121M39
- /OEoUJ0D2cCWq1EY4hF8gtHgDvU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 607758838166b7eff74aa1f6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Apr 2021 21:02:59
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6364CC43465; Wed, 14 Apr 2021 21:02:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D6CEC43461;
-        Wed, 14 Apr 2021 21:02:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D6CEC43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] drm/msm/dp: initialize audio_comp when audio starts
-Date:   Wed, 14 Apr 2021 14:02:50 -0700
-Message-Id: <1618434170-28302-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230254AbhDNVEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230350AbhDNVEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 17:04:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C30060240;
+        Wed, 14 Apr 2021 21:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618434232;
+        bh=cgcS4OT2OQ9yztrLDGKDqC6WZcpOr+I4kBHjkeeifHI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RyyQi/TmEIUBU+HOZ21LdL23oaLp2hBjZuOmAPFhhbi8qfzcfRIBmL6v1bCTQArTY
+         coseRP6wrzY78lz0d9FYncNFhxNPVvXo+7KuJWIGGJsJt2e4lMfvKuHXJ0CY/OIBz5
+         afSssNEzxZjBR0nEBGWAzZ0OhZRrCypnVzy6z3AH0nQROcwvILiTdGgEm/5e/RGFWs
+         hdAKI+cBjORjkgsJ3MM05L6PWYIo+mjU0tzfFU0/QWGKVZm3AFj+iZo7PhyKOjy+lH
+         SEUZ4clOsj/5gZGs3oPzTOqzfhvL1rJl8KJpjm4kc7BYYEC6iU1el7OKYSLshEMRvk
+         64bdHZhw9OMJA==
+Date:   Wed, 14 Apr 2021 16:03:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ingmar Klein <ingmar_klein@web.de>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: QCA6174 pcie wifi: Add pci quirks
+Message-ID: <20210414210350.GA2537653@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08982e05-b6e8-5a8d-24ab-da1488ee50a8@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize audio_comp when audio starts and wait for audio_comp at
-dp_display_disable(). This will take care of both dongle unplugged
-and display off (suspend) cases.
+[+cc Alex]
 
-Changes in v2:
--- add dp_display_start_audio()
+On Fri, Apr 09, 2021 at 11:26:33AM +0200, Ingmar Klein wrote:
+> Edit: Retry, as I did not consider, that my mail-client would make this
+> party html.
+> 
+> Dear maintainers,
+> I recently encountered an issue on my Proxmox server system, that
+> includes a Qualcomm QCA6174 m.2 PCIe wifi module.
+> https://deviwiki.com/wiki/AIRETOS_AFX-QCA6174-NX
+> 
+> On system boot and subsequent virtual machine start (with passed-through
+> QCA6174), the VM would just freeze/hang, at the point where the ath10k
+> driver loads.
+> Quick search in the proxmox related topics, brought me to the following
+> discussion, which suggested a PCI quirk entry for the QCA6174 in the kernel:
+> https://forum.proxmox.com/threads/pcie-passthrough-freezes-proxmox.27513/
+> 
+> I then went ahead, got the Proxmox kernel source (v5.4.106) and applied
+> the attached patch.
+> Effect was as hoped, that the VM hangs are now gone. System boots and
+> runs as intended.
+> 
+> Judging by the existing quirk entries for Atheros, I would think, that
+> my proposed "fix" could be included in the vanilla kernel.
+> As far as I saw, there is no entry yet, even in the latest kernel sources.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_audio.c   |  1 +
- drivers/gpu/drm/msm/dp/dp_display.c | 13 ++++++++-----
- drivers/gpu/drm/msm/dp/dp_display.h |  1 +
- 3 files changed, 10 insertions(+), 5 deletions(-)
+This would need a signed-off-by; see
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v5.11#n361
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_audio.c b/drivers/gpu/drm/msm/dp/dp_audio.c
-index 82a8673..52994f2 100644
---- a/drivers/gpu/drm/msm/dp/dp_audio.c
-+++ b/drivers/gpu/drm/msm/dp/dp_audio.c
-@@ -527,6 +527,7 @@ int dp_audio_hw_params(struct device *dev,
- 	dp_audio_setup_acr(audio);
- 	dp_audio_safe_to_exit_level(audio);
- 	dp_audio_enable(audio, true);
-+	dp_display_start_audio(dp_display);
- 	dp_display->audio_enabled = true;
- 
- end:
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0ba71c7..8a69bcd 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -177,6 +177,14 @@ static int dp_del_event(struct dp_display_private *dp_priv, u32 event)
- 
- 	return 0;
- }
-+void dp_display_start_audio(struct msm_dp *dp_display)
-+{
-+	struct dp_display_private *dp;
-+
-+	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+
-+	reinit_completion(&dp->audio_comp);
-+}
- 
- void dp_display_signal_audio_complete(struct msm_dp *dp_display)
- {
-@@ -648,10 +656,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	/* start sentinel checking in case of missing uevent */
- 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
- 
--	/* signal the disconnect event early to ensure proper teardown */
--	reinit_completion(&dp->audio_comp);
--	dp_display_handle_plugged_change(g_dp_display, false);
--
- 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
- 					DP_DP_IRQ_HPD_INT_MASK, true);
- 
-@@ -894,7 +898,6 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 	/* wait only if audio was enabled */
- 	if (dp_display->audio_enabled) {
- 		/* signal the disconnect event */
--		reinit_completion(&dp->audio_comp);
- 		dp_display_handle_plugged_change(dp_display, false);
- 		if (!wait_for_completion_timeout(&dp->audio_comp,
- 				HZ * 5))
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-index 6092ba1..55fe0d4 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.h
-+++ b/drivers/gpu/drm/msm/dp/dp_display.h
-@@ -34,6 +34,7 @@ int dp_display_get_modes(struct msm_dp *dp_display,
- int dp_display_request_irq(struct msm_dp *dp_display);
- bool dp_display_check_video_test(struct msm_dp *dp_display);
- int dp_display_get_test_bpp(struct msm_dp *dp_display);
-+void dp_display_start_audio(struct msm_dp *dp_display);
- void dp_display_signal_audio_complete(struct msm_dp *dp_display);
- 
- #endif /* _DP_DISPLAY_H_ */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+This is an old issue, and likely we'll end up just applying this as
+yet another quirk.  But looking at c3e59ee4e766 ("PCI: Mark Atheros
+AR93xx to avoid bus reset"), where it started, it seems to be
+connected to 425c1b223dac ("PCI: Add Virtual Channel to save/restore
+support").
+
+I'd like to dig into that a bit more to see if there are any clues.
+AFAIK Linux itself still doesn't use VC at all, and 425c1b223dac added
+a fair bit of code.  I wonder if we're restoring something out of
+order or making some simple mistake in the way to restore VC config.
+
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 706f27a86a8e..ecfe80ec5b9c 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -3584,6 +3584,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0032, quirk_no_bus_reset);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_reset);
+>  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
+>  
+>  /*
+>   * Root port on some Cavium CN8xxx chips do not successfully complete a bus
 
