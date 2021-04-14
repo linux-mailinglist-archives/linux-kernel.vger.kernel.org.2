@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0E835F8CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1C135F8D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351603AbhDNQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:14:43 -0400
-Received: from mga01.intel.com ([192.55.52.88]:24333 "EHLO mga01.intel.com"
+        id S1351640AbhDNQPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:15:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233932AbhDNQOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:14:40 -0400
-IronPort-SDR: 7sRCmvIdqpiusw+8iidomoRnKXRRL7p0UKoooYkNxtUPEfaCnqs06Md2iI48xPXCioIYdNWv34
- tQsdlmc0B8jg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215167456"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="215167456"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:13:04 -0700
-IronPort-SDR: f4nPpK0iMTfkJ0nsaX2aEchOnpQWwut2Lw5JjWzvSuQ5RNhD/T/jlNJPcrL79E+ZDSSy3qwHNc
- FtF1368Fy44A==
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="389443810"
-Received: from unknown (HELO schen9-mobl.amr.corp.intel.com) ([10.209.63.115])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:13:02 -0700
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@suse.com, iamjoonsoo.kim@lge.com,
-        vbabka@suse.cz, alex.shi@linux.alibaba.com, willy@infradead.org,
-        minchan@kernel.org, richard.weiyang@gmail.com, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-3-linmiaohe@huawei.com>
- <87o8ejug76.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <c9bb0a8a-72ca-d9b4-4c31-d4d8cfde0b4c@linux.intel.com>
- <878s5lu16i.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <7ce9d6a2-6a9a-1203-0566-8a3bf478876f@linux.intel.com>
-Date:   Wed, 14 Apr 2021 09:13:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <878s5lu16i.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233932AbhDNQPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:15:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3692A6117A;
+        Wed, 14 Apr 2021 16:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618416904;
+        bh=1nDvP95bzb/uGokuz/oElAfbPFu9dpjFesgxr65T4+w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=tA83H+ogr0YmNzNmB08TSrm9AQ+KJLdpF8hnVZgfx4ci6Wx9T/IGtx5upTD71tqgh
+         gg0dV1ullKausocnX2qAd5p3lCPX/GdCtV6SHvzuyknRGhnw0opMUd/88qFz6gsmIO
+         YvqyX2arWSm+wVOHyblNtAZjJZddKGW0lvcbiKyka2k/sh84Yr+2xuRA0VXjlGzuwr
+         FjU6LPUF9GN61mVaYgH5CzrRF/ycsxbr5cKxDs0i85NMMBG3oxzaivKYdgHVqALUin
+         JU5UkSNyRlr+BfM+8/HVBKtiaLOVbqIFRMAaztyyVyqf7KfFDAqEc/wWdoCe9P/eTV
+         pWqE8SfR667rQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2485D60CD1;
+        Wed, 14 Apr 2021 16:15:04 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM changes for 5.12-rc8 or final
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210413223958.156145-1-pbonzini@redhat.com>
+References: <20210413223958.156145-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210413223958.156145-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 04c4f2ee3f68c9a4bf1653d15f1a9a435ae33f7a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2558258d78873998b8cd81ce7661dc68541b8b51
+Message-Id: <161841690408.3200.15405279772210006990.pr-tracker-bot@kernel.org>
+Date:   Wed, 14 Apr 2021 16:15:04 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Tue, 13 Apr 2021 18:39:58 -0400:
 
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-On 4/13/21 6:04 PM, Huang, Ying wrote:
-> Tim Chen <tim.c.chen@linux.intel.com> writes:
-> 
->> On 4/12/21 6:27 PM, Huang, Ying wrote:
->>
->>>
->>> This isn't the commit that introduces the race.  You can use `git blame`
->>> find out the correct commit.  For this it's commit 0bcac06f27d7 "mm,
->>> swap: skip swapcache for swapin of synchronous device".
->>>
->>> And I suggest to merge 1/5 and 2/5 to make it easy to get the full
->>> picture.
->>
->> I'll suggest make fix to do_swap_page race with get/put_swap_device
->> as a first patch. Then the per_cpu_ref stuff in patch 1 and patch 2 can
->> be combined together.
-> 
-> The original get/put_swap_device() use rcu_read_lock/unlock().  I don't
-> think it's good to wrap swap_read_page() with it.  After all, some
-> complex operations are done in swap_read_page(), including
-> blk_io_schedule().
-> 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2558258d78873998b8cd81ce7661dc68541b8b51
 
-In that case then have the patches to make get/put_swap_device to use
-percpu_ref first.  And the patch to to fix the race in do_swap_page
-later in another patch.
+Thank you!
 
-Patch 2 is mixing the two.
-
-Tim
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
