@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9347935F002
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1A35F004
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348535AbhDNImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:42:45 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:42516 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232348AbhDNImn (ORCPT
+        id S232467AbhDNIoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243057AbhDNIoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:42:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UVX0skD_1618389740;
-Received: from 30.21.164.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UVX0skD_1618389740)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 16:42:20 +0800
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
- <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com>
-Date:   Wed, 14 Apr 2021 16:42:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Wed, 14 Apr 2021 04:44:04 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C58C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:43:41 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id r9so30170220ejj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6SQfNRGxSjXRzedcsX9gd93FwU4XNVzxarlmDX1+Htg=;
+        b=eI+o9nvwetyLFlEebNLWvXJTKP1fojiRNrpkjoQvQXmF8TZDu8IkJxXtAj0iumSH/L
+         Oqnhc+/lGuZWPtl24duYGsLFeRXWlLxbRsVwUzOd4+IJ1kEPW7CoJJLSRxp307itbxOJ
+         48HMquiHGXIUpopas+i8vMSw2B9eA2bpMNgEfNbXAj4silYIfb+OibEjRXUsBQ56hztY
+         zA40sC5EDA4WhSDUp8ykRzEdNoaxDT3ANeyYZdw38wX54PazAXCN6HdqIK16pwGvhKy8
+         mF8FQ2csq09pBwYFNZDkFNQIedRM1AXVM4aCZOiEsi+50Kmo+8kFph3Fv3bHXvuVRkHG
+         8pIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6SQfNRGxSjXRzedcsX9gd93FwU4XNVzxarlmDX1+Htg=;
+        b=cG7Xt32Xxsqsc+j3/IQ3roqButs99WURYObAbgp2RtdX2Rrbt960hR1e62SMDbWv48
+         o7WIrIUcBNdz8ObKHqEaD/GYH2ODIw6XQ++jcz216vzLx/OrSzNAjauwbzjmfAm8tels
+         UfGEUKwNI4wcdAG3651DNG9ryGnV+CpEAzCGq6jMKytkRLHZ4OVQE926/Lwfoh/GPZvS
+         nJc7RhRu2YrOjeKFKmLf5vhnnq+zF799lKBKtAwC/sxS6l/RKVLs/FvUdprQalhAQNDp
+         Bgu2GUxOsHblP66w820UfZVpmjndENjDV1xkj3UnmkSsK7iOxOR9mgteLudjBdo1mZn1
+         lkdA==
+X-Gm-Message-State: AOAM532hnaqMLGyAcqV6ghb/DGf9bUsi+Wdsz+ZL8OjDHAFR8HoFWerV
+        a+BzZkjcLrlSFDlmZERHEp2Tzw==
+X-Google-Smtp-Source: ABdhPJxrggCrqwenEAzEx8qdYXHHJM7yO0JufM40aQaa2b/6v+yl9P6NFhxVbpEmKzkEFdQQwpFneA==
+X-Received: by 2002:a17:907:961b:: with SMTP id gb27mr35528345ejc.402.1618389820552;
+        Wed, 14 Apr 2021 01:43:40 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id w13sm10935849edc.81.2021.04.14.01.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 01:43:40 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 09:43:38 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] mfd: abx500: Remove repeated struct declaration
+Message-ID: <20210414084338.GI4869@dell>
+References: <20210401093052.1004712-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210401093052.1004712-1-wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 01 Apr 2021, Wan Jiabing wrote:
 
-在 2021/4/13 16:57, Miklos Szeredi 写道:
-> On Mon, Apr 12, 2021 at 3:23 PM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
->>
->> Hi Miklos,
->>
->> 在 2021/3/27 14:36, Baolin Wang 写道:
->>> We can meet below deadlock scenario when writing back dirty pages, and
->>> writing files at the same time. The deadlock scenario can be reproduced
->>> by:
->>>
->>> - A writeback worker thread A is trying to write a bunch of dirty pages by
->>> fuse_writepages(), and the fuse_writepages() will lock one page (named page 1),
->>> add it into rb_tree with setting writeback flag, and unlock this page 1,
->>> then try to lock next page (named page 2).
->>>
->>> - But at the same time a file writing can be triggered by another process B,
->>> to write several pages by fuse_perform_write(), the fuse_perform_write()
->>> will lock all required pages firstly, then wait for all writeback pages
->>> are completed by fuse_wait_on_page_writeback().
->>>
->>> - Now the process B can already lock page 1 and page 2, and wait for page 1
->>> waritehack is completed (page 1 is under writeback set by process A). But
->>> process A can not complete the writeback of page 1, since it is still
->>> waiting for locking page 2, which was locked by process B already.
->>>
->>> A deadlock is occurred.
->>>
->>> To fix this issue, we should make sure each page writeback is completed
->>> after lock the page in fuse_fill_write_pages() separately, and then write
->>> them together when all pages are stable.
->>>
->>> [1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than 120 seconds.
->>> [1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
->>> [1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
->>> [1450578.796188] Call trace:
->>> [1450578.798804]  __switch_to+0xd8/0x148
->>> [1450578.802458]  __schedule+0x280/0x6a0
->>> [1450578.806112]  schedule+0x34/0xe8
->>> [1450578.809413]  io_schedule+0x20/0x40
->>> [1450578.812977]  __lock_page+0x164/0x278
->>> [1450578.816718]  write_cache_pages+0x2b0/0x4a8
->>> [1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
->>> [1450578.825592]  do_writepages+0x58/0x108
->>> [1450578.829412]  __writeback_single_inode+0x48/0x448
->>> [1450578.834217]  writeback_sb_inodes+0x220/0x520
->>> [1450578.838647]  __writeback_inodes_wb+0x50/0xe8
->>> [1450578.843080]  wb_writeback+0x294/0x3b8
->>> [1450578.846906]  wb_do_writeback+0x2ec/0x388
->>> [1450578.850992]  wb_workfn+0x80/0x1e0
->>> [1450578.854472]  process_one_work+0x1bc/0x3f0
->>> [1450578.858645]  worker_thread+0x164/0x468
->>> [1450578.862559]  kthread+0x108/0x138
->>> [1450578.865960] INFO: task doio:207752 blocked for more than 120 seconds.
->>> [1450578.888321] doio            D    0 207752 207740 0x00000000
->>> [1450578.888329] Call trace:
->>> [1450578.890945]  __switch_to+0xd8/0x148
->>> [1450578.894599]  __schedule+0x280/0x6a0
->>> [1450578.898255]  schedule+0x34/0xe8
->>> [1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
->>> [1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
->>> [1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
->>> [1450578.917207]  do_iter_readv_writev+0x110/0x188
->>> [1450578.921724]  do_iter_write+0x90/0x1c8
->>> [1450578.925598]  vfs_writev+0x84/0xf8
->>> [1450578.929071]  do_writev+0x70/0x110
->>> [1450578.932552]  __arm64_sys_writev+0x24/0x30
->>> [1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
->>> [1450578.941694]  el0_svc_handler+0x30/0x80
->>> [1450578.945606]  el0_svc+0x10/0x14
->>>
->>> Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>
->> Do you have any comments for this patch set? Thanks.
+> struct ab8500_fg is declared twice. The blew one at 457th line
+> is closer to user. Remove the duplicate here.
+> Move "Forward declaration" annotation to the suitable place.
 > 
-> Hi,
-> 
-> I guess this is related:
-> 
-> https://lore.kernel.org/linux-fsdevel/20210209100115.GB1208880@miu.piliscsaba.redhat.com/
-> 
-> Can you verify that the patch at the above link fixes your issue?
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  include/linux/mfd/abx500/ab8500-bm.h | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-Sorry I missed this patch before, and I've tested this patch, it seems 
-can solve the deadlock issue I met before.
+Please check, but I don't think this patch is valid anymore.
 
-But look at this patch in detail, I think this patch only reduced the 
-deadlock window, but did not remove the possible deadlock scenario 
-completely like I explained in the commit log.
-
-Since the fuse_fill_write_pages() can still lock the partitail page in 
-your patch, and will be wait for the partitail page waritehack is 
-completed if writeback is set in fuse_send_write_pages().
-
-But at the same time, a writeback worker thread may be waiting for 
-trying to lock the partitail page to write a bunch of dirty pages by 
-fuse_writepages().
-
-Then the deadlock issue can still be occurred. And I think the deadlock 
-issue I met is not same with the deadlock issue solved by your patch.
-
-
-
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
