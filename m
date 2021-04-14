@@ -2,207 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ADB35ED14
+	by mail.lfdr.de (Postfix) with ESMTP id AF22A35ED15
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347788AbhDNGQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:16:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:32872 "EHLO mga07.intel.com"
+        id S1347834AbhDNGQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:16:28 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48231 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229877AbhDNGQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:16:11 -0400
-IronPort-SDR: cAdf/qPUOmLCXFcvrZPwaWibpVna21hHf1mTXE6kLtzBfd884t+ZYf0tlyqB9p00zHaIXYyy5b
- 3F2dYiKcBAKg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="258542224"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="258542224"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 23:15:49 -0700
-IronPort-SDR: EBKoZlK+dMkVcGQ2Qi/FfLInSXc2rFSELw+6kvuItB0WvIViPnkUZJs/uTRaodrDWFP5gpnEiY
- jfMC2Ml/QkZQ==
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="424584972"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 23:15:41 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Rik van Riel <riel@surriel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-References: <20210413075155.32652-1-sjpark@amazon.de>
-        <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
-        <20210413231436.GF63242@dread.disaster.area>
-        <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
-        <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
-Date:   Wed, 14 Apr 2021 14:15:38 +0800
-In-Reply-To: <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
-        (Yu Zhao's message of "Tue, 13 Apr 2021 22:13:16 -0600")
-Message-ID: <87tuo9qtmd.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229877AbhDNGQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:16:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618380954;
+        bh=LutR6DvZ3BWEG3fagVRG7i7mzJ5l1vET1psDib4/VJA=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=kGoeBbSaTL4ITAtEsDpxtBbrpi/IppekwhvdnQv94nUMWzkloattfwY1VvehH3FlN
+         bTr6KLC70IcDvBLLQmYf5uNhT8tz4DCoDwfFawa652Wqm9Y7LTo+MxWhVeTIjFnwiN
+         GcEpeicowCfdVrcJQuPS7viyPehzBqmTIb669JwY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.216.50]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQvD5-1l9HSv0MjP-00O1tK; Wed, 14
+ Apr 2021 08:15:54 +0200
+Message-ID: <a262b57875cf894020df9b3aa84030e2080ad187.camel@gmx.de>
+Subject: Re: Question on KASAN calltrace record in RT
+From:   Mike Galbraith <efault@gmx.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
+        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>
+Date:   Wed, 14 Apr 2021 08:15:53 +0200
+In-Reply-To: <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
+References: <BY5PR11MB4193DBB0DE4AF424DE235892FF769@BY5PR11MB4193.namprd11.prod.outlook.com>
+         <CACT4Y+bsOhKnv2ikR1fTb7KhReGfEeAyxCOyvCu7iS37Lm0vnw@mail.gmail.com>
+         <182eea30ee9648b2a618709e9fc894e49cb464ad.camel@gmx.de>
+         <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:i2oTji6pkK7Awnn4kp8awBkagqnDehpwQ19loaFFTEDOWWzpnJT
+ 5ZWePAPbDr4rTHVpYVUUBYlMAKHS6+2sdX7n1tdPxczJZz8mzCKpkoxzCe7SWM/50iSywXK
+ RH+YSrCdoOHBhEZ9MRZu3dJKn6zt9yAYMAWf3yTAZ4J5yi6w59Stoy+3HZ0PutFJUNeI8g+
+ PceWxcmskbS47vHR1NR0A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d0fpSXM5V8w=:DBY15R1nVlW7LxOLFEPwLs
+ UREHxo4fBskbInhck33ZUBkKQdD0vRU0gjuSKhx2B3cgiTI3SV6Er/3ZhFIgZlyTcvwIbUCOz
+ lnHDE10fPuKpJyCsIoN5bd6Cs2IAoTJByLtufFeY+/YnMnA+YMPv8uxzuesxiuFqjSbSS8lyO
+ B1uqZc0SF3s7xp3ixbFph8mCq1KxSGaStEeEwtgIx0J57bY85dMhR6UFaPHUTtuGv4pxBz0it
+ ThXrI0/n6as1AWVOTmEI2hkLDSh3wMmb3rcMwI3ulj9k1XCCw3PtkrTcOtyLp04gTvNn3kNBa
+ +ZGO4Ib0lFpyHneqmA/vLy+LY5u8oBeeYHRHvVm2TS6g1Pi/VIPSh1lTd21aKQ2d31aY7AS/O
+ OHKtphiOQEtNn/SeapMt6q9kfIXeXnXLPzeY55CKq6WgN8Wp4/+KBbueAufhHHSissdFVJ5rP
+ Ad7v+NqxWF5fkVlqMQpIou147d9Oh+4mliH8Hj0opjX9MU+W0hpn0RbgjiLUYu7vGfCz61+Fv
+ vUwc92f2tXBZv5Gd4LqOACDpDBI5m3S+1Cpb5t/N0TBrpD4aze83LL5ZIjw3ECmDcMqpRCdvo
+ Tp57EcGXefPGV14+ErR4hIj3traBLNLIw7ucgO8AHbpETHS/GfC+LnbJYA4WE7NqlLp4CUdNO
+ HAXj6TdWpHW0uAdOK1U4gMnXo/FBHCCYCxwuIsXiQoAB2aWUd+r3nKD6L76lpwxFu2elozIR6
+ 57PMDNI0xc3iA2QAoHFBKzuvBkt76phX5IBor7L/yjOdoheBnN9Lzx7FIsSxBli0cFKmGVbhL
+ 6X4N49j3erCH2vTuV1GvJtE0VBwqzauzJy+Jjldmug9BJKJEJgJZGs/fjyc5E2rX727gtdPy4
+ 5BaXrpFCMvn+f8r4P5xYpKtT+Suz+0I32a2yG0C0FFKibLUTD6cAtl2nlg0F1qRuEbe7KZRsp
+ G/lP2w6vlI7HHIK7lYrLzdpcY3EOPiaHD6Bnx0+aAKH8cutZSlzPWVANdCg748YZdbP/ihiBM
+ HiSRMEkevol7wFeengVrkC8nIBIBgcDPIyChaQKA/re8Zjc+VRCbGP1gEzKFw0i/MbXUj5QUw
+ pYoBrS4v3T40HXvwvfm3JBm8wjEwgS9HXZWa21b9cvLMqxj6DFXDqvBMs/94eBg6LQVe4dvXV
+ R+v5deDlKTUkSCh604hAC/anoJMeOoRjI5g0rN79RqScYNhpCr1YKO14vtywz5Gt9eNSg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+On Wed, 2021-04-14 at 07:26 +0200, Dmitry Vyukov wrote:
+> On Wed, Apr 14, 2021 at 6:00 AM Mike Galbraith <efault@gmx.de> wrote:
+>
+> > [    0.692437] BUG: sleeping function called from invalid context at k=
+ernel/locking/rtmutex.c:943
+> > [    0.692439] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: =
+1, name: swapper/0
+> > [    0.692442] Preemption disabled at:
+> > [    0.692443] [<ffffffff811a1510>] on_each_cpu_cond_mask+0x30/0xb0
+> > [    0.692451] CPU: 5 PID: 1 Comm: swapper/0 Not tainted 5.12.0.g2afef=
+ec-tip-rt #5
+> > [    0.692454] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20=
+C 09/23/2013
+> > [    0.692456] Call Trace:
+> > [    0.692458]  ? on_each_cpu_cond_mask+0x30/0xb0
+> > [    0.692462]  dump_stack+0x8a/0xb5
+> > [    0.692467]  ___might_sleep.cold+0xfe/0x112
+> > [    0.692471]  rt_spin_lock+0x1c/0x60
+>
+> HI Mike,
+>
+> If freeing pages from smp_call_function is not OK, then perhaps we
+> need just to collect the objects to be freed to the task/CPU that
+> executes kasan_quarantine_remove_cache and it will free them (we know
+> it can free objects).
 
-> On Tue, Apr 13, 2021 at 8:30 PM Rik van Riel <riel@surriel.com> wrote:
->>
->> On Wed, 2021-04-14 at 09:14 +1000, Dave Chinner wrote:
->> > On Tue, Apr 13, 2021 at 10:13:24AM -0600, Jens Axboe wrote:
->> >
->> > > The initial posting of this patchset did no better, in fact it did
->> > > a bit
->> > > worse. Performance dropped to the same levels and kswapd was using
->> > > as
->> > > much CPU as before, but on top of that we also got excessive
->> > > swapping.
->> > > Not at a high rate, but 5-10MB/sec continually.
->> > >
->> > > I had some back and forths with Yu Zhao and tested a few new
->> > > revisions,
->> > > and the current series does much better in this regard. Performance
->> > > still dips a bit when page cache fills, but not nearly as much, and
->> > > kswapd is using less CPU than before.
->> >
->> > Profiles would be interesting, because it sounds to me like reclaim
->> > *might* be batching page cache removal better (e.g. fewer, larger
->> > batches) and so spending less time contending on the mapping tree
->> > lock...
->> >
->> > IOWs, I suspect this result might actually be a result of less lock
->> > contention due to a change in batch processing characteristics of
->> > the new algorithm rather than it being a "better" algorithm...
->>
->> That seems quite likely to me, given the issues we have
->> had with virtual scan reclaim algorithms in the past.
->
-> Hi Rik,
->
-> Let paste the code so we can move beyond the "batching" hypothesis:
->
-> static int __remove_mapping(struct address_space *mapping, struct page
-> *page,
->                             bool reclaimed, struct mem_cgroup *target_memcg)
-> {
->         unsigned long flags;
->         int refcount;
->         void *shadow = NULL;
->
->         BUG_ON(!PageLocked(page));
->         BUG_ON(mapping != page_mapping(page));
->
->         xa_lock_irqsave(&mapping->i_pages, flags);
->
->> SeongJae, what is this algorithm supposed to do when faced
->> with situations like this:
->
-> I'll assume the questions were directed at me, not SeongJae.
->
->> 1) Running on a system with 8 NUMA nodes, and
->> memory
->>    pressure in one of those nodes.
->> 2) Running PostgresQL or Oracle, with hundreds of
->>    processes mapping the same (very large) shared
->>    memory segment.
->>
->> How do you keep your algorithm from falling into the worst
->> case virtual scanning scenarios that were crippling the
->> 2.4 kernel 15+ years ago on systems with just a few GB of
->> memory?
->
-> There is a fundamental shift: that time we were scanning for cold pages,
-> and nowadays we are scanning for hot pages.
->
-> I'd be surprised if scanning for cold pages didn't fall apart, because it'd
-> find most of the entries accessed, if they are present at all.
->
-> Scanning for hot pages, on the other hand, is way better. Let me just
-> reiterate:
-> 1) It will not scan page tables from processes that have been sleeping
->    since the last scan.
-> 2) It will not scan PTE tables under non-leaf PMD entries that do not
->    have the accessed bit set, when
->    CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG=y.
-> 3) It will not zigzag between the PGD table and the same PMD or PTE
->    table spanning multiple VMAs. In other words, it finishes all the
->    VMAs with the range of the same PMD or PTE table before it returns
->    to the PGD table. This optimizes workloads that have large numbers
->    of tiny VMAs, especially when CONFIG_PGTABLE_LEVELS=5.
->
-> So the cost is roughly proportional to the number of referenced pages it
-> discovers. If there is no memory pressure, no scanning at all. For a system
-> under heavy memory pressure, most of the pages are referenced (otherwise
-> why would it be under memory pressure?), and if we use the rmap, we need to
-> scan a lot of pages anyway. Why not just scan them all?
+Yeah, RT will have to shove freeing into preemptible context.
 
-This may be not the case.  For rmap scanning, it's possible to scan only
-a small portion of memory.  But with the page table scanning, you need
-to scan almost all (I understand you have some optimization as above).
-As Rik shown in the test case above, there may be memory pressure on
-only one of 8 NUMA nodes (because of NUMA binding?).  Then ramp scanning
-only needs to scan pages in this node, while the page table scanning may
-need to scan pages in other nodes too.
+> >
+> > [   15.428008] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [   15.428011] BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap=
+_entries+0x17e/0x3a0
+>
+> This looks like a genuine kernel bug on first glance. I think it needs
+> to be fixed rather than ignored.
 
-Best Regards,
-Huang, Ying
+I figured KASAN probably knew what it was talking about, I just wanted
+it to either go find something shiny or leave lockdep the heck alone.
 
-> This way you save a
-> lot because of batching (now it's time to talk about batching). Besides,
-> page tables have far better memory locality than the rmap. For the shared
-> memory example you gave, the rmap needs to lock *each* page it scans. How
-> many 4KB pages does your large file have? I'll leave the math to you.
->
-> Here are some profiles:
->
-> zram with the rmap (mainline)
->   31.03%  page_vma_mapped_walk
->   25.59%  lzo1x_1_do_compress
->    4.63%  do_raw_spin_lock
->    3.89%  vma_interval_tree_iter_next
->    3.33%  vma_interval_tree_subtree_search
->
-> zram with page table scanning (this patchset)
->   49.36%  lzo1x_1_do_compress
->    4.54%  page_vma_mapped_walk
->    4.45%  memset_erms
->    3.47%  walk_pte_range
->    2.88%  zram_bvec_rw
->
-> Note that these are not just what I saw from some local benchmarks. We have
-> observed *millions* of machines in our fleet.
->
-> I encourage you to try it and see for yourself. It's as simple as:
->
-> git fetch https://linux-mm.googlesource.com/page-reclaim
->  refs/changes/73/1173/1
->
-> CONFIG_LRU_GEN=y
-> CONFIG_LRU_GEN_ENABLED=y
->
-> and build and run your favorite benchmarks.
+	-Mike
+
