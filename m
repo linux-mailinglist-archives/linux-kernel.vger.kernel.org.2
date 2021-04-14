@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BE435EA9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961D235EAA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348059AbhDNCHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:07:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23323 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347590AbhDNCHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:07:30 -0400
-IronPort-SDR: j8puOYKgpTkCzHiWsm7QNGzrwm6CxanMIEnCkAF0ZaY3yZFluVf6/IitBynzr/YMD2yNDBwyo7
- 7+BQfBl+9tOA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="181669549"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="181669549"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 19:07:09 -0700
-IronPort-SDR: +w9i91SN6CtVYLJO9ax4un4cg75+8DVQcmUMFkRuCDAFDcXhTl5aKJfs39VWOSRweZ+DgRi8c+
- xBtZY/FF6zGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="418105391"
-Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Apr 2021 19:07:01 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     wsa@kernel.org, wsa@the-dreams.de, mst@redhat.com,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     wsa@kernel.org, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org,
-        stefanha@redhat.com, mst@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <e93836c3-d444-0b8c-c9df-559de0d5f27e@intel.com>
-Date:   Wed, 14 Apr 2021 10:07:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S232186AbhDNCK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhDNCKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 22:10:54 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC1FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:10:31 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id l11so1080634vsr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rqpmVSMeGO85HYhXbbrqjAjjgDBDlXCmgwDZysFf8H8=;
+        b=RdORCPpEX/0RF83AbL12/OxNPbXJarx3Ud34+xQeNTgiFTGqcGKeYCW2CneDCwO2Bz
+         rvJeA8FX7uU31hBg3B2NKRJkxhDG+A/wzVxMjyyRnYsQgpry2re4Fgu9AEU8mX2xafbG
+         I6OvF8RMsH1dctjjmoil7BvwHaRimJdm14cb5NjJS6xENKH6xwUn5bAjaPEpv68ThqWw
+         3F6MIQ/DqZ/NLgkYAUjzDN7vppdXbcP0lkVtnbAsF+MiFLaON/hGoy7XmC5tHoePE/Dk
+         G2TrbtzicWEZX00Sxq+U+p/qzDAhaRbTZ2uJdD/B0V+zwsx12f6aieZe/J+hvzkim7Wm
+         B7Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rqpmVSMeGO85HYhXbbrqjAjjgDBDlXCmgwDZysFf8H8=;
+        b=bXo44bDHckNSATYqbaPc0zPIdcVJJT6l921TIZxY0gKo8H83ZBZi3kRsW/h7/WVX7a
+         vcNQk+bNxvU+OtzrBzjWf+6BuJOjgtqZ8q6NSmfXqTZjkg20M8Crv8q0jMWnKXynOlTl
+         Ovr0v/pNUb1jJjktHylD+8NRJYW7URpvHbNl+GMFHiizss/msJOWoc4DQ1bWMDkvQnEx
+         FyG+hVe4/TUqdLk+cN8IGzxHG4r7uacpDZiTWJIToqX1mJw8SpvQJllXbiKppxRArjgW
+         nd3p79R4+RJxhpO6D8VvB2s/OUkKQxDniRnjNdr1dOrfFHKkJgyMdNeEEBu4SPmWCMNg
+         CKBQ==
+X-Gm-Message-State: AOAM53116uDibFboHHsRQu4vu5AoZeke0thc2NvyRrH1T0LKVBA2gP/q
+        7CcHweTVAP/fKw5mxb1di0NqvPsnTQQvod5Kf/I=
+X-Google-Smtp-Source: ABdhPJyuoCoTLUa5as2KmtyQ19vrqLGgEe9aWttUwr+H+o46TCNFOC10lGRXQsXo/rurA+lNwDKvsaLh4/iZvdCRlMQ=
+X-Received: by 2002:a67:2c46:: with SMTP id s67mr5067774vss.13.1618366230123;
+ Tue, 13 Apr 2021 19:10:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210413131842.44430-1-qianjun.kernel@gmail.com> <YHWpknBamqQz2rpJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHWpknBamqQz2rpJ@hirez.programming.kicks-ass.net>
+From:   jun qian <qianjun.kernel@gmail.com>
+Date:   Wed, 14 Apr 2021 10:10:19 +0800
+Message-ID: <CAKc596J1eEqYjYy9dnK6VriGU6GE-7be-6Tq4VA5UUhCp3+ZMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair:Reduce unnecessary check preempt in the
+ sched tick
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi maintainers,
-
-What's the status of this patch ? Is i2c/for-next the right tree to 
-merge it ?
-
-Thanks,
-
-Jie
-
-
-On 2021/3/23 22:19, Jie Deng wrote:
-> Add an I2C bus driver for virtio para-virtualization.
+Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8810:24=E5=86=99=E9=81=93=EF=BC=9A
 >
-> The controller can be emulated by the backend driver in
-> any device model software by following the virtio protocol.
+> On Tue, Apr 13, 2021 at 09:18:42PM +0800, qianjun.kernel@gmail.com wrote:
+> > From: jun qian <qianjun.kernel@gmail.com>
+> >
+> > If it has been determined that the current cpu need resched in the
+> > early stage of for_each_sched_entity, then there is no need to check
+> > preempt in the subsequent se->parent entity_tick.
 >
-> The device specification can be found on
-> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+> Right, but does it actually do anything, except increase linecount?
 >
-> By following the specification, people may implement different
-> backend drivers to emulate different controllers according to
-> their needs.
+> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> > ---
+> >  kernel/sched/fair.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 1a68a0536add..c0d135100d54 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -4352,8 +4352,13 @@ check_preempt_tick(struct cfs_rq *cfs_rq, struct=
+ sched_entity *curr)
+> >  {
+> >       unsigned long ideal_runtime, delta_exec;
+> >       struct sched_entity *se;
+> > +     struct rq *rq =3D rq_of(cfs_rq);
+> >       s64 delta;
+> >
+> > +     /* If the TIF_NEED_RESCHED has been set, it is no need to check a=
+gain */
+> > +     if (test_tsk_need_resched(rq->curr))
+> > +             return;
+> > +
+> >       ideal_runtime =3D sched_slice(cfs_rq, curr);
+> >       delta_exec =3D curr->sum_exec_runtime - curr->prev_sum_exec_runti=
+me;
+> >       if (delta_exec > ideal_runtime) {
 >
-> Co-developed-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Conghui Chen <conghui.chen@intel.com>
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
->
+> Also, I think that's placed wrong; this way we can mis clear_buddies().
+
+thanks, i will modify it in the next version
