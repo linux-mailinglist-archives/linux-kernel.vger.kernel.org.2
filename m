@@ -2,230 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEFD35EF96
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C0235EF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhDNI17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:27:59 -0400
-Received: from mga18.intel.com ([134.134.136.126]:24956 "EHLO mga18.intel.com"
+        id S232461AbhDNI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:28:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhDNI1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:27:54 -0400
-IronPort-SDR: gj56hEk6t/z9wBlpjYXHCnE5N92jjbsikdwmF2Oxe0QFyAeykTu5C6C3/LO2v7KPUOaH7p0Jmf
- jJOKqyxf8HjA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="182100361"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="182100361"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 01:27:32 -0700
-IronPort-SDR: 14SQdVLTCk4i+9pQiSFX9sYdGYvZAlpQ1aaayf9l30dCbDnh/Odfq6h/GxWxQN25SOgX9jLpl7
- tb49LF92dXug==
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="424627039"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 01:27:24 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Rik van Riel <riel@surriel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-References: <20210413075155.32652-1-sjpark@amazon.de>
-        <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
-        <20210413231436.GF63242@dread.disaster.area>
-        <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
-        <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
-        <87tuo9qtmd.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <CAOUHufbk=TVOpEOvTNRBe0uoOWNZ=wf3umQ628ZFZ=QYhNqsHA@mail.gmail.com>
-Date:   Wed, 14 Apr 2021 16:27:22 +0800
-In-Reply-To: <CAOUHufbk=TVOpEOvTNRBe0uoOWNZ=wf3umQ628ZFZ=QYhNqsHA@mail.gmail.com>
-        (Yu Zhao's message of "Wed, 14 Apr 2021 01:58:56 -0600")
-Message-ID: <87lf9lqnit.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S229467AbhDNI2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:28:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AA19613C4;
+        Wed, 14 Apr 2021 08:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618388874;
+        bh=bsj0yTP1PFUb/V2oR3gLTK6H+GD+8Hj8YaUWcNDooNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nbu5hnKaG5FnRqZMHYvaz7PTjFo2kSpnEfqclxIHjWqDW1x4SJ/SVKhLFH9VLOU0z
+         JYva32lguS00R+s0lc9C3lri+fFuoS21sAZAQm5GYBZxRllBrYioOwrMSP4YZWn1BZ
+         DYAipfmpJiHAC/p7rI4HiD9no8R00M5PXfoV+V1k=
+Date:   Wed, 14 Apr 2021 10:27:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: remove sdio_drv_priv structure
+Message-ID: <YHanh+kO3Z6qi9Wx@kroah.com>
+References: <20210413171124.174008-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413171124.174008-1-hello@bryanbrattlof.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> writes:
+On Tue, Apr 13, 2021 at 05:11:39PM +0000, Bryan Brattlof wrote:
+> The sdio_drv_priv structure is a small wrapper around sdio_driver in
+> linux/mmc/sdio_func.h with an added drv_registered integer.
+> 
+> drv_registered is never used anywhere in the driver and only assigned to
+> during the sdio registering and unregistering process. We can safely
+> remove sdio_drv_priv and use the sdio_driver structure directly.
+> 
+> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+> ---
+>  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 32 ++++++--------------
+>  1 file changed, 9 insertions(+), 23 deletions(-)
 
-> On Wed, Apr 14, 2021 at 12:15 AM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Yu Zhao <yuzhao@google.com> writes:
->>
->> > On Tue, Apr 13, 2021 at 8:30 PM Rik van Riel <riel@surriel.com> wrote:
->> >>
->> >> On Wed, 2021-04-14 at 09:14 +1000, Dave Chinner wrote:
->> >> > On Tue, Apr 13, 2021 at 10:13:24AM -0600, Jens Axboe wrote:
->> >> >
->> >> > > The initial posting of this patchset did no better, in fact it did
->> >> > > a bit
->> >> > > worse. Performance dropped to the same levels and kswapd was using
->> >> > > as
->> >> > > much CPU as before, but on top of that we also got excessive
->> >> > > swapping.
->> >> > > Not at a high rate, but 5-10MB/sec continually.
->> >> > >
->> >> > > I had some back and forths with Yu Zhao and tested a few new
->> >> > > revisions,
->> >> > > and the current series does much better in this regard. Performance
->> >> > > still dips a bit when page cache fills, but not nearly as much, and
->> >> > > kswapd is using less CPU than before.
->> >> >
->> >> > Profiles would be interesting, because it sounds to me like reclaim
->> >> > *might* be batching page cache removal better (e.g. fewer, larger
->> >> > batches) and so spending less time contending on the mapping tree
->> >> > lock...
->> >> >
->> >> > IOWs, I suspect this result might actually be a result of less lock
->> >> > contention due to a change in batch processing characteristics of
->> >> > the new algorithm rather than it being a "better" algorithm...
->> >>
->> >> That seems quite likely to me, given the issues we have
->> >> had with virtual scan reclaim algorithms in the past.
->> >
->> > Hi Rik,
->> >
->> > Let paste the code so we can move beyond the "batching" hypothesis:
->> >
->> > static int __remove_mapping(struct address_space *mapping, struct page
->> > *page,
->> >                             bool reclaimed, struct mem_cgroup *target_memcg)
->> > {
->> >         unsigned long flags;
->> >         int refcount;
->> >         void *shadow = NULL;
->> >
->> >         BUG_ON(!PageLocked(page));
->> >         BUG_ON(mapping != page_mapping(page));
->> >
->> >         xa_lock_irqsave(&mapping->i_pages, flags);
->> >
->> >> SeongJae, what is this algorithm supposed to do when faced
->> >> with situations like this:
->> >
->> > I'll assume the questions were directed at me, not SeongJae.
->> >
->> >> 1) Running on a system with 8 NUMA nodes, and
->> >> memory
->> >>    pressure in one of those nodes.
->> >> 2) Running PostgresQL or Oracle, with hundreds of
->> >>    processes mapping the same (very large) shared
->> >>    memory segment.
->> >>
->> >> How do you keep your algorithm from falling into the worst
->> >> case virtual scanning scenarios that were crippling the
->> >> 2.4 kernel 15+ years ago on systems with just a few GB of
->> >> memory?
->> >
->> > There is a fundamental shift: that time we were scanning for cold pages,
->> > and nowadays we are scanning for hot pages.
->> >
->> > I'd be surprised if scanning for cold pages didn't fall apart, because it'd
->> > find most of the entries accessed, if they are present at all.
->> >
->> > Scanning for hot pages, on the other hand, is way better. Let me just
->> > reiterate:
->> > 1) It will not scan page tables from processes that have been sleeping
->> >    since the last scan.
->> > 2) It will not scan PTE tables under non-leaf PMD entries that do not
->> >    have the accessed bit set, when
->> >    CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG=y.
->> > 3) It will not zigzag between the PGD table and the same PMD or PTE
->> >    table spanning multiple VMAs. In other words, it finishes all the
->> >    VMAs with the range of the same PMD or PTE table before it returns
->> >    to the PGD table. This optimizes workloads that have large numbers
->> >    of tiny VMAs, especially when CONFIG_PGTABLE_LEVELS=5.
->> >
->> > So the cost is roughly proportional to the number of referenced pages it
->> > discovers. If there is no memory pressure, no scanning at all. For a system
->> > under heavy memory pressure, most of the pages are referenced (otherwise
->> > why would it be under memory pressure?), and if we use the rmap, we need to
->> > scan a lot of pages anyway. Why not just scan them all?
->>
->> This may be not the case.  For rmap scanning, it's possible to scan only
->> a small portion of memory.  But with the page table scanning, you need
->> to scan almost all (I understand you have some optimization as above).
->
-> Hi Ying,
->
-> Let's take a step back.
->
-> For the sake of discussion, when does the scanning have to happen? Can
-> we agree that the simplest answer is when we have evicted all inactive
-> pages?
->
-> If so, my next question is who's filled in the memory space previously
-> occupied by those inactive pages? Newly faulted in pages, right? They
-> have the accessed bit set, and we can't evict them without scanning
-> them first, would you agree?
->
-> And there are also existing active pages, and they were protected from
-> eviction. But now we need to deactivate some of them. Do you think
-> whether they'd have been used or not since the last scan? (Remember
-> they were active.)
->
-> You mentioned "a small portion" and "almost all". How do you interpret
-> them in terms of these steps?
->
-> Intuitively, "a small portion" and "almost all" seem right. But our
-> observations from *millions* of machines say the ratio of
-> pgscan_kswapd to pgsteal_kswapd is well over 7 when anon percentage is
->>90%. Unlikely streaming files, it doesn't make sense to "stream" anon
-> memory.
+Does not apply to my tree :(
 
-What I said is that it is "POSSIBLE" to scan only a small portion of
-memory.  Whether and in which cases to do that depends on the policy we
-choose.  I didn't say we have chosen to do that for all cases.
+Please rebase and resend.
 
->> As Rik shown in the test case above, there may be memory pressure on
->> only one of 8 NUMA nodes (because of NUMA binding?).  Then ramp scanning
->> only needs to scan pages in this node, while the page table scanning may
->> need to scan pages in other nodes too.
->
-> Yes, and this is on my to-do list in the patchset:
->
-> To-do List
-> ==========
-> KVM Optimization
-> ----------------
-> Support shadow page table scanning.
->
-> NUMA Optimization
-> -----------------
-> Support NUMA policies and per-node RSS counters.
->
-> We only can move forward one step at a time. Fair?
+thanks,
 
-You don't need to implement that now definitely.  But we can discuss the
-possible solution now.
-
-Note that it's possible that only some processes are bound to some NUMA
-nodes, while other processes aren't bound.
-
-Best Regards,
-Huang, Ying
+greg k-h
