@@ -2,69 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE62235EB6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049BB35EB71
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhDNDZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 23:25:15 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41333 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232296AbhDNDZN (ORCPT
+        id S233230AbhDND1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:27:52 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15676 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232296AbhDND1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:25:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVVUQd-_1618370679;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVVUQd-_1618370679)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 11:24:50 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     paul@crapouillou.net
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, linux-mips@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] ASoC: codec: remove unused variable
-Date:   Wed, 14 Apr 2021 11:24:37 +0800
-Message-Id: <1618370677-4559-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 13 Apr 2021 23:27:51 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKnry72DqzpXSb;
+        Wed, 14 Apr 2021 11:24:34 +0800 (CST)
+Received: from [10.174.176.162] (10.174.176.162) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 14 Apr 2021 11:27:22 +0800
+Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-3-linmiaohe@huawei.com>
+ <87o8ejug76.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <e72bb6a2-6aff-0d6c-3e56-562b4fb53285@huawei.com>
+ <87eefdsgwx.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <489bcf5f-1441-a775-913d-cc8b54dc6a2a@huawei.com>
+Date:   Wed, 14 Apr 2021 11:27:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87eefdsgwx.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+On 2021/4/14 11:07, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2021/4/13 9:27, Huang, Ying wrote:
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> When I was investigating the swap code, I found the below possible race
+>>>> window:
+>>>>
+>>>> CPU 1					CPU 2
+>>>> -----					-----
+>>>> do_swap_page
+>>>>   synchronous swap_readpage
+>>>>     alloc_page_vma
+>>>> 					swapoff
+>>>> 					  release swap_file, bdev, or ...
+>>>>       swap_readpage
+>>>> 	check sis->flags is ok
+>>>> 	  access swap_file, bdev...[oops!]
+>>>> 					    si->flags = 0
+>>>>
+>>>> Using current get/put_swap_device() to guard against concurrent swapoff for
+>>>> swap_readpage() looks terrible because swap_readpage() may take really long
+>>>> time. And this race may not be really pernicious because swapoff is usually
+>>>> done when system shutdown only. To reduce the performance overhead on the
+>>>> hot-path as much as possible, it appears we can use the percpu_ref to close
+>>>> this race window(as suggested by Huang, Ying).
+>>>>
+>>>> Fixes: 235b62176712 ("mm/swap: add cluster lock")
+>>>
+>>> This isn't the commit that introduces the race.  You can use `git blame`
+>>> find out the correct commit.  For this it's commit 0bcac06f27d7 "mm,
+>>> swap: skip swapcache for swapin of synchronous device".
+>>>
+>>
+>> Sorry about it! What I refer to is commit eb085574a752 ("mm, swap: fix race between
+>> swapoff and some swap operations"). And I think this commit does not fix the race
+>> condition completely, so I reuse the Fixes tag inside it.
+>>
+>>> And I suggest to merge 1/5 and 2/5 to make it easy to get the full
+>>> picture.
+>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  include/linux/swap.h |  2 +-
+>>>>  mm/memory.c          | 10 ++++++++++
+>>>>  mm/swapfile.c        | 28 +++++++++++-----------------
+>>>>  3 files changed, 22 insertions(+), 18 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>> index 849ba5265c11..9066addb57fd 100644
+>>>> --- a/include/linux/swap.h
+>>>> +++ b/include/linux/swap.h
+>>>> @@ -513,7 +513,7 @@ sector_t swap_page_sector(struct page *page);
+>>>>  
+>>>>  static inline void put_swap_device(struct swap_info_struct *si)
+>>>>  {
+>>>> -	rcu_read_unlock();
+>>>> +	percpu_ref_put(&si->users);
+>>>>  }
+>>>>  
+>>>>  #else /* CONFIG_SWAP */
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index cc71a445c76c..8543c47b955c 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>  {
+>>>>  	struct vm_area_struct *vma = vmf->vma;
+>>>>  	struct page *page = NULL, *swapcache;
+>>>> +	struct swap_info_struct *si = NULL;
+>>>>  	swp_entry_t entry;
+>>>>  	pte_t pte;
+>>>>  	int locked;
+>>>> @@ -3339,6 +3340,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>>  	}
+>>>>  
+>>>>
+>>>
+>>> I suggest to add comments here as follows (words copy from Matthew Wilcox)
+>>>
+>>> 	/* Prevent swapoff from happening to us */
+>>
+>> Ok.
+>>
+>>>
+>>>> +	si = get_swap_device(entry);
+>>>> +	/* In case we raced with swapoff. */
+>>>> +	if (unlikely(!si))
+>>>> +		goto out;
+>>>> +
+>>>
+>>> Because we wrap the whole do_swap_page() with get/put_swap_device()
+>>> now.  We can remove several get/put_swap_device() for function called by
+>>> do_swap_page().  That can be another optimization patch.
+>>
+>> I tried to remove several get/put_swap_device() for function called
+>> by do_swap_page() only before I send this series. But it seems they have
+>> other callers without proper get/put_swap_device().
+> 
+> Then we need to revise these callers instead.  Anyway, can be another
+> series.
 
-sound/soc/codecs/jz4760.c:201:6: warning: variable ‘ret’ set but not
-used [-Wunused-but-set-variable].
+Yes. can be another series.
+Thanks.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- sound/soc/codecs/jz4760.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/jz4760.c b/sound/soc/codecs/jz4760.c
-index e8f28cc..ad5e859 100644
---- a/sound/soc/codecs/jz4760.c
-+++ b/sound/soc/codecs/jz4760.c
-@@ -198,15 +198,13 @@ static int jz4760_codec_startup(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *codec = dai->component;
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(codec);
--	int ret;
--
- 	/*
- 	 * SYSCLK output from the codec to the AIC is required to keep the
- 	 * DMA transfer going during playback when all audible outputs have
- 	 * been disabled.
- 	 */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		ret = snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
-+		snd_soc_dapm_force_enable_pin(dapm, "SYSCLK");
- 	return 0;
- }
- 
--- 
-1.8.3.1
+> 
+> Best Regards,
+> Huang, Ying
+> 
+> .
+> 
 
