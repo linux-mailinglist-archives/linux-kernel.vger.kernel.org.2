@@ -2,89 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C2E35F05E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A2F35F065
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhDNJDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhDNJDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:03:03 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA465C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:02:42 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id l11so1492854vsr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ve208t/RK2O5KKA1Tytd/3SnK5wVjxvj8UwjAFmW0A4=;
-        b=PP+vQbwka8RkOrkMB+NhaqUGiWztFql/zPxeSR5HtPBJcqExUKf+kRnJg0jn/jHCWQ
-         yT+BPzbnZlqaszEiNmIifyyMUPkADCZDBxV40m6ViFnyalFPs1AVq/zaig81R2kq/rhP
-         J2qGcnekVuX9VSo6oH3Crg8BzN7Lnc2T28CI8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ve208t/RK2O5KKA1Tytd/3SnK5wVjxvj8UwjAFmW0A4=;
-        b=uCH5txSPz2B5Yk3/8t5afwlv04oLFQ5ovMclQjJrKDTVGFG4Aar8QACZkS5Z4FeIzt
-         jRs8I4j3O3AsjdrGxLKZCyq/sq6yGHK1KF3gccKrGMAlxQKVHiBMvEO0NBJ1UFqfvcAj
-         ep2HROGpc2/1edhoHKYH8EcjPcV0oIdPQ/qqCladbl3IgVZPi0IbwskHRCV1b8/ABVtA
-         IH1+YH4uaaKnkN/Ntn887fbSmD0KoK5k+Eq9gqBpycb7QBk+O6HXS7zG5GvkY0GK8Io9
-         P1tNT0hW9afPgsXsC4JAcGNLiH4if4c2oQJVVFK1cLGbuMzqONN+KPbZYlS5ncPxZ1fD
-         cHXQ==
-X-Gm-Message-State: AOAM532jHYSCCOK+m4a+eQubp046znhAHK76jc7peHhoKjQVCfvdINzd
-        4BUiWZpAXLOj8DBEkifJGg6qp9xyhNRkcSu6OxiaAQ==
-X-Google-Smtp-Source: ABdhPJyDuyMa4F6hAu3fNjHYFx6RQZ5dQfSkW2XG+XWw8KImgVRaUTb+FCtc04tKKlRDbVgsVoaEBuyoyrNUwKdrdsk=
-X-Received: by 2002:a67:1643:: with SMTP id 64mr11142777vsw.0.1618390962045;
- Wed, 14 Apr 2021 02:02:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com> <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com>
-In-Reply-To: <d9b71523-153c-12fa-fc60-d89b27e04854@linux.alibaba.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 14 Apr 2021 11:02:31 +0200
-Message-ID: <CAJfpegsurP8JshxFah0vCwBQicc0ijRnGyLeZZ-4tio6BHqEzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Peng Tao <tao.peng@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1346793AbhDNJFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237308AbhDNJF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:05:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 034A761166;
+        Wed, 14 Apr 2021 09:05:08 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lWbSL-007OqK-TI; Wed, 14 Apr 2021 10:05:06 +0100
+Date:   Wed, 14 Apr 2021 10:05:05 +0100
+Message-ID: <87pmyxme2m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <wanghaibin.wang@huawei.com>,
+        Santosh Shukla <sashukla@nvidia.com>
+Subject: Re: [PATCH v3 2/2] kvm/arm64: Try stage2 block mapping for host device MMIO
+In-Reply-To: <20210414065109.8616-3-zhukeqian1@huawei.com>
+References: <20210414065109.8616-1-zhukeqian1@huawei.com>
+        <20210414065109.8616-3-zhukeqian1@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: zhukeqian1@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, wanghaibin.wang@huawei.com, sashukla@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:42 AM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
++ Santosh, who found some interesting bugs in that area before.
 
-> Sorry I missed this patch before, and I've tested this patch, it seems
-> can solve the deadlock issue I met before.
+On Wed, 14 Apr 2021 07:51:09 +0100,
+Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+> The MMIO region of a device maybe huge (GB level), try to use
+> block mapping in stage2 to speedup both map and unmap.
+> 
+> Compared to normal memory mapping, we should consider two more
+> points when try block mapping for MMIO region:
+> 
+> 1. For normal memory mapping, the PA(host physical address) and
+> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
+> the HVA to request hugepage, so we don't need to consider PA
+> alignment when verifing block mapping. But for device memory
+> mapping, the PA and HVA may have different alignment.
+> 
+> 2. For normal memory mapping, we are sure hugepage size properly
+> fit into vma, so we don't check whether the mapping size exceeds
+> the boundary of vma. But for device memory mapping, we should pay
+> attention to this.
+> 
+> This adds device_rough_page_shift() to check these two points when
+> selecting block mapping size.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>  arch/arm64/kvm/mmu.c | 37 +++++++++++++++++++++++++++++++++----
+>  1 file changed, 33 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index c59af5ca01b0..1a6d96169d60 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -624,6 +624,31 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
+>  	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
+>  }
+>  
+> +/*
+> + * Find a max mapping size that properly insides the vma. And hva and pa must
+> + * have the same alignment to this mapping size. It's rough as there are still
+> + * other restrictions, will be checked by fault_supports_stage2_huge_mapping().
+> + */
+> +static short device_rough_page_shift(struct vm_area_struct *vma,
+> +				     unsigned long hva)
 
-Great, thanks for testing.
+My earlier question still stands. Under which circumstances would this
+function return something that is *not* the final mapping size? I
+really don't see a reason why this would not return the final mapping
+size.
 
-> But look at this patch in detail, I think this patch only reduced the
-> deadlock window, but did not remove the possible deadlock scenario
-> completely like I explained in the commit log.
->
-> Since the fuse_fill_write_pages() can still lock the partitail page in
-> your patch, and will be wait for the partitail page waritehack is
-> completed if writeback is set in fuse_send_write_pages().
->
-> But at the same time, a writeback worker thread may be waiting for
-> trying to lock the partitail page to write a bunch of dirty pages by
-> fuse_writepages().
+> +{
+> +	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
+> +
+> +#ifndef __PAGETABLE_PMD_FOLDED
+> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
+> +	    ALIGN_DOWN(hva, PUD_SIZE) >= vma->vm_start &&
+> +	    ALIGN(hva, PUD_SIZE) <= vma->vm_end)
+> +		return PUD_SHIFT;
+> +#endif
+> +
+> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
+> +	    ALIGN_DOWN(hva, PMD_SIZE) >= vma->vm_start &&
+> +	    ALIGN(hva, PMD_SIZE) <= vma->vm_end)
+> +		return PMD_SHIFT;
+> +
+> +	return PAGE_SHIFT;
+> +}
+> +
+>  static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
+>  					       unsigned long hva,
+>  					       unsigned long map_size)
+> @@ -769,7 +794,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  		return -EFAULT;
+>  	}
+>  
+> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
+> +	/*
+> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
+> +	 * get block mapping for device MMIO region.
+> +	 */
+>  	mmap_read_lock(current->mm);
+>  	vma = find_vma_intersection(current->mm, hva, hva + 1);
+>  	if (unlikely(!vma)) {
+> @@ -780,11 +808,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  
+>  	if (is_vm_hugetlb_page(vma))
+>  		vma_shift = huge_page_shift(hstate_vma(vma));
+> +	else if (vma->vm_flags & VM_PFNMAP)
+> +		vma_shift = device_rough_page_shift(vma, hva);
 
-As you say, fuse_fill_write_pages() will lock a partial page.  This
-page cannot become dirty, only after being read completely, which
-first requires the page lock.  So dirtying this page can only happen
-after the writeback of the fragment was completed.
+What prevents a VMA from having both VM_HUGETLB and VM_PFNMAP? This is
+pretty unlikely, but I'd like to see this case catered for.
 
-I don't see how this could lead to a deadlock.
+>  	else
+>  		vma_shift = PAGE_SHIFT;
+>  
+> -	if (logging_active ||
+> -	    (vma->vm_flags & VM_PFNMAP)) {
+> +	if (logging_active) {
+>  		force_pte = true;
+>  		vma_shift = PAGE_SHIFT;
+>  	}
+> @@ -855,7 +884,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  
+>  	if (kvm_is_device_pfn(pfn)) {
+>  		device = true;
+> -		force_pte = true;
+> +		force_pte = (vma_pagesize == PAGE_SIZE);
+
+Why do we need to set force_pte if we are already dealing with
+PAGE_SIZE? I guess you are doing this for the sake of avoiding the
+call to transparent_hugepage_adjust(), right?
+
+I'd rather you simply don't try to upgrade a device mapping by
+explicitly checking for this and keep force_pte for *memory*
+exclusively.
+
+Santosh, can you please take a look at this series and try to see if
+the problem you fixed in [1] (which ended up as commit 91a2c34b7d6f)
+is still OK with this series?
+
+>  	} else if (logging_active && !write_fault) {
+>  		/*
+>  		 * Only actually map the page as writable if this was a write
 
 Thanks,
-Miklos
+
+	M.
+
+[1] https://lore.kernel.org/kvmarm/1603711447-11998-1-git-send-email-sashukla@nvidia.com/
+
+-- 
+Without deviation from the norm, progress is not possible.
