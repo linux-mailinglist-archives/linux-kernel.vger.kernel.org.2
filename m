@@ -2,235 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E666335EB84
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AADD35EB91
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 05:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346868AbhDNDpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 23:45:02 -0400
-Received: from mail-il1-f169.google.com ([209.85.166.169]:45954 "EHLO
-        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbhDNDpA (ORCPT
+        id S1346442AbhDNDxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 23:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232602AbhDNDw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 23:45:00 -0400
-Received: by mail-il1-f169.google.com with SMTP id e14so4623223ils.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:44:40 -0700 (PDT)
+        Tue, 13 Apr 2021 23:52:57 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABABC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:52:35 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so2342477pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 20:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WuM+BaGUNuiUixC5dEfTXZqVl+1vqYpTV8zTf1r96dc=;
+        b=DrPgtQvrjPfgRjo21QhMAAagaQr1LUefazxADfNJEjZ+aJPvKfA8z2Q+O6imzvFAMe
+         H7op5V15/i8W52VTLu1gxjhW67jaf9nOmsmISIpo2JNoHF4CaIKEtS4p/hiq6J/nDHSL
+         DoMxIiv5G549XWQ5N7XDN6AvciWoiB46NnijP+HJMJubofcjK13AaY6g6v7Squ3LXqtk
+         9Nr5mxY2B7bMmGzYCFQp0ZRc/2qKczW3BYD1Kn8o+YSz+TPAA1EXmXMYpAYQzkxLsHlv
+         9CdKtl9TaQMN6btSmWetPnr9lQjMm9PKgKT5r4GjTwwxb6Irc0csWR3OflbdyqyfLzYF
+         J8sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xfdm6SLikmekIdGUXOcQbfA+pIeWoCcb6+txvE9srgk=;
-        b=i4gqi/c9/vZe2FeFPXgEdq8yN7brs2rEdWQOxxqMgkutXMhX7XnSNEEBCS0jyby1y/
-         7ydafejhLIBDNMRjpzYEwcJU0EIMswaAfArxbYMTYQ4gC0O4RoCkujpIy/L9wUhxYwGy
-         C1iYci/yDcL0+/ATVlJC44xGuOP/wB2l1RCZ8OKfWFAZCcgZK77NYRzwLYCxd1fEyW/F
-         wpkelizj+N50GTm6nCIh8tkSFwl/fz41aVb5YX2oTs70uHVE3SB7xP2Q4CH/14VfuAef
-         fVVQGQj8Yo69yYyHoa94PI4fNBd3iAb19silugif5mlggd/el6GfCgFozpY7btFwnQse
-         d9dg==
-X-Gm-Message-State: AOAM5323Z2kZQ/7U5blWCVZ2eFtwvSE4khQ70MicoC44ohQ6C3nOYO6M
-        ULwZpUd9SZa2Tb9nxf7k1ig=
-X-Google-Smtp-Source: ABdhPJxbx/s/NB+3pabeJ+q80RhKB1UHz5lvice0vYUHqlo6Ve8Rdq10JnZ4/30S11a2Wgu473FPBA==
-X-Received: by 2002:a05:6e02:190a:: with SMTP id w10mr4095472ilu.1.1618371879644;
-        Tue, 13 Apr 2021 20:44:39 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id j2sm7462310ilr.76.2021.04.13.20.44.39
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WuM+BaGUNuiUixC5dEfTXZqVl+1vqYpTV8zTf1r96dc=;
+        b=eW6s3nMbL/vjrVNN4O6xyOLPpPpMBlSiRlucpUnj76KBhiXf2ZesHF6FELNW72po5F
+         P+ix4LRg8TVY9GLz5+GlthFQkuk/G95r5NEVi9hXMgGlmhfuBs4/UYTXQ9DA2BgE+BcM
+         859iRHDRbhdckIzFhahkNSADtJ2SH035ME53sHJJmq2q5SYQNeFFus6VNrRTPEPtE40i
+         UfFxfnQFbDkN1lw6y7gOLq3J56F2YNmFuVuUsbD1+AjWGaTwcoYjXRXjfVIhlcI96xe9
+         m7sAMkUTWalG/XIKVrvmGuEs5lS0bvTDRuz31iDe4Qz+28YWOKjhXEaNjpNTsP8416XJ
+         l4uw==
+X-Gm-Message-State: AOAM532O89T/OWhRoZfsw9nThLhpSZowMJlAGK0rfvir9NRmBnI/IEXR
+        1uKgYzoPUjOHtMdwhUDOloB8cQ==
+X-Google-Smtp-Source: ABdhPJywZ4E18fDVCmXhLJVB51NirppKni0+fNhFPzV/YR/qlI7pVw+352j61hTBsZbhQ81AtdzbbA==
+X-Received: by 2002:a17:902:ed87:b029:eb:a96:7892 with SMTP id e7-20020a170902ed87b02900eb0a967892mr11365626plj.47.1618372354979;
+        Tue, 13 Apr 2021 20:52:34 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id l25sm16769568pgu.72.2021.04.13.20.52.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 20:44:39 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 03:44:37 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@suse.com, iamjoonsoo.kim@lge.com,
-        vbabka@suse.cz, alex.shi@linux.alibaba.com, willy@infradead.org,
-        minchan@kernel.org, richard.weiyang@gmail.com, hughd@google.com,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-Message-ID: <YHZlJZh8T4ZhLhp6@google.com>
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-2-linmiaohe@huawei.com>
- <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
- <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <75e27441-7744-7a10-e709-c8cd00830099@huawei.com>
- <87tuo9sjpj.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        Tue, 13 Apr 2021 20:52:34 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 09:22:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     wsa@kernel.org, wsa@the-dreams.de, mst@redhat.com,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210414035229.7uqfdcd6dy2ryg3s@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <e93836c3-d444-0b8c-c9df-559de0d5f27e@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87tuo9sjpj.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <e93836c3-d444-0b8c-c9df-559de0d5f27e@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Wed, Apr 14, 2021 at 10:06:48AM +0800, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
+On 14-04-21, 10:07, Jie Deng wrote:
+> Hi maintainers,
 > 
-> > On 2021/4/14 9:17, Huang, Ying wrote:
-> >> Miaohe Lin <linmiaohe@huawei.com> writes:
-> >> 
-> >>> On 2021/4/12 15:24, Huang, Ying wrote:
-> >>>> "Huang, Ying" <ying.huang@intel.com> writes:
-> >>>>
-> >>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
-> >>>>>
-> >>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
-> >>>>>> patch adds the percpu_ref support for later fixup.
-> >>>>>>
-> >>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> >>>>>> ---
-> >>>>>>  include/linux/swap.h |  2 ++
-> >>>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
-> >>>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> >>>>>> index 144727041e78..849ba5265c11 100644
-> >>>>>> --- a/include/linux/swap.h
-> >>>>>> +++ b/include/linux/swap.h
-> >>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
-> >>>>>>   * The in-memory structure used to track swap areas.
-> >>>>>>   */
-> >>>>>>  struct swap_info_struct {
-> >>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
-> >>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
-> >>>>>>  	signed short	prio;		/* swap priority of this type */
-> >>>>>>  	struct plist_node list;		/* entry in swap_active_head */
-> >>>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
-> >>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
-> >>>>>>  	struct file *swap_file;		/* seldom referenced */
-> >>>>>>  	unsigned int old_block_size;	/* seldom referenced */
-> >>>>>> +	struct completion comp;		/* seldom referenced */
-> >>>>>>  #ifdef CONFIG_FRONTSWAP
-> >>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
-> >>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
-> >>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> >>>>>> index 149e77454e3c..724173cd7d0c 100644
-> >>>>>> --- a/mm/swapfile.c
-> >>>>>> +++ b/mm/swapfile.c
-> >>>>>> @@ -39,6 +39,7 @@
-> >>>>>>  #include <linux/export.h>
-> >>>>>>  #include <linux/swap_slots.h>
-> >>>>>>  #include <linux/sort.h>
-> >>>>>> +#include <linux/completion.h>
-> >>>>>>  
-> >>>>>>  #include <asm/tlbflush.h>
-> >>>>>>  #include <linux/swapops.h>
-> >>>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
-> >>>>>>  	spin_unlock(&si->lock);
-> >>>>>>  }
-> >>>>>>  
-> >>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
-> >>>>>> +{
-> >>>>>> +	struct swap_info_struct *si;
-> >>>>>> +
-> >>>>>> +	si = container_of(ref, struct swap_info_struct, users);
-> >>>>>> +	complete(&si->comp);
-> >>>>>> +	percpu_ref_exit(&si->users);
-> >>>>>
-> >>>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
-> >>>>> get_swap_device(), better to add comments there.
-> >>>>
-> >>>> I just noticed that the comments of percpu_ref_tryget_live() says,
-> >>>>
-> >>>>  * This function is safe to call as long as @ref is between init and exit.
-> >>>>
-> >>>> While we need to call get_swap_device() almost at any time, so it's
-> >>>> better to avoid to call percpu_ref_exit() at all.  This will waste some
-> >>>> memory, but we need to follow the API definition to avoid potential
-> >>>> issues in the long term.
-> >>>
-> >>> I have to admit that I'am not really familiar with percpu_ref. So I read the
-> >>> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
-> >>> be called after exit now. But you're right we need to follow the API definition
-> >>> to avoid potential issues in the long term.
-> >>>
-> >>>>
-> >>>> And we need to call percpu_ref_init() before insert the swap_info_struct
-> >>>> into the swap_info[].
-> >>>
-> >>> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
-> >>> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
-> >>> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
-> >>> or percpu_ref_resurrect() will do the work.
-> >>>
-> >>> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
-> >>> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
-> >>> Maybe I could do this in alloc_swap_info()?
-> >> 
-> >> Yes.  In alloc_swap_info(), you can distinguish newly allocated and
-> >> reused swap_info_struct.
-> >> 
-> >>>>
-> >>>>>> +}
-> >>>>>> +
-> >>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
-> >>>>>>  {
-> >>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
-> >>>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
-> >>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
-> >>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
-> >>>>>>  	 */
-> >>>>>> -	synchronize_rcu();
-> >>>>>> +	percpu_ref_reinit(&p->users);
-> >>>>>
-> >>>>> Although the effect is same, I think it's better to use
-> >>>>> percpu_ref_resurrect() here to improve code readability.
-> >>>>
-> >>>> Check the original commit description for commit eb085574a752 "mm, swap:
-> >>>> fix race between swapoff and some swap operations" and discussion email
-> >>>> thread as follows again,
-> >>>>
-> >>>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
-> >>>>
-> >>>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
-> >>>> smp_load_acquire() in get_swap_device().  Now we will use
-> >>>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
-> >>>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
-> >>>> ACQUIRE semantics.  Per my understanding, we need to change
-> >>>> percpu_ref_tryget_live() for that.
-> >>>>
-> >>>
-> >>> Do you mean the below scene is possible?
-> >>>
-> >>> cpu1
-> >>> swapon()
-> >>>   ...
-> >>>   percpu_ref_init
-> >>>   ...
-> >>>   setup_swap_info
-> >>>   /* smp_store_release() is inside percpu_ref_reinit */
-> >>>   percpu_ref_reinit
-> >> 
-> >> spin_unlock() has RELEASE semantics already.
-> >> 
-> >>>   ...
-> >>>
-> >>> cpu2
-> >>> get_swap_device()
-> >>>   /* ignored  smp_rmb() */
-> >>>   percpu_ref_tryget_live
-> >> 
-> >> Some kind of ACQUIRE is required here to guarantee the refcount is
-> >> checked before fetching the other fields of swap_info_struct.  I have
-> >> sent out a RFC patch to mailing list to discuss this.
+> What's the status of this patch based on the review comments you got ?
 
-I'm just catching up and following along a little bit. I apologize I
-haven't read the swap code, but my understanding is you are trying to
-narrow a race condition with swapoff. That makes sense to me. I'm not
-sure I follow the need to race with reinitializing the ref though? Is it
-not possible to wait out the dying swap info and then create a new one
-rather than push acquire semantics?
+I was expecting a new version to be honest..
 
-> >
-> > Many thanks.
-> > But We may still need to add a smp_rmb() in get_swap_device() in case
-> > we can't add ACQUIRE for refcount.
-> 
-> Yes.
-> 
-> Best Regards,
-> Huang, Ying
-> 
+> Is i2c/for-next the right tree to merge it
+> ?
 
-Thanks,
-Dennis
+It should be.
+
+-- 
+viresh
