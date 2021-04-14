@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B5435FCBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89B135FCBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244538AbhDNUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:34:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50449 "EHLO
+        id S245423AbhDNUee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:34:34 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50464 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbhDNUeY (ORCPT
+        with ESMTP id S244531AbhDNUeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:34:24 -0400
+        Wed, 14 Apr 2021 16:34:25 -0400
 Received: from mail-ej1-f71.google.com ([209.85.218.71])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lWmD3-0007QZ-LA
-        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 20:34:01 +0000
-Received: by mail-ej1-f71.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so219361ejb.18
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
+        id 1lWmD4-0007RA-QH
+        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 20:34:02 +0000
+Received: by mail-ej1-f71.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso218755ejt.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:34:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x2hO5DXMeLJZo3Sq4pJYNG0FO8H5GrNmCBQcI+p7buM=;
-        b=hHEgzp1W6hUAJX7kYCPOX/rHNDC/xuUZBJQCq1i72LfqJswyqk9E+FW2O94US+fnyP
-         1Xo2YRnIAWM6Ir9+R1wdlAhfY/9O0ro8vVLmfix4qkZqrlm76lltYrWb9AnJgg/aD1Py
-         AdD9FIaigO5HviKYZl36RN5YqA8aVYXDUKqXPkQbT/xzqJJ3BELyjAlpimqqGFszdvs3
-         XeTbsVSxRr0LvN5TUKxcTEGa5+ba34NhiWHFhORsjEu0NdX4g+of7JrBkPnP2h0p5D6H
-         9hasKTlpsIhYc7FUD9404Qnu+4NPMmMnExymyqzkvjLBAx3cZ+nWrtTH2plf93eOhRjF
-         e2ig==
-X-Gm-Message-State: AOAM530zJvzaVWczQ6LejipvaLc0XlfOlbbvqDLQxLChodEeQSG2Kg8Q
-        opxZC3viEsB9ehFVUKJ3ODFTEL49gYuyf0wZcT/IjGPsy+pJXFrsNsXHUsQIYf6S7rQew2uGLnA
-        0mZ/APUg3CKcF5zOthG/aYWVbiWjyHVBbb/Wqm2wo4w==
-X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr72094edd.168.1618432441434;
-        Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8Z5ptlAYigxFNCd5S/xT8AwrP3ue/ADlxR9AJcWKfkq3TLq+hwkPI3X1JJfIFB9MPghvAVg==
-X-Received: by 2002:a05:6402:5189:: with SMTP id q9mr72086edd.168.1618432441295;
-        Wed, 14 Apr 2021 13:34:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6iWJ3bgZpUCfwGeaD2iQV5boaIsrvYIQwgNIcJKkeRc=;
+        b=je7uXCqBRpl44cnDFLYoFm+S/HMP/ia1hCS0uDVDYUYQavNI8QQ+yBG3efbWR9Ns9E
+         x6q8OGRClkU0I+H/q3gnmff8kDGUOShNLLgypaqbgGO+htMfcTUsGQZBZ/Vwiab86Z4v
+         5VdZcta8i5u2FW6/js99kjrHTmLy5ECRvKeDJWx/AeJAacuguCQxDSbio1HRQrw7mot7
+         AcB6b/o6jOg/bWGRqk018OZPHUvd55TaEP98V8xIHvNYzA7/GUiGwVe2Fel2h05pJbbi
+         0aRLhugb85xbtPU6g6lRmTSpukyIyHS9RCkSak76MQbUI+D80Qn6QQqbd8Nxb0urh/VF
+         EuJQ==
+X-Gm-Message-State: AOAM533OQzuTrriGY4AMsT74G9BtE7NUMQQtIQadcwIfrPgHrXBih/yI
+        p/DfAR0ZZ6ZKuXALTNzkrEsF+fpnFYZEfYgUl2oyho1ukGqOayiK4oQD6ycPI6QOAkef9i3PotM
+        UjqUCk0MJzPV0nSgBfwizIMsQ3Sgy189NP4IUrzhsCA==
+X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr87958edc.14.1618432442537;
+        Wed, 14 Apr 2021 13:34:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgIg2g0mP+FUvTRFflQtwAfKDR1XJ2BSwJmU+aJUp/4sLcSAVyFpDY3szKBQWx2xkzpd2sKg==
+X-Received: by 2002:a05:6402:34d5:: with SMTP id w21mr87946edc.14.1618432442372;
+        Wed, 14 Apr 2021 13:34:02 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id q6sm372209ejt.51.2021.04.14.13.34.00
+        by smtp.gmail.com with ESMTPSA id q6sm372209ejt.51.2021.04.14.13.34.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 13:34:00 -0700 (PDT)
+        Wed, 14 Apr 2021 13:34:02 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
@@ -50,56 +50,41 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 1/3] spi: s3c64xx: simplify getting of_device_id match data
-Date:   Wed, 14 Apr 2021 22:33:41 +0200
-Message-Id: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/3] spi: s3c64xx: correct kerneldoc of s3c64xx_spi_port_config
+Date:   Wed, 14 Apr 2021 22:33:42 +0200
+Message-Id: <20210414203343.203119-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
+References: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use of_device_get_match_data() to make the code slightly smaller and to
-remove the of_device_id table forward declaration.
+Correct the name of s3c64xx_spi_port_config structure in kerneldoc:
+
+  drivers/spi/spi-s3c64xx.c:154: warning:
+    expecting prototype for struct s3c64xx_spi_info. Prototype was for struct s3c64xx_spi_port_config instead
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/spi/spi-s3c64xx.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index dfa7c91e13aa..c6d7641ea342 100644
+index c6d7641ea342..eac3c300f806 100644
 --- a/drivers/spi/spi-s3c64xx.c
 +++ b/drivers/spi/spi-s3c64xx.c
-@@ -15,6 +15,7 @@
- #include <linux/spi/spi.h>
- #include <linux/gpio.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/of_gpio.h>
+@@ -128,7 +128,7 @@ struct s3c64xx_spi_dma_data {
+ };
  
- #include <linux/platform_data/spi-s3c64xx.h>
-@@ -1048,17 +1049,12 @@ static struct s3c64xx_spi_info *s3c64xx_spi_parse_dt(struct device *dev)
- }
- #endif
- 
--static const struct of_device_id s3c64xx_spi_dt_match[];
--
- static inline struct s3c64xx_spi_port_config *s3c64xx_spi_get_port_config(
- 						struct platform_device *pdev)
- {
- #ifdef CONFIG_OF
--	if (pdev->dev.of_node) {
--		const struct of_device_id *match;
--		match = of_match_node(s3c64xx_spi_dt_match, pdev->dev.of_node);
--		return (struct s3c64xx_spi_port_config *)match->data;
--	}
-+	if (pdev->dev.of_node)
-+		return (struct s3c64xx_spi_port_config *)of_device_get_match_data(&pdev->dev);
- #endif
- 	return (struct s3c64xx_spi_port_config *)
- 			 platform_get_device_id(pdev)->driver_data;
+ /**
+- * struct s3c64xx_spi_info - SPI Controller hardware info
++ * struct s3c64xx_spi_port_config - SPI Controller hardware info
+  * @fifo_lvl_mask: Bit-mask for {TX|RX}_FIFO_LVL bits in SPI_STATUS register.
+  * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regiter.
+  * @tx_st_done: Bit offset of TX_DONE bit in SPI_STATUS regiter.
 -- 
 2.25.1
 
