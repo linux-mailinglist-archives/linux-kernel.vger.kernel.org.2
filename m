@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F1C35F562
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8FD35F564
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348678AbhDNNrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:47:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
+        id S1349144AbhDNNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:47:47 -0400
+Received: from mga07.intel.com ([134.134.136.100]:2756 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348684AbhDNNrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:47:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B76E9611EE;
-        Wed, 14 Apr 2021 13:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618408031;
-        bh=mfIzprwlfl8gA6WjqilLB/e5g2WRcCToRYhdfla3psQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gnjzTAVr5QiF6z5cl0OWBs8b1nJGNVh5hQoZyKyniiqXH7CvDMhwEYxVYHZ4XMxvz
-         cEVAQiqshzmxWjZOzmTpol8Mw88odn+srobvl4NJEW1+BXmT1+Bs0VQaGVdhO0eSgu
-         jzHGTSApWmpe8LNawSCFIT9of9XAuj4vUwe+feN1KeIBc1XwmOsWlY2/fRrjY2tqsC
-         gzbCMrdj+F5IwkaLkCHlDH/i3U9eqeyUKGzLDs0UO2eeyEku03W9+HFSt8jSTiDzLM
-         f+072gX0geggdNLEjiJJaxkbIZSD9GtyLn7mKhrlLOOd+oVZRkL48T5GVTx0M7viZM
-         fm9xjfsBLbA7Q==
-Date:   Wed, 14 Apr 2021 16:46:59 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Tobias Wolf <dev-NTEO@vplace.de>,
-        Marcin Nowakowski <marcin.nowakowski@mips.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: fix memory reservation for non-usermem setups
-Message-ID: <YHbyU3n+My/0+3g7@kernel.org>
-References: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
- <20210312151934.GA4209@alpha.franken.de>
- <CALCv0x1AEZanNsVcNuUrbHuLyWYNegEVuye9Gso-Ou9xX8JEAg@mail.gmail.com>
- <YFGip16ObFp/vOZS@kernel.org>
- <CALCv0x3sGY8t_NCch7qa6KijoxwvFJJYQEZB5kOMuK35C=c3og@mail.gmail.com>
- <20210406131043.GG9505@alpha.franken.de>
- <CALCv0x3rZXK2KYM+twkd_3v2bzqrVAXaA2NnaP8AJh76NeME8w@mail.gmail.com>
+        id S1351655AbhDNNrd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:47:33 -0400
+IronPort-SDR: wEAMZhWrElRHwwoYAFSIetQHUvMOQlXXzQ+NJEWAPMCrl5rX6zhHUEQUDWJKCA+KITDSHYVBL1
+ vY+q/zclwjNg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="258606108"
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="258606108"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 06:47:08 -0700
+IronPort-SDR: 0n4T3frXNxMxljFE/Wzw42wvVHemPO4TIrK/q0E4uua7r85/X/CIMBUnzp0YDtIFIqeOOpGgV2
+ pvXFChZtVAWw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="383684192"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 14 Apr 2021 06:47:08 -0700
+Received: from [10.209.105.172] (kliang2-MOBL.ccr.corp.intel.com [10.209.105.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 7A981580021;
+        Wed, 14 Apr 2021 06:47:07 -0700 (PDT)
+Subject: Re: [PATCH V3 2/2] perf/x86: Reset the dirty counter to prevent the
+ leak for an RDPMC task
+To:     kernel test robot <lkp@intel.com>, peterz@infradead.org,
+        mingo@kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, acme@kernel.org, ak@linux.intel.com,
+        mark.rutland@arm.com, luto@amacapital.net, eranian@google.com,
+        namhyung@kernel.org
+References: <1618340250-29027-2-git-send-email-kan.liang@linux.intel.com>
+ <202104140454.EDz6DV9M-lkp@intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <ff3622c3-3fdd-9e94-17ca-f0bf8dd98544@linux.intel.com>
+Date:   Wed, 14 Apr 2021 09:47:06 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCv0x3rZXK2KYM+twkd_3v2bzqrVAXaA2NnaP8AJh76NeME8w@mail.gmail.com>
+In-Reply-To: <202104140454.EDz6DV9M-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:45:45PM -0700, Ilya Lipnitskiy wrote:
-> Hi Thomas,
+
+
+On 4/13/2021 4:33 PM, kernel test robot wrote:
+> Hi,
 > 
-> On Tue, Apr 6, 2021 at 6:18 AM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Sat, Apr 03, 2021 at 07:02:13PM -0700, Ilya Lipnitskiy wrote:
-> > > Hi Mike,
-> > >
-> > > On Tue, Mar 16, 2021 at 11:33 PM Mike Rapoport <rppt@kernel.org> wrote:
-> > > >
-> > > > Hi Ilya,
-> > > >
-> > > > On Tue, Mar 16, 2021 at 10:10:09PM -0700, Ilya Lipnitskiy wrote:
-> > > > > Hi Thomas,
-> > > > >
-> > > > > On Fri, Mar 12, 2021 at 7:19 AM Thomas Bogendoerfer
-> > > > > <tsbogend@alpha.franken.de> wrote:
-> > > > > >
-> > > > > > On Sun, Mar 07, 2021 at 11:40:30AM -0800, Ilya Lipnitskiy wrote:
-> > > > > > > From: Tobias Wolf <dev-NTEO@vplace.de>
-> > > > > > >
-> > > > > > > Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
-> > > > > > > issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
-> > > > > > > not. As the prerequisite of custom memory map has been removed, this results
-> > > > > > > in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
-> > > > > > > platform.
-> > > > > >
-> > > > > > and where is the problem here ?
-> > > > > Turns out this was already attempted to be upstreamed - not clear why
-> > > > > it wasn't merged. Context:
-> > > > > https://lore.kernel.org/linux-mips/6504517.U6H5IhoIOn@loki/
-> > > > >
-> > > > > I hope the thread above helps you understand the problem.
-> > > >
-> > > > The memory initialization was a bit different then. Do you still see the
-> > > > same problem?
-> > > Thanks for asking. I obtained a RT2880 device and gave it a try. It
-> > > hangs at boot without this patch, however selecting
-> >
-> > can you provide debug logs with memblock=debug for both good and bad
-> > kernels ? I'm curious what's the reason for failing allocation...
->
-> Sorry for taking a while to respond. See attached.
-> FWIW, it seems these are the lines that stand out in hang.log:
-> [    0.000000] memblock_reserve: [0x00000000-0x07ffffff] setup_arch+0x214/0x5d8
-> [    0.000000] Wasting 1048576 bytes for tracking 32768 unused pages
-> ...
-> [    0.000000]  reserved[0x0]    [0x00000000-0x087137aa], 0x087137ab
-> bytes flags: 0x0
+> Thank you for the patch! Perhaps something to improve:
 > 
-> Ilya
+> [auto build test WARNING on tip/perf/core]
+> [also build test WARNING on tip/master linux/master linus/master v5.12-rc7 next-20210413]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/kan-liang-linux-intel-com/perf-x86-Move-cpuc-running-into-P4-specific-code/20210414-030649
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git cface0326a6c2ae5c8f47bd466f07624b3e348a7
+> config: i386-tinyconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>          # https://github.com/0day-ci/linux/commit/83f02393e1b5a2723294d8697f4fd5473d70602c
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review kan-liang-linux-intel-com/perf-x86-Move-cpuc-running-into-P4-specific-code/20210414-030649
+>          git checkout 83f02393e1b5a2723294d8697f4fd5473d70602c
+>          # save the attached .config to linux build tree
+>          make W=1 ARCH=i386
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> arch/x86/events/core.c:2309:6: warning: no previous prototype for 'x86_pmu_clear_dirty_counters' [-Wmissing-prototypes]
+>      2309 | void x86_pmu_clear_dirty_counters(void)
+>           |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> 
+> vim +/x86_pmu_clear_dirty_counters +2309 arch/x86/events/core.c
+> 
+>    2308	
+>> 2309	void x86_pmu_clear_dirty_counters(void)
 
-> ---------------------------CONTINUTES-BOOTING-NORMALLY-----------------------
 
-> [    0.000000] MEMBLOCK configuration:
-> [    0.000000]  memory size = 0x02000000 reserved size = 0x0875a542
-> [    0.000000]  memory.cnt  = 0x1
-> [    0.000000]  memory[0x0]	[0x08000000-0x09ffffff], 0x02000000 bytes flags: 0x0
-> [    0.000000]  reserved.cnt  = 0x5
-> [    0.000000]  reserved[0x0]	[0x00000000-0x087137aa], 0x087137ab bytes flags: 0x0
-> [    0.000000]  reserved[0x1]	[0x087137b0-0x087137b3], 0x00000004 bytes flags: 0x0
-> [    0.000000]  reserved[0x2]	[0x087137c0-0x08715276], 0x00001ab7 bytes flags: 0x0
-> [    0.000000]  reserved[0x3]	[0x08715278-0x0871a533], 0x000052bc bytes flags: 0x0
-> [    0.000000]  reserved[0x4]	[0x0871a540-0x0875a55f], 0x00040020 bytes flags: 0x0
+Should be "static void x86_pmu_clear_dirty_counters(void)".
 
-...
+I will send V4 shortly to fix it.
 
-> [    0.000000] Memory: 25168K/32768K available (4299K kernel code, 575K rwdata, 952K rodata, 1204K init, 205K bss, 7600K reserved, 0K cma-reserved)
-> ----------------------------------------HANGS-FOREVER-HERE---------------------------------
+Thanks,
+Kan
 
-I'd say that with ARCH_PFN_OFFSET set to 0 and actual memory start address
-at 0x08000000 any attempt to do pfn_to_page()/page_to_pfn()/page_address()
-will give an incorrect result and will crash the system.
-
-No idea why the crash is silent, though :)
-
--- 
-Sincerely yours,
-Mike.
+>    2310	{
+>    2311		struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>    2312		int i;
+>    2313	
+>    2314		if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
+>    2315			return;
+>    2316	
+>    2317		 /* Don't need to clear the assigned counter. */
+>    2318		for (i = 0; i < cpuc->n_events; i++)
+>    2319			__clear_bit(cpuc->assign[i], cpuc->dirty);
+>    2320	
+>    2321		for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
+>    2322			/* Metrics and fake events don't have corresponding HW counters. */
+>    2323			if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
+>    2324				continue;
+>    2325			else if (i >= INTEL_PMC_IDX_FIXED)
+>    2326				wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
+>    2327			else
+>    2328				wrmsrl(x86_pmu_event_addr(i), 0);
+>    2329		}
+>    2330	
+>    2331		bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
+>    2332	}
+>    2333	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
