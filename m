@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8812D35FB94
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E60935FB96
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353268AbhDNTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349223AbhDNTWA (ORCPT
+        id S1353358AbhDNTWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:22:14 -0400
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:40486 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345520AbhDNTWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:22:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26404C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:21:38 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWl4u-0001zT-NY; Wed, 14 Apr 2021 21:21:32 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWl4u-00008G-1Y; Wed, 14 Apr 2021 21:21:32 +0200
-Date:   Wed, 14 Apr 2021 21:21:31 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
-Message-ID: <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
- <YHR3wP4Fk3jidnri@workstation.tuxnet>
- <20210412201019.vouxx4daumusrcvr@pengutronix.de>
- <YHWKehtYFSaHt1hC@workstation.tuxnet>
- <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
- <YHbbaiwK9Tasb7NF@workstation.tuxnet>
+        Wed, 14 Apr 2021 15:22:12 -0400
+Received: by mail-ua1-f43.google.com with SMTP id 33so6750182uaa.7;
+        Wed, 14 Apr 2021 12:21:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b+tmZI5JiTVWm421cIPTsk+PGdNmsovX4NE2wqukjp8=;
+        b=NYbAlfcsB1+PePQwoubcuMaK4skNyTEp8F2DsczMW0Imq0eMa8Qjx0RqcTLyZIyfZD
+         Kh2NhTmtJcqrUJGbD4HE8F9YljpdCHvAfGyOiUdikEowaAAd1v2Oxu9OBmszTXkTmDua
+         dQOrJ+kR8HQTKVoaQGRNEFs6GunFZEQvuDzgy600yq5fUcjKUy99v6Y1AE59BpTJpbDk
+         EsEL1UjIcvMdapLCAATPnMlOw7xGnxn8Pr3RoAoX87yU8Rn6GCHdClajMFyOYMWFNhae
+         wwC6LIhT+nEbY5pgwmTUzrZHDewuKE1Fq86Ng9ioyuLjWEaXMLU9JB6KraspfP7+K9Tb
+         p8OA==
+X-Gm-Message-State: AOAM530RvbecmwShCrau5bBJDyxzhu/wDcSE6jp5D2lm7EXHA5Hbfaps
+        vkBj9nxmvHf2S3hiY+kQasNsfkHr81rrsnQCYq0=
+X-Google-Smtp-Source: ABdhPJxMt8XdUVgQ883P3bgnbatYcWMTY60i2JEfJnr9k8/d1RhEdoFYRNUQ7dHItoAICruEUDdtFNDUHNXGETbY1VI=
+X-Received: by 2002:a9f:3852:: with SMTP id q18mr19839105uad.58.1618428110127;
+ Wed, 14 Apr 2021 12:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="inuazthvvxg6ghkd"
-Content-Disposition: inline
-In-Reply-To: <YHbbaiwK9Tasb7NF@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
+ <YHc+/MOWA6rO+1Wy@smile.fi.intel.com>
+In-Reply-To: <YHc+/MOWA6rO+1Wy@smile.fi.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Apr 2021 21:21:38 +0200
+Message-ID: <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
 
---inuazthvvxg6ghkd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
+> > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
+> > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+> > > > > On 2021/4/13 20:26, Geert Uytterhoeven wrote:
+> > > > > > The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+> > > > > > Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+> > > > > > Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+> > > > > > about this driver when configuring a kernel without Hisilicon platform
+> > > > > > or ACPI firmware support.
+> > > > >
+> > > > > this is a public IP which doesn't specifically depend on ARCH_HISI. I'm
+> > > > > not sure all the platform this IP on has ARCH_HISI configured. The driver
+> > > > > will not be compiled by default config. This is not correct to have
+> > > > > this dependence.
+> > > >
+> > > > Thanks for your answer!
+> > > >
+> > > > I guess it's still fine to add a dependency on ACPI?
+> > >
+> > > But why?
+> >
+> > Please tell me how/when the driver is used when CONFIG_ACPI=n.
+>
+> I'm not using it at all. Ask the author :-)
+>
+> But if we follow your logic, then we need to mark all the _platform_ drivers
+> for x86 world as ACPI dependent? This sounds ugly.
 
-On Wed, Apr 14, 2021 at 02:09:14PM +0200, Clemens Gruber wrote:
-> Hi Uwe,
->=20
-> On Tue, Apr 13, 2021 at 09:38:18PM +0200, Uwe Kleine-K=F6nig wrote:
-> > Hello Clemens,
-> >=20
-> > On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
-> > > On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
-> > > > > With your suggested round-down, the example with frequency of 200=
- Hz
-> > > > > would no longer result in 30 but 29 and that contradicts the data=
-sheet.
-> > > >=20
-> > > > Well, with PRESCALE =3D 30 we get a frequency of 196.88 Hz and with
-> > > > PRESCALE =3D 29 we get a frequency of 203.45 Hz. So no matter if yo=
-u pick
-> > > > 29 or 30, you don't get 200 Hz. And which of the two possible value=
-s is
-> > > > the better one depends on the consumer, no matter what rounding
-> > > > algorithm the data sheet suggests. Also note that the math here con=
-tains
-> > > > surprises you don't expect at first. For example, what PRESCALE val=
-ue
-> > > > would you pick to get 284 Hz? [If my mail was a video, I'd suggest =
-to
-> > > > press Space now to pause and let you think first :-)] The data shee=
-t's
-> > > > formula suggests:
-> > > >=20
-> > > > 	round(25 MHz / (4096 * 284)) - 1 =3D 20
-> > > >=20
-> > > > The resulting frequency when picking PRESCALE =3D 20 is 290.644 Hz =
-(so an
-> > > > error of 6.644 Hz). If instead you pick PRESCALE =3D 21 you get 277=
-=2E433 Hz
-> > > > (error =3D 6.567 Hz), so 21 is the better choice.
-> > > >=20
-> > > > Exercise for the reader:
-> > > >  What is the correct formula to really determine the PRESCALE value=
- that
-> > > >  yields the best approximation (i.e. minimizing
-> > > >  abs(real_freq - target_freq)) for a given target_freq?
-> >=20
-> > I wonder if you tried this.
->=20
-> We could calculate both round-up and round-down and decide which one is
-> closer to "real freq" (even though that is not the actual frequency but
-> just our backwards-calculated frequency).
+Do all other x86 platform drivers have (1) an .acpi_match_table[] and
+(2) no other way of instantiating their devices?
+The first driver from the top of my memory I looked at is rtc-cmos:
+it has no .acpi_match_table[], and the rtc-cmos device is instantiated
+from arch/x86/kernel/rtc.c.
 
-Yeah, the backwards-calculated frequency is the best assumption we
-have.
+For drivers with only an .of_match_table(), and no legacy users
+instantiating platform devices, we do have dependencies on OF.
 
-> But I can't give you a formula with minimized abs(real_freq-target_freq)
-> Is it a different round point than 0.5 and maybe relative to f ?
->=20
-> Please enlighten us :-)
+Gr{oetje,eeting}s,
 
-Sorry, I cannot. I spend ~20 min today after lunch with pencil and
-paper, but without success. I was aware that it isn't trivial and this
-is the main reason I established round-down as default for new drivers
-instead of round-nearest.
+                        Geert
 
-Best regards
-Uwe
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---inuazthvvxg6ghkd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB3QLgACgkQwfwUeK3K
-7AnqbQf+O7AIVRO+G24LPhBJpVA9DGMwHmVgChEtFmCRO725hO1rE7mO20DH7WAU
-+c9RxmhoT8Txdv3tAFWSKqhO6CJUvnn2YdJ5lAXCV5+xrKFFKjhcc/Xu/wH381f6
-jkAfpvyK3s3aQU3hrKYfSbzTiMfXymrrSUX9UeqqNsoX8WefwCTifnrmcbLMlIEu
-D9C0mQpHqzDuWu4K/V+Uc4jHbJ8G/uMS6cuymJCpk/2Q2kHsMeGmxHYoCJBTmQNW
-LMG6luBZ5xLbleVFEPTCqZ3Iv3ELzRmRueRgd3xVX4xkH7o3s8l5EkbzRW+fOfbA
-QVSvu1Vyry4vUpB5QtWnrpyh/vjvmQ==
-=N4NK
------END PGP SIGNATURE-----
-
---inuazthvvxg6ghkd--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
