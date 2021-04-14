@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35E335F8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448E835F8F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352711AbhDNQZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S1352713AbhDNQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhDNQZp (ORCPT
+        with ESMTP id S233964AbhDNQ0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:25:45 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A04C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:25:22 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id r12so32351004ejr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:25:22 -0700 (PDT)
+        Wed, 14 Apr 2021 12:26:45 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C312C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:26:20 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u17so32359008ejk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 09:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iP7KGYih0ScL9NDo4YHcxu5ievJ0k08+ogShzicxdcI=;
-        b=yicn4QCpRAW4psE8yFGxsrVdKLQvpoxJJILCW/xOysKBCPsxr04f1+yIOBoiq+en/W
-         AWHC0EojiRGsfCu+UHy8BPb4ZhIXU35KpFPh5aBgTpazizLnf8v9YMSDpBCBHjEiCwU5
-         ZYoQuxKqArnLxcEgorwAJh5ZJMbTPx4wfa+M3Q4YmoXrhHJ2EciAqZ0f0DT8jGTKT/Ov
-         C/Cfr7ICwGgn8KMVRf4Aim/5svCUIxJV6cgfVG79ztVHkuXdY8kjbyhUpeaPbOcBh3Xh
-         IpvR3LKXHoEteLXkQh+Xtuxb1mpn4kEDXdToZzaeKz1guV7RVsssfms+/nB58C1POa2A
-         sy6Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7OJ5/q27rVQyMJMOKx5XsjrMcpogAT1Y8irqV1uKSxE=;
+        b=nZJiQUOjb34oGOxyGs8MPrzzBpINEaVqRnwnQlby3J29ZlZ2LSD+RySg/Em1usx/sp
+         VBK0JbsrcRrXtuDOhdLMWmFY6LgzU0M6QaaU8WoaImzFI4CKqOFK1JrAP0WCyW/2hupo
+         Y1jCnX4zRNDAlYQ91iTrV2Z0rolLlrV5hTsarOY7velbj2TE31ngP89BS2CFogI0lFmX
+         wtCS3p6NgPyLU267rbHlsAVf7mS34XhhHUx8qk1qor69S/3fx1hg6lCg7eLUw65IDKHA
+         o1ag3yhq5Q51sdXKtj0m+Nks9Gkv7RoGHXT8QgPR2/P/L+CZDl0T+A1sp1vNR8wsHr9m
+         zx2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=iP7KGYih0ScL9NDo4YHcxu5ievJ0k08+ogShzicxdcI=;
-        b=rVWWuAPIHnOQPL6NzB3amTekVia1bZ5dzpfKNzz82MJvpRLZF+At6v4YrGKOtnWOK+
-         LAQSpMEd70CcVh2jlDQ0IXLk/yC+0lpbDaJoI4Tkcvo5aiecf9reWS16ixW0ht3EQnXI
-         Ecml/yBoUFN18fkY0OptpCTersLBpht3wutianpnGUW2iFmTnh/TeX1oRm2S3KTw3Ww4
-         kv2CxPDERKdJj436g6CABq5ykXbhMC6R2nQHTnZov6BKrPJBHMqUQeXaL62N7H2UcfSL
-         +wNSHOOwfK1lWl57H6YZNDVrCAN5lK/dftfHAb8SUP/aqKQ/U+tb5mZ1n05BDFGYqc1B
-         qGcQ==
-X-Gm-Message-State: AOAM533XrMEXy5Zg14lBi2I7V5G3FLuugbHQUbmxRZHUXa0iLUZ4kAT9
-        VOs7gQAqTCUEyQsIEq7WkiVVOQ==
-X-Google-Smtp-Source: ABdhPJzj/VkYQmA6hewZS4HCBdddVZJyTjlKToqN7L4xUMN2MR0fcKB4SBKxRtX20NtKVUNqOb1ZeQ==
-X-Received: by 2002:a17:906:a103:: with SMTP id t3mr39048501ejy.334.1618417521254;
-        Wed, 14 Apr 2021 09:25:21 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id u4sm19631ejf.11.2021.04.14.09.25.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7OJ5/q27rVQyMJMOKx5XsjrMcpogAT1Y8irqV1uKSxE=;
+        b=cUli5h6kHj6EkZSOZV5AvS/XOC6DCfoDCbwPzb+5KmjrfaetiC/s63FvQkJfCPUstR
+         wp9FoVMhR6qXIW6/bCqshhSPiM0p5mMBLdDSAFs/zO4hlD+HbrOSmaxU/Oy+MSfcuhw3
+         CjZ+mCI2cg+eRzt8pMgTyF0ppJyRI7J6c6uTMWc4dYP+cOt/ei8cfbcV6UMNAW4CXqTS
+         925ZhY7j0boDH/tH5t6CtXRKIN6pfTo29KC40iqfZcz+ABCHfhPUESN3wnViW864P1t/
+         reFLvOXe/y6auUNRPUQA5ePh5NIXlG7IZAk9sxXj9nBWEmaPBMKt7S53BBZIqzNH2zBA
+         INLA==
+X-Gm-Message-State: AOAM5332QQOWHjY03I7QnNsp/npOOrLXnFYw9fusBwCIgMVQdhvX+2TK
+        vreH3UOD+Rd0s48pCyJH40o=
+X-Google-Smtp-Source: ABdhPJwYhgLyWRyMP6WBDuERSnqYTcUVjV949pj88yA1MgehFGue4mztsNvAkffFSHyBSdPJd/UZ6g==
+X-Received: by 2002:a17:906:a385:: with SMTP id k5mr6548344ejz.148.1618417579300;
+        Wed, 14 Apr 2021 09:26:19 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id s17sm20803ejx.10.2021.04.14.09.26.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 09:25:20 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 17:25:18 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Russ Weight <russell.h.weight@intel.com>,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com,
-        yilun.xu@intel.com, hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v9 1/1] mfd: intel-m10-bmc: support for MAX10 BMC Secure
- Updates
-Message-ID: <20210414162518.GP4869@dell>
-References: <20210412195329.241357-1-russell.h.weight@intel.com>
- <20210412195329.241357-2-russell.h.weight@intel.com>
- <c7044c0a-b3fb-837d-137f-fdb9b1d42847@redhat.com>
+        Wed, 14 Apr 2021 09:26:18 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless led_blink_hdl()
+Date:   Wed, 14 Apr 2021 18:26:14 +0200
+Message-Id: <20210414162614.14867-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c7044c0a-b3fb-837d-137f-fdb9b1d42847@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021, Tom Rix wrote:
+Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
+the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
+change has not unwanted side effects because the code in rtw_cmd.c checks
+if the function pointer is valid before using it.
 
-> 
-> On 4/12/21 12:53 PM, Russ Weight wrote:
-> > Add macros and definitions required by the MAX10 BMC
-> > Secure Update driver.
-> > 
-> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > Acked-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> > v9:
-> >    - Rebased on next-20210412
-> > v8:
-> >    - Previously patch 1/6 in "Intel MAX10 BMC Secure Update Driver"
-> >    - Rebased on next-20210121
-> > v7:
-> >    - No change
-> > v6:
-> >    - No change
-> > v5:
-> >    - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
-> > v4:
-> >    - No change
-> > v3:
-> >    - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
-> >      Update driver"
-> >    - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
-> >      underlying functions will be called directly.
-> > v2:
-> >    - These functions and macros were previously distributed among
-> >      the patches that needed them. They are now grouped together
-> >      in a single patch containing changes to the Intel MAX10 BMC
-> >      driver.
-> >    - Added DRBL_ prefix to some definitions
-> >    - Some address definitions were moved here from the .c files that
-> >      use them.
-> > ---
-> >   include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
-> >   1 file changed, 85 insertions(+)
-> > 
-> > diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-> > index c4eb38c13eda..f0044b14136e 100644
-> > --- a/include/linux/mfd/intel-m10-bmc.h
-> > +++ b/include/linux/mfd/intel-m10-bmc.h
-> > @@ -16,6 +16,9 @@
-> >   #define M10BMC_FLASH_END		0x1fffffff
-> >   #define M10BMC_MEM_END			M10BMC_FLASH_END
-> > +#define M10BMC_STAGING_BASE		0x18000000
-> > +#define M10BMC_STAGING_SIZE		0x3800000
-> > +
-> >   /* Register offset of system registers */
-> >   #define NIOS2_FW_VERSION		0x0
-> >   #define M10BMC_MAC_LOW			0x10
-> > @@ -33,6 +36,88 @@
-> >   #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
-> >   #define M10BMC_VER_LEGACY_INVALID	0xffffffff
-> > +/* Secure update doorbell register, in system register region */
-> > +#define M10BMC_DOORBELL			0x400
-> 
-> To be consistent with the existing register #defines,
-> 
-> The bit values for the register should follow the register and have a
-> M10BMC_ prefix
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-This patch has been through 9 revisions and has been merged already.
+Changes since v1: Corrected a bad solution to this issue that made use of
+an unnecessary dummy function.
 
-Any changes will have to be submitted as subsequent patches.
+ drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
+ drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
+ 3 files changed, 1 insertion(+), 11 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+index 0297fbad7bce..f82dbd4f4c3d 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
++++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+@@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
+ 
+ 	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
+ 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
+-	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
++	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
+ 
+ 	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelSwitch_param), set_csa_hdl) /*61*/
+ 	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*62*/
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 873d3792ac8e..963ea80083c8 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -6189,15 +6189,6 @@ u8 set_chplan_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 	return	H2C_SUCCESS;
+ }
+ 
+-u8 led_blink_hdl(struct adapter *padapter, unsigned char *pbuf)
+-{
+-
+-	if (!pbuf)
+-		return H2C_PARAMETERS_ERROR;
+-
+-	return	H2C_SUCCESS;
+-}
+-
+ u8 set_csa_hdl(struct adapter *padapter, unsigned char *pbuf)
+ {
+ 	return	H2C_REJECTED;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+index 5e6cf63956b8..472818c5fd83 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+@@ -745,7 +745,6 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf);
+ u8 tx_beacon_hdl(struct adapter *padapter, unsigned char *pbuf);
+ u8 set_ch_hdl(struct adapter *padapter, u8 *pbuf);
+ u8 set_chplan_hdl(struct adapter *padapter, unsigned char *pbuf);
+-u8 led_blink_hdl(struct adapter *padapter, unsigned char *pbuf);
+ u8 set_csa_hdl(struct adapter *padapter, unsigned char *pbuf);	/* Kurt: Handling DFS channel switch announcement ie. */
+ u8 tdls_hdl(struct adapter *padapter, unsigned char *pbuf);
+ u8 run_in_thread_hdl(struct adapter *padapter, u8 *pbuf);
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.31.1
+
