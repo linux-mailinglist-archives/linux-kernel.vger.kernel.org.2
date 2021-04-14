@@ -2,149 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7734635F5A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7B535F5AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351709AbhDNNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:52:42 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:48344 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbhDNNwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:52:39 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lWfvr-0001GU-Kr; Wed, 14 Apr 2021 09:51:51 -0400
-Message-ID: <93308ea276cfe7997c29ce7132516e830e8fec40.camel@surriel.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-From:   Rik van Riel <riel@surriel.com>
-To:     "Huang, Ying" <ying.huang@intel.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Date:   Wed, 14 Apr 2021 09:51:51 -0400
-In-Reply-To: <87lf9lqnit.fsf@yhuang6-desk1.ccr.corp.intel.com>
-References: <20210413075155.32652-1-sjpark@amazon.de>
-         <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
-         <20210413231436.GF63242@dread.disaster.area>
-         <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
-         <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
-         <87tuo9qtmd.fsf@yhuang6-desk1.ccr.corp.intel.com>
-         <CAOUHufbk=TVOpEOvTNRBe0uoOWNZ=wf3umQ628ZFZ=QYhNqsHA@mail.gmail.com>
-         <87lf9lqnit.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-TvVzMFbUNFpXYZ2w65cj"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1349249AbhDNNyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:54:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:57018 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351750AbhDNNyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:54:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3994E113E;
+        Wed, 14 Apr 2021 06:53:52 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFAF33F694;
+        Wed, 14 Apr 2021 06:53:49 -0700 (PDT)
+Subject: Re: [PATCH 1/1] arm: topology: parse the topology from the dt
+To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux@armlinux.org.uk, sudeep.holla@arm.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
+        mingo@kernel.org, ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com>
+ <87y2dnn3gw.mognet@arm.com>
+ <CAG7+-3MsjuChoEOj11VAMX9W61UY6MmphkxWDF=-_R1A8sfvpA@mail.gmail.com>
+ <87tuobmsba.mognet@arm.com>
+ <CAG7+-3OMYVTc+ja9CK+94X8XtKq3hbRb+XOEv7xOeuXgNm0BHQ@mail.gmail.com>
+ <87o8eimmyw.mognet@arm.com>
+ <CAG7+-3NaUAvjv9=9HZ4jQU=DVcZW6gRKZg9ZjutL3aKnnC4FLw@mail.gmail.com>
+ <74b3ff57-473f-4d5a-daf8-ecbb0761abb2@arm.com>
+ <CAG7+-3P6FYhqmt3p6g8b5ZXzaFW2pfx-vOZJYwuLCKXVqfFMVw@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <02ed2223-6f33-faee-38a6-fc4ef071d431@arm.com>
+Date:   Wed, 14 Apr 2021 15:53:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+In-Reply-To: <CAG7+-3P6FYhqmt3p6g8b5ZXzaFW2pfx-vOZJYwuLCKXVqfFMVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/04/2021 13:26, Ruifeng Zhang wrote:
+> Dietmar Eggemann <dietmar.eggemann@arm.com> 于2021年4月14日周三 下午5:43写道：
+>>
+>> On 13/04/2021 15:26, Ruifeng Zhang wrote:
+>>> Thanks for your review. Patch-v2 that solve the capacity issue will be
+>>> uploaded as soon as possible. : )
+>>>
+>>> Valentin Schneider <valentin.schneider@arm.com> 于2021年4月13日周二 下午7:40写道：
+>>>>
+>>>> On 13/04/21 14:13, Ruifeng Zhang wrote:
+>>>>> Valentin Schneider <valentin.schneider@arm.com> 于2021年4月12日周一 下午11:33写道：
 
---=-TvVzMFbUNFpXYZ2w65cj
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-On Wed, 2021-04-14 at 16:27 +0800, Huang, Ying wrote:
-> Yu Zhao <yuzhao@google.com> writes:
->=20
-> > On Wed, Apr 14, 2021 at 12:15 AM Huang, Ying <ying.huang@intel.com>
-> > wrote:
-> > >=20
-> > NUMA Optimization
-> > -----------------
-> > Support NUMA policies and per-node RSS counters.
-> >=20
-> > We only can move forward one step at a time. Fair?
->=20
-> You don't need to implement that now definitely.  But we can discuss
-> the
-> possible solution now.
+>> Looks like sc9863a has two frequency domains (1.6 and 1.2GHz). So
+>> technically it's a big.LITTLE system (based only on max CPU frequency
+>> (not on uarch) differences).
+>> But the dts file doesn't contain any `capacity-dmips-mhz` entries? So
+>> asymmetric CPU capacity (even only based on max CPU frequency) detection
+>> won't kick in. Since you don't have any uarch diffs, you would have to
+>> specify `capacity-dmips-mhz = <1024>` for each CPU.
+> 
+> Yes, for capacity, the DT should have a capacity-dmips-MHz entry or a
+> clock-frequency entry (for A7 and A15 only).
+> The sc9863a dts is a vendor file,  in my opinion is not appropriate to
+> be update with this series.
+> What do you think if I independently update the sc9863a dts file later?
+> 
 
-That was my intention, too. I want to make sure we don't
-end up "painting ourselves into a corner" by moving in some
-direction we have no way to get out of.
+Yes, this is a separate thing. Just wanted to mention it here since this
+allows you to test asymmetric CPU capacity on your platform w/ and w/o
+your patch on arm64 and arm.
 
-The patch set looks promising, but we need some plan to
-avoid the worst case behaviors that forced us into rmap
-based scanning initially.
-
-> Note that it's possible that only some processes are bound to some
-> NUMA
-> nodes, while other processes aren't bound.
-
-For workloads like PostgresQL or Oracle, it is common
-to have maybe 70% of memory in a large shared memory
-segment, spread between all the NUMA nodes, and mapped
-into hundreds, if not thousands, of processes in the
-system.
-
-Now imagine we have an 8 node system, and memory
-pressure in the DMA32 zone of node 0.
-
-How will the current VM behave?
-
-Wha
-t will the virtual scanning need to do?
-
-If we can come up with a solution to make virtual
-scanning scale for that kind of workload, great.
-
-If not ... if it turns out most of the benefits of
-the multigeneratinal LRU framework come from sorting
-the pages into multiple LRUs, and from being able
-to easily reclaim unmapped pages before having to
-scan mapped ones, could it be an idea to implement
-that first, independently from virtual scanning?
-
-I am all for improving
-our page reclaim system, I
-just want to make sure we don't revisit the old traps
-that forced us where we are today :)
-
---=20
-All Rights Reversed.
-
---=-TvVzMFbUNFpXYZ2w65cj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB283cACgkQznnekoTE
-3oPHTAgAibRj26Dg8hudb4TbNjzdUMWxbcn01w6bKFBXrdvDF+R0L9GpYE5Ujha7
-xkegocz6XyUNRTHvfvLL7Z/CsZezxbeJoe3PIvRLZ0DV2L5TxYKFDdq5I+oeYuE2
-cRpk5iE4eqZ8e9OK5NV2uFMBJ9M/s1ajvHLlY3izNfSAPX86rjAMFI50DboJChL5
-+AXB3s0Qgmg4U9Wo9yyefUNma3AA9zN8E9mMeKnJuBsfVT4SLv+EZxIIPbLUPV24
-bd0bce2U1BVlb1U6d4gHgLFDmVrlKmH1NK4MopRQU5sQSTYlnoh5BIsJO9pstNFp
-CBP8TQTqMhWSLDnwv7rBMQo8Z5pv9w==
-=tvZB
------END PGP SIGNATURE-----
-
---=-TvVzMFbUNFpXYZ2w65cj--
-
+No need to add `clock-frequency` entries, just `capacity-dmips-mhz`
+entries should do.
