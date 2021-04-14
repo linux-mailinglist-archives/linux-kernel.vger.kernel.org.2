@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6167035FD18
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C8B35FD31
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhDNVT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        id S232519AbhDNVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhDNVTX (ORCPT
+        with ESMTP id S232307AbhDNVTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:19:23 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13819C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:02 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id c2so3416555plz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:02 -0700 (PDT)
+        Wed, 14 Apr 2021 17:19:42 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E50C06138D
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:20 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id r9so33574818ejj.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 14:19:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=LcOc4JlIYDboURYMkcvr8SNtAziTFL1D41weTgPLTsw=;
-        b=VG6MIZyisv7JYepLL9z7oA0Y9Nxg8R0YWSjk8tfVBod5e4RAWtVwiL3M3guGCVha2K
-         lCS920xReB/AV6By58fHqFsrJDW08Yq2FQrHo8U9M0TOx37djAijHQSeCqF4EHsLXaX+
-         3KWc/Bx2DbJ5fWKiFHYzrvJyFB6nqjUrKOa8g=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Lpc6RYLWLDEpwLOi/hV46x6VxBnwTNow/+x2BqXaIi0=;
+        b=KCkADvu+U/VtADJMTHsn6p3YX696ldK3wIux/PsGDVNiLSvvNK+GVr4kVrLyuDr4E6
+         /Tlbu6T2xilWNUHwgDmNeiBY4SiCKt3vz2pL6P7KF+/zBqDBXyOrLD2XgVu+XFQXsBsZ
+         +Vq00aXLVJ79n1rpyTlcjoUZVUm+0qBwWL8ruvPfQ9LdnsU5hGSoiA7yBOs3UwV1Fn2a
+         Pm9zo+nS8j0xDE8nY3sbdTC1YGOVew4gJO9td/YpF2uLO8orawhLI1kFHhk90umnerht
+         uz1/zVBTXCLw5A04psJKetRSR2terRyQSR4PD9+qN+bEFpmAvG5CMvTnbZNPp0m3Fzil
+         KvYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=LcOc4JlIYDboURYMkcvr8SNtAziTFL1D41weTgPLTsw=;
-        b=iaP0PckJzms95iU2itEFJGxFgzNnX7geReKaEBj8B3vBiPwONEB6MrUiCEW1qlrnj5
-         HzZRrGNJnaOXwhFx3C+vDor4Y9dyK5M0204gWQ46PfANjqNrnxrZW0rzwvd2+GY5i6nT
-         gATSUBGk4t3GXd7q5OuAmri2Dw1pWgfRyAcTGNaPmeJabDB0CtiC2rb3gLKw19iKKSxa
-         5Cs86yV30ae80e/GS2qUZ/XtPO+0XckSXvioX36lK9mEhaBMlWdfYCvqmxZW1yhKxD/G
-         VGW7wklhVsjurK4SG1uDKWoTN2sI4AUmjlHXsln6izbgL+e0gU14KxMF/IOpgRxAYW8J
-         akHw==
-X-Gm-Message-State: AOAM532kQA9f1KdiuQnDBuSuNgO1x2FzciotJpj0zdzgaOCfJqbEcRxb
-        v1RDqQSV2J/1br/Q+S9fU4d7+g==
-X-Google-Smtp-Source: ABdhPJxGCQP3KYUFO8ly/GrqLFZX3A5UWMJ3VX3pPVI5/QsxfJ55s9l4d5dNVg23uJhu+r5B26INSg==
-X-Received: by 2002:a17:902:d911:b029:ea:cc53:5501 with SMTP id c17-20020a170902d911b02900eacc535501mr213198plz.21.1618435141650;
-        Wed, 14 Apr 2021 14:19:01 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:753e:814e:f002:498a])
-        by smtp.gmail.com with ESMTPSA id q18sm290934pfj.131.2021.04.14.14.19.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Lpc6RYLWLDEpwLOi/hV46x6VxBnwTNow/+x2BqXaIi0=;
+        b=DPAx+k22tr0OdqAlnjxkkJSQK8GKKG9/URlK1kbroyAAyL1ZIaxYFiuD/wgaKwwe4C
+         kF7vYFGl4SZ0aVGKZoUW9tBBYebmH0mE65xLofIB5Df0JdZe/GKnM6/5iBu+FwEzIY+b
+         WyVckDMrzAgmCyC2k0V/OHmUtiblZ82VAtyJ3zUdGT1rF1M3Zg2GlMHNZS0WdaFcIg4Y
+         r1y92WuG2NadnpOciw1+A5QH8CQzGxKHCWB+TxI+zIJiL0Wz2syRAYelyo3Ttx0myvYD
+         uxzjrdhwN/ACkSrYVlaBbj5vw3faMdJH2Z8HPQtlBGPQZNpdtKoPY1mNzFnGlFm/iT/k
+         jVrw==
+X-Gm-Message-State: AOAM5311XnTyCm+tpczlKGM4lrChtdBZWEpDUQl3SL2m9LDOYooBY4bR
+        oazUv4xtyw+pNORBGmvVQ6b0Pb3u0HlUuQ==
+X-Google-Smtp-Source: ABdhPJwIg0OtmR6Xln9tsg2C1Q81TAVOcGw3LZ40p0AmzGLangViKlrU1nTARl6n/KzDOA+/UgW5lw==
+X-Received: by 2002:a17:906:fb90:: with SMTP id lr16mr66148ejb.173.1618435158908;
+        Wed, 14 Apr 2021 14:19:18 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id e20sm412752ejy.66.2021.04.14.14.19.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 14:19:01 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 14 Apr 2021 14:19:18 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 22:19:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick
+ with const
+Message-ID: <20210414211916.GS4869@dell>
+References: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
+ <20210326145129.GB2916463@dell>
+ <20210414171319.GQ4869@dell>
+ <YHcr144krHDay72g@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618434154-28255-1-git-send-email-khsieh@codeaurora.org>
-References: <1618434154-28255-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH v2 1/3] drm/msm/dp: check sink_count before update is_connected status
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Wed, 14 Apr 2021 14:18:59 -0700
-Message-ID: <161843513989.46595.8623474483864386727@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHcr144krHDay72g@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-04-14 14:02:34)
-> Link status is different from display connected status in the case
-> of something like an Apple dongle where the type-c plug can be
-> connected, and therefore the link is connected, but no sink is
-> connected until an HDMI cable is plugged into the dongle.
-> The sink_count of DPCD of dongle will increase to 1 once an HDMI
-> cable is plugged into the dongle so that display connected status
-> will become true. This checking also apply at pm_resume.
->=20
-> Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and=
- pm_resume")
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Tested-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+On Wed, 14 Apr 2021, Andy Shevchenko wrote:
 
-Can you please thread your emailed patches? I see them all as toplevel
-messages in my inbox :(
+> On Wed, Apr 14, 2021 at 06:13:19PM +0100, Lee Jones wrote:
+> > On Fri, 26 Mar 2021, Lee Jones wrote:
+> > 
+> > > On Fri, 26 Mar 2021, Andy Shevchenko wrote:
+> > > 
+> > > > As Linus rightfully noticed, the driver plays dirty trick with const,
+> > > > i.e. it assigns a place holder data structure to the const field
+> > > > in the MFD cell and then drops the const by explicit casting. This is
+> > > > not how it should be.
+> > > > 
+> > > > Assign local pointers of the cell and resource to the respective
+> > > > non-const place holders in the intel_quark_i2c_setup() and
+> > > > intel_quark_gpio_setup().
+> > > > 
+> > > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > > ---
+> > > > v2: eliminated bar parameter (Lee)
+> > > >  drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
+> > > >  1 file changed, 12 insertions(+), 14 deletions(-)
+> > > 
+> > > Neat.
+> > > 
+> > > Applied, thanks.
+> > 
+> > Am I still missing patches from you Andy?
+> 
+> Patches for fixes should be applied to for-next as well. I don't know why with
+> my patches it diverged.
+> 
+> I have already commented on this when kbuild bot complained.
+> 
+> So,
+> 
+> 	git checkout for-mfd-next
+> 	git merge for-mfd-fixes
+> 
+> or equivalent (cherry-pick) will fix that.
 
+Ah, it's in -rc5.  Very good.  Thanks for the explanation.
 
->  drivers/gpu/drm/msm/dp/dp_display.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp=
-/dp_display.c
-> index 5a39da6..0ba71c7 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -586,10 +586,8 @@ static int dp_connect_pending_timeout(struct dp_disp=
-lay_private *dp, u32 data)
->         mutex_lock(&dp->event_mutex);
-> =20
->         state =3D dp->hpd_state;
-> -       if (state =3D=3D ST_CONNECT_PENDING) {
-> -               dp_display_enable(dp, 0);
-> +       if (state =3D=3D ST_CONNECT_PENDING)
->                 dp->hpd_state =3D ST_CONNECTED;
-> -       }
-> =20
->         mutex_unlock(&dp->event_mutex);
-> =20
-> @@ -669,10 +667,8 @@ static int dp_disconnect_pending_timeout(struct dp_d=
-isplay_private *dp, u32 data
->         mutex_lock(&dp->event_mutex);
-> =20
->         state =3D  dp->hpd_state;
-> -       if (state =3D=3D ST_DISCONNECT_PENDING) {
-> -               dp_display_disable(dp, 0);
-> +       if (state =3D=3D ST_DISCONNECT_PENDING)
->                 dp->hpd_state =3D ST_DISCONNECTED;
-> -       }
-> =20
->         mutex_unlock(&dp->event_mutex);
-> =20
-> @@ -1272,7 +1268,12 @@ static int dp_pm_resume(struct device *dev)
-> =20
->         status =3D dp_catalog_link_is_connected(dp->catalog);
-> =20
-> -       if (status)
-> +       /*
-> +        * can not declared display is connected unless
-> +        * HDMI cable is plugged in and sink_count of
-> +        * dongle become 1
-> +        */
-> +       if (status && dp->link->sink_count)
->                 dp->dp_display.is_connected =3D true;
->         else
->                 dp->dp_display.is_connected =3D false;
-
-With this patch applied things still go wrong for me sometimes. I can
-connect the apple dongle and then disconnect the apple dongle, instead
-of connect and disconnect the HDMI cable, and sometimes the external
-display doesn't come on. I'm still investigating but just wanted to let
-you know.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
