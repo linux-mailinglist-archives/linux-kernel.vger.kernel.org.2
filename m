@@ -2,198 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A65D35EE20
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA07935EE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349564AbhDNHBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:01:23 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50100 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348486AbhDNHBS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:01:18 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E6oU9i193686;
-        Wed, 14 Apr 2021 07:00:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=m/BC1PXDIRHi2UEq3219ItPZCDRmPUW6dTcnGRZcjxY=;
- b=JPZS+leU8X3ymojlV9/FmnKxJQSxThB5TdrHD6eFOJ+MzMzyiz0pPYK8vI2U9tNbr+9p
- lVeOYnbsdQIW48RPG9kMx8jQzBhF3D9eTv9oD15QlKX4BzkIE2NOZksaieqvJalMVe1h
- mH0RpL7INo1iCddd62XOxSDV/QxqqbrC/vxZBOQDIM3ENu+7txTWME7J0xnJl+Pu0CrW
- FjcF3FlljAvxduv8JRp4sDqhAYT1RJ7ctZBvhXIYKw7nfqTSR4E1SvmKMF8W3hqrzm2B
- amwNoLcZ/AYqZvKwi/h/tvLET8DoQZMLUrr+LMqZXFsVknbDTDhdaydSUsFICNx+tuAw +g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37u3ymha26-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 07:00:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E6nWMu022173;
-        Wed, 14 Apr 2021 07:00:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 37unstgv07-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Apr 2021 07:00:37 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13E70XIn028227;
-        Wed, 14 Apr 2021 07:00:33 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Apr 2021 00:00:32 -0700
-Date:   Wed, 14 Apr 2021 10:00:25 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] :staging: rtl8723bs: Remove useless
- led_blink_hdl()
-Message-ID: <20210414070025.GB6048@kadam>
-References: <20210413155908.8691-1-fmdefrancesco@gmail.com>
- <3505455.GpAHCVcAZI@linux.local>
- <20210414052150.GO6021@kadam>
- <2418632.vfNx7fMs9o@linux.local>
+        id S1348563AbhDNHKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:10:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61355 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231480AbhDNHKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:10:46 -0400
+IronPort-SDR: LZoXoIh6cuE5h8osogmmuTFxnI6o39eFCB6QzF6DlbefU4jXi/Ls14nL77zOHZ1mgZWoOxvD2W
+ jkrg9F/d6NfA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279893748"
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="279893748"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:10:23 -0700
+IronPort-SDR: LPDjYvTHctJbm+V68V9IjOOQKtLJ4OlSdGwjd/itmDlxHu/E+zSqwp2lC/nxkazMLe8s5chtuL
+ h5Ri1FnE60Ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
+   d="scan'208";a="443716342"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2021 00:10:19 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [PATCH v3 01/12] iommu: Introduce dirty log tracking framework
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210413085457.25400-1-zhukeqian1@huawei.com>
+ <20210413085457.25400-2-zhukeqian1@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <fe337950-f8d0-3d21-a7b1-98b385d71f3e@linux.intel.com>
+Date:   Wed, 14 Apr 2021 15:00:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2418632.vfNx7fMs9o@linux.local>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104140046
-X-Proofpoint-GUID: uhSbYR7RrlWs6VDyQdG19EBzB06XCwT-
-X-Proofpoint-ORIG-GUID: uhSbYR7RrlWs6VDyQdG19EBzB06XCwT-
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1031
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104140046
+In-Reply-To: <20210413085457.25400-2-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:33:48AM +0200, Fabio M. De Francesco wrote:
-> On Wednesday, April 14, 2021 7:21:50 AM CEST Dan Carpenter wrote:
-> > On Tue, Apr 13, 2021 at 10:08:32PM +0200, Fabio M. De Francesco wrote:
-> > > On Tuesday, April 13, 2021 9:48:44 PM CEST Matthew Wilcox wrote:
-> > > > On Tue, Apr 13, 2021 at 09:45:03PM +0200, Fabio M. De Francesco 
-> wrote:
-> > > > > 1) The driver doesn't call that function from anywhere else than
-> > > > > the
-> > > > > macro. 2) You have explained that the macro add its symbol to a
-> > > > > slot
-> > > > > in an array that would shift all the subsequent elements down if
-> > > > > that
-> > > > > macro is not used exactly in the line where it is.
-> > > > > 3) Dan Carpenter said that that array is full of null functions (or
-> > > > > empty slots?).
-> > > > > 
-> > > > > Unless that function is called anonymously dereferencing its
-> > > > > address
-> > > > > from the position it occupies in the array, I'm not able to see
-> > > > > what
-> > > > > else means can any caller use.
-> > > > > 
-> > > > > I know I have much less experience than you with C: what can go
-> > > > > wrong?
-> > > > 
-> > > > Here's where the driver calls that function:
-> > > > 
-> > > > $ git grep wlancmds drivers/staging/rtl8723bs/
-> > > > drivers/staging/rtl8723bs/core/rtw_cmd.c:static struct cmd_hdl
-> > > > wlancmds[] = { drivers/staging/rtl8723bs/core/rtw_cmd.c:            
-> > > >   if
-> > > > (pcmd->cmdcode < ARRAY_SIZE(wlancmds)) {
-> > > > drivers/staging/rtl8723bs/core/rtw_cmd.c:                      
-> > > > cmd_hdl
-> > > > = wlancmds[pcmd->cmdcode].h2cfuns;
-> > > 
-> > > OK, I had imagined an anonymous call from its location in the array (as
-> > > I wrote in the last phrase of my message). However, I thought that it
-> > > could have been an improbable possibility, not a real one.
-> > > 
-> > > Linux uses a lot of interesting ideas that newcomers like me should
-> > > learn. Things here are trickier than they appear at first sight.
-> > 
-> > One trick would be to build the Smatch cross function database.
-> > 
-> > https://www.spinics.net/lists/smatch/msg00568.html 
-> > 
-> > Then you could do:
-> > 
-> > $ ~/path/to/smatch_data/db/smdb.py led_blink_hdl
-> > file | caller | function | type | parameter | key | value |
-> > drivers/staging/rtl8723bs/core/rtw_cmd.c |       rtw_cmd_thread |
-> > rtw_cmd_thread ptr cmd_hdl |           INTERNAL | -1 |                 |
-> > uchar(*)(struct adapter*, uchar*)
-> > drivers/staging/rtl8188eu/core/rtw_cmd.c |       rtw_cmd_thread |
-> > rtw_cmd_thread ptr cmd_hdl |           INTERNAL | -1 |                 |
-> > uchar(*)(struct adapter*, uchar*)
-> > drivers/staging/rtl8188eu/core/rtw_cmd.c |       rtw_cmd_thread |
-> > rtw_cmd_thread ptr cmd_hdl |           BUF_SIZE |  1 |            pbuf |
-> > 1,4,6,8,12,14,16,19-20,23-24,48,740,884,892,900,960
-> > 
-> > 
-> > Which says that led_blink_hdl() is called as a function pointer called
-> > "cmd_hdl" from rtw_cmd_thread().
-> > 
-> > Hm...  It says it can be called from either rtw_cmd_thread() function
-> > (the rtl8723bs or rtl8188eu version) which is not ideal.  But also
-> > basically harmless so whatever...
-> > 
-> > regards,
-> > dan carpenter
-> >
-> Nice tool, thanks. I'll surely use it when it is needed to find out which  
-> callers use a function pointer.
+Hi Keqian,
+
+On 4/13/21 4:54 PM, Keqian Zhu wrote:
+> Some types of IOMMU are capable of tracking DMA dirty log, such as
+> ARM SMMU with HTTU or Intel IOMMU with SLADE. This introduces the
+> dirty log tracking framework in the IOMMU base layer.
 > 
-> However I cannot see how it can help in this context. That function *does* 
-> something, even if I cannot understand why someone needs a function to test 
-> the initialization of a pointer. Furthermore it is actually called by 
-> rtw_cmd_thread() (as you found out by using smatch) that expect one of the 
-> two possible values that led_blink_hdl() returns.
+> Three new essential interfaces are added, and we maintaince the status
+> of dirty log tracking in iommu_domain.
+> 1. iommu_switch_dirty_log: Perform actions to start|stop dirty log tracking
+> 2. iommu_sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
+> 3. iommu_clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
 > 
-> That said, what trick could I use for the purpose of getting rid of that 
-> function? At this point I'm not sure it could be made.
+> A new dev feature are added to indicate whether a specific type of
+> iommu hardware supports and its driver realizes them.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+> ---
+>   drivers/iommu/iommu.c | 150 ++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/iommu.h |  53 +++++++++++++++
+>   2 files changed, 203 insertions(+)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index d0b0a15dba84..667b2d6d2fc0 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -1922,6 +1922,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+>   	domain->type = type;
+>   	/* Assume all sizes by default; the driver may override this later */
+>   	domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
+> +	mutex_init(&domain->switch_log_lock);
+>   
+>   	return domain;
+>   }
+> @@ -2720,6 +2721,155 @@ int iommu_domain_set_attr(struct iommu_domain *domain,
+>   }
+>   EXPORT_SYMBOL_GPL(iommu_domain_set_attr);
+>   
+> +int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
+> +			   unsigned long iova, size_t size, int prot)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	int ret;
+> +
+> +	if (unlikely(!ops || !ops->switch_dirty_log))
+> +		return -ENODEV;
+> +
+> +	mutex_lock(&domain->switch_log_lock);
+> +	if (enable && domain->dirty_log_tracking) {
+> +		ret = -EBUSY;
+> +		goto out;
+> +	} else if (!enable && !domain->dirty_log_tracking) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	ret = ops->switch_dirty_log(domain, enable, iova, size, prot);
+> +	if (ret)
+> +		goto out;
+> +
+> +	domain->dirty_log_tracking = enable;
+> +out:
+> +	mutex_unlock(&domain->switch_log_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_switch_dirty_log);
 
-If you look at how this is called:
+Since you also added IOMMU_DEV_FEAT_HWDBM, I am wondering what's the
+difference between
 
-drivers/staging/rtl8723bs/core/rtw_cmd.c
-   449                  memcpy(pcmdbuf, pcmd->parmbuf, pcmd->cmdsz);
-   450  
-   451                  if (pcmd->cmdcode < ARRAY_SIZE(wlancmds)) {
-   452                          cmd_hdl = wlancmds[pcmd->cmdcode].h2cfuns;
-   453  
-   454                          if (cmd_hdl) {
-   455                                  ret = cmd_hdl(pcmd->padapter, pcmdbuf);
-                                                                      ^^^^^^^
+iommu_switch_dirty_log(on) vs. 
+iommu_dev_enable_feature(IOMMU_DEV_FEAT_HWDBM)
 
-   456                                  pcmd->res = ret;
-   457                          }
-   458  
-   459                          pcmdpriv->cmd_seq++;
-   460                  } else {
-   461                          pcmd->res = H2C_PARAMETERS_ERROR;
-   462                  }
-   463  
-   464                  cmd_hdl = NULL;
+iommu_switch_dirty_log(off) vs. 
+iommu_dev_disable_feature(IOMMU_DEV_FEAT_HWDBM)
 
-The led_blink_hdl() function returns success if "pcmdbuf" is non-NULL
-and fail if it's NULL.  "pcmdbuf" is never supposed to be NULL.  (The
-"supposed" caveat is because there may be a race in rtw_sdio_if1_init()
-which briefly allows a NULL "pcmdbuf", but that is an unrelated bug).
+> +
+> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +			 size_t size, unsigned long *bitmap,
+> +			 unsigned long base_iova, unsigned long bitmap_pgshift)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	unsigned int min_pagesz;
+> +	size_t pgsize;
+> +	int ret = 0;
+> +
+> +	if (unlikely(!ops || !ops->sync_dirty_log))
+> +		return -ENODEV;
+> +
+> +	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
+> +	if (!IS_ALIGNED(iova | size, min_pagesz)) {
+> +		pr_err("unaligned: iova 0x%lx size 0x%zx min_pagesz 0x%x\n",
+> +		       iova, size, min_pagesz);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&domain->switch_log_lock);
+> +	if (!domain->dirty_log_tracking) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	while (size) {
+> +		pgsize = iommu_pgsize(domain, iova, size);
+> +
+> +		ret = ops->sync_dirty_log(domain, iova, pgsize,
+> +					  bitmap, base_iova, bitmap_pgshift);
 
-Anyway, there is no point to the led_blink_hdl() function.  Likely
-they intended it to do something but never got around to implementing
-it.  Just delete it.
+Any reason why do you want to do this in a per-4K page manner? This can
+lead to a lot of indirect calls and bad performance.
 
-regards,
-dan carpenter
+How about a sync_dirty_pages()?
 
+The same comment applies to other places in this patch series.
+
+> +		if (ret)
+> +			break;
+> +
+> +		pr_debug("dirty_log_sync handle: iova 0x%lx pagesz 0x%zx\n",
+> +			 iova, pgsize);
+> +
+> +		iova += pgsize;
+> +		size -= pgsize;
+> +	}
+> +out:
+> +	mutex_unlock(&domain->switch_log_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_sync_dirty_log);
+> +
+> +static int __iommu_clear_dirty_log(struct iommu_domain *domain,
+> +				   unsigned long iova, size_t size,
+> +				   unsigned long *bitmap,
+> +				   unsigned long base_iova,
+> +				   unsigned long bitmap_pgshift)
+> +{
+> +	const struct iommu_ops *ops = domain->ops;
+> +	size_t pgsize;
+> +	int ret = 0;
+> +
+> +	if (unlikely(!ops || !ops->clear_dirty_log))
+> +		return -ENODEV;
+> +
+> +	while (size) {
+> +		pgsize = iommu_pgsize(domain, iova, size);
+> +
+> +		ret = ops->clear_dirty_log(domain, iova, pgsize, bitmap,
+> +					   base_iova, bitmap_pgshift);
+> +		if (ret)
+> +			break;
+> +
+> +		pr_debug("dirty_log_clear handled: iova 0x%lx pagesz 0x%zx\n",
+> +			 iova, pgsize);
+> +
+> +		iova += pgsize;
+> +		size -= pgsize;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +int iommu_clear_dirty_log(struct iommu_domain *domain,
+> +			  unsigned long iova, size_t size,
+> +			  unsigned long *bitmap, unsigned long base_iova,
+> +			  unsigned long bitmap_pgshift)
+> +{
+> +	unsigned long riova, rsize;
+> +	unsigned int min_pagesz;
+> +	bool flush = false;
+> +	int rs, re, start, end;
+> +	int ret = 0;
+> +
+> +	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
+> +	if (!IS_ALIGNED(iova | size, min_pagesz)) {
+> +		pr_err("unaligned: iova 0x%lx min_pagesz 0x%x\n",
+> +		       iova, min_pagesz);
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&domain->switch_log_lock);
+> +	if (!domain->dirty_log_tracking) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	start = (iova - base_iova) >> bitmap_pgshift;
+> +	end = start + (size >> bitmap_pgshift);
+> +	bitmap_for_each_set_region(bitmap, rs, re, start, end) {
+> +		flush = true;
+> +		riova = iova + (rs << bitmap_pgshift);
+> +		rsize = (re - rs) << bitmap_pgshift;
+> +		ret = __iommu_clear_dirty_log(domain, riova, rsize, bitmap,
+> +					      base_iova, bitmap_pgshift);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	if (flush)
+> +		iommu_flush_iotlb_all(domain);
+> +out:
+> +	mutex_unlock(&domain->switch_log_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_clear_dirty_log);
+> +
+>   void iommu_get_resv_regions(struct device *dev, struct list_head *list)
+>   {
+>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 5e7fe519430a..7f9ed9f520e2 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -87,6 +87,8 @@ struct iommu_domain {
+>   	void *handler_token;
+>   	struct iommu_domain_geometry geometry;
+>   	void *iova_cookie;
+> +	bool dirty_log_tracking;
+> +	struct mutex switch_log_lock;
+>   };
+>   
+>   enum iommu_cap {
+> @@ -160,6 +162,7 @@ struct iommu_resv_region {
+>   enum iommu_dev_features {
+>   	IOMMU_DEV_FEAT_AUX,	/* Aux-domain feature */
+>   	IOMMU_DEV_FEAT_SVA,	/* Shared Virtual Addresses */
+> +	IOMMU_DEV_FEAT_HWDBM,	/* Hardware Dirty Bit Management */
+>   };
+>   
+>   #define IOMMU_PASID_INVALID	(-1U)
+> @@ -205,6 +208,9 @@ struct iommu_iotlb_gather {
+>    * @device_group: find iommu group for a particular device
+>    * @domain_get_attr: Query domain attributes
+>    * @domain_set_attr: Change domain attributes
+> + * @switch_dirty_log: Perform actions to start|stop dirty log tracking
+> + * @sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
+> + * @clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
+>    * @get_resv_regions: Request list of reserved regions for a device
+>    * @put_resv_regions: Free list of reserved regions for a device
+>    * @apply_resv_region: Temporary helper call-back for iova reserved ranges
+> @@ -260,6 +266,18 @@ struct iommu_ops {
+>   	int (*domain_set_attr)(struct iommu_domain *domain,
+>   			       enum iommu_attr attr, void *data);
+>   
+> +	/* Track dirty log */
+> +	int (*switch_dirty_log)(struct iommu_domain *domain, bool enable,
+> +				unsigned long iova, size_t size, int prot);
+> +	int (*sync_dirty_log)(struct iommu_domain *domain,
+> +			      unsigned long iova, size_t size,
+> +			      unsigned long *bitmap, unsigned long base_iova,
+> +			      unsigned long bitmap_pgshift);
+> +	int (*clear_dirty_log)(struct iommu_domain *domain,
+> +			       unsigned long iova, size_t size,
+> +			       unsigned long *bitmap, unsigned long base_iova,
+> +			       unsigned long bitmap_pgshift);
+> +
+>   	/* Request/Free a list of reserved regions for a device */
+>   	void (*get_resv_regions)(struct device *dev, struct list_head *list);
+>   	void (*put_resv_regions)(struct device *dev, struct list_head *list);
+> @@ -511,6 +529,16 @@ extern int iommu_domain_get_attr(struct iommu_domain *domain, enum iommu_attr,
+>   				 void *data);
+>   extern int iommu_domain_set_attr(struct iommu_domain *domain, enum iommu_attr,
+>   				 void *data);
+> +extern int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
+> +				  unsigned long iova, size_t size, int prot);
+> +extern int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +				size_t size, unsigned long *bitmap,
+> +				unsigned long base_iova,
+> +				unsigned long bitmap_pgshift);
+> +extern int iommu_clear_dirty_log(struct iommu_domain *domain, unsigned long iova,
+> +				 size_t dma_size, unsigned long *bitmap,
+> +				 unsigned long base_iova,
+> +				 unsigned long bitmap_pgshift);
+>   
+>   /* Window handling function prototypes */
+>   extern int iommu_domain_window_enable(struct iommu_domain *domain, u32 wnd_nr,
+> @@ -901,6 +929,31 @@ static inline int iommu_domain_set_attr(struct iommu_domain *domain,
+>   	return -EINVAL;
+>   }
+>   
+> +static inline int iommu_switch_dirty_log(struct iommu_domain *domain,
+> +					 bool enable, unsigned long iova,
+> +					 size_t size, int prot)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static inline int iommu_sync_dirty_log(struct iommu_domain *domain,
+> +				       unsigned long iova, size_t size,
+> +				       unsigned long *bitmap,
+> +				       unsigned long base_iova,
+> +				       unsigned long pgshift)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static inline int iommu_clear_dirty_log(struct iommu_domain *domain,
+> +					unsigned long iova, size_t size,
+> +					unsigned long *bitmap,
+> +					unsigned long base_iova,
+> +					unsigned long pgshift)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+>   static inline int  iommu_device_register(struct iommu_device *iommu)
+>   {
+>   	return -ENODEV;
+> 
+
+Best regards,
+baolu
