@@ -2,94 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9705835F48D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D8635F48F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 15:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351192AbhDNNKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 09:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351167AbhDNNKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:10:05 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E556EC06138C;
-        Wed, 14 Apr 2021 06:09:42 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id f12so15361795qtf.2;
-        Wed, 14 Apr 2021 06:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=elncytFW+zb3qUFxfSlLsAeQiq/hOBit9WYqXcP+TbM=;
-        b=qQkv9kwMDgVjNDgE8+1XHzGKiVU3D7+1BMbay98l8IO5vpr6gzVdPUqBxyUoufZwpR
-         64BnoOrEnoaJOZLB4/0K3A76+ytyVltzkGa5UPoz+DVmqCtVO4UnmEVeP0yXTTAeDvYk
-         oouF7MpHMsDTJOgsjmKne0JciOMZmKPsfTj9PSg3E4Awjj3UeMP0+nSmAcm8c0Y/Nbeg
-         kPL9C2NyFEmy1ZFHaaol+R8vZg1PRgdtdyedrWz4nvoZxGmirTsltCKRGQWQ9N9e35aa
-         waPCIyNOBn3zZ5vFwQzzxehxjmG1PQYpSml3ygnIh4AHDRHayPc/Cg2xdlauZUT7iJnH
-         x8tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=elncytFW+zb3qUFxfSlLsAeQiq/hOBit9WYqXcP+TbM=;
-        b=H950bvifRzQXl/DhpyS8/bs5hjkS4E7FY2ffpFNx5BRSY8b0GLTEw+Or43iY60/5qa
-         YnM3obdfQ5IHPlsEw6PIXdZTXn5ISWUZF7Ol9VfxYvI8RlpjyWy7wYtxmeXqMS/e/8DI
-         0kj/cv9DyZLf6xxFZxDJ2VffF3KkpOYQMQ6X6UBkdEYQrF5NNLUzOMAFLytomJbPpohz
-         IVBfJpJ3+dvpd46qQXtPXF7xD6IQOLamD+09bOH4lDjOYKLshEvNq07PbKcYI+RXqw7P
-         cb565rQVGeV7DQXg7jX2RHKILK3287joGeCGJJrOA70VTxQImRAt+geOibTJc7KT8Pyd
-         48/Q==
-X-Gm-Message-State: AOAM530cMaSN400fSUh9XgLVZ6AUXkS4ORKHG9F1RoS3jn7rvP8YaEFV
-        wLmD6a2XjYvdtgNwoZebkVo=
-X-Google-Smtp-Source: ABdhPJzFIH2icLx/tD0Vzvjk7b2K2kFlcws0XDy0/f2uGTsedCe1BJf79qi72vxRofLpC3ks19U0YA==
-X-Received: by 2002:ac8:5c0b:: with SMTP id i11mr18904800qti.368.1618405782136;
-        Wed, 14 Apr 2021 06:09:42 -0700 (PDT)
-Received: from focaruja ([2001:1284:f016:a037:7038:c088:ae60:452d])
-        by smtp.gmail.com with ESMTPSA id b83sm6523257qkc.97.2021.04.14.06.09.41
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 14 Apr 2021 06:09:41 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 10:09:39 -0300
-From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH] staging: media: tegra-video: Align line break to match with
- the open parenthesis in file vi.c
-Message-ID: <20210414130939.GA15290@focaruja>
+        id S1351122AbhDNNLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 09:11:35 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48700 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351180AbhDNNKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:10:39 -0400
+Received: from zn.tnic (p200300ec2f0e8f0048923c048b418a85.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:4892:3c04:8b41:8a85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 445FE1EC0258;
+        Wed, 14 Apr 2021 15:10:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618405816;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ub16e8IgsqCsaQskNeYCBWNu+OwjL3P+PDajfBScz2g=;
+        b=eOUVItvGPZmx64t3BeuBZnhqA0RvaTr46W3ZuhcgzHBQSeGW31lRrhGfLCuaPi38qj78qm
+        HnO90lsvBhSyQcqZxmLQ7btlvp47NL3Cp1gNaNCl9f14oplZ7BRp6xcu5k7DbIWCRe2Uic
+        lfJXsfATPXGHVO7tKxFvCezuRt6Jpxo=
+Date:   Wed, 14 Apr 2021 15:10:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jue Wang <juew@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        naoya.horiguchi@nec.com, tony.luck@intel.com, x86@kernel.org,
+        yaoaili@kingsoft.com
+Subject: Re: [PATCH 3/4] mce/copyin: fix to not SIGBUS when copying from user
+ hits poison
+Message-ID: <20210414131018.GG10709@zn.tnic>
+References: <CAPcxDJ6xx00Gjn6DxoMpdJ7UjNeJUp2613jqGRm7ZZeuMNeSjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAPcxDJ6xx00Gjn6DxoMpdJ7UjNeJUp2613jqGRm7ZZeuMNeSjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align line break to match with the open parenthesis.
-Issue detected by checkpatch.pl.
+On Tue, Apr 13, 2021 at 10:47:21PM -0700, Jue Wang wrote:
+> This path is when EPT #PF finds accesses to a hwpoisoned page and
+> sends SIGBUS to user space (KVM exits into user space) with the same
+> semantic as if regular #PF found access to a hwpoisoned page.
+> 
+> The KVM_X86_SET_MCE ioctl actually injects a machine check into the guest.
+> 
+> We are in process to launch a product with MCE recovery capability in
+> a KVM based virtualization product and plan to expand the scope of the
+> application of it in the near future.
 
-Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
----
- drivers/staging/media/tegra-video/vi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Any pointers to code or is this all non-public? Any text on what that
+product does with the MCEs?
 
-diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
-index 7a09061c..9878d1e 100644
---- a/drivers/staging/media/tegra-video/vi.c
-+++ b/drivers/staging/media/tegra-video/vi.c
-@@ -1813,7 +1813,8 @@ static int tegra_vi_graph_parse_one(struct tegra_vi_channel *chan,
- 		}
- 
- 		tvge = v4l2_async_notifier_add_fwnode_subdev(&chan->notifier,
--				remote, struct tegra_vi_graph_entity);
-+							     remote,
-+							     struct tegra_vi_graph_entity);
- 		if (IS_ERR(tvge)) {
- 			ret = PTR_ERR(tvge);
- 			dev_err(vi->dev,
+> The in-memory database and analytical domain are definitely using it.
+> A couple examples:
+> SAP HANA - as we've tested and planned to launch as a strategic
+> enterprise use case with MCE recovery capability in our product
+> SQL server - https://support.microsoft.com/en-us/help/2967651/inf-sql-server-may-display-memory-corruption-and-recovery-errors
+
+Aha, so they register callbacks for the processes to exec on a memory
+error. Good to know, thanks for those.
+
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
