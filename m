@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6939C35F615
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDE935F617
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349484AbhDNOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:21:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
+        id S1349518AbhDNOWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348303AbhDNOVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:21:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2632861019;
-        Wed, 14 Apr 2021 14:20:37 +0000 (UTC)
+        id S231770AbhDNOWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 10:22:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEC2660E09;
+        Wed, 14 Apr 2021 14:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618410038;
-        bh=DykQO4BQxTHccj2c0RU/3WhmZd1h8XFYW7G9mDIAu20=;
+        s=k20201202; t=1618410107;
+        bh=YNNRj2u7BdAHG59JR6BW6NVLzaJPqdTTe1vruxvvEIA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSuRbnLqSceeRXtJOmVbK2ImrfOgaaxVevo2l0FliVCtz6IapYN6ta3q8ZDOxTOyf
-         9PIh4JXcGsdm3oUf474ro0pblftH6gjuJ/70YDYDFYQJDbFzyXiuVd9mRbyCMGOgmH
-         W1Ssg8FbNI9Ym7O4ohirhw+9mVR24wEb6/gxCBFENBF0ivN7OHSIe5ohF7HvBz12at
-         ThwiA9XHnPqXvtRSSC0NzL3LZ8I/BHrmxQ3NaY9oPLFMjiAzEVjmXKqiwUN6h0mxL4
-         yJsnj4ZhMGGXIkmgdrFy0jJPJlSR+bSdf9RRa302+2rabt7hxc5S8hOnvT+H5HDwFq
-         3hq79rq5V6MYw==
-Date:   Wed, 14 Apr 2021 15:20:16 +0100
+        b=VirPXHKVg7Yl9/9H/rjVIwdD5sFnOSy3vub+O2Q+1KqrtOGnHwF5T0l2GW7Q1gJQ5
+         uPAXicvZaGuSZNyy4guPJSH/h8IIAafz/o9Aa+6QeV+CrkNopFwQvtOjMMt75hFwQL
+         Vz02zlVeg6Rc3orHqG3oXU2zUG2W5pZX5hdhSIKHj9WZmic1KotQ4VxUs5UXFL5zfm
+         uoT3Fx9NmjUK6OpRIezGIbBrVmlAJ2eqCiD9Mt0cvjsjJpmriPTi5qrLD9rwAk5wwX
+         kL0Y/yljbaHpQ48SZLtUHk6z3RBIxAxkMArF2XK+3Is4vc3l2lTKAhlukNFhaOaDZx
+         Z5064ocdwT72w==
+Date:   Wed, 14 Apr 2021 15:21:25 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Nico Pache <npache@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
-        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        linux-m68k@lists.linux-m68k.org, geert@linux-m68k.org,
-        tytso@mit.edu, mathew.j.martineau@linux.intel.com,
-        davem@davemloft.net, davidgow@google.com,
-        skhan@linuxfoundation.org, mptcp@lists.linux.dev
-Subject: Re: [PATCH v2 1/6] kunit: ASoC: topology: adhear to KUNIT formatting
- standard
-Message-ID: <20210414142016.GE4535@sirena.org.uk>
-References: <cover.1618388989.git.npache@redhat.com>
- <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     paul@crapouillou.net, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: codec: remove unused variable
+Message-ID: <20210414142125.GA13758@sirena.org.uk>
+References: <1618370677-4559-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
 Content-Disposition: inline
-In-Reply-To: <dcf79e592f9a7e14483dde32ac561f6af2632e50.1618388989.git.npache@redhat.com>
-X-Cookie: George Orwell was an optimist.
+In-Reply-To: <1618370677-4559-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Cookie: Ginger snap.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---imjhCm/Pyz7Rq5F2
-Content-Type: text/plain; charset=us-ascii
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 14, 2021 at 04:58:04AM -0400, Nico Pache wrote:
-> Drop 'S' from end of SND_SOC_TOPOLOGY_KUNIT_TESTS inorder to adhear to
->  the KUNIT *_KUNIT_TEST config name format.
+On Wed, Apr 14, 2021 at 11:24:37AM +0800, Jiapeng Chong wrote:
+> Fix the following gcc warning:
+>=20
+> sound/soc/codecs/jz4760.c:201:6: warning: variable =E2=80=98ret=E2=80=99 =
+set but not
+> used [-Wunused-but-set-variable].
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+This doesn't apply against current code, please check and resend.
 
---imjhCm/Pyz7Rq5F2
+--zYM0uCDKw75PZbzx
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+h8ACgkQJNaLcl1U
-h9C5ygf/f+BNG8PCz0e3sGq/F/lIAmu23fPiN7lzXIQ/7/mdT3MwGiTHu9temsXL
-0d99SUvGT3MUczcKW+6Vj6faDQZGBXKBsKMW7rOq5h7Ns2tvw5MyvWwSYhHLj/Zt
-Ojkg3tN7GXemTVGC+TZyHVqWgh2q2wWvqJHeNzKY/9WPDcQo5BqoHlvO0xm9iF+L
-w3XI2y5+R6HulHM9PNNH18x3QiPWrjIjDAn2INWfPuPsAwu9+GpPf16ZK6CusCmZ
-ugX0b36XCpwrS2aNmb6SrjAA7GiQGnNXTZZ290lLhaN+ams3aM2pCePDkPjQU5EI
-ASor0godC7IdsihlvPd4BHIRP07Sdw==
-=U3R8
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB2+mQACgkQJNaLcl1U
+h9C+yAf+JzMtHCR7yqmPgEcucV/uizpLuRZd0CNMXys5FR9O6YTwaGV4Vk5A+Zi/
+Yyt6vOGywVWmu0Yh5kKGN+ZmtcTKnbf2L7e5OlvfQd5s13rwYgOXCvLoo+aPHfcs
+Tc1JNo8jDJN2qlmxgIlKvN2TmBEqTNmCixRsG03EhpdJB1z41ltT4FSoUeJVC73q
+IuX9UVk8ikUEJdkNMdm3XukrWyewvFb9a7HZdq8HVn14Pv3arLKA/k3V82kPyYTI
+W8YEvu+VmCc3iPLvPEu3MgmsZjkHt4iGaBtOOKnCIOSfc5icSOaaZPV0vneJVRah
+/fQerNIlNwjuQDJCRCz4U/s7X7tuqw==
+=WYPm
 -----END PGP SIGNATURE-----
 
---imjhCm/Pyz7Rq5F2--
+--zYM0uCDKw75PZbzx--
