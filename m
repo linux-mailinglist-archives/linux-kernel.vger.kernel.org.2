@@ -2,66 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDEF35FCE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8958935FCE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhDNVBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 17:01:48 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:52011
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229463AbhDNVBj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:01:39 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A91hWm6CpwVf2e03lHejDsseALOonbusQ8zAX?=
- =?us-ascii?q?/mhrQx1UbcCU0+iy9c5rlSPcojAXRX0mhJSkMK6PXXvT+fdOkPcsFJ2lWxTrv3?=
- =?us-ascii?q?btEZF64eLZskLdMgD36+I179YaT4FSBNjxElRggcu/3Q/QKbod6fWd66ayn6Pi?=
- =?us-ascii?q?yR5WPHVXQo566QMRMHf8LmRXQ018CYM9BN6g4KN81kadUFEWdNn+LmIOXujdq7?=
- =?us-ascii?q?Tw5dPbSDsHHQNiyQWKlFqTmfTHOj2ZxApbcz4n+8ZozUHhkxblooO8tP2hoyWs?=
- =?us-ascii?q?mVP7ypRNhZ/ZzMFfbfb8xfQ9DzX3l0KTeI96UaaDtzxdmpDj1H8OkMPQ5ysmJd?=
- =?us-ascii?q?h58XnLfmq4yCGdlzXI9BYLxzvcxUSDgX3lyPaJOQ4SL8Zan4pWfl/4xiMbzalB?=
- =?us-ascii?q?+ZtR02iUupZRBx+oplWLlq71fipnnEa1vnYu+NR75xc0PuV/GdwhyLA3x09bHI?=
- =?us-ascii?q?wNGyj38ukcYY1TJfrR/fNHNW6dBkqpzVVH+tCqU3gpdy32C3QqgNCf0DRdgRlC?=
- =?us-ascii?q?vjsl7fEY901wk64Vd4NJ/KDtPKhuidh1P7UrRJM4K+EbX8OtB2DBBTbBKnibL1?=
- =?us-ascii?q?iiNKxvAQO1l7fHpJAy4vjCQu178LIC3LLbUF1ZsmY2P3/pYPfi4LR7tjbXQGu8?=
- =?us-ascii?q?WjzxysZRo7hB04eMJobDAGm4REgzn8yrr5wkc7jmcsf2B5pSA/LqMGvpHsJDz2?=
- =?us-ascii?q?TFKuhvAEhbb80Ppsx+YViHpcXGJ+TR19DzQbLVIv7kCjwkWnzya0FzFATOGA?=
- =?us-ascii?q?=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,223,1613430000"; 
-   d="scan'208";a="378682693"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:01:16 +0200
-Date:   Wed, 14 Apr 2021 23:01:15 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Outreachy patch] [PATCH v3 1/2] staging: rtl8723bs: Remove
- useless led_blink_hdl()
-In-Reply-To: <20210414192750.4974-2-fmdefrancesco@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104142300550.33347@hadrien>
-References: <20210414192750.4974-1-fmdefrancesco@gmail.com> <20210414192750.4974-2-fmdefrancesco@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229936AbhDNVDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:03:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55832 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229741AbhDNVDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 17:03:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618434166; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=NDFPUG8w+QVdc1ZKn+OX2p4Lkw+ii5Hbq+ynLwXvK3s=; b=kjSoBk9soBRvacb+oSQLCzAX/qi+0j3yiYy1dVoUkn5Qa+UDBzAwlInbEbmvROfr1IkPyOVM
+ V9whJlRowWtTS5fWJmbj8USsQwVdk8Yr9M6IHsyheSdnN+Shy9VmrucHI9wj/K65fkVWp9ep
+ VDBBeB8xn4RlNu/E68MSA9EwQNc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60775875febcffa80fbcc2d9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Apr 2021 21:02:45
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 61032C43461; Wed, 14 Apr 2021 21:02:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E1B8C433CA;
+        Wed, 14 Apr 2021 21:02:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E1B8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] drm/msm/dp: check sink_count before update is_connected status
+Date:   Wed, 14 Apr 2021 14:02:34 -0700
+Message-Id: <1618434154-28255-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Link status is different from display connected status in the case
+of something like an Apple dongle where the type-c plug can be
+connected, and therefore the link is connected, but no sink is
+connected until an HDMI cable is plugged into the dongle.
+The sink_count of DPCD of dongle will increase to 1 once an HDMI
+cable is plugged into the dongle so that display connected status
+will become true. This checking also apply at pm_resume.
 
+Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and pm_resume")
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-On Wed, 14 Apr 2021, Fabio M. De Francesco wrote:
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 5a39da6..0ba71c7 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -586,10 +586,8 @@ static int dp_connect_pending_timeout(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state = dp->hpd_state;
+-	if (state == ST_CONNECT_PENDING) {
+-		dp_display_enable(dp, 0);
++	if (state == ST_CONNECT_PENDING)
+ 		dp->hpd_state = ST_CONNECTED;
+-	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+ 
+@@ -669,10 +667,8 @@ static int dp_disconnect_pending_timeout(struct dp_display_private *dp, u32 data
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state =  dp->hpd_state;
+-	if (state == ST_DISCONNECT_PENDING) {
+-		dp_display_disable(dp, 0);
++	if (state == ST_DISCONNECT_PENDING)
+ 		dp->hpd_state = ST_DISCONNECTED;
+-	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+ 
+@@ -1272,7 +1268,12 @@ static int dp_pm_resume(struct device *dev)
+ 
+ 	status = dp_catalog_link_is_connected(dp->catalog);
+ 
+-	if (status)
++	/*
++	 * can not declared display is connected unless
++	 * HDMI cable is plugged in and sink_count of
++	 * dongle become 1
++	 */
++	if (status && dp->link->sink_count)
+ 		dp->dp_display.is_connected = true;
+ 	else
+ 		dp->dp_display.is_connected = false;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
-> the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
-> change has not unwanted side effects because the code in rtw_cmd.c checks
-> if the function pointer is valid before using it.
-
-When you send the series again, you can change not to no in the above.
-
-julia
