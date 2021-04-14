@@ -2,318 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFC435FE95
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92B135FE9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhDNXss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 19:48:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhDNXsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:48:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DABE7611AD;
-        Wed, 14 Apr 2021 23:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618444104;
-        bh=IR12TWORQZbaSrvAqiFIvHh7U8GjQYljtfBf4zfVH+M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IsMPa4ExKt7vkrY0Py/D0+WlIis497+qUgK9GaOfe9pXnEvPI9arJrsgjNPl4zbhn
-         6Apul6j+FBrb/ct9RdmGaBCximiX9+5HULVMbi9KoTv5hNnuam22HD93QN+SNk8T8O
-         EyRNmc/E0S+8Na/1Wo0XMfRoDFTfPEfyGWAG0reiTRtPZ6ITJLt+KIXIaNyrz0d+di
-         YIi9v0LEUSZHksGYHG1udxzOlKIaQqilgXcSX7k58CwKcrpbQ9t8XYvhaK7PiK1LRx
-         Cb/HuUYJ0Pze6WrRRL7PPtNInw0C8RKGXvxCo3wSt5NAHya+b8l6sJfghbEodcu8Lz
-         WSGjZ8aq2tPxQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A99375C2738; Wed, 14 Apr 2021 16:48:24 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 16:48:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210414234824.GZ4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
- <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
- <20210217191907.GH2743@paulmck-ThinkPad-P72>
- <20210217194359.m647inivfp4frzc7@linutronix.de>
+        id S229969AbhDNXtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 19:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhDNXtI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 19:49:08 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E53C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:48:45 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u20so25077070lja.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:48:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sYrhQ+L0KHq4tveN5clEASWcQ37/wtC32tCYh0nBGLo=;
+        b=oVcontEvK+/+8MA7Pe0KxzkdxdTY9uAw/triIXdClbgN0AqR9y8J3vDKWQGZQognij
+         Dv00nHR4pwZKbHwSELVW5MrGADWTow2YAHFxLyIaZMUVnYn+HgFQ8m6I4nxQIIa6oaxR
+         vZ1zOvsFHhQpoJofcGiYwlm0N3C7yvAyenfpmab9wAukwMa/kcYewOhykPReLODnnHdD
+         B/UdliM0FMyAu1rYPLtGw/OMmDtd0yatWxtt6mS1EiYKE4B+p79g4b6MjsuD0Gv3Y+C0
+         z7Zo437En5Rw8m6Tf0iCuERtCSm0c+tBNu9xHU8I+jVxM5wFKHnusyAReqAdFalPdrTB
+         RNWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sYrhQ+L0KHq4tveN5clEASWcQ37/wtC32tCYh0nBGLo=;
+        b=QlMRStuueP0H/P+1REATnEcUSM7umhzwltNmgI9N3ww4hfIXZ0PqZ2ROEi32ls9cbg
+         qPwriWH4XnpKwaN/9823fsDXoBgjaoe51kPujRr0i2XAEP7h9QkFYulp57H4RyGm4DzN
+         ZWjVktgWT/6kcDQNN/zgB3QjpLUvjHA16z/fQf09n7NAIQ3kEqSPiVYthcm5BIoBd3cl
+         rfuxIxKPHCJd0U24nv8f0aM64FfpAykb2hJUXXgBoK1LrErUhkqoodJpz0rUmG2LXTZ8
+         vsdck1TI/BL/6mo5yhfuCF7WfqTztYQt0IjVAGQfgldR02pB8QhXD/pcal2oq7iS18u/
+         hs8g==
+X-Gm-Message-State: AOAM533xxi+3KCnTMsGPDRxyv+UbpMB8JoksII+p609bh2pwZSiDW4Fg
+        csuDqeBV24jy6aWw6o6FZI4q1ELv3IYg23vKXVQjaw==
+X-Google-Smtp-Source: ABdhPJxDm6QXae66Kp5wtL/ye/7TEOwYZKMxEQuOI5NmLFtK+zp9XBWYUFbSmyJLar215o9dcq4wZWgDF/OjIY+UAhA=
+X-Received: by 2002:a2e:5716:: with SMTP id l22mr239987ljb.244.1618444123676;
+ Wed, 14 Apr 2021 16:48:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217194359.m647inivfp4frzc7@linutronix.de>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-3-ojeda@kernel.org>
+In-Reply-To: <20210414184604.23473-3-ojeda@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Apr 2021 16:48:31 -0700
+Message-ID: <CAKwvOdk+Wya_mhVMPiiv1MVwCGX4DTZ2tX=AOm1-XGOYN5yMZg@mail.gmail.com>
+Subject: Re: [PATCH 02/13] kallsyms: Increase maximum kernel symbol length to 512
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 08:43:59PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-17 11:19:07 [-0800], Paul E. McKenney wrote:
-> > > Ah. One nice thing is that you can move the RCU threads to a house
-> > > keeping CPU - away from the CPU(s) running the RT tasks. Would this
-> > > scenario be still affected (if ksoftirqd would be blocked)?
-> > 
-> > At this point, I am going to say that it is the sysadm's job to place
-> > the rcuo kthreads, and if they are placed poorly, life is hard.
-> 
-> Good. Because that is what I suggest :)
-> 
-> > > Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-> > > of moving forward (the timer did not fire, the condition is true and you
-> > > move the timeout forward).
-> > > A hrtimer timer on the other hand needs to be removed, forwarded and
-> > > added back to the "timer tree". This is considered more expensive
-> > > especially if the timer does not fire.
-> > 
-> > There are some timers that are used to cause a wakeup to happen from
-> > a clean environment, but maybe these can instead use irq-work.
-> 
-> irq-work has also a "hard" mode because people ended up to throwing
-> everything in there.
+On Wed, Apr 14, 2021 at 11:48 AM <ojeda@kernel.org> wrote:
+>
+> From: Miguel Ojeda <ojeda@kernel.org>
+>
+> Rust symbols can become quite long due to namespacing introduced
+> by modules, types, traits, generics, etc. For instance, for:
+>
+>     pub mod my_module {
+>         pub struct MyType;
+>         pub struct MyGenericType<T>(T);
+>
+>         pub trait MyTrait {
+>             fn my_method() -> u32;
+>         }
+>
+>         impl MyTrait for MyGenericType<MyType> {
+>             fn my_method() -> u32 {
+>                 42
+>             }
+>         }
+>     }
+>
+> generates a symbol of length 96 when using the upcoming v0 mangling scheme:
+>
+>     _RNvXNtCshGpAVYOtgW1_7example9my_moduleINtB2_13MyGenericTypeNtB2_6MyTypeENtB2_7MyTrait9my_method
+>
+> At the moment, Rust symbols may reach up to 300 in length.
+> Setting 512 as the maximum seems like a reasonable choice to
+> keep some headroom.
 
-So after beating on this a bit, I decided that the timer problems are
-specific to rcutorture.  The problem is making a test that reliably
-and quickly finds RCU priority boosting failures, while not destroying
-the rest of the kernel's ability to function.  The current approach is
-CPU-bound FIFO priority-1 real-time processes, and with the RT throttling
-disabled.  And one such process on each online CPU, all running
-concurrently for a four-second time period.
+What are the implications of this change for someone not using Rust?
+Does it change the binary size of vmlinux for a defconfig build, for
+example?
 
-This is of course a great way to destroy the rest of the kernel.  And
-in any other context, this would be abuse that was expected to destroy
-the kernel.
+>
+> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
+> Co-developed-by: Finn Behrens <me@kloenk.de>
+> Signed-off-by: Finn Behrens <me@kloenk.de>
+> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
+> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  include/linux/kallsyms.h            | 2 +-
+>  kernel/livepatch/core.c             | 4 ++--
+>  scripts/kallsyms.c                  | 2 +-
+>  tools/include/linux/kallsyms.h      | 2 +-
+>  tools/include/linux/lockdep.h       | 2 +-
+>  tools/lib/perf/include/perf/event.h | 2 +-
+>  tools/lib/symbol/kallsyms.h         | 2 +-
+>  7 files changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+> index 465060acc981..5cdc6903abca 100644
+> --- a/include/linux/kallsyms.h
+> +++ b/include/linux/kallsyms.h
+> @@ -14,7 +14,7 @@
+>
+>  #include <asm/sections.h>
+>
+> -#define KSYM_NAME_LEN 128
+> +#define KSYM_NAME_LEN 512
+>  #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
+>                          2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
+>
+> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+> index 335d988bd811..73874e5edfda 100644
+> --- a/kernel/livepatch/core.c
+> +++ b/kernel/livepatch/core.c
+> @@ -213,7 +213,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
+>          * we use the smallest/strictest upper bound possible (56, based on
+>          * the current definition of MODULE_NAME_LEN) to prevent overflows.
+>          */
+> -       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 128);
+> +       BUILD_BUG_ON(MODULE_NAME_LEN < 56 || KSYM_NAME_LEN != 512);
+>
+>         relas = (Elf_Rela *) relasec->sh_addr;
+>         /* For each rela in this klp relocation section */
+> @@ -227,7 +227,7 @@ static int klp_resolve_symbols(Elf64_Shdr *sechdrs, const char *strtab,
+>
+>                 /* Format: .klp.sym.sym_objname.sym_name,sympos */
+>                 cnt = sscanf(strtab + sym->st_name,
+> -                            ".klp.sym.%55[^.].%127[^,],%lu",
+> +                            ".klp.sym.%55[^.].%511[^,],%lu",
+>                              sym_objname, sym_name, &sympos);
+>                 if (cnt != 3) {
+>                         pr_err("symbol %s has an incorrectly formatted name\n",
+> diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+> index bcdabee13aab..9bab5f55ade3 100644
+> --- a/scripts/kallsyms.c
+> +++ b/scripts/kallsyms.c
+> @@ -27,7 +27,7 @@
+>
+>  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
+>
+> -#define KSYM_NAME_LEN          128
+> +#define KSYM_NAME_LEN          512
+>
+>  struct sym_entry {
+>         unsigned long long addr;
+> diff --git a/tools/include/linux/kallsyms.h b/tools/include/linux/kallsyms.h
+> index efb6c3f5f2a9..5a37ccbec54f 100644
+> --- a/tools/include/linux/kallsyms.h
+> +++ b/tools/include/linux/kallsyms.h
+> @@ -6,7 +6,7 @@
+>  #include <stdio.h>
+>  #include <unistd.h>
+>
+> -#define KSYM_NAME_LEN 128
+> +#define KSYM_NAME_LEN 512
+>
+>  struct module;
+>
+> diff --git a/tools/include/linux/lockdep.h b/tools/include/linux/lockdep.h
+> index e56997288f2b..d9c163f3ab24 100644
+> --- a/tools/include/linux/lockdep.h
+> +++ b/tools/include/linux/lockdep.h
+> @@ -47,7 +47,7 @@ static inline int debug_locks_off(void)
+>
+>  #define task_pid_nr(tsk) ((tsk)->pid)
+>
+> -#define KSYM_NAME_LEN 128
+> +#define KSYM_NAME_LEN 512
+>  #define printk(...) dprintf(STDOUT_FILENO, __VA_ARGS__)
+>  #define pr_err(format, ...) fprintf (stderr, format, ## __VA_ARGS__)
+>  #define pr_warn pr_err
+> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+> index d82054225fcc..f5c40325b441 100644
+> --- a/tools/lib/perf/include/perf/event.h
+> +++ b/tools/lib/perf/include/perf/event.h
+> @@ -93,7 +93,7 @@ struct perf_record_throttle {
+>  };
+>
+>  #ifndef KSYM_NAME_LEN
+> -#define KSYM_NAME_LEN 256
+> +#define KSYM_NAME_LEN 512
+>  #endif
+>
+>  struct perf_record_ksymbol {
+> diff --git a/tools/lib/symbol/kallsyms.h b/tools/lib/symbol/kallsyms.h
+> index 72ab9870454b..542f9b059c3b 100644
+> --- a/tools/lib/symbol/kallsyms.h
+> +++ b/tools/lib/symbol/kallsyms.h
+> @@ -7,7 +7,7 @@
+>  #include <linux/types.h>
+>
+>  #ifndef KSYM_NAME_LEN
+> -#define KSYM_NAME_LEN 256
+> +#define KSYM_NAME_LEN 512
+>  #endif
+>
+>  static inline u8 kallsyms2elf_binding(char type)
+> --
+> 2.17.1
+>
 
-So rather than make large changes to RCU, I instead check to see whether
-rcutorture is built into the kernel, and in that case crank all of the
-ksoftirqd kthreads up to FIFO priority 2, the same as the various RCU
-kthreads.  This is a simple change, and if you are running rcutorture
-built-in in production you are in a world of hurt anyway, so realtime
-ksoftirqd kthreads are the least of your problems.
 
-> > That it can!  Aravinda Prasad prototyped a mechanism hinting to the
-> > hypervisor in such cases, but I don't know that this ever saw the light
-> > of day.
-> 
-> Ah, good to know.
-> 
-> > > My understanding of the need for RCU boosting is to get a task,
-> > > preempted (by a RT task) within a RCU section, back on the CPU to
-> > > at least close the RCU section. So it is possible to run RCU callbacks
-> > > and free memory.
-> > > The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-> > > killer got nervous (and if we had memory allocation failures).
-> > > Also, running thousands of accumulated callbacks isn't good either.
-> > 
-> > Sounds good, thank you!
-> 
-> I hope my understanding was correct. Glad to be if service :)
-
-So far, so good!  ;-)
-
-After reworking rcu_torture_boost() to use the polling interfaces, thus
-getting callback invocation out of the way, there did turn out to be a
-bug in RCU priority boosting.  If you had a system with more than one
-CPU, but also having an rcu_node structure with only one CPU, and task
-that blocked while running on that one CPU would never be RCU priority
-boosted.
-
-How did this happen?  One step at a time...
-
-o	A bug I was chasing a few years back reproduced much more
-	quickly if I enabled CPU hotplug on TREE03.
-
-o	And in addition, x86 no longer supports configurations where CPUs
-	cannot be hotplugged (mumble mumble security mumble mumble),
-	which means that the rcutorture scripting is always going to
-	test CPU hotplug.
-
-o	TREE03 was the one scenario that tested RCU priority boosting.
-
-o	But RCU priority-boost testing assumes that CPU hotplug
-	was disabled.  So much so that if it saw that there was any
-	CPU-hotplug work going on, it would disable itself.
-
-o	So RCU priority boosting has gone completely untested for
-	quite a few years.
-
-o	Quite a few more years back, I learned that firmware sometimes
-	lies about the number of CPUs.  I learned this from bug reports
-	noting that RCU was creating way more kthreads than made any
-	sense on small CPUs.
-
-o	So the spawning of kthreads that are per-CPU or per-group-of-CPUs
-	is done at CPU-online time.  Which ensures that systems get
-	the right number of RCU kthreads even in the presence of lying
-	firmware.  In the case of the RCU boost kthreads, the code
-	verifies that the rcu_node structure in question has at least
-	one online CPU before spawning the corresponding kthread.
-
-o	Except that changes in CPU hotplug mean that it is quite possible
-	for the incoming CPU to not be fully online at the time that
-	rcutree_online_cpu() executes.  This means that the RCU boost
-	kthread will be spawned when the second for a given rcu_node
-	structure comes online.
-
-o	Which means that rcu_node structures that have only one CPU
-	never get an RCU boost kthread.  This is unusual, requiring 17,
-	33, 49, 65, ... CPUs on the system given default values for RCU
-	kconfig options.  But it can be made to happen, especially when
-	using the rcutorture scripting.
-	('--kconfig "CONFIG_NR_CPUS=17" ...')
-
-The fix is to push the check for at least one online CPU up into the
-loop that is executed during early boot, which means that the calls
-from rcutree_online_cpu() can be moved to rcutree_prepare_cpu(), and
-can simply assume that the CPU will eventually come online.  The patch
-is shown below.
-
-The rcu_torture_boost() function required additional rework because CPUs
-can fail to pass through a quiescent state for some seconds from time to
-time, and there is nothing that RCU priority boosting can do about this.
-I therefore added checks for this condition, and refrain from reporting
-an error in such cases.
-
-I also created a new BUSTED-BOOST scenario that tests RCU priority
-boosting on a kernel built with CONFIG_RCU_BOOST=y.  This fails within a
-few tens of seconds, so the test might actually be working.  If testing
-continues to go well, I expect to submit these into the v5.14 merge window
-(not the upcoming one, but the one after that).
-
-More than you probably wanted to know, but at least both the boosting
-and its tests now seem to be doing something useful.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit 8193d3465bc8fb8bd3ee765c42df2f551c01329a
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Mon Apr 5 20:42:09 2021 -0700
-
-    rcu: Make RCU priority boosting work on single-CPU rcu_node structures
-    
-    When any CPU comes online, it checks to see if an RCU-boost kthread has
-    already been created for that CPU's leaf rcu_node structure, and if
-    not, it creates one.  Unfortunately, it also verifies that this leaf
-    rcu_node structure actually has at least one online CPU, and if not,
-    it declines to create the kthread.  Although this behavior makes sense
-    during early boot, especially on systems that claim far more CPUs than
-    they actually have, it makes no sense for the first CPU to come online
-    for a given rcu_node structure.  There is no point in checking because
-    we know there is a CPU on its way in.
-    
-    The problem is that timing differences can cause this incoming CPU to not
-    yet be reflected in the various bit masks even at rcutree_online_cpu()
-    time, and there is no chance at rcutree_prepare_cpu() time.  Plus it
-    would be better to create the RCU-boost kthread at rcutree_prepare_cpu()
-    to handle the case where the CPU is involved in an RCU priority inversion
-    very shortly after it comes online.
-    
-    This commit therefore moves the checking to rcu_prepare_kthreads(), which
-    is called only at early boot, when the check is appropriate.  In addition,
-    it makes rcutree_prepare_cpu() invoke rcu_spawn_one_boost_kthread(), which
-    no longer does any checking for online CPUs.
-    
-    With this change, RCU priority boosting tests now pass for short rcutorture
-    runs, even with single-CPU leaf rcu_node structures.
-    
-    Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    Cc: Scott Wood <swood@redhat.com>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 03282196953a..5c214705c33f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -4167,7 +4167,7 @@ int rcutree_prepare_cpu(unsigned int cpu)
- 	rdp->rcu_iw_gp_seq = rdp->gp_seq - 1;
- 	trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuonl"));
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--	rcu_prepare_kthreads(cpu);
-+	rcu_spawn_one_boost_kthread(rnp);
- 	rcu_spawn_cpu_nocb_kthread(cpu);
- 	WRITE_ONCE(rcu_state.n_online_cpus, rcu_state.n_online_cpus + 1);
- 
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 007be551803e..305cf6aeb408 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -417,8 +417,8 @@ static void rcu_initiate_boost(struct rcu_node *rnp, unsigned long flags);
- static void rcu_preempt_boost_start_gp(struct rcu_node *rnp);
- static bool rcu_is_callbacks_kthread(void);
- static void rcu_cpu_kthread_setup(unsigned int cpu);
-+static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp);
- static void __init rcu_spawn_boost_kthreads(void);
--static void rcu_prepare_kthreads(int cpu);
- static void rcu_cleanup_after_idle(void);
- static void rcu_prepare_for_idle(void);
- static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 6bf72c4132a6..464b16132866 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1188,22 +1188,16 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
-  */
- static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- {
--	int rnp_index = rnp - rcu_get_root();
- 	unsigned long flags;
-+	int rnp_index = rnp - rcu_get_root();
- 	struct sched_param sp;
- 	struct task_struct *t;
- 
--	if (!IS_ENABLED(CONFIG_PREEMPT_RCU))
--		return;
--
--	if (!rcu_scheduler_fully_active || rcu_rnp_online_cpus(rnp) == 0)
-+	if (rnp->boost_kthread_task || !rcu_scheduler_fully_active)
- 		return;
- 
- 	rcu_state.boost = 1;
- 
--	if (rnp->boost_kthread_task != NULL)
--		return;
--
- 	t = kthread_create(rcu_boost_kthread, (void *)rnp,
- 			   "rcub/%d", rnp_index);
- 	if (WARN_ON_ONCE(IS_ERR(t)))
-@@ -1255,17 +1249,8 @@ static void __init rcu_spawn_boost_kthreads(void)
- 	struct rcu_node *rnp;
- 
- 	rcu_for_each_leaf_node(rnp)
--		rcu_spawn_one_boost_kthread(rnp);
--}
--
--static void rcu_prepare_kthreads(int cpu)
--{
--	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
--	struct rcu_node *rnp = rdp->mynode;
--
--	/* Fire up the incoming CPU's kthread and leaf rcu_node kthread. */
--	if (rcu_scheduler_fully_active)
--		rcu_spawn_one_boost_kthread(rnp);
-+		if (rcu_rnp_online_cpus(rnp))
-+			rcu_spawn_one_boost_kthread(rnp);
- }
- 
- #else /* #ifdef CONFIG_RCU_BOOST */
-@@ -1285,15 +1270,15 @@ static void rcu_preempt_boost_start_gp(struct rcu_node *rnp)
- {
- }
- 
--static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
-+static void rcu_spawn_one_boost_kthread(struct rcu_node *rnp)
- {
- }
- 
--static void __init rcu_spawn_boost_kthreads(void)
-+static void rcu_boost_kthread_setaffinity(struct rcu_node *rnp, int outgoingcpu)
- {
- }
- 
--static void rcu_prepare_kthreads(int cpu)
-+static void __init rcu_spawn_boost_kthreads(void)
- {
- }
- 
+-- 
+Thanks,
+~Nick Desaulniers
