@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB0F35EEC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7C735EEC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348254AbhDNHvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbhDNHvr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:51:47 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B679FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kel5nAWcgLTms55fQqQrURNpeeeiQj+msHoHON8xUVk=; b=hEKePnQgXk+B3+0G0TRY+5JSeC
-        nAdThLSJmNd6gEBlbF/v0u1MCwYq2q/UWAyqJyFwi8iejyGP0fsqutIYWzBBtWe9TELK6IqEd2Cdj
-        i6GVlCMQLrb7wsSZWjxbaDlPw3ZPBCotm7ItYea6EEsLlufcz1xo5hisPqXbn/CV0Mv//JSgWhhGh
-        9E8S7cK3GNAM0qR6HwTMRzZj/cvIvHECSnnoO6j5TWPYclWR8fnpAJ+UMErhTJIg9lcEdXTahMuDl
-        kwYZoUHjqYZcM9Sz/zmPSqbUQXskoJO2XHdXQT5H8CLcJIdtLimm0sjlfzt6G4vRksTeaaPnWVSxO
-        BOPAzsYQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWaIv-00BtFw-ES; Wed, 14 Apr 2021 07:51:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C062300033;
-        Wed, 14 Apr 2021 09:51:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 45BA0203CF7D6; Wed, 14 Apr 2021 09:51:16 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 09:51:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, paulmck <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Arjun Roy <arjunroy@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH v3 0/3] rseq: minor optimizations
-Message-ID: <YHae9AasEN+xY5bj@hirez.programming.kicks-ass.net>
-References: <20210413203352.71350-1-eric.dumazet@gmail.com>
- <1447691783.73957.1618346433394.JavaMail.zimbra@efficios.com>
+        id S1349090AbhDNHv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348092AbhDNHvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:51:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C7B1601FE;
+        Wed, 14 Apr 2021 07:51:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618386692;
+        bh=zojRrA+SEVZVplxBJb0vmN6/7XHw2L494AoVKdAZjdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YjXZBIfzmd7krID9ftFF5zj6n3QXwljc5UVtlmUIp1qczKposRteSwRn1SCkkSB79
+         xXDGH2kHe1xw88jPPcIKqX/aQL/sEOupEL0rHQV3jBcXXswbsCU+L/kGFhuHeir97M
+         5A5IjzfNLtrRAh6PR6VqgTW+LxljS986sk1epPKBI8cB1o9VwzIEV+Bt3Nxl0G8T+L
+         LLvqn0bGE46cJtctKu9AZHUWOrZd/7AcXJocdzWCXBOD3EvBVCwglCq2qz9UIMuKw5
+         omyLVHoSitohTApoN36vTizS4duxBYm5B5NTV9plqWGVBVmzZS+s2txkDtQUxc7JKa
+         jq5jPwKzpLyrg==
+Date:   Wed, 14 Apr 2021 09:51:27 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Vignesh R <vigneshr@ti.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] i2c: fix reference leak when pm_runtime_get_sync
+ fails
+Message-ID: <20210414075127.GA2180@ninjato>
+References: <20201201092924.112461-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
 Content-Disposition: inline
-In-Reply-To: <1447691783.73957.1618346433394.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201201092924.112461-1-miaoqinglang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:40:33PM -0400, Mathieu Desnoyers wrote:
-> ----- On Apr 13, 2021, at 4:33 PM, Eric Dumazet eric.dumazet@gmail.com wrote:
-> 
-> > From: Eric Dumazet <edumazet@google.com>
-> > 
-> > rseq is a heavy user of copy to/from user data in fast paths.
-> > This series tries to reduce the cost.
-> > 
-> > v3: Third patch going back to v1 (only deal with 64bit arches)
-> > v2: Addressed Peter and Mathieu feedbacks, thanks !
-> 
-> For the whole series:
-> 
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Thanks!
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Dec 01, 2020 at 05:29:24PM +0800, Qinglang Miao wrote:
+> pm_runtime_get_sync will increment the PM reference count
+> even failed. Forgetting to putting operation will result
+> in a reference leak here.=20
+>=20
+> Replace it with pm_runtime_resume_and_get to keep usage
+> counter balanced.=20
+>=20
+> BTW, pm_runtime_resume_and_get is introduced in v5.10-rc5 as
+> dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get
+> to dealwith usage counter")
+>=20
+> Qinglang Miao (8):
+>   i2c: cadence: fix reference leak when pm_runtime_get_sync fails
+>   i2c: img-scb: fix reference leak when pm_runtime_get_sync fails
+>   i2c: imx-lpi2c: fix reference leak when pm_runtime_get_sync fails
+>   i2c: imx: fix reference leak when pm_runtime_get_sync fails
+>   i2c: omap: fix reference leak when pm_runtime_get_sync fails
+>   i2c: sprd: fix reference leak when pm_runtime_get_sync fails
+>   i2c: stm32f7: fix reference leak when pm_runtime_get_sync fails
+>   i2c: xiic: fix reference leak when pm_runtime_get_sync fails
+
+I applied this series now to for-next, thanks!
+
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB2nvsACgkQFA3kzBSg
+KbbCtw/+NcMmI6QKvhWoRpGzsqS4JR3ve8xPWFEaYBcBABOFAJ3OtQeYoeFXyFv5
+xJVaL0EqvTsppo22meJ8HGSDgp8cnGupdpwZhIWUxEAdwV2XPabWGQM0IOhq5fIo
+EXDs+bWvDeo0FqHi/fnc3ykUYXeEo2eh2te+rdhrQy8/l9HdzeFJhx7zOvu2bl/y
+F5sindz+A6+JxmDGrv5ocmCKDV0/ESIQG4QKadxtRrvNM55hkR7HLBo/XC3iwZx/
+XSAJwJNwTxCLhIE2YHhSvO0vnMbXD/rcia9nJ+KcNRSDzNRu/KnECzM1r5HZ4k/8
+iWKGyC5eZDfeBMDGDtBs3puS5lktt5bdeBJevXHkSch5Vjaa30fojPbAwHo7paHk
+v5ojLq1mXX38TkeVvofFBjF7XVyiNuiUwxcIFPHiu38AeSQdkAPRLczyRuU+1yNU
+uZ7fRS7UPZYy3twjnvgiAdSqiZXa3Z30pgD/bULDwZA39fsXiqg47/vh8pVUI9A6
+fz/I3LOyn7qwxxGrLxvErdyAJXazGvEF+pouaAF0XKNgB7iokFV3t1YGTV7IZoWd
+Cg29vCPjjUsFTnaj1HNIjN0KDYD7kDjqzeYRQzzfPStheExujd2I5qtyZVhOKRal
++AkE/oTuRAlxrmNH6/N3pgLdayySwS70gZ4mOGSO8bE/xV/bL+Q=
+=dXOi
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
