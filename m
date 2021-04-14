@@ -2,180 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFC235F95E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD62135F961
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352819AbhDNQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:59:48 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:16360 "EHLO pegase1.c-s.fr"
+        id S1352839AbhDNRBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352104AbhDNQ7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:59:37 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FL7ww2RpSzB09ZS;
-        Wed, 14 Apr 2021 18:59:12 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 7xncGceT2Qtl; Wed, 14 Apr 2021 18:59:12 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FL7ww18cnzB09ZC;
-        Wed, 14 Apr 2021 18:59:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C1BF58B7CE;
-        Wed, 14 Apr 2021 18:59:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1DUihww9BCXs; Wed, 14 Apr 2021 18:59:13 +0200 (CEST)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 75FA18B7C4;
-        Wed, 14 Apr 2021 18:59:13 +0200 (CEST)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 5368C679F3; Wed, 14 Apr 2021 16:59:13 +0000 (UTC)
-Message-Id: <6c77cf01d88115c57c1f72f2c45d31f6bf64ef4f.1618419539.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <7aaa03114d8bc4ba1805b51993fb92ec520899e0.1618419539.git.christophe.leroy@csgroup.eu>
-References: <7aaa03114d8bc4ba1805b51993fb92ec520899e0.1618419539.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 3/3] powerpc/atomics: Remove atomic_inc()/atomic_dec() and
- friends
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 14 Apr 2021 16:59:13 +0000 (UTC)
+        id S232043AbhDNRBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 006F36100C;
+        Wed, 14 Apr 2021 17:00:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618419644;
+        bh=bx3oAhc3i0mDHsdiCnxOJmKJyC0pV+jZkUkWvJEyymM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EhJPySsNEiHohK1eUnPv+7AISSQSolQAOHIf1JcytVGbpll0b7lx57shEbTucdYoA
+         55dNBhifRNpWGxpuPPqJzMFnlaK2LQUu7VJ2zbi2SkmPPolFH88fTTbeJR6YLrjxLi
+         b36Zp+czDap/SLfu/b0fpthifsSAcJxH8LmEBfsY=
+Date:   Wed, 14 Apr 2021 19:00:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless
+ led_blink_hdl()
+Message-ID: <YHcfud6Fpsi9Weac@kroah.com>
+References: <20210414162614.14867-1-fmdefrancesco@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414162614.14867-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that atomic_add() and atomic_sub() handle immediate operands,
-atomic_inc() and atomic_dec() have no added value compared to the
-generic fallback which calls atomic_add(1) and atomic_sub(1).
+On Wed, Apr 14, 2021 at 06:26:14PM +0200, Fabio M. De Francesco wrote:
+> Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
+> the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
+> change has not unwanted side effects because the code in rtw_cmd.c checks
+> if the function pointer is valid before using it.
+> 
+> Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> Changes since v1: Corrected a bad solution to this issue that made use of
+> an unnecessary dummy function.
+> 
+>  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
+>  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
+>  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
+>  3 files changed, 1 insertion(+), 11 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> index 0297fbad7bce..f82dbd4f4c3d 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> @@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
+>  
+>  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
+>  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
+> -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
+> +	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
 
-Also remove atomic_inc_not_zero() which fallsback to
-atomic_add_unless() which itself fallsback to
-atomic_fetch_add_unless() which now handles immediate operands.
+Better, but you really do not need to keep this here, right?  Remove the
+"led blink command" entirely, you didn't do that here.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: New
----
- arch/powerpc/include/asm/atomic.h | 95 -------------------------------
- 1 file changed, 95 deletions(-)
+thanks,
 
-diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-index eb1bdf14f67c..00ba5d9e837b 100644
---- a/arch/powerpc/include/asm/atomic.h
-+++ b/arch/powerpc/include/asm/atomic.h
-@@ -118,71 +118,6 @@ ATOMIC_OPS(xor, xor, "", K)
- #undef ATOMIC_OP_RETURN_RELAXED
- #undef ATOMIC_OP
- 
--static __inline__ void atomic_inc(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc\n\
--	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2 \n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic_inc atomic_inc
--
--static __inline__ int atomic_inc_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc_return_relaxed\n"
--"	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--static __inline__ void atomic_dec(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec\n\
--	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define atomic_dec atomic_dec
--
--static __inline__ int atomic_dec_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec_return_relaxed\n"
--"	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--#define atomic_inc_return_relaxed atomic_inc_return_relaxed
--#define atomic_dec_return_relaxed atomic_dec_return_relaxed
--
- #define atomic_cmpxchg(v, o, n) (cmpxchg(&((v)->counter), (o), (n)))
- #define atomic_cmpxchg_relaxed(v, o, n) \
- 	cmpxchg_relaxed(&((v)->counter), (o), (n))
-@@ -252,36 +187,6 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
- }
- #define atomic_fetch_add_unless atomic_fetch_add_unless
- 
--/**
-- * atomic_inc_not_zero - increment unless the number is zero
-- * @v: pointer of type atomic_t
-- *
-- * Atomically increments @v by 1, so long as @v is non-zero.
-- * Returns non-zero if @v was non-zero, and zero otherwise.
-- */
--static __inline__ int atomic_inc_not_zero(atomic_t *v)
--{
--	int t1, t2;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	lwarx	%0,0,%2		# atomic_inc_not_zero\n\
--	cmpwi	0,%0,0\n\
--	beq-	2f\n\
--	addic	%1,%0,1\n"
--"	stwcx.	%1,0,%2\n\
--	bne-	1b\n"
--	PPC_ATOMIC_EXIT_BARRIER
--	"\n\
--2:"
--	: "=&r" (t1), "=&r" (t2)
--	: "r" (&v->counter)
--	: "cc", "xer", "memory");
--
--	return t1;
--}
--#define atomic_inc_not_zero(v) atomic_inc_not_zero((v))
--
- /*
-  * Atomically test *v and decrement if it is greater than 0.
-  * The function returns the old value of *v minus 1, even if
--- 
-2.25.0
-
+greg k-h
