@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A6735F94F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3411635F959
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhDNQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:56:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27737 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233980AbhDNQ4X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:56:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618419361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0XekfZf+wewTDqvutKV+4wFsWL6CSPJUUNNw63RFcjk=;
-        b=fasna2/RbXSUU3s3J0U12h1YUpwpVTEv0/TDM6I0BKSdH9zG6Zj9HOr1TknExiubVMlAnn
-        ZRoZGDZBvzg3j/eaPvund+5A4pa579K4me1FVs2pMw0opVxFW0mngepL+vCmYp46L3YNj7
-        y/V42Jy4T7QTae4mtP90yG3QVyNtelY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-0TGPAZATPW-ACxAz1fKdHg-1; Wed, 14 Apr 2021 12:55:58 -0400
-X-MC-Unique: 0TGPAZATPW-ACxAz1fKdHg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78F6E8189DE;
-        Wed, 14 Apr 2021 16:55:50 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.65])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E773B60877;
-        Wed, 14 Apr 2021 16:55:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 14 Apr 2021 18:55:50 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 18:55:47 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     He Zhe <zhe.he@windriver.com>, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ptrace: is_syscall_success: Add syscall return code
- handling for compat task
-Message-ID: <20210414165547.GA22294@redhat.com>
-References: <20210414080245.25476-1-zhe.he@windriver.com>
- <20210414150810.GA19371@redhat.com>
- <e2efffb879914176a2eae8b52a3c5c33@AcuMS.aculab.com>
+        id S1349929AbhDNQ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:59:13 -0400
+Received: from mga07.intel.com ([134.134.136.100]:20433 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243400AbhDNQ7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:59:07 -0400
+IronPort-SDR: w0U5XZLBZkI+SJl6JGbcrkLAC7+Wkxjq0MabJTbEH9XpuYJMktKj6Kc1hZM9ADySC/Y9n4n7C8
+ PIQ/c1/MxFDg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="258648761"
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="258648761"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:58:44 -0700
+IronPort-SDR: WCf2aJVP8c4ooDOolOa1snOF+srOC1Kp+mxS4WSffdAR6MkYnSXmQn4llUJ+0WMd0EWCBnqgNE
+ zOsaLW/GCQ1w==
+X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
+   d="scan'208";a="418396538"
+Received: from djzorn-mobl.amr.corp.intel.com (HELO [10.212.231.247]) ([10.212.231.247])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:58:43 -0700
+Subject: Re: [PATCH v8] x86/sgx: Maintain encl->refcount for each
+ encl->mm_list entry
+To:     Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     linux-sgx@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org
+References: <20210207221401.29933-1-jarkko@kernel.org>
+ <op.01te3jzwwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <YHcPfRqKCx+KXwoJ@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9c09f331-fb3c-4ad3-8887-f27688f49b9c@intel.com>
+Date:   Wed, 14 Apr 2021 09:58:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e2efffb879914176a2eae8b52a3c5c33@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YHcPfRqKCx+KXwoJ@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/14, David Laight wrote:
->
-> From: Oleg Nesterov
-> > Sent: 14 April 2021 16:08
-> >
-> > Add audit maintainers...
-> >
-> > On 04/14, He Zhe wrote:
-> > >
-> > > When 32-bit userspace application is running on 64-bit kernel, the 32-bit
-> > > syscall return code would be changed from u32 to u64 in regs_return_value
-> > > and then changed to s64. Hence the negative return code would be treated
-> > > as a positive number and results in a non-error in, for example, audit
-> > > like below.
-> >
-> > Sorry, can understand. At least on x86_64 even the 32-bit syscall returns
-> > long, not u32.
-> >
-> > Hmm. And afaics on x86 is_compat_task() is only defined if !CONFIG_COMPAT,
-> > so this patch looks wrong anyway.
->
-> And, as with the other patch a x64_64 64bit process can make both types
-> of 32bit system call - so it needs to depend on the system call entry type
-> not any type of the task.
+On 4/14/21 8:51 AM, Sean Christopherson wrote:
+>> Could this access to and kfree of encl_mm possibly be after the
+>> kfree(encl_mm) noted above?
+> No, the mmu_notifier_unregister() ensures that all in-progress notifiers complete
+> before it returns, i.e. SGX's notifier call back is not reachable after it's
+> unregistered.
+> 
+>> Also is there a reason we do kfree(encl_mm) in notifier_free not directly in
+>> notifier_release?
+> Because encl_mm is the anchor to the enclave reference
+> 
+> 	/* 'encl_mm' is going away, put encl_mm->encl reference: */
+> 	kref_put(&encl_mm->encl->refcount, sgx_encl_release);
+> 
+> as well as the mmu notifier reference (the mmu_notifier_put(mn) call chain).
+> Freeing encl_mm immediately would prevent sgx_mmu_notifier_free() from dropping
+> the enclave reference.  And the mmu notifier reference need to be dropped in
+> sgx_mmu_notifier_release() because the encl_mm has been taken off encl->mm_list.
 
-I don't understand... but iirc is_compat_task() used to check TS_COMPAT and
-this is what we need to detect the 32-bit syscall. But it looks deprecated,
-I think in_compat_syscall() should be used instead.
-
-But this doesn't matter, I still can't understand the problem.
-
-Oleg.
-
+Haitao, I think you've highlighted that this locking scheme is woefully
+under-documented.  Any patches to beef it up would be very welcome.
