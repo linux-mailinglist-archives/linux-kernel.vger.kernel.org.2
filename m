@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD9535F72A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F0135F728
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238598AbhDNPCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
+        id S234028AbhDNPCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhDNPB7 (ORCPT
+        with ESMTP id S232433AbhDNPBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:01:59 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE012C061756;
-        Wed, 14 Apr 2021 08:01:36 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id m3so24103667edv.5;
-        Wed, 14 Apr 2021 08:01:36 -0700 (PDT)
+        Wed, 14 Apr 2021 11:01:54 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D75C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:01:32 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id o13-20020a9d404d0000b029028e0a0ae6b4so538888oti.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tT7uwoYzV1OZBhSy625V8SIzoldYD1Jtal4XKpjIk6E=;
-        b=gmFJ28R8jAqVvsrufxOILvnC1EhALwJelyqUFa2bAc6yNejyqklzCDN4MNbDh7azi4
-         sBwUgn6B+AF30eoC1zW4TYvYvOGV2BDLOW2G5Uoob9pf3ZCTw3S48qS1UjBJUQDzMFGl
-         zJJC9JrDNICNRA0LWE4A1tj2hafsaxMS6uPBr9ah0kuYocLCt70qlhvWSOl9FW4cpgSB
-         rXsK80Pb0Nddd0bbK91htO5PVtw/oRVEoVOz/tWtHbYI+0CUhqYbowA976+KF0UretoP
-         dmd2IyxTiqT0J/b2Hzo8zfnusAgtd8Vcqs35Yu3x3f8A9Cz2fU5VwixFRVYV0PIDU8IX
-         bPlQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pWUtMV31lAE/hyg87N7iEfJU2y6qay0uOr7HTCluXiQ=;
+        b=weX1bUpjRw6wuytQJlFfHNsn28nJPkkHmgBmJw8yPf3L2dHbbM5kfw3GHxlJBh1DyO
+         BJkCg2eP4j3uyTHTdQaKSyyrOp+Fdowe+89rwe7wEGQbQm73jyYQTJ7L9wx49d6igFYd
+         vbmQpzTiwPwqdGDeylnvV3vHpL+PWpFnvnzhRJ+IDnGQvkvXtwuLb+d5yUV9tHJCFx7s
+         bOw6rogRUZEzwOFKIQ91VGxbwbpZd7+mDC+GgCrvp1IoZyasKbedKt0fyfNtq6M1NaxO
+         7QzGAS3TRRrj5hg+1RxcPnAG82mKMruMgDVEaVQhzyw4zOZpmht7sd/ADU718gXGHYFJ
+         +Udg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tT7uwoYzV1OZBhSy625V8SIzoldYD1Jtal4XKpjIk6E=;
-        b=q6cS3HVP3htCzmhlsKlJ+w3xOswByofhRNOOq772udZEtHxD2DwdxZm7M6rOYlM+iV
-         C4GYOfX4a1yz4B7wg102Y36mVLVA3vBG2gLVRQXAzD4Z7UT6hGot3AiT23mxSX1rjVrI
-         sRbAk6SWXcVkZM3Ir52UTrymTCx0BtyQQbIvQNBjhoTzQiNrZen6W8uS//z2aci8rz/S
-         U/Af9f+NkutARichkTwvdbWD9EqSBJN/kHqewKipio5pqrDjWEsbOdFnIM5T+TKwoEIE
-         7WNLEXTzkmALdSsUe/cvZFybETaR/1AoLyIBgXBKFnrG7lgkj3xMUYW6t+ndmjpd44/p
-         4mWg==
-X-Gm-Message-State: AOAM533L2lwQbcwYoRwOWkYk5h9hvRiVPL4ssqfjGjRM25v86piodvec
-        aIkzwyCbaC+FDfiRgG4mvvb3yZYbHeUKpg==
-X-Google-Smtp-Source: ABdhPJxMIX8qIkKkbUhJ6ZLMBAQ1SepdGNJ7jLGhdrcO/r+YoSmg6OqqtONRLo8V47RZN6qZLXsOfw==
-X-Received: by 2002:a05:6402:51cd:: with SMTP id r13mr41713124edd.116.1618412495387;
-        Wed, 14 Apr 2021 08:01:35 -0700 (PDT)
-Received: from anparri.mshome.net (host-95-232-15-7.retail.telecomitalia.it. [95.232.15.7])
-        by smtp.gmail.com with ESMTPSA id c12sm12683393edx.54.2021.04.14.08.01.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pWUtMV31lAE/hyg87N7iEfJU2y6qay0uOr7HTCluXiQ=;
+        b=WY1l40/NdgqhWuHI5vCy0So50m2sMgNRwbDcfGdST8rB3sdQxQP9/TU5O8O4EMgTa0
+         9aNNVWikkiAZH5YsWIaT5nP9QVUoS8mjfIKMIEnOGPaMqxSvgmKes69drcOvBU8gFKzd
+         bHfq3+6naHXjv5MyBQCrjCYF02hcrFNQmjpKufXQsaZe9v/B8Lobk/NYg02i/yQKJmdP
+         HP8a0At7xIbk7ibVW8Bbmfh8iM7T8lqAmz3l1puhhDl2LPnn1bJ0ZIbRZwyHDoxvqSxd
+         OMbHe5w8mLtwovJ2yXMP1TTV2/geCKt6vaPoIwlyolX+gOOgWa41P9kd3s7PEm/aQIHW
+         c2Xg==
+X-Gm-Message-State: AOAM533TpekZNIP4ywJRwf/sZIp6vxAI18VliyN4n7ubLzEV/UJdKEBx
+        UVa9HC7/mhUdPpqyI484XqLqyQ==
+X-Google-Smtp-Source: ABdhPJxDtOsCeDQQ/deHM1lftmwj2WSD1eWrJZcD1R9B4e21VGSd2wMo678cp9rC6umgF66U/MAcWg==
+X-Received: by 2002:a9d:7f9a:: with SMTP id t26mr2801371otp.363.1618412491567;
+        Wed, 14 Apr 2021 08:01:31 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z25sm337558otm.34.2021.04.14.08.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 08:01:35 -0700 (PDT)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        mikelley@microsoft.com,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [PATCH v2 3/3] Drivers: hv: vmbus: Check for pending channel interrupts before taking a CPU offline
-Date:   Wed, 14 Apr 2021 17:01:18 +0200
-Message-Id: <20210414150118.2843-4-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210414150118.2843-1-parri.andrea@gmail.com>
-References: <20210414150118.2843-1-parri.andrea@gmail.com>
+        Wed, 14 Apr 2021 08:01:31 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 10:01:29 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] remoteproc: stm32: add capability to detach
+Message-ID: <YHcDyUap4cU8WNh6@builder.lan>
+References: <20210331073347.8293-1-arnaud.pouliquen@foss.st.com>
+ <20210331073347.8293-3-arnaud.pouliquen@foss.st.com>
+ <YHYOd/vqeZCiqkpJ@builder.lan>
+ <3df5317b-d28a-9362-6876-99442fdb8ef5@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3df5317b-d28a-9362-6876-99442fdb8ef5@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check that enough time has passed such that the modify channel message
-has been processed before taking a CPU offline.
+On Wed 14 Apr 02:23 CDT 2021, Arnaud POULIQUEN wrote:
+> On 4/13/21 11:34 PM, Bjorn Andersson wrote:
+> > On Wed 31 Mar 02:33 CDT 2021, Arnaud Pouliquen wrote:
+[..]
+> >> +		err = mbox_send_message(ddata->mb[idx].chan,
+> >> +					&dummy_data);
+> > 
+> > Seems I posted my comment on v1, rather than this latest version. Please
+> > let me know if we should do anything about this dummy_data.
+> 
+> Thanks for pointing this out, you are right, the mailbox driver is stm32_ipcc
+> and it only sends a signal to the remote processor.
+> 
+> As message can be queued by the mailbox framework using a local variable seems
+> not a good option. As this code is a copy/past of the kick and stop?
+> I propose to get this one and I will send a new patch to fix the usage in the
+> whole driver.
+> 
 
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
----
- drivers/hv/hv.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+That works for me, I've merged the two patches.
 
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index 3e6ff83adff42..dc9aa1130b22f 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -15,6 +15,7 @@
- #include <linux/hyperv.h>
- #include <linux/random.h>
- #include <linux/clockchips.h>
-+#include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <clocksource/hyperv_timer.h>
- #include <asm/mshyperv.h>
-@@ -292,6 +293,41 @@ void hv_synic_disable_regs(unsigned int cpu)
- 		disable_percpu_irq(vmbus_irq);
- }
- 
-+#define HV_MAX_TRIES 3
-+/*
-+ * Scan the event flags page of 'this' CPU looking for any bit that is set.  If we find one
-+ * bit set, then wait for a few milliseconds.  Repeat these steps for a maximum of 3 times.
-+ * Return 'true', if there is still any set bit after this operation; 'false', otherwise.
-+ *
-+ * If a bit is set, that means there is a pending channel interrupt.  The expectation is
-+ * that the normal interrupt handling mechanism will find and process the channel interrupt
-+ * "very soon", and in the process clear the bit.
-+ */
-+static bool hv_synic_event_pending(void)
-+{
-+	struct hv_per_cpu_context *hv_cpu = this_cpu_ptr(hv_context.cpu_context);
-+	union hv_synic_event_flags *event =
-+		(union hv_synic_event_flags *)hv_cpu->synic_event_page + VMBUS_MESSAGE_SINT;
-+	unsigned long *recv_int_page = event->flags; /* assumes VMBus version >= VERSION_WIN8 */
-+	bool pending;
-+	u32 relid;
-+	int tries = 0;
-+
-+retry:
-+	pending = false;
-+	for_each_set_bit(relid, recv_int_page, HV_EVENT_FLAGS_COUNT) {
-+		/* Special case - VMBus channel protocol messages */
-+		if (relid == 0)
-+			continue;
-+		pending = true;
-+		break;
-+	}
-+	if (pending && tries++ < HV_MAX_TRIES) {
-+		usleep_range(10000, 20000);
-+		goto retry;
-+	}
-+	return pending;
-+}
- 
- int hv_synic_cleanup(unsigned int cpu)
- {
-@@ -336,6 +372,19 @@ int hv_synic_cleanup(unsigned int cpu)
- 	if (channel_found && vmbus_connection.conn_state == CONNECTED)
- 		return -EBUSY;
- 
-+	if (vmbus_proto_version >= VERSION_WIN10_V4_1) {
-+		/*
-+		 * channel_found == false means that any channels that were previously
-+		 * assigned to the CPU have been reassigned elsewhere with a call of
-+		 * vmbus_send_modifychannel().  Scan the event flags page looking for
-+		 * bits that are set and waiting with a timeout for vmbus_chan_sched()
-+		 * to process such bits.  If bits are still set after this operation
-+		 * and VMBus is connected, fail the CPU offlining operation.
-+		 */
-+		if (hv_synic_event_pending() && vmbus_connection.conn_state == CONNECTED)
-+			return -EBUSY;
-+	}
-+
- 	hv_stimer_legacy_cleanup(cpu);
- 
- 	hv_synic_disable_regs(cpu);
--- 
-2.25.1
-
+Thanks,
+Bjorn
