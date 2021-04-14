@@ -2,403 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7084C35F191
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4C835F196
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhDNKjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        id S233504AbhDNKli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233897AbhDNKjK (ORCPT
+        with ESMTP id S231772AbhDNKlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:39:10 -0400
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7F0C061574;
-        Wed, 14 Apr 2021 03:38:49 -0700 (PDT)
-From:   zzam@gentoo.org
-To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-References: <cover.1618342050.git.mitaliborkar810@gmail.com>
- <fb60b20f7cdf3650d678fac4c0f1f364ac6984bf.1618342050.git.mitaliborkar810@gmail.com>
-Subject: Re: [PATCH v4 2/2] staging: media: zoran: add BIT() macro and align
- code
-Message-ID: <c6a301f6-99f3-69e0-a394-00948aef6c1c@gentoo.org>
-Date:   Wed, 14 Apr 2021 12:38:41 +0200
+        Wed, 14 Apr 2021 06:41:35 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608CCC061574;
+        Wed, 14 Apr 2021 03:41:10 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lWcxC-0000vp-4h; Wed, 14 Apr 2021 12:41:02 +0200
+To:     w4v3 <vv4v3@protonmail.com>, "corbet@lwn.net" <corbet@lwn.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <vaWPnw1Txo_MD5Sf-BnMmq3pBTkITza0W5p_jAi8JIy3hBAbCsKPXZ5g5IHKYGqK6zLjzUNgJ59xMCHvhREBUq6Vc1105b8yCIVDgaPABqE=@protonmail.com>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: "Reporting issues" document feedback
+Message-ID: <dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info>
+Date:   Wed, 14 Apr 2021 12:41:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <fb60b20f7cdf3650d678fac4c0f1f364ac6984bf.1618342050.git.mitaliborkar810@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <vaWPnw1Txo_MD5Sf-BnMmq3pBTkITza0W5p_jAi8JIy3hBAbCsKPXZ5g5IHKYGqK6zLjzUNgJ59xMCHvhREBUq6Vc1105b8yCIVDgaPABqE=@protonmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1618396872;41536736;
+X-HE-SMSGID: 1lWcxC-0000vp-4h
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 13.04.21 um 21:50 schrieb Mitali Borkar:
-> Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
-> This BIT() macro from linux/bitops.h is used to define ZR36057_VFESPFR_* bitmasks.
-> Use of macro is better and neater. It maintains consistency.
-> Removed comments from the same line and added them to new line above the
-> blocks, aligned everything properly by using tabs to make code neater
-> and improve readability.
-> Reported by checkpatch.
+
+[CCing Rafael]
+
+Beforehand: many thx for your feedback and for reporting the bug you
+faced, much appreciated.
+
+On 13.04.21 23:18, w4v3 wrote:
+
+> I would like to make some suggestions regarding the "Reporting
+> issues" document 
+> (https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
+> <https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html>).
+>
+>  I recently tried to submit a bug report, and since that was my
+> first time of doing so I closely read through said document.
+
+Glad to see it being read :-D
+
+> Now it
+> makes it very clear that one should consult the maintainers file on
+> how to proceed and that in most cases, bugzilla is not the right
+> place to submit a bug. It does however say that if the entry contains
+> a line starting with "bugs:", then I should file my issue with the
+> indicated bug tracker.
 > 
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
-> 
-> Changes from v3:- No changes.
-> Changes from v2:- Aligned the code using tabs.
-> Changes from v1:- Aligned the code using tabs and readjusted the
-> comments line.
-> 
->   drivers/staging/media/zoran/zr36057.h | 312 ++++++++++++++------------
->   1 file changed, 172 insertions(+), 140 deletions(-)
-> 
+> My problem was ACPI-related, and the corresponding entry in the 
+> maintainers file does have a line with "bugs:" pointing to bugzilla.
+> I concluded that it would be sufficient to file the bug there (after
+> all, bugzilla asks you identify the subsystem and seemingly forwards
+> the issue to the appropriate email address), but I don't think it was
+> since I didn't receive any response, and after looking into the
+> archive of the mailing list of the subsystem I could see that
+> meanwhile, 
 
-General comment:
-The patch is hard to read without applying it and viewing it with ignore 
-whitespace.
+Links to your bug report and the thread on the mailing list would have
+helped here to understand better what's going on, but whatever, they are
+not that important.
 
-> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> index a2a75fd9f535..f51e9ea2c3d3 100644
-> --- a/drivers/staging/media/zoran/zr36057.h
-> +++ b/drivers/staging/media/zoran/zr36057.h
-> @@ -7,148 +7,180 @@
->   
->   #ifndef _ZR36057_H_
->   #define _ZR36057_H_
-> +#include <linux/bitops.h>
->   
->   /* Zoran ZR36057 registers */
->   
-> -#define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-> -#define ZR36057_VFEHCR_HS_POL             BIT(30)
-> -#define ZR36057_VFEHCR_H_START           10
-> -#define ZR36057_VFEHCR_H_END		0
-> -#define ZR36057_VFEHCR_HMASK		0x3ff
-> -
-> -#define ZR36057_VFEVCR          0x004	/* Video Front End, Vertical Configuration Register */
-> -#define ZR36057_VFEVCR_VS_POL             BIT(30)
-> -#define ZR36057_VFEVCR_V_START           10
-> -#define ZR36057_VFEVCR_V_END		0
-> -#define ZR36057_VFEVCR_VMASK		0x3ff
-> -
-> -#define ZR36057_VFESPFR         0x008	/* Video Front End, Scaler and Pixel Format Register */
-> -#define ZR36057_VFESPFR_EXT_FL            BIT(26)
-> -#define ZR36057_VFESPFR_TOP_FIELD         BIT(25)
-> -#define ZR36057_VFESPFR_VCLK_POL          BIT(24)
-> -#define ZR36057_VFESPFR_H_FILTER         21
-> -#define ZR36057_VFESPFR_HOR_DCM          14
-> -#define ZR36057_VFESPFR_VER_DCM          8
-> -#define ZR36057_VFESPFR_DISP_MODE        6
-> -#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> -#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> -#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> -#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> -#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> -#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> -
-> -#define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> -
-> -#define ZR36057_VDBR            0x010	/* Video Display "Bottom" Register */
-> -
-> -#define ZR36057_VSSFGR          0x014	/* Video Stride, Status, and Frame Grab Register */
-> -#define ZR36057_VSSFGR_DISP_STRIDE       16
-> -#define ZR36057_VSSFGR_VID_OVF            BIT(8)
-> -#define ZR36057_VSSFGR_SNAP_SHOT          BIT(1)
-> -#define ZR36057_VSSFGR_FRAME_GRAB         BIT(0)
-> -
-> -#define ZR36057_VDCR            0x018	/* Video Display Configuration Register */
-> -#define ZR36057_VDCR_VID_EN               BIT(31)
-> -#define ZR36057_VDCR_MIN_PIX             24
-> -#define ZR36057_VDCR_TRITON              BIT(24)
-> -#define ZR36057_VDCR_VID_WIN_HT           12
-> -#define ZR36057_VDCR_VID_WIN_WID          0
-> -
-> -#define ZR36057_MMTR            0x01c	/* Masking Map "Top" Register */
-> -
-> -#define ZR36057_MMBR            0x020	/* Masking Map "Bottom" Register */
-> -
-> -#define ZR36057_OCR             0x024	/* Overlay Control Register */
-> -#define ZR36057_OCR_OVL_ENABLE            BIT(15)
-> -#define ZR36057_OCR_MASK_STRIDE          0
-> -
-> -#define ZR36057_SPGPPCR         0x028	/* System, PCI, and General Purpose Pins Control Register */
-> -#define ZR36057_SPGPPCR_SOFT_RESET	 BIT(24)
-> -
-> -#define ZR36057_GPPGCR1         0x02c	/* General Purpose Pins and GuestBus Control Register (1) */
-> -
-> -#define ZR36057_MCSAR           0x030	/* MPEG Code Source Address Register */
-> -
-> -#define ZR36057_MCTCR           0x034	/* MPEG Code Transfer Control Register */
-> -#define ZR36057_MCTCR_COD_TIME            BIT(30)
-> -#define ZR36057_MCTCR_C_EMPTY             BIT(29)
-> -#define ZR36057_MCTCR_C_FLUSH             BIT(28)
-> -#define ZR36057_MCTCR_COD_GUEST_ID	20
-> -#define ZR36057_MCTCR_COD_GUEST_REG	16
-> -
-> -#define ZR36057_MCMPR           0x038	/* MPEG Code Memory Pointer Register */
-> -
-> -#define ZR36057_ISR             0x03c	/* Interrupt Status Register */
-> -#define ZR36057_ISR_GIRQ1                BIT(30)
-> -#define ZR36057_ISR_GIRQ0                BIT(29)
-> -#define ZR36057_ISR_COD_REP_IRQ            BIT(28)
-> -#define ZR36057_ISR_JPEG_REP_IRQ           BIT(27)
-> -
-> -#define ZR36057_ICR             0x040	/* Interrupt Control Register */
-> -#define ZR36057_ICR_GIRQ1                BIT(30)
-> -#define ZR36057_ICR_GIRQ0                BIT(29)
-> -#define ZR36057_ICR_COD_REP_IRQ            BIT(28)
-> -#define ZR36057_ICR_JPEG_REP_IRQ           BIT(27)
-> -#define ZR36057_ICR_INT_PIN_EN             BIT(24)
-> -
-> -#define ZR36057_I2CBR           0x044	/* I2C Bus Register */
-> -#define ZR36057_I2CBR_SDA		 BIT(1)
-> -#define ZR36057_I2CBR_SCL		 BIT(0)
-> -
-> -#define ZR36057_JMC             0x100	/* JPEG Mode and Control */
-> -#define ZR36057_JMC_JPG                  BIT(31)
-> -#define ZR36057_JMC_JPG_EXP_MODE          (0 << 29)
-> -#define ZR36057_JMC_JPG_CMP_MODE           BIT(29)
-> -#define ZR36057_JMC_MJPG_EXP_MODE         (2 << 29)
-> -#define ZR36057_JMC_MJPG_CMP_MODE         (3 << 29)
-> -#define ZR36057_JMC_RTBUSY_FB            BIT(6)
-> -#define ZR36057_JMC_GO_EN                BIT(5)
-> -#define ZR36057_JMC_SYNC_MSTR             BIT(4)
-> -#define ZR36057_JMC_FLD_PER_BUFF         BIT(3)
-> -#define ZR36057_JMC_VFIFO_FB             BIT(2)
-> -#define ZR36057_JMC_CFIFO_FB             BIT(1)
-> -#define ZR36057_JMC_STLL_LIT_ENDIAN       BIT(0)
-> -
-> -#define ZR36057_JPC             0x104	/* JPEG Process Control */
-> -#define ZR36057_JPC_P_RESET              BIT(7)
-> -#define ZR36057_JPC_COD_TRNS_EN            BIT(5)
-> -#define ZR36057_JPC_ACTIVE               BIT(0)
-> -
-> -#define ZR36057_VSP             0x108	/* Vertical Sync Parameters */
-> -#define ZR36057_VSP_VSYNC_SIZE           16
-> -#define ZR36057_VSP_FRM_TOT              0
-> -
-> -#define ZR36057_HSP             0x10c	/* Horizontal Sync Parameters */
-> -#define ZR36057_HSP_HSYNC_START          16
-> -#define ZR36057_HSP_LINE_TOT             0
-> -
-> -#define ZR36057_FHAP            0x110	/* Field Horizontal Active Portion */
-> -#define ZR36057_FHAP_NAX                16
-> -#define ZR36057_FHAP_PAX                0
-> -
-> -#define ZR36057_FVAP            0x114	/* Field Vertical Active Portion */
-> -#define ZR36057_FVAP_NAY                16
-> -#define ZR36057_FVAP_PAY                0
-> -
-> -#define ZR36057_FPP             0x118	/* Field Process Parameters */
-> -#define ZR36057_FPP_ODD_EVEN             BIT(0)
-> -
-> -#define ZR36057_JCBA            0x11c	/* JPEG Code Base Address */
-> -
-> -#define ZR36057_JCFT            0x120	/* JPEG Code FIFO Threshold */
-> -
-> -#define ZR36057_JCGI            0x124	/* JPEG Codec Guest ID */
-> -#define ZR36057_JCGI_JPE_GUEST_ID         4
-> -#define ZR36057_JCGI_JPE_GUEST_REG        0
-> -
-> -#define ZR36057_GCR2            0x12c	/* GuestBus Control Register (2) */
-> -
-> -#define ZR36057_POR             0x200	/* Post Office Register */
-> -#define ZR36057_POR_PO_PEN                BIT(25)
-> -#define ZR36057_POR_PO_TIME               BIT(24)
-> -#define ZR36057_POR_PO_DIR                BIT(23)
-> -
-> -#define ZR36057_STR             0x300	/* "Still" Transfer Register */
-> +/* Video Front End, Horizontal Configuration Register */
-> +#define ZR36057_VFEHCR				0x000
-> +#define ZR36057_VFEHCR_HS_POL			BIT(30)
-> +#define ZR36057_VFEHCR_H_START			10
-> +#define ZR36057_VFEHCR_H_END			0
-> +#define ZR36057_VFEHCR_HMASK			0x3ff
-> +
-> +/* Video Front End, Vertical Configuration Register */
-> +#define ZR36057_VFEVCR				0x004
-> +#define ZR36057_VFEVCR_VS_POL			BIT(30)
-> +#define ZR36057_VFEVCR_V_START			10
-> +#define ZR36057_VFEVCR_V_END			0
-> +#define ZR36057_VFEVCR_VMASK			0x3ff
-> +
-> +/* Video Front End, Scaler and Pixel Format Register */
-> +#define ZR36057_VFESPFR			0x008
-> +#define ZR36057_VFESPFR_EXT_FL			BIT(26)
-> +#define ZR36057_VFESPFR_TOP_FIELD		BIT(25)
-> +#define ZR36057_VFESPFR_VCLK_POL		BIT(24)
-> +#define ZR36057_VFESPFR_H_FILTER		21
-> +#define ZR36057_VFESPFR_HOR_DCM		14
-> +#define ZR36057_VFESPFR_VER_DCM		8
-> +#define ZR36057_VFESPFR_DISP_MODE		6
+> the same bug had been reported (and dealt with) on that list.
+> Admittedly, it does say in the document that if there is no "bugs:"
+> line and "in many other cases", one should write an email to the
+> maintainer and the mailing list, but I don't think it's very clear.
+> To make it even more fool(like me)proof, it'd be worth pointing out
+> that the existence of a "bugs:" line does not imply that simply
+> submitting the bug there is enough to call attention to it.
 
-> +#define ZR36057_VFESPFR_YUV422			(0 << 3)
-> +#define ZR36057_VFESPFR_RGB888			BIT(3)
-> +#define ZR36057_VFESPFR_RGB565			(2 << 3)
-> +#define ZR36057_VFESPFR_RGB555			(3 << 3)
-The single BIT occurrence in this list is confusing at best. Please keep 
-ZR36057_VFESPFR_RGB888 to be (1 << 3). It is not a single bit, but 
-defining a 2-bit field in the middle with 4 different values. It should 
-be consistent.
+But it should, otherwise the subsystem should remove the line starting
+with B: ("bugs:" in the webview).
 
-> +#define ZR36057_VFESPFR_ERR_DIF		BIT(2)
-> +#define ZR36057_VFESPFR_PACK24			BIT(1)
-> +#define ZR36057_VFESPFR_LITTLE_ENDIAN		BIT(0)
-> +
-> +/* Video Display "Top" Register */
-> +#define ZR36057_VDTR				0x00c
-> +
-> +/* Video Display "Bottom" Register */
-> +#define ZR36057_VDBR				0x010
-> +
-> +/* Video Stride, Status, and Frame Grab Register */
-> +#define ZR36057_VSSFGR				0x014
-> +#define ZR36057_VSSFGR_DISP_STRIDE		16
-> +#define ZR36057_VSSFGR_VID_OVF			BIT(8)
-> +#define ZR36057_VSSFGR_SNAP_SHOT		BIT(1)
-> +#define ZR36057_VSSFGR_FRAME_GRAB		BIT(0)
-> +
-> +/* Video Display Configuration Register */
-> +#define ZR36057_VDCR				0x018
-> +#define ZR36057_VDCR_VID_EN			BIT(31)
-> +#define ZR36057_VDCR_MIN_PIX			24
-> +#define ZR36057_VDCR_TRITON			BIT(24)
-> +#define ZR36057_VDCR_VID_WIN_HT		12
-> +#define ZR36057_VDCR_VID_WIN_WID		0
-> +
-> +/* Masking Map "Top" Register */
-> +#define ZR36057_MMTR				0x01c
-> +
-> +/* Masking Map "Bottom" Register */
-> +#define ZR36057_MMBR				0x020
-> +
-> +/* Overlay Control Register */
-> +#define ZR36057_OCR				0x024
-> +#define ZR36057_OCR_OVL_ENABLE			BIT(15)
-> +#define ZR36057_OCR_MASK_STRIDE		0
-> +
-> +/* System, PCI, and General Purpose Pins Control Register */
-> +#define ZR36057_SPGPPCR			0x028
-> +#define ZR36057_SPGPPCR_SOFT_RESET		BIT(24)
-> +
-> +/* General Purpose Pins and GuestBus Control Register (1) */
-> +#define ZR36057_GPPGCR1			0x02c
-> +
-> +/* MPEG Code Source Address Register */
-> +#define ZR36057_MCSAR				0x030
-> +
-> +/* MPEG Code Transfer Control Register */
-> +#define ZR36057_MCTCR				0x034
-> +#define ZR36057_MCTCR_COD_TIME			BIT(30)
-> +#define ZR36057_MCTCR_C_EMPTY			BIT(29)
-> +#define ZR36057_MCTCR_C_FLUSH			BIT(28)
-> +#define ZR36057_MCTCR_COD_GUEST_ID		20
-> +#define ZR36057_MCTCR_COD_GUEST_REG		16
-> +
-> +/* MPEG Code Memory Pointer Register */
-> +#define ZR36057_MCMPR				0x038
-> +
-> +/* Interrupt Status Register */
-> +#define ZR36057_ISR				0x03c
-> +#define ZR36057_ISR_GIRQ1			BIT(30)
-> +#define ZR36057_ISR_GIRQ0			BIT(29)
-> +#define ZR36057_ISR_COD_REP_IRQ		BIT(28)
-> +#define ZR36057_ISR_JPEG_REP_IRQ		BIT(27)
-> +
-> +/* Interrupt Control Register */
-> +#define ZR36057_ICR				0x040
-> +#define ZR36057_ICR_GIRQ1			BIT(30)
-> +#define ZR36057_ICR_GIRQ0			BIT(29)
-> +#define ZR36057_ICR_COD_REP_IRQ		BIT(28)
-> +#define ZR36057_ICR_JPEG_REP_IRQ		BIT(27)
-> +#define ZR36057_ICR_INT_PIN_EN			BIT(24)
-> +
-> +/* I2C Bus Register */
-> +#define ZR36057_I2CBR				0x044
-> +#define ZR36057_I2CBR_SDA			BIT(1)
-> +#define ZR36057_I2CBR_SCL			BIT(0)
-> +
-> +/* JPEG Mode and Control */
-> +#define ZR36057_JMC				0x100
-> +#define ZR36057_JMC_JPG			BIT(31)
+Rafael might be able to clarify things.
 
-> +#define ZR36057_JMC_JPG_EXP_MODE		(0 << 29)
-> +#define ZR36057_JMC_JPG_CMP_MODE		BIT(29)
-> +#define ZR36057_JMC_MJPG_EXP_MODE		(2 << 29)
-> +#define ZR36057_JMC_MJPG_CMP_MODE		(3 << 29)
-Same as above. Please change back ZR36057_JMC_JPG_CMP_MODE to be (1 << 
-29). Then this 2 bit field is consistent.
+But afais it's appropriate there is a B: line: just a few weeks ago I
+took a quick look at bugzilla and ACPI bugs in particular, and back then
+most of the bug reports there got handled by the maintainers. That's why
+I assume you were just unlucky and your report fall through the cracks
+(but obviously I might be wrong here). And maybe your report even did
+help: the developer that fixed the issue might have seen both the bug
+entry and the mailed report, but simply forget to close the former.
 
-> +#define ZR36057_JMC_RTBUSY_FB			BIT(6)
-> +#define ZR36057_JMC_GO_EN			BIT(5)
-> +#define ZR36057_JMC_SYNC_MSTR			BIT(4)
-> +#define ZR36057_JMC_FLD_PER_BUFF		BIT(3)
-> +#define ZR36057_JMC_VFIFO_FB			BIT(2)
-> +#define ZR36057_JMC_CFIFO_FB			BIT(1)
-> +#define ZR36057_JMC_STLL_LIT_ENDIAN		BIT(0)
-> +
-> +/* JPEG Process Control */
-> +#define ZR36057_JPC				0x104
-> +#define ZR36057_JPC_P_RESET			BIT(7)
-> +#define ZR36057_JPC_COD_TRNS_EN		BIT(5)
-> +#define ZR36057_JPC_ACTIVE			BIT(0)
-> +
-> +/* Vertical Sync Parameters */
-> +#define ZR36057_VSP				0x108
-> +#define ZR36057_VSP_VSYNC_SIZE			16
-> +#define ZR36057_VSP_FRM_TOT			0
-> +
-> +/* Horizontal Sync Parameters */
-> +#define ZR36057_HSP				0x10c
-> +#define ZR36057_HSP_HSYNC_START		16
-> +#define ZR36057_HSP_LINE_TOT			0
-> +
-> +/* Field Horizontal Active Portion */
-> +#define ZR36057_FHAP				0x110
-> +#define ZR36057_FHAP_NAX			16
-> +#define ZR36057_FHAP_PAX			0
-> +
-> +/* Field Vertical Active Portion */
-> +#define ZR36057_FVAP				0x114
-> +#define ZR36057_FVAP_NAY			16
-> +#define ZR36057_FVAP_PAY			0
-> +
-> +/* Field Process Parameters */
-> +#define ZR36057_FPP				0x118
-> +#define ZR36057_FPP_ODD_EVEN			BIT(0)
-> +
-> +/* JPEG Code Base Address */
-> +#define ZR36057_JCBA				0x11c
-> +
-> +/* JPEG Code FIFO Threshold */
-> +#define ZR36057_JCFT				0x120
-> +
-> +/* JPEG Codec Guest ID */
-> +#define ZR36057_JCGI				0x124
-> +#define ZR36057_JCGI_JPE_GUEST_ID		4
-> +#define ZR36057_JCGI_JPE_GUEST_REG		0
-> +
-> +/* GuestBus Control Register (2) */
-> +#define ZR36057_GCR2				0x12c
-> +
-> +/* Post Office Register */
-> +#define ZR36057_POR				0x200
-> +#define ZR36057_POR_PO_PEN			BIT(25)
-> +#define ZR36057_POR_PO_TIME			BIT(24)
-> +#define ZR36057_POR_PO_DIR			BIT(23)
-> +
-> +/* "Still" Transfer Register */
-> +#define ZR36057_STR				0x300
->   
->   #endif
-> 
+Things like that can not be prevented completely, as all of us are just
+humans. :-/
 
-Regards
-Matthias
+> Conversely, I'm surprised that despite the ACPI subsystem having 
+> bugzilla as designated bug tracker, the issue was only reported on
+> the mailing list
+
+If there is a B: entry in MAINTAINERS, then afaik that's the preferred
+way to report bugs. But kernel development is driven by mail, hence
+there will always be someone to report an issue by mail. That's not
+ideal, but that's how it is. :-/ That's mainly an issue for the few
+subsystems that have a B: entry, as they need to watch two areas.
+
+> and not on bugzilla (except by me). This makes it
+> seem like all the "bugs:" line indicates is that the given bug
+> tracker has a section for that subsystem, which may be neither
+> necessary nor sufficient for bug reporting. If this is the case then
+> stating this could clarify how to understand the maintainers file.
+
+Let's see what Rafael says.
+
+But your mail showed me that indeed there is one aspect that
+reporting-issues currently does not cover: in cases like yours reporters
+are better off checking both the mailing list archives and the bug
+tracker before reporting a bug.
+
+Again, thx for your feedback! Have a nice day!
+
+Ciao, Thorsten
