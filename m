@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B4B35FB6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79E935FB6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352290AbhDNTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:15:05 -0400
-Received: from mga18.intel.com ([134.134.136.126]:13176 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352044AbhDNTPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:15:01 -0400
-IronPort-SDR: UQ6JjfZKLJ7SDVklFzMRAHTTvh4bkBXWu9wfS43FY2BfRcCfI+WpyTSMBY3QSlttIEHJN1iWEA
- 2aapL83wcwsw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="182217977"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="182217977"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 12:14:36 -0700
-IronPort-SDR: JHSXI5ogPMf+nKkJI5QO2UwfF7lt/5uE0WflR1ZvTeC7DrX94bEfvJM0dmZ/wIz52W+oHeEUg5
- W0ZA3rpfkMwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="452592279"
-Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Apr 2021 12:14:34 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-In-Reply-To: <YHc68v7keeITnA3K@kroah.com>
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
- <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
- <YHcnckePpKDujCU+@kroah.com> <YHcqxMLR44laX2PZ@smile.fi.intel.com>
- <YHc68v7keeITnA3K@kroah.com>
-Date:   Wed, 14 Apr 2021 22:14:34 +0300
-Message-ID: <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
+        id S1353222AbhDNTPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353126AbhDNTPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 15:15:32 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25099C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:15:09 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id w4so17177641wrt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 12:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFk9xs2GNfkAG4LwFGmGU5idTsGe49u9Ar1GX/8V8R4=;
+        b=RHqW+I/cdvDL4vkAOSqhD4lvQxt3Y5Aa2VhgrbK6C+OJl5+wZd6bQkVczV0xZIKYS9
+         CkwU9hFDSKBDT44C7J6Cu9afnSpN6elhc8X8S3fGXNH9nJTfR6s4n0NvBqtz8KuBxI+I
+         +bJJ1UVLMFov2AgHIMn3ug+4k9cvnqitCgqgE6d5tcC7fDRX0EtLXqlSp5/Up3l3tFUt
+         /3togF4vDLRZI/LOabvlLAIuRwBcxwudDEjURLOKGPoZpQAYF4/VzIibnHzPknIL2+th
+         8pmdkf7VCYgZN4Q0lkxoNNj1+2/Kqbzky0ZoGnBkCQDRArbWG2kfgE9MXadAuP7UiupJ
+         CpwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFk9xs2GNfkAG4LwFGmGU5idTsGe49u9Ar1GX/8V8R4=;
+        b=qV78aGMPuFmli7c8M8yP878wQufzVrLkiZk5XPPGI8cQ2e9axkYIR2WAoCKijzBdIE
+         PjX0eiguABIAJrbR/9UHKwwIwT8oscNM71wZBgIm+uAtB7J7CwL5vVYSNo7BCtUSNMWZ
+         iorrnmThSnSyqufqvrtMiN59ObtN7WUrywd+aq9gcNVHnvfNExiimUxnuEIZdhVF7xzI
+         q1H6FRy73vxZBiSgescke3i7fWMW9CELmy3pHEOLQ8utL/vEOY+vAb8oce3Ou3FREUeY
+         wSvkMd4gnNpaDIvqeO6uUrNcbFUD5da53iyIKzouhc6sFxzMaApy/c0ygmfARoyTxYFT
+         hPLA==
+X-Gm-Message-State: AOAM5326FHVSATPtOaZPEY6VaM+WpEyq95FRe/e2PUqiY2hFfEIkf30h
+        AFU7ztFsksJOdqeru5lg0ZTfF35LGrPsUTApBxsdKA==
+X-Google-Smtp-Source: ABdhPJyQL4wEyStvGfDKX4aHEFscf5giZOOpJHx1+tdKcPWnQs4kfikFxy5uEletU2lADZ+akHYan2B7qw89puI99Q0=
+X-Received: by 2002:a5d:6a84:: with SMTP id s4mr35949194wru.92.1618427707498;
+ Wed, 14 Apr 2021 12:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210413075155.32652-1-sjpark@amazon.de> <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+ <20210413231436.GF63242@dread.disaster.area> <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
+ <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
+ <20210414155130.GU3762101@tassilo.jf.intel.com> <e0ad1b48a1ad0b6d3a1e79129f397ddb6c32fe35.camel@surriel.com>
+In-Reply-To: <e0ad1b48a1ad0b6d3a1e79129f397ddb6c32fe35.camel@surriel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Wed, 14 Apr 2021 13:14:55 -0600
+Message-ID: <CAOUHufaRXbDHbEro1uE1CHvpWB4U67iroj0hT8CkUEOSAddzYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        SeongJae Park <sj38.park@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Kernel Page Reclaim v2 <page-reclaim@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-
->> Using raw buffer APIs against uuid_t / guid_t.
+On Wed, Apr 14, 2021 at 9:59 AM Rik van Riel <riel@surriel.com> wrote:
 >
-> So you want to do that, or you do not want to do that?  Totally
-> confused,
+> On Wed, 2021-04-14 at 08:51 -0700, Andi Kleen wrote:
+> > >    2) It will not scan PTE tables under non-leaf PMD entries that
+> > > do not
+> > >       have the accessed bit set, when
+> > >       CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG=y.
+> >
+> > This assumes  that workloads have reasonable locality. Could there
+> > be a worst case where only one or two pages in each PTE are used,
+> > so this PTE skipping trick doesn't work?
+>
+> Databases with large shared memory segments shared between
+> many processes come to mind as a real-world example of a
+> worst case scenario.
 
-My understanding is that:
-1) generate_random_uuid() use is allegedly bad even though it's in their
-header,
-2) poking directly at the byte array inside uuid_t is bad, even though,
-again, header.
+Well, I don't think you two are talking about the same thing. Andi was
+focusing on sparsity. Your example seems to be about sharing, i.e.,
+ihgh mapcount. Of course both can happen at the same time, as I tested
+here:
+https://lore.kernel.org/linux-mm/YHFuL%2FDdtiml4biw@google.com/#t
 
-It is, indeed, not ideal.
-
-If agreeable, I'll update this patch to the below and respin the whole
-series.
-
-From 02340f8c7c17ace028040a35553c33cce8f3bce4 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Wed, 22 Apr 2020 16:02:20 +0300
-Subject: [PATCH] stm class: Use correct UUID APIs
-
-It appears that the STM code didn't manage to accurately decypher the
-delicate inner workings of an alternative thought process behind the
-UUID API and directly called generate_random_uuid() that clearly needs
-to be a static function in lib/uuid.c.
-
-At the same time, said STM code is poking directly at the byte array
-inside the uuid_t when it uses the UUID for its internal purposes.
-
-Fix these two transgressions by using intended APIs instead.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-[ash: changed back to uuid_t and updated the commit message]
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
----
- drivers/hwtracing/stm/p_sys-t.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwtracing/stm/p_sys-t.c b/drivers/hwtracing/stm/p_sys-t.c
-index 360b5c03df95..8254971c02e7 100644
---- a/drivers/hwtracing/stm/p_sys-t.c
-+++ b/drivers/hwtracing/stm/p_sys-t.c
-@@ -92,7 +92,7 @@ static void sys_t_policy_node_init(void *priv)
- {
- 	struct sys_t_policy_node *pn = priv;
- 
--	generate_random_uuid(pn->uuid.b);
-+	uuid_gen(&pn->uuid);
- }
- 
- static int sys_t_output_open(void *priv, struct stm_output *output)
-@@ -292,6 +292,7 @@ static ssize_t sys_t_write(struct stm_data *data, struct stm_output *output,
- 	unsigned int m = output->master;
- 	const unsigned char nil = 0;
- 	u32 header = DATA_HEADER;
-+	u8 uuid[UUID_SIZE];
- 	ssize_t sz;
- 
- 	/* We require an existing policy node to proceed */
-@@ -322,7 +323,8 @@ static ssize_t sys_t_write(struct stm_data *data, struct stm_output *output,
- 		return sz;
- 
- 	/* GUID */
--	sz = stm_data_write(data, m, c, false, op->node.uuid.b, UUID_SIZE);
-+	export_uuid(uuid, &op->node.uuid);
-+	sz = stm_data_write(data, m, c, false, uuid, sizeof(op->node.uuid));
- 	if (sz <= 0)
- 		return sz;
- 
--- 
-2.30.2
-
+I'm skeptical that shared memory used by databases is that sparse,
+i.e., one page per PTE table, because the extremely low locality would
+heavily penalize their performance. But my knowledge in databases is
+close to zero. So feel free to enlighten me or just ignore what I
+said.
