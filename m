@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F7435F8EF
+	by mail.lfdr.de (Postfix) with ESMTP id D2D2235F8F0
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 18:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352693AbhDNQZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 12:25:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:60708 "EHLO mga06.intel.com"
+        id S1352705AbhDNQZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 12:25:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:62957 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233385AbhDNQZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 12:25:22 -0400
-IronPort-SDR: qEdPu2f0prdnVgGFRibsYFmizM+Wy5qjlXaeF0Ca5xyw8vlfpSB05Zf32MAjxuZs30Fm3Nqg95
- 4ofeOCx8Bpvw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="255995993"
+        id S233964AbhDNQZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 12:25:23 -0400
+IronPort-SDR: 8FiUePjvQvdziojlqTAzDhMPXLIYvWzRx7TSgqOzzCzzTPYy785/nE4/d8Rd4xR8Jt7Rermuxo
+ 29lc47Y4H78A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181800138"
 X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="255995993"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:25:00 -0700
-IronPort-SDR: 4FSkHrhbDpM9UP8osiiSC5qSKWbBKqfC/5QpWky9QM0Tx5hTq9GddFMUR7trOKzsZ4rm+dKPay
- oORt8XHHYv1A==
+   d="scan'208";a="181800138"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 09:25:00 -0700
+IronPort-SDR: 2pBh8imAzVDFjnVwjF2nCDf4qjnx0nqVoB8Ne081AA8QSnzZS1ERIfk5heFTyWuHwtwh0BjD3i
+ DHYZaJNn/A8A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="443872140"
+   d="scan'208";a="522046876"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2021 09:24:58 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2021 09:24:58 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 3647B24D; Wed, 14 Apr 2021 19:25:15 +0300 (EEST)
+        id 41473279; Wed, 14 Apr 2021 19:25:15 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
@@ -34,9 +34,9 @@ To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v3 3/4] devres: No need to call remove_nodes() when there none present
-Date:   Wed, 14 Apr 2021 19:25:10 +0300
-Message-Id: <20210414162511.59466-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 4/4] devres: Enable trace events
+Date:   Wed, 14 Apr 2021 19:25:11 +0300
+Message-Id: <20210414162511.59466-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210414162511.59466-1-andriy.shevchenko@linux.intel.com>
 References: <20210414162511.59466-1-andriy.shevchenko@linux.intel.com>
@@ -46,29 +46,254 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a list of devres nodes is empty, no need to call remove_nodes().
+In some cases the printf() mechanism is too heavy and can't be used.
+For example, when debugging a race condition involving devres API.
+When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
+otherwise it's quite visible with a useful information being collected.
+
+Enable trace events for devres part of the driver core.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v3: new patch
- drivers/base/devres.c | 4 ++++
- 1 file changed, 4 insertions(+)
+v3: always assign name and size for the resource
+ drivers/base/Makefile  |  3 +++
+ drivers/base/devres.c  | 47 +++++++++++++++--------------------
+ drivers/base/trace.c   | 10 ++++++++
+ drivers/base/trace.h   | 56 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/device.h |  9 -------
+ 5 files changed, 89 insertions(+), 36 deletions(-)
+ create mode 100644 drivers/base/trace.c
+ create mode 100644 drivers/base/trace.h
 
+diff --git a/drivers/base/Makefile b/drivers/base/Makefile
+index 8b93a7f291ec..ef8e44a7d288 100644
+--- a/drivers/base/Makefile
++++ b/drivers/base/Makefile
+@@ -30,3 +30,6 @@ obj-y			+= test/
+ 
+ ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
+ 
++# define_trace.h needs to know how to find our header
++CFLAGS_trace.o		:= -I$(src)
++obj-$(CONFIG_TRACING)	+= trace.o
 diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-index db1f3137fc81..dee48858663f 100644
+index dee48858663f..eaa9a5cd1db9 100644
 --- a/drivers/base/devres.c
 +++ b/drivers/base/devres.c
-@@ -526,6 +526,10 @@ int devres_release_all(struct device *dev)
- 	if (WARN_ON(dev->devres_head.next == NULL))
- 		return -ENODEV;
+@@ -14,14 +14,13 @@
+ #include <asm/sections.h>
  
-+	/* Nothing to release if list is empty */
-+	if (list_empty(&dev->devres_head))
-+		return 0;
+ #include "base.h"
++#include "trace.h"
+ 
+ struct devres_node {
+ 	struct list_head		entry;
+ 	dr_release_t			release;
+-#ifdef CONFIG_DEBUG_DEVRES
+ 	const char			*name;
+ 	size_t				size;
+-#endif
+ };
+ 
+ struct devres {
+@@ -43,10 +42,6 @@ struct devres_group {
+ 	/* -- 8 pointers */
+ };
+ 
+-#ifdef CONFIG_DEBUG_DEVRES
+-static int log_devres = 0;
+-module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
+-
+ static void set_node_dbginfo(struct devres_node *node, const char *name,
+ 			     size_t size)
+ {
+@@ -54,7 +49,11 @@ static void set_node_dbginfo(struct devres_node *node, const char *name,
+ 	node->size = size;
+ }
+ 
+-static void devres_log(struct device *dev, struct devres_node *node,
++#ifdef CONFIG_DEBUG_DEVRES
++static int log_devres = 0;
++module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
 +
- 	spin_lock_irqsave(&dev->devres_lock, flags);
- 	cnt = remove_nodes(dev, dev->devres_head.next, &dev->devres_head, &todo);
- 	spin_unlock_irqrestore(&dev->devres_lock, flags);
++static void devres_dbg(struct device *dev, struct devres_node *node,
+ 		       const char *op)
+ {
+ 	if (unlikely(log_devres))
+@@ -62,10 +61,16 @@ static void devres_log(struct device *dev, struct devres_node *node,
+ 			op, node, node->name, node->size);
+ }
+ #else /* CONFIG_DEBUG_DEVRES */
+-#define set_node_dbginfo(node, n, s)	do {} while (0)
+-#define devres_log(dev, node, op)	do {} while (0)
++#define devres_dbg(dev, node, op)	do {} while (0)
+ #endif /* CONFIG_DEBUG_DEVRES */
+ 
++static void devres_log(struct device *dev, struct devres_node *node,
++		       const char *op)
++{
++	trace_devres_log(dev, op, node, node->name, node->size);
++	devres_dbg(dev, node, op);
++}
++
+ /*
+  * Release functions for devres group.  These callbacks are used only
+  * for identification.
+@@ -134,26 +139,13 @@ static void replace_dr(struct device *dev,
+ 	list_replace(&old->entry, &new->entry);
+ }
+ 
+-#ifdef CONFIG_DEBUG_DEVRES
+-void * __devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
+-		      const char *name)
+-{
+-	struct devres *dr;
+-
+-	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
+-	if (unlikely(!dr))
+-		return NULL;
+-	set_node_dbginfo(&dr->node, name, size);
+-	return dr->data;
+-}
+-EXPORT_SYMBOL_GPL(__devres_alloc_node);
+-#else
+ /**
+- * devres_alloc_node - Allocate device resource data
++ * __devres_alloc_node - Allocate device resource data
+  * @release: Release function devres will be associated with
+  * @size: Allocation size
+  * @gfp: Allocation flags
+  * @nid: NUMA node
++ * @name: Name of the resource
+  *
+  * Allocate devres of @size bytes.  The allocated area is zeroed, then
+  * associated with @release.  The returned pointer can be passed to
+@@ -162,17 +154,18 @@ EXPORT_SYMBOL_GPL(__devres_alloc_node);
+  * RETURNS:
+  * Pointer to allocated devres on success, NULL on failure.
+  */
+-void * devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid)
++void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
++			  const char *name)
+ {
+ 	struct devres *dr;
+ 
+ 	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
+ 	if (unlikely(!dr))
+ 		return NULL;
++	set_node_dbginfo(&dr->node, name, size);
+ 	return dr->data;
+ }
+-EXPORT_SYMBOL_GPL(devres_alloc_node);
+-#endif
++EXPORT_SYMBOL_GPL(__devres_alloc_node);
+ 
+ /**
+  * devres_for_each_res - Resource iterator
+diff --git a/drivers/base/trace.c b/drivers/base/trace.c
+new file mode 100644
+index 000000000000..b24b0a309c4a
+--- /dev/null
++++ b/drivers/base/trace.c
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Device core Trace Support
++ * Copyright (C) 2021, Intel Corporation
++ *
++ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++ */
++
++#define CREATE_TRACE_POINTS
++#include "trace.h"
+diff --git a/drivers/base/trace.h b/drivers/base/trace.h
+new file mode 100644
+index 000000000000..3192e18f877e
+--- /dev/null
++++ b/drivers/base/trace.h
+@@ -0,0 +1,56 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Device core Trace Support
++ * Copyright (C) 2021, Intel Corporation
++ *
++ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM dev
++
++#if !defined(__DEV_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define __DEV_TRACE_H
++
++#include <linux/device.h>
++#include <linux/tracepoint.h>
++#include <linux/types.h>
++
++DECLARE_EVENT_CLASS(devres,
++	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
++	TP_ARGS(dev, op, node, name, size),
++	TP_STRUCT__entry(
++		__string(devname, dev_name(dev))
++		__field(struct device *, dev)
++		__field(const char *, op)
++		__field(void *, node)
++		__field(const char *, name)
++		__field(size_t, size)
++	),
++	TP_fast_assign(
++		__assign_str(devname, dev_name(dev));
++		__entry->op = op;
++		__entry->node = node;
++		__entry->name = name;
++		__entry->size = size;
++	),
++	TP_printk("%s %3s %p %s (%zu bytes)", __get_str(devname),
++		  __entry->op, __entry->node, __entry->name, __entry->size)
++);
++
++DEFINE_EVENT(devres, devres_log,
++	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
++	TP_ARGS(dev, op, node, name, size)
++);
++
++#endif /* __DEV_TRACE_H */
++
++/* this part has to be here */
++
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE trace
++
++#include <trace/define_trace.h>
+diff --git a/include/linux/device.h b/include/linux/device.h
+index 38a2071cf776..3769cce77e2c 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -165,21 +165,12 @@ void device_remove_bin_file(struct device *dev,
+ typedef void (*dr_release_t)(struct device *dev, void *res);
+ typedef int (*dr_match_t)(struct device *dev, void *res, void *match_data);
+ 
+-#ifdef CONFIG_DEBUG_DEVRES
+ void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp,
+ 			  int nid, const char *name) __malloc;
+ #define devres_alloc(release, size, gfp) \
+ 	__devres_alloc_node(release, size, gfp, NUMA_NO_NODE, #release)
+ #define devres_alloc_node(release, size, gfp, nid) \
+ 	__devres_alloc_node(release, size, gfp, nid, #release)
+-#else
+-void *devres_alloc_node(dr_release_t release, size_t size,
+-			gfp_t gfp, int nid) __malloc;
+-static inline void *devres_alloc(dr_release_t release, size_t size, gfp_t gfp)
+-{
+-	return devres_alloc_node(release, size, gfp, NUMA_NO_NODE);
+-}
+-#endif
+ 
+ void devres_for_each_res(struct device *dev, dr_release_t release,
+ 			 dr_match_t match, void *match_data,
 -- 
 2.30.2
 
