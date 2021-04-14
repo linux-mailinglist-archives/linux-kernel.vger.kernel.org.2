@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CA335EB0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9D535EB0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346608AbhDNClh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346508AbhDNCl2 (ORCPT
+        id S243269AbhDNCnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:43:04 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16990 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhDNCnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:41:28 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F4DC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:41:08 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c2so1839947plz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=IWQ8kZIVlGhQD8+fDUl3Qr87vRGoEpJEhZ9a36cdmds=;
-        b=GhUjZ2ZzTjpi1biirHOduFNr3NQBYkkJ5xRA/5xxo7UwrTjpe5gMi42KF/VcAgf9rB
-         sucr6zJ0RA7Zb6zUP40T0031wV3wN2+mdQS9op63T/qR/NUQDJNAGnN/xi1AAXdsYlBO
-         G62pKW/wz39ztJxtonQWrGCIbwKywdy2TXntM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=IWQ8kZIVlGhQD8+fDUl3Qr87vRGoEpJEhZ9a36cdmds=;
-        b=IXNJOdOrXlKi/iQtqY/ScGN5Q4+lsiL8YeBrKOK/Wce2OoBG53ltnQslwGTZ3x2wW8
-         isG60eFa7zOZKY6qrJvIYZnNmhZ04rFNUK73kA1CEXGzx0R6mhD9b8UI3z2Ci8WmCF+c
-         c9mvhrMdgCazkEzlhJXIlTD3UckSW1Kqvpsz9r89gMUn/8nAtv/rq0JmnZJcpyKusOIs
-         PK9KqkrE1mH4nKFEyBxPUz2Om8PZFzfoXO1cpm6dgH4NZ1FzGnB5rW6x1h4EKOY7e1aK
-         Xqw5iSxFxZ2JtbrIqUREzqXg1M9CitROev3bldr1XyZd24nCWNcji5ET41ZN65UdKVL8
-         l1aw==
-X-Gm-Message-State: AOAM532pQGllFbB1FB452tDrO5qMQc4asffHNy9lP+zXg1hh4AzjzKNM
-        WHOKXmSRAO0tmNdtv8+vG6+dHA==
-X-Google-Smtp-Source: ABdhPJyWXs4uv20lp9C9gM9mn6ADAno63aDcQTRqZNWrgUoUHGkLTKU1PClRdBDVvX1u664CF+3CWw==
-X-Received: by 2002:a17:90b:33c7:: with SMTP id lk7mr951786pjb.95.1618368067895;
-        Tue, 13 Apr 2021 19:41:07 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
-        by smtp.gmail.com with ESMTPSA id x125sm13272511pfd.124.2021.04.13.19.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 19:41:07 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 13 Apr 2021 22:43:02 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FKmsH20DhzNvtd;
+        Wed, 14 Apr 2021 10:39:47 +0800 (CST)
+Received: from [10.174.176.162] (10.174.176.162) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 14 Apr 2021 10:42:38 +0800
+Subject: Re: [PATCH 3/5] mm/swap_state: fix get_shadow_from_swap_cache() race
+ with swapoff
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-4-linmiaohe@huawei.com>
+ <87im4rufwq.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <4ebc0a78-6fde-9d43-7562-8ef7679b5460@huawei.com>
+Date:   Wed, 14 Apr 2021 10:42:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618355470-5226-1-git-send-email-khsieh@codeaurora.org>
-References: <1618355470-5226-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH v2 1/3] drm/msm/dp: check sink_count before update is_connected status
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Tue, 13 Apr 2021 19:41:05 -0700
-Message-ID: <161836806593.3764895.3487656287937752851@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <87im4rufwq.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-04-13 16:11:10)
-> Link status is different from display connected status in the case
-> of something like an Apple dongle where the type-c plug can be
-> connected, and therefore the link is connected, but no sink is
-> connected until an HDMI cable is plugged into the dongle.
-> The sink_count of DPCD of dongle will increase to 1 once an HDMI
-> cable is plugged into the dongle so that display connected status
-> will become true. This checking also apply at pm_resume.
->=20
-> Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and=
- pm_resume")
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+On 2021/4/13 9:33, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> The function get_shadow_from_swap_cache() can race with swapoff, though
+>> it's only called by do_swap_page() now.
+>>
+>> Fixes: aae466b0052e ("mm/swap: implement workingset detection for anonymous LRU")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> 
+> This is unnecessary.  The only caller has guaranteed the swap device
+> from swapoff
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Ok. This patch is just in case get_shadow_from_swap_cache() would be
+called from elsewhere someday.
+
+It's unnecessary and can be dropped now
+
+.
+> 
+> Best Regards,
+> Huang, Ying
+> 
+>> ---
+>>  mm/swap_state.c | 9 ++++++---
+>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> index 272ea2108c9d..709c260d644a 100644
+>> --- a/mm/swap_state.c
+>> +++ b/mm/swap_state.c
+>> @@ -83,11 +83,14 @@ void show_swap_cache_info(void)
+>>  
+>>  void *get_shadow_from_swap_cache(swp_entry_t entry)
+>>  {
+>> -	struct address_space *address_space = swap_address_space(entry);
+>> -	pgoff_t idx = swp_offset(entry);
+>> +	struct swap_info_struct *si;
+>>  	struct page *page;
+>>  
+>> -	page = xa_load(&address_space->i_pages, idx);
+>> +	si = get_swap_device(entry);
+>> +	if (!si)
+>> +		return NULL;
+>> +	page = xa_load(&swap_address_space(entry)->i_pages, swp_offset(entry));
+>> +	put_swap_device(si);
+>>  	if (xa_is_value(page))
+>>  		return page;
+>>  	return NULL;
+> 
+> .
+> 
+
