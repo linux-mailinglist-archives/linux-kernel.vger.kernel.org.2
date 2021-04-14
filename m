@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EA835EE33
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644AA35EE36
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349587AbhDNHNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349581AbhDNHNc (ORCPT
+        id S1349593AbhDNHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:13:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51310 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349581AbhDNHNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:13:32 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DC9C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:13:09 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u20so22149723lja.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qj0MrsT9MP5e9TP+dMw9mmYBXbSrTZPaBuJ5U6SATfM=;
-        b=VmhuoHIcOki+zO4haBZBKfw7hojfMB7Nw0INkxjwf/vBzvZ7iYvt6XBll6SNoIle4r
-         pB5Gvpj5/rJUHz0zQEV+nlXGMLOAEWJNTOTkWxk60N3fFyJb0tjIbRwiU0RKUGs2fYsQ
-         bYYdCOzzmtp2F9hkIu1ANqoKCMSY+0gzbWuKMwwgooJOJQsuTqE9HhJJJ3MQggWOslYd
-         9uuB22CtOAjy+7GArD2AA79musxSr5z09NoNhvwBqrVaMmq3KnyhdHhFq6wOlL7tMwL5
-         LxivJMkFjmCuQXFQlLVCEUmPDsgf7rrWqJDiZd3cem9W6lzUqytJzaDTBm96gz1fx8Gw
-         dDNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qj0MrsT9MP5e9TP+dMw9mmYBXbSrTZPaBuJ5U6SATfM=;
-        b=loVb8xK72h4UPyNTJQERqvNqRrXVJxcIcC5KQwDWBu1XUr3AxxLDjmHC/cLeNFiCfu
-         yyejQzwIXzjYO82jd33VbwqAreBRgnlBEl2n6wMa0UUKLSjYEycs2MQ0N6klQ+U6Q/q6
-         rzy/UqYIWW6D588QqcPfVefCiaAZPSczu4Cb0hOcK2Ry/6GZ1kGfxFn12x1WmFFxbxTo
-         93AOpY3O34K40hVJPTC1cdxgdK/khWfTh9r8uiGMVBmRpyOoYUPsUrpRTwgVpETtpEc6
-         rrprXoj3vD3RGwTy0VDCzoPAWpS89TAs+1g5PtnQWheY+uV2BL3wXnqZcY7MlUOG1T8+
-         EF8w==
-X-Gm-Message-State: AOAM530N3MN0uiPx/OThe0dtTvTEzU81Eyd3NZ/PQz2lC25IvD99CGYw
-        J/Ig9OuSFsnEj3RBaSoHtOl4qZ9hLaASliqeHMOVRA==
-X-Google-Smtp-Source: ABdhPJzdQYN+OFaEjUwuex2WL91l2G0cQ7jC6a5Gr4VgWvGVniRwFeGdvxQ+vEG70ZSzlMCTweKJjZIDCuUm6uChqLI=
-X-Received: by 2002:a2e:7001:: with SMTP id l1mr23239380ljc.200.1618384388240;
- Wed, 14 Apr 2021 00:13:08 -0700 (PDT)
+        Wed, 14 Apr 2021 03:13:46 -0400
+Date:   Wed, 14 Apr 2021 09:13:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618384404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s1a8CshZw26m5BPo40fPgY70peR7b/oBo1WgNZJ84PU=;
+        b=tfoPDrMz+bDx6GEZ18qfSmD32hyCOd50f121Wj+M1N+AESll+NPKTJF8jLv2RPCaxXKegg
+        Qmj85Ehh8bOAwsEnwJ/iz6jAD4LdoA1J7qdCu3em3suVAWV7DKySDCGmpEHnue7IOOwTLp
+        IZyNN0oGroPATeyUUzKracVt5rWp0GI+K4tL8eYArpqV0i5yX1tCXJrSwM6R31I7wRMHF0
+        Cjqc5Jb6lIsy4oz9K6U5ScTtWg8lDKO2/XV2zpOBlE7V/OtBEkxLHjWFTnsC6yS6F2E9T9
+        5MJNV8r1iC5vyO5erEIAeOt+AGF1L/PnXHV2seu3P/lvdWI8nVCWcro6LnDuLQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618384404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s1a8CshZw26m5BPo40fPgY70peR7b/oBo1WgNZJ84PU=;
+        b=/ji24/zUdBjSgpPBk3m4wRAgZ/rOTRnNiDW44YXS/9ETjOx6+6CyfN+OXZI6NdX9IRqo32
+        kaapHP+y/CBhTlBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it
+ has been spawned
+Message-ID: <20210414071322.nz64kow4sp4nwzmy@linutronix.de>
+References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
+ <87czuz1tbc.ffs@nanos.tec.linutronix.de>
+ <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210412223617.8634-1-jbx6244@gmail.com>
-In-Reply-To: <20210412223617.8634-1-jbx6244@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 14 Apr 2021 09:12:57 +0200
-Message-ID: <CACRpkdZ-oq4zKt_qOYTNCL7XqvJygRG0gfb9jRGVi2XRiE_3RQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: gpio: add YAML description for rockchip,gpio-bank
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:36 AM Johan Jonker <jbx6244@gmail.com> wrote:
+On 2021-04-12 11:36:45 [-0700], Paul E. McKenney wrote:
+> > Color me confused. I did not follow the discussion around this
+> > completely, but wasn't it agreed on that this rcu torture muck can wait
+> > until the threads are brought up?
+> 
+> Yes, we can cause rcutorture to wait.  But in this case, rcutorture
+> is just the messenger, and making it wait would simply be ignoring
+> the message.  The message is that someone could invoke any number of
+> things that wait on a softirq handler's invocation during the interval
+> before ksoftirqd has been spawned.
 
-> Current dts files with "rockchip,gpio-bank" subnodes
-> are manually verified. In order to automate this process
-> the text that describes the compatible in rockchip,pinctrl.txt
-> is removed and converted to YAML in rockchip,gpio-bank.yaml.
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
-> Changed V2:
->   changed example gpio nodename
+My memory on this is that the only user, that required this early
+behaviour, was kprobe which was recently changed to not need it anymore.
+Which makes the test as the only user that remains. Therefore I thought
+that this test will be moved to later position (when ksoftirqd is up and
+running) and that there is no more requirement for RCU to be completely
+up that early in the boot process.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Did I miss anything?
 
-Yours,
-Linus Walleij
+> 
+> 							Thanx, Paul
+
+Sebastian
