@@ -2,205 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A25C35EC98
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433FB35EC8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348085AbhDNFzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 01:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbhDNFzP (ORCPT
+        id S1347924AbhDNFxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 01:53:04 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:40521 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347830AbhDNFwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 01:55:15 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AF3C061574;
-        Tue, 13 Apr 2021 22:54:54 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id y2so9491533plg.5;
-        Tue, 13 Apr 2021 22:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3SS7TfLcX3MlIeFX8w3xQCLk3KlSKpLv7cvdIhmhAbc=;
-        b=ryrnYW3p7SbZXMlLv9/ra9F8bIuoQScZP8/IV4eEUXZJOgKi6d17pjW9ydO2tX7sG3
-         WM+wB6LxDHlLBoaQ/Zg1IssqZF2qTiFs7X2rU28fUOWr2KJ9Bu+9JKO5VGTSciz8MuG0
-         4Mo1WbZMAOVvV1tR17zDsXH0EnN1f8eWXZQEQQHBOIF3uq3Z/pTEMIiqB0r5P58R69gH
-         pNx7edjzHG6ifFSfqF+c/9TRL8fNKHbPMhNW+s0c1MPvaDL2t0xFEQIDvSfuEpfbgl/c
-         gzMzkiPnavry8jrMjHFmtJqpNVbHV/7nfPYuDLpgA5edMNZQCdBdwE5abkAi+/6VhUpO
-         xMhw==
+        Wed, 14 Apr 2021 01:52:44 -0400
+Received: by mail-lf1-f49.google.com with SMTP id f17so24123038lfu.7;
+        Tue, 13 Apr 2021 22:52:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3SS7TfLcX3MlIeFX8w3xQCLk3KlSKpLv7cvdIhmhAbc=;
-        b=hACWXQldygsqbNYHkAFJ7aMz5vLYhTS/Cnsuip0JakSUMbVCHB6ODenHicbrmpkmbd
-         WXQ03rhBVUNan1R7gQsPSaKe7wFZGVzliC43IP4iy6D5xU+At0vs66aXAX2Ous+GYXA5
-         1jo1V61w1rU7Xqgb7BjfpfDMnciW5dtUJgVo8CGRWLs5VGOOwZCfJX1l4rFBoSR7V7XK
-         M43lhLYdPksZjcobPR97D5h5alXkfMdT3FJsEp+wGn2QusLhzvc8fa3R3wC0sFvVhTAj
-         tZOSxSJILDCgGjVy3H/tPdVFxCHBInun6WvsZ4oib0TCHgvmN6pAy5sRohyVkhgZQnWR
-         a3Pw==
-X-Gm-Message-State: AOAM5307v7gpDxdz9DvfRnLSeZ4JFsZ4kZJJ7A5GYP1mIhKjdf9nI6Y8
-        Uge52jnKwb9NHNJYEEhG38K/FsmZgXpvbahq
-X-Google-Smtp-Source: ABdhPJz8mixwYF1iRmYLcpc7Q+i79Q2AdDqqW3lovuPkYLGs61jcUK2d5F0vgOQn1ifaPyACOC6ewA==
-X-Received: by 2002:a17:903:2309:b029:e7:1063:e6aa with SMTP id d9-20020a1709032309b02900e71063e6aamr36310484plh.52.1618379693978;
-        Tue, 13 Apr 2021 22:54:53 -0700 (PDT)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:8500:5f14:d627:c51e:516e:a105])
-        by smtp.gmail.com with ESMTPSA id u17sm13728969pfm.113.2021.04.13.22.54.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BPG1D69wRQsM8a7uMxi1N4+aIC/CYq+adoD40wDxg6o=;
+        b=AD+/U4vMLJ9gV7Ocsm2qTtI12D7C7DLGr9bNP9983MgIBFd1sq0DUmXtH71df7CmrT
+         vATuGyYD2lYPpmDxBSXa24qWpsF4b9TlhX2abfxeUdWU0RxO0PbbCs5Bgqjh2eGTi35G
+         CU3Qb01ZSNpOqHvJ4WMBVBGt5A5w8RgbIlgk5hXI56jFhppsOFXgYX5R4gvLPzDaK9wx
+         wGGdvZiNQejJ5DtSh8F0oKHCtv5bI0fRLXKINCFLPjeAiMHiKDem3eJMjJXAzYOBaVd1
+         Hi+Uyl9y4K4aUpvuMRIpiOHFthFZNOWc3sRGqwdNOqjuaJZ/Pp27zRo8Qp0Ivf6aa9Z+
+         9KqQ==
+X-Gm-Message-State: AOAM532vWmCnJv33eLaHjnIzejXqHk8IP6vFUyWOgaWg6hFeMTpr4hYu
+        04xW2V3jz9kLCPmAbTiZGPY=
+X-Google-Smtp-Source: ABdhPJyWyf85LVns20fs0dss3NlTy0W2vikS6C0WlMrEMr8a1B6656zUvHqe1ZOFQhHP9/YNKnhUcQ==
+X-Received: by 2002:ac2:456e:: with SMTP id k14mr24064986lfm.526.1618379541401;
+        Tue, 13 Apr 2021 22:52:21 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id d25sm2146998ljg.96.2021.04.13.22.52.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 22:54:53 -0700 (PDT)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrei Vagin <avagin@gmail.com>,
+        Tue, 13 Apr 2021 22:52:20 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 08:52:14 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 0/4 POC] Allow executing code and syscalls in another address space
-Date:   Tue, 13 Apr 2021 22:52:13 -0700
-Message-Id: <20210414055217.543246-1-avagin@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v7 2/9] reboot: thermal: Export hardware protection shutdown
+Message-ID: <adf417797006c996605a03c8bacfb4961e8f0b42.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We already have process_vm_readv and process_vm_writev to read and write
-to a process memory faster than we can do this with ptrace. And now it
-is time for process_vm_exec that allows executing code in an address
-space of another process. We can do this with ptrace but it is much
-slower.
+Thermal core contains a logic for safety shutdown. System is attempted to
+be powered off if temperature exceeds safety limits.
 
-= Use-cases =
+Currently this can be also utilized by regulator subsystem as a final
+protection measure if PMICs report dangerous over-voltage, over-current or
+over-temperature and if per regulator counter measures fail or do not
+exist.
 
-Here are two known use-cases. The first one is “application kernel”
-sandboxes like User-mode Linux and gVisor. In this case, we have a
-process that runs the sandbox kernel and a set of stub processes that
-are used to manage guest address spaces. Guest code is executed in the
-context of stub processes but all system calls are intercepted and
-handled in the sandbox kernel. Right now, these sort of sandboxes use
-PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
-significantly speed them up.
+Move this logic to kernel/reboot.c and export the functionality for other
+subsystems to use. Also replace the mutex with a spinlock to allow using
+the function from any context.
 
-Another use-case is CRIU (Checkpoint/Restore in User-space). Several
-process properties can be received only from the process itself. Right
-now, we use a parasite code that is injected into the process. We do
-this with ptrace but it is slow, unsafe, and tricky. process_vm_exec can
-simplify the process of injecting a parasite code and it will allow
-pre-dump memory without stopping processes. The pre-dump here is when we
-enable a memory tracker and dump the memory while a process is continue
-running. On each interaction we dump memory that has been changed from
-the previous iteration. In the final step, we will stop processes and
-dump their full state. Right now the most effective way to dump process
-memory is to create a set of pipes and splice memory into these pipes
-from the parasite code. With process_vm_exec, we will be able to call
-vmsplice directly. It means that we will not need to stop a process to
-inject the parasite code.
+Also the EMIF bus code has implemented a safety shut-down. EMIF does not
+attempt orderly_poweroff at all. Thus the EMIF code is not converted to use
+this new function.
 
-= How it works =
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+Changelog
+ v7:
+  - new patch
 
-process_vm_exec has two modes:
+Please note - this patch has received only a minimal amount of testing.
+(The new API call was tested to shut-down my system at driver probe but
+no odd corner-cases have been tested).
 
-* Execute code in an address space of a target process and stop on any
-  signal or system call.
+Any testing for thermal shutdown is appreciated.
+---
+ drivers/thermal/thermal_core.c | 63 ++-----------------------
+ include/linux/reboot.h         |  1 +
+ kernel/reboot.c                | 86 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 91 insertions(+), 59 deletions(-)
 
-* Execute a system call in an address space of a target process.
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 996c038f83a4..b1444845af38 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -36,10 +36,8 @@ static LIST_HEAD(thermal_governor_list);
+ 
+ static DEFINE_MUTEX(thermal_list_lock);
+ static DEFINE_MUTEX(thermal_governor_lock);
+-static DEFINE_MUTEX(poweroff_lock);
+ 
+ static atomic_t in_suspend;
+-static bool power_off_triggered;
+ 
+ static struct thermal_governor *def_governor;
+ 
+@@ -327,70 +325,18 @@ static void handle_non_critical_trips(struct thermal_zone_device *tz, int trip)
+ 		       def_governor->throttle(tz, trip);
+ }
+ 
+-/**
+- * thermal_emergency_poweroff_func - emergency poweroff work after a known delay
+- * @work: work_struct associated with the emergency poweroff function
+- *
+- * This function is called in very critical situations to force
+- * a kernel poweroff after a configurable timeout value.
+- */
+-static void thermal_emergency_poweroff_func(struct work_struct *work)
+-{
+-	/*
+-	 * We have reached here after the emergency thermal shutdown
+-	 * Waiting period has expired. This means orderly_poweroff has
+-	 * not been able to shut off the system for some reason.
+-	 * Try to shut down the system immediately using kernel_power_off
+-	 * if populated
+-	 */
+-	WARN(1, "Attempting kernel_power_off: Temperature too high\n");
+-	kernel_power_off();
+-
+-	/*
+-	 * Worst of the worst case trigger emergency restart
+-	 */
+-	WARN(1, "Attempting emergency_restart: Temperature too high\n");
+-	emergency_restart();
+-}
+-
+-static DECLARE_DELAYED_WORK(thermal_emergency_poweroff_work,
+-			    thermal_emergency_poweroff_func);
+-
+-/**
+- * thermal_emergency_poweroff - Trigger an emergency system poweroff
+- *
+- * This may be called from any critical situation to trigger a system shutdown
+- * after a known period of time. By default this is not scheduled.
+- */
+-static void thermal_emergency_poweroff(void)
++void thermal_zone_device_critical(struct thermal_zone_device *tz)
+ {
+-	int poweroff_delay_ms = CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS;
+ 	/*
+ 	 * poweroff_delay_ms must be a carefully profiled positive value.
+-	 * Its a must for thermal_emergency_poweroff_work to be scheduled
++	 * Its a must for forced_emergency_poweroff_work to be scheduled.
+ 	 */
+-	if (poweroff_delay_ms <= 0)
+-		return;
+-	schedule_delayed_work(&thermal_emergency_poweroff_work,
+-			      msecs_to_jiffies(poweroff_delay_ms));
+-}
++	int poweroff_delay_ms = CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS;
+ 
+-void thermal_zone_device_critical(struct thermal_zone_device *tz)
+-{
+ 	dev_emerg(&tz->device, "%s: critical temperature reached, "
+ 		  "shutting down\n", tz->type);
+ 
+-	mutex_lock(&poweroff_lock);
+-	if (!power_off_triggered) {
+-		/*
+-		 * Queue a backup emergency shutdown in the event of
+-		 * orderly_poweroff failure
+-		 */
+-		thermal_emergency_poweroff();
+-		orderly_poweroff(true);
+-		power_off_triggered = true;
+-	}
+-	mutex_unlock(&poweroff_lock);
++	hw_protection_shutdown("Temperature too high", poweroff_delay_ms);
+ }
+ EXPORT_SYMBOL(thermal_zone_device_critical);
+ 
+@@ -1549,7 +1495,6 @@ static int __init thermal_init(void)
+ 	ida_destroy(&thermal_cdev_ida);
+ 	mutex_destroy(&thermal_list_lock);
+ 	mutex_destroy(&thermal_governor_lock);
+-	mutex_destroy(&poweroff_lock);
+ 	return result;
+ }
+ postcore_initcall(thermal_init);
+diff --git a/include/linux/reboot.h b/include/linux/reboot.h
+index 3734cd8f38a8..af907a3d68d1 100644
+--- a/include/linux/reboot.h
++++ b/include/linux/reboot.h
+@@ -79,6 +79,7 @@ extern char poweroff_cmd[POWEROFF_CMD_PATH_LEN];
+ 
+ extern void orderly_poweroff(bool force);
+ extern void orderly_reboot(void);
++void hw_protection_shutdown(const char *reason, int ms_until_forced);
+ 
+ /*
+  * Emergency restart, callable from an interrupt handler.
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index a6ad5eb2fa73..1b5fa6d213d4 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -518,6 +518,92 @@ void orderly_reboot(void)
+ }
+ EXPORT_SYMBOL_GPL(orderly_reboot);
+ 
++/**
++ * hw_failure_emergency_poweroff_func - emergency poweroff work after a known delay
++ * @work: work_struct associated with the emergency poweroff function
++ *
++ * This function is called in very critical situations to force
++ * a kernel poweroff after a configurable timeout value.
++ */
++static void hw_failure_emergency_poweroff_func(struct work_struct *work)
++{
++	/*
++	 * We have reached here after the emergency shutdown waiting period has
++	 * expired. This means orderly_poweroff has not been able to shut off
++	 * the system for some reason.
++	 *
++	 * Try to shut down the system immediately using kernel_power_off
++	 * if populated
++	 */
++	WARN(1, "Hardware protection timed-out. Trying forced poweroff\n");
++	kernel_power_off();
++
++	/*
++	 * Worst of the worst case trigger emergency restart
++	 */
++	WARN(1,
++	     "Hardware protection shutdown failed. Trying emergency restart\n");
++	emergency_restart();
++}
++
++static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
++			    hw_failure_emergency_poweroff_func);
++
++/**
++ * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
++ *
++ * This may be called from any critical situation to trigger a system shutdown
++ * after a given period of time. If time is negative this is not scheduled.
++ */
++static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
++{
++	if (poweroff_delay_ms <= 0)
++		return;
++	schedule_delayed_work(&hw_failure_emergency_poweroff_work,
++			      msecs_to_jiffies(poweroff_delay_ms));
++}
++
++static bool prot_power_off_triggered;
++static DEFINE_SPINLOCK(poweroff_lock);
++
++/**
++ * hw_protection_shutdown - Trigger an emergency system poweroff
++ *
++ * @reason:		Reason of emergency shutdown to be printed.
++ * @ms_until_forced:	Time to wait for orderly shutdown before tiggering a
++ *			forced shudown. Negative value disables the forced
++ *			shutdown.
++ *
++ * Initiate an emergency system shutdown in order to protect hardware from
++ * further damage. Usage examples include a thermal protection or a voltage or
++ * current regulator failures.
++ * NOTE: The request is ignored if protection shutdown is already pending even
++ * if the previous request has given a large timeout for forced shutdown.
++ * Can be called from any context.
++ */
++void hw_protection_shutdown(const char *reason, int ms_until_forced)
++{
++	unsigned long flags;
++
++	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
++
++	spin_lock_irqsave(&poweroff_lock, flags);
++	if (prot_power_off_triggered) {
++		spin_unlock(&poweroff_lock);
++		return;
++	}
++	prot_power_off_triggered = true;
++	spin_unlock_irqrestore(&poweroff_lock, flags);
++
++	/*
++	 * Queue a backup emergency shutdown in the event of
++	 * orderly_poweroff failure
++	 */
++	hw_failure_emergency_poweroff(ms_until_forced);
++	orderly_poweroff(true);
++}
++EXPORT_SYMBOL_GPL(hw_protection_shutdown);
++
+ static int __init reboot_setup(char *str)
+ {
+ 	for (;;) {
+-- 
+2.25.4
 
-int process_vm_exec(pid_t pid, struct sigcontext uctx,
-		    unsigned long flags, siginfo_t siginfo,
-		    sigset_t  *sigmask, size_t sizemask)
-
-PID - target process identification. We can consider to use pidfd
-instead of PID here.
-
-sigcontext contains a process state with what the process will be
-resumed after switching the address space and then when a process will
-be stopped, its sate will be saved back to sigcontext.
-
-siginfo is information about a signal that has interrupted the process.
-If a process is interrupted by a system call, signfo will contain a
-synthetic siginfo of the SIGSYS signal.
-
-sigmask is a set of signals that process_vm_exec returns via signfo.
-
-# How fast is it
-
-In the fourth patch, you can find two benchmarks that execute a function
-that calls system calls in a loop. ptrace_vm_exe uses ptrace to trap
-system calls, proces_vm_exec uses the process_vm_exec syscall to do the
-same thing.
-
-ptrace_vm_exec:   1446 ns/syscall
-ptrocess_vm_exec:  289 ns/syscall
-
-PS: This version is just a prototype. Its goal is to collect the initial
-feedback, to discuss the interfaces, and maybe to get some advice on
-implementation..
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-
-Andrei Vagin (4):
-  signal: add a helper to restore a process state from sigcontex
-  arch/x86: implement the process_vm_exec syscall
-  arch/x86: allow to execute syscalls via process_vm_exec
-  selftests: add tests for process_vm_exec
-
- arch/Kconfig                                  |  15 ++
- arch/x86/Kconfig                              |   1 +
- arch/x86/entry/common.c                       |  19 +++
- arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
- arch/x86/include/asm/sigcontext.h             |   2 +
- arch/x86/kernel/Makefile                      |   1 +
- arch/x86/kernel/process_vm_exec.c             | 160 ++++++++++++++++++
- arch/x86/kernel/signal.c                      | 125 ++++++++++----
- include/linux/entry-common.h                  |   2 +
- include/linux/process_vm_exec.h               |  17 ++
- include/linux/sched.h                         |   7 +
- include/linux/syscalls.h                      |   6 +
- include/uapi/asm-generic/unistd.h             |   4 +-
- include/uapi/linux/process_vm_exec.h          |   8 +
- kernel/entry/common.c                         |   2 +-
- kernel/fork.c                                 |   9 +
- kernel/sys_ni.c                               |   2 +
- .../selftests/process_vm_exec/Makefile        |   7 +
- tools/testing/selftests/process_vm_exec/log.h |  26 +++
- .../process_vm_exec/process_vm_exec.c         | 105 ++++++++++++
- .../process_vm_exec/process_vm_exec_fault.c   | 111 ++++++++++++
- .../process_vm_exec/process_vm_exec_syscall.c |  81 +++++++++
- .../process_vm_exec/ptrace_vm_exec.c          | 111 ++++++++++++
- 23 files changed, 785 insertions(+), 37 deletions(-)
- create mode 100644 arch/x86/kernel/process_vm_exec.c
- create mode 100644 include/linux/process_vm_exec.h
- create mode 100644 include/uapi/linux/process_vm_exec.h
- create mode 100644 tools/testing/selftests/process_vm_exec/Makefile
- create mode 100644 tools/testing/selftests/process_vm_exec/log.h
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec.c
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_fault.c
- create mode 100644 tools/testing/selftests/process_vm_exec/process_vm_exec_syscall.c
- create mode 100644 tools/testing/selftests/process_vm_exec/ptrace_vm_exec.c
 
 -- 
-2.29.2
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
