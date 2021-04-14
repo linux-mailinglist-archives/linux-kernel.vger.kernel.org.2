@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46E035F33B
+	by mail.lfdr.de (Postfix) with ESMTP id F024435F33C
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350697AbhDNMNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:13:18 -0400
+        id S233780AbhDNMNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:13:22 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbhDNMNB (ORCPT
+        with ESMTP id S233852AbhDNMNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:13:01 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEBDC061574;
-        Wed, 14 Apr 2021 05:12:40 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id x20so2495395lfu.6;
-        Wed, 14 Apr 2021 05:12:40 -0700 (PDT)
+        Wed, 14 Apr 2021 08:13:02 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428CBC06175F;
+        Wed, 14 Apr 2021 05:12:41 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id n138so32890375lfa.3;
+        Wed, 14 Apr 2021 05:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1StD1decQS7zRdEOzRVJotVRFVyFLJ+Y3wtmlXev/IY=;
-        b=YWqdqVidTwyyPcwaWIOh+MXw/0ithmAZaBZD3lJOeFdoAUMnyIH5NwJuIjaNrmkZda
-         08k/n5gwIihOOlDl0d2uYPib5faG9ctnuiU0+8Dyf7ZY0lhxwB6eZX0dTg2K0F087fLz
-         9Y5F8Sx5yKkeMHP/olqsd35+mJ0IZT58pLbx3h9+5mgyWzpgAWPMZUV5Q/2IWnFHacDm
-         WvVRNbtA4bhY4b9DKAvg75Nb3wgcLsRh928TDQ1tYDX1JX230704PKDtl39IaTMC2Own
-         l+NkCgGBt4YLJDrKP2dR2j0bM19lDRxMUYmzXeAK83d3L5FTgzP0mjPl3s24s21KRRrh
-         lklg==
+        bh=k/F4pdvzkzZzwdTEYJKDDaCgHwGNIFnZgcaHpEY7Sas=;
+        b=L4iJFkdk1+8DyfMQ4scxeJHs+54J8NfC+m2ktDc/0uFL/FOIs1qgfxFwprB+vxD53m
+         YqFxb4NgHZ2guDuX/D5ezFyXsgfG9Y2s3FtNjCF62igD6vR+GSYpDhgyJkU2vuBLD5Ft
+         sDGwdZJqlg+ZuTekEptS/ZJQB5Vg5M49PkWeWf2arM57EXTB71EJVlf0mYgQ1y7wadKP
+         +D1iVKzyUCZA1vYJfEC0Jor0k23XsOc0fZWPALvQ1849ZH0QKfeKXImSxW16PactjGpX
+         nrmIxUtORTElSsG35ab9+iRr2uXSQhH9iC672sKxFVoeLiu1LJdJzChr5yK9olN8J0QW
+         G6zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1StD1decQS7zRdEOzRVJotVRFVyFLJ+Y3wtmlXev/IY=;
-        b=W952oUtYzNfm93ESDMJWL5AByutBqTB513erjkfzz6jzECvEETXTnCSpdTQmeWiMRX
-         Q7A8rH6Flb/oGlRQYFr9pCGPWg/PqblsKz9kMGTzV45iTpyeOeIo6xMDiERBtx3gDVTU
-         l3tpe0qo+u4YsQjxMPbSIWv2Vr+a3XAnFPPMg9gWa6Do5W1CtGXZF9Zb07VsZzCDe6oC
-         gOQBDkYcuEBwjehGn5MW0znepfGkH+wZ9c35AGmsvtU4hpykFFL7ZCLbHDKLrMt+5YkJ
-         ZrKC9uppp9SWJkcytQJ9yAOy9epC/v+RKSjNBmZ9PG6sdCcKdrnT5FABrjzlSiKwC5Z0
-         Hxpw==
-X-Gm-Message-State: AOAM5309NsrppSeEBpbhB29MaoS+UPoMxRF+hthf/bPSQblqfzYUE+4u
-        8tTLd6FJQJHx4msirfsCeTXF+2jyFvaAHw==
-X-Google-Smtp-Source: ABdhPJwH59eH06gguM5t4WgzIM5xI8HRNEkg0jGasy30GLT2kvSHfzUWhP/f0O/1f5MqTSbLNoxsrw==
-X-Received: by 2002:ac2:5e30:: with SMTP id o16mr19820524lfg.35.1618402358997;
-        Wed, 14 Apr 2021 05:12:38 -0700 (PDT)
+        bh=k/F4pdvzkzZzwdTEYJKDDaCgHwGNIFnZgcaHpEY7Sas=;
+        b=dzjR1DAtcOf/8+iQqpzEFko8zTNOMQtMnugnZe9OfE45cLYkxEawbnRNhO/2vKY2rm
+         gMBFuCiEeE760rVByRy0SxFNRXe28lBUrTHkszPqAYN4yvzcH/aASBmanxRWOdHTsPo5
+         v8bqOUAi/g5XMPkUt+hrm6UR/TXDpd6ozofvFOKvNxJuKgUjqrVR2jMICGGS1E7gc2t/
+         UvERE0X3QaykBQv0FJ85JpfZRk2yABgblT/Dmja1nlj9cN/MnbYP77qxpSWscKDmkWZc
+         ZZgSDsb+H1Qyk+hOtAA/aq8VWFJeJXCDZayJn6kEAUdZZubiGHguxWp4SQn8QSycnX75
+         Z+LA==
+X-Gm-Message-State: AOAM531VHpjDGlzjL5W6PC9xJwosFCmPTCs6miLklLCDT3g5HK0cnnEL
+        k/+3ZadoUCujmJ9e/G3Vg66HgED+5AWRPg==
+X-Google-Smtp-Source: ABdhPJyKSj/EPhkNrPglsWOnUo7HmALHeiCEKa1JUwVsIRItBN3YBO1aV0JZNBbJOGoetOictm11uA==
+X-Received: by 2002:a19:ae1a:: with SMTP id f26mr16899311lfc.390.1618402359833;
+        Wed, 14 Apr 2021 05:12:39 -0700 (PDT)
 Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i4sm4338061lfu.33.2021.04.14.05.12.38
+        by smtp.gmail.com with ESMTPSA id i4sm4338061lfu.33.2021.04.14.05.12.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 05:12:38 -0700 (PDT)
+        Wed, 14 Apr 2021 05:12:39 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
@@ -63,9 +63,9 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 5/6] kvfree_rcu: clear KRC_MONITOR_TODO bit once a batch is started
-Date:   Wed, 14 Apr 2021 14:12:25 +0200
-Message-Id: <20210414121226.2650-5-urezki@gmail.com>
+Subject: [PATCH 6/6] kvfree_rcu: use kfree_rcu_monitor() instead of open-coded variant
+Date:   Wed, 14 Apr 2021 14:12:26 +0200
+Message-Id: <20210414121226.2650-6-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210414121226.2650-1-urezki@gmail.com>
 References: <20210414121226.2650-1-urezki@gmail.com>
@@ -75,42 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before attempting of starting a new batch the KRC_MONITOR_TODO
-bit is cleared and set back when a previous RCU batch is still
-in progress.
-
-Clear the KRC_MONITOR_TODO bit only when a new batch has been
-successfully queued, if not, it stays active anyway, thus no
-reason in setting it back. Please note that checking/setting
-this bit is protected by the krcp->lock spinlock.
+To queue a new batch we have a kfree_rcu_monitor() function that
+checks KRC_MONITOR_TODO bit and invokes kfree_rcu_drain_unlock()
+to start a new batch after a GP. Get rid of open-coded case by
+switching it to the separate function.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/rcu/tree.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index da3605067cc1..012030cbe55e 100644
+index 012030cbe55e..14e9220198eb 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3427,16 +3427,14 @@ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
- 					  unsigned long flags)
+@@ -3680,7 +3680,6 @@ static unsigned long
+ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
  {
- 	// Attempt to start a new batch.
--	clear_bit(KRC_MONITOR_TODO, &krcp->flags);
--
- 	if (queue_kfree_rcu_work(krcp)) {
- 		// Success! Our job is done here.
-+		clear_bit(KRC_MONITOR_TODO, &krcp->flags);
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 		return;
- 	}
+ 	int cpu, freed = 0;
+-	unsigned long flags;
  
- 	// Previous RCU batch still in progress, try again later.
--	set_bit(KRC_MONITOR_TODO, &krcp->flags);
- 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
- }
+ 	for_each_possible_cpu(cpu) {
+ 		int count;
+@@ -3688,12 +3687,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 
+ 		count = krcp->count;
+ 		count += drain_page_cache(krcp);
+-
+-		raw_spin_lock_irqsave(&krcp->lock, flags);
+-		if (test_bit(KRC_MONITOR_TODO, &krcp->flags))
+-			kfree_rcu_drain_unlock(krcp, flags);
+-		else
+-			raw_spin_unlock_irqrestore(&krcp->lock, flags);
++		kfree_rcu_monitor(&krcp->monitor_work.work);
+ 
+ 		sc->nr_to_scan -= count;
+ 		freed += count;
 -- 
 2.20.1
 
