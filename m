@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CEF35EC93
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF6335EC95
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 07:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349024AbhDNFye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 01:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57896 "EHLO mail.kernel.org"
+        id S1348017AbhDNFy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 01:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347991AbhDNFxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 01:53:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF4C60BBB;
-        Wed, 14 Apr 2021 05:53:16 +0000 (UTC)
+        id S233304AbhDNFyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 01:54:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CED611C9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618379596;
-        bh=ifghnpZF4cab51wf/GaXfpPHxzkiE0Xm9QeqXGQPtgc=;
+        s=k20201202; t=1618379671;
+        bh=e0GvAqItKrgC7xw+mYTZm1jWGWMl1RtZC+QudRQVvVU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Kgs86P2usKXy+79WZ7fLegeuNMGJUONny7PUPqyU4JZ1XVKgYUXBSPqI654aQ/40P
-         1pyxe9z+GPUF96ddcIdONrzpGBAEzr2H2ZsmfkR4zZQeLe83pwrqpS3jYQXQCebw6X
-         WeOx/fnVkTQ0QWJHA2y5wBJ4zHm+lOdRHslFR9Ka0bIB35yqWAUD+r5Q1iUS+JO92Y
-         PuLRP7KJ26dZeHUpMWSN4rc7S4bCwPqwrhxhuMAA+8d63DXLNzJdFiexDPdKeyTtW0
-         sNMvC5aSECkqq68BjS4duzoAkyv6T2xhL2gdcerrd/hnYg6xEPRFfnyKVxSVIBP3Ho
-         YVnJpaNQBDOsg==
-Received: by mail-wr1-f52.google.com with SMTP id g9so2577800wrx.0;
-        Tue, 13 Apr 2021 22:53:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531xdsOyXGS3A+bos6H8H/ADcs0zdvOng4z4mqY0H3tiuD3P7j/n
-        uKpMcQ4bCpHiAbO6Yw7fLlLgT3AMdcl11VQl+yY=
-X-Google-Smtp-Source: ABdhPJy51/b6W+EKiNhSS+iJU3+dVxLryertqO+/vSmzLGmUXWnERfTqC6hgIaSxp0ZQLn4367Xq17TqiphXEElHql4=
-X-Received: by 2002:adf:e483:: with SMTP id i3mr13495285wrm.286.1618379594859;
- Tue, 13 Apr 2021 22:53:14 -0700 (PDT)
+        b=AKyiMYAOp5u74Mfl8iLk7Sxh1yYch8Aicyz+bYIOBK6sJoTIco/QV2z1X/6ORQ8RO
+         k13lHshi4pwQIEK3wXLN66kASyFjysW5HY5pK0v0qcksfMY1EgbEgAkDtK2uijwBU3
+         uqLHomJ8D0hoNH0oaTyWU4NiyrcofypIE3IdiMVV+L1fAh8kNLtZpgeatZBL08UsxG
+         x8u/OfJL3M/2EA6xntC5qiD/LPkeDXPjBryw2h8selY9QFa9MPqXpGUUe6Bjm2khZK
+         vJBITiYaZMmWPlmUH62OTo0xpRX7sC30OeZTrkKNNi6CbJRVp5uM/o8ut0p+ILEGjL
+         JMLwk0dKJ0V/w==
+Received: by mail-lj1-f180.google.com with SMTP id l22so14642205ljc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 22:54:31 -0700 (PDT)
+X-Gm-Message-State: AOAM530u5RN15j1JdVNCPgNjnaEXjkb33X+HSC9Ei5IKxatPwfxeZy0r
+        yW91KLC4PPqi+GznVZWDLjFeeqH1/62uBAVizQ4=
+X-Google-Smtp-Source: ABdhPJzLhQOFkp2cNfza5RPwNjXsLt4AjtmrFdQ9MA3JHT7YIse6wTSnxKU/n/GZ0uYgcHLjxzwDlxV5nnIYOxZkYsU=
+X-Received: by 2002:a2e:919a:: with SMTP id f26mr22943414ljg.508.1618379669738;
+ Tue, 13 Apr 2021 22:54:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210413141627.2414092-1-arnd@kernel.org> <20210413154204.1ae59d6a@hermes.local>
-In-Reply-To: <20210413154204.1ae59d6a@hermes.local>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 14 Apr 2021 07:52:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1bZWsMvARCj2LKerQrdw_asiOvffxN2c5ekoDDNESooA@mail.gmail.com>
-Message-ID: <CAK8P3a1bZWsMvARCj2LKerQrdw_asiOvffxN2c5ekoDDNESooA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: Space: remove hp100 probe
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net> <CAHB2gtTmGt=V4cUgbt3zGgi+y5h0f5ON0n+MdRC8P=su670qhQ@mail.gmail.com>
+ <YHVl8fFfdQDn+QYW@hirez.programming.kicks-ass.net> <CAHB2gtTzEuD7j-+5ztui0eV6UNiEisBTgoK+2Sr=Z0b4PPXRyA@mail.gmail.com>
+ <20210413104503.GD15806@arm.com> <73cab48b63ea4ba3b1ef532f47d146f4@AcuMS.aculab.com>
+In-Reply-To: <73cab48b63ea4ba3b1ef532f47d146f4@AcuMS.aculab.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 14 Apr 2021 13:54:18 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTE54rDfFeVGbc0BL7br3hy+6oN6KMFQDx5+aKPSSviKw@mail.gmail.com>
+Message-ID: <CAJF2gTTE54rDfFeVGbc0BL7br3hy+6oN6KMFQDx5+aKPSSviKw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christophm30@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        "will.deacon@arm.com" <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021, 00:42 Stephen Hemminger
-<stephen@networkplumber.org> wrote:
+On Tue, Apr 13, 2021 at 6:54 PM David Laight <David.Laight@aculab.com> wrote:
 >
-> On Tue, 13 Apr 2021 16:16:17 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Catalin Marinas
+> > Sent: 13 April 2021 11:45
+> ...
+> > This indeed needs some care. IIUC RISC-V has similar restrictions as arm
+> > here, no load/store instructions are allowed between LR and SC. You
+> > can't guarantee that the compiler won't spill some variable onto the
+> > stack.
 >
-> >   */
-> >  static struct devprobe2 isa_probes[] __initdata = {
-> > -#if defined(CONFIG_HP100) && defined(CONFIG_ISA)     /* ISA, EISA */
-> > -     {hp100_probe, 0},
-> > -#endif
-> >  #ifdef CONFIG_3C515
-> >       {tc515_probe, 0},
-> >  #endif
+> You can probably never guarantee the compiler won't spill to stack.
+> Especially if someone compiles with -O0.
 >
-> Thanks, do we even need to have the static initialization anymore?
+> Which probably means that anything using LR/SC must be written in
+> asm and the C wrappers disabled.
+Agree, and cmpxchg has been widely used in Linux. I think it's the
+last requirement for complex atomic API, although cmpxchg has ABA
+problem:
 
-I actually did some more cleanups after I sent the above patch when
-I found out that this code still exists. It turned out that above half of
-the static initializations are completely pointless because the
-drivers never rely on the netdev= command line arguments and
-can simply be changed to always using module_init() instead of
-relying on net_olddevs_init() for the built-in case.
+CPU0
+                          CPU1
+=======
+                        ======
+do {
+  old32 = load32;
 
-The remaining ones are all ISA drivers: 3c515, Ultra, WD80x3,
-NE2000, Lance, SMC9194, CS89x0, NI65 and COPS.
+                               *ptr32 = new32_tmp;
 
-With my cleanups, I move the netdev_boot_setup infrastructure
-into drivers/net/Space.c and only compile it when at least one of
-these eight drivers is enabled.
+                               *ptr32 = old32;
+  load32 = cmpxchg(ptr32, old32, new32); //still success
+} while (load32 != old32);
 
-All these drivers also support being built as loadable modules, but
-in that configuration they only support a single device (back in the
-day you could copy the module and just load it twice to support
-more than one instance, not sure we still want to support that).
+That means cmpxhg only cares about the result but not the middle
+situation. It's different from LR/SC or AMO instructions.
 
-None of these drivers have a maintainer listed, but I suppose
-there are still some PC/104 machines with NE2000 network
-cards that could theoretically run a modern kernel.
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+>
 
-        Arnd
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
