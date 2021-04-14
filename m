@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B4C35FA20
+	by mail.lfdr.de (Postfix) with ESMTP id C039735FA21
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhDNRzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:55:43 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62465 "EHLO m43-7.mailgun.net"
+        id S1351272AbhDNR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234303AbhDNRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:55:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618422919; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3uShNxK5FJYLasDW+nrg03JrG9d+DonaEeEOaVhcnHk=;
- b=nUBWMK87Av7PX7jx9mHSF4fPvbB9O0XBbtbjpVzY2Af++a5v9/ijPHXiKRBvRzxWrD8AqOd+
- kuHLe5/zCYdf9nV5e3Dit2BeCKUxjJqTepyeycnAQn+EpVsB93Tl0Y+NabRSjdsa9lhgleGp
- QpsGCFCQa6kSpUZ4Suh5L8/yVwQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60772c7f8166b7eff763f95b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Apr 2021 17:55:11
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D7F3AC433ED; Wed, 14 Apr 2021 17:55:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE1CCC433CA;
-        Wed, 14 Apr 2021 17:55:09 +0000 (UTC)
+        id S234303AbhDNR51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9150960FF0;
+        Wed, 14 Apr 2021 17:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618423026;
+        bh=cQ9f4u2xR3uFXq5S5htMvUykddDB8bI00VAaR7ZaQ1Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qy9wu/cxBjQjTqY7RD0xDdNPYZkaERYrUM11TFHPJn3SWjjBTn0YRN8xC5Jlqv6tI
+         bMKCsazVI4rEk3y8sybmRIWDXWfITeLg4OTZmksiWoIiOG0bILBf7G9GtKHDVtLxHa
+         s/xUunAuWw0DzlfEkpgkke88wBG6T/ztOs4eIVFI=
+Date:   Wed, 14 Apr 2021 19:57:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: Remove useless
+ led_blink_hdl()
+Message-ID: <YHcs70RdhaBBZv0i@kroah.com>
+References: <20210414162614.14867-1-fmdefrancesco@gmail.com>
+ <YHcfud6Fpsi9Weac@kroah.com>
+ <20210414174809.GX6021@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 14 Apr 2021 10:55:09 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] drm/msm/dp: do not re initialize of audio_comp at
- display_disable()
-In-Reply-To: <161837022104.3764895.807226402876043006@swboyd.mtv.corp.google.com>
-References: <1618355490-5292-1-git-send-email-khsieh@codeaurora.org>
- <161837022104.3764895.807226402876043006@swboyd.mtv.corp.google.com>
-Message-ID: <cf72c919404a5bb4d0bdf101a341b074@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414174809.GX6021@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-13 20:17, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-04-13 16:11:30)
->> At dongle unplug, dp initializes audio_comp followed by sending 
->> disconnect
->> event notification to audio and to make sure audio had shutdown 
->> completely
->> by wait for audio completion notification at display_disable(). This 
->> patch
+On Wed, Apr 14, 2021 at 08:48:09PM +0300, Dan Carpenter wrote:
+> On Wed, Apr 14, 2021 at 07:00:41PM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 14, 2021 at 06:26:14PM +0200, Fabio M. De Francesco wrote:
+> > > Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
+> > > the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
+> > > change has not unwanted side effects because the code in rtw_cmd.c checks
+> > > if the function pointer is valid before using it.
+> > > 
+> > > Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> > > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > > 
+> > > Changes since v1: Corrected a bad solution to this issue that made use of
+> > > an unnecessary dummy function.
+> > > 
+> > >  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
+> > >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
+> > >  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
+> > >  3 files changed, 1 insertion(+), 11 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > index 0297fbad7bce..f82dbd4f4c3d 100644
+> > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> > > @@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
+> > >  
+> > >  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
+> > >  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
+> > > -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
+> > > +	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
+> > 
+> > Better, but you really do not need to keep this here, right?  Remove the
+> > "led blink command" entirely, you didn't do that here.
 > 
-> Is this dp_display_disable()? Doubtful that display_disable() is the
-> function we're talking about.
-yes
-> 
->> will not re initialize audio_comp at display_disable() if audio 
->> shutdown
->> is triggered by dongle unplugged.
-> 
-> This commit text seems to say the why before the what, where why is "dp
-> initializes audio_comp followed by sending disconnect.." and the what 
-> is
-> "this patch will no re-initialized audio_comp...". Can you reorder this
-> so the what comes before the why?
-> 
-ok
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_display.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 0ba71c7..1d71c95 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -894,8 +894,10 @@ static int dp_display_disable(struct 
->> dp_display_private *dp, u32 data)
->>         /* wait only if audio was enabled */
->>         if (dp_display->audio_enabled) {
->>                 /* signal the disconnect event */
->> -               reinit_completion(&dp->audio_comp);
->> -               dp_display_handle_plugged_change(dp_display, false);
->> +               if (dp->hpd_state != ST_DISCONNECT_PENDING) {
->> +                       reinit_completion(&dp->audio_comp);
-> 
-> Why is this reinitialized here at all? Wouldn't it make more sense to
-> initialize the completion once at cable plug in and then not initialize
-> the completion anywhere else? Or initialize the completion whenever
-> dp_display->audio_enabled is set to true and then only wait for the
-> completion here if that boolean is true? Or initialize the completion
-> when dp_display_handle_plugged_change() is passed true for the 
-> 'plugged'
-> argument?
-> yes, i think it is better approach, this will take care of both unplug 
-> and suspend.
+> No, this is right.  We have to put a NULL function pointer in the array
+> or the indexing will be off.  But Fabio is correct that the struct
+> type should be removed.
 
-> I started reading the code and quickly got lost figuring out how
-> dp_display_handle_plugged_change() worked and the interaction between
-> the dp display code and the audio codec embedded in here. There seem to
-> be a couple of conditions that cut off things early, like
-> dp_display->audio_enabled and audio->engine_on. Why? Why does
-> dp_display_signal_audio_complete() call complete_all() vs. just
-> complete()? Please help! :(
-> 
->> +                       dp_display_handle_plugged_change(dp_display, 
->> false);
-> 
-> I think it's this way because dp_hpd_unplug_handle() is the function
-> that sets the hpd_state to ST_DISCONNECT_PENDING and then reinitializes
-> the completion (why?) and calls dp_display_handle_plugged_change(). So
-> the commit text could say that reinitializing the completion again here
-> at dp_display_disable() is racing with the audio code in the case that
-> dp_hpd_unplug_handle() already called
-> dp_display_handle_plugged_change() and it would make more sense. But 
-> the
-> question still stands why that race even exists in the first place vs.
-> initializing the completion variable in only one place unconditionally
-> when the cable is connected, in dp_hpd_plug_handle() or
-> dp_display_post_enable().
-> 
->> +               }
->>                 if (!wait_for_completion_timeout(&dp->audio_comp,
->>                                 HZ * 5))
->>                         DRM_ERROR("audio comp timeout\n");
+The indexing can be off, just remove the other place where the "command"
+is in the index and all is good as rebuilding will fix it.  These are
+not external "values" we have to keep stable.
+
+This has been done for other drivers exactly like this, there are loads
+of "odd" commands in there that should not be.
+
+thanks,
+
+greg k-h
