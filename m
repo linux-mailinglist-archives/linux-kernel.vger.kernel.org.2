@@ -2,157 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A7C35FCBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E23235FCBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245443AbhDNUeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:34:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50472 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244702AbhDNUe0 (ORCPT
+        id S245167AbhDNUfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244702AbhDNUfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:34:26 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lWmD6-0007Ro-0x
-        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 20:34:04 +0000
-Received: by mail-ed1-f70.google.com with SMTP id m2-20020aa7c4820000b0290382b0bad9e7so3932461edq.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:34:04 -0700 (PDT)
+        Wed, 14 Apr 2021 16:35:34 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D78FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:35:12 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id z22so5677692plo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wiaZwHGTdCRj5+b/FatO3lAkw7tSqDQttkSKoeHjA7s=;
+        b=lrlW0qZV+YVC2aLuyTTCzdEh/STkvFuGresOjdRh4pVuImIj4ZKS/pMqdt/Vps1g+I
+         jvkqVg67lsiTt2P5KQYNlt5Oft4TafNrKS/86QVFmrPJdnHqVKjY3Z6SxZ+ir/hBJsYT
+         XenCklvDU78qUlXpHVIEQHmdkhxWR9nghPavEdPw5YUJmn+mlrDgk778ir7lUCXyDNzr
+         skV+HvM2/hrY1tYUEjD8LtqO+EJIiGKA4NnwO/ALqhN7uEmAaihGYxEl8Bt57JXD+8ZJ
+         ezEX9+s3kac+CexiWaxM6fdSUF2WKHxTUIAtIfzrbRygspDbrj5j2Nt2+0m+QdzLFliD
+         hf+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EnsBrJR/4Jhy/GeQbcflnHQbmvQg6xzGpkQctWEUZLc=;
-        b=rofdvUpsYQYkyWa8e4VIxS1h/HMhS5hlGq6dmwwSa7jq+j8S/2t87S8YIlq7vmqPlZ
-         MD27AIfDd2qsHczVUAuNajVxvc8G/Z1sM7ZpBGjqXl5mm8AP2t5N2lInsBIPJ1UMhy4r
-         9/BzTW+3Ffgma+lQJLC/EzwynciEDlCFiKazJ50iNWyWhd7AnC5SKP8zc/MBjhDt32nK
-         EEMop4YvohGw11mh5mqxTrupnbAchxlgo6+cxwczW0OlPhpflL+shgcuYdxqs8GPDMP+
-         H2CtIoI0OvT90TLjH4whfZzcTjzNDalTFpF38tSMRk7rnXXZbF2/tS1XleqW5rdmjfEc
-         AmXQ==
-X-Gm-Message-State: AOAM531TX1QFouII2cZ+JOGV6uehYYKLC2BuZVDyviZzHxMdN2cHQ/Ei
-        pQ/FnzwHPQyPaxmZLuO/CVudgW4VVf/C87qhRVufKDpKV78HevqttwsmFqxDz3xPR/5tiWkYFE2
-        vxdpojExSe5S9FAViB9cNJWtP8QluIEcKUSgRPq2rmg==
-X-Received: by 2002:a05:6402:3092:: with SMTP id de18mr77342edb.96.1618432443691;
-        Wed, 14 Apr 2021 13:34:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4ge9Wh6Dy2ti9MnagPxtY+Lp7PT4OXoKWYxYA7ocEK2jErwNRrZdhQ86yjzHKPsL2D62BKQ==
-X-Received: by 2002:a05:6402:3092:: with SMTP id de18mr77329edb.96.1618432443522;
-        Wed, 14 Apr 2021 13:34:03 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id q6sm372209ejt.51.2021.04.14.13.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 13:34:03 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
-        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 3/3] spi: s3c64xx: constify driver/match data
-Date:   Wed, 14 Apr 2021 22:33:43 +0200
-Message-Id: <20210414203343.203119-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
-References: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wiaZwHGTdCRj5+b/FatO3lAkw7tSqDQttkSKoeHjA7s=;
+        b=Jd1U8a2eSdk/+XYkyMUFHeIijTm+mNtYFOPNushwzSCEMnH/QQHSFfIvJ51u3zJJi3
+         vQIsMqWDkjmj81pGlw41YwvC3yfVcQedzPkyXDj5wgJKd62FFrgJbnHfJ4dnWBm0mL3e
+         l6IirSReT7Yt138bLlrkMh7QdFoRVP2Ai1VlMGU3jfsX6xtw4Bs0gVpnocT4N0Zank5I
+         pPgwhoLi7An9ZzEYPMjMadD5x3gI0CbuIjZ+sBOm0JA5fIsp2q4sG/TYgl3cExlAGUjn
+         ab04bhIq3d0sti0omUpb5GZZ/PyNFLzlB+eeL2X5wIoH4kqAmhHWPmHuwNAng/J8Rdud
+         9UZQ==
+X-Gm-Message-State: AOAM533cScWCB/+Dk4ZEmyGe10VdaXxd2DK0unvPNIVTDA7rIVYG6MSi
+        7KUM8BJZsLd+bYOuTUZMc1WHOPWgqTawqGHPthcyAw==
+X-Google-Smtp-Source: ABdhPJyrGR1ILmJJHGsxuS9At2CwFEQk/mztw0Kol72/gRR52T4v+nahM0YrroGAhUUDDQH83gCKRz7w1yNG7lW7XtM=
+X-Received: by 2002:a17:902:7e8b:b029:e9:2ba0:20a2 with SMTP id
+ z11-20020a1709027e8bb02900e92ba020a2mr40838pla.69.1618432511767; Wed, 14 Apr
+ 2021 13:35:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210413162240.3131033-1-eric.dumazet@gmail.com>
+ <20210413162240.3131033-4-eric.dumazet@gmail.com> <567941475.72456.1618332885342.JavaMail.zimbra@efficios.com>
+ <CANn89iJi=RY5HE6+TDvNv0HPEuedtsYHkEZSoEb45EO=tQM2tw@mail.gmail.com>
+ <CANn89iKChc2Xf7fnJN0A7OfA7v=S0f6KruB91dKmEPVRhxQyPg@mail.gmail.com>
+ <CANn89iKnQ7KeCo0os0c67GMgEkmrRqhmGhug-xL-Mx5BhR+BkQ@mail.gmail.com>
+ <989543379.72506.1618334454075.JavaMail.zimbra@efficios.com>
+ <CANn89iLXE6V2gpbJeE6KVU+YiNkmYZKjpRxKv8b69k1ECsyE9g@mail.gmail.com>
+ <1347243835.72576.1618336812739.JavaMail.zimbra@efficios.com>
+ <CANn89iKhKrHgTduwUtZ6QhxE6xFcK=ijadwACg9aSEJ7QQx4Mg@mail.gmail.com>
+ <CAOFY-A1=2MzHvmqBEo=WBT6gWc=KnmtCWogjLdwZVDTp-zDjBQ@mail.gmail.com>
+ <feed2c13dbe34279a03929a588c46c67@AcuMS.aculab.com> <CAOFY-A21tjC5dWwM0W0aXHij40kKj2JNo5Nq4X8mBZZdKwr+AA@mail.gmail.com>
+ <2c6885b0241d4127b8cb7e38abbbe1e5@AcuMS.aculab.com> <CANn89iJj9254GORTsabwv6ZBPWzebR4iYAj9VYxuOZSrF99fNg@mail.gmail.com>
+ <1e5576a1a5b24cb0b1d53b9bb22d528e@AcuMS.aculab.com> <CANn89iKmUJRf3FNuk6BhC06Qt-C_RuYfxPUm-1Ho0ztL0KJsLg@mail.gmail.com>
+ <CAOFY-A1Nff_99-V+W-xyhq3g4kvqXPzM3eWAQV2WpzrxPfjeFw@mail.gmail.com>
+ <CANn89iK_mRog=vN4krT_86_CfWBWAz1w8c3Tr51xbdS5V45ATg@mail.gmail.com>
+ <CAOFY-A2JZTuthaOMs5Edrkjz2YjnsQTt_YF=RA8F4x1MXb3mjQ@mail.gmail.com> <CANn89i+m7Df_pb6CUMVjnBAcHqayg=4wKQ1VEGFvg3DYTDpetA@mail.gmail.com>
+In-Reply-To: <CANn89i+m7Df_pb6CUMVjnBAcHqayg=4wKQ1VEGFvg3DYTDpetA@mail.gmail.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Wed, 14 Apr 2021 13:35:00 -0700
+Message-ID: <CAOFY-A0Wp9yXkzQQrw_3CefZYMwjQixaKsb51uHjO_NnZ=fOdA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] rseq: optimise rseq_get_rseq_cs() and clear_rseq_cs()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The match data (struct s3c64xx_spi_port_config) stored in of_device_id
-and platform_device_id tables is not modified by the driver and can be
-handled entirely in a const-way to increase the code safety.
+On Wed, Apr 14, 2021 at 1:25 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Wed, Apr 14, 2021 at 10:15 PM Arjun Roy <arjunroy@google.com> wrote:
+> >
+> > On Wed, Apr 14, 2021 at 10:35 AM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Wed, Apr 14, 2021 at 7:15 PM Arjun Roy <arjunroy@google.com> wrote:
+> > > >
+> > > > On Wed, Apr 14, 2021 at 9:10 AM Eric Dumazet <edumazet@google.com> wrote:
+> > > > >
+> > > > > On Wed, Apr 14, 2021 at 6:08 PM David Laight <David.Laight@aculab.com> wrote:
+> > > > > >
+> > > > > > From: Eric Dumazet
+> > > > > > > Sent: 14 April 2021 17:00
+> > > > > > ...
+> > > > > > > > Repeated unsafe_get_user() calls are crying out for an optimisation.
+> > > > > > > > You get something like:
+> > > > > > > >         failed = 0;
+> > > > > > > >         copy();
+> > > > > > > >         if (failed) goto error;
+> > > > > > > >         copy();
+> > > > > > > >         if (failed) goto error;
+> > > > > > > > Where 'failed' is set by the fault handler.
+> > > > > > > >
+> > > > > > > > This could be optimised to:
+> > > > > > > >         failed = 0;
+> > > > > > > >         copy();
+> > > > > > > >         copy();
+> > > > > > > >         if (failed) goto error;
+> > > > > > > > Even if it faults on every invalid address it probably
+> > > > > > > > doesn't matter - no one cares about that path.
+> > > > > > >
+> > > > > > >
+> > > > > > > On which arch are you looking at ?
+> > > > > > >
+> > > > > > > On x86_64 at least, code generation is just perfect.
+> > > > > > > Not even a conditional jmp, it is all handled by exceptions (if any)
+> > > > > > >
+> > > > > > > stac
+> > > > > > > copy();
+> > > > > > > copy();
+> > > > > > > clac
+> > > > > > >
+> > > > > > >
+> > > > > > > <out_of_line>
+> > > > > > > efault_end: do error recovery.
+> > > > > >
+> > > > > > It will be x86_64.
+> > > > > > I'm definitely seeing repeated tests of (IIRC) %rdx.
+> > > > > >
+> > > > > > It may well be because the compiler isn't very new.
+> > > > > > Will be an Ubuntu build of 9.3.0.
+> > > > > > Does that support 'asm goto with outputs' - which
+> > > > > > may be the difference.
+> > > > > >
+> > > > >
+> > > > > Yep, probably. I am using some recent clang version.
+> > > > >
+> > > >
+> > > > On x86-64 I can confirm, for me it (4 x unsafe_get_user()) compiles
+> > > > down to stac + lfence + 8 x mov + clac as straight line code. And
+> > > > results in roughly a 5%-10% speedup over copy_from_user().
+> > > >
+> > >
+> > > But rseq_get_rseq_cs() would still need three different copies,
+> > > with 3 stac+lfence+clac sequences.
+> > >
+> > > Maybe we need to enclose all __rseq_handle_notify_resume() operations
+> > > in a single section.
+> > >
+> > >
+> >
+> > To provide a bit of further exposition on this point, if you do 4x
+> > unsafe_get_user() recall I mentioned a 5-10% improvement. On the other
+> > hand, 4x normal get_user() I saw something like a 100% (ie. doubling
+> > of sys time measured) regression.
+> >
+> > I assume that's the fault of multiple stac+clac.
+>
+>
+> I was suggesting only using unsafe_get_user() and unsafe_put_user(),
+> and one surrounding stac/clac
+>
+> Basically what we had (partially) in our old Google kernels, before
+> commit 8f2817701492 ("rseq: Use get_user/put_user rather than
+> __get_user/__put_user")
+> but with all the needed modern stuff.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/spi/spi-s3c64xx.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+Yep - in agreement with that approach.
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index eac3c300f806..8755cd85e83c 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -190,7 +190,7 @@ struct s3c64xx_spi_driver_data {
- 	unsigned                        cur_speed;
- 	struct s3c64xx_spi_dma_data	rx_dma;
- 	struct s3c64xx_spi_dma_data	tx_dma;
--	struct s3c64xx_spi_port_config	*port_conf;
-+	const struct s3c64xx_spi_port_config	*port_conf;
- 	unsigned int			port_id;
- };
- 
-@@ -1049,15 +1049,14 @@ static struct s3c64xx_spi_info *s3c64xx_spi_parse_dt(struct device *dev)
- }
- #endif
- 
--static inline struct s3c64xx_spi_port_config *s3c64xx_spi_get_port_config(
-+static inline const struct s3c64xx_spi_port_config *s3c64xx_spi_get_port_config(
- 						struct platform_device *pdev)
- {
- #ifdef CONFIG_OF
- 	if (pdev->dev.of_node)
--		return (struct s3c64xx_spi_port_config *)of_device_get_match_data(&pdev->dev);
-+		return of_device_get_match_data(&pdev->dev);
- #endif
--	return (struct s3c64xx_spi_port_config *)
--			 platform_get_device_id(pdev)->driver_data;
-+	return (const struct s3c64xx_spi_port_config *)platform_get_device_id(pdev)->driver_data;
- }
- 
- static int s3c64xx_spi_probe(struct platform_device *pdev)
-@@ -1395,27 +1394,27 @@ static const struct dev_pm_ops s3c64xx_spi_pm = {
- 			   s3c64xx_spi_runtime_resume, NULL)
- };
- 
--static struct s3c64xx_spi_port_config s3c2443_spi_port_config = {
-+static const struct s3c64xx_spi_port_config s3c2443_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x7f },
- 	.rx_lvl_offset	= 13,
- 	.tx_st_done	= 21,
- 	.high_speed	= true,
- };
- 
--static struct s3c64xx_spi_port_config s3c6410_spi_port_config = {
-+static const struct s3c64xx_spi_port_config s3c6410_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x7f, 0x7F },
- 	.rx_lvl_offset	= 13,
- 	.tx_st_done	= 21,
- };
- 
--static struct s3c64xx_spi_port_config s5pv210_spi_port_config = {
-+static const struct s3c64xx_spi_port_config s5pv210_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x1ff, 0x7F },
- 	.rx_lvl_offset	= 15,
- 	.tx_st_done	= 25,
- 	.high_speed	= true,
- };
- 
--static struct s3c64xx_spi_port_config exynos4_spi_port_config = {
-+static const struct s3c64xx_spi_port_config exynos4_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x1ff, 0x7F, 0x7F },
- 	.rx_lvl_offset	= 15,
- 	.tx_st_done	= 25,
-@@ -1424,7 +1423,7 @@ static struct s3c64xx_spi_port_config exynos4_spi_port_config = {
- 	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
- };
- 
--static struct s3c64xx_spi_port_config exynos7_spi_port_config = {
-+static const struct s3c64xx_spi_port_config exynos7_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x1ff, 0x7F, 0x7F, 0x7F, 0x7F, 0x1ff},
- 	.rx_lvl_offset	= 15,
- 	.tx_st_done	= 25,
-@@ -1433,7 +1432,7 @@ static struct s3c64xx_spi_port_config exynos7_spi_port_config = {
- 	.quirks		= S3C64XX_SPI_QUIRK_CS_AUTO,
- };
- 
--static struct s3c64xx_spi_port_config exynos5433_spi_port_config = {
-+static const struct s3c64xx_spi_port_config exynos5433_spi_port_config = {
- 	.fifo_lvl_mask	= { 0x1ff, 0x7f, 0x7f, 0x7f, 0x7f, 0x1ff},
- 	.rx_lvl_offset	= 15,
- 	.tx_st_done	= 25,
--- 
-2.25.1
-
+-Arjun
