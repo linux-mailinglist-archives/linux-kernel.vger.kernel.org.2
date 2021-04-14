@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EA335ED3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7105335EDB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347959AbhDNGde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:33:34 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:57540 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231831AbhDNGd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:33:28 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVWtpYf_1618381977;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVWtpYf_1618381977)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Apr 2021 14:33:06 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     agk@redhat.com
-Cc:     snitzer@redhat.com, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] dm clone metadata: remove unused function
-Date:   Wed, 14 Apr 2021 14:32:56 +0800
-Message-Id: <1618381976-127456-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1349366AbhDNGtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:49:06 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:42824 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349338AbhDNGs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:48:59 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B0801A3EA1;
+        Wed, 14 Apr 2021 08:48:37 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C9CDC1A41FA;
+        Wed, 14 Apr 2021 08:48:34 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2B4EE4031C;
+        Wed, 14 Apr 2021 08:48:31 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 -next 1/2] ASoC: ak5558: correct reset polarity
+Date:   Wed, 14 Apr 2021 14:33:43 +0800
+Message-Id: <1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
+Reset (aka power off) happens when the reset gpio is made active.
+The reset gpio is GPIO_ACTIVE_LOW
 
-drivers/md/dm-clone-metadata.c:279:19: warning: unused function
-'superblock_write_lock' [-Wunused-function].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: 920884777480 ("ASoC: ak5558: Add support for AK5558 ADC driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- drivers/md/dm-clone-metadata.c | 6 ------
- 1 file changed, 6 deletions(-)
+changes in v2:
+- split the patch to two patches.
 
-diff --git a/drivers/md/dm-clone-metadata.c b/drivers/md/dm-clone-metadata.c
-index 1771245..c43d556 100644
---- a/drivers/md/dm-clone-metadata.c
-+++ b/drivers/md/dm-clone-metadata.c
-@@ -276,12 +276,6 @@ static inline int superblock_read_lock(struct dm_clone_metadata *cmd,
- 	return dm_bm_read_lock(cmd->bm, SUPERBLOCK_LOCATION, &sb_validator, sblock);
+ sound/soc/codecs/ak5558.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 8e4dca753f0b..f24d91b728dd 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -323,7 +323,7 @@ static void ak5558_power_off(struct ak5558_priv *ak5558)
+ 	if (!ak5558->reset_gpiod)
+ 		return;
+ 
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 0);
++	gpiod_set_value_cansleep(ak5558->reset_gpiod, 1);
+ 	usleep_range(1000, 2000);
  }
  
--static inline int superblock_write_lock(struct dm_clone_metadata *cmd,
--					struct dm_block **sblock)
--{
--	return dm_bm_write_lock(cmd->bm, SUPERBLOCK_LOCATION, &sb_validator, sblock);
--}
--
- static inline int superblock_write_lock_zero(struct dm_clone_metadata *cmd,
- 					     struct dm_block **sblock)
- {
+@@ -332,7 +332,7 @@ static void ak5558_power_on(struct ak5558_priv *ak5558)
+ 	if (!ak5558->reset_gpiod)
+ 		return;
+ 
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 1);
++	gpiod_set_value_cansleep(ak5558->reset_gpiod, 0);
+ 	usleep_range(1000, 2000);
+ }
+ 
 -- 
-1.8.3.1
+2.27.0
 
