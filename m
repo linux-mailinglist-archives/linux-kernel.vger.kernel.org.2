@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB86A35FDE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E1335FDEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbhDNWhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        id S233875AbhDNWj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhDNWgz (ORCPT
+        with ESMTP id S229690AbhDNWjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:36:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A11C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:36:29 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id r8so35716348lfp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s+VGRBuPdmKutKxIYYlr7lTmNrQCLCweQw9SWmlzyUo=;
-        b=N+uEViMICnndvL0isdw49RiQ0qEN5p8Dv4opi+pSvIFgeYBfXbb7yPNqvgdpjmHJPE
-         3B1g0ufMGZ/Fro7POD4HcoJ5csMnob/rnMCHoH0j9RtLtkAV1Z4a8riYA8GnNcV1O2dT
-         jL/0dwOwHy1WCk9GxlYEUpglJyQNV/q9boJTKDSiSVftls6y8d1e7RJKsX+tleJiiJo4
-         tGMZzAPZnMiXQ5fbq7FLdWS7LTsdL2OqOGcEFLNeR4kXmxBCBhzyt9n5P7P42dFIZc7a
-         pYTyoPc/48JTDs+u0Y77aOTEkIdXaP8oQQziJe0qeRU4WHsygOyJ/BJ1OS5TlxYdkZgs
-         WTkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s+VGRBuPdmKutKxIYYlr7lTmNrQCLCweQw9SWmlzyUo=;
-        b=EI99CcHbEWcQXUTTsJDOBkv4EcJgKaTCOU/XE4sfp+oea8GuGMlh+y5AknEUXxTflw
-         2NfA7jdzvoXvUTv/2atCS/oqDRiIou+saMQtQLP+XQ5Sh2b7WA8Ey/TnEM4YxwHJ4q4A
-         DpiI2Xd8vbl0Lxq1laLTKigwjYTiGE/Ocn+CNZa5V3LkZVcRBX2lpmjsHtv/bCViR5lf
-         G86mAx3R2CZr78VmdKRD6LlJiryn67seGwCPqcpZ60pOSqWgHis76r6Hq9/la7XsYmay
-         Vt1AXr/L/FBRb9+q/2ZoDqV9naUWS0uCB1Duv8/L5GGHwob/KiJz/jWny8fzYNCsQopx
-         HMxA==
-X-Gm-Message-State: AOAM532boidkoo8VJ3dikqdkoujnvPvdgRDt2gsczBbrgV79Ff7uCDTx
-        rTI2DcvWaoxB8rnRO7OY/CuRZKn56Yl3sFUXNZksVg==
-X-Google-Smtp-Source: ABdhPJwWtbuJsvcv11qI8BqaFhOcOpRWm/UUOom7nk9emsiunf9lpKoCxjINZOypiABigrAkPa04FX0s9f4ScB2p+RU=
-X-Received: by 2002:a05:6512:94d:: with SMTP id u13mr270494lft.368.1618439787310;
- Wed, 14 Apr 2021 15:36:27 -0700 (PDT)
+        Wed, 14 Apr 2021 18:39:25 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2BF28C061574;
+        Wed, 14 Apr 2021 15:39:03 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 579A192009C; Thu, 15 Apr 2021 00:38:59 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 4CD8B92009B;
+        Thu, 15 Apr 2021 00:38:59 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 00:38:59 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to Y2021
+Message-ID: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-12-ojeda@kernel.org>
-In-Reply-To: <20210414184604.23473-12-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Apr 2021 15:36:15 -0700
-Message-ID: <CAKwvOdkn9e59wizhbAFLGbCKn3JbsVxMHOLds6V7HE7C9Yoaig@mail.gmail.com>
-Subject: Re: [PATCH 11/13] MAINTAINERS: Rust
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:50 AM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> Miguel, Alex and Wedson will be maintaining the Rust support.
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
->  MAINTAINERS | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9e876927c60d..de32aaa5cabd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15547,6 +15547,20 @@ L:     linux-rdma@vger.kernel.org
-...
-> +F:     rust/
-> +F:     samples/rust/
-> +F:     Documentation/rust/
+Hi,
 
-Probably some other files, too? Like the target.json files under
-arch/{arch}/rust/ ?
+ First of all, does anyone have a copy of: "MultiMaster UltraSCSI Host 
+Adapters for PCI Systems: Technical Reference Manual" (pub. 3002493-E)?  
+It used to live in the "Mylex Manuals and Documentation Archives" section 
+of the Mylex web site <http://www.mylex.com/pub/manuals/index.htm>, 
+specifically at: <http://www.mylex.com/pub/manuals/mmultra.pdf>.
 
--- 
-Thanks,
-~Nick Desaulniers
+ Another useful document might be: "Wide SCSI Host Adapters for PCI and 
+EISA Systems: Technical Reference Manual" (pub. 3000763-A), which used to 
+live at: <http://www.mylex.com/pub/manuals/widescsi.pdf>, linked from the 
+same place.
+
+ Sadly I didn't get to these resources while they were still there, and 
+neither did archive.org, and now they not appear available from anywhere 
+online.  I'm sure Leonard had this all, but, alas, he is long gone too.
+
+ It looks to me like either or both documents would help understanding how 
+the BusLogic devices (are supposed to) work and possibly deal with issues 
+in a better way.
+
+ So we are here owing to Christoph's recent ISA bounce buffering sweep: 
+<https://lore.kernel.org/linux-scsi/20210331073001.46776-1-hch@lst.de/T/#m981284e74e93216626a0728ce1601ca18fca92e8> 
+which has prompted me to verify the current version of Linux with my old 
+server, which has been long equipped with venerable Linux 2.6.18 and which 
+I now have available for general experimenting, and the BusLogic BT-958 
+PCI SCSI host bus adapter the server has used for 20-something years now.  
+This revealed numerous issues with the BusLogic driver.
+
+ Firstly (1/5) it has suffered from some bitrot and messages produced have 
+become messy from the lack of update for proper `pr_cont' support.
+
+ Secondly (2/5) there has been a potential buffer overrun/stack corruption 
+security issue from using an unbounded `vsprintf' call.
+
+ Thirdly (3/5) it has become obvious the BusLogic driver would have been 
+non-functional, should I have upgraded the kernel, at least with this 
+configuration for some 8 years now, and the underlying cause has been a 
+long-known issue with the MultiMaster firmware I have dealt with already, 
+back in 2003.  To put it short the firmware cannot cope with commands that 
+request an allocation length exceeding the length of actual data returned.
+
+ I have originally observed it with a LOG SENSE command in the course of 
+investigating why smartmontools bring the system to a death, and worked it 
+around: <https://sourceforge.net/p/smartmontools/mailman/message/4993087/> 
+by issuing the command twice, first just to obtain the allocation length 
+required.  As it turns out we need a similar workaround in the kernel now.
+
+ But in the course of investigating this issue I have discovered there is 
+a second bottom to it and hence I have prepared follow-up changes (4-5/5) 
+to address problems with our handling of Vital Product Data INQUIRY pages.
+
+ See individual change descriptions for further details.
+
+ Questions, comments, concerns?  Otherwise please apply.
+
+  Maciej
