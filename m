@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38FA35ECD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBBC35ECDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348426AbhDNGBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:01:19 -0400
-Received: from mga17.intel.com ([192.55.52.151]:10337 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231629AbhDNGBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:01:13 -0400
-IronPort-SDR: mR04dnqzzjFzPyZreN2FhTTafTTB+IZhNjMBS8yDd0xxeAVCFLNGlQtPDTrqaRFdqNnxIfxGGk
- +r6W6W9TO5zw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="174679395"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="174679395"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 23:00:50 -0700
-IronPort-SDR: iAAaup/KkwHp+utw+AfOGHomK6q2f7xNUUET0OhPGe8sqRiCmIErCfAJ5Zv03BOy6mxEKMWMWQ
- NhsjrcscwEdA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="452304710"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Apr 2021 23:00:43 -0700
-Subject: Re: [PATCH 2/2] perf intel-pt: Use aux_watermark
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-References: <20210408153159.81880-1-alexander.shishkin@linux.intel.com>
- <20210408153159.81880-3-alexander.shishkin@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e8097eb7-66cb-432a-a799-2514b28ae48e@intel.com>
-Date:   Wed, 14 Apr 2021 09:00:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210408153159.81880-3-alexander.shishkin@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1348541AbhDNGEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:04:39 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:13775 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349122AbhDNGEX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:04:23 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 13 Apr 2021 23:04:02 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 13 Apr 2021 23:03:59 -0700
+X-QCInternal: smtphost
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Apr 2021 11:33:33 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id 71C2037A5; Wed, 14 Apr 2021 11:33:32 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v2] usb: dwc3: core: Add shutdown callback for dwc3
+Date:   Wed, 14 Apr 2021 11:33:29 +0530
+Message-Id: <1618380209-20114-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/04/21 6:31 pm, Alexander Shishkin wrote:
-> Turns out, the default setting of attr.aux_watermark to half of the total
-> buffer size is not very useful, especially with smaller buffers. The
-> problem is that, after half of the buffer is filled up, the kernel updates
-> ->aux_head and sets up the next "transaction", while observing that
-> ->aux_tail is still zero (as userspace haven't had the chance to update
-> it), meaning that the trace will have to stop at the end of this second
-> "transaction". This means, for example, that the second PERF_RECORD_AUX in
-> every trace comes with TRUNCATED flag set.
-> 
-> Setting attr.aux_watermark to quarter of the buffer gives enough space for
-> the ->aux_tail update to be observed and prevents the data loss.
-> 
-> The obligatory before/after showcase:
-> 
->> # perf_before record -e intel_pt//u -m,8 uname
->> Linux
->> [ perf record: Woken up 6 times to write data ]
->> Warning:
->> AUX data lost 4 times out of 10!
->>
->> [ perf record: Captured and wrote 0.099 MB perf.data ]
->> # perf record -e intel_pt//u -m,8 uname
->> Linux
->> [ perf record: Woken up 4 times to write data ]
->> [ perf record: Captured and wrote 0.039 MB perf.data ]
-> 
-> The effect is still visible with large workloads and large buffers,
-> although less pronounced.
-> 
-> Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> ---
->  tools/perf/arch/x86/util/intel-pt.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-> index a6420c647959..d00707faf547 100644
-> --- a/tools/perf/arch/x86/util/intel-pt.c
-> +++ b/tools/perf/arch/x86/util/intel-pt.c
-> @@ -776,6 +776,10 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
->  		}
->  	}
->  
-> +	if (opts->full_auxtrace)
-> +		intel_pt_evsel->core.attr.aux_watermark =
-> +		       opts->auxtrace_mmap_pages / 4 * page_size;
-> +
+This patch adds a shutdown callback to USB DWC core driver to ensure that
+it is properly shutdown in reboot/shutdown path. This is required
+where SMMU address translation is enabled like on SC7180
+SoC and few others. If the hardware is still accessing memory after
+SMMU translation is disabled as part of SMMU shutdown callback in
+system reboot or shutdown path, then IOVAs(I/O virtual address)
+which it was using will go on the bus as the physical addresses which
+might result in unknown crashes (NoC/interconnect errors).
 
-I would be explicit about the mode and put "/ 4" at the end
-for the case auxtrace_mmap_pages is not a multiple of 4 (e.g. 2).
-i.e.
+Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+---
+Changes in v2:
+        - As per Stephen's comment, calling dwc3_remove in dwc3_shutdown.
 
-	if (!opts->auxtrace_snapshot_mode && !opts->auxtrace_sample_mode) {
-		u32 aux_watermark = opts->auxtrace_mmap_pages * page_size / 4;
+ drivers/usb/dwc3/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-		intel_pt_evsel->core.attr.aux_watermark = aux_watermark;
-	}
-
-
->  	intel_pt_parse_terms(intel_pt_pmu->name, &intel_pt_pmu->format,
->  			     "tsc", &tsc_bit);
->  
-> 
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 05e2e54c..2022d90 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -1658,6 +1658,11 @@ static int dwc3_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static void dwc3_shutdown(struct platform_device *pdev)
++{
++	dwc3_remove(pdev);
++}
++
+ #ifdef CONFIG_PM
+ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ {
+@@ -1975,6 +1980,7 @@ MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
+ static struct platform_driver dwc3_driver = {
+ 	.probe		= dwc3_probe,
+ 	.remove		= dwc3_remove,
++	.shutdown   = dwc3_shutdown,
+ 	.driver		= {
+ 		.name	= "dwc3",
+ 		.of_match_table	= of_match_ptr(of_dwc3_match),
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
