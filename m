@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3BC35F7A5
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB4135F7A6
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352243AbhDNP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:29:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350223AbhDNP3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:29:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A122D61158;
-        Wed, 14 Apr 2021 15:28:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618414130;
-        bh=VOjjidsArMWHVu6+STthr6t7XDFmwhg8C/WgwQsOgao=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DMiddRMTdBxF2WA+pSHF0xc1KgYlNzxRuGZTT1AtS3/gVz/BMF6a3M18AuP5l0pKy
-         VnoMbAi30WmQhjunDjVhIMdeUwMzeSvc6/P6PosBb05jZizgFajzJuqY4DWMr8Kfty
-         NDvbDpT8/uXGzjxNxA6ATE6RJMz7W2xI3qbzS9OqEyF9dnLVfTTGayPaQGkig61jfi
-         yNRhi+e130pPjy0Q4vBOqmpZ5PAe3EeBC+3nIvHsVVfrM7TKbZjU3Jf3+939QOUHmg
-         HwCE3Sc6v5mhI3JAOqPWiSXDFuLcVpX2B/A0Vw0KrO5TMTqYssB/KdhjScZAvhnLBx
-         v8C4yC75MfMeg==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     dm-devel@redhat.com
-Cc:     gregkh@linuxfoundation.org, snitzer@redhat.com,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        agk@redhat.com, Jaegeuk Kim <jaegeuk@google.com>,
-        stable@vger.kernel.org
-Subject: [PATCH RESEND] dm verity: fix not aligned logical block size of RS roots IO
-Date:   Wed, 14 Apr 2021 08:28:28 -0700
-Message-Id: <20210414152828.760900-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+        id S1352280AbhDNP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352278AbhDNP3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:29:24 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E808C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:03 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id x11so21743479qkp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w9Oa3BGE0nLdxfYSEJulYCQMQ2MOOmW16QvouCtA+Ws=;
+        b=Trw4QaVx4IDtynizdbhRMzOZ6NQrZOQkImB52ygkyeKLdYaiE1ZQofk/brnMhXSpSS
+         84gc4QfaWVXCoIWRgBQ+2U/V90JRhWBtDdeODEyCIwoQ7RTmvB+6v8tXi4ZltwjX7XbJ
+         UBthN1H+rm9GC2LQJeI14t5WmXgg2Zgh075As=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w9Oa3BGE0nLdxfYSEJulYCQMQ2MOOmW16QvouCtA+Ws=;
+        b=NpY9eO0+hykQngQu1qNqdL2jqOiNtPIodPqjQrG8nC8dpw5qFROw0uWx9E61lvnkZD
+         ybFbW6KLOqDzmnYlZdJu8wmL4hY7MhOVu3KyY0Udht00esxrCoLv0Pi5IXxznnJM2GUt
+         YnYquNrD7+iUcMh9hdkwldbGl4xOJ1kZDSLAJiCMu76PvgUdsoS+2o2OAZgEKPefFlZn
+         ygabOWB4R0sjtfiQ1R0c0yUzEdzfEpxT2Ga2/3lgob+xR+qAf2fSDIm6h/N+ukXdGmM/
+         CW6rc/jDXdJHJHSjWcq409txEOIVtyUDNolfMSbwn80uadkmNkQUEiXBaMt7DGRL9lXW
+         dL8A==
+X-Gm-Message-State: AOAM531caO1uLYSSVnyPW84l8jWUeG3V2M30zUjrYydrNZizDuW/rj24
+        oc6xs9eyWFq9BAEGom17kHddV3MfUMrtKQ==
+X-Google-Smtp-Source: ABdhPJx0unGGXbUg5T9Xo6Y+oqfqM3ntkTn0vxSANCrVMelcpcEtmZeXYH/j7ZmVhAoCxpXXTX3TLg==
+X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr30535336qka.145.1618414142202;
+        Wed, 14 Apr 2021 08:29:02 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id 2sm8395552qko.134.2021.04.14.08.29.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 08:29:01 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id k73so16289675ybf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:29:00 -0700 (PDT)
+X-Received: by 2002:a25:58d5:: with SMTP id m204mr55376026ybb.32.1618414140336;
+ Wed, 14 Apr 2021 08:29:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
+In-Reply-To: <1618276850-27178-1-git-send-email-johnny.chuang.emc@gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 14 Apr 2021 08:28:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
+Message-ID: <CAD=FV=VvrWKKbLExpFaDLTDGTam3rbwd7CwTLVFdCY=_c7-eag@mail.gmail.com>
+Subject: Re: [PATCH v3] HID: i2c-hid: Skip ELAN power-on command after reset
+To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Harry Cutts <hcutts@chromium.org>,
+        Johnny Chuang <johnny.chuang@emc.com.tw>,
+        James Chen <james.chen@emc.com.tw>,
+        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
+        Paul Liang <paul.liang@emc.com.tw>,
+        Jeff Chuang <jeff.chuang@emc.com.tw>,
+        Jingle <jingle.wu@emc.com.tw>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaegeuk Kim <jaegeuk@google.com>
+Hi,
 
-commit df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
-made dm_bufio->block_size 1024, if f->roots is 2. But, that gives the below EIO
-if the logical block size of the device is 4096, given v->data_dev_block_bits=12.
+On Mon, Apr 12, 2021 at 6:20 PM Johnny Chuang
+<johnny.chuang.emc@gmail.com> wrote:
+>
+> Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset").
 
-E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
-E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
+Note that the "Fixes" tag actually belongs down at the end. It also
+shouldn't have a "." at the end. Presumably the maintainer can adjust
+this when landing?
 
-Let's use f->roots for dm_bufio iff it's aligned to v->data_dev_block_bits.
 
-Fixes: df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
----
- drivers/md/dm-verity-fec.c | 11 ++++++++---
- drivers/md/dm-verity-fec.h |  1 +
- 2 files changed, 9 insertions(+), 3 deletions(-)
+> For ELAN touchscreen, we found our boot code of IC was not flexible enough
+> to receive and handle this command.
+> Once the FW main code of our controller is crashed for some reason,
+> the controller could not be enumerated successfully to be recognized
+> by the system host. therefore, it lost touch functionality.
+>
+> Add quirk for skip send power-on command after reset.
+> It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
+>
+> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
 
-diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
-index 66f4c6398f67..cea2b3789736 100644
---- a/drivers/md/dm-verity-fec.c
-+++ b/drivers/md/dm-verity-fec.c
-@@ -65,7 +65,7 @@ static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
- 	u8 *res;
- 
- 	position = (index + rsb) * v->fec->roots;
--	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
-+	block = div64_u64_rem(position, v->fec->io_size, &rem);
- 	*offset = (unsigned)rem;
- 
- 	res = dm_bufio_read(v->fec->bufio, block, buf);
-@@ -154,7 +154,7 @@ static int fec_decode_bufs(struct dm_verity *v, struct dm_verity_fec_io *fio,
- 
- 		/* read the next block when we run out of parity bytes */
- 		offset += v->fec->roots;
--		if (offset >= v->fec->roots << SECTOR_SHIFT) {
-+		if (offset >= v->fec->io_size) {
- 			dm_bufio_release(buf);
- 
- 			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
-@@ -742,8 +742,13 @@ int verity_fec_ctr(struct dm_verity *v)
- 		return -E2BIG;
- 	}
- 
-+	if ((f->roots << SECTOR_SHIFT) & ((1 << v->data_dev_block_bits) - 1))
-+		f->io_size = 1 << v->data_dev_block_bits;
-+	else
-+		f->io_size = v->fec->roots << SECTOR_SHIFT;
-+
- 	f->bufio = dm_bufio_client_create(f->dev->bdev,
--					  f->roots << SECTOR_SHIFT,
-+					  f->io_size,
- 					  1, 0, NULL, NULL);
- 	if (IS_ERR(f->bufio)) {
- 		ti->error = "Cannot initialize FEC bufio client";
-diff --git a/drivers/md/dm-verity-fec.h b/drivers/md/dm-verity-fec.h
-index 42fbd3a7fc9f..3c46c8d61883 100644
---- a/drivers/md/dm-verity-fec.h
-+++ b/drivers/md/dm-verity-fec.h
-@@ -36,6 +36,7 @@ struct dm_verity_fec {
- 	struct dm_dev *dev;	/* parity data device */
- 	struct dm_bufio_client *data_bufio;	/* for data dev access */
- 	struct dm_bufio_client *bufio;		/* for parity data access */
-+	size_t io_size;		/* IO size for roots */
- 	sector_t start;		/* parity data start in blocks */
- 	sector_t blocks;	/* number of blocks covered */
- 	sector_t rounds;	/* number of interleaving rounds */
--- 
-2.31.1.295.g9ea45b61b8-goog
+This patch looks fine to me, thus:
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+I can confirm that after applying this patch I can recovery my borked
+touchscreen (which got borked by a failed firmware update ages ago):
+
+Tested-by: Douglas Anderson <dianders@chromium.org>
