@@ -2,155 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C272B35F9A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D506235F9A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349102AbhDNRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S1349527AbhDNRQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233618AbhDNRPo (ORCPT
+        with ESMTP id S233618AbhDNRQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:15:44 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0312BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:23 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d21so4513397edv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:15:22 -0700 (PDT)
+        Wed, 14 Apr 2021 13:16:17 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF741C061574;
+        Wed, 14 Apr 2021 10:15:54 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r128so7432038lff.4;
+        Wed, 14 Apr 2021 10:15:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UXvQGOPGMiIBh+TNB+TuJqTHlXvXGuBCSN0JQwAe2RQ=;
-        b=PWwEvYYJje0y3hO9Tl1LpDzu7QSF9xAeVKMVaYsWQZrwkc7nZjup6LaFcS/lfjD4cs
-         U3RG3b+S0Ul3QZJC7Rahky+ypsws8OJFNWgcA/uATSo/kIWbttCAdlLjnFhau8ieQOdi
-         lnZoUpHjTPV1fOkCJ3QGdk1ZDi10Do4z5CbIpvZiR6P5jMXr0qAflAIqifK5T8ybVR3s
-         DRNGrAOLqXYnH/lFkKF2u6vDCp1NHUPLZ6iwjPQaYSd3VF/lGxM3wJJgqXvYrChs7Z+T
-         R2y9g/F6WEvR4q6w7JpydKRIExcO4e8E6By3YV3o4tE6XP0k/AeXUqxynt4rjyLMpLtB
-         nSZQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bJQXEAKrIHFWn1sudHV/OeQTpWST1/mB/y/Z+J+ibCY=;
+        b=eKXTqJfujAdVMW+kYIeXdTuOmOTty6jMqeNDA/7FXS4n/mt+fT1WyIGWgz7ORx2ZYl
+         RbcyFraRKhrqgeOwM8tZRqvdpK53Ti4Hw6FOLhSb2uvigldYJrRAjYIpDKfxT+7xx0E7
+         ScAodrdQFW9vrmhc138wQ+y/TJxXOBwdU08v2jx4qN24C4yNQt6OYY12HHCYWmIe/her
+         cfQxNfXSDajYAY+NRIdy/yjNmNNBOSUoMcQzIa6QBC2FT1rbKzyfX7BBdi6+HvMrMx3A
+         MqNAhnxjo3yIdAZ4H7UEpB1SWswjbriGyEctj1BxOEcst6RKRXf7qUpVkOIFrrqr3KWC
+         Q+IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UXvQGOPGMiIBh+TNB+TuJqTHlXvXGuBCSN0JQwAe2RQ=;
-        b=kKwfKXB/G/jeCkrLpn9dyZZTAtTr5yqjC8XpTVeqc1r1u0GSnOTe981F+iYh4i8Cbv
-         LgQRMtLOKss8u7yn41gnn6PwQF8V4gMJtWoWhu53R6n21gV109/X6ZiuqeniYHSIPlKr
-         ++6AVJmEKJpR/tk527sMqp5Gxf0zlolslnrjeAKBDxpQgfdFX1XMqeH47X0etuyP39ss
-         XxlE/CHsDDAkwTt69nSkcmoF51rKcFgKlNIyBtdAthLk51nH/98kN0VOeK8pv0ji5nd+
-         T98HGU+VfucJ/bOuMrIc9OZeDblFtqw0VPPvB8//MNE3aNQjtZPE4HGKYfntpD2XEaYX
-         a8jg==
-X-Gm-Message-State: AOAM530V//SSFOJcxXvnbqE8l7ZSUF7aylJfPCw9zD/yvcDulvlnxmMR
-        nKAD7Foyi81hzPGMmIJFU50g5w==
-X-Google-Smtp-Source: ABdhPJxsbziy4uMsB6zVMu3xcsr6bls0vIOO6rGwapNBI/ohN+5CrAvAeMvtWBDqkfAGseaP3jUKjQ==
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr42149129edb.62.1618420521771;
-        Wed, 14 Apr 2021 10:15:21 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id p24sm180643edt.5.2021.04.14.10.15.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 10:15:21 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 18:15:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Subject: Re: [GIT PULL] Immutable branch between MFD, Clock, GPIO, Regulator
- and RTC due for the v5.13 merge window
-Message-ID: <20210414171519.GR4869@dell>
-References: <cover.1617616855.git.matti.vaittinen@fi.rohmeurope.com>
- <20210414131158.GN4869@dell>
- <20210414145345.GO4869@dell>
- <43131cbebdd04a3abc51e05de5170c583006e2d2.camel@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bJQXEAKrIHFWn1sudHV/OeQTpWST1/mB/y/Z+J+ibCY=;
+        b=YR/QBZ2kg3me2dViC+qx4vTYW8UdN0ifdL88hJJJpzBZmhE0MQ1qkAt4EKk7LtGkqC
+         VdWwfqVwb/buG6PedNrrpUe2oaUepPtYcIwnBVgse8e7PPfU2wgqJ/mgzTSOiUskpwp3
+         Emaq0ilLewmLPBeUOonUn3Go4ay3AVvydCbxuvz1Hw+1yEJHboh0rDceGsyewUpEa+bz
+         QRc/kOrfwu6wa5HdsKUSUIkRWOOJApFif0v+6PoGv6H6//YSxViz3UvqzxAZbUw06rHh
+         HWTAVYJa1e86meD/NZPTEoVWe87X8G6YhmWhALo/A1CTTn/DJf8CpOrTDG0BKyUQylgx
+         dwCw==
+X-Gm-Message-State: AOAM532j+mzG77PpYD5Hp7i/GbnY2CMhQNc++SwB/rhi9CVqTNJVnd1Q
+        7Mg9WGu2AohvEH1GqEFJpad3QAt5WkSFzJgFcfA=
+X-Google-Smtp-Source: ABdhPJx1rAomw+Zvd4JKKgOb9hPHDz3M8W++z1hOKo+J4PQ50UXQ0NXfR1a2MDOhV7tNr65UeR2IxOWIJbJiNZeQVp8=
+X-Received: by 2002:a19:f007:: with SMTP id p7mr9338067lfc.597.1618420553361;
+ Wed, 14 Apr 2021 10:15:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <43131cbebdd04a3abc51e05de5170c583006e2d2.camel@fi.rohmeurope.com>
+References: <20210413212416.3273-1-shy828301@gmail.com> <20210413212416.3273-4-shy828301@gmail.com>
+ <87o8ehshzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <87o8ehshzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 14 Apr 2021 10:15:41 -0700
+Message-ID: <CAHbLzkrWzhLL5DSS3a2SAnQz-Spjy3S-QyjFy3rkgqvOqCLqmA@mail.gmail.com>
+Subject: Re: [v2 PATCH 3/7] mm: thp: refactor NUMA fault handling
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>, linux-s390@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021, Vaittinen, Matti wrote:
+On Tue, Apr 13, 2021 at 7:44 PM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Yang Shi <shy828301@gmail.com> writes:
+>
+> > When the THP NUMA fault support was added THP migration was not supported yet.
+> > So the ad hoc THP migration was implemented in NUMA fault handling.  Since v4.14
+> > THP migration has been supported so it doesn't make too much sense to still keep
+> > another THP migration implementation rather than using the generic migration
+> > code.
+> >
+> > This patch reworked the NUMA fault handling to use generic migration implementation
+> > to migrate misplaced page.  There is no functional change.
+> >
+> > After the refactor the flow of NUMA fault handling looks just like its
+> > PTE counterpart:
+> >   Acquire ptl
+> >   Prepare for migration (elevate page refcount)
+> >   Release ptl
+> >   Isolate page from lru and elevate page refcount
+> >   Migrate the misplaced THP
+> >
+> > If migration is failed just restore the old normal PMD.
+> >
+> > In the old code anon_vma lock was needed to serialize THP migration
+> > against THP split, but since then the THP code has been reworked a lot,
+> > it seems anon_vma lock is not required anymore to avoid the race.
+> >
+> > The page refcount elevation when holding ptl should prevent from THP
+> > split.
+> >
+> > Use migrate_misplaced_page() for both base page and THP NUMA hinting
+> > fault and remove all the dead and duplicate code.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/migrate.h |  23 ------
+> >  mm/huge_memory.c        | 143 ++++++++++----------------------
+> >  mm/internal.h           |  18 ----
+> >  mm/migrate.c            | 177 ++++++++--------------------------------
+> >  4 files changed, 77 insertions(+), 284 deletions(-)
+> >
+> > diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> > index 4bb4e519e3f5..163d6f2b03d1 100644
+> > --- a/include/linux/migrate.h
+> > +++ b/include/linux/migrate.h
+> > @@ -95,14 +95,9 @@ static inline void __ClearPageMovable(struct page *page)
+> >  #endif
+> >
+> >  #ifdef CONFIG_NUMA_BALANCING
+> > -extern bool pmd_trans_migrating(pmd_t pmd);
+> >  extern int migrate_misplaced_page(struct page *page,
+> >                                 struct vm_area_struct *vma, int node);
+> >  #else
+> > -static inline bool pmd_trans_migrating(pmd_t pmd)
+> > -{
+> > -     return false;
+> > -}
+> >  static inline int migrate_misplaced_page(struct page *page,
+> >                                        struct vm_area_struct *vma, int node)
+> >  {
+> > @@ -110,24 +105,6 @@ static inline int migrate_misplaced_page(struct page *page,
+> >  }
+> >  #endif /* CONFIG_NUMA_BALANCING */
+> >
+> > -#if defined(CONFIG_NUMA_BALANCING) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+> > -extern int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+> > -                     struct vm_area_struct *vma,
+> > -                     pmd_t *pmd, pmd_t entry,
+> > -                     unsigned long address,
+> > -                     struct page *page, int node);
+> > -#else
+> > -static inline int migrate_misplaced_transhuge_page(struct mm_struct *mm,
+> > -                     struct vm_area_struct *vma,
+> > -                     pmd_t *pmd, pmd_t entry,
+> > -                     unsigned long address,
+> > -                     struct page *page, int node)
+> > -{
+> > -     return -EAGAIN;
+> > -}
+> > -#endif /* CONFIG_NUMA_BALANCING && CONFIG_TRANSPARENT_HUGEPAGE*/
+> > -
+> > -
+> >  #ifdef CONFIG_MIGRATION
+> >
+> >  /*
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 35cac4aeaf68..94981907fd4c 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -1418,93 +1418,21 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+> >  {
+> >       struct vm_area_struct *vma = vmf->vma;
+> >       pmd_t pmd = vmf->orig_pmd;
+> > -     struct anon_vma *anon_vma = NULL;
+> > +     pmd_t oldpmd;
+>
+> nit: the usage of oldpmd and pmd in the function appears not very
+> consistent.  How about make oldpmd == vmf->orig_pmd always.  While make
+> pmd the changed one?
 
-> Hello Lee, Mark, Stephen, Linus, Alexandre,
-> 
-> On Wed, 2021-04-14 at 15:53 +0100, Lee Jones wrote:
-> > On Wed, 14 Apr 2021, Lee Jones wrote:
-> > 
-> > > Please note that this PR will break your build unless you have the
-> > > required Regulator API update.
-> > > 
-> > >  fb8fee9efdcf0 regulator: Add regmap helper for ramp-delay setting
-> > >  e3baacf542756 regulator: helpers: Export helper voltage listing
-> > 
-> > Looks like Mark has these:
-> > 
-> >  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator
-> > regulator-list-ramp-helpers
-> >  
-> > > Pull at your peril! :)
-> > > 
-> > > The following changes since commit
-> > > a38fd8748464831584a19438cbb3082b5a2dab15:
-> > > 
-> > >   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git
-> > > tags/ib-mfd-clk-gpio-regulator-rtc-v5.13
-> > > 
-> > > for you to fetch changes up to
-> > > 5a8a64d9a38b9d3794f9f5e153fc0358b858cc24:
-> > > 
-> > >   MAINTAINERS: Add ROHM BD71815AGW (2021-04-14 10:21:43 +0100)
-> > > 
-> > > ----------------------------------------------------------------
-> > > Immutable branch between MFD, Clock, GPIO, Regulator and RTC due
-> > > for the v5.13 merge window
-> > > 
-> > > ----------------------------------------------------------------
-> > > Matti Vaittinen (16):
-> > >       rtc: bd70528: Do not require parent data
-> > >       mfd: bd718x7: simplify by cleaning unnecessary device data
-> > >       dt_bindings: bd71828: Add clock output mode
-> > >       dt_bindings: regulator: Add ROHM BD71815 PMIC regulators
-> > >       dt_bindings: mfd: Add ROHM BD71815 PMIC
-> > >       mfd: Add ROHM BD71815 ID
-> > >       mfd: Sort ROHM chip ID list for better readability
-> > >       mfd: Support for ROHM BD71815 PMIC core
-> > >       gpio: Support ROHM BD71815 GPOs
-> > >       regulator: rohm-regulator: linear voltage support
-> > >       regulator: rohm-regulator: Support SNVS HW state.
-> > >       regulator: bd718x7, bd71828: Use ramp-delay helper
-> > >       regulator: Support ROHM BD71815 regulators
-> > >       clk: bd718x7: Add support for clk gate on ROHM BD71815 PMIC
-> > >       rtc: bd70528: Support RTC on ROHM BD71815
-> > >       MAINTAINERS: Add ROHM BD71815AGW
-> 
-> I think the original idea was that Lee could get the Tag from Mark and
-> then get all the changes in via MFD tree. I can't say what would be the
-> best way to get these in. I'm open to all suggestions :)
+Thanks for the suggestion. Yes, it seemed neater. Will fix it in the
+next version.
 
-It's done now.  Anyone who wishes to pull (and test) this branch
-should also pull in the regulator-list-ramp-helpers tag from Mark's
-Regulator tree.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> Best Regards,
+> Huang, Ying
+>
+> >       struct page *page;
+> >       unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
+> > -     int page_nid = NUMA_NO_NODE, this_nid = numa_node_id();
+> > +     int page_nid = NUMA_NO_NODE;
+> >       int target_nid, last_cpupid = -1;
+> > -     bool page_locked;
+> >       bool migrated = false;
+> > -     bool was_writable;
+> > +     bool was_writable = pmd_savedwrite(pmd);
+> >       int flags = 0;
+> >
+> >       vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+> > -     if (unlikely(!pmd_same(pmd, *vmf->pmd)))
+> > -             goto out_unlock;
+> > -
+> > -     /*
+> > -      * If there are potential migrations, wait for completion and retry
+> > -      * without disrupting NUMA hinting information. Do not relock and
+> > -      * check_same as the page may no longer be mapped.
+> > -      */
+> > -     if (unlikely(pmd_trans_migrating(*vmf->pmd))) {
+> > -             page = pmd_page(*vmf->pmd);
+> > -             if (!get_page_unless_zero(page))
+> > -                     goto out_unlock;
+> > +     if (unlikely(!pmd_same(pmd, *vmf->pmd))) {
+> >               spin_unlock(vmf->ptl);
+> > -             put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE);
+> >               goto out;
+> >       }
+> >
+> > -     page = pmd_page(pmd);
+> > -     BUG_ON(is_huge_zero_page(page));
+> > -     page_nid = page_to_nid(page);
+> > -     last_cpupid = page_cpupid_last(page);
+> > -     count_vm_numa_event(NUMA_HINT_FAULTS);
+> > -     if (page_nid == this_nid) {
+> > -             count_vm_numa_event(NUMA_HINT_FAULTS_LOCAL);
+> > -             flags |= TNF_FAULT_LOCAL;
+> > -     }
+> > -
+> > -     /* See similar comment in do_numa_page for explanation */
+> > -     if (!pmd_savedwrite(pmd))
+> > -             flags |= TNF_NO_GROUP;
+> > -
+> > -     /*
+> > -      * Acquire the page lock to serialise THP migrations but avoid dropping
+> > -      * page_table_lock if at all possible
+> > -      */
+> > -     page_locked = trylock_page(page);
+> > -     target_nid = mpol_misplaced(page, vma, haddr);
+> > -     /* Migration could have started since the pmd_trans_migrating check */
+> > -     if (!page_locked) {
+> > -             page_nid = NUMA_NO_NODE;
+> > -             if (!get_page_unless_zero(page))
+> > -                     goto out_unlock;
+> > -             spin_unlock(vmf->ptl);
+> > -             put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE);
+> > -             goto out;
+> > -     } else if (target_nid == NUMA_NO_NODE) {
+> > -             /* There are no parallel migrations and page is in the right
+> > -              * node. Clear the numa hinting info in this pmd.
+> > -              */
+> > -             goto clear_pmdnuma;
+> > -     }
+> > -
+> > -     /*
+> > -      * Page is misplaced. Page lock serialises migrations. Acquire anon_vma
+> > -      * to serialises splits
+> > -      */
+> > -     get_page(page);
+> > -     spin_unlock(vmf->ptl);
+> > -     anon_vma = page_lock_anon_vma_read(page);
+> > -
+> > -     /* Confirm the PMD did not change while page_table_lock was released */
+> > -     spin_lock(vmf->ptl);
+> > -     if (unlikely(!pmd_same(pmd, *vmf->pmd))) {
+> > -             unlock_page(page);
+> > -             put_page(page);
+> > -             page_nid = NUMA_NO_NODE;
+> > -             goto out_unlock;
+> > -     }
+> > -
+> > -     /* Bail if we fail to protect against THP splits for any reason */
+> > -     if (unlikely(!anon_vma)) {
+> > -             put_page(page);
+> > -             page_nid = NUMA_NO_NODE;
+> > -             goto clear_pmdnuma;
+> > -     }
+> > -
+> >       /*
+> >        * Since we took the NUMA fault, we must have observed the !accessible
+> >        * bit. Make sure all other CPUs agree with that, to avoid them
+> > @@ -1531,43 +1459,60 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+> >                                             haddr + HPAGE_PMD_SIZE);
+> >       }
+> >
+> > -     /*
+> > -      * Migrate the THP to the requested node, returns with page unlocked
+> > -      * and access rights restored.
+> > -      */
+> > +     oldpmd = pmd_modify(pmd, vma->vm_page_prot);
+> > +     page = vm_normal_page_pmd(vma, haddr, oldpmd);
+> > +     if (!page) {
+> > +             spin_unlock(vmf->ptl);
+> > +             goto out_map;
+> > +     }
+> > +
+> > +     /* See similar comment in do_numa_page for explanation */
+> > +     if (!was_writable)
+> > +             flags |= TNF_NO_GROUP;
+> > +
+> > +     page_nid = page_to_nid(page);
+> > +     last_cpupid = page_cpupid_last(page);
+> > +     target_nid = numa_migrate_prep(page, vma, haddr, page_nid,
+> > +                                    &flags);
+> > +
+> > +     if (target_nid == NUMA_NO_NODE) {
+> > +             put_page(page);
+> > +             goto out_map;
+> > +     }
+> > +
+> >       spin_unlock(vmf->ptl);
+> >
+> > -     migrated = migrate_misplaced_transhuge_page(vma->vm_mm, vma,
+> > -                             vmf->pmd, pmd, vmf->address, page, target_nid);
+> > +     migrated = migrate_misplaced_page(page, vma, target_nid);
+> >       if (migrated) {
+> >               flags |= TNF_MIGRATED;
+> >               page_nid = target_nid;
+> > -     } else
+> > +     } else {
+> >               flags |= TNF_MIGRATE_FAIL;
+> > +             vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
+> > +             if (unlikely(!pmd_same(pmd, *vmf->pmd))) {
+> > +                     spin_unlock(vmf->ptl);
+> > +                     goto out;
+> > +             }
+> > +             goto out_map;
+> > +     }
+> >
+> > -     goto out;
+> > -clear_pmdnuma:
+> > -     BUG_ON(!PageLocked(page));
+> > -     was_writable = pmd_savedwrite(pmd);
+> > +out:
+> > +     if (page_nid != NUMA_NO_NODE)
+> > +             task_numa_fault(last_cpupid, page_nid, HPAGE_PMD_NR,
+> > +                             flags);
+> > +
+> > +     return 0;
+> > +
+> > +out_map:
+> > +     /* Restore the PMD */
+> >       pmd = pmd_modify(pmd, vma->vm_page_prot);
+> >       pmd = pmd_mkyoung(pmd);
+> >       if (was_writable)
+> >               pmd = pmd_mkwrite(pmd);
+> >       set_pmd_at(vma->vm_mm, haddr, vmf->pmd, pmd);
+> >       update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
+> > -     unlock_page(page);
+> > -out_unlock:
+> >       spin_unlock(vmf->ptl);
+> > -
+> > -out:
+> > -     if (anon_vma)
+> > -             page_unlock_anon_vma_read(anon_vma);
+> > -
+> > -     if (page_nid != NUMA_NO_NODE)
+> > -             task_numa_fault(last_cpupid, page_nid, HPAGE_PMD_NR,
+> > -                             flags);
+> > -
+> > -     return 0;
+> > +     goto out;
+> >  }
+> >
+>
+> [snip]
