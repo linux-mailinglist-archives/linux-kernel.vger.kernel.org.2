@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC09F35FA0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2D935FA02
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347383AbhDNRsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:48:02 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2857 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234304AbhDNRr5 (ORCPT
+        id S233440AbhDNRpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:45:52 -0400
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:46811 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231582AbhDNRpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:47:57 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FL8nJ6kwxz6898S;
-        Thu, 15 Apr 2021 01:37:40 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 14 Apr 2021 19:47:33 +0200
-Received: from [10.47.25.158] (10.47.25.158) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 14 Apr
- 2021 18:47:32 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: Re: [PATCH 1/6] iommu: Move IOVA power-of-2 roundup into allocator
-To:     Robin Murphy <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1616160348-29451-1-git-send-email-john.garry@huawei.com>
- <1616160348-29451-2-git-send-email-john.garry@huawei.com>
- <ee935a6d-a94c-313e-f0ed-e14cc6dac055@arm.com>
- <73d459de-b5cc-e2f5-bcd7-2ee23c8d5075@huawei.com>
- <afc2fc05-a799-cb14-debd-d36afed8f456@arm.com>
- <08c0f4b9-8713-fa97-3986-3cfb0d6b820b@huawei.com>
- <e4b9146a-ca32-50f5-4fe0-42aa0b66d2d6@arm.com>
- <4914d134-5a63-f683-b14b-25ab71a57cd4@huawei.com>
-Message-ID: <8fce915b-18fa-2bfb-66d7-325cb7837894@huawei.com>
-Date:   Wed, 14 Apr 2021 18:44:58 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 14 Apr 2021 13:45:51 -0400
+Received: by mail-lf1-f53.google.com with SMTP id 12so34447109lfq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XzvRDyOuIyeck+tSs9EJfCB1Y5RstqTjR3ghvYaUV18=;
+        b=d+2LNLbMvQKLLmPnAxAHA4xSjgnIM+neLuv1iZZy0h4Ju7HhMW4ZLoE4iwZH1SP5yl
+         cuoBNyolvlYtCmucXKhuYNGFYWCUofgGO5ZFEMz4+pOrLgjtq5CHCigUAZBscnJKI78R
+         Bop+Dwzc/lZcChufbNyKMUa+Mx1e44kd9OCK/WW+uAM0VC2g6MeF2Gac2y/LyMW8t1H2
+         /WqGQvJyTHlyY4jUTu4HiToA3EQ5pMvCnInA0VTIc1Mz3IrB5SPBSy0lBIcbxU0tBQjV
+         wEkuoTafTsescIqK49CjBGIAty/s3EWxnsp5QFXk2vG4GHkqFqziHsmT8K6vbKOqhfWM
+         x6/A==
+X-Gm-Message-State: AOAM531QsNV7zywXTUGkXoExC+ALK8Obd4TdxGdGVThvCX+IJ7+2puiP
+        kj43PS6xFGeRVR0zjaOtVkp/sLm2UxgydDt+U+1Z+Ze1KUk=
+X-Google-Smtp-Source: ABdhPJzXVvModV+yFNmSilmeg1EjEE7EXFak22D33E16xJemBxojSTaYDxzzemmyBb5A+EGkrchEgMzOp6NRh51PBrw=
+X-Received: by 2002:a05:6512:3d8d:: with SMTP id k13mr14132604lfv.494.1618422328623;
+ Wed, 14 Apr 2021 10:45:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4914d134-5a63-f683-b14b-25ab71a57cd4@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.25.158]
-X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210414155412.3697605-1-robh@kernel.org> <20210414155412.3697605-2-robh@kernel.org>
+ <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com> <CAL_JsqLEEeJjP1TmSLt=ruQUureSw1gk5sxP7RvMSm=jXAeOtw@mail.gmail.com>
+In-Reply-To: <CAL_JsqLEEeJjP1TmSLt=ruQUureSw1gk5sxP7RvMSm=jXAeOtw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 15 Apr 2021 02:45:17 +0900
+Message-ID: <CAM9d7ci2c97dcv9pn3tcZWgYtyipxG1ApFz-wPXOTxQyXfaxXA@mail.gmail.com>
+Subject: Re: [PATCH v8 2/4] libperf: Add evsel mmap support
+To:     Rob Herring <robh@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/2021 17:54, John Garry wrote:
+On Thu, Apr 15, 2021 at 1:53 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Apr 14, 2021 at 11:41 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > On Thu, Apr 15, 2021 at 1:07 AM Rob Herring <robh@kernel.org> wrote:
+> > > +void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
+> > > +{
+> > > +       if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
+> > > +               return NULL;
+> >
+> > I think you should check the cpu and the thread is in
+> > a valid range.  Currently xyarray__entry() simply accesses
+> > the content without checking the boundaries.
+>
+> Happy to add a patch to do that if desired, but I think that's
+> separate from this series. That would be something to add to
+> xyarray__entry().
 
-Hi Robin,
-
-> 
->> Sorry if the phrasing was unclear there - the allusion to default 
->> domains is new, it just occurred to me that what we do there is in 
->> fact fairly close to what I've suggested previously for this. In that 
->> case, we have a global policy set by the command line, which *can* be 
->> overridden per-domain via sysfs at runtime, provided the user is 
->> willing to tear the whole thing down. Using a similar approach here 
->> would give a fair degree of flexibility but still mean that changes 
->> never have to be made dynamically to a live domain.
-> 
-> So are you saying that we can handle it similar to how we now can handle 
-> changing default domain for an IOMMU group via sysfs? If so, that just 
-> is not practical here. Reason being that this particular DMA engine 
-> provides the block device giving / mount point, so if we unbind the 
-> driver, we lose / mount point.
-> 
-> And I am not sure if the end user would even know how to set such a 
-> tunable. Or, in this case, why the end user would not want the optimized 
-> range configured always.
-> 
-> I'd still rather if the device driver could provide info which can be 
-> used to configure this before or during probing.
-
-As a new solution, how about do both of these:
-a. Add a per-IOMMU group sysfs file to set this tunable. Works same as 
-how we change the default domain, and has all the same 
-restrictions/steps. I think that this is what you are already suggesting.
-b. Provide a DMA mapping API to set this value, similar to this current 
-series. In the IOMMU backend for that API, we record a new range value 
-and return -EPROBE_DEFER when successful. In the reprobe we reset the 
-default domain for the devices' IOMMU group, with the IOVA domain rcache 
-range configured as previously requested. Again, allocating the new 
-default domain is similar to how we change default domain type today.
-This means that we don't play with a live domain. Downside is that we 
-need to defer the probe.
+Sure, we can do that separately.
 
 Thanks,
-John
+Namhyung
