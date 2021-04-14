@@ -2,88 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C8435F747
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F061935F752
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348640AbhDNPKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:10:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:34043 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347174AbhDNPKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:10:50 -0400
-IronPort-SDR: NkDhiYHKCsFU6mMTtgc+ob3kbqTChbOI5OILWBpnTrHT9QmHqDCCq+g28k13zjkroyNbOi4xC/
- 5+hrXqpWEWFQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194768016"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="194768016"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:10:15 -0700
-IronPort-SDR: aZgfj1IxVxNFY4kP4MSWfZpcXsUtzUBNLWl3hJsxLJLj+ikwlVn8HR4DMtE2tvqdF3Qwf5aEub
- KrF5E0pVhirg==
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="399211281"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 08:10:13 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lWh9e-0041hY-Mt; Wed, 14 Apr 2021 18:10:10 +0300
-Date:   Wed, 14 Apr 2021 18:10:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Flavio Suligoi <f.suligoi@asem.it>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next v2 0/5] net: pch: fix and a few cleanups
-Message-ID: <YHcF0kqenD5Si66Z@smile.fi.intel.com>
-References: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
+        id S1348723AbhDNPMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:12:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229661AbhDNPMi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:12:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618413136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OvGZLtj/JZR18KhKppCpw2o1u6Vet6Jv6a+C3P66ArY=;
+        b=Z35UkNKBkIK0hGHpQD8SHKm76+gdePDQ0HKztJG4P5Eq50Ylen3jHjl9dcIn05dnSjnstK
+        ptk6XpYM1j94A1mdeYcSXuFmmdKrQ5N4uAfXbPPeD25l1LWIn8epjeuBOIjVf6ZYFrvp5U
+        m5Gx0uMbVhM2n7oonL0zWifv4P8t0ws=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-jZ1pD_1oP0uJpXOi25PFxg-1; Wed, 14 Apr 2021 11:12:14 -0400
+X-MC-Unique: jZ1pD_1oP0uJpXOi25PFxg-1
+Received: by mail-wr1-f71.google.com with SMTP id j4-20020adfe5040000b0290102bb319b87so1209995wrm.23
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:12:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OvGZLtj/JZR18KhKppCpw2o1u6Vet6Jv6a+C3P66ArY=;
+        b=YLG6V6TYkaPb4NpjKpd0/fKm2MKp/GP+21CcoBypNfNlyHxYdB57fi8AcWyL9fY1mJ
+         Mo+xpNkyhkWu8z4A8RNeXJxRqbU28CZVN+QD82RIZCwSmzpX0P2TXiM3/1oiHaKrGwzQ
+         VxHDtOrLL3uijJDFm5YpH/jUJeb2Z+o3fsIt7yh2gBWDT/l1GBWsr5jekte7dxppxWaP
+         z4DC7q1f6no1Y6HCeS4oX/oczPuPrHeOnMf6LLK2W4Saam178hvOCBL+TVOsfHnZTH5E
+         WQcQ+c8SyR15Lv3VAhr1eMj9Qq43oMkrMUwbITsDRvFMxVfK2pmWktrWVkPMPf+Cm3im
+         ckhw==
+X-Gm-Message-State: AOAM533MhBW84g2Ahrt5kouPI2Ae38Nnz1Fjy+mZht+M3BOIQCaQ9doN
+        q40Tz6TxkRlIE3xK9ALpHddPuoJH6ZBb/NISKYxSzm5sxjlmRrRK5AE7HpesKaoPRLTmuJ6RNpe
+        ZCaVvbn+6dgnDc/UA4KTgLGxA
+X-Received: by 2002:a1c:f614:: with SMTP id w20mr3490000wmc.70.1618413132949;
+        Wed, 14 Apr 2021 08:12:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwpIn8nv9v5Y/Dtcv6mOc3r8te/FMqBM0g0pALidkDsp7h2aVJV3ZZM5WuTLB2ksnnlanbKw==
+X-Received: by 2002:a1c:f614:: with SMTP id w20mr3489987wmc.70.1618413132740;
+        Wed, 14 Apr 2021 08:12:12 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6470.dip0.t-ipconnect.de. [91.12.100.112])
+        by smtp.gmail.com with ESMTPSA id z14sm334347wrt.54.2021.04.14.08.12.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 08:12:12 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210407172607.8812-1-rppt@kernel.org>
+ <20210407172607.8812-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC/RFT PATCH 1/3] memblock: update initialization of reserved
+ pages
+Message-ID: <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
+Date:   Wed, 14 Apr 2021 17:12:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210407172607.8812-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 07:34:07PM +0200, Andy Shevchenko wrote:
-> The series provides one fix (patch 1) for GPIO to be able to wait for
-> the GPIO driver to appear. This is separated from the conversion to
-> the GPIO descriptors (patch 2) in order to have a possibility for
-> backporting. Patches 3 and 4 fix a minor warnings from Sparse while
-> moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
+On 07.04.21 19:26, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Tested on Intel Minnowboard (v1).
+> The struct pages representing a reserved memory region are initialized
+> using reserve_bootmem_range() function. This function is called for each
+> reserved region just before the memory is freed from memblock to the buddy
+> page allocator.
+> 
+> The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+> values set by the memory map initialization which makes it necessary to
+> have a special treatment for such pages in pfn_valid() and
+> pfn_valid_within().
 
-Guys, it has been already the report from kbuild bot (sparse warnings), which
-should be fixed by this series (at least partially if not completely).
+I assume these pages are never given to the buddy, because we don't have 
+a direct mapping. So to the kernel, it's essentially just like a memory 
+hole with benefits.
 
-Please, apply this as soon as it's possible.
-Or tell me what's wrong with the series.
+I can spot that we want to export such memory like any special memory 
+thingy/hole in /proc/iomem -- "reserved", which makes sense.
 
-Thanks!
+I would assume that MEMBLOCK_NOMAP is a special type of *reserved* 
+memory. IOW, that for_each_reserved_mem_range() should already succeed 
+on these as well -- we should mark anything that is MEMBLOCK_NOMAP 
+implicitly as reserved. Or are there valid reasons not to do so? What 
+can anyone do with that memory?
 
-> Since v2:
-> - added a few cleanups on top of the fix
+I assume they are pretty much useless for the kernel, right? Like other 
+reserved memory ranges.
+
+
 > 
-> Andy Shevchenko (5):
->   net: pch_gbe: Propagate error from devm_gpio_request_one()
->   net: pch_gbe: Convert to use GPIO descriptors
->   net: pch_gbe: use readx_poll_timeout_atomic() variant
->   net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
->   net: pch_gbe: remove unneeded MODULE_VERSION() call
+> Split out initialization of the reserved pages to a function with a
+> meaningful name and treat the MEMBLOCK_NOMAP regions the same way as the
+> reserved regions and mark struct pages for the NOMAP regions as
+> PageReserved.
 > 
->  .../net/ethernet/oki-semi/pch_gbe/pch_gbe.h   |   2 -
->  .../oki-semi/pch_gbe/pch_gbe_ethtool.c        |   2 +
->  .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  | 103 +++++++++---------
->  3 files changed, 54 insertions(+), 53 deletions(-)
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>   mm/memblock.c | 23 +++++++++++++++++++++--
+>   1 file changed, 21 insertions(+), 2 deletions(-)
 > 
-> -- 
-> 2.30.2
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index afaefa8fc6ab..6b7ea9d86310 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -2002,6 +2002,26 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
+>   	return end_pfn - start_pfn;
+>   }
+>   
+> +static void __init memmap_init_reserved_pages(void)
+> +{
+> +	struct memblock_region *region;
+> +	phys_addr_t start, end;
+> +	u64 i;
+> +
+> +	/* initialize struct pages for the reserved regions */
+> +	for_each_reserved_mem_range(i, &start, &end)
+> +		reserve_bootmem_region(start, end);
+> +
+> +	/* and also treat struct pages for the NOMAP regions as PageReserved */
+> +	for_each_mem_region(region) {
+> +		if (memblock_is_nomap(region)) {
+> +			start = region->base;
+> +			end = start + region->size;
+> +			reserve_bootmem_region(start, end);
+> +		}
+> +	}
+> +}
+> +
+>   static unsigned long __init free_low_memory_core_early(void)
+>   {
+>   	unsigned long count = 0;
+> @@ -2010,8 +2030,7 @@ static unsigned long __init free_low_memory_core_early(void)
+>   
+>   	memblock_clear_hotplug(0, -1);
+>   
+> -	for_each_reserved_mem_range(i, &start, &end)
+> -		reserve_bootmem_region(start, end);
+> +	memmap_init_reserved_pages();
+>   
+>   	/*
+>   	 * We need to use NUMA_NO_NODE instead of NODE_DATA(0)->node_id
 > 
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
 
+David / dhildenb
 
