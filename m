@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D3D35F5F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C0535F60A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbhDNONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhDNONd (ORCPT
+        id S1346781AbhDNORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:17:05 -0400
+Received: from p3plsmtpa12-07.prod.phx3.secureserver.net ([68.178.252.236]:37191
+        "EHLO p3plsmtpa12-07.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345594AbhDNORC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:13:33 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8253C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so4627284oof.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sb+yeDNpNA+Bz8H8xtWBwZnjUmpmY3Grk6ocFL4I/TQ=;
-        b=HVfk+QtkxRTNz90nOoRDFi1g41C5yA5NI/ndLkdC2nUXutLyI0cslXbLRurCPBCNIp
-         6P1nWTfHukY5aUH9ge6nL0/7tuPhJiOVRjTGSjn01VihAi5+D9DqH0yVSNTAZzge9FH0
-         eClYBXJwNw+fiSRccdpqbtOX1sih8b1fMI5CB2q6pQKwN24LAPV9nVRBsOQ4R+UlJrvp
-         ZS66rwnXzQ1n/r0TGT0Ltnclq3Z2dhqbmDZENQxVBOvkM/ci8U2MrwgiW7KW/QCTkwWr
-         7MXKkeQIgRWHYn7Q7jju7/9tGgU2tl3UfYj02SBFrgOe/h1hZohzbpzID2cSeV14xDom
-         LtYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sb+yeDNpNA+Bz8H8xtWBwZnjUmpmY3Grk6ocFL4I/TQ=;
-        b=hGCtbJc3K3ZhHM/NzSXowHfO2cXupxVzGCJYV42+W+lekvfEhJlc+VjDMs+ylvuWoH
-         yP7CkL3DPncqtCa1naZg7sZSaOFvlw0MQ3YBYCo6gc+SNe8lDIYTRAHaOfRJv88fOFfo
-         06asxlNlYHDhy9OFTk1JHNiKQULcaNznHOe+KS0+y6+u0gPehyFPyzIuQp4KlAlnXtOM
-         0fzIPtai5NjCZDapWeXca9OovhiXC9v0/2svYVV+ebJZx/KRvAguZPGg54IcR4Ux+OnW
-         Zz9f9MazxIS5jb2T7ybJN+9+0zIXJdm4nKJuq3rEET5/Wv9+wCD+ssOkzIdUGKDbhk/w
-         +q+g==
-X-Gm-Message-State: AOAM531sa0qjNI4nofx5hmlu2jeCDrgkI5IEyLx/SpKgpM/CYVVE8QJD
-        rAcUYRqDs2pqaIN1RqinTqGN2+aCy2SfOUU0ULtlHA==
-X-Google-Smtp-Source: ABdhPJzVqDgUTs0CSOHiGCtXMVUP29nRAd/nar8/zWXZGwSyMpmH6yKoTRiRNGStUZoW4T97KmUZzdsisS7I7MQE5SE=
-X-Received: by 2002:a4a:925a:: with SMTP id g26mr18617165ooh.29.1618409592066;
- Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
+        Wed, 14 Apr 2021 10:17:02 -0400
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id WgJgl1TYe83tOWgJgl6gLC; Wed, 14 Apr 2021 07:16:32 -0700
+X-CMAE-Analysis: v=2.4 cv=ONniYQWB c=1 sm=1 tr=0 ts=6076f940
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=mjHj8f7IP-_Ssy1yzXMA:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        David Laight <David.Laight@aculab.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+ <20210406114952.GH7405@nvidia.com>
+ <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+ <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
+ <4b02d1b2-be0e-0d1d-7ac3-38d32e44e77e@talpey.com>
+ <1FA38618-E245-4C53-BF49-6688CA93C660@oracle.com>
+ <7b9e7d9c-13d7-0d18-23b4-0d94409c7741@talpey.com>
+ <f71b24433f4540f0a13133111a59dab8@AcuMS.aculab.com>
+ <880A23A2-F078-42CF-BEE2-30666BCB9B5D@oracle.com>
+ <7deadc67-650c-ea15-722b-a1d77d38faba@talpey.com>
+ <20210412224843.GQ7405@nvidia.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <02593083-056e-cc62-22cf-d6bd6c9b18a8@talpey.com>
+Date:   Wed, 14 Apr 2021 10:16:28 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
- <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
- <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
- <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
- <87a6qrk2pw.fsf@igel.home> <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
- <874kgyfetu.fsf@igel.home> <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
- <87h7kukzy4.fsf@igel.home> <CANXhq0r5_xhFu3W9mUFkp_7BYUVBzvHZE1A6jpBDcL_KwTc1cA@mail.gmail.com>
- <87tuob7n8g.fsf@igel.home>
-In-Reply-To: <87tuob7n8g.fsf@igel.home>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Wed, 14 Apr 2021 22:13:00 +0800
-Message-ID: <CANXhq0rTC8grpRe_Q0vG6_52b-41OuN4vHum8RvouMbE6xiXpQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210412224843.GQ7405@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: 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
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 7:31 PM Andreas Schwab <schwab@linux-m68k.org> wrot=
-e:
->
-> On M=C3=A4r 31 2021, Zong Li wrote:
->
-> > I found that the gemgxlpll was disabled immediately by power
-> > management after macb driver install. The mainline's defconfig doesn't
-> > enable CONFIG_PM, so the network is fine on it. The opensuse defconfig
-> > enables CONFIG_PM, and the patch
-> > 732374a0b440d9a79c8412f318a25cd37ba6f4e2 added the enable/disable
-> > callback functions, so the gemgxlpll PLL, I have no idea why power
-> > management disable it, I would keep trace it.
->
-> Does that mean that CONFIG_PM also affects the FU740?
->
+On 4/12/2021 6:48 PM, Jason Gunthorpe wrote:
+> On Mon, Apr 12, 2021 at 04:20:47PM -0400, Tom Talpey wrote:
+> 
+>> So the issue is only in testing all the providers and platforms,
+>> to be sure this new behavior isn't tickling anything that went
+>> unnoticed all along, because no RDMA provider ever issued RO.
+> 
+> The mlx5 ethernet driver has run in RO mode for a long time, and it
+> operates in basically the same way as RDMA. The issues with Haswell
+> have been worked out there already.
+> 
+> The only open question is if the ULPs have errors in their
+> implementation, which I don't think we can find out until we apply
+> this series and people start running their tests aggressively.
 
-Yes, we got the same problem on the FU740. We are checking the issue.
+I agree that the core RO support should go in. But turning it on
+by default for a ULP should be the decision of each ULP maintainer.
+It's a huge risk to shift all the storage drivers overnight. How
+do you propose to ensure the aggressive testing happens?
 
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint =3D 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC=
-1
-> "And now for something completely different."
+One thing that worries me is the patch02 on-by-default for the dma_lkey.
+There's no way for a ULP to prevent IB_ACCESS_RELAXED_ORDERING
+from being set in __ib_alloc_pd().
+
+Tom.
+
+
