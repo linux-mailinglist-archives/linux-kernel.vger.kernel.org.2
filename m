@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208BD35F256
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A797735F261
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350487AbhDNL0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350286AbhDNLZW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:25:22 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F43C06138D
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:24:58 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id r128so5567312lff.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OuhKmn9FYt80c9ROH/y1oStEmOA02E9r2ZFVc64O4vU=;
-        b=h8GWyIwQyu60pOCe4C60MthHMqT5pMO47tMHYURZaLLnjuqqmRLPPW3NxTj3zmgCkq
-         J9MJdes7wg290CO9mdRjSDufx1MJ88id5lkJr9CrTxpgHv7xmqwSq4HV/wDPoLhiLN3I
-         Zjgr9bP+xMv1I85lpUGUO6rdq+4JRxq2NMzd9rxJD5kq/BEGlCxTHtSMhZtJgvZTgSx2
-         bl/VKJ7ykaGdB5iExvBHq0VwnYzGl8AH1TfgUwPqcMFyGrgg5I3pGLUqiUVWXnLRpkGS
-         Iavi/tLjCf/cv1wGSfges1YuQVHuiVRsVl0V6Ds2Lkhu5rUQlPEKdH7YLOGzzGPQwSXk
-         DEgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OuhKmn9FYt80c9ROH/y1oStEmOA02E9r2ZFVc64O4vU=;
-        b=O7DPTdSPOvYFArnrJF+SPIwaQG/hpmq+yzaSePG6547eRoFYHYqhgbrzbKSc62c/D6
-         7U/6my9ILdP2ZPraTj5fQJc4xUz/Y1VG2qCzNrucLIE6TsaklQ+r6faGpIRrMjACSs+y
-         tKu7AtaVyj+rWOMZ/CimSpK9HfKDcjAs9pVwCu8pI7NZwhQwZlO8du5fUXCOvlZlw7mY
-         Fv0sIpvZRs02OJc5I5DRQZ7O5/mGMZWz+oQesDZtgsnIgWyGZkCFRVqf4bhRzkk8LvnF
-         bx4OO5adXgQ/9OWY2jm4sfZp3UWimcsrvzpC0ooM9AAgajSY626IS/8RTHZku1HgmcQ1
-         IRhQ==
-X-Gm-Message-State: AOAM532c2MXFpcJK5MuA0zdtP1tDWYFW1XO0zDzFERZlrW4WLrkQIrGK
-        vmxeeFNUSA1tDwZ0kGjOqdR6jDtXyKpQijnZI0l2UQ==
-X-Google-Smtp-Source: ABdhPJypOoKb7zY0yopEiDor+KdM+gPLg/z4FR7SXyJJUzfRhluH65oC8mcVTQMJQu7oVHUsLhEKzfAVrRZWsg1i2G0=
-X-Received: by 2002:ac2:5cae:: with SMTP id e14mr11595625lfq.69.1618399497182;
- Wed, 14 Apr 2021 04:24:57 -0700 (PDT)
+        id S232272AbhDNL1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:27:05 -0400
+Received: from mail-dm6nam10on2065.outbound.protection.outlook.com ([40.107.93.65]:55776
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1346583AbhDNL00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:26:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RfLdK6ZD/ku3OpsnVkrOgtyyyHpa3Pn4poSMgUuDgKDbLx14AvOEom9OwOS6zKN2b8NeLngjw95XfQvbPXJhuLpGTto4584LgXwZs9jW6pCYKqLIMFPb/UMHSYfCXh7bvP/ygFOvabv3doXaCMg7ovPImKG6C4sebCmNa+8P0IL0UQf1KxSl/dp2OOxSaoH8vouufewTuZsSoK3GIl0qfuWaCSLhjJBWit9rp4sefUJGUiINAdqXssLtzxyAR9dOytwZ+x+dy0OXz+9kIMRvNMJN9gLoQocJ499IvrbYxO4YmJKK1Rln4SCGJvdlxdaleztXhAbGkGTyZ/NnIf8+Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=76i6l+cvAAnAb9Nhd+jhna5Gr8bMOlYByZlpNECA0pQ=;
+ b=CiDbR6bgXRYuPP61oTjj6B157BPlVrDlCYf6gsbrvAl3Sqqswm59XorbS1CYCmrCBtNulzYv5xPxH9Db6lysqneWGnJT03kEFEAAU2XmStcCNJJ3asvadmd6sbWA1c733Qfd7HXO2GWv39icKOnbGXZO00ywGHZrOK/qLkiqghau6IeYwTSYBxAwuNRioQbp9xWnELDKlGmS3y9YPabMjOV2+GGK9YWBDG+5mNXF1br42BLv2QVOTMkrPyVapJgwDsyP3o6N8PLA0g4qVddz2kl64SN0FO9okmQ5ygOHwwVJyNBOUoSdaShl9gOMPk8q7xfdSDvheFzmMxR1gruVVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=76i6l+cvAAnAb9Nhd+jhna5Gr8bMOlYByZlpNECA0pQ=;
+ b=HZSg0iCl/jtCWlQeUViDKQyHOVyncDB/zuOelrUVScfcJ6Tf9MbwYqaE8uU4GH4dHb+Iyn02A/nlEpk/AnnhZ4Sa0LBq50arjLajkR0BCR3vUG4mwwkHJaQRdaa1oXFWjdqwg7AHjK9UL8Qy4v0FssSpXF6CD5y88r/8cnnaD+0GYUCHf/9SAOPCkkZPpJJSHmWm5LtX8Eh+mwLfJKvmUdRP7Ne4pO3qFnd3CUnCT1FV2fVaDQOwhT0n5WaWmyWxiQQwbUY9Q5W2lW+QltFttgldV5EX+xhAN4+nKgHr3dmGKYLrW69ZIKK+HPImFNt9/uNHZ+mSiLN2Im17Wu+6Ug==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4356.namprd12.prod.outlook.com (2603:10b6:5:2aa::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Wed, 14 Apr
+ 2021 11:26:03 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
+ 11:26:03 +0000
+Date:   Wed, 14 Apr 2021 08:26:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <20210414112602.GA1370958@nvidia.com>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+ <YHAoY9+w2ebYZ7VV@myrica>
+ <20210409110305.6b0471d9@jacob-builder>
+ <20210413170947.35ba9267@jacob-builder>
+ <41433d99-e413-f5bf-5279-695dae6c58ba@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41433d99-e413-f5bf-5279-695dae6c58ba@linux.intel.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL0PR0102CA0006.prod.exchangelabs.com
+ (2603:10b6:207:18::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210414055217.543246-1-avagin@gmail.com> <87blahb1pr.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <87blahb1pr.fsf@oldenburg.str.redhat.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 14 Apr 2021 13:24:30 +0200
-Message-ID: <CAG48ez2z0a4x2GfHv9L0HmO1-uzsKtfOF40erPb8ADR-m+itbg@mail.gmail.com>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andrei Vagin <avagin@gmail.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-um@lists.infradead.org, criu@openvz.org,
-        Andrei Vagin <avagin@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0006.prod.exchangelabs.com (2603:10b6:207:18::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Wed, 14 Apr 2021 11:26:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lWdek-006316-1w; Wed, 14 Apr 2021 08:26:02 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70b777b0-b08b-489f-135a-08d8ff38166a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4356:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB435660DB9D4F3FA28033787DC24E9@DM6PR12MB4356.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4wMdUJOnVkg9RVQFYjbiNHltuh3kc0F9TvlKi0jpXYJKtKEE7K71xvaF3NEEnvvIRF8Tvh4drMEWcEs7Nbi3JzJGB8Cby9Le6uoC7zsjqTVvwmkPXs3xicwOZO+Sh3qpt5Eblch/d1NdtT3niuXOVQXMG+I/KEozVIwOuQMBQqn6IIIopYIGlTKs87ci2f1+7dMhfyD9P7tSHGiGfE7hqOmVxKqZMOjT4jFVm3PI4o2Xkj3Mu1e7t06+41XxFfQ/8/onm49U8z998NEcqqARFoFThD+FV4u4GnWPZspxO1aP1upCsGKQHJmVhtC92G0i9D/2LzNtTnpGgt0i+kM65jeFRKUTlGvvORB0RjnMENwqu2Gm6ASBNAqlb1CdRbq7EELbWMDKD8m1ccBMJWLy4mZ7/jrfWSN96LivOoBh0VoL4LDYu2DvK3ss2jCOZiQD3Kpn4HxF7NgJwpSNKdgQiP+lHuOvCAP6Nq/99vXZDpDqPPKpXvpD2egeAYTTdsGgptrA9gxfUTBTysjgd8ClJQFTGqga9fqpiYhGbBlJBrCNwtNNp9jN7NwuI05bkx7FxPsU9jH8wqiU7K7ZLpR0Oz+VlOFKT/R2fHiwnL9pxz8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(376002)(396003)(136003)(8676002)(4744005)(7416002)(316002)(6916009)(54906003)(2616005)(186003)(2906002)(426003)(478600001)(36756003)(38100700002)(4326008)(1076003)(9786002)(66946007)(66556008)(33656002)(8936002)(9746002)(26005)(5660300002)(66476007)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?dzvIaYp7FaH2rawdwXHLKultTWb/m1dNpkpBs/toRxXjT2KHExxRqojGkdyA?=
+ =?us-ascii?Q?49v5ZtyfhX4HhVorOSIbjzjtmhM/Sg9VO7d970B3eKpiRI7kqJvJak3KLd2p?=
+ =?us-ascii?Q?1Ey/41MJYh5i3IzRjpMvpjqzyCcTGn8p+GVdFEIwM5CVLxbJVl4CgW3BGsqQ?=
+ =?us-ascii?Q?79ihtms/purHwVHYaQbcAsRfnQzFKq39rZPX0gLzmB6ZdlTI9iQHnMSuC4XQ?=
+ =?us-ascii?Q?rqvJn7v74MujMmJfolc7X0eoARmcRktrrGmxy+Ero3NpEOEgPYQfejQyZc6a?=
+ =?us-ascii?Q?Mcm6muz8pzB0pzEVTTmA3flHzuwzvnxKO8slOJK5ald6Q3HoJsBP0db0QVpz?=
+ =?us-ascii?Q?kw1EzGIHR0Cz+vGOm+l5nr8QNXGf/xKJgAzlgAmbYpVRrpylhefV785njQfw?=
+ =?us-ascii?Q?cyCzOZ99OhHzR9Sv1gBtqBEUiC6QImaERwWm1Fz7Obp8wx6nPe/vuYI265CX?=
+ =?us-ascii?Q?nwcoCGvgUDZHxW2b9ipUEUfX0lrftpqcBLyl2xvK+jR7+zqq+iKF5qmZC5fh?=
+ =?us-ascii?Q?nff9t49XeRFdfeWXNKs+qs8nK1QO40ovn8zu/nq++JS8l86R6LHML1FnJuD+?=
+ =?us-ascii?Q?5EjL6jeVIKx09pC5kWiNJ8bqoefQby4SqGJ3J/HYGvEdLuZUtbPanQPWLrGl?=
+ =?us-ascii?Q?kXafIldOePDmGA+KB2M0m4NwCybFXIuqPQMi7rflVq52CYgcuOYf7YWPzpXa?=
+ =?us-ascii?Q?Xuelq5tF5lZlw1q8d0gstCOyL7hp+WdFyt2N6b+hFm3JbpgLRG+Oj1ZOIzTt?=
+ =?us-ascii?Q?/uTT68+FxI1PvsCiUHZBxpgK6jT5y+gHUTr++y3xVnc1eGO3QYG0NZ/I9Z36?=
+ =?us-ascii?Q?6Eja6NbdXx6tLlHOnGEV1zzhhhpQTKpjO366koDEuexyC8+pq8oS/vuvG6By?=
+ =?us-ascii?Q?CEbrB+q6cjJY7q2KgU59LKioQKCWSDWa/ty5mX1//4JdXutIkZehIUqJdbuO?=
+ =?us-ascii?Q?mLwM6sddZYF9EZV+5XdhIfM02OrqpR9W/RqTZzGcfdMjWSt3yMtAK2twfNdL?=
+ =?us-ascii?Q?WMe3zZIvZBW/XQlNAF6bafKOrOaQg/PU6uxUyhwUF2HioWGjvYDDkaRs8ppP?=
+ =?us-ascii?Q?aFENCjMqSEV5BxKbOCqMZIF3COE3mUM7GCQEC+1736kCGM80uxlSv81dZLAL?=
+ =?us-ascii?Q?a+/fh1e8HPdfUXcFvS6EcNY01T/Tejie/D7WT4YphWO4tphsGjTKrbr5Jfom?=
+ =?us-ascii?Q?JMicPeQFjVxmH9uboCh+SOTfeMqcH0TUI4G8xDBo1P4NF9yPiGK8lqSRM4mD?=
+ =?us-ascii?Q?JnuRalhjuaTJ8AhfAvfcEQQ5ylHLqArYXZCujoR41hsWWEtdpsBMX9I1AeUL?=
+ =?us-ascii?Q?IpTWx6/wQpSlZ203j8W1Ff78?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70b777b0-b08b-489f-135a-08d8ff38166a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 11:26:03.4965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fFKs5kPlyI9E5FZJVfnbrvDHU/vsbr/DLAgsXxm8ydFP8qgnKPHjONDJHmik13Ld
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:27 PM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Andrei Vagin:
->
-> > We already have process_vm_readv and process_vm_writev to read and write
-> > to a process memory faster than we can do this with ptrace. And now it
-> > is time for process_vm_exec that allows executing code in an address
-> > space of another process. We can do this with ptrace but it is much
-> > slower.
-> >
-> > = Use-cases =
->
-> We also have some vaguely related within the same address space: running
-> code on another thread, without modifying its stack, while it has signal
-> handlers blocked, and without causing system calls to fail with EINTR.
-> This can be used to implement certain kinds of memory barriers.
+On Wed, Apr 14, 2021 at 02:22:09PM +0800, Lu Baolu wrote:
 
-That's what the membarrier() syscall is for, right? Unless you don't
-want to register all threads for expedited membarrier use?
+> I still worry about supervisor pasid allocation.
+> 
+> If we use iommu_sva_alloc_pasid() to allocate a supervisor pasid, which
+> mm should the pasid be set? I've ever thought about passing &init_mm to
+> iommu_sva_alloc_pasid(). But if you add "mm != current->mm", this seems
+> not to work. Or do you prefer a separated interface for supervisor pasid
+> allocation/free?
 
-> It is
-> also necessary to implement set*id with POSIX semantics in userspace.
-> (Linux only changes the current thread credentials, POSIX requires
-> process-wide changes.)  We currently use a signal for set*id, but it has
-> issues (it can be blocked, the signal could come from somewhere, etc.).
-> We can't use signals for barriers because of the EINTR issue, and
-> because the signal context is stored on the stack.
+Without a mm_struct it is not SVA, so don't use SVA APIs for whatever
+a 'supervisor pasid' is
 
-This essentially becomes a question of "how much is set*id allowed to
-block and what level of guarantee should there be by the time it
-returns that no threads will perform privileged actions anymore after
-it returns", right?
-
-Like, if some piece of kernel code grabs a pointer to the current
-credentials or acquires a temporary reference to some privileged
-resource, then blocks on reading an argument from userspace, and then
-performs a privileged action using the previously-grabbed credentials
-or resource, what behavior do you want? Should setuid() block until
-that privileged action has completed? Should it abort that action
-(which is kinda what you get with the signals approach)? Should it
-just return immediately even though an attacker who can write to
-process memory at that point might still be able to influence a
-privileged operation that hasn't read all its inputs yet? Should the
-kernel be designed to keep track of whether it is currently holding a
-privileged resource? Or should the kernel just specifically permit
-credential changes in specific places where it is known that a task
-might block for a long time and it is not holding any privileged
-resources (kinda like the approach taken for freezer stuff)?
-
-If userspace wants multithreaded setuid() without syscall aborting,
-things get gnarly really fast; and having an interface to remotely
-perform operations under another task's context isn't really relevant
-to the core problem here, I think.
+Jason
