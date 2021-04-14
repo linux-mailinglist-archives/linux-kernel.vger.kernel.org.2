@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA0A35FDDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB86A35FDE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234915AbhDNWe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:34:28 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:42404 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233729AbhDNWeI (ORCPT
+        id S234302AbhDNWhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233729AbhDNWgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:34:08 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D8331806A8;
-        Thu, 15 Apr 2021 10:33:44 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1618439624;
-        bh=Rf6OJrdsK2JWznpN19KSH6KRlgBOD4HiuC1YoSencj0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=vSaUXzBJoQvGm4524qbLTVEVjXUlqOeekV796BE6ozzTodCCKHOzUsZiVVuD1ZMKk
-         AMziHrUKOFhqK1NvYWqGT1AaRlVmBPL6AdSGDCW0IPZeOUjwMCj814A+8D86X5VUq5
-         PVpdZHw81qoLsaifYd6NmeEQDnQCcFBP01BPdmrE/O5d4fjphf7nFcnIpgDmoeNuS+
-         zkHFxuOM/UDSaeBBK1Mm26rUxYwMHpakCRC2I7xosfwrbz5WMyTGBs6O+GY99W2DvU
-         iPhr2akkLQlmB4lBUYtaPXdos731NCrCAIolucI9gNzqF3VjLR9jGHHSKauxHdp7KH
-         P2CTlHf4fl9tA==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60776dc80000>; Thu, 15 Apr 2021 10:33:44 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id 572E313EEED;
-        Thu, 15 Apr 2021 10:34:05 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id B3BF928945B; Thu, 15 Apr 2021 10:33:44 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v4 6/6] i2c: mpc: Drop duplicate message from devm_platform_ioremap_resource()
-Date:   Thu, 15 Apr 2021 10:33:25 +1200
-Message-Id: <20210414223325.23352-7-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
-References: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
+        Wed, 14 Apr 2021 18:36:55 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A11C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:36:29 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id r8so35716348lfp.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s+VGRBuPdmKutKxIYYlr7lTmNrQCLCweQw9SWmlzyUo=;
+        b=N+uEViMICnndvL0isdw49RiQ0qEN5p8Dv4opi+pSvIFgeYBfXbb7yPNqvgdpjmHJPE
+         3B1g0ufMGZ/Fro7POD4HcoJ5csMnob/rnMCHoH0j9RtLtkAV1Z4a8riYA8GnNcV1O2dT
+         jL/0dwOwHy1WCk9GxlYEUpglJyQNV/q9boJTKDSiSVftls6y8d1e7RJKsX+tleJiiJo4
+         tGMZzAPZnMiXQ5fbq7FLdWS7LTsdL2OqOGcEFLNeR4kXmxBCBhzyt9n5P7P42dFIZc7a
+         pYTyoPc/48JTDs+u0Y77aOTEkIdXaP8oQQziJe0qeRU4WHsygOyJ/BJ1OS5TlxYdkZgs
+         WTkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s+VGRBuPdmKutKxIYYlr7lTmNrQCLCweQw9SWmlzyUo=;
+        b=EI99CcHbEWcQXUTTsJDOBkv4EcJgKaTCOU/XE4sfp+oea8GuGMlh+y5AknEUXxTflw
+         2NfA7jdzvoXvUTv/2atCS/oqDRiIou+saMQtQLP+XQ5Sh2b7WA8Ey/TnEM4YxwHJ4q4A
+         DpiI2Xd8vbl0Lxq1laLTKigwjYTiGE/Ocn+CNZa5V3LkZVcRBX2lpmjsHtv/bCViR5lf
+         G86mAx3R2CZr78VmdKRD6LlJiryn67seGwCPqcpZ60pOSqWgHis76r6Hq9/la7XsYmay
+         Vt1AXr/L/FBRb9+q/2ZoDqV9naUWS0uCB1Duv8/L5GGHwob/KiJz/jWny8fzYNCsQopx
+         HMxA==
+X-Gm-Message-State: AOAM532boidkoo8VJ3dikqdkoujnvPvdgRDt2gsczBbrgV79Ff7uCDTx
+        rTI2DcvWaoxB8rnRO7OY/CuRZKn56Yl3sFUXNZksVg==
+X-Google-Smtp-Source: ABdhPJwWtbuJsvcv11qI8BqaFhOcOpRWm/UUOom7nk9emsiunf9lpKoCxjINZOypiABigrAkPa04FX0s9f4ScB2p+RU=
+X-Received: by 2002:a05:6512:94d:: with SMTP id u13mr270494lft.368.1618439787310;
+ Wed, 14 Apr 2021 15:36:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=3YhXtTcJ-WEA:10 a=QyXUC8HyAAAA:8 a=twOyDPGeZ73IQfhE1VoA:9 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-12-ojeda@kernel.org>
+In-Reply-To: <20210414184604.23473-12-ojeda@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 14 Apr 2021 15:36:15 -0700
+Message-ID: <CAKwvOdkn9e59wizhbAFLGbCKn3JbsVxMHOLds6V7HE7C9Yoaig@mail.gmail.com>
+Subject: Re: [PATCH 11/13] MAINTAINERS: Rust
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Apr 14, 2021 at 11:50 AM <ojeda@kernel.org> wrote:
+>
+> From: Miguel Ojeda <ojeda@kernel.org>
+>
+> Miguel, Alex and Wedson will be maintaining the Rust support.
+>
+> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
+> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> ---
+>  MAINTAINERS | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9e876927c60d..de32aaa5cabd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15547,6 +15547,20 @@ L:     linux-rdma@vger.kernel.org
+...
+> +F:     rust/
+> +F:     samples/rust/
+> +F:     Documentation/rust/
 
-devm_platform_ioremap_resource() prints a message in case of error.
-Drop custom one.
+Probably some other files, too? Like the target.json files under
+arch/{arch}/rust/ ?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- drivers/i2c/busses/i2c-mpc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 7a9abeeb6da0..30d9e89a3db2 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -711,10 +711,8 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	spin_lock_init(&i2c->lock);
-=20
- 	i2c->base =3D devm_platform_ioremap_resource(op, 0);
--	if (IS_ERR(i2c->base)) {
--		dev_err(i2c->dev, "failed to map controller\n");
-+	if (IS_ERR(i2c->base))
- 		return PTR_ERR(i2c->base);
--	}
-=20
- 	i2c->irq =3D platform_get_irq(op, 0);
- 	if (i2c->irq < 0)
---=20
-2.31.1
-
+-- 
+Thanks,
+~Nick Desaulniers
