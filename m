@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6997B35F1E3
+	by mail.lfdr.de (Postfix) with ESMTP id D9B8F35F1E4
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239223AbhDNLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:07:34 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:33792 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbhDNLHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:07:19 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 8F3AE40031E;
-        Wed, 14 Apr 2021 19:06:53 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] sfc: Remove duplicate argument
-Date:   Wed, 14 Apr 2021 19:06:45 +0800
-Message-Id: <20210414110645.8128-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S241931AbhDNLHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239043AbhDNLHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:07:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4354E6103D;
+        Wed, 14 Apr 2021 11:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618398429;
+        bh=ZlTh2XvxkZonmGp/oGDLggXooibLHwOMf9vMHpzG0nU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b6g4OwY63Se22iXul2XqqLsp0DBe0DE/8UuUvf7vvq4AyPrFzTSQ9pxONb3mBp1lM
+         3n9WZNkayxJ6wC+jzseXBhRH3boDwjvdrGGR+c/q2NGZHYqE5ol4s8FoF7mlDRnaFp
+         EPloIshbs+ZNK/ebgwWC3i54ORXekLxxvRq5De8INJI9aKKRmkMueVEgd6eNtvG7rX
+         hgLx6KEBlKJRRq+kPu/KZSg+fZtANgUNKHiq2f5PFjB8/hQ1zUKuk6a//dzurNh6M/
+         ISGyy4odlmv5Cn60RfWgjbqpzhhTfnZBTn+x0isobwFmGzJiZihutBSKB8/o4jkiG0
+         wsnsg+brlFgXg==
+Date:   Wed, 14 Apr 2021 14:07:07 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Raoul Strackx <raoul.strackx@fortanix.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
+Message-ID: <YHbM29ko8YUDywky@kernel.org>
+References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+ <a05d07dc-1623-012c-5120-e30f64decae7@intel.com>
+ <f3366028-286a-8543-0604-3db6799364b5@fortanix.com>
+ <ae4b4271-9e74-99e6-fa59-369863c891b5@intel.com>
+ <29cbfb1b-848a-2e14-5c0f-5d39d372bfcf@fortanix.com>
+ <1c8f5c58-6cea-7f43-81ed-fa165af2b59d@intel.com>
+ <4e478984-e692-3b6a-771b-8eb73f6d82a7@fortanix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU0eSFZOTE4YTUxKTExCQ0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pkk6Pxw6Oj8VOBM3Ehk6MxUZ
-        LRQwFBZVSlVKTUpDSEJDT0pPSk9LVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEhINwY+
-X-HM-Tid: 0a78d01003e1d991kuws8f3ae40031e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e478984-e692-3b6a-771b-8eb73f6d82a7@fortanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Mon, Apr 12, 2021 at 07:01:39PM +0200, Jethro Beekman wrote:
+> On 2021-04-12 18:47, Dave Hansen wrote:
+> > On 4/12/21 9:41 AM, Jethro Beekman wrote:
+> >> Yes this still doesn't let one execute all possible ECREATE, EADD, EEXTEND, EINIT sequences.
+> > 
+> > OK, so we're going in circles now.
+> > 
+> > I don't believe we necessarily *WANT* or need Linux to support "all
+> > possible ECREATE, EADD, EEXTEND, EINIT sequences".  Yet, it's what is
+> > being used to justify this series without any other justification.
+> > 
+> > It's going to be a different story if you bring me a real enclave that
+> > *REALLY* wants to do this for good reasons.
+> > 
+> 
+> It's still not clear to me what your motivations are for trying to keep Linux incompatible with the rest of the world.
 
-./drivers/net/ethernet/sfc/enum.h:80:7-28: duplicated argument to |
+What specifically are you referring as the "rest of the world"?
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/net/ethernet/sfc/enum.h | 1 -
- 1 file changed, 1 deletion(-)
+That would be mean that there is reviewable workload "out there".
 
-diff --git a/drivers/net/ethernet/sfc/enum.h b/drivers/net/ethernet/sfc/enum.h
-index 3332cdf2918a..cd590e0685e5 100644
---- a/drivers/net/ethernet/sfc/enum.h
-+++ b/drivers/net/ethernet/sfc/enum.h
-@@ -78,7 +78,6 @@ enum efx_loopback_mode {
- 			    (1 << LOOPBACK_XAUI) |		\
- 			    (1 << LOOPBACK_GMII) |		\
- 			    (1 << LOOPBACK_SGMII) |		\
--			    (1 << LOOPBACK_SGMII) |		\
- 			    (1 << LOOPBACK_XGBR) |		\
- 			    (1 << LOOPBACK_XFI) |		\
- 			    (1 << LOOPBACK_XAUI_FAR) |		\
--- 
-2.25.1
-
+/Jarkko
