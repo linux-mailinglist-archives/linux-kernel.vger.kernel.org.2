@@ -2,151 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA72635F21C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C60E35F220
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348895AbhDNLVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:21:12 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50682 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229886AbhDNLVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:21:11 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3+8B0HZg8_MHAA--.897S2;
-        Wed, 14 Apr 2021 19:20:33 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next v2] bpf: Fix some invalid links in bpf_devel_QA.rst
-Date:   Wed, 14 Apr 2021 19:20:32 +0800
-Message-Id: <1618399232-17858-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx3+8B0HZg8_MHAA--.897S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUKrWfJr1fWF1xtF1DWrg_yoWrZF1Upa
-        1fGrnIkr18XF13Wwn7GrWUurySqas3GayUCF18Jr95Zw1jvryktr1IgrWfXa98Gr909ay3
-        Za4SkryYka18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfU589NDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1348911AbhDNLWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:22:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46696 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229886AbhDNLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:22:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618399317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GbwNrz+C+FlJj2Tmf1qzyMIm3jUMt5tfj2rrUtGbXLs=;
+        b=bocG8ylE+M6EpHPFfK0Jw/6lNz6u8zUKN9ND/FAlaPcbSfA+hQHIy3ZVKEKRI8p0SwqGjA
+        oHOENSU4WR1H/Bn2Y05XDy6GuyT/HMo/Z8F99x0E0kn/q8MJ+z4LHRCm2qgPCkfjC7TMtW
+        O3+1N11NMBz2NGxwFZIi4mJarJz4Lsg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 501EEAFC1;
+        Wed, 14 Apr 2021 11:21:57 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 13:21:55 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v4 00/13] Introduced multi-preference mempolicy
+Message-ID: <YHbQU7ObwzXiIfeM@dhcp22.suse.cz>
+References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist some errors "404 Not Found" when I click the link
-of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-in the documentation "HOWTO interact with BPF subsystem" [4].
+[Cc linux-api]
 
-Use correct link of "MAINTAINERS" and just remove the links of
-"samples/bpf/" and "selftests" because there are no related
-documentations.
+On Wed 17-03-21 11:39:57, Feng Tang wrote:
+> This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
+> This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
+> interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
+> preference for nodes which will fulfil memory allocation requests. Unlike the
+> MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
+> works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
+> invoke the OOM killer if those preferred nodes are not available.
+> 
+> Along with these patches are patches for libnuma, numactl, numademo, and memhog.
+> They still need some polish, but can be found here:
+> https://gitlab.com/bwidawsk/numactl/-/tree/prefer-many
+> It allows new usage: `numactl -P 0,3,4`
+> 
+> The goal of the new mode is to enable some use-cases when using tiered memory
+> usage models which I've lovingly named.
+> 1a. The Hare - The interconnect is fast enough to meet bandwidth and latency
+> requirements allowing preference to be given to all nodes with "fast" memory.
+> 1b. The Indiscriminate Hare - An application knows it wants fast memory (or
+> perhaps slow memory), but doesn't care which node it runs on. The application
+> can prefer a set of nodes and then xpu bind to the local node (cpu, accelerator,
+> etc). This reverses the nodes are chosen today where the kernel attempts to use
+> local memory to the CPU whenever possible. This will attempt to use the local
+> accelerator to the memory.
+> 2. The Tortoise - The administrator (or the application itself) is aware it only
+> needs slow memory, and so can prefer that.
+> 
+> Much of this is almost achievable with the bind interface, but the bind
+> interface suffers from an inability to fallback to another set of nodes if
+> binding fails to all nodes in the nodemask.
+> 
+> Like MPOL_BIND a nodemask is given. Inherently this removes ordering from the
+> preference.
+> 
+> > /* Set first two nodes as preferred in an 8 node system. */
+> > const unsigned long nodes = 0x3
+> > set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+> 
+> > /* Mimic interleave policy, but have fallback *.
+> > const unsigned long nodes = 0xaa
+> > set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+> 
+> Some internal discussion took place around the interface. There are two
+> alternatives which we have discussed, plus one I stuck in:
+> 1. Ordered list of nodes. Currently it's believed that the added complexity is
+>    nod needed for expected usecases.
+> 2. A flag for bind to allow falling back to other nodes. This confuses the
+>    notion of binding and is less flexible than the current solution.
+> 3. Create flags or new modes that helps with some ordering. This offers both a
+>    friendlier API as well as a solution for more customized usage. It's unknown
+>    if it's worth the complexity to support this. Here is sample code for how
+>    this might work:
+> 
+> > // Prefer specific nodes for some something wacky
+> > set_mempolicy(MPOL_PREFER_MANY, 0x17c, 1024);
+> >
+> > // Default
+> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_SOCKET, NULL, 0);
+> > // which is the same as
+> > set_mempolicy(MPOL_DEFAULT, NULL, 0);
+> >
+> > // The Hare
+> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, NULL, 0);
+> >
+> > // The Tortoise
+> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE_REV, NULL, 0);
+> >
+> > // Prefer the fast memory of the first two sockets
+> > set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, -1, 2);
+> >
+> 
+> In v1, Andi Kleen brought up reusing MPOL_PREFERRED as the mode for the API.
+> There wasn't consensus around this, so I've left the existing API as it was. I'm
+> open to more feedback here, but my slight preference is to use a new API as it
+> ensures if people are using it, they are entirely aware of what they're doing
+> and not accidentally misusing the old interface. (In a similar way to how
+> MPOL_LOCAL was introduced).
+> 
+> In v1, Michal also brought up renaming this MPOL_PREFERRED_MASK. I'm equally
+> fine with that change, but I hadn't heard much emphatic support for one way or
+> another, so I've left that too.
+> 
+> Changelog: 
+> 
+>   Since v3:
+>   * Rebased against v5.12-rc2
+>   * Drop the v3/0013 patch of creating NO_SLOWPATH gfp_mask bit
+>   * Skip direct reclaim for the first allocation try for
+>     MPOL_PREFERRED_MANY, which makes its semantics close to
+>     existing MPOL_PREFFERRED policy
+> 
+>   Since v2:
+>   * Rebased against v5.11
+>   * Fix a stack overflow related panic, and a kernel warning (Feng)
+>   * Some code clearup (Feng)
+>   * One RFC patch to speedup mem alloc in some case (Feng)
+> 
+>   Since v1:
+>   * Dropped patch to replace numa_node_id in some places (mhocko)
+>   * Dropped all the page allocation patches in favor of new mechanism to
+>     use fallbacks. (mhocko)
+>   * Dropped the special snowflake preferred node algorithm (bwidawsk)
+>   * If the preferred node fails, ALL nodes are rechecked instead of just
+>     the non-preferred nodes.
+> 
+> v4 Summary:
+> 1: Random fix I found along the way
+> 2-5: Represent node preference as a mask internally
+> 6-7: Tread many preferred like bind
+> 8-11: Handle page allocation for the new policy
+> 12: Enable the uapi
+> 13: unifiy 2 functions
+> 
+> Ben Widawsky (8):
+>   mm/mempolicy: Add comment for missing LOCAL
+>   mm/mempolicy: kill v.preferred_nodes
+>   mm/mempolicy: handle MPOL_PREFERRED_MANY like BIND
+>   mm/mempolicy: Create a page allocator for policy
+>   mm/mempolicy: Thread allocation for many preferred
+>   mm/mempolicy: VMA allocation for many preferred
+>   mm/mempolicy: huge-page allocation for many preferred
+>   mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
+> 
+> Dave Hansen (4):
+>   mm/mempolicy: convert single preferred_node to full nodemask
+>   mm/mempolicy: Add MPOL_PREFERRED_MANY for multiple preferred nodes
+>   mm/mempolicy: allow preferred code to take a nodemask
+>   mm/mempolicy: refactor rebind code for PREFERRED_MANY
+> 
+> Feng Tang (1):
+>   mem/mempolicy: unify mpol_new_preferred() and
+>     mpol_new_preferred_many()
+> 
+>  .../admin-guide/mm/numa_memory_policy.rst          |  22 +-
+>  include/linux/mempolicy.h                          |   6 +-
+>  include/uapi/linux/mempolicy.h                     |   6 +-
+>  mm/hugetlb.c                                       |  26 +-
+>  mm/mempolicy.c                                     | 272 ++++++++++++++-------
+>  5 files changed, 225 insertions(+), 107 deletions(-)
+> 
+> -- 
+> 2.7.4
 
-[1] https://www.kernel.org/doc/html/MAINTAINERS
-[2] https://www.kernel.org/doc/html/samples/bpf/
-[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-
-Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v2: Add Fixes: tag
-
- Documentation/bpf/bpf_devel_QA.rst | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 2ed89ab..4fd4c8c 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -29,7 +29,7 @@ list:
- This may also include issues related to XDP, BPF tracing, etc.
- 
- Given netdev has a high volume of traffic, please also add the BPF
--maintainers to Cc (from kernel MAINTAINERS_ file):
-+maintainers to Cc (from kernel :ref:`MAINTAINERS <maintainers>` file):
- 
- * Alexei Starovoitov <ast@kernel.org>
- * Daniel Borkmann <daniel@iogearbox.net>
-@@ -217,11 +217,11 @@ page run by David S. Miller on net-next that provides guidance:
- Q: Verifier changes and test cases
- ----------------------------------
- Q: I made a BPF verifier change, do I need to add test cases for
--BPF kernel selftests_?
-+BPF kernel selftests?
- 
- A: If the patch has changes to the behavior of the verifier, then yes,
- it is absolutely necessary to add test cases to the BPF kernel
--selftests_ suite. If they are not present and we think they are
-+selftests suite. If they are not present and we think they are
- needed, then we might ask for them before accepting any changes.
- 
- In particular, test_verifier.c is tracking a high number of BPF test
-@@ -234,11 +234,11 @@ be subject to change.
- 
- Q: samples/bpf preference vs selftests?
- ---------------------------------------
--Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
--selftests_ ?
-+Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
-+selftests?
- 
--A: In general, we prefer additions to BPF kernel selftests_ rather than
--`samples/bpf/`_. The rationale is very simple: kernel selftests are
-+A: In general, we prefer additions to BPF kernel selftests rather than
-+``samples/bpf/``. The rationale is very simple: kernel selftests are
- regularly run by various bots to test for kernel regressions.
- 
- The more test cases we add to BPF selftests, the better the coverage
-@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
- not that BPF kernel selftests cannot demo how a specific feature can
- be used.
- 
--That said, `samples/bpf/`_ may be a good place for people to get started,
-+That said, ``samples/bpf/`` may be a good place for people to get started,
- so it might be advisable that simple demos of features could go into
--`samples/bpf/`_, but advanced functional and corner-case testing rather
-+``samples/bpf/``, but advanced functional and corner-case testing rather
- into kernel selftests.
- 
- If your sample looks like a test case, then go for BPF kernel selftests
-@@ -413,7 +413,7 @@ Testing patches
- Q: How to run BPF selftests
- ---------------------------
- A: After you have booted into the newly compiled kernel, navigate to
--the BPF selftests_ suite in order to test BPF functionality (current
-+the BPF selftests suite in order to test BPF functionality (current
- working directory points to the root of the cloned git tree)::
- 
-   $ cd tools/testing/selftests/bpf/
-@@ -645,10 +645,7 @@ when:
- 
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _MAINTAINERS: ../../MAINTAINERS
- .. _netdev-FAQ: ../networking/netdev-FAQ.rst
--.. _samples/bpf/: ../../samples/bpf/
--.. _selftests: ../../tools/testing/selftests/bpf/
- .. _Documentation/dev-tools/kselftest.rst:
-    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
- .. _Documentation/bpf/btf.rst: btf.rst
 -- 
-2.1.0
-
+Michal Hocko
+SUSE Labs
