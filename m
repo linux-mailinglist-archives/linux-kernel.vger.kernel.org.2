@@ -2,68 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2039F35FCA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1767635FCA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346009AbhDNU0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
+        id S1349955AbhDNU0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhDNU0H (ORCPT
+        with ESMTP id S1349935AbhDNU0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:26:07 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9483C061574;
-        Wed, 14 Apr 2021 13:25:45 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so11187731wmj.2;
-        Wed, 14 Apr 2021 13:25:45 -0700 (PDT)
+        Wed, 14 Apr 2021 16:26:34 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEAFC061760
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:26:11 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id p3so2934058ybk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=FB9ffVgv9MGEJSSW+p7l1641ZpAhJ8oP7yeu0DFe398=;
-        b=bXU7oYDCZUJdQXAoMzcTrLrKMLIcfrvclwfMZ36GWtHQPtXGa1tR0LLgBwpeS6um9X
-         jsRJ9EcSuq3/NPj0WHh8ziTtGtbyVUEamtb4LDe34XvMI/2n48qR2z3NLZ4P3d3DxMIQ
-         Uziu+ee+t0HtnAI9Y/l5uKNTrDlb4jG7NC6AOBIPEjyhF0AIcwxTRF9kz0HITul1ooOH
-         uHanWYTm7h9f0S36CI6um8u1eci3QvGPXBDYnQrdu5d+78IPJ13qkQQl9Cb1M4Mg5aft
-         uc9m8EHvvp4pp/Pv1EeS4ACSyh3UPP8eH/iU6XwIMpeTu6IrlcrC8ZwodEEomMgeNCHG
-         Xwxw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uXB/h0HritpGaogqR4MZ0Syh5r+OFtVKW/hzSi9q7iw=;
+        b=gmTqsMWsFi+G0V3Us4qP+jMCjW/ogfkX9UIVn0orHc7UWb0Tdbd6S6ynCZhGYn9aB/
+         JeiCFwrlqgLREEJfzkhy0CThiuhlTxiASsKxMsaV5ccjx22BZVUAG0cPPFjIfLvyVPYw
+         Rm7x8aX3VOAZBSbD5Bu3gokPJUUyNB4VWJXC7FF3hkZQv3CZgqFG887jNDLndyiMd0iB
+         j5ryaMtSsP5zWVdGzfES+axDLqO5sTTnJDJXUzzVQxmGHsgsS7Ap99VjSQdFLbFf6MUf
+         vsC9bzC2+Ip+qx5eZj8PN7i5JJdQ0wDd7A8qQrDvgubwEhzZ/0IR29/WspIfz9gdP1IE
+         AOTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=FB9ffVgv9MGEJSSW+p7l1641ZpAhJ8oP7yeu0DFe398=;
-        b=NxIAPtQ+cquMJmdDoQ0m4j7aToxx0+HhpXwyTT7FMAvyb8UWsR7SK+4FXDUIYHS5bo
-         PcR3vGfWPMAAmtQoVqYUUv8xpwWJ9Kke6Ugn9ZDO4q27uW9XF/5Zx+q6AHl8vEbYN3rN
-         20VH1VnXpeuQvsdMue/1Ug2JEHco2MGMKS3flgc1jAqpDuPOx1LoAPHJOGJMZgpcJkdU
-         UQOzXR8aZ25xF1IXHxgDFawIMFh83WmCLtclMzGrxnbBGZMMvnqy4VADG7O3ovjarZYP
-         LOZY6wlNgxNsFrfRVD7dlclDcWKWFPzeJsr0TEGqstNeBH3ZuonegjO/sT1Uch75L7Bt
-         28vw==
-X-Gm-Message-State: AOAM531wDF50hMcjb1ycbN3jHii85YNdS33gah3rqWDRJPityyNB7F9g
-        k6p3aCuTwB0ueTnL1rjHuqA=
-X-Google-Smtp-Source: ABdhPJzZKB8aa9R00xHAArjkcWSVVPOczKCIzrpnfFiQWRdRg93oLrha3pNay1aY16Ympb0CnKLRAA==
-X-Received: by 2002:a05:600c:4da6:: with SMTP id v38mr4656290wmp.42.1618431944756;
-        Wed, 14 Apr 2021 13:25:44 -0700 (PDT)
-Received: from [192.168.1.152] ([102.64.194.225])
-        by smtp.gmail.com with ESMTPSA id y17sm442099wrq.76.2021.04.14.13.25.41
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Wed, 14 Apr 2021 13:25:44 -0700 (PDT)
-Message-ID: <60774fc8.1c69fb81.529e6.1b97@mx.google.com>
-From:   vanevans001@gmail.com
-X-Google-Original-From: Vanina
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uXB/h0HritpGaogqR4MZ0Syh5r+OFtVKW/hzSi9q7iw=;
+        b=rvjiR9FwL0KXuZO4oqX8agDOa4CpNXywuN4ddUsZOD3OIk0noPm9eA5Wagd9utt+4+
+         up+2F4PgNaCVosiuMZOguz/X8RVPqBvNzcZJ3IKchPOoSBnzZyJxrMFPDF6rmx21ziQA
+         u9zm8df96d96L5thgO7IuG3TnIvPGH0AxI8SCHryQ5g56MC60HSOcxxlio39yrU8ZYv3
+         rsDC+mptN0s+TyUC4c/Pyhsg3uZzLMvsv/OciCgmimBD3YN8U5LGk5D8gyQB26LT81fu
+         GQXOZbUFvAb5eovqMcVIAcdH7CXpgyrgHbupE0oPZttD8IeCXlTcMA8M/xOqxhGjtSEO
+         VFfg==
+X-Gm-Message-State: AOAM532GuyL01u1BgutGERHPqQl8cDjJXfqa/8VvJ5801xjvtrBZ24lM
+        08JInkdJ/IonUXW+OH7CO327mmGspqm4hJdEM4xOFw==
+X-Google-Smtp-Source: ABdhPJy68/JQ2akezNu6ZdB4kqML+b9w63gefQDDXSh7QMIsi4KZSHn4ZxpYoICD3BhsO3PYRnXFJtwrAc0x2iTGIIg=
+X-Received: by 2002:a25:6088:: with SMTP id u130mr56279885ybb.257.1618431970036;
+ Wed, 14 Apr 2021 13:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Please reply to me
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Wed, 14 Apr 2021 20:25:32 +0000
-Reply-To: curtisvani9008@gmail.com
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
+ <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org> <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
+ <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com> <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
+In-Reply-To: <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 14 Apr 2021 13:25:58 -0700
+Message-ID: <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Evan Green <evgreen@chromium.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you? I'm Vanina C. I picked interest in you and I would like to kno=
-w more about you and establish relationship with you. i will wait for your =
-response. thank you.
+Hi,
+
+On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
+>
+> >> >>> +                                       required-opps =
+> >> >>> <&rpmhpd_opp_low_svs>;
+> >> >>> +                                       opp-peak-kBps = <1200000
+> >> >>> 76000>;
+> >> >>> +                                       opp-avg-kBps = <1200000
+> >> >>> 50000>;
+> >> >> Why are the kBps numbers so vastly different than the ones on sc7180
+> >> >> for the same OPP point. That implies:
+> >> >>
+> >> >> a) sc7180 is wrong.
+> >> >>
+> >> >> b) This patch is wrong.
+> >> >>
+> >> >> c) The numbers are essentially random and don't really matter.
+> >> >>
+> >> >> Can you identify which of a), b), or c) is correct, or propose an
+> >> >> alternate explanation of the difference?
+> >> >>
+> >>
+> >> We calculated bus votes values for both sc7180 and sc7280 with ICB
+> >> tool,
+> >> above mentioned values we got for sc7280.
+> >
+> > I don't know what an ICB tool is. Please clarify.
+> >
+> > Also: just because a tool spits out numbers that doesn't mean it's
+> > correct. Presumably the tool could be wrong or incorrectly configured.
+> > We need to understand why these numbers are different.
+> >
+> we checked with ICB tool team on this they conformed as Rennell & Kodiak
+> are different chipsets,
+> we might see delta in ib/ab values due to delta in scaling factors.
+
+...but these numbers are in kbps, aren't they? As I understand it
+these aren't supposed to be random numbers spit out by a tool but are
+supposed to be understandable by how much bandwidth an IP block (like
+MMC) needs from the busses it's connected to. Since the MMC IP block
+on sc7180 and sc7280 is roughly the same there shouldn't be a big
+difference in numbers.
+
+Something smells wrong.
+
+Adding a few people who understand interconnects better than I do, though.
+
+-Doug
