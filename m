@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD4435F102
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3EF35F104
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243101AbhDNJqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:46:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59796 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233066AbhDNJqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:46:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618393569; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=05qnuH1nbbTYL5zFdv5eMMmudj0mqycIJlXy8sYIrAo=;
-        b=oyjmC6heHUrWLTxImm+JHiXprN8BqhbDxcZrY2ANR1FvvTRXP05xLiO5H4ZMbyA1dDBsbS
-        YRaCHLlvV20KO2WOZhA1cXL5kJyh0zofhzd22NO/P9/iIxPnaceqjIEnncQpHtik4Gp3+n
-        XWaYWpCGkELA+bQIbU21wcemyqoDjac=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 76B44ABB3;
-        Wed, 14 Apr 2021 09:46:09 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 11:46:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [PATCH 7/7] mm: vmscan: remove noinline_for_stack
-Message-ID: <YHa54ENFqoPrTbXJ@dhcp22.suse.cz>
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-8-songmuchun@bytedance.com>
+        id S231892AbhDNJrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233066AbhDNJrK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:47:10 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2137C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:46:49 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id j26so20029216iog.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 02:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QSY+YF0ygYiG1EiJZskRZOjnmmttz2RNZ0RIR9uNbSI=;
+        b=k7ieuvix8d6RycI66YKCN8yW4dVTY36rKSS/XWuHxyv0q5bdN0h1ICUXSNyrvs4F3o
+         +Xyv5f/8HrExwKjEwsVFfcgbKVSYiqSM6jf3ftSqntLpKcSmyrKOmbNcgHlfkC7VC2B5
+         qTKlt2g5WLJo98c3Bm+C1av3VrY3wE0hfPcNQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QSY+YF0ygYiG1EiJZskRZOjnmmttz2RNZ0RIR9uNbSI=;
+        b=rKcJKO0bHeubK3EzxtBcy7RRGI1Xc3cTDxZ7Nyqzt1sELnvq8jWBXRU2qw/GjkRtKK
+         PYF0kLaSwlCn/1RnOm8Qx6uCnmM73hOGOY3+Dc5bg/5UAYAxySQns4HZDIKo2XWVoH6V
+         cj7v0Ixbu6edlAEy1Kx5yNmxqYISsl8xdI4rfbS00sVuxma+ECxZC8WV5Cz4mDtCVkxE
+         DkCj3wdcZT3cNJurvv9mxhxYCR1+9q/PAAS6JKUJLwxAEMilzzU45Ru/W+4aJ/VkczMU
+         BzjRIo1FSIeA0/3dyZyd82hSK0IVa1FgSBR2oKqzQmJO9b6Ud//bYOqALEemOBzeJmm2
+         abTg==
+X-Gm-Message-State: AOAM533uUNwSunSIdagGH9FR2QRnftRmcbNMm/WJIgVqgbjOkBRLaZLh
+        WwSv+dPCn2YeWfV4Lc1jW86Tg9kkAx0HXXbcnTCBLWBQ4EiS6w==
+X-Google-Smtp-Source: ABdhPJzPixnojwlN8XP8k88cP6u03RzsNaQL6/YxmSt+0RNWzwVpls932y0asMJtoxu14QXvEPsckB3We2i+WUq90JU=
+X-Received: by 2002:a02:cf16:: with SMTP id q22mr25911665jar.32.1618393609117;
+ Wed, 14 Apr 2021 02:46:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413065153.63431-8-songmuchun@bytedance.com>
+References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
+ <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 14 Apr 2021 11:46:38 +0200
+Message-ID: <CABRcYmJvzcFySYS=U=xtfn4eG7yKpmET_yh-bZYrkYfJMdx_pw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13-04-21 14:51:53, Muchun Song wrote:
-> The noinline_for_stack is introduced by commit 666356297ec4 ("vmscan:
-> set up pagevec as late as possible in shrink_inactive_list()"), its
-> purpose is to delay the allocation of pagevec as late as possible to
-> save stack memory. But the commit 2bcf88796381 ("mm: take pagevecs off
-> reclaim stack") replace pagevecs by lists of pages_to_free. So we do
-> not need noinline_for_stack, just remove it (let the compiler decide
-> whether to inline).
+On Wed, Apr 14, 2021 at 1:16 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
+> > +static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+> > +                                  struct bpf_reg_state *regs)
+> > +{
+> > +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
+> > +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> > +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
+> > +       int err, fmt_map_off, num_args;
+> > +       u64 fmt_addr;
+> > +       char *fmt;
+> > +
+> > +       /* data must be an array of u64 */
+> > +       if (data_len_reg->var_off.value % 8)
+> > +               return -EINVAL;
+> > +       num_args = data_len_reg->var_off.value / 8;
+> > +
+> > +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+> > +        * and map_direct_value_addr is set.
+> > +        */
+> > +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
+> > +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+> > +                                                 fmt_map_off);
+> > +       if (err)
+> > +               return err;
+> > +       fmt = (char *)fmt_addr + fmt_map_off;
+> > +
 >
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> bot complained about lack of (long) cast before fmt_addr, please address
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Will do.
 
-> ---
->  mm/vmscan.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 64bf07cc20f2..e40b21298d77 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2015,8 +2015,8 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
->   *
->   * Returns the number of pages moved to the given lruvec.
->   */
-> -static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-> -						     struct list_head *list)
-> +static unsigned int move_pages_to_lru(struct lruvec *lruvec,
-> +				      struct list_head *list)
->  {
->  	int nr_pages, nr_moved = 0;
->  	LIST_HEAD(pages_to_free);
-> @@ -2096,7 +2096,7 @@ static int current_may_throttle(void)
->   * shrink_inactive_list() is a helper for shrink_node().  It returns the number
->   * of reclaimed pages
->   */
-> -static noinline_for_stack unsigned long
-> +static unsigned long
->  shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
->  		     struct scan_control *sc, enum lru_list lru)
->  {
-> -- 
-> 2.11.0
+> > +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
+> > +        * all of them to snprintf().
+> > +        */
+> > +       err = snprintf(str, str_size, fmt, BPF_CAST_FMT_ARG(0, args, mod),
+> > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod),
+> > +               BPF_CAST_FMT_ARG(3, args, mod), BPF_CAST_FMT_ARG(4, args, mod),
+> > +               BPF_CAST_FMT_ARG(5, args, mod), BPF_CAST_FMT_ARG(6, args, mod),
+> > +               BPF_CAST_FMT_ARG(7, args, mod), BPF_CAST_FMT_ARG(8, args, mod),
+> > +               BPF_CAST_FMT_ARG(9, args, mod), BPF_CAST_FMT_ARG(10, args, mod),
+> > +               BPF_CAST_FMT_ARG(11, args, mod));
+> > +
+> > +       put_fmt_tmp_buf();
+>
+> reading this for at least 3rd time, this put_fmt_tmp_buf() looks a bit
+> out of place and kind of random. I think bpf_printf_cleanup() name
+> pairs with bpf_printf_prepare() better.
 
--- 
-Michal Hocko
-SUSE Labs
+Yes, I thought it would be clever to name that function
+put_fmt_tmp_buf() as a clear parallel to try_get_fmt_tmp_buf() but
+because it only puts the buffer if it is used and because they get
+called in two different contexts, it's after all maybe not such a
+clever name... I'll revert to bpf_printf_cleanup(). Thank you for your
+patience with my naming adventures! :)
+
+> > +
+> > +       return err + 1;
+>
+> snprintf() already returns string length *including* terminating zero,
+> so this is wrong
+
+lib/vsprintf.c says:
+ * The return value is the number of characters which would be
+ * generated for the given input, excluding the trailing null,
+ * as per ISO C99.
+
+Also if I look at the "no arg" test case in the selftest patch.
+"simple case" is asserted to return 12 which seems correct to me
+(includes the terminating zero only once). Am I missing something ?
+
+However that makes me wonder whether it would be more appropriate to
+return the value excluding the trailing null. On one hand it makes
+sense to be coherent with other BPF helpers that include the trailing
+zero (as discussed in patch v1), on the other hand the helper is
+clearly named after the standard "snprintf" function and it's likely
+that users will assume it works the same as the std snprintf.
