@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB21D35FCDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC6D35FCDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 22:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhDNUwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 16:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbhDNUwf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:52:35 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37B8C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 65so23678278ybc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=jZ63PQvS0OSJEWxuC8eQL+mgIeY3zye5GVk1y4o1Jz5FWVvQk/PfIiL7GTYhxNoeq0
-         rGznM1hJWUQXA6P+waeuHPSY/DJs03JNq0uVwSWPnPsBzxVjgnn6TMUzGdV111v1vp2Q
-         /nX5IfLwP9juprGuNEOuTT07JchH9A7AGMglO6Rb+9+c7hhfVbUxRh2zz0sBnmQacfBf
-         EWnX8k44LFD6bjU3kBqM3T1EuffW2JooY05UpEBA0BKMVo1IB4OZNKKbX1gUPW2isFLB
-         R4bgmou+/6jqYIgPw+6DqLVgue9r1GJfCIJRUL/HusGRiJ45hR+a3JnPDjJrbBlQveOp
-         CdDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=pXNc6bV7q2UGkcBm0ts4N4afiou5Wn/mx2wWeKI76RPqPDJ5nOkbznR8R9xH8yB2mj
-         Eeh843n+iPvi1mkJ7V49DyO2JOH0W1OHx6pD+GwQXKZgq0GbZomXunZPljBJ5dtdOD4t
-         R2OT5SvR0aSQJBdtgA1/b/Syl2rYQ7EEWclt40nxktY8obidb0gN0HWc1NUO32mWR1Ej
-         qQDR6/BHZu2OBYsZr4l52iRhq+PzOTzpT0SO2UBzwfWbAi8SOpdsyhhCid/7sYwZSjKZ
-         TGJcyFPap38a+WkJ7osv9DMfXDGIA0uv32oA/5GV2WNrpU9aBfSR9tfdiki0Nkq+Ig7t
-         2JGw==
-X-Gm-Message-State: AOAM532H6sj2CB9oLwU7ofg0fG1j6nBtLX5RU0I/UZUTvNvqi28HT5za
-        5G3GmUXwIs0kUo9qhZg80tBT4S0P+3GuuXVaAh06Vw==
-X-Google-Smtp-Source: ABdhPJyqMKv7jKazLHNQr9xfoSHuUWvXv3SH59PCH1Ndn1yE1hoJqvYOK5wZMT0jkn32p4YGeb+4ZAvFlg7cBrY5JE0=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr55634403ybk.518.1618433530591;
- Wed, 14 Apr 2021 13:52:10 -0700 (PDT)
+        id S229734AbhDNUyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 16:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229974AbhDNUyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 16:54:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A30D61179
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 20:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618433629;
+        bh=29EHUhjzIrsu9S9WT6ZbMpXUN6PrspEKBQXQhwjItis=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KcxWGSASyG+jv1awQVl2Ij8cGl6rYUGUxoubR8iIXA5bS850ZxPDd30919EQwW0oT
+         aXM+wWplgBhrbtJW0L+27SDIjG6oUw4Kk9zyPTFDhi1zEaCf82hl/OkLRcINUT1OY3
+         N8W/Y8k9bs64IpXZDsTCUKW+wnGTcidtKtzzsjvnA2DGKVnXSAn5BP1/a2jyTRiuqt
+         K31R78kulDC2Oy/HPNL0pMY7cg7Nvxd+JfAOgZAclABoVKuvWudN4hUWEZm7UTjipp
+         zYiMyoz1X/Ghpr+6hauSksVmQitGf7VUnl1z5GUr9eh9uR3dk7pNtKAVHCg4D1qkm/
+         MriZZyCB4FHBg==
+Received: by mail-ed1-f51.google.com with SMTP id h10so25308373edt.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 13:53:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532iwSo94c3fkKnSxNO6eRKSyEAVTMDMBekg0sFLqwJAviN+BCJD
+        jAzq6JtXF7sCsKhQrWPtHVoeCY/xKM7pdHAjMA==
+X-Google-Smtp-Source: ABdhPJyufEB6F9JqzdPSmBO4JR1mPFbi9Mq9JvcH0ReY77nTTwoXmEjxUbNKYPQqgeDdt456pSIJ4MxCaHTdNhGTsGI=
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr97305edv.373.1618433627682;
+ Wed, 14 Apr 2021 13:53:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon> <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 14 Apr 2021 22:51:59 +0200
-Message-ID: <CANn89i+ASy7d+ew0BrnsB5aH8BPb+kr_pazWgfaAB9939o-cmQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+References: <20210414195758.4078803-1-robh@kernel.org> <CAM9d7chWROPAg3T_gd+T6N+94pWawKtggyegCGo0nXzKF+F7+g@mail.gmail.com>
+In-Reply-To: <CAM9d7chWROPAg3T_gd+T6N+94pWawKtggyegCGo0nXzKF+F7+g@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 14 Apr 2021 15:53:36 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKuk53i0Lf=3sMOjieSNZo3Rqh+-Uhbd0n3qn=rpRKfLQ@mail.gmail.com>
+Message-ID: <CAL_JsqKuk53i0Lf=3sMOjieSNZo3Rqh+-Uhbd0n3qn=rpRKfLQ@mail.gmail.com>
+Subject: Re: [PATCH] libperf: xyarray: Add bounds checks to xyarray__entry()
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:09 PM Shakeel Butt <shakeelb@google.com> wrote:
-
+On Wed, Apr 14, 2021 at 3:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> I will let TCP RX zerocopy experts respond to this but from my high
-> level code inspection, I didn't see page->private usage.
+> On Thu, Apr 15, 2021 at 4:58 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > xyarray__entry() is missing any bounds checking yet often the x and y
+> > parameters come from external callers. Add bounds checks and an
+> > unchecked __xyarray__entry().
+> >
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  tools/lib/perf/include/internal/xyarray.h | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/perf/include/internal/xyarray.h b/tools/lib/perf/include/internal/xyarray.h
+> > index 51e35d6c8ec4..f0896c00b494 100644
+> > --- a/tools/lib/perf/include/internal/xyarray.h
+> > +++ b/tools/lib/perf/include/internal/xyarray.h
+> > @@ -18,11 +18,18 @@ struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size);
+> >  void xyarray__delete(struct xyarray *xy);
+> >  void xyarray__reset(struct xyarray *xy);
+> >
+> > -static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
+> > +static inline void *__xyarray__entry(struct xyarray *xy, int x, int y)
+> >  {
+> >         return &xy->contents[x * xy->row_size + y * xy->entry_size];
+> >  }
+> >
+> > +static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
+> > +{
+> > +       if (x >= xy->max_x || y >= xy->max_y)
+> > +               return NULL;
+>
+> Maybe better to check negatives as well.
 
-Indeed, we do not use page->private, since we do not own the page(s).
+max_x and max_y are size_t and unsigned, so x and y will be promoted
+to unsigned and the check will still work.
+
+It's probably better to change the args to size_t though. And perhaps
+on xyarray__new(), xyarray__max_y(), and xyarray__max_x() as well.
+
+Rob
