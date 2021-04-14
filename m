@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C6535F5F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D3D35F5F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 16:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbhDNOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 10:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S233823AbhDNONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233839AbhDNOMi (ORCPT
+        with ESMTP id S231158AbhDNONd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 10:12:38 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC07C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so6078620pja.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
+        Wed, 14 Apr 2021 10:13:33 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8253C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so4627284oof.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vp40JX7MD1oyRAb9Y8UvaxNthRrEWLT17bpKIw89Vp8=;
-        b=hgK+6erZ/ZaIIki51J5aG86ePrPsolHe2qeKZ3mg0eC79G+Ei/Bl8NcW1/owX7Xdvd
-         rmz970jRX+yXh0X9NH6qR54n+i8aLCInwqGmBYXVE5Pz/41ZSjaa2XardvhUTDY0Cs8p
-         Yb8qSrX8YZkIaX1LZOMsIyyp2AANwpQbaD0TPaGWdD1+oDzIhG4EZDWR4UpDRE/xVuCQ
-         N8pnfMt21Jt8oaHjNOazLwIuBchS7NTnnWhbxgVR/eiJnPPzM4uD+eQIsTwsTcftdTN2
-         PLFnQlYAW0zxbCBAw867haMamI/S87JyMzhiPrlCaEk/1uzEh5rdFQu8pm1apetFdwCW
-         YVfw==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sb+yeDNpNA+Bz8H8xtWBwZnjUmpmY3Grk6ocFL4I/TQ=;
+        b=HVfk+QtkxRTNz90nOoRDFi1g41C5yA5NI/ndLkdC2nUXutLyI0cslXbLRurCPBCNIp
+         6P1nWTfHukY5aUH9ge6nL0/7tuPhJiOVRjTGSjn01VihAi5+D9DqH0yVSNTAZzge9FH0
+         eClYBXJwNw+fiSRccdpqbtOX1sih8b1fMI5CB2q6pQKwN24LAPV9nVRBsOQ4R+UlJrvp
+         ZS66rwnXzQ1n/r0TGT0Ltnclq3Z2dhqbmDZENQxVBOvkM/ci8U2MrwgiW7KW/QCTkwWr
+         7MXKkeQIgRWHYn7Q7jju7/9tGgU2tl3UfYj02SBFrgOe/h1hZohzbpzID2cSeV14xDom
+         LtYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vp40JX7MD1oyRAb9Y8UvaxNthRrEWLT17bpKIw89Vp8=;
-        b=TLZXC8A6INzg38mC/Urt3hBBiuxDO4jVZ+kq0gHptM9iW3aDyP/vZ9AJOnxX7D+40P
-         0/93FbzG+hHH47G5qYAJLvB8/45AvzMYxyk48k+lHyArerwhWd9PScuDRuCn/rowkDww
-         mN22eOCSK8e0GEX+GigTNcfda1aEAm8CWjwNxlZmJx//eMdzeinmDYSzc92/JSQ0vZDj
-         Vxrb7VetXwEtvnWNl+8OaTR1/FEyGuUdjvgAiDbceEx6bJ5CaicefPzNlWVkkVtQ9G5o
-         8t/ojBhH4yPWS3W4smmCm07Do9cxBR+CL2/0gPDxH1dEItugLSv9Lq5SlsNJ+LdT6biw
-         qHXw==
-X-Gm-Message-State: AOAM530XwNlYYNa+l1bfDZTAw9OBZpUyV+7604awjqcZu/2h+VGlQRbv
-        ToqE5vddSTKh1VggAjPrZRA=
-X-Google-Smtp-Source: ABdhPJza5jUB4sMZoDE0tC09q1IDVXc3SViDZwxG00IgG6HA9/9/9np52gjLQ2051sKXN15McHj8Hw==
-X-Received: by 2002:a17:90a:ee95:: with SMTP id i21mr4068778pjz.160.1618409536393;
-        Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
-        by smtp.gmail.com with ESMTPSA id i18sm6579059pfq.168.2021.04.14.07.12.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 07:12:16 -0700 (PDT)
-Subject: Re: [RFC V2 PATCH 9/12] swiotlb: Add bounce buffer remap address
- setting function
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210413152217.3386288-1-ltykernel@gmail.com>
- <20210413152217.3386288-10-ltykernel@gmail.com>
- <20210414064358.GA25877@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <963fc95f-915e-99a2-aa5c-63ae8e2c6591@gmail.com>
-Date:   Wed, 14 Apr 2021 22:12:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sb+yeDNpNA+Bz8H8xtWBwZnjUmpmY3Grk6ocFL4I/TQ=;
+        b=hGCtbJc3K3ZhHM/NzSXowHfO2cXupxVzGCJYV42+W+lekvfEhJlc+VjDMs+ylvuWoH
+         yP7CkL3DPncqtCa1naZg7sZSaOFvlw0MQ3YBYCo6gc+SNe8lDIYTRAHaOfRJv88fOFfo
+         06asxlNlYHDhy9OFTk1JHNiKQULcaNznHOe+KS0+y6+u0gPehyFPyzIuQp4KlAlnXtOM
+         0fzIPtai5NjCZDapWeXca9OovhiXC9v0/2svYVV+ebJZx/KRvAguZPGg54IcR4Ux+OnW
+         Zz9f9MazxIS5jb2T7ybJN+9+0zIXJdm4nKJuq3rEET5/Wv9+wCD+ssOkzIdUGKDbhk/w
+         +q+g==
+X-Gm-Message-State: AOAM531sa0qjNI4nofx5hmlu2jeCDrgkI5IEyLx/SpKgpM/CYVVE8QJD
+        rAcUYRqDs2pqaIN1RqinTqGN2+aCy2SfOUU0ULtlHA==
+X-Google-Smtp-Source: ABdhPJzVqDgUTs0CSOHiGCtXMVUP29nRAd/nar8/zWXZGwSyMpmH6yKoTRiRNGStUZoW4T97KmUZzdsisS7I7MQE5SE=
+X-Received: by 2002:a4a:925a:: with SMTP id g26mr18617165ooh.29.1618409592066;
+ Wed, 14 Apr 2021 07:13:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210414064358.GA25877@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
+ <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
+ <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
+ <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
+ <87a6qrk2pw.fsf@igel.home> <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
+ <874kgyfetu.fsf@igel.home> <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
+ <87h7kukzy4.fsf@igel.home> <CANXhq0r5_xhFu3W9mUFkp_7BYUVBzvHZE1A6jpBDcL_KwTc1cA@mail.gmail.com>
+ <87tuob7n8g.fsf@igel.home>
+In-Reply-To: <87tuob7n8g.fsf@igel.home>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Wed, 14 Apr 2021 22:13:00 +0800
+Message-ID: <CANXhq0rTC8grpRe_Q0vG6_52b-41OuN4vHum8RvouMbE6xiXpQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Pragnesh Patel <pragnesh.patel@openfive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/2021 2:43 PM, Christoph Hellwig wrote:
-> On Tue, Apr 13, 2021 at 11:22:14AM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> For Hyper-V isolation VM with AMD SEV SNP, the bounce buffer(shared memory)
->> needs to be accessed via extra address space(e.g address above bit39).
->> Hyper-V code may remap extra address space outside of swiotlb. swiotlb_bounce()
->> needs to use remap virtual address to copy data from/to bounce buffer. Add
->> new interface swiotlb_set_bounce_remap() to do that.
-> 
-> I have no way to review what this actually doing when you only Cc me
-> on a single patch.  Please make sure everyone is Cced on the whole
-> series to enable proper review.
-> 
+On Mon, Apr 12, 2021 at 7:31 PM Andreas Schwab <schwab@linux-m68k.org> wrot=
+e:
+>
+> On M=C3=A4r 31 2021, Zong Li wrote:
+>
+> > I found that the gemgxlpll was disabled immediately by power
+> > management after macb driver install. The mainline's defconfig doesn't
+> > enable CONFIG_PM, so the network is fine on it. The opensuse defconfig
+> > enables CONFIG_PM, and the patch
+> > 732374a0b440d9a79c8412f318a25cd37ba6f4e2 added the enable/disable
+> > callback functions, so the gemgxlpll PLL, I have no idea why power
+> > management disable it, I would keep trace it.
+>
+> Does that mean that CONFIG_PM also affects the FU740?
+>
 
-Sure. I will resend all patches. Thanks for reminder.
+Yes, we got the same problem on the FU740. We are checking the issue.
+
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint =3D 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC=
+1
+> "And now for something completely different."
