@@ -2,184 +2,483 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459BE35EA02
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A270E35EA07
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 02:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348854AbhDNAcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 20:32:01 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48355 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348308AbhDNAcA (ORCPT
+        id S1348863AbhDNAdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 20:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348856AbhDNAdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 20:32:00 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8F9AB580666;
-        Tue, 13 Apr 2021 20:31:37 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Tue, 13 Apr 2021 20:31:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=knUE4eA4OJPF+HeLNfyGSHUwlIZ5VVc
-        yXxGwT1wC3mg=; b=HbYw7hONcS2tHP0GCTKx/rYFKmy6+Sd8TH68re77bRFrgzx
-        QfAEqd7AD81GTnpwPRTHX98f7jeTYe0eIJrVMD7TH3Ec6Gt15D3MejL0meVGrwHS
-        J5NfluxWOHookNX0PJoE6SkGMYt5rPCJ/gQX5daohJXLfcwOVgJ3S0XrgMD3BpJR
-        J/KSQK33bz/jrNS1sUH+Beav2jyJ94ajcCVDblqlzdIgjt5uaeDAduPXTJcqavWu
-        5ZWrRj3Jg1z1hCoanX2OMsAcGREhn+umQZF6L017nZowqg/gq/E70GTZD2uGK+rL
-        3R5nU9r7z+YX5ukYQt3oI/7NiZrlPuGorVs42ug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=knUE4e
-        A4OJPF+HeLNfyGSHUwlIZ5VVcyXxGwT1wC3mg=; b=rHiavBpyRcIE+PMbzfzvJx
-        Cr0oPNN4/2GPWA08i2c3zxaa0bCXP6OpOt0z9DxTj3u7rX9bODvYxWjKt9AMh9oq
-        at3vN/9FuHI/5WPEOKa0OsHxcVXceSH7iIFcKTVpRmz/ojIULPbaVKHczk2sWa1D
-        24AjCtbKYoNJcRg2+JeTL2jRymF/6ytOVskQ7FqMAHT2q+YTtwiO5zxOGe4ohDAm
-        uvED+R76YyBdT354ty/u8x0Ab/7YTrQqQyWx/hw6XS2C2LDLtBex30XxQe0GjcCM
-        IhpOXK3epVnXqDeCFLLPJo4IKrr655YhdgYQdW1/byEQ7Fs5Z8LbDtYpNa99jNNw
-        ==
-X-ME-Sender: <xms:5zd2YEf91elAHYYF4a6xWKfQAzs7g9rGGYewbD2w0AF8U7yJZ-SyoQ>
-    <xme:5zd2YGO9FCnHPZFcDcYLZI4wtuK_1OstqatjI7Qh0DkBR-GKFZc3_9Su08_u9ZRVX
-    gMgo74vCRxb9gNtJw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeltddgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepudevjeegleejteffgfdvudetgfdvjedujeefgfekheeitedtgedvtdei
-    keevjeeinecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:6Dd2YFjtn4geL8pbKnmdAxFVCoANBYEZVkahiXm_FtHrWW0aY8vmeQ>
-    <xmx:6Dd2YJ-KWD3CTYBpBOPTc1wpT8VvPQ16wE_vhPkC_b-a3QTwR38AGw>
-    <xmx:6Dd2YAukFZRXWD8XhWMtnEMZsuSwPC8CgxTCiwg3fr-9HN6LBY6b6w>
-    <xmx:6Td2YLmq1Q30OW6nlYM7YkKRtyM73qX1nztS54cbHVRn2JqlSrb0bw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D411AA0048E; Tue, 13 Apr 2021 20:31:35 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <37e75b07-a5c6-422f-84b3-54f2bea0b917@www.fastmail.com>
-In-Reply-To: <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-16-andrew@aj.id.au>
- <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
- <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
- <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
- <e2d7268b-bdaf-45bf-bb21-a5b9f7e985a4@www.fastmail.com>
- <CAK8P3a1VFKuewt65RUK6hFAhZYSFFVUX7_nuJLoZW2WoPXGVTw@mail.gmail.com>
-Date:   Wed, 14 Apr 2021 10:00:20 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        openipmi-developer@lists.sourceforge.net,
-        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>, "Joel Stanley" <joel@jms.id.au>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_16/21]_ipmi:_kcs=5Fbmc:_Add_a_"raw"_character_de?=
- =?UTF-8?Q?vice_interface?=
-Content-Type: text/plain
+        Tue, 13 Apr 2021 20:33:35 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9063C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:33:14 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id b10so18955493iot.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 17:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ajkY9cSvM0yJXBaUdfH+EY6hPA2iU5BvpjfgTOX51Fk=;
+        b=H/wsEyTwh3fVtfXOc81Q37NwyeheY5mjBR6Uvlzh0UYMnxEHIMGsTJ0qcvbaInhgJc
+         HnnScWvpxipVGxugIaipkfttKD0HHeWYixRsfHtkRfFwOvdX/Qx59YWEFMsNfmBfYz46
+         oK6GXu998Y3aVddI5gOMlrI+4xxUb2eDbfiAjDgj6leP2emIRJ2HtkhHTFg6qJ1u+WMl
+         sDEs3xJbMDXMtVSqF3Wgs8rsS4sDcXvm4Uvu68+3peKDwmk1VLatWoqzLJSAmMVQlRES
+         YNee2BQVn+nPG7oW/m/0Omix+YMMA+000P7BPmftBVQxL8hfgh76B3nBi4X7B1Vy7cex
+         nH5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ajkY9cSvM0yJXBaUdfH+EY6hPA2iU5BvpjfgTOX51Fk=;
+        b=NZEFTUnZl1QNvWQcvUW2ZkZwQFJxV5WhPlQ1FAtbWGj6WogHiHVVT/I3KqQ/QXMG9q
+         +j9S0Ysglt6zsfIKXAvfD6Ibx6RIpoBMvQv3WCG7SVutrBO0tx1miJyNAk34d97O11Ft
+         1+NC+RbA/9c6rfjmoxdOOQQEL8NjnvU1UjU8fVxR60x/zhPmiz9gdZeqef0K27df0gyN
+         OCxGh0Pl7oXyG5r4wBwDmiZNsr6Sll48+XeWsl8YJNW0VQ7in2VUqaB1rEyrTaAHxbRO
+         ym+FbnpK4GDB9yfFIOrcyNBj08MVNFwts1ZhmvUB2Axe1Mn+HTaJ2/QFYYoT4C6JNubq
+         hnQw==
+X-Gm-Message-State: AOAM532NUgCxqjevOtwPeID6PuO2Ytbcg7Ll6arPQjkd5/+nFmZR3iPX
+        pQQAbt74bx545/RuutN9YSEJeIxfRXGmOimScVDRFg==
+X-Google-Smtp-Source: ABdhPJwOKqsKv+OAXpb8uIShaFRPB3HxM8MSdwBmCP+iucCaLStLkTNLQ7R4xq+nOGbZ+syDNvZNR+vKp305VmP2cNQ=
+X-Received: by 2002:a6b:fa14:: with SMTP id p20mr27435380ioh.168.1618360393909;
+ Tue, 13 Apr 2021 17:33:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210412190715.555883-1-dlatypov@google.com> <CABVgOSnn1WYyPspo6xu2Dua_ryk0xsRqMpE-OTnvW4q6gG7Ykg@mail.gmail.com>
+In-Reply-To: <CABVgOSnn1WYyPspo6xu2Dua_ryk0xsRqMpE-OTnvW4q6gG7Ykg@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Tue, 13 Apr 2021 17:33:02 -0700
+Message-ID: <CAGS_qxrD2+noEy7sF4bm1A_TBKuH7T_VWtpjvAppZeJk4098_w@mail.gmail.com>
+Subject: Re: [PATCH v5] lib: add basic KUnit test for lib/math
+To:     David Gow <davidgow@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 13 Apr 2021, at 17:52, Arnd Bergmann wrote:
-> On Tue, Apr 13, 2021 at 1:45 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> > On Mon, 12 Apr 2021, at 18:18, Arnd Bergmann wrote:
-> > > On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> > > > On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
-> > > > > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> > > > > >
-> > > > > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
-> > > > > > However, KCS devices are useful beyond IPMI (or keyboards), as they
-> > > > > > provide a means to generate IRQs and exchange arbitrary data between a
-> > > > > > BMC and its host system.
-> > > > >
-> > > > > I only noticed the series after Joel asked about the DT changes on the arm
-> > > > > side. One question though:
-> > > > >
-> > > > > How does this related to the drivers/input/serio/ framework that also talks
-> > > > > to the keyboard controller for things that are not keyboards?
-> > > >
-> > > > I've taken a brief look and I feel they're somewhat closely related.
-> > > >
-> > > > It's plausible that we could wrangle the code so the Aspeed and Nuvoton
-> > > > KCS drivers move under drivers/input/serio. If you squint, the i8042
-> > > > serio device driver has similarities with what the Aspeed and Nuvoton
-> > > > device drivers are providing to the KCS IPMI stack.
-> > >
-> > > After looking some more into it, I finally understood that the two are
-> > > rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
-> > > is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
-> > > that the proposed kcs_bmc_cdev_raw.c interface would be
-> > > what corresponds to the other side of
-> > > drivers/input/serio/i8042.c+userio.c.
+On Mon, Apr 12, 2021 at 11:41 PM David Gow <davidgow@google.com> wrote:
+>
+> On Tue, Apr 13, 2021 at 3:07 AM Daniel Latypov <dlatypov@google.com> wrote:
 > >
-> > Right. I guess the question is should we be splitting kernel subsystems
-> > along host/bmc lines? Doesn't feel intuitive, it's all Linux, but maybe
-> > we can consolidate in the future if it makes sense?
-> 
-> We actually have a number of subsystems with somewhat overlapping
-> functionality. I brought up serio, because it has an abstraction for multiple
-> things that communicate over the keyboard controller and I thought
-> the problem you were trying to solve was also related to the keyboard
-> controller.
-> It is also one of multiple abstractions that allow you to connect a device
-> to a uart (along with serdev and tty_ldisc, probably at least one more that
-> you can nest above or below these).
-> 
-> Consolidating the kcs_bmc.c interface into something that already
-> exists would obviously be best, but it's not clear which of these that
-> should be, that depends on the fundamental properties of the hardware
-> interface.
-> 
-> > > Then again, these are also on
-> > > separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
-> > > KCS), so they would never actually talk to one another.
+> > Add basic test coverage for files that don't require any config options:
+> > * part of math.h (what seem to be the most commonly used macros)
+> > * gcd.c
+> > * lcm.c
+> > * int_sqrt.c
+> > * reciprocal_div.c
+> > (Ignored int_pow.c since it's a simple textbook algorithm.)
 > >
-> > Well, sort of I guess. On Power systems we don't use the keyboard
-> > controller for IPMI or keyboards, so we're just kinda exploiting the
-> > hardware for our own purposes.
-> 
-> Can you describe in an abstract form what the hardware interface
-> can do here and what you want from it? I wonder if it could be
-> part of a higher-level interface such as drivers/mailbox/ instead.
+> > These tests aren't particularly interesting, but they
+> > * provide short and simple examples of parameterized tests
+> > * provide a place to add tests for any new files in this dir
+> > * are written so adding new test cases to cover edge cases should be easy
+> >   * looking at code coverage, we hit all the branches in the .c files
+> >
+> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+>
+> This looks good to me. A few comments/observations below, but nothing
+> that I think should actually block this.
+>
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> -- David
+>
+> > ---
+> > Changes since v4:
+> > * add in test cases for some math.h macros (abs, round_up/round_down,
+> >   div_round_down/closest)
+> > * use parameterized testing less to keep things terser
+> >
+> > Changes since v3:
+> > * fix `checkpatch.pl --strict` warnings
+> > * add test cases for gcd(0,0) and lcm(0,0)
+> > * minor: don't test both gcd(a,b) and gcd(b,a) when a == b
+> >
+> > Changes since v2: mv math_test.c => math_kunit.c
+> >
+> > Changes since v1:
+> > * Rebase and rewrite to use the new parameterized testing support.
+> > * misc: fix overflow in literal and inline int_sqrt format string.
+> > * related: commit 1f0e943df68a ("Documentation: kunit: provide guidance
+> > for testing many inputs") was merged explaining the patterns shown here.
+> >   * there's an in-flight patch to update it for parameterized testing.
+> >
+> > v1: https://lore.kernel.org/lkml/20201019224556.3536790-1-dlatypov@google.com/
+> > ---
+> >  lib/math/Kconfig      |   5 +
+> >  lib/math/Makefile     |   2 +
+> >  lib/math/math_kunit.c | 264 ++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 271 insertions(+)
+> >  create mode 100644 lib/math/math_kunit.c
+> >
+> > diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+> > index f19bc9734fa7..6ba8680439c1 100644
+> > --- a/lib/math/Kconfig
+> > +++ b/lib/math/Kconfig
+> > @@ -15,3 +15,8 @@ config PRIME_NUMBERS
+> >
+> >  config RATIONAL
+> >         bool
+> > +
+> > +config MATH_KUNIT_TEST
+> > +       tristate "KUnit test for lib/math" if !KUNIT_ALL_TESTS
+> > +       default KUNIT_ALL_TESTS
+> > +       depends on KUNIT
+>
+> This could have a description of the test and KUnit here, as mentioned
+> in the style guide doc:
+> https://www.kernel.org/doc/html/latest/dev-tools/kunit/style.html#test-kconfig-entries
+>
+> (I think it's sufficiently self explanatory that it's not essential,
+> but it could be nice to have a more detailed description of the things
+> being tested than just "lib/math".)
+>
 
-It gives us interrupts each way between the host and BMC when we send 
-some (small amount of) data/metadata. Mailbox is possibly a fit for 
-this? We're (ab)using the keyboard controllers to implement a vendor 
-MCTP binding over LPC[1] and also a simple protocol for the (Power) 
-host to trigger BMC debug data capture in the event of issues with 
-other (more complex) in-band communication stacks. The MCTP binding is 
-what requires access to STR.
+Done. I've left off the details about what the test tests so we have
+less places to go and update if/when new tests are added.
 
-It's feasible that we could implement the debug capture protocol with 
-the serio_raw interface now that I think about it (as it only makes use 
-of data and not status). What's unclear to me right now is what impact 
-that has on the Aspeed/Nuvoton KCS drivers we have in the IPMI 
-subsystem. If we can do something sensible to service both serio and 
-IPMI with the one driver implementation then I can put together a PoC 
-for the debug data stuff using serio_raw.
+> > diff --git a/lib/math/Makefile b/lib/math/Makefile
+> > index be6909e943bd..30abb7a8d564 100644
+> > --- a/lib/math/Makefile
+> > +++ b/lib/math/Makefile
+> > @@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
+> >  obj-$(CONFIG_CORDIC)           += cordic.o
+> >  obj-$(CONFIG_PRIME_NUMBERS)    += prime_numbers.o
+> >  obj-$(CONFIG_RATIONAL)         += rational.o
+> > +
+> > +obj-$(CONFIG_MATH_KUNIT_TEST)  += math_kunit.o
+> > diff --git a/lib/math/math_kunit.c b/lib/math/math_kunit.c
+> > new file mode 100644
+> > index 000000000000..80a087a32884
+> > --- /dev/null
+> > +++ b/lib/math/math_kunit.c
+> > @@ -0,0 +1,264 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Simple KUnit suite for math helper funcs that are always enabled.
+> > + *
+> > + * Copyright (C) 2020, Google LLC.
+> > + * Author: Daniel Latypov <dlatypov@google.com>
+> > + */
+> > +
+> > +#include <kunit/test.h>
+> > +#include <linux/gcd.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/lcm.h>
+> > +#include <linux/reciprocal_div.h>
+> > +
+> > +static void abs_test(struct kunit *test)
+> > +{
+>
+> There's something weird about taking the absolute values of char
+> literals. I'm not sure if it's better to case integer literals (like
+> with 'short' below), or keep it as-is.
 
-Regarding the MCTP binding, Jeremy Kerr is working in an in-kernel, 
-socket-based implementation of MCTP. Eventually this will allow us to 
-bury the KCS details in the MCTP subsystem, which removes some of the 
-motivation for the raw interface here.
+I just thought it was amusing :)
+Converting it to be like the short test below.
 
-Andrew
+> > +       KUNIT_EXPECT_EQ(test, abs('\0'), '\0');
+> > +       KUNIT_EXPECT_EQ(test, abs('a'), 'a');
+> > +       KUNIT_EXPECT_EQ(test, abs(-'a'), 'a');
+> > +
+> > +       /* The expression in the macro is actually promoted to an int. */
+> > +       KUNIT_EXPECT_EQ(test, abs((short)0),  0);
+> > +       KUNIT_EXPECT_EQ(test, abs((short)42),  42);
+> > +       KUNIT_EXPECT_EQ(test, abs((short)-42),  42);
+> > +
+> > +       KUNIT_EXPECT_EQ(test, abs(0),  0);
+> > +       KUNIT_EXPECT_EQ(test, abs(42),  42);
+> > +       KUNIT_EXPECT_EQ(test, abs(-42),  42);
+> > +
+> > +       KUNIT_EXPECT_EQ(test, abs(0L), 0L);
+> > +       KUNIT_EXPECT_EQ(test, abs(42L), 42L);
+> > +       KUNIT_EXPECT_EQ(test, abs(-42L), 42L);
+> > +
+> > +       KUNIT_EXPECT_EQ(test, abs(0LL), 0LL);
+> > +       KUNIT_EXPECT_EQ(test, abs(42LL), 42LL);
+> > +       KUNIT_EXPECT_EQ(test, abs(-42LL), 42LL);
+> > +
+> > +       /* Unsigned types get casted to signed. */
+> > +       KUNIT_EXPECT_EQ(test, abs(0ULL), 0LL);
+> > +       KUNIT_EXPECT_EQ(test, abs(42ULL), 42LL);
+>
+> A part of me is curious what the result is for -0x80000000, but I
+> guess that's not defined, so shouldn't be tested. :-)
 
-[1] https://github.com/openbmc/libmctp/blob/master/docs/bindings/vendor-ibm-astlpc.md
+abs(-42ULL) == 42, but the compiler spits out a warning.
+
+> > +}
+> > +
+> > +static void int_sqrt_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(0UL), 0UL);
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(1UL), 1UL);
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(4UL), 2UL);
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(5UL), 2UL);
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(8UL), 2UL);
+> > +       KUNIT_EXPECT_EQ(test, int_sqrt(1UL << 30), 1UL << 15);
+> > +}
+> > +
+>
+> _Maybe_ it's worth a comment here that round_up (and round_down) only
+> support rounding to powers of two?
+> (Either that, or also test roundup/rounddown to provide the contrast.)
+
+Adding in those test cases for v6.
+Andy had asked for those as well but I had forgotten them by the time
+I sent out v5.
+
+>
+> > +static void round_up_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, round_up(0, 1), 0);
+> > +       KUNIT_EXPECT_EQ(test, round_up(1, 2), 2);
+> > +       KUNIT_EXPECT_EQ(test, round_up(3, 2), 4);
+> > +       KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 2), 1 << 30);
+> > +       KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 1 << 29), 1 << 30);
+> > +}
+> > +
+> > +static void round_down_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, round_down(0, 1), 0);
+> > +       KUNIT_EXPECT_EQ(test, round_down(1, 2), 0);
+> > +       KUNIT_EXPECT_EQ(test, round_down(3, 2), 2);
+> > +       KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 2), (1 << 30) - 2);
+> > +       KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 1 << 29), 1 << 29);
+> > +}
+> > +
+> > +static void div_round_up_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(0, 1), 0);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(20, 10), 2);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 10), 3);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 20), 2);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 99), 1);
+> > +}
+> > +
+> > +static void div_round_closest_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(0, 1), 0);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(20, 10), 2);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(21, 10), 2);
+> > +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(25, 10), 3);
+> > +}
+> > +
+> > +/* Generic test case for unsigned long inputs. */
+> > +struct test_case {
+> > +       unsigned long a, b;
+> > +       unsigned long result;
+> > +};
+> > +
+> > +static struct test_case gcd_cases[] = {
+> > +       {
+> > +               .a = 0, .b = 0,
+> > +               .result = 0,
+> > +       },
+> > +       {
+> > +               .a = 0, .b = 1,
+> > +               .result = 1,
+> > +       },
+> > +       {
+> > +               .a = 2, .b = 2,
+> > +               .result = 2,
+> > +       },
+> > +       {
+> > +               .a = 2, .b = 4,
+> > +               .result = 2,
+> > +       },
+> > +       {
+> > +               .a = 3, .b = 5,
+> > +               .result = 1,
+> > +       },
+> > +       {
+> > +               .a = 3 * 9, .b = 3 * 5,
+> > +               .result = 3,
+> > +       },
+> > +       {
+> > +               .a = 3 * 5 * 7, .b = 3 * 5 * 11,
+> > +               .result = 15,
+> > +       },
+> > +       {
+> > +               .a = 1 << 21,
+> > +               .b = (1 << 21) - 1,
+> > +               .result = 1,
+> > +       },
+> > +};
+> > +
+> > +KUNIT_ARRAY_PARAM(gcd, gcd_cases, NULL);
+> > +
+> > +static void gcd_test(struct kunit *test)
+> > +{
+> > +       const char *message_fmt = "gcd(%lu, %lu)";
+> > +       const struct test_case *test_param = test->param_value;
+> > +
+> > +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> > +                           gcd(test_param->a, test_param->b),
+> > +                           message_fmt, test_param->a,
+> > +                           test_param->b);
+> > +
+> > +       if (test_param->a == test_param->b)
+> > +               return;
+> > +
+> > +       /* gcd(a,b) == gcd(b,a) */
+> > +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> > +                           gcd(test_param->b, test_param->a),
+> > +                           message_fmt, test_param->b,
+> > +                           test_param->a);
+> > +}
+> > +
+> > +static struct test_case lcm_cases[] = {
+> > +       {
+> > +               .a = 0, .b = 0,
+> > +               .result = 0,
+> > +       },
+> > +       {
+> > +               .a = 0, .b = 1,
+> > +               .result = 0,
+> > +       },
+> > +       {
+> > +               .a = 1, .b = 2,
+> > +               .result = 2,
+> > +       },
+> > +       {
+> > +               .a = 2, .b = 2,
+> > +               .result = 2,
+> > +       },
+> > +       {
+> > +               .a = 3 * 5, .b = 3 * 7,
+> > +               .result = 3 * 5 * 7,
+> > +       },
+> > +};
+> > +
+> > +KUNIT_ARRAY_PARAM(lcm, lcm_cases, NULL);
+> > +
+> > +static void lcm_test(struct kunit *test)
+> > +{
+> > +       const char *message_fmt = "lcm(%lu, %lu)";
+> > +       const struct test_case *test_param = test->param_value;
+> > +
+> > +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> > +                           lcm(test_param->a, test_param->b),
+> > +                           message_fmt, test_param->a,
+> > +                           test_param->b);
+> > +
+> > +       if (test_param->a == test_param->b)
+> > +               return;
+> > +
+> > +       /* lcm(a,b) == lcm(b,a) */
+> > +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> > +                           lcm(test_param->b, test_param->a),
+> > +                           message_fmt, test_param->b,
+> > +                           test_param->a);
+> > +}
+> > +
+> > +struct u32_test_case {
+> > +       u32 a, b;
+> > +       u32 result;
+> > +};
+> > +
+> > +static struct u32_test_case reciprocal_div_cases[] = {
+> > +       {
+> > +               .a = 0, .b = 1,
+> > +               .result = 0,
+> > +       },
+> > +       {
+> > +               .a = 42, .b = 20,
+> > +               .result = 2,
+> > +       },
+> > +       {
+> > +               .a = 42, .b = 9999,
+> > +               .result = 0,
+> > +       },
+> > +       {
+> > +               .a = (1 << 16), .b = (1 << 14),
+> > +               .result = 1 << 2,
+> > +       },
+> > +};
+> > +
+> > +KUNIT_ARRAY_PARAM(reciprocal_div, reciprocal_div_cases, NULL);
+>
+> Is there a reason this test is using KUNIT_EXPECT_EQ_MSG() rather than
+> a get_desc function in KUNIT_ARRAY_PARAM()? I can sort-of see how the
+> former is a little simpler, so I'm not opposed to keeping it as-is,
+> but it's nice to have KUnit aware of a nicer name for the parameter if
+> all else is equal.
+> (I think there's a stronger case for keeping the gcd/lcm tests as is
+> because they actually have two checks per parameter, but even then,
+> it's not absurdly silly. And it'd be possible to have both a get_desc
+> function and use EXPECT_..._MSG() to get the best of both worlds,
+> albeit with twice as much work.)
+
+I can add in the get_desc for it if you want.
+
+That's partly a relic of the previous versions of this patchset where
+I reused the case arrays for the unary funcs as well.
+But now the unary use case has disappeared and we only need to write
+one get_desc.
+
+But yeah, given it can test two calls of gcd, I've opted to keep it
+using _MSG().
+And I figured I'd keep the reciprocal_div test the same for
+consistency (aka, I just copy-pasted it from gcd).
+
+
+
+
+>
+> > +
+> > +static void reciprocal_div_test(struct kunit *test)
+> > +{
+> > +       const struct u32_test_case *test_param = test->param_value;
+> > +       struct reciprocal_value rv = reciprocal_value(test_param->b);
+> > +
+> > +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> > +                           reciprocal_divide(test_param->a, rv),
+> > +                           "reciprocal_divide(%u, %u)",
+> > +                           test_param->a, test_param->b);
+> > +}
+> > +
+> > +static void reciprocal_scale_test(struct kunit *test)
+> > +{
+> > +       KUNIT_EXPECT_EQ(test, reciprocal_scale(0u, 100), 0u);
+> > +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u, 100), 0u);
+> > +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 4, 1 << 28), 1u);
+> > +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 16, 1 << 28), 1u << 12);
+> > +       KUNIT_EXPECT_EQ(test, reciprocal_scale(~0u, 1 << 28), (1u << 28) - 1);
+> > +}
+> > +
+> > +static struct kunit_case math_test_cases[] = {
+> > +       KUNIT_CASE(abs_test),
+> > +       KUNIT_CASE(int_sqrt_test),
+> > +       KUNIT_CASE(round_up_test),
+> > +       KUNIT_CASE(round_down_test),
+> > +       KUNIT_CASE(div_round_up_test),
+> > +       KUNIT_CASE(div_round_closest_test),
+> > +       KUNIT_CASE_PARAM(gcd_test, gcd_gen_params),
+> > +       KUNIT_CASE_PARAM(lcm_test, lcm_gen_params),
+> > +       KUNIT_CASE_PARAM(reciprocal_div_test, reciprocal_div_gen_params),
+> > +       KUNIT_CASE(reciprocal_scale_test),
+> > +       {}
+> > +};
+> > +
+> > +static struct kunit_suite math_test_suite = {
+> > +       .name = "lib-math",
+> > +       .test_cases = math_test_cases,
+> > +};
+> > +
+> > +kunit_test_suites(&math_test_suite);
+> > +
+> > +MODULE_LICENSE("GPL v2");
+> >
+> > base-commit: 4fa56ad0d12e24df768c98bffe9039f915d1bc02
+> > --
+> > 2.31.1.295.g9ea45b61b8-goog
+> >
