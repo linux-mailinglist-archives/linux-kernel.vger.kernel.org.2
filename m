@@ -2,161 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE0835ECE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8584F35ECF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349064AbhDNGHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:07:25 -0400
-Received: from mail-bn8nam11on2074.outbound.protection.outlook.com ([40.107.236.74]:21120
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1347522AbhDNGHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:07:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hZZuov+ZxiCdkn2nJWr6RVD3X3IAcg3U0O8G6syvTQSiTTZmDjnxQekK3yoVPuZKkDWMIJYGBnlNSnEhmEHDlGAbiT11poGofbmSpfamqbnbtE5GjyKnlzsxwU6jV2fh33tVyLxsjqgJFeoUNoaBeJaKg8QolQIF+GLX/8W3LQlGeQiMcXO8ofuXvmOh1gT57kPMVOX3ccTUOnHIAck+uiYcyCngLZL+FoqpqBS0wza/jwHPuTryEDvMYoSMohcLZ046n4mQM3YefneDIvpPEgj+5KNDrK/vQ9+Eyir4z4z4HHz/1hD0g2X/m5szv0NMXUfSjB8YrVCZ4MnO0cX+1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5NaZ+OBOw4XrGwZl/LgyYrrtkIxaT/C/Y1MQLQpp5H4=;
- b=hxzJ0Lm7IC8ajyIKf1TyjNCm1GjzHQj2CYbmelQmweus29aiqTR+HGFxq3RDM4s7ErXT48G6480gv5Kn8DHlaOChOmSwQgUCKxFucxAb69D4Z6oraFa0My5r1eCIuCJpEsBf0oE4XR2RDyMyg1O4bkLs6CMroe9WSC6UtQ4z6d7jKA/T0LrXR11gj83TNq5w9jMKzLm+MqK1FLc/kJm3wNdxgiJYubO4agWdicrCjlKVCbhi+DCXjxAf/QYSP2RDvqY4AdYsD7zLq3VphUwJzGCgDpjNTO/UduTddwHdnaGh72DkZvXpfFR4cjJ19XI5t7+UW+Ek10XclLicCmTU0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5NaZ+OBOw4XrGwZl/LgyYrrtkIxaT/C/Y1MQLQpp5H4=;
- b=hJ1r4WRbiEySh7QSjoI9H94fo7FwpWH0UCgi//1imm3jDTdSC0DqTHejB/Io/u94JNPU1RK4bPGfnmRcNIPvZn+4UdHDah24lnqwjSOm88iu4z0pgyzozCa8K1HNXN6XdN47XMJtl5JD3UF00Fqlc6dQda9IJy4Bp4UHElCkqRs=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by SJ0PR03MB5664.namprd03.prod.outlook.com (2603:10b6:a03:28f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Wed, 14 Apr
- 2021 06:06:57 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Wed, 14 Apr 2021
- 06:06:57 +0000
-Date:   Wed, 14 Apr 2021 14:06:43 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jon Bloomfield <jon.bloomfield@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/i915: Fix "mitigations" parsing if i915 is builtin
-Message-ID: <20210414140643.620c3adb@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR07CA0053.namprd07.prod.outlook.com
- (2603:10b6:a03:60::30) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+        id S1349089AbhDNGLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:11:17 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:22095 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229840AbhDNGLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 02:11:15 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FKsXp6CPzzB09bD;
+        Wed, 14 Apr 2021 08:10:50 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id bgEX-Y99N3ka; Wed, 14 Apr 2021 08:10:50 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FKsXp513xzB09bB;
+        Wed, 14 Apr 2021 08:10:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8F6CC8B7B6;
+        Wed, 14 Apr 2021 08:10:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8t_hMitD6rsU; Wed, 14 Apr 2021 08:10:51 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 62A328B75F;
+        Wed, 14 Apr 2021 08:10:50 +0200 (CEST)
+Subject: Re: [PATCH] mm: Define ARCH_HAS_FIRST_USER_ADDRESS
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-s390@vger.kernel.org, x86@kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1618368899-20311-1-git-send-email-anshuman.khandual@arm.com>
+ <f29ba8e2-3071-c963-1e9f-e8c88526ed8d@csgroup.eu>
+ <6d24d3cc-b2df-f0d7-f4bf-f505f679c77e@arm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ec7bbb30-dbbd-197b-4d65-eb3600fe6413@csgroup.eu>
+Date:   Wed, 14 Apr 2021 08:10:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0053.namprd07.prod.outlook.com (2603:10b6:a03:60::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 14 Apr 2021 06:06:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c5a55b30-f8dd-4079-154d-08d8ff0b8263
-X-MS-TrafficTypeDiagnostic: SJ0PR03MB5664:
-X-Microsoft-Antispam-PRVS: <SJ0PR03MB5664AE8BE44D330C04564C40ED4E9@SJ0PR03MB5664.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8mpp/vIXYrzFtnQLtk7sLjHWdZZ3Lnv29tFf7S/f6/fBDxC9EaQYMddIasDSCHnkOAmhUBOqLDRvyIShhMPmCBjh9f8P4XoCyX+UguSDzZTo+MiHA95mgA5EiZK+Puv1TfnBLE0mj9cRtIl3opdYoB0npaIqkm6kG4Ok4M0ueavxiPKkm+jtl+44CRH92cl1yE8KRYTmMWVnQPmnDJY7cvRWX/YoX20uqUshn2xJUQHZ+DpkbxOwmTj1Y04jwiM7jD+0mqDbKqseBJNnOomwly4IXfrnNFIH5Z9SfTJKwTjOZ4JiR0LCkf6XnML9obMRInnBRo0HLX8PH2GKFXh0fAgoCSWmS1l0pf2HzMkWqSTt2GD9DjeZ/Pf3TH30zXBKHCXhmvPvQJ0Zj8u186JyuI1DOuQqaw71FJbqtQVekSELSumGXZjC92uHk4eFnjrTtRldtBfy2zF+hmVvAdwpxqWDywck5fCcfHDs6m7eU94iywdj8Q0nkitMyOyXzYnm87jtB3i0Z12ko+zMv88pYT+GAstrbRjziOQEc+mTMAtu/xgesP+9NV9lxm5iZNbKgQDCQhMlL6KHfySjMRLxqptydXWMkUQlcYiHSQTQWsRcHrDCJ717Y44I5L9IUQx2cV+esjS1Ka7GHwJozps27Ctf9nhR3N5yNYMz9WMoDXs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(366004)(376002)(39850400004)(66946007)(316002)(7696005)(38100700002)(7416002)(16526019)(66556008)(8676002)(6666004)(2906002)(110136005)(5660300002)(66476007)(83380400001)(6506007)(1076003)(4326008)(52116002)(55016002)(86362001)(956004)(8936002)(26005)(186003)(478600001)(38350700002)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uljiTkiWru+6kCn/hFevr4yONZo+OwmSJGGJn1RbyhoclIS5aHnBy8xIENVM?=
- =?us-ascii?Q?ETKl5xQSmQAK0hpU10LesviB34R1n3ZkwT3SrtBvXlCzVOo2oFuTud+IC/OC?=
- =?us-ascii?Q?W2Pu94TfEpY9CKSK6/QbxY8fOde3jrFQ5JkS3VLGvbSb8uuHy0RmwV/YVT/2?=
- =?us-ascii?Q?7DjUFp1Z/ml6r0LPNgIlOBKzKkHD3ZkjRrjDDolVO64L/su4dX2GkXKhYRoq?=
- =?us-ascii?Q?6/f68Z8SFBz5OL5IEU45s+nAxED5OHXka+af7RIoVC67pjsKN2zJ+fQyb7Z5?=
- =?us-ascii?Q?ctGt0Xp+ueaiJjgaMYRonGbtXeAAZqeSnFOSXuNe6UneA57oMEUCrdA0VCu5?=
- =?us-ascii?Q?6yrKBut89i3pjuFge3+HxBeCgEgV5Ln8KIW4jv1//VvpSNZ76naQqt5Rj1FD?=
- =?us-ascii?Q?Hye4UefIX4L2TnsmJcbhHTuK3JelUqSnv3WTG0qNNa1zkb2+suxcJkuzAI3e?=
- =?us-ascii?Q?XxcbKucOpokOcGgDuUp6HbvYk/JfnB6m2kQbOR+Ek/vRMSUg+SsWG3XziNt7?=
- =?us-ascii?Q?qO/FwE2ogWwzTOvUCUOtB5vzeNFAZ45hA9wAp8ekKBQAvFZI+uC4RbvdZlum?=
- =?us-ascii?Q?7NZZ6zqzGBxCbHFXRWIe4p58YwLCOt7n6GVBxJUo5vdVLkPh7VRgLlg9HyRq?=
- =?us-ascii?Q?Z2mV5LIlY3eMCjSCqbTb82BodbLYkUnBjtpQ8l/e0shXZ/5UrB9bgJxiLPoz?=
- =?us-ascii?Q?pCKKbLNLFFoxSrotG0SHYkNXGdMT1Jd7ziUqNgaBl3DTo3qfHOetQF5SDxXg?=
- =?us-ascii?Q?UhHRDtJniunfGvHDMqLtYLjU6mDugxyJ3ZFRzY2a+nXVnGX1Cbpc420xOxSI?=
- =?us-ascii?Q?zrPQPg8yPlFmmc4G8ngzMHQxSs4VSFvWx5molx7swrdCmu0gPifk7uT5GzPT?=
- =?us-ascii?Q?ktGAJChCUubDzv6w8En7MUAeWSjM2lDcdHcOjiww5Py+ibTGASNcst+lWUw4?=
- =?us-ascii?Q?9XAxn1HFzIX62MZ+Fb5q/1wkBb0D7/WVZ0isRkFx8pA6qiLIh9jDOZCv8c+N?=
- =?us-ascii?Q?55z1tMEBFdFSaw6hUbdt6JKBbLnwzf49Cqkr10126asjgrF2Idnq1x8F8f63?=
- =?us-ascii?Q?IKZ3zUxleUhmHcQtb+qJp7DhZTM9rF15gR5X95V3kObQCuVzG5ft5uigWxDp?=
- =?us-ascii?Q?nlk/yp3kNsOTTmDKl/+6D6dJXZHir7yvIVGJ46s8pTw9SlQOzfwqdd2cCOPM?=
- =?us-ascii?Q?mVrJ1mArU/+bT8l9Ygr7ZowqqIYfQRopszkPJ1MDX7tpC9PzBHrwCC7El9gm?=
- =?us-ascii?Q?lnAX/tuLeOLWM05UDTi9KMYv7u9kINaJ3xRFvUkeyOoTKgufiwu1JQhBBAvG?=
- =?us-ascii?Q?+dxmn+IcYfcOFom6C7USJ6Ub?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5a55b30-f8dd-4079-154d-08d8ff0b8263
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2021 06:06:57.2161
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L4jUboh/N1Uh7mFLXJJdvabbSK6qqvNESNyjP8smhK1ZjaeCAbzpz3XP5UkHev2+8hJQsJt3SetZv+b0rtS4nQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5664
+In-Reply-To: <6d24d3cc-b2df-f0d7-f4bf-f505f679c77e@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I met below error during boot with i915 builtin if pass
-"i915.mitigations=off":
-[    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
 
-The reason is slab subsystem isn't ready at that time, so kstrdup()
-returns NULL. Fix this issue by using stack var instead of kstrdup().
 
-Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
-Since v1:
- - Ensure "str" is properly terminated. Thanks Ville for pointing this out.
+Le 14/04/2021 à 07:59, Anshuman Khandual a écrit :
+> 
+> 
+> On 4/14/21 10:52 AM, Christophe Leroy wrote:
+>>
+>>
+>> Le 14/04/2021 à 04:54, Anshuman Khandual a écrit :
+>>> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplicating the
+>>> same code all over. Instead define a new option ARCH_HAS_FIRST_USER_ADDRESS
+>>> for those platforms which would override generic default FIRST_USER_ADDRESS
+>>> value 0UL. This makes it much cleaner with reduced code.
+>>>
+>>> Cc: linux-alpha@vger.kernel.org
+>>> Cc: linux-snps-arc@lists.infradead.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-csky@vger.kernel.org
+>>> Cc: linux-hexagon@vger.kernel.org
+>>> Cc: linux-ia64@vger.kernel.org
+>>> Cc: linux-m68k@lists.linux-m68k.org
+>>> Cc: linux-mips@vger.kernel.org
+>>> Cc: openrisc@lists.librecores.org
+>>> Cc: linux-parisc@vger.kernel.org
+>>> Cc: linuxppc-dev@lists.ozlabs.org
+>>> Cc: linux-riscv@lists.infradead.org
+>>> Cc: linux-s390@vger.kernel.org
+>>> Cc: linux-sh@vger.kernel.org
+>>> Cc: sparclinux@vger.kernel.org
+>>> Cc: linux-um@lists.infradead.org
+>>> Cc: linux-xtensa@linux-xtensa.org
+>>> Cc: x86@kernel.org
+>>> Cc: linux-mm@kvack.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>>    arch/alpha/include/asm/pgtable.h             | 1 -
+>>>    arch/arc/include/asm/pgtable.h               | 6 ------
+>>>    arch/arm/Kconfig                             | 1 +
+>>>    arch/arm64/include/asm/pgtable.h             | 2 --
+>>>    arch/csky/include/asm/pgtable.h              | 1 -
+>>>    arch/hexagon/include/asm/pgtable.h           | 3 ---
+>>>    arch/ia64/include/asm/pgtable.h              | 1 -
+>>>    arch/m68k/include/asm/pgtable_mm.h           | 1 -
+>>>    arch/microblaze/include/asm/pgtable.h        | 2 --
+>>>    arch/mips/include/asm/pgtable-32.h           | 1 -
+>>>    arch/mips/include/asm/pgtable-64.h           | 1 -
+>>>    arch/nds32/Kconfig                           | 1 +
+>>>    arch/nios2/include/asm/pgtable.h             | 2 --
+>>>    arch/openrisc/include/asm/pgtable.h          | 1 -
+>>>    arch/parisc/include/asm/pgtable.h            | 2 --
+>>>    arch/powerpc/include/asm/book3s/pgtable.h    | 1 -
+>>>    arch/powerpc/include/asm/nohash/32/pgtable.h | 1 -
+>>>    arch/powerpc/include/asm/nohash/64/pgtable.h | 2 --
+>>>    arch/riscv/include/asm/pgtable.h             | 2 --
+>>>    arch/s390/include/asm/pgtable.h              | 2 --
+>>>    arch/sh/include/asm/pgtable.h                | 2 --
+>>>    arch/sparc/include/asm/pgtable_32.h          | 1 -
+>>>    arch/sparc/include/asm/pgtable_64.h          | 3 ---
+>>>    arch/um/include/asm/pgtable-2level.h         | 1 -
+>>>    arch/um/include/asm/pgtable-3level.h         | 1 -
+>>>    arch/x86/include/asm/pgtable_types.h         | 2 --
+>>>    arch/xtensa/include/asm/pgtable.h            | 1 -
+>>>    include/linux/mm.h                           | 4 ++++
+>>>    mm/Kconfig                                   | 4 ++++
+>>>    29 files changed, 10 insertions(+), 43 deletions(-)
+>>>
+>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>> index 8ba434287387..47098ccd715e 100644
+>>> --- a/include/linux/mm.h
+>>> +++ b/include/linux/mm.h
+>>> @@ -46,6 +46,10 @@ extern int sysctl_page_lock_unfairness;
+>>>      void init_mm_internals(void);
+>>>    +#ifndef ARCH_HAS_FIRST_USER_ADDRESS
+>>
+>> I guess you didn't test it ..... :)
+> 
+> In fact I did :) Though just booted it on arm64 and cross compiled on
+> multiple others platforms.
+> 
+>>
+>> should be #ifndef CONFIG_ARCH_HAS_FIRST_USER_ADDRESS
+> 
+> Right, meant that instead.
+> 
+>>
+>>> +#define FIRST_USER_ADDRESS    0UL
+>>> +#endif
+>>
+>> But why do we need a config option at all for that ?
+>>
+>> Why not just:
+>>
+>> #ifndef FIRST_USER_ADDRESS
+>> #define FIRST_USER_ADDRESS    0UL
+>> #endif
+> 
+> This sounds simpler. But just wondering, would not there be any possibility
+> of build problems due to compilation sequence between arch and generic code ?
+> 
 
- drivers/gpu/drm/i915/i915_mitigations.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+For sure it has to be addresses carefully, but there are already a lot of stuff like that around 
+pgtables.h
 
-diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
-index 84f12598d145..231aad5ff46c 100644
---- a/drivers/gpu/drm/i915/i915_mitigations.c
-+++ b/drivers/gpu/drm/i915/i915_mitigations.c
-@@ -29,15 +29,14 @@ bool i915_mitigate_clear_residuals(void)
- static int mitigations_set(const char *val, const struct kernel_param *kp)
- {
- 	unsigned long new = ~0UL;
--	char *str, *sep, *tok;
-+	char str[64], *sep, *tok;
- 	bool first = true;
- 	int err = 0;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
- 
--	str = kstrdup(val, GFP_KERNEL);
--	if (!str)
--		return -ENOMEM;
-+	strncpy(str, val, sizeof(str) - 1);
-+	str[sizeof(str) - 1] = '\0';
- 
- 	for (sep = str; (tok = strsep(&sep, ","));) {
- 		bool enable = true;
-@@ -86,7 +85,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
- 			break;
- 		}
- 	}
--	kfree(str);
- 	if (err)
- 		return err;
- 
--- 
-2.31.0
+For instance, pte_offset_kernel() has a generic definition in linux/pgtables.h based on whether it 
+is already defined or not.
 
+Taking into account that FIRST_USER_ADDRESS is today in the architectures's asm/pgtables.h, I think 
+putting the fallback definition in linux/pgtable.h would do the trick.
