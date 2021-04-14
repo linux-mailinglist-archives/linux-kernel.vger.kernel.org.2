@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A7E35F77C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D02335F77D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351878AbhDNPSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:18:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41331 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350422AbhDNPSE (ORCPT
+        id S1351947AbhDNPTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:19:17 -0400
+Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:39044 "EHLO
+        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352042AbhDNPTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:18:04 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lWhGw-0002im-KX
-        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 15:17:42 +0000
-Received: by mail-ej1-f70.google.com with SMTP id l25so538173ejr.16
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:17:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kfcPhmhTdK2FMhaZokOecDc4Tx+X+Ot5TvToWRx2lBk=;
-        b=XYRoi+F59+88LEm8+ux2sAhL48H5pFVi3PH0prnb5EwplSfDK10OwhXpjJ71ODQuDV
-         ABDfLleH1yi3QUTaFIiFIJ9tq3RNp9tQ8z6ot+NA2KB4nuXWsfS+J0Y5bnRhLYIYFWtP
-         28kkIybvs5ilgELJ16QRaSN+9HNsd3i48LDpWgj9XwfcNNOOmZ0ovq9/m/aEIky6IFsg
-         KKUg+JLiSq3qJsRQWksb/VMQTZUFv5BgMvV2WXfAVddDy4RHuYh7Xo0pqWV9alJC0Sn7
-         BF2vDgSerVXCPWSqGiEX2WqAMHzN4dA9FZBF6YGwbaF+cmJS57bIdFx9T6lHgDu2qo5R
-         ou6A==
-X-Gm-Message-State: AOAM533YdNUaSNtriG2+cWjsZ2V9nOSmglgpqbddA3IaZJj3tUveVOxe
-        p6oCXMTcKKPwElUTQx1Zq6TzHgpn1i5TvIZHEC6EBmtf/w2oQwredLJ6Gj4bZbJrNlDohsEb122
-        2BsWBAP6Zwx8b/UONW1cpDKCBFbRaWqWDTf4mhfsBXQ==
-X-Received: by 2002:a17:906:c7ca:: with SMTP id dc10mr18984214ejb.294.1618413462003;
-        Wed, 14 Apr 2021 08:17:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJww4LZWkop8/QH04cQnq21mbuppuNTF7N1mSZTl9IH3GDtIqGlSU0aYkEzPKTWpEM0YEVziJA==
-X-Received: by 2002:a17:906:c7ca:: with SMTP id dc10mr18984195ejb.294.1618413461861;
-        Wed, 14 Apr 2021 08:17:41 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id p3sm6376513ejd.65.2021.04.14.08.17.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 08:17:41 -0700 (PDT)
-Subject: Re: drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:306:26:
- sparse: sparse: incorrect type in argument 1 (different address spaces)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <202104140604.hH9CHHBR-lkp@intel.com>
- <CAHp75VdRNGNscyONgVsMqw9F_DQ_noK5dE4d8mexq=4t_2xTXg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <36cae99e-6a23-ab6f-62a7-5fca4ffc040d@canonical.com>
-Date:   Wed, 14 Apr 2021 17:17:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 14 Apr 2021 11:19:14 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 943F3D2AA9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:18:52 +0100 (IST)
+Received: (qmail 27104 invoked from network); 14 Apr 2021 15:18:52 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Apr 2021 15:18:52 -0000
+Date:   Wed, 14 Apr 2021 16:18:50 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH 04/11] mm/vmstat: Convert NUMA statistics to basic NUMA
+ counters
+Message-ID: <20210414151850.GG3697@techsingularity.net>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-5-mgorman@techsingularity.net>
+ <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdRNGNscyONgVsMqw9F_DQ_noK5dE4d8mexq=4t_2xTXg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2021 16:53, Andy Shevchenko wrote:
-> On Wed, Apr 14, 2021 at 10:21 AM kernel test robot <lkp@intel.com> wrote:
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   eebe426d32e1a10ac7c35f8ffab5f818c32a2454
->> commit: 8f28ca6bd8211214faf717677bbffe375c2a6072 iomap: constify ioreadX() iomem argument (as in generic implementation)
->> date:   8 months ago
->> config: alpha-randconfig-s032-20210414 (attached as .config)
->> compiler: alpha-linux-gcc (GCC) 9.3.0
->> reproduce:
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # apt-get install sparse
->>         # sparse version: v0.6.3-280-g2cd6d34e-dirty
->>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8f28ca6bd8211214faf717677bbffe375c2a6072
->>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>         git fetch --no-tags linus master
->>         git checkout 8f28ca6bd8211214faf717677bbffe375c2a6072
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
+On Wed, Apr 14, 2021 at 02:56:45PM +0200, Vlastimil Babka wrote:
+> On 4/7/21 10:24 PM, Mel Gorman wrote:
+> > NUMA statistics are maintained on the zone level for hits, misses, foreign
+> > etc but nothing relies on them being perfectly accurate for functional
+> > correctness. The counters are used by userspace to get a general overview
+> > of a workloads NUMA behaviour but the page allocator incurs a high cost to
+> > maintain perfect accuracy similar to what is required for a vmstat like
+> > NR_FREE_PAGES. There even is a sysctl vm.numa_stat to allow userspace to
+> > turn off the collection of NUMA statistics like NUMA_HIT.
+> > 
+> > This patch converts NUMA_HIT and friends to be NUMA events with similar
+> > accuracy to VM events. There is a possibility that slight errors will be
+> > introduced but the overall trend as seen by userspace will be similar.
+> > Note that while these counters could be maintained at the node level that
+> > it would have a user-visible impact.
 > 
-> I believe after my patch series [1] at least part of this will be
-> gone. Can you confirm?
+> I guess this kind of inaccuracy is fine. I just don't like much
+> fold_vm_zone_numa_events() which seems to calculate sums of percpu counters and
+> then assign the result to zone counters for immediate consumption, which differs
+> from other kinds of folds in vmstat that reset the percpu counters to 0 as they
+> are treated as diffs to the global counters.
+> 
 
-Have in mind that the warnings were there since beginning. My patch only
-changed the warning contents (-> const) thus robot sees it as a new issue.
+The counters that are diffs fit inside an s8 and they are kept limited
+because their "true" value is sometimes critical -- e.g. NR_FREE_PAGES
+for watermark checking. So the level of drift has to be controlled and
+the drift should not exist potentially forever so it gets updated
+periodically.
 
-> [1]: https://lore.kernel.org/netdev/20210325173412.82911-1-andriy.shevchenko@linux.intel.com/T/#u
+The inaccurate counters are only exported to userspace. There is no need
+to update them every few seconds so fold_vm_zone_numa_events() is only
+called when a user cares but you raise a raise a valid below.
 
-You convert the reg to "iomem", so it seems that yes, your series should
-fix it.
+> So it seems that this intermediate assignment to zone counters (using
+> atomic_long_set() even) is unnecessary and this could mimic sum_vm_events() that
+> just does the summation on a local array?
+> 
 
+The atomic is unnecessary for sure but using a local array is
+problematic because of your next point.
 
-Best regards,
-Krzysztof
+> And probably a bit more serious is that vm_events have vm_events_fold_cpu() to
+> deal with a cpu going away, but after your patch the stats counted on a cpu just
+> disapepar from the sums as it goes offline as there's no such thing for the numa
+> counters.
+> 
+
+That is a problem I missed. Even if zonestats was preserved on
+hot-remove, fold_vm_zone_numa_events would not be reading the CPU so
+hotplug events jump all over the place.
+
+So some periodic folding is necessary. I would still prefer not to do it
+by time but it could be done only on overflow or when a file like
+/proc/vmstat is read. I'll think about it a bit more and see what I come
+up with.
+
+Thanks!
+
+-- 
+Mel Gorman
+SUSE Labs
