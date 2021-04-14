@@ -2,210 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF0A35EF95
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A2F35EFA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 10:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhDNI03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 04:26:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhDNI0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 04:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51AE2613C1;
-        Wed, 14 Apr 2021 08:26:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618388763;
-        bh=Pg3fNT7/oU63EmAB4eQU10EvR8ucuRZPqA3qE6a4JKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sbsH9o4TCChcsYGeh1wgxzI9+vojbCZ3BM243OQtYDpJxgVvccSOD/nh6amYtY1tv
-         ybrm1Vk/iAocx/b5fK9glIFAG0rmEOPnQOv9olWtszCWXEfJeILmscHWP5RCAyf3Ff
-         K2pEewuYlfeMzSyrCdCD9E+iadOpfuLq19ULOAwI=
-Date:   Wed, 14 Apr 2021 10:26:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     julia.lawall@inria.fr, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] staging: rtl8723bs: replace DBG_871X_SEL_NL with
- netdev_dbg()
-Message-ID: <YHanGdS1Kc/4zq4q@kroah.com>
-References: <cover.1618325614.git.fabioaiuto83@gmail.com>
- <a798262b8e1dacf225dd42f2863243c543667d5f.1618325614.git.fabioaiuto83@gmail.com>
+        id S1344492AbhDNIaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 04:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350064AbhDNI3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 04:29:35 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E5DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:29:13 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so428071wmh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 01:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=epXw3irDvsvZFL4o434NpborWULmmHYE5K7OMVRyRAI=;
+        b=p7Sxm7w9vNyyhaZiiyz/88cew7fUg3K8H2EC02WrUDTOxJ+2hC/CbH8VY3rrYvX7eO
+         uXMzbiDRMr6+nUahA7p0JZigYAC26pMFHDdVxyyTBvUtSCN17kVwhxyOtanZ2m1yrU0a
+         PIzpBpDOKr+9R/QEzcW2792Htj+Sp/VfoWh6o0mux4Fa8voOp7Fv7ufJr7RHhlXRQmhP
+         oaymv49jrNB2zFc/5CRVufR87V5BwOu1+7EZ1mEtQP/dNOzv+xaz6A5TPrLkgu2nffad
+         Frd3gdc3Xk7xN5YU2hiw2L6CdAZFkZkbMw4G9LTDk8d3atgG7ZlqgojFSKM36b+gAg9q
+         25XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=epXw3irDvsvZFL4o434NpborWULmmHYE5K7OMVRyRAI=;
+        b=VfK45o42K4AOGQBXzAQ3Zjnd9LpPB4/TMQtMteIFACbjY5I2PEg0Rs6OnNPZiDUyMM
+         Z4cSzbUIsMHnom0Uzn5oPKb1lcua25J+sdTnJu+dSz8CgwXM7V8g/jeqqyRv6pMf0xmE
+         l0vLDRqwGYM+MrA9PeXESlmLUhsFfKNVCMH8LfMWIvjNoZ+GcWvuWrIF2ghmCNfNqTDp
+         pL5snxwFvfUZGXoFns30k/SIApDGW/VBre4ddBCeZc7BdiIBH/B4MaonQlYlbi9k82nc
+         wV5bn+TQjfsupmbM6g3MnvOXcQOK2RAXtu6msaIMYnX3RlD9jVVKSHWfzSuqMKaDb2OQ
+         OrNA==
+X-Gm-Message-State: AOAM532MDAz7/4Kkd74gxgSYXY1P2gR8UdHv+zg62YFPQPKyDUHI/jNY
+        slfYkvC3QUstPW+/aDuTIGXG6g==
+X-Google-Smtp-Source: ABdhPJwM8rnaaPmIEmSVIcO5Ix/lhhztBwn1RzthnOJVzNgGDiuXonPn4QdXuKllPtda2dypc+NOZQ==
+X-Received: by 2002:a7b:c8ce:: with SMTP id f14mr1765553wml.113.1618388952091;
+        Wed, 14 Apr 2021 01:29:12 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id c12sm23850730wro.6.2021.04.14.01.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 01:29:11 -0700 (PDT)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
+Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, joro@8bytes.org,
+        will@kernel.org, iommu@lists.linux-foundation.org,
+        robin.murphy@arm.com, hch@lst.de,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH] x86/dma: Tear down DMA ops on driver unbind
+Date:   Wed, 14 Apr 2021 10:26:34 +0200
+Message-Id: <20210414082633.877461-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a798262b8e1dacf225dd42f2863243c543667d5f.1618325614.git.fabioaiuto83@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:56:32PM +0200, Fabio Aiuto wrote:
-> replace DGB_871X_SEL_NL macro with netdev_dbg().
-> 
-> DBG_871X_SEL_NL macro expands to a raw prink call or a
-> seq_printf if selected stream _is not_ a local
-> debug symbol set to null.
-> This second scenario never occurs so replace
-> all macro usages with netdev_dbg().
-> 
-> This is done with the following coccinelle script:
-> 
-> @@
-> expression sel;
-> expression list args;
-> identifier padapter;
-> identifier func;
-> @@
-> 
-> func(..., struct adapter *padapter, ...) {
-> 	<...
-> -	DBG_871X_SEL_NL(sel, args);
-> +	netdev_dbg(padapter->pnetdev, args);
-> 	...>
-> }
-> 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_debug.c | 16 +++----
->  drivers/staging/rtl8723bs/core/rtw_odm.c   | 49 +++++++++++-----------
->  drivers/staging/rtl8723bs/hal/hal_com.c    | 31 ++++++--------
->  3 files changed, 46 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_debug.c b/drivers/staging/rtl8723bs/core/rtw_debug.c
-> index 324c7e5248f8..79fd968bb147 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_debug.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_debug.c
-> @@ -20,7 +20,7 @@ void sd_f0_reg_dump(void *sel, struct adapter *adapter)
->  
->  	for (i = 0x0; i <= 0xff; i++) {
->  		if (i%16 == 0)
-> -			DBG_871X_SEL_NL(sel, "0x%02x ", i);
-> +			netdev_dbg(adapter->pnetdev, "0x%02x ", i);
->  
->  		DBG_871X_SEL(sel, "%02x ", rtw_sd_f0_read8(adapter, i));
->  
-> @@ -35,11 +35,11 @@ void mac_reg_dump(void *sel, struct adapter *adapter)
->  {
->  	int i, j = 1;
->  
-> -	DBG_871X_SEL_NL(sel, "======= MAC REG =======\n");
-> +	netdev_dbg(adapter->pnetdev, "======= MAC REG =======\n");
->  
->  	for (i = 0x0; i < 0x800; i += 4) {
->  		if (j%4 == 1)
-> -			DBG_871X_SEL_NL(sel, "0x%03x", i);
-> +			netdev_dbg(adapter->pnetdev, "0x%03x", i);
->  		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
->  		if ((j++)%4 == 0)
->  			DBG_871X_SEL(sel, "\n");
-> @@ -50,10 +50,10 @@ void bb_reg_dump(void *sel, struct adapter *adapter)
->  {
->  	int i, j = 1;
->  
-> -	DBG_871X_SEL_NL(sel, "======= BB REG =======\n");
-> +	netdev_dbg(adapter->pnetdev, "======= BB REG =======\n");
->  	for (i = 0x800; i < 0x1000 ; i += 4) {
->  		if (j%4 == 1)
-> -			DBG_871X_SEL_NL(sel, "0x%03x", i);
-> +			netdev_dbg(adapter->pnetdev, "0x%03x", i);
->  		DBG_871X_SEL(sel, " 0x%08x ", rtw_read32(adapter, i));
->  		if ((j++)%4 == 0)
->  			DBG_871X_SEL(sel, "\n");
-> @@ -73,14 +73,14 @@ void rf_reg_dump(void *sel, struct adapter *adapter)
->  	else
->  		path_nums = 2;
->  
-> -	DBG_871X_SEL_NL(sel, "======= RF REG =======\n");
-> +	netdev_dbg(adapter->pnetdev, "======= RF REG =======\n");
->  
->  	for (path = 0; path < path_nums; path++) {
-> -		DBG_871X_SEL_NL(sel, "RF_Path(%x)\n", path);
-> +		netdev_dbg(adapter->pnetdev, "RF_Path(%x)\n", path);
->  		for (i = 0; i < 0x100; i++) {
->  			value = rtw_hal_read_rfreg(adapter, path, i, 0xffffffff);
->  			if (j%4 == 1)
-> -				DBG_871X_SEL_NL(sel, "0x%02x ", i);
-> +				netdev_dbg(adapter->pnetdev, "0x%02x ", i);
->  			DBG_871X_SEL(sel, " 0x%08x ", value);
->  			if ((j++)%4 == 0)
->  				DBG_871X_SEL(sel, "\n");
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_odm.c b/drivers/staging/rtl8723bs/core/rtw_odm.c
-> index 53f7cc0444ba..084f6ae040ee 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_odm.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_odm.c
-> @@ -96,12 +96,13 @@ void rtw_odm_dbg_comp_msg(void *sel, struct adapter *adapter)
->  	int i;
->  
->  	rtw_hal_get_def_var(adapter, HW_DEF_ODM_DBG_FLAG, &dbg_comp);
-> -	DBG_871X_SEL_NL(sel, "odm.DebugComponents = 0x%016llx\n", dbg_comp);
-> +	netdev_dbg(adapter->pnetdev, "odm.DebugComponents = 0x%016llx\n",
-> +		   dbg_comp);
->  	for (i = 0; i < RTW_ODM_COMP_MAX; i++) {
->  		if (odm_comp_str[i])
-> -			DBG_871X_SEL_NL(sel, "%cBIT%-2d %s\n",
-> -					(BIT0 << i) & dbg_comp ? '+' : ' ',
-> -					i, odm_comp_str[i]);
-> +			netdev_dbg(adapter->pnetdev, "%cBIT%-2d %s\n",
-> +				   (BIT0 << i) & dbg_comp ? '+' : ' ', i,
-> +				   odm_comp_str[i]);
->  	}
->  }
->  
-> @@ -116,11 +117,11 @@ void rtw_odm_dbg_level_msg(void *sel, struct adapter *adapter)
->  	int i;
->  
->  	rtw_hal_get_def_var(adapter, HW_DEF_ODM_DBG_LEVEL, &dbg_level);
-> -	DBG_871X_SEL_NL(sel, "odm.DebugLevel = %u\n", dbg_level);
-> +	netdev_dbg(adapter->pnetdev, "odm.DebugLevel = %u\n", dbg_level);
->  	for (i = 0; i < RTW_ODM_DBG_LEVEL_NUM; i++) {
->  		if (odm_dbg_level_str[i])
-> -			DBG_871X_SEL_NL(sel, "%u %s\n",
-> -					i, odm_dbg_level_str[i]);
-> +			netdev_dbg(adapter->pnetdev, "%u %s\n", i,
-> +				   odm_dbg_level_str[i]);
->  	}
->  }
->  
-> @@ -135,12 +136,12 @@ void rtw_odm_ability_msg(void *sel, struct adapter *adapter)
->  	int i;
->  
->  	rtw_hal_get_hwreg(adapter, HW_VAR_DM_FLAG, (u8 *)&ability);
-> -	DBG_871X_SEL_NL(sel, "odm.SupportAbility = 0x%08x\n", ability);
-> +	netdev_dbg(adapter->pnetdev, "odm.SupportAbility = 0x%08x\n", ability);
->  	for (i = 0; i < RTW_ODM_ABILITY_MAX; i++) {
->  		if (odm_ability_str[i])
-> -			DBG_871X_SEL_NL(sel, "%cBIT%-2d %s\n",
-> -					(BIT0 << i) & ability ? '+' : ' ', i,
-> -					odm_ability_str[i]);
-> +			netdev_dbg(adapter->pnetdev, "%cBIT%-2d %s\n",
-> +				   (BIT0 << i) & ability ? '+' : ' ', i,
-> +				   odm_ability_str[i]);
->  	}
->  }
->  
-> @@ -154,17 +155,16 @@ void rtw_odm_adaptivity_parm_msg(void *sel, struct adapter *adapter)
->  	struct hal_com_data *pHalData = GET_HAL_DATA(adapter);
->  	struct dm_odm_t *odm = &pHalData->odmpriv;
->  
-> -	DBG_871X_SEL_NL(sel, "%10s %16s %8s %10s %11s %14s\n",
-> -			"TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base",
-> -			"ForceEDCCA", "AdapEn_RSSI", "IGI_LowerBound");
-> -	DBG_871X_SEL_NL(sel, "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
-> -			(u8)odm->TH_L2H_ini,
-> -			odm->TH_EDCCA_HL_diff,
-> -			odm->IGI_Base,
-> -			odm->ForceEDCCA,
-> -			odm->AdapEn_RSSI,
-> -			odm->IGI_LowerBound
-> -	);
-> +	netdev_dbg(adapter->pnetdev, "%10s %16s %8s %10s %11s %14s\n",
-> +		   "TH_L2H_ini", "TH_EDCCA_HL_diff", "IGI_Base", "ForceEDCCA",
-> +		   "AdapEn_RSSI", "IGI_LowerBound");netdev_dbg(adapter->pnetdev,
-> +							       "0x%-8x %-16d 0x%-6x %-10d %-11u %-14u\n",
-> +							       (u8)odm->TH_L2H_ini,
-> +							       odm->TH_EDCCA_HL_diff,
-> +							       odm->IGI_Base,
-> +							       odm->ForceEDCCA,
-> +							       odm->AdapEn_RSSI,
-> +							       odm->IGI_LowerBound);
+Since commit 08a27c1c3ecf ("iommu: Add support to change default domain
+of an iommu group") a user can switch a device between IOMMU and direct
+DMA through sysfs. This doesn't work for AMD IOMMU at the moment because
+dev->dma_ops is not cleared when switching from a DMA to an identity
+IOMMU domain. The DMA layer thus attempts to use the dma-iommu ops on an
+identity domain, causing an oops:
 
-Something went wrong with this change :(
+  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/unbind
+  # echo identity > /sys/bus/pci/devices/0000:00:05.0/iommu_group/type
+  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/bind
+   ...
+  [  190.017587] BUG: kernel NULL pointer dereference, address: 0000000000000028
+   ...
+  [  190.027375] Call Trace:
+  [  190.027561]  iommu_dma_alloc+0xd0/0x100
+  [  190.027840]  e1000e_setup_tx_resources+0x56/0x90
+  [  190.028173]  e1000e_open+0x75/0x5b0
+
+Implement arch_teardown_dma_ops() on x86 to clear the device's dma_ops
+pointer during driver unbind.
+
+Fixes: 08a27c1c3ecf ("iommu: Add support to change default domain of an iommu group")
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+ arch/x86/Kconfig          | 1 +
+ arch/x86/kernel/pci-dma.c | 7 +++++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879d398e..2c90f8de3e20 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -85,6 +85,7 @@ config X86
+ 	select ARCH_HAS_STRICT_MODULE_RWX
+ 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+ 	select ARCH_HAS_SYSCALL_WRAPPER
++	select ARCH_HAS_TEARDOWN_DMA_OPS	if IOMMU_DMA
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
+index de234e7a8962..60a4ec22d849 100644
+--- a/arch/x86/kernel/pci-dma.c
++++ b/arch/x86/kernel/pci-dma.c
+@@ -154,3 +154,10 @@ static void via_no_dac(struct pci_dev *dev)
+ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_VIA, PCI_ANY_ID,
+ 				PCI_CLASS_BRIDGE_PCI, 8, via_no_dac);
+ #endif
++
++#ifdef CONFIG_ARCH_HAS_TEARDOWN_DMA_OPS
++void arch_teardown_dma_ops(struct device *dev)
++{
++	set_dma_ops(dev, NULL);
++}
++#endif
+-- 
+2.31.1
+
