@@ -2,161 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D6635EB16
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2EF35EB19
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 04:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhDNCri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 22:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhDNCrg (ORCPT
+        id S229845AbhDNCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 22:49:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15674 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346823AbhDNCtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 22:47:36 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3882C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:47:15 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id n140so19109064oig.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 19:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uODSff3t2JSJqxFmEXfapBv0QkFqQwxecfMeix/4Xhg=;
-        b=P631JNgnQJKoJT8k6iHyWS7SzFFegwexZ5mGAB0sXUE72L34HvEEPtiui3W8wiF66n
-         Jz2ToTYX9M7FP2i8S55NnkOKm1+dMPsDhmqiI1r5bpkqYDVPYs0owyzAsMue/jaSexiZ
-         oxTpGenbTauS11vt8itGtCITFUclDK19hQcE7vbfhNxP1xfEf+oMCqtHB5I/ap+UNSYj
-         6dbIHY3Vz7LCTi73Fvz3l7Nst75fUkFpglYJ6ic8qDYrdnemFLzVAMq3H3voe8ZQA5UX
-         qXlBw64+l7aF37B3D5J98D3ekBK64uBltk3nQke/OwQQ1t79rMCXW/nLwpfQK5wKmbat
-         tIog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uODSff3t2JSJqxFmEXfapBv0QkFqQwxecfMeix/4Xhg=;
-        b=E9PuZ7t95V3+biU9BS6cHKKWYU5ZAEzlsHGywZEgt2DHWIF1UuFPRmVIaSXVbfK++H
-         /fX38tdgLbOT4/V2bN1TcC0aweFVmeMG5vtCmeyUTXXi60q7h4VTW8GP+5cy1pMVEYo/
-         GVqxRKR/SYP+SfKJlifnayYhtvV39+rHN1hYjrAD/A5HDmyajGqr1kVENW5d1Vtgibqb
-         PQ8AsuruQXAmUomWonfokJ8HaEQr2dQGPu04QJqvu5RXQ6vQDUGlA5s21x/4212Ki3JO
-         oo99yuYPh54lnpBdL7DunhVkzrlnhxR9cUG9BIEjCKcxlX33xuVQfjdPfOWZ8PJ09zZ7
-         i04Q==
-X-Gm-Message-State: AOAM530Ws5fgPG1j1HIb4+6alEmpoWWqv1vXKyZXScJKeD5hPmkDkL5p
-        43vVekhIfCRFBnmwux2jcTn4jA==
-X-Google-Smtp-Source: ABdhPJyeMBwF8/BA758z0/LHS5xbw4Go//yuABYqrtdJI4syuogqUsBuF6MJaujiZAkbPIidsVRktQ==
-X-Received: by 2002:aca:1312:: with SMTP id e18mr649250oii.153.1618368435099;
-        Tue, 13 Apr 2021 19:47:15 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b12sm3845680oti.17.2021.04.13.19.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 19:47:14 -0700 (PDT)
-Date:   Tue, 13 Apr 2021 21:47:12 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     soc@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: kernel: Fix interrupted SMC calls
-Message-ID: <20210414024712.GX1538589@yoga>
-References: <20210326182237.47048-1-manivannan.sadhasivam@linaro.org>
+        Tue, 13 Apr 2021 22:49:21 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FKn0Z05DMzpXFS;
+        Wed, 14 Apr 2021 10:46:06 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 14 Apr 2021 10:48:50 +0800
+Subject: Re: [RFC PATCH v2 2/2] kvm/arm64: Try stage2 block mapping for host
+ device MMIO
+To:     Marc Zyngier <maz@kernel.org>
+References: <20210316134338.18052-1-zhukeqian1@huawei.com>
+ <20210316134338.18052-3-zhukeqian1@huawei.com> <878s5up71v.wl-maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <a72d4b34-1088-70b8-2cf9-628119fbbb74@huawei.com>
+Date:   Wed, 14 Apr 2021 10:48:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326182237.47048-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <878s5up71v.wl-maz@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26 Mar 13:22 CDT 2021, Manivannan Sadhasivam wrote:
+Hi Marc,
 
-> On Qualcomm ARM32 platforms, the SMC call can return before it has
-> completed. If this occurs, the call can be restarted, but it requires
-> using the returned session ID value from the interrupted SMC call.
-> 
-> The ARM32 SMCC code already has the provision to add platform specific
-> quirks for things like this. So let's make use of it and add the
-> Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
-> driver.
-> 
-> This change is similar to the below one added for ARM64 a while ago:
-> commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
-> 
-> Without this change, the Qualcomm ARM32 platforms like SDX55 will return
-> -EINVAL for SMC calls used for modem firmware loading and validation.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+I think I have fully tested this patch. The next step is to do some restriction on
+HVA in vfio module, so we can build block mapping for it with a higher probability.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Is there anything to improve? If not, could you apply it? ^_^
 
-Regards,
-Bjorn
+Thanks,
+Keqian
 
-> ---
+On 2021/4/7 21:18, Marc Zyngier wrote:
+> On Tue, 16 Mar 2021 13:43:38 +0000,
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>
+>> The MMIO region of a device maybe huge (GB level), try to use
+>> block mapping in stage2 to speedup both map and unmap.
+>>
+>> Compared to normal memory mapping, we should consider two more
+>> points when try block mapping for MMIO region:
+>>
+>> 1. For normal memory mapping, the PA(host physical address) and
+>> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
+>> the HVA to request hugepage, so we don't need to consider PA
+>> alignment when verifing block mapping. But for device memory
+>> mapping, the PA and HVA may have different alignment.
+>>
+>> 2. For normal memory mapping, we are sure hugepage size properly
+>> fit into vma, so we don't check whether the mapping size exceeds
+>> the boundary of vma. But for device memory mapping, we should pay
+>> attention to this.
+>>
+>> This adds device_rough_page_shift() to check these two points when
+>> selecting block mapping size.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>
+>> Mainly for RFC, not fully tested. I will fully test it when the
+>> code logic is well accepted.
+>>
+>> ---
+>>  arch/arm64/kvm/mmu.c | 42 ++++++++++++++++++++++++++++++++++++++----
+>>  1 file changed, 38 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index c59af5ca01b0..224aa15eb4d9 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -624,6 +624,36 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
+>>  	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
+>>  }
+>>  
+>> +/*
+>> + * Find a mapping size that properly insides the intersection of vma and
+>> + * memslot. And hva and pa have the same alignment to this mapping size.
+>> + * It's rough because there are still other restrictions, which will be
+>> + * checked by the following fault_supports_stage2_huge_mapping().
 > 
-> Changes in v3:
+> I don't think these restrictions make complete sense to me. If this is
+> a PFNMAP VMA, we should use the biggest mapping size that covers the
+> VMA, and not more than the VMA.
 > 
-> * Rebased on top of v5.12-rc2
-> * Sent to SoC list since there was no review so far apart from initial one
->   by Russel
+>> + */
+>> +static short device_rough_page_shift(struct kvm_memory_slot *memslot,
+>> +				     struct vm_area_struct *vma,
+>> +				     unsigned long hva)
+>> +{
+>> +	size_t size = memslot->npages * PAGE_SIZE;
+>> +	hva_t sec_start = max(memslot->userspace_addr, vma->vm_start);
+>> +	hva_t sec_end = min(memslot->userspace_addr + size, vma->vm_end);
+>> +	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
+>> +
+>> +#ifndef __PAGETABLE_PMD_FOLDED
+>> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
+>> +	    ALIGN_DOWN(hva, PUD_SIZE) >= sec_start &&
+>> +	    ALIGN(hva, PUD_SIZE) <= sec_end)
+>> +		return PUD_SHIFT;
+>> +#endif
+>> +
+>> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
+>> +	    ALIGN_DOWN(hva, PMD_SIZE) >= sec_start &&
+>> +	    ALIGN(hva, PMD_SIZE) <= sec_end)
+>> +		return PMD_SHIFT;
+>> +
+>> +	return PAGE_SHIFT;
+>> +}
+>> +
+>>  static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
+>>  					       unsigned long hva,
+>>  					       unsigned long map_size)
+>> @@ -769,7 +799,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  		return -EFAULT;
+>>  	}
+>>  
+>> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
+>> +	/*
+>> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
+>> +	 * get block mapping for device MMIO region.
+>> +	 */
+>>  	mmap_read_lock(current->mm);
+>>  	vma = find_vma_intersection(current->mm, hva, hva + 1);
+>>  	if (unlikely(!vma)) {
+>> @@ -780,11 +813,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  
+>>  	if (is_vm_hugetlb_page(vma))
+>>  		vma_shift = huge_page_shift(hstate_vma(vma));
+>> +	else if (vma->vm_flags & VM_PFNMAP)
+>> +		vma_shift = device_rough_page_shift(memslot, vma, hva);
+>>  	else
+>>  		vma_shift = PAGE_SHIFT;
+>>  
+>> -	if (logging_active ||
+>> -	    (vma->vm_flags & VM_PFNMAP)) {
+>> +	if (logging_active) {
+>>  		force_pte = true;
+>>  		vma_shift = PAGE_SHIFT;
 > 
-> Changes in v2:
+> But why should we downgrade to page-size mappings if logging? This is
+> a device, and you aren't moving the device around, are you? Or is your
+> device actually memory with a device mapping that you are trying to
+> migrate?
 > 
-> * Preserved callee saved registers and used the registers r4, r5 which
->   are getting pushed onto the stack.
+>>  	}
+>> @@ -855,7 +889,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  
+>>  	if (kvm_is_device_pfn(pfn)) {
+>>  		device = true;
+>> -		force_pte = true;
+>> +		force_pte = (vma_pagesize == PAGE_SIZE);
+>>  	} else if (logging_active && !write_fault) {
+>>  		/*
+>>  		 * Only actually map the page as writable if this was a write
+>> -- 
+>> 2.19.1
+>>
+>>
 > 
->  arch/arm/kernel/asm-offsets.c |  3 +++
->  arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
+> Thanks,
 > 
-> diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-> index be8050b0c3df..70993af22d80 100644
-> --- a/arch/arm/kernel/asm-offsets.c
-> +++ b/arch/arm/kernel/asm-offsets.c
-> @@ -24,6 +24,7 @@
->  #include <asm/vdso_datapage.h>
->  #include <asm/hardware/cache-l2x0.h>
->  #include <linux/kbuild.h>
-> +#include <linux/arm-smccc.h>
->  #include "signal.h"
->  
->  /*
-> @@ -148,6 +149,8 @@ int main(void)
->    DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
->    DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
->  #endif
-> +  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
-> +  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
->    BLANK();
->    DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
->    DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
-> diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
-> index 00664c78faca..931df62a7831 100644
-> --- a/arch/arm/kernel/smccc-call.S
-> +++ b/arch/arm/kernel/smccc-call.S
-> @@ -3,7 +3,9 @@
->   * Copyright (c) 2015, Linaro Limited
->   */
->  #include <linux/linkage.h>
-> +#include <linux/arm-smccc.h>
->  
-> +#include <asm/asm-offsets.h>
->  #include <asm/opcodes-sec.h>
->  #include <asm/opcodes-virt.h>
->  #include <asm/unwind.h>
-> @@ -27,7 +29,14 @@ UNWIND(	.fnstart)
->  UNWIND(	.save	{r4-r7})
->  	ldm	r12, {r4-r7}
->  	\instr
-> -	pop	{r4-r7}
-> +	ldr	r4, [sp, #36]
-> +	cmp	r4, #0
-> +	beq	1f			// No quirk structure
-> +	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
-> +	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
-> +	bne	1f			// No quirk present
-> +	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
-> +1:	pop	{r4-r7}
->  	ldr	r12, [sp, #(4 * 4)]
->  	stm	r12, {r0-r3}
->  	bx	lr
-> -- 
-> 2.25.1
+> 	M.
 > 
