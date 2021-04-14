@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BCD35F240
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA72635F21C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348966AbhDNLWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:22:49 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:42582 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348949AbhDNLWd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:22:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618399332; x=1649935332;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3hsmB1pC45gEMTmJOeR/FghN72S4zw/MUaNuw40oaz4=;
-  b=jPXOdNseZL9H9WXc5YV7jIjSed7BsuqcaHmyRqXjV3pMw2yHFZYjd85F
-   z0ql+O1O99V9z0eQNgTpuXH43NwquMsCaP/Q7hDUtHtxgG8Wu+g94KGlr
-   4rwZkYzot0GUlYUEt/cleeeg8ZLfksG3N+13VJFaHeW65Fuj2XDo3sK33
-   r3LdOE2svDpPllx4eAe6PzhmwiCR+DUItrzpm6zgryEJLDVnAn9Zo/iPN
-   i+mqseEgtz0ESEeuZyp8XokJaacPHfzyzsQgXEzd8uzfmZzSHZSpdoO//
-   5BgKpZEGDSHFXNQ2qo6a4pQjvNUeRfxgTqJQ4VSQ1ktnx/gayFsBhH6pg
-   g==;
-IronPort-SDR: t8rSU63WkdyYxoNSKygb1K3HD2vZX5+ql9Qfxnrlx5Bres0j8sgEPlUVLm8lOi/tdjZ2nwA19H
- wLrV5kyX03Z5dtMHlZvnJVPXrazAIN2eFpESeL2bL/x/AmOS1uRSLIBd6DXQOIYbUq7PVmqH2/
- q12kvSu7x0klniH28as2vr8DOyzH+JWCDDopm72dOMmmr86eYZss60pS71hHjgaBR4TRtUJ7zS
- +NTSSD0Lg86r6htWt0mbVxPKO8Xj77awD135oqejnUta8lPE/f4P9w7BZmARHh54oN36QVxRc9
- h0E=
-X-IronPort-AV: E=Sophos;i="5.82,221,1613458800"; 
-   d="scan'208";a="51077078"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Apr 2021 04:22:10 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 14 Apr 2021 04:22:10 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 14 Apr 2021 04:21:54 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH] net: macb: fix the restore of cmp registers
-Date:   Wed, 14 Apr 2021 14:20:29 +0300
-Message-ID: <20210414112029.86857-1-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S1348895AbhDNLVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:21:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50682 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229886AbhDNLVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:21:11 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3+8B0HZg8_MHAA--.897S2;
+        Wed, 14 Apr 2021 19:20:33 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next v2] bpf: Fix some invalid links in bpf_devel_QA.rst
+Date:   Wed, 14 Apr 2021 19:20:32 +0800
+Message-Id: <1618399232-17858-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx3+8B0HZg8_MHAA--.897S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUKrWfJr1fWF1xtF1DWrg_yoWrZF1Upa
+        1fGrnIkr18XF13Wwn7GrWUurySqas3GayUCF18Jr95Zw1jvryktr1IgrWfXa98Gr909ay3
+        Za4SkryYka18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfU589NDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
-introduces the restore of CMP registers on resume path. In case the IP
-doesn't support type 2 screeners (zero on DCFG8 register) the
-struct macb::rx_fs_list::list is not initialized and thus the
-list_for_each_entry(item, &bp->rx_fs_list.list, list) loop introduced in
-commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
-will access an uninitialized list leading to crash. Thus, initialize
-the struct macb::rx_fs_list::list without taking into account if the
-IP supports type 2 screeners or not.
+There exist some errors "404 Not Found" when I click the link
+of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
+in the documentation "HOWTO interact with BPF subsystem" [4].
 
-Fixes: a14d273ba159 ("net: macb: restore cmp registers on resume path")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Use correct link of "MAINTAINERS" and just remove the links of
+"samples/bpf/" and "selftests" because there are no related
+documentations.
+
+[1] https://www.kernel.org/doc/html/MAINTAINERS
+[2] https://www.kernel.org/doc/html/samples/bpf/
+[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
+[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+
+Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index c36722541bc4..0db538d089b1 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -3926,6 +3926,7 @@ static int macb_init(struct platform_device *pdev)
- 	reg = gem_readl(bp, DCFG8);
- 	bp->max_tuples = min((GEM_BFEXT(SCR2CMP, reg) / 3),
- 			GEM_BFEXT(T2SCR, reg));
-+	INIT_LIST_HEAD(&bp->rx_fs_list.list);
- 	if (bp->max_tuples > 0) {
- 		/* also needs one ethtype match to check IPv4 */
- 		if (GEM_BFEXT(SCR2ETH, reg) > 0) {
-@@ -3938,7 +3939,6 @@ static int macb_init(struct platform_device *pdev)
- 			/* Filtering is supported in hw but don't enable it in kernel now */
- 			dev->hw_features |= NETIF_F_NTUPLE;
- 			/* init Rx flow definitions */
--			INIT_LIST_HEAD(&bp->rx_fs_list.list);
- 			bp->rx_fs_list.count = 0;
- 			spin_lock_init(&bp->rx_fs_lock);
- 		} else
+v2: Add Fixes: tag
+
+ Documentation/bpf/bpf_devel_QA.rst | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 2ed89ab..4fd4c8c 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -29,7 +29,7 @@ list:
+ This may also include issues related to XDP, BPF tracing, etc.
+ 
+ Given netdev has a high volume of traffic, please also add the BPF
+-maintainers to Cc (from kernel MAINTAINERS_ file):
++maintainers to Cc (from kernel :ref:`MAINTAINERS <maintainers>` file):
+ 
+ * Alexei Starovoitov <ast@kernel.org>
+ * Daniel Borkmann <daniel@iogearbox.net>
+@@ -217,11 +217,11 @@ page run by David S. Miller on net-next that provides guidance:
+ Q: Verifier changes and test cases
+ ----------------------------------
+ Q: I made a BPF verifier change, do I need to add test cases for
+-BPF kernel selftests_?
++BPF kernel selftests?
+ 
+ A: If the patch has changes to the behavior of the verifier, then yes,
+ it is absolutely necessary to add test cases to the BPF kernel
+-selftests_ suite. If they are not present and we think they are
++selftests suite. If they are not present and we think they are
+ needed, then we might ask for them before accepting any changes.
+ 
+ In particular, test_verifier.c is tracking a high number of BPF test
+@@ -234,11 +234,11 @@ be subject to change.
+ 
+ Q: samples/bpf preference vs selftests?
+ ---------------------------------------
+-Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
+-selftests_ ?
++Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
++selftests?
+ 
+-A: In general, we prefer additions to BPF kernel selftests_ rather than
+-`samples/bpf/`_. The rationale is very simple: kernel selftests are
++A: In general, we prefer additions to BPF kernel selftests rather than
++``samples/bpf/``. The rationale is very simple: kernel selftests are
+ regularly run by various bots to test for kernel regressions.
+ 
+ The more test cases we add to BPF selftests, the better the coverage
+@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
+ not that BPF kernel selftests cannot demo how a specific feature can
+ be used.
+ 
+-That said, `samples/bpf/`_ may be a good place for people to get started,
++That said, ``samples/bpf/`` may be a good place for people to get started,
+ so it might be advisable that simple demos of features could go into
+-`samples/bpf/`_, but advanced functional and corner-case testing rather
++``samples/bpf/``, but advanced functional and corner-case testing rather
+ into kernel selftests.
+ 
+ If your sample looks like a test case, then go for BPF kernel selftests
+@@ -413,7 +413,7 @@ Testing patches
+ Q: How to run BPF selftests
+ ---------------------------
+ A: After you have booted into the newly compiled kernel, navigate to
+-the BPF selftests_ suite in order to test BPF functionality (current
++the BPF selftests suite in order to test BPF functionality (current
+ working directory points to the root of the cloned git tree)::
+ 
+   $ cd tools/testing/selftests/bpf/
+@@ -645,10 +645,7 @@ when:
+ 
+ .. Links
+ .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
+-.. _MAINTAINERS: ../../MAINTAINERS
+ .. _netdev-FAQ: ../networking/netdev-FAQ.rst
+-.. _samples/bpf/: ../../samples/bpf/
+-.. _selftests: ../../tools/testing/selftests/bpf/
+ .. _Documentation/dev-tools/kselftest.rst:
+    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+ .. _Documentation/bpf/btf.rst: btf.rst
 -- 
-2.25.1
+2.1.0
 
