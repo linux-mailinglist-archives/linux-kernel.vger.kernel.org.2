@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 708BE35EE26
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D5735EE28
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346993AbhDNHHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S233438AbhDNHJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbhDNHHu (ORCPT
+        with ESMTP id S1348568AbhDNHJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:07:50 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67A4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:07:28 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id j7so14746410qtx.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P6hiw8keT+mJ14/6B/ZNNtm4SRsN+Z+zw9UvJ6sbBIE=;
-        b=Srj6zP6ShQPr5gpjT0x9UJMnLHH0cORzUpvS4tjX2ZmguGZKxmWXLwBW4kfaxeriCx
-         nQAOiJXgfwzofsyKVOzaMt9Uh5cHLExnL+uFhSKGB+XILYWP4HYyUCnn+TBJ95xq09qQ
-         uond4boU/uu7efn0DwBLtnc1Cfdfzi7sr+mYgGWXiSQkek5tgxeEmGOfTopDDr8JVwsU
-         2GeDt2HWYH1lm6RQnQErP698w0xRZvUutTT2V86qjwnDBC8qllVT+64xxe46vzMqgK1P
-         f4jUq1yf/Sjs1gY65sXhTZeB475ymjpBmk2a9v2mjhFc+wRC4ttoZZKavmu4wZo+gq/e
-         oO1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P6hiw8keT+mJ14/6B/ZNNtm4SRsN+Z+zw9UvJ6sbBIE=;
-        b=RLzrqAtG//AI9NfiknxGkhj/jmZXiz+TF9U0uS6dhlvzk+uhobRWLuGMBsqFwZ/1GL
-         b1jMeJou3Obha2Oy+p90lxRQZA8XtnIGotX/kqW5YASaqvKIOmMDXh31I93C4c4XFwFQ
-         On8BWkKxaZiNqANWat9EOZlqrZaPkwRVmMQUfFiuPz2b8LzSEMsak2hwKmmyql5vwB6+
-         /jI10MWH7ChUXamOoRfwElw1WccR5ZcIjCf5xunOA2aGsCdx5ejuoRT0p/2VZzjax7n0
-         DWslNTIH+sUUn7v0rVh3y0v07jBRfGv/A2qpP6A2QlWrcEuHa21fF2YVlvH3RGuAceLM
-         WQUw==
-X-Gm-Message-State: AOAM530MeSKmDv1kCfrNTMMpKei8UOeyE/u/7RXFN2mIcgfiEXIK00xH
-        YvrnpviURSLU+lOQAcjrkcFqQGZttKTbx/ivVfLTdw==
-X-Google-Smtp-Source: ABdhPJxwsd2CCyqAlud4x9Bsl+7DPGRCAMgfkxeZ28cliway7Jkl7daGOC9QRqag9G+GSci8qG64ox32/4cUGuCx63s=
-X-Received: by 2002:ac8:110d:: with SMTP id c13mr33564230qtj.337.1618384047727;
- Wed, 14 Apr 2021 00:07:27 -0700 (PDT)
+        Wed, 14 Apr 2021 03:09:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2893C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 00:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cPfVvcbK8T4D/6el7vVPft6WcH2dgQZt6307pfljaIs=; b=QoWGo05rX8BTJjkF5ptA2dFFAt
+        fULA6iI1uxTwTXJF/lE3ZsWeMkLeKB1QnIs7RdgHjQaoiRpQ2+cGn+N5u/oDRXFuuI/1HKTqearur
+        75+TDpMCNoM+vuMitFtxt4Hboytxc/SLq0NBKh1H4FVPRLFlsdCoscYcHZVBCXvZmS54Frsu8wCZj
+        XnA0fPVx5HV3cD9/N1B6dymb7EahE6hQSKY0kdR0qZiLMdI/B3Ss+O2l7jxf9oGC5AXmAMtj2NOvJ
+        2M7/a9OvGIpCK7mQYaBZe8yojj0cnlknsfb+kET4/81eiFYcHoaOgVDBL9Dr2/gjYoPfjEM3uq1QN
+        5vgvzQzg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWZdL-006mde-Sp; Wed, 14 Apr 2021 07:08:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 35C86300033;
+        Wed, 14 Apr 2021 09:08:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F1B4F203D395C; Wed, 14 Apr 2021 09:08:18 +0200 (CEST)
+Date:   Wed, 14 Apr 2021 09:08:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock
+ implementation
+Message-ID: <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
 MIME-Version: 1.0
-References: <BY5PR11MB4193DBB0DE4AF424DE235892FF769@BY5PR11MB4193.namprd11.prod.outlook.com>
- <CACT4Y+bsOhKnv2ikR1fTb7KhReGfEeAyxCOyvCu7iS37Lm0vnw@mail.gmail.com> <DM6PR11MB420213907FE92BF6B6B5EB44FF4E9@DM6PR11MB4202.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB420213907FE92BF6B6B5EB44FF4E9@DM6PR11MB4202.namprd11.prod.outlook.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 14 Apr 2021 09:07:16 +0200
-Message-ID: <CACT4Y+Z5i+MOc+in9DuFj0b6cyyuHur5fpgu4e9-_6i4Luiygw@mail.gmail.com>
-Subject: Re: Question on KASAN calltrace record in RT
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Andrew Halaney <ahalaney@redhat.com>,
-        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 8:58 AM Zhang, Qiang <Qiang.Zhang@windriver.com> wr=
-ote:
-> ________________________________________
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: Dmitry Vyukov <dvyukov@google.com>
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021=E5=B9=B44=E6=9C=8813=E6=97=A5 =
-23:29
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: Zhang, Qiang
-> =E6=8A=84=E9=80=81: Andrew Halaney; andreyknvl@gmail.com; ryabinin.a.a@gm=
-ail.com; akpm@linux-foundation.org; linux-kernel@vger.kernel.org; kasan-dev=
-@googlegroups.com
-> =E4=B8=BB=E9=A2=98: Re: Question on KASAN calltrace record in RT
->
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
->
-> On Tue, Apr 6, 2021 at 10:26 AM Zhang, Qiang <Qiang.Zhang@windriver.com> =
-wrote:
+On Wed, Apr 14, 2021 at 10:26:57AM +0800, Guo Ren wrote:
+> Thx Peter,
+> 
+> On Tue, Apr 13, 2021 at 4:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > Hello everyone
+> > On Tue, Apr 13, 2021 at 10:03:01AM +0200, Peter Zijlstra wrote:
 > >
-> > In RT system,   after  Andrew test,   found the following calltrace ,
-> > in KASAN, we record callstack through stack_depot_save(), in this funct=
-ion, may be call alloc_pages,  but in RT, the spin_lock replace with
-> > rt_mutex in alloc_pages(), if before call this function, the irq is dis=
-abled,
-> > will trigger following calltrace.
-> >
-> > maybe  add array[KASAN_STACK_DEPTH] in struct kasan_track to record cal=
-lstack  in RT system.
-> >
-> > Is there a better solution =EF=BC=9F
->
-> >Hi Qiang,
-> >
-> >Adding 2 full stacks per heap object can increase memory usage too >much=
-.
-> >The stackdepot has a preallocation mechanism, I would start with
-> >adding interrupts check here:
-> >https://elixir.bootlin.com/linux/v5.12-rc7/source/lib/stackdepot.c#L294
-> >and just not do preallocation in interrupt context. This will solve
-> >the problem, right?
->
-> It seems to be useful,  however, there are the following situations
-> If there is a lot of stack information that needs to be saved in  interru=
-pts,  the memory which has been allocated to hold the stack information is =
-depletion,   when need to save stack again in interrupts,  there will be no=
- memory available .
+> > > For ticket locks you really only needs atomic_fetch_add() and
+> > > smp_store_release() and an architectural guarantees that the
+> > > atomic_fetch_add() has fwd progress under contention and that a sub-word
+> > > store (through smp_store_release()) will fail the SC.
+> > >
+> > > Then you can do something like:
+> > >
+> > > void lock(atomic_t *lock)
+> > > {
+> > >       u32 val = atomic_fetch_add(1<<16, lock); /* SC, gives us RCsc */
+> > >       u16 ticket = val >> 16;
+> > >
+> > >       for (;;) {
+> > >               if (ticket == (u16)val)
+> > >                       break;
+> > >               cpu_relax();
+> > >               val = atomic_read_acquire(lock);
+> > >       }
+> Should it be?
+>        for (;;) {
+>                if (ticket == (u16)val) {
+>                        __atomic_acquire_fence();
+>                        break;
+>                }
 
-Yes, this is true. This also true now because we allocate with
-GFP_ATOMIC. This is deliberate design decision.
-Note that a unique allocation stack is saved only once, so it's enough
-to be lucky only once per stack. Also interrupts don't tend to
-allocate thousands of objects. So I think all in all it should work
-fine in practice.
-If it turns out to be a problem, we could simply preallocate more
-memory in RT config.
+No, atomic_fetch_add() is full smp_mb(), it even has a comment on that
+says so.
 
-> Thanks
-> Qiang
->
->
-> > Thanks
-> > Qiang
-> >
-> > BUG: sleeping function called from invalid context at kernel/locking/rt=
-mutex.c:951
-> > [   14.522262] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 6=
-40, name: mount
-> > [   14.522304] Call Trace:
-> > [   14.522306]  dump_stack+0x92/0xc1
-> > [   14.522313]  ___might_sleep.cold.99+0x1b0/0x1ef
-> > [   14.522319]  rt_spin_lock+0x3e/0xc0
-> > [   14.522329]  local_lock_acquire+0x52/0x3c0
-> > [   14.522332]  get_page_from_freelist+0x176c/0x3fd0
-> > [   14.522543]  __alloc_pages_nodemask+0x28f/0x7f0
-> > [   14.522559]  stack_depot_save+0x3a1/0x470
-> > [   14.522564]  kasan_save_stack+0x2f/0x40
-> > [   14.523575]  kasan_record_aux_stack+0xa3/0xb0
-> > [   14.523580]  insert_work+0x48/0x340
-> > [   14.523589]  __queue_work+0x430/0x1280
-> > [   14.523595]  mod_delayed_work_on+0x98/0xf0
-> > [   14.523607]  kblockd_mod_delayed_work_on+0x17/0x20
-> > [   14.523611]  blk_mq_run_hw_queue+0x151/0x2b0
-> > [   14.523620]  blk_mq_sched_insert_request+0x2ad/0x470
-> > [   14.523633]  blk_mq_submit_bio+0xd2a/0x2330
-> > [   14.523675]  submit_bio_noacct+0x8aa/0xfe0
-> > [   14.523693]  submit_bio+0xf0/0x550
-> > [   14.523714]  submit_bio_wait+0xfe/0x200
-> > [   14.523724]  xfs_rw_bdev+0x370/0x480 [xfs]
-> > [   14.523831]  xlog_do_io+0x155/0x320 [xfs]
-> > [   14.524032]  xlog_bread+0x23/0xb0 [xfs]
-> > [   14.524133]  xlog_find_head+0x131/0x8b0 [xfs]
-> > [   14.524375]  xlog_find_tail+0xc8/0x7b0 [xfs]
-> > [   14.524828]  xfs_log_mount+0x379/0x660 [xfs]
-> > [   14.524927]  xfs_mountfs+0xc93/0x1af0 [xfs]
-> > [   14.525424]  xfs_fs_fill_super+0x923/0x17f0 [xfs]
-> > [   14.525522]  get_tree_bdev+0x404/0x680
-> > [   14.525622]  vfs_get_tree+0x89/0x2d0
-> > [   14.525628]  path_mount+0xeb2/0x19d0
-> > [   14.525648]  do_mount+0xcb/0xf0
-> > [   14.525665]  __x64_sys_mount+0x162/0x1b0
-> > [   14.525670]  do_syscall_64+0x33/0x40
-> > [   14.525674]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [   14.525677] RIP: 0033:0x7fd6c15eaade
+Also, __atomic_acquire_fence() is an implementation detail of atomic,
+and architectures need not provide it. On top of that, IIRC the atomic
+_acquire/_release have RCpc ordering, where we want our locks to have
+RCsc ordering (and very much not weaker than RCtso). Even more so,
+adding barriers to atomics should really not be conditional.
