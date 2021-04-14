@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE95E35ED2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B57E35ED31
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349216AbhDNGWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:22:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51056 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbhDNGWi (ORCPT
+        id S232847AbhDNGXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:23:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52771 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349221AbhDNGW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:22:38 -0400
-Date:   Wed, 14 Apr 2021 06:22:14 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618381335;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sj8bKQs3EzaDo1n24IZ7KqWvkhErmm1PrSIWnyuBl1I=;
-        b=asast63DGsjZ1sz8ZaEtepCNbMu9OG/HV8166DvS+9Ta28rHVooyJLFmBOMxG0yTfAAkAU
-        RE2nQK0QCiMqJKX/zbo9oVRJi3PbMkUhJ2T9bfVAI5oEaY4Qiw/eD5JMN2J9/WR+x1htGj
-        RVgrgetUVRKK27JCcKW0U6NWKoMx1QrRielCTKLp/RaxbbUwSONEu77AwLyxJWOrWulZfj
-        FkdoATUhLJfVLfearKjuukuzS5eFkgt85zffaB7r+yBOkS0AeCmiqqxXD4k2Z9SHpfWs/y
-        uSOrFP9sphVCW3QU8fI9f00vgy8pZeSc7pL7FR2Golzmp2CD85KkqxNuazmQ8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618381335;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sj8bKQs3EzaDo1n24IZ7KqWvkhErmm1PrSIWnyuBl1I=;
-        b=5wIhF45LzyXhv//dLiJ6MzpzsG9ZAngO+VD3oiwt9IFzVmPskk+T3oROAKItX6PSPBrAmS
-        PGrVX+1nAkdoxgCA==
-From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/setup: Move trim_snb_memory() later in
- setup_arch() to fix boot hangs
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Borislav Petkov <bp@suse.de>, Hugh Dickins <hughd@google.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
-References: <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
+        Wed, 14 Apr 2021 02:22:59 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lWYv6-0007Eb-QI
+        for linux-kernel@vger.kernel.org; Wed, 14 Apr 2021 06:22:36 +0000
+Received: by mail-ed1-f71.google.com with SMTP id z3-20020a05640240c3b029037fb0c2bd3bso2745755edb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:22:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JSGpiJ39NLZU1nC6HICC+dG4seEp2QpeNa5YM4lkqF4=;
+        b=JSNVBzraQuAKQAuxbG+AASRr7d4NS0DCR4kgYJbb8gNbg7NLsZRHuE6/T2bqeAaT7o
+         E4J/4gg5+98pK4g7HetgAza9kdAoj2b2/YDLRpda9QT1yqmDvVG3I/js0//Ne4edHj/0
+         Hk/YfEpBhnFr5zfjg6uCsN1xEzEU1C3eAFGToABVtvann7VPk8xbR0k4gdLjP/4XjSJ1
+         UAwDVrsdwp6i3+NtPqCe/4+lbFxd8dqqcox4lQo0LEcQc6huGhX4TyX8DrJoEV/l2GvS
+         1tRtuu3+lsNheHTaHrEFKKpgNV/6nZFddRBAD/gWHi+FCy1jL2wdNVnPEIoDQwUFitk8
+         nZdg==
+X-Gm-Message-State: AOAM530s2UjTuR4QRl0yV7y5vQh9XeDEZDQCNMR6D12hghwiDt+a95Qx
+        utNeOSILV1huy0ZozDt4wBYu5CbbksQlxEGxrzG4KK0THWFMScK7Ryc4MiLzl7vOadDlRL4IDte
+        0b0iL7v7r4IAQgJfSAP/ijsz0SRM7rnGtz3/WLzc/UQ==
+X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr13059961ejc.47.1618381356425;
+        Tue, 13 Apr 2021 23:22:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyc+W2YNC6BqcZus895U2ci0Cv8Sg59KQnn2K2ha4/WQYNKRsatv0G/4PTC+oGTu4cp/AK51Q==
+X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr13059942ejc.47.1618381356301;
+        Tue, 13 Apr 2021 23:22:36 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id dh27sm10829592edb.28.2021.04.13.23.22.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Apr 2021 23:22:35 -0700 (PDT)
+Subject: Re: [PATCH v1 1/3] dt-bindings: arm: imx: Add i.mx6q DaSheng COM-9XX
+ SBC board dts support
+To:     dillon.minfei@gmail.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        linux@rempel-privat.de, s.riedmueller@phytec.de,
+        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
+        arnd@arndb.de, olof@lixom.net, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        prabhakar.csengg@gmail.com, mchehab@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-media@vger.kernel.org
+References: <1618380827-16056-1-git-send-email-dillon.minfei@gmail.com>
+ <1618380827-16056-2-git-send-email-dillon.minfei@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2a993aa9-6933-4af8-da26-f53096dc6ab7@canonical.com>
+Date:   Wed, 14 Apr 2021 08:22:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Message-ID: <161838133498.29796.12540775721070465830.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1618380827-16056-2-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/boot branch of tip:
+On 14/04/2021 08:13, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> The DaSheng Com-9xx is and ARM based signle board computer (SBC)
+> featuring:
+> - i.MX6Q
+> - 2GiB LPDDR3 DRAM
+> - 8GiB eMMC 5.0 FLASH
+> - 4MiB SPI Flash
+> - USB 2.0 Host/Device
+> - Multiple multi-protocol RS232/RS485 Serial ports
+> - microSD socket
+> - 5V DC power input
+> - HDMI1.4a,1080p@60
+> - RGMIIx1 Gigabit Ethernet
+> - CSI0x1, connect with ov2659
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index 297c87f45db8..24bdfbd4853f 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -206,6 +206,7 @@ properties:
+>                - fsl,imx6q-sabreauto
+>                - fsl,imx6q-sabrelite
+>                - fsl,imx6q-sabresd
+> +              - ds,imx6q-sbc              # Da Sheng COM-9XX Modules
+>                - karo,imx6q-tx6q           # Ka-Ro electronics TX6Q Modules
+>                - kiebackpeter,imx6q-tpc    # K+P i.MX6 Quad TPC Board
+>                - kontron,imx6q-samx6i      # Kontron i.MX6 Dual/Quad SMARC Module
+> 
 
-Commit-ID:     c361e5d4d07d63768880e1994c7ed999b3a94cd9
-Gitweb:        https://git.kernel.org/tip/c361e5d4d07d63768880e1994c7ed999b3a94cd9
-Author:        Mike Rapoport <rppt@linux.ibm.com>
-AuthorDate:    Tue, 13 Apr 2021 21:08:39 +03:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 14 Apr 2021 08:16:48 +02:00
-
-x86/setup: Move trim_snb_memory() later in setup_arch() to fix boot hangs
-
-Commit
-
-  a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-
-moved reservation of the memory inaccessible by Sandy Bride integrated
-graphics very early, and, as a result, on systems with such devices
-the first 1M was reserved by trim_snb_memory() which prevented the
-allocation of the real mode trampoline and made the boot hang very
-early.
-
-Since the purpose of trim_snb_memory() is to prevent problematic pages
-ever reaching the graphics device, it is safe to reserve these pages
-after memblock allocations are possible.
-
-Move trim_snb_memory() later in boot so that it will be called after
-reserve_real_mode() and make comments describing trim_snb_memory()
-operation more elaborate.
-
- [ bp: Massage a bit. ]
-
-Fixes: a799c2bd29d1 ("x86/setup: Consolidate early memory reservations")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Hugh Dickins <hughd@google.com>
-Link: https://lkml.kernel.org/r/f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org
----
- arch/x86/kernel/setup.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 776fc9b..e93283e 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -633,11 +633,16 @@ static void __init trim_snb_memory(void)
- 	printk(KERN_DEBUG "reserving inaccessible SNB gfx pages\n");
- 
- 	/*
--	 * Reserve all memory below the 1 MB mark that has not
--	 * already been reserved.
-+	 * SandyBridge integrated graphics devices have a bug that prevents
-+	 * them from accessing certain memory ranges, namely anything below
-+	 * 1M and in the pages listed in bad_pages[] above.
-+	 *
-+	 * To avoid these pages being ever accessed by SNB gfx devices
-+	 * reserve all memory below the 1 MB mark and bad_pages that have
-+	 * not already been reserved at boot time.
- 	 */
- 	memblock_reserve(0, 1<<20);
--	
-+
- 	for (i = 0; i < ARRAY_SIZE(bad_pages); i++) {
- 		if (memblock_reserve(bad_pages[i], PAGE_SIZE))
- 			printk(KERN_WARNING "failed to reserve 0x%08lx\n",
-@@ -746,8 +751,6 @@ static void __init early_reserve_memory(void)
- 
- 	reserve_ibft_region();
- 	reserve_bios_regions();
--
--	trim_snb_memory();
- }
- 
- /*
-@@ -1081,6 +1084,13 @@ void __init setup_arch(char **cmdline_p)
- 
- 	reserve_real_mode();
- 
-+	/*
-+	 * Reserving memory causing GPU hangs on Sandy Bridge integrated
-+	 * graphics devices should be done after we allocated memory under
-+	 * 1M for the real mode trampoline.
-+	 */
-+	trim_snb_memory();
-+
- 	init_mem_mapping();
- 
- 	idt_setup_early_pf();
+You miss change in vendor prefixes. Didn't checkpatch complain about it?
+Did you run checkpatch?
+Best regards,
+Best regards,
+Krzysztof
