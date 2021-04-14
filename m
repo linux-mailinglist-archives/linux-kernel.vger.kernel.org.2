@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AA935FBC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799E835FBC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 21:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347795AbhDNTmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 15:42:36 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34198 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbhDNTme (ORCPT
+        id S1353464AbhDNTnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 15:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349164AbhDNTnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 15:42:34 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lWlOV-0004hX-Kt; Wed, 14 Apr 2021 15:41:47 -0400
-Message-ID: <db2f6f81d30945eb296c4dcc9824b1ad353cc777.camel@surriel.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-From:   Rik van Riel <riel@surriel.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Date:   Wed, 14 Apr 2021 15:41:46 -0400
-In-Reply-To: <CAOUHufaRXbDHbEro1uE1CHvpWB4U67iroj0hT8CkUEOSAddzYQ@mail.gmail.com>
-References: <20210413075155.32652-1-sjpark@amazon.de>
-         <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
-         <20210413231436.GF63242@dread.disaster.area>
-         <f4750f9431bd12b7338a47925de8b17015da51a7.camel@surriel.com>
-         <CAOUHufafMcaG8sOS=1YMy2P_6p0R1FzP16bCwpUau7g1-PybBQ@mail.gmail.com>
-         <20210414155130.GU3762101@tassilo.jf.intel.com>
-         <e0ad1b48a1ad0b6d3a1e79129f397ddb6c32fe35.camel@surriel.com>
-         <CAOUHufaRXbDHbEro1uE1CHvpWB4U67iroj0hT8CkUEOSAddzYQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-d7+pZEnMCdzHhTJvagz0"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Wed, 14 Apr 2021 15:43:01 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02643C061574;
+        Wed, 14 Apr 2021 12:42:38 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 82so23463109yby.7;
+        Wed, 14 Apr 2021 12:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nwNvUrfqSihmBKw7V/O58rXxdk7PvVw2JH+6F3njTsY=;
+        b=YV//ipOjf5gJMevTfH7bJhridvxJ8j6dAaX/WtBar5+xa/JDdKm3GnAf/k+7aidCz3
+         EtOfSuGLH8Uetdga7IHFUGFXmTBbz1/qO9JMQn3JRMCXMBi5stkSu/q0P0R8rx9OLgHT
+         Hkp9xOofiM4eXvGIS8mY5ChzIufloYKQOXudaNJb03Xm5r9buPypPFe8bCnzUCi56uql
+         QqeAsrVZ747luCRYB2Udru4RDqSAhXdMznQvhSBy7Bn061o77sq6HKOhHnpb5crpinY+
+         EsVcI13PHzDui9bf+iW9NVSAXbOwXrvTPRL4tcyxkRT26bmir7YQ1k7GbwY5QdTJaBZ8
+         jj4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nwNvUrfqSihmBKw7V/O58rXxdk7PvVw2JH+6F3njTsY=;
+        b=Qi1BvKwEN5e7DjAOLDj907ctE7ypR4Zva20cBnIQf/GuO7GkEbXePelptlQ9u4VDdE
+         6umNlfjvhhbVnrpWBaV+M6Cj2DGkQu0Y61CVk46rF8JOc8owYRlkmXv49xr30ozYrhDM
+         r0nUshmdCdtb4KU01T9Hosdsa1sw90k16MRB9srL8j9TEL0Y0bYdo3w3OeAa+RmSPXvp
+         xVl7H14Ua6nft4inGDyonjEDbcC1R79QiUNcwxfrJ1L/QkQGEpltc1E1yK9RkzdFjjGS
+         HlBYEfISTTP2N6VpbNGPQ0oCrK5A/62lMDcSoE6Pus6nNHsa1GUtIC+CPU7p9+6ybk2s
+         DvCA==
+X-Gm-Message-State: AOAM533lLvNT6slN5k/vHWCIAgTmxIIOWlZ3HVvAgamqfwJGe6Z8dOg9
+        SAyTssl58M7ufGDJ+P+JrvGAYjLLFH2lw/p5xMg=
+X-Google-Smtp-Source: ABdhPJyjfJxleWF/XeQmoJoEcxGFIQGNg6XYRodo71ehUQOm7nERG1n2SSzQnsEgofJ0HGzvxpioefFmvvXqlV4tG48=
+X-Received: by 2002:a25:c444:: with SMTP id u65mr27626251ybf.93.1618429357237;
+ Wed, 14 Apr 2021 12:42:37 -0700 (PDT)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-10-ojeda@kernel.org>
+ <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 14 Apr 2021 21:42:26 +0200
+Message-ID: <CANiq72mpjQh01QovUPCjdHDS-zVHroxymet67GOHvotW8wGdVg@mail.gmail.com>
+Subject: Re: [PATCH 09/13] Samples: Rust examples
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 9:34 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Honestly, I'd like to see a real example. This is fine for testing,
+> but I'd like to see something a bit more real, and a bit less special
+> than the Android "binder" WIP that comes a few patches later.
+>
+> Would there be some kind of real driver or something that people could
+> use as a example of a real piece of code that actually does something
+> meaningful?
 
---=-d7+pZEnMCdzHhTJvagz0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yeah, we are planning to write a couple of drivers that talk to actual
+hardware. Not sure which ones we will do, but we will have them
+written.
 
-On Wed, 2021-04-14 at 13:14 -0600, Yu Zhao wrote:
-> On Wed, Apr 14, 2021 at 9:59 AM Rik van Riel <riel@surriel.com>
-> wrote:
-> > On Wed, 2021-04-14 at 08:51 -0700, Andi Kleen wrote:
-> > > >    2) It will not scan PTE tables under non-leaf PMD entries
-> > > > that
-> > > > do not
-> > > >       have the accessed bit set, when
-> > > >       CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG=3Dy.
-> > >=20
-> > > This assumes  that workloads have reasonable locality. Could
-> > > there
-> > > be a worst case where only one or two pages in each PTE are used,
-> > > so this PTE skipping trick doesn't work?
-> >=20
-> > Databases with large shared memory segments shared between
-> > many processes come to mind as a real-world example of a
-> > worst case scenario.
->=20
-> Well, I don't think you two are talking about the same thing. Andi
-> was
-> focusing on sparsity. Your example seems to be about sharing, i.e.,
-> ihgh mapcount. Of course both can happen at the same time, as I
-> tested
-> here:
-> https://lore.kernel.org/linux-mm/YHFuL%2FDdtiml4biw@google.com/#t
->=20
-> I'm skeptical that shared memory used by databases is that sparse,
-> i.e., one page per PTE table, because the extremely low locality
-> would
-> heavily penalize their performance. But my knowledge in databases is
-> close to zero. So feel free to enlighten me or just ignore what I
-> said.
-
-A database may have a 200GB shared memory segment,
-and a worker task that gets spun up to handle a
-query might access only 1MB of memory to answer
-that query.
-
-That memory could be from anywhere inside the
-shared memory segment. Maybe some of the accesses
-are more dense, and others more sparse, who knows?
-
-A lot of the locality
-will depend on how memory
-space inside the shared memory segment is reclaimed
-and recycled inside the database.
-
---=20
-All Rights Reversed.
-
---=-d7+pZEnMCdzHhTJvagz0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB3RXsACgkQznnekoTE
-3oOQKgf/cHYeGYL+vEGo2ujR7QJ1IO0KzWQoVv9TjWcfYctiTXl+jzYf/fuyBLqh
-Hk+VhgI+jxkQljbjg7Tha183gQRlykdjrghGI8ojQFkNIy1sNRH/JYAeiuqcw/zZ
-3YUJhxS7WFczgI7KQ5+iLXFTQebr+UQE/LwfS+FW9gTYVg8OwizIfeQdCowQoiAt
-qDbaVKQRClFyGYL7m3FKa84SodEXFf0JIY+qPrTqOWMwH93liO0rQhMNJIcw9XBx
-Vd6Ns18YXOCk2tUlv9lVMVBPM+cM7PxFDPjgaZf+L5N2B7z/H2A4UsijUn1ZDe9U
-RzcIQ9rtP3HF0tD/lwW4C0pnBLAwLg==
-=BeNw
------END PGP SIGNATURE-----
-
---=-d7+pZEnMCdzHhTJvagz0--
-
+Cheers,
+Miguel
