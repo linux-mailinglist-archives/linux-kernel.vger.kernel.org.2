@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6B635EEB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18EC35EEB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 09:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349620AbhDNHnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 03:43:46 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21818 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231319AbhDNHno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 03:43:44 -0400
-IronPort-SDR: GEhjaTtaGZYUtc5xckaOiQ7LVGT2QV3WdCix+n/8gjSdlpUqyY4OejGPxuMWVWBhmLDIy8jBHA
- y2k3HOf7e9jg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="182094824"
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="182094824"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 00:43:22 -0700
-IronPort-SDR: xfNQIv05NcLGdDDYpqk3e4d/rMQF/nPSUyRQ2Wn6XT9bLeMV0fmVcg+z04yuv8i5PxgJj7e5l8
- Z4wDui3SU4Mw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,221,1613462400"; 
-   d="scan'208";a="521902579"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2021 00:43:19 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 14 Apr 2021 10:43:18 +0300
-Date:   Wed, 14 Apr 2021 10:43:18 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
- API
-Message-ID: <YHadFnjWy2zjwxo2@kuha.fi.intel.com>
-References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
- <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
- <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
- <39e2ab87-3b70-8659-6282-5b03d30f901b@linux.intel.com>
- <YHWMmR5gBvlpd7rl@kuha.fi.intel.com>
- <YHWlQooPtrTjyq+i@kuha.fi.intel.com>
- <4c7aa8d0-8660-b545-4b40-c6965e667a93@linux.intel.com>
+        id S1349639AbhDNHpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 03:45:15 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44906 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231140AbhDNHpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 03:45:13 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E7iYh7070282;
+        Wed, 14 Apr 2021 07:44:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=YYpWT+54DiKG1mpTtvWPuyxWI9sWMxE6oWl1mUNmwaQ=;
+ b=HCAKevP6LQXNzXzhEedvKuNgDJGg5J7CQYGr1LiGN9n5CT7YXrVL/JENDKs5emz/CRT3
+ NbgtjzAGsCfs6iJoF7YxkDjb2yi5K/0984VNaeUXyTiUCICiZ4EwQ9oXBbXdh4lmfrpe
+ AQzgewFd+oG0M38MJvcZ8P3ks6tJcTZvCKs1oJc0HLDFIMLdqvhjbGUjSY9JWz8VVi3O
+ Kp6YuY3ysnoNu5Z49m+vog/wOpN/PLIN0DUmAHxXOVFeERdw8ZGBkRyEh2OhlWukr0ee
+ nT7hLeEPPHaMNmgPeT0SKctrylyT2mv9fRAySWEgATPgr4ab9p8Ih4cTsBHPSsMlSO7X Gg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 37u3ymhe23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 07:44:49 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13E7aSWA121769;
+        Wed, 14 Apr 2021 07:44:47 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 37unxy0ykt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Apr 2021 07:44:47 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13E7ikTf028859;
+        Wed, 14 Apr 2021 07:44:46 GMT
+Received: from mwanda (/10.175.166.128)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Apr 2021 00:44:45 -0700
+Date:   Wed, 14 Apr 2021 10:44:40 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] usb: typec: silence a static checker warning
+Message-ID: <YHadaACH8Mq/10F7@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4c7aa8d0-8660-b545-4b40-c6965e667a93@linux.intel.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140051
+X-Proofpoint-GUID: poEY082I-9YxXb2AuSj0ebG01W9PIzAv
+X-Proofpoint-ORIG-GUID: poEY082I-9YxXb2AuSj0ebG01W9PIzAv
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9953 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104140052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:47:49AM -0500, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 4/13/21 9:05 AM, Heikki Krogerus wrote:
-> > On Tue, Apr 13, 2021 at 03:20:45PM +0300, Heikki Krogerus wrote:
-> > > On Mon, Apr 12, 2021 at 03:36:20PM -0500, Pierre-Louis Bossart wrote:
-> > > > I took the code and split it in two for BYT/CHT (modified to remove devm_)
-> > > > and SoundWire parts (added as is).
-> > > > 
-> > > > https://github.com/thesofproject/linux/pull/2810
-> > > > 
-> > > > Both cases result in a refcount error on device_remove_sof when removing the
-> > > > platform device. I don't understand the code well enough to figure out what
-> > > > happens, but it's likely a case of the software node being removed twice?
-> > > 
-> > > Right. Because you are injecting the node to an already existing
-> > > device, the node does not get linked with the device in sysfs. That
-> > > would increment the reference count in a normal case. It all happens
-> > > in the function software_node_notify(). Driver core calls it when a
-> > > device is added and also when it's removed. In this case it is only
-> > > called when it's removed.
-> > > 
-> > > I think the best way to handle this now is to simply not decrementing
-> > > the ref count when you add the properties, so don't call
-> > > fwnode_handle_put() there (but add a comment explaining why you are
-> > > not calling it).
-> > 
-> > No, sorry... That's just too hacky. Let's not do that after all.
-> > 
-> > We can also fix this in the software node code. I'm attaching a patch
-> > that should make it possible to inject the software nodes also
-> > afterwards safely. This is definitely also not without its problems,
-> > but we can go with that if it works. Let me know.
-> 
-> I tested manually on bytcr w/ RT5640 and used the SOF CI farm to test the
-> SoundWire cases, I don't see any issues with your patch. The refcount issue
-> is gone and the module load/unload cycles don't report any problems.
-> 
-> Would you queue it for 5.13-rc1, or is this too late already?
+Smatch complains about a potential missing error code:
 
-I'll send it out now. Let's see what happens.
+    drivers/usb/typec/port-mapper.c:168 typec_link_port()
+    warn: missing error code 'ret'
 
-thanks,
+This is a false positive and returning zero is intentional.  Let's
+re-arrange the code to silence the warning and make the intent more
+clear.
 
-> > > For a better solution you would call device_reprobe() after you have
-> > > injected the software node, but before that you need to modify
-> > > device_reprobe() so it calls device_platform_notify() (which it really
-> > > should call in any case). But this should probable be done later,
-> > > separately.
-> > > 
-> > > thanks,
-> > > 
-> > > P.S.
-> > > 
-> > > Have you guys considered the possibility of describing the connections
-> > > between all these components by using one of the methods that we now
-> > > have for that in kernel, for example device graph? It can now be
-> > > used also with software nodes (OF graph and ACPI device graph are of
-> > > course already fully supported).
-> 
-> I must admit I've never heard of a 'device graph'. Any pointers or APIs you
-> can think of?
-> It's a good comment since we are planning to rework the SOF clients and
-> machine driver handling.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/usb/typec/port-mapper.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/usb/typec/port-mapper.c b/drivers/usb/typec/port-mapper.c
+index fae736eb0601..9b0991bdf391 100644
+--- a/drivers/usb/typec/port-mapper.c
++++ b/drivers/usb/typec/port-mapper.c
+@@ -157,15 +157,17 @@ int typec_link_port(struct device *port)
+ {
+ 	struct device *connector;
+ 	struct port_node *node;
+-	int ret = 0;
++	int ret;
+ 
+ 	node = create_port_node(port);
+ 	if (IS_ERR(node))
+ 		return PTR_ERR(node);
+ 
+ 	connector = find_connector(node);
+-	if (!connector)
++	if (!connector) {
++		ret = 0;
+ 		goto remove_node;
++	}
+ 
+ 	ret = link_port(to_typec_port(connector), node);
+ 	if (ret)
 -- 
-heikki
+2.30.2
+
