@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8BA35F206
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BCD35F240
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349018AbhDNLOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:14:33 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:35212 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348030AbhDNLN6 (ORCPT
+        id S1348966AbhDNLWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:22:49 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:42582 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348949AbhDNLWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:13:58 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 14 Apr 2021 04:13:37 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Apr 2021 04:13:35 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 14 Apr 2021 16:43:14 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id 515A647ED; Wed, 14 Apr 2021 16:43:13 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     mka@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kgunda@codeaurora.org, satya priya <skakit@codeaurora.org>
-Subject: [RESEND PATCH V3 5/5] arm64: dts: qcom: sc7280: Include PMIC DT files for sc7280
-Date:   Wed, 14 Apr 2021 16:43:03 +0530
-Message-Id: <1618398783-7834-6-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
-References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
+        Wed, 14 Apr 2021 07:22:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1618399332; x=1649935332;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3hsmB1pC45gEMTmJOeR/FghN72S4zw/MUaNuw40oaz4=;
+  b=jPXOdNseZL9H9WXc5YV7jIjSed7BsuqcaHmyRqXjV3pMw2yHFZYjd85F
+   z0ql+O1O99V9z0eQNgTpuXH43NwquMsCaP/Q7hDUtHtxgG8Wu+g94KGlr
+   4rwZkYzot0GUlYUEt/cleeeg8ZLfksG3N+13VJFaHeW65Fuj2XDo3sK33
+   r3LdOE2svDpPllx4eAe6PzhmwiCR+DUItrzpm6zgryEJLDVnAn9Zo/iPN
+   i+mqseEgtz0ESEeuZyp8XokJaacPHfzyzsQgXEzd8uzfmZzSHZSpdoO//
+   5BgKpZEGDSHFXNQ2qo6a4pQjvNUeRfxgTqJQ4VSQ1ktnx/gayFsBhH6pg
+   g==;
+IronPort-SDR: t8rSU63WkdyYxoNSKygb1K3HD2vZX5+ql9Qfxnrlx5Bres0j8sgEPlUVLm8lOi/tdjZ2nwA19H
+ wLrV5kyX03Z5dtMHlZvnJVPXrazAIN2eFpESeL2bL/x/AmOS1uRSLIBd6DXQOIYbUq7PVmqH2/
+ q12kvSu7x0klniH28as2vr8DOyzH+JWCDDopm72dOMmmr86eYZss60pS71hHjgaBR4TRtUJ7zS
+ +NTSSD0Lg86r6htWt0mbVxPKO8Xj77awD135oqejnUta8lPE/f4P9w7BZmARHh54oN36QVxRc9
+ h0E=
+X-IronPort-AV: E=Sophos;i="5.82,221,1613458800"; 
+   d="scan'208";a="51077078"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Apr 2021 04:22:10 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 14 Apr 2021 04:22:10 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 14 Apr 2021 04:21:54 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] net: macb: fix the restore of cmp registers
+Date:   Wed, 14 Apr 2021 14:20:29 +0300
+Message-ID: <20210414112029.86857-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include pm7325, pm8350c, pmk8350 and pmr735a DT files. Add
-channel nodes for pmk8350_vadc. Also, add the thermal_zones
-node in dtsi.
+Commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+introduces the restore of CMP registers on resume path. In case the IP
+doesn't support type 2 screeners (zero on DCFG8 register) the
+struct macb::rx_fs_list::list is not initialized and thus the
+list_for_each_entry(item, &bp->rx_fs_list.list, list) loop introduced in
+commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+will access an uninitialized list leading to crash. Thus, initialize
+the struct macb::rx_fs_list::list without taking into account if the
+IP supports type 2 screeners or not.
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
+Fixes: a14d273ba159 ("net: macb: restore cmp registers on resume path")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm64/boot/dts/qcom/sc7280-idp.dts | 30 ++++++++++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sc7280.dtsi    |  3 +++
- 2 files changed, 33 insertions(+)
+ drivers/net/ethernet/cadence/macb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-index 950ecb2..9293502 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-@@ -8,6 +8,10 @@
- /dts-v1/;
- 
- #include "sc7280.dtsi"
-+#include "pm7325.dtsi"
-+#include "pm8350c.dtsi"
-+#include "pmk8350.dtsi"
-+#include "pmr735a.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. sc7280 IDP platform";
-@@ -22,6 +26,32 @@
- 	};
- };
- 
-+&pmk8350_vadc {
-+		pm8350_die_temp {
-+			reg = <PM8350_ADC7_DIE_TEMP>;
-+			label = "pm8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmk8350_die_temp {
-+			reg = <PMK8350_ADC7_DIE_TEMP>;
-+			label = "pmk8350_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmr735a_die_temp {
-+			reg = <PMR735A_ADC7_DIE_TEMP>;
-+			label = "pmr735a_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+
-+		pmr735b_die_temp {
-+			reg = <PMR735B_ADC7_DIE_TEMP>;
-+			label = "pmr735b_die_temp";
-+			qcom,pre-scaling = <1 1>;
-+		};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 39cf0be..0f4fd33 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -605,4 +605,7 @@
- 			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
- 			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
- 	};
-+
-+	thermal_zones: thermal-zones {
-+	};
- };
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index c36722541bc4..0db538d089b1 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3926,6 +3926,7 @@ static int macb_init(struct platform_device *pdev)
+ 	reg = gem_readl(bp, DCFG8);
+ 	bp->max_tuples = min((GEM_BFEXT(SCR2CMP, reg) / 3),
+ 			GEM_BFEXT(T2SCR, reg));
++	INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 	if (bp->max_tuples > 0) {
+ 		/* also needs one ethtype match to check IPv4 */
+ 		if (GEM_BFEXT(SCR2ETH, reg) > 0) {
+@@ -3938,7 +3939,6 @@ static int macb_init(struct platform_device *pdev)
+ 			/* Filtering is supported in hw but don't enable it in kernel now */
+ 			dev->hw_features |= NETIF_F_NTUPLE;
+ 			/* init Rx flow definitions */
+-			INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 			bp->rx_fs_list.count = 0;
+ 			spin_lock_init(&bp->rx_fs_lock);
+ 		} else
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
 
