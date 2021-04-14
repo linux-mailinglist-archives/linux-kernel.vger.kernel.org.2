@@ -2,184 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E75335F2B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0152035F2BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348930AbhDNLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233595AbhDNLra (ORCPT
+        id S1350615AbhDNLtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:49:19 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:19026 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350606AbhDNLtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:47:30 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5110C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:47:09 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id r13so6350762pjf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 04:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FgIM2dWQlt+cv4L943XfP34jj5PrH6rrYLkFCRTYTi0=;
-        b=DB/1wQ31t1X7d1BmTWafb5soGIcAZW7EeQlYN7iUWatdl2tifjavlZgyOiqRkS59LQ
-         9z92O3u9GWzEgS4Wit0Ghnk8yqz4F97IHGylY6U9HTKOFwMSVs/0GQpsxmtEtz0xBzHJ
-         h7SyfSzOqzmN/FMc0xiyQUO55Yezq127oJPyo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FgIM2dWQlt+cv4L943XfP34jj5PrH6rrYLkFCRTYTi0=;
-        b=HErUXAUgEILkT/AL3wL76dhKpYVURwQtdCuOrqW1xG3CrjMOg8RusAq/6W/JlFmyHU
-         m6btaZM+TFjPWcvljvCowUfsKPx+E7MQZzZiOmJo1L0Cajvy5slSdYPeX0sDTPpbCNJh
-         7hHaC5VsWS6bfohexHceHZNBJA5UjStVEJTayqrG0Csg+h6Bdrou0fTA2KkZBoh7Q2ZB
-         HlnfKK464ySB7t0l/kIUN8Co44TQu+Fg2KcYtpKRPcUyRC00SFEowLxZZ8LfNgNs6p3j
-         hBnUkL6JBZ8+Ahr52woVe0QsA8G3ZJQCSKHG/IbjkyDZf3tJxwKb7vJ3LYC7T+gN+YRg
-         0lOA==
-X-Gm-Message-State: AOAM533Wl5LovWf4gJAjfhxkTCJilczbUsrJ4wqnf1Y2s3RRStLG7VD8
-        K04QwOBP/B23KbPihRj5qF0zWQMrWG3le03K9kQaJA==
-X-Google-Smtp-Source: ABdhPJxW8IoCR6BzsDM2zF8Qy/ZrQogXAnxRIFLoahMm6T2xWPDsJSN0tgrwBbEDlHGaIuGkJdvF008i3VshEqdHl7w=
-X-Received: by 2002:a17:90b:3b8c:: with SMTP id pc12mr3252713pjb.208.1618400828960;
- Wed, 14 Apr 2021 04:47:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329094532.4165147-1-liushixin2@huawei.com>
-In-Reply-To: <20210329094532.4165147-1-liushixin2@huawei.com>
-From:   Sumit Saxena <sumit.saxena@broadcom.com>
-Date:   Wed, 14 Apr 2021 17:16:43 +0530
-Message-ID: <CAL2rwxoJTfLrD_a1sf+gkT1xdBrwOZj3seYq7W6=ETdb3MBJVw@mail.gmail.com>
-Subject: Re: [PATCH -next] scsi: megaraid_sas: Use DEFINE_SPINLOCK() for spinlock
-To:     Shixin Liu <liushixin2@huawei.com>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000008925df05bfed4e8b"
+        Wed, 14 Apr 2021 07:49:17 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 04A988004B0;
+        Wed, 14 Apr 2021 19:48:53 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH V3] watchdog: mtk: support pre-timeout when the bark irq is available
+Date:   Wed, 14 Apr 2021 19:48:49 +0800
+Message-Id: <1618400929-17013-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGh9MSFZPHRkYQ0IYThhLSUxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6PDo4Ez8XFhNPAksqPzNR
+        M0IaCyFVSlVKTUpDT0tLQkhPTU5PVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFOSkNMNwY+
+X-HM-Tid: 0a78d036799eb03akuuu04a988004b0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008925df05bfed4e8b
-Content-Type: text/plain; charset="UTF-8"
+Use the bark interrupt as the pretimeout notifier if available.
 
-On Mon, Mar 29, 2021 at 2:45 PM Shixin Liu <liushixin2@huawei.com> wrote:
->
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
-Acked-by: Sumit Saxena <sumit.saxena@broadcom.com>
->
-> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
-> ---
->  drivers/scsi/megaraid/megaraid_sas_base.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-> index 4d4e9dbe5193..8ed347eebf07 100644
-> --- a/drivers/scsi/megaraid/megaraid_sas_base.c
-> +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-> @@ -213,7 +213,7 @@ static bool support_nvme_encapsulation;
->  static bool support_pci_lane_margining;
->
->  /* define lock for aen poll */
-> -static spinlock_t poll_aen_lock;
-> +static DEFINE_SPINLOCK(poll_aen_lock);
->
->  extern struct dentry *megasas_debugfs_root;
->  extern int megasas_blk_mq_poll(struct Scsi_Host *shost, unsigned int queue_num);
-> @@ -8934,8 +8934,6 @@ static int __init megasas_init(void)
->          */
->         pr_info("megasas: %s\n", MEGASAS_VERSION);
->
-> -       spin_lock_init(&poll_aen_lock);
-> -
->         support_poll_for_event = 2;
->         support_device_change = 1;
->         support_nvme_encapsulation = true;
-> --
-> 2.25.1
->
+By default, the pretimeout notification shall occur one second earlier
+than the timeout.
 
---0000000000008925df05bfed4e8b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+V2:
+- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
 
-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
-GmgWG68YahkDuVSTTt2beZdyMeDwq/KifJFo18EkhcL3e7rmDAh8SniUI/0o3HX6hrgdmUI1wSdz
-uIVL/m6Ok9mIl2U5kvguitOSC0bVaQPfNzlj+7PCKBECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZc3VtaXQuc2F4ZW5hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUNz+JSIXEXl2uQ4Utcnx7FnFi
-hhowDQYJKoZIhvcNAQELBQADggEBAL0HLbxgPSW4BFbbIMN3A/ifBg4Lzaph8ARJOnZpGQivo9jG
-kQOd95knQi9Lm95JlBAJZCqXXj7QS+dnE71tsFeHWcHNNxHrTSwn4Xi5EqaRjLC6g4IEPyZHWDrD
-zzJidgfwQvfZONkf4IXnnrIEFle+26/gPs2kOjCeLMo6XGkNC4HNla1ol1htToQaNN8974pCqwIC
-rTXcWqD03VkqSOo+oPP/NAgFAZVfpeuBoK2Xv8zYlrF49Q4hxgFpWhaiDsZUSdWIS7vg1ak1n+6L
-3aHRY/lheSkOn/uJWXsqsTDp613hVtOTEDsHSQK32yTGr8jN/oRQgJASuUqQFdD4VzAxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwoQTpBmhDxj9JoN1ow
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBrKq7zGKQ1r/bnJaat73yH9rHyBVehl
-6x7VzGlMpRYZMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDQx
-NDExNDcwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQCzEaVtiqig2sg16jbBf+l/WDUAK5cgpz9AwtEUIZS49crCoTYU
-xgOkWeVvC+vkVkP6lU208+9+Onp+QASa5+/de+bCug8xNedFsKcfFSrHl9Fq82Iq7t7OAzd1Bb3c
-9vIDwmd+3o0Vurqh6003MiXnHOKKIHQf2WhoiR4tR13I0/PNXpQwqj2Pa81NAcUjMpDR9pJ/SceR
-UEePdzI7YKu+FlxfJksxS2ujiYcXhnBqCTz1Os7BAYfoJ9tEpOPRyME9l3kJKUvkS9oXW490fTOz
-WREN43Ji0KKAM3siMPcVnJXeIQEnKJqrUrL1bdKEdQepb9Kefh2ozBoc7Ce6kvIC
---0000000000008925df05bfed4e8b--
+V3:
+- Modify the pretimeout behavior, manually reset after the pretimeout
+- is processed and wait until timeout.
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/watchdog/mtk_wdt.c | 62 ++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 57 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+index 97ca993..7bef1e3
+--- a/drivers/watchdog/mtk_wdt.c
++++ b/drivers/watchdog/mtk_wdt.c
+@@ -25,6 +25,7 @@
+ #include <linux/reset-controller.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
++#include <linux/interrupt.h>
+ 
+ #define WDT_MAX_TIMEOUT		31
+ #define WDT_MIN_TIMEOUT		1
+@@ -234,18 +235,46 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+ 	void __iomem *wdt_base = mtk_wdt->wdt_base;
+ 	int ret;
+ 
+-	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
++	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	reg = ioread32(wdt_base + WDT_MODE);
+-	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
++	reg &= ~WDT_MODE_IRQ_EN;
++	if (wdt_dev->pretimeout)
++		reg |= WDT_MODE_IRQ_EN;
++	else
++		reg &= ~WDT_MODE_IRQ_EN;
+ 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+ 	iowrite32(reg, wdt_base + WDT_MODE);
+ 
+ 	return 0;
+ }
+ 
++static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
++				   unsigned int timeout)
++{
++	wdd->pretimeout = timeout;
++	return mtk_wdt_start(wdd);
++}
++
++static irqreturn_t mtk_wdt_isr(int irq, void *arg)
++{
++	struct watchdog_device *wdd = arg;
++	struct mtk_wdt_dev *mtk_wdt = watchdog_get_drvdata(wdd);
++	void __iomem *wdt_base = mtk_wdt->wdt_base;
++
++	watchdog_notify_pretimeout(wdd);
++	/*
++	 * Guaranteed to be reset when the timeout
++	 * expires under any situations
++	 */
++	mdelay(1000*wdd->pretimeout);
++	writel(WDT_SWRST_KEY, wdt_base + WDT_SWRST);
++
++	return IRQ_HANDLED;
++}
++
+ static const struct watchdog_info mtk_wdt_info = {
+ 	.identity	= DRV_NAME,
+ 	.options	= WDIOF_SETTIMEOUT |
+@@ -253,12 +282,21 @@ static const struct watchdog_info mtk_wdt_info = {
+ 			  WDIOF_MAGICCLOSE,
+ };
+ 
++static const struct watchdog_info mtk_wdt_pt_info = {
++	.identity	= DRV_NAME,
++	.options	= WDIOF_SETTIMEOUT |
++			  WDIOF_PRETIMEOUT |
++			  WDIOF_KEEPALIVEPING |
++			  WDIOF_MAGICCLOSE,
++};
++
+ static const struct watchdog_ops mtk_wdt_ops = {
+ 	.owner		= THIS_MODULE,
+ 	.start		= mtk_wdt_start,
+ 	.stop		= mtk_wdt_stop,
+ 	.ping		= mtk_wdt_ping,
+ 	.set_timeout	= mtk_wdt_set_timeout,
++	.set_pretimeout	= mtk_wdt_set_pretimeout,
+ 	.restart	= mtk_wdt_restart,
+ };
+ 
+@@ -267,7 +305,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct mtk_wdt_dev *mtk_wdt;
+ 	const struct mtk_wdt_data *wdt_data;
+-	int err;
++	int err, irq;
+ 
+ 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+ 	if (!mtk_wdt)
+@@ -279,7 +317,22 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mtk_wdt->wdt_base))
+ 		return PTR_ERR(mtk_wdt->wdt_base);
+ 
+-	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	irq = platform_get_irq(pdev, 0);
++	if (irq > 0) {
++		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
++							&mtk_wdt->wdt_dev);
++		if (err)
++			return err;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
++		mtk_wdt->wdt_dev.pretimeout = 1;
++	} else {
++		if (irq == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	}
++
+ 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+ 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+ 	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+@@ -360,7 +413,6 @@ static struct platform_driver mtk_wdt_driver = {
+ };
+ 
+ module_platform_driver(mtk_wdt_driver);
+-
+ module_param(timeout, uint, 0);
+ MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds");
+ 
+-- 
+2.7.4
+
