@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C8735F0C8
+	by mail.lfdr.de (Postfix) with ESMTP id 8273035F0C9
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 11:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhDNJZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 05:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350359AbhDNJYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:24:55 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A65C061574;
-        Wed, 14 Apr 2021 02:24:33 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94)
-        (envelope-from <benjamin@sipsolutions.net>)
-        id 1lWbl3-00BZS3-BF; Wed, 14 Apr 2021 11:24:25 +0200
-Message-ID: <c35e321fe3d3e6993c0d9a1ad638230a8f77866b.camel@sipsolutions.net>
-Subject: Re: [PATCH 0/4 POC] Allow executing code and syscalls in another
- address space
-From:   Benjamin Berg <benjamin@sipsolutions.net>
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Cc:     linux-um@lists.infradead.org, criu@openvz.org, avagin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Wed, 14 Apr 2021 11:24:19 +0200
-In-Reply-To: <9f8280540bbc6f3c857ac5749eeafcd145577da3.camel@sipsolutions.net>
-References: <20210414055217.543246-1-avagin@gmail.com>
-         <78cdee11-1923-595f-90d2-e236efbafa6a@cambridgegreys.com>
-         <9f8280540bbc6f3c857ac5749eeafcd145577da3.camel@sipsolutions.net>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-7RgkmP5TmgdmmPtYS/8k"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S1350413AbhDNJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 05:25:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35028 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350373AbhDNJY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:24:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618392275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eU2ARRKP2HKvM+HAl1bRPX/7KV3rG7+C5uUtQ33atXM=;
+        b=IGgGnIQtjcrIzFVumv1YMozZ6hq3GY17VTmUjGWyzKv4uT67rU/hjhLEcBTyrE9Zhyx0jR
+        kEPfF1i9Euyvldus/fo4V4iS0STdYp/aVRUQgQ8AM+AaUOwUjyb+wz6d3TQ33Js2M28Q82
+        g3v7PveyPuDVZ9u3lhscBZJ21+IPvwA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8BC63ACC4;
+        Wed, 14 Apr 2021 09:24:35 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 11:24:34 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
+Subject: Re: [PATCH 2/7] mm: memcontrol: bail out early when !mm in
+ get_mem_cgroup_from_mm
+Message-ID: <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
+References: <20210413065153.63431-1-songmuchun@bytedance.com>
+ <20210413065153.63431-3-songmuchun@bytedance.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-malware-bazaar-2: OK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413065153.63431-3-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 13-04-21 14:51:48, Muchun Song wrote:
+> When mm is NULL, we do not need to hold rcu lock and call css_tryget for
+> the root memcg. And we also do not need to check !mm in every loop of
+> while. So bail out early when !mm.
 
---=-7RgkmP5TmgdmmPtYS/8k
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+mem_cgroup_charge and other callers unconditionally drop the reference
+so how come this does not underflow reference count?
+ 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  mm/memcontrol.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index f229de925aa5..9cbfff59b171 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -901,20 +901,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+>  	if (mem_cgroup_disabled())
+>  		return NULL;
+>  
+> +	/*
+> +	 * Page cache insertions can happen without an
+> +	 * actual mm context, e.g. during disk probing
+> +	 * on boot, loopback IO, acct() writes etc.
+> +	 */
+> +	if (unlikely(!mm))
+> +		return root_mem_cgroup;
+> +
+>  	rcu_read_lock();
+>  	do {
+> -		/*
+> -		 * Page cache insertions can happen without an
+> -		 * actual mm context, e.g. during disk probing
+> -		 * on boot, loopback IO, acct() writes etc.
+> -		 */
+> -		if (unlikely(!mm))
+> +		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
+> +		if (unlikely(!memcg))
+>  			memcg = root_mem_cgroup;
+> -		else {
+> -			memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
+> -			if (unlikely(!memcg))
+> -				memcg = root_mem_cgroup;
+> -		}
+>  	} while (!css_tryget(&memcg->css));
+>  	rcu_read_unlock();
+>  	return memcg;
+> -- 
+> 2.11.0
 
-On Wed, 2021-04-14 at 09:34 +0200, Johannes Berg wrote:
-> On Wed, 2021-04-14 at 08:22 +0100, Anton Ivanov wrote:
-> > On 14/04/2021 06:52, Andrei Vagin wrote:
-> > > We already have process_vm_readv and process_vm_writev to read and
-> > > write
-> > > to a process memory faster than we can do this with ptrace. And now
-> > > it
-> > > is time for process_vm_exec that allows executing code in an
-> > > address
-> > > space of another process. We can do this with ptrace but it is much
-> > > slower.
-> > >=20
-> > > =3D Use-cases =3D
-> > >=20
-> > > Here are two known use-cases. The first one is =E2=80=9Capplication k=
-ernel=E2=80=9D
-> > > sandboxes like User-mode Linux and gVisor. In this case, we have a
-> > > process that runs the sandbox kernel and a set of stub processes
-> > > that
-> > > are used to manage guest address spaces. Guest code is executed in
-> > > the
-> > > context of stub processes but all system calls are intercepted and
-> > > handled in the sandbox kernel. Right now, these sort of sandboxes
-> > > use
-> > > PTRACE_SYSEMU to trap system calls, but the process_vm_exec can
-> > > significantly speed them up.
-> >=20
-> > Certainly interesting, but will require um to rework most of its
-> > memory=20
-> > management and we will most likely need extra mm support to make use
-> > of=20
-> > it in UML. We are not likely to get away just with one syscall there.
->=20
-> Might help the seccomp mode though:
->=20
-> https://patchwork.ozlabs.org/project/linux-um/list/?series=3D231980
-
-Hmm, to me it sounds like it replaces both ptrace and seccomp mode
-while completely avoiding the scheduling overhead that these techniques
-have. I think everything UML needs is covered:
-
- * The new API can do syscalls in the target memory space
-   (we can modify the address space)
- * The new API can run code until the next syscall happens
-   (or a signal happens, which means SIGALRM for scheduling works)
- * Single step tracing should work by setting EFLAGS
-
-I think the memory management itself stays fundamentally the same. We
-just do the initial clone() using CLONE_STOPPED. We don't need any stub
-code/data and we have everything we need to modify the address space
-and run the userspace process.
-
-Benjamin
-
---=-7RgkmP5TmgdmmPtYS/8k
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAmB2tMMACgkQq6ZWhpmF
-Y3DHNw/+OI7BooddkdmPX1QVWLfOOcxDuyD/drcEgE5/m7sjUK4zdG+Va3SlAOC+
-Nq8D0N3vCjbjxmebMsNDLS47RIy6OaKrpl0iEZkokNIXVkH0tQrehKNLiKdN20cf
-Ktu6yNW+F1QT4DC/M9MHVvgRHzxxJb34beVdUXOCPcqKE1fMHAHorHRrJ2Pn6Z+2
-whcdWFKkD+k8dPcQ8SV+djNebYqK/8tkc/nnGbi/NXXJ05eLXqDRSgWMDPYQwqsV
-5ngFDYVCIqXS21nNjQaw1YbxevY4F58w82LLGoumMygx9VCYs6JCm7eWF2ommPuP
-DF4OdXD0/JTZOv0bPc7dZgB3YcpkL6KnBSj52Ps7AmVgtF8+pGc/syimY3cGVGsR
-+2IbShWAFAS5oE04GVc53iRZaqLjO2gryPHqE3QGrcSMZzAxP3F6m6ne7exDvwJO
-+aNbR3zcJWuFtcIgkhVSIBJRRNyQNsAovZypSuYNgCuJbNk7fYpYW8KEkf6PBhhJ
-aPLvTOEgreYeKknKl4P2NGpkr/dPjQZtucXQIu5+LflL4fFR61cqi6VskAhuDThj
-j2Zf8PvWVY5BqpnFSDHa1jucsWsIzthSZbh12NuYi8yRfiDMoUYfoB9dPbm7GfzK
-n1H6HwrMZzFSPXBGspLWzGGyStY0IqX/r+KpSWmQqcsH8s+5wDQ=
-=MzgV
------END PGP SIGNATURE-----
-
---=-7RgkmP5TmgdmmPtYS/8k--
-
+-- 
+Michal Hocko
+SUSE Labs
