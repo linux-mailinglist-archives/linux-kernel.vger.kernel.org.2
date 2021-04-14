@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC55535FDB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCDA35FDB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 00:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhDNWTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 18:19:52 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:44772 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhDNWTu (ORCPT
+        id S232202AbhDNWUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 18:20:50 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:40542 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230234AbhDNWUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:19:50 -0400
-Received: by mail-oi1-f169.google.com with SMTP id e66so6935522oif.11;
-        Wed, 14 Apr 2021 15:19:28 -0700 (PDT)
+        Wed, 14 Apr 2021 18:20:47 -0400
+Received: by mail-ot1-f49.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so20806170otb.7;
+        Wed, 14 Apr 2021 15:20:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=shhxLQuTrS6CU0G16xzkxHsbk3trBrwF7tum2COVf1Q=;
-        b=ECOjp2jCDFesyp9HbcmutF6IqPnktJvmu8XagCT1tUf0+RFlRGUcjTzG8xo3RIdy/X
-         GvqZpCeRK3ejOKFSA8iraEUkp7BggRyg1Fs+6JCOyxEouNDBQ5iVxwuidxne/IPLYCVY
-         tPSso4g5G8ScE9t3d0BsbTaJ2O6QKnp5UuJyGeiB522KwloX8oY7Yl3X7IXeX9G4MVZq
-         Ty7uH3qJuguiKM3hnqw6fOwoDYYa3WiW5s/9iauKBsbSNsSC+s+Ui1KOimVU/KARfFpH
-         oGhV4mPkG0P41Xv+/qHUkna9iqbB+1VmytjtX4OB7Cko71N5qU7p3ohYf9BsbM1YMp04
-         9z8g==
-X-Gm-Message-State: AOAM532kDPkxYIYk9bui7bc9ljpcuLb2rt310K59qdTmwReVa6HLfT8M
-        ZnPaf80wtYQ4b2qMQ67Byg==
-X-Google-Smtp-Source: ABdhPJx6GppsvAcMfhCc/TcWFOcFYEwW+XxDXo6r8z6IJFxygHtL17xNAfoh1RHqI7F2eLpl2oyvAw==
-X-Received: by 2002:aca:b787:: with SMTP id h129mr372861oif.58.1618438768152;
-        Wed, 14 Apr 2021 15:19:28 -0700 (PDT)
+        bh=jFyrIpeFo5U8A0ub5rVfkRP1qf9ceKJAtWSaPoYqoA8=;
+        b=liW0NkZTPn77KvqzQhXgV9JIO467JfLxrxwF5P8Yqj89k10k5kA1ucWfMj/If1gh/w
+         ZbLtr8NNwlurhjAsEuHwCPS9ZoboHxPMuEcVtvSOY91pL0ntcDpcy7rHPuhENIHSJM88
+         H+VZvZLpfS1oAmosLfL6QrlSq6UV5NIxME8NcE5elzTXkIEVYX4hi0vnK5iRdSKTgZSQ
+         QKkWIWhzLOYeICtCzG4vhipR8cZ/Go3S4plfEN2sSIMkxxfsJNZdxA7i+6HXCXPhBPeU
+         qdr3Ijo6Rp+VJq1AuTlOEaqO2/wUhpsnb4KCZtMHweE+MZLwLnNqjG8mT9y4UwXQGByz
+         AprA==
+X-Gm-Message-State: AOAM530CWzAevz0kIQGsxnr/Vh/pTmzwxGXh5BPBBmDeMBE9jLYriRiJ
+        ds1wCmTD0YLZl3dCw1+elQ==
+X-Google-Smtp-Source: ABdhPJzasy2C8tx84w/qIT/2CBlJzhuZBN+y3/61CKGEdRa99Ugdd+1UWwRCiRj4qKg1CHgwIOuJig==
+X-Received: by 2002:a05:6830:2398:: with SMTP id l24mr201288ots.349.1618438824647;
+        Wed, 14 Apr 2021 15:20:24 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i4sm195366oik.21.2021.04.14.15.19.26
+        by smtp.gmail.com with ESMTPSA id l4sm188103oic.26.2021.04.14.15.20.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 15:19:27 -0700 (PDT)
-Received: (nullmailer pid 69085 invoked by uid 1000);
-        Wed, 14 Apr 2021 22:19:26 -0000
-Date:   Wed, 14 Apr 2021 17:19:26 -0500
+        Wed, 14 Apr 2021 15:20:24 -0700 (PDT)
+Received: (nullmailer pid 70448 invoked by uid 1000);
+        Wed, 14 Apr 2021 22:20:23 -0000
+Date:   Wed, 14 Apr 2021 17:20:23 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        intel-gfx@lists.freedesktop.org, devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Qii Wang <qii.wang@mediatek.com>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [Intel-gfx] [PATCH v19 2/6] dt-binding: i2c: mt65xx: add
- vbus-supply property
-Message-ID: <20210414221926.GA69036@robh.at.kernel.org>
-References: <20210414172916.2689361-1-hsinyi@chromium.org>
- <20210414172916.2689361-3-hsinyi@chromium.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     robh+dt@kernel.org, enric.balletbo@collabora.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, zhangqing@rock-chips.com,
+        heiko@sntech.de, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v7 08/11] dt-bindings: add power-domain header for RK3568
+ SoCs
+Message-ID: <20210414222023.GA70402@robh.at.kernel.org>
+References: <20210414211856.12104-1-jbx6244@gmail.com>
+ <20210414211856.12104-9-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414172916.2689361-3-hsinyi@chromium.org>
+In-Reply-To: <20210414211856.12104-9-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 01:29:12 +0800, Hsin-Yi Wang wrote:
-> Add vbus-supply property for mt65xx. The regulator can be passed into
-> core and turned off during suspend/sleep to reduce power consumption.
+On Wed, 14 Apr 2021 23:18:53 +0200, Johan Jonker wrote:
+> From: Elaine Zhang <zhangqing@rock-chips.com>
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> According to a description from TRM, add all the power domains
+> 
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 > ---
->  Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt | 1 +
->  1 file changed, 1 insertion(+)
+>  include/dt-bindings/power/rk3568-power.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 include/dt-bindings/power/rk3568-power.h
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
