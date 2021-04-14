@@ -2,179 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06EC35FE92
+	by mail.lfdr.de (Postfix) with ESMTP id EBB0135FE93
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 01:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhDNXrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 19:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43260 "EHLO
+        id S229884AbhDNXrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 19:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhDNXrg (ORCPT
+        with ESMTP id S229774AbhDNXrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 19:47:36 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B5BC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:47:13 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id a1so25129218ljp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 16:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+TpZa+C9cCQwz4Q2nu+eQulPH6EC1ZhAKJ0Pt2gzF58=;
-        b=CjmCZvhyG1hOPzQ0l7b1Br0e4i7SFJ8KrImnZRGRP0SCVDXXfHW4HoDlWBvTbq0WSv
-         fcLuenxPR5TSbfjQ5WLbNxs4D/NVnzepr7FK1GKTd+9yxFp2VJ0GJiai7n5rL72Uq1aM
-         k3WkJ5gAaYpFl4qQnWX8ZCTVosqEi7TA2Lv6054ltoIuPK4G4ZQ4jvl6eKT82QnjkBAF
-         Q5ZPhd81n9Xkk9fA61LKnmq+9yejt3s3XqOHeHq+/XeTbgYIGpvlwr19zfoDp+QsqCyQ
-         vHm1OgzZtwmFWKakdNo6gbNopibS26GcSs32BtOUqA4UMcnY0TV3dAeu1Dx9xqoPwCr1
-         sl9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+TpZa+C9cCQwz4Q2nu+eQulPH6EC1ZhAKJ0Pt2gzF58=;
-        b=EH4NGcU3yjNnXVK5ojTmBavbv48PcaZib41z0boAPqVX/llFb819aaXtkxVokRx7DE
-         tTa9iihc1j8RVI/E5ECsHt2lITe2iQ6EWnieex6UuDUgl7VQyQVKpNqWXemAV0z25OI9
-         uPBrrb1PW5ptw5Ygxo4IiHyqc+i/0yJd6lMWLgEKTjUhcl4CTw7It8okssuEKw7+nW5t
-         BLnMqk0RFwTGOtWgRuy0U1S/t0rTZWU/zSa5U6mLTQiATDxEdyQ3gxN2MhUZQHEP9Jv2
-         ybBfAQRdkJZisGU1QyQVjzILCzsGF0Q1HODQXZ/0AcpXVr2F3nGQcJFPoevY3KfCwLsS
-         HijA==
-X-Gm-Message-State: AOAM5335wUOpslGDWXrs1zLYz7vMeEOtokoH37QUpeXPp66U+qTmdkYm
-        iSlf0anXZkf5D6lwrumVk1jxJW29CaUVkMOcTrPQHA==
-X-Google-Smtp-Source: ABdhPJx1061aL/GqHoj3QkAEX++DNSP6KXBGITCMLiN6jW2qaQa8bGDJNhOL8TCspjkGwTLyMoKgn+vBboav1U+bOOg=
-X-Received: by 2002:a2e:b817:: with SMTP id u23mr249392ljo.116.1618444031762;
- Wed, 14 Apr 2021 16:47:11 -0700 (PDT)
+        Wed, 14 Apr 2021 19:47:37 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE10C061761;
+        Wed, 14 Apr 2021 16:47:14 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1340A51E;
+        Thu, 15 Apr 2021 01:47:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618444033;
+        bh=KU83gbnQL3jFn4Ena/atI8KTxMRJFA0STYHmiS3VcfE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kExSRd+mHVC7QTDDUIOr3ySJk3zBxibaOR4gGv0ntUfLVlN1Vd1lVk3NI/J4m4kOP
+         hKanaf4b8Huc/BFtGy2IRydsBXksxDD4pLaKnnxJA57/XukY05WPB2pH4QgKwpaK3g
+         E1xlcWZb1QUg4t0QqyUXXX4W2dMmR3qOavEaiDng=
+Date:   Thu, 15 Apr 2021 02:47:12 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: media: max9286: Define
+ 'maxim,gpio-poc'
+Message-ID: <YHd/AKIfxIHhTjWO@pendragon.ideasonboard.com>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-2-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-4-ojeda@kernel.org>
-In-Reply-To: <20210414184604.23473-4-ojeda@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 14 Apr 2021 16:46:59 -0700
-Message-ID: <CAKwvOd=YV1Ck3hYKEC9035o+yghy_Oh1VWAyeGLQP5B9SR9xLw@mail.gmail.com>
-Subject: Re: [PATCH 03/13] Makefile: Generate CLANG_FLAGS even in GCC builds
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210414135128.180980-2-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:48 AM <ojeda@kernel.org> wrote:
->
-> From: Miguel Ojeda <ojeda@kernel.org>
->
-> To support Rust under GCC-built kernels, we need to save the flags that
-> would have been passed if the kernel was being compiled with Clang.
->
-> The reason is that bindgen -- the tool we use to generate Rust bindings
-> to the C side of the kernel -- relies on libclang to parse C. Ideally:
->
->   - bindgen would support a GCC backend (requested at [1]),
->
->   - or the Clang driver would be perfectly compatible with GCC,
->     including plugins. Unlikely, of course, but perhaps a big
->     subset of configs may be possible to guarantee to be kept
->     compatible nevertheless.
->
-> This is also the reason why GCC builds are very experimental and some
-> configurations may not work (e.g. GCC_PLUGIN_RANDSTRUCT). However,
-> we keep GCC builds working (for some example configs) in the CI
-> to avoid diverging/regressing further, so that we are better prepared
-> for the future when a solution might become available.
->
-> [1] https://github.com/rust-lang/rust-bindgen/issues/1949
->
-> Link: https://github.com/Rust-for-Linux/linux/issues/167
->
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Co-developed-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Signed-off-by: Geoffrey Thomas <geofft@ldpreload.com>
-> Co-developed-by: Finn Behrens <me@kloenk.de>
-> Signed-off-by: Finn Behrens <me@kloenk.de>
-> Co-developed-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Signed-off-by: Adam Bratschi-Kaye <ark.email@gmail.com>
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@google.com>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Hi Jacopo,
+
+Thank you for the patch.
+
+On Wed, Apr 14, 2021 at 03:51:24PM +0200, Jacopo Mondi wrote:
+> Define a new vendor property in the maxim,max9286 binding schema.
+> 
+> The new property allows to declare that the remote camera
+> power-over-coax is controlled by one of the MAX9286 gpio lines.
+> 
+> As it is currently not possible to establish a regulator as consumer
+> of the MAX9286 gpio controller for this purpose, the property allows to
+> declare that the camera power is controlled by the MAX9286 directly.
+> 
+> The property accepts a gpio-index (0 or 1) and one line polarity
+> flag as defined by dt-bindings/gpio/gpio.h.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
->  Makefile | 27 ++++++++++++++++-----------
->  1 file changed, 16 insertions(+), 11 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index d4784d181123..9c75354324ed 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -559,26 +559,31 @@ ifdef building_out_of_srctree
->         { echo "# this is build directory, ignore it"; echo "*"; } > .gitignore
->  endif
->
-> -# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
-> -# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-> -# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-> -# and from include/config/auto.conf.cmd to detect the compiler upgrade.
-> -CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
-> +TENTATIVE_CLANG_FLAGS := -Werror=unknown-warning-option
->
-> -ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->  ifneq ($(CROSS_COMPILE),)
-> -CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> +TENTATIVE_CLANG_FLAGS  += --target=$(notdir $(CROSS_COMPILE:%-=%))
->  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> -CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> +TENTATIVE_CLANG_FLAGS  += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
->  GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
->  endif
->  ifneq ($(GCC_TOOLCHAIN),)
-> -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
-> +TENTATIVE_CLANG_FLAGS  += --gcc-toolchain=$(GCC_TOOLCHAIN)
->  endif
->  ifneq ($(LLVM_IAS),1)
-> -CLANG_FLAGS    += -no-integrated-as
-> +TENTATIVE_CLANG_FLAGS  += -no-integrated-as
->  endif
-> -CLANG_FLAGS    += -Werror=unknown-warning-option
+>  .../bindings/media/i2c/maxim,max9286.yaml     | 53 ++++++++++++++++++-
+>  1 file changed, 52 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> index ee16102fdfe7..480a491f3744 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> @@ -70,6 +70,24 @@ properties:
+>        a remote serializer whose high-threshold noise immunity is not enabled
+>        is 100000 micro volts
+>  
+> +  maxim,gpio-poc:
+
+I would have written poc-gpio to match the order of the GPIO bindings
+syntax.
+
+> +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
+> +    minItems: 2
+> +    maxItems: 2
+> +    description: |
+> +      Identifier of gpio line that controls Power over Coax to the cameras and
+
+I'd write "Index of the MAX9286 GPIO output that ..." to make it clear
+that this is not a generic GPIO.
+
+> +      the associated polarity flag (GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW)
+> +      as defined in <include/dt-bindings/gpio/gpio.h>.
 > +
-> +export TENTATIVE_CLANG_FLAGS
+> +      When the remote cameras power is controlled by one of the MAX9286 gpio
+> +      lines, this property has to be used to specify which line among the two
+> +      available ones controls the remote camera power enablement.
+> +
+> +      When this property is used it is not possible to register a gpio
+> +      controller as the gpio lines are controlled directly by the MAX9286 and
+> +      not available for consumers, nor the 'poc-supply' property should be
+> +      specified.
 
-I'm ok with this approach, but I'm curious:
-If the user made a copy of the CLANG_FLAGS variable and modified its
-copy, would TENTATIVE_CLANG_FLAGS even be necessary? IIUC,
-TENTATIVE_CLANG_FLAGS is used to filter out certain flags before
-passing them to bindgen?
+Only one of the two lines would be controlled directly. Shouldn't we
+still register a GPIO controller for the other line ?
 
-Or, I'm curious whether you even need to rename this variable (or
-create a new variable) at all? Might make for a shorter diff if you
-just keep the existing identifier (CLANG_FLAGS), but create them
-unconditionally (at least not conditional on CC=clang).
+Could you also mention somewhere that the first item in the array should
+be 0 or 1 ? It may be hard to express in a YAML schema, so I'm fine just
+documenting it in the description.
 
+I've been wondering whether this would be a common enough issue that it
+could justify support in the GPIO core to handle consumer-provider
+loops, but even if that happens at some point in the future, I think the
+proposal here is good enough and we won't need to switch.
 
 > +
-> +# The expansion should be delayed until arch/$(SRCARCH)/Makefile is included.
-> +# Some architectures define CROSS_COMPILE in arch/$(SRCARCH)/Makefile.
-> +# CC_VERSION_TEXT is referenced from Kconfig (so it needs export),
-> +# and from include/config/auto.conf.cmd to detect the compiler upgrade.
-> +CC_VERSION_TEXT = $(shell $(CC) --version 2>/dev/null | head -n 1 | sed 's/\#//g')
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> @@ -182,7 +200,6 @@ required:
+>    - reg
+>    - ports
+>    - i2c-mux
+> -  - gpio-controller
+>  
+>  additionalProperties: false
+>  
+> @@ -327,4 +344,38 @@ examples:
+>            };
+>          };
+>        };
 > +
-> +ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> +CLANG_FLAGS    += $(TENTATIVE_CLANG_FLAGS)
->  KBUILD_CFLAGS  += $(CLANG_FLAGS)
->  KBUILD_AFLAGS  += $(CLANG_FLAGS)
->  export CLANG_FLAGS
-> --
-> 2.17.1
->
+> +      /*
+> +       * Example of a deserializer that controls the camera Power over Coax
+> +       * through one of its gpio lines.
+> +       */
+> +      gmsl-deserializer@6c {
+> +        compatible = "maxim,max9286";
+> +        reg = <0x6c>;
+> +        enable-gpios = <&gpio 14 GPIO_ACTIVE_HIGH>;
+> +
+> +        /*
+> +         * The remote camera power is controlled by MAX9286 GPIO line #0.
+> +         * No 'poc-supply' nor 'gpio-controller' are specified.
+> +         */
+> +        maxim,gpio-poc = <0 GPIO_ACTIVE_LOW>;
+> +
+> +        /*
+> +         * Do not describe connections as they're the same as in the previous
+> +         * example.
+> +         */
+> +        ports {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          port@4 {
+> +            reg = <4>;
+> +          };
+> +        };
+> +
+> +        i2c-mux {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +        };
+> +      };
+>      };
 
+It's customary to indent DT examples with 4 spaces. The existing
+examples use two spaces, so maybe a patch on top of this would be useful
+to increase readability ?
 
---
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+-- 
+Regards,
+
+Laurent Pinchart
