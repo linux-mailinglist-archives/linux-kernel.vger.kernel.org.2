@@ -2,166 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA4235F7A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3BC35F7A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbhDNP2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47896 "EHLO mail.kernel.org"
+        id S1352243AbhDNP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:29:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233670AbhDNP20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:28:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 335F1611F2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 15:28:05 +0000 (UTC)
+        id S1350223AbhDNP3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 11:29:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A122D61158;
+        Wed, 14 Apr 2021 15:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618414085;
-        bh=LwQCTRWb7Rq4DqiUTefKtvt2QC/nEsSrSyc5Ht5pJyk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jYLbWgtCHR/SP++hgXjyN7wsiKuNlKxfly5lcNNBft3+xf2v1jpLuQDj4Ner/KcK3
-         mNm39W5OUHNihuDvVOIns3IeaihceBebDx5+mgrqVLKqCdAjbOrEfEuTmBfDB0ssj5
-         /iU1bFA2VIoe4wz00BLTNtk1l+GImmY9ryyZvqVUimCHotaHD0qMAfWVbB3bzPxWUC
-         oYHJTuuvl6t2Z4prUI0xsw61kA2tz0NDy1gCWPczMkEeReEimUb+HZU61tXDonHeIW
-         pQDOcoHfaBagjhH6Ywvpip1iiWRUrzbXFhoO6j4NSsc3OaMnvI9RDB9zD9fKq8Y+Sj
-         Z5DBaQ7cv8WvQ==
-Received: by mail-oo1-f52.google.com with SMTP id c12-20020a4ae24c0000b02901bad05f40e4so4686414oot.4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 08:28:05 -0700 (PDT)
-X-Gm-Message-State: AOAM530HYaTU+3BuMHKmv7g4uENY+8FW3D4uc5pGMsi/xevIJ00M3ksj
-        58YZLYt1Y+5c1qb2ACQzquTIhsN9DyNEgpeHFY8=
-X-Google-Smtp-Source: ABdhPJz+JSWz1Dqi1C/C62MRuoCEpRmSe86sqIrI/r3CxHcywLXtc82obRQrItgRzp6gBYbcXpltBvEt0/ghCzKR6Q8=
-X-Received: by 2002:a4a:a588:: with SMTP id d8mr126051oom.45.1618414084358;
- Wed, 14 Apr 2021 08:28:04 -0700 (PDT)
+        s=k20201202; t=1618414130;
+        bh=VOjjidsArMWHVu6+STthr6t7XDFmwhg8C/WgwQsOgao=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DMiddRMTdBxF2WA+pSHF0xc1KgYlNzxRuGZTT1AtS3/gVz/BMF6a3M18AuP5l0pKy
+         VnoMbAi30WmQhjunDjVhIMdeUwMzeSvc6/P6PosBb05jZizgFajzJuqY4DWMr8Kfty
+         NDvbDpT8/uXGzjxNxA6ATE6RJMz7W2xI3qbzS9OqEyF9dnLVfTTGayPaQGkig61jfi
+         yNRhi+e130pPjy0Q4vBOqmpZ5PAe3EeBC+3nIvHsVVfrM7TKbZjU3Jf3+939QOUHmg
+         HwCE3Sc6v5mhI3JAOqPWiSXDFuLcVpX2B/A0Vw0KrO5TMTqYssB/KdhjScZAvhnLBx
+         v8C4yC75MfMeg==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     dm-devel@redhat.com
+Cc:     gregkh@linuxfoundation.org, snitzer@redhat.com,
+        kernel-team@android.com, linux-kernel@vger.kernel.org,
+        agk@redhat.com, Jaegeuk Kim <jaegeuk@google.com>,
+        stable@vger.kernel.org
+Subject: [PATCH RESEND] dm verity: fix not aligned logical block size of RS roots IO
+Date:   Wed, 14 Apr 2021 08:28:28 -0700
+Message-Id: <20210414152828.760900-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-References: <20210407172607.8812-1-rppt@kernel.org> <20210407172607.8812-2-rppt@kernel.org>
- <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
-In-Reply-To: <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 14 Apr 2021 17:27:53 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGw97epyP2HdHjA8Yp6+VF1j5xmd0AgVBBv3k+h_B610w@mail.gmail.com>
-Message-ID: <CAMj1kXGw97epyP2HdHjA8Yp6+VF1j5xmd0AgVBBv3k+h_B610w@mail.gmail.com>
-Subject: Re: [RFC/RFT PATCH 1/3] memblock: update initialization of reserved pages
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 at 17:14, David Hildenbrand <david@redhat.com> wrote:
->
-> On 07.04.21 19:26, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > The struct pages representing a reserved memory region are initialized
-> > using reserve_bootmem_range() function. This function is called for each
-> > reserved region just before the memory is freed from memblock to the buddy
-> > page allocator.
-> >
-> > The struct pages for MEMBLOCK_NOMAP regions are kept with the default
-> > values set by the memory map initialization which makes it necessary to
-> > have a special treatment for such pages in pfn_valid() and
-> > pfn_valid_within().
->
-> I assume these pages are never given to the buddy, because we don't have
-> a direct mapping. So to the kernel, it's essentially just like a memory
-> hole with benefits.
->
-> I can spot that we want to export such memory like any special memory
-> thingy/hole in /proc/iomem -- "reserved", which makes sense.
->
-> I would assume that MEMBLOCK_NOMAP is a special type of *reserved*
-> memory. IOW, that for_each_reserved_mem_range() should already succeed
-> on these as well -- we should mark anything that is MEMBLOCK_NOMAP
-> implicitly as reserved. Or are there valid reasons not to do so? What
-> can anyone do with that memory?
->
-> I assume they are pretty much useless for the kernel, right? Like other
-> reserved memory ranges.
->
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-On ARM, we need to know whether any physical regions that do not
-contain system memory contain something with device semantics or not.
-One of the examples is ACPI tables: these are in reserved memory, and
-so they are not covered by the linear region. However, when the ACPI
-core ioremap()s an arbitrary memory region, we don't know whether it
-is mapping a memory region or a device region unless we keep track of
-this in some way. (Device mappings require device attributes, but
-firmware tables require memory attributes, as they might be accessed
-using misaligned reads)
+commit df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
+made dm_bufio->block_size 1024, if f->roots is 2. But, that gives the below EIO
+if the logical block size of the device is 4096, given v->data_dev_block_bits=12.
 
+E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
+E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
 
->
-> >
-> > Split out initialization of the reserved pages to a function with a
-> > meaningful name and treat the MEMBLOCK_NOMAP regions the same way as the
-> > reserved regions and mark struct pages for the NOMAP regions as
-> > PageReserved.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   mm/memblock.c | 23 +++++++++++++++++++++--
-> >   1 file changed, 21 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/memblock.c b/mm/memblock.c
-> > index afaefa8fc6ab..6b7ea9d86310 100644
-> > --- a/mm/memblock.c
-> > +++ b/mm/memblock.c
-> > @@ -2002,6 +2002,26 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
-> >       return end_pfn - start_pfn;
-> >   }
-> >
-> > +static void __init memmap_init_reserved_pages(void)
-> > +{
-> > +     struct memblock_region *region;
-> > +     phys_addr_t start, end;
-> > +     u64 i;
-> > +
-> > +     /* initialize struct pages for the reserved regions */
-> > +     for_each_reserved_mem_range(i, &start, &end)
-> > +             reserve_bootmem_region(start, end);
-> > +
-> > +     /* and also treat struct pages for the NOMAP regions as PageReserved */
-> > +     for_each_mem_region(region) {
-> > +             if (memblock_is_nomap(region)) {
-> > +                     start = region->base;
-> > +                     end = start + region->size;
-> > +                     reserve_bootmem_region(start, end);
-> > +             }
-> > +     }
-> > +}
-> > +
-> >   static unsigned long __init free_low_memory_core_early(void)
-> >   {
-> >       unsigned long count = 0;
-> > @@ -2010,8 +2030,7 @@ static unsigned long __init free_low_memory_core_early(void)
-> >
-> >       memblock_clear_hotplug(0, -1);
-> >
-> > -     for_each_reserved_mem_range(i, &start, &end)
-> > -             reserve_bootmem_region(start, end);
-> > +     memmap_init_reserved_pages();
-> >
-> >       /*
-> >        * We need to use NUMA_NO_NODE instead of NODE_DATA(0)->node_id
-> >
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Let's use f->roots for dm_bufio iff it's aligned to v->data_dev_block_bits.
+
+Fixes: df7b59ba9245 ("dm verity: fix FEC for RS roots unaligned to block size")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+---
+ drivers/md/dm-verity-fec.c | 11 ++++++++---
+ drivers/md/dm-verity-fec.h |  1 +
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
+index 66f4c6398f67..cea2b3789736 100644
+--- a/drivers/md/dm-verity-fec.c
++++ b/drivers/md/dm-verity-fec.c
+@@ -65,7 +65,7 @@ static u8 *fec_read_parity(struct dm_verity *v, u64 rsb, int index,
+ 	u8 *res;
+ 
+ 	position = (index + rsb) * v->fec->roots;
+-	block = div64_u64_rem(position, v->fec->roots << SECTOR_SHIFT, &rem);
++	block = div64_u64_rem(position, v->fec->io_size, &rem);
+ 	*offset = (unsigned)rem;
+ 
+ 	res = dm_bufio_read(v->fec->bufio, block, buf);
+@@ -154,7 +154,7 @@ static int fec_decode_bufs(struct dm_verity *v, struct dm_verity_fec_io *fio,
+ 
+ 		/* read the next block when we run out of parity bytes */
+ 		offset += v->fec->roots;
+-		if (offset >= v->fec->roots << SECTOR_SHIFT) {
++		if (offset >= v->fec->io_size) {
+ 			dm_bufio_release(buf);
+ 
+ 			par = fec_read_parity(v, rsb, block_offset, &offset, &buf);
+@@ -742,8 +742,13 @@ int verity_fec_ctr(struct dm_verity *v)
+ 		return -E2BIG;
+ 	}
+ 
++	if ((f->roots << SECTOR_SHIFT) & ((1 << v->data_dev_block_bits) - 1))
++		f->io_size = 1 << v->data_dev_block_bits;
++	else
++		f->io_size = v->fec->roots << SECTOR_SHIFT;
++
+ 	f->bufio = dm_bufio_client_create(f->dev->bdev,
+-					  f->roots << SECTOR_SHIFT,
++					  f->io_size,
+ 					  1, 0, NULL, NULL);
+ 	if (IS_ERR(f->bufio)) {
+ 		ti->error = "Cannot initialize FEC bufio client";
+diff --git a/drivers/md/dm-verity-fec.h b/drivers/md/dm-verity-fec.h
+index 42fbd3a7fc9f..3c46c8d61883 100644
+--- a/drivers/md/dm-verity-fec.h
++++ b/drivers/md/dm-verity-fec.h
+@@ -36,6 +36,7 @@ struct dm_verity_fec {
+ 	struct dm_dev *dev;	/* parity data device */
+ 	struct dm_bufio_client *data_bufio;	/* for data dev access */
+ 	struct dm_bufio_client *bufio;		/* for parity data access */
++	size_t io_size;		/* IO size for roots */
+ 	sector_t start;		/* parity data start in blocks */
+ 	sector_t blocks;	/* number of blocks covered */
+ 	sector_t rounds;	/* number of interleaving rounds */
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
