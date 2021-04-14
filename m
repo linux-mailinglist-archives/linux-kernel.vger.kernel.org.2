@@ -2,83 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32C535F1C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 12:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD1E35F1CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhDNK5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 06:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234570AbhDNK5S (ORCPT
+        id S1346667AbhDNK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 06:59:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42308 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343757AbhDNK7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:57:18 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A50C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:56:57 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id v26so20211656iox.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xJdZSbHTyMBCsVp7BAaTCxdXi6B0tpl9od8+wlQ9J+g=;
-        b=TEAgfFBFUB3b0fB+QOyjxFBwYw0U5RxeWNc26RxJa8ik23iALaiCaRngy5LMzw9L8o
-         ngDCjNrtS7pw5RNK5LCLafOfxKX5DMh1H3zLWoCqWVa9aaP7xk6xhD22vEEhdjO/3zMq
-         4tbPUaynT31cZgfRtXvFhfpcpcSWqp//AzYq0=
+        Wed, 14 Apr 2021 06:59:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618397937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rs2PlOx2xiUIBK9k56hAPqdrqHZQ9ahIYUEPYnsCJD4=;
+        b=gaBRz5uiVPAGbXE2SRiJzDhsNiDYZX6vnCuelr/LDueWLVqhU4XMBANAHtw6WcfiFnsP6t
+        U4wXfDXEOraUR6oj0GfdTnqqqDYjRvhXVE5K33/LyehHRcbpioArIL8jmjYRaUkOZYoWtJ
+        o14cW2gL2maq1cL34+UraX+ILyMSPx8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-afeA1wY5O5uXG_oos8WqWA-1; Wed, 14 Apr 2021 06:58:53 -0400
+X-MC-Unique: afeA1wY5O5uXG_oos8WqWA-1
+Received: by mail-ed1-f69.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so1346600eds.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 03:58:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xJdZSbHTyMBCsVp7BAaTCxdXi6B0tpl9od8+wlQ9J+g=;
-        b=GdpzSmCInUpHcOlfWsV+yX15iCq0gSaEu6PJmLyCrrB+ic4jk/8cPKHH5pFuBSFN0z
-         RkbewqzwkUIF3DrW6YqHwmU9+PMB04M9Df9YEbpSTbpRgd2myxAVgztEwIYn3lTxkGK1
-         0/Tt40mgjLxWC+3rxzvlo0oWcvtTnYPyRc+kl+NNrsUMilKBlfIkOtvQWE9pp+TELRQA
-         EvKQDuduwqdgbK5nEnTim7TsvgryVkHYaM0NqM7Qc12nrMvmG5l6EPuSKd9RQl8b63P7
-         7pL0J5eLKN1sLeMGGlkJ4Rccf/0yuM4cvEseaYlkSY5VAd4dQcNMBykTV207wQHIMO8T
-         tm7A==
-X-Gm-Message-State: AOAM532vD9pqRz875H7r7h2jZwhLEKvTrd8WMjAnygC4P9FHE/BvZUJx
-        Jj+TzuOWi4tjX0DsBk0fzNba9TmQBnvcc1LbXdSrBulU3Lc=
-X-Google-Smtp-Source: ABdhPJzbOpygaeq8A7GMJvLn+Om67N8hLLaO1CKhbeDgYPkDMIxrniuJJUuaib3hhaIExfwv2HbHOYjtPypZ2p0Mt3M=
-X-Received: by 2002:a02:b197:: with SMTP id t23mr37906352jah.125.1618397816954;
- Wed, 14 Apr 2021 03:56:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-2-revest@chromium.org>
- <CAEf4BzaUeE7EPObUuS=NPw9qmssxJ=i6+M1v6A3=wvLVGOKkXg@mail.gmail.com> <CABRcYmKjcZD4px3QwjqMZozOJDTXV+fWvf+w2R=ssPyBOJmMTg@mail.gmail.com>
-In-Reply-To: <CABRcYmKjcZD4px3QwjqMZozOJDTXV+fWvf+w2R=ssPyBOJmMTg@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 14 Apr 2021 12:56:46 +0200
-Message-ID: <CABRcYmJz_yGqJx_suu8JN8SkHZm10RaSS5xx=f7QDZFFNS9twg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Rs2PlOx2xiUIBK9k56hAPqdrqHZQ9ahIYUEPYnsCJD4=;
+        b=mo5D7yHdqpLJ95+zmf1CS0F7x6wye5eOHfUE24tD8qTc2cUTyeHFpzg4wtWlkpybhf
+         WD6rW9eaX+c7RU52HKDmXFF+xw5uHS5jNH9uGd8Zg+eVCt7Z/gKG3/uNip5euFrvvEng
+         xOUF7/BBK7RXqm0TXoIgBlW+HJpZhhG66dhtj8Zh9ySMHQ1LdEEWDBS1UOcGHtmwqnLY
+         v/ZeExiQ5EdgNmw4vkS0b4F7dvW0ANdXdyNLESImkIEjJO3wC5Y2yYANHhkpGQPGa1L7
+         9w1NKPUwm3HkWdQ7iGREqDqCNJb7XJfIZirW+ggMoUmV//iguzaTC/Pv7elc2dKVon17
+         jC1Q==
+X-Gm-Message-State: AOAM532IWRSv6AJySqGAqHYRZ7fqKIGllh+1OVKFsDlajgWvGKULNjzM
+        h772ZMznNtChGRuJmeCVCfuvpGqXG4dLCj65yhBI7Oiolk3Zdag2olYOxiK9VPtcK5/Xmg5JO94
+        7vQI/iRa7C19bDT6OtsjfefiS
+X-Received: by 2002:a17:906:c7c3:: with SMTP id dc3mr25448727ejb.107.1618397932093;
+        Wed, 14 Apr 2021 03:58:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCjw34YtxrVVL0DYTRyA3gVeSzc6JEjgugOoRuwH7v7SeRzgMLzV/QtDBxhy9IU7IiN5uHMw==
+X-Received: by 2002:a17:906:c7c3:: with SMTP id dc3mr25448688ejb.107.1618397931666;
+        Wed, 14 Apr 2021 03:58:51 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id c16sm9866499ejx.81.2021.04.14.03.58.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 03:58:50 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1B5021804E8; Wed, 14 Apr 2021 12:58:50 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
+References: <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+ <20210402190806.nhcgappm3iocvd3d@apollo>
+ <20210403174721.vg4wle327wvossgl@ast-mbp>
+ <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+ <87blar4ti7.fsf@toke.dk>
+ <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 14 Apr 2021 12:58:50 +0200
+Message-ID: <874kg9m8t1.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:56 AM Florent Revest <revest@chromium.org> wrote:
-> On Wed, Apr 14, 2021 at 1:01 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > > +       err = 0;
-> > > +out:
-> > > +       put_fmt_tmp_buf();
-> >
-> > so you are putting tmp_buf unconditionally, even when there was no
-> > error. That seems wrong? Should this be:
-> >
-> > if (err)
-> >     put_fmt_tmp_buf()
-> >
-> > ?
->
-> Yeah the naming is unfortunate, as discussed in the other patch, I
-> will rename that to bpf_pintf_cleanup instead. It's not clear from the
-> name that it only "puts" if the buffer was already gotten.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Ah, sorry I see what you meant! Indeed, my mistake. :|
+> On Tue, Apr 6, 2021 at 3:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
+>> > <alexei.starovoitov@gmail.com> wrote:
+>> >>
+>> >> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wro=
+te:
+>> >> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
+>> >> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gm=
+ail.com> wrote:
+>> >> > > > [...]
+>> >> > >
+>> >> > > All of these things are messy because of tc legacy. bpf tried to =
+follow tc style
+>> >> > > with cls and act distinction and it didn't quite work. cls with
+>> >> > > direct-action is the only
+>> >> > > thing that became mainstream while tc style attach wasn't really =
+addressed.
+>> >> > > There were several incidents where tc had tens of thousands of pr=
+ogs attached
+>> >> > > because of this attach/query/index weirdness described above.
+>> >> > > I think the only way to address this properly is to introduce bpf=
+_link style of
+>> >> > > attaching to tc. Such bpf_link would support ingress/egress only.
+>> >> > > direction-action will be implied. There won't be any index and qu=
+ery
+>> >> > > will be obvious.
+>> >> >
+>> >> > Note that we already have bpf_link support working (without support=
+ for pinning
+>> >> > ofcourse) in a limited way. The ifindex, protocol, parent_id, prior=
+ity, handle,
+>> >> > chain_index tuple uniquely identifies a filter, so we stash this in=
+ the bpf_link
+>> >> > and are able to operate on the exact filter during release.
+>> >>
+>> >> Except they're not unique. The library can stash them, but something =
+else
+>> >> doing detach via iproute2 or their own netlink calls will detach the =
+prog.
+>> >> This other app can attach to the same spot a different prog and now
+>> >> bpf_link__destroy will be detaching somebody else prog.
+>> >>
+>> >> > > So I would like to propose to take this patch set a step further =
+from
+>> >> > > what Daniel said:
+>> >> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>> >> > > and make this proposed api to return FD.
+>> >> > > To detach from tc ingress/egress just close(fd).
+>> >> >
+>> >> > You mean adding an fd-based TC API to the kernel?
+>> >>
+>> >> yes.
+>> >
+>> > I'm totally for bpf_link-based TC attachment.
+>> >
+>> > But I think *also* having "legacy" netlink-based APIs will allow
+>> > applications to handle older kernels in a much nicer way without extra
+>> > dependency on iproute2. We have a similar situation with kprobe, where
+>> > currently libbpf only supports "modern" fd-based attachment, but users
+>> > periodically ask questions and struggle to figure out issues on older
+>> > kernels that don't support new APIs.
+>>
+>> +1; I am OK with adding a new bpf_link-based way to attach TC programs,
+>> but we still need to support the netlink API in libbpf.
+>>
+>> > So I think we'd have to support legacy TC APIs, but I agree with
+>> > Alexei and Daniel that we should keep it to the simplest and most
+>> > straightforward API of supporting direction-action attachments and
+>> > setting up qdisc transparently (if I'm getting all the terminology
+>> > right, after reading Quentin's blog post). That coincidentally should
+>> > probably match how bpf_link-based TC API will look like, so all that
+>> > can be abstracted behind a single bpf_link__attach_tc() API as well,
+>> > right? That's the plan for dealing with kprobe right now, btw. Libbpf
+>> > will detect the best available API and transparently fall back (maybe
+>> > with some warning for awareness, due to inherent downsides of legacy
+>> > APIs: no auto-cleanup being the most prominent one).
+>>
+>> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
+>> high-level API auto-detect. That way users can also still use the
+>> netlink attach function if they don't want the fd-based auto-close
+>> behaviour of bpf_link.
+>
+> So I thought a bit more about this, and it feels like the right move
+> would be to expose only higher-level TC BPF API behind bpf_link. It
+> will keep the API complexity and amount of APIs that libbpf will have
+> to support to the minimum, and will keep the API itself simple:
+> direct-attach with the minimum amount of input arguments. By not
+> exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
+> design discussion, as we now can keep as much info as needed inside
+> bpf_link_tc (which will embed bpf_link internally as well) to support
+> detachment and possibly some additional querying, if needed.
+
+But then there would be no way for the caller to explicitly select a
+mechanism? I.e., if I write a BPF program using this mechanism targeting
+a 5.12 kernel, I'll get netlink attachment, which can stick around when
+I do bpf_link__disconnect(). But then if the kernel gets upgraded to
+support bpf_link for TC programs I'll suddenly transparently get
+bpf_link and the attachments will go away unless I pin them. This
+seems... less than ideal?
+
+If we expose the low-level API I can elect to just use this if I know I
+want netlink behaviour, but if bpf_program__attach_tc() is the only API
+available it would at least need a flag to enforce one mode or the other
+(I can see someone wanting to enforce kernel bpf_link semantics as well,
+so a flag for either mode seems reasonable?).
+
+-Toke
+
