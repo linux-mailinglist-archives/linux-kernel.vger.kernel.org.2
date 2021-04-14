@@ -2,137 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACF835FD79
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C170635FD7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 23:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhDNV5J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Apr 2021 17:57:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34617 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229493AbhDNV5F (ORCPT
+        id S230011AbhDNV6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 17:58:04 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:35614 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhDNV55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 17:57:05 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-4-PsdLgvNoPOivxmwyvxbtWw-1; Wed, 14 Apr 2021 22:56:40 +0100
-X-MC-Unique: PsdLgvNoPOivxmwyvxbtWw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 14 Apr 2021 22:56:39 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 14 Apr 2021 22:56:39 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Christoph Hellwig" <hch@lst.de>
-Subject: RE: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Thread-Topic: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Thread-Index: AQHXMXYmwdfrgigLI0exh4xFUSZq9Kq0jZ3g
-Date:   Wed, 14 Apr 2021 21:56:39 +0000
-Message-ID: <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
-References: <20210410205246.507048-1-willy@infradead.org>
- <20210410205246.507048-2-willy@infradead.org>
- <20210411114307.5087f958@carbon>
- <20210411103318.GC2531743@casper.infradead.org>
- <20210412011532.GG2531743@casper.infradead.org>
- <20210414101044.19da09df@carbon>
- <20210414115052.GS2531743@casper.infradead.org>
- <20210414211322.3799afd4@carbon>
- <20210414213556.GY2531743@casper.infradead.org>
-In-Reply-To: <20210414213556.GY2531743@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 14 Apr 2021 17:57:57 -0400
+Received: by mail-ed1-f52.google.com with SMTP id x4so25556937edd.2;
+        Wed, 14 Apr 2021 14:57:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hJDYdY4y4ttJ0VfwvoAkuVaHu7q9owyfa4h9zmvYo7o=;
+        b=q+hmMs4eMJFI5pwsDAwQSh3ScEFJY2u7EHaGC0NLzB0wrYcC8fdS9zQCTs9svhhcIz
+         vDMHtLpCwb4AzM5HAG9eXpNJwdLKZHtsjThu23+dsPzX32AwGjGLFEafHb/ulVR4U1LG
+         fgbPG8SDH6pfYu8jNIQhKgY+oSNjnSqcPVRW0fKBh0Lc6PjSNAyX85DjCKwRRnakHr59
+         LTASD1gtGmaIODUhBDPx3v/+ocPUN/BAPHERW6N1wsu0GiTBaTRz5K3J8A4oYiw85viD
+         +vE4t9UWA8urI8c7+Z2JYOi3hnOthuDemC9OHM7mNFItgfur0mWBBxRfrcU/Oqme9pIW
+         0Elw==
+X-Gm-Message-State: AOAM5301XrlZ6K45jz01tEp+9KJyVTtcMMUG0RvbkWrcRZTmq6AugKpc
+        /QHETIiCFeWkUyLYtqs7tZEfdVyCtI3Bnmm7P1E=
+X-Google-Smtp-Source: ABdhPJyRHJNyKlkQDom9OOnmZTGMNVEwavqkKgxZuNdqoWF+Vp+ZkGIssTUZCIgt1sAvVglIqXIcleuM7N5f/qMk1K4=
+X-Received: by 2002:a05:6402:2208:: with SMTP id cq8mr394377edb.122.1618437453589;
+ Wed, 14 Apr 2021 14:57:33 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
+ <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+ <20210413034346.GA22861@1wt.eu> <CAJvTdKmLth==ZPv7ygLs0jFX7JRPVhVT82ZDoT4xcQRABEVTvQ@mail.gmail.com>
+ <20210414095804.GB10709@zn.tnic>
+In-Reply-To: <20210414095804.GB10709@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Wed, 14 Apr 2021 17:57:22 -0400
+Message-ID: <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 14 April 2021 22:36
-> 
-> On Wed, Apr 14, 2021 at 09:13:22PM +0200, Jesper Dangaard Brouer wrote:
-> > (If others want to reproduce).  First I could not reproduce on ARM32.
-> > Then I found out that enabling CONFIG_XEN on ARCH=arm was needed to
-> > cause the issue by enabling CONFIG_ARCH_DMA_ADDR_T_64BIT.
-> 
-> hmmm ... you should be able to provoke it by enabling ARM_LPAE,
-> which selects PHYS_ADDR_T_64BIT, and
-> 
-> config ARCH_DMA_ADDR_T_64BIT
->         def_bool 64BIT || PHYS_ADDR_T_64BIT
-> 
-> >  struct page {
-> >         long unsigned int          flags;                /*     0     4 */
-> >
-> >         /* XXX 4 bytes hole, try to pack */
-> >
-> >         union {
-> >                 struct {
-> >                         struct list_head lru;            /*     8     8 */
-> >                         struct address_space * mapping;  /*    16     4 */
-> >                         long unsigned int index;         /*    20     4 */
-> >                         long unsigned int private;       /*    24     4 */
-> >                 };                                       /*     8    20 */
-> >                 struct {
-> >                         dma_addr_t dma_addr
+On Wed, Apr 14, 2021 at 5:58 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Apr 13, 2021 at 03:51:50PM -0400, Len Brown wrote:
+> > AMX does the type of matrix multiplication that AI algorithms use. In
+> > the unlikely event that you or one of the libraries you call are doing
+> > the same, then you will be very happy with AMX. Otherwise, you'll
+> > probably not use it.
+>
+> Which sounds to me like AMX is something which should not be enabled
+> automatically but explicitly requested. I don't see the majority of the
+> processes on the majority of the Linux machines out there doing AI with
+> AMX - at least not anytime soon. If it becomes ubiquitous later, we can
+> make it automatic then.
 
-Adding __packed here will remove the 4 byte hole before the union
-and the compiler seems clever enough to know that anything following
-a 'long' must also be 'long' aligned.
-So you don't get anything horrid like byte accesses.
-On 64bit dma_addr will remain 64bit aligned.
-On arm32 dma_addr will be 32bit aligned - but forcing two 32bit access
-won't make any difference.
-
-So definitely the only simple fix.
-
-	David
-
-> >                                            ;             /*     8     8 */
-> >                 };                                       /*     8     8 */
-> [...]
-> >         } __attribute__((__aligned__(8)));               /*     8    24 */
-> >         union {
-> >                 atomic_t           _mapcount;            /*    32     4 */
-> >                 unsigned int       page_type;            /*    32     4 */
-> >                 unsigned int       active;               /*    32     4 */
-> >                 int                units;                /*    32     4 */
-> >         };                                               /*    32     4 */
-> >         atomic_t                   _refcount;            /*    36     4 */
-> >
-> >         /* size: 40, cachelines: 1, members: 4 */
-> >         /* sum members: 36, holes: 1, sum holes: 4 */
-> >         /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
-> >         /* last cacheline: 40 bytes */
-> > } __attribute__((__aligned__(8)));
-> 
-> If you also enable CONFIG_MEMCG or enough options to make
-> LAST_CPUPID_NOT_IN_PAGE_FLAGS true, you'll end up with another 4-byte
-> hole at the end.
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+I'm pretty sure that the "it isn't my use case of interest, so it
+doesn't matter"
+line of reasoning has long been established as -EINVAL ;-)
