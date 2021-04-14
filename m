@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC4E35F9B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A9335F9B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 19:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350108AbhDNRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 13:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbhDNRWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 13:22:02 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DAAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:21:41 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id d15so9215514qkc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 10:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K+CoWOryQXPkwoI6HADtuZJs0NXTCSdwEpDuMV86TlA=;
-        b=bv523jUWRxpMuwbk6qn63MlBojHdAT3raBNQVr5ncdx1Pa+c+Slrjo3PVYbdNW24r2
-         PmpEuKXoj0AIGt6346L38UqnljlFhqA5owtMDWCQmuCEdGy/Jap23GmsopTSqzqhB0kn
-         d2w7tBccKzvOWz16UWg+IsJSk1l10NqIT8YDhAwRuqzSAC3RJMVJS6yxl213gzQ/+XWa
-         ozm47LpwltErV6/fMMRuR2oNMlUodIlUZtZ7D9Ima6ZjJieOwN/3MkDbIB9bKLC4Vh90
-         h7O5L7G01ke0hAATOA+OxqkGsEH1k8NEoYC+YeHEeCbCUpws4K+tFDNu1fAWieD/nK0+
-         mmOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K+CoWOryQXPkwoI6HADtuZJs0NXTCSdwEpDuMV86TlA=;
-        b=fGPJNHntrD9u9AgsM/hnr1j+szjC1uAvLLkaZffsKwnbEDsfjN0tkmCl0p0Mg2gHCu
-         sypCW1NdQpqdeRRZUZF5yQcYr+bOjVqFE88Y4mM4iflxAXGiyS7ZAe6S9bK+lxHbd8I3
-         wnmBaWdHmrKCTFjTc8AGOQbrWH10nSm0mJVNvVv1YK+VEwjpP+Pctkw+IMmvutzQ9+bC
-         2HB1wkspuYkGOX8VP/etTkRsgqN1AKxx/UTLAQyfWtaVj2mIFlD0Cz9dKNYHzkHm5CFE
-         Gz5+A+S5/Ty85Gcw311G22GxWbd8IOZ2pDat01wJDyX2PC56wUx1le3j42K/x9En+cXt
-         gkvA==
-X-Gm-Message-State: AOAM532pEA94X9UfFVdwSo0i2MLMkssmEzEWeKlK3I8lZ7/+zizMEMk4
-        sjW2ASmulTRz2dTB/YTngqE80Q==
-X-Google-Smtp-Source: ABdhPJze/w6tKhj7npYWuGbWGASAUlBgT9DXJ65oVl81RZf9YXd14o/U9XfEjNzujpifVZRg1rto5g==
-X-Received: by 2002:a37:9604:: with SMTP id y4mr12435433qkd.354.1618420900166;
-        Wed, 14 Apr 2021 10:21:40 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c1::127b? ([2620:10d:c091:480::1:e1e5])
-        by smtp.gmail.com with ESMTPSA id h65sm18155qkd.112.2021.04.14.10.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 10:21:39 -0700 (PDT)
-Subject: Re: the qemu-nbd process automatically exit with the commit 43347d56c
- 'livepatch: send a fake signal to all blocking tasks'
-To:     xiaojun.zhao141@gmail.com, Miroslav Benes <mbenes@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
-References: <20210414115548.0cdb529b@slime>
- <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz>
- <20210414232119.13b126fa@slime>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <f7698105-23a4-4558-7b65-9116e8587848@toxicpanda.com>
-Date:   Wed, 14 Apr 2021 13:21:37 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S1350214AbhDNRWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 13:22:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47272 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349855AbhDNRWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 13:22:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F35C0B007;
+        Wed, 14 Apr 2021 17:21:42 +0000 (UTC)
+Subject: Re: [PATCH 07/11] mm/page_alloc: Remove duplicate checks if
+ migratetype should be isolated
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210414133931.4555-1-mgorman@techsingularity.net>
+ <20210414133931.4555-8-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e5a41984-998f-730f-852b-3de82b582d01@suse.cz>
+Date:   Wed, 14 Apr 2021 19:21:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210414232119.13b126fa@slime>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210414133931.4555-8-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 11:21 AM, xiaojun.zhao141@gmail.com wrote:
-> On Wed, 14 Apr 2021 13:27:43 +0200 (CEST)
-> Miroslav Benes <mbenes@suse.cz> wrote:
+On 4/14/21 3:39 PM, Mel Gorman wrote:
+> Both free_pcppages_bulk() and free_one_page() have very similar
+> checks about whether a page's migratetype has changed under the
+> zone lock. Use a common helper.
 > 
->> Hi,
->>
->> On Wed, 14 Apr 2021, xiaojun.zhao141@gmail.com wrote:
->>
->>> I found the qemu-nbd process(started with qemu-nbd -t -c /dev/nbd0
->>> nbd.qcow2) will automatically exit when I patched for functions of
->>> the nbd with livepatch.
->>>
->>> The nbd relative source:
->>> static int nbd_start_device_ioctl(struct nbd_device *nbd, struct
->>> block_device *bdev)
->>> { struct nbd_config *config =
->>> nbd->config; int
->>> ret;
->>>          ret =
->>> nbd_start_device(nbd); if
->>> (ret) return
->>> ret;
->>>          if
->>> (max_part) bdev->bd_invalidated =
->>> 1;
->>> mutex_unlock(&nbd->config_lock); ret =
->>> wait_event_interruptible(config->recv_wq,
->>> atomic_read(&config->recv_threads) == 0); if
->>> (ret)
->>> sock_shutdown(nbd);
->>> flush_workqueue(nbd->recv_workq);
->>>          mutex_lock(&nbd->config_lock);
->>>          nbd_bdev_reset(bdev);
->>>          /* user requested, ignore socket errors
->>> */ if (test_bit(NBD_RT_DISCONNECT_REQUESTED,
->>> &config->runtime_flags)) ret =
->>> 0; if (test_bit(NBD_RT_TIMEDOUT,
->>> &config->runtime_flags)) ret =
->>> -ETIMEDOUT; return
->>> ret; }
->>
->> So my understanding is that ndb spawns a number
->> (config->recv_threads) of workqueue jobs and then waits for them to
->> finish. It waits interruptedly. Now, any signal would make
->> wait_event_interruptible() to return -ERESTARTSYS. Livepatch fake
->> signal is no exception there. The error is then propagated back to
->> the userspace. Unless a user requested a disconnection or there is
->> timeout set. How does the userspace then reacts to it? Is
->> _interruptible there because the userspace sends a signal in case of
->> NBD_RT_DISCONNECT_REQUESTED set? How does the userspace handles
->> ordinary signals? This all sounds a bit strange, but I may be missing
->> something easily.
->>
->>> When the nbd waits for atomic_read(&config->recv_threads) == 0, the
->>> klp will send a fake signal to it then the qemu-nbd process exits.
->>> And the signal of sysfs to control this action was removed in the
->>> commit 10b3d52790e 'livepatch: Remove signal sysfs attribute'. Are
->>> there other ways to control this action? How?
->>
->> No, there is no way currently. We send a fake signal automatically.
->>
->> Regards
->> Miroslav
-> It occurs IO error of the nbd device when I use livepatch of the
-> nbd, and I guess that any livepatch on other kernel source maybe cause
-> the IO error. Well, now I decide to workaround for this problem by
-> adding a livepatch for the klp to disable a automatic fake signal.
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+
+Seems like for free_pcppages_bulk() this patch makes it check for each page on
+the pcplist
+- zone->nr_isolate_pageblock != 0 instead of local bool (the performance might
+be the same I guess on modern cpu though)
+- is_migrate_isolate(migratetype) for a migratetype obtained by
+get_pcppage_migratetype() which cannot be migrate_isolate so the check is useless.
+
+As such it doesn't seem a worthwhile cleanup to me considering all the other
+microoptimisations?
+
+> ---
+>  mm/page_alloc.c | 32 ++++++++++++++++++++++----------
+>  1 file changed, 22 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 295624fe293b..1ed370668e7f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1354,6 +1354,23 @@ static inline void prefetch_buddy(struct page *page)
+>  	prefetch(buddy);
+>  }
+>  
+> +/*
+> + * The migratetype of a page may have changed due to isolation so check.
+> + * Assumes the caller holds the zone->lock to serialise against page
+> + * isolation.
+> + */
+> +static inline int
+> +check_migratetype_isolated(struct zone *zone, struct page *page, unsigned long pfn, int migratetype)
+> +{
+> +	/* If isolating, check if the migratetype has changed */
+> +	if (unlikely(has_isolate_pageblock(zone) ||
+> +		is_migrate_isolate(migratetype))) {
+> +		migratetype = get_pfnblock_migratetype(page, pfn);
+> +	}
+> +
+> +	return migratetype;
+> +}
+> +
+>  /*
+>   * Frees a number of pages from the PCP lists
+>   * Assumes all pages on list are in same zone, and of same order.
+> @@ -1371,7 +1388,6 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>  	int migratetype = 0;
+>  	int batch_free = 0;
+>  	int prefetch_nr = READ_ONCE(pcp->batch);
+> -	bool isolated_pageblocks;
+>  	struct page *page, *tmp;
+>  	LIST_HEAD(head);
+>  
+> @@ -1433,21 +1449,20 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>  	 * both PREEMPT_RT and non-PREEMPT_RT configurations.
+>  	 */
+>  	spin_lock(&zone->lock);
+> -	isolated_pageblocks = has_isolate_pageblock(zone);
+>  
+>  	/*
+>  	 * Use safe version since after __free_one_page(),
+>  	 * page->lru.next will not point to original list.
+>  	 */
+>  	list_for_each_entry_safe(page, tmp, &head, lru) {
+> +		unsigned long pfn = page_to_pfn(page);
+>  		int mt = get_pcppage_migratetype(page);
+> +
+>  		/* MIGRATE_ISOLATE page should not go to pcplists */
+>  		VM_BUG_ON_PAGE(is_migrate_isolate(mt), page);
+> -		/* Pageblock could have been isolated meanwhile */
+> -		if (unlikely(isolated_pageblocks))
+> -			mt = get_pageblock_migratetype(page);
+>  
+> -		__free_one_page(page, page_to_pfn(page), zone, 0, mt, FPI_NONE);
+> +		mt = check_migratetype_isolated(zone, page, pfn, mt);
+> +		__free_one_page(page, pfn, zone, 0, mt, FPI_NONE);
+>  		trace_mm_page_pcpu_drain(page, 0, mt);
+>  	}
+>  	spin_unlock(&zone->lock);
+> @@ -1459,10 +1474,7 @@ static void free_one_page(struct zone *zone,
+>  				int migratetype, fpi_t fpi_flags)
+>  {
+>  	spin_lock(&zone->lock);
+> -	if (unlikely(has_isolate_pageblock(zone) ||
+> -		is_migrate_isolate(migratetype))) {
+> -		migratetype = get_pfnblock_migratetype(page, pfn);
+> -	}
+> +	migratetype = check_migratetype_isolated(zone, page, pfn, migratetype);
+>  	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
+>  	spin_unlock(&zone->lock);
+>  }
 > 
 
-Would wait_event_killable() fix this problem?  I'm not sure any client 
-implementations depend on being able to send other signals to the client 
-process, so it should be safe from that standpoint.  Not sure if the livepatch 
-thing would still get an error at that point tho.  Thanks,
-
-Josef
