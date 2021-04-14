@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D965435ED74
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EF435ED76
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349294AbhDNGqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
+        id S1349302AbhDNGqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhDNGp7 (ORCPT
+        with ESMTP id S230448AbhDNGq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:45:59 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422B4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:45:39 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id b17so13715438pgh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DYWXHC0m5snw7fdzJwmyok00ub1oisU0fjZXojNhnAk=;
-        b=AzYak0j0aSFu8UGn3rt7LYpmKrIurxFN3WId1nFmsSU6CYjzf0KAHDwSJB1QkbQJuI
-         V6Rtg6P9DYjbPyLtcjh52zxPoDVt7bQ9cQAbGejHPRByOFBp7qPyS7ezEcWGzZ/w/s64
-         wkJ2mRiJQ7QA0Dd6DNN4sxaXdQPE4RPavKG4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DYWXHC0m5snw7fdzJwmyok00ub1oisU0fjZXojNhnAk=;
-        b=hGJdmz9KrTdTx/n+F09nRTqCy5M5xyqCetFnHTniFE3ZMb+cv828wolMJzcVHQws4X
-         25kT1fl21lOhQQeLJKnWlaaPVa54jKxhnszZNSHxZrRdiH0WNp4r3QHlJBXoukuoiquG
-         sfxAqZhAuNr3NLVfMBjF+Uzz+mABwZ0vxY23HVDdI+O8ntOzQ9+WchvNXvyQsjIIJNSG
-         0CqZVChZEISrp8rLF0ScZRJnMS62L0Z31QbQ52JhDDmKnP2RwmP/g521FN7Dkf/jOje0
-         oOWCBaea+O2F0EIdIt5WCFJYBTNTiwmVANQP4bKAMSDdNCh4LCHNDFkMPqdGuc/si+Sv
-         L3Og==
-X-Gm-Message-State: AOAM530vM9c3LE5czLYA765Sm1UYj4RzrXl2gSOZICwowc4zGaBmiD7o
-        H3BoqtzNadriohKi/PL6eM5tfQ==
-X-Google-Smtp-Source: ABdhPJy0jZ57Sly9/h7luIJOSL53N7qcqiGEuWfja/tblfBLkd09pVOJ3uPa+gbsldhYvBKX9uWVaQ==
-X-Received: by 2002:a63:530d:: with SMTP id h13mr35844072pgb.120.1618382738828;
-        Tue, 13 Apr 2021 23:45:38 -0700 (PDT)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id j20sm4051027pji.3.2021.04.13.23.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 23:45:38 -0700 (PDT)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] platform/chrome: cros_usbpd_notify: Listen to EC_HOST_EVENT_USB_MUX host event
-Date:   Wed, 14 Apr 2021 14:45:24 +0800
-Message-Id: <20210414064524.2450908-1-pihsun@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+        Wed, 14 Apr 2021 02:46:28 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CFBC061574;
+        Tue, 13 Apr 2021 23:46:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e8f005acf25a97a6c1ba1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8f00:5acf:25a9:7a6c:1ba1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 90B791EC03A0;
+        Wed, 14 Apr 2021 08:46:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618382762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qajLDFvAjN4vrpgqjvft79r59EaS59vt+FlFTgJ6tXA=;
+        b=R0rJgdvfm7210YHOaXgB5qyf3vYsUJO6RAV/1BWLT9SA4vex+uBnL3WOC/1GOGaZYn496Z
+        8eS/66RZJqfH1jSAkGgSrsIQ66sTUpUbwWQilbBEK38SkhFOWdpYRLXnjosXFjnjwEX+U/
+        0NraHyFYTBsHwARQD/akWvgl8JlmwF4=
+Date:   Wed, 14 Apr 2021 08:45:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "David S. Miller" <davem@davemloft.net>, linux-ide@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Remove me from IDE/ATAPI section
+Message-ID: <20210414064559.GA10709@zn.tnic>
+References: <20210412090346.31213-1-bp@alien8.de>
+ <20210414063925.GA1607069@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210414063925.GA1607069@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On system that use ACPI, cros_usbpd_notify gets notifications of USB MUX
-host event same as PD host events [1]. But currently on system that use
-DT, the driver only listen on EC_HOST_EVENT_PD_MCU.
+On Wed, Apr 14, 2021 at 07:39:25AM +0100, Christoph Hellwig wrote:
+> On Mon, Apr 12, 2021 at 11:03:46AM +0200, Borislav Petkov wrote:
+> >  IDE/ATAPI DRIVERS
+> > -M:	Borislav Petkov <bp@alien8.de>
+> >  L:	linux-ide@vger.kernel.org
+> >  S:	Maintained
+> >  F:	Documentation/cdrom/ide-cd.rst
+> 
+> The Maintained should also become Orphaned then.
 
-Add EC_HOST_EVENT_USB_MUX to the list of host events, so we have same
-behavior on all platforms.
+Ok, will correct and push through tip this week.
 
-[1]: https://chromium.googlesource.com/chromiumos/third_party/coreboot/+/refs/heads/chromeos-2016.05/src/ec/google/chromeec/acpi/ec.asl#382
+Thx.
 
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
----
- drivers/platform/chrome/cros_usbpd_notify.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/platform/chrome/cros_usbpd_notify.c b/drivers/platform/chrome/cros_usbpd_notify.c
-index 7f36142ab12a..48a6617aa12f 100644
---- a/drivers/platform/chrome/cros_usbpd_notify.c
-+++ b/drivers/platform/chrome/cros_usbpd_notify.c
-@@ -220,7 +220,8 @@ static int cros_usbpd_notify_plat(struct notifier_block *nb,
- 	if (!host_event)
- 		return NOTIFY_DONE;
- 
--	if (host_event & EC_HOST_EVENT_MASK(EC_HOST_EVENT_PD_MCU)) {
-+	if (host_event & (EC_HOST_EVENT_MASK(EC_HOST_EVENT_PD_MCU) |
-+			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_USB_MUX))) {
- 		cros_usbpd_get_event_and_notify(pdnotify->dev, ec_dev);
- 		return NOTIFY_OK;
- 	}
-
-base-commit: 50987beca096a7ed4f453a6da245fd6a2fadedeb
 -- 
-2.31.1.295.g9ea45b61b8-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
