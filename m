@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FA335ED08
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1AC135ED0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 08:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349134AbhDNGOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 02:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
+        id S1349160AbhDNGO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 02:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349109AbhDNGO3 (ORCPT
+        with ESMTP id S1349113AbhDNGOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 02:14:29 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91833C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:13:52 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z1so22229513edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Apr 2021 23:13:52 -0700 (PDT)
+        Wed, 14 Apr 2021 02:14:30 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A29C06138D;
+        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id d10so13654082pgf.12;
+        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2OU2KfPs5ZLY9/eANVVEMxuGk0nOH0alcTehz44zqd4=;
-        b=Q34+3UVvVMeRO2pDc0ZhkM5C6ptR6G9eG5qsdyekgxQftdiVVd9V1+4urI+xWpCQ8A
-         PQUKFFxiX+TBAT78SVeiB4ByyQsmxu6zuco2JbD8ltFg1sfaQ1Vk4/aaHgj316KJD5mh
-         mh25SVYcMnveSSdl9la2RpzBmyosmp2an4lWmAmXZxlTvpdRkEf1HE+aa5qyXCUFTR0h
-         1GqX3v57HXeeFnxM8cAkVpRsXigpbrx3zhznG6qmPeD/+g0oMXKq9qD5BP7qhRBX7zFv
-         B3LuPWFrKPCOYunZPAj5KzunwgJMmVOiczPYbMXlS20dJ8K7MMCVhQBbq88yTGAboJqi
-         W5vg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=LqBjgru/kZiv2kgZDvT4GDl1IMrvGcwQ/GofAyAsCoI=;
+        b=ILVyUIH8LNRoWIsR8w+ffysuuD7sGt7bSRwJ5vSEBW1HE/UDmLzroSVgfI3YaQqbDG
+         rfzopRxQEczTvaUNt5pl6+bQLK1wo0B82wV+SWiwJryyP85zX9BhNRmLo/fJcM87KGa2
+         2xW5mR6ut6SHPbls0SEsmGzp0fjcm9lefFszcXAnIXYnJyGlSbv2ZBK1kRsqDoN0DJrW
+         TMIgz5GSKQfjWz/08rwLLzPHbpdS45WLN+HeWBvPWXVQjEAUr2e+aA7H0JvhdWLGLixT
+         THqqH5JF7Xq4b7f6gL6OARny5WCOORGXr1MaTcAS9Zywg1sm+3NYRQJKy8tzWwF3g+Iu
+         IPxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2OU2KfPs5ZLY9/eANVVEMxuGk0nOH0alcTehz44zqd4=;
-        b=VNZ08toxJawFv99doJFcm/cxEexzXSfFh8Kwq7h6iNf8u+MfFjBofidJJ5lCQuRkOe
-         CnV3PSabOBoEesIl4/eRtv9Rlse7wkMzvB7cIYx4nHDvYNu0Nn7bi2YvZZ/3Ol70+xwC
-         OVp1nq0BElTTgptURLYFZot3TN6PNbxrtn/Edg8pe5zdiuGRF5AyZZwhZN4BYWSHgRb2
-         Z9zGm1JwCc9zL1jx+AMiaVEo+TT9WCp4DK9bfiJj6acWu5Rxjjn8FJwFIcgwTemSY6j5
-         WUQP84Bo1ZwoKeGIzfOGJyJ3E0d98GjSlto2f12ClOj+YfzOBD8gnrnpDrHlqK0aZz6Y
-         JBhg==
-X-Gm-Message-State: AOAM531E1q6V/kZZXv0k8YECDo2y5PY69NAtCBCoFHDRFTgLtwksE3jO
-        pz0oObHPfgRfvviVY0+iwFk=
-X-Google-Smtp-Source: ABdhPJwwJG66A7j7zmHDI6pADLthTYyzZVxvACfPBEUHMVkq/XFP0e4jorqTX76bRg7iDMQ+0CbQ6Q==
-X-Received: by 2002:aa7:cc15:: with SMTP id q21mr40158512edt.140.1618380831272;
-        Tue, 13 Apr 2021 23:13:51 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id w1sm11384312edt.89.2021.04.13.23.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 23:13:50 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v2] staging: rtl8723bs: hal: Remove four set but not used variables
-Date:   Wed, 14 Apr 2021 08:13:46 +0200
-Message-Id: <20210414061346.11423-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=LqBjgru/kZiv2kgZDvT4GDl1IMrvGcwQ/GofAyAsCoI=;
+        b=ZuZdVJGJ5EGNdXC/tYxyxme5C2kgmCny8JAXTt/LEY/Rp739X9zGeexGHjS0VoOOoQ
+         D6BXFmPWR6Wu0VLrp8Te/muxUMrDPCvl7K3Xepm4kyCyhQu5HLsBEtEJKNCafwPEZ+ex
+         pcRBOB1WNIaEIvRIuZ8ztto1BRVDFJGZJV33Fp42EUdq/4RJrUTzPh2XWl+E+lP64ILU
+         zQ4iUJ5/32FQ1tINjPnwjQvffP1G5fV+8F2LEXkfi88xepAlaSnnqGaAxpt5P7Sv2rMS
+         BqGau6QzrNHXMjjvtRS29SO3+qBcR0Wi5LSMthIxuDS9bjA3FwT6495gU8h8VEyKHGLS
+         zVKg==
+X-Gm-Message-State: AOAM532EPpRxPsDV/owPSdb2GBoVeECwBOAaeX+t1nuv0auLrOfQClRu
+        Pt2aUc/ucR/xmXQkaK9GBDI=
+X-Google-Smtp-Source: ABdhPJxZJd6FW5aeYTCVQO81obZYLNmzCqikb4NF3fjOEO6+8Uuo6fjuWAE7hyZL6xN5nqFskaLxrw==
+X-Received: by 2002:a65:62d7:: with SMTP id m23mr36562496pgv.244.1618380847472;
+        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id d17sm13629071pfn.60.2021.04.13.23.14.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Apr 2021 23:14:07 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     robh+dt@kernel.org, shawnguo@kernel.org, krzk@kernel.org,
+        linux@rempel-privat.de, s.riedmueller@phytec.de,
+        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
+        arnd@arndb.de, olof@lixom.net, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        prabhakar.csengg@gmail.com, mchehab@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v1 3/3] media: i2c: ov2659: Add clk_prepare_enable(), clk_disable_unprepare() to handle xvclk
+Date:   Wed, 14 Apr 2021 14:13:47 +0800
+Message-Id: <1618380827-16056-4-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1618380827-16056-1-git-send-email-dillon.minfei@gmail.com>
+References: <1618380827-16056-1-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed four variables that were set but not used.
+From: dillon min <dillon.minfei@gmail.com>
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+For power save purpose, xvclk might not be always on.
+need add clk_prepare_enable(), clk_disable_unprepare() at driver
+side to set xvclk on/off at proper stage.
+
+Add following changes:
+- add 'struct clk *clk' in 'struct ov2659'
+- enable xvclk in ov2659_power_on()
+- disable xvclk in ov2659_power_off()
+
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
 ---
+ drivers/media/i2c/ov2659.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-Changes from v1: deleted one blank line.
-
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index 77f8353c5ce5..63f7f673aefb 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -3199,13 +3199,10 @@ static void hw_var_set_mlme_join(struct adapter *padapter, u8 variable, u8 *val)
+diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
+index 42f64175a6df..fb78a1cedc03 100644
+--- a/drivers/media/i2c/ov2659.c
++++ b/drivers/media/i2c/ov2659.c
+@@ -204,6 +204,7 @@ struct ov2659 {
+ 	struct i2c_client *client;
+ 	struct v4l2_ctrl_handler ctrls;
+ 	struct v4l2_ctrl *link_frequency;
++	struct clk *clk;
+ 	const struct ov2659_framesize *frame_size;
+ 	struct sensor_register *format_ctrl_regs;
+ 	struct ov2659_pll_ctrl pll;
+@@ -1270,6 +1271,8 @@ static int ov2659_power_off(struct device *dev)
  
- void CCX_FwC2HTxRpt_8723b(struct adapter *padapter, u8 *pdata, u8 len)
- {
--	u8 seq_no;
+ 	gpiod_set_value(ov2659->pwdn_gpio, 1);
  
- #define	GET_8723B_C2H_TX_RPT_LIFE_TIME_OVER(_Header)	LE_BITS_TO_1BYTE((_Header + 0), 6, 1)
- #define	GET_8723B_C2H_TX_RPT_RETRY_OVER(_Header)	LE_BITS_TO_1BYTE((_Header + 0), 7, 1)
++	clk_disable_unprepare(ov2659->clk);
++
+ 	return 0;
+ }
  
--	seq_no = *(pdata+6);
--
- 	if (GET_8723B_C2H_TX_RPT_RETRY_OVER(pdata) | GET_8723B_C2H_TX_RPT_LIFE_TIME_OVER(pdata)) {
- 		rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_CCX_PKT_FAIL);
- 	}
-@@ -3357,17 +3354,15 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
- 	case HW_VAR_BASIC_RATE:
- 	{
- 		struct mlme_ext_info *mlmext_info = &padapter->mlmeextpriv.mlmext_info;
--		u16 input_b = 0, masked = 0, ioted = 0, BrateCfg = 0;
-+		u16 BrateCfg = 0;
- 		u16 rrsr_2g_force_mask = (RRSR_11M|RRSR_5_5M|RRSR_1M);
- 		u16 rrsr_2g_allow_mask = (RRSR_24M|RRSR_12M|RRSR_6M|RRSR_CCK_RATES);
+@@ -1278,9 +1281,17 @@ static int ov2659_power_on(struct device *dev)
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+ 	struct ov2659 *ov2659 = to_ov2659(sd);
++	int ret;
  
- 		HalSetBrateCfg(padapter, val, &BrateCfg);
--		input_b = BrateCfg;
+ 	dev_dbg(&client->dev, "%s:\n", __func__);
  
- 		/* apply force and allow mask */
- 		BrateCfg |= rrsr_2g_force_mask;
- 		BrateCfg &= rrsr_2g_allow_mask;
--		masked = BrateCfg;
++	ret = clk_prepare_enable(ov2659->clk);
++	if (ret) {
++		dev_err(&client->dev, "%s: failed to enable clock\n",
++			__func__);
++		return ret;
++	}
++
+ 	gpiod_set_value(ov2659->pwdn_gpio, 0);
  
- 		/* IOT consideration */
- 		if (mlmext_info->assoc_AP_vendor == HT_IOT_PEER_CISCO) {
-@@ -3375,7 +3370,6 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
- 			if ((BrateCfg & (RRSR_24M|RRSR_12M|RRSR_6M)) == 0)
- 				BrateCfg |= RRSR_6M;
- 		}
--		ioted = BrateCfg;
+ 	if (ov2659->resetb_gpio) {
+@@ -1425,7 +1436,6 @@ static int ov2659_probe(struct i2c_client *client)
+ 	const struct ov2659_platform_data *pdata = ov2659_get_pdata(client);
+ 	struct v4l2_subdev *sd;
+ 	struct ov2659 *ov2659;
+-	struct clk *clk;
+ 	int ret;
  
- 		pHalData->BasicRateSet = BrateCfg;
+ 	if (!pdata) {
+@@ -1440,11 +1450,11 @@ static int ov2659_probe(struct i2c_client *client)
+ 	ov2659->pdata = pdata;
+ 	ov2659->client = client;
  
+-	clk = devm_clk_get(&client->dev, "xvclk");
+-	if (IS_ERR(clk))
+-		return PTR_ERR(clk);
++	ov2659->clk = devm_clk_get(&client->dev, "xvclk");
++	if (IS_ERR(ov2659->clk))
++		return PTR_ERR(ov2659->clk);
+ 
+-	ov2659->xvclk_frequency = clk_get_rate(clk);
++	ov2659->xvclk_frequency = clk_get_rate(ov2659->clk);
+ 	if (ov2659->xvclk_frequency < 6000000 ||
+ 	    ov2659->xvclk_frequency > 27000000)
+ 		return -EINVAL;
+@@ -1506,7 +1516,9 @@ static int ov2659_probe(struct i2c_client *client)
+ 	ov2659->frame_size = &ov2659_framesizes[2];
+ 	ov2659->format_ctrl_regs = ov2659_formats[0].format_ctrl_regs;
+ 
+-	ov2659_power_on(&client->dev);
++	ret = ov2659_power_on(&client->dev);
++	if (ret < 0)
++		goto error;
+ 
+ 	ret = ov2659_detect(sd);
+ 	if (ret < 0)
 -- 
-2.31.1
+2.7.4
 
