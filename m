@@ -2,242 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2F235EA42
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C95335EA45
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 03:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242793AbhDNBSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Apr 2021 21:18:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:13088 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231983AbhDNBSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Apr 2021 21:18:16 -0400
-IronPort-SDR: /38Fmp4TnEtcqdR4a3wEmuP+pv8SlcuzXp3ZPhSfCqNIFWO/yllveqe6cgIc/yHZdFOs1XNRAW
- tVZ2islxaCmg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279850521"
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="279850521"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 18:17:55 -0700
-IronPort-SDR: FdDLUHla0g04zOeCMteLz5CYLoP3B8ENkU2tWAe3ITen9tISFv/JAFqoBg5dmPltYdm9Y8euU1
- oX0eOkxT57rQ==
-X-IronPort-AV: E=Sophos;i="5.82,220,1613462400"; 
-   d="scan'208";a="424499263"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 18:17:51 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
-        <20210408130820.48233-2-linmiaohe@huawei.com>
-        <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
-Date:   Wed, 14 Apr 2021 09:17:47 +0800
-In-Reply-To: <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com> (Miaohe Lin's
-        message of "Tue, 13 Apr 2021 20:39:24 +0800")
-Message-ID: <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+        id S1346498AbhDNBVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Apr 2021 21:21:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50929 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239917AbhDNBVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Apr 2021 21:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618363250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=LSB88EC5/cfTeZcbFM6S4I7akVAT0dRwokU/dRHo8FE=;
+        b=Kb7bEjJRcnEFtPIsAAQDwIa+4C0snTf6vlX6voGGIB3BqtxHIh+eP469Ephea+9wGsYsEO
+        1YAkGqHWPxcnnFzIm7vlMFVJ5k4gdSZCOPjb5qhPaZcTsjqXUiKf6QCNtWoUY4lAqOf+ya
+        UMz5x3rwPAA+4xWtkbx4zb3EkMFsqu4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-IGhgiti5OH-v0rTB_gGvSg-1; Tue, 13 Apr 2021 21:20:48 -0400
+X-MC-Unique: IGhgiti5OH-v0rTB_gGvSg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C41251883520;
+        Wed, 14 Apr 2021 01:20:45 +0000 (UTC)
+Received: from llong.com (ovpn-113-4.rdu2.redhat.com [10.10.113.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C69751F056;
+        Wed, 14 Apr 2021 01:20:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+Date:   Tue, 13 Apr 2021 21:20:22 -0400
+Message-Id: <20210414012027.5352-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+ v3:
+  - Add missing "inline" qualifier to the alternate mod_obj_stock_state()
+    in patch 3.
+  - Remove redundant current_obj_stock() call in patch 5.
 
-> On 2021/4/12 15:24, Huang, Ying wrote:
->> "Huang, Ying" <ying.huang@intel.com> writes:
->> 
->>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>
->>>> We will use percpu-refcount to serialize against concurrent swapoff. This
->>>> patch adds the percpu_ref support for later fixup.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  include/linux/swap.h |  2 ++
->>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
->>>>  2 files changed, 24 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>> index 144727041e78..849ba5265c11 100644
->>>> --- a/include/linux/swap.h
->>>> +++ b/include/linux/swap.h
->>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>>>   * The in-memory structure used to track swap areas.
->>>>   */
->>>>  struct swap_info_struct {
->>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>>>  	signed short	prio;		/* swap priority of this type */
->>>>  	struct plist_node list;		/* entry in swap_active_head */
->>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
->>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>>>  	struct file *swap_file;		/* seldom referenced */
->>>>  	unsigned int old_block_size;	/* seldom referenced */
->>>> +	struct completion comp;		/* seldom referenced */
->>>>  #ifdef CONFIG_FRONTSWAP
->>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>> index 149e77454e3c..724173cd7d0c 100644
->>>> --- a/mm/swapfile.c
->>>> +++ b/mm/swapfile.c
->>>> @@ -39,6 +39,7 @@
->>>>  #include <linux/export.h>
->>>>  #include <linux/swap_slots.h>
->>>>  #include <linux/sort.h>
->>>> +#include <linux/completion.h>
->>>>  
->>>>  #include <asm/tlbflush.h>
->>>>  #include <linux/swapops.h>
->>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
->>>>  	spin_unlock(&si->lock);
->>>>  }
->>>>  
->>>> +static void swap_users_ref_free(struct percpu_ref *ref)
->>>> +{
->>>> +	struct swap_info_struct *si;
->>>> +
->>>> +	si = container_of(ref, struct swap_info_struct, users);
->>>> +	complete(&si->comp);
->>>> +	percpu_ref_exit(&si->users);
->>>
->>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
->>> get_swap_device(), better to add comments there.
->> 
->> I just noticed that the comments of percpu_ref_tryget_live() says,
->> 
->>  * This function is safe to call as long as @ref is between init and exit.
->> 
->> While we need to call get_swap_device() almost at any time, so it's
->> better to avoid to call percpu_ref_exit() at all.  This will waste some
->> memory, but we need to follow the API definition to avoid potential
->> issues in the long term.
->
-> I have to admit that I'am not really familiar with percpu_ref. So I read the
-> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
-> be called after exit now. But you're right we need to follow the API definition
-> to avoid potential issues in the long term.
->
->> 
->> And we need to call percpu_ref_init() before insert the swap_info_struct
->> into the swap_info[].
->
-> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
-> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
-> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
-> or percpu_ref_resurrect() will do the work.
->
-> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
-> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
-> Maybe I could do this in alloc_swap_info()?
+ v2:
+  - Fix bug found by test robot in patch 5.
+  - Update cover letter and commit logs.
 
-Yes.  In alloc_swap_info(), you can distinguish newly allocated and
-reused swap_info_struct.
+With the recent introduction of the new slab memory controller, we
+eliminate the need for having separate kmemcaches for each memory
+cgroup and reduce overall kernel memory usage. However, we also add
+additional memory accounting overhead to each call of kmem_cache_alloc()
+and kmem_cache_free().
 
->> 
->>>> +}
->>>> +
->>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>  {
->>>>  	struct swap_cluster_info *ci = si->cluster_info;
->>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>>>  	 */
->>>> -	synchronize_rcu();
->>>> +	percpu_ref_reinit(&p->users);
->>>
->>> Although the effect is same, I think it's better to use
->>> percpu_ref_resurrect() here to improve code readability.
->> 
->> Check the original commit description for commit eb085574a752 "mm, swap:
->> fix race between swapoff and some swap operations" and discussion email
->> thread as follows again,
->> 
->> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
->> 
->> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
->> smp_load_acquire() in get_swap_device().  Now we will use
->> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
->> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
->> ACQUIRE semantics.  Per my understanding, we need to change
->> percpu_ref_tryget_live() for that.
->> 
->
-> Do you mean the below scene is possible?
->
-> cpu1
-> swapon()
->   ...
->   percpu_ref_init
->   ...
->   setup_swap_info
->   /* smp_store_release() is inside percpu_ref_reinit */
->   percpu_ref_reinit
+For workloads that require a lot of kmemcache allocations and
+de-allocations, they may experience performance regression as illustrated
+in [1] and [2].
 
-spin_unlock() has RELEASE semantics already.
+A simple kernel module that performs repeated loop of 100,000,000
+kmem_cache_alloc() and kmem_cache_free() of a 64-byte object at module
+init time is used for benchmarking. The test was run on a CascadeLake
+server with turbo-boosting disable to reduce run-to-run variation.
 
->   ...
->
-> cpu2
-> get_swap_device()
->   /* ignored  smp_rmb() */
->   percpu_ref_tryget_live
+With memory accounting disable, the run time was 2.848s. With memory
+accounting enabled, the run times with the application of various
+patches in the patchset were:
 
-Some kind of ACQUIRE is required here to guarantee the refcount is
-checked before fetching the other fields of swap_info_struct.  I have
-sent out a RFC patch to mailing list to discuss this.
+  Applied patches   Run time   Accounting overhead   Overhead %age
+  ---------------   --------   -------------------   -------------
+       None          10.800s         7.952s              100.0%
+        1-2           9.140s         6.292s               79.1%
+        1-3           7.641s         4.793s               60.3%
+        1-5           6.801s         3.953s               49.7%
 
->   ...
->
-> There is indeed missing smp_rmb() in percpu_ref_tryget_live. So I think the above
-> scene possible and we should fix this.
->
->>>>  	spin_lock(&swap_lock);
->>>>  	spin_lock(&p->lock);
->>>>  	_enable_swap_info(p);
->>>> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->>>>  	spin_unlock(&p->lock);
->>>>  	spin_unlock(&swap_lock);
->>>> +
->>>> +	percpu_ref_kill(&p->users);
->>>>  	/*
->>>>  	 * wait for swap operations protected by get/put_swap_device()
->>>>  	 * to complete
->>>>  	 */
->>>> -	synchronize_rcu();
->>>> +	wait_for_completion(&p->comp);
->>>
->>> Better to move percpu_ref_kill() after the comments.  And maybe revise
->>> the comments.
->> 
->> After reading the original commit description as above, I found that we
->> need synchronize_rcu() here to protect the accessing to the swap cache
->> data structure.  Because there's call_rcu() during percpu_ref_kill(), it
->> appears OK to keep the synchronize_rcu() here.  And we need to revise
->> the comments to make it clear what is protected by which operation.
->> 
->
-> Per my understanding, percpu_ref->data->release is called only after the refcnt
-> reaches 0, including a full grace period has elapsed or refcnt won't be 0.
-> wait_for_completion() is used for waiting the last refcnt being released. So
-> synchronize_rcu() is not necessary here?
+Note that this is the best case scenario where most updates happen only
+to the percpu stocks. Real workloads will likely have a certain amount
+of updates to the memcg charges and vmstats. So the performance benefit
+will be less.
 
-Then we will depends on the implementation of percpu_ref.  If it changed
-its implementation, it may take long to find out we need to change the
-code here.  I guess in most cases, even adding a synchronize_rcu() here,
-we still only need to wait for one grace period.  So the overhead to
-call synchronize_rcu() is low here.  And the code is easier to be
-maintained.
+It was found that a big part of the memory accounting overhead
+was caused by the local_irq_save()/local_irq_restore() sequences in
+updating local stock charge bytes and vmstat array, at least in x86
+systems. There are two such sequences in kmem_cache_alloc() and two
+in kmem_cache_free(). This patchset tries to reduce the use of such
+sequences as much as possible. In fact, it eliminates them in the common
+case. Another part of this patchset to cache the vmstat data update in
+the local stock as well which also helps.
 
-Best Regards,
-Huang, Ying
+[1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
+[2] https://lore.kernel.org/lkml/20210114025151.GA22932@xsang-OptiPlex-9020/
+
+Waiman Long (5):
+  mm/memcg: Pass both memcg and lruvec to mod_memcg_lruvec_state()
+  mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
+  mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+  mm/memcg: Separate out object stock data into its own struct
+  mm/memcg: Optimize user context object stock access
+
+ include/linux/memcontrol.h |  14 ++-
+ mm/memcontrol.c            | 199 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   9 +-
+ mm/slab.h                  |  32 +++---
+ 4 files changed, 196 insertions(+), 58 deletions(-)
+
+-- 
+2.18.1
+
