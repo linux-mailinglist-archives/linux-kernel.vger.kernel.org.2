@@ -2,115 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4E235F431
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECC835F438
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 14:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhDNMqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 08:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
+        id S1347265AbhDNMqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 08:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233671AbhDNMqP (ORCPT
+        with ESMTP id S233671AbhDNMqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 08:46:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94728C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QDlL+offzqBR8/8ljKZKG+TOPSgr5bGaMNneqpmzy3Q=; b=gMyW7TA5Mnl7S70eeXJzae4bD4
-        PatUg9WGAhao4nhRO91GNw1b9rXEvksVWPhUvNwwUWJ+bYyOyLR+eVont2+XK20jLNQA5Hq5X/5ma
-        hjOq5sP7To3cco8+Z+DGi8bMwR6OWO5ttk3fHqOyyxzfHwryEMVrUm4728vcQCd+3lljcOSCGtbel
-        db6hG/UUEePBMbcHlwErkZPdxv60M7lGa2G18ag/beDBvxYN7Na3hhnjZCNFxhoaRT1x0ElVCYFkS
-        k7gGnhBOMN0emJvMXVNqN7OJG7qLooa0TaD9h6QsLwC4+OmChPFxGDzCHN49hYzCcENFdDhRSCuK/
-        GrrhQaKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWets-00Ccwo-Eh; Wed, 14 Apr 2021 12:45:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 88DDF30015A;
-        Wed, 14 Apr 2021 14:45:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DF3F203CF7D2; Wed, 14 Apr 2021 14:45:43 +0200 (CEST)
-Date:   Wed, 14 Apr 2021 14:45:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com
-Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
-Message-ID: <YHbj987Ks0JOKw/X@hirez.programming.kicks-ass.net>
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
- <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
- <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
- <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
- <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
- <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+        Wed, 14 Apr 2021 08:46:48 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAC2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:46:26 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id bx20so22380314edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 05:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c12kBO3Pgp5axDxH1oUxBgya9YWgLpZ/kaZ33hnvOio=;
+        b=GxqTGgkBQuBd+h08zms+A5cxIMNwiDUQbpLkFJUNS/zcrTzD3n0Z/fmg6CUKL2yW6a
+         4L7HADBDvJccCEV95/rW0rIow7jf/Yc1brNiHpPHMtPIk75v3EvO4eL7g9abY0GP8JA3
+         1BBq/t/InonR6TCP/3srjzvBGhuxAuYdtFna9tMpxEalwph0UcSApnqutK3eKIaB/uJI
+         /AVUunC7EjPBXUuTCusZR825FALkPdKX7swsxDW91S5qHGKs097g05ryYrQrgFi3d1/d
+         0tuMM9iaaY5tmHgztpqcL6LT3V53zVLEQXc8qxSAr22BcG91kUpHdgpss6p3PFzR8CuN
+         e3xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c12kBO3Pgp5axDxH1oUxBgya9YWgLpZ/kaZ33hnvOio=;
+        b=j8NQBXlhzOl/r/ocCBQFsgbeL153OWFnCc3S2w1kYGX8yHXXf/qh3E/+4ND3nDR8f1
+         Pfb/qE9nMeuD4Cr7LTXVarHVfQisanAaR/EySwKHVAk/FMRMFHd0hsXF3xaMjW8F7IQc
+         tG2hBoCETDe0mwf5YwwME4i1tkNYnmn9JHbfC4Cjb198ObRv7NNDlsJvpknesibfEbnK
+         jFbcmPPkQujYBwh+6C4PrsaftAgXvpgSTA7uHemBBg00oVZRhOb/ME8GH24sQvyKLNuW
+         I74qQQOHERWn7WepEbrlkrCb3nJ95mS1UYuII8BNqr0jPOY7dvK6IMJm3dWEhro6NNgh
+         e5ww==
+X-Gm-Message-State: AOAM530boOcMNJjFOBw8FTxb3vmnztrC58ZT4sbZTjC5QnJYihSsa/PH
+        OM/8jbnPIrB6JlCXDLi6u70Chg==
+X-Google-Smtp-Source: ABdhPJxNoeVMM4M7fagorplO94aOHvWHBEbak2D1eGPYacICUTWOeO46urEtFrulJagbKqAkvLLgTA==
+X-Received: by 2002:a05:6402:1a31:: with SMTP id be17mr41943431edb.330.1618404385016;
+        Wed, 14 Apr 2021 05:46:25 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id hp12sm9484101ejc.46.2021.04.14.05.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 05:46:24 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 13:46:22 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, jason.wessel@windriver.com,
+        dianders@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] kdb: Refactor env variables get/set code
+Message-ID: <20210414124622.sjgiwtjjzxolixvx@maple.lan>
+References: <1612771342-16883-1-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+In-Reply-To: <1612771342-16883-1-git-send-email-sumit.garg@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:16:38PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 14, 2021 at 11:05:24AM +0200, Peter Zijlstra wrote:
+On Mon, Feb 08, 2021 at 01:32:22PM +0530, Sumit Garg wrote:
 > 
-> > That made me look at the qspinlock code, and queued_spin_*lock() uses
-> > atomic_try_cmpxchg_acquire(), which means any arch that uses qspinlock
-> > and has RCpc atomics will give us massive pain.
-> > 
-> > Current archs using qspinlock are: x86, arm64, power, sparc64, mips and
-> > openrisc (WTF?!).
-> > 
-> > Of those, x86 and sparc are TSO archs with SC atomics, arm64 has RCsc
-> > atomics, power has RCtso atomics (and is the arch we all hate for having
-> > RCtso locks).
-> > 
-> > Now MIPS has all sorts of ill specified barriers, but last time looked
-> > at it it didn't actually use any of that and stuck to using smp_mb(), so
-> > it will have RCsc atomics.
-> > 
-> > /me goes look at wth openrisc is..  doesn't even appear to have
-> > asm/barrier.h :-/ Looking at wikipedia it also doesn't appear to
-> > actually have hardware ...
+> Add two new kdb environment access methods as kdb_setenv() and
+> kdb_printenv() in order to abstract out environment access code
+> from kdb command functions.
 > 
-> FWIW this is broken, anything SMP *MUST* define mb(), at the very least.
+> Also, replace (char *)0 with NULL as an initializer for environment
+> variables array.
 
-As near as I can tell this should do. The arch spec only lists this one
-instruction and the text makes it sound like a completion barrier.
+Neither (char *)0 nor NULL are great initializers since, for static
+data, these are the default value anyway. Better to just give the array
+a explicit dimension and be done.
 
----
- arch/openrisc/include/asm/barrier.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+However... that's a fairly small change and I can fix it up when
+applying this.
 
-diff --git a/arch/openrisc/include/asm/barrier.h b/arch/openrisc/include/asm/barrier.h
-new file mode 100644
-index 000000000000..7538294721be
---- /dev/null
-+++ b/arch/openrisc/include/asm/barrier.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_BARRIER_H
-+#define __ASM_BARRIER_H
-+
-+#define mb() asm volatile ("l.msync" ::: "memory")
-+
-+#include <asm-generic/barrier.h>
-+
-+#endif /* __ASM_BARRIER_H */
+
+Daniel.
+
+
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v3:
+> - Remove redundant '\0' char assignment.
+> - Pick up Doug's review tag.
+> 
+> Changes in v2:
+> - Get rid of code motion to separate kdb_env.c file.
+> - Replace (char *)0 with NULL.
+> - Use kernel-doc style function comments.
+> - s/kdb_prienv/kdb_printenv/
+> 
+>  kernel/debug/kdb/kdb_main.c | 164 ++++++++++++++++++++++++--------------------
+>  1 file changed, 91 insertions(+), 73 deletions(-)
+> 
+> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> index 588062a..69b8f55 100644
+> --- a/kernel/debug/kdb/kdb_main.c
+> +++ b/kernel/debug/kdb/kdb_main.c
+> @@ -142,40 +142,40 @@ static const int __nkdb_err = ARRAY_SIZE(kdbmsgs);
+>  
+>  static char *__env[] = {
+>  #if defined(CONFIG_SMP)
+> - "PROMPT=[%d]kdb> ",
+> +	"PROMPT=[%d]kdb> ",
+>  #else
+> - "PROMPT=kdb> ",
+> +	"PROMPT=kdb> ",
+>  #endif
+> - "MOREPROMPT=more> ",
+> - "RADIX=16",
+> - "MDCOUNT=8",			/* lines of md output */
+> - KDB_PLATFORM_ENV,
+> - "DTABCOUNT=30",
+> - "NOSECT=1",
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> - (char *)0,
+> +	"MOREPROMPT=more> ",
+> +	"RADIX=16",
+> +	"MDCOUNT=8",		/* lines of md output */
+> +	KDB_PLATFORM_ENV,
+> +	"DTABCOUNT=30",
+> +	"NOSECT=1",
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+> +	NULL,
+>  };
+>  
+>  static const int __nenv = ARRAY_SIZE(__env);
+> @@ -318,6 +318,63 @@ int kdbgetintenv(const char *match, int *value)
+>  }
+>  
+>  /*
+> + * kdb_setenv() - Alter an existing environment variable or create a new one.
+> + * @var: Name of the variable
+> + * @val: Value of the variable
+> + *
+> + * Return: Zero on success, a kdb diagnostic on failure.
+> + */
+> +static int kdb_setenv(const char *var, const char *val)
+> +{
+> +	int i;
+> +	char *ep;
+> +	size_t varlen, vallen;
+> +
+> +	varlen = strlen(var);
+> +	vallen = strlen(val);
+> +	ep = kdballocenv(varlen + vallen + 2);
+> +	if (ep == (char *)0)
+> +		return KDB_ENVBUFFULL;
+> +
+> +	sprintf(ep, "%s=%s", var, val);
+> +
+> +	for (i = 0; i < __nenv; i++) {
+> +		if (__env[i]
+> +		 && ((strncmp(__env[i], var, varlen) == 0)
+> +		   && ((__env[i][varlen] == '\0')
+> +		    || (__env[i][varlen] == '=')))) {
+> +			__env[i] = ep;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Wasn't existing variable.  Fit into slot.
+> +	 */
+> +	for (i = 0; i < __nenv-1; i++) {
+> +		if (__env[i] == (char *)0) {
+> +			__env[i] = ep;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	return KDB_ENVFULL;
+> +}
+> +
+> +/*
+> + * kdb_printenv() - Display the current environment variables.
+> + */
+> +static void kdb_printenv(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < __nenv; i++) {
+> +		if (__env[i])
+> +			kdb_printf("%s\n", __env[i]);
+> +	}
+> +}
+> +
+> +/*
+>   * kdbgetularg - This function will convert a numeric string into an
+>   *	unsigned long value.
+>   * Parameters:
+> @@ -374,10 +431,6 @@ int kdbgetu64arg(const char *arg, u64 *value)
+>   */
+>  int kdb_set(int argc, const char **argv)
+>  {
+> -	int i;
+> -	char *ep;
+> -	size_t varlen, vallen;
+> -
+>  	/*
+>  	 * we can be invoked two ways:
+>  	 *   set var=value    argv[1]="var", argv[2]="value"
+> @@ -422,37 +475,7 @@ int kdb_set(int argc, const char **argv)
+>  	 * Tokenizer squashed the '=' sign.  argv[1] is variable
+>  	 * name, argv[2] = value.
+>  	 */
+> -	varlen = strlen(argv[1]);
+> -	vallen = strlen(argv[2]);
+> -	ep = kdballocenv(varlen + vallen + 2);
+> -	if (ep == (char *)0)
+> -		return KDB_ENVBUFFULL;
+> -
+> -	sprintf(ep, "%s=%s", argv[1], argv[2]);
+> -
+> -	ep[varlen+vallen+1] = '\0';
+> -
+> -	for (i = 0; i < __nenv; i++) {
+> -		if (__env[i]
+> -		 && ((strncmp(__env[i], argv[1], varlen) == 0)
+> -		   && ((__env[i][varlen] == '\0')
+> -		    || (__env[i][varlen] == '=')))) {
+> -			__env[i] = ep;
+> -			return 0;
+> -		}
+> -	}
+> -
+> -	/*
+> -	 * Wasn't existing variable.  Fit into slot.
+> -	 */
+> -	for (i = 0; i < __nenv-1; i++) {
+> -		if (__env[i] == (char *)0) {
+> -			__env[i] = ep;
+> -			return 0;
+> -		}
+> -	}
+> -
+> -	return KDB_ENVFULL;
+> +	return kdb_setenv(argv[1], argv[2]);
+>  }
+>  
+>  static int kdb_check_regs(void)
+> @@ -2055,12 +2078,7 @@ static int kdb_lsmod(int argc, const char **argv)
+>  
+>  static int kdb_env(int argc, const char **argv)
+>  {
+> -	int i;
+> -
+> -	for (i = 0; i < __nenv; i++) {
+> -		if (__env[i])
+> -			kdb_printf("%s\n", __env[i]);
+> -	}
+> +	kdb_printenv();
+>  
+>  	if (KDB_DEBUG(MASK))
+>  		kdb_printf("KDBDEBUG=0x%x\n",
+> -- 
+> 2.7.4
+> 
