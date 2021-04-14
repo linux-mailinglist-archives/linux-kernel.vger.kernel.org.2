@@ -2,64 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DD935F29E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51EA35F2A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 13:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350588AbhDNLf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 07:35:26 -0400
-Received: from mga05.intel.com ([192.55.52.43]:16156 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232069AbhDNLfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:35:24 -0400
-IronPort-SDR: Qsj014cOJnYFUeEIw5fXuAa7FIogtoNJuy4yYmPNgFlbxpFEQwb8Jo05wl/BIvXxjr/IuBiS7K
- Lm9pHVCnmeVw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="279931720"
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="279931720"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 04:35:01 -0700
-IronPort-SDR: 6Oc8hCUQ5OB3w7UeCQOSf8wfQ4KqG9pk5f56OMXThcachX8Y4M+Sar7znTNCW9SsONT5Sf++nb
- HT/MU2hA4ddg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,222,1613462400"; 
-   d="scan'208";a="521961851"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Apr 2021 04:34:59 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 14 Apr 2021 14:34:58 +0300
-Date:   Wed, 14 Apr 2021 14:34:58 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] software node: Allow node addition to already existing
- device
-Message-ID: <YHbTYuMSyzPKXGoB@kuha.fi.intel.com>
-References: <20210414075438.64547-1-heikki.krogerus@linux.intel.com>
- <YHayP0cTOGMSoPNR@kuha.fi.intel.com>
- <YHazQ33v4PY8kRHd@kroah.com>
+        id S1350596AbhDNLhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 07:37:50 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:38220 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232069AbhDNLhp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 07:37:45 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id F3A7745442;
+        Wed, 14 Apr 2021 13:37:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id vWaSPcbXCHlY; Wed, 14 Apr 2021 13:37:21 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id 59E1F45441;
+        Wed, 14 Apr 2021 13:37:21 +0200 (CEST)
+From:   Jiri Prchal <jiri.prchal@aksignal.cz>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH] nvmem: eeprom: at25: export FRAM serial num
+Date:   Wed, 14 Apr 2021 13:37:17 +0200
+Message-Id: <20210414113717.53593-1-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHazQ33v4PY8kRHd@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:17:55AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 14, 2021 at 12:13:35PM +0300, Heikki Krogerus wrote:
-> > +Greg
-> > 
-> > Sorry about that. Should I resend this?
-> 
-> No worries, I can pick it up, thanks
-> 
-> `b4` really is nice to use :)
+This exports serial number of FRAM in sysfs file named "sernum".
+Formatted in hex, each byte separated by space.
+Example:
+$ cat /sys/class/spi_master/spi0/spi0.0/sernum
+a4 36 44 f2 ae 6c 00 00
 
-Yes, it's a really nice tool.
+Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+---
+ drivers/misc/eeprom/at25.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-thanks,
-
+diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
+index 4f6e983c278b..b2cffeb3af2c 100644
+--- a/drivers/misc/eeprom/at25.c
++++ b/drivers/misc/eeprom/at25.c
+@@ -38,6 +38,7 @@ struct at25_data {
+ 	struct nvmem_config	nvmem_config;
+ 	struct nvmem_device	*nvmem;
+ 	int has_sernum;
++	char *sernum;
+ };
+ 
+ #define	AT25_WREN	0x06		/* latch the write enable */
+@@ -172,6 +173,19 @@ static int fm25_aux_read(struct at25_data *at25, char *buf, uint8_t command,
+ 	return status;
+ }
+ 
++static ssize_t sernum_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct at25_data *at25;
++	int i;
++
++	at25 = dev_get_drvdata(dev);
++	for (i = 0; i < FM25_SN_LEN; i++)
++		buf += sprintf(buf, "%02x ", at25->sernum[i]);
++	sprintf(--buf, "\n");
++	return (3 * i);
++}
++static DEVICE_ATTR_RO(sernum);
++
+ static int at25_ee_write(void *priv, unsigned int off, void *val, size_t count)
+ {
+ 	struct at25_data *at25 = priv;
+@@ -427,8 +441,13 @@ static int at25_probe(struct spi_device *spi)
+ 		else
+ 			at25->chip.flags |= EE_ADDR2;
+ 
+-		if (id[8])
++		if (id[8]) {
+ 			at25->has_sernum = 1;
++			at25->sernum = kzalloc(FM25_SN_LEN, GFP_KERNEL);
++			if (!at25->sernum)
++				return -ENOMEM;
++			fm25_aux_read(at25, at25->sernum, FM25_RDSN, FM25_SN_LEN);
++		}
+ 		else
+ 			at25->has_sernum = 0;
+ 
+@@ -467,6 +486,13 @@ static int at25_probe(struct spi_device *spi)
+ 	if (IS_ERR(at25->nvmem))
+ 		return PTR_ERR(at25->nvmem);
+ 
++	/* Export the FM25 serial number */
++	if (at25->has_sernum) {
++		err = device_create_file(&spi->dev, &dev_attr_sernum);
++		if (err)
++			return err;
++	}
++
+ 	dev_info(&spi->dev, "%d %s %s %s%s, pagesize %u\n",
+ 		 (chip.byte_len < 1024) ? chip.byte_len : (chip.byte_len / 1024),
+ 		 (chip.byte_len < 1024) ? "Byte" : "KByte",
 -- 
-heikki
+2.25.1
+
