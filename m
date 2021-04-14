@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FA435F780
+	by mail.lfdr.de (Postfix) with ESMTP id DAAD635F782
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Apr 2021 17:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350422AbhDNPUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 11:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        id S1350457AbhDNPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 11:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbhDNPUp (ORCPT
+        with ESMTP id S232358AbhDNPVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 11:20:45 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C48FC061574;
-        Wed, 14 Apr 2021 08:20:24 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id e2so5987297plh.8;
-        Wed, 14 Apr 2021 08:20:24 -0700 (PDT)
+        Wed, 14 Apr 2021 11:21:45 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C82DC061574;
+        Wed, 14 Apr 2021 08:21:24 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id e2so5988983plh.8;
+        Wed, 14 Apr 2021 08:21:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GjnyRXzQJs/ruevdN1h+ewCMUU5MROLW5faBjSTHYuk=;
-        b=r6ySV3uMl0D+g1EvD538J47qBPrk4NpMBZ08hqgf4Erzcekb/krnaZePTtMzchncG/
-         qN54me47vACgJUEe1jgJzTNhEhRKKWXbkxSYhcniON20hMC52HL82van9C0f7tNCEx0E
-         ieuQb4DM/upvYoTyCmmfj6+2zCjtjf7ySM+hThuVZjs0UDhhZZKJ53HjZluPTXgS+1JI
-         bM78EWw6rTQVw4/EhdX4EMXeS1ng4ucKJcohV95yRsghHehN0b7lA9J8dw7wY7dJxA1V
-         NhL/SVXwqiiZNiCscBNghbJDuc1ugVWjN05e9RLZW5V4k8GnhnoJS6Y8RX+uDNXUa5dY
-         1wnA==
+        h=from:date:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LKBWpjyMDRFuuMYdGVnQkKgGtzVnoGLy1lYODPpAzN4=;
+        b=Z7S2SFqo8Jhhfd7L9wAGEm2/Jq1XwM9BgNVD8/LS/YH5FFe3DS1y8X+8iIB5w1O//n
+         7mOKIeUGvzKkAbJH7e4DroEhKLuKLt+2I8x0K8CT7vz2O9OjSzpA/hC6+oPbzvvs1egs
+         IjOtQlRkE5W44ChjhY+CzpIQq5WIjo6mNKAEPSFwEc+U0ukXtCMxAeacQGrLwdjXFdP9
+         9xBlsb8Axpzql02GqmTcTgCH8IrK7P6fCxrvlkxTKdtr5OWvg5Fhbe3cXaHhp6A/39Qt
+         lM2DIxnnvrIDG1i0SoI+QxrMfGPcT6AzNI6p9nTIxQCWLzISJvksq4Ik/WQz3pm/KpZt
+         koqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GjnyRXzQJs/ruevdN1h+ewCMUU5MROLW5faBjSTHYuk=;
-        b=LhwuZFldjsRQF9Zc/L54mDT298sNxaGs/lLjfw1RCywfxOYh5RJdRPTjZgDO46+hyH
-         bPuvgDGZx+K4ZVhPEbnqVCOA+TzACZucdGQtT5yKYuKtnUpL7Rp08sS7lD0vRpuEyIJh
-         4tO/APACImWCN4m1+vUw7Ztfm155/K2e/WIMisI1/JYAxCbGfrr46fRvqsWJJI8Izh9d
-         NVplLf/c4d4oTxMjwGmNupC6e/6EP39L3dBpc9/XjfUBUQxJjbUj9nP4xUIRw3p4R/TV
-         1fEMMCcPrcQ5rbHkEvaX/Wqyn+mZQoKZWd/XmqQo2YSbZ1l9oZEH6Qa3/bT6m9bqLT3y
-         DNEQ==
-X-Gm-Message-State: AOAM531TomLDgGvSyVHlGlQvzVitXvS7iez8NNe8SMYgqkc/BRDmXB6X
-        5iANGvlZQF5bhLCbyQ35UDqDlnMAd8OJLPmM
-X-Google-Smtp-Source: ABdhPJwYkbx3moK6IBiDeaJUyG0vF+58FHQQ471qa5iiLWYh7LAIgbVq2JIXvpAZ7iENT8ayACk7jg==
-X-Received: by 2002:a17:90b:300f:: with SMTP id hg15mr4260680pjb.92.1618413623873;
-        Wed, 14 Apr 2021 08:20:23 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
-        by smtp.gmail.com with ESMTPSA id ir3sm5205971pjb.42.2021.04.14.08.20.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Apr 2021 08:20:23 -0700 (PDT)
-Subject: Re: [RFC V2 PATCH 8/12] UIO/Hyper-V: Not load UIO HV driver in the
- isolation VM.
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210413152217.3386288-1-ltykernel@gmail.com>
- <20210413152217.3386288-9-ltykernel@gmail.com> <YHXAL+83iHPK8O/Q@kroah.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <e54446fb-f9d9-2768-f73f-01a94cf635ea@gmail.com>
-Date:   Wed, 14 Apr 2021 23:20:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LKBWpjyMDRFuuMYdGVnQkKgGtzVnoGLy1lYODPpAzN4=;
+        b=F+LcziuLA6i7exmS8CxNsFiVC8GZlB64Pngq/A5xfmjH35HXTMp6F4m7I8TIgmCDpn
+         UPXqedv9dPVrHH5JYiNx6AQsGl9RGySJ7ZYQWRe9Vk6Q84IZ/FJha4PCJ+Nrpoz/2OYM
+         1ZnfISlDesHT/jlWGxDkauYrvqvaIhpCtppXw5e9buR8ZxQjRm8pxBzUr/Ci+XjsdfP/
+         pTM0M8OdKNWOKWegWr3Zxzxl8VJyWkQTJI84Wi3F+BotO/Gcd7lkzLym3rg2VFowBEeQ
+         LU20JCqHFAjNEURUv04qfnC/cpQ+TJcdPwDV5xeuHliOVK3meoFcYblOcYR6M5iWG9iZ
+         iELA==
+X-Gm-Message-State: AOAM533m1fxNRSZmrJ9zK0Ku66pR7VEbBfGrJ+DOIwtPBKXUvJuWq/vC
+        78jVgbb5iPXDEHrqKpfkHvE=
+X-Google-Smtp-Source: ABdhPJwd4ONqa2AMY1ON0aLJIMUhue0FVe7zEZeVay8oBqQMWCiM781IfgmJxOymFSRRFgHbjnWRbw==
+X-Received: by 2002:a17:902:b28b:b029:ea:eda0:4d5e with SMTP id u11-20020a170902b28bb02900eaeda04d5emr17850905plr.68.1618413683915;
+        Wed, 14 Apr 2021 08:21:23 -0700 (PDT)
+Received: from slime ([139.198.121.254])
+        by smtp.gmail.com with ESMTPSA id y19sm17873854pge.50.2021.04.14.08.21.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 08:21:23 -0700 (PDT)
+From:   xiaojun.zhao141@gmail.com
+X-Google-Original-From: <xiaojunzhao141@gmail.com>
+Date:   Wed, 14 Apr 2021 23:21:19 +0800
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     xiaojun.zhao141@gmail.com, josef@toxicpanda.com,
+        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: the qemu-nbd process automatically exit with the commit
+ 43347d56c 'livepatch: send a fake signal to all blocking tasks'
+Message-ID: <20210414232119.13b126fa@slime>
+In-Reply-To: <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz>
+References: <20210414115548.0cdb529b@slime>
+        <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YHXAL+83iHPK8O/Q@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg:
-	Thanks for your review.
+On Wed, 14 Apr 2021 13:27:43 +0200 (CEST)
+Miroslav Benes <mbenes@suse.cz> wrote:
 
-On 4/14/2021 12:00 AM, Greg KH wrote:
-> On Tue, Apr 13, 2021 at 11:22:13AM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> UIO HV driver should not load in the isolation VM for security reason.
+> Hi,
 > 
-> Why?  I need a lot more excuse than that.
-
-The reason is that ring buffers have been marked as visible to host.
-UIO driver will expose these buffers to user space and user space
-driver hasn't done some secure check for data from host. This
-is considered as insecure in isolation VM.
-
+> On Wed, 14 Apr 2021, xiaojun.zhao141@gmail.com wrote:
 > 
-> Why would the vm allow UIO devices to bind to it if it was not possible?
-> Shouldn't the VM be handling this type of logic and not forcing all
-> individual hyperv drivers to do this?
+> > I found the qemu-nbd process(started with qemu-nbd -t -c /dev/nbd0
+> > nbd.qcow2) will automatically exit when I patched for functions of
+> > the nbd with livepatch.
+> > 
+> > The nbd relative source:
+> > static int nbd_start_device_ioctl(struct nbd_device *nbd, struct
+> > block_device *bdev)
+> > { struct nbd_config *config =
+> > nbd->config; int
+> > ret; 
+> >         ret =
+> > nbd_start_device(nbd); if
+> > (ret) return
+> > ret; 
+> >         if
+> > (max_part) bdev->bd_invalidated =
+> > 1;
+> > mutex_unlock(&nbd->config_lock); ret =
+> > wait_event_interruptible(config->recv_wq,
+> > atomic_read(&config->recv_threads) == 0); if
+> > (ret)
+> > sock_shutdown(nbd);
+> > flush_workqueue(nbd->recv_workq); 
+> >         mutex_lock(&nbd->config_lock);                                          
+> >         nbd_bdev_reset(bdev);                                                   
+> >         /* user requested, ignore socket errors
+> > */ if (test_bit(NBD_RT_DISCONNECT_REQUESTED,
+> > &config->runtime_flags)) ret =
+> > 0; if (test_bit(NBD_RT_TIMEDOUT,
+> > &config->runtime_flags)) ret =
+> > -ETIMEDOUT; return
+> > ret; }  
 > 
-> This feels wrong...
-
-Hypervisor exposes network and storage devices but can't prohibit guest
-from binding these devices to UIO driver.
-
-You are right. This should not happen in the individual driver and will
-try handling this in the vmbus driver level.
-
-
-
+> So my understanding is that ndb spawns a number
+> (config->recv_threads) of workqueue jobs and then waits for them to
+> finish. It waits interruptedly. Now, any signal would make
+> wait_event_interruptible() to return -ERESTARTSYS. Livepatch fake
+> signal is no exception there. The error is then propagated back to
+> the userspace. Unless a user requested a disconnection or there is
+> timeout set. How does the userspace then reacts to it? Is
+> _interruptible there because the userspace sends a signal in case of
+> NBD_RT_DISCONNECT_REQUESTED set? How does the userspace handles
+> ordinary signals? This all sounds a bit strange, but I may be missing
+> something easily.
 > 
-> thanks,
+> > When the nbd waits for atomic_read(&config->recv_threads) == 0, the
+> > klp will send a fake signal to it then the qemu-nbd process exits.
+> > And the signal of sysfs to control this action was removed in the
+> > commit 10b3d52790e 'livepatch: Remove signal sysfs attribute'. Are
+> > there other ways to control this action? How?  
 > 
-> greg k-h
+> No, there is no way currently. We send a fake signal automatically.
 > 
+> Regards
+> Miroslav
+It occurs IO error of the nbd device when I use livepatch of the
+nbd, and I guess that any livepatch on other kernel source maybe cause
+the IO error. Well, now I decide to workaround for this problem by
+adding a livepatch for the klp to disable a automatic fake signal.
+
+Regards.
+
