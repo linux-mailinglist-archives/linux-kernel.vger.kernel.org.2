@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DA3360478
+	by mail.lfdr.de (Postfix) with ESMTP id D692D360479
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhDOIiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:38:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58310 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231710AbhDOIiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:38:01 -0400
-Date:   Thu, 15 Apr 2021 08:37:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618475858;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iflNOAc77w3kq9tozGFhigUvlAM3AiSvPdoqcZsUX9Y=;
-        b=WBP/m/MmZfZBwbH1050SFrvS9ECZ4mXRsY2/9KS+1n+WKL+bSqjleDESgbZQmEQp81P/ZN
-        c68BvKhMweG/BaOXC38pPoxiBmh5dlFIPOyMjOEdhGV9yltByfaj8yRmb5ByaNrFtT7QW3
-        SfUmDjqWkFdFuJ2xhk5JcLU8LY7FLYfRuswzwOKpFkOs/moNEtBYqHeC5V6+g7Ac14sk37
-        ufrl1qMP9t4AQlpIVNRlKPdSBVVmyr9RIVOhWTfyNaqvGRZl4IsBrtml0cFTDIMKxEyKcD
-        Y+ZsGNBE53aFEnUz3bDjJQiuqVqdUXrXuNMv9Z1xMnDv/x7R8yR9s5G90rkhVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618475858;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iflNOAc77w3kq9tozGFhigUvlAM3AiSvPdoqcZsUX9Y=;
-        b=R+9fY/Fwh3X6PkSJfh/cpal6dR4SBGXmt4sQhA35rwvNZHOu/EBRrUQ5wN/lOT/bHMjkmt
-        WdZEZ9pRBC9GdqDw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210322092258.898677147@linutronix.de>
-References: <20210322092258.898677147@linutronix.de>
+        id S231824AbhDOIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:38:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45596 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231736AbhDOIiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:38:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20484AE27;
+        Thu, 15 Apr 2021 08:37:45 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 10:37:44 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+cc:     xiaojun.zhao141@gmail.com, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: the qemu-nbd process automatically exit with the commit 43347d56c
+ 'livepatch: send a fake signal to all blocking tasks'
+In-Reply-To: <f7698105-23a4-4558-7b65-9116e8587848@toxicpanda.com>
+Message-ID: <alpine.LSU.2.21.2104151026100.15642@pobox.suse.cz>
+References: <20210414115548.0cdb529b@slime> <alpine.LSU.2.21.2104141320060.6604@pobox.suse.cz> <20210414232119.13b126fa@slime> <f7698105-23a4-4558-7b65-9116e8587848@toxicpanda.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Message-ID: <161847585573.29796.1243362956609044823.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Wed, 14 Apr 2021, Josef Bacik wrote:
 
-Commit-ID:     69995ebbb9d3717306a165db88a1292b63f77a37
-Gitweb:        https://git.kernel.org/tip/69995ebbb9d3717306a165db88a1292b63f77a37
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 22 Mar 2021 10:19:42 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 14 Apr 2021 18:04:08 +02:00
+> On 4/14/21 11:21 AM, xiaojun.zhao141@gmail.com wrote:
+> > On Wed, 14 Apr 2021 13:27:43 +0200 (CEST)
+> > Miroslav Benes <mbenes@suse.cz> wrote:
+> > 
+> >> Hi,
+> >>
+> >> On Wed, 14 Apr 2021, xiaojun.zhao141@gmail.com wrote:
+> >>
+> >>> I found the qemu-nbd process(started with qemu-nbd -t -c /dev/nbd0
+> >>> nbd.qcow2) will automatically exit when I patched for functions of
+> >>> the nbd with livepatch.
+> >>>
+> >>> The nbd relative source:
+> >>> static int nbd_start_device_ioctl(struct nbd_device *nbd, struct
+> >>> block_device *bdev)
+> >>> { struct nbd_config *config =
+> >>> nbd->config; int
+> >>> ret;
+> >>>          ret =
+> >>> nbd_start_device(nbd); if
+> >>> (ret) return
+> >>> ret;
+> >>>          if
+> >>> (max_part) bdev->bd_invalidated =
+> >>> 1;
+> >>> mutex_unlock(&nbd->config_lock); ret =
+> >>> wait_event_interruptible(config->recv_wq,
+> >>> atomic_read(&config->recv_threads) == 0); if
+> >>> (ret)
+> >>> sock_shutdown(nbd);
+> >>> flush_workqueue(nbd->recv_workq);
+> >>>          mutex_lock(&nbd->config_lock);
+> >>>          nbd_bdev_reset(bdev);
+> >>>          /* user requested, ignore socket errors
+> >>> */ if (test_bit(NBD_RT_DISCONNECT_REQUESTED,
+> >>> &config->runtime_flags)) ret =
+> >>> 0; if (test_bit(NBD_RT_TIMEDOUT,
+> >>> &config->runtime_flags)) ret =
+> >>> -ETIMEDOUT; return
+> >>> ret; }
+> >>
+> >> So my understanding is that ndb spawns a number
+> >> (config->recv_threads) of workqueue jobs and then waits for them to
+> >> finish. It waits interruptedly. Now, any signal would make
+> >> wait_event_interruptible() to return -ERESTARTSYS. Livepatch fake
+> >> signal is no exception there. The error is then propagated back to
+> >> the userspace. Unless a user requested a disconnection or there is
+> >> timeout set. How does the userspace then reacts to it? Is
+> >> _interruptible there because the userspace sends a signal in case of
+> >> NBD_RT_DISCONNECT_REQUESTED set? How does the userspace handles
+> >> ordinary signals? This all sounds a bit strange, but I may be missing
+> >> something easily.
+> >>
+> >>> When the nbd waits for atomic_read(&config->recv_threads) == 0, the
+> >>> klp will send a fake signal to it then the qemu-nbd process exits.
+> >>> And the signal of sysfs to control this action was removed in the
+> >>> commit 10b3d52790e 'livepatch: Remove signal sysfs attribute'. Are
+> >>> there other ways to control this action? How?
+> >>
+> >> No, there is no way currently. We send a fake signal automatically.
+> >>
+> >> Regards
+> >> Miroslav
+> > It occurs IO error of the nbd device when I use livepatch of the
+> > nbd, and I guess that any livepatch on other kernel source maybe cause
+> > the IO error. Well, now I decide to workaround for this problem by
+> > adding a livepatch for the klp to disable a automatic fake signal.
+> > 
+> 
+> Would wait_event_killable() fix this problem?  I'm not sure any client
+> implementations depend on being able to send other signals to the client
+> process, so it should be safe from that standpoint.  Not sure if the livepatch
+> thing would still get an error at that point tho.  Thanks,
 
-signal: Hand SIGQUEUE_PREALLOC flag to __sigqueue_alloc()
+wait_event_killable() means that you would sleep uninterruptedly (still 
+reacting to fatal signals), so the fake signal from livepatch would not be 
+sent at all. set_notify_signal() handles TASK_INTERRUPTIBLE tasks. No 
+disruption for the userspace and it would fix this problem.
 
-There is no point in having the conditional at the callsite.
+There is a catch on the livepatch side of things. If there is a live patch 
+for nbd_start_device_ioctl(), the transition process would get stuck until 
+the task leaves the function (all workqueue jobs are processed). I gather 
+it is unlikely to be it indefinite, so we can live with that, I think.
 
-Just hand in the allocation mode flag to __sigqueue_alloc() and use it to
-initialize sigqueue::flags.
-
-No functional change.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210322092258.898677147@linutronix.de
----
- kernel/signal.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index ba4d1ef..568a2e2 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -410,7 +410,8 @@ void task_join_group_stop(struct task_struct *task)
-  *   appropriate lock must be held to stop the target task from exiting
-  */
- static struct sigqueue *
--__sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimit)
-+__sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
-+		 int override_rlimit, const unsigned int sigqueue_flags)
- {
- 	struct sigqueue *q = NULL;
- 	struct user_struct *user;
-@@ -432,7 +433,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
- 	rcu_read_unlock();
- 
- 	if (override_rlimit || likely(sigpending <= task_rlimit(t, RLIMIT_SIGPENDING))) {
--		q = kmem_cache_alloc(sigqueue_cachep, flags);
-+		q = kmem_cache_alloc(sigqueue_cachep, gfp_flags);
- 	} else {
- 		print_dropped_signal(sig);
- 	}
-@@ -442,7 +443,7 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t flags, int override_rlimi
- 			free_uid(user);
- 	} else {
- 		INIT_LIST_HEAD(&q->list);
--		q->flags = 0;
-+		q->flags = sigqueue_flags;
- 		q->user = user;
- 	}
- 
-@@ -1113,7 +1114,8 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
- 	else
- 		override_rlimit = 0;
- 
--	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit);
-+	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit, 0);
-+
- 	if (q) {
- 		list_add_tail(&q->list, &pending->list);
- 		switch ((unsigned long) info) {
-@@ -1807,12 +1809,7 @@ EXPORT_SYMBOL(kill_pid);
-  */
- struct sigqueue *sigqueue_alloc(void)
- {
--	struct sigqueue *q = __sigqueue_alloc(-1, current, GFP_KERNEL, 0);
--
--	if (q)
--		q->flags |= SIGQUEUE_PREALLOC;
--
--	return q;
-+	return __sigqueue_alloc(-1, current, GFP_KERNEL, 0, SIGQUEUE_PREALLOC);
- }
- 
- void sigqueue_free(struct sigqueue *q)
+Miroslav
