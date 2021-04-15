@@ -2,67 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB203602EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82573602F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhDOHGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:06:54 -0400
-Received: from www381.your-server.de ([78.46.137.84]:51512 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhDOHGw (ORCPT
+        id S231214AbhDOHJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230481AbhDOHJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=GpPC6kjMAScPgOy9gWmvzAqvitQWMheOac8bf5AM7OU=; b=MVjRdroWh7p90PFc+51tvIkr9K
-        5rF2ufksBnKBAKF/7NjjzvDgkpaf02c0VwzlLVv+C37KTg05jtSr4V4dz5fZRhDJicdJvfaZqYH7g
-        ni6MvHdyScuSCU1sLgyTCO6fh2H7CzQDXYeUCGNriJH53TNR6uw9dzAaAMyHVMIstZbwB60x5iMzS
-        FN/fg0UoS6uLdyxmOM+CImCns1dG55lSo0JOJxr3us/TggXzEUZFI0iZAt57cla95avOHwXyr8IXm
-        pi7DXOixVkneDuCsYuwNqsO8VeTvpxMHvUnIDhQh38qs1s+Aoqf/2d7xfZ9RdclMjWnqHROjojIiw
-        X6fsCtuA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lWw54-000Chl-Lw; Thu, 15 Apr 2021 09:06:26 +0200
-Received: from [2001:a61:2a42:9501:9e5c:8eff:fe01:8578]
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lWw54-0003pF-B1; Thu, 15 Apr 2021 09:06:26 +0200
-Subject: Re: [RFC v2 PATCH 0/7] Xilinx DMA enhancements and optimization
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        vkoul@kernel.org, robh+dt@kernel.org, michal.simek@xilinx.com
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com
-References: <1617990965-35337-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <0948eae0-b304-79f8-7d9a-543cba78fbe5@metafoo.de>
-Date:   Thu, 15 Apr 2021 09:06:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 15 Apr 2021 03:09:17 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849FFC061574;
+        Thu, 15 Apr 2021 00:08:54 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so21741436otn.1;
+        Thu, 15 Apr 2021 00:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nvv9Z+5IWRSsuwqqnBpx+MZMoeQomd87AFJ4WvcFBio=;
+        b=fELtbrT9MMPajwbDhgBIp13s7ytuo9ZP436u5bHiLqI96pnWwNG5zhIfjL9Dw171m9
+         fgJQDkAnw4nnD67piz3+EUgSD97l2fMIi2PAliv47JT18EwJeet92Tk6/rxCnCh7x0vV
+         7A7B5sBCJKb+eCKX60HGUvjQraaDuXEGIqle1953TFREiTFvvUsoqfJTZRlpQlAF+gKE
+         db8+fYW/SYMcJLsYG9M+aWLLBz/Ptng/B/iZjwwpjXsXR2q6XjFKU3GqS2C9dZv194e/
+         77ZLOqxbOwrdA0Tl3lLF+WkUukRsQSMj8ryC+DoRJYTD+gNGZv7WIqo43RV9sKg3s/Sx
+         LFiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nvv9Z+5IWRSsuwqqnBpx+MZMoeQomd87AFJ4WvcFBio=;
+        b=S3dd5PSQTmo0Y+pcMEtDHpfVgScFNkoAeOnNS9k74z5lfCGlHp1pIiTXKPvxD6FXGe
+         AdXFk4jkPyGq4eX+QB33iLWcmcH1CutDHbd0Ca6E2WfzPEV6aNSM/9aTcStHDhfOWzlM
+         L3xE2Gawoo07nSfmla0xh7yiSiG8Pb0alGA7b3mVBKwz9jQQIZQFkqGZ1/X7QctLxODu
+         jDRLwGV0CQoUp69JKj8ITbx8wECl0R4zn2bZixflShKSLT4HZgI4i02xYgSdQjdgtwWe
+         4jxtu24SxrWJ4luKmUurSDG1FxpZl98D9hmCS4QBKiuLLhiMFXU2J73Ibn30MJmOL6e5
+         z+9Q==
+X-Gm-Message-State: AOAM530XqGIkox0r1usmuRvTdGZHxRetlKoDtMkMjKgTfr0tLQ1Sa27W
+        NQjf3bZkvmtWNVV/LM3/K10TUfqNL5MQ1C8CnXh/xfg7ejX76Q==
+X-Google-Smtp-Source: ABdhPJyS9hsAmAbnFATfr51nALqPsm1RRwEbtQKsklRn8JfEb5jRAgLViDjfoMM3N8DgpnbsDPhmyxSQLK5BbaQ8tig=
+X-Received: by 2002:a9d:ecf:: with SMTP id 73mr1587984otj.339.1618470533770;
+ Thu, 15 Apr 2021 00:08:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617990965-35337-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26140/Wed Apr 14 13:10:01 2021)
+References: <20210412161012.1628202-1-colin.king@canonical.com> <CAK8P3a2pSRu0OKDNrNJSdviRgcv8Lw1mwZr5opv=UbtHLps2oQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2pSRu0OKDNrNJSdviRgcv8Lw1mwZr5opv=UbtHLps2oQ@mail.gmail.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Thu, 15 Apr 2021 10:08:26 +0300
+Message-ID: <CAFCwf10S8WhEZtpwD=2AgbgopMahxHofp-yXvsZ4GWkrctPRAQ@mail.gmail.com>
+Subject: Re: [PATCH][next] habanalabs/gaudi: Fix uninitialized return code rc
+ when read size is zero
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Ofir Bitton <obitton@habana.ai>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/21 7:55 PM, Radhey Shyam Pandey wrote:
-> Some background about the patch series: Xilinx Axi Ethernet device driver
-> (xilinx_axienet_main.c) currently has axi-dma code inside it. The goal
-> is to refactor axiethernet driver and use existing AXI DMA driver using
-> DMAEngine API.
+On Mon, Apr 12, 2021 at 9:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Apr 12, 2021 at 6:11 PM Colin King <colin.king@canonical.com> wrote:
+> >
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > In the case where size is zero the while loop never assigns rc and the
+> > return value is uninitialized. Fix this by initializing rc to zero.
+> >
+> > Addresses-Coverity: ("Uninitialized scalar variable")
+> > Fixes: 639781dcab82 ("habanalabs/gaudi: add debugfs to DMA from the device")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+> > index 8730b691ec61..b751652f80a8 100644
+> > --- a/drivers/misc/habanalabs/gaudi/gaudi.c
+> > +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+> > @@ -6252,7 +6252,7 @@ static int gaudi_debugfs_read_dma(struct hl_device *hdev, u64 addr, u32 size,
+> >         dma_addr_t dma_addr;
+> >         void *kernel_addr;
+> >         bool is_eng_idle;
+> > -       int rc, dma_id;
+> > +       int rc = 0, dma_id;
+> >
+> >         kernel_addr = hdev->asic_funcs->asic_dma_alloc_coherent(
+> >                                                 hdev, SZ_2M,
+>
+>
+> In general, I don't like adding initializations during the declaration as that
+> tends to hide warnings for the cases where a later initialization is
+> missing. In this case it looks correct though.
+>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-This is pretty neat! Do you have the patches that modify the AXI 
-Ethernet driver in a public tree somewhere, so this series can be seen 
-in context?
+I don't mind taking this patch for eliminating the warning but fyi,
+the caller function (hl_dma_size_write) checks that the size is not
+zero. If the size is zero, we never reach this function.
 
+Greg, do you mind applying it directly to your -next branch ? I don't
+have anything pending and I'm too lazy sending a pull request on a
+single patch ;)
+
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+
+Thanks,
+Oded
