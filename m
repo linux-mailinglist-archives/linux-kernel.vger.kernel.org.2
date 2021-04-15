@@ -2,96 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D23360B33
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B3E360B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhDON7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhDON7X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:59:23 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD21DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:58:58 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g9so7394035wrx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XVGfVGRf2lqFdi9u95Ww6kE/ExzJlYdE+7z23VB8v3A=;
-        b=Z0jka7QMeObS2sH3XYnKMtcZ4M+L2HZkoTx+uQNaVYN+nTnBXgs0fEYg6T78vU3LFV
-         qDZpyIW8TOta+/kYslVbnTPjvmjtqpXiDY1XCMyqpMbiwVqdXAj5vDjeadNyS7e+NZGa
-         jLq5NZNngaZTTrcFqDuHveX3Q+DiMr977bfSZOiK3aAsuKsaS+hfmclUOcEncXJUY4/W
-         MQ1Fb5QnEPB71KFqwhlkQXi5XFVOX0qdj6dKiTvlnrC+sCnCauNVpAo3tukc4z8M/03v
-         lU/nq216h5ALBhFThVMbM/Om0t7BSMcjGKX5NWdu2+tUpggoHAtggXK9IY0oKiGKyy8k
-         gkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XVGfVGRf2lqFdi9u95Ww6kE/ExzJlYdE+7z23VB8v3A=;
-        b=sw8tn4ChQqEzzKnq2X4l6xboPMRESJ8EXVarOZljO2Tw0NVTKcsxKqv4YCdzLS3tEw
-         rvZ9LQrLhZYIWy2/6Je4Q75u+q+IxuuSo67mrWXSeZthAonFeiSJXg6cfeGxMPuMSmfT
-         aPAF4wUr0vj5r2b5ee/vJOdGQi8WgTNE+abI2irS+tmwdPGzU7M1mzO/LCEaDyyPNT0E
-         E67VRas+Fycsp3HiAPk/qg1CRf8KWB0mKAL62MVRWJ6YO+ayuugSt0VwjDvj9jFB8Kgx
-         JGFPUvL6//j1/T9Kydj4xcrpNS5gMtzGMv7k5VV3hyqXeKSs6/DdKHTc48i500gcrIXY
-         6AgA==
-X-Gm-Message-State: AOAM531+WK0o8l9t3xf9AUb4/75AgVN9nVMSuFCU3L+08OkVbyMLHabx
-        r6KiQriIQZuLcPP9jCFfGzqO8kvt+6gYrA==
-X-Google-Smtp-Source: ABdhPJznICyWykrJyWx5i+dcomhTZnr4iAs69us/lf2jyAxWRzIkRsbO6Uykej8p9dT1E5Eg7kN5XA==
-X-Received: by 2002:a05:6000:18cd:: with SMTP id w13mr3650522wrq.20.1618495137577;
-        Thu, 15 Apr 2021 06:58:57 -0700 (PDT)
-Received: from localhost.localdomain (amontpellier-652-1-286-103.w109-210.abo.wanadoo.fr. [109.210.101.103])
-        by smtp.gmail.com with ESMTPSA id e10sm3105582wrw.14.2021.04.15.06.58.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 06:58:57 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.12-rc8
-Date:   Thu, 15 Apr 2021 15:58:51 +0200
-Message-Id: <20210415135851.27595-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        id S233169AbhDON7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:59:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60059 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231549AbhDON7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:59:18 -0400
+IronPort-SDR: CkolhUsRVbRTZ7UKT7r4VIbAwBhMhXg5SromWdjeazFTA+H6yiorYf8mumGVKuMfeqEOpnnctz
+ k9rvN4HbosBg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="174961472"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="174961472"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 06:58:53 -0700
+IronPort-SDR: 1Ero4IpCmY7zN/BTHjiLpTX2bZF4Yh00EOPhGr04YRY+PryaHh50jCkmxU7H3tJHVBvXgIoVkE
+ ovqkuIFI+rDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="425186820"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 15 Apr 2021 06:58:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7C258BA; Thu, 15 Apr 2021 16:59:05 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>, linux-nvdimm@lists.01.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ACPI: NFIT: Import GUID before use
+Date:   Thu, 15 Apr 2021 16:59:01 +0300
+Message-Id: <20210415135901.47131-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Strictly speaking the comparison between guid_t and raw buffer
+is not correct. Import GUID to variable of guid_t type and then
+compare.
 
-I waited until late with this non-urgent one hoping we'd get more fixes for this
-release cycle to go with it but nothing's coming up so please pull this single
-fix for an older problem with the sysfs interface.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/nfit/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Bartosz
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index 958aaac869e8..6d8a1a93636a 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -678,10 +678,12 @@ static const char *spa_type_name(u16 type)
+ 
+ int nfit_spa_type(struct acpi_nfit_system_address *spa)
+ {
++	guid_t guid;
+ 	int i;
+ 
++	import_guid(&guid, spa->range_guid);
+ 	for (i = 0; i < NFIT_UUID_MAX; i++)
+-		if (guid_equal(to_nfit_uuid(i), (guid_t *)&spa->range_guid))
++		if (guid_equal(to_nfit_uuid(i), &guid))
+ 			return i;
+ 	return -1;
+ }
+-- 
+2.30.2
 
-The following changes since commit 6cb59afe9e5b45a035bd6b97da6593743feefc72:
-
-  gpiolib: Assign fwnode to parent's if no primary one provided (2021-03-16 10:18:08 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.12-rc8
-
-for you to fetch changes up to 23cf00ddd2e1aacf1873e43f5e0c519c120daf7a:
-
-  gpio: sysfs: Obey valid_mask (2021-03-31 20:32:38 +0200)
-
-----------------------------------------------------------------
-gpio fixes for v5.12-rc8
-
-- do not allow exporting GPIO lines which were marked invalid by the driver
-
-----------------------------------------------------------------
-Matti Vaittinen (1):
-      gpio: sysfs: Obey valid_mask
-
- drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
