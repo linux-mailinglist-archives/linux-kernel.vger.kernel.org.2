@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DB6360CFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D380F360C5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbhDOOz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:55:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39798 "EHLO mail.kernel.org"
+        id S233932AbhDOOub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234166AbhDOOv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7783360FDC;
-        Thu, 15 Apr 2021 14:51:32 +0000 (UTC)
+        id S233806AbhDOOuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:50:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86F47613A9;
+        Thu, 15 Apr 2021 14:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498293;
-        bh=xhkDpRFRfP5r+hTYDvg5s+DyIrSAUNmXl65UQahiBLU=;
+        s=korg; t=1618498180;
+        bh=XAJg5YMWizKBSURekwDC2oe3p4LgBGSmgSOIz2GMYcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LfT8LHMoQ7tF1yKUln0BEwenkTnLvMCuxAzEakTs6nLk/4GpCrAVu9GDR09zEq6k2
-         sJRQnPJKe7nPDrPz0rVAEEXc+k4X/NQKN0yvfA/HFyHCjacBd6n1+un9HtS6pyqcrc
-         tWu/q8ezWqdKHcxIRp9aEYe9ijs4QSk9eqCXsxD0=
+        b=V/0VA9KLvooEm3bjBqtwawUBfHHFvNfxAhs6+Q3sBYynhbt6azsFpLNGWBH+t1Oq+
+         0NYN6EEG4/Hdjbu/V6l0jyE89gKK92lCdPkI55+yZja64ZjL6Yac1eKyiWfdvAusJf
+         XAQHu7hTBQQ40JjQavRuibA/eh96U0ZJ57YBx7TU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
         Xiaoming Ni <nixiaoming@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 08/47] nfc: Avoid endless loops caused by repeated llcp_sock_connect()
+Subject: [PATCH 4.4 06/38] nfc: Avoid endless loops caused by repeated llcp_sock_connect()
 Date:   Thu, 15 Apr 2021 16:47:00 +0200
-Message-Id: <20210415144413.747208914@linuxfoundation.org>
+Message-Id: <20210415144413.559348852@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,7 +65,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/nfc/llcp_sock.c
 +++ b/net/nfc/llcp_sock.c
-@@ -685,6 +685,10 @@ static int llcp_sock_connect(struct sock
+@@ -679,6 +679,10 @@ static int llcp_sock_connect(struct sock
  		ret = -EISCONN;
  		goto error;
  	}
