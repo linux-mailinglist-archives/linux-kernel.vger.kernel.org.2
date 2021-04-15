@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FD2360855
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB45360858
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhDOLfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:35:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17001 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDOLfL (ORCPT
+        id S232615AbhDOLfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232557AbhDOLff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:35:11 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FLcck3HcWzPpxD;
-        Thu, 15 Apr 2021 19:31:50 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 15 Apr 2021 19:34:40 +0800
-Subject: Re: [PATCH 1/5] KVM: arm64: Divorce the perf code from oprofile
- helpers
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210414134409.1266357-1-maz@kernel.org>
- <20210414134409.1266357-2-maz@kernel.org>
- <baa268cf-c92d-6b97-da4c-e7da2a9ccb7a@huawei.com>
- <87h7k7n81z.wl-maz@kernel.org>
-CC:     <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linux-sh@vger.kernel.org>, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        <nathan@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        <kernel-team@android.com>, Will Deacon <will@kernel.org>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <da73e0c7-4dd7-ce69-3304-3da8f1521127@huawei.com>
-Date:   Thu, 15 Apr 2021 19:34:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 15 Apr 2021 07:35:35 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50740C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 04:35:12 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lX0H4-0004Ji-90; Thu, 15 Apr 2021 13:35:06 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4081960F62E;
+        Thu, 15 Apr 2021 11:35:03 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 13:35:02 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] can: etas_es58x: Fix a couple of spelling mistakes
+Message-ID: <20210415113502.onga2bsnb3iwtenh@pengutronix.de>
+References: <20210415113050.1942333-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <87h7k7n81z.wl-maz@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vjzv32frs7mxesai"
+Content-Disposition: inline
+In-Reply-To: <20210415113050.1942333-1-colin.king@canonical.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-On 2021/4/15 18:42, Marc Zyngier wrote:
-> On Thu, 15 Apr 2021 07:59:26 +0100,
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>
->> Hi Marc,
->>
->> On 2021/4/14 21:44, Marc Zyngier wrote:
->>> KVM/arm64 is the sole user of perf_num_counters(), and really
->>> could do without it. Stop using the obsolete API by relying on
->>> the existing probing code.
->>>
->>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>> ---
->>>  arch/arm64/kvm/perf.c     | 7 +------
->>>  arch/arm64/kvm/pmu-emul.c | 2 +-
->>>  include/kvm/arm_pmu.h     | 4 ++++
->>>  3 files changed, 6 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
->>> index 739164324afe..b8b398670ef2 100644
->>> --- a/arch/arm64/kvm/perf.c
->>> +++ b/arch/arm64/kvm/perf.c
->>> @@ -50,12 +50,7 @@ static struct perf_guest_info_callbacks kvm_guest_cbs = {
->>>  
->>>  int kvm_perf_init(void)
->>>  {
->>> -	/*
->>> -	 * Check if HW_PERF_EVENTS are supported by checking the number of
->>> -	 * hardware performance counters. This could ensure the presence of
->>> -	 * a physical PMU and CONFIG_PERF_EVENT is selected.
->>> -	 */
->>> -	if (IS_ENABLED(CONFIG_ARM_PMU) && perf_num_counters() > 0)
->>> +	if (kvm_pmu_probe_pmuver() != 0xf)
->> The probe() function may be called many times
->> (kvm_arm_pmu_v3_set_attr also calls it).  I don't know whether the
->> first calling is enough. If so, can we use a static variable in it,
->> so the following calling can return the result right away?
-> 
-> No, because that wouldn't help with crappy big-little implementations
-> that could have PMUs with different versions. We want to find the
-> version at the point where the virtual PMU is created, which is why we
-> call the probe function once per vcpu.
-I see.
+--vjzv32frs7mxesai
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But AFAICS the pmuver is placed in kvm->arch, and the probe function is called
-once per VM. Maybe I miss something.
+On 15.04.2021 12:30:50, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There are spelling mistakes in netdev_dbg and netdev_dbg messages,
+> fix these.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> 
-> This of course is broken in other ways (BL+KVM is a total disaster
-> when it comes to PMU), but making this static would just make it
-> worse.
-OK.
+Applied to linux-can-next/testing.
 
-Thanks,
-Keqian
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--vjzv32frs7mxesai
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4JOMACgkQqclaivrt
+76nlqQf+N6mHncWWGn2F1Ui0prby17+RS+qSvnFNoRu7Pvx0CDKttRj/vdXCeYfK
+aQtqtzNSxxe3xLThQzgSf6sRWRj75n23437zw7gOxz0blanvE3yHVKOkuUplw60Z
+0OYm37Ip3vwoyF6PrYc5nLPwUc342Qu7tXRvM4Nc/2W7HW5PwUcA+gDj1e7NScnn
+ZE+4Hufl40ugyMtF8eFdUqjY01t342nVGnR8i3dOR1+3Q77kMvXyXTXCadXKDS4c
+V3NLyFjXA3WX96e0IBh0Aq/dpp++iWUK/hKCWCw8bmlF73UiN3WiXO/07/FkUbhC
+gXdKzjltFfIWoS0UODH00dHyOqXnEQ==
+=t83b
+-----END PGP SIGNATURE-----
+
+--vjzv32frs7mxesai--
