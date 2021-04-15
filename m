@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD0C360E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAE0360E25
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhDOPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:08:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46934 "EHLO mail.kernel.org"
+        id S234721AbhDOPKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:10:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234907AbhDOPAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B4861406;
-        Thu, 15 Apr 2021 14:55:55 +0000 (UTC)
+        id S235255AbhDOPAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2471B613E3;
+        Thu, 15 Apr 2021 14:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498556;
-        bh=/OqoiyF58eJ1ZX2Sbi4gzBwj/jNfSytLlR1vYZznEso=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zFmk8hZW+/GtwqxS56QSdICPahl65zZ5FCpBGrnGx+4YGawVpLBvbSLPCPuJv1odx
-         xaVXF8j+rQx89uvAHwoKHrdbpk8MCMKpXymOpR9JihhNiJa+UhutXCtaTt49ll+JQd
-         vLS2Wn+rIfsPXl+5AqFaDvbkNYxsGpeLn2cpNgzI=
+        s=korg; t=1618498602;
+        bh=jLImaHg4yqnfp7A1shLC9L6yxSwaOLerhXp+12rAMmE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e86LUz8On3/Wy5P5RlVyj7tiVwXs/g3alH40gznoIee2MEEUOUKmOFHMVzdRvE/vW
+         aoxTJZIwcjTbS5W3ufTSHZt/L4/kkmuwYT46dMx4NwlbolgPCnXeUkAUHbuH/xI0e9
+         BAZqAHCy+vGMrzhyUvaDfYxGnqXci0vjciKQLleU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Liu Ying <victor.liu@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/13] drm/imx: imx-ldb: fix out of bounds array access warning
-Date:   Thu, 15 Apr 2021 16:47:52 +0200
-Message-Id: <20210415144411.707717946@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/18] 5.4.113-rc1 review
+Date:   Thu, 15 Apr 2021 16:47:53 +0200
+Message-Id: <20210415144413.055232956@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-References: <20210415144411.596695196@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.113-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.113-rc1
+X-KernelTest-Deadline: 2021-04-17T14:44+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+This is the start of the stable review cycle for the 5.4.113 release.
+There are 18 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit 33ce7f2f95cabb5834cf0906308a5cb6103976da ]
+Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+Anything received after that time might be too late.
 
-When CONFIG_OF is disabled, building with 'make W=1' produces warnings
-about out of bounds array access:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.113-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
-drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
+thanks,
 
-Add an error check before the index is used, which helps with the
-warning, as well as any possible other error condition that may be
-triggered at runtime.
+greg k-h
 
-The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
-but Liu Ying points out that the driver may hit the out-of-bounds
-problem at runtime anyway.
+-------------
+Pseudo-Shortlog of commits:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Liu Ying <victor.liu@nxp.com>
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpu/drm/imx/imx-ldb.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.113-rc1
 
-diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-index 221a8cbc57f9..a4dba034dca4 100644
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -206,6 +206,11 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
- 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	drm_panel_prepare(imx_ldb_ch->panel);
- 
- 	if (dual) {
-@@ -264,6 +269,11 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 	u32 bus_format = imx_ldb_ch->bus_format;
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	if (mode->clock > 170000) {
- 		dev_warn(ldb->dev,
- 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
--- 
-2.30.2
+Juergen Gross <jgross@suse.com>
+    xen/events: fix setting irq affinity
 
+Arnaldo Carvalho de Melo <acme@redhat.com>
+    perf map: Tighten snprintf() string precision to pass gcc check on some 32-bit arches
+
+Chris Wilson <chris@chris-wilson.co.uk>
+    perf tools: Use %zd for size_t printf formats on 32-bit
+
+Jiri Olsa <jolsa@redhat.com>
+    perf tools: Use %define api.pure full instead of %pure-parser
+
+Saravana Kannan <saravanak@google.com>
+    driver core: Fix locking bug in deferred_probe_timeout_work_func()
+
+Florian Westphal <fw@strlen.de>
+    netfilter: x_tables: fix compat match/target pad out-of-bound write
+
+Pavel Begunkov <asml.silence@gmail.com>
+    block: don't ignore REQ_NOWAIT for direct IO
+
+Zihao Yu <yuzihao@ict.ac.cn>
+    riscv,entry: fix misaligned base for excp_vect_table
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    idr test suite: Create anchor before launching throbber
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    idr test suite: Take RCU read lock in idr_find_test_1
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    radix tree test suite: Register the main thread with the RCU library
+
+Yufen Yu <yuyufen@huawei.com>
+    block: only update parent bi_status when bio fail
+
+Dmitry Osipenko <digetx@gmail.com>
+    drm/tegra: dc: Don't set PLL clock to 0Hz
+
+Bob Peterson <rpeterso@redhat.com>
+    gfs2: report "already frozen/thawed" errors
+
+Arnd Bergmann <arnd@arndb.de>
+    drm/imx: imx-ldb: fix out of bounds array access warning
+
+Suzuki K Poulose <suzuki.poulose@arm.com>
+    KVM: arm64: Disable guest access to trace filter controls
+
+Suzuki K Poulose <suzuki.poulose@arm.com>
+    KVM: arm64: Hide system instruction access to Trace registers
+
+Jia-Ju Bai <baijiaju1990@gmail.com>
+    interconnect: core: fix error return code of icc_link_destroy()
+
+
+-------------
+
+Diffstat:
+
+ Makefile                              |  4 ++--
+ arch/arm64/include/asm/kvm_arm.h      |  1 +
+ arch/arm64/kernel/cpufeature.c        |  1 -
+ arch/arm64/kvm/debug.c                |  2 ++
+ arch/riscv/kernel/entry.S             |  1 +
+ block/bio.c                           |  2 +-
+ drivers/base/dd.c                     |  8 +++++---
+ drivers/gpu/drm/imx/imx-ldb.c         | 10 ++++++++++
+ drivers/gpu/drm/tegra/dc.c            | 10 +++++-----
+ drivers/interconnect/core.c           |  2 ++
+ drivers/xen/events/events_base.c      |  4 ++--
+ fs/block_dev.c                        |  4 ++++
+ fs/gfs2/super.c                       | 10 ++++++----
+ net/ipv4/netfilter/arp_tables.c       |  2 ++
+ net/ipv4/netfilter/ip_tables.c        |  2 ++
+ net/ipv6/netfilter/ip6_tables.c       |  2 ++
+ net/netfilter/x_tables.c              | 10 ++--------
+ tools/perf/util/expr.y                |  3 ++-
+ tools/perf/util/map.c                 |  7 +++----
+ tools/perf/util/parse-events.y        |  2 +-
+ tools/perf/util/session.c             |  2 +-
+ tools/perf/util/zstd.c                |  2 +-
+ tools/testing/radix-tree/idr-test.c   | 10 ++++++++--
+ tools/testing/radix-tree/multiorder.c |  2 ++
+ tools/testing/radix-tree/xarray.c     |  2 ++
+ 25 files changed, 69 insertions(+), 36 deletions(-)
 
 
