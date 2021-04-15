@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED579360956
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B02B360960
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232965AbhDOM0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:26:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232812AbhDOM0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:26:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 74D5BAE56;
-        Thu, 15 Apr 2021 12:25:37 +0000 (UTC)
-Subject: Re: [PATCH 09/11] mm/page_alloc: Avoid conflating IRQs disabled with
- zone->lock
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20210414133931.4555-1-mgorman@techsingularity.net>
- <20210414133931.4555-10-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <838c6734-1e5d-6a26-8c88-90e89d407482@suse.cz>
-Date:   Thu, 15 Apr 2021 14:25:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210414133931.4555-10-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
+        id S233045AbhDOM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:26:32 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2867 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232975AbhDOM0Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:26:16 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FLdbb1Rksz68BPR;
+        Thu, 15 Apr 2021 20:15:55 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 15 Apr 2021 14:25:50 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2106.013;
+ Thu, 15 Apr 2021 14:25:50 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jeff Mahoney <jeffm@suse.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>
+Subject: RE: [PATCH 1/5] xattr: Complete constify ->name member of "struct
+ xattr"
+Thread-Topic: [PATCH 1/5] xattr: Complete constify ->name member of "struct
+ xattr"
+Thread-Index: AQHXMd7FDBbRfOc0Vkms8LxU+cs6Xqq1TVmAgAAzkSA=
+Date:   Thu, 15 Apr 2021 12:25:49 +0000
+Message-ID: <eedc6f82d59b4084b529788efd43e10b@huawei.com>
+References: <20210415100435.18619-1-roberto.sassu@huawei.com>
+ <20210415100435.18619-2-roberto.sassu@huawei.com>
+ <164b0933-0917-457e-4dad-245ea13cbe52@i-love.sakura.ne.jp>
+In-Reply-To: <164b0933-0917-457e-4dad-245ea13cbe52@i-love.sakura.ne.jp>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.215.118]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 3:39 PM, Mel Gorman wrote:
-> Historically when freeing pages, free_one_page() assumed that callers
-> had IRQs disabled and the zone->lock could be acquired with spin_lock().
-> This confuses the scope of what local_lock_irq is protecting and what
-> zone->lock is protecting in free_unref_page_list in particular.
-> 
-> This patch uses spin_lock_irqsave() for the zone->lock in
-> free_one_page() instead of relying on callers to have disabled
-> IRQs. free_unref_page_commit() is changed to only deal with PCP pages
-> protected by the local lock. free_unref_page_list() then first frees
-> isolated pages to the buddy lists with free_one_page() and frees the rest
-> of the pages to the PCP via free_unref_page_commit(). The end result
-> is that free_one_page() is no longer depending on side-effects of
-> local_lock to be correct.
-> 
-> Note that this may incur a performance penalty while memory hot-remove
-> is running but that is not a common operation.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-A nit below:
-
-> @@ -3294,6 +3295,7 @@ void free_unref_page_list(struct list_head *list)
->  	struct page *page, *next;
->  	unsigned long flags, pfn;
->  	int batch_count = 0;
-> +	int migratetype;
->  
->  	/* Prepare pages for freeing */
->  	list_for_each_entry_safe(page, next, list, lru) {
-> @@ -3301,15 +3303,28 @@ void free_unref_page_list(struct list_head *list)
->  		if (!free_unref_page_prepare(page, pfn))
->  			list_del(&page->lru);
->  		set_page_private(page, pfn);
-
-Should probably move this below so we don't set private for pages that then go
-through free_one_page()? Doesn't seem to be a bug, just unneccessary.
-
-> +
-> +		/*
-> +		 * Free isolated pages directly to the allocator, see
-> +		 * comment in free_unref_page.
-> +		 */
-> +		migratetype = get_pcppage_migratetype(page);
-> +		if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
-> +			if (unlikely(is_migrate_isolate(migratetype))) {
-> +				free_one_page(page_zone(page), page, pfn, 0,
-> +							migratetype, FPI_NONE);
-> +				list_del(&page->lru);
-> +			}
-> +		}
->  	}
->  
->  	local_lock_irqsave(&pagesets.lock, flags);
->  	list_for_each_entry_safe(page, next, list, lru) {
-> -		unsigned long pfn = page_private(page);
-> -
-> +		pfn = page_private(page);
->  		set_page_private(page, 0);
-> +		migratetype = get_pcppage_migratetype(page);
->  		trace_mm_page_free_batched(page);
-> -		free_unref_page_commit(page, pfn);
-> +		free_unref_page_commit(page, pfn, migratetype);
->  
->  		/*
->  		 * Guard against excessive IRQ disabled times when we get
-> 
-
+PiBGcm9tOiBUZXRzdW8gSGFuZGEgW21haWx0bzpwZW5ndWluLWtlcm5lbEBpLWxvdmUuc2FrdXJh
+Lm5lLmpwXQ0KPiBTZW50OiBUaHVyc2RheSwgQXByaWwgMTUsIDIwMjEgMToyMCBQTQ0KPiBPbiAy
+MDIxLzA0LzE1IDE5OjA0LCBSb2JlcnRvIFNhc3N1IHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggY29t
+cGxldGVzIGNvbW1pdCA5NTQ4OTA2YjJiYjcgKCd4YXR0cjogQ29uc3RpZnkgLT5uYW1lDQo+IG1l
+bWJlciBvZg0KPiA+ICJzdHJ1Y3QgeGF0dHIiJykuIEl0IGZpeGVzIHRoZSBkb2N1bWVudGF0aW9u
+IG9mIHRoZSBpbm9kZV9pbml0X3NlY3VyaXR5DQo+ID4gaG9vaywgYnkgcmVtb3ZpbmcgdGhlIHhh
+dHRyIG5hbWUgZnJvbSB0aGUgb2JqZWN0cyB0aGF0IGFyZSBleHBlY3RlZCB0bw0KPiBiZQ0KPiA+
+IGFsbG9jYXRlZCBieSBMU01zIChvbmx5IHRoZSB2YWx1ZSBpcyBhbGxvY2F0ZWQpLiBBbHNvLCBp
+dCByZW1vdmVzIHRoZQ0KPiA+IGtmcmVlKCkgb2YgbmFtZSBhbmQgc2V0dGluZyBpdCB0byBOVUxM
+IGluIHRoZSByZWlzZXJmcyBjb2RlLg0KPiANCj4gR29vZCBjYXRjaCwgYnV0IHdlbGwsIGdyZXAg
+ZG9lcyBub3QgZmluZCBhbnkgcmVpc2VyZnNfc2VjdXJpdHlfZnJlZSgpIGNhbGxlcnMuDQo+IElz
+IHJlaXNlcmZzX3NlY3VyaXR5X2ZyZWUoKSBhIGRlYWQgY29kZT8NCg0KVWhtLCBJIGFsc28gZG9u
+J3Qgc2VlIGl0Lg0KDQpUaGFua3MNCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1
+ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExp
+IEppYW4sIFNoaSBZYW5saQ0K
