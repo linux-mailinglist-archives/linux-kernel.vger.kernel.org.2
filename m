@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97C4360566
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3892136056C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhDOJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
+        id S232079AbhDOJQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhDOJPF (ORCPT
+        with ESMTP id S231718AbhDOJQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:15:05 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FB7C061574;
-        Thu, 15 Apr 2021 02:14:42 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t22so11385605ply.1;
-        Thu, 15 Apr 2021 02:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=8QQanvqIsbT15bWZACbVjA2SrlomBIPcG7B7C48451s=;
-        b=tFWaMlFRTNZDXyYkLqSWHWLlcViX2L7a4h+ZaB6JYG4WXIa2XA1BEJ9dAKOCqZeVTZ
-         w0ql8mpjbQZNI7RQyfyIhZT3N48vLJ3BYtTl6FZQjabwmJ5vVnU/6zz8CjoxqcOSFInF
-         48tWqx3TOjIfh9omZGbIeICMV8SOFaW2GRyVAW0yHjFStRYAXb6Npp+w+vEyjQexTw8u
-         yNeAOOoXPpoZF3tV4qF9mU7UjIk9y6ktbQSTQv/AkZbhunEMU1DTeYE3VBxJmpwfUHYQ
-         0xlWsTR1dB65wbfwz0oTMeAKYvcQds7jgxTTzghs6JHvhPyOPUtuVkIH/aQryMs4+u7Z
-         RgAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8QQanvqIsbT15bWZACbVjA2SrlomBIPcG7B7C48451s=;
-        b=JePLpuESPLbowwL9NHHoUxqiZgSJ45XDBQfvTupfxg44KEvDqXz7yxQP0I7dWKo+oi
-         6YLZcoAK16TdEgclWM+GDGI8OnXEvaGXvWPi0kJdDT46X9KH+nmRX3DqqUjLQs3n/Kk4
-         h1xtmcgooIL6F64LVFn7bolTFE5YwFSWp2zC8xKHrHtZ7/IBaDpWN6qk/DMNAr9f3Rrm
-         XDkVIQG2P837lJEdAjdiMt6EhIMGhdIbJE2x8hJKKsecydxBu8gGmp5bOJRrHJrFFzoj
-         SDdfuxsQixnDTXriX0wbhqBc8f7gPfCRamB/HRbgvA2QEy8TCdX2pZx1cEqDGonDr1XS
-         9mdA==
-X-Gm-Message-State: AOAM530/rfAmtSAbVCthWfaOA6dVJi2eE/2FUQ4UYOBBYw/D65hqvCEr
-        p1cdp1HhoHTehJnBpjHS3xNVpAUD5NPv+Ciu
-X-Google-Smtp-Source: ABdhPJxnaseCIkuSx/rHHhtIaAlwpSFCAwxMCggKZi36BRt2BlcfkjXMbBd9Uxh0ah8ZJ2B+yuEuUQ==
-X-Received: by 2002:a17:90a:b891:: with SMTP id o17mr2862355pjr.180.1618478081956;
-        Thu, 15 Apr 2021 02:14:41 -0700 (PDT)
-Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.212])
-        by smtp.gmail.com with ESMTPSA id y68sm2051153pgy.5.2021.04.15.02.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 02:14:41 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH] platform/x86: intel_chtdc_ti_pwrbtn: Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Thu, 15 Apr 2021 17:14:35 +0800
-Message-Id: <20210415091435.10486-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 15 Apr 2021 05:16:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669A9C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:15:39 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lWy5s-0002bi-IT; Thu, 15 Apr 2021 11:15:24 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 0F88B60F30C;
+        Thu, 15 Apr 2021 09:15:21 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 11:15:21 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: Re: [PATCH v2 3/6] dt-bindings: phy: Add binding for TI TCAN104x CAN
+ transceivers
+Message-ID: <20210415091521.d62k47xpugcvid2t@pengutronix.de>
+References: <20210414140521.11463-1-a-govindraju@ti.com>
+ <20210414140521.11463-4-a-govindraju@ti.com>
+ <20210414153303.yig6bguue3g25yhg@pengutronix.de>
+ <9a9a3b8b-f345-faae-b9bc-3961518e3d29@ti.com>
+ <20210415073810.nwoi2hx57hdg4ima@pengutronix.de>
+ <072648d4-a747-bc5f-a525-25dd055905ee@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sqrdgl4qh74mzxtg"
+Content-Disposition: inline
+In-Reply-To: <072648d4-a747-bc5f-a525-25dd055905ee@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-Coccinelle noticed:
-  drivers/platform/x86/intel_chtdc_ti_pwrbtn.c:59:7-32: ERROR: Threaded IRQ
-with no primary handler requested without IRQF_ONESHOT
+--sqrdgl4qh74mzxtg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
- drivers/platform/x86/intel_chtdc_ti_pwrbtn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 15.04.2021 14:41:57, Aswath Govindraju wrote:
+> >>>> +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> > Can you create a maintainers entry for this file with your address?
+>=20
+> I don't see this being done for other phy yamls in the
+> Documentation/devicetree/bindings/phy folder. Also,
+> scripts/get_maintainer.pl is giving the names of maintainers after
+> reading the yaml files too.
 
-diff --git a/drivers/platform/x86/intel_chtdc_ti_pwrbtn.c b/drivers/platform/x86/intel_chtdc_ti_pwrbtn.c
-index 0df2e82dd249..9606a994af22 100644
---- a/drivers/platform/x86/intel_chtdc_ti_pwrbtn.c
-+++ b/drivers/platform/x86/intel_chtdc_ti_pwrbtn.c
-@@ -58,7 +58,7 @@ static int chtdc_ti_pwrbtn_probe(struct platform_device *pdev)
- 
- 	err = devm_request_threaded_irq(dev, irq, NULL,
- 					chtdc_ti_pwrbtn_interrupt,
--					0, KBUILD_MODNAME, input);
-+					IRQF_ONESHOT, KBUILD_MODNAME, input);
- 	if (err)
- 		return err;
- 
--- 
-2.17.1
+Nice! Clever script.
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--sqrdgl4qh74mzxtg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4BCYACgkQqclaivrt
+76ms1Qf+MgNCzkHp1rtwktzh+c3mVAPjupRXLxsmNoEJ2WJPx3eQSRbdqazlOO0T
+2AXVVEnrU9hXjdzIdGB4hPzQkZzSDfv0NpOL7DYRPqkHs60Y66fypAjL+K+N16ym
+oEEP7Kxh2WjuFzOgyVbOvxI9k4IODUfzQqklQBQda3If0UEHsQXqgMEy80oIiOlC
+Ua6+Cws6eV/PGSNHM6NQBnQwvN4kZGzy/4O+zYXRPwM+fAbISCGS8tH7kt+eL5hu
+y5HRO5V0YG+r99zfXnOkov69cz3pXAZOVdVZ5xtw0ja8djyBTZxXPLiWtNkrArRJ
+xYKkh8KdiJaK7pd0W2EonECPHCtQBA==
+=tebW
+-----END PGP SIGNATURE-----
+
+--sqrdgl4qh74mzxtg--
