@@ -2,56 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0C6360577
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D962936057E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhDOJSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57170 "EHLO mail.kernel.org"
+        id S231678AbhDOJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:20:46 -0400
+Received: from mga14.intel.com ([192.55.52.115]:26136 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhDOJSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:18:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B2E611F1;
-        Thu, 15 Apr 2021 09:17:46 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 10:17:43 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: alternatives: Move length validation in
- alternative_{insn,endif}
-Message-ID: <20210415091743.GB1015@arm.com>
-References: <20210414000803.662534-1-nathan@kernel.org>
+        id S231388AbhDOJUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:20:40 -0400
+IronPort-SDR: 9Z0vg8P6gX/DCdgLdbCPrQocmlP1+Kq94A9vtj/INKPfkbrUXSPo25jSpnmBJnUumDZ7KcgH0S
+ MwSBhua5+0EA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194383848"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="194383848"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 02:20:16 -0700
+IronPort-SDR: n5soXkagFEqGqwFmH8J/fHl9ftelwXXgyTGTn83FZG4lrlItyzBPeIkqVI2EgtgMjNXvlKQ1IP
+ 04g8avGPvBOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="444123430"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2021 02:20:14 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
+In-Reply-To: <YHf6s2r28XOtP2+2@kroah.com>
+References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
+ <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
+ <YHcnckePpKDujCU+@kroah.com> <YHcqxMLR44laX2PZ@smile.fi.intel.com>
+ <YHc68v7keeITnA3K@kroah.com>
+ <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
+ <YHf6s2r28XOtP2+2@kroah.com>
+Date:   Thu, 15 Apr 2021 12:20:14 +0300
+Message-ID: <87pmyvgb01.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414000803.662534-1-nathan@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-On Tue, Apr 13, 2021 at 05:08:04PM -0700, Nathan Chancellor wrote:
-> After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-> set atomically"), LLVM's integrated assembler fails to build entry.S:
-> 
-> <instantiation>:5:7: error: expected assembly-time absolute expression
->  .org . - (664b-663b) + (662b-661b)
->       ^
-> <instantiation>:6:7: error: expected assembly-time absolute expression
->  .org . - (662b-661b) + (664b-663b)
->       ^
+> On Wed, Apr 14, 2021 at 10:14:34PM +0300, Alexander Shishkin wrote:
+>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>> 
+>> >> Using raw buffer APIs against uuid_t / guid_t.
+>> >
+>> > So you want to do that, or you do not want to do that?  Totally
+>> > confused,
+>> 
+>> My understanding is that:
+>> 1) generate_random_uuid() use is allegedly bad even though it's in their
+>> header,
+>> 2) poking directly at the byte array inside uuid_t is bad, even though,
+>> again, header.
+>> 
+>> It is, indeed, not ideal.
+>> 
+>> If agreeable, I'll update this patch to the below and respin the whole
+>> series.
+>
+> You are showing that Andy wrote this, when you are the one that did :(
 
-I tried the latest Linus' tree and linux-next (defconfig) with this
-commit in and I can't get your build error. I used both clang-10 from
-Debian stable and clang-11 from Debian sid. So, which clang version did
-you use or which kernel config options?
+That's intentional, it's Andy's patch. In fact, it was probably me who
+insisted on the open-coded-byte-array version, in an offline
+conversation some time ago. I'd like to keep his name on it if that's
+ok. I've re-sent it [1] as a standalone patch.
 
--- 
-Catalin
+> Anyway, I've dropped this single patch from the series and applied the
+> rest.  Feel free to send this patch as a stand-alone one once you have
+> the authorship issues sorted out.
+
+Thank you!
+
+[1] https://lore.kernel.org/lkml/20210415091555.88085-1-alexander.shishkin@linux.intel.com/
+
+Regards,
+--
+Alex
