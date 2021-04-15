@@ -2,55 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E80360307
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F01336030E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhDOHNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230090AbhDOHNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:13:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACEFD611F1;
-        Thu, 15 Apr 2021 07:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618470801;
-        bh=lpWxRgXJSBBZ+/h21aDGOdU9sxO1H0Ab1tK4kG6NEPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=St8LyY9BNupzO8uJWM02Fb00F5gdM/h+EfeyWh6Dmy8BwWO6lgIiQ+Uhy8+TfU2en
-         CoxZFZdYMC+kTYcMFS+5l1oZRGKmNo9Wxqtbq7Pzv/N9Otu68WzsVlb7MzIPSEv+yi
-         DhMzcpoGhRGROF2JAPCa2f4o+GdM1iu/h4ooyG4E=
-Date:   Thu, 15 Apr 2021 09:13:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Phy <linux-phy@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: Re: [GIT PULL]: Generic phy updates for v5.13 -second round
-Message-ID: <YHfniUnGLP3gAeNE@kroah.com>
-References: <YHcHjYv8HIaODa5t@vkoul-mobl.Dlink>
+        id S230507AbhDOHQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhDOHQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:16:15 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04906C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:15:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u15so2999113plf.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RgNR7eI/Uw8a9iJY+TsDCOg5IUfvzI2+Hb5tNImKknU=;
+        b=jkziAWgRadT6a7zgsT7qTCXkAiJIDK64WqeqveOXp/mjGzPoYyjZPhTpV7UITLOZP3
+         j28yVzN5zaBkf64iDfT4D4y9zqYVIwDooBNacLA0Z7beJXbd3R7W/cxry7VBpmSTwFGX
+         +OziTWo6GsvDGhurk4TnnN/kAyzlHTOKHzfsGrG/wadzgUoMTXhwR9euEWApLSr3SiKL
+         +fnm7+5yMBaoIMnj5Q7n6kwHmOF2d5C8kjACO5Y3LeSQCxDEKzjhy14d09GqjkV06Qb2
+         NcNnE7vAqnPhlnnGmt7YyMebnqbqP16v7te8F/mAFEU5hRIWOe3Uq8j0wwa5aliXJM5w
+         XZ1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RgNR7eI/Uw8a9iJY+TsDCOg5IUfvzI2+Hb5tNImKknU=;
+        b=M0Hq5z92lCYrZ/XNJIfjBj3BIOcJf/xrUKOZmVrgChY1tV3ovr3rWK1iMSZ9PDuDbc
+         r2U27L8cCM8cd14xZNqQi3hCaqNcbtlU3gJWZmKFdRHPfKCrOGDvqwGa8fTIYuFvCUl7
+         6U+1dWp9VZq5vL7mlipnYU9V6BVRm8mdZgNlP5K0IzV+SuGPGFzj+0pykAqYC9hpQiI3
+         7NsdZft2rId0Hx2DLpuCvy7s+Y/hxUaCJMbQB0WRFeG65PqhhSBPgIGH1ukUELVPhHbK
+         zKppwDCPbCk0Q0XZDbOgNr/jae/smo3TW+mtO7oe80GSiIxhLQ1ZW6HXpGh2kR9Q6gC0
+         kfaw==
+X-Gm-Message-State: AOAM531TnX6fW64Z/QVpH/bdOG/y9Pjen5QDZavRN/Wfy8U3bUrBbEJa
+        ymTYGWLpDzuftpKkMluTadHfZvC6//lZdQ==
+X-Google-Smtp-Source: ABdhPJw/bpZ7i6ekhnOCzmBecFj4xM2sUaMjFHMYOxR0OgOAPlIWdbZFsGlzKM5st71MKrRx4NV2rQ==
+X-Received: by 2002:a17:90b:1904:: with SMTP id mp4mr2331401pjb.193.1618470952483;
+        Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id p22sm1385614pjg.39.2021.04.15.00.15.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 12:45:49 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210415071549.mh4tgb6dqfjzuflx@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
+ <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
+ <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
+ <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+ <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHcHjYv8HIaODa5t@vkoul-mobl.Dlink>
+In-Reply-To: <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:47:33PM +0530, Vinod Koul wrote:
-> Hi Greg,
+On 15-04-21, 14:56, Jie Deng wrote:
 > 
-> As promised, here are some minor fixes for earlier pull request. This
-> includes fixes which came in after the request was sent
+> On 2021/4/15 14:45, Viresh Kumar wrote:
+> > On 23-03-21, 10:27, Arnd Bergmann wrote:
+> > > I usually recommend the use of __maybe_unused for the suspend/resume
+> > > callbacks for drivers that use SIMPLE_DEV_PM_OPS() or similar helpers
+> > > that hide the exact conditions under which the functions get called.
+> > > 
+> > > In this driver, there is an explicit #ifdef in the reference to the
+> > > functions, so
+> > > it would make sense to use the same #ifdef around the definition.
+> > Jie,
+> > 
+> > I was talking about this comment when I said I was expecting a new
+> > version. I think you still need to make this change.
 > 
-> The following changes since commit cbc336c09b6d6dfb24d20c955599123308fa2fe2:
 > 
->   phy: fix resource_size.cocci warnings (2021-04-06 10:39:20 +0530)
+> I didn't forget this. It is a very small change. I'm not sure if the
+> maintainer Wolfram
 > 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.13-second
+> has any comments so that I can address them together in one version.
 
-Pulled and pushed out, thanks.
+Ahh, okay then. That's fine. I have been waiting for the final version
+to give my Tested/reviewed by :)
 
-greg k-h
+-- 
+viresh
