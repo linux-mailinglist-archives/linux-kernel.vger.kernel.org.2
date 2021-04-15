@@ -2,193 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE1C360963
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AAC36096C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhDOM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S232694AbhDOMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhDOM1w (ORCPT
+        with ESMTP id S231919AbhDOMay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:27:52 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA22C061574;
-        Thu, 15 Apr 2021 05:27:29 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id h3so10771126qve.13;
-        Thu, 15 Apr 2021 05:27:29 -0700 (PDT)
+        Thu, 15 Apr 2021 08:30:54 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F91BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:30:31 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so14306470pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=do6UEgvEb56r/+VgD7/HgsidFuR+UH9N0ozm3NJagw0=;
-        b=Lyel7gM/m++uSGzmmS63UAQWZsHsVGwX87FUyMfcYkVP2cjVdV6MgV7CVp8NfAmwWg
-         bw74WCvnkF+0/WQqKUz1MCunjyHPdweogZ0G6B2mkGpRD64omUoC6kk+SimvYA1gBG+b
-         MuBkQj92eb/fmrs93vrxzXuKeqwB3bb02MBO+XMhtWz2dtc6CFNssJVvF+5Sxi/dFqz4
-         Z7zo9k7euTRv1jA/sJ+2NKWGfUyfqgLqd+ILJ5ueAib1wNKN22bYoJj26HEzbLR2BIkO
-         3O66Uk0Ntjs2L1ZMWnb+wUho9vFU3abMZ9G7CmFW1am08VWUPXAWxkIHcvJ2HNpqr++e
-         oTKA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5XyW6c0nj1LTK1cGyNlupGJV32J66cs3TPcbFBh3pgM=;
+        b=qEvSZSXY5kP38+23FroIqLisVVrnScuxWSOmSyq7j7sTGDDOhlp/jBadqv5DChvcfT
+         XiW4w0Dzt3Hmsh1BPaRfSYo0jzG3z5Y4aOJtETxd0qr8jJoHNBpJWemRBmGjyW33SOj+
+         xBEDhmSrF2YsxIF6hnQqOgvBUJgOhQ0SppiJRqe+jTOoaqTb3wsvAhJ8d0BML5tZY1o0
+         wiP7M1nZ5pcTSjpenJGb7cSzHbbXQc7s3QGPeucunqNWfsBdO+9eQTFnkB81kXAD6e48
+         j6bf0q663NSB9tPF+hbefkFx1ogx74lVaJ9kITaxfq4mJODoTpLuDorsJBbUubE5xRkD
+         jG2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=do6UEgvEb56r/+VgD7/HgsidFuR+UH9N0ozm3NJagw0=;
-        b=iKReQhs0jUtsuGF4ruyi8GHqW0Q4XDpzYpyHwCynKbjRkaTd14Y/oN76v+Iwns8I1X
-         kA2zMABvL/fbbz2qjWpDOxd0yH2v8AWnXDmSVub6Kx9wR8RfFKVY9EC+oA1WjUD57QYV
-         f7WB5YlURnb6UU6hBtfd+gEiQ0MVdCdbnao8dT0Qd9ovBWWv16q9srPMi+Yf0/tdUj0o
-         ShQCJmTgcMT+v1cboWNa46/30o60GiIw7cvCWio1ExzvhyvnaO/UCaZV80Fk/3v1JH7n
-         j8bDtritE7bZdqTReTlrlQ5x02Wxn+pqt9hMqnkWJrYYkKyPewhDLTr9/09vQTKIUmOI
-         JtxQ==
-X-Gm-Message-State: AOAM530+ypR2r1luX0tUl/Nlfi6ZggjxBt9LHkIGKhvPFL7jICx+Yd2Q
-        PxsRFCgrqnDmJtTqc8D6Dmw=
-X-Google-Smtp-Source: ABdhPJzJg6ubE+tkPGWGlrzUH7nz6/eBOm4dpi4itSqomhewIpeF5AF5sUm62T4KmMlWmafPF23sng==
-X-Received: by 2002:a05:6214:18f4:: with SMTP id ep20mr2771195qvb.5.1618489649151;
-        Thu, 15 Apr 2021 05:27:29 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:fda3:4e59:60ec:90e5? ([2001:1284:f016:a037:fda3:4e59:60ec:90e5])
-        by smtp.gmail.com with ESMTPSA id g3sm1674684qth.66.2021.04.15.05.27.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5XyW6c0nj1LTK1cGyNlupGJV32J66cs3TPcbFBh3pgM=;
+        b=LZqbpTWcLur71gFHctjPmW+KwdSos2ZSZunB//SM2Kb9iZS0s7RSIsKKqa023R/Z3a
+         OKP2GEtR0KwOEn9+f2hdS3P3jO6/VNs3o2zTooytt709C1gjjUFaCeMlp2j3XQ6R82Aj
+         xG7q3T6MfugyhD71XRX1CaLZmUMeOLScexOmop7ikvE97aLjMZFDSovIfUSOdIF3jn2A
+         dgoy1AdWMDRK/rUkjV9GvdJ51+bPR6iauIgjvo2INIm5UO4MVz0/6gmUisDdsafVqpON
+         zMXcHEXDenp8LM0ju9vybsy+XFkr/qmTvPzhpExD4wel5QYETuovkOpFO6pasWqlJwx5
+         NWbA==
+X-Gm-Message-State: AOAM530oRJtRpCw8gFQYxuwb9Zl+O/ww0ElpLuub07zZP6/TzoTQoMRq
+        z+Meooek8P0yY0R0TyFfZK995A==
+X-Google-Smtp-Source: ABdhPJwTihxl8OfzQjZbqtclr0zxCRFFYbodeyffLoetQtLiglgg+QCNKkQlydCohq73v5b1Jvgszg==
+X-Received: by 2002:a17:90a:4e0b:: with SMTP id n11mr3707422pjh.108.1618489830531;
+        Thu, 15 Apr 2021 05:30:30 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id s21sm2385931pjr.52.2021.04.15.05.30.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 05:27:28 -0700 (PDT)
-Message-ID: <138704cf6fb32f66295b2ffd9d5c376d1b6826bc.camel@gmail.com>
-Subject: Re: [PATCH v2] staging: media: atomisp: pci: Format comments
- according to coding-style in file atomisp_cmd.c
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Thu, 15 Apr 2021 09:27:25 -0300
-In-Reply-To: <20210415054851.GA6021@kadam>
-References: <20210414204244.GA8287@focaruja> <20210415054851.GA6021@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Thu, 15 Apr 2021 05:30:29 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 20:30:23 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+Message-ID: <20210415123023.GA1011890@leoy-ThinkPad-X240s>
+References: <20210414143919.12605-1-james.clark@arm.com>
+ <20210414143919.12605-2-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qui, 2021-04-15 às 08:48 +0300, Dan Carpenter escreveu:
-> On Wed, Apr 14, 2021 at 05:42:44PM -0300, Aline Santana Cordeiro
-> wrote:
-> > @@ -90,18 +92,14 @@ struct camera_mipi_info
-> > *atomisp_to_sensor_mipi_info(struct v4l2_subdev *sd)
-> >         return (struct camera_mipi_info
-> > *)v4l2_get_subdev_hostdata(sd);
-> >  }
-> >  
-> > -/*
-> > - * get struct atomisp_video_pipe from v4l2 video_device
-> > - */
-> > +/* get struct atomisp_video_pipe from v4l2 video_device */
-> 
-> This code is obvious and the comment doesn't add anything except
-> noise.
-> Just delete it.  Same for a lot of the other one line comments
-> describing functions in this patch.
-> 
+Hi James,
 
-No worries, I'm going to delete it all.
-Can I send a v3 just with the issues detected by checkpatch?
+On Wed, Apr 14, 2021 at 05:39:19PM +0300, James Clark wrote:
+> The following attribute is set when synthesising samples in
+> timed decoding mode:
+> 
+>     attr.sample_type |= PERF_SAMPLE_TIME;
+> 
+> This results in new samples that appear to have timestamps but
+> because we don't assign any timestamps to the samples, when the
+> resulting inject file is opened again, the synthesised samples
+> will be on the wrong side of the MMAP or COMM events.
+> 
+> For example this results in the samples being associated with
+> the perf binary, rather than the target of the record:
+> 
+>     perf record -e cs_etm/@tmc_etr0/u top
+>     perf inject -i perf.data -o perf.inject --itrace=i100il
+>     perf report -i perf.inject
+> 
+> Where 'Command' == perf should show as 'top':
+> 
+>     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
+>     # ........  .......  ....................  ......................  ......................  ..................
+>     #
+>         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
+> 
+> If the perf.data file is opened directly with perf, without the
+> inject step, then this already works correctly because the
+> events are synthesised after the COMM and MMAP events and
+> no second sorting happens. Re-sorting only happens when opening
+> the perf.inject file for the second time so timestamps are
+> needed.
+> 
+> Using the timestamp from the AUX record mirrors the current
+> behaviour when opening directly with perf, because the events
+> are generated on the call to cs_etm__process_queues().
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Co-developed-by: Al Grant <al.grant@arm.com>
+> Signed-off-by: Al Grant <al.grant@arm.com>
+> ---
+>  tools/perf/util/cs-etm.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index c25da2ffa8f3..d0fa9dce47f1 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
+>  	u8 sample_instructions;
+>  
+>  	int num_cpu;
+> +	u64 latest_kernel_timestamp;
+>  	u32 auxtrace_type;
+>  	u64 branches_sample_type;
+>  	u64 branches_id;
+> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
+>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
+>  	event->sample.header.size = sizeof(struct perf_event_header);
+>  
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>  	sample.ip = addr;
+>  	sample.pid = tidq->pid;
+>  	sample.tid = tidq->tid;
+> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
+>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
+>  	event->sample.header.size = sizeof(struct perf_event_header);
+>  
+> +	if (!etm->timeless_decoding)
+> +		sample.time = etm->latest_kernel_timestamp;
+>  	sample.ip = ip;
+>  	sample.pid = tidq->pid;
+>  	sample.tid = tidq->tid;
+> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
+>  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
+>  		return cs_etm__process_switch_cpu_wide(etm, event);
+>  
+> -	if (!etm->timeless_decoding &&
+> -	    event->header.type == PERF_RECORD_AUX)
+> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
+> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
+>  		return cs_etm__process_queues(etm);
+> +	}
 
-Thank you in advance,
-Aline
+The change looks good to me, I went through these two patches for at
+least twice, and didn't find issue.
 
-> >  struct atomisp_video_pipe *atomisp_to_video_pipe(struct
-> > video_device *dev)
-> >  {
-> >         return (struct atomisp_video_pipe *)
-> >                container_of(dev, struct atomisp_video_pipe, vdev);
-> >  }
-> >  
-> > -/*
-> > - * get struct atomisp_acc_pipe from v4l2 video_device
-> > - */
-> > +/* get struct atomisp_acc_pipe from v4l2 video_device */
-> >  struct atomisp_acc_pipe *atomisp_to_acc_pipe(struct video_device
-> > *dev)
-> >  {
-> >         return (struct atomisp_acc_pipe *)
-> > @@ -269,7 +267,7 @@ int atomisp_freq_scaling(struct atomisp_device
-> > *isp,
-> >                             ATOMISP_RUN_MODE_CONTINUOUS_CAPTURE;
-> >         }
-> >  
-> > -       /* search for the target frequency by looping freq rules*/
-> > +       /* search for the target frequency by looping freq rules */
-> >         for (i = 0; i < dfs->dfs_table_size; i++) {
-> >                 if (curr_rules.width != dfs->dfs_table[i].width &&
-> >                     dfs->dfs_table[i].width != ISP_FREQ_RULE_ANY)
-> > @@ -307,9 +305,7 @@ int atomisp_freq_scaling(struct atomisp_device
-> > *isp,
-> >         return ret;
-> >  }
-> >  
-> > -/*
-> > - * reset and restore ISP
-> > - */
-> > +/* reset and restore ISP */
-> 
-> Obvious
-> 
-> >  int atomisp_reset(struct atomisp_device *isp)
-> >  {
-> >         /* Reset ISP by power-cycling it */
-> > @@ -338,9 +334,7 @@ int atomisp_reset(struct atomisp_device *isp)
-> >         return ret;
-> >  }
-> >  
-> > -/*
-> > - * interrupt disable functions
-> > - */
-> > +/* interrupt disable functions */
-> 
-> Obvious
-> 
-> >  static void disable_isp_irq(enum hrt_isp_css_irq irq)
-> >  {
-> >         irq_disable_channel(IRQ0_ID, irq);
-> > @@ -351,9 +345,7 @@ static void disable_isp_irq(enum
-> > hrt_isp_css_irq irq)
-> >         cnd_sp_irq_enable(SP0_ID, false);
-> >  }
-> >  
-> > -/*
-> > - * interrupt clean function
-> > - */
-> > +/* interrupt clean function */
-> 
-> Obvious
-> 
-> >  static void clear_isp_irq(enum hrt_isp_css_irq irq)
-> >  {
-> >         irq_clear_all(IRQ0_ID);
-> 
-> [ snip ]
-> 
-> > @@ -1918,10 +1914,7 @@ irqreturn_t atomisp_isr_thread(int irq, void
-> > *isp_ptr)
-> >         return IRQ_HANDLED;
-> >  }
-> >  
-> > -/*
-> > - * utils for buffer allocation/free
-> > - */
-> > -
-> > +/* utils for buffer allocation/free */
-> 
-> What?  This one seems actively wrong.
-> 
-> >  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
-> >                            const struct ia_css_frame *frame, u32
-> > *p_pgnr)
-> >  {
-> 
-> etc.
-> 
-> regards,
-> dan carpenter
-> 
+And given the trace data might be overflow and overwritten, it's
+reasonable for me to use the PERF_RECORD_AUX timestamp from the tail of
+trace data.
 
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
+>  	return 0;
+>  }
+> -- 
+> 2.28.0
+> 
