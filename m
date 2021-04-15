@@ -2,180 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F53601E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16B0360218
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhDOFtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:49:36 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57186 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhDOFtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:49:33 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5k0V1088198;
-        Thu, 15 Apr 2021 05:49:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=UKh2oMINkAlsBGjPrGn33bQfhhfZDzZzi4ZAtWpYPc0=;
- b=fjw1FNNr1MfNeFsutgK/MLCa5vv+we9TUYibZa32Xst2f8Mtee+uh9NARwlXwPdD7x+N
- W4VpR72o7+sFgK0uo/rFAyFbNsVp+Ff0ErsSyfnsRAFEhxuND2/iyapBYW8qWvWYd19W
- hQgFf3qQ7yzAoed1rTMGQsrGftKfNmA/vdgILaQh22RWrESZ/ShSPdldGoFQ1+49ejvk
- ssrtFOsl3y5Vw8TQeEz3xloYx+lSa+rMLcgHQ67mtkyfSnOLg1RRD91hcuR+T4e9Hway
- snRJkTlvjrrvVKwO/U6jhfQhT8pzrQdZ8+Mber9hJR/0ElDW2s+xwzETjV8go73025bU BQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 37u1hbmpgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 05:49:02 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5dY6M029293;
-        Thu, 15 Apr 2021 05:49:00 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 37unsv20mr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 05:49:00 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13F5mwQx020490;
-        Thu, 15 Apr 2021 05:48:59 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Apr 2021 22:48:58 -0700
-Date:   Thu, 15 Apr 2021 08:48:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH v2] staging: media: atomisp: pci: Format comments
- according to coding-style in file atomisp_cmd.c
-Message-ID: <20210415054851.GA6021@kadam>
-References: <20210414204244.GA8287@focaruja>
+        id S230331AbhDOF7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:59:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:43550 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229793AbhDOF7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:59:38 -0400
+IronPort-SDR: PVz46bTUDm5iyLa2nCdlLkT5N6UYaT6qCJHuKsW9EWEm0QmDP1rf/0vWQcAIHgv7ryKpFxhA7X
+ 5Hf792p5OJ8Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215294954"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="215294954"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 22:59:12 -0700
+IronPort-SDR: rWcVVr+HoVZyGXzVMjF6DGfjHPVYXB9lyYmNeP89phqJcnEJnrpduOurB1cqgNB0zty9zG9yRb
+ dabu/2Wdd6FQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="444067941"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Apr 2021 22:59:10 -0700
+Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Gonglei <arei.gonglei@huawei.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] iommu/vt-d: Force to flush iotlb before creating
+ superpage
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210415004628.1779-1-longpeng2@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <91aaf321-92a2-9c61-93c3-00c4112977f7@linux.intel.com>
+Date:   Thu, 15 Apr 2021 13:49:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414204244.GA8287@focaruja>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150040
-X-Proofpoint-GUID: dKV2ZxJwBAw6Zd8HVB_vpCGW5vrpRtn_
-X-Proofpoint-ORIG-GUID: dKV2ZxJwBAw6Zd8HVB_vpCGW5vrpRtn_
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104150040
+In-Reply-To: <20210415004628.1779-1-longpeng2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:42:44PM -0300, Aline Santana Cordeiro wrote:
-> @@ -90,18 +92,14 @@ struct camera_mipi_info *atomisp_to_sensor_mipi_info(struct v4l2_subdev *sd)
->  	return (struct camera_mipi_info *)v4l2_get_subdev_hostdata(sd);
->  }
->  
-> -/*
-> - * get struct atomisp_video_pipe from v4l2 video_device
-> - */
-> +/* get struct atomisp_video_pipe from v4l2 video_device */
+Hi Longpeng,
 
-This code is obvious and the comment doesn't add anything except noise.
-Just delete it.  Same for a lot of the other one line comments
-describing functions in this patch.
-
-
->  struct atomisp_video_pipe *atomisp_to_video_pipe(struct video_device *dev)
->  {
->  	return (struct atomisp_video_pipe *)
->  	       container_of(dev, struct atomisp_video_pipe, vdev);
->  }
->  
-> -/*
-> - * get struct atomisp_acc_pipe from v4l2 video_device
-> - */
-> +/* get struct atomisp_acc_pipe from v4l2 video_device */
->  struct atomisp_acc_pipe *atomisp_to_acc_pipe(struct video_device *dev)
->  {
->  	return (struct atomisp_acc_pipe *)
-> @@ -269,7 +267,7 @@ int atomisp_freq_scaling(struct atomisp_device *isp,
->  			    ATOMISP_RUN_MODE_CONTINUOUS_CAPTURE;
->  	}
->  
-> -	/* search for the target frequency by looping freq rules*/
-> +	/* search for the target frequency by looping freq rules */
->  	for (i = 0; i < dfs->dfs_table_size; i++) {
->  		if (curr_rules.width != dfs->dfs_table[i].width &&
->  		    dfs->dfs_table[i].width != ISP_FREQ_RULE_ANY)
-> @@ -307,9 +305,7 @@ int atomisp_freq_scaling(struct atomisp_device *isp,
->  	return ret;
->  }
->  
-> -/*
-> - * reset and restore ISP
-> - */
-> +/* reset and restore ISP */
-
-Obvious
-
->  int atomisp_reset(struct atomisp_device *isp)
->  {
->  	/* Reset ISP by power-cycling it */
-> @@ -338,9 +334,7 @@ int atomisp_reset(struct atomisp_device *isp)
->  	return ret;
->  }
->  
-> -/*
-> - * interrupt disable functions
-> - */
-> +/* interrupt disable functions */
-
-Obvious
-
->  static void disable_isp_irq(enum hrt_isp_css_irq irq)
->  {
->  	irq_disable_channel(IRQ0_ID, irq);
-> @@ -351,9 +345,7 @@ static void disable_isp_irq(enum hrt_isp_css_irq irq)
->  	cnd_sp_irq_enable(SP0_ID, false);
->  }
->  
-> -/*
-> - * interrupt clean function
-> - */
-> +/* interrupt clean function */
-
-Obvious
-
->  static void clear_isp_irq(enum hrt_isp_css_irq irq)
->  {
->  	irq_clear_all(IRQ0_ID);
-
-[ snip ]
-
-> @@ -1918,10 +1914,7 @@ irqreturn_t atomisp_isr_thread(int irq, void *isp_ptr)
->  	return IRQ_HANDLED;
->  }
->  
-> -/*
-> - * utils for buffer allocation/free
-> - */
+On 4/15/21 8:46 AM, Longpeng(Mike) wrote:
+> The translation caches may preserve obsolete data when the
+> mapping size is changed, suppose the following sequence which
+> can reveal the problem with high probability.
+> 
+> 1.mmap(4GB,MAP_HUGETLB)
+> 2.
+>    while (1) {
+>     (a)    DMA MAP   0,0xa0000
+>     (b)    DMA UNMAP 0,0xa0000
+>     (c)    DMA MAP   0,0xc0000000
+>               * DMA read IOVA 0 may failure here (Not present)
+>               * if the problem occurs.
+>     (d)    DMA UNMAP 0,0xc0000000
+>    }
+> 
+> The page table(only focus on IOVA 0) after (a) is:
+>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
+>      PTE: 0x21d200803  entry:0xffff89b3b0a72000
+> 
+> The page table after (b) is:
+>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>     PDE: 0x1a30a72003  entry:0xffff89b39cacb000
+>      PTE: 0x0          entry:0xffff89b3b0a72000
+> 
+> The page table after (c) is:
+>   PML4: 0x19db5c1003   entry:0xffff899bdcd2f000
+>    PDPE: 0x1a1cacb003  entry:0xffff89b35b5c1000
+>     PDE: 0x21d200883   entry:0xffff89b39cacb000 (*)
+> 
+> Because the PDE entry after (b) is present, it won't be
+> flushed even if the iommu driver flush cache when unmap,
+> so the obsolete data may be preserved in cache, which
+> would cause the wrong translation at end.
+> 
+> However, we can see the PDE entry is finally switch to
+> 2M-superpage mapping, but it does not transform
+> to 0x21d200883 directly:
+> 
+> 1. PDE: 0x1a30a72003
+> 2. __domain_mapping
+>       dma_pte_free_pagetable
+>         Set the PDE entry to ZERO
+>       Set the PDE entry to 0x21d200883
+> 
+> So we must flush the cache after the entry switch to ZERO
+> to avoid the obsolete info be preserved.
+> 
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Cc: Nadav Amit <nadav.amit@gmail.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Cc: Gonglei (Arei) <arei.gonglei@huawei.com>
+> 
+> Fixes: 6491d4d02893 ("intel-iommu: Free old page tables before creating superpage")
+> Cc: <stable@vger.kernel.org> # v3.0+
+> Link: https://lore.kernel.org/linux-iommu/670baaf8-4ff8-4e84-4be3-030b95ab5a5e@huawei.com/
+> Suggested-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+> ---
+> v1 -> v2:
+>    - add Joerg
+>    - reconstruct the solution base on the Baolu's suggestion
+> ---
+>   drivers/iommu/intel/iommu.c | 52 +++++++++++++++++++++++++++++++++------------
+>   1 file changed, 38 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index ee09323..881c9f2 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -2289,6 +2289,41 @@ static inline int hardware_largepage_caps(struct dmar_domain *domain,
+>   	return level;
+>   }
+>   
+> +/*
+> + * Ensure that old small page tables are removed to make room for superpage(s).
+> + * We're going to add new large pages, so make sure we don't remove their parent
+> + * tables. The IOTLB/devTLBs should be flushed if any PDE/PTEs are cleared.
+> + */
+> +static void switch_to_super_page(struct dmar_domain *domain,
+> +				 unsigned long start_pfn,
+> +				 unsigned long end_pfn, int level)
+> +{
+> +	unsigned long lvl_pages = lvl_to_nr_pages(level);
+> +	struct dma_pte *pte = NULL;
+> +	int i;
+> +
+> +	while (start_pfn <= end_pfn) {
+> +		if (!pte)
+> +			pte = pfn_to_dma_pte(domain, start_pfn, &level);
+> +
+> +		if (dma_pte_present(pte)) {
+> +			dma_pte_free_pagetable(domain, start_pfn,
+> +					       start_pfn + lvl_pages - 1,
+> +					       level + 1);
+> +
+> +			for_each_domain_iommu(i, domain)
+> +				iommu_flush_iotlb_psi(g_iommus[i], domain,
+> +						      start_pfn, lvl_pages,
+> +						      0, 0);
+> +		}
+> +
+> +		pte++;
+> +		start_pfn += lvl_pages;
+> +		if (first_pte_in_page(pte))
+> +			pte = NULL;
+> +	}
+> +}
+> +
+>   static int
+>   __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
+>   		 unsigned long phys_pfn, unsigned long nr_pages, int prot)
+> @@ -2329,22 +2364,11 @@ static inline int hardware_largepage_caps(struct dmar_domain *domain,
+>   				return -ENOMEM;
+>   			/* It is large page*/
+>   			if (largepage_lvl > 1) {
+> -				unsigned long nr_superpages, end_pfn;
+> +				unsigned long end_pfn;
+>   
+>   				pteval |= DMA_PTE_LARGE_PAGE;
+> -				lvl_pages = lvl_to_nr_pages(largepage_lvl);
 > -
-> +/* utils for buffer allocation/free */
+> -				nr_superpages = nr_pages / lvl_pages;
+> -				end_pfn = iov_pfn + nr_superpages * lvl_pages - 1;
+> -
+> -				/*
+> -				 * Ensure that old small page tables are
+> -				 * removed to make room for superpage(s).
+> -				 * We're adding new large pages, so make sure
+> -				 * we don't remove their parent tables.
+> -				 */
+> -				dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
+> -						       largepage_lvl + 1);
+> +				end_pfn = ((iov_pfn + nr_pages) & level_mask(largepage_lvl)) - 1;
+> +				switch_to_super_page(domain, iov_pfn, end_pfn, largepage_lvl);
+>   			} else {
+>   				pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
+>   			}
+> 
 
-What?  This one seems actively wrong.
+Thank you!
 
->  int atomisp_get_frame_pgnr(struct atomisp_device *isp,
->  			   const struct ia_css_frame *frame, u32 *p_pgnr)
->  {
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-etc.
-
-regards,
-dan carpenter
-
+Best regards,
+baolu
