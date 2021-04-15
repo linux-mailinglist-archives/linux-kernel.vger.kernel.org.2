@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAD7360443
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C072360447
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhDOIaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:30:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38514 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231251AbhDOI37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:29:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 06EC4AE72;
-        Thu, 15 Apr 2021 08:29:36 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 10:29:33 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/7] mm: Make alloc_contig_range handle free hugetlb
- pages
-Message-ID: <YHf5bW9GTxeSwfZN@localhost.localdomain>
-References: <20210413104747.12177-1-osalvador@suse.de>
- <20210413104747.12177-6-osalvador@suse.de>
- <YHWfQjegLi4xekhM@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHWfQjegLi4xekhM@dhcp22.suse.cz>
+        id S231587AbhDOIbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:31:05 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37696 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231251AbhDOIbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:31:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UVdbOP7_1618475423;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVdbOP7_1618475423)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Apr 2021 16:30:40 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] PCI: shpchp: remove unused function
+Date:   Thu, 15 Apr 2021 16:30:22 +0800
+Message-Id: <1618475422-96531-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 03:40:18PM +0200, Michal Hocko wrote:
-> > +		/*
-> > +		 * Call __prep_new_huge_page() to construct the hugetlb page, and
-> > +		 * enqueue it then to place it in the freelists. After this,
-> > +		 * counters are back on track. Free hugepages have a refcount of 0,
-> > +		 * so we need to decrease new_page's count as well.
-> > +		 */
-> > +		__prep_new_huge_page(new_page);
-> > +		__prep_account_new_huge_page(h, nid);
-> 
-> I think it would help to put something like the following into the
-> comment above this really strange construct.
-> 
-> 		/*
-> 		 * new_page needs to be initialized with the standard
-> 		 * hugetlb state. This is normally done by
-> 		 * prep_new_huge_page but that takes hugetlb_lock which
-> 		 * is already held so we need to open code it here.
-> 		 * Reference count trick is needed because allocator
-> 		 * gives us referenced page but the pool requires pages
-> 		 * with 0 refcount.
-> 		 */
+Fix the following clang warning:
 
-Ok, I will try to add more info, thanks Michal!
+drivers/pci/hotplug/shpchp_hpc.c:177:20: warning: unused function
+'shpc_writeb' [-Wunused-function].
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/pci/hotplug/shpchp_hpc.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/pci/hotplug/shpchp_hpc.c b/drivers/pci/hotplug/shpchp_hpc.c
+index db04728..9e3b277 100644
+--- a/drivers/pci/hotplug/shpchp_hpc.c
++++ b/drivers/pci/hotplug/shpchp_hpc.c
+@@ -174,11 +174,6 @@ static inline u8 shpc_readb(struct controller *ctrl, int reg)
+ 	return readb(ctrl->creg + reg);
+ }
+ 
+-static inline void shpc_writeb(struct controller *ctrl, int reg, u8 val)
+-{
+-	writeb(val, ctrl->creg + reg);
+-}
+-
+ static inline u16 shpc_readw(struct controller *ctrl, int reg)
+ {
+ 	return readw(ctrl->creg + reg);
 -- 
-Oscar Salvador
-SUSE L3
+1.8.3.1
+
