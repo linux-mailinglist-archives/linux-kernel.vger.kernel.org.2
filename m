@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B3A360BD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B7A360BDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhDOOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:32:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:47592 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233037AbhDOOci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:32:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B362106F;
-        Thu, 15 Apr 2021 07:32:15 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4E293FA45;
-        Thu, 15 Apr 2021 07:32:13 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
-        swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs hotplug-rollback
-In-Reply-To: <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
-References: <20210310145258.899619710@infradead.org> <20210310150109.259726371@infradead.org> <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me> <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net> <87r1jfmn8d.mognet@arm.com> <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net> <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
-Date:   Thu, 15 Apr 2021 15:32:11 +0100
-Message-ID: <87a6pzmxec.mognet@arm.com>
+        id S233186AbhDOOeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhDOOeA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:34:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F7CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:33:36 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so14508292pji.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S/Ac5p5sFlhYpJj45qpbkrcbzcCAGOqGDmLTdphHEcY=;
+        b=uxXFkFcErUQRZZT2RsagDil40vU8fxQhVFq4L8Q1w8InnSx7O+aNifDs0SIao2TCdU
+         5pMTUbhGK2infCJ4+Bp85Me6Su32E+vSzX/LFc6R8qE4w/ZwxDqWsDxaOdpcb38xjcj/
+         Hb9rcWzLAB+UV5fMgbtGZl4qRUcGXpg3S+YJWnrDHyji/TpKZLLNJH33RhGbQL27N+WS
+         3fk4+2QwXwZ76889lGDQ/xyHWDCTOls7q6GGSg+KfYx4V0GDopX9AslBRsmjI2wncGS4
+         iX7HD1DwFOQ7KFMBMIbaCO45NOhS2tsXzqF3f/MUi/kQed6VMIrxutIh6V2AynvYzzIY
+         rFJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S/Ac5p5sFlhYpJj45qpbkrcbzcCAGOqGDmLTdphHEcY=;
+        b=N6ZYAW8aTyoNDWbO6TVbwB61mKtMftHm5c0ZxjzDVSvbX4HVE8hRjrx+/EBywbZh7l
+         1gARD5X/pyXUfPpmEA5YW2TjUuUpX1iy+FV6/3UURRhCu6PrOc7cetEtJPWkaB+o96Fw
+         QttflMIAMeCHd3TpoQDL8tMHpOyU0w98q+xB7+rLLLZfCPTz5VcFLmpjnMFGJiI/gOZw
+         5pkWw6KpaRJKgqXr25FaEfivQHSxfAyWjPEz2DOd5PTDiWIdKkCFCGWxOpyW2oRKFvVZ
+         pc5QeDi2tctUiPd2I4TVPqhpUxqj6B24MymJwQCwf3tRsM2edfSJhlYMfMi7GqPG4a3i
+         cAew==
+X-Gm-Message-State: AOAM530/bmsQrOjfdDLtUOjR3uYeoHgDDELBkfiHH8kvljDcdbKIe/98
+        Y02e4yhJeIiDlVrvTMx9CLncsQ==
+X-Google-Smtp-Source: ABdhPJzdaH1Gm9JyqnfPTo7HQh23YJXi3M9xml+sUHCOLDFbpT44bFt/Dd06K8z2yY2wR/no/niRCQ==
+X-Received: by 2002:a17:90b:3b4a:: with SMTP id ot10mr4193152pjb.48.1618497215586;
+        Thu, 15 Apr 2021 07:33:35 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id s22sm2971372pjs.42.2021.04.15.07.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:33:35 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 22:33:29 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+Message-ID: <20210415143329.GC1011890@leoy-ThinkPad-X240s>
+References: <20210414143919.12605-1-james.clark@arm.com>
+ <20210414143919.12605-2-james.clark@arm.com>
+ <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
+ <20210415123953.GB1011890@leoy-ThinkPad-X240s>
+ <4c173b86-b045-0514-b293-c39cc74d353d@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c173b86-b045-0514-b293-c39cc74d353d@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/21 10:59, Peter Zijlstra wrote:
-> Can't make sense of what I did.. I've removed that hunk. Patch now looks
-> like this.
->
+Hi James,
 
-Small nit below, but regardless feel free to apply to the whole lot:
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-@VincentD, ISTR you had tested the initial version of this with your fancy
-shmancy hotplug rollback stresser. Feel like doing this
-
-> So instead, make sure balance_push is enabled between
-> sched_cpu_deactivate() and sched_cpu_activate() (eg. when
-> !cpu_active()), and gate it's utility with cpu_dying().
-
-I'd word that "is enabled below sched_cpu_activate()", since
-sched_cpu_deactivate() is now out of the picture.
+On Thu, Apr 15, 2021 at 03:51:46PM +0300, James Clark wrote:
 
 [...]
-> @@ -7639,6 +7639,9 @@ static DEFINE_PER_CPU(struct cpu_stop_wo
+
+> > For the orignal perf data file with "--per-thread" option, the decoder
+> > runs into the condition for "etm->timeless_decoding"; and it doesn't
+> > contain ETM timestamp.
+> > 
+> > Afterwards, the injected perf data file also misses ETM timestamp and
+> > hit the condition "etm->timeless_decoding".
+> > 
+> > So I am confusing why the original perf data can be processed properly
+> > but fails to handle the injected perf data file.
+> 
+> Hi Leo,
+> 
+> My patch only deals with per-cpu mode. With per-thread mode everything is already working
+> because _none_ of the events have timestamps because they are not enabled by default:
+> 
+> 	/* In per-cpu case, always need the time of mmap events etc */
+> 	if (!perf_cpu_map__empty(cpus))
+> 		evsel__set_sample_bit(tracking_evsel, TIME);
+> 
+> When none of the events have timestamps, I think perf doesn't use the ordering code in
+> ordered-events.c. So when the inject file is opened, the events are read in file order.
+
+The explination makes sense to me.  One thinking: if the original file
+doesn't use the ordered event, is it possible for the injected file to
+not use the ordered event as well?
+
+Could you confirm Intel-pt can work well for per-cpu mode for inject
+file?
+
+> So it's not really about --per-thread vs per-cpu mode, it's actually about whether
+> PERF_SAMPLE_TIME is set, which is set as a by-product of per-cpu mode.
 >
->  /*
->   * Ensure we only run per-cpu kthreads once the CPU goes !active.
-> + *
-> + * This is active/set between sched_cpu_deactivate() / sched_cpu_activate().
+> I hope I understood your question properly.
 
-Ditto
+Thanks for info, sorry if I miss any info you have elaborated.
 
-> + * But only effective when the hotplug motion is down.
->   */
->  static void balance_push(struct rq *rq)
->  {
+Leo
