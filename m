@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A533601BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6A03601BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhDOFk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:40:58 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:53752 "EHLO
+        id S230422AbhDOFlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:41:03 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:53758 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhDOFkv (ORCPT
+        by vger.kernel.org with ESMTP id S230118AbhDOFk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:40:51 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        Thu, 15 Apr 2021 01:40:59 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 1CB90C0619;
-        Thu, 15 Apr 2021 05:40:29 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id DDED3C0619;
+        Thu, 15 Apr 2021 05:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618465229; bh=/CKEqrmCTBvX8BljUE8RmnqFNiwNonJFnQwnpVeK+DM=;
+        t=1618465237; bh=+x+O2x776IR77O4BNxgrElMeHHKOSZeGKNYnzVXdQKE=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=VnxjUhjZVHUmcCINdCPyosW4z0tvlCRYp3WLdKLyKc7nKEz/Wrpii2od5LTutSh+u
-         Ou9+FcY+46uxIOcjKi+YsV7SNvBN2ifyS8VZjFK93Y87j4VOTrb+IlKcBbsEYX6PVL
-         A4IKTVQ3pJjHON85Vam7oxMOrHxhp/BkpmnW8uRiKFOS9B+yRzFiwDn+Wmo0BnGvYd
-         mP7ycSx3Dht157qFO1DRAe9fFkKju/6XvgD5tY8prvpwAOCS4z45BfFCRi9EoOsHxv
-         ixIsP+/yrpAMy7lNqPLa45VgZJYoxetPqGd72VOdZBNU0GqPtnYXC99RiNqHXaRlnj
-         JuDlHZFXbi/bg==
+        b=V/z7D1i+yZTjYZc9fQawJ4HHxQ+JoUYfQ/PTiBp04O/nHVCdxRz0I2k4Ej50XCSAv
+         En846RBwGNLLmNHj2UpFqoNp8YqR+QsMpTUpyIqGatvsHTcwzcFQYqoHhsKveorpd8
+         2ImUTirQXAasmXVcbtLcY62s4iA6GCxbyIsnO45Xt7fyn/2yH1Dt+sNJdtiCev2Pu8
+         zTgiPfy6ayrd0XnilwwAFlUIDE7p50FwOW4sL/Tess5MPjrSOvZNqfP0ouOxHBeuml
+         4BxOIGPgrX5qzcMhphZcEFArAoJ3uNrpnWB54zwZv1Xe3owvNjut0/+PSEePf/Jfza
+         g5OtiEjvn0evA==
 Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 1ECD8A005C;
-        Thu, 15 Apr 2021 05:40:26 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:40:24 +0400
-Date:   Thu, 15 Apr 2021 09:40:24 +0400
-Message-Id: <a2ac2540a3d6858d3a7b04cd466caead1b6bb0a8.1618464534.git.Arthur.Petrosyan@synopsys.com>
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 1708BA005D;
+        Thu, 15 Apr 2021 05:40:34 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:40:32 +0400
+Date:   Thu, 15 Apr 2021 09:40:32 +0400
+Message-Id: <ce0293bcc36b0857262a9a46e61b3f4e1d9e757c.1618464534.git.Arthur.Petrosyan@synopsys.com>
 In-Reply-To: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 X-SNPS-Relay: synopsys.com
 From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 08/15] usb: dwc2: Move enter hibernation to dwc2_port_suspend() function
+Subject: [PATCH 09/15] usb: dwc2: Move exit hibernation to dwc2_port_resume() function
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
@@ -49,50 +49,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This move is done to call enter hibernation handler in
-"dwc2_port_suspend()" function when core receives port suspend.
-Otherwise it could be confusing to enter to hibernation in
+This move is done to call hibernation exit handler in
+"dwc2_port_resume()" function when core receives port resume.
+Otherwise it could be confusing to exit hibernation in
 "dwc2_hcd_hub_control()" function but other power saving modes
-in "dwc2_port_suspend()" function.
+in "dwc2_port_resume()" function.
 
 Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 ---
- drivers/usb/dwc2/hcd.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/usb/dwc2/hcd.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index ff945c40ef8a..43a2298b7d42 100644
+index 43a2298b7d42..cc9ad6cf02d9 100644
 --- a/drivers/usb/dwc2/hcd.c
 +++ b/drivers/usb/dwc2/hcd.c
-@@ -3321,6 +3321,18 @@ int dwc2_port_suspend(struct dwc2_hsotg *hsotg, u16 windex)
- 				"enter partial_power_down failed.\n");
+@@ -3383,6 +3383,11 @@ int dwc2_port_resume(struct dwc2_hsotg *hsotg)
+ 				"exit partial_power_down failed.\n");
  		break;
  	case DWC2_POWER_DOWN_PARAM_HIBERNATION:
-+		/*
-+		 * Perform spin unlock and lock because in
-+		 * "dwc2_host_enter_hibernation()" function there is a spinlock
-+		 * logic which prevents servicing of any IRQ during entering
-+		 * hibernation.
-+		 */
-+		spin_unlock_irqrestore(&hsotg->lock, flags);
-+		ret = dwc2_enter_hibernation(hsotg, 1);
++		/* Exit host hibernation. */
++		ret = dwc2_exit_hibernation(hsotg, 0, 0, 1);
 +		if (ret)
-+			dev_err(hsotg->dev, "enter hibernation failed.\n");
-+		spin_lock_irqsave(&hsotg->lock, flags);
++			dev_err(hsotg->dev, "exit hibernation failed.\n");
 +		break;
  	case DWC2_POWER_DOWN_PARAM_NONE:
  		/*
  		 * If not hibernation nor partial power down are supported,
-@@ -3650,10 +3662,8 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
- 				"SetPortFeature - USB_PORT_FEAT_SUSPEND\n");
- 			if (windex != hsotg->otg_port)
- 				goto error;
--			if (hsotg->params.power_down == DWC2_POWER_DOWN_PARAM_HIBERNATION)
--				dwc2_enter_hibernation(hsotg, 1);
--			else
--				dwc2_port_suspend(hsotg, windex);
-+			if (!hsotg->bus_suspended)
-+				retval = dwc2_port_suspend(hsotg, windex);
+@@ -3446,12 +3451,8 @@ static int dwc2_hcd_hub_control(struct dwc2_hsotg *hsotg, u16 typereq,
+ 			dev_dbg(hsotg->dev,
+ 				"ClearPortFeature USB_PORT_FEAT_SUSPEND\n");
+ 
+-			if (hsotg->bus_suspended) {
+-				if (hsotg->hibernated)
+-					dwc2_exit_hibernation(hsotg, 0, 0, 1);
+-				else
+-					dwc2_port_resume(hsotg);
+-			}
++			if (hsotg->bus_suspended)
++				retval = dwc2_port_resume(hsotg);
  			break;
  
  		case USB_PORT_FEAT_POWER:
