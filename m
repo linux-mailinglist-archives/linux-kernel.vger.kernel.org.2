@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6C936085F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253D0360863
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbhDOLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:37:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58233 "EHLO
+        id S232439AbhDOLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:39:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45946 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230260AbhDOLhj (ORCPT
+        by vger.kernel.org with ESMTP id S230190AbhDOLjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:37:39 -0400
+        Thu, 15 Apr 2021 07:39:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618486636;
+        s=mimecast20190719; t=1618486728;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zwPqtcgmrKCFLbG+4l49abPvq6SvAM83sbdeBFnVipU=;
-        b=hfWNYqKfKPgESc3rDTm1o4+RQvpGByMVp8oWKfgxcJsu2SFGRhWx3fCp2Tm/ho80tOF2E2
-        c0aQ0XHsTgInF4KWf1NyynZTfVn9RGIilY+X9N7NXorpehpzuvgX/7DT851rbCb/E+Q3hD
-        iDqBAFA+Vqj0tgULyzT6Jahfwu5p3U0=
+        bh=SsVIIWV579j9hdwgaxcglkKaYM/aPZcfKX84IROT46o=;
+        b=DbyAVGzjh/WduJ36C2B3rHcrbqffGvPgCRKFsRXFsNHPqQJVuy2caI41c2xXYJ24ST9EiA
+        I75NoAqFhky59+JFKb4un9ve8NAOgonpP1dWXgtRN/3JS9Lf41OQCBI/+WMAutcqM9AegY
+        naq12xlpftguUN3zy0fXwUzMYJWbQ6Y=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-7ghcpfrLPUy5UsyEsppFSQ-1; Thu, 15 Apr 2021 07:37:14 -0400
-X-MC-Unique: 7ghcpfrLPUy5UsyEsppFSQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-309-xose_pJEO9q26OZ_rRaCEw-1; Thu, 15 Apr 2021 07:38:44 -0400
+X-MC-Unique: xose_pJEO9q26OZ_rRaCEw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1CB86D241;
-        Thu, 15 Apr 2021 11:37:12 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 370CF8030B5;
+        Thu, 15 Apr 2021 11:38:43 +0000 (UTC)
 Received: from krava (unknown [10.40.196.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DADAA610A8;
-        Thu, 15 Apr 2021 11:37:10 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 13:37:09 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 879D819801;
+        Thu, 15 Apr 2021 11:38:41 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 13:38:40 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Zhen Lei <thunder.leizhen@huawei.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -43,22 +43,23 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf map: Fix error return code in maps__clone()
-Message-ID: <YHglZSAF/iUGloPY@krava>
-References: <20210415092744.3793-1-thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 1/1] perf data: Fix error return code in
+ perf_data__create_dir()
+Message-ID: <YHglwGXW7IV4W6qV@krava>
+References: <20210415083417.3740-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210415092744.3793-1-thunder.leizhen@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210415083417.3740-1-thunder.leizhen@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 05:27:44PM +0800, Zhen Lei wrote:
-> Although 'err' has been initialized to -ENOMEM, but it will be reassigned
-> by the "err = unwind__prepare_access(...)" statement in the for loop. So
-> that, the value of 'err' is unknown when map__clone() failed.
+On Thu, Apr 15, 2021 at 04:34:16PM +0800, Zhen Lei wrote:
+> Although 'ret' has been initialized to -1, but it will be reassigned by
+> the "ret = open(...)" statement in the for loop. So that, the value of
+> 'ret' is unknown when asprintf() failed.
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
@@ -69,34 +70,32 @@ thanks,
 jirka
 
 > ---
->  tools/perf/util/map.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  tools/perf/util/data.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-> index fbc40a2c17d4dca..8af693d9678cefe 100644
-> --- a/tools/perf/util/map.c
-> +++ b/tools/perf/util/map.c
-> @@ -840,15 +840,18 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
->  int maps__clone(struct thread *thread, struct maps *parent)
+> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> index f29af4fc3d09390..8fca4779ae6a8e9 100644
+> --- a/tools/perf/util/data.c
+> +++ b/tools/perf/util/data.c
+> @@ -35,7 +35,7 @@ void perf_data__close_dir(struct perf_data *data)
+>  int perf_data__create_dir(struct perf_data *data, int nr)
 >  {
->  	struct maps *maps = thread->maps;
-> -	int err = -ENOMEM;
-> +	int err;
->  	struct map *map;
+>  	struct perf_data_file *files = NULL;
+> -	int i, ret = -1;
+> +	int i, ret;
 >  
->  	down_read(&parent->lock);
+>  	if (WARN_ON(!data->is_dir))
+>  		return -EINVAL;
+> @@ -51,7 +51,8 @@ int perf_data__create_dir(struct perf_data *data, int nr)
+>  	for (i = 0; i < nr; i++) {
+>  		struct perf_data_file *file = &files[i];
 >  
->  	maps__for_each_entry(parent, map) {
->  		struct map *new = map__clone(map);
-> -		if (new == NULL)
-> +
-> +		if (new == NULL) {
-> +			err = -ENOMEM;
->  			goto out_unlock;
-> +		}
+> -		if (asprintf(&file->path, "%s/data.%d", data->path, i) < 0)
+> +		ret = asprintf(&file->path, "%s/data.%d", data->path, i);
+> +		if (ret < 0)
+>  			goto out_err;
 >  
->  		err = unwind__prepare_access(maps, new, NULL);
->  		if (err)
+>  		ret = open(file->path, O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR);
 > -- 
 > 2.26.0.106.g9fadedd
 > 
