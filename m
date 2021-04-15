@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C363604DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE593604DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhDOIvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
+        id S231712AbhDOIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhDOIvQ (ORCPT
+        with ESMTP id S231251AbhDOIwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:51:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E463C061574;
-        Thu, 15 Apr 2021 01:50:53 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso12306354pjh.2;
-        Thu, 15 Apr 2021 01:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+6iDhpxs+5W7xhPPyWJKa/R+jas3XNSVfnqzpKFbZZU=;
-        b=B+ez1qQ9sBLxXH4vCYkoOsbsReIFeuRgpufyG/GNuSDjvMTLH/lsJ4Z+LBBn/TOrQF
-         szrpnnQgNzsYiw+HAZQZ3l7htgHIeUlcR+dA0k1gR4H4AXzAiynKqRg9X0SFBL6dg4R/
-         NggkhLdNMmzcTmo18+W/fvcX2CZr3ZXsSoD35xABi8kAIn25K8ez8+gVukHpre+Ul7Zn
-         y9OEBngmvk3WfLRAEFHrs83CWqx/eHYidt8ysxoHQ55f/mJmuLvnkzgaz3LFfjyUqdPU
-         whbKGPrCi1QM5owa9v67QYX36uPmE2fCS79xO2spxtdILSaIg5ytw5ecMQiG+sxvLPac
-         OujA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+6iDhpxs+5W7xhPPyWJKa/R+jas3XNSVfnqzpKFbZZU=;
-        b=DPd9C7OJ417hgh9PFgAEGiMMR9gG4V31QIRSkLnCkSVyhEgSEgfYyXfjwg6UwCoBGY
-         u67Ic0sng4b6OuEBugq9BhIi8XxTQ/Ho4fnHY3OH/SHPXs4lK5F4NQGDkvPgoRbmnf1g
-         I9H/brEu30rmNjSFx6IrSZszu0LHKfV8y60gjJKDq4CZi3uT+TICxFBlp5e4N/kp3N1F
-         0pJ6nyZd8Mdf9QyeJZxGFeONGPUekFXU8aCHVDecWBnSC3R33qzP38Tk8Z+bG6+MdYvS
-         3INb9XK1V9CzzVbgRUUAp7f9AzQ3bqUlmMzM+45FOph8BSaWTG08Fcy56BzBTP9Udx5p
-         nRHA==
-X-Gm-Message-State: AOAM530kJg9f8hRCZ7N//uKuzhJM0myniF7djT90izvOcIcPawcNJ6qB
-        e/oBLiYwAIZk7d7/d+NjisCzFkT8r6vLRbWrduU=
-X-Google-Smtp-Source: ABdhPJxu3rXXptRhVwp318YsuQ/EdZ/T0jKYj0kA+UJCPu+zEaZ3KoV2zJXu2CU8TIiy144PbCGgxigIjv44P5IoquY=
-X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
- 91-20020a1709020264b02900eb3d3aa09cmr2799900plc.0.1618476652952; Thu, 15 Apr
- 2021 01:50:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
- <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
- <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
- <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
-In-Reply-To: <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Apr 2021 11:50:36 +0300
-Message-ID: <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
-Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Thu, 15 Apr 2021 04:52:43 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F7AC061574;
+        Thu, 15 Apr 2021 01:52:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLY4c6r5tz9sV5;
+        Thu, 15 Apr 2021 18:52:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618476737;
+        bh=QB4BCrjpgU5KIJI4AkeD+l2HmZyaeGojTt9+DV9zCLo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sPz/Rn+h//t1rbqV0p7oPnMtgSi30MbEu9LFkiVRK1KgD+aYNJaEMc1C2aN+M3fye
+         fes31BRejNNvBZKZUu62VGkuA/CLovh65QZhFnCgxsr42AFUug1K/AzlTUqWMh3kVg
+         BPBf5/NaTkuXlwDYbceTPisTBHOVuKRwCXg5V8YF4ETTCXrkfPSQkcXn1oPSNhiXu6
+         wJ33Vwqw3Q8CB/m0/2BhAueZl7DD0avibnZvzg7dFX6y4szTuhjd4yske9TQg6BlPW
+         aWwZaYs7AhZE6wgSdlsxi9j4K3nTA1al9L0Gqn9j1lgxA0uw0dH568UVvuKpHq9te0
+         UP0cX6fCV7U8g==
+Date:   Thu, 15 Apr 2021 18:52:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Shivaprasad G Bhat <sbhat@linux.ibm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the powerpc tree
+Message-ID: <20210415185214.01e1e64f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/S2nGF_z4WmlMfPGsNq_GhQO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
-> > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
-> > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+--Sig_/S2nGF_z4WmlMfPGsNq_GhQO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Hi all,
 
-> > > > > I guess it's still fine to add a dependency on ACPI?
-> > > >
-> > > > But why?
-> > >
-> > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
-> >
-> > I'm not using it at all. Ask the author :-)
-> >
-> > But if we follow your logic, then we need to mark all the _platform_ drivers
-> > for x86 world as ACPI dependent? This sounds ugly.
->
-> Do all other x86 platform drivers have (1) an .acpi_match_table[] and
-> (2) no other way of instantiating their devices?
-> The first driver from the top of my memory I looked at is rtc-cmos:
-> it has no .acpi_match_table[], and the rtc-cmos device is instantiated
-> from arch/x86/kernel/rtc.c.
->
-> For drivers with only an .of_match_table(), and no legacy users
-> instantiating platform devices, we do have dependencies on OF.
+After merging the powerpc tree, today's linux-next build (powerpc
+allyesconfig) produced this warning:
 
-This is not true. Entire IIO subsystem is an example.
+In file included from include/linux/device.h:15,
+                 from arch/powerpc/include/asm/io.h:27,
+                 from include/linux/io.h:13,
+                 from include/linux/irq.h:20,
+                 from arch/powerpc/include/asm/hardirq.h:6,
+                 from include/linux/hardirq.h:11,
+                 from include/linux/highmem.h:10,
+                 from include/linux/bio.h:8,
+                 from include/linux/libnvdimm.h:14,
+                 from arch/powerpc/platforms/pseries/papr_scm.c:12:
+arch/powerpc/platforms/pseries/papr_scm.c: In function 'papr_scm_pmem_flush=
+':
+arch/powerpc/platforms/pseries/papr_scm.c:144:26: warning: format '%lld' ex=
+pects argument of type 'long long int', but argument 3 has type 'long int' =
+[-Wformat=3D]
+  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
+      |                          ^~~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
+   19 | #define dev_fmt(fmt) fmt
+      |                      ^~~
+arch/powerpc/platforms/pseries/papr_scm.c:144:3: note: in expansion of macr=
+o 'dev_err'
+  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
+      |   ^~~~~~~
+arch/powerpc/platforms/pseries/papr_scm.c:144:43: note: format string is de=
+fined here
+  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
+      |                                        ~~~^
+      |                                           |
+      |                                           long long int
+      |                                        %ld
 
--- 
-With Best Regards,
-Andy Shevchenko
+Introduced by commit
+
+  75b7c05ebf90 ("powerpc/papr_scm: Implement support for H_SCM_FLUSH hcall")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/S2nGF_z4WmlMfPGsNq_GhQO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB3/r4ACgkQAVBC80lX
+0GzHTQf/fKx+jXRlPW1AX2OiUn+d7JMj6eTElM/cuCdqNjO8RMmqrbh/MVl7UJ7G
+WKy22wVfJp+d8gaJMmosAoNjCC8CPwYBgbjGrzQ8ipBRp9kguHl/er1jMusYAyvQ
+dJ3DcV8BDhltacPQ8AFBChzw0tm7WfOQsfdMo00k+OMnQSrYIefEeaxSilpCgL6s
+Af2mli1J1MjfnR6uqUpLgQyY6WM/9s+LFKhzrvWkdJhqVR9BUEwPA51XzU+RleLZ
+KsrWHQW5mgaoLxzdr0zols3KvT8Rq3rzIZ2u7MsqCLKrng8lC4xDMRPz1wohfVBL
+/WjL2J1eG9vys5Ts5vj8pVMmNpyj6g==
+=KZQ0
+-----END PGP SIGNATURE-----
+
+--Sig_/S2nGF_z4WmlMfPGsNq_GhQO--
