@@ -2,105 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598653609A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DC93609AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbhDOMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:43:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232993AbhDOMnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:43:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B88610E8;
-        Thu, 15 Apr 2021 12:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618490567;
-        bh=3M573xfs0hNXfcCF4OhMwhysBCpFoK9x2zhcPMH6MCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rhibKjm+E0PTHJnnjSg49QkkkTHu4PodN1IM//rzWAFkVF16V4LsZudMr8F9m73Fr
-         K8PKDiOYBfmp6aXurI7V5oe4Y/kaosCZswDnj51KwjKtJpG/OYTnglASt/irGE177S
-         khD1g/6sm4uPAHnDcj4GTFw4BeZ8scOkVw/J97ECOuTI6SzEJ+eHE3/w8U1kcuUYJ5
-         EpkUlsGpkGFK5I2EYSBQzJfKtNQKAQMlSnLd5s38LuINBESudy3S57jfCKPeJrjtsp
-         z6tjrHrB4VJTmHRrnz6M84Umsp1rtRCBL/40w3KJDBrk6rGYHXLzL4DoBFA9lPIhBO
-         NBMjfLckfNINw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 138E040647; Thu, 15 Apr 2021 09:42:44 -0300 (-03)
-Date:   Thu, 15 Apr 2021 09:42:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf map: Fix error return code in maps__clone()
-Message-ID: <YHg0wyanA+UxqXWi@kernel.org>
-References: <20210415092744.3793-1-thunder.leizhen@huawei.com>
+        id S232812AbhDOMpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhDOMpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:45:06 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2155CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:44:42 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id g8so39024842lfv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QTZuOLyTeSPqIxpmQtTpEHkmOSrRy44Y0KTmGLHsQTA=;
+        b=KBMvfITJ6P1GJl3X+OkppIQD4G7uFHtheljIHTq0mOPMl/1ji4DLUkXc5yDJp0wy3/
+         0w/SUUMyyxBFbPW/XYzjkinIvEXA/usUJSZuAKalmXOWKJD0c43ztneuZToJ+KVByU7t
+         lr0TTWpnZbIwRpXA7U6/ELvRgiYAcbm+nezEqjjCwDyPPveS9APdAE67+CqWFA/F+cc1
+         cLqPICHZlo4+GJXjzewKHWtwuTkCe1t9xCaVoBTMy4hiBFfYSmll7QW0mnBF3zg+FHEl
+         UnoyygocULl7tMQvPwSvHqBrcFTXKY4/V9HoOgcfRRCN6CRc6T99OOsp5P6hQa6WQaJ3
+         bFYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QTZuOLyTeSPqIxpmQtTpEHkmOSrRy44Y0KTmGLHsQTA=;
+        b=ivDVZv9dLNiZvVh6UFX9BcawwwW1zP4qxMMF2N4rZjRhJXnNCc+ru0CiAV6swRKRks
+         lQ/pV/if/OBpnTxO4pn48S+nMjyl/zC8Bnrc9KXTfXU1VdBekfuIpzoGHKmvFYnjQCJd
+         Xdgbnc7NeZUh6J9HM6r/jqqd7JhbPyqIDnJ2GI6byCV/r4r7aNjhfr4GmT2uttFZ8Sd+
+         Mi2l1mJyiLWGW/cwb+OKhqKgVCz3LmWigF3hOaVPbdIHg+pJcVREc6cVQrwYGS52mlKj
+         4+IKRIdz3kImh6kykrjCFvWEB44r+DUWt+ghaRMjuX0Bj9QRaZO4gsyq+UOhoqL1W6MB
+         2PNg==
+X-Gm-Message-State: AOAM532/OlPZKRmSSpkDvcRdQsyCiirIgm6ywJSzdew7M2V4kTY0PjK8
+        SfJLGno/kzNbdkUuW4SRU42kgg==
+X-Google-Smtp-Source: ABdhPJx/JsoSsokvTGNO9NBxDRpe6VnMzzOOJdkz0CEWSlLS/dpp0SisW5W3I7anbKMDuXCfS726lg==
+X-Received: by 2002:a05:6512:c02:: with SMTP id z2mr2522381lfu.595.1618490680625;
+        Thu, 15 Apr 2021 05:44:40 -0700 (PDT)
+Received: from localhost.localdomain (89-70-221-122.dynamic.chello.pl. [89.70.221.122])
+        by smtp.gmail.com with ESMTPSA id j2sm667820lfm.210.2021.04.15.05.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 05:44:40 -0700 (PDT)
+From:   Lukasz Majczak <lma@semihalf.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Harsha Priya <harshapriya.n@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: Fix kabylake_ssp_fixup function
+Date:   Thu, 15 Apr 2021 14:43:47 +0200
+Message-Id: <20210415124347.475432-1-lma@semihalf.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415092744.3793-1-thunder.leizhen@huawei.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 15, 2021 at 05:27:44PM +0800, Zhen Lei escreveu:
-> Although 'err' has been initialized to -ENOMEM, but it will be reassigned
-> by the "err = unwind__prepare_access(...)" statement in the for loop. So
-> that, the value of 'err' is unknown when map__clone() failed.
+kabylake_ssp_fixup function uses snd_soc_dpcm to identify the
+codecs DAIs. The HW parameters are changed based on the codec DAI of the
+stream. The earlier approach to get snd_soc_dpcm was using container_of()
+macro on snd_pcm_hw_params.
 
-You forgot to research and add this:
+The structures have been modified over time and snd_soc_dpcm does not have
+snd_pcm_hw_params as a reference but as a copy. This causes the current
+driver to crash when used.
 
-Fixes: 6c502584438bda63 ("perf unwind: Call unwind__prepare_access for forked thread")
+This patch changes the way snd_soc_dpcm is extracted. snd_soc_pcm_runtime
+holds 2 dpcm instances (one for playback and one for capture). 2 codecs
+on the SSP are dmic (capture) and speakers (playback). Based on the
+stream direction, snd_soc_dpcm is extracted from snd_soc_pcm_runtime.
 
-So that the stable@kernel.org guys can pick this up automagically and
-apply this fix to the stable kernels.
+Tested for all use cases of the driver.
+Based on similar fix in kbl_rt5663_rt5514_max98927.c
+from Harsha Priya <harshapriya.n@intel.com> and
+Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
 
-I've added it.
+Cc: <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+---
+Hi,
+This is basically a cherry-pick of this change:
+https://patchwork.kernel.org/project/alsa-devel/patch/1595432147-11166-1-git-send-email-harshapriya.n@intel.com/
+just applied to the kbl_da7219_max98927.
+Best regards,
+Lukasz
 
-Thanks, applied.
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 38 +++++++++++++++-----
+ 1 file changed, 30 insertions(+), 8 deletions(-)
 
-- Arnaldo
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 9dfe5bd9180d..4b7b4a044f81 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -284,11 +284,33 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_interval *chan = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-	struct snd_soc_dpcm *dpcm = container_of(
+-			params, struct snd_soc_dpcm, hw_params);
+-	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
+-	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
++	struct snd_soc_dpcm *dpcm, *rtd_dpcm = NULL;
  
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  tools/perf/util/map.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-> index fbc40a2c17d4dca..8af693d9678cefe 100644
-> --- a/tools/perf/util/map.c
-> +++ b/tools/perf/util/map.c
-> @@ -840,15 +840,18 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
->  int maps__clone(struct thread *thread, struct maps *parent)
->  {
->  	struct maps *maps = thread->maps;
-> -	int err = -ENOMEM;
-> +	int err;
->  	struct map *map;
->  
->  	down_read(&parent->lock);
->  
->  	maps__for_each_entry(parent, map) {
->  		struct map *new = map__clone(map);
-> -		if (new == NULL)
-> +
-> +		if (new == NULL) {
-> +			err = -ENOMEM;
->  			goto out_unlock;
-> +		}
->  
->  		err = unwind__prepare_access(maps, new, NULL);
->  		if (err)
-> -- 
-> 2.26.0.106.g9fadedd
-> 
-> 
-
++	/*
++	 * The following loop will be called only for playback stream
++	 * In this platform, there is only one playback device on every SSP
++	 */
++	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_PLAYBACK, dpcm) {
++		rtd_dpcm = dpcm;
++		break;
++	}
++
++	/*
++	 * This following loop will be called only for capture stream
++	 * In this platform, there is only one capture device on every SSP
++	 */
++	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_CAPTURE, dpcm) {
++		rtd_dpcm = dpcm;
++		break;
++	}
++
++	if (!rtd_dpcm)
++		return -EINVAL;
++
++	/*
++	 * The above 2 loops are mutually exclusive based on the stream direction,
++	 * thus rtd_dpcm variable will never be overwritten
++	 */
+ 	/*
+ 	 * Topology for kblda7219m98373 & kblmax98373 supports only S24_LE,
+ 	 * where as kblda7219m98927 & kblmax98927 supports S16_LE by default.
+@@ -311,9 +333,9 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	/*
+ 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
+ 	 */
+-	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
+-	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
++	if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Port") ||
++	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Headset Playback") ||
++	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Capture Port")) {
+ 		rate->min = rate->max = 48000;
+ 		chan->min = chan->max = 2;
+ 		snd_mask_none(fmt);
+@@ -324,7 +346,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
+ 	 * thus changing the mask here
+ 	 */
+-	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
++	if (!strcmp(rtd_dpcm->be->dai_link->name, "SSP0-Codec"))
+ 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+ 
+ 	return 0;
 -- 
+2.25.1
 
-- Arnaldo
