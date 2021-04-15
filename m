@@ -2,203 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C9B36099A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213C936099D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbhDOMk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S232922AbhDOMkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhDOMkY (ORCPT
+        with ESMTP id S230202AbhDOMke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:40:24 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A994C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:40:00 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d124so15945720pfa.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:40:00 -0700 (PDT)
+        Thu, 15 Apr 2021 08:40:34 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEAFC061574;
+        Thu, 15 Apr 2021 05:40:10 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id v3so23612003ybi.1;
+        Thu, 15 Apr 2021 05:40:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qHBUjFRmsEeOYPlQQPLg6xTAMgdhf1Iy5nFWfOda9F8=;
-        b=xdrPhpNmqth/Odu0CxkbvNliBLFVdumJ6LwaTZDxR492ERXvk2fSNpE5m7PuuAaDfe
-         p//Z+yxMcIVE6RafsPFE9BWzDfkqD/x5unY5YV4U0H3knh66AYjfyaRXuGT/qRVZWxrR
-         55TR0hyUUxqGb+b9ZWz+jpbHqrKwbSKBypFwenkxvmnhY2viwsXBfo33kvG8AF8bk4qq
-         xdnLrImUyMHv593PuVdXK55ztOVZAfVhrfv2Df3pYgLZnL9y+5XYiRCX1mHkwp0xPfyN
-         yFLqjo8iRoqUcQyo37qBM3WI4DQG8xHPgY4y+frKnKjCcZv51L+E1KngixT5fpVEKgi4
-         XJAQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HNWPrpdPoD+pXH9p1hvOGpr8+bIHmvjS+4XG2ldZ0Sc=;
+        b=PHuF3KrGqNBmqAhI7J+l69fge3/RxdwOfMm73BbiapXnaS25fJER94tzGL0volq6nJ
+         uVBdFT87qfAFF6Mk9bToFO5RRpRY90hP8G2jKu6QeUr2Kt50f58LPPu85yVORSpWVKYQ
+         hd5D4KclIVt0np3ZmNZEmb7ZR6eE10A3wTDxilcHC6fMWxbsbaw7jKcI3tcqLt7m/ckn
+         QCJhcjmQCzFCbiJw4xc7e+DIitZozXwIlcRRUisdbJZcbZMG2ORchleytjjRVcsDlsJG
+         RID3l6K3+u7ePY/dvZTSnJKqVAerSfoEiYE3lytwF4HiVmXSsLtV4suJai+7Q/Hp3CEL
+         ia6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qHBUjFRmsEeOYPlQQPLg6xTAMgdhf1Iy5nFWfOda9F8=;
-        b=UvgJ0I251cPSGa/yCFB52odBOyk261AJSfjSJdvRdUlT1v4F2yhlafyYWh39E9uhx7
-         69n6Xu85i/w9Eypb8jGWzpGKwiM2apW7PMjWuXOJftA9CR1/VcAYl7fJljQAzhAQq+nE
-         KKxAUQbI1a5grTRkZoESCbEnWy0osE8JN9HmQj4dvRqoMBYGD8m87/VdqGFLNdBHQ92d
-         yIP/A9IYv1J9EmXLG7QxhxSGr3hXExqUFphP7rpn5Z23xoahgmP47Qq14F6CUu3mU58j
-         PHWn7w38baAE0hSwor4rIirvhlsA75N+YrGGF2iE2GtKwYbR8IwI/bqf9ZhpccK88EvK
-         +1yA==
-X-Gm-Message-State: AOAM533eCAOeZcBtrk3l9bD0s8msEojEBJFohjTJN9OC3FGEc+Kfqsc0
-        2Tmb0Jm8CAbcL+aI7eZXkPV+ZQ==
-X-Google-Smtp-Source: ABdhPJxgbk0ONbpJokQpAAIPSGD0ZPu2o/+xcyjFE2CKce0EU5QlYvB0VRytYNdOFP6CmExBTV5qPA==
-X-Received: by 2002:a62:1615:0:b029:243:fec5:6618 with SMTP id 21-20020a6216150000b0290243fec56618mr2991175pfw.35.1618490399390;
-        Thu, 15 Apr 2021 05:39:59 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id z17sm2482812pjn.47.2021.04.15.05.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 05:39:58 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 20:39:53 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-Message-ID: <20210415123953.GB1011890@leoy-ThinkPad-X240s>
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com>
- <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HNWPrpdPoD+pXH9p1hvOGpr8+bIHmvjS+4XG2ldZ0Sc=;
+        b=FP4tmY1b/bHhUbmHF7dd4X43sr9hNfsRYQO1uy8Yq1AprYKopqsC987jJriFyLqfNG
+         MMkKQVYnihXyHWoGq+B85YXA6uFqSS6s7OaaS2msKFe2PUQuOs6trzHHj4K+tl2NvYlR
+         etI4sED1MUGhOaE5o28W4vFggPAjErh0y/rVjy0LBcKjPtZEo7TMzY61NnZ7yXb1eT/0
+         qJaj79/l8yi8NTGBZTjKuYXB5IaEKROy3BnF/nTq6yJ/UWVNHwPhDkNJ/tDoYSpNHqpb
+         W8umJxPNsHNpndXk7nKQoVdLn+q+wgNFpp1YwCyYnW8fH+Yzl5XsRIi0PL3ckPXVGdl9
+         Cm/w==
+X-Gm-Message-State: AOAM533uA6CJ/ssg3J/DvhRgh9cFZhpCGyh7DUk44GsGIlczf7cJZuvZ
+        29H+uf2gHd2dGWYERI+mwpCnyyL373RI9FzNrXugrek1iyc=
+X-Google-Smtp-Source: ABdhPJxxvwHaN8MXNkZ2cWP+VxR/Oi6OrV25u/8c4Sk71cAVeHSDikukkFzc+2IPtDy3JiqOzh/Ywn1UnHBoDwcKALw=
+X-Received: by 2002:a25:cfc2:: with SMTP id f185mr4317197ybg.26.1618490409882;
+ Thu, 15 Apr 2021 05:40:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
+ <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com> <202104141820.7DDE15A30@keescook>
+In-Reply-To: <202104141820.7DDE15A30@keescook>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 15 Apr 2021 14:39:58 +0200
+Message-ID: <CANiq72=miTm-WYN4Q4JRfm7ocaoNePW_f1khcUOE1EkO8UyQzw@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:41:46PM +0300, James Clark wrote:
-> Hi,
-> 
-> For this change, I also tried removing the setting of PERF_SAMPLE_TIME in cs_etm__synth_events(). In theory, this would remove the sorting when opening the file, but the change doesn't affect when the built-in events are saved to the inject file. Resulting in events like MMAP and COMM with timestamps, but the synthesised events without. This results in the same issue of the synthesised events appearing before the COMM and MMAP events. If it was possible to somehow tell perf to remove timestamps from built-in events, removing PERF_SAMPLE_TIME would probably be the right solution, because we don't set sample.time.
-> 
-> For Arm v8.4 we will have the kernel time in the etm timestamps, so an if can be added to switch between this behaviour and the next (more correct) one depending on the hardware. 
-> 
-> On the subject of timestamps, but not related to this change, some combinations of timestamp options aren't working. For example:
-> 
->     perf record -e cs_etm/time,@tmc_etr0/u --per-thread
-> or  perf record -e cs_etm/@tmc_etr0/u --timestamp --per-thread
-> 
-> These don't work because of the assumption that etm->timeless_decoding == --per-thread
-> and kernel timestamps enabled (/time/ or --timestamp) == etm timestamps enabled (/timestamp/), which isn't necessarily true.
-> 
-> This can be made to work with a few code changes for cs_etm/time,timestamp/u --per-thread, but cs_etm/time/u --per-thread could be a bit more work. Changes involved would be using "per_cpu_mmaps" in some places instead of etm->timeless_decoding, and also setting etm->timeless_decoding based on whether there are any etm timestamps, not kernel ones. Although to search for any etm timestamp would involve a full decode ahead of time which might not be feasible (or maybe just checking the options, although that's not how it's done in cs_etm__is_timeless_decoding() currently).
+On Thu, Apr 15, 2021 at 3:38 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> Before anything else: yay! I'm really glad to see this RFC officially
+> hit LKML. :)
 
-Confirm for one thing:
+Thanks! :)
 
-For the orignal perf data file with "--per-thread" option, the decoder
-runs into the condition for "etm->timeless_decoding"; and it doesn't
-contain ETM timestamp.
+> When originally learning Rust I was disappointed to see that (by default)
+> Rust similarly ignores the overflow problem, but I'm glad to see the
+> very intentional choices in the Rust-in-Linux design to deal with it
+> directly. I think the default behavior should be saturate-with-WARN
+> (this will match the ultimate goals of the UBSAN overflow support[1][2]
+> in the C portions of the kernel). Rust code wanting wrapping/checking
+> can expressly use those. The list of exploitable overflows is loooong,
+> and this will remain a weakness in Rust unless we get it right from
+> the start. What's not clear to me is if it's better to say "math with
+> undeclared overflow expectation" will saturate" or to say "all math must
+> declare its overflow expectation".
 
-Afterwards, the injected perf data file also misses ETM timestamp and
-hit the condition "etm->timeless_decoding".
++1 Agreed, we need to get this right (and ideally make both the C and
+Rust sides agree...).
 
-So I am confusing why the original perf data can be processed properly
-but fails to handle the injected perf data file.
-
-Thanks,
-Leo
-
-> Or, we could force /time/ and /timestamp/ options to always be enabled together in the record stage. 
-> 
-> 
-> Thanks
-> James
-> 
-> On 14/04/2021 17:39, James Clark wrote:
-> > The following attribute is set when synthesising samples in
-> > timed decoding mode:
-> > 
-> >     attr.sample_type |= PERF_SAMPLE_TIME;
-> > 
-> > This results in new samples that appear to have timestamps but
-> > because we don't assign any timestamps to the samples, when the
-> > resulting inject file is opened again, the synthesised samples
-> > will be on the wrong side of the MMAP or COMM events.
-> > 
-> > For example this results in the samples being associated with
-> > the perf binary, rather than the target of the record:
-> > 
-> >     perf record -e cs_etm/@tmc_etr0/u top
-> >     perf inject -i perf.data -o perf.inject --itrace=i100il
-> >     perf report -i perf.inject
-> > 
-> > Where 'Command' == perf should show as 'top':
-> > 
-> >     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
-> >     # ........  .......  ....................  ......................  ......................  ..................
-> >     #
-> >         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
-> > 
-> > If the perf.data file is opened directly with perf, without the
-> > inject step, then this already works correctly because the
-> > events are synthesised after the COMM and MMAP events and
-> > no second sorting happens. Re-sorting only happens when opening
-> > the perf.inject file for the second time so timestamps are
-> > needed.
-> > 
-> > Using the timestamp from the AUX record mirrors the current
-> > behaviour when opening directly with perf, because the events
-> > are generated on the call to cs_etm__process_queues().
-> > 
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> > Co-developed-by: Al Grant <al.grant@arm.com>
-> > Signed-off-by: Al Grant <al.grant@arm.com>
-> > ---
-> >  tools/perf/util/cs-etm.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > index c25da2ffa8f3..d0fa9dce47f1 100644
-> > --- a/tools/perf/util/cs-etm.c
-> > +++ b/tools/perf/util/cs-etm.c
-> > @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
-> >  	u8 sample_instructions;
-> >  
-> >  	int num_cpu;
-> > +	u64 latest_kernel_timestamp;
-> >  	u32 auxtrace_type;
-> >  	u64 branches_sample_type;
-> >  	u64 branches_id;
-> > @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
-> >  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
-> >  	event->sample.header.size = sizeof(struct perf_event_header);
-> >  
-> > +	if (!etm->timeless_decoding)
-> > +		sample.time = etm->latest_kernel_timestamp;
-> >  	sample.ip = addr;
-> >  	sample.pid = tidq->pid;
-> >  	sample.tid = tidq->tid;
-> > @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
-> >  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
-> >  	event->sample.header.size = sizeof(struct perf_event_header);
-> >  
-> > +	if (!etm->timeless_decoding)
-> > +		sample.time = etm->latest_kernel_timestamp;
-> >  	sample.ip = ip;
-> >  	sample.pid = tidq->pid;
-> >  	sample.tid = tidq->tid;
-> > @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
-> >  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
-> >  		return cs_etm__process_switch_cpu_wide(etm, event);
-> >  
-> > -	if (!etm->timeless_decoding &&
-> > -	    event->header.type == PERF_RECORD_AUX)
-> > +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
-> > +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
-> >  		return cs_etm__process_queues(etm);
-> > +	}
-> >  
-> >  	return 0;
-> >  }
-> > 
+Cheers,
+Miguel
