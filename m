@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117C235FFD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B89F35FFD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhDOCG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:06:27 -0400
-Received: from ozlabs.org ([203.11.71.1]:44541 "EHLO ozlabs.org"
+        id S229669AbhDOCHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:07:17 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14866 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhDOCGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:06:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLN3m34zKz9sRR;
-        Thu, 15 Apr 2021 12:05:56 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618452358;
-        bh=PYgaVE9PcVq38Vy6wf5WsIwhmhTCstQabYe5OVga994=;
-        h=Date:From:To:Cc:Subject:From;
-        b=e+amyzW0bVAObm9NdzX8M0KKf6EOKNM/dCREIP0PCpgQdO/KcXyjtzXm+IR95DGgD
-         xgJruyvVdDjqSA34cuUg5jWCkHPE2BMTo/zN3TicdUEhe4Av5R4JCkP9KHRXpFsqzK
-         XXZZxjOfKhW0Rx3KCTOVkKI5VtuHYCXZLr3VK/Jg8XP9o2UErRbjJHJ6k42FyMS3at
-         oI12tRLWi+k/WZIl0JdfSvD37lP5TH1WEwM+Y3RWkCErgtnaEvgmrPzsocoOja4Qtq
-         XHIKz0VwglFRCbjB70nGb9ZfSJZ5N5FJ7z1tCMAJdGaGqy/hwJbQk4vrMU9QgQ1304
-         gtg/sN4PBVrrA==
-Date:   Thu, 15 Apr 2021 12:05:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Subject: linux-next: manual merge of the rdma tree with Linus' tree
-Message-ID: <20210415120554.27a65b64@canb.auug.org.au>
+        id S229449AbhDOCHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 22:07:15 -0400
+IronPort-SDR: OAj1+TXC/xDBgbGHh87mJqGcG+AeH130Sdv57AwUnKGs+gMlaGX7hXN7gg5nBbfomPG4Pj6/UG
+ nfDStuembbcg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="192648863"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="192648863"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:06:53 -0700
+IronPort-SDR: XfNeBLI887Qp5AIn4Mtpvqr7TMGB4r1tIYsEOb/+S1DvwzmWZLsPyymzajdWHKDKLzvsRaQDpc
+ FaMdnn/wDzVw==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="383874988"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.19.126])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:06:52 -0700
+Date:   Wed, 14 Apr 2021 19:06:52 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     kerneljasonxing@gmail.com, davem@davemloft.net, kuba@kernel.org
+Cc:     anthony.l.nguyen@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: Re: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv
+ mode
+Message-ID: <20210414190652.00006680@intel.com>
+In-Reply-To: <20210414023428.10121-1-kerneljasonxing@gmail.com>
+References: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+        <20210414023428.10121-1-kerneljasonxing@gmail.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/r5QQjExRYB93QcOlez/u6E2";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/r5QQjExRYB93QcOlez/u6E2
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+kerneljasonxing@gmail.com wrote:
 
-Hi all,
+> From: Jason Xing <xingwanli@kuaishou.com>
+> 
+> Fix this panic by adding more rules to calculate the value of @rss_size_max
+> which could be used in allocating the queues when bpf is loaded, which,
+> however, could cause the failure and then trigger the NULL pointer of
+> vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> cpus are online and then allocates 256 queues on the machine with 32 cpus
+> online actually.
+> 
+> Once the load of bpf begins, the log will go like this "failed to get
+> tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> failed".
+> 
+> Thus, I attach the key information of the crash-log here.
+> 
+> BUG: unable to handle kernel NULL pointer dereference at
+> 0000000000000000
+> RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> Call Trace:
+> [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> [2160294.717666]  dev_xdp_install+0x4f/0x70
+> [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> [2160294.718705]  do_setlink+0xac7/0xe70
+> [2160294.719035]  ? __nla_parse+0xed/0x120
+> [2160294.719365]  rtnl_newlink+0x73b/0x860
+> 
+> Fixes: 41c445ff0f48 ("i40e: main driver core")
+> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
 
-Today's linux-next merge of the rdma tree got a conflict in:
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 
-  drivers/infiniband/hw/hfi1/hfi.h
-
-between commit:
-
-  5de61a47eb90 ("IB/hfi1: Fix probe time panic when AIP is enabled with a b=
-uggy BIOS")
-
-from Linus' tree and commit:
-
-  780278c2c8bb ("IB/hfi1: Rework AIP and VNIC dummy netdev usage")
-
-from the rdma tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/infiniband/hw/hfi1/hfi.h
-index 2a9a040569eb,2183d02ccfa2..000000000000
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@@ -1408,8 -1402,7 +1402,8 @@@ struct hfi1_devdata=20
-  	/* Lock to protect IRQ SRC register access */
-  	spinlock_t irq_src_lock;
-  	int vnic_num_vports;
-- 	struct net_device *dummy_netdev;
-+ 	struct hfi1_netdev_rx *netdev_rx;
- +	struct hfi1_affinity_node *affinity_entry;
- =20
-  	/* Keeps track of IPoIB RSM rule users */
-  	atomic_t ipoib_rsm_usr_num;
-
---Sig_/r5QQjExRYB93QcOlez/u6E2
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB3n4IACgkQAVBC80lX
-0GzmgwgAmNMTFYusqlM3FwnZdQD8GG8crxMYenqHFYHyOZ4Bj0vASdteaN2r7HXV
-5IB6e/+WXozmJ1ZvsYRcgAMiAqf12lmxvbX9XPTpC96dS35N7p7wa8ngpObXR5PN
-SSZvhECFGrKVWNR26C4mGA8Oz+8i6EJn+HGLWwCjKo5UZKAtcRv50OE/SKrssfeE
-FuW4yVOEzOKXdkzFk8hUTv7eSx2JgzARh6+nQDbLXdBOZgM+mMJ1NIOo8ir7LbvW
-cgNDEfMzkGkjiHXeHqXfMj3TVFfpS/qPQd2Lu4IEGDOKqNkbWzyHl9kSSuc5HuUa
-+GnM3uvpr/3OBexbVKo6G85Xl2mmRQ==
-=ihZb
------END PGP SIGNATURE-----
-
---Sig_/r5QQjExRYB93QcOlez/u6E2--
+@Jakub/@DaveM - feel free to apply this directly.
