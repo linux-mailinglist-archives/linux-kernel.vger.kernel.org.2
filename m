@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AB236122C
+	by mail.lfdr.de (Postfix) with ESMTP id A380036122E
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhDOSes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42168 "EHLO mail.kernel.org"
+        id S234633AbhDOSex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:34:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234565AbhDOSep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:34:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39FDB610FC;
-        Thu, 15 Apr 2021 18:34:21 +0000 (UTC)
+        id S234598AbhDOSev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 14:34:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 280D6611CD;
+        Thu, 15 Apr 2021 18:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618511661;
-        bh=Kbob7OMphmt3u9UFU9U2QWIuSQbjN9slDC+F+dIJdWY=;
+        s=k20201202; t=1618511667;
+        bh=DIjc359eJQvUuEAXonYp4ayJobMO/jbmR85gSygggvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=emAwkXVzBesOHhCYumFy0reWg57jyFGL0yppj5k2T3gFJ5r0Xl39a4+7ww0K+aKwX
-         5xOK/+HQg4sj4YGKqjJ7EDqySKKcpMf6ZzC1nejla4lAPPS9E5zwr7ifevthZkL7uh
-         2eVIVx08axFE2BgFfcUaB4k/4RYvlq2Lesty/DvkyFm4uo5RAO8FWHhyKaL0J7s+7B
-         3Qs5ydKFgaOZHudeCC8yynOCQvVxwIhlf55DuAVbkVkEWu2GYaxW2H9ZteENV0vbP2
-         fUPeooIpzMv9qmi8brYnNO/du4YbexMGyxROc4XAcH0irRjACdMrZ24tADmcPSGZFr
-         +73s2EsOk87jQ==
+        b=cFf1N+RAHcgMOxD7jOIxal/ixnnS9l8SrlF482aXeUDCq6/ssN2O1HVN9d3H6l77q
+         IH3i1gCkMqiix+Bpi/LuoeJ3teu0jkl/GTuDODfgUZCsFtYfRXBZ+uDb8JSDwtD5j3
+         WlGqlbjoy9D8EJQcRNHOlyiyI/u5lqt6tL8mTKRQcnguBA88fhaHUOoaoE9ie7xptm
+         d8zncHj/UbVZyKSVIxz3jJVUpeZrDh3xY+9ikVWKy5yLh2nbYrYxzkE2LxWtl6uB3Q
+         fze2RyRxGVXNOQPexxf30iInvksiop9UOO5kzg4UU8Va9B3h6VI0nybNmCYp0yIMZ7
+         kPaxQZW3hjZQg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, zhuguangqing83@gmail.com,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: codecs: wcd934x: Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Thu, 15 Apr 2021 19:33:44 +0100
-Message-Id: <161851148784.23061.9027207380997094789.b4-ty@kernel.org>
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Harsha Priya <harshapriya.n@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+Cc:     Mark Brown <broonie@kernel.org>, stable@vger.kernel.org,
+        alsa-devel@alsa-project.org, upstream@semihalf.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: Fix kabylake_ssp_fixup function
+Date:   Thu, 15 Apr 2021 19:33:46 +0100
+Message-Id: <161851148785.23061.12027153189842499464.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210415073829.22750-1-zhuguangqing83@gmail.com>
-References: <20210415073829.22750-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20210415124347.475432-1-lma@semihalf.com>
+References: <20210415124347.475432-1-lma@semihalf.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,10 +44,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 15:38:29 +0800, zhuguangqing83@gmail.com wrote:
-> Coccinelle noticed:
->   sound/soc/codecs/wcd934x.c:5041:7-32: ERROR: Threaded IRQ with no primary
-> handler requested without IRQF_ONESHOT
+On Thu, 15 Apr 2021 14:43:47 +0200, Lukasz Majczak wrote:
+> kabylake_ssp_fixup function uses snd_soc_dpcm to identify the
+> codecs DAIs. The HW parameters are changed based on the codec DAI of the
+> stream. The earlier approach to get snd_soc_dpcm was using container_of()
+> macro on snd_pcm_hw_params.
+> 
+> The structures have been modified over time and snd_soc_dpcm does not have
+> snd_pcm_hw_params as a reference but as a copy. This causes the current
+> driver to crash when used.
+> 
+> [...]
 
 Applied to
 
@@ -55,8 +62,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: wcd934x: Fix missing IRQF_ONESHOT as only threaded handler
-      commit: 22ff9c4230bd09ade8971c05463b90ec1d513245
+[1/1] ASoC: Intel: kbl_da7219_max98927: Fix kabylake_ssp_fixup function
+      commit: a523ef731ac6674dc07574f31bf44cc5bfa14e4d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
