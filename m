@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFE8360185
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3654E360187
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhDOFR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhDOFRV (ORCPT
+        id S229867AbhDOFVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:21:03 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47014 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOFVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:17:21 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B6FC061574;
-        Wed, 14 Apr 2021 22:16:58 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so16428664otf.12;
-        Wed, 14 Apr 2021 22:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gxcWeNrjFCcTeKjmbsNotnTpQRzTFqaqt9nFjPnqCjA=;
-        b=HljV85rUzclS3NeavfN9xrwN4+8P6rsi8WPxVPCCn/SY3DA5zrJdR8DMeDEE7ZVYXj
-         LjjHl0bchiENqHDYTxH/bLMsUvi9EArsWd7nf+M2+hvl1R8kLI5Gq0KBeFVsBfMkEv1D
-         1eSc0qUul43wNnzZGC/Wnln4xkgoFvzlmxPUqK6fUnvKLYZ3duz7eRMy4/eaMNS5fuVv
-         LZ3+mtoU/buaKhxgwgXqRjusMeRmB/b3GGtb4zGjiDpuk9JjBCBEc0+r9KIzF8s73vyh
-         MgDFUN56sRJtjh0PEYN8KcIief60O2GIffJ6zeQ1IovVj1tRHtDqr+KZwYnPimzbPE3K
-         ratw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gxcWeNrjFCcTeKjmbsNotnTpQRzTFqaqt9nFjPnqCjA=;
-        b=shp8Dpbi5wX8B7lQlDdfkyP7jvchaPW3wPFnsOVOu3cY3cQYrvdGgv0ucPtX11nV6c
-         xqsxJe07Q24uYLvXzfO08Ph+/O9Uva9ZySkDJ+a+Ma2csFokzzVp7OLCBTyf5MScfSbM
-         /6LcvMS6egA1yUc3vtS5eUehwK7pdI+UZ1BsKP/vzOScX7vLCuq2zRVUobwZ6Q8yxiLq
-         HS/pv307qt9fJ3K53/LhED78Exi7Gy4wJe56/1CK+h2WYCUxRc1dKVAeR4UqUEWEd6/8
-         5AbKpOFeNiPHwjOoxh9qrHjJKVYuhdtByqlZ25EVK6BG1zlNLmvfynWoi20hllKd+pQ1
-         Dccg==
-X-Gm-Message-State: AOAM530xvnpmfnLEyXa3mQFgrTrvf1lwmmXM/uY0iq29gXE+WJNl90JX
-        Ra2nLJntf6HJUVlHQMfq7qj3UWoRfDK1LK9+WtQcvhtd6lV+Sg==
-X-Google-Smtp-Source: ABdhPJyKx6RobEXsCC6040Be2jAITs+SqWUI/vu+hz87uwHTi9bm17mC42YqhPaktVI0VUQF/gqkIxzaWMv6XlFwDDI=
-X-Received: by 2002:a9d:1c7:: with SMTP id e65mr1304632ote.105.1618463818159;
- Wed, 14 Apr 2021 22:16:58 -0700 (PDT)
+        Thu, 15 Apr 2021 01:21:02 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5JEmW059525;
+        Thu, 15 Apr 2021 05:20:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ov+A9MryhFsZ9CMkzirHLxFXB3cb10I5KxiyLHM/m7Q=;
+ b=U35oxl/4+8WSjVvLrV4XGcWB2a9vRlsEbeakNQJrlVA63qfYqM9Pu3YHpX/0xj8Y2ju+
+ 1PWD+oBc0uaFChnWImUlQQgSvv50Hme6ZOXMi8ib6ppJ6pV/fZcZyZmQ3iklQonQOWQa
+ AOtdeYmXqx4zWKTCbxVgpYlQiPD+UzlGk58bF5N0QJ07uWALFJ7+n3zYhFAkFCq24klo
+ sLMjlavDpiUuyBekqi8Koxymzs9X44jgjW8pneYA+zx97wMPCtGpuIDsbD28RZyADHEJ
+ zPrGRdt+Ms9HdU7h0llPvIoBofDr1Q6jO8bYsQZUZFnj3fuGigitvkXUh4/PEwp5ph6p GA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 37u4nnmfxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Apr 2021 05:20:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5KTX1071939;
+        Thu, 15 Apr 2021 05:20:31 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 37uny0epnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Apr 2021 05:20:31 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13F5KO80013546;
+        Thu, 15 Apr 2021 05:20:24 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Apr 2021 22:20:23 -0700
+Date:   Thu, 15 Apr 2021 08:20:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 37/57] staging: rtl8188eu: os_dep: ioctl_linux: Move 2
+ large data buffers into the heap
+Message-ID: <20210415051835.GY6021@kadam>
+References: <20210414181129.1628598-1-lee.jones@linaro.org>
+ <20210414181129.1628598-38-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
- <20210413025011.1251-1-kerneljasonxing@gmail.com> <20210413091812.0000383d@intel.com>
- <CAL+tcoBVhD1SfMYAFVn0HxZ3ig88pxtiLoha9d6Z+62yq8bWBA@mail.gmail.com> <20210414190837.0000085a@intel.com>
-In-Reply-To: <20210414190837.0000085a@intel.com>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Thu, 15 Apr 2021 13:16:22 +0800
-Message-ID: <CAL+tcoAfVCJMgeVFnyHaZhEEJRiWEYc5hm5c0GOKwg2BDiVtYA@mail.gmail.com>
-Subject: Re: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv mode
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        intel-wired-lan@lists.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414181129.1628598-38-lee.jones@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104150037
+X-Proofpoint-ORIG-GUID: HHn02tmwWKnK40RfH7mHWNFpeVBHs_73
+X-Proofpoint-GUID: HHn02tmwWKnK40RfH7mHWNFpeVBHs_73
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104150037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 10:08 AM Jesse Brandeburg
-<jesse.brandeburg@intel.com> wrote:
->
-> Jason Xing wrote:
->
-> > On Wed, Apr 14, 2021 at 12:27 AM Jesse Brandeburg
-> > <jesse.brandeburg@intel.com> wrote:
-> > >
-> > > kerneljasonxing@gmail.com wrote:
-> > >
-> > > > From: Jason Xing <xingwanli@kuaishou.com>
-> > >
-> > > Hi Jason,
-> > >
-> > > Sorry, I missed this on the first time: Added intel-wired-lan,
-> > > please include on any future submissions for Intel drivers.
-> > > get-maintainers script might help here?
-> > >
-> >
-> > Probably I got this wrong in the last email. Did you mean that I should add
-> > intel-wired-lan in the title not the cc list? It seems I should put
-> > this together on
-> > the next submission like this:
-> >
-> > [Intel-wired-lan] [PATCH net v4]
->
-> Your v3 submittal was correct. My intent was to make sure
-> intel-wired-lan was in CC:
->
+On Wed, Apr 14, 2021 at 07:11:09PM +0100, Lee Jones wrote:
+> ---
+>  drivers/staging/rtl8188eu/os_dep/ioctl_linux.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> index c95ae4d6a3b6b..cc14f00947781 100644
+> --- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
+> @@ -224,7 +224,7 @@ static char *translate_scan(struct adapter *padapter,
+>  	/* parsing WPA/WPA2 IE */
+>  	{
+>  		u8 *buf;
+> -		u8 wpa_ie[255], rsn_ie[255];
+> +		u8 *wpa_ie, *rsn_ie;
+>  		u16 wpa_len = 0, rsn_len = 0;
+>  		u8 *p;
+>  
+> @@ -232,6 +232,14 @@ static char *translate_scan(struct adapter *padapter,
+>  		if (!buf)
+>  			return start;
+>  
+> +		wpa_ie = kzalloc(255, GFP_ATOMIC);
+> +		if (!wpa_ie)
+> +			return start;
 
-Well, I get to know more about the whole thing.
+kfree(buf);
 
-> If Kuba or Dave wants us to take the fix in via intel-wired-lan trees,
-> then we can do that, or they can apply it directly. I'll ack it on the
-> v3.
+> +
+> +		rsn_ie = kzalloc(255, GFP_ATOMIC);
+> +		if (!rsn_ie)
+> +			return start;
 
-Thanks, Jesse:)
+kfree(buf);
+kfree(wpa_ie);
 
-Jason
+> +
+>  		rtw_get_sec_ie(pnetwork->network.ies, pnetwork->network.ie_length, rsn_ie, &rsn_len, wpa_ie, &wpa_len);
+>  		RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_wx_get_scan: ssid =%s\n", pnetwork->network.ssid.ssid));
+>  		RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_wx_get_scan: wpa_len =%d rsn_len =%d\n", wpa_len, rsn_len));
 
->
+regards,
+dan carpenter
