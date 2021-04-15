@@ -2,229 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A5D361311
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F308361314
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbhDOTrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:47:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22982 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234960AbhDOTrU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:47:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618516017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=NFvD14E/O2xfcZkQUJKPm+kNaCcXcWDI9yc+KeoaA1o=;
-        b=I0YYaHvJFvWTa46y5TltxkQr8iydKOKBs/MxaNgqIFdBf6yhhIgfv8WKWaV6XgRCnq5ozZ
-        N5XP0r+dePvIy9406iXJUSHcLx5u93phLiGXR78zyvP5wzRtjr7uE/OyZ2GNVKVevxu8nA
-        cddu4G+C0XxrGW0dgi2z6QfTLBqRBhI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-4ljUzWjkN4CmeKKcVUJFMw-1; Thu, 15 Apr 2021 15:46:53 -0400
-X-MC-Unique: 4ljUzWjkN4CmeKKcVUJFMw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3962501FE;
-        Thu, 15 Apr 2021 19:46:51 +0000 (UTC)
-Received: from crecklin.bos.com (unknown [10.10.115.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F26310074E1;
-        Thu, 15 Apr 2021 19:46:47 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     ebiggers@kernel.org, ardb@kernel.org, simo@redhat.com,
-        rafael@kernel.org, decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 1/1] use crc32 instead of md5 for hibernation e820 integrity check
-Date:   Thu, 15 Apr 2021 15:46:46 -0400
-Message-Id: <20210415194646.13387-1-crecklin@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S234994AbhDOTtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:49:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234735AbhDOTtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:49:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3EC060FF0;
+        Thu, 15 Apr 2021 19:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618516118;
+        bh=XFrfWw1wDB/JimT4e2JQs2CnouuoEnMmATfGQ4ibUJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YLPj4qRz+1LxZB4SuMFlmhCwXdqTB+PTtTbO36fH+orIpW7l0ch06e8v4auyjbczq
+         fG4PoN6Up7ndM41Pf0Vg43U3x+GGpJTZp1U4ZWZkl3oNuEccl5KkE6BookMl27y6ti
+         i7OfVV4HjuuE53+m0LdukMMtvYfs2365PCSmJpdyP/eELfsF0JAk8MvYEzcCavHDS0
+         wcv9npLXwf3SnewlI+db6EI6gH9zqkTyOPivPPAF5dAhDcJxCCe0rdcfD4S8hEoPOH
+         MDiSIK/Mjs4D1J0xUfOZ/vi2cUUa5GVKwrq4kV9c1LE87nPceyDZy/AxWERU71yAw+
+         FK4qstS1S6Nsw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C7AA540647; Thu, 15 Apr 2021 16:48:34 -0300 (-03)
+Date:   Thu, 15 Apr 2021 16:48:34 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [PATCH] libperf: xyarray: Add bounds checks to xyarray__entry()
+Message-ID: <YHiYkhBKWRYA6WRC@kernel.org>
+References: <20210414195758.4078803-1-robh@kernel.org>
+ <CAM9d7chWROPAg3T_gd+T6N+94pWawKtggyegCGo0nXzKF+F7+g@mail.gmail.com>
+ <CAL_JsqKuk53i0Lf=3sMOjieSNZo3Rqh+-Uhbd0n3qn=rpRKfLQ@mail.gmail.com>
+ <YHiYJp9nabvsCZ4O@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHiYJp9nabvsCZ4O@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hibernation fails on a system in fips mode because md5 is used for the e820
-integrity check and is not available. Use crc32 instead.
+Em Thu, Apr 15, 2021 at 04:46:46PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Apr 14, 2021 at 03:53:36PM -0500, Rob Herring escreveu:
+> > On Wed, Apr 14, 2021 at 3:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > On Thu, Apr 15, 2021 at 4:58 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > xyarray__entry() is missing any bounds checking yet often the x and y
+> > > > parameters come from external callers. Add bounds checks and an
+> > > > unchecked __xyarray__entry().
+> > > >
+> > > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > > > Cc: Mark Rutland <mark.rutland@arm.com>
+> > > > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > > > Cc: Jiri Olsa <jolsa@redhat.com>
+> > > > Cc: Namhyung Kim <namhyung@kernel.org>
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > > > ---
+> > > >  tools/lib/perf/include/internal/xyarray.h | 9 ++++++++-
+> > > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/lib/perf/include/internal/xyarray.h b/tools/lib/perf/include/internal/xyarray.h
+> > > > index 51e35d6c8ec4..f0896c00b494 100644
+> > > > --- a/tools/lib/perf/include/internal/xyarray.h
+> > > > +++ b/tools/lib/perf/include/internal/xyarray.h
+> > > > @@ -18,11 +18,18 @@ struct xyarray *xyarray__new(int xlen, int ylen, size_t entry_size);
+> > > >  void xyarray__delete(struct xyarray *xy);
+> > > >  void xyarray__reset(struct xyarray *xy);
+> > > >
+> > > > -static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
+> > > > +static inline void *__xyarray__entry(struct xyarray *xy, int x, int y)
+> > > >  {
+> > > >         return &xy->contents[x * xy->row_size + y * xy->entry_size];
+> > > >  }
+> > > >
+> > > > +static inline void *xyarray__entry(struct xyarray *xy, int x, int y)
+> > > > +{
+> > > > +       if (x >= xy->max_x || y >= xy->max_y)
+> > > > +               return NULL;
+> > >
+> > > Maybe better to check negatives as well.
+> > 
+> > max_x and max_y are size_t and unsigned, so x and y will be promoted
+> > to unsigned and the check will still work.
+> 
+> Fair enough, applied.
 
-This patch changes the integrity check algorithm from md5 to crc32.
+So...:
 
-The check is intended to detect whether the E820 memory map provided
-by the firmware after cold boot unexpectedly differs from the one that
-was in use when the hibernation image was created. In this case, the
-hibernation image cannot be restored, as it may cover memory regions
-that are no longer available to the OS.
+  CC       /tmp/build/perf/builtin-script.o
+In file included from xyarray.c:2:
+/home/acme/git/perf/tools/lib/perf/include/internal/xyarray.h: In function ‘xyarray__entry’:
+/home/acme/git/perf/tools/lib/perf/include/internal/xyarray.h:28:8: error: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Werror=sign-compare]
+   28 |  if (x >= xy->max_x || y >= xy->max_y)
+      |        ^~
+/home/acme/git/perf/tools/lib/perf/include/internal/xyarray.h:28:26: error: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Werror=sign-compare]
+   28 |  if (x >= xy->max_x || y >= xy->max_y)
+      |                          ^~
+cc1: all warnings being treated as errors
 
-A non-cryptographic checksum such as CRC-32 is sufficient to detect such
-inadvertent deviations.
 
-Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
-       by md5 digest")
+Fedora 33's gcc complains, so I'll cast it to size_t.
 
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
----
-v1 -> v2
-   bump up RESTORE_MAGIC
-v2 -> v3
-   move embelishment from cover letter to commit comments (no code change)
-v3 -> v4
-   add note to comments that md5 isn't used for encryption here.
-v4 -> v5
-   reword comment per Simo's suggestion
-v5 -> v6
-   use wording from Eric Biggers, use crc32_le instead of crc32 from crypto
-	framework (crc32_le is in the core API and removes need for #defines)
-v6 -> v7
-   reword with input from Eric/Ard/Simo, code changed per Eric's feedback
-v7 -> v8
-   More feedback per Eric -
-   change 'Suspend' to 'Hibernation' in commit comments, rename e820_digest to
-   e820_checksum and change it to an unsigned long. rename get_e820_md5 to
-   compute_e820_crc32 and have it return the checksum value instead of writing
-   it into a user supplied buffer, get rid of hibernation_e820_save in favor of
-   calling compute_e820_crc32 directly, likewise, get rid of
-   hibernation_e820_mismatch in favor of comparing e820_checksum to the return
-   value of compute_e820_crc32()
+- Arnaldo
+ 
+>  
+> > It's probably better to change the args to size_t though. And perhaps
+> > on xyarray__new(), xyarray__max_y(), and xyarray__max_x() as well.
 
- arch/x86/power/hibernate.c | 87 ++++++--------------------------------
- 1 file changed, 12 insertions(+), 75 deletions(-)
-
-diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-index cd3914fc9f3d..b358acdc66f4 100644
---- a/arch/x86/power/hibernate.c
-+++ b/arch/x86/power/hibernate.c
-@@ -13,8 +13,8 @@
- #include <linux/kdebug.h>
- #include <linux/cpu.h>
- #include <linux/pgtable.h>
--
--#include <crypto/hash.h>
-+#include <linux/types.h>
-+#include <linux/crc32.h>
- 
- #include <asm/e820/api.h>
- #include <asm/init.h>
-@@ -54,95 +54,31 @@ int pfn_is_nosave(unsigned long pfn)
- 	return pfn >= nosave_begin_pfn && pfn < nosave_end_pfn;
- }
- 
--
--#define MD5_DIGEST_SIZE 16
--
- struct restore_data_record {
- 	unsigned long jump_address;
- 	unsigned long jump_address_phys;
- 	unsigned long cr3;
- 	unsigned long magic;
--	u8 e820_digest[MD5_DIGEST_SIZE];
-+	unsigned long e820_checksum;
- };
- 
--#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
- /**
-- * get_e820_md5 - calculate md5 according to given e820 table
-+ * compute_e820_crc32 - calculate md5 according to given e820 table
-  *
-  * @table: the e820 table to be calculated
-- * @buf: the md5 result to be stored to
-  */
--static int get_e820_md5(struct e820_table *table, void *buf)
-+static inline u32 compute_e820_crc32(struct e820_table *table)
- {
--	struct crypto_shash *tfm;
--	struct shash_desc *desc;
--	int size;
--	int ret = 0;
--
--	tfm = crypto_alloc_shash("md5", 0, 0);
--	if (IS_ERR(tfm))
--		return -ENOMEM;
--
--	desc = kmalloc(sizeof(struct shash_desc) + crypto_shash_descsize(tfm),
--		       GFP_KERNEL);
--	if (!desc) {
--		ret = -ENOMEM;
--		goto free_tfm;
--	}
--
--	desc->tfm = tfm;
--
--	size = offsetof(struct e820_table, entries) +
-+	int size = offsetof(struct e820_table, entries) +
- 		sizeof(struct e820_entry) * table->nr_entries;
- 
--	if (crypto_shash_digest(desc, (u8 *)table, size, buf))
--		ret = -EINVAL;
--
--	kfree_sensitive(desc);
--
--free_tfm:
--	crypto_free_shash(tfm);
--	return ret;
--}
--
--static int hibernation_e820_save(void *buf)
--{
--	return get_e820_md5(e820_table_firmware, buf);
-+	return ~crc32_le(~0, (unsigned char const *)table, size);
- }
- 
--static bool hibernation_e820_mismatch(void *buf)
--{
--	int ret;
--	u8 result[MD5_DIGEST_SIZE];
--
--	memset(result, 0, MD5_DIGEST_SIZE);
--	/* If there is no digest in suspend kernel, let it go. */
--	if (!memcmp(result, buf, MD5_DIGEST_SIZE))
--		return false;
--
--	ret = get_e820_md5(e820_table_firmware, result);
--	if (ret)
--		return true;
--
--	return memcmp(result, buf, MD5_DIGEST_SIZE) ? true : false;
--}
--#else
--static int hibernation_e820_save(void *buf)
--{
--	return 0;
--}
--
--static bool hibernation_e820_mismatch(void *buf)
--{
--	/* If md5 is not builtin for restore kernel, let it go. */
--	return false;
--}
--#endif
--
- #ifdef CONFIG_X86_64
--#define RESTORE_MAGIC	0x23456789ABCDEF01UL
-+#define RESTORE_MAGIC	0x23456789ABCDEF02UL
- #else
--#define RESTORE_MAGIC	0x12345678UL
-+#define RESTORE_MAGIC	0x12345679UL
- #endif
- 
- /**
-@@ -179,7 +115,8 @@ int arch_hibernation_header_save(void *addr, unsigned int max_size)
- 	 */
- 	rdr->cr3 = restore_cr3 & ~CR3_PCID_MASK;
- 
--	return hibernation_e820_save(rdr->e820_digest);
-+	rdr->e820_checksum = compute_e820_crc32(e820_table_firmware);
-+	return 0;
- }
- 
- /**
-@@ -200,7 +137,7 @@ int arch_hibernation_header_restore(void *addr)
- 	jump_address_phys = rdr->jump_address_phys;
- 	restore_cr3 = rdr->cr3;
- 
--	if (hibernation_e820_mismatch(rdr->e820_digest)) {
-+	if (rdr->e820_checksum != compute_e820_crc32(e820_table_firmware)) {
- 		pr_crit("Hibernate inconsistent memory map detected!\n");
- 		return -ENODEV;
- 	}
 -- 
-2.18.1
 
+- Arnaldo
