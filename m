@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AC73607A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296E33607A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhDOKv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:51:57 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:49604 "EHLO
+        id S232721AbhDOKwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:52:02 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:54871 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhDOKvw (ORCPT
+        with ESMTP id S232683AbhDOKv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:51:52 -0400
+        Thu, 15 Apr 2021 06:51:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618483890; x=1650019890;
+  t=1618483895; x=1650019895;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NVdLR/4vBiZXHdxKzbg48TM13jojIDCbZRf2vOwtXD0=;
-  b=mm+8iuYMZfVslhQH14ih8TR8jvInuPnK5YUiNOd7aVd8IKCkCuJbyUkA
-   qswmZ8fYHVAXjKm+hk5Xt1/IsIn3XAX6dpOogj88dIPK/NZiRkML5Hw9c
-   TOKA64MkcBZtBt/rGiXdQHjYw7uQ4dSK+vENOwUTwjP6FCGuqwPdnQaf5
-   HV4JUwknhbGKNeP/OwK4g7MKW5Iqdnmam0eCKOhDL3l7IB8QCkJ2FFX4P
-   PlLA8bVD1thTgmIJV/yqhiLe1WTLrdTFW8jDCx9K7IbqFrfrdlQ3SnMug
-   3etwpmTZFsUjZ272QMIPpbFyPw7xrx3mMUJ5UuLbgoQqb0FR5NCIFIhEy
-   w==;
-IronPort-SDR: soura4eL2MGDRs/nN7aO2upcnUabgjr4BGBuWD8tWVJ2fENdC+jlxSo7dLIpKKle8N9SmsPQl3
- rq93Cl2mvOjD5Bpe5GEz3ZXxLDMUoqFkPH6HBn5NCqWRbemtOeIm39750Q6uYeBY3sQeyqTz5d
- P07BW459zZisHxPTixVndSWpuL5WS6nEjGn8w+DsU1KEWe4JVoSVs0AGRubta2v41pdYe9y9sR
- F5IwKpdJ0SF+Wp5tX2y95J2jglruGkpjnvlEuwrLQRsntqr85A2NV13uov/0UpNabxpNWavWDJ
- rCc=
+  bh=1EIwoE6xdH41w/s2cb732B6ELAnBKKbdQvfImNvzlTc=;
+  b=fRrOW9q2E54fkc6+8jg9FPvoqLwi18uOlCUNvGqkHtJC9yN6/g2lV47T
+   TOWKryIbQpU0psTnJQDYtthOhbDdRyGpi5h3f7EqePMmr/8NQUw/UIMjy
+   IYWF7lCcdzmPVF7MfzItze1ZIBMgK5KNsOotbvOnT9PsNDw8K+431C8Dl
+   FKPGWyq1IG9jU5Gy9h4q1ajEmvS1kw+Rb4wiwkFYq9wKoBt4u9AKrBXkD
+   OEUB/98zQWOFsJW6MHYg4qPK9DP1ajgyCEOST2RGexygsodE7vvjgCC/N
+   7oTqBvsy2+oIfyqbiswcYiRnga3aMjThNm7UitYSdNmPNNy+e+eo2q/sF
+   Q==;
+IronPort-SDR: 8hvAmonbxngAppkIxpXUjf7c9o03hkBwCky0yLHsMq0mZdOufb9IsYGvnH1IZQnn2me1FqRmd+
+ cXbtjAsee6xLR/G2MxbiFr8FPRCwpxWfk/3UoNJfotOJr5sjst6Fj/mlo4TmcX2tMfNxkLTZbG
+ qPRGnIaHXUstwyCiCx+kM22rGPavAHcK8VY2J0+K32Pu/yfxruLACBUnXTNrYFbrRwqjgpgJA8
+ c//1cwyokvc+ioJzWICI+WXFrqBmPrXn+PHLZWcRzPA5m5e8odULxA9XSR2dwclAY1dmkEUoz0
+ tFk=
 X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
-   d="scan'208";a="116551622"
+   d="scan'208";a="113688325"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:51:30 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:51:35 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Apr 2021 03:51:26 -0700
+ 15.1.2176.2; Thu, 15 Apr 2021 03:51:30 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:51:24 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:51:27 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 10/24] ARM: at91: sfrbu: add sfrbu registers definitions for sama7g5
-Date:   Thu, 15 Apr 2021 13:49:56 +0300
-Message-ID: <20210415105010.569620-11-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 11/24] ARM: at91: ddr: add registers definitions for sama7g5's ddr
+Date:   Thu, 15 Apr 2021 13:49:57 +0300
+Message-ID: <20210415105010.569620-12-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210415105010.569620-1-claudiu.beznea@microchip.com>
 References: <20210415105010.569620-1-claudiu.beznea@microchip.com>
@@ -61,54 +61,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SFRBU registers definitions for SAMA7G5.
+Add registers and bits definitions for SAMA7G5's UDDRC and DDR3PHY.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- include/soc/at91/sama7-sfrbu.h | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
- create mode 100644 include/soc/at91/sama7-sfrbu.h
+ include/soc/at91/sama7-ddr.h | 80 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 include/soc/at91/sama7-ddr.h
 
-diff --git a/include/soc/at91/sama7-sfrbu.h b/include/soc/at91/sama7-sfrbu.h
+diff --git a/include/soc/at91/sama7-ddr.h b/include/soc/at91/sama7-ddr.h
 new file mode 100644
-index 000000000000..76b740810d34
+index 000000000000..f6542584ca13
 --- /dev/null
-+++ b/include/soc/at91/sama7-sfrbu.h
-@@ -0,0 +1,34 @@
++++ b/include/soc/at91/sama7-ddr.h
+@@ -0,0 +1,80 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Microchip SAMA7 SFRBU registers offsets and bit definitions.
++ * Microchip SAMA7 UDDR Controller and DDR3 PHY Controller registers offsets
++ * and bit definitions.
 + *
 + * Copyright (C) [2020] Microchip Technology Inc. and its subsidiaries
 + *
 + * Author: Claudu Beznea <claudiu.beznea@microchip.com>
 + */
 +
-+#ifndef __SAMA7_SFRBU_H__
-+#define __SAMA7_SFRBU_H__
++#ifndef __SAMA7_DDR_H__
++#define __SAMA7_DDR_H__
 +
 +#ifdef CONFIG_SOC_SAMA7
 +
-+#define AT91_SFRBU_PSWBU			(0x00)		/* SFRBU Power Switch BU Control Register */
-+#define		AT91_SFRBU_PSWBU_PSWKEY		(0x4BD20C << 8)	/* Specific value mandatory to allow writing of other register bits */
-+#define		AT91_SFRBU_PSWBU_STATE		(1 << 2)	/* Power switch BU state */
-+#define		AT91_SFRBU_PSWBU_SOFTSWITCH	(1 << 1)	/* Power switch BU source selection */
-+#define		AT91_SFRBU_PSWBU_CTRL		(1 << 0)	/* Power switch BU control */
++/* DDR3PHY */
++#define DDR3PHY_PIR				(0x04)		/* DDR3PHY PHY Initialization Register	*/
++#define	DDR3PHY_PIR_DLLBYP		(1 << 17)	/* DLL Bypass */
++#define		DDR3PHY_PIR_ITMSRST		(1 << 4)	/* Interface Timing Module Soft Reset */
++#define	DDR3PHY_PIR_DLLLOCK		(1 << 2)	/* DLL Lock */
++#define		DDR3PHY_PIR_DLLSRST		(1 << 1)	/* DLL Soft Rest */
++#define	DDR3PHY_PIR_INIT		(1 << 0)	/* Initialization Trigger */
 +
-+#define AT91_SFRBU_25LDOCR			(0x0C)		/* SFRBU 2.5V LDO Control Register */
-+#define		AT91_SFRBU_25LDOCR_LDOANAKEY	(0x3B6E18 << 8)	/* Specific value mandatory to allow writing of other register bits. */
-+#define		AT91_SFRBU_25LDOCR_STATE	(1 << 3)	/* LDOANA Switch On/Off Control */
-+#define		AT91_SFRBU_25LDOCR_LP		(1 << 2)	/* LDOANA Low-Power Mode Control */
-+#define		AT91_SFRBU_PD_VALUE_MSK		(0x3)
-+#define		AT91_SFRBU_25LDOCR_PD_VALUE(v)	((v) & AT91_SFRBU_PD_VALUE_MSK)	/* LDOANA Pull-down value */
++#define DDR3PHY_PGCR				(0x08)		/* DDR3PHY PHY General Configuration Register */
++#define		DDR3PHY_PGCR_CKDV1		(1 << 13)	/* CK# Disable Value */
++#define		DDR3PHY_PGCR_CKDV0		(1 << 12)	/* CK Disable Value */
 +
-+#define AT91_FRBU_DDRPWR			(0x10)		/* SFRBU DDR Power Control Register */
-+#define		AT91_FRBU_DDRPWR_STATE		(1 << 0)	/* DDR Power Mode State */
++#define	DDR3PHY_PGSR				(0x0C)		/* DDR3PHY PHY General Status Register */
++#define		DDR3PHY_PGSR_IDONE		(1 << 0)	/* Initialization Done */
++
++#define DDR3PHY_ACIOCR				(0x24)		/*  DDR3PHY AC I/O Configuration Register */
++#define		DDR3PHY_ACIOCR_CSPDD_CS0	(1 << 18)	/* CS#[0] Power Down Driver */
++#define		DDR3PHY_ACIOCR_CKPDD_CK0	(1 << 8)	/* CK[0] Power Down Driver */
++#define		DDR3PHY_ACIORC_ACPDD		(1 << 3)	/* AC Power Down Driver */
++
++#define DDR3PHY_DXCCR				(0x28)		/* DDR3PHY DATX8 Common Configuration Register */
++#define		DDR3PHY_DXCCR_DXPDR		(1 << 3)	/* Data Power Down Receiver */
++
++#define DDR3PHY_DSGCR				(0x2C)		/* DDR3PHY DDR System General Configuration Register */
++#define		DDR3PHY_DSGCR_ODTPDD_ODT0	(1 << 20)	/* ODT[0] Power Down Driver */
++
++#define DDR3PHY_ZQ0SR0				(0x188)		/* ZQ status register 0 */
++
++/* UDDRC */
++#define UDDRC_STAT				(0x04)		/* UDDRC Operating Mode Status Register */
++#define		UDDRC_STAT_SELFREF_TYPE_DIS	(0x0 << 4)	/* SDRAM is not in Self-refresh */
++#define		UDDRC_STAT_SELFREF_TYPE_PHY	(0x1 << 4)	/* SDRAM is in Self-refresh, which was caused by PHY Master Request */
++#define		UDDRC_STAT_SELFREF_TYPE_SW	(0x2 << 4)	/* SDRAM is in Self-refresh, which was not caused solely under Automatic Self-refresh control */
++#define		UDDRC_STAT_SELFREF_TYPE_AUTO	(0x3 << 4)	/* SDRAM is in Self-refresh, which was caused by Automatic Self-refresh only */
++#define		UDDRC_STAT_SELFREF_TYPE_MSK	(0x3 << 4)	/* Self-refresh type mask */
++#define		UDDRC_STAT_OPMODE_INIT		(0x0 << 0)	/* Init */
++#define		UDDRC_STAT_OPMODE_NORMAL	(0x1 << 0)	/* Normal */
++#define		UDDRC_STAT_OPMODE_PWRDOWN	(0x2 << 0)	/* Power-down */
++#define		UDDRC_STAT_OPMODE_SELF_REFRESH	(0x3 << 0)	/* Self-refresh */
++#define		UDDRC_STAT_OPMODE_MSK		(0x7 << 0)	/* Operating mode mask */
++
++#define UDDRC_PWRCTL				(0x30)		/* UDDRC Low Power Control Register */
++#define		UDDRC_PWRCTRL_SELFREF_SW	(1 << 5)	/* Software self-refresh */
++
++#define UDDRC_DFIMISC				(0x1B0)		/* UDDRC DFI Miscellaneous Control Register */
++#define		UDDRC_DFIMISC_DFI_INIT_COMPLETE_EN (1 << 0)	/* PHY initialization complete enable signal */
++
++#define UDDRC_SWCTRL				(0x320)		/* UDDRC Software Register Programming Control Enable */
++#define		UDDRC_SWCTRL_SW_DONE		(1 << 0)	/* Enable quasi-dynamic register programming outside reset */
++
++#define UDDRC_SWSTAT				(0x324)		/* UDDRC Software Register Programming Control Status */
++#define		UDDRC_SWSTAT_SW_DONE_ACK	(1 << 0)	/* Register programming done */
++
++#define UDDRC_PSTAT				(0x3FC)		/* UDDRC Port Status Register */
++#define	UDDRC_PSTAT_ALL_PORTS		(0x1F001F)	/* Read + writes outstanding transactions on all ports */
++
++#define UDDRC_PCTRL_0				(0x490)		/* UDDRC Port 0 Control Register */
++#define UDDRC_PCTRL_1				(0x540)		/* UDDRC Port 1 Control Register */
++#define UDDRC_PCTRL_2				(0x5F0)		/* UDDRC Port 2 Control Register */
++#define UDDRC_PCTRL_3				(0x6A0)		/* UDDRC Port 3 Control Register */
++#define UDDRC_PCTRL_4				(0x750)		/* UDDRC Port 4 Control Register */
 +
 +#endif /* CONFIG_SOC_SAMA7 */
 +
-+#endif /* __SAMA7_SFRBU_H__ */
-+
++#endif /* __SAMA7_DDR_H__ */
 -- 
 2.25.1
 
