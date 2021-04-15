@@ -2,157 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F40361360
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CC3361362
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbhDOUTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235169AbhDOUTj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:19:39 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8B0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:19:15 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id x11so26567094qkp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hD3bQIY2ucYvZVOUSWo6vopC1VOcxVsnFm0zvmFOg+E=;
-        b=ncE49eeSu4d9JPAV9lE+/q2xl8LS+vgcjxBrrC1YbpgbOEdDASvGHJSbLbPwFvkpVd
-         G3FDAN50vmifSNPyI/+iFoCnMeJuHzWS9JePPFYvKAncH1z/O1/khvTw2ESGPrEVx/EX
-         Ml8HScotQVh5QAaoX1NaKvt/TdkCYlK/uKcva06UWtHgDWwstlIDYXclXcrPiUbL9QJ2
-         fu7+7zlr+hxzXe6hq6LC5vTCg9H5b/3dHncRSN9i7CBH2gZXaewKzpSS0g3SYZCvvlBh
-         uDp0AeuH+jAUDLoCanhLTeoi4x8WzLnDdkSU3xfu41oXZPBPNF+wWndl1QWgWuiaCEeO
-         9jAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hD3bQIY2ucYvZVOUSWo6vopC1VOcxVsnFm0zvmFOg+E=;
-        b=ll7OG/fLiYRokEeAVRPtpi9LhdcK5qFszJPz1KhqBWtqP4zfN5ejaA7OBGIxkIvbcG
-         cODdLOC1M7Zog5zGvbiucli/ZuKkO3Xi/lgAaE0ITATlhW9aWPAjaGZnOnznNj0BkkIS
-         bh6rgtSFFRNfB9jK/mdbS98lwmVMSVAUQLEgfGI9+bXS2pOeAScHuZWuha1+DwhVZxdh
-         1yJR+w1FEWzAufLH94HypBUMrABjIGcKgt8owRxZoRikj/BJGXc6Njk7apEsT1MFMGna
-         HoCmdqJS48G7GIjK5ceB6I0n8NWB1g4tkxeNse0/VMUN811XVZjPPkkFnWkyENHMVCqh
-         Dw3Q==
-X-Gm-Message-State: AOAM532C+2Zu3l1TOYpvX4uPS/1sW84qY6Pyh356rOs8cq6JDPYDRorP
-        DhpiwEyEamFJuXESgpr0pngjBQ==
-X-Google-Smtp-Source: ABdhPJwiAzFTxTZfDxhRJ5CRFM83AZJ2htjjGF5NKjElSvaAczmJIdn1NVBKiJ0Z9fZC15Vk+NMDpw==
-X-Received: by 2002:a37:9604:: with SMTP id y4mr5219490qkd.345.1618517954908;
-        Thu, 15 Apr 2021 13:19:14 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id l16sm2814015qke.117.2021.04.15.13.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 13:19:14 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 16:19:13 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 2/5] mm/memcg: Introduce
- obj_cgroup_uncharge_mod_state()
-Message-ID: <YHifwQ+Rjdnghgm7@cmpxchg.org>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-3-longman@redhat.com>
- <YHhqPYcajI9JgXk/@cmpxchg.org>
- <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
- <YHiBlhUWoCKqQgM7@cmpxchg.org>
- <8a104fd5-64c7-3f41-981c-9cfa977c78a6@redhat.com>
- <YHiWmsQVQPGSm2El@cmpxchg.org>
- <cba964b6-d2b6-9a74-f556-e2733b65dd81@redhat.com>
+        id S235347AbhDOUUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235326AbhDOUUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:20:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3AF6101C;
+        Thu, 15 Apr 2021 20:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618517978;
+        bh=yAbWbMoOThDBMD78Afb1Hhb0xzAEM3MhGqdKoiAqF9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASGiOXybLGBN9jky71hzUL63CN23ZTbqiyqPyd7trogRfIBbUJ94NZUfXaGzL3qao
+         M22ns77dO0DGQjlD4aSJrUDrnJRA5gvGnMlQAXV88TLRUB7QaKqK3LQohhS1AZgQZK
+         TWIeT3cURYQ1AebYCwegPMUw8vj7eH/Ag1EDVr6i4/rXjU+GQVZuDRvvn0YBeZcuMI
+         f0h/1rH+4I3rzaTYoIjy79kIkyVe/908IujhGGDfKmY/Ur32F0bMv22FpyLV86oE39
+         VZwEhKAfDER1L+AMqUA4MOxzFOn0W4HaAn8i/Yt7VA9LIqdqHLxEUQZJoAELU6qsna
+         WzbspCNRt7GqQ==
+Date:   Thu, 15 Apr 2021 22:19:26 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix 'assignment to __be16' warning
+Message-ID: <20210415201926.GE2360@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210412115302.95686-1-bence98@sch.bme.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EgVrEAR5UttbsTXg"
 Content-Disposition: inline
-In-Reply-To: <cba964b6-d2b6-9a74-f556-e2733b65dd81@redhat.com>
+In-Reply-To: <20210412115302.95686-1-bence98@sch.bme.hu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:44:56PM -0400, Waiman Long wrote:
-> On 4/15/21 3:40 PM, Johannes Weiner wrote:
-> > On Thu, Apr 15, 2021 at 02:47:31PM -0400, Waiman Long wrote:
-> > > On 4/15/21 2:10 PM, Johannes Weiner wrote:
-> > > > On Thu, Apr 15, 2021 at 12:35:45PM -0400, Waiman Long wrote:
-> > > > > On 4/15/21 12:30 PM, Johannes Weiner wrote:
-> > > > > > On Tue, Apr 13, 2021 at 09:20:24PM -0400, Waiman Long wrote:
-> > > > > > > In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
-> > > > > > > is followed by mod_objcg_state()/mod_memcg_state(). Each of these
-> > > > > > > function call goes through a separate irq_save/irq_restore cycle. That
-> > > > > > > is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
-> > > > > > > that combines them with a single irq_save/irq_restore cycle.
-> > > > > > > 
-> > > > > > > @@ -3292,6 +3296,25 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
-> > > > > > >     	refill_obj_stock(objcg, size);
-> > > > > > >     }
-> > > > > > > +void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
-> > > > > > > +				   struct pglist_data *pgdat, int idx)
-> > > > > > The optimization makes sense.
-> > > > > > 
-> > > > > > But please don't combine independent operations like this into a
-> > > > > > single function. It makes for an unclear parameter list, it's a pain
-> > > > > > in the behind to change the constituent operations later on, and it
-> > > > > > has a habit of attracting more random bools over time. E.g. what if
-> > > > > > the caller already has irqs disabled? What if it KNOWS that irqs are
-> > > > > > enabled and it could use local_irq_disable() instead of save?
-> > > > > > 
-> > > > > > Just provide an __obj_cgroup_uncharge() that assumes irqs are
-> > > > > > disabled, combine with the existing __mod_memcg_lruvec_state(), and
-> > > > > > bubble the irq handling up to those callsites which know better.
-> > > > > > 
-> > > > > That will also work. However, the reason I did that was because of patch 5
-> > > > > in the series. I could put the get_obj_stock() and put_obj_stock() code in
-> > > > > slab.h and allowed them to be used directly in various places, but hiding in
-> > > > > one function is easier.
-> > > > Yeah it's more obvious after getting to patch 5.
-> > > > 
-> > > > But with the irq disabling gone entirely, is there still an incentive
-> > > > to combine the atomic section at all? Disabling preemption is pretty
-> > > > cheap, so it wouldn't matter to just do it twice.
-> > > > 
-> > > > I.e. couldn't the final sequence in slab code simply be
-> > > > 
-> > > > 	objcg_uncharge()
-> > > > 	mod_objcg_state()
-> > > > 
-> > > > again and each function disables preemption (and in the rare case
-> > > > irqs) as it sees fit?
-> > > > 
-> > > > You lose the irqsoff batching in the cold path, but as you say, hit
-> > > > rates are pretty good, and it doesn't seem worth complicating the code
-> > > > for the cold path.
-> > > > 
-> > > That does make sense, though a little bit of performance may be lost. I will
-> > > try that out to see how it work out performance wise.
-> > Thanks.
-> > 
-> > Even if we still end up doing it, it's great to have that cost
-> > isolated, so we know how much extra code complexity corresponds to how
-> > much performance gain. It seems the task/irq split could otherwise be
-> > a pretty localized change with no API implications.
-> > 
-> I still want to move mod_objcg_state() function to memcontrol.c though as I
-> don't want to put any obj_stock stuff in mm/slab.h.
 
-No objection from me!
+--EgVrEAR5UttbsTXg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That's actually a nice cleanup, IMO. Not sure why it was separated
-from the rest of the objcg interface implementation to begin with.
+Hi Bence,
+
+On Mon, Apr 12, 2021 at 11:53:02AM +0000, Bence Cs=C3=B3k=C3=A1s wrote:
+> While the preamble field _is_ technically big-endian, its value is always=
+ 0x2A2A,
+> which is the same in either endianness, therefore it should be u16 instea=
+d.
+
+Why should it be u16? I don't see it.
+
+I thought the fix would be to add the suffix 'U' to 0x2A2A when it is
+assigned to preamble?
+
+Also, please use "i2c: cp2615: <patch header>" in the $subject
+
+Happy hacking,
+
+   Wolfram
+
+
+--EgVrEAR5UttbsTXg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB4n80ACgkQFA3kzBSg
+KbaIyw//QJqkdQCzK2VDX58T2MDqDK7YvdjmX1PpBnj4ioPj9LVkr4ewykmliTRS
+m+CkGtxNplY3jila/8m4GDmqepAfZKRTGkS2rh2ndYKIJ8IYDlPhMEtDGoQeF2Ya
+1GMVo++AMcdxMZ6FuXXT55YDqZsknpZnFXUhDRzorexfhqL4rjA9tmXu69bC9Vzb
+mtlY+Ge6gNyL0PFupPUm0s6vZtfQ5GYo6rv3VMHk9SG0GBMLdeL+3BrGZWILDOIs
+LOhFeqCFz6UMGoFW28qj3lERRVZ63p3+1qnqZ5opU591oDoGcvFqKjormGSuimd2
+5TnCMXr9iLa3J7JJRfg763OAzkC2oWuzLO+IPkl60UVprzkenbkpxUGE/qwqpmwp
+aLzyngu5t77NJK7SMg4e0XkcRVheB76Yn5GroxEAF8UaVchFdaT6xhaQ7EqMPXVP
+AYUyGZ9GMZNvcWJxcsZpwqcCe/3/VB1XXvuNBh/UIo1iqk8ZtLAWvVDhWqGv8ge0
+mti9N79lDbkYI0Cgij/jtmyUGIjCUghWKgY7mr73L9R/AFdNibuP1wnpGc3zZ4W2
+1u5mNerAxtRbesbAC/hqjLQSan47/oEqAP464V1xD83UbKpnUk7H4TBpxcWpxYlf
+1JMAL5NJbetQMs6jTUA3Zl2hXO/a0KokHVEHxShHIkhv/IuJEbk=
+=WjyG
+-----END PGP SIGNATURE-----
+
+--EgVrEAR5UttbsTXg--
