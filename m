@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C18E360F64
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4FB360F67
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhDOPvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbhDOPvC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:51:02 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB20DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:50:37 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id y2so24562002ybq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYilzRCKDkKUdgOhlVcbbYfdjO7wy5E8rO0x4orHhLA=;
-        b=bEB5pWOw1ZAIEUWzcKl3t4shqwnwqh/rbFNGxWSeVrpats5bWqew/AS8LFT3tNurTV
-         6jHs1OBTFCnbQptuEUluJxyy6jAFZreNCZ796HPkZZYWF6zjuAyNvU2xP5WXSfIi1imN
-         G+PtFPreT1JLKhpb7n6HpLTFMLjYeOPmAMWVO1Pv97TF2Moj4YGx33apF8aDGkiKCoD+
-         lXHJ7DSWzFfkexGt3fEy8QmKmedF0GDdt2t+0ny6YZd63u90gt9NRSp4x5XC+6s4e1ZI
-         LWELvd2kjcDBuqEzGn/Ch5dq7WFZ4+Zi5qQV3D0vmU9Dj2Kly+zHrBoVkTZwmo67/CFU
-         Zrvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fYilzRCKDkKUdgOhlVcbbYfdjO7wy5E8rO0x4orHhLA=;
-        b=F5uZYj1QduY8MUaVufheoa7DuKNlYU9o5z6hBZJBI58j5QZWy8IbxOdWzT0jBYbEGv
-         0bGXlJ1Nr9DTsnuR9RnFqVV2aLxaBIeEpSAXZnqGztgG6nDdqqSZhJ6TkWkZ2YuL4s9T
-         4TQVl+3LUQHbFO36fOQ8VwHxlrK4bkI+3VrdKoKrizpgbh/niUg82r0C3aVdh5NI0Kqn
-         6UQgd+Qz4zWgPzjBalTuq6uD/pwwwZJjwb6xvm8qlqnihi87aws4DPUUhd6S2Prv1pjE
-         Al+thBo4aQk+OySEPI9d+64zYtfIYzhLc733Rebq/BkqvMnuqk78jVXiBbeEc+L3eo0i
-         HVcg==
-X-Gm-Message-State: AOAM531Kbjng4qt2g/QI/fscyYNo8EzXi7O3qfQlTkHSIG7+J22cOPsx
-        6adEo+lNyuSlSTSQAkTzQXHb/2KJsKCoA6eLi1IWTA==
-X-Google-Smtp-Source: ABdhPJzIjnUNpPqqfntRP4pP+GuW6qH1+7UUP1qwaDpRmrDTkNySxQxbfSOI1ocgfp4UGS5eD86r8SdSA8roqJ5pIdM=
-X-Received: by 2002:a5b:54a:: with SMTP id r10mr5087018ybp.476.1618501836920;
- Thu, 15 Apr 2021 08:50:36 -0700 (PDT)
+        id S233816AbhDOPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:51:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:36388 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233052AbhDOPvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:51:09 -0400
+IronPort-SDR: qfDxdRRWlHEDuZKMHpVifT1jRu0JvRBWnpG6UoM3sMD7KgBsF7QpNDbGJdoddn4NNgKzWlfWjh
+ ktZ5VgtA7MxA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="280192772"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="280192772"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 08:50:43 -0700
+IronPort-SDR: lhluqeXrSSgzmFMmrkJm9YGQF6Ah1BYE/QTlAHpmuvIDMXRnpQoJV872zukMofZbYqmeIddV2D
+ 7MvpaAqiXWDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="384053803"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga006.jf.intel.com with SMTP; 15 Apr 2021 08:50:38 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 15 Apr 2021 18:50:37 +0300
+Date:   Thu, 15 Apr 2021 18:50:37 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jon Bloomfield <jon.bloomfield@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/i915: Fix "mitigations" parsing if i915 is builtin
+Message-ID: <YHhgzVkSDDkm95FJ@intel.com>
+References: <20210414140643.620c3adb@xhacker.debian>
 MIME-Version: 1.0
-References: <20210414000803.662534-1-nathan@kernel.org> <20210415091743.GB1015@arm.com>
- <YHg+5RSG4XPLlZD8@archlinux-ax161> <20210415140224.GE1015@arm.com>
-In-Reply-To: <20210415140224.GE1015@arm.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 15 Apr 2021 08:50:25 -0700
-Message-ID: <CABCJKufDUgPSRQi1ZQRk=upNtziKDJ8rTBHgq2oQpPWS=utrvg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: alternatives: Move length validation in alternative_{insn,endif}
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414140643.620c3adb@xhacker.debian>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 7:02 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Thu, Apr 15, 2021 at 06:25:57AM -0700, Nathan Chancellor wrote:
-> > On Thu, Apr 15, 2021 at 10:17:43AM +0100, Catalin Marinas wrote:
-> > > On Tue, Apr 13, 2021 at 05:08:04PM -0700, Nathan Chancellor wrote:
-> > > > After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-> > > > set atomically"), LLVM's integrated assembler fails to build entry.S:
-> > > >
-> > > > <instantiation>:5:7: error: expected assembly-time absolute expression
-> > > >  .org . - (664b-663b) + (662b-661b)
-> > > >       ^
-> > > > <instantiation>:6:7: error: expected assembly-time absolute expression
-> > > >  .org . - (662b-661b) + (664b-663b)
-> > > >       ^
-> > >
-> > > I tried the latest Linus' tree and linux-next (defconfig) with this
-> > > commit in and I can't get your build error. I used both clang-10 from
-> > > Debian stable and clang-11 from Debian sid. So, which clang version did
-> > > you use or which kernel config options?
-> >
-> > Interesting, this reproduces for me with LLVM 12 or newer with just
-> > defconfig.
->
-> It fails for me as well with clang-12. Do you happen to know why it
-> works fine with previous clang versions?
+On Wed, Apr 14, 2021 at 02:06:43PM +0800, Jisheng Zhang wrote:
+> I met below error during boot with i915 builtin if pass
+> "i915.mitigations=off":
+> [    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
+> 
+> The reason is slab subsystem isn't ready at that time, so kstrdup()
+> returns NULL. Fix this issue by using stack var instead of kstrdup().
+> 
+> Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+> Since v1:
+>  - Ensure "str" is properly terminated. Thanks Ville for pointing this out.
+> 
+>  drivers/gpu/drm/i915/i915_mitigations.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
+> index 84f12598d145..231aad5ff46c 100644
+> --- a/drivers/gpu/drm/i915/i915_mitigations.c
+> +++ b/drivers/gpu/drm/i915/i915_mitigations.c
+> @@ -29,15 +29,14 @@ bool i915_mitigate_clear_residuals(void)
+>  static int mitigations_set(const char *val, const struct kernel_param *kp)
+>  {
+>  	unsigned long new = ~0UL;
+> -	char *str, *sep, *tok;
+> +	char str[64], *sep, *tok;
+>  	bool first = true;
+>  	int err = 0;
+>  
+>  	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
+>  
+> -	str = kstrdup(val, GFP_KERNEL);
+> -	if (!str)
+> -		return -ENOMEM;
+> +	strncpy(str, val, sizeof(str) - 1);
+> +	str[sizeof(str) - 1] = '\0';
 
-It looks like CONFIG_ARM64_AS_HAS_MTE is not set when we use the
-integrated assembler with LLVM 11, and the code that breaks later
-versions is gated behind CONFIG_ARM64_MTE.
+Looks correct, however strscpy() seems to be the thing we should
+be using these days.
 
-Sami
+>  
+>  	for (sep = str; (tok = strsep(&sep, ","));) {
+>  		bool enable = true;
+> @@ -86,7 +85,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
+>  			break;
+>  		}
+>  	}
+> -	kfree(str);
+>  	if (err)
+>  		return err;
+>  
+> -- 
+> 2.31.0
+
+-- 
+Ville Syrjälä
+Intel
