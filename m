@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFE73609A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 388F63609A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhDOMmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:42:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33257 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230202AbhDOMma (ORCPT
+        id S232981AbhDOMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232935AbhDOMmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618490527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zACdA77WTa2D+EH6NmqEJg1JcWkY/0DDkKu1lgaix30=;
-        b=O5l2PiE+R+uEMg5W7Lmi+vk99F9WdWAmXJ89wMzyHOeaQMz806866z7KjcViwsnv226ZSh
-        1Ml/QdzTkxM6oMD7Xww/B9fIUT6kBecXq1bfxbsnbXGhoprrSYziu1jJclAuBUXORx+doc
-        Ete7Vej5azYKy+PXCF4RqoP1jgnc5is=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-UcS9PgqlOUyfRZkEoV95mw-1; Thu, 15 Apr 2021 08:42:05 -0400
-X-MC-Unique: UcS9PgqlOUyfRZkEoV95mw-1
-Received: by mail-wm1-f71.google.com with SMTP id f134-20020a1c1f8c0000b029012e03286b7bso775772wmf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:42:05 -0700 (PDT)
+        Thu, 15 Apr 2021 08:42:53 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BBCC061574;
+        Thu, 15 Apr 2021 05:42:29 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 82so25968029yby.7;
+        Thu, 15 Apr 2021 05:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fg1M3JraqfPDjiabkJVNqyxhu8/Pp6Uz2D3T2HiqLvQ=;
+        b=kpmqvZ16cOjL1qmF50hdCBJJl/SH0b5eS3d35WnCRAcH3TNBYEYghwBNxfcF8SdyvP
+         YBuJeOq6e5TenRxL14f+MQcSmeAe1QCGJzsVLD/6e/dM7STmQdV4M2vCipvbi23SgjN5
+         zuPOj3BXYixygBdg/ZirIIOmoynp8f7URe4mAIkQ9GwcJxP8jQviEPTDstrAihADSGIz
+         V4alt5N2ZfwPCJWb+wB79+XEuO8IZ+ysRNtDliVZjBd/H4io5SV8YEm1RNVEBSe/BNEY
+         1+neJHgpQLDHzSgJCmc1XBTMqTfvqG1hFphLuubccVGFqXqtCLRtYXQv8QYlGC7nNRxy
+         e5og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zACdA77WTa2D+EH6NmqEJg1JcWkY/0DDkKu1lgaix30=;
-        b=Pop6up+CISi9MKNBaa2qQCGlwXysIlMHiUxjDZzpomS+i/GzX5/ZjqZbfjAP6Y5mtm
-         LTqq8SeEdQRl08aSzIpoNH6n11TzU0kQxRQt4+N+Fk5SToRzXTeqdQOtIWqQgM4Reubo
-         7VNhEH7r0v5o1tGKmNf7R0byDjIIW/NKUm2QGjwQGsQorzQU7O0UJiJAEAlw+BRhrckc
-         L1V474BUslaMXCcRHZPfZNfNHvb5+HIPPTx+sL86/BoUluUHlODw+PlzOb1DymkpnRX6
-         xZ+YmVRC3SzQjxBHXpZCufGcMt9EEKE8/jMctgIMDl8QJYET/oicLIXfWzRFrQaKcVaC
-         4sYA==
-X-Gm-Message-State: AOAM5324MR+q98KdSZyFwoJR6a6MyFWQMiUowQIMF3hapbULEceNQbIf
-        +9D9anNHgnN/T7EdQss4GKj7Tl3u/sCBdKjMbQQFhlCJi6rgIhwh58JziR1Z0KLbVB1T7hQaC5y
-        dhNX7+tziYLgDZ0BgMoFx2D/xZH6E9kSSMlVwesLFmYINe94u5D9hGXWGjpMgMuWBbLeIbyH5
-X-Received: by 2002:a05:6000:c2:: with SMTP id q2mr3452640wrx.200.1618490524816;
-        Thu, 15 Apr 2021 05:42:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyTws3Xaqrmc9w/HCKZ9yvo04+CNq4y+/1CSb9wDtEOkwkQSuu08CvKB2o4T5u6PO45lfr3Pw==
-X-Received: by 2002:a05:6000:c2:: with SMTP id q2mr3452619wrx.200.1618490524640;
-        Thu, 15 Apr 2021 05:42:04 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
-        by smtp.gmail.com with ESMTPSA id 18sm1378876wmo.47.2021.04.15.05.42.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 05:42:04 -0700 (PDT)
-Subject: Re: [PATCH v8 2/7] mm,compaction: Let
- isolate_migratepages_{range,block} return error codes
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210415103544.6791-1-osalvador@suse.de>
- <20210415103544.6791-3-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <f293a4d2-ddac-edb2-7858-92e3a3f2c6f6@redhat.com>
-Date:   Thu, 15 Apr 2021 14:42:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fg1M3JraqfPDjiabkJVNqyxhu8/Pp6Uz2D3T2HiqLvQ=;
+        b=PhBfW1U1SLvjymmF+2gIZhCig6RQnKiAuDAOsjrptilTfaVjqjWpwQ3gxreqbX+rR8
+         JJZEk6Z3qBkGdW6OJaolOrDdx47xlXO7yAocfVkzq6WpmK0fD+h2A60FznMhqnyQ6s3a
+         sm9GxYoicRzn3e+8OTsTwG2Bove+br3aP5rNlXp9idhL2FqGkJA1WPfLyP++wJ58V+Ef
+         /s/bN2ERNfXEFpjHHx+YuqQndjdbpOcqQ1kAPP3aGuwBnB76TlDOYoSCq8xrtYvOLQqR
+         990L8CKMw/WksYob1rlCKam+jvFmziKYt7f4n8GBOALaJPAuFXoTt2/eKnzdLeMfAjHp
+         xngA==
+X-Gm-Message-State: AOAM531VCiI3QEeKy2+hoII+sHpOZqBbQJNSQYIuxXjug8l/gRQOA9cz
+        NQnqg2rV/YSci9EHzfLplwgf64hSRTWZWDR++Pnl36e3HS/feA==
+X-Google-Smtp-Source: ABdhPJxE7dhcBCOERrKV8ouMZMA94c5LX/odP9YslP9ixiCAWlsBt5oMnCvxCgG8e/ljQ1sYiDcdxDQuEaQVnG1Yn70=
+X-Received: by 2002:a25:cfc2:: with SMTP id f185mr4331260ybg.26.1618490549378;
+ Thu, 15 Apr 2021 05:42:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210415103544.6791-3-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-10-ojeda@kernel.org>
+ <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
+ <CAKwvOd=Vo3wwm-egc6fTa7gD4dsrc77OvBhUy8e+VM=LujRCfg@mail.gmail.com> <YHfm+tCYp+I1C5I/@kroah.com>
+In-Reply-To: <YHfm+tCYp+I1C5I/@kroah.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 15 Apr 2021 14:42:18 +0200
+Message-ID: <CANiq72mSdao=r5f-6nS8E_hgOy=+Rwedtbs-m4CmGbnoEtV+KA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] Samples: Rust examples
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.04.21 12:35, Oscar Salvador wrote:
-> Currently, isolate_migratepages_{range,block} and their callers use
-> a pfn == 0 vs pfn != 0 scheme to let the caller know whether there was
-> any error during isolation.
-> This does not work as soon as we need to start reporting different error
-> codes and make sure we pass them down the chain, so they are properly
-> interpreted by functions like e.g: alloc_contig_range.
-> 
-> Let us rework isolate_migratepages_{range,block} so we can report error
-> codes.
-> Since isolate_migratepages_block will stop returning the next pfn to be
-> scanned, we reuse the cc->migrate_pfn field to keep track of that.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Thu, Apr 15, 2021 at 9:10 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Let's see what happens here, this patchset is a great start that
+> provides the core "here's how to build rust in the kernel build system",
+> which was a non-trivial engineering effort.  Hats off to them that "all"
+> I had to do was successfully install the proper rust compiler on my
+> system (not these developers fault), and then building the kernel code
+> here did "just work".  That's a major achievement.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Thanks a lot for the kind words and for trying it!
 
--- 
-Thanks,
+Let's see if we can make this happen.
 
-David / dhildenb
-
+Cheers,
+Miguel
