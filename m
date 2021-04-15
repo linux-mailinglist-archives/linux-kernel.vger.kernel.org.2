@@ -2,171 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE5A3611AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C639C3611A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhDOSET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
+        id S234544AbhDOSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233134AbhDOSEQ (ORCPT
+        with ESMTP id S233551AbhDOSD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:04:16 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935D1C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:03:52 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id j12so7028831ils.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:03:52 -0700 (PDT)
+        Thu, 15 Apr 2021 14:03:59 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4F8C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:03:35 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i10so4678006lfe.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:03:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jMi3JQh4ceVfV/j7Lf7DWzkm4A/CG7sUwuBKTI9Y7vs=;
-        b=LOWfqGRgHZ2GaLk4r0jnjtm6hmUQDMtLwyD23G/zSp+dciXK8p9hxW5dpWlieJWVov
-         9fZxBC9Gq0vChe5/SI2Xz2rZtf5evjuecN76OfNiPb1n7JvJtsnyuPbcU7lyolclN6h9
-         xm/USSXnuwH42Jp23W8TX1U8yNA3aiVNF0zBR+WhMg086kxGgjnkrWSXlZ2K1t+dKvX5
-         mz6u4JCxYhvmR84+sH+l+BSsbQc2DhNnetCk62Xcxyf/eFiJ8bkw8HN++VM57h/YDUKu
-         p8uMAQs2++W6WuNhOtTfjydZwv7nX0X3/sjt3phwy8sk76atjR1aN3znqw1PgpCPveT8
-         oH7A==
+         :cc:content-transfer-encoding;
+        bh=F59qFWjXIgpvV4ZN+CZ30hb3C7uuWkssKg5Jbmq7Ww8=;
+        b=G/NT4J14rCpD8NA8d8MBv0FXKoPW385KyYuoW969O2aWtfyO/hJZYF+odetZ4qBA6e
+         E0z4YmLm/kz2oIhJ/BszpZQKX4R9gcEbhdh6mqRAnU+ANIaPsfPe3x/4qbyVWqBVIaY4
+         hdNfhxkMIek13GWVpyLWEEh/nj+CipxPHh7d0/ZMEqamPRTHJ8OP9Dpy5Mq3TiulmxqO
+         XXsMSaNvN06qzDkqa5eIxaDM4kY8HgKk4nza/Y++YEZ9QmbYM10J1qaUTNEJmIKBrMzR
+         lKffAR9VeBNvYyU/+eyPVugQv5g7b5T7fqposkOYVpxU4YOE3sCROkgwggF44eli2Qxe
+         V3hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jMi3JQh4ceVfV/j7Lf7DWzkm4A/CG7sUwuBKTI9Y7vs=;
-        b=GBIbTMeqMxXV6ih/tD0/HLZsCbJTxkghm/hvfTCpGnSlWNWEDmjP6cNtvJUyObiqme
-         3EK1fJ5kWcB67nVjupjCzJIUVuhyILBCN27p0hyprK6gcFgznAEN26G/rZWlugmhNPqC
-         f+aw3frrMhMq9m4EVdBjZ/3YXpYHi2Gn1NB9wiCNbVvaEv5/0qvDWK9EicSgy3q87o5N
-         qD6CEpUJLAXQFEdZLwXAKsrGCV8aVnsSLypLvd6YAW5VFXttfNX7tG88OLpFd3dbw9D0
-         O/+U/ndo6WJ14qjbcGBnNO3euRQczVHSZWd9MxzzrUhEUsFQrL0c41pwBEylc+ggZaeU
-         ff8A==
-X-Gm-Message-State: AOAM5301D9ht7fKVzpGJucGE4pklO6qfyafLAd6SPaH/fap2wg+K5RPT
-        MBIt+vVHRU+PCkoxs0roomvrfsB/TixVWRPn/25hxg==
-X-Google-Smtp-Source: ABdhPJzLg34mG/2F8echbVGsALC+cjlSLd1cDv+gDbhlWGfCHOBwcNyvJAecuz7DsvJdtaeQICx6VrotmYdZLAXz92k=
-X-Received: by 2002:a05:6e02:1d06:: with SMTP id i6mr1346852ila.165.1618509831881;
- Thu, 15 Apr 2021 11:03:51 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=F59qFWjXIgpvV4ZN+CZ30hb3C7uuWkssKg5Jbmq7Ww8=;
+        b=L0IFWUao1gZ/978lnoNF+FyjFrYROC/EQ4vO0yK3wfpYIqJ51s8j62GJnGJVF8S+wx
+         bL5T0QRmim5Hr2SAOaLbiFLhzE9C/nvoSAornMm/EUi2tLJVKwJ423xPcEvKB6/lnK8S
+         5cpTSgcNDY3FNgQccxZ921Xv+eTuoY3izkyDeaG2ivKXEbWgYpGgiziH5uEcCILFGImO
+         TQrxeSub0B11MriP5/j1HjXs8VztK3oIrb7CY/TVw3UfGXia3TXrgL3fd7E0ER+b96zk
+         LPxmyafMEddZKP9wSu5WsXphBUo2hLVwuWmTAJPzl4hOERsZnHlMELi290+m0++mkRtI
+         W3zA==
+X-Gm-Message-State: AOAM532Af3c3QdG4BUPo79wMtIi3rLIOGRWJ+/E/0RWUeDWQDeNPwjC/
+        bG7uS3Alu0Ynwc5eSIw6KWzfflzTcflLC+9eZXCbzQ==
+X-Google-Smtp-Source: ABdhPJySCFix/QLobkMr+mNd4p1eh6+V52WoYufupnbXAoEB0kYBV4dx1xGZvJwbl8wweHAwSTgTOP9NMCfUKyp9nvs=
+X-Received: by 2002:a05:6512:1046:: with SMTP id c6mr238636lfb.297.1618509813998;
+ Thu, 15 Apr 2021 11:03:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210413051721.2896915-1-axelrasmussen@google.com>
- <20210413051721.2896915-8-axelrasmussen@google.com> <20210413201535.GD4440@xz-x1>
-In-Reply-To: <20210413201535.GD4440@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 15 Apr 2021 11:03:14 -0700
-Message-ID: <CAJHvVcix2CO_+qQ7+gWMLYL9H5zyDNz_06UnThd84etMNr-SWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] userfaultfd/selftests: reinitialize test context
- in each test
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <CAKwvOdkjttdX83tL4pw+J5EnHM1MgEYDPp=YTpEagV4RrhdxwA@mail.gmail.com> <CANiq72ksLeuL_uqoqbf3fhLP7M0j-7TdEvRDDmxThdmrEqD2Lw@mail.gmail.com>
+In-Reply-To: <CANiq72ksLeuL_uqoqbf3fhLP7M0j-7TdEvRDDmxThdmrEqD2Lw@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Apr 2021 11:03:22 -0700
+Message-ID: <CAKwvOdkyRkR0Jj5w5HWJ+o4YpOrLfTY1Vjho0bDn60fgRE-pkA@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 1:15 PM Peter Xu <peterx@redhat.com> wrote:
+On Wed, Apr 14, 2021 at 5:43 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
 >
-> On Mon, Apr 12, 2021 at 10:17:19PM -0700, Axel Rasmussen wrote:
-> > Currently, the context (fds, mmap-ed areas, etc.) are global. Each test
-> > mutates this state in some way, in some cases really "clobbering it"
-> > (e.g., the events test mremap-ing area_dst over the top of area_src, or
-> > the minor faults tests overwriting the count_verify values in the test
-> > areas). We run the tests in a particular order, each test is careful to
-> > make the right assumptions about its starting state, etc.
+> On Thu, Apr 15, 2021 at 1:19 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
 > >
-> > But, this is fragile. It's better for a test's success or failure to not
-> > depend on what some other prior test case did to the global state.
-> >
-> > To that end, clear and reinitialize the test context at the start of
-> > each test case, so whatever prior test cases did doesn't affect future
-> > tests.
-> >
-> > This is particularly relevant to this series because the events test's
-> > mremap of area_dst screws up assumptions the minor fault test was
-> > relying on. This wasn't a problem for hugetlb, as we don't mremap in
-> > that case.
-> >
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  tools/testing/selftests/vm/userfaultfd.c | 221 +++++++++++++----------
-> >  1 file changed, 127 insertions(+), 94 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-> > index 1f65c4ab7994..0ff01f437a39 100644
-> > --- a/tools/testing/selftests/vm/userfaultfd.c
-> > +++ b/tools/testing/selftests/vm/userfaultfd.c
-> > @@ -89,7 +89,8 @@ static int shm_fd;
-> >  static int huge_fd;
-> >  static char *huge_fd_off0;
-> >  static unsigned long long *count_verify;
-> > -static int uffd, uffd_flags, finished, *pipefd;
-> > +static int uffd = -1;
-> > +static int uffd_flags, finished, *pipefd;
-> >  static char *area_src, *area_src_alias, *area_dst, *area_dst_alias;
-> >  static char *zeropage;
-> >  pthread_attr_t attr;
-> > @@ -342,6 +343,121 @@ static struct uffd_test_ops hugetlb_uffd_test_ops = {
-> >
-> >  static struct uffd_test_ops *uffd_test_ops;
-> >
-> > +static int userfaultfd_open(uint64_t *features)
-> > +{
-> > +     struct uffdio_api uffdio_api;
-> > +
-> > +     uffd = syscall(__NR_userfaultfd, O_CLOEXEC | O_NONBLOCK);
+> > -Oz in clang typically generates larger kernel code than -Os; LLVM
+> > seems to aggressively emit libcalls even when the setup for a call
+> > would be larger than the inlined call itself.  Is z smaller than s for
+> > the existing rust examples?
 >
-> Keep UFFD_USER_MODE_ONLY?
+> I will check if the `s`/`z` flags have the exact same semantics as
+> they do in Clang, but as a quick test (quite late here, sorry!), yes,
+> it seems `z` is smaller:
 >
-> [...]
+>       text data bss    dec   hex filename
 >
-> > @@ -961,10 +1045,9 @@ static int userfaultfd_zeropage_test(void)
-> >       printf("testing UFFDIO_ZEROPAGE: ");
-> >       fflush(stdout);
-> >
-> > -     uffd_test_ops->release_pages(area_dst);
-> > -
-> > -     if (userfaultfd_open(0))
-> > +     if (uffd_test_ctx_clear() || uffd_test_ctx_init(0))
-> >               return 1;
+>     126568    8 104 126680 1eed8 drivers/android/rust_binder.o [s]
+>     122923    8 104 123035 1e09b drivers/android/rust_binder.o [z]
 >
-> Would it look even nicer to init() at the entry of each test, and clear() after
-> finish one test?
+>     212351    0   0 212351 33d7f rust/core.o [s]
+>     207653    0   0 207653 32b25 rust/core.o [z]
 
-I slightly prefer clearing at the beginning, as it means we don't need
-to depend on the previous test being correct for this test to
-function. And, we don't need more complex error handling in the test
-cases to make sure we don't mess things up for the next test.
+cool, thanks for verifying. LGTM
 
-But, two things we can do to clean this up as-is:
-
-The initialization function can just call clear itself, so tests don't
-need to worry about it.
-
-And, with err(), we don't need these functions to return an int any more.
-
-I'll send a version like that, we can see how it looks.
-
+> > This is a mess; who thought it would be a good idea to support
+> > compiling the rust code at a different optimization level than the
+> > rest of the C code in the kernel?  Do we really need that flexibility
+> > for Rust kernel code, or can we drop this feature?
 >
-> > +
-> >       uffdio_register.range.start = (unsigned long) area_dst;
-> >       uffdio_register.range.len = nr_pages * page_size;
-> >       uffdio_register.mode = UFFDIO_REGISTER_MODE_MISSING;
+> I did :P
 >
-> The rest looks good to me.  Thanks,
+> The idea is that, since it seemed to work out of the box when I tried,
+> it could be nice to keep for debugging and for having another degree
+> of freedom when testing the compiler/nightlies etc.
 >
-> --
-> Peter Xu
+> Also, it is not intended for users, which is why I put it in the
+> "hacking" menu -- users should still only modify the usual global
+> option.
 >
+> However, it is indeed strange for the kernel and I don't mind dropping
+> it if people want to see it out (one could still do it manually if
+> needed...).
+>
+> (Related: from what I have been told, the kernel does not support
+> lower levels in C just due to old problems with compilers; but those
+> may be gone now).
+
+IIRC the kernel (or at least x86_64 defconfig) cannot be built at -O0,
+which is too bad if developers were myopically focused on build times.
+It would have been nice to have something like
+CONFIG_CC_OPTIMIZE_FOR_COMPILE_TIME to join
+CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE and CONFIG_CC_OPTIMIZE_FOR_SIZE,
+but maybe it's still possible to support one day.  (=C2=BFPor qu=C3=A9 no l=
+os
+tres? Perhaps a false-trichotomy? Sorry, but those 3 are somewhat at
+odds for compilation).
+
+Until then, I don't see why we need to permit developers to express
+such flexibility for just the Rust code, or have it differ from the
+intent of the C code. Does it make sense to set RUST_OPT_LEVEL_3 and
+CC_OPTIMIZE_FOR_SIZE? I doubt it. That doesn't seem like a development
+feature, but a mistake.  YAGNI.  Instead developers should clarify
+what they care about in terms of high level intent; if someone wants
+to micromanage optimization level flags in their forks they don't need
+a Kconfig to do it (they're either going to hack KBUILD_CFLAGS,
+CFLAGS_*.o, or KCFLAGS), and there's probably better mechanisms for
+fine-tooth precision of optimizing actually hot code or not via PGO
+and AutoFDO.
+https://lore.kernel.org/lkml/20210407211704.367039-1-morbo@google.com/
+--=20
+Thanks,
+~Nick Desaulniers
