@@ -2,197 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98896360237
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B619E36023A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhDOGQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhDOGQu (ORCPT
+        id S231190AbhDOGRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:17:04 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:59443 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230491AbhDOGRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:16:50 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBEDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:16:25 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id u7so9664332plr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8aPMWJgLeOMSHDPtfmh56WRL1jMhYN833mNKhQBp9lg=;
-        b=S2hDQvA6UfYIH0obB5OOp9EyLCYxAEyAd3zUh7VQB70I3FE4ZQVlnB7pDBCv+EYFQR
-         iFQFmiIaWxlgH15kJyqdoNWAXVIuM4M2ymSet5SjMCXRhlept12z7lOne2sKKM/Qahl7
-         SR7pLqx9Vp7A+RTWtW8cb1WdsLFiMjf9rLjh125BDNZllXhK6EEvfBeKPL8z4bLGqKGk
-         eFuDCXxvbc2teHQ6SsD24i8HjukX3iaINCwJ2VtvMJAWwhBc4Ndv9ROtmGrWt1xbQIm5
-         DmNE3nxJvy2+8U5npx6FG2l55e7/FJb/AM0pRO39N+0wA1HUB8S4qbjmV/RhscpnPZUn
-         ii2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=8aPMWJgLeOMSHDPtfmh56WRL1jMhYN833mNKhQBp9lg=;
-        b=ErcwO865ll5jCqP/kB92wfwb+bkcYiyfu3WZyjIoQBosiCZMaxBxMYo7etqm8veqaC
-         XGplJF17uoqR1j4YsJj8FegwhIAFx6/beoecnK4SnbSBIfrJNeQ4D4en/+mehluQl4RE
-         XK8Zoa4RbkXWgI/eutv5CdWEz3worOL5niBchnSgWmgdVS9NjP98fiFvo1F/cX9Xcp8W
-         BWBRnjdoS1JOpEf+Ki4fwpMkaiUbdcuaf7BYUIVNuN4PMuefXrLQhpAcPeAMd4yRBWJ8
-         ZwQcLJpmENh+pipyUuWBjVyZ+5Z+kBtJrDrLXaaks43FyYQ7Th78X9p12AI9bgqaFmZS
-         rMkA==
-X-Gm-Message-State: AOAM533+pSfzbfWvpZe86RG31ClMwHI3f4Ugc3E00VSpGLUDRztSyhD+
-        VOqMuMX1213JconcIux6Tl7vKg==
-X-Google-Smtp-Source: ABdhPJwQ8tlbhjRyFTql28i8d3dPzxk+82TQ7fucsms/w1A1eM/vcb693iFMmHVxxBPuNRepSBkMdQ==
-X-Received: by 2002:a17:90a:670a:: with SMTP id n10mr2087887pjj.176.1618467385372;
-        Wed, 14 Apr 2021 23:16:25 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id m9sm1242059pgt.65.2021.04.14.23.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 23:16:24 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 23:16:24 -0700 (PDT)
-X-Google-Original-Date: Wed, 14 Apr 2021 23:16:23 PDT (-0700)
-Subject:     Re: [PATCH v3 2/2] riscv: Cleanup KASAN_VMALLOC support
-In-Reply-To: <CAMuHMdXdhTUKuvJkJGUm=ESpwA6R06eKV5q6wFOJftJ1p3R7nw@mail.gmail.com>
-CC:     alex@ghiti.fr, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, nylon7@andestech.com, nickhu@andestech.com,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     geert@linux-m68k.org
-Message-ID: <mhng-93309746-0fd6-42ec-b574-bf1ce486f34a@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 15 Apr 2021 02:17:03 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2DF285C010E;
+        Thu, 15 Apr 2021 02:16:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 15 Apr 2021 02:16:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=who-t.net; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=xpJeKXmkNApc5i/qtQ1rQItiME+
+        Z8v2/EI2GZ2dmgzI=; b=aZOQo76AVTMtgbcrHiVUCRwraZpTquqv+O25mIyDPhe
+        ld7iJpzKpWwUX5KFsEaTLErO8XS/WBMStPpip1ZID3w0c5CuAqjSnsvedObaf8Lf
+        gGNWmaRRlHLTXQBRyW+1tFSNSbVn63UQJf6f3Rfff6FXKpOzpvboOb2YlD9/DZN1
+        5aW9IuaR80CWnffFlmw27QgAaGbnf6QCXHlU8IJ1Qu+2jUtbTcuflvGSp76YdRkb
+        ENjKzM3fnskbc1xVLuQLf2KNIQkyR3s2mXZ+ZjEftyx0ybt6x93x1aJh5WoEl93F
+        N5OqC1z6/ripgt3sm8rj7v0pirA20m6eIirZ6deuePg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=xpJeKX
+        mkNApc5i/qtQ1rQItiME+Z8v2/EI2GZ2dmgzI=; b=qQs0eRptVmhNAPh5SXRF+s
+        HucmhY3lq+Bmsf0WMOltAkqwSrvX42lqqG3efLwv5Flm1C7K/O7gXPjsZgDtew+U
+        ymJ1Z1lq8pLDU+t5XC6WG/KLEcctsDx8H24T2Ics92sgT11rN6FgFiDJJYujkozy
+        2vgX+fFRctcUCQI0lMouJxFMIpRIk9fJHAuweesm4dBSNs5Xsfw2+26QpzUKI3WU
+        F0aX14izIk/BrqsK16rxCsnypx9Jnr5ZxJPLikSsdByJybOsaddEKrgqsCtbcnF3
+        6ro4SxDP+mKUqstglrFx0CvNTgkFZwE9wig9Zv6AO7oO8ZZ87tmqxdhL+4GEQGZw
+        ==
+X-ME-Sender: <xms:R9p3YPpjq_BgxeqhwiTJO3EJfMIZ15M_Llxaf-VLAW18jOj23QXITg>
+    <xme:R9p3YJpJOrPhQU557i0nc0bAG9MlSp9IHytYZU-8RWTd5JSYT_qsUVqVGUP0I3vTU
+    FrRM8lPb4j5PhfhtRM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelvddguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvthgv
+    rhcujfhuthhtvghrvghruceophgvthgvrhdrhhhuthhtvghrvghrseifhhhoqdhtrdhnvg
+    htqeenucggtffrrghtthgvrhhnpeehhfehfffgheelgeeuudelhefgvdefveekudevjeev
+    jeevvefggefguddufeeuveenucfkphepuddujedrvddtrdejuddrvddvkeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehpvghtvghrrdhhuhht
+    thgvrhgvrhesfihhohdqthdrnhgvth
+X-ME-Proxy: <xmx:R9p3YMMKSgsLkPoTCERB9b0tIbkVO-bzTsQIcfrKaWsaN-7y5uF1Uw>
+    <xmx:R9p3YC4z2Z7_Th2H6nw4l8AC612AMgYFxkZ98LNzYApoc4fk57UhIg>
+    <xmx:R9p3YO7iIRW5_1w4jUsPVVKC-CRfRLrLGqLxPeaaMbyNbrGc-e1njA>
+    <xmx:SNp3YASdzxwCsSt2t6ecwuozouTHB3jaajjJYsZdgVIWiiK5ZnwVGg>
+Received: from jelly (117-20-71-228.751447.bne.nbn.aussiebb.net [117.20.71.228])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BDD5F108005F;
+        Thu, 15 Apr 2021 02:16:36 -0400 (EDT)
+Date:   Thu, 15 Apr 2021 16:16:31 +1000
+From:   Peter Hutterer <peter.hutterer@who-t.net>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Rob Herring <robh@kernel.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/3] Input: add driver for the Hycon HY46XX touchpanel
+ series
+Message-ID: <YHfaP4lc1ZDWeBqb@jelly>
+References: <CAL_JsqK6Bm==DaCMD3PruZoFO9iv0Te_KBVPnb9ZU0L8yDYF5Q@mail.gmail.com>
+ <20210413144446.2277817-1-giulio.benetti@benettiengineering.com>
+ <20210413144446.2277817-4-giulio.benetti@benettiengineering.com>
+ <YHaBJ6MX9c28MUQY@google.com>
+ <YHaP1Fzsi5pSaEq3@koala>
+ <080a71d9-d629-5589-c943-4e65a7f414d8@benettiengineering.com>
+ <YHcltT7HkJoXrX0f@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHcltT7HkJoXrX0f@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Mar 2021 02:47:30 PDT (-0700), geert@linux-m68k.org wrote:
-> Hi Palmer,
->
-> On Tue, Mar 30, 2021 at 7:08 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
->> On Sat, 13 Mar 2021 00:45:05 PST (-0800), alex@ghiti.fr wrote:
->> > When KASAN vmalloc region is populated, there is no userspace process and
->> > the page table in use is swapper_pg_dir, so there is no need to read
->> > SATP. Then we can use the same scheme used by kasan_populate_p*d
->> > functions to go through the page table, which harmonizes the code.
->> >
->> > In addition, make use of set_pgd that goes through all unused page table
->> > levels, contrary to p*d_populate functions, which makes this function work
->> > whatever the number of page table levels.
->> >
->> > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->> > Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
->> > ---
->> >  arch/riscv/mm/kasan_init.c | 59 ++++++++++++--------------------------
->> >  1 file changed, 18 insertions(+), 41 deletions(-)
->> >
->> > diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->> > index 57bf4ae09361..c16178918239 100644
->> > --- a/arch/riscv/mm/kasan_init.c
->> > +++ b/arch/riscv/mm/kasan_init.c
->> > @@ -11,18 +11,6 @@
->> >  #include <asm/fixmap.h>
->> >  #include <asm/pgalloc.h>
->> >
->> > -static __init void *early_alloc(size_t size, int node)
->> > -{
->> > -     void *ptr = memblock_alloc_try_nid(size, size,
->> > -             __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
->> > -
->> > -     if (!ptr)
->> > -             panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d from=%llx\n",
->> > -                     __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
->> > -
->> > -     return ptr;
->> > -}
->> > -
->> >  extern pgd_t early_pg_dir[PTRS_PER_PGD];
->> >  asmlinkage void __init kasan_early_init(void)
->> >  {
->> > @@ -155,38 +143,27 @@ static void __init kasan_populate(void *start, void *end)
->> >       memset(start, KASAN_SHADOW_INIT, end - start);
->> >  }
->> >
->> > -void __init kasan_shallow_populate(void *start, void *end)
->> > +static void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned long end)
->> >  {
->> > -     unsigned long vaddr = (unsigned long)start & PAGE_MASK;
->> > -     unsigned long vend = PAGE_ALIGN((unsigned long)end);
->> > -     unsigned long pfn;
->> > -     int index;
->> > +     unsigned long next;
->> >       void *p;
->> > -     pud_t *pud_dir, *pud_k;
->> > -     pgd_t *pgd_dir, *pgd_k;
->> > -     p4d_t *p4d_dir, *p4d_k;
->> > -
->> > -     while (vaddr < vend) {
->> > -             index = pgd_index(vaddr);
->> > -             pfn = csr_read(CSR_SATP) & SATP_PPN;
->> > -             pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
->> > -             pgd_k = init_mm.pgd + index;
->> > -             pgd_dir = pgd_offset_k(vaddr);
->> > -             set_pgd(pgd_dir, *pgd_k);
->> > -
->> > -             p4d_dir = p4d_offset(pgd_dir, vaddr);
->> > -             p4d_k  = p4d_offset(pgd_k, vaddr);
->> > -
->> > -             vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
->> > -             pud_dir = pud_offset(p4d_dir, vaddr);
->> > -             pud_k = pud_offset(p4d_k, vaddr);
->> > -
->> > -             if (pud_present(*pud_dir)) {
->> > -                     p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
->> > -                     pud_populate(&init_mm, pud_dir, p);
->> > +     pgd_t *pgd_k = pgd_offset_k(vaddr);
->> > +
->> > +     do {
->> > +             next = pgd_addr_end(vaddr, end);
->> > +             if (pgd_page_vaddr(*pgd_k) == (unsigned long)lm_alias(kasan_early_shadow_pmd)) {
->> > +                     p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->> > +                     set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
->> >               }
->> > -             vaddr += PAGE_SIZE;
->> > -     }
->> > +     } while (pgd_k++, vaddr = next, vaddr != end);
->> > +}
->> > +
->> > +static void __init kasan_shallow_populate(void *start, void *end)
->> > +{
->> > +     unsigned long vaddr = (unsigned long)start & PAGE_MASK;
->> > +     unsigned long vend = PAGE_ALIGN((unsigned long)end);
->> > +
->> > +     kasan_shallow_populate_pgd(vaddr, vend);
->> >
->> >       local_flush_tlb_all();
->> >  }
->>
->> Thanks, this is on for-next.
->
-> Your for-next does not include your fixes branch, hence they now conflict,
-> and for-next lacks the local_flush_tlb_all().
+On Wed, Apr 14, 2021 at 10:26:13AM -0700, Dmitry Torokhov wrote:
+> Hi Giulio, Peter,
+> 
+> On Wed, Apr 14, 2021 at 01:22:55PM +0200, Giulio Benetti wrote:
+> > Hi Peter, Dmitry,
+> > 
+> > On 4/14/21 8:46 AM, Peter Hutterer wrote:
+> > > On Tue, Apr 13, 2021 at 10:44:07PM -0700, Dmitry Torokhov wrote:
+> > > > Hi Giulio,
+> > > > 
+> > > > On Tue, Apr 13, 2021 at 04:44:46PM +0200, Giulio Benetti wrote:
+> > > > > +
+> > > > > +	input_mt_report_pointer_emulation(tsdata->input, true);
+> > > > 
+> > > > For touchscreens it does not make much sense to report BTN_DOUBLETAP,
+> > > > BTN_TRIPLETAP, etc, events (they are really for touchpads), so I changed
+> > > > this to
+> > > > 
+> > > > 	input_mt_report_pointer_emulation(tsdata->input, false);
+> > > > 
+> > > > to only report ABS_X, ABS_Y, and BTN_TOUCH, and applied.
+> > > 
+> > > Can you expand on this please, just to make sure I'm not misinterpreting
+> > > those codes? Those bits are just for how many fingers are down (but without
+> > > position), dropping those bits means you restrict the device to a pure
+> > > single-touch screen. Or am I missing something here?
+> 
+> They are indeed represent number of fingers on the surface. I think I
+> over-simplified this a bit by saying these events are only for
+> touchpads, as there is allowance for BTN_TOOL_*TAP in
+> Documentation/input/multi-touch-protocol.rst for MT devices that may
+> report more contacts than what they can distinctly track, and it is
+> not restricted to touchpads (but I believe in reality only used by a
+> couple of "semi-MT" touchpad drivers).
 
-This came up before and I don't think we ever sorted out what the right 
-thing to do is.  Right now I'm keeping for-next pinned an at early RC, 
-but fast-forwarding fixes to the latest RC every time I sent a PR.  I 
-don't have fixes merged back into for-next because I don't want those 
-merges to show up when I send my merge window PRs.
+fwiw, almost all touchpads on ps2 use that functionality - they can track 2
+touchpoints but *detect* up to 5. There's significant insanity in libinput
+to deal with that because it is so common :)
 
-For this one I purposefully left out the local_flush_tlb_all() whene I 
-pulled in this patch, and was planning on fixing it up along with any 
-other merge conflicts when I send along the PR.  It does all seem like a 
-bit of a song and dance here, though, so I'm open to suggestions as to 
-how to run this better -- though last time I went through that exercise 
-it seemed like everyone had their own way of doing it, they all had a 
-different set of issues, and I was at least familiar with this flavor of 
-craziness.
+semi-mt is orthogonal to that, it's the an inability to track two
+touchpoints correctly (only get top-left and bottom-right, but it's
+guesswork which finger is in which corner).
 
-I was kind of tempted to convert for-next over into a branch that only 
-contains merges, though, which would make it a bit easier to merge fixes 
-in.
+> What I meant to say that for ST fallback of MT-capable devices we
+> typically provide BTN_TOOL_*TAP for devices declared as INPUT_MT_POINTER
+> (which is touchpads) and for INPUT_MT_DIRECT and others we only provide
+> ABS_X, ABS_Y, ABS_PRESSURE and BTN_TOUCH (see input_mt_sync_frame()),
+> and I think this driver should follow the suit.
 
->
-> Gr{oetje,eeting}s,
->
->                         Geert
+ah, right. that makes sense, thanks for the clarification.
+
+Cheers,
+   Peter
