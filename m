@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17DB360EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D137F360EA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235407AbhDOPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbhDOPO5 (ORCPT
+        id S234776AbhDOPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:17:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:53894 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236550AbhDOPPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:14:57 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0C2C06138E;
-        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id g35so17083082pgg.9;
-        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i0SWPsbZMrd0nebi+GVIlyiAWrh4CzfKyh+F53eCiJI=;
-        b=g3thAUPNolya2yaKXB5KwLtyiplCBRPd1lMgSEU3Gl6ZxCnKYJBgaaqnI7wlZkPPe+
-         yKzXoBMZOx6M3RHjZHKdlRMDZHQ4qTtR58jloRXCd3cVfZ/bE2v9KEBYHKOSMHUqBaTN
-         859bdOg6morVtwz8+5qEion050CRwOLw11Zoe37RBBJMH+/DfxhiBYIF9OGctrZ07sP5
-         8tPRnhWGhxo/DxsQzOUSCyEOFvJYs6Uvb3xP05KjeAuHfTyB0yKsKml22hZmDS3kv0Tt
-         nYi14mLivu+Cy+i3mj/ZRE7PbC9q145kAdC5qhpTvM4Ndpzt52CULPUiAAMMSWo5oD2F
-         M2Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i0SWPsbZMrd0nebi+GVIlyiAWrh4CzfKyh+F53eCiJI=;
-        b=XwZ0FEe+AOmWrb7AbwF51qH6rDBLTlYGVAlEAmxzgEc7MgwW2WWtXyDZtiMMefjdrm
-         +smrmo3e3wrmSezlUgnURqdHByn+1ceKf1sbV1USPrF2Pj+dqzT11v5KmVg/jZI19pu0
-         eO2Oz3dU3VkIkJ2wCje/yFHL2ePwjaHvgugq0cUil0HhH1zi3Dn1eStA+d5YEkVszr5J
-         khvRKZupSZKj9i/VOuYhm4OjmPwr0S3Bhe96id/1wO07gpR+Oycz+vk5Uea8V+J6iEII
-         EpWqMt+Qc2j859gameWA6APgCpYzrxGNKhWNQcVpFJsBW9CqAg2SOxIusvbS2E/54Mz0
-         Y1kQ==
-X-Gm-Message-State: AOAM532twWxN8hgMHD+hYjbETzB2jFsThDaGwkzwKR3DoXuknxiZWD+s
-        D9gg9qPzmp/jrd5m2q59bD4=
-X-Google-Smtp-Source: ABdhPJxYmcljVlbKmo68b2xJsy8My7DGt4PPefNRj1OC73eYNiNx+X83zT/1SrQUwzZfZcCRMywKUQ==
-X-Received: by 2002:a63:df56:: with SMTP id h22mr3959816pgj.84.1618499638122;
-        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
-Received: from syed ([2401:4900:2eec:4193:f802:b600:e94c:55c4])
-        by smtp.gmail.com with ESMTPSA id 186sm2476361pfe.212.2021.04.15.08.13.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 08:13:57 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 20:43:35 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de
-Subject: Re: [PATCH v10 03/33] counter: 104-quad-8: Remove pointless comment
-Message-ID: <20210415151335.GA8933@syed>
-References: <cover.1616150619.git.vilhelm.gray@gmail.com>
- <e53df4416573f16069090f4c660afbd8d501f2a0.1616150619.git.vilhelm.gray@gmail.com>
+        Thu, 15 Apr 2021 11:15:03 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FFEUCn013190;
+        Thu, 15 Apr 2021 10:14:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618499670;
+        bh=+qBC1tnl5YMK3m60rKOq4hj1XFlwy6Q4817612NjXgE=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=yfp2Ont4ALWQWjciYZ1YSZtvmOAulxg5cb/16pbUSzbGHThWmXB8x4vP0Um2MAn7N
+         x6Qc+dcMcdXltpENliCMx6/3tTikjIlxhhfC8lcSs7JVsGj4p0b3qdVkgcBRTo/ebf
+         Rz2L8jKNlffRGiKGr0T6Lk7QvTrGgaxO7Bsf+dok=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FFEUTk017045
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Apr 2021 10:14:30 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Apr 2021 10:14:29 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 15 Apr 2021 10:14:29 -0500
+Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FFEPBM088778;
+        Thu, 15 Apr 2021 10:14:26 -0500
+Subject: Re: [PATCH 0/2] MCAN: Add support for implementing transceiver as a
+ phy
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20210415150629.5417-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <1fc33525-d879-f8b2-60e5-58c64b66b938@ti.com>
+Date:   Thu, 15 Apr 2021 20:44:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e53df4416573f16069090f4c660afbd8d501f2a0.1616150619.git.vilhelm.gray@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210415150629.5417-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:00:22PM +0900, William Breathitt Gray wrote:
-> It is obvious that devm_counter_register() is used to register a Counter
-> device, so a comment stating such is pointless here.
-> 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
->  drivers/counter/104-quad-8.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index 9691f8612be8..4bb9abffae48 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -1082,7 +1082,6 @@ static int quad8_probe(struct device *dev, unsigned int id)
->  	/* Enable all counters */
->  	outb(QUAD8_CHAN_OP_ENABLE_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
->  
-> -	/* Register Counter device */
->  	return devm_counter_register(dev, &priv->counter);
->  }
->  
-> -- 
-> 2.30.2
->
+Hi all,
 
-Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
+On 15/04/21 8:36 pm, Aswath Govindraju wrote:
+> The following series of patches add support for implementing the
+> transceiver as a phy of m_can_platform driver.
+> 
+> TCAN1042 has a standby signal that needs to be pulled high for
+> sending/receiving messages[1]. TCAN1043 has a enable signal along with
+> standby signal that needs to be pulled up for sending/receiving
+> messages[2], and other combinations of the two lines can be used to put the
+> transceiver in different states to reduce power consumption. On boards
+> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> 
+> These gpios are set in phy driver, and the transceiver can be put in
+> different states using phy API. The phy driver is added in the series [3].
+> 
+> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495365
+> 
+
+Please ignore this series. I will post a respin using
+devm_phy_get_optional instead of devm_of_phy_get_optional_by_index()
+based on the comments below[1]. Sorry for the noise.
+
+[1] - https://lore.kernel.org/patchwork/patch/1413931/
+
+Thanks,
+Aswath
+
+> Faiz Abbas (2):
+>   dt-bindings: net: can: Document transceiver implementation as phy
+>   can: m_can: Add support for transceiver as phy
+> 
+>  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
+>  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
+>  drivers/net/can/m_can/m_can.h                       |  2 ++
+>  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
+>  4 files changed, 28 insertions(+)
+> 
+
