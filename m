@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FE3360C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91902360CB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhDOOts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:49:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36792 "EHLO mail.kernel.org"
+        id S234256AbhDOOxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233699AbhDOOtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C3D261029;
-        Thu, 15 Apr 2021 14:49:07 +0000 (UTC)
+        id S234110AbhDOOva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1897613B7;
+        Thu, 15 Apr 2021 14:51:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498148;
-        bh=8TXkaDq9p8upES/NdQyeftTvbHiQJNlVZ3QKoPLpfn8=;
+        s=korg; t=1618498266;
+        bh=rqb5Q7z0UyJBQEDy03SP4fu5yDVD6BF6zCzSK2Dkrwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZDM57kFqdHySGceS5aP5+BkXszpY17IO5iR3qU5IAh7oJoH0E222+as73virlAMe6
-         hKlIjOMwHlaIYVNK/QpANAHssQhAG/+lCasE7ozqjy4Zalw/7lvwyZbiQ8skc17jAq
-         /9ivMJDqSV8vaYcdQ/xJWfHU4sKkRtsmYsjzq8QQ=
+        b=E5oFtB8zCfuyXsr2yu21SkblBUs8YrlKDLtOMOHdoWHw/15GFpl+FVnGXqRnReRXn
+         UpI5lj/7lyoZIsAv8qx+lKU3TiJy9Ma1NzfT/F2pRDtFFzeFaft8whxHI9WxLWv94E
+         NlgDGmG3LWzgXlX12uSL8v5v4Nvypc8Vv2nSSJNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Lukasz Majczak <lma@semihalf.com>,
+        Lukasz Bartosik <lb@semihalf.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 19/38] s390/cpcmd: fix inline assembly register clobbering
-Date:   Thu, 15 Apr 2021 16:47:13 +0200
-Message-Id: <20210415144413.962139913@linuxfoundation.org>
+Subject: [PATCH 4.9 22/47] clk: fix invalid usage of list cursor in unregister
+Date:   Thu, 15 Apr 2021 16:47:14 +0200
+Message-Id: <20210415144414.167647563@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+From: Lukasz Bartosik <lb@semihalf.com>
 
-[ Upstream commit 7a2f91441b2c1d81b77c1cd816a4659f4abc9cbe ]
+[ Upstream commit 7045465500e465b09f09d6e5bdc260a9f1aab97b ]
 
-Register variables initialized using arithmetic. That leads to
-kasan instrumentaton code corrupting the registers contents.
-Follow GCC guidlines and use temporary variables for assigning
-init values to register variables.
+Fix invalid usage of a list_for_each_entry cursor in
+clk_notifier_unregister(). When list is empty or if the list
+is completely traversed (without breaking from the loop on one
+of the entries) then the list cursor does not point to a valid
+entry and therefore should not be used. The patch fixes a logical
+bug that hasn't been seen in pratice however it is analogus
+to the bug fixed in clk_notifier_register().
 
-Fixes: 94c12cc7d196 ("[S390] Inline assembly cleanup.")
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Local-Register-Variables.html
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+The issue was dicovered when running 5.12-rc1 kernel on x86_64
+with KASAN enabled:
+BUG: KASAN: global-out-of-bounds in clk_notifier_register+0xab/0x230
+Read of size 8 at addr ffffffffa0d10588 by task swapper/0/1
+
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1 #1
+Hardware name: Google Caroline/Caroline,
+BIOS Google_Caroline.7820.430.0 07/20/2018
+Call Trace:
+ dump_stack+0xee/0x15c
+ print_address_description+0x1e/0x2dc
+ kasan_report+0x188/0x1ce
+ ? clk_notifier_register+0xab/0x230
+ ? clk_prepare_lock+0x15/0x7b
+ ? clk_notifier_register+0xab/0x230
+ clk_notifier_register+0xab/0x230
+ dw8250_probe+0xc01/0x10d4
+ ...
+ Memory state around the buggy address:
+  ffffffffa0d10480: 00 00 00 00 00 03 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
+ >ffffffffa0d10580: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+                          ^
+  ffffffffa0d10600: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10680: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
+  ==================================================================
+
+Fixes: b2476490ef11 ("clk: introduce the common clock framework")
+Reported-by: Lukasz Majczak <lma@semihalf.com>
+Signed-off-by: Lukasz Bartosik <lb@semihalf.com>
+Link: https://lore.kernel.org/r/20210401225149.18826-2-lb@semihalf.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/cpcmd.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/clk/clk.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/arch/s390/kernel/cpcmd.c b/arch/s390/kernel/cpcmd.c
-index 7f768914fb4f..c15546c6fb66 100644
---- a/arch/s390/kernel/cpcmd.c
-+++ b/arch/s390/kernel/cpcmd.c
-@@ -37,10 +37,12 @@ static int diag8_noresponse(int cmdlen)
- 
- static int diag8_response(int cmdlen, char *response, int *rlen)
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index af4f2ffc4fc5..9d60b3f219f6 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2990,32 +2990,28 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
+  */
+ int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
  {
-+	unsigned long _cmdlen = cmdlen | 0x40000000L;
-+	unsigned long _rlen = *rlen;
- 	register unsigned long reg2 asm ("2") = (addr_t) cpcmd_buf;
- 	register unsigned long reg3 asm ("3") = (addr_t) response;
--	register unsigned long reg4 asm ("4") = cmdlen | 0x40000000L;
--	register unsigned long reg5 asm ("5") = *rlen;
-+	register unsigned long reg4 asm ("4") = _cmdlen;
-+	register unsigned long reg5 asm ("5") = _rlen;
+-	struct clk_notifier *cn = NULL;
+-	int ret = -EINVAL;
++	struct clk_notifier *cn;
++	int ret = -ENOENT;
  
- 	asm volatile(
- 		"	sam31\n"
+ 	if (!clk || !nb)
+ 		return -EINVAL;
+ 
+ 	clk_prepare_lock();
+ 
+-	list_for_each_entry(cn, &clk_notifier_list, node)
+-		if (cn->clk == clk)
+-			break;
+-
+-	if (cn->clk == clk) {
+-		ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk) {
++			ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
+ 
+-		clk->core->notifier_count--;
++			clk->core->notifier_count--;
+ 
+-		/* XXX the notifier code should handle this better */
+-		if (!cn->notifier_head.head) {
+-			srcu_cleanup_notifier_head(&cn->notifier_head);
+-			list_del(&cn->node);
+-			kfree(cn);
++			/* XXX the notifier code should handle this better */
++			if (!cn->notifier_head.head) {
++				srcu_cleanup_notifier_head(&cn->notifier_head);
++				list_del(&cn->node);
++				kfree(cn);
++			}
++			break;
+ 		}
+-
+-	} else {
+-		ret = -ENOENT;
+ 	}
+ 
+ 	clk_prepare_unlock();
 -- 
 2.30.2
 
