@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59167360929
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A084360938
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhDOMR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhDOMRU (ORCPT
+        id S232718AbhDOMVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:21:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55386 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230202AbhDOMVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:17:20 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64728C061574;
-        Thu, 15 Apr 2021 05:16:57 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id d23so12822351qko.12;
-        Thu, 15 Apr 2021 05:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vWuMPoAE8UBxHeNo7QhXBPsmih0P+8U7Q8QiWirp95g=;
-        b=QEPR7zW4F2buJfe2/0q/Do+HgnihvLvH75yFZXYoSIEAsd5pvO2VZsskORw9FaK3qT
-         bcZn9AeJubvP+XKoDHKYPm17f5EnqO6SnyFbevyQpdLFd/dgjC8NtoAynIjQtSipvppY
-         IKclDl5Wb55AG6gDcd55/LzTdzszDj/5h/oXHSpOMWj0JcWG67nS8W3Mi7BRYfpuNjAV
-         98bZ0lymWQAsgfYv6Dq5dXZAOz/V/hYV67v6JD2mIh7ICfEbFoBpDUtTVM4s2Wr0wkQj
-         yMRK89IE2tJKHj23aKC9y3TPmgaBFzMRLuEr+qKRaih2eEA02VSSOLndN4pCayGugPc6
-         HyYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vWuMPoAE8UBxHeNo7QhXBPsmih0P+8U7Q8QiWirp95g=;
-        b=bLVqdZ2nTQpeHsvbGxUad08owbfzzKEBh+p/HUZu3S83Xr/EfkrUuQ96rSbYB7Ug60
-         Tom2EfQf7Rj7YeeYOcqQVMDpmE7QHMgRGoYHq3UhLeun4x29ubKVpJOZV+0D0x6mJUk8
-         KZZL6HZv228/TLprDxaqsCaPfyvww1HMuylF+FwgR5i65O9GOUO0bAC+pq4enyxuKuvt
-         9l2XHGCLs20C0tXItxtXovXRRqhO4Vm5/XMK9RkwIQWIPtdvo5ZHHhFUDSUqV983gBG/
-         wqJLu4gXS0ECr192E0tlZ00GeS/1PFbPRcz6/fiuOk2KFBdn3/2S2A0U3cg75Q5CPmGw
-         ZmmA==
-X-Gm-Message-State: AOAM533zCbzvknDCWqD99FT9XDylv84RRDTYtdlr8QEJwwBU5u2Ls+8q
-        pHH6iXu0V7So9klJfuYLxw==
-X-Google-Smtp-Source: ABdhPJxUbZ/hz2L3Dkwg5Kf0hfJ+pUukynyiaPFK5kfR5GN08QVvapRqOLkj598HM2XyDlmch6BqIQ==
-X-Received: by 2002:a37:9bc8:: with SMTP id d191mr3120663qke.99.1618489016748;
-        Thu, 15 Apr 2021 05:16:56 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id x24sm1709700qtm.95.2021.04.15.05.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 05:16:56 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 08:16:53 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
- access
-Message-ID: <20210415121653.dotuf6253s5yuhae@gabell>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-6-longman@redhat.com>
- <20210415032836.lohexqge3cvpsqoa@gabell>
- <alpine.DEB.2.22.394.2104151143080.632904@gentwo.de>
+        Thu, 15 Apr 2021 08:21:43 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FC3NUN037904;
+        Thu, 15 Apr 2021 08:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=BJ8vT+zdtijIJ63F5bRpUZcIpEAXyB7xSiiu0EiR3AE=;
+ b=lqnNjMkDdKOIVL9emzvdhra3fldjBHU/IOeopSt1uinqa1JfIVINDUkhZWf3dUdXLgXP
+ 5Cd6+opDn4W14eIXi+4RSA4lZ5lG/Hgm0myxACaCn9zTl4IBvaEZy6SawVvOsYN2McOZ
+ y3v7ks+qYtAC2WI3Iw33EKRu7KLiIMFvb2r+F9gZVdCIj3b6szJfmeeDjc9bCew+pryD
+ TVDPhVsS9q+bI0y9zNpLLvC8ZQ8Lcdy/WXGWjA0mUFjXprGZMClHofcNrwqSGEGZUsMz
+ 3EufkW6Zf/xnbygvhgrUBSbNDBu6xDoX8Xxp87yhHHzvn/KVh6CCXQIkYYv0sYXjZa/+ vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88j2vgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 08:20:55 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13FC5j7G060273;
+        Thu, 15 Apr 2021 08:20:55 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88j2vf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 08:20:55 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13FCCeu1011734;
+        Thu, 15 Apr 2021 12:20:53 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 37u3n8a33e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 12:20:53 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13FCKoQB39911756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Apr 2021 12:20:50 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F12A052050;
+        Thu, 15 Apr 2021 12:20:49 +0000 (GMT)
+Received: from osiris (unknown [9.171.3.254])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 37F265204E;
+        Thu, 15 Apr 2021 12:20:49 +0000 (GMT)
+Date:   Thu, 15 Apr 2021 14:20:48 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>, x86@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: consolidate the flock uapi definitions
+Message-ID: <YHgvoCpqLrcbQETJ@osiris>
+References: <20210412085545.2595431-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104151143080.632904@gentwo.de>
+In-Reply-To: <20210412085545.2595431-1-hch@lst.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GYiuXa6MwPoYPHEW5dNs6OA4IVhEE-Qd
+X-Proofpoint-ORIG-GUID: WIGbMGvshmA6lDf2tv4RGrRtJ4XbrxTC
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_04:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=762 clxscore=1011
+ mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104150081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 11:44:55AM +0200, Christoph Lameter wrote:
-> Would you please stop quoting the whole patch when you have nothing to say
-> about the details? It is enough to just respond without quoting. I was
-> looking through this trying to find something you said about individual
-> sections of code but there was nothing.
+On Mon, Apr 12, 2021 at 10:55:40AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> currently we deal with the slight differents in the various architecture
+> variants of the flock and flock64 stuctures in a very cruft way.  This
+> series switches to just use small arch hooks and define the rest in
+> asm-generic and linux/compat.h instead.
+> 
+> Diffstat:
+>  arch/arm64/include/asm/compat.h        |   20 --------------------
+>  arch/mips/include/asm/compat.h         |   23 ++---------------------
+>  arch/mips/include/uapi/asm/fcntl.h     |   28 +++-------------------------
+>  arch/parisc/include/asm/compat.h       |   16 ----------------
+>  arch/powerpc/include/asm/compat.h      |   20 --------------------
+>  arch/s390/include/asm/compat.h         |   20 --------------------
+>  arch/sparc/include/asm/compat.h        |   22 +---------------------
+>  arch/x86/include/asm/compat.h          |   24 +++---------------------
+>  include/linux/compat.h                 |   31 +++++++++++++++++++++++++++++++
+>  include/uapi/asm-generic/fcntl.h       |   21 +++++++--------------
+>  tools/include/uapi/asm-generic/fcntl.h |   21 +++++++--------------
+>  11 files changed, 54 insertions(+), 192 deletions(-)
 
-Thank you for pointing it out and sorry about that.
-I'll do that next time.
-
-- Masa
+for the s390 bits:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
