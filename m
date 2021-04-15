@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6073C360322
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74929360320
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbhDOHTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:19:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35482 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDOHTC (ORCPT
+        id S231285AbhDOHTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:19:01 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:34567 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhDOHTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:19:02 -0400
-Received: from mail-pg1-f199.google.com ([209.85.215.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1lWwGs-00037B-Mz
-        for linux-kernel@vger.kernel.org; Thu, 15 Apr 2021 07:18:38 +0000
-Received: by mail-pg1-f199.google.com with SMTP id g5-20020a63f4050000b02901f6c7b9a6d0so948967pgi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:18:38 -0700 (PDT)
+        Thu, 15 Apr 2021 03:19:00 -0400
+Received: by mail-ua1-f45.google.com with SMTP id s2so7220196uap.1;
+        Thu, 15 Apr 2021 00:18:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5R2UEdalYH+QJwAiSQKftUG6+6vnMGSX5LzgwS8fZTU=;
-        b=oEDx9J//GtiA7bogzT/k6pNRRtcWSfZ5nQU092UVeeVjOIntU56+Bj5ifb7l6yCvkv
-         3F8JwY0XZNMFsZ2CwDOtfQ/wSyocPCPWgArt2PJWDa2ayCb3K9DH+SuARYNY7xSjZQ2S
-         69eJxvA191Z5hBAwUCRgzLaquL07XwXMB4kZmCupo2vITgnK4Rho9ot01ryv4nqh1uZe
-         SJseytWh1XtEqAI3Aa1Varf9mQHxoKU9CGGsad8HSjV8ot1JaBI4ULFwjz1ZKvVEF60W
-         cdWcaVqtv6RHRtNDKI4TWYVNhXYLu+yLKM3eJ6rvLZqeFXIec+PocaHV5QPMf+gIJ9H/
-         ZLyw==
-X-Gm-Message-State: AOAM533QlP4ZdO0HHwv341HELUNr37S6h8wy3oB6RMyN7VsQVbteaJbG
-        rCIcavzM+eJ4MRx7qywGhySXYbgHLran74S1PdH0DcW72obMxYohWUZ+iq/KFBR6YfStC5shR8+
-        7nmupISd+QWwDgSPp0zR31TnZ1uy/u8xXyYJauYrn
-X-Received: by 2002:a62:5cc3:0:b029:203:54be:e4c9 with SMTP id q186-20020a625cc30000b029020354bee4c9mr1955790pfb.80.1618471117357;
-        Thu, 15 Apr 2021 00:18:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzulbQcEb+SL0c0oEOvqz6I23syA3ZKRAT/SnGjUswHi0aNKxnJZy3J42T0G5Q7Z+0TGkGXEA==
-X-Received: by 2002:a62:5cc3:0:b029:203:54be:e4c9 with SMTP id q186-20020a625cc30000b029020354bee4c9mr1955745pfb.80.1618471116517;
-        Thu, 15 Apr 2021 00:18:36 -0700 (PDT)
-Received: from Leggiero.taipei.internal (114-136-27-149.emome-ip.hinet.net. [114.136.27.149])
-        by smtp.gmail.com with ESMTPSA id h7sm1283475pfo.44.2021.04.15.00.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 00:18:35 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     shuah@kernel.org, davem@davemloft.net
-Subject: [PATCH] selftests: xfrm: put cleanup code into a exit trap
-Date:   Thu, 15 Apr 2021 15:18:23 +0800
-Message-Id: <20210415071823.29091-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TYpEFy4TiS8JfXQcnDIWzjJBFSrstXrUZn7dBlSbGg0=;
+        b=twCmbuKS/Jjeqc97M5GoqKHZEYetz6QQFR+i5fK7HEu2yUI1vnKx6L+Yidg/kZmndj
+         McmIEZLEYa7U8FJVtgfscbUztCA9GUmtWviyltOfdDFmuQ5RRBDLXdo/jRCJ0O3eOmwp
+         3ta+CL82FL3W4qAhTleYZG+d3gu0nyKMBzse4j3mxhjjJ4hr5+Igl6CLp923FVplcmvG
+         ci2EBwqVJu60vuoI9c0dw52+dC0gRAsTQMeqz0Eslu8EZfQrVdzBcCf2NPi71bCCoP7y
+         WgT/icfSMgPMT0Htw3LJk4Kj2R+MIcbu0AeUGOfEGAb1ePHZiJvEQkM5MOHehcP+WAUJ
+         KajA==
+X-Gm-Message-State: AOAM532DNwrNOWpV8pD4IjUmqrxblGuMIjcFyb2T26vTUymlR3Y2l8wx
+        dUz2nmD3pmUhAHe8GImwVaeJzLarp3gp3+KAFuc=
+X-Google-Smtp-Source: ABdhPJztPwJcY9Ud2yMHeeON2pYWHFlcgH92k1SmJ4Mv/fkqt/H8QcgYvYh8pCTm1dBwGoP5HEfatXBa0el+hDTFGxM=
+X-Received: by 2002:ab0:2c16:: with SMTP id l22mr856492uar.100.1618471117162;
+ Thu, 15 Apr 2021 00:18:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
+ <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
+ <CAMuHMdUQOi8h31D_Qtnv_E1vsEu6RO8sHy-DArQ0jQt5v_JoVA@mail.gmail.com>
+ <CABRcYmK597zCNs_ay6BUjxCuxGJazKn4iujYtOUxcZC0J=xVPg@mail.gmail.com> <CAEf4BzbROOSi8PfM2c-BR31S-=aQjVgfzTAPaCqntcjjQb1W=w@mail.gmail.com>
+In-Reply-To: <CAEf4BzbROOSi8PfM2c-BR31S-=aQjVgfzTAPaCqntcjjQb1W=w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 15 Apr 2021 09:18:25 +0200
+Message-ID: <CAMuHMdXQ2=xPSGxDsrprb_pXjkOaUi_YZ+8h65kdW+SYCseWoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the xfrm_policy.sh script takes longer than the default kselftest
-framework 45 seconds timeout to run, it will be terminated and thus
-leave those netns namespace files created by the test alone.
+Hi Andrii,
 
-In this case a second attempt will fail with:
-  # Cannot create namespace file "/run/netns/ns1": File exists
+On Thu, Apr 15, 2021 at 12:58 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Wed, Apr 14, 2021 at 11:30 AM Florent Revest <revest@chromium.org> wrote:
+> > On Wed, Apr 14, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Wed, Apr 14, 2021 at 9:41 AM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
+> > > > > +       fmt = (char *)fmt_addr + fmt_map_off;
+> > > > > +
+> > > >
+> > > > bot complained about lack of (long) cast before fmt_addr, please address
+> > >
+> > > (uintptr_t), I assume?
+> >
+> > (uintptr_t) seems more correct to me as well. However, I just had a
+> > look at the rest of verifier.c and (long) casts are already used
+> > pretty much everywhere whereas uintptr_t isn't used yet.
+> > I'll send a v4 with a long cast for the sake of consistency with the
+> > rest of the verifier.
+>
+> right, I don't care about long or uintptr_t, both are guaranteed to
+> work, I just remember seeing a lot of code with (long) cast. I have no
+> preference.
 
-It might affect the outcome of other tests as well.
+AFAIR, uintptr_t was introduced only in C99. Early Linux code predates that,
+hence uses long, and this behavior was of course copied to new code.
 
-Move the netns cleanup code into an exit trap so that we can ensure
-these namespace files will be removed after the test.
+Please use uintptr_t in new code.
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- tools/testing/selftests/net/xfrm_policy.sh | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/tools/testing/selftests/net/xfrm_policy.sh b/tools/testing/selftests/net/xfrm_policy.sh
-index bdf450e..bb4632b 100755
---- a/tools/testing/selftests/net/xfrm_policy.sh
-+++ b/tools/testing/selftests/net/xfrm_policy.sh
-@@ -28,6 +28,11 @@ KEY_AES=0x0123456789abcdef0123456789012345
- SPI1=0x1
- SPI2=0x2
- 
-+cleanup() {
-+    for i in 1 2 3 4;do ip netns del ns$i 2>/dev/null ;done
-+}
-+trap cleanup EXIT
-+
- do_esp_policy() {
-     local ns=$1
-     local me=$2
-@@ -481,6 +486,4 @@ check_hthresh_repeat "policies with repeated htresh change"
- 
- check_random_order ns3 "policies inserted in random order"
- 
--for i in 1 2 3 4;do ip netns del ns$i;done
--
- exit $ret
+                        Geert
+
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
