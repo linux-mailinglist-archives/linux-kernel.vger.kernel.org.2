@@ -2,170 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395173613D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32743613DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235654AbhDOVD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:03:28 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:56210 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235546AbhDOVDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:03:25 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([95.244.94.151])
-        by smtp-35.iol.local with ESMTPA
-        id X98ZlquQZpK9wX98dlNmSe; Thu, 15 Apr 2021 23:03:00 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1618520580; bh=Kvp5+D47MKZDrSKIysJWNf2xhpIp7NvSFWAyqEdkBPI=;
-        h=From;
-        b=zze3CLYsqtDa6dS/qz4LpoDb0dciwMJVlDch6uEkRu+nrJhbFD0SR9mBe8q96Yiiq
-         wm6zq70f/qNHqbgfmQvQhUnB3ZoKCVTuk1o59GT+KgLEwIi3eDLg2U6pMMHgsBmigq
-         ontLdY8kb9DrxZp/3CLcuuEOfcvje61/8HmGPjpARjSnklSVmz/Po6NOIcIvDGBRzY
-         L8kSc15WJhPDNHtSZToLyYQEdpm+WeiFZW+V1FDZf6ZE9Bjv0wz9AaNaJ+7o8i9EqL
-         PGBPDYYzadAkJNZUPqg/pqzm/A69yRDfmPYN2Wy8z4kZZmyNUE8W9HCSw5a78vUDCx
-         7MkqK9UutzANA==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=6078aa04 cx=a_exe
- a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
- a=RNOFN41U3FZ75c9ZyJUA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Dimitris Lampridis <dlampridis@logikonlabs.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH v3] serial: omap: fix rs485 half-duplex filtering
-Date:   Thu, 15 Apr 2021 23:02:52 +0200
-Message-Id: <20210415210252.25399-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfIrbi7z3i+m5hsETCrdGeYoVtrG3sy1gXbOe5zpMYGT5iv5aH0wegp3o6aw+84qjnLuxC+Unw33u58cYRlBHQwlWudzPWawaZpaBqSbSYI5efYBEQKD7
- V1HhzB6Z3EPPZTqiA7U+DQp444/0yya1wXxfHZOfMAQDzP4MFFU4F+woNZrDVBNvQkC1vFdX0UBec1ViP6aZrHc2iRzdawWgs4BSHJmBm2fyk8oojf9qVFKg
- bcKZRWMnYA8eKBC2iPzS/HJYHJQUzFxgeYi4ySn8awSmmI+MFFayFfFo3u0ElERANuGsIwNzVkd7La4ERrWKpp7JR+2kkaP0WGjLLnnM03zJ58ZxSsx6GIiN
- gAquvgWxzW2yaTzkGoM9EzbxEA+ysThPqCv735n/V80xFTdHmcDOOdUsaOh8kl99IWd1ke9H
+        id S235433AbhDOVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234869AbhDOVIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 17:08:13 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76BDC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id q14-20020a17090a430eb02901503aaee02bso2358806pjg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HftWZnccBzP01eluEQiPxFKbZi9Y6kknhs11IWeFnvM=;
+        b=NRvO3JOF8esPh7/WWkaX8usLVRSwsRys7YWh93NwFRddFNjL48k1rv9EHsnby5dv04
+         kYHVjh/ZHUyXCgAzGLfn7VWfk2NBxw3Q8otRYaShP4NqstdYEUq/RNE9dqnxIEZbPF9H
+         IfTxHNzYLHNYjAECWkPJWbtiy3yh4kow8p71RFx1TtXsLxi2vxXExkzbv16OOrihFzNr
+         37qV+2AICtA+AGb9EQbNJCEKW8cl2jypQLut7Xb2RYvFIiUkFmf6x26JXOUXtR1wUEKv
+         ARouBx2K+KXbP//OX1crmWeSBLkJQlQgQT7HPXWRtaH7l4xyUoG2WD59i/ADlDwvtfOt
+         ZXWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HftWZnccBzP01eluEQiPxFKbZi9Y6kknhs11IWeFnvM=;
+        b=Q/cZTvDlXLXNzmHW+70TdMeihtOUTG4GAp02jvyC6ZOj0y97HwnJN+6G5/4WLS+Xkc
+         cr6UdocdRp517wzfsOpBXupPjAdlyDnwO7Q9gVKf4jiatZbJkf67yy0+WLzgJRU08b/z
+         PwqfzX4j3FOhWCzw4X3zkjOOaRfp5Pu9+O+G81tA2D7lMeBBvE6eQ5AXOuAzX05mtuCl
+         PhLlGPFYU4S2f8oHGAGWQJpATbfozcUxnBJod7rGMYYnJ8GO/b7y4noz7+HIjJFZ/tql
+         ZJ7hIz2L7Lmg5anHY3MGBQPeZVLKyzwb+GyBYixq3v6rcYu6U9lL/4BB6z0FsVhmrVpt
+         iCmg==
+X-Gm-Message-State: AOAM531UsjEQ8sTw23P989K1xe9QJkp4MWT079fYeF+1bEIejo+s1nq0
+        ZYAWJvSY767hVVWT1lnecpIjFg==
+X-Google-Smtp-Source: ABdhPJxIfjaIzEemvHUaeH9feCNZBRnIZBbDTyHH5eWcVFuZoEsFzhsCpvLoN1Y+4JC4uNcJLeUhuw==
+X-Received: by 2002:a17:90b:16cd:: with SMTP id iy13mr6219384pjb.46.1618520869084;
+        Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
+Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
+        by smtp.gmail.com with ESMTPSA id q63sm3391636pjq.17.2021.04.15.14.07.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 14:07:48 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 14:07:40 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        liuwe@microsoft.com, netdev@vger.kernel.org, leon@kernel.org,
+        andrew@lunn.ch, bernd@petrovitsch.priv.at, rdunlap@infradead.org,
+        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v6 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210415140740.7fac720e@hermes.local>
+In-Reply-To: <20210415054519.12944-1-decui@microsoft.com>
+References: <20210415054519.12944-1-decui@microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data received during half-duplex transmission must be filtered.
-If the target device responds quickly, emptying the FIFO at the end of
-the transmission can erase not only the echo characters but also part of
-the response message.
-By keeping the receive interrupt enabled even during transmission, it
-allows you to filter each echo character and only in a number equal to
-those transmitted.
-The issue was generated by a target device that started responding
-240us later having received a request in communication at 115200bps.
-Sometimes, some messages received by the target were missing some of the
-first bytes.
+On Wed, 14 Apr 2021 22:45:19 -0700
+Dexuan Cui <decui@microsoft.com> wrote:
 
-Fixes: 3a13884abea0 ("tty/serial: omap: empty the RX FIFO at the end of half-duplex TX")
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> +static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
+> +				u32 *max_sq, u32 *max_rq, u32 *num_indir_entry)
+> +{
+> +	struct mana_query_vport_cfg_resp resp = {};
+> +	struct mana_query_vport_cfg_req req = {};
+> +	int err;
+> +
+> +	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_VPORT_CONFIG,
+> +			     sizeof(req), sizeof(resp));
+> +
+> +	req.vport_index = vport_index;
+> +
+> +	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
+> +				sizeof(resp));
+> +	if (err)
+> +		return err;
+> +
+> +	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_VPORT_CONFIG,
+> +				   sizeof(resp));
+> +	if (err)
+> +		return err;
+> +
+> +	if (resp.hdr.status)
+> +		return -EPROTO;
+> +
+> +	*max_sq = resp.max_num_sq;
+> +	*max_rq = resp.max_num_rq;
+> +	*num_indir_entry = resp.num_indirection_ent;
+> +
+> +	apc->port_handle = resp.vport;
+> +	memcpy(apc->mac_addr, resp.mac_addr, ETH_ALEN);
+
+You could use ether_addr_copy here.
 
 
----
+> +int mana_do_attach(struct net_device *ndev, enum mana_attach_caller caller)
+> +{
+> +	struct mana_port_context *apc = netdev_priv(ndev);
+> +	struct gdma_dev *gd = apc->ac->gdma_dev;
+> +	u32 max_txq, max_rxq, max_queues;
+> +	int port_idx = apc->port_idx;
+> +	u32 num_indirect_entries;
+> +	int err;
+> +
+> +	if (caller == MANA_OPEN)
+> +		goto start_open;
+> +
+> +	err = mana_init_port_context(apc);
+> +	if (err)
+> +		return err;
+> +
+> +	err = mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
+> +				   &num_indirect_entries);
+> +	if (err) {
+> +		netdev_err(ndev, "Failed to query info for vPort 0\n");
+> +		goto reset_apc;
+> +	}
+> +
+> +	max_queues = min_t(u32, max_txq, max_rxq);
+> +	if (apc->max_queues > max_queues)
+> +		apc->max_queues = max_queues;
+> +
+> +	if (apc->num_queues > apc->max_queues)
+> +		apc->num_queues = apc->max_queues;
+> +
+> +	memcpy(ndev->dev_addr, apc->mac_addr, ETH_ALEN);
 
-Changes in v3:
-- Add 'Fixes' tag
-
-Changes in v2:
-- Fix compiling error
-
- drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-index 76b94d0ff586..c0df22b7ea5e 100644
---- a/drivers/tty/serial/omap-serial.c
-+++ b/drivers/tty/serial/omap-serial.c
-@@ -159,6 +159,8 @@ struct uart_omap_port {
- 	u32			calc_latency;
- 	struct work_struct	qos_work;
- 	bool			is_suspending;
-+
-+	atomic_t		rs485_tx_filter_count;
- };
- 
- #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
-@@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
- 		serial_out(up, UART_IER, up->ier);
- 	}
- 
--	if ((port->rs485.flags & SER_RS485_ENABLED) &&
--	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
--		/*
--		 * Empty the RX FIFO, we are not interested in anything
--		 * received during the half-duplex transmission.
--		 */
--		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
--		/* Re-enable RX interrupts */
--		up->ier |= UART_IER_RLSI | UART_IER_RDI;
--		up->port.read_status_mask |= UART_LSR_DR;
--		serial_out(up, UART_IER, up->ier);
--	}
--
- 	pm_runtime_mark_last_busy(up->dev);
- 	pm_runtime_put_autosuspend(up->dev);
- }
-@@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, up->port.x_char);
- 		up->port.icount.tx++;
- 		up->port.x_char = 0;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		return;
- 	}
- 	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
-@@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
- 		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
- 		up->port.icount.tx++;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		if (uart_circ_empty(xmit))
- 			break;
- 	} while (--count > 0);
-@@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
- 
- 	if ((port->rs485.flags & SER_RS485_ENABLED) &&
- 	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
--		serial_omap_stop_rx(port);
-+		atomic_set(&up->rs485_tx_filter_count, 0);
- 
- 	serial_omap_enable_ier_thri(up);
- 	pm_runtime_mark_last_busy(up->dev);
-@@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
- 	 * Read one data character out to avoid stalling the receiver according
- 	 * to the table 23-246 of the omap4 TRM.
- 	 */
--	if (likely(lsr & UART_LSR_DR))
-+	if (likely(lsr & UART_LSR_DR)) {
- 		serial_in(up, UART_RX);
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+		    atomic_read(&up->rs485_tx_filter_count))
-+			atomic_dec(&up->rs485_tx_filter_count);
-+	}
- 
- 	up->port.icount.rx++;
- 	flag = TTY_NORMAL;
-@@ -543,6 +545,13 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
- 		return;
- 
- 	ch = serial_in(up, UART_RX);
-+	if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+	    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+	    atomic_read(&up->rs485_tx_filter_count)) {
-+		atomic_dec(&up->rs485_tx_filter_count);
-+		return;
-+	}
-+
- 	flag = TTY_NORMAL;
- 	up->port.icount.rx++;
- 
--- 
-2.17.1
+And here use ether_addr_copy().
 
