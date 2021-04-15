@@ -2,176 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A1835FFAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABBA35FFB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhDOBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:39:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:34051 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhDOBjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:39:05 -0400
-IronPort-SDR: yZVNJ5dEEhpDNl1y1AKhxbbglza6HFkpKH4mkxnxVddIH/Bfe/pCAecrHK3PLa9LP6F8Oqwqtf
- MCEEpE0SADJA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="174876843"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="174876843"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 18:38:43 -0700
-IronPort-SDR: sy2oOTyzPZukgNuZT+0/6FyNUiVvu7q31rRtTjHSry+kCcD5FVU8H1w7IiFPT4rWjG3OadupVP
- GAnJcL461WmA==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="424989801"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 18:38:40 -0700
-Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
- Lake Servers
-To:     Liuxiangdong <liuxiangdong5@huawei.com>
-Cc:     andi@firstfloor.org, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wei.w.wang@intel.com, x86@kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210329054137.120994-2-like.xu@linux.intel.com>
- <606BD46F.7050903@huawei.com>
- <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
- <60701165.3060000@huawei.com>
- <1ba15937-ee3d-157a-e891-981fed8b414d@linux.intel.com>
- <607700F2.9080409@huawei.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <76467c36-3399-a123-d582-92affadc4d73@intel.com>
-Date:   Thu, 15 Apr 2021 09:38:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S229721AbhDOBjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229619AbhDOBjV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 21:39:21 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF77C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:38:59 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so6953839pja.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bX6POsGmP4rs/rcLgPiRiQi4oaHEHZ6HqQN4nR2RIow=;
+        b=QsNXz83U6yLc/9B6Ylh4qLBbM+mPoSDKwIE36jf24RToMnYA6W/NTMnk4CSkDaUDu1
+         fchQlGZSES0NTLp9wu5LBdzEchrvbRvU9yKyeV2C6p6gEALe0GLxpC0aSOGEOyTJgPOr
+         +t6OqHmIWMjLTfFGARripHpVxPqOF70SbTut4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bX6POsGmP4rs/rcLgPiRiQi4oaHEHZ6HqQN4nR2RIow=;
+        b=fKr/HMIxLhr8NWO0PkuDZUGVCEnrwAVZyweiRTyI2XfInbl2+Be4HQfWHVnuukTi41
+         ZSfFq+RVTQz2D3nXJaaAGkXdoD16fAW0TA+1pLzG+qfdWEoQuuVEB8DZjaTMk9+q52Tx
+         /dIIim26aj9rd/rzAW6w5mm7PW5EbCa3221xUuhiVqIRS834dXtdJloZ8YIvIpcJy8vZ
+         /pT/+QInNYI5tLb+FfgMYi50vjGa/SMXsWg7lER/6TqfwKnkf/KBpcR+xPPg749CpR98
+         O984TXitqXbBU+N6HbqEIT5UAQQklwDWqvw8zDBmtz5bqL2TbL/8Iw0OZANPMDXMwWAs
+         wE0g==
+X-Gm-Message-State: AOAM532Y2K0SM0nVK0T+f46m19P81htya9lsirL762LP3Dnw41JoT9xl
+        DBTY+UhjKWC/0umcbVNt+71c7A==
+X-Google-Smtp-Source: ABdhPJwd5bR54OWgpgBTnm6xH0X8VpmlK7vpSuR0Oz+hSNYVch3S//NX4ZCB3JzVG85QOgXpbg0aOw==
+X-Received: by 2002:a17:902:e851:b029:eb:1fd0:fa8e with SMTP id t17-20020a170902e851b02900eb1fd0fa8emr1262234plg.38.1618450738773;
+        Wed, 14 Apr 2021 18:38:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o9sm516255pfh.217.2021.04.14.18.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 18:38:58 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 18:38:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <202104141820.7DDE15A30@keescook>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
+ <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <607700F2.9080409@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/14 22:49, Liuxiangdong wrote:
-> Hi Like,
->
-> On 2021/4/9 16:46, Like Xu wrote:
->> Hi Liuxiangdong,
->>
->> On 2021/4/9 16:33, Liuxiangdong (Aven, Cloud Infrastructure Service 
->> Product Dept.) wrote:
->>> Do you have any comments or ideas about it ?
->>>
->>> https://lore.kernel.org/kvm/606E5EF6.2060402@huawei.com/
->>
->> My expectation is that there may be many fewer PEBS samples
->> on Skylake without any soft lockup.
->>
->> You may need to confirm the statement
->>
->> "All that matters is that the EPT pages don't get
->> unmapped ever while PEBS is active"
->>
->> is true in the kernel level.
->>
->> Try "-overcommit mem-lock=on" for your qemu.
->>
->
-> Sorry, in fact, I don't quite understand
-> "My expectation is that there may be many fewer PEBS samples on Skylake 
-> without any soft lockup. "
+Before anything else: yay! I'm really glad to see this RFC officially
+hit LKML. :)
 
-For testcase: perf record -e instructions:pp ./workload
+On Wed, Apr 14, 2021 at 10:20:51PM +0200, Miguel Ojeda wrote:
+>   - On floating-point, 128-bit, etc.: the main issue is that the
+> `core` library is a single big blob at the moment. I have already
+> mentioned this to some Rust team folks. We will need a way to "cut"
+> some things out, for instance with the "feature flags" they already
+> have for other crates (or they can split `core` in to several, like
+> `alloc` is for similar reasons). Or we could do it on our side
+> somehow, but I prefer to avoid that (we cannot easily customize `core`
+> like we can with `alloc`, because it is tied to the compiler too
+> tightly).
 
-We can get 2242 samples on the ICX guest, but
-only 17 samples or less on the Skylake guest.
+Besides just FP, 128-bit, etc, I remain concerned about just basic
+math operations. C has no way to describe the intent of integer
+overflow, so the kernel was left with the only "predictable" result:
+wrap around. Unfortunately, this is wrong in most cases, and we're left
+with entire classes of vulnerability related to such overflows.
 
-In my testcase on Skylake, neither the host nor the guest triggered the 
-soft lock.
+When originally learning Rust I was disappointed to see that (by default)
+Rust similarly ignores the overflow problem, but I'm glad to see the
+very intentional choices in the Rust-in-Linux design to deal with it
+directly. I think the default behavior should be saturate-with-WARN
+(this will match the ultimate goals of the UBSAN overflow support[1][2]
+in the C portions of the kernel). Rust code wanting wrapping/checking
+can expressly use those. The list of exploitable overflows is loooong,
+and this will remain a weakness in Rust unless we get it right from
+the start. What's not clear to me is if it's better to say "math with
+undeclared overflow expectation" will saturate" or to say "all math must
+declare its overflow expectation".
 
->
-> And, I have used "-overcommit mem-lock=on"  when soft lockup happens.
+-Kees
 
-I misunderstood the use of "mem-lock=on". It is not the same as the
-guest mem pin and I believe more kernel patches are needed.
+[1] https://github.com/KSPP/linux/issues/26
+[2] https://github.com/KSPP/linux/issues/27
 
->
->
-> Now, I have tried to configure 1G-hugepages for 2G-mem vm. Each of guest 
-> numa nodes has 1G mem.
-> When I use pebs(perf record -e cycles:pp) in guest, there are successful 
-> pebs samples just for a while and
-> then I cannot get pebs samples. Host doesn't soft lockup in this process.
-
-In the worst case, no samples are expected.
-
->
-> Are there something wrong on skylake for we can only get a few samples? 
-> IRQ?  Or using hugepage is not effecitve?
-
-The few samples comes from hardware limitation.
-The Skylake doesn't have this "EPT-Friendly PEBS" capabilityand
-some PEBS records will be lost when used by guests.
-
->
-> Thanks!
->
->>>
->>>
->>> On 2021/4/6 13:14, Xu, Like wrote:
->>>> Hi Xiangdong,
->>>>
->>>> On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service 
->>>> Product Dept.) wrote:
->>>>> Hi，like.
->>>>> Some questions about this new pebs patches set：
->>>>> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/ 
->>>>>
->>>>>
->>>>> The new hardware facility supporting guest PEBS is only available
->>>>> on Intel Ice Lake Server platforms for now.
->>>>
->>>> Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
->>>> 18.3.10.1 Processor Event Based Sampling (PEBS) Facility
->>>>
->>>> And again, this patch set doesn't officially support guest PEBS on the 
->>>> Skylake.
->>>>
->>>>>
->>>>>
->>>>> AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake 
->>>>> doesn't.
->>>>> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
->>>>> counter in Skylake.
->>>>
->>>> For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
->>>> mask the other unsupported bits in the pmu->pebs_enable_mask.
->>>>
->>>>> Is there anything else that only Icelake supports in this patches set?
->>>>
->>>> The PDIR counter on the Ice Lake is the fixed counter 0
->>>> while the PDIR counter on the Sky Lake is the gp counter 1.
->>>>
->>>> You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
->>>>
->>>>>
->>>>>
->>>>> Besides, we have tried this patches set in Icelake.  We can use 
->>>>> pebs(eg: "perf record -e cycles:pp")
->>>>> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
->>>>> minimum guest kernel version requirement?
->>>>
->>>> The Ice Lake CPU model has been added since v5.4.
->>>>
->>>> You may double check whether the stable tree(s) code has
->>>> INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
->>>>
->>>>>
->>>>>
->>>>> Thanks,
->>>>> Xiangdong Liu
->>>>
->>>
->>
->
-
+-- 
+Kees Cook
