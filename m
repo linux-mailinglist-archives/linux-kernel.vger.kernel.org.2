@@ -2,186 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6B636076D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3224F3607C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbhDOKrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhDOKrR (ORCPT
+        id S232871AbhDOKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:53:23 -0400
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:19337 "EHLO
+        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232827AbhDOKxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:47:17 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A001C061574;
-        Thu, 15 Apr 2021 03:46:54 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u15so3276260plf.10;
-        Thu, 15 Apr 2021 03:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oV4yvPzBl+8JFQ4FMZmRE08ppy67MX2UmEYPl8EhO50=;
-        b=SyCpLMrBzeb3fwLhDpa8qxrbb//VUgy89Xbxe2C1+tWhCS9enUHbulLBHkcU6OX0y6
-         aHxwV87N38c/JoUPRfl6OhhKdhUVhou/52XznXoo8Bx5Tu22pxYcEqRVukZs1IfA2tDd
-         lNgirBp+nJPByNqRfO3W2SBS7jyrvI42Y0qbt8PZUL0CXTRAX+Fx3snanIKBTDexZDsV
-         JMY4U2CzQt/F7Xgchoi+hcCzI8t+w7vHQgYlQ3PdPAtg6af3Otr+yAA5x94ts4Y1VodI
-         7d73jN58s11sK0a6XN+8Ktwxv3EtNqBChHGjI1PBxgR5BmasC3dTi9SFfUzyAvZE1dIV
-         9Hgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oV4yvPzBl+8JFQ4FMZmRE08ppy67MX2UmEYPl8EhO50=;
-        b=Fq5o1UWfdxpF1762POLCJd1t/b/5zKhCwkWSvoxHUlDrht0BYQcF2wkL2yyd0aEZE+
-         hGk5HR5GniWqSCF7t7O4msRId6cah/zcI0M9Brxd9Yy5hle9624Jah5l+SektASHEjkG
-         rg0kebCaoYGpsf6eutA3BSWbSgNh+sOXVvjgWrpPwT3TsXT7xpvgTjshKgm0RT8DMNBA
-         FQB8Athrb3slCr9zZkPmWfSB3jBkiDPOfGUefmWFsvijr2S9Ww1QLJTJoylsxIaL4WXe
-         TPvVVDMgvJwuckCWo8PaRyTFuG9TrHvdsouKc1WTYJAbwjq026vybMysWjyoQOcBHTqr
-         shmQ==
-X-Gm-Message-State: AOAM532vTnG0H5GHpbZBIVMOr29sb5o3OZ4WNrbSBV/gL3fV7Tiumn12
-        NXSbNZ/Stkw3GWiJIwoliGr7sQEkstNstY1XUs0=
-X-Google-Smtp-Source: ABdhPJyJC4pTKN9cWqu158fTl9rbPrgh93CK4doD8LtZU92In9K69g4pbH9tiEeOcHlzTrh7Q8t7v8WNh6iO49fyHSo=
-X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
- 91-20020a1709020264b02900eb3d3aa09cmr3246929plc.0.1618483613936; Thu, 15 Apr
- 2021 03:46:53 -0700 (PDT)
+        Thu, 15 Apr 2021 06:53:13 -0400
+X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 06:53:13 EDT
+Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 4FLbd504l7z4xn8w;
+        Thu, 15 Apr 2021 10:47:04 +0000 (UTC)
+Authentication-Results: mail-41104.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="VFX0DLTP"
+Date:   Thu, 15 Apr 2021 10:46:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1618483619;
+        bh=FqqoljThLpOkKq3HVnBx6falyOkeZosZYHA11X1CY4Q=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=VFX0DLTPJGS+E8PEcqknTVMEkNY7s7p4wpU5cvvYem3E8esQCFuXBkL+29Y0d6+JE
+         kihOVEXGKkBxFg+Jd+M949kBliz9opJXziMSQm/bmxJ3mQ8xUw5yQdC3RRIt9pkmV+
+         PFwQA241d7BNnb9o1b1tfpjYnhhooef105I4Lnvo=
+To:     bjorn.andersson@linaro.org
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     agross@kernel.org, devicetree@vger.kernel.org, dmurphy@ti.com,
+        lee.jones@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-pwm@vger.kernel.org, martin.botka1@gmail.com, pavel@ucw.cz,
+        robh+dt@kernel.org, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <MhLF908GTTNiXzyq2bkuFfK30ETPKJrYqVSGyeT4rY@cp4-web-038.plabs.ch>
 MIME-Version: 1.0
-References: <20210412034712.16778-1-zev@bewilderbeest.net> <20210412034712.16778-4-zev@bewilderbeest.net>
-In-Reply-To: <20210412034712.16778-4-zev@bewilderbeest.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Apr 2021 13:46:37 +0300
-Message-ID: <CAHp75VfCKRn+ER4bKf+PLhXHT0yZeN4JDufxfROa4UMf=Bc6bQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] serial: 8250_aspeed_vuart: add aspeed,lpc-io-reg
- and aspeed,lpc-interrupts DT properties
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 7:05 AM Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> These allow describing all the Aspeed VUART attributes currently
-> available via sysfs.  aspeed,lpc-interrupts provides a replacement for
-> the deprecated aspeed,sirq-polarity-sense property.
+Hi,
 
-One nit-pick below.
-
-In any case it's fine.
-
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On Wed, 21 Oct 2020 13:12:22 -0700 Bjorn Andersson wrote:
+> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> lookup-table, altering the duty cycle over time - which provides the
+> means for e.g. hardware assisted transitions of LED brightness.
+>=20
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  drivers/tty/serial/8250/8250_aspeed_vuart.c | 51 ++++++++++++++++++++-
->  1 file changed, 49 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> index 8433f8dbb186..3c239d98747f 100644
-> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> @@ -28,6 +28,10 @@
->  #define ASPEED_VUART_ADDRL             0x28
->  #define ASPEED_VUART_ADDRH             0x2c
->
-> +#define ASPEED_VUART_DEFAULT_LPC_ADDR  0x3f8
-> +#define ASPEED_VUART_DEFAULT_SIRQ      4
-> +#define ASPEED_VUART_DEFAULT_SIRQ_POLARITY     IRQ_TYPE_LEVEL_LOW
-> +
->  struct aspeed_vuart {
->         struct device           *dev;
->         void __iomem            *regs;
-> @@ -386,6 +390,18 @@ static void aspeed_vuart_auto_configure_sirq_polarity(
->         aspeed_vuart_set_sirq_polarity(vuart, (value & reg_mask) == 0);
->  }
->
-> +static int aspeed_vuart_map_irq_polarity(u32 dt)
-> +{
-> +       switch (dt) {
-> +       case IRQ_TYPE_LEVEL_LOW:
-> +               return 0;
-> +       case IRQ_TYPE_LEVEL_HIGH:
-> +               return 1;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +}
-> +
->  static int aspeed_vuart_probe(struct platform_device *pdev)
->  {
->         struct of_phandle_args sirq_polarity_sense_args;
-> @@ -393,8 +409,8 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->         struct aspeed_vuart *vuart;
->         struct device_node *np;
->         struct resource *res;
-> -       u32 clk, prop;
-> -       int rc;
-> +       u32 clk, prop, sirq[2];
-> +       int rc, sirq_polarity;
->
->         np = pdev->dev.of_node;
->
-> @@ -501,6 +517,37 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->                 of_node_put(sirq_polarity_sense_args.np);
->         }
->
-> +       rc = of_property_read_u32(np, "aspeed,lpc-io-reg", &prop);
-> +       if (rc < 0)
-> +               prop = ASPEED_VUART_DEFAULT_LPC_ADDR;
-> +
-> +       rc = aspeed_vuart_set_lpc_address(vuart, prop);
-> +       if (rc < 0) {
-> +               dev_err(&pdev->dev, "invalid value in aspeed,lpc-io-reg property\n");
-> +               goto err_clk_disable;
-> +       }
-> +
-> +       rc = of_property_read_u32_array(np, "aspeed,lpc-interrupts", sirq, 2);
-> +       if (rc < 0) {
-> +               sirq[0] = ASPEED_VUART_DEFAULT_SIRQ;
-> +               sirq[1] = ASPEED_VUART_DEFAULT_SIRQ_POLARITY;
-> +       }
-> +
-> +       rc = aspeed_vuart_set_sirq(vuart, sirq[0]);
-> +       if (rc < 0) {
-> +               dev_err(&pdev->dev, "invalid sirq number in aspeed,lpc-interrupts property\n");
-> +               goto err_clk_disable;
-> +       }
-> +
-> +       sirq_polarity = aspeed_vuart_map_irq_polarity(sirq[1]);
-> +       if (sirq_polarity < 0) {
-> +               dev_err(&pdev->dev, "invalid sirq polarity in aspeed,lpc-interrupts property\n");
+>=20
+> Changes since v5:
+> - Make sure to not used the state of the last channel in a group to
+> determine if the current sink should be active for all channels in the
+> group. - Replacement of unsigned -1 with UINT_MAX
+> - Work around potential overflow by using larger data types, instead of
+> separate code paths - Use cpu_to_l16() rather than hand rolling them
+> - Minor style cleanups
+>=20
+>  drivers/leds/Kconfig         |    9 +
+>  drivers/leds/Makefile        |    1 +
+>  drivers/leds/leds-qcom-lpg.c | 1190 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 1200 insertions(+)
+>  create mode 100644 drivers/leds/leds-qcom-lpg.c
 
-> +               rc = sirq_polarity;
-> +               goto err_clk_disable;
-> +       }
+Works well on the Xiaomi Mi Note 2 (msm8996pro/pmi8996).
 
-Why not to use the same pattern as above, i.e.
+Tested-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-       rc = aspeed_vuart_map_irq_polarity(sirq[1]);
-       if (rc < 0) {
-               dev_err(&pdev->dev, "invalid sirq polarity in
-aspeed,lpc-interrupts property\n");
-               goto err_clk_disable;
-       }
-       sirq_polarity = rc;
+Regards,
+Yassine
 
-?
-
-> +       aspeed_vuart_set_sirq_polarity(vuart, sirq_polarity);
-> +
->         aspeed_vuart_set_enabled(vuart, true);
->         aspeed_vuart_set_host_tx_discard(vuart, true);
->         platform_set_drvdata(pdev, vuart);
-
-
--- 
-With Best Regards,
-Andy Shevchenko
