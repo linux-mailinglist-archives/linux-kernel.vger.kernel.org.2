@@ -2,187 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294A0360314
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1987E36031D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhDOHRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:17:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26297 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230201AbhDOHRM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:17:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618471009;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wCRl0VxJxSL9UjqcPN4nvBTKlzJxeSk0M+fzlCzX4vs=;
-        b=Th+nYz6xQdfPCL8RlhVbgzIGQTSfnrdV6ixYubtTpxtMeI5T8K8Jdl6yPfUXT5cUhja1UZ
-        UyAqNpoymHLThc+zjHDzv3YbVsV4aPFxgfWb9supX9otc8K5phcau28LS2J3j4Pg8f07Eo
-        G1jIAgRKE57ljRTOM/X5xyJr6OIR21U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-QmM1FKnsNjOGZJ6okvmyGg-1; Thu, 15 Apr 2021 03:16:45 -0400
-X-MC-Unique: QmM1FKnsNjOGZJ6okvmyGg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E78F481431F;
-        Thu, 15 Apr 2021 07:16:43 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-61.pek2.redhat.com [10.72.12.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B20F05C255;
-        Thu, 15 Apr 2021 07:16:37 +0000 (UTC)
-Subject: Re: [PATCH 1/3] vDPA/ifcvf: deduce VIRTIO device ID when probe
-To:     Zhu Lingshan <lingshan.zhu@linux.intel.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414091832.5132-1-lingshan.zhu@intel.com>
- <20210414091832.5132-2-lingshan.zhu@intel.com>
- <85483ff1-cf98-ad05-0c53-74caa2464459@redhat.com>
- <ccf7001b-27f0-27ea-40d2-52ca3cc2386b@linux.intel.com>
- <ffd2861d-2395-de51-a227-f1ef33f74322@redhat.com>
- <92ef6264-4462-cbd4-5db8-6ce6b68762e0@linux.intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d3c7ea9f-1849-f890-f647-6caf764a7542@redhat.com>
-Date:   Thu, 15 Apr 2021 15:16:35 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <92ef6264-4462-cbd4-5db8-6ce6b68762e0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S231348AbhDOHSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:18:05 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:17998 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231215AbhDOHSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:18:01 -0400
+Received: from localhost.localdomain (unknown [10.192.139.175])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHmQ2C6Hdga8TPAA--.12438S4;
+        Thu, 15 Apr 2021 15:17:28 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     quanyang.wang@windriver.com, Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v3] spi: spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe
+Date:   Thu, 15 Apr 2021 15:17:14 +0800
+Message-Id: <20210415071714.19334-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHmQ2C6Hdga8TPAA--.12438S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFyfKw4fAFWkAryrWFyfZwb_yoW8Kr1fpr
+        WvqFW7Kr4Iq3yxtF1qyw4kXFy5uryFg347JrykK3WIva4Fq3WrtF18JFy3tFW0yF97AFWU
+        WF48J3ySkF1YvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwNBlZdtTXCvwAJs6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is a PM usage counter decrement after zynqmp_qspi_init_hw()
+without any refcount increment, which leads to refcount leak.Add
+a refcount increment to balance the refcount. Also set
+auto_runtime_pm to resume suspended spi controller.
 
-在 2021/4/15 下午2:36, Zhu Lingshan 写道:
->
->
-> On 4/15/2021 2:30 PM, Jason Wang wrote:
->>
->> 在 2021/4/15 下午1:52, Zhu Lingshan 写道:
->>>
->>>
->>> On 4/15/2021 11:30 AM, Jason Wang wrote:
->>>>
->>>> 在 2021/4/14 下午5:18, Zhu Lingshan 写道:
->>>>> This commit deduces VIRTIO device ID as device type when probe,
->>>>> then ifcvf_vdpa_get_device_id() can simply return the ID.
->>>>> ifcvf_vdpa_get_features() and ifcvf_vdpa_get_config_size()
->>>>> can work properly based on the device ID.
->>>>>
->>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>>> ---
->>>>>   drivers/vdpa/ifcvf/ifcvf_base.h |  1 +
->>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 22 ++++++++++------------
->>>>>   2 files changed, 11 insertions(+), 12 deletions(-)
->>>>>
->>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>> index b2eeb16b9c2c..1c04cd256fa7 100644
->>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>>> @@ -84,6 +84,7 @@ struct ifcvf_hw {
->>>>>       u32 notify_off_multiplier;
->>>>>       u64 req_features;
->>>>>       u64 hw_features;
->>>>> +    u32 dev_type;
->>>>>       struct virtio_pci_common_cfg __iomem *common_cfg;
->>>>>       void __iomem *net_cfg;
->>>>>       struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
->>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>> index 44d7586019da..99b0a6b4c227 100644
->>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>>> @@ -323,19 +323,9 @@ static u32 ifcvf_vdpa_get_generation(struct 
->>>>> vdpa_device *vdpa_dev)
->>>>>     static u32 ifcvf_vdpa_get_device_id(struct vdpa_device *vdpa_dev)
->>>>>   {
->>>>> -    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->>>>> -    struct pci_dev *pdev = adapter->pdev;
->>>>> -    u32 ret = -ENODEV;
->>>>> -
->>>>> -    if (pdev->device < 0x1000 || pdev->device > 0x107f)
->>>>> -        return ret;
->>>>> -
->>>>> -    if (pdev->device < 0x1040)
->>>>> -        ret =  pdev->subsystem_device;
->>>>> -    else
->>>>> -        ret =  pdev->device-0x1040;
->>>>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>>>   -    return ret;
->>>>> +    return vf->dev_type;
->>>>>   }
->>>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
->>>>> @@ -466,6 +456,14 @@ static int ifcvf_probe(struct pci_dev *pdev, 
->>>>> const struct pci_device_id *id)
->>>>>       pci_set_drvdata(pdev, adapter);
->>>>>         vf = &adapter->vf;
->>>>> +    if (pdev->device < 0x1000 || pdev->device > 0x107f)
->>>>> +        return -EOPNOTSUPP;
->>>>> +
->>>>> +    if (pdev->device < 0x1040)
->>>>> +        vf->dev_type =  pdev->subsystem_device;
->>>>> +    else
->>>>> +        vf->dev_type =  pdev->device - 0x1040;
->>>>
->>>>
->>>> So a question here, is the device a transtional device or modern one?
->>>>
->>>> If it's a transitonal one, can it swtich endianess automatically or 
->>>> not?
->>>>
->>>> Thanks
->>> Hi Jason,
->>>
->>> This driver should drive both modern and transitional devices as we 
->>> discussed before.
->>> If it's a transitional one, it will act as a modern device by 
->>> default, legacy mode is a fail-over path.
->>
->>
->> Note that legacy driver use native endian, support legacy driver 
->> requires the device to know native endian which I'm not sure your 
->> device can do that.
->>
->> Thanks
-> Yes, legacy requires guest native endianess, I think we don't need to 
-> worry about this because our transitional device should work in modern 
-> mode by
-> default(legacy mode is the failover path we will never reach, 
-> get_features will fail if no ACCESS_PLATFORM), we don't support legacy 
-> device in vDPA.
->
-> Thanks
+Fixes: 9e3a000362aec ("spi: zynqmp: Add pm runtime support")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
+Changelog:
 
-Ok, so I think it's better to add a comment here.
+v2: - Add a refcount increment to fix refcout leak instead of the
+      refcount decrement on error.
+      Set ctlr->auto_runtime_pm = true.
 
-Thanks
+v3: - Add fix tag.
+      Add a return value check against pm_runtime_get_sync().
+      Move pm_runtime_{mark_last_busy & put_autosuspend} to the
+      end of current function.
+---
+ drivers/spi/spi-zynqmp-gqspi.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-
->>
->>
->>> For vDPA, it has to support VIRTIO_1 and ACCESS_PLATFORM, so it must 
->>> in modern mode.
->>> I think we don't need to worry about endianess for legacy mode.
->>>
->>> Thanks
->>> Zhu Lingshan
->>>>
->>>>
->>>>> +
->>>>>       vf->base = pcim_iomap_table(pdev);
->>>>>         adapter->pdev = pdev;
->>>>
->>>
->>
->
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index c8fa6ee18ae7..781ef3fc76e2 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -1160,11 +1160,14 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
++
++	ret = pm_runtime_get_sync(&pdev->dev);
++	if (ret < 0)
++		goto clk_dis_all;
++
+ 	/* QSPI controller initializations */
+ 	zynqmp_qspi_init_hw(xqspi);
+ 
+-	pm_runtime_mark_last_busy(&pdev->dev);
+-	pm_runtime_put_autosuspend(&pdev->dev);
+ 	xqspi->irq = platform_get_irq(pdev, 0);
+ 	if (xqspi->irq <= 0) {
+ 		ret = -ENXIO;
+@@ -1187,6 +1190,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD |
+ 			    SPI_TX_DUAL | SPI_TX_QUAD;
+ 	ctlr->dev.of_node = np;
++	ctlr->auto_runtime_pm = true;
+ 
+ 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
+ 	if (ret) {
+@@ -1194,9 +1198,13 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
+ 		goto clk_dis_all;
+ 	}
+ 
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
++
+ 	return 0;
+ 
+ clk_dis_all:
++	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_set_suspended(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 	clk_disable_unprepare(xqspi->refclk);
+-- 
+2.17.1
 
