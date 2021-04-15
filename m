@@ -2,157 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F96360F20
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEE1360F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhDOPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:40:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232642AbhDOPkj (ORCPT
+        id S233794AbhDOPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDOPlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:40:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618501215;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zXY8qgXZKCc4z2lwTWwd4Blid0GIGNFURZ3FYBCFZtI=;
-        b=hR+CTXZMWt5O07ABm2bVLQDlIfzWpVP6AwVXzAV0u/naur+ax9OegpXyb0IjOo5OlXeZpp
-        6/btW3NCUjghDcAxrkkTd8WqZGNtq9AF+eDPY1dpZHoBHNmtMrwgblwK5mCH4XZ9NAw7Hw
-        0GnNbmMree9dE4PAp3HzD9SnAgmBiJ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-Ctb2fErJOuiP2WvEJeThWA-1; Thu, 15 Apr 2021 11:40:13 -0400
-X-MC-Unique: Ctb2fErJOuiP2WvEJeThWA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1413F8030C4;
-        Thu, 15 Apr 2021 15:40:12 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E680E610F1;
-        Thu, 15 Apr 2021 15:40:04 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id D80DC4179B89; Thu, 15 Apr 2021 12:39:35 -0300 (-03)
-Date:   Thu, 15 Apr 2021 12:39:35 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>
-Subject: [PATCH v3] hrtimer: avoid retrigger_next_event IPI
-Message-ID: <20210415153935.GA69750@fuller.cnet>
-References: <20210407135301.GA16985@fuller.cnet>
- <87o8en4k9a.ffs@nanos.tec.linutronix.de>
- <20210409165146.GA40118@fuller.cnet>
- <87lf9q4lue.ffs@nanos.tec.linutronix.de>
- <20210413170431.GA16190@fuller.cnet>
+        Thu, 15 Apr 2021 11:41:50 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA70C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:41:27 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id m9so11015737wrx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qzCmIc5xh7d+ubWNy7gZo3UPfbkyUvg8kMmWmppBNes=;
+        b=BEj/1/8XPncnjRfRK8mLiZ1SoZ2+BwrE+a39LxPwB/MsIFJnzBAICQLZ2jiwGGbQov
+         4zqh7un0jhEP1iNaKM1PurWOo4uOYi/n2gtxwCVm76y8egSWq0m6KnadRWC5DH8hi34C
+         K41+UsN0jCiClEebcR9kPZsL0Lx6/VJV5Li9dNkP8mG/+bW6Uxqyyarpphfbe13+sVlb
+         FizX/3RV1YXqCKanusixVoY8OxsNOXFXCWpfkOB2NeLmRvAHXodqwMYxxCYasGQZQftV
+         OsBicx1g9iYrnNMRoDBiJ4p9GtlEji++P0zPJAhhkeDvxObWb1E6q5IO+XBq+ah9VkM2
+         b8CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qzCmIc5xh7d+ubWNy7gZo3UPfbkyUvg8kMmWmppBNes=;
+        b=WT7B/WkMVQBDpTZCfzArgN3UfhgwmITH70n3dS6cpSbITIkrFeTMczGygzSXEVIGcC
+         V915h6D0/tmnGJNHItEIMkKCu36dzDvA8WfMPInYlyOrzHrucjvqgLtc7/Z2OOGU8lSE
+         TTY3KjU5bo7dI84ICS/DxT96ui7sSlE84swzOIoeedyHHoGOfhIbVHgfoGUmH9bElhCF
+         0YLnHN4AlPqcuAh9BnOeP+EVqscrBjbw11DYtr0JO6tHNgk8hwuXqZXzEzp/U7hqdMg9
+         itp2j9LYhP23ekV3F9KEDpTj8/55R6ZqOAsO5+mwKKN47iStubvZCf+0G35M84kZ9FEF
+         zksw==
+X-Gm-Message-State: AOAM532NKqzSCkiafWlMQ4fgR3LRpFo7dRwDPqVVR+c8nxF+LUP/+LpG
+        zg10ftHn8Br8lbGcp+SO7wuBvg==
+X-Google-Smtp-Source: ABdhPJyLNMOWPYjLpplPAmINNkz2Fou+qVJXho8kWclmtHcejA/NRHvG9yzn7ifRTNHYBMXjICP1Nw==
+X-Received: by 2002:a05:6000:ca:: with SMTP id q10mr4272021wrx.104.1618501286182;
+        Thu, 15 Apr 2021 08:41:26 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.87.196])
+        by smtp.gmail.com with ESMTPSA id l14sm1920076wmq.4.2021.04.15.08.41.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 08:41:25 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        illusionist.neo@gmail.com, linux@armlinux.org.uk,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        paulburton@kernel.org, tsbogend@alpha.franken.de,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
+        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
+        horms@verge.net.au, nicolas.dichtel@6wind.com,
+        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
+        keescook@chromium.org, tklauser@distanz.ch, grantseltzer@gmail.com,
+        irogers@google.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iecedge@gmail.com
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+ <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
+Date:   Thu, 15 Apr 2021 16:41:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413170431.GA16190@fuller.cnet>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+> On 4/15/21 11:32 AM, Jianlin Lv wrote:
+>> For debugging JITs, dumping the JITed image to kernel log is discouraged,
+>> "bpftool prog dump jited" is much better way to examine JITed dumps.
+>> This patch get rid of the code related to bpf_jit_enable=2 mode and
+>> update the proc handler of bpf_jit_enable, also added auxiliary
+>> information to explain how to use bpf_jit_disasm tool after this change.
+>>
+>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
 
-Setting the realtime clock triggers an IPI to all CPUs to reprogram
-the clock event device.
+Hello,
 
-However, only realtime and TAI clocks have their offsets updated
-(and therefore potentially require a reprogram).
+For what it's worth, I have already seen people dump the JIT image in
+kernel logs in Qemu VMs running with just a busybox, not for kernel
+development, but in a context where buiding/using bpftool was not
+possible. Maybe not a common case, but still, removing the debugging
+mode will make that impossible. Is there a particular incentive to
+remove the feature?
 
-Instead of sending an IPI unconditionally, check each per CPU hrtimer base
-whether it has active timers in the CLOCK_REALTIME and CLOCK_TAI bases. If
-that's not the case, update the realtime and TAI base offsets remotely and
-skip the IPI. This ensures that any subsequently armed timers on
-CLOCK_REALTIME and CLOCK_TAI are evaluated with the correct offsets.
-
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-
----
-
-v3:
-   - Nicer changelog  (Thomas).
-   - Code style fixes (Thomas).
-   - Compilation warning with CONFIG_HIGH_RES_TIMERS=n (Thomas).
-   - Shrink preemption disabled section (Thomas).
-
-v2:
-   - Only REALTIME and TAI bases are affected by offset-to-monotonic changes (Thomas).
-   - Don't special case nohz_full CPUs (Thomas).
-
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 5c9d968187ae..dd9c0d2f469f 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -871,6 +871,24 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
- 	tick_program_event(expires, 1);
- }
- 
-+#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME) |	\
-+			 (1U << HRTIMER_BASE_REALTIME_SOFT) |	\
-+			 (1U << HRTIMER_BASE_TAI) |		\
-+			 (1U << HRTIMER_BASE_TAI_SOFT))
-+
-+static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
-+{
-+	unsigned int active = 0;
-+
-+	if (cpu_base->softirq_activated)
-+		return true;
-+
-+	active = cpu_base->active_bases & HRTIMER_ACTIVE_SOFT;
-+	active = active | (cpu_base->active_bases & HRTIMER_ACTIVE_HARD);
-+
-+	return (cpu_base->active_bases & CLOCK_SET_BASES) != 0;
-+}
-+
- /*
-  * Clock realtime was set
-  *
-@@ -885,8 +903,32 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
- void clock_was_set(void)
- {
- #ifdef CONFIG_HIGH_RES_TIMERS
--	/* Retrigger the CPU local events everywhere */
--	on_each_cpu(retrigger_next_event, NULL, 1);
-+	cpumask_var_t mask;
-+	int cpu;
-+
-+	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-+		on_each_cpu(retrigger_next_event, NULL, 1);
-+		goto set_timerfd;
-+	}
-+
-+	/* Avoid interrupting CPUs if possible */
-+	cpus_read_lock();
-+	for_each_online_cpu(cpu) {
-+		unsigned long flags;
-+		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
-+
-+		raw_spin_lock_irqsave(&cpu_base->lock, flags);
-+		if (need_reprogram_timer(cpu_base))
-+			cpumask_set_cpu(cpu, mask);
-+		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
-+	}
-+
-+	preempt_disable();
-+	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
-+	preempt_enable();
-+	cpus_read_unlock();
-+	free_cpumask_var(mask);
-+set_timerfd:
- #endif
- 	timerfd_clock_was_set();
- }
-
-
-
-
+Best regards,
+Quentin
