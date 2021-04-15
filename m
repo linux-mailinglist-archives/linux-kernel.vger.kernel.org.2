@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FE8360080
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F59C360081
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhDODar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 23:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbhDODaj (ORCPT
+        id S230093AbhDODbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 23:31:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36337 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhDODbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 23:30:39 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F333C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 20:30:15 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id e2so6974446plh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 20:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L/J0PuGsoQ9jKaU7QDPzGYAqcrZkxGOtbfN36+E+p8I=;
-        b=LGHLZBSOwzpZ9O510rIL4ZM32mfTVVIY11xJJeGRe404aX0hfcWxjokJKytl+/wxiO
-         bSuhMJNi1caURHh9x8TSTzB4INo7Yy5crEqzvacuN3sQjzQppEtluAKaHfRmW8467vuk
-         KomjIjGzFdAYynHossjAeKnE+UL6wviA9+iHc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L/J0PuGsoQ9jKaU7QDPzGYAqcrZkxGOtbfN36+E+p8I=;
-        b=ugAbBq3u1ilCoxSRDxrECUODJ45JsOAi3QG7JZacvsobcJqFZhD/G0A0BiTCJqQ/Av
-         QjSqe7We0CiebSO52W1GHo71Y9DXEj25XtQ4BMGchS9mWSVOS5y97/EIuhac3Tbdx3k2
-         /D1wHpqM4s7PA4U/ZQ0pNGPukq/hGFw/N4qqWOEltlLKBXxghQcPN2BIdPDNy9i2Ijz6
-         V5o4GEq2NrxNN4s3T0puN6qanyGJU4NLoBcyrIrtsMTxo4ISWq/yKqsgelImsUalopJa
-         knNoal+9EPGOeIO6oLYZL+MKGMczg5+b/7MT6yAgu95UCjAxZF6Ldt0yDRSKGOyXeApO
-         bf4A==
-X-Gm-Message-State: AOAM532/gAnoQS8NpnVKyMdY5XEx9PMiINLbM4c4pBMcXasVATAUh5tm
-        4N0zCZym6D0iPrhcw1bLyvBRyw==
-X-Google-Smtp-Source: ABdhPJwoj7f2JqKoECZlBfOxjMxLfaPaqA7yxldayc265YPN0gbhK0JJj702ZI/Wz77wEj5Y8ROZWA==
-X-Received: by 2002:a17:90a:e298:: with SMTP id d24mr1455055pjz.37.1618457410343;
-        Wed, 14 Apr 2021 20:30:10 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:2d50:863d:8932:d6bc])
-        by smtp.gmail.com with ESMTPSA id n3sm351622pga.92.2021.04.14.20.30.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 20:30:09 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Dmitry Torokhov <dtor@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] HID: google: Add of_match table to Whiskers switch device.
-Date:   Thu, 15 Apr 2021 11:29:58 +0800
-Message-Id: <20210415032958.740233-3-ikjn@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-In-Reply-To: <20210415032958.740233-1-ikjn@chromium.org>
-References: <20210415032958.740233-1-ikjn@chromium.org>
+        Wed, 14 Apr 2021 23:31:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618457450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HlNNiI/3x3aTaVCgbYG1oVjUjq53goSd1bVD/8PXIMk=;
+        b=WvNnwpeQUr2ma2+yuayizJe3fcS6gp1sW1kJ4eHpNHjfRktk5kbB2l6uxaoQT5APar1/DX
+        rVmCKPLE2nqu2jreeCawr6ip5MTfv8zUWZZ7yZKochgwQoSTcEBdlCg95ilcP6XzYeJ/1K
+        8r6+l8+VukP/g9CvdBPU5VJN4iThVCk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-wQ4K-NJSPnOVQhvEvIBkPQ-1; Wed, 14 Apr 2021 23:30:49 -0400
+X-MC-Unique: wQ4K-NJSPnOVQhvEvIBkPQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08E81107ACE4;
+        Thu, 15 Apr 2021 03:30:48 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-220.pek2.redhat.com [10.72.13.220])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D418610A8;
+        Thu, 15 Apr 2021 03:30:43 +0000 (UTC)
+Subject: Re: [PATCH 1/3] vDPA/ifcvf: deduce VIRTIO device ID when probe
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414091832.5132-1-lingshan.zhu@intel.com>
+ <20210414091832.5132-2-lingshan.zhu@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <85483ff1-cf98-ad05-0c53-74caa2464459@redhat.com>
+Date:   Thu, 15 Apr 2021 11:30:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
+In-Reply-To: <20210414091832.5132-2-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a device tree match table for "cros-cbas" switch device.
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-Reviewed-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Acked-by: Jiri Kosina <jkosina@suse.cz>
+ÔÚ 2021/4/14 ÏÂÎç5:18, Zhu Lingshan Ð´µÀ:
+> This commit deduces VIRTIO device ID as device type when probe,
+> then ifcvf_vdpa_get_device_id() can simply return the ID.
+> ifcvf_vdpa_get_features() and ifcvf_vdpa_get_config_size()
+> can work properly based on the device ID.
+>
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+> ---
+>   drivers/vdpa/ifcvf/ifcvf_base.h |  1 +
+>   drivers/vdpa/ifcvf/ifcvf_main.c | 22 ++++++++++------------
+>   2 files changed, 11 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
+> index b2eeb16b9c2c..1c04cd256fa7 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+> @@ -84,6 +84,7 @@ struct ifcvf_hw {
+>   	u32 notify_off_multiplier;
+>   	u64 req_features;
+>   	u64 hw_features;
+> +	u32 dev_type;
+>   	struct virtio_pci_common_cfg __iomem *common_cfg;
+>   	void __iomem *net_cfg;
+>   	struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index 44d7586019da..99b0a6b4c227 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -323,19 +323,9 @@ static u32 ifcvf_vdpa_get_generation(struct vdpa_device *vdpa_dev)
+>   
+>   static u32 ifcvf_vdpa_get_device_id(struct vdpa_device *vdpa_dev)
+>   {
+> -	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+> -	struct pci_dev *pdev = adapter->pdev;
+> -	u32 ret = -ENODEV;
+> -
+> -	if (pdev->device < 0x1000 || pdev->device > 0x107f)
+> -		return ret;
+> -
+> -	if (pdev->device < 0x1040)
+> -		ret =  pdev->subsystem_device;
+> -	else
+> -		ret =  pdev->device - 0x1040;
+> +	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>   
+> -	return ret;
+> +	return vf->dev_type;
+>   }
+>   
+>   static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
+> @@ -466,6 +456,14 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>   	pci_set_drvdata(pdev, adapter);
+>   
+>   	vf = &adapter->vf;
+> +	if (pdev->device < 0x1000 || pdev->device > 0x107f)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (pdev->device < 0x1040)
+> +		vf->dev_type =  pdev->subsystem_device;
+> +	else
+> +		vf->dev_type =  pdev->device - 0x1040;
 
----
 
-(no changes since v1)
+So a question here, is the device a transtional device or modern one?
 
-Please note that v3 was submitted in 28 Oct 2019, 1.5yrs ago.
-Link(v2): https://patchwork.kernel.org/project/linux-input/patch/20191021030158.32464-1-ikjn@chromium.org/
+If it's a transitonal one, can it swtich endianess automatically or not?
 
----
- drivers/hid/hid-google-hammer.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Thanks
 
-diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
-index d9319622da44..be4f9f3dbbba 100644
---- a/drivers/hid/hid-google-hammer.c
-+++ b/drivers/hid/hid-google-hammer.c
-@@ -17,6 +17,7 @@
- #include <linux/hid.h>
- #include <linux/leds.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_data/cros_ec_commands.h>
- #include <linux/platform_data/cros_ec_proto.h>
- #include <linux/platform_device.h>
-@@ -272,12 +273,21 @@ static const struct acpi_device_id cbas_ec_acpi_ids[] = {
- };
- MODULE_DEVICE_TABLE(acpi, cbas_ec_acpi_ids);
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id cbas_ec_of_match[] = {
-+	{ .compatible = "google,cros-cbas" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, cbas_ec_of_match);
-+#endif
-+
- static struct platform_driver cbas_ec_driver = {
- 	.probe = cbas_ec_probe,
- 	.remove = cbas_ec_remove,
- 	.driver = {
- 		.name = "cbas_ec",
- 		.acpi_match_table = ACPI_PTR(cbas_ec_acpi_ids),
-+		.of_match_table = of_match_ptr(cbas_ec_of_match),
- 		.pm = &cbas_ec_pm_ops,
- 	},
- };
--- 
-2.31.1.295.g9ea45b61b8-goog
+
+> +
+>   	vf->base = pcim_iomap_table(pdev);
+>   
+>   	adapter->pdev = pdev;
 
