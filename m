@@ -2,59 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5126B360AA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6EC360AAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhDONl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:41:59 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:11233
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230056AbhDONl6 (ORCPT
+        id S233208AbhDONmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:42:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30480 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233152AbhDONmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:41:58 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AngYAza7UWSMWbtMJwAPXwCnXdLJzesId70hD?=
- =?us-ascii?q?6mlaTxtJfsuE0/2/hfhz726RtB89UGwt8OrqBICuWnXZnKQe3aAwOvOYUBDiqC?=
- =?us-ascii?q?+UKuhZjLfK5x3FN2nA+vVG1aFmGpIObeHYKVRhl8717E2ZPr8boOWvy6yjiefA?=
- =?us-ascii?q?w3oFd2gDV4ha4wh0EQqdGEFtLTM2ZqYRLoaW5cZMulObF0g/U8LTPBU4dtTYq8?=
- =?us-ascii?q?aOvJzrZgNuPW9E1CC+yQLt0rL8HhSCty1ybxpEy94ZnlT4rw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,225,1613430000"; 
-   d="scan'208";a="378762268"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 15:41:23 +0200
-Date:   Thu, 15 Apr 2021 15:41:23 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     zzam@gentoo.org, clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] Re: [PATCH v4 2/2] staging: media: zoran:
- add BIT() macro and align code
-In-Reply-To: <YHg70mRLN5S8mywn@kali>
-Message-ID: <alpine.DEB.2.22.394.2104151540360.29064@hadrien>
-References: <cover.1618342050.git.mitaliborkar810@gmail.com> <fb60b20f7cdf3650d678fac4c0f1f364ac6984bf.1618342050.git.mitaliborkar810@gmail.com> <c6a301f6-99f3-69e0-a394-00948aef6c1c@gentoo.org> <YHg70mRLN5S8mywn@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 15 Apr 2021 09:42:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618494114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZWBwNvOA3bfYgGwRaFOHTKgSUsx4hve9qhx0Mr44bE8=;
+        b=VAbF1XKpeXQhzm8s1D1r+MYIQ286wXXic707kS0Z8ACmG2hVPyczR0SSL6dl/sTVyYZELY
+        ETevtHA8+x+kF16whKQTkgv6Ek4ok/WnKsmOqmTsCQwMmfEBI4KhbD/jouBNr9y8lqM0M4
+        rzGca7jrtyfluIr6AXCdeQVhMvXmh5k=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-BPdGsaEFMBW5uJjXNdGxwA-1; Thu, 15 Apr 2021 09:41:52 -0400
+X-MC-Unique: BPdGsaEFMBW5uJjXNdGxwA-1
+Received: by mail-ed1-f72.google.com with SMTP id d2-20020aa7d6820000b0290384ee872881so1162282edr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:41:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZWBwNvOA3bfYgGwRaFOHTKgSUsx4hve9qhx0Mr44bE8=;
+        b=L8a6LybuXqjr0d6KpVJ1LieHeLUqpPLhlKLuM1REdIRxABEcekxMAyFhId6SZpQBdJ
+         CBjAfgk9l2+P12C9BU5hN2kxf2VI4nbvZHp5ARNhsP/vho6ShkZ4CL7W9+uAnQtWpHyJ
+         CkOaF2mWjRPmMjgpgas9ShIqezpz0b8kiURTO/Bu+Kr5Oi0yuXCCRzX7Cgxc6gRcetyB
+         15Z5G9sUxCs1OgIANHlB36wZsYT/DN82ugcY8Q6qLbw8aBAwzlGYDJcPGloTV1NP8liu
+         U29EBdjFfcRhdyKVd55rX03/1fqJNACIv0TEBpUtJNQd/G868BjVx+30loEi6MpXqV+8
+         E3CQ==
+X-Gm-Message-State: AOAM533Z+7lsrluDnTqTp8D2FC6rf3uoh1mfnzSvE254jaQc/gpLD01W
+        IKMWKh5CoioIlyElcaP36XpqDAMdqoHnbqwNgKXCX1m9+y+zle9D6QSDCnxcqCBn18NkdGUNNlG
+        ox86/2+BV1zEFQsXfPv8DfVcn
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr4285848eds.166.1618494111620;
+        Thu, 15 Apr 2021 06:41:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyemgNsvx8pZ1RlfDQ7s7LT6G11+jyHeg9kKcfvRUnwPB3uY5DW+Uiq1h1T6dV5iO/rg2AG3A==
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr4285830eds.166.1618494111460;
+        Thu, 15 Apr 2021 06:41:51 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id mm8sm1973637ejb.28.2021.04.15.06.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 06:41:51 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 15:41:48 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block
+ for vDPA
+Message-ID: <20210415134148.q53glknhktbjwtzz@steredhat>
+References: <20210415095336.4792-1-lingshan.zhu@intel.com>
+ <20210415095336.4792-3-lingshan.zhu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210415095336.4792-3-lingshan.zhu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +#define ZR36057_JMC_JPG_EXP_MODE		(0 << 29)
-> > > +#define ZR36057_JMC_JPG_CMP_MODE		BIT(29)
-> > > +#define ZR36057_JMC_MJPG_EXP_MODE		(2 << 29)
-> > > +#define ZR36057_JMC_MJPG_CMP_MODE		(3 << 29)
-> > Same as above. Please change back ZR36057_JMC_JPG_CMP_MODE to be (1 << 29).
-> > Then this 2 bit field is consistent.
-> >
-> Sir, I guess this BIT(29) was already present. I didn't changed this.
-> I will change this as you said.
+On Thu, Apr 15, 2021 at 05:53:35PM +0800, Zhu Lingshan wrote:
+>This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-block
+>for vDPA.
+>
+>Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>---
+> drivers/vdpa/ifcvf/ifcvf_base.h |  8 +++++++-
+> drivers/vdpa/ifcvf/ifcvf_main.c | 10 +++++++++-
+> 2 files changed, 16 insertions(+), 2 deletions(-)
+>
+>diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
+>index 1c04cd256fa7..0111bfdeb342 100644
+>--- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>+++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>@@ -15,6 +15,7 @@
+> #include <linux/pci_regs.h>
+> #include <linux/vdpa.h>
+> #include <uapi/linux/virtio_net.h>
+>+#include <uapi/linux/virtio_blk.h>
+> #include <uapi/linux/virtio_config.h>
+> #include <uapi/linux/virtio_pci.h>
+>
+>@@ -28,7 +29,12 @@
+> #define C5000X_PL_SUBSYS_VENDOR_ID	0x8086
+> #define C5000X_PL_SUBSYS_DEVICE_ID	0x0001
+>
+>-#define IFCVF_SUPPORTED_FEATURES \
+>+#define C5000X_PL_BLK_VENDOR_ID		0x1AF4
+>+#define C5000X_PL_BLK_DEVICE_ID		0x1001
+>+#define C5000X_PL_BLK_SUBSYS_VENDOR_ID	0x8086
+>+#define C5000X_PL_BLK_SUBSYS_DEVICE_ID	0x0002
+>+
+>+#define IFCVF_NET_SUPPORTED_FEATURES \
+> 		((1ULL << VIRTIO_NET_F_MAC)			| \
+> 		 (1ULL << VIRTIO_F_ANY_LAYOUT)			| \
+> 		 (1ULL << VIRTIO_F_VERSION_1)			| \
+>diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+>index 469a9b5737b7..cea1313b1a3f 100644
+>--- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>@@ -171,7 +171,11 @@ static u64 ifcvf_vdpa_get_features(struct vdpa_device *vdpa_dev)
+> 	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> 	u64 features;
+>
+>-	features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
+>+	if (vf->dev_type == VIRTIO_ID_NET)
+>+		features = ifcvf_get_features(vf) & IFCVF_NET_SUPPORTED_FEATURES;
+>+
+>+	if (vf->dev_type == VIRTIO_ID_BLOCK)
+>+		features = ifcvf_get_features(vf);
+>
 
-It comes from this patch:
+Should we put a warning here too otherwise feature could be seen 
+unassigned?
 
-5e195bbddabdd94b15eeb60439cece996d58b329
+Thanks,
+Stefano
 
-Probably putting it back should be a different patch in the series.
+> 	return features;
+> }
+>@@ -517,6 +521,10 @@ static struct pci_device_id ifcvf_pci_ids[] = {
+> 			 C5000X_PL_DEVICE_ID,
+> 			 C5000X_PL_SUBSYS_VENDOR_ID,
+> 			 C5000X_PL_SUBSYS_DEVICE_ID) },
+>+	{ PCI_DEVICE_SUB(C5000X_PL_BLK_VENDOR_ID,
+>+			 C5000X_PL_BLK_DEVICE_ID,
+>+			 C5000X_PL_BLK_SUBSYS_VENDOR_ID,
+>+			 C5000X_PL_BLK_SUBSYS_DEVICE_ID) },
+>
+> 	{ 0 },
+> };
+>-- 
+>2.27.0
+>
 
-julia
