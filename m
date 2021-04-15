@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765BE360FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292F2360FE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhDOQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:09:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233583AbhDOQJh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:09:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618502953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W03gzn95lmQwBjXKVAhaFhaZhIzVrvHdOQqbqadkdVs=;
-        b=Y6d2gYr72AOzGNBeHhFLHgPBIywi9Quh9haFfAQbxyxuuQypN1iK/MMhfpge4boT2ztAVR
-        HC5srZAP5y661HY8KcI4hwVR/D0/nnNPDqdpU199lTctGDWEcsuBGKja8DW5sg/fwtA3+R
-        ooH9Uq4vaM78hiq0eTLbTTXIJjOc/68=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-bTjiqRAhOuKsJBwyVASD0A-1; Thu, 15 Apr 2021 12:09:12 -0400
-X-MC-Unique: bTjiqRAhOuKsJBwyVASD0A-1
-Received: by mail-ed1-f72.google.com with SMTP id d27-20020a50f69b0000b02903827b61b783so5489045edn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:09:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W03gzn95lmQwBjXKVAhaFhaZhIzVrvHdOQqbqadkdVs=;
-        b=M7CkoSgZzB/nDVv9nsr6JlKxo/mPWNCLxDU9LCB/C5Ikf8Nc5HS54KPKsFK9sDWGB4
-         a+a0d1YhK+pXIfo8Rs/9N8fCWwgE8/WHqsp0blMK7piEkLoxalOVT1oXXsoYa4sVGfTI
-         IUt8VgZCSVnimGwQ3cUcZm8mtueuF8OptdW32BFgncDTjP0tbRbFsnlaXrKWL7IkHXv9
-         /3YoaDoojFhuwahtPRzNBLQ3sVMFUyCoCSoGmNiaWbco+uiX/UtRYzYVHglc8IajSBbp
-         4l4AMdMKNfQ7OPBPXe5oxEZtiQP0OJmwnIEYxlHI5nobIg9ZZ3iL1d/6YFTBXzhUQuAO
-         Ompw==
-X-Gm-Message-State: AOAM531G9uHypBRLkrKbwr78OpRKKoQQMQLWgx5zoyCg0to1er9KusZ3
-        C7SKZ//7XP3qzx+FYGFOWvHBRefs/qCScid7ghtgvBUw8OY/nQBxxMpDj5fVWeDbF4WMI/HR04S
-        tymKnmioBDX+jLL3HgAZHgQCS
-X-Received: by 2002:a05:6402:441:: with SMTP id p1mr5124880edw.298.1618502951039;
-        Thu, 15 Apr 2021 09:09:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzV22NsXbsmnW4eVxT5pHeM545ePFvzvr1Wdd3ttFnbZCyVMXKHBg1lLlAtWJY18Pa0LC02/Q==
-X-Received: by 2002:a05:6402:441:: with SMTP id p1mr5124867edw.298.1618502950901;
-        Thu, 15 Apr 2021 09:09:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id t15sm2297260edr.55.2021.04.15.09.09.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 09:09:10 -0700 (PDT)
-Subject: Re: [PATCH v2 0/8] ccp: KVM: SVM: Use stack for SEV command buffers
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20210406224952.4177376-1-seanjc@google.com>
- <3d4ae355-1fc9-4333-643f-f163d32fbe17@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <88eef561-6fd8-a495-0d60-ff688070cc9e@redhat.com>
-Date:   Thu, 15 Apr 2021 18:09:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <3d4ae355-1fc9-4333-643f-f163d32fbe17@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S234246AbhDOQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:10:07 -0400
+Received: from mail-eopbgr20061.outbound.protection.outlook.com ([40.107.2.61]:23623
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233583AbhDOQKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:10:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bvSPerlwyFyBQwtFaLCNZZ9rWyH7muSb+vRArNtMzo1NWkQG2i5uQrC/4nO+prVet51ZVUEHFDkyvRy72uuIPc3vonvFtTcSzYJ7HLGj0AerUjwPXliomDgqL8+K91zMkCoiHjCtcJS8fOR4Sux6K/f3L10YKgNEHTPeCZNRKnui95IUgbv6G/Cad4v/E/1NPAnp/KMezcrEWBauod2hPUFC83SNM4ofA63HQ2sz12W41fl2I/HJNiKxI4TaND/zdtdWVq9rLB28NyPow1REIL7wVde2gcr4aeqH5Meq6Qe/VD8uJPp/aTnql4G5T503qruQFyho6AS7pnYJx2q+pw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7jUlwKq1ur9+hh5LAm1O2XopZP26yvF2C3Y4jIuxHlE=;
+ b=jhrofBMeJECprBucdJqKlMSROfwG4t7/b3Z1XnizKPSHQrntrqnt5boyPK032OQpUWbDbfqe884xV/IRdFr6XXBzEeSBP3L96GevjBGeZPkMT92yzDDuSRyQbFVdcfpiUIBgQeqfLCOYBRB3gDsaSaDgOIc9oIBqCt9gCTceKO+oFL8rTopFV0RUITzP4sRkMfNyVbtUzcJS4VZpthsUeXMZETBBGwuMhJAgJSJiP0bhAsuYafhm5B1b8c3lm5FHC5ZgxepFENajkUzQWQDY8chWRSSe0F+fcEy20NQhBNE6wojNvsisSwkfXYFIlYucPn8PXOIM6tw80tvUA2px1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7jUlwKq1ur9+hh5LAm1O2XopZP26yvF2C3Y4jIuxHlE=;
+ b=KTkhPKd+/jPWLjYghIVdwqHDpP9Su/FrSnT4Mh35ptUYZ1nOsNhEq3Vv0YXmOj+BLi5KHmtC5irPvLDgnAbzBkonuKQVslbwNea+mZIZwMxRFqPr3SUsyKcMYBF/q5CP0X5BPg8BV3MoC1mJ8/hW37o7XxBQ9mpRnz2SymHL4qM=
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:ac::5)
+ by PA4PR10MB4557.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:10e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Thu, 15 Apr
+ 2021 16:09:37 +0000
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7040:2788:a951:5f6]) by PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7040:2788:a951:5f6%6]) with mapi id 15.20.4020.023; Thu, 15 Apr 2021
+ 16:09:37 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+CC:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: RE: [RFC PATCH 2/2] ASoC: da732x: simplify code
+Thread-Topic: [RFC PATCH 2/2] ASoC: da732x: simplify code
+Thread-Index: AQHXIo2z1z47S5z30EGys1D2hqxR9Kq1275AgAABFwCAAAFJEA==
+Date:   Thu, 15 Apr 2021 16:09:37 +0000
+Message-ID: <PR3PR10MB41422CAB027515DE2D6F684D804D9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+ <20210326221619.949961-3-pierre-louis.bossart@linux.intel.com>
+ <PR3PR10MB4142E8DBB9313E751DA52DD0804D9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+ <20210415160410.GF5514@sirena.org.uk>
+In-Reply-To: <20210415160410.GF5514@sirena.org.uk>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [147.161.166.124]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b0abdba8-12ba-4946-8335-08d90028de36
+x-ms-traffictypediagnostic: PA4PR10MB4557:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PA4PR10MB4557568D2A234FE12A0B2C1DA74D9@PA4PR10MB4557.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SOphqcsZ8QiraJ5ZlTvzldvSjzqW4Ev0kZ8por2+CSsLaIyFZEzzzgi3KVkjvLNI5VzpiaJLmJEEhpQVrP3eyqNVWqpvPmP5YyAFz3wdQLvThNSptz7pctoIMY5NvE9OQyd8arBaqEjDEVkFLQDP1lx/UsUpPYt/YnP/o/Zp2hGwJcaZPxTURNEsSTqhm4VWvw9g8wYCIysBpvoCTDowhs0vsJ142anM1G1qEx3KNKfscLeNa1Cv0HCTLcToHtoLIi9Gf/p38+yxumBJUlAqwK19VfJH/EkRB8+zsTsTvHuNZRVT+ZdNgbL8CUu9GeCTN976ReC7xQY7Xw+r2Eb8E0nMgBIAZ59wPKdtGrf6pi5XaJ6z0vHhxXF06Vjkv/LwpqLds1BBdD9wNeH3GCjU6b7fSvbvyr1tJow7wPuIdCxVTvdchb+1g9gITDLbj4tdlEUM9yktSNbin+eGdmcfvekIg/UoCsOmpfmAz8jADHo8RI1fkp2aT6thMdROAh+q3D/C1TgTC3br1g6cufTQqAfoVTTqV2bGuAOON1nQvU2xpWUxGEFQ6SURq/Ivxo8+B9K6ktrcr6gFUsLUbGI6SvPfaOSgSDnlPdE1NGtVkxc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(366004)(39840400004)(478600001)(8936002)(5660300002)(52536014)(66476007)(4744005)(4326008)(8676002)(66446008)(71200400001)(76116006)(186003)(54906003)(316002)(26005)(110136005)(64756008)(66946007)(66556008)(33656002)(6506007)(86362001)(2906002)(53546011)(122000001)(55016002)(7696005)(9686003)(83380400001)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?RhDiFBSiZ6cSwnazVJId0KsjwGEpx6yJvabTwHlzEQHG+ZL0MUdGatrMPp04?=
+ =?us-ascii?Q?W2wP96tBIykAy7CstO1l3tikbpKFNTK4ageUUW1Vp32O5kl3xRsR3zSInse7?=
+ =?us-ascii?Q?g02dz/bGkszrnbNzeYutLbVQPEbBGMxm1ygJIIKVw+saK1Zh1VmllEcuu9y0?=
+ =?us-ascii?Q?HU/7bQFKK+ICITssO4F7S5B8piA2LHv5gueKj3VfgyERNiPvnMOtydPmVa25?=
+ =?us-ascii?Q?hFXpg3MmoagUZGXSkkvzVMvhAY9K9XbOpth5f87y01iNhaTCNQ15Py3AD2Ye?=
+ =?us-ascii?Q?nSW4hMd6cuUjhHFmU3lCz601JOBtPfFL+YzpaKFZnMwVmT7BJ/okBG9pm8Uc?=
+ =?us-ascii?Q?AlBYPQUWLgzeoivmLZ+avL3sg9HT+JQqde5nMcvG16TLFHcaQHOlWB1bNVV5?=
+ =?us-ascii?Q?YFF3+vk6DfOC8whGzW2h3eQztLPAWkA+wi0a9LWG3bjEkD4MR2xhhyUvDSjH?=
+ =?us-ascii?Q?JA99a9bPZsHJrAhFQ2YN4FmPOFiLmfFBPiC/ey38YZTwqgeXWs2MONtBNKbV?=
+ =?us-ascii?Q?Sr6MzjreZFeOhhRzRLr3XZBEI6gPOFQpPZi2DTCoYaTLa3Rl/tuxlXvb/ltp?=
+ =?us-ascii?Q?JeuKzubB8VFDQQJyDeqr9JDt4AUHPT8aBzRD3CTLCbUc6smKeRvdimMRMMoX?=
+ =?us-ascii?Q?3GeT7BSjE92FkGKuDgiQt8wKK09Z4KYJRGttWNmAeT5oTQJPMxmACm5wHJde?=
+ =?us-ascii?Q?TeSqRwV4GPyPW6eDpHmPAh1uSX/BPFGFozQCYwCy/ELRxJGmVb34bGaXoT6p?=
+ =?us-ascii?Q?U5eFXnz84i5GvDbGWR6CHRk2XKO1FcrvWxkN1ZEFQt5JNgdcKrhjgZ9ybvg6?=
+ =?us-ascii?Q?C6qOAAXRsOsWwMexmJnxbGMRitGrU/JaFRRKabLUbsGFUpwfe6T4t8qe0MBl?=
+ =?us-ascii?Q?93HD6VK8qU5opGfN8FzIrWejGrJig+mCNMvLBsiEHTuw9DYQd7mRUDxxrbgw?=
+ =?us-ascii?Q?zssL92lw+6fGP7wSZcyCwY7oiDNYY7dylKCgHEudaxshmmgnjr3ZbrSbxzR8?=
+ =?us-ascii?Q?nz393gGif5qYN0W1WUxqQX0dYSwD75f1juyjgEjzZEnTNGOnigZV+02HEd1r?=
+ =?us-ascii?Q?5DqU2ftrjVjeAJl4sWx4ibXILKuDqXYUT1ggO+/UdASlXwFVyyGokNgxNhEK?=
+ =?us-ascii?Q?uj5UFbw90A68b6MD92aSPchq7oMukk+yVeNQMCM4B02j8arCJ1cD/YZCNMWV?=
+ =?us-ascii?Q?V3PTf6LAeWB1/9EMAe/vKawen8POsaSlxZOYGkekdWhrEORSuRx27/4U5lcF?=
+ =?us-ascii?Q?OUAHhXbIyxgLlWwEL9tSJJUtH7SKRad0R80dFvlviSJr3TU1LmEK338cumpV?=
+ =?us-ascii?Q?V7tN1zMAPHKs48/R10ldaMSn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0abdba8-12ba-4946-8335-08d90028de36
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2021 16:09:37.5416
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DWJtX7wnr7ePltK+s4tDh4FfyF5HSJUnr3FCmNlUQjIy72PR2VsiDfT9gBzWLhkw3Z6q7xxgSwZM30AR11AVsy43NmdSb00lj/tTeKAasRk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR10MB4557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/04/21 20:00, Tom Lendacky wrote:
-> For the series:
-> 
-> Acked-by: Tom Lendacky<thomas.lendacky@amd.com>
+On 15 April 2021 17:04, Mark Brown wrote:
 
-Shall I take this as a request (or permission, whatever :)) to merge it 
-through the KVM tree?
+> On Thu, Apr 15, 2021 at 04:00:48PM +0000, Adam Thomson wrote:
+> > On 26 March 2021 22:16, Pierre-Louis Bossart wrote:
+>=20
+> > Apologies for the delay in getting to this. The change looks fine to me=
+,
+> > although this part was EOL some time back, and I find it hard to believ=
+e anyone
+> > out there has a board with this on. Wondering if it would make sense to
+> remove
+> > the driver permanently?
+>=20
+> Unless it's actually getting in the way it's generally easier to just
+> leave the driver than try to figure out if anyone is updating a system
+> that uses it.
 
-Paolo
-
+Fair enough. Just don't want to waste people's time with unnecessary update=
+s :)
