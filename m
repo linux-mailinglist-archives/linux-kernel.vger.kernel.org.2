@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0C2361368
+	by mail.lfdr.de (Postfix) with ESMTP id D9745361369
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhDOUYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        id S235382AbhDOUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbhDOUYb (ORCPT
+        with ESMTP id S234901AbhDOUYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:24:31 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909AEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:24:06 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so9164653pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:24:06 -0700 (PDT)
+        Thu, 15 Apr 2021 16:24:32 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC374C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:24:07 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id z16so17677119pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:24:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RAXoYkprowFqCX7hiZm4GG8LZxe+i0LK+61fU0cYCZ8=;
-        b=yBOMS8XkuoYJFLD8ELgKzgG0pcHwh5wCBiDMqFCtVM8ebI0g0K/aBvjdoVq9VL1SuK
-         gNkfQHnDMpYaYHVhv9+cpGhRVhWB09TZYulGFstGkV5ls7RfV5Gb8/YF/EFUd5/+/grJ
-         dYPjPiOwVX2Rl5kahz8H12NtqSGhGXDiaCqZt6ysqw7uds2uBK/oplQf4pzQ65HMBuMO
-         mSrE/3pmtU744C+xrY0sHUIQzBq5vODZAoXVUuOIHS27IMWWmIjLID08xW4MjGiK9Vjm
-         ZJeS2dgiXNsfqeS6CSYfAe3JwwkBAirj6Nvj/jao0bOYxO3sXe+Q/kfwNS+SdUoCA1fR
-         mE/g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WAfI5gmtCJFa1TuhXQgYH1iMmMqE67AZfwLRWLHkhdg=;
+        b=SfuU7weNeHlXrJzX/vyKr9IQdOgWWIPnlj2MFyTJEfnnYfEwPhHR3N759aYT6JghbO
+         p9o8NNekkePdGsRrdvgrA6swzgQIrYjwiKIg1WzOWIqArUgGNEJDe1auTCG8f/0q+pq4
+         LTZ7ymDfuy1cYnxRdkIggzG+yKw8O8D6NKZ1weJULh0F4stt5oWBSDHcoWM3fjD7c4sH
+         FUsGIvSGcb6HPizlskaxJE1PiWWZUM6hwIwuBDT51gaohppviENCajg3KvkfvwP4nqZ0
+         Bi7UTnDU0YOojsNj93dtnF8bbCN+OlGrCP0MExLTPXYEx3DSCXnaI28unrNyTNS6+qH8
+         2LZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RAXoYkprowFqCX7hiZm4GG8LZxe+i0LK+61fU0cYCZ8=;
-        b=jBnXmefYY1Cg9QI11UZABXH/84rnE0QA8TbTaCEpNVyNx+kmWLZokLgnJXh1UFUHlo
-         MfZuOeB5aDqaMmk0KtlJTOSdFpANTXGkqao/BE79bhNov2Ip4M9ak42ixnDpQnnJpehe
-         niTAP0TSTz1E8esbUEC4efJ9J62vAFpzfDgcCP2d3g38O7cj+K0cDJeJxnn7hAw5wkaV
-         UBpujAZ9QUjoBoB89bZ/McGyIfNMcMrVYNc55SikNZmuPQqSnXbJr/CPiCqkTKNat5xe
-         tJ4fc20VijYVgj6hWuGkAlce7U41yBWtxuKqDufYrSxld4Myvo8SDdvR8jpeJiKEyg+Z
-         oEqQ==
-X-Gm-Message-State: AOAM532CJ8rXLzPSlv9F3PmImDfeNRxqo0i+wedpjsOqiceoIfoRHY9F
-        LlYMhE3dYbfmX9Pu+xr70ra8qQ==
-X-Google-Smtp-Source: ABdhPJzomE1CxA3N3z6sepYQr9clOVjiMwU4M7NrfFJ55uXZZxdOTUz5tcoYMZejFmyh27S3hn89mA==
-X-Received: by 2002:a17:902:ff09:b029:eb:3d5a:1332 with SMTP id f9-20020a170902ff09b02900eb3d5a1332mr5706483plj.24.1618518246058;
-        Thu, 15 Apr 2021 13:24:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WAfI5gmtCJFa1TuhXQgYH1iMmMqE67AZfwLRWLHkhdg=;
+        b=hazXNIq3zdytzaU48TCGpN5krhDaH3XGYu0DY7hCebnyMi75CmA3knaHJhem8wPUic
+         NsGsJ2qqhARuzrpzSzN6uJvU+ZQGTgoTlRZ5q27pGz7ynKJhCVsAsG6TED5TuTeT1F//
+         NEpEG/MHjEqxbVUQhZff8gRBkXR1oRHJzKYk1BPS/rdEJHNuxZyv1N0XKmfrRUNDPoue
+         onBlFLnochwfaJwv2jHdjfgtwvW9dIaux5GuIBVVH7fY7FJwHmHqNVNtCvyBCWjkpX0+
+         gIPzUU4vg6rTgkEAUfU+IBYcK917vjoDmzNxewuHEb+GYDd8hJXzyqUhfYrc3Y+kwjFP
+         MWkQ==
+X-Gm-Message-State: AOAM533LBg5ZVFKYxwNu8iKnUjxZ0BvEkeW+C6U9eQ7NDDu+2Qd1qEkR
+        OXlkN8H8wcJNhKivA83xtXd7kGEW7l4kcw==
+X-Google-Smtp-Source: ABdhPJx1ODeNmclj2OVM31Oq3MuqlC1GsIRH+OAzqYgBCbFwAB55189RQ9pMY/doig9PvfmEHHoioQ==
+X-Received: by 2002:a63:f4e:: with SMTP id 14mr4270192pgp.236.1618518247557;
+        Thu, 15 Apr 2021 13:24:07 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id kk6sm3275829pjb.51.2021.04.15.13.24.05
+        by smtp.gmail.com with ESMTPSA id kk6sm3275829pjb.51.2021.04.15.13.24.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 13:24:05 -0700 (PDT)
+        Thu, 15 Apr 2021 13:24:06 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     mike.leach@linaro.org, leo.yan@linaro.org, suzuki.poulose@arm.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/1] coresight: Fix for v5.12-rc7 
-Date:   Thu, 15 Apr 2021 14:24:03 -0600
-Message-Id: <20210415202404.945368-1-mathieu.poirier@linaro.org>
+Subject: [PATCH 1/1] coresight: etm-perf: Fix define build issue when built as module
+Date:   Thu, 15 Apr 2021 14:24:04 -0600
+Message-Id: <20210415202404.945368-2-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210415202404.945368-1-mathieu.poirier@linaro.org>
+References: <20210415202404.945368-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Mike Leach <mike.leach@linaro.org>
 
-Please consider this patch as a fix for v5.12-rc7.  Applies cleanly
-to your char-misc-linus branch (e49d033bddf5).
+CONFIG_CORESIGHT_SOURCE_ETM4X is undefined when built as module,
+CONFIG_CORESIGHT_SOURCE_ETM4X_MODULE is defined instead.
 
-Thanks,
-Mathieu
+Therefore code in format_attr_contextid_show() not correctly complied
+when coresight built as module.
 
-Mike Leach (1):
-  coresight: etm-perf: Fix define build issue when built as module
+Use IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X) to correct this.
 
+Fixes: 88f11864cf1d ("coresight: etm-perf: Support PID tracing for kernel at EL2")
+Signed-off-by: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Link: https://lore.kernel.org/r/20210414194808.22872-1-mike.leach@linaro.org
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+---
  drivers/hwtracing/coresight/coresight-etm-perf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 0f603b4094f2..a706ba11b93e 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -52,7 +52,7 @@ static ssize_t format_attr_contextid_show(struct device *dev,
+ {
+ 	int pid_fmt = ETM_OPT_CTXTID;
+ 
+-#if defined(CONFIG_CORESIGHT_SOURCE_ETM4X)
++#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+ 	pid_fmt = is_kernel_in_hyp_mode() ? ETM_OPT_CTXTID2 : ETM_OPT_CTXTID;
+ #endif
+ 	return sprintf(page, "config:%d\n", pid_fmt);
 -- 
 2.25.1
 
