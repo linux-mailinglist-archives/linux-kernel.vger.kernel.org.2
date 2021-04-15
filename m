@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1987E36031D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C88360318
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhDOHSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:18:05 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:17998 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231215AbhDOHSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230201AbhDOHSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Apr 2021 03:18:01 -0400
-Received: from localhost.localdomain (unknown [10.192.139.175])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBHmQ2C6Hdga8TPAA--.12438S4;
-        Thu, 15 Apr 2021 15:17:28 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     quanyang.wang@windriver.com, Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v3] spi: spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe
-Date:   Thu, 15 Apr 2021 15:17:14 +0800
-Message-Id: <20210415071714.19334-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgBHmQ2C6Hdga8TPAA--.12438S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFyfKw4fAFWkAryrWFyfZwb_yoW8Kr1fpr
-        WvqFW7Kr4Iq3yxtF1qyw4kXFy5uryFg347JrykK3WIva4Fq3WrtF18JFy3tFW0yF97AFWU
-        WF48J3ySkF1YvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwNBlZdtTXCvwAJs6
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39911 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230090AbhDOHR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:17:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618471054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0WnUGWj6mmdpbk5EPEs1Mzx7dyk9BlduW5BXBGRUq4=;
+        b=JjDpkIcokTjJXVryPlQYzm2yc2NLMlTo9pTVRmaqdZbamVHVDF7EjnY04812IMYwbRhvAS
+        E7Jm2kKd8Lid25VpImJKnxY/N0sCOLFXQck/qT6vrrxp1wqtjho0un9uC/D3R0W7kBvXzJ
+        oPpSUPym3VwLKrFdI973CTJizSOuGJM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-Dle6J09lNr2HRO6FMp9cYg-1; Thu, 15 Apr 2021 03:17:32 -0400
+X-MC-Unique: Dle6J09lNr2HRO6FMp9cYg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21BB01854E25;
+        Thu, 15 Apr 2021 07:17:31 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-61.pek2.redhat.com [10.72.12.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9021F61D31;
+        Thu, 15 Apr 2021 07:17:22 +0000 (UTC)
+Subject: Re: [PATCH 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block for
+ vDPA
+To:     Zhu Lingshan <lingshan.zhu@linux.intel.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414091832.5132-1-lingshan.zhu@intel.com>
+ <20210414091832.5132-3-lingshan.zhu@intel.com>
+ <54839b05-78d2-8edf-317c-372f0ecda024@redhat.com>
+ <1a1f9f50-dc92-ced3-759d-e600abca3138@linux.intel.com>
+ <c90a923f-7c8d-9a32-ce14-2370f85f1ba4@redhat.com>
+ <10700088-3358-739b-5770-612ab761598c@linux.intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d6b27f59-ff17-1d63-0065-fd03ee36cd2d@redhat.com>
+Date:   Thu, 15 Apr 2021 15:17:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <10700088-3358-739b-5770-612ab761598c@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a PM usage counter decrement after zynqmp_qspi_init_hw()
-without any refcount increment, which leads to refcount leak.Add
-a refcount increment to balance the refcount. Also set
-auto_runtime_pm to resume suspended spi controller.
 
-Fixes: 9e3a000362aec ("spi: zynqmp: Add pm runtime support")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+在 2021/4/15 下午2:41, Zhu Lingshan 写道:
+>>>>
+>>>> I think we've discussed this sometime in the past but what's the 
+>>>> reason for such whitelist consider there's already a get_features() 
+>>>> implemention?
+>>>>
+>>>> E.g Any reason to block VIRTIO_BLK_F_WRITE_ZEROS or 
+>>>> VIRTIO_F_RING_PACKED?
+>>>>
+>>>> Thanks
+>>> The reason is some feature bits are supported in the device but not 
+>>> supported by the driver, e.g, for virtio-net, mq & cq implementation 
+>>> is not ready in the driver.
+>>
+>>
+>> I understand the case of virtio-net but I wonder why we need this for 
+>> block where we don't vq cvq.
+>>
+>> Thanks
+> This is still a subset of the feature bits read from hardware, I leave 
+> it here to code consistently, and indicate what we support clearly.
+> Are you suggesting remove this feature bits list and just use what we 
+> read from hardware?
+>
+> Thansk 
 
-Changelog:
 
-v2: - Add a refcount increment to fix refcout leak instead of the
-      refcount decrement on error.
-      Set ctlr->auto_runtime_pm = true.
+Yes, please do that.
 
-v3: - Add fix tag.
-      Add a return value check against pm_runtime_get_sync().
-      Move pm_runtime_{mark_last_busy & put_autosuspend} to the
-      end of current function.
----
- drivers/spi/spi-zynqmp-gqspi.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+The whiltelist doesn't help in this case I think.
 
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index c8fa6ee18ae7..781ef3fc76e2 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -1160,11 +1160,14 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
- 	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
-+
-+	ret = pm_runtime_get_sync(&pdev->dev);
-+	if (ret < 0)
-+		goto clk_dis_all;
-+
- 	/* QSPI controller initializations */
- 	zynqmp_qspi_init_hw(xqspi);
- 
--	pm_runtime_mark_last_busy(&pdev->dev);
--	pm_runtime_put_autosuspend(&pdev->dev);
- 	xqspi->irq = platform_get_irq(pdev, 0);
- 	if (xqspi->irq <= 0) {
- 		ret = -ENXIO;
-@@ -1187,6 +1190,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD |
- 			    SPI_TX_DUAL | SPI_TX_QUAD;
- 	ctlr->dev.of_node = np;
-+	ctlr->auto_runtime_pm = true;
- 
- 	ret = devm_spi_register_controller(&pdev->dev, ctlr);
- 	if (ret) {
-@@ -1194,9 +1198,13 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 		goto clk_dis_all;
- 	}
- 
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
- 	return 0;
- 
- clk_dis_all:
-+	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	clk_disable_unprepare(xqspi->refclk);
--- 
-2.17.1
+Thanks
 
