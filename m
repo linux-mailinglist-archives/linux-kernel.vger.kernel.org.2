@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1374E360F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475CB360F56
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233966AbhDOPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhDOPsF (ORCPT
+        id S234019AbhDOPs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:48:26 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35036 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233330AbhDOPsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:48:05 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6D6C061574;
-        Thu, 15 Apr 2021 08:47:40 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id er3so3392436qvb.6;
-        Thu, 15 Apr 2021 08:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AoDRJbLhMyQN2f8H9fWTQ1c7bXpVm9d9RpwiX2eJiww=;
-        b=jFxMl4vLIYgEpSsFOV8F7i3rw0jACscm7gLRIKbiEuAbWE6cjlPjmSkDy3RSDhymgc
-         Mf3aIPkQgNSQkNsoUBiSu60LBVb+j8HeD5EGEylP2G1Mj88RGelW/CajdtkuRAPEfkdh
-         b1PMRpJy8OvtXd56NpLVQQSYxbvehwATyTdFLpAIPJMEgsI3agh1t6pQznu3Bfkpd0rW
-         3mjDu7+0mVhQcpyLAJQpDIaRLrfBcmY99jrBLcAS0qew2TyXueJLZdwgZvS1XBXP1E/+
-         NmqNrPgAuyE/qyeC9gJeoO27v8xUHMBxkE8nuKxSPEOYd/5WNHTdc23ERpAI5PgLVONm
-         GElw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AoDRJbLhMyQN2f8H9fWTQ1c7bXpVm9d9RpwiX2eJiww=;
-        b=HPfJRjCZjIFJLrFiXbzl6/Zh6PgS+ruzUPnxH+/j8wzwJZfOcRGLv3CHMP3qhztO7w
-         qwqVkXXfu5BFeKrcNff/RzYjVela+GMSoak6D/yB6AU68ap7nCqTJC+xwNanisZ7OUy5
-         cxOrQouGjtmvioFf5CYCpKixejPlHYywuX3Nf/O9ab2OlgpEUs9MfQT/5MFc96K2CCYN
-         ZBZl0BF6AemH22AjjGutep3JXEHHAYoQNI4b6gKm2ki39FfbglM8rR8asM3hX6QEudHg
-         JrJhzEsvLnKHm/dZLqLImxUVYsqKSPPVOPyvSDY941LZQ5Pg05OtWL9nfQWpMGGvn+Lc
-         L8gw==
-X-Gm-Message-State: AOAM53090pYEyynpoaELFjCRoVddS6E5cGG0T2M/mBEC/sxHZ08SlqI1
-        fCAgBiTjJ7nFOM1M5OpigQ==
-X-Google-Smtp-Source: ABdhPJzadBXtYG4nxpGRKGezUFM6iBFLYf9gyscWOakHrs8tSavr6EtXDHjn3yGuy0+TzjeUTGjx5g==
-X-Received: by 2002:ad4:4052:: with SMTP id r18mr4097682qvp.8.1618501659858;
-        Thu, 15 Apr 2021 08:47:39 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id t17sm1959248qtr.42.2021.04.15.08.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 08:47:39 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 11:47:36 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
- overhead
-Message-ID: <20210415154736.snzrxq625p5l4lz2@gabell>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210415032642.gfaevezaxoj4od3d@gabell>
- <12cba05a-e268-3a5d-69d7-feb00e36ef40@redhat.com>
+        Thu, 15 Apr 2021 11:48:24 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FFlpL0028482;
+        Thu, 15 Apr 2021 10:47:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618501671;
+        bh=uiHPH94tE4sIxoTIhjL8lKWiz49jYbtUss22vgnacZU=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=eq0H2pxoQWFYaqm9B/JzGiBnJOx0DF8elBRyPAmjU2X4zb03AnWoTO7SWkwPqiKM/
+         0FRZXhDCD3VIVOcOfBsOvRF8ryigttBQenPgbdsiEfFHsnJyndNjrsZ201gBk6kqzN
+         3RJlJdlDP8A1eypvOq5+2B3R1BlWOiArX2tmyl1M=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FFlpI0091560
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Apr 2021 10:47:51 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Apr 2021 10:47:51 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 15 Apr 2021 10:47:51 -0500
+Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FFlkM9088230;
+        Thu, 15 Apr 2021 10:47:47 -0500
+Subject: Re: [PATCH 0/2] MCAN: Add support for implementing transceiver as a
+ phy
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+References: <20210415150629.5417-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <3b669b65-9e68-7148-90fb-7ad28e9a93cc@ti.com>
+Date:   Thu, 15 Apr 2021 21:17:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12cba05a-e268-3a5d-69d7-feb00e36ef40@redhat.com>
+In-Reply-To: <20210415150629.5417-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:17:37AM -0400, Waiman Long wrote:
-> I was focusing on your kernel module benchmark in testing my patch. I will
-> try out your pgbench benchmark to see if there can be other tuning that can
-> be done.
+Hi all,
 
-Thanks a lot!
+On 15/04/21 8:36 pm, Aswath Govindraju wrote:
+> The following series of patches add support for implementing the
+> transceiver as a phy of m_can_platform driver.
+> 
+> TCAN1042 has a standby signal that needs to be pulled high for
+> sending/receiving messages[1]. TCAN1043 has a enable signal along with
+> standby signal that needs to be pulled up for sending/receiving
+> messages[2], and other combinations of the two lines can be used to put the
+> transceiver in different states to reduce power consumption. On boards
+> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> 
+> These gpios are set in phy driver, and the transceiver can be put in
+> different states using phy API. The phy driver is added in the series [3].
+> 
+> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495365
+> 
 
-> BTW, how many numa nodes does your test machine? I did my testing with a
-> 2-socket system. The vmstat caching part may be less effective on systems
-> with more numa nodes. I will try to find a larger 4-socket systems for
-> testing.
+Posted v2 for this series.
 
-The test machine has one node.
+Thanks,
+Aswath
 
-- Masa
+> Faiz Abbas (2):
+>   dt-bindings: net: can: Document transceiver implementation as phy
+>   can: m_can: Add support for transceiver as phy
+> 
+>  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
+>  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
+>  drivers/net/can/m_can/m_can.h                       |  2 ++
+>  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
+>  4 files changed, 28 insertions(+)
+> 
+
