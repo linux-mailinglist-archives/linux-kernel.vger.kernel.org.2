@@ -2,153 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D59E35FFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DD635FFCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhDOB5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:57:16 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40172 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhDOB5P (ORCPT
+        id S229612AbhDOCFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhDOCFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:57:15 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4DE7951E;
-        Thu, 15 Apr 2021 03:56:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618451811;
-        bh=RULpcO7goqO0tGQ9PD90rkJ16ACguP4Uv0uAXLxJS80=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hvJF7tDBDz5uJdDJmmSklEK+F1jlEOxEyTS+Ptbi7XKRiLqCEnsXNb0i5hWONjl5L
-         GOzvZVW56GQRUS/hTD+cpTkA9+WE3SLCLAJbRt0HF8HeT70KD16VpwHH38+hfP/cm/
-         GKiysRfSAX+Qyng50zl+/6u7ocU7KV3MMqoK4hCQ=
-Date:   Thu, 15 Apr 2021 04:56:50 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 01/12] drm/bridge: Fix the stop condition of
- drm_bridge_chain_pre_enable()
-Message-ID: <YHedYnUrcnhRDnie@pendragon.ideasonboard.com>
-References: <20210402222846.2461042-1-dianders@chromium.org>
- <20210402152701.v3.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid>
- <YGpeo9LV4uAh1B7u@pendragon.ideasonboard.com>
- <CAD=FV=UN38EiYMiwNjysBS6dReKDaf+g2GcgaVt9iF1mTRKg7A@mail.gmail.com>
+        Wed, 14 Apr 2021 22:05:51 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5A3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:05:27 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f12so17093084qtf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:05:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kepstin.ca; s=google;
+        h=message-id:subject:from:to:cc:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=6xhuUVgjBAC1B6CSbTxZXzScfJ4bMKqw6vDHawJD1C4=;
+        b=Jqmm8OgSc88cnUqwazmpGrij1003UuKustveP2GDVtNaaRF13m12U88Ofd/giO5FZ8
+         dw4kD5RR/jEHCJXIH+ne0DgEG0vjBXIcfNFCeqHDHDEE/8XLYFGLU+dhzh4b/KGYc/g0
+         kIMqpnV0UT5//s2nswOY/Re/fAmt3WgocLbT8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=6xhuUVgjBAC1B6CSbTxZXzScfJ4bMKqw6vDHawJD1C4=;
+        b=EzNy6O6sve3T49AlZABwyhuM1ZUpKcYjiVjDjtl2von29SXGShYoOkGFGxSjy/HlvP
+         f4bMEjyeB11c1wo0rhKbNgxcJ1OeFoA5BOXTpyyKShu5KHzG1iEeZnsloy9UzZ7Ym+EU
+         Hj5Y6TRgPTw3MTGoWR4TtXesxZmD2ndb04EtqxXz6B5Y5au7wQm68SDG7BGsv5zF7sAl
+         HOi3kY3TjZByqsq8CPoT4aM3NpN61XE4W1cRss5ys2MwG6ni0MjD1gFn5QYPMetDuRYY
+         38KI9oQzMc4QlJr8dkCG8rSxzk2EtQqO+iiEqaT1vXqJ8UFlFFtZcADeEE51WJJdYbVY
+         QQAA==
+X-Gm-Message-State: AOAM5317LfDFKfHRPJ6iMv7TYNpI1HNFGySDe1QSvhcfPEXbtvZunqPU
+        rdattFoHTnREdRz7gsnFPVSOCw==
+X-Google-Smtp-Source: ABdhPJyFOL+4vGBXdOfpecXwAwZ83EwIJMAtJadyx0Rf90fufgsZ21AA3mETfYaoxkeAM+hhPvhxrw==
+X-Received: by 2002:ac8:45c6:: with SMTP id e6mr1017883qto.228.1618452326372;
+        Wed, 14 Apr 2021 19:05:26 -0700 (PDT)
+Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
+        by smtp.gmail.com with ESMTPSA id f27sm925917qkh.118.2021.04.14.19.05.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 19:05:25 -0700 (PDT)
+Message-ID: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
+Subject: [PATCH] Fix turbostat exiting with an error when run on AMD CPUs
+From:   Calvin Walton <calvin.walton@kepstin.ca>
+To:     Linux PM list <linux-pm@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>, Chen Yu <yu.c.chen@intel.com>
+Date:   Wed, 14 Apr 2021 22:05:24 -0400
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UN38EiYMiwNjysBS6dReKDaf+g2GcgaVt9iF1mTRKg7A@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+The current version of turbostat exits immediately upon entering the
+main loop, with error code -13. This is a regression that was introducted
+in these commits:
 
-On Wed, Apr 14, 2021 at 06:19:13PM -0700, Doug Anderson wrote:
-> On Sun, Apr 4, 2021 at 5:50 PM Laurent Pinchart wrote:
-> > On Fri, Apr 02, 2021 at 03:28:35PM -0700, Douglas Anderson wrote:
-> > > The drm_bridge_chain_pre_enable() is not the proper opposite of
-> > > drm_bridge_chain_post_disable(). It continues along the chain to
-> > > _before_ the starting bridge. Let's fix that.
-> > >
-> > > Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-> > > ---
-> > >
-> > > (no changes since v1)
-> > >
-> > >  drivers/gpu/drm/drm_bridge.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > > index 64f0effb52ac..044acd07c153 100644
-> > > --- a/drivers/gpu/drm/drm_bridge.c
-> > > +++ b/drivers/gpu/drm/drm_bridge.c
-> > > @@ -522,6 +522,9 @@ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
-> > >       list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
-> > >               if (iter->funcs->pre_enable)
-> > >                       iter->funcs->pre_enable(iter);
-> > > +
-> > > +             if (iter == bridge)
-> > > +                     break;
-> >
-> > This looks good as it matches drm_atomic_bridge_chain_disable().
-> >
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Thanks for your review here and several of the other patches. Can you
-> suggest any plan for getting them landed? It would at least be nice to
-> get the non-controversial ones landed.
+9972d5d84d76 tools/power turbostat: Enable accumulate RAPL display
+87e15da95775 tools/power turbostat: Introduce functions to accumulate RAPL consumption
 
-Do you have commit access to drm-misc ? If not, given your
-contributions, I think you qualify for it.
+Which introduced a method to accumulate MSR values over long sampling
+durations.
 
-> > I'm curious though, given that the bridge passed to the function should
-> > be the one closest to the encoder, does this make a difference ?
-> 
-> Yes, that's how I discovered it originally. Let's see. So if I don't
-> have this patch but have the rest of the series then I get a splat at
-> bootup. This shows that dsi_mgr_bridge_pre_enable() must be "earlier"
-> in the chain than my bridge chip. Here's the splat:
+The commits failed to account for the fact that AMD CPUs use a different
+(but confusingly similarly named) MSR for reading the package energy.
+I've added the AMD version of the MSR to the methods so that turbostat
+can be run again.
 
-Right, I think it's caused by a later patch in the series calling this
-function with a different bridge than the one closest to the encoder.
+(If you run on a system with mixed Intel and AMD cpus, you might have
+problems, but I have been assured that this isn't likely in practice.)
 
->  msm_dsi_host_get_phy_clk_req: unable to calc clk rate, -22
->  ------------[ cut here ]------------
->  disp_cc_mdss_ahb_clk status stuck at 'off'
->  WARNING: CPU: 7 PID: 404 at drivers/clk/qcom/clk-branch.c:92
-> clk_branch_toggle+0x194/0x280
->  Modules linked in: joydev
->  CPU: 7 PID: 404 Comm: frecon Tainted: G    B             5.12.0-rc3-lockdep+ #2
->  Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
->  pstate: 60400089 (nZCv daIf +PAN -UAO -TCO BTYPE=--)
->  pc : clk_branch_toggle+0x194/0x280
->  lr : clk_branch_toggle+0x190/0x280
->  ...
->  Call trace:
->   clk_branch_toggle+0x194/0x280
->   clk_branch2_enable+0x28/0x34
->   clk_core_enable+0x2f4/0x6b4
->   clk_enable+0x54/0x74
->   dsi_phy_enable_resource+0x80/0xd8
->   msm_dsi_phy_enable+0xa8/0x4a8
->   enable_phy+0x9c/0xf4
->   dsi_mgr_bridge_pre_enable+0x23c/0x4b0
->   drm_bridge_chain_pre_enable+0xac/0xe4
->   ti_sn_bridge_connector_get_modes+0x134/0x1b8
->   drm_helper_probe_single_connector_modes+0x49c/0x1358
->   drm_mode_getconnector+0x460/0xe98
->   drm_ioctl_kernel+0x144/0x228
->   drm_ioctl+0x418/0x7cc
->   drm_compat_ioctl+0x1bc/0x230
->   __arm64_compat_sys_ioctl+0x14c/0x188
->   el0_svc_common+0x128/0x23c
->   do_el0_svc_compat+0x50/0x60
->   el0_svc_compat+0x24/0x34
->   el0_sync_compat_handler+0xc0/0xf0
->   el0_sync_compat+0x174/0x180
+The MSR offsets in the conversion functions have been switched to use
+type off_t, since the offsets of the AMD MSRs exceed the range of a
+signed 32-bit int.
 
+Note that since the framework introduced only handles per-cpu MSRs but not
+per-core MSRs, AMD "Core" energy is not currently accumulated over long
+sampling periods.
+
+Fixes: 9972d5d84d76982606806b2ce887f70c2f8ba60a
+Signed-off-by: Calvin Walton <calvin.walton@kepstin.ca>
+---
+ tools/power/x86/turbostat/turbostat.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index a7c4f0772e53..576e03d373c4 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -291,13 +291,16 @@ struct msr_sum_array {
+ /* The percpu MSR sum array.*/
+ struct msr_sum_array *per_cpu_msr_sum;
+ 
+-int idx_to_offset(int idx)
++off_t idx_to_offset(int idx)
+ {
+-	int offset;
++	off_t offset;
+ 
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		offset = MSR_PKG_ENERGY_STATUS;
++		if (do_rapl & RAPL_AMD_F17H)
++			offset = MSR_PKG_ENERGY_STAT;
++		else
++			offset = MSR_PKG_ENERGY_STATUS;
+ 		break;
+ 	case IDX_DRAM_ENERGY:
+ 		offset = MSR_DRAM_ENERGY_STATUS;
+@@ -320,11 +323,12 @@ int idx_to_offset(int idx)
+ 	return offset;
+ }
+ 
+-int offset_to_idx(int offset)
++int offset_to_idx(off_t offset)
+ {
+ 	int idx;
+ 
+ 	switch (offset) {
++	case MSR_PKG_ENERGY_STAT:
+ 	case MSR_PKG_ENERGY_STATUS:
+ 		idx = IDX_PKG_ENERGY;
+ 		break;
+@@ -353,7 +357,7 @@ int idx_valid(int idx)
+ {
+ 	switch (idx) {
+ 	case IDX_PKG_ENERGY:
+-		return do_rapl & RAPL_PKG;
++		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
+ 	case IDX_DRAM_ENERGY:
+ 		return do_rapl & RAPL_DRAM;
+ 	case IDX_PP0_ENERGY:
 -- 
-Regards,
+2.31.1
 
-Laurent Pinchart
+
+
