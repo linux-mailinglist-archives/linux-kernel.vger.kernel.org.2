@@ -2,137 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE75C360944
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDA736093E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbhDOMZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:25:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16124 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbhDOMZy (ORCPT
+        id S232635AbhDOMYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:24:15 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:2290 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232842AbhDOMYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:25:54 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLdlC5ynrzpY88;
-        Thu, 15 Apr 2021 20:22:31 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 15 Apr 2021
- 20:25:15 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
-        <stern@rowland.harvard.edu>, <liudongdong3@huawei.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
-        <yisen.zhuang@huawei.com>
-Subject: [RFC PATCH] USB:XHCI:skip hub registration
-Date:   Thu, 15 Apr 2021 20:22:38 +0800
-Message-ID: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Thu, 15 Apr 2021 08:24:13 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FCCh6W018070;
+        Thu, 15 Apr 2021 14:23:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=F/GalzWzm89gxShNFkNRH3cF1SeIQnv7lFFgZazi5ZQ=;
+ b=gQ5SO8rWCWnYxZBEOdMNQbwMf98LxmuB0V4phCMQ3NG40IwZ7kjIpuvoMjJksPQrpNA2
+ B7E1C93lNcvWnttQuzXK2Cgk1Q23TWM/tsSibX/FSZAa3+XKA7t00qfuhbrhB2fxxTbm
+ WmnRw8Ra9AbM+zyq2qxsvORGIn0eA1rFuf7EVYyQKILpuq2BX++pvxffSoaFGHDnl4pg
+ rNjjDLHjtnTWDW7Z4ZWzXI8GwK1ixiCuBWWiJsEZzgXQXQSkz31njrDWw3PDGRybnbyE
+ BPAZArpPxHVSoBiIzjvrXzShLpFjiQZvZ1TjhjSHcnGol9EL85AjERUzhyfkYQsUYbkw iA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37wx3yyyga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 14:23:35 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E71110002A;
+        Thu, 15 Apr 2021 14:23:34 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 351CC22D63C;
+        Thu, 15 Apr 2021 14:23:34 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Apr
+ 2021 14:23:33 +0200
+Subject: Re: [PATCH 12/13] ARM: dts: stm32: fix DSI port node on STM32MP15
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>, <arnd@arndb.de>,
+        <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+        <jagan@amarulasolutions.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        <kuba@kernel.org>
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-13-alexandre.torgue@foss.st.com>
+ <ececc78c-4fca-bb93-ef62-5d107501d963@pengutronix.de>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <96da49dc-f24d-aa12-e1d8-39b5a5b6fbc9@foss.st.com>
+Date:   Thu, 15 Apr 2021 14:23:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <ececc78c-4fca-bb93-ef62-5d107501d963@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_04:2021-04-15,2021-04-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the number of ports on the USB hub is 0, skip the registration
-operation of the USB hub.
+Hi Ahmad
 
-The current Kunpeng930's XHCI hardware controller is defective. The number
-of ports on its USB3.0 bus controller is 0, and the number of ports on
-the USB2.0 bus controller is 1.
+On 4/15/21 12:43 PM, Ahmad Fatoum wrote:
+> Hi,
+> 
+> On 15.04.21 12:10, Alexandre Torgue wrote:
+>> Running "make dtbs_check W=1", some warnings are reported concerning
+>> DSI. This patch reorder DSI nodes to avoid:
+>>
+>> soc/dsi@5a000000: unnecessary #address-cells/#size-cells without
+>> "ranges" or child "reg" property
+> 
+> This reverts parts of commit 9c32f980d9 ("ARM: dts: stm32: preset
+> stm32mp15x video #address- and #size-cells"):
+>      
+>      The cell count for address and size is defined by the binding and not
+>      something a board would change. Avoid each board adding this
+>      boilerplate by having the cell size specification in the SoC DTSI.
+>      
+> 
+> The DSI can have child nodes with a unit address (e.g. a panel) and ones
+> without (ports { } container). ports is described in the dtsi, panels are
+> described in the dts if available.
+> 
+> Apparently, the checker is fine with
+> ports {
+> 	#address-cells = <1>;
+> 	#size-cells = <0>;
+> };
+> 
+> I think my rationale for the patch above was sound, so I think the checker
+> taking offense at the DSI cells here should be considered a false positive.
 
-In order to solve this problem that the USB3.0 controller does not have
-a port which causes the registration of the hub to fail, this patch passes
-the defect information by adding flags in the quirks of xhci and usb_hcd,
-and finally skips the registration process of the hub directly according
-to the results of these flags when the hub is initialized.
+If it's a "false positive" warning then we need to find a way to not 
+print it out. Else, it'll be difficult to distinguish which warnings are 
+"normal" and which are not. This question could also be applied to patch[3].
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- drivers/usb/core/hub.c      | 6 ++++++
- drivers/usb/host/xhci-pci.c | 4 ++++
- drivers/usb/host/xhci.c     | 5 +++++
- drivers/usb/host/xhci.h     | 1 +
- include/linux/usb/hcd.h     | 1 +
- 5 files changed, 17 insertions(+)
+Arnd, Rob what is your feeling about this case ?
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index b1e14be..2d6869d 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -1769,9 +1769,15 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
- 	struct usb_host_interface *desc;
- 	struct usb_device *hdev;
- 	struct usb_hub *hub;
-+	struct usb_hcd *hcd;
- 
- 	desc = intf->cur_altsetting;
- 	hdev = interface_to_usbdev(intf);
-+	hcd = bus_to_hcd(hdev->bus);
-+	if (hcd->usb3_no_port) {
-+		dev_warn(&intf->dev, "USB hub has no port\n");
-+		return -ENODEV;
-+	}
- 
- 	/*
- 	 * Set default autosuspend delay as 0 to speedup bus suspend,
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index ef513c2..63b89a4 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -281,6 +281,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
- 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
- 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
- 				"QUIRK: Resetting on resume");
-+
-+	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
-+	    pdev->device == 0xa23c)
-+		xhci->quirks |= XHCI_USB3_NOPORT;
- }
- 
- #ifdef CONFIG_ACPI
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index bee5dec..e3e3573 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -5184,6 +5184,11 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
- 		/* xHCI private pointer was set in xhci_pci_probe for the second
- 		 * registered roothub.
- 		 */
-+		if (xhci->quirks & XHCI_USB3_NOPORT) {
-+			xhci_info(xhci, "xHCI host has no port\n");
-+			hcd->usb3_no_port = 1;
-+		}
-+
- 		return 0;
- 	}
- 
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 2c6c4f8..d3c658f 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1874,6 +1874,7 @@ struct xhci_hcd {
- #define XHCI_RESET_PLL_ON_DISCONNECT	BIT_ULL(34)
- #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
- #define XHCI_RENESAS_FW_QUIRK	BIT_ULL(36)
-+#define XHCI_USB3_NOPORT	BIT_ULL(37)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
-diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-index 3dbb42c..7df23a0f 100644
---- a/include/linux/usb/hcd.h
-+++ b/include/linux/usb/hcd.h
-@@ -172,6 +172,7 @@ struct usb_hcd {
- 	unsigned		tpl_support:1; /* OTG & EH TPL support */
- 	unsigned		cant_recv_wakeups:1;
- 			/* wakeup requests from downstream aren't received */
-+	unsigned		usb3_no_port:1; /* xHCI main_hcd has no port */
- 
- 	unsigned int		irq;		/* irq allocated */
- 	void __iomem		*regs;		/* device memory/io */
--- 
-2.8.1
+thanks
+alex
 
+
+
+> Thanks,
+> Ahmad
+> 
+>>
+>> Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>>
+>> diff --git a/arch/arm/boot/dts/stm32mp157.dtsi b/arch/arm/boot/dts/stm32mp157.dtsi
+>> index 54e73ccea446..c355fcf26ec3 100644
+>> --- a/arch/arm/boot/dts/stm32mp157.dtsi
+>> +++ b/arch/arm/boot/dts/stm32mp157.dtsi
+>> @@ -24,8 +24,6 @@
+>>   			clock-names = "pclk", "ref", "px_clk";
+>>   			resets = <&rcc DSI_R>;
+>>   			reset-names = "apb";
+>> -			#address-cells = <1>;
+>> -			#size-cells = <0>;
+>>   			status = "disabled";
+>>   
+>>   			ports {
+>> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>> index 19ef475a48fc..763dde1dbbaf 100644
+>> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>> @@ -36,6 +36,8 @@
+>>   &dsi {
+>>   	status = "okay";
+>>   	phy-dsi-supply = <&reg18>;
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>>   
+>>   	ports {
+>>   		port@0 {
+>> diff --git a/arch/arm/boot/dts/stm32mp157c-ev1.dts b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+>> index 6fe5b0fee7c4..4625bb58cc6d 100644
+>> --- a/arch/arm/boot/dts/stm32mp157c-ev1.dts
+>> +++ b/arch/arm/boot/dts/stm32mp157c-ev1.dts
+>> @@ -102,6 +102,8 @@
+>>   &dsi {
+>>   	phy-dsi-supply = <&reg18>;
+>>   	status = "okay";
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>>   
+>>   	ports {
+>>   		port@0 {
+>>
+> 
