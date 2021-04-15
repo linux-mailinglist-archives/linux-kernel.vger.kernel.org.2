@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A1E360521
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CF5360526
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhDOJB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhDOJBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:01:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04727C061574;
-        Thu, 15 Apr 2021 02:01:02 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 09:00:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618477260;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lefCfJ0JnIAclFIhMangSYD9z2I7g+v5fd7E3LDwGW0=;
-        b=VOoGmconNMenTDgB5Po63xuJwAf2KVLrN+P1bLIx6/AxBO+D7efgFx6m3Ez3gI3v6Vevne
-        gJkz3CM6FQ5XU3sp060ON6Bz/daHAlUs8+qUyz/7QROZlMeV83mOFWQjbVhzeJ3pqw/zZB
-        Lidlvnibz35bxlYGoETXdRGgo2/umUa6kkng7srBWS3Aay/xel8jHnkk4W/0Wx/s8/JL6t
-        pvTdkhfRFCjDM4xb1LCbTtblJB4SmNSMA9mBhb1yjnVgtAVUxb9AwsaaQHu58lHZVdKJqW
-        zaDbHiFNtRdSeuR0VByZIhzjxR0PYJh5RjlRfTeHb0tZwWWTYrBtwhDey/jZUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618477260;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lefCfJ0JnIAclFIhMangSYD9z2I7g+v5fd7E3LDwGW0=;
-        b=Tqh0kJz0iDS5CI/xmj9N2ncaIyHaQ4bmCrxj+Kirm8ZeYoiiZO1LvVMULE5lfMnkudv+JS
-        zdcIDy3TMPdheHAg==
-From:   "tip-bot2 for Jean-Philippe Brucker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/dma: Tear down DMA ops on driver unbind
-Cc:     "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210414082633.877461-1-jean-philippe@linaro.org>
-References: <20210414082633.877461-1-jean-philippe@linaro.org>
+        id S231920AbhDOJCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231809AbhDOJCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:02:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE781611F1;
+        Thu, 15 Apr 2021 09:02:20 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 10:02:18 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Stafford Horne <shorne@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi
+Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
+Message-ID: <20210415090215.GA1015@arm.com>
+References: <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
+ <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+ <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
+ <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+ <20210414204734.GJ3288043@lianli.shorne-pla.net>
+ <YHf00hgpB5C20tH3@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <161847725788.29796.15623166781765421094.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHf00hgpB5C20tH3@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+(fixed Will's email address)
 
-Commit-ID:     9f8614f5567eb4e38579422d38a1bdfeeb648ffc
-Gitweb:        https://git.kernel.org/tip/9f8614f5567eb4e38579422d38a1bdfeeb648ffc
-Author:        Jean-Philippe Brucker <jean-philippe@linaro.org>
-AuthorDate:    Wed, 14 Apr 2021 10:26:34 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 15 Apr 2021 10:27:29 +02:00
+On Thu, Apr 15, 2021 at 10:09:54AM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 15, 2021 at 05:47:34AM +0900, Stafford Horne wrote:
+> > > How's this then? Compile tested only on openrisc/simple_smp_defconfig.
+> > 
+> > I did my testing with this FPGA build SoC:
+> > 
+> >  https://github.com/stffrdhrn/de0_nano-multicore
+> > 
+> > Note, the CPU timer sync logic uses mb() and is a bit flaky.  So missing mb()
+> > might be a reason.  I thought we had defined mb() and l.msync, but it seems to
+> > have gotten lost.
+> > 
+> > With that said I could test out this ticket-lock implementation.  How would I
+> > tell if its better than qspinlock?
+> 
+> Mostly if it isn't worse, it's better for being *much* simpler. As you
+> can see, the guts of ticket is like 16 lines of C (lock+unlock) and you
+> only need the behaviour of atomic_fetch_add() to reason about behaviour
+> of the whole thing. qspinlock OTOH is mind bending painful to reason
+> about.
+> 
+> There are some spinlock tests in locktorture; but back when I had a
+> userspace copy of the lot and would measure min,avg,max acquire times
+> under various contention loads (making sure to only run a single task
+> per CPU etc.. to avoid lock holder preemption and other such 'fun'
+> things).
+> 
+> It took us a fair amount of work to get qspinlock to compete with ticket
+> for low contention cases (by far the most common in the kernel), and it
+> took a fairly large amount of CPUs for qspinlock to really win from
+> ticket on the contended case. Your hardware may vary. In particular the
+> access to the external cacheline (for queueing, see the queue: label in
+> queued_spin_lock_slowpath) is a pain-point and the relative cost of
+> cacheline misses for your arch determines where (and if) low contention
+> behaviour is competitive.
+> 
+> Also, less variance (the reason for the min/max measure) is better.
+> Large variance is typically a sign of fwd progress trouble.
 
-x86/dma: Tear down DMA ops on driver unbind
+IIRC, one issue we had with ticket spinlocks on arm64 was on big.LITTLE
+systems where the little CPUs were always last to get a ticket when
+racing with the big cores. That was with load/store exclusives (LR/SC
+style) and would have probably got better with atomics but we moved to
+qspinlocks eventually (the Juno board didn't have atomics).
 
-Since
+(leaving the rest of the text below for Will's convenience)
 
-  08a27c1c3ecf ("iommu: Add support to change default domain of an iommu group")
+> That's not saying that qspinlock isn't awesome, but I'm arguing that you
+> should get there by first trying all the simpler things. By gradually
+> increasing complexity you can also find the problem spots (for your
+> architecture) and you have something to fall back to in case of trouble.
+> 
+> Now, the obvious selling point of qspinlock is that due to the MCS style
+> nature of the thing it doesn't bounce the lock around, but that comes at
+> a cost of having to use that extra cacheline (due to the kernel liking
+> sizeof(spinlock_t) == sizeof(u32)). But things like ARM64's WFE (see
+> smp_cond_load_acquire()) can shift the balance quite a bit on that front
+> as well (ARM has a similar thing but less useful, see it's spinlock.h
+> and look for wfe() and dsb_sev()).
+> 
+> Once your arch hits NUMA, qspinlock is probably a win. However, low
+> contention performance is still king for most workloads. Better high
+> contention behaviour is nice.
 
-a user can switch a device between IOMMU and direct DMA through sysfs.
-This doesn't work for AMD IOMMU at the moment because dev->dma_ops is
-not cleared when switching from a DMA to an identity IOMMU domain. The
-DMA layer thus attempts to use the dma-iommu ops on an identity domain,
-causing an oops:
-
-  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/unbind
-  # echo identity > /sys/bus/pci/devices/0000:00:05.0/iommu_group/type
-  # echo 0000:00:05.0 > /sys/sys/bus/pci/drivers/e1000e/bind
-   ...
-  BUG: kernel NULL pointer dereference, address: 0000000000000028
-   ...
-   Call Trace:
-    iommu_dma_alloc
-    e1000e_setup_tx_resources
-    e1000e_open
-
-Implement arch_teardown_dma_ops() on x86 to clear the device's dma_ops
-pointer during driver unbind.
-
- [ bp: Massage commit message. ]
-
-Fixes: 08a27c1c3ecf ("iommu: Add support to change default domain of an iommu group")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210414082633.877461-1-jean-philippe@linaro.org
----
- arch/x86/Kconfig          | 1 +
- arch/x86/kernel/pci-dma.c | 7 +++++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879..2c90f8d 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -85,6 +85,7 @@ config X86
- 	select ARCH_HAS_STRICT_MODULE_RWX
- 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
- 	select ARCH_HAS_SYSCALL_WRAPPER
-+	select ARCH_HAS_TEARDOWN_DMA_OPS	if IOMMU_DMA
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_DEBUG_WX
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
-diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
-index de234e7..60a4ec2 100644
---- a/arch/x86/kernel/pci-dma.c
-+++ b/arch/x86/kernel/pci-dma.c
-@@ -154,3 +154,10 @@ static void via_no_dac(struct pci_dev *dev)
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_VIA, PCI_ANY_ID,
- 				PCI_CLASS_BRIDGE_PCI, 8, via_no_dac);
- #endif
-+
-+#ifdef CONFIG_ARCH_HAS_TEARDOWN_DMA_OPS
-+void arch_teardown_dma_ops(struct device *dev)
-+{
-+	set_dma_ops(dev, NULL);
-+}
-+#endif
+-- 
+Catalin
