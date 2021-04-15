@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2754C36121D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDFC361227
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhDOS3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:29:36 -0400
-Received: from mail-pg1-f169.google.com ([209.85.215.169]:44667 "EHLO
-        mail-pg1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhDOS3f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:29:35 -0400
-Received: by mail-pg1-f169.google.com with SMTP id y32so17471033pga.11;
-        Thu, 15 Apr 2021 11:29:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TV0W0PA+E/xRpJBeBsTztONxJa8elueaRo6voPq/Bf4=;
-        b=BMznXrFvmF7Gy3DUUis+2tGlzSuPo1FJVgELNPI5OEQ7OfFLFsT33pMLTmOHYaE9j/
-         NgUtfcH4089DyHcOuRf8haPFLzJWneQnKaEbcMzpCBn+BQROYISSONUHK1Mlin+9jgnN
-         d7pgbcycscdATxDjsUjZmcWmgqJbNaIuvd277O0631wS2FfnEM/U+gA5bQpFv6n757fj
-         eam4rFLYDaOowuMlIoJ2CJr26tB4ePOXpvjHmyJn3KD5P9+75LBrVzyOi975xxGMhKHv
-         IttFsjbsGnJ5M41/Vz3a6xzn9kg3FiO42ZzH3OuULHVnripFowWlFEvg5iAgjc/fb+LI
-         9yXw==
-X-Gm-Message-State: AOAM531mlZhfYMNN88LTqR448GupQoGq/Iye7/nrspEGPtQIr4TNL2IA
-        C8xM5pPyTp7XljSVt6v0QFA=
-X-Google-Smtp-Source: ABdhPJzIwpv7qrR++Yme2wzTD+E6VL3I4NlABqPKtNImJyDg0nHQaQ2z18qPL/uAt8D1W1eCM+32iw==
-X-Received: by 2002:a63:3244:: with SMTP id y65mr4766094pgy.197.1618511351614;
-        Thu, 15 Apr 2021 11:29:11 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id c9sm2748735pfo.122.2021.04.15.11.29.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 11:29:10 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id CBD5740402; Thu, 15 Apr 2021 18:29:09 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 18:29:09 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeff Mahoney <jeffm@suse.com>
-Subject: Re: [RFC v3 0/2] vfs / btrfs: add support for ustat()
-Message-ID: <20210415182909.GK4332@42.do-not-panic.com>
-References: <1408071538-14354-1-git-send-email-mcgrof@do-not-panic.com>
- <20140815092950.GZ18016@ZenIV.linux.org.uk>
- <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
- <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
- <e7e867b8-b57a-7eb2-2432-1627bd3a88fb@toxicpanda.com>
+        id S234354AbhDOSeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233052AbhDOSeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 14:34:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE896109D;
+        Thu, 15 Apr 2021 18:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618511653;
+        bh=Z7rlcf62/SeM90x3yXm6cxI0c7m0aB8KUv/uFZ4RNKM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EHok+Ml7HW5qRCjFV0UjOhOwESORXNHFxjxbQfAmrToF17zUp9G1JyKI0IdvSpmeG
+         Eia+If0gp7lug8g4pDT574Z8ro+68h74JfGMHVG3prNXFbgC8/h9Y9v7G9xfpRauhb
+         L8I1E8rSll0HcULpn6JGcBi3nJJ0nF9lSuGTtx6bMm4KLQRvK2NiLNQMEm/MLT6tG9
+         XiQuMbYaDZdEMqWxWAZVAaR9hL1w1tuapPuWZ0BvJ8rHqyzoICbz3grkxBy2eif/Fx
+         ijsXxWexN3Bx2YdCjMKm/w4p5Gd1T06zJ8N5tMv+thwkXd5QjviTqjbcM3F7dSGdZS
+         B+5+lZAq4epeA==
+From:   Mark Brown <broonie@kernel.org>
+To:     kjlu@umn.edu, Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quanyang.wang@windriver.com,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+Subject: Re: [PATCH] [v4] spi: spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe
+Date:   Thu, 15 Apr 2021 19:33:41 +0100
+Message-Id: <161851161878.23304.12649397818878323854.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210415074644.24646-1-dinghao.liu@zju.edu.cn>
+References: <20210415074644.24646-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7e867b8-b57a-7eb2-2432-1627bd3a88fb@toxicpanda.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 02:17:58PM -0400, Josef Bacik wrote:
-> There's a lot of larger things that need to
-> be addressed in general to support the volume approach inside file systems
-> that is going to require a lot of work inside of VFS.  If you feel like
-> tackling that work and then wiring up btrfs by all means have at it, but I'm
-> not seeing a urgent need to address this.  Thanks,
+On Thu, 15 Apr 2021 15:46:44 +0800, Dinghao Liu wrote:
+> There is a PM usage counter decrement after zynqmp_qspi_init_hw()
+> without any refcount increment, which leads to refcount leak.Add
+> a refcount increment to balance the refcount. Also set
+> auto_runtime_pm to resume suspended spi controller.
 
-That's precisely what I what I want to hear me about. Things like this.
-Would btrfs be the ony user of volumes inside filesystem? Jeff had
-mentioned before this could also allow namespaces per volumes, and this
-might be a desirable feature.
+Applied to
 
-What else?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
- Luis
+Thanks!
+
+[1/1] spi: spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe
+      commit: 58eaa7b2d07d3c25e1068b0bf42ca7e7464f4bca
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
