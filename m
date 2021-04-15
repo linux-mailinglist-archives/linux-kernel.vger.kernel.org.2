@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461E936053F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27182360545
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhDOJGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
+        id S232076AbhDOJIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbhDOJGj (ORCPT
+        with ESMTP id S232032AbhDOJID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:06:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538B2C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:06:16 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWxwy-0001Uy-K8; Thu, 15 Apr 2021 11:06:12 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWxwx-0007rB-Fc; Thu, 15 Apr 2021 11:06:11 +0200
-Date:   Thu, 15 Apr 2021 11:06:11 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     thierry.reding@gmail.com, lee.jones@linaro.org,
-        matthias.bgg@gmail.com, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] pwm: mediatek: remove unused function
-Message-ID: <20210415090611.jjbwoz2nbcam3kct@pengutronix.de>
-References: <1618475753-102123-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Thu, 15 Apr 2021 05:08:03 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325D7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:07:40 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id u200so2439186vku.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kjVJwjzWYr1/sR0XamTsvtpkvMNA+5snLIJZWYxDhFI=;
+        b=UyrLPEOZuT1ziKU+PyL1rJHq7rNyJg+UeOgK0vbNVbHgo9TdDnHuc+z5wtHB5da8cA
+         G+eyDGuYo4jyss1OzbjpexQ1IRvennZUdBbRenPx4Yah7ic1Za0jpMLgARxClGCfccbQ
+         la+cauI00P0pXwi8nnpjnuobj6IVxaU5KLorR9GLgmrM87RNMG2TxXIjwxkorvE0BAmE
+         zH8TnvhSXF640s8pNdpUhEMJsqERIBzh+keXwLTULu70N1bYEdBNjeHg/tDr7EJnIIzm
+         a8VZIsXsEW+0idHwtn7r+QltlRl5lNlAGJB11tkdsNyIqC5UkivcIK1+5f3qWV9Lxje1
+         nUhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kjVJwjzWYr1/sR0XamTsvtpkvMNA+5snLIJZWYxDhFI=;
+        b=J9effKIyt48T+1xmeO85T1Fa6/KSNEEcMuQvUm7tmTObE4Bf8vGokSHPrF1IAzzaFW
+         2rL0L//lndC4pDI98sOzSKSAyMxrWD3gl386/heWz7E+w5jGFanMSCl6Tz7pnAeQe4gS
+         E5Y02cMRZ1tTRy/VwrPoDq/KNuWDeX3VqRbmGqlc+WZI906egV50HmeZaW/YrWOxVp8F
+         QYcNug3qjimzsu8mQOEvoqcjLwI3ZIK8TOZKPWkYNaFzA7X0bVSG04im5/ZdsbdDA2kd
+         T0rqwV3NOPhw2fBiarMSC0fhC+pth4zmqmKmqVelO81l+cPAWbZmCTS4lLIMnmM158PN
+         xncQ==
+X-Gm-Message-State: AOAM5301QFWTzCX0lv69mWzJeJZkqlvGSSgfUKoh9FYj0x+83gTzlWzr
+        VOUUQ+DLWjVi1IFCFnDfFJdKTTRz6rKgA1eiT3PGlg==
+X-Google-Smtp-Source: ABdhPJy/tFAI7hIwRCSFL3zc12707ikZU7bG/40bLAl8ttRArxQYWSFbL/u1pKeyKIZ0A2iQgJwfGHELnGwKLccsYO8=
+X-Received: by 2002:a1f:2c58:: with SMTP id s85mr999684vks.15.1618477659418;
+ Thu, 15 Apr 2021 02:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7bpyeb4yz3dyj6pq"
-Content-Disposition: inline
-In-Reply-To: <1618475753-102123-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210414100010.3877669-1-narmstrong@baylibre.com>
+In-Reply-To: <20210414100010.3877669-1-narmstrong@baylibre.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 15 Apr 2021 11:07:03 +0200
+Message-ID: <CAPDyKFpNLu3R+7ODZaC7yWMYbSOujswgLTkN97FQNg5zhwSxgw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: meson-gx: remove useless warning about scatterlist
+ size alignment in block mode
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dmitry Lebed <lebed.dmitry@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Apr 2021 at 12:00, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Since commit e085b51c74cc ("mmc: meson-gx: check for scatterlist size alignment in block mode"),
+> support for SDIO SD_IO_RW_EXTENDED transferts are properly filtered but some driver
+> like brcmfmac still gives a block sg buffer size not aligned with SDIO block,
+> triggerring a warning even if the transfer works in degraded mode.
+>
+> This should be ultimately fixed in brcmfmac, but since it's only a performance issue
+> the warning should be removed.
+>
+> Fixes: e085b51c74cc ("mmc: meson-gx: check for scatterlist size alignment in block mode")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  drivers/mmc/host/meson-gx-mmc.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+> index eb6c02bc4a02..6bc151045843 100644
+> --- a/drivers/mmc/host/meson-gx-mmc.c
+> +++ b/drivers/mmc/host/meson-gx-mmc.c
+> @@ -246,11 +246,8 @@ static void meson_mmc_get_transfer_mode(struct mmc_host *mmc,
+>                  * size, otherwise chain mode could not be used.
+>                  */
+>                 for_each_sg(data->sg, sg, data->sg_len, i) {
+> -                       if (sg->length % data->blksz) {
+> -                               WARN_ONCE(1, "unaligned sg len %u blksize %u\n",
+> -                                         sg->length, data->blksz);
 
---7bpyeb4yz3dyj6pq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Rather than removing this warning, perhaps an option could be to use
+dev_warn_once() instead?
 
-On Thu, Apr 15, 2021 at 04:35:53PM +0800, Jiapeng Chong wrote:
-> Fix the following clang warning:
->=20
-> drivers/pwm/pwm-mediatek.c:110:19: warning: unused function
-> 'pwm_mediatek_readl' [-Wunused-function].
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> +                       if (sg->length % data->blksz)
+>                                 return;
+> -                       }
+>                 }
+>         }
+>
 
-Looks right, even though I would prefer to see a patch implementing
-=2Eget_state instead (which probably would make use of this function).
-
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---7bpyeb4yz3dyj6pq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB4AgAACgkQwfwUeK3K
-7Ak5AAf7BTvu8rSzXv1FOdNJdLxf7+YfcvZs28wu+8AjrB4lxsn3KmModBJ0Zd3S
-kWP2SjRYH6z6yufXwBLo+hePxCVf4ZXwtNcpjX3KS2DMiDNh3W4maCwdWwuLbuVq
-Tkwvbw55qamozBBxcMvNO2NeQMk1NRoS5H5kG3sJbOppG7zaALoNz4WEEu8ByNXt
-1v8d+FWjdAAfaVQnLI1ndYC1AWVkdKEjQLO6FkMQ2F/hVzRzZqnFoxAqgqYyZe8f
-F4cAA9JWdK5MC5uAtCm0QfL1FFs39AZ5Y0jRkZDug5swopt6nSHS6zm6HZhJydTo
-nWOhe9Ugom7Yq1L+XSiWIO8NWhq4XQ==
-=wl9M
------END PGP SIGNATURE-----
-
---7bpyeb4yz3dyj6pq--
+Kind regards
+Uffe
