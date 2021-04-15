@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5758E361481
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19499361484
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhDOWEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:04:47 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37519 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234735AbhDOWEp (ORCPT
+        id S236499AbhDOWFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234735AbhDOWFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:04:45 -0400
-Received: by mail-ot1-f50.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso9921613otm.4;
-        Thu, 15 Apr 2021 15:04:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cjrjUXHacNvGNDk7Q/C+ESbCLjg4Pa5yFyEf+O/Q6Rk=;
-        b=qwEY+POX/67u1x//6jonW/ZjR6UcIb/ZjbFT39/33rBTbIjKdA4iNiMX9eAkTH3Hii
-         qHgsCSBm8//LkMgn2+66nulMeeX0xXb6mipZFWzNqZA4aJG2ynuHhG8WmRdpy4Yqwwzn
-         Mn3QNGMnPPR1Dp6wLk+WxuGY+IFbxQdWdutHYyPxnpnD+gVKFHWk2LNlro0u9ifKqh6j
-         k7L/2xu0uZkMBMOy5AHTd2xKCnJ7vvbOEGEOy7P0RuEWE22ktBgFCFDkTPGEWkkPGgXo
-         aZR9Zi81RBeFfjW4SAfTvGquGd6Fho9EmJ7+OnCyT0U+2XjCiHriFkm+rSR6jyDO1n3Q
-         T5Bw==
-X-Gm-Message-State: AOAM531JN3UyYcLuOFvjCeW8Z7jR6GFbw5rZF/kdjCTMTwSDZD9AQO8q
-        +5WoPUmjMAUQRuUwkwUvAw==
-X-Google-Smtp-Source: ABdhPJzs5cTY0YiItEz95ckGhd4fP2bum5/rIk1QKiYpZyI1sYfO1Yo40mAXSSBYGF8zxgIXNDa72A==
-X-Received: by 2002:a05:6830:1e15:: with SMTP id s21mr1077237otr.334.1618524260057;
-        Thu, 15 Apr 2021 15:04:20 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l9sm820713oog.32.2021.04.15.15.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 15:04:18 -0700 (PDT)
-Received: (nullmailer pid 1959975 invoked by uid 1000);
-        Thu, 15 Apr 2021 22:04:16 -0000
-Date:   Thu, 15 Apr 2021 17:04:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Rajeev Nandan <rajeevny@codeaurora.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        kalyan_t@codeaurora.org, hoegsberg@chromium.org,
-        abhinavk@codeaurora.org, seanpaul@chromium.org
-Subject: Re: [v1 2/3] dt-bindings: drm/bridge: ti-sn65dsi86: Document
- use-aux-backlight
-Message-ID: <20210415220416.GA1954887@robh.at.kernel.org>
-References: <1618418390-15055-1-git-send-email-rajeevny@codeaurora.org>
- <1618418390-15055-3-git-send-email-rajeevny@codeaurora.org>
+        Thu, 15 Apr 2021 18:05:39 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0501C061574;
+        Thu, 15 Apr 2021 15:05:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLtgV5j0vz9sW4;
+        Fri, 16 Apr 2021 08:05:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618524313;
+        bh=N0kmpCXfYvJVThMK+hIA7oKPDTMnMe87Yd9++GHP6TI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qiyk3M/6v4coSUg+Q14EFk0ZjXI9ltV1+1gjoe1FVnKJNJdaiIXKI3AaJx+zLpdLe
+         7XVlmuTgJPa/S4BrNwWpiKuHTorG4JHKHxX9HuinebEQ6MY+6IsEB+U1BTQxpqxGfs
+         1Ze9IU3yszZ4xdBp4Zi7BeebcZ7TdzijnG/4OBfcCmAy0g8030q+klNXOKb8OrXPN1
+         YkJnKOWhI/xeKXhVSw1/MllsPIWz8q1Qbx1PXSmjHydod9ymkdCjnstNcIyvKcQRGo
+         tptboQN6Mh4iWz4M1oosa7DEt2LfZKeRb6qSE+ckmG0aTJPKCZyz1LWGmkwsuyA/MC
+         0Ng1bg9iTkyKw==
+Date:   Fri, 16 Apr 2021 08:05:08 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Ong, Boon Leong" <boon.leong.ong@intel.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Linux Next Mailing List" <linux-next@vger.kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210416080508.25030590@canb.auug.org.au>
+In-Reply-To: <DM6PR11MB2780C0D45E70297CC5CE5423CA4D9@DM6PR11MB2780.namprd11.prod.outlook.com>
+References: <20210415121713.28af219a@canb.auug.org.au>
+        <DM6PR11MB2780C0D45E70297CC5CE5423CA4D9@DM6PR11MB2780.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618418390-15055-3-git-send-email-rajeevny@codeaurora.org>
+Content-Type: multipart/signed; boundary="Sig_/26TA7tHlp29Th/NRAfnKn8r";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:09:49PM +0530, Rajeev Nandan wrote:
-> If the panel connected to the bridge supports backlight control
-> using DPCD registers on the DisplayPort aux channel, setting
-> "use-aux-backlight" property in the bridge node will enable the
-> registration of a DP aux backlight device from the bridge driver.
-> 
-> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-> ---
->  .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml          | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> index 26932d2..c8d8c00 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> @@ -58,6 +58,12 @@ properties:
->    clock-names:
->      const: refclk
->  
-> +  use-aux-backlight:
+--Sig_/26TA7tHlp29Th/NRAfnKn8r
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-use-dp-aux-backlight perhaps.
+Hi all,
 
-> +    type: boolean
-> +    description:
-> +      The panel backlight to be controlled using DPCD registers on
-> +      the DP aux channel.
+On Thu, 15 Apr 2021 14:00:16 +0000 "Ong, Boon Leong" <boon.leong.ong@intel.=
+com> wrote:
+>
+> I check linux-next merge fix above and spotted an additional fix needed.
+> Please see below.=20
+>=20
+> >+ /**
+> >+  * dma_recycle_rx_skbufs - recycle RX dma buffers
+> >+  * @priv: private structure
+> >+  * @queue: RX queue index
+> >+  */
+> >+ static void dma_recycle_rx_skbufs(struct stmmac_priv *priv, u32 queue)
+> >+ {
+> >+ 	struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
+> >+ 	int i;
+> >+
+> >+ 	for (i =3D 0; i < priv->dma_rx_size; i++) {
+> >+ 		struct stmmac_rx_buffer *buf =3D &rx_q->buf_pool[i];
+> >+
+> >+ 		if (buf->page) {
+> >+ 			page_pool_recycle_direct(rx_q->page_pool, buf- =20
+> >>page); =20
+> >+ 			buf->page =3D NULL;
+> >+ 		}
+> >+
+> >+ 		if (priv->sph && buf->sec_page) {
+> >+ 			page_pool_recycle_direct(rx_q->page_pool, buf- =20
+> >>sec_page); =20
+> >+ 			buf->sec_page =3D NULL;
+> >+ 		}
+> >+ 	}
+> >+ } =20
+>=20
+> With https://git.kernel.org/netdev/net/c/00423969d806 that reverts
+> stmmac_reinit_rx_buffers(), then the above dma_recycle_rx_skbufs()
+> is no longer needed when net-next is sent for merge.=20
 
-Sounds like a property of the panel, not the bridge. So it should be in 
-the panel node.
+Thanks.  I have added removal of that (now unused) function to my merge
+resolution.
 
-Rob
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/26TA7tHlp29Th/NRAfnKn8r
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB4uJQACgkQAVBC80lX
+0GyAqgf5AZ531eJDllZim2FFQuyNW3MYW7Wnn4dbP9pXm0SQeUNrvk3Ccag9LS9O
+ks1aEIXe2V+HMd3G9GQvJwOMaHGx4Axytkp3f55ZERlLF1Pea4JYuo4bZpQfD4FO
+S1C9v7Dlh8LON8urt4BfUATcegFisE2k8GCkwWxI8ecWaOinuWqfOqlVic7M38fx
+DuOkymPFqJd0jP+yAIFoRUVwWtUV5nP3nwlAYNSjAJeIShjJ4u8V+Bqf8ZK/mPSx
+v214RMI540mIq317Wo+qQfWYMz+xgszwlO1jZRPsQy3OPj/+YHFMoXz0KZSh0WD8
+E7z5Eq+PrItLCy9ucDvQ/IlZxv6GYA==
+=dk52
+-----END PGP SIGNATURE-----
+
+--Sig_/26TA7tHlp29Th/NRAfnKn8r--
