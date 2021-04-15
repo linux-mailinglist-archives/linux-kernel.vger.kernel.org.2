@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC5F360BE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AB3360BE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbhDOOfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:35:19 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53338 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhDOOfS (ORCPT
+        id S233439AbhDOOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhDOOez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:35:18 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13FEJGow079587;
-        Thu, 15 Apr 2021 14:34:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=CkWzQJq9qTXR/COElw+2nWhJygfpMk390eJBQixVWfk=;
- b=ejz+nbayBZTs6/DWzcb2fO1Kvs0JJdKB0ekXoRwFa/oZ1l9yX0+xBBvYQajdgJSvMhKd
- Oia8VCc8V3J5lm+bV5mVTfyR0Y72jbfULD1kwT1ef1o33YvCwz/A290iOJ0lc67tAyhA
- tOIks3zfDzb0frBB5IBkg346uvRAl/ApqRlwg0UBwwznpEYkqqjkC6ZJqgiEzgsaOaup
- 6/w0sinwaZmUxA3o1/8TiJQIaZir86RloKC3BGH0vH1KrzmEppWvbpz7n8KvGFAnQBhj
- yG6/kq9P+FQOjmdJfOUNWLucK2x0uZmsNxok+NKFqDG/Vbhbzbm5ojeV1aSE3e+qHgQW 7w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 37u4nnp29h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 14:34:27 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13FEGXDo130989;
-        Thu, 15 Apr 2021 14:34:26 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 37uny13ksw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 14:34:26 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13FEYJUM018811;
-        Thu, 15 Apr 2021 14:34:23 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Apr 2021 07:34:18 -0700
-Date:   Thu, 15 Apr 2021 17:34:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net: stmmac: replace redundant comparison with true
-Message-ID: <20210415143409.GC6021@kadam>
-References: <20210415083757.1807538-1-colin.king@canonical.com>
+        Thu, 15 Apr 2021 10:34:55 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3A5C061574;
+        Thu, 15 Apr 2021 07:34:30 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id n8so39654200lfh.1;
+        Thu, 15 Apr 2021 07:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jAiGdDMjV3w/bmHPCKTZ38AvctziY46kn5qhLkuysBM=;
+        b=Mxiueoq5hgyhrUVfdJUkpWm/fK667IjKkfYcb7A9BOaEOzF7f828TbdiUl/zOPznN9
+         ghz1V8GXeKZbRy4rWFGd3gxyaGrDxHqmIW0LSePFV1+DTRtddc64AyZJt/8o0sYN1DqU
+         bGrCLY1t4rwqx0SFpgV/bBIFXsA7GNkxvUCPH2CFSux/u8l0nqzY+ocTc/CWAY6k0FPM
+         L5iwLpdHWBA+avgr87rrOzc6NaBMlEKbvGEtzwx7BvDDOBSAv0yf54unUlVWS1j57mih
+         1STVDZ6KhzoINVD1HdFO9WR9fHKB+3gZFL90ys6h39X8ccbKWReqeL3kk93VjmQhPXN1
+         COlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jAiGdDMjV3w/bmHPCKTZ38AvctziY46kn5qhLkuysBM=;
+        b=PIggoSeRLTxxR+4jGmli4h4S7Iz5k/VIyS7VPOC/9soK49bDTHhVIkgRZ9U1MQgjrv
+         hkLFISjxsenAsQDgJjrswXwve/D5WJl3nrRRj+/2csnIFt9GfhV5l9NQUuW75tltYO7j
+         VMnGZcpz73icmzw/lhqcyFNsoThrjguWm9CbdzyirsS7hPIY2rPBpiM6rr11Wzcje58p
+         jpEHs4kCdVQA96kOeBNHQF2t4tYOduYtZ09KuOOdml/heOMzIdnn3BIR4pS99oSyipkO
+         0QHrrInvOEvY2Pc16ogu5jZNmOps5G2D1JaQ37ph5TPtYmLr90xO+tRcw8VkAdoVfGJJ
+         Wgjg==
+X-Gm-Message-State: AOAM532/083Vk99/CP0AdQw6OwcNS1bIkMo28wAO2fNi3rffWdaEaouA
+        oyMFdnNdPbbNYm5Ak/Ol965zCk6vtgk=
+X-Google-Smtp-Source: ABdhPJxhRfPDkCWUFQmDxB5/TxlpxDOlg3JamFgDT6Lzzbkwek2dF2pefDSS3TkLFWSPFQCCX6qSug==
+X-Received: by 2002:ac2:491d:: with SMTP id n29mr2814040lfi.541.1618497269163;
+        Thu, 15 Apr 2021 07:34:29 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j17sm670034lfe.222.2021.04.15.07.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:34:28 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 15 Apr 2021 16:34:26 +0200
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it
+ has been spawned
+Message-ID: <20210415143426.GA14967@pc638.lan>
+References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
+ <87czuz1tbc.ffs@nanos.tec.linutronix.de>
+ <20210412183645.GF4510@paulmck-ThinkPad-P17-Gen-1>
+ <20210414071322.nz64kow4sp4nwzmy@linutronix.de>
+ <20210414085757.GA1917@pc638.lan>
+ <20210414181158.GU4510@paulmck-ThinkPad-P17-Gen-1>
+ <87tuo8v2vp.ffs@nanos.tec.linutronix.de>
+ <20210415050225.GC4510@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210415083757.1807538-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104150096
-X-Proofpoint-ORIG-GUID: 54ZOchoRvgCtTE-6YcFYiYJqRlTKUTmH
-X-Proofpoint-GUID: 54ZOchoRvgCtTE-6YcFYiYJqRlTKUTmH
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150096
+In-Reply-To: <20210415050225.GC4510@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:37:57AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
 > 
-> The comparison of the u32 variable queue with <= zero is always true
-> since an unsigned can never be negative. Replace the conditional
-> check with the boolean true to simplify the code.  The while loop
-> will terminate because of the zero check on queue before queue is
-> decremented.
+> Another approach is to move the spawning of ksoftirqd earlier.  This
+> still leaves a window of vulnerability, but the window is smaller, and
+> thus the probablity of something needing to happen there is smaller.
+> Uladzislau sent out a patch that did this some weeks back.
 > 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index e3e22200a4fd..6e5b4c4b375c 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -1673,7 +1673,7 @@ static void stmmac_reinit_rx_buffers(struct stmmac_priv *priv)
->  	return;
->  
->  err_reinit_rx_buffers:
-> -	while (queue >= 0) {
+See below the patch that is in question, just in case:
 
-This is an off by one from what the original developer was intending
-because we're freeing the most recent queue that wasn't allocated.
-In other words, we're freeing everything that we need to plus *one
-more thing that we don't need to*.  But it's harmless in this case:
+<snip>
+commit f4cd768e341486655c8c196e1f2b48a4463541f3
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Feb 12 16:41:05 2021 -0800
 
-The better fix would be to make queue an int type and do:
+    softirq: Don't try waking ksoftirqd before it has been spawned
 
-	while (--queue >= 0)
-		dma_free_rx_skbufs(priv, queue);
+    If there is heavy softirq activity, the softirq system will attempt
+    to awaken ksoftirqd and will stop the traditional back-of-interrupt
+    softirq processing.  This is all well and good, but only if the
+    ksoftirqd kthreads already exist, which is not the case during early
+    boot, in which case the system hangs.
 
+    One reproducer is as follows:
+
+    tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+
+    This commit therefore moves the spawning of the ksoftirqd kthreads
+    earlier in boot.  With this change, the above test passes.
+
+    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    Reported-by: Uladzislau Rezki <urezki@gmail.com>
+    Inspired-by: Uladzislau Rezki <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index bb8ff90..283a02d 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -592,6 +592,8 @@ static inline struct task_struct *this_cpu_ksoftirqd(void)
+        return this_cpu_read(ksoftirqd);
+ }
+
++int spawn_ksoftirqd(void);
++
+ /* Tasklets --- multithreaded analogue of BHs.
+
+    This API is deprecated. Please consider using threaded IRQs instead:
+diff --git a/init/main.c b/init/main.c
+index c68d784..99835bb 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1512,6 +1512,7 @@ static noinline void __init kernel_init_freeable(void)
+
+        init_mm_internals();
+
++       spawn_ksoftirqd();
+        rcu_init_tasks_generic();
+        do_pre_smp_initcalls();
+        lockup_detector_init();
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 9d71046..45d50d4 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -724,7 +724,7 @@ static struct smp_hotplug_thread softirq_threads = {
+        .thread_comm            = "ksoftirqd/%u",
+ };
+
+-static __init int spawn_ksoftirqd(void)
++__init int spawn_ksoftirqd(void)
+ {
+        cpuhp_setup_state_nocalls(CPUHP_SOFTIRQ_DEAD, "softirq:dead", NULL,
+                                  takeover_tasklets);
+@@ -732,7 +732,6 @@ static __init int spawn_ksoftirqd(void)
+
+
+
+        return 0;
+ }
+-early_initcall(spawn_ksoftirqd);
+
+ /*
+  * [ These __weak aliases are kept in a separate compilation unit, so that
+<snip>
+
+Thanks.
+
+--
+Vlad Rezki
