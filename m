@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632B03611CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08663611D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhDOSOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233595AbhDOSOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:14:06 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA4EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:13:40 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id u8so18842296qtq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EO1ZRnRE5AIix1KmwKUfdGLcr4z4RBOaJpoQ33nEJcU=;
-        b=jcmAT3HPYBCrHP6jHCPcphUzr0fG91bIyePgBoblxnUY+uM+e0eGmbicEIUky5JdS0
-         3f+T18xTekj77ibaghPcyaYdxNQRjMPbL4Ntyc63OCy/SDczT2i+WSCRxh/sJc/Sb+jL
-         zTGvaa45VbkcKTNF0+kZ/awf98n0XtQGdqXy5xnTcX+StcRGfboJyIAFPchfBTtSF5A9
-         VROXd7+VJIJA1jLng07E/m4Vx1z4MfGAhl74Z/6Z251sfegah5pmMek7SH5p2gLdC140
-         PPSH1qvSRmRMyxmzaa54BMa3AEJO4ukZlCVGoQ8YJmEH+HRKNHBmnXMdiv8fuv7DifI4
-         oqvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EO1ZRnRE5AIix1KmwKUfdGLcr4z4RBOaJpoQ33nEJcU=;
-        b=RSRSnxsGrpW1DzJB0gO505M7Il4SIlsEBl9ctfx8e0ZgaThUup4mr/RB6cFW0Va+1U
-         sp7iVdjLe/PtcUXx+xIEf3q+pzdcIwsnEADov0jo8KEmfFJ+iJppbKEPVEXkF8C3wwoE
-         wngipGqR05UKKautAOaMH5rTmLjWDUM3+LeOeKrPq2N01+dMKWANlyyLuFLCa4t5mK+d
-         Mqf6/JILiE762Y87bprpAZABzc9/w5LhVmk+EYdpmAzPlq6EBiwP//EN3bfu2kQbH1EQ
-         77Dl8BkzQQtx77DOjMtFvELg7IqIFY1PYGYvcQ242UpulFZXaqA2bKXNJvzNOQW3MRxL
-         IsgA==
-X-Gm-Message-State: AOAM530bOEOkEYatvNozZgqXdiAC85y2w/wAJm3bFcw4BAHGudNqG81C
-        bfBH5efgGjekJSbaPYy1//kRdQ==
-X-Google-Smtp-Source: ABdhPJwZeV1EKidTKUJjnDui70hmgN5zSMh0mrr3zrj2n5DFwYlqRj8w5iOpw/kIBIcCxxRbU4cpSA==
-X-Received: by 2002:a05:622a:3c8:: with SMTP id k8mr4248564qtx.101.1618510419998;
-        Thu, 15 Apr 2021 11:13:39 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id 71sm2559708qkm.40.2021.04.15.11.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 11:13:39 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:13:38 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 3/5] mm/memcg: Cache vmstat data in percpu
- memcg_stock_pcp
-Message-ID: <YHiCUnqaVkIwGzUT@cmpxchg.org>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-4-longman@redhat.com>
- <YHhu1BOMj1Ip+sb3@cmpxchg.org>
- <5abe499a-b1ad-fa22-3487-1a6e00e30e17@redhat.com>
+        id S233134AbhDOSOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:14:43 -0400
+Received: from mout.gmx.net ([212.227.15.15]:45645 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233595AbhDOSOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 14:14:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618510439;
+        bh=TdTcHGYJ1c8RXGkpf0+s767H2Zkzsb60TtOHhEGg0OQ=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Te1Ium806lZyefPp+PmD7eu2uDuLWp8KbfVDRtnWGQDmWMYyC97dUqqtzudagx5Y6
+         jly2gjwDnNt8HVvICJIGdaVweyPQ8fCwIsYdduiFtlNjsTs7trN5ndemcyBVB6aFlI
+         QEhzvOCN9X/W6r9hiLTUEe167UukBSP1C+gMRtNU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.149.95]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MryT9-1luOgs1hXJ-00o03y; Thu, 15
+ Apr 2021 20:13:59 +0200
+Message-ID: <f2f54eccdbda3bd09eee8bf50264133faf84b80f.camel@gmx.de>
+Subject: Re: Question on KASAN calltrace record in RT
+From:   Mike Galbraith <efault@gmx.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
+        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>
+Date:   Thu, 15 Apr 2021 20:13:58 +0200
+In-Reply-To: <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
+References: <BY5PR11MB4193DBB0DE4AF424DE235892FF769@BY5PR11MB4193.namprd11.prod.outlook.com>
+         <CACT4Y+bsOhKnv2ikR1fTb7KhReGfEeAyxCOyvCu7iS37Lm0vnw@mail.gmail.com>
+         <182eea30ee9648b2a618709e9fc894e49cb464ad.camel@gmx.de>
+         <CACT4Y+bVkBscD+Ggp6oQm3LbyiMVmwaaX20fQJLHobg6_z4VzQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5abe499a-b1ad-fa22-3487-1a6e00e30e17@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WJcUOFmUdF8mB3VJ5X9eU2m+Rl2Ob9KE5WzQ1EJoxEPmBschOWJ
+ G0uUzYiIaxZhzPeEobnkLMfaC2Dyjb35GC+MF+ZIuCSlbmFyQEag6qChD0u2eMxfMtQz9Sm
+ 4ZH1WO3pB7TeCcbAOQrel7mENL1yYyyqrV4pQGNRZ2Fpzkd4LOSWQSoZ28rCIHzOw/jKKpI
+ ROpl1fmnZNsZPaRE1Cprw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rKMJVeirOr8=:t/2IQteopQzsoMRImFcrCA
+ axURKvimsAVhEWifQy0R59n1E/FeSERO91LhNZFzBNaQK6D0UMdpy31T25j95P3QyWAUfj0Qg
+ bbueTBPleQAnX0I8608aeTAb3z41Gau+QgGNP8Pg2oVyHMT2LF2lU1rI6Xv/gxsNUJIYZoWob
+ chPgbTI08blR5xmzrwHP5z5LKn5dgl2G7WXqu5dP19iBSe9RIx8uuUDNzV3pvyIv3DLq2qq6N
+ wr1MoKgGooJWIvA7vNwPrvjRsXkh4udLHoijWqnm/ooXLGY7EZJAN7zyT9y0dAO9w45CrBjsT
+ HfaBEyh0KtzZktsR1Fq7H3QA+bcN7KyOMjgg7HuXvWT9X+YG950mYQTf+MUfPFwuoRsrKmUaD
+ XLtZ9nLp0C5AR9ZzdCVNB0nUBBEcGJiTKnPBrhrtAJlrdS6Cd3Tai1Y8BpxB9QRCXn1CsBTC1
+ FVDaT/SqZmZyvpY7QLHn7YCacxd7cj/ft/zMfv+Ynq7Kpirzrj/s5lkl5W2a1abjjlrGmzomU
+ qBD6KePakNsNQ+r2m2tRtdzPa/D9hUbzw1thVgzWQuCVXooPQ7kp3V2jqkOGRprUWcu8q/Rf1
+ VHkQnuZ6VyxL/UV9pOluLWvtzD1FHBaYNdvwdj6foziTV2lc2Gq2xX034/0QRZKt1mXgyE987
+ hibyAF6Y6LIdp8jHrsxRnVfFZ6hTsbZfnGRi2ztZpnyF4JG5eUKdsERKL5yOV9aqDNp9tKd1y
+ dNmvVEQsHdOowMHpj2f819m3FZXhCQyQcwaEH0HZHkoUwPvwsfLKMzGtdFirg+qrNLmi3NWGm
+ 4kH79ZpZJNK4OvOoB4/HFTjGsUOTi8KkWsgrJ8HfhVSXlCErRdB03xXwtd9MePu/Anbw8v0t2
+ k+VrBNzkQzL9/ncUATWTUjABbqXJZVftT2nLBwoANrluj4s4WFZxG29ARUjH3exYNPsiuiT0h
+ pNtJjhOWA+NaCjMums2AZmi0bBMEvSiiltP5jdOaVkafDkIqosylf9THjNKliWuSdeDgSa5uW
+ gsw3hiinK6Ns92hO6Up7s9nPq9qWUALQMPT3b+gSCQR+1mUMe1y6SzgvyFoqq6W8ALEUlA7u2
+ m7DuDSSQGAOoAac7jEYZBEXxMbNsQhElD4NrfzHrJBGqi/FNuUVHd5Z4483vWTIW9RZGNqPAV
+ 2Rj76HAO7MXISUGihgteaU22mzcy57SfYZ28ELhN3OGJYY+6BQdCNUQSRQ6In4LI3KsfE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 01:08:29PM -0400, Waiman Long wrote:
-> On 4/15/21 12:50 PM, Johannes Weiner wrote:
-> > On Tue, Apr 13, 2021 at 09:20:25PM -0400, Waiman Long wrote:
-> > > Before the new slab memory controller with per object byte charging,
-> > > charging and vmstat data update happen only when new slab pages are
-> > > allocated or freed. Now they are done with every kmem_cache_alloc()
-> > > and kmem_cache_free(). This causes additional overhead for workloads
-> > > that generate a lot of alloc and free calls.
-> > > 
-> > > The memcg_stock_pcp is used to cache byte charge for a specific
-> > > obj_cgroup to reduce that overhead. To further reducing it, this patch
-> > > makes the vmstat data cached in the memcg_stock_pcp structure as well
-> > > until it accumulates a page size worth of update or when other cached
-> > > data change.
-> > > 
-> > > On a 2-socket Cascade Lake server with instrumentation enabled and this
-> > > patch applied, it was found that about 17% (946796 out of 5515184) of the
-> > > time when __mod_obj_stock_state() is called leads to an actual call to
-> > > mod_objcg_state() after initial boot. When doing parallel kernel build,
-> > > the figure was about 16% (21894614 out of 139780628). So caching the
-> > > vmstat data reduces the number of calls to mod_objcg_state() by more
-> > > than 80%.
-> > Right, but mod_objcg_state() is itself already percpu-cached. What's
-> > the benefit of avoiding calls to it with another percpu cache?
-> > 
-> There are actually 2 set of vmstat data that have to be updated. One is
-> associated with the memcg and other one is for each lruvec within the
-> cgroup. Caching it in obj_stock, we replace 2 writes to two colder
-> cachelines with one write to a hot cacheline. If you look at patch 5, I
-> break obj_stock into two - one for task context and one for irq context.
-> Interrupt disable is no longer needed in task context, but that is not
-> possible when writing to the actual vmstat data arrays.
+On Wed, 2021-04-14 at 07:26 +0200, Dmitry Vyukov wrote:
+>
+> > [   15.428008] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [   15.428011] BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap=
+_entries+0x17e/0x3a0
+>
+> This looks like a genuine kernel bug on first glance. I think it needs
+> to be fixed rather than ignored.
 
-Ah, thanks for the explanation. Both of these points are worth
-mentioning in the changelog of this patch.
+I posted a fix, so KASAN earns another notch in its pistol grips.
+
+	-Mike
+
