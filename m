@@ -2,155 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0ED360649
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1990B36064E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbhDOJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhDOJyv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:54:51 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E88AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:54:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id e14so35894710ejz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=B2Fqr5NrGo6XWgDU6JjQz47MwlJ8Kw/VR7rCvP0gwec=;
-        b=hCRENN2JAum41BR5TkYhp6L24NUIe3pxdfzcxPO0KVaXXIqIf2TQKDO+GB2IDzqIGK
-         XciSjNUeIld40SMwUdhukgeNrIxsUC/6R/PWz+cmpEd7RxjLCrmRy5XesTi0tFpErWgI
-         F/PluSqlFZ2a/16bTLMmgAOs4NWxUVJGNK5dxQJziCvq1LNmjxwDQJpE82uAvL35Xomt
-         aGqtY1efUEdxPOVFTj4LENYcv3u0ctHcsn4GROxEonIpUtuJKucqzHYjXd/zUepXKX+N
-         bs82HbDF0MooZNm5n3hdPwXaeZ28apP5sNjs+9OH22oyf8R0pINTbL72DYvYJ03nPvhy
-         cy/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=B2Fqr5NrGo6XWgDU6JjQz47MwlJ8Kw/VR7rCvP0gwec=;
-        b=UekdCbPveqO3ZG4/sNsXzTVm10vg6t1O1M/+oQetGs8tGlnjsV0hJnqhBFY6o6DvQh
-         G2ERK4bMTH/ZW+kVa2tiguzBbuqGjDrUlsBVrN7Sk6947waw41wYiBfqU+Am2PPUXoFw
-         L+oZ/pYLD4Q57nKF8SWFvoxUkeJ/EcsZUzjkpmTyFbv2prLuAAPkcyP0hH8S0Z3fJNAZ
-         sxcaDDboHRakAsheF5goZBfu5l8O1qm8l7OOq+cSjS/cwMLh+2msuaLb1b0UCOfH2pOu
-         59UAkL6c1OcM8wZoPHw0BAbzIp/dbkvc1AnCiiP/NyGc6fzI7H/XzBaorRRSVCiu2ATX
-         VWqA==
-X-Gm-Message-State: AOAM531ddOMMRuc7rwhKJMOmLyFK0vdwEfNOYhutMQ9sOKlybBS+YN/M
-        878lU7JE3L7vx8s5e7E0dfZ32g==
-X-Google-Smtp-Source: ABdhPJzVBz5Vc8f1H+FidST1MZgZUzJyMRWOEUDV3rKTyI8dZ7dAdCNzVfzORk/vWOA9oZhCIOzXCg==
-X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr2516246ejw.341.1618480465538;
-        Thu, 15 Apr 2021 02:54:25 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id e16sm1990440edu.94.2021.04.15.02.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 02:54:25 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 10:54:23 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Ian Abbott <abbotti@mev.co.uk>
-Cc:     linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 55/57] staging: comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-Message-ID: <20210415095423.GY4869@dell>
-References: <20210414181129.1628598-1-lee.jones@linaro.org>
- <20210414181129.1628598-56-lee.jones@linaro.org>
- <fd880e8e-a5fc-67ef-6ba4-f59592dee71d@mev.co.uk>
+        id S231664AbhDOJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhDOJ6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D27F61166;
+        Thu, 15 Apr 2021 09:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618480666;
+        bh=Z8fKpQhCnoPycrzSI0zFpUvBPt/oa7wi/1dPZ/AiPkk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KaRXvhZbzzVO4VeHKwH7FSnlwK57Jqnszi14cKw7z/nkoxRfGx+yL5NiS1hyTxOwF
+         Abg1zmSJ944r5DvL1YaHesXwhlP9lj4z2qadQTqauD2F7mViViqYER8AB/HTfv/C1O
+         2NpWpOT7+kAx2PDLEHBPNbI/TSDzO+YRSNjgecKFzF+z+K6H8hRuQQ5RBPMrK7IFvU
+         VFIjP5xIAf+64HSNF3SIlaQ2DETfKzOBcGrjrOo8Dwyt2Tnqgn1xNo8S5k8USaqbQF
+         Cr+a1tV4Ra9sGAohklL0dueRYGoW9dGXuETXSRYMs5Y8i1rSv/lC9DsV406FwQD1Mi
+         gX6btdq/xA07Q==
+Subject: Re: [PATCH v2 2/3] mmc: sdhci-s3c: correct kerneldoc of
+ sdhci_s3c_drv_data
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210415084412.51125-1-krzysztof.kozlowski@canonical.com>
+ <20210415084412.51125-2-krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <91d3b5ed-63ac-cf5d-e3bf-8ec853927cee@kernel.org>
+Date:   Thu, 15 Apr 2021 11:57:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fd880e8e-a5fc-67ef-6ba4-f59592dee71d@mev.co.uk>
+In-Reply-To: <20210415084412.51125-2-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021, Ian Abbott wrote:
 
-> On 14/04/2021 19:11, Lee Jones wrote:
-> > ... and mark it as __maybe_unused since not all users of the
-> > header file reference it.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
-> > 
-> > Cc: Ian Abbott <abbotti@mev.co.uk>
-> > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: "David A. Schleef" <ds@schleef.org>
-> > Cc: Mori Hess <fmhess@users.sourceforge.net>
-> > Cc: Truxton Fulton <trux@truxton.com>
-> > Cc: linux-staging@lists.linux.dev
-> > Cc: linux-pwm@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >   drivers/staging/comedi/drivers/ni_mio_common.c | 9 ---------
-> >   drivers/staging/comedi/drivers/ni_stc.h        | 9 ++++++++-
-> >   2 files changed, 8 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
-> > index 4f80a4991f953..37615b4e2c10d 100644
-> > --- a/drivers/staging/comedi/drivers/ni_mio_common.c
-> > +++ b/drivers/staging/comedi/drivers/ni_mio_common.c
-> > @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
-> >   	}
-> >   };
-> > -static const struct comedi_lrange range_ni_E_ao_ext = {
-> > -	4, {
-> > -		BIP_RANGE(10),
-> > -		UNI_RANGE(10),
-> > -		RANGE_ext(-1, 1),
-> > -		RANGE_ext(0, 1)
-> > -	}
-> > -};
-> > -
-> >   static const struct comedi_lrange *const ni_range_lkup[] = {
-> >   	[ai_gain_16] = &range_ni_E_ai,
-> >   	[ai_gain_8] = &range_ni_E_ai_limited,
-> > diff --git a/drivers/staging/comedi/drivers/ni_stc.h b/drivers/staging/comedi/drivers/ni_stc.h
-> > index fbc0b753a0f59..0822e65f709dd 100644
-> > --- a/drivers/staging/comedi/drivers/ni_stc.h
-> > +++ b/drivers/staging/comedi/drivers/ni_stc.h
-> > @@ -1137,6 +1137,13 @@ struct ni_private {
-> >   	u8 rgout0_usage;
-> >   };
-> > -static const struct comedi_lrange range_ni_E_ao_ext;
-> > +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
-> > +	4, {
-> > +		BIP_RANGE(10),
-> > +		UNI_RANGE(10),
-> > +		RANGE_ext(-1, 1),
-> > +		RANGE_ext(0, 1)
-> > +	}
-> > +};
-> >   #endif /* _COMEDI_NI_STC_H */
-> > 
+On 15.04.2021 10:44, Krzysztof Kozlowski wrote:
+> Correct the name of sdhci_s3c_drv_data structure in kerneldoc:
 > 
-> I think it is better where it is for now with its fellow struct
-> comedi_lrange variables, but feel free to mark it as __maybe_unused.
+>    drivers/mmc/host/sdhci-s3c.c:143: warning:
+>      expecting prototype for struct sdhci_s3c_driver_data. Prototype was for struct sdhci_s3c_drv_data instead
+> 
+> Signed-off-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
 
-Can do.  Will fix.
-
-> (Really, the #include "ni_mio_common.c" mess needs sorting out sometime.)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
