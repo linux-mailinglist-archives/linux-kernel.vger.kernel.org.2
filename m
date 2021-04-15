@@ -2,173 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37C03602BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103E33602C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhDOGxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:53:25 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:64536 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhDOGxW (ORCPT
+        id S231163AbhDOGyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:54:08 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35971 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhDOGyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:53:22 -0400
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 13F6qfpq015976;
-        Thu, 15 Apr 2021 15:52:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13F6qfpq015976
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618469561;
-        bh=ASLMD/Isn3hyU3AH6rc2TBLrCxFcTFf8y3b9byejf+k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QwDQByczDp2Ixc5lmb0fTUY0fURBptlbXVYbFrJk7tr0V2WT1I+xMW1fy/nuaSm3A
-         eVZ1lykXl438BMO7IHX+FvjX+ANuPxqUd6f0YdG7iN3yb7r+vYML21Zem9K3kFWqih
-         AnCzn/WgRJRIdEwi3hZbOZoTh4uOe6mNGwQ4G+sUkgdXyznrOwrD6pBKLIOJbQZRJS
-         TsnKY4xVw1G98JyH+5om3gtB4Q5tlWLHQLkJiJKbZ4Dfq1ElZvrduxL9F5EZ6dKgth
-         oyY72QksPOPWSQPwF1qsBqKddCpkr0IGzu6ipz7tjm99JFEOTsGhQjQf2iRfKfz4Zl
-         a6Um2KxZ/t1XQ==
-X-Nifty-SrcIP: [209.85.216.43]
-Received: by mail-pj1-f43.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso12163663pje.0;
-        Wed, 14 Apr 2021 23:52:41 -0700 (PDT)
-X-Gm-Message-State: AOAM532CNR4sIMkZS3Lo4Wh3ZU5z2nfooz0cEsz9T5IIPbRZC9XkzuXr
-        2poS7tREx1MiGmKGb9M8X1XzN4sR1/ChYA9vFmA=
-X-Google-Smtp-Source: ABdhPJyMNCwpzerAzacYrJrcWqFcuKBK68TQWYjfjdGIIUUg6XX5GJzX3WcOY63EAoqh8uq6kpikN+HHEWtCfQmbYCE=
-X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr2109954pjd.153.1618469560457;
- Wed, 14 Apr 2021 23:52:40 -0700 (PDT)
+        Thu, 15 Apr 2021 02:54:07 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id F114E60008;
+        Thu, 15 Apr 2021 06:53:41 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 08:54:20 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: media: max9286: Define
+ 'maxim,gpio-poc'
+Message-ID: <20210415065420.lbba2hig4p2ynx6c@uno.localdomain>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-2-jacopo+renesas@jmondi.org>
+ <YHd/AKIfxIHhTjWO@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <20210414192657.17764-1-rdunlap@infradead.org>
-In-Reply-To: <20210414192657.17764-1-rdunlap@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 15 Apr 2021 15:52:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
-Message-ID: <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
-Subject: Re: [PATCH] uml: fix W=1 missing-include-dirs warnings
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YHd/AKIfxIHhTjWO@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+Hi Laurent,
+
+On Thu, Apr 15, 2021 at 02:47:12AM +0300, Laurent Pinchart wrote:
+> Hi Jacopo,
 >
-> Currently when using "W=1" with UML builds, there are over 700 warnings
-> like so:
+> Thank you for the patch.
 >
->   CC      arch/um/drivers/stderr_console.o
-> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+> On Wed, Apr 14, 2021 at 03:51:24PM +0200, Jacopo Mondi wrote:
+> > Define a new vendor property in the maxim,max9286 binding schema.
+> >
+> > The new property allows to declare that the remote camera
+> > power-over-coax is controlled by one of the MAX9286 gpio lines.
+> >
+> > As it is currently not possible to establish a regulator as consumer
+> > of the MAX9286 gpio controller for this purpose, the property allows to
+> > declare that the camera power is controlled by the MAX9286 directly.
+> >
+> > The property accepts a gpio-index (0 or 1) and one line polarity
+> > flag as defined by dt-bindings/gpio/gpio.h.
+> >
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  .../bindings/media/i2c/maxim,max9286.yaml     | 53 ++++++++++++++++++-
+> >  1 file changed, 52 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > index ee16102fdfe7..480a491f3744 100644
+> > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> > @@ -70,6 +70,24 @@ properties:
+> >        a remote serializer whose high-threshold noise immunity is not enabled
+> >        is 100000 micro volts
+> >
+> > +  maxim,gpio-poc:
 >
-> but arch/um/ does not have include/uapi/ at all, so don't
-> include arch/um/include/uapi/ in USERINCLUDE for UML.
+> I would have written poc-gpio to match the order of the GPIO bindings
+> syntax.
 >
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Michal Marek <michal.lkml@markovi.net>
-> Cc: linux-kbuild@vger.kernel.org
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: linux-um@lists.infradead.org
-> ---
->  Makefile |   10 ++++++++++
->  1 file changed, 10 insertions(+)
+
+That's what I had :) but then the property gets matched against the
+gpio schema and I get complains because it expects a phandle as first
+argument... Maybe there's a way I've missed to prevent the property to
+be matched with *-gpio ?
+
+> > +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +    description: |
+> > +      Identifier of gpio line that controls Power over Coax to the cameras and
 >
-> Option 2: change the setting of USERINCLUDE. This could alter
->         (a) build times and
->         (b) which header files get used: if there are multiple
->             header files named foobar.h in the $(USERINCLUDE)
->             subdirectories, this Option changes the order in which
->             they would be found.
+> I'd write "Index of the MAX9286 GPIO output that ..." to make it clear
+> that this is not a generic GPIO.
 >
-> - linux-next-20210413.orig/Makefile
-> + linux-next-20210413/Makefile
-> @@ -501,13 +501,16 @@ LDFLAGS_vmlinux =
+
+Ack
+
+> > +      the associated polarity flag (GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW)
+> > +      as defined in <include/dt-bindings/gpio/gpio.h>.
+> > +
+> > +      When the remote cameras power is controlled by one of the MAX9286 gpio
+> > +      lines, this property has to be used to specify which line among the two
+> > +      available ones controls the remote camera power enablement.
+> > +
+> > +      When this property is used it is not possible to register a gpio
+> > +      controller as the gpio lines are controlled directly by the MAX9286 and
+> > +      not available for consumers, nor the 'poc-supply' property should be
+> > +      specified.
 >
->  # Use USERINCLUDE when you must reference the UAPI directories only.
->  USERINCLUDE    := \
-> -               -I$(srctree)/arch/$(SRCARCH)/include/uapi \
->                 -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
->                 -I$(srctree)/include/uapi \
->                 -I$(objtree)/include/generated/uapi \
->                  -include $(srctree)/include/linux/compiler-version.h \
->                  -include $(srctree)/include/linux/kconfig.h
->
-> +ifneq ($(ARCH),um)
-> +USERINCLUDE    += -I$(srctree)/arch/$(SRCARCH)/include/uapi
-> +endif
-> +
->  # Use LINUXINCLUDE when you must reference the include/ directory.
->  # Needed to be compatible with the O= option
->  LINUXINCLUDE    := \
->
-> Option 3: modify scripts/Makefile.extrawarn not to set
->         -Wmissing-include-dirs for arch=um. I think that this is not
->         a good idea: it could cause valid problem reports not to be
->         reported.
->
-> Option 4: simply mkdir arch/um/include/uapi
->         That's what I did first, just as a test, and it works.
+> Only one of the two lines would be controlled directly. Shouldn't we
+> still register a GPIO controller for the other line ?
 
-
-I like Option 4.
-
-But, you cannot do "mkdir -p arch/um/include/uapi" at build-time
-because the build system should not touch the source tree(, which
-might be read-only)
-for O= building.
-
-How about adding
-
-  arch/um/include/uapi/asm/Kbuild,
-
-which is just having a SPDX one-liner?
-
-
-
-
-
-
-
-
-
-
-
+I considered that and thought it was a bit of an overkill (and I also
+had a bit of troubles identifying how to register only gpio #1, as it
+would be identified as gpio #0 if the actual #0 is not registered)
 
 >
-> --- linux-next-20210413.orig/Makefile
-> +++ linux-next-20210413/Makefile
-> @@ -500,6 +500,15 @@ AFLAGS_KERNEL      =
->  LDFLAGS_vmlinux =
+> Could you also mention somewhere that the first item in the array should
+> be 0 or 1 ? It may be hard to express in a YAML schema, so I'm fine just
+> documenting it in the description.
 >
->  # Use USERINCLUDE when you must reference the UAPI directories only.
-> +# Note: arch/um/ does not have an include/uapi/ subdir.
-> +ifeq ($(ARCH),um)
-> +USERINCLUDE    := \
-> +               -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
-> +               -I$(srctree)/include/uapi \
-> +               -I$(objtree)/include/generated/uapi \
-> +                -include $(srctree)/include/linux/compiler-version.h \
-> +                -include $(srctree)/include/linux/kconfig.h
-> +else
->  USERINCLUDE    := \
->                 -I$(srctree)/arch/$(SRCARCH)/include/uapi \
->                 -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
-> @@ -507,6 +516,7 @@ USERINCLUDE    := \
->                 -I$(objtree)/include/generated/uapi \
->                  -include $(srctree)/include/linux/compiler-version.h \
->                  -include $(srctree)/include/linux/kconfig.h
-> +endif
+
+Sure, I tried identifying how to express that with yaml and failed :)
+
+> I've been wondering whether this would be a common enough issue that it
+> could justify support in the GPIO core to handle consumer-provider
+> loops, but even if that happens at some point in the future, I think the
+> proposal here is good enough and we won't need to switch.
 >
->  # Use LINUXINCLUDE when you must reference the include/ directory.
->  # Needed to be compatible with the O= option
 
+Please note that with the suggestion offline from rob I will add to
+the next version:
 
+# If 'maxim,gpio-poc' is present, then 'poc-supply' and 'gpio-controller'
+# are not allowed.
+if:
+  required:
+    - maxim,gpio-poc
+then:
+  allOf:
+    - not:
+        required:
+          - poc-supply
+    - not:
+        required:
+          - gpio-controller
 
--- 
-Best Regards
-Masahiro Yamada
+> > +
+> >    ports:
+> >      $ref: /schemas/graph.yaml#/properties/ports
+> >
+> > @@ -182,7 +200,6 @@ required:
+> >    - reg
+> >    - ports
+> >    - i2c-mux
+> > -  - gpio-controller
+> >
+> >  additionalProperties: false
+> >
+> > @@ -327,4 +344,38 @@ examples:
+> >            };
+> >          };
+> >        };
+> > +
+> > +      /*
+> > +       * Example of a deserializer that controls the camera Power over Coax
+> > +       * through one of its gpio lines.
+> > +       */
+> > +      gmsl-deserializer@6c {
+> > +        compatible = "maxim,max9286";
+> > +        reg = <0x6c>;
+> > +        enable-gpios = <&gpio 14 GPIO_ACTIVE_HIGH>;
+> > +
+> > +        /*
+> > +         * The remote camera power is controlled by MAX9286 GPIO line #0.
+> > +         * No 'poc-supply' nor 'gpio-controller' are specified.
+> > +         */
+> > +        maxim,gpio-poc = <0 GPIO_ACTIVE_LOW>;
+> > +
+> > +        /*
+> > +         * Do not describe connections as they're the same as in the previous
+> > +         * example.
+> > +         */
+> > +        ports {
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +
+> > +          port@4 {
+> > +            reg = <4>;
+> > +          };
+> > +        };
+> > +
+> > +        i2c-mux {
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +        };
+> > +      };
+> >      };
+>
+> It's customary to indent DT examples with 4 spaces. The existing
+> examples use two spaces, so maybe a patch on top of this would be useful
+> to increase readability ?
+>
+
+Ah weird! I can add a patch before this one!
+
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+
+Thanks
+   j
+
+> --
+> Regards,
+>
+> Laurent Pinchart
