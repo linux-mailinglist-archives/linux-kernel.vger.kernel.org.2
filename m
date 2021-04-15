@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2B6360E2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D77F360E12
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235068AbhDOPL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45530 "EHLO mail.kernel.org"
+        id S235264AbhDOPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235326AbhDOPAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB7461414;
-        Thu, 15 Apr 2021 14:57:02 +0000 (UTC)
+        id S235104AbhDOPAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 374896140A;
+        Thu, 15 Apr 2021 14:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498622;
-        bh=bqcHL98/5DIfVZ4OpfrnQ/Lr5T/8yN1YD9VjwhQTA2g=;
+        s=korg; t=1618498583;
+        bh=mIpMHbgtarwGrt6vg+yVjTI4jWbgZVAP5Q+APwJgb44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QVLKD1gVNkwisOEiMJAB/oKAzuUiqV7zrJl9+NscDnwUOPeYqOcN66RAbaIydqx/8
-         h+fpvlQvd3HYt2IUk70+JsMIunh0Y+fWdw+snhSaAAqxYHD6lZ/Q+a90FeM9fKnrL2
-         lEa8oZbekY+9Qv6hO+GD0kSpUzbu5lHiKeMHY8xw=
+        b=SlMPwM6Qn5OxbvZuj9b9eCARZ0cXQsCrTh/dsBZbjZbfYN3UI1hSxidXpWs+NRWU6
+         gGFlzL0YWTEx49fSy2VxJlknNocGomGQSCAPkL1ZyS3Q+dq+8D7CV9dZ3qpM+Oqv9B
+         fgVhab8oRlyvlinklbxkTf9wlzBof/Q6qqcKNw6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 01/25] interconnect: core: fix error return code of icc_link_destroy()
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 02/18] KVM: arm64: Hide system instruction access to Trace registers
 Date:   Thu, 15 Apr 2021 16:47:55 +0200
-Message-Id: <20210415144413.213011641@linuxfoundation.org>
+Message-Id: <20210415144413.132401786@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-References: <20210415144413.165663182@linuxfoundation.org>
+In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
+References: <20210415144413.055232956@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,36 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-[ Upstream commit 715ea61532e731c62392221238906704e63d75b6 ]
+[ Upstream commit 1d676673d665fd2162e7e466dcfbe5373bfdb73e ]
 
-When krealloc() fails and new is NULL, no error return code of
-icc_link_destroy() is assigned.
-To fix this bug, ret is assigned with -ENOMEM hen new is NULL.
+Currently we advertise the ID_AA6DFR0_EL1.TRACEVER for the guest,
+when the trace register accesses are trapped (CPTR_EL2.TTA == 1).
+So, the guest will get an undefined instruction, if trusts the
+ID registers and access one of the trace registers.
+Lets be nice to the guest and hide the feature to avoid
+unexpected behavior.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Link: https://lore.kernel.org/r/20210306132857.17020-1-baijiaju1990@gmail.com
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+Even though this can be done at KVM sysreg emulation layer,
+we do this by removing the TRACEVER from the sanitised feature
+register field. This is fine as long as the ETM drivers
+can handle the individual trace units separately, even
+when there are differences among the CPUs.
+
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210323120647.454211-2-suzuki.poulose@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/kernel/cpufeature.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-index 5ad519c9f239..8a1e70e00876 100644
---- a/drivers/interconnect/core.c
-+++ b/drivers/interconnect/core.c
-@@ -942,6 +942,8 @@ int icc_link_destroy(struct icc_node *src, struct icc_node *dst)
- 		       GFP_KERNEL);
- 	if (new)
- 		src->links = new;
-+	else
-+		ret = -ENOMEM;
- 
- out:
- 	mutex_unlock(&icc_lock);
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 79caab15ccbf..acdef8d76c64 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -277,7 +277,6 @@ static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+ 	 * of support.
+ 	 */
+ 	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_EXACT, ID_AA64DFR0_PMUVER_SHIFT, 4, 0),
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_TRACEVER_SHIFT, 4, 0),
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_DEBUGVER_SHIFT, 4, 0x6),
+ 	ARM64_FTR_END,
+ };
 -- 
 2.30.2
 
