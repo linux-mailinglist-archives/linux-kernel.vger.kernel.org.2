@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC76360CAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A264360CAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbhDOOxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38990 "EHLO mail.kernel.org"
+        id S233886AbhDOOxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234078AbhDOOvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 114DB613C5;
-        Thu, 15 Apr 2021 14:50:48 +0000 (UTC)
+        id S233890AbhDOOvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD1AB613CF;
+        Thu, 15 Apr 2021 14:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498249;
-        bh=8YhNqd0bxrphCpCc3EdA9iz1v9qb0MULPkODsT5opLA=;
+        s=korg; t=1618498252;
+        bh=o+2YVePM07Ah8r+F1VQN/NSYIeLaggCg4UFIYgiiZFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1ZYyAPpEfDWpSiFoOlQStHfkusDq0lmMv57mR619VzFyQkwTfGLaktPCfs0vnG/XO
-         L6k38fZk8xmA+9Fq/8ZhWBzmybGYMCiYh3+ebKMknyTRHHPtXslVJaYT0wnTYJ5SQ6
-         oWLkfaQQkB5CABOkwLxffrhBeuTqqkehQNvZZ544=
+        b=NXLwqPTlkxwyOSirfNPAV8jPOKR3P82h4eZ14OZAkXbQtvhfKv9XbDQzQpNwDi/Vn
+         W2yKbkhETEZfKgax/FPEPUF0BLpWQyRv32kzKwfBx+3cFAQ2UZwDGe2br3dYQfP3yD
+         eHfCLac9t03tPhy8dQLhabnJkvtd1F4iDPHRVFpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 17/47] net: sched: sch_teql: fix null-pointer dereference
-Date:   Thu, 15 Apr 2021 16:47:09 +0200
-Message-Id: <20210415144414.017068339@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 18/47] sch_red: fix off-by-one checks in red_check_params()
+Date:   Thu, 15 Apr 2021 16:47:10 +0200
+Message-Id: <20210415144414.046260214@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
 References: <20210415144413.487943796@linuxfoundation.org>
@@ -41,92 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 1ffbc7ea91606e4abd10eb60de5367f1c86daf5e upstream.
+[ Upstream commit 3a87571f0ffc51ba3bf3ecdb6032861d0154b164 ]
 
-Reproduce:
+This fixes following syzbot report:
 
-  modprobe sch_teql
-  tc qdisc add dev teql0 root teql0
+UBSAN: shift-out-of-bounds in ./include/net/red.h:237:23
+shift exponent 32 is too large for 32-bit type 'unsigned int'
+CPU: 1 PID: 8418 Comm: syz-executor170 Not tainted 5.12.0-rc4-next-20210324-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
+ red_set_parms include/net/red.h:237 [inline]
+ choke_change.cold+0x3c/0xc8 net/sched/sch_choke.c:414
+ qdisc_create+0x475/0x12f0 net/sched/sch_api.c:1247
+ tc_modify_qdisc+0x4c8/0x1a50 net/sched/sch_api.c:1663
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43f039
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdfa725168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f039
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 0000000000403020 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000400488 R11: 0000000000000246 R12: 00000000004030b0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 
-This leads to (for instance in Centos 7 VM) OOPS:
-
-[  532.366633] BUG: unable to handle kernel NULL pointer dereference at 00000000000000a8
-[  532.366733] IP: [<ffffffffc06124a8>] teql_destroy+0x18/0x100 [sch_teql]
-[  532.366825] PGD 80000001376d5067 PUD 137e37067 PMD 0
-[  532.366906] Oops: 0000 [#1] SMP
-[  532.366987] Modules linked in: sch_teql ...
-[  532.367945] CPU: 1 PID: 3026 Comm: tc Kdump: loaded Tainted: G               ------------ T 3.10.0-1062.7.1.el7.x86_64 #1
-[  532.368041] Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.2 04/01/2014
-[  532.368125] task: ffff8b7d37d31070 ti: ffff8b7c9fdbc000 task.ti: ffff8b7c9fdbc000
-[  532.368224] RIP: 0010:[<ffffffffc06124a8>]  [<ffffffffc06124a8>] teql_destroy+0x18/0x100 [sch_teql]
-[  532.368320] RSP: 0018:ffff8b7c9fdbf8e0  EFLAGS: 00010286
-[  532.368394] RAX: ffffffffc0612490 RBX: ffff8b7cb1565e00 RCX: ffff8b7d35ba2000
-[  532.368476] RDX: ffff8b7d35ba2000 RSI: 0000000000000000 RDI: ffff8b7cb1565e00
-[  532.368557] RBP: ffff8b7c9fdbf8f8 R08: ffff8b7d3fd1f140 R09: ffff8b7d3b001600
-[  532.368638] R10: ffff8b7d3b001600 R11: ffffffff84c7d65b R12: 00000000ffffffd8
-[  532.368719] R13: 0000000000008000 R14: ffff8b7d35ba2000 R15: ffff8b7c9fdbf9a8
-[  532.368800] FS:  00007f6a4e872740(0000) GS:ffff8b7d3fd00000(0000) knlGS:0000000000000000
-[  532.368885] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  532.368961] CR2: 00000000000000a8 CR3: 00000001396ee000 CR4: 00000000000206e0
-[  532.369046] Call Trace:
-[  532.369159]  [<ffffffff84c8192e>] qdisc_create+0x36e/0x450
-[  532.369268]  [<ffffffff846a9b49>] ? ns_capable+0x29/0x50
-[  532.369366]  [<ffffffff849afde2>] ? nla_parse+0x32/0x120
-[  532.369442]  [<ffffffff84c81b4c>] tc_modify_qdisc+0x13c/0x610
-[  532.371508]  [<ffffffff84c693e7>] rtnetlink_rcv_msg+0xa7/0x260
-[  532.372668]  [<ffffffff84907b65>] ? sock_has_perm+0x75/0x90
-[  532.373790]  [<ffffffff84c69340>] ? rtnl_newlink+0x890/0x890
-[  532.374914]  [<ffffffff84c8da7b>] netlink_rcv_skb+0xab/0xc0
-[  532.376055]  [<ffffffff84c63708>] rtnetlink_rcv+0x28/0x30
-[  532.377204]  [<ffffffff84c8d400>] netlink_unicast+0x170/0x210
-[  532.378333]  [<ffffffff84c8d7a8>] netlink_sendmsg+0x308/0x420
-[  532.379465]  [<ffffffff84c2f3a6>] sock_sendmsg+0xb6/0xf0
-[  532.380710]  [<ffffffffc034a56e>] ? __xfs_filemap_fault+0x8e/0x1d0 [xfs]
-[  532.381868]  [<ffffffffc034a75c>] ? xfs_filemap_fault+0x2c/0x30 [xfs]
-[  532.383037]  [<ffffffff847ec23a>] ? __do_fault.isra.61+0x8a/0x100
-[  532.384144]  [<ffffffff84c30269>] ___sys_sendmsg+0x3e9/0x400
-[  532.385268]  [<ffffffff847f3fad>] ? handle_mm_fault+0x39d/0x9b0
-[  532.386387]  [<ffffffff84d88678>] ? __do_page_fault+0x238/0x500
-[  532.387472]  [<ffffffff84c31921>] __sys_sendmsg+0x51/0x90
-[  532.388560]  [<ffffffff84c31972>] SyS_sendmsg+0x12/0x20
-[  532.389636]  [<ffffffff84d8dede>] system_call_fastpath+0x25/0x2a
-[  532.390704]  [<ffffffff84d8de21>] ? system_call_after_swapgs+0xae/0x146
-[  532.391753] Code: 00 00 00 00 00 00 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 66 66 66 66 90 55 48 89 e5 41 55 41 54 53 48 8b b7 48 01 00 00 48 89 fb <48> 8b 8e a8 00 00 00 48 85 c9 74 43 48 89 ca eb 0f 0f 1f 80 00
-[  532.394036] RIP  [<ffffffffc06124a8>] teql_destroy+0x18/0x100 [sch_teql]
-[  532.395127]  RSP <ffff8b7c9fdbf8e0>
-[  532.396179] CR2: 00000000000000a8
-
-Null pointer dereference happens on master->slaves dereference in
-teql_destroy() as master is null-pointer.
-
-When qdisc_create() calls teql_qdisc_init() it imediately fails after
-check "if (m->dev == dev)" because both devices are teql0, and it does
-not set qdisc_priv(sch)->m leaving it zero on error path, then
-qdisc_create() imediately calls teql_destroy() which does not expect
-zero master pointer and we get OOPS.
-
-Fixes: 87b60cfacf9f ("net_sched: fix error recovery at qdisc creation")
-Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Fixes: 8afa10cbe281 ("net_sched: red: Avoid illegal values")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_teql.c |    3 +++
- 1 file changed, 3 insertions(+)
+ include/net/red.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/sched/sch_teql.c
-+++ b/net/sched/sch_teql.c
-@@ -138,6 +138,9 @@ teql_destroy(struct Qdisc *sch)
- 	struct teql_sched_data *dat = qdisc_priv(sch);
- 	struct teql_master *master = dat->m;
- 
-+	if (!master)
-+		return;
-+
- 	prev = master->slaves;
- 	if (prev) {
- 		do {
+diff --git a/include/net/red.h b/include/net/red.h
+index b3ab5c6bfa83..117a3654d319 100644
+--- a/include/net/red.h
++++ b/include/net/red.h
+@@ -170,9 +170,9 @@ static inline void red_set_vars(struct red_vars *v)
+ static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog,
+ 				    u8 Scell_log, u8 *stab)
+ {
+-	if (fls(qth_min) + Wlog > 32)
++	if (fls(qth_min) + Wlog >= 32)
+ 		return false;
+-	if (fls(qth_max) + Wlog > 32)
++	if (fls(qth_max) + Wlog >= 32)
+ 		return false;
+ 	if (Scell_log >= 32)
+ 		return false;
+-- 
+2.30.2
+
 
 
