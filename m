@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D4C360900
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5110C360903
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhDOMM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:12:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1868 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231590AbhDOMMy (ORCPT
+        id S232758AbhDOMND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:13:03 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56190 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231590AbhDOMNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:12:54 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FC4982064386;
-        Thu, 15 Apr 2021 08:12:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=0qmyfG6khRpUOKcXpSEaC/J9TizHeX8zVO1F8w3sqWk=;
- b=joVs24R/42uPu6TAZl2eclklMxA31xdJPYE3bnVojAVNlLlmuCn/T+gxGAbCj1xALnMD
- BnGRroXfmU7QqX4j6AOj2BlraPJ0PxJz5Hy3Lee9ltHLDfvttJuFhTjMukZNU2DIsjtj
- MBJq25gtWdgS5GrCuFRwdO3ESuwnrIh+a4z8P1+WsncktYlGaYnSLU36c/EFay/thW/3
- sSs3/Jb1eJH0+AQUASbvpBKHIPHv2LoWRyRobQI1WCghg9uJGid4K5+0j8qIFhUfF5I5
- +gbHiv85aRMdgwb5GhAAHF7fzMRv4UtRYUIfR1IdLAiR2DWKyTev1sSR8qtWloR23zCq CA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xbqb6dv5-1
+        Thu, 15 Apr 2021 08:13:02 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FCAoFj023982;
+        Thu, 15 Apr 2021 14:12:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=9LcfNvL3q1nqjhvUfDTxZXWWF0n6sg5Qxq9jRLUkPiY=;
+ b=PPvxpkdQ5nKGK1PR3Mid7VGQh5CocddyDY2CkHpeiNmbgwOsZ1TttZIeTwtSgFUfQhAT
+ Pmr+99V8UGGaHfWnzhF3arcDvhsNqr/NPUCPqG9clAFnft6fAt9ADFcQJKMPtOoRF2dw
+ 0a2ywhRjkf2ToXR7NJ8RpysyaS6Fgo4eEvNjoOZ0OOjbL5oezcAcndp364Ygvc/qwUZY
+ ENBB8393ZCm4bPQgXrJRrXdWcHKjyT53y3nHpwGn01k6U1YF43zXduXMUEiyR73qYGJC
+ KPkNnpGWW5/IxnpVgAaokporDItYeXKYcZPyp3bnyJO4mMYuKplgSYYPG0X3vqNizQDR Wg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37xes0tvug-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 08:12:16 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13FC7YAO007426;
-        Thu, 15 Apr 2021 12:12:15 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8bv3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 12:12:14 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13FCCCQV26018220
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 12:12:12 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 86AB042041;
-        Thu, 15 Apr 2021 12:12:12 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AC84E4203F;
-        Thu, 15 Apr 2021 12:12:11 +0000 (GMT)
-Received: from osiris (unknown [9.171.3.254])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 15 Apr 2021 12:12:11 +0000 (GMT)
-Date:   Thu, 15 Apr 2021 14:12:10 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        nathan@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 3/5] s390: Get rid of oprofile leftovers
-Message-ID: <YHgtmjjtk9dDa7/R@osiris>
-References: <20210414134409.1266357-1-maz@kernel.org>
- <20210414134409.1266357-4-maz@kernel.org>
- <YHgXvFCLh0Ls0b9t@osiris>
- <87fszrn7sx.wl-maz@kernel.org>
+        Thu, 15 Apr 2021 14:12:21 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 29F5D10002A;
+        Thu, 15 Apr 2021 14:12:20 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 26D9722D608;
+        Thu, 15 Apr 2021 14:12:20 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Apr
+ 2021 14:12:19 +0200
+Subject: Re: [PATCH 10/13] dt-bindings: mfd: add vref_ddr-supply to st,stpmic1
+ yaml
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>, <arnd@arndb.de>,
+        <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+        <jagan@amarulasolutions.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        <kuba@kernel.org>
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-11-alexandre.torgue@foss.st.com>
+ <9fc27672-765b-9bd3-bb0a-d9159cb7d502@pengutronix.de>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <906ea3e5-0aaa-2307-e6fb-aaac1a5e5d00@foss.st.com>
+Date:   Thu, 15 Apr 2021 14:12:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fszrn7sx.wl-maz@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vARCqOoco7d3n4Ke2RUPNWmaue1niUQS
-X-Proofpoint-ORIG-GUID: vARCqOoco7d3n4Ke2RUPNWmaue1niUQS
+In-Reply-To: <9fc27672-765b-9bd3-bb0a-d9159cb7d502@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-15_04:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=714
- suspectscore=0 phishscore=0 mlxscore=0 clxscore=1015 spamscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 11:47:26AM +0100, Marc Zyngier wrote:
-> On Thu, 15 Apr 2021 11:38:52 +0100,
-> Heiko Carstens <hca@linux.ibm.com> wrote:
-> > 
-> > On Wed, Apr 14, 2021 at 02:44:07PM +0100, Marc Zyngier wrote:
-> > > perf_pmu_name() and perf_num_counters() are unused. Drop them.
-> > > 
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > ---
-> > >  arch/s390/kernel/perf_event.c | 21 ---------------------
-> > >  1 file changed, 21 deletions(-)
-> > 
-> > Acked-by: Heiko Carstens <hca@linux.ibm.com>
-> > 
-> > ...or do you want me to pick this up and route via the s390 tree(?).
-> 
-> Either way work for me, but I just want to make sure the last patch
-> doesn't get applied before the previous ones.
+Hi Ahmad
 
-Ok, I applied this one to the s390 tree. Thanks!
+On 4/15/21 12:51 PM, Ahmad Fatoum wrote:
+> Hi,
+> 
+> On 15.04.21 12:10, Alexandre Torgue wrote:
+>> Add vref_ddr-supply to the STPMIC1 regulators supplies pattern
+>> list.
+>>
+>> Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>>
+>> diff --git a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+>> index 305123e74a58..ffc32d209496 100644
+>> --- a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+>> +++ b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+>> @@ -184,7 +184,7 @@ properties:
+>>           additionalProperties: false
+>>   
+>>       patternProperties:
+>> -      "^(buck[1-4]|ldo[1-6]|boost|pwr_sw[1-2])-supply$":
+>> +      "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])-supply$":
+> 
+> IIRC, vref-ddr was a hack because a change in the regulator core broke
+> the STM32MP1 boards. I believe vref-ddr should be removed altogether
+> instead. It's supplied from BUCK2IN, which is already in the binding,
+> so it's redundant.
+
+Correct I forgot this point. We got random crash without this 
+vddr_ref_supply but I don't know if regulator FW has been updated to fix 
+it. If yes, I'll drop this one and remove
+vddr_ref_supply from DT file.
+
+> 
+> Cheers,
+> Ahmad
+> 
+>>           description: STPMIC1 voltage regulators supplies
+>>   
+>>         "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])$":
+>>
+> 
