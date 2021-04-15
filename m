@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AF135FF9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F46035FFA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhDOBbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:31:21 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:39934 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhDOBbT (ORCPT
+        id S229659AbhDOBbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:31:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25999 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhDOBbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:31:19 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2009C51E;
-        Thu, 15 Apr 2021 03:30:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618450256;
-        bh=EZIFa8zmYfQaeGAmxib5xuU9akWCJGo2jrN3oYBFs+8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWs6kVZ7ZZ3ThgWZVlMdzL+nD5e6NDG5oyq+HwlqR5WIyOsXoQLhRUyrj+70XCtSo
-         20evL/nSJG1npQ9wexaNwFWvki6qkrOCuX1AI6IbxSEaTqSDNSrCYi8SWZZP2p+n/k
-         vkjehNJRnxeoy1BZ04as2bGkjWK4CD/Q+4dpQ8/U=
-Date:   Thu, 15 Apr 2021 04:30:54 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 12/12] drm/panel: panel-simple: Use runtime pm to
- avoid excessive unprepare / prepare
-Message-ID: <YHeXTsGkDCAToqwP@pendragon.ideasonboard.com>
-References: <20210402222846.2461042-1-dianders@chromium.org>
- <20210402152701.v3.12.I9e8bd33b49c496745bfac58ea9ab418bd3b6f5ce@changeid>
- <YHePsQgqOau1V5lD@pendragon.ideasonboard.com>
- <CAD=FV=X=XixXONS9D4CRxku4VuKa2pYniSjzSoX_NXkDW-J15g@mail.gmail.com>
+        Wed, 14 Apr 2021 21:31:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618450280; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=9gnP5pgYelSlV/Rgr0abTb2Kc3chY5fICOH5Ndmud5U=; b=q0J7J7puWBMCrH1OW1Q4Z5/H3O81G5ET5z0PiunIgOuqhWs0lPb628ppXOZiIkpIBClVLqUz
+ rXu2fjH21d7LJzfDBjIbVadaezarA7aNiW8iMoAG++KUJMXjyblJ73hTVUkmmS+cLvtSqrq8
+ iWa99DZoOsHrBkLsyYVElPqMUEE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6077975f8166b7eff72d6a95 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 01:31:11
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 017C3C43463; Thu, 15 Apr 2021 01:31:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.103] (unknown [49.204.182.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0672C433C6;
+        Thu, 15 Apr 2021 01:31:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E0672C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v4 5/7] cpufreq: qcom-hw: Implement CPRh aware OSM
+ programming
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>, agross@kernel.org,
+        rjw@rjwysocki.net, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
+References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
+ <20210119174557.227318-6-angelogioacchino.delregno@somainline.org>
+ <c35bfd76-0d7e-d7bc-79ab-041b1074c1af@codeaurora.org>
+ <YAh+9/IgRhI8M3ov@builder.lan>
+ <92e465e4-a0d9-43eb-84f7-69fa355097a9@codeaurora.org>
+ <20210413034940.o6uzjtnh2ylvikbf@vireshk-i7>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <150e19b9-9ecf-7cac-8aa3-c7c4d7a11468@codeaurora.org>
+Date:   Thu, 15 Apr 2021 07:01:03 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=X=XixXONS9D4CRxku4VuKa2pYniSjzSoX_NXkDW-J15g@mail.gmail.com>
+In-Reply-To: <20210413034940.o6uzjtnh2ylvikbf@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
 
-On Wed, Apr 14, 2021 at 06:22:57PM -0700, Doug Anderson wrote:
-> On Wed, Apr 14, 2021 at 5:58 PM Laurent Pinchart wrote:
-> > On Fri, Apr 02, 2021 at 03:28:46PM -0700, Douglas Anderson wrote:
-> > > Unpreparing and re-preparing a panel can be a really heavy
-> > > operation. Panels datasheets often specify something on the order of
-> > > 500ms as the delay you should insert after turning off the panel
-> > > before turning it on again. In addition, turning on a panel can have
-> > > delays on the order of 100ms - 200ms before the panel will assert HPD
-> > > (AKA "panel ready"). The above means that we should avoid turning a
-> > > panel off if we're going to turn it on again shortly.
-> > >
-> > > The above becomes a problem when we want to read the EDID of a
-> > > panel. The way that ordering works is that userspace wants to read the
-> > > EDID of the panel _before_ fully enabling it so that it can set the
-> > > initial mode correctly. However, we can't read the EDID until we power
-> > > it up. This leads to code that does this dance (like
-> > > ps8640_bridge_get_edid()):
-> > >
-> > > 1. When userspace requests EDID / the panel modes (through an ioctl),
-> > >    we power on the panel just enough to read the EDID and then power
-> > >    it off.
-> > > 2. Userspace then turns the panel on.
-> > >
-> > > There's likely not much time between step #1 and #2 and so we want to
-> > > avoid powering the panel off and on again between those two steps.
-> > >
-> > > Let's use Runtime PM to help us. We'll move the existing prepare() and
-> > > unprepare() to be runtime resume() and runtime suspend(). Now when we
-> > > want to prepare() or unprepare() we just increment or decrement the
-> > > refcount. We'll default to a 1 second autosuspend delay which seems
-> > > sane given the typical delays we see for panels.
-> > >
-> > > A few notes:
-> > > - It seems the existing unprepare() and prepare() are defined to be
-> > >   no-ops if called extra times. We'll preserve that behavior.
-> >
-> > The prepare and unprepare calls are supposed to be balanced, which
-> > should allow us to drop this check. Do you have a reason to suspect that
-> > it may not be the case ?
+On 4/13/2021 9:19 AM, Viresh Kumar wrote:
+> On 12-04-21, 15:01, Taniya Das wrote:
+>> Technically the HW we are trying to program here differs in terms of
+>> clocking, the LUT definitions and many more. It will definitely make
+>> debugging much more troublesome if we try to accommodate multiple versions of
+>> CPUFREQ-HW in the same code.
+>>
+>> Thus to keep it simple, easy to read, debug, the suggestion is to keep it
+>> with "v1" tag as the OSM version we are trying to put here is from OSM1.0.
 > 
-> No, it was just code inspection. The old code definitely made an
-> effort to make enable of an already enabled panel a no-op and disable
-> of an already disabled panel a no-op. This is even before my
-> (somewhat) recent patch to make things timing based, though I did
-> touch the code.
+> That is a valid point and is always a case with so many drivers. What
+> I am concerned about is how much code is common across versions, if it
+> is 5-70%, or more, then we should definitely share, arrange to have
+> callbacks or ops per version and call them in a generic fashion instead
+> of writing a new driver. This is what's done across
+> drivers/frameworks, etc.
 > 
-> Can I maybe suggest that getting rid of the extra check should be a
-> separate patch after this one? Then if it breaks someone it's easy to
-> just revert that one and we can still keep the runtime pm?
 
-Sounds good to me.
-
-> > > - This is a slight change in the ABI of simple panel. If something was
-> > >   absolutely relying on the unprepare() to happen instantly that
-> > >   simply won't be the case anymore. I'm not aware of anyone relying on
-> > >   that behavior, but if there is someone then we'll need to figure out
-> > >   how to enable (or disable) this new delayed behavior selectively.
-> > > - In order for this to work we now have a hard dependency on
-> > >   "PM". From memory this is a legit thing to assume these days and we
-> > >   don't have to find some fallback to keep working if someone wants to
-> > >   build their system without "PM".
-> >
-> > Sounds fine to me.
-> >
-> > The code looks good to me. Possibly with the prepared check removed,
-> >
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+The code sharing here between versions should be very minimal as most 
+portion of the code here in V1 would focus on programming to prepare the 
+LUT to be further read by the driver, the programming in itself is huge 
+for v1. I am okay if you move the v1 in a different file and invoke 
+based on version.
 
 -- 
-Regards,
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
-Laurent Pinchart
+--
