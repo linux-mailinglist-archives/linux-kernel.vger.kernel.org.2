@@ -2,94 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF128360690
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BFF360693
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhDOKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:07:19 -0400
-Received: from outbound-smtp56.blacknight.com ([46.22.136.240]:46845 "EHLO
-        outbound-smtp56.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232282AbhDOKHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:07:17 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp56.blacknight.com (Postfix) with ESMTPS id 24CB9FAAA8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:06:53 +0100 (IST)
-Received: (qmail 20158 invoked from network); 15 Apr 2021 10:06:53 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Apr 2021 10:06:52 -0000
-Date:   Thu, 15 Apr 2021 11:06:50 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 04/11] mm/vmstat: Convert NUMA statistics to basic NUMA
- counters
-Message-ID: <20210415100650.GJ3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-5-mgorman@techsingularity.net>
- <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
- <20210414151850.GG3697@techsingularity.net>
- <c4dff8a5-7959-c191-c66d-23a515244b80@suse.cz>
+        id S232397AbhDOKHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:07:33 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:65076 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhDOKHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:07:31 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FLZky2PTvz9v4hJ;
+        Thu, 15 Apr 2021 12:07:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id U8NVifxNkUuw; Thu, 15 Apr 2021 12:07:06 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FLZky1QWLz9v4hH;
+        Thu, 15 Apr 2021 12:07:06 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 799B08B7F2;
+        Thu, 15 Apr 2021 12:07:06 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id o6oLMiP1k9cJ; Thu, 15 Apr 2021 12:07:06 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B61CD8B7FB;
+        Thu, 15 Apr 2021 12:07:03 +0200 (CEST)
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ powerpc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20210415194417.498e71b7@canb.auug.org.au>
+ <20210415195814.0dc4ced9@canb.auug.org.au>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9bc1b8fd-8051-54ed-b9d8-198fe1f4c348@csgroup.eu>
+Date:   Thu, 15 Apr 2021 12:07:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <c4dff8a5-7959-c191-c66d-23a515244b80@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210415195814.0dc4ced9@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:56:53PM +0200, Vlastimil Babka wrote:
-> On 4/14/21 5:18 PM, Mel Gorman wrote:
-> > On Wed, Apr 14, 2021 at 02:56:45PM +0200, Vlastimil Babka wrote:
-> >> So it seems that this intermediate assignment to zone counters (using
-> >> atomic_long_set() even) is unnecessary and this could mimic sum_vm_events() that
-> >> just does the summation on a local array?
-> >> 
-> > 
-> > The atomic is unnecessary for sure but using a local array is
-> > problematic because of your next point.
-> 
-> IIUC vm_events seems to do fine without a centralized array and handling CPU hot
-> remove at the sime time ...
-> 
 
-The vm_events are more global in nature. They are not reported
-to userspace on a per-zone (/proc/zoneinfo) basis or per-node
-(/sys/devices/system/node/node*/numastat) basis so they are not equivalent.
 
-> >> And probably a bit more serious is that vm_events have vm_events_fold_cpu() to
-> >> deal with a cpu going away, but after your patch the stats counted on a cpu just
-> >> disapepar from the sums as it goes offline as there's no such thing for the numa
-> >> counters.
-> >> 
-> > 
-> > That is a problem I missed. Even if zonestats was preserved on
-> > hot-remove, fold_vm_zone_numa_events would not be reading the CPU so
-> > hotplug events jump all over the place.
-> > 
-> > So some periodic folding is necessary. I would still prefer not to do it
-> > by time but it could be done only on overflow or when a file like
-> > /proc/vmstat is read. I'll think about it a bit more and see what I come
-> > up with.
+Le 15/04/2021 à 11:58, Stephen Rothwell a écrit :
+> Hi all,
 > 
-> ... because vm_events_fold_cpu() seems to simply move the stats from the CPU
-> being offlined to the current one. So the same approach should be enough for
-> NUMA stats?
+> On Thu, 15 Apr 2021 19:44:17 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Today's linux-next merge of the akpm-current tree got a conflict in:
+>>
+>>    arch/powerpc/kernel/module.c
+>>
+>> between commit:
+>>
+>>    2ec13df16704 ("powerpc/modules: Load modules closer to kernel text")
+>>
+>> from the powerpc tree and commit:
+>>
+>>    4930ba789f8d ("powerpc/64s/radix: enable huge vmalloc mappings")
+>>
+>> from the akpm-current tree.
+>>
+>> I fixed it up (I think - see below) and can carry the fix as
+>> necessary. This is now fixed as far as linux-next is concerned, but any
+>> non trivial conflicts should be mentioned to your upstream maintainer
+>> when your tree is submitted for merging.  You may also want to consider
+>> cooperating with the maintainer of the conflicting tree to minimise any
+>> particularly complex conflicts.
+>>
+>> -- 
+>> Cheers,
+>> Stephen Rothwell
+>>
+>> diff --cc arch/powerpc/kernel/module.c
+>> index fab84024650c,cdb2d88c54e7..000000000000
+>> --- a/arch/powerpc/kernel/module.c
+>> +++ b/arch/powerpc/kernel/module.c
+>> @@@ -88,29 -88,26 +89,42 @@@ int module_finalize(const Elf_Ehdr *hdr
+>>    	return 0;
+>>    }
+>>    
+>> - #ifdef MODULES_VADDR
+>>   -void *module_alloc(unsigned long size)
+>>   +static __always_inline void *
+>>   +__module_alloc(unsigned long size, unsigned long start, unsigned long end)
+>>    {
+>>   -	unsigned long start = VMALLOC_START;
+>>   -	unsigned long end = VMALLOC_END;
+>>   -
+>>   -#ifdef MODULES_VADDR
+>>   -	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+>>   -	start = MODULES_VADDR;
+>>   -	end = MODULES_END;
+>>   -#endif
+>>   -
+>> + 	/*
+>> + 	 * Don't do huge page allocations for modules yet until more testing
+>> + 	 * is done. STRICT_MODULE_RWX may require extra work to support this
+>> + 	 * too.
+>> + 	 */
+>> +
+>>    	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
+>> - 				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+>> + 				    PAGE_KERNEL_EXEC,
+>> + 				    VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
+>> + 				    NUMA_NO_NODE,
+>>    				    __builtin_return_address(0));
+>>    }
+>>   +
+>> ++
+>>   +void *module_alloc(unsigned long size)
+>>   +{
+>> ++	unsigned long start = VMALLOC_START;
+>> ++	unsigned long end = VMALLOC_END;
+>>   +	unsigned long limit = (unsigned long)_etext - SZ_32M;
+>>   +	void *ptr = NULL;
+>>   +
+>> ++#ifdef MODULES_VADDR
+>>   +	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+>> ++	start = MODULES_VADDR;
+>> ++	end = MODULES_END;
+
+The #endif should be here.
+
+
+>>   +
+>>   +	/* First try within 32M limit from _etext to avoid branch trampolines */
+>>   +	if (MODULES_VADDR < PAGE_OFFSET && MODULES_END > limit)
+>> - 		ptr = __module_alloc(size, limit, MODULES_END);
+>> ++		ptr = __module_alloc(size, limit, end);
+>>   +
+>>   +	if (!ptr)
+>> - 		ptr = __module_alloc(size, MODULES_VADDR, MODULES_END);
+>> ++#endif
+>> ++		ptr = __module_alloc(size, start, end);
+>>   +
+>>   +	return ptr;
+>>   +}
+>> - #endif
 > 
+> Unfortunately, it also needs this:
 
-Yes, or at least very similar.
+Before the #endif is too far.
 
--- 
-Mel Gorman
-SUSE Labs
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Thu, 15 Apr 2021 19:53:58 +1000
+> Subject: [PATCH] merge fix up for powerpc merge fix
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>   arch/powerpc/kernel/module.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+> index d8ab1ad2eb05..c060f99afd4d 100644
+> --- a/arch/powerpc/kernel/module.c
+> +++ b/arch/powerpc/kernel/module.c
+> @@ -110,7 +110,9 @@ void *module_alloc(unsigned long size)
+>   {
+>   	unsigned long start = VMALLOC_START;
+>   	unsigned long end = VMALLOC_END;
+> +#ifdef MODULES_VADDR
+>   	unsigned long limit = (unsigned long)_etext - SZ_32M;
+> +#endif
+>   	void *ptr = NULL;
+>   
+>   #ifdef MODULES_VADDR
+> 
