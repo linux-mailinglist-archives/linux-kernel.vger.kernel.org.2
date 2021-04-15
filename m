@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213C936099D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB5B36099F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhDOMkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhDOMke (ORCPT
+        id S232747AbhDOMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:42:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52342 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230202AbhDOMmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:40:34 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEAFC061574;
-        Thu, 15 Apr 2021 05:40:10 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id v3so23612003ybi.1;
-        Thu, 15 Apr 2021 05:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HNWPrpdPoD+pXH9p1hvOGpr8+bIHmvjS+4XG2ldZ0Sc=;
-        b=PHuF3KrGqNBmqAhI7J+l69fge3/RxdwOfMm73BbiapXnaS25fJER94tzGL0volq6nJ
-         uVBdFT87qfAFF6Mk9bToFO5RRpRY90hP8G2jKu6QeUr2Kt50f58LPPu85yVORSpWVKYQ
-         hd5D4KclIVt0np3ZmNZEmb7ZR6eE10A3wTDxilcHC6fMWxbsbaw7jKcI3tcqLt7m/ckn
-         QCJhcjmQCzFCbiJw4xc7e+DIitZozXwIlcRRUisdbJZcbZMG2ORchleytjjRVcsDlsJG
-         RID3l6K3+u7ePY/dvZTSnJKqVAerSfoEiYE3lytwF4HiVmXSsLtV4suJai+7Q/Hp3CEL
-         ia6g==
+        Thu, 15 Apr 2021 08:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618490505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lfTrVvYyr8Nd9g6k5o/4wByZB+cDMhMVOX5RhAUHIvE=;
+        b=BeqTZbFGaGXfCs1xmqhuU65KQI0NctJcL3r1BLwxBwnswNkQ6fGvrmtAt+WuqaDKwGC1Tf
+        J4yJGyWxabYbFlzxb8urQdEsKxbdxovzAmvqTCCA91n7jJUSQp6N9x274UO/sfuIz3PRbQ
+        dJlYL3JzV6OCBo2hfkqvXj5sambSZuk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-1FF_dtTwMt-Rzolq91KAkw-1; Thu, 15 Apr 2021 08:41:43 -0400
+X-MC-Unique: 1FF_dtTwMt-Rzolq91KAkw-1
+Received: by mail-wm1-f71.google.com with SMTP id w187-20020a1cdfc40000b029012e8682a12bso728302wmg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:41:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNWPrpdPoD+pXH9p1hvOGpr8+bIHmvjS+4XG2ldZ0Sc=;
-        b=FP4tmY1b/bHhUbmHF7dd4X43sr9hNfsRYQO1uy8Yq1AprYKopqsC987jJriFyLqfNG
-         MMkKQVYnihXyHWoGq+B85YXA6uFqSS6s7OaaS2msKFe2PUQuOs6trzHHj4K+tl2NvYlR
-         etI4sED1MUGhOaE5o28W4vFggPAjErh0y/rVjy0LBcKjPtZEo7TMzY61NnZ7yXb1eT/0
-         qJaj79/l8yi8NTGBZTjKuYXB5IaEKROy3BnF/nTq6yJ/UWVNHwPhDkNJ/tDoYSpNHqpb
-         W8umJxPNsHNpndXk7nKQoVdLn+q+wgNFpp1YwCyYnW8fH+Yzl5XsRIi0PL3ckPXVGdl9
-         Cm/w==
-X-Gm-Message-State: AOAM533uA6CJ/ssg3J/DvhRgh9cFZhpCGyh7DUk44GsGIlczf7cJZuvZ
-        29H+uf2gHd2dGWYERI+mwpCnyyL373RI9FzNrXugrek1iyc=
-X-Google-Smtp-Source: ABdhPJxxvwHaN8MXNkZ2cWP+VxR/Oi6OrV25u/8c4Sk71cAVeHSDikukkFzc+2IPtDy3JiqOzh/Ywn1UnHBoDwcKALw=
-X-Received: by 2002:a25:cfc2:: with SMTP id f185mr4317197ybg.26.1618490409882;
- Thu, 15 Apr 2021 05:40:09 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=lfTrVvYyr8Nd9g6k5o/4wByZB+cDMhMVOX5RhAUHIvE=;
+        b=OTPIyAi1laQGER/6ZUVrpeP7SSh5czdT8p5WWJTmzPMGPvmRPH5XwkxFFaz3upcDtC
+         2nHbbZZHP5kfXFInIitpzHa+5IHM8qhohmHE8uLTN4y2WEVNm9yz1XsSQ1cpi7echMbV
+         CyoVWzH0tNv82NTp6Tvt/2lENfZ7VQxG+0jt0OIdy7KYTzSGsFgse7NhgZj1CYR5Ka0L
+         vWB+ZRNro6dXPAWhQTTHvw+3qhIKNU8tpQ7odW1kk4U9j91JHgjZgVLW3r9cgsAuI0gP
+         D3njMAurdbNfte5oVSFBBiGXSrfGx/uMNT5TVAqjaMCQ6q8TqjVtGhilqZDMZRqwbZ82
+         wIEw==
+X-Gm-Message-State: AOAM530HKRaNqKBiQe0ktu0gkdGktZAARw8F6ck3swSjvRgnNvRwCzMm
+        Wufs0ZJYDuDYiC/i2AwvwJLnOcLQwN86+f7gB1hRr2FyuF7IhsyVoF0a50MW17htqCHvUYudmgi
+        9636nYcfwPLUoqNZ3XBUi5X6cqBCI9Hml584duSuLq89HItN7cBcLuctYaKQp9JD8kYFy04kD
+X-Received: by 2002:a7b:cf38:: with SMTP id m24mr3000671wmg.148.1618490502287;
+        Thu, 15 Apr 2021 05:41:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzxo9Es1WG9Y5+1El0W1SGwghjzNenwwpYlqUfIAYpfTUQEtDPG44l1mf3ZMdy5LLRAArR7Zw==
+X-Received: by 2002:a7b:cf38:: with SMTP id m24mr3000648wmg.148.1618490502084;
+        Thu, 15 Apr 2021 05:41:42 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
+        by smtp.gmail.com with ESMTPSA id i21sm2488033wmh.21.2021.04.15.05.41.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 05:41:41 -0700 (PDT)
+To:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210415103544.6791-1-osalvador@suse.de>
+ <20210415103544.6791-4-osalvador@suse.de> <YHgmgtJRadMB2c5k@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v8 3/7] mm,hugetlb: Drop clearing of flag from
+ prep_new_huge_page
+Message-ID: <cf4a3e6d-f69a-cf0b-dc66-b55ad06a1d1c@redhat.com>
+Date:   Thu, 15 Apr 2021 14:41:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
- <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com> <202104141820.7DDE15A30@keescook>
-In-Reply-To: <202104141820.7DDE15A30@keescook>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 15 Apr 2021 14:39:58 +0200
-Message-ID: <CANiq72=miTm-WYN4Q4JRfm7ocaoNePW_f1khcUOE1EkO8UyQzw@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YHgmgtJRadMB2c5k@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 3:38 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Before anything else: yay! I'm really glad to see this RFC officially
-> hit LKML. :)
+On 15.04.21 13:41, Michal Hocko wrote:
+> On Thu 15-04-21 12:35:40, Oscar Salvador wrote:
+>> Pages allocated after boot get its private field cleared by means
+>> of post_alloc_hook().
+> 
+> You surely meant to say s@boot@page/cma allocator@ here
 
-Thanks! :)
+I think this also includes allocating gigantic pages via 
+alloc_contig_pages() directly. post_alloc_hook() covers both.
 
-> When originally learning Rust I was disappointed to see that (by default)
-> Rust similarly ignores the overflow problem, but I'm glad to see the
-> very intentional choices in the Rust-in-Linux design to deal with it
-> directly. I think the default behavior should be saturate-with-WARN
-> (this will match the ultimate goals of the UBSAN overflow support[1][2]
-> in the C portions of the kernel). Rust code wanting wrapping/checking
-> can expressly use those. The list of exploitable overflows is loooong,
-> and this will remain a weakness in Rust unless we get it right from
-> the start. What's not clear to me is if it's better to say "math with
-> undeclared overflow expectation" will saturate" or to say "all math must
-> declare its overflow expectation".
+> 
+>> Pages allocated during boot, that is directly from the memblock allocator,
+>> get cleared by paging_init()->..->memmap_init_zone->..->__init_single_page()
+>> before any memblock allocation.
+>>
+>> Based on this ground, let us remove the clearing of the flag from
+>> prep_new_huge_page() as it is not needed.
+> 
+> I would also mention that this is a leftover from 6c0371490140
+> ("hugetlb: convert PageHugeFreed to HPageFreed flag"). Previously the
+> explicit clearing was necessary because compound allocations do not get
+> this initialization (see prep_compound_page).
+> 
+>> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> 
+> with that
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> 
 
-+1 Agreed, we need to get this right (and ideally make both the C and
-Rust sides agree...).
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Cheers,
-Miguel
+
+-- 
+Thanks,
+
+David / dhildenb
+
