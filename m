@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B02B360960
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B34360948
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbhDOM0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:26:32 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2867 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhDOM0Q (ORCPT
+        id S232770AbhDOM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:26:02 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:58343 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231482AbhDOMZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:26:16 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FLdbb1Rksz68BPR;
-        Thu, 15 Apr 2021 20:15:55 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 15 Apr 2021 14:25:50 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2106.013;
- Thu, 15 Apr 2021 14:25:50 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jeff Mahoney <jeffm@suse.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>
-Subject: RE: [PATCH 1/5] xattr: Complete constify ->name member of "struct
- xattr"
-Thread-Topic: [PATCH 1/5] xattr: Complete constify ->name member of "struct
- xattr"
-Thread-Index: AQHXMd7FDBbRfOc0Vkms8LxU+cs6Xqq1TVmAgAAzkSA=
-Date:   Thu, 15 Apr 2021 12:25:49 +0000
-Message-ID: <eedc6f82d59b4084b529788efd43e10b@huawei.com>
-References: <20210415100435.18619-1-roberto.sassu@huawei.com>
- <20210415100435.18619-2-roberto.sassu@huawei.com>
- <164b0933-0917-457e-4dad-245ea13cbe52@i-love.sakura.ne.jp>
-In-Reply-To: <164b0933-0917-457e-4dad-245ea13cbe52@i-love.sakura.ne.jp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.48.215.118]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 15 Apr 2021 08:25:54 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.LocalDomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id C31521C0010;
+        Thu, 15 Apr 2021 12:25:28 +0000 (UTC)
+From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/7] arm64: dts: renesas: Enable GMSL on R8A77970 V3M Eagle
+Date:   Thu, 15 Apr 2021 14:25:55 +0200
+Message-Id: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBUZXRzdW8gSGFuZGEgW21haWx0bzpwZW5ndWluLWtlcm5lbEBpLWxvdmUuc2FrdXJh
-Lm5lLmpwXQ0KPiBTZW50OiBUaHVyc2RheSwgQXByaWwgMTUsIDIwMjEgMToyMCBQTQ0KPiBPbiAy
-MDIxLzA0LzE1IDE5OjA0LCBSb2JlcnRvIFNhc3N1IHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggY29t
-cGxldGVzIGNvbW1pdCA5NTQ4OTA2YjJiYjcgKCd4YXR0cjogQ29uc3RpZnkgLT5uYW1lDQo+IG1l
-bWJlciBvZg0KPiA+ICJzdHJ1Y3QgeGF0dHIiJykuIEl0IGZpeGVzIHRoZSBkb2N1bWVudGF0aW9u
-IG9mIHRoZSBpbm9kZV9pbml0X3NlY3VyaXR5DQo+ID4gaG9vaywgYnkgcmVtb3ZpbmcgdGhlIHhh
-dHRyIG5hbWUgZnJvbSB0aGUgb2JqZWN0cyB0aGF0IGFyZSBleHBlY3RlZCB0bw0KPiBiZQ0KPiA+
-IGFsbG9jYXRlZCBieSBMU01zIChvbmx5IHRoZSB2YWx1ZSBpcyBhbGxvY2F0ZWQpLiBBbHNvLCBp
-dCByZW1vdmVzIHRoZQ0KPiA+IGtmcmVlKCkgb2YgbmFtZSBhbmQgc2V0dGluZyBpdCB0byBOVUxM
-IGluIHRoZSByZWlzZXJmcyBjb2RlLg0KPiANCj4gR29vZCBjYXRjaCwgYnV0IHdlbGwsIGdyZXAg
-ZG9lcyBub3QgZmluZCBhbnkgcmVpc2VyZnNfc2VjdXJpdHlfZnJlZSgpIGNhbGxlcnMuDQo+IElz
-IHJlaXNlcmZzX3NlY3VyaXR5X2ZyZWUoKSBhIGRlYWQgY29kZT8NCg0KVWhtLCBJIGFsc28gZG9u
-J3Qgc2VlIGl0Lg0KDQpUaGFua3MNCg0KUm9iZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1
-ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIExp
-IEppYW4sIFNoaSBZYW5saQ0K
+Following the recent v3, this new version:
+
+- Two new patches (minor fixes)
+- Address Laurent's comments on gpio-poc bindings and implementation.
+  Naming might still be discussed
+- Address Laurent's comments on DTS patches
+- Last patch not for inclusion
+
+Thanks
+   j
+
+Jacopo Mondi (4):
+  dt-bindings: media: max9286: Re-indent example
+  dt-bindings: media: max9286: Define 'maxim,gpio-poc'
+  media: i2c: max9286: Use "maxim,gpio-poc" property
+  arm64: dts: renesas: r8a77970: Add csi40 port@0
+
+Kieran Bingham (3):
+  arm64: dts: renesas: eagle: Enable MAX9286
+  arm64: dts: renesas: eagle: Add GMSL .dtsi
+  DNI: arm64: dts: renesas: eagle: Include eagle-gmsl
+
+ .../bindings/media/i2c/maxim,max9286.yaml     | 279 +++++++++++-------
+ arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi   | 178 +++++++++++
+ .../arm64/boot/dts/renesas/r8a77970-eagle.dts | 114 +++++++
+ arch/arm64/boot/dts/renesas/r8a77970.dtsi     |   4 +
+ drivers/media/i2c/max9286.c                   | 119 ++++++--
+ 5 files changed, 563 insertions(+), 131 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+
+--
+2.31.1
+
