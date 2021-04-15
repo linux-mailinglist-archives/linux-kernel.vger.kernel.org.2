@@ -2,79 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913E036029E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C373602A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhDOGq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:46:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:21856 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhDOGq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:46:28 -0400
-IronPort-SDR: qXA0Cy5Sxat0HlfJSXHh9gid2sfZE9wDO326BmQtwTQB+2Q+8CbzsinEgj5BrSrTPUQg8OT5b6
- N9jAMKFK1F9g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191609700"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="191609700"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:46:02 -0700
-IronPort-SDR: 1pfPbXhjlYYReGkPxq6HfP4+S3mzqWZg9G55ESeGOM9vhqkGCJ7BYRc35RiXXmWynnugSAJ6uM
- atnC5MlIfazg==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="425061751"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:45:58 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     "Zi Yan" <ziy@nvidia.com>
-Cc:     Yang Shi <shy828301@gmail.com>, <mgorman@suse.de>,
-        <kirill.shutemov@linux.intel.com>, <mhocko@suse.com>,
-        <hughd@google.com>, <gerald.schaefer@linux.ibm.com>,
-        <hca@linux.ibm.com>, <gor@linux.ibm.com>, <borntraeger@de.ibm.com>,
-        <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [v2 PATCH 6/7] mm: migrate: check mapcount for THP instead of
- ref count
-References: <20210413212416.3273-1-shy828301@gmail.com>
-        <20210413212416.3273-7-shy828301@gmail.com>
-        <87k0p5sh7h.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <6297AD92-8D0E-4BEC-8E1F-5C5AC32FA128@nvidia.com>
-Date:   Thu, 15 Apr 2021 14:45:54 +0800
-In-Reply-To: <6297AD92-8D0E-4BEC-8E1F-5C5AC32FA128@nvidia.com> (Zi Yan's
-        message of "Wed, 14 Apr 2021 11:02:58 -0400")
-Message-ID: <87fszsoxjx.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230405AbhDOGsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOGsI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:48:08 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971A1C061574;
+        Wed, 14 Apr 2021 23:47:45 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLVJl6lPwz9s1l;
+        Thu, 15 Apr 2021 16:47:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618469260;
+        bh=R5LUy5pjaeLxiJym25jOcWLIKuHSmBUrMVbjBrEUoEE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZC1Rn3qDDfSUgI1ENprMbTM9EXOG0xLdfAZLhDV1SVEO1FHHdeTw0UG/iKicRjjRT
+         k+M5MhcFhJjtjZITFXMZ39g9dGcdLdFDkOhLvItsmaYJUWG39FYLZKStBCY2afKwB/
+         szsCwl7y8CYw8CKXHxAZsXfNoVUpAZV9axrJ4QH2ibsGArUZs1BoY7SMARsl3OZ86Q
+         C23jEg3KNW8lHSup1SEpJSfEGOmIKXs5U5aw6RJCwMI3Uhe1ICUMKEKDU3Hgbp76vJ
+         5SHdsafyoe2t7YTw1iNL436iiMNo5X0KCRm6UbeTAZGthr/lzs2j6fSX/wlkKlAWXl
+         oJttncC85wZBA==
+Date:   Thu, 15 Apr 2021 16:47:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: linux-next: manual merge of the vfio tree with the drm tree
+Message-ID: <20210415164734.1143f20d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: multipart/signed; boundary="Sig_/x=GVyj4HwY=icfJeVJ6Gf8Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Zi Yan" <ziy@nvidia.com> writes:
+--Sig_/x=GVyj4HwY=icfJeVJ6Gf8Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On 13 Apr 2021, at 23:00, Huang, Ying wrote:
->
->> Yang Shi <shy828301@gmail.com> writes:
->>
->>> The generic migration path will check refcount, so no need check refcount here.
->>> But the old code actually prevents from migrating shared THP (mapped by multiple
->>> processes), so bail out early if mapcount is > 1 to keep the behavior.
->>
->> What prevents us from migrating shared THP?  If no, why not just remove
->> the old refcount checking?
->
-> If two or more processes are in different NUMA nodes, a THP shared by them can be
-> migrated back and forth between NUMA nodes, which is quite costly. Unless we have
-> a better way of figuring out a good location for such pages to reduce the number
-> of migration, it might be better not to move them, right?
->
+Hi all,
 
-Some mechanism has been provided in should_numa_migrate_memory() to
-identify the shared pages from the private pages.  Do you find it
-doesn't work well in some situations?
+Today's linux-next merge of the vfio tree got a conflict in:
 
-The multiple threads in one process which run on different NUMA nodes
-may share pages too.  So it isn't a good solution to exclude pages
-shared by multiple processes.
+  drivers/gpu/drm/i915/gvt/gvt.c
 
-Best Regards,
-Huang, Ying
+between commit:
+
+  9ff06c385300 ("drm/i915/gvt: Remove references to struct drm_device.pdev")
+
+from the drm tree and commit:
+
+  383987fd15ba ("vfio/gvt: Use mdev_get_type_group_id()")
+
+from the vfio tree.
+
+I fixed it up (I used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/x=GVyj4HwY=icfJeVJ6Gf8Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB34YYACgkQAVBC80lX
+0GxlBwf9GwbxaLS1q+d0lcqr+GclIfWkGkY4xoLYvRlHqedpOJInqdwWb7tivxaA
+n8p0o7wiQ04k+2FkSXz91q0VLardEbI9Q7/JUgFOhKd2XFVih4ibxjGMk946KINB
+Z2U85LrdiLvKJwfgznX2uKJ4CnJm9yJV2K19FdmJoberb/Iq2RvsBpXX7TzSOY2d
+5IxAwSLHR0k/O9NclVkPU/ajy1xDkkHwa4iMtVgwkFgYk4pnMejJH5b/GNSbCz0V
+1Aar7icfTf++ru3vD5+8jPRr9dwNEwWNJnzUhSNv8P04RXSKgu7UnGR9ULAGVshh
+4llM/LYsxqGYZ1Mi0XvbVG3JlJqXNA==
+=Ag7H
+-----END PGP SIGNATURE-----
+
+--Sig_/x=GVyj4HwY=icfJeVJ6Gf8Z--
