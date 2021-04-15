@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F65360D3F
+	by mail.lfdr.de (Postfix) with ESMTP id BEECF360D40
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhDOO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        id S234591AbhDOO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234201AbhDOOzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234204AbhDOOzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Apr 2021 10:55:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D08E4613C3;
-        Thu, 15 Apr 2021 14:53:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9363613EB;
+        Thu, 15 Apr 2021 14:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498402;
-        bh=EvXScd5g8HMt6o/FKz8nYJ7vsp83HBpWwfqwm6F4ICQ=;
+        s=korg; t=1618498405;
+        bh=f/2zWovTdWw1YiITnl0NVy6h6k/ftA0MY1bRphiYMCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AtSJdM5Pxr21Yi9kkCDFAN+HCC86B0kkl0HL5tbvsh8+qNTiMsWYlzziqfhjZy3zu
-         jAg5qOu9y26NcnP7JBRdd1aTHHOGqR3JaVgDj6C+NpJD2MeA4t67MgSO51qgp+yNWk
-         4hisko9G4rWNXw43XxEwIRIFCKQdPGfwGsFZSTyA=
+        b=PVTDmtLxTBSV6JeYKbKBwsD4HXJtyYSn6G0EW0HK5BHgyUC6zpOkw0IFDwXsoUVeR
+         F55ZUbXfyqdgOHzM8Awy7VhWLeLWJxW+GuKt49W6mcE0bljcF+d4KpqUfHuzvXZxyC
+         L8pUfUbXeHcFtppKR7OkK5my9i/Vxq6Q7e7iuGeI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 25/68] sch_red: fix off-by-one checks in red_check_params()
-Date:   Thu, 15 Apr 2021 16:47:06 +0200
-Message-Id: <20210415144415.285106711@linuxfoundation.org>
+Subject: [PATCH 4.14 26/68] gianfar: Handle error code at MAC address change
+Date:   Thu, 15 Apr 2021 16:47:07 +0200
+Message-Id: <20210415144415.316808393@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 References: <20210415144414.464797272@linuxfoundation.org>
@@ -41,71 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit 3a87571f0ffc51ba3bf3ecdb6032861d0154b164 ]
+[ Upstream commit bff5b62585123823842833ab20b1c0a7fa437f8c ]
 
-This fixes following syzbot report:
+Handle return error code of eth_mac_addr();
 
-UBSAN: shift-out-of-bounds in ./include/net/red.h:237:23
-shift exponent 32 is too large for 32-bit type 'unsigned int'
-CPU: 1 PID: 8418 Comm: syz-executor170 Not tainted 5.12.0-rc4-next-20210324-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:327
- red_set_parms include/net/red.h:237 [inline]
- choke_change.cold+0x3c/0xc8 net/sched/sch_choke.c:414
- qdisc_create+0x475/0x12f0 net/sched/sch_api.c:1247
- tc_modify_qdisc+0x4c8/0x1a50 net/sched/sch_api.c:1663
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f039
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdfa725168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f039
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000004
-RBP: 0000000000403020 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000000400488 R11: 0000000000000246 R12: 00000000004030b0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-
-Fixes: 8afa10cbe281 ("net_sched: red: Avoid illegal values")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 3d23a05c75c7 ("gianfar: Enable changing mac addr when if up")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/red.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/gianfar.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/red.h b/include/net/red.h
-index 8fe55b8b2fb8..ff07a7cedf68 100644
---- a/include/net/red.h
-+++ b/include/net/red.h
-@@ -171,9 +171,9 @@ static inline void red_set_vars(struct red_vars *v)
- static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog,
- 				    u8 Scell_log, u8 *stab)
+diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
+index b3b7b98eb32c..c89a5a80c9c8 100644
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -485,7 +485,11 @@ static struct net_device_stats *gfar_get_stats(struct net_device *dev)
+ 
+ static int gfar_set_mac_addr(struct net_device *dev, void *p)
  {
--	if (fls(qth_min) + Wlog > 32)
-+	if (fls(qth_min) + Wlog >= 32)
- 		return false;
--	if (fls(qth_max) + Wlog > 32)
-+	if (fls(qth_max) + Wlog >= 32)
- 		return false;
- 	if (Scell_log >= 32)
- 		return false;
+-	eth_mac_addr(dev, p);
++	int ret;
++
++	ret = eth_mac_addr(dev, p);
++	if (ret)
++		return ret;
+ 
+ 	gfar_set_mac_for_addr(dev, 0, dev->dev_addr);
+ 
 -- 
 2.30.2
 
