@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99905360CF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373AB360D21
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhDOOzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbhDOOwq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:52:46 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B83C06138D;
-        Thu, 15 Apr 2021 07:52:16 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so2883374wmh.0;
-        Thu, 15 Apr 2021 07:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Yhv+oIi881Wgsc3Q1qGBC+RzhabNoWArSeuEYCDa/2E=;
-        b=EzArC/Zm3EHVt1YR03UnvVaqbepPonzJGS4D7tcivNVIi4F+WUhaIeYG4lTwaok4kH
-         MUGH+LBTxu7RRgzIOysyK6k8W8KJMNGDNe0zGjrfq/lSfUGuv/E4/9OxNsm9CdEVPpbf
-         6Z5bm9qn8G5iIhuajEwvl0r7aQw0p9SvZcK06s4rotVdqiN55OUKQ3fshrjxcpQCVkDy
-         YsC1uNxY/dbWTTyBq9wj2LQqgH9BBGLR23yN5MHjvaJKkbQ7I71HmXZm9E3Fij4kDWzO
-         hGoWAqNgcHaTUrKrOkNsre78E3a2SM1Cqhw/4Wf1OlkrhiPKM56/g9wg8WcgzBd54A6M
-         zgWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Yhv+oIi881Wgsc3Q1qGBC+RzhabNoWArSeuEYCDa/2E=;
-        b=bWJR5Zvq1te8H+wF8liYrsgsK+79BScdpOa1dZ2uwc8biTGMw+Fx+gI43HRhWI3ySa
-         +xIFxaP12QM6wM+Pb/fkNhlj9AfhQbzHUT8DOUKa0viiZmfKRkktoDUxKsdSn7UOb5cv
-         pTyFB3mm1VoqKjhdcDwlrTKm4MPAUAfORxqpQPPi/o23Nb0HU76sJo1ZOKWcJW1S34LI
-         IYPOtET6UtwpDrSBt2WdNUTMdEHSHIuRkc10iLWv/38paZv+dKqt/iZy++k73f7nllLu
-         Dm+AH4+6EJEVw6Su7vk/1/+kNzO3Esj3YLA+QOznrAX7B/JWJ9cEi9FGisrOBUQnGCd1
-         UPqQ==
-X-Gm-Message-State: AOAM532QWly7YSuCWERpZwbs+1ch1DiNbcgdNzyLObiD+mik0UPZS9rI
-        PkWB5yngWhJMkojrbmdc6h/0U/hk/6pApddd
-X-Google-Smtp-Source: ABdhPJz2fF36if8PpXB2ecPSa4MAtQnxwn46LMYIzoHF7JTR5lhBKXGH3dlffhiBagkyTYBPMw4L+Q==
-X-Received: by 2002:a1c:730e:: with SMTP id d14mr2847757wmb.20.1618498335024;
-        Thu, 15 Apr 2021 07:52:15 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.65.172])
-        by smtp.gmail.com with ESMTPSA id 64sm3187015wmz.7.2021.04.15.07.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 07:52:14 -0700 (PDT)
-Message-ID: <654ae83eb92077ab01b962890fdf57453d889d7c.camel@gmail.com>
-Subject: Re: [PATCH] cifs: remove unnecessary copies of tcon->crfid.fid
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     =?ISO-8859-1?Q?Aur=E9lien?= Aptel <aaptel@suse.com>,
-        Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        "open list:COMMON INTERNET FILE SYSTEM CLIENT (CIFS)" 
-        <linux-cifs@vger.kernel.org>,
-        "moderated list:COMMON INTERNET FILE SYSTEM CLIENT (CIFS)" 
-        <samba-technical@lists.samba.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     musamaanjum@gmail.com, kernel-janitors@vger.kernel.org,
-        dan.carpenter@oracle.com, colin.king@canonical.com
-Date:   Thu, 15 Apr 2021 19:52:09 +0500
-In-Reply-To: <87tuo913g6.fsf@suse.com>
-References: <20210413232558.GA1136036@LEGION> <87tuo913g6.fsf@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S234245AbhDOO5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:57:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54976 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234353AbhDOOyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:54:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CDC45AFE6;
+        Thu, 15 Apr 2021 14:53:46 +0000 (UTC)
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210414133931.4555-1-mgorman@techsingularity.net>
+ <20210414133931.4555-12-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 11/11] mm/page_alloc: Embed per_cpu_pages locking within
+ the per-cpu structure
+Message-ID: <de5d1dbb-fb56-9660-fadb-6318047305d4@suse.cz>
+Date:   Thu, 15 Apr 2021 16:53:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <20210414133931.4555-12-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-14 at 14:00 +0200, Aurélien Aptel wrote:
-> Muhammad Usama Anjum <musamaanjum@gmail.com> writes:
-> > pfid is being set to tcon->crfid.fid and they are copied in each other
-> > multiple times. Remove the memcopy between same pointers.
-> > 
-> > Addresses-Coverity: ("Overlapped copy")
-> > Fixes: 9e81e8ff74b9 ("cifs: return cached_fid from open_shroot")
-> > Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> > ---
-> > I'm not sure why refcount was being incremented here. This file has been
-> > evoloved so much. Any ideas?
+On 4/14/21 3:39 PM, Mel Gorman wrote:
+> struct per_cpu_pages is protected by the pagesets lock but it can be
+> embedded within struct per_cpu_pages at a minor cost. This is possible
+> because per-cpu lookups are based on offsets. Paraphrasing an explanation
+> from Peter Ziljstra
 > 
-> The fact that pfid is the same as the cache is very weird... Probably
-> due to recent change.
+>   The whole thing relies on:
 > 
-> This function returns a cached dir entry for the root of the share which
-> can be accessed/shared by multiple task.
+>     &per_cpu_ptr(msblk->stream, cpu)->lock == per_cpu_ptr(&msblk->stream->lock, cpu)
 > 
-Aurélien Aptel,
+>   Which is true because the lhs:
+> 
+>     (local_lock_t *)((zone->per_cpu_pages + per_cpu_offset(cpu)) + offsetof(struct per_cpu_pages, lock))
+> 
+>   and the rhs:
+> 
+>     (local_lock_t *)((zone->per_cpu_pages + offsetof(struct per_cpu_pages, lock)) + per_cpu_offset(cpu))
+> 
+>   are identical, because addition is associative.
+> 
+> More details are included in mmzone.h. This embedding is not completely
+> free for three reasons.
+> 
+> 1. As local_lock does not return a per-cpu structure, the PCP has to
+>    be looked up twice -- first to acquire the lock and again to get the
+>    PCP pointer.
+> 
+> 2. For PREEMPT_RT and CONFIG_DEBUG_LOCK_ALLOC, local_lock is potentially
+>    a spinlock or has lock-specific tracking. In both cases, it becomes
+>    necessary to release/acquire different locks when freeing a list of
+>    pages in free_unref_page_list.
 
-Thank you so much for awesome explanation. The whole function makes
-sense now. We need to remove the memcpy calls only. We need to
-increment the refcount (it was removed in this patch). I'll send a V2.
+Looks like this pattern could benefit from a local_lock API helper that would do
+the right thing? It probably couldn't optimize much the CONFIG_PREEMPT_RT case
+which would need to be unlock/lock in any case, but CONFIG_DEBUG_LOCK_ALLOC
+could perhaps just keep the IRQ's disabled and just note the change of what's
+acquired?
 
-Regards,
-Usama
+> 3. For most kernel configurations, local_lock_t is empty and no storage is
+>    required. By embedding the lock, the memory consumption on PREEMPT_RT
+>    and CONFIG_DEBUG_LOCK_ALLOC is higher.
 
+But I wonder, is there really a benefit to this increased complexity? Before the
+patch we had "pagesets" - a local_lock that protects all zones' pcplists. Now
+each zone's pcplists have own local_lock. On !PREEMPT_RT we will never take the
+locks of multiple zones from the same CPU in parallel, because we use
+local_lock_irqsave(). Can that parallelism happen on PREEMPT_RT, because that
+could perhaps justify the change?
+
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
