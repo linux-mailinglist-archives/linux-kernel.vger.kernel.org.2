@@ -2,191 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F0735FFAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A1835FFAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhDOBgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:36:52 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:58556 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229449AbhDOBgo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:36:44 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 8A91D1044304;
-        Thu, 15 Apr 2021 11:36:18 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lWqvZ-008SPM-J8; Thu, 15 Apr 2021 11:36:17 +1000
-Date:   Thu, 15 Apr 2021 11:36:17 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, SeongJae Park <sj38.park@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Benjamin Manes <ben.manes@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Kernel Page Reclaim v2 <page-reclaim@google.com>
-Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
-Message-ID: <20210415013617.GU1990290@dread.disaster.area>
-References: <20210413075155.32652-1-sjpark@amazon.de>
- <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
- <20210413231436.GF63242@dread.disaster.area>
- <CAOUHufa7RCK6gcYSeLv98w3_NY-TUpUNkDS0p_W4u5_ZfSXTsg@mail.gmail.com>
- <20210414045006.GR1990290@dread.disaster.area>
- <CAOUHufa5id9mmjud-UQd4agLCtmDypdNDStkxgoQxsUoh8Qcsg@mail.gmail.com>
+        id S229611AbhDOBjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:39:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34051 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhDOBjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 21:39:05 -0400
+IronPort-SDR: yZVNJ5dEEhpDNl1y1AKhxbbglza6HFkpKH4mkxnxVddIH/Bfe/pCAecrHK3PLa9LP6F8Oqwqtf
+ MCEEpE0SADJA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="174876843"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="174876843"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 18:38:43 -0700
+IronPort-SDR: sy2oOTyzPZukgNuZT+0/6FyNUiVvu7q31rRtTjHSry+kCcD5FVU8H1w7IiFPT4rWjG3OadupVP
+ GAnJcL461WmA==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="424989801"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 18:38:40 -0700
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+To:     Liuxiangdong <liuxiangdong5@huawei.com>
+Cc:     andi@firstfloor.org, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wei.w.wang@intel.com, x86@kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+ <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+ <60701165.3060000@huawei.com>
+ <1ba15937-ee3d-157a-e891-981fed8b414d@linux.intel.com>
+ <607700F2.9080409@huawei.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <76467c36-3399-a123-d582-92affadc4d73@intel.com>
+Date:   Thu, 15 Apr 2021 09:38:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOUHufa5id9mmjud-UQd4agLCtmDypdNDStkxgoQxsUoh8Qcsg@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_f
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=-ifDvvrug44cuN_tyPgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <607700F2.9080409@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 01:16:52AM -0600, Yu Zhao wrote:
-> On Tue, Apr 13, 2021 at 10:50 PM Dave Chinner <david@fromorbit.com> wrote:
-> > On Tue, Apr 13, 2021 at 09:40:12PM -0600, Yu Zhao wrote:
-> > > On Tue, Apr 13, 2021 at 5:14 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > Profiles would be interesting, because it sounds to me like reclaim
-> > > > *might* be batching page cache removal better (e.g. fewer, larger
-> > > > batches) and so spending less time contending on the mapping tree
-> > > > lock...
-> > > >
-> > > > IOWs, I suspect this result might actually be a result of less lock
-> > > > contention due to a change in batch processing characteristics of
-> > > > the new algorithm rather than it being a "better" algorithm...
-> > >
-> > > I appreciate the profile. But there is no batching in
-> > > __remove_mapping() -- it locks the mapping for each page, and
-> > > therefore the lock contention penalizes the mainline and this patchset
-> > > equally. It looks worse on your system because the four kswapd threads
-> > > from different nodes were working on the same file.
-> >
-> > I think you misunderstand exactly what I mean by "batching" here.
-> > I'm not talking about doing multiple pieces of work under a single
-> > lock. What I mean is that the overall amount of work done in a
-> > single reclaim scan (i.e a "reclaim batch") is packaged differently.
-> >
-> > We already batch up page reclaim via building a page list and then
-> > passing it to shrink_page_list() to process the batch of pages in a
-> > single pass. Each page in this page list batch then calls
-> > remove_mapping() to pull the page form the LRU, we have a run of
-> > contention between the foreground read() thread and the background
-> > kswapd.
-> >
-> > If the size or nature of the pages in the batch passed to
-> > shrink_page_list() changes, then the amount of time a reclaim batch
-> > is going to put pressure on the mapping tree lock will also change.
-> > That's the "change in batching behaviour" I'm referring to here. I
-> > haven't read through the patchset to determine if you change the
-> > shrink_page_list() algorithm, but it likely changes what is passed
-> > to be reclaimed and that in turn changes the locking patterns that
-> > fall out of shrink_page_list...
-> 
-> Ok, if we are talking about the size of the batch passed to
-> shrink_page_list(), both the mainline and this patchset cap it at
-> SWAP_CLUSTER_MAX, which is 32. There are corner cases, but when
-> running fio/io_uring, it's safe to say both use 32.
+On 2021/4/14 22:49, Liuxiangdong wrote:
+> Hi Like,
+>
+> On 2021/4/9 16:46, Like Xu wrote:
+>> Hi Liuxiangdong,
+>>
+>> On 2021/4/9 16:33, Liuxiangdong (Aven, Cloud Infrastructure Service 
+>> Product Dept.) wrote:
+>>> Do you have any comments or ideas about it ?
+>>>
+>>> https://lore.kernel.org/kvm/606E5EF6.2060402@huawei.com/
+>>
+>> My expectation is that there may be many fewer PEBS samples
+>> on Skylake without any soft lockup.
+>>
+>> You may need to confirm the statement
+>>
+>> "All that matters is that the EPT pages don't get
+>> unmapped ever while PEBS is active"
+>>
+>> is true in the kernel level.
+>>
+>> Try "-overcommit mem-lock=on" for your qemu.
+>>
+>
+> Sorry, in fact, I don't quite understand
+> "My expectation is that there may be many fewer PEBS samples on Skylake 
+> without any soft lockup. "
 
-You're still looking at micro-scale behaviour, not the larger-scale
-batching effects. Are we passing SWAP_CLUSTER_MAX groups of pages to
-shrinker_page_list() at a different rate?
+For testcase: perf record -e instructions:pp ./workload
 
-When I say "batch of work" when talking about the page cache cycling
-*500 thousand pages a second* through the cache, I'm not talking
-about batches of 32 pages. I'm talking about the entire batch of
-work kswapd does in an invocation cycle.
+We can get 2242 samples on the ICX guest, but
+only 17 samples or less on the Skylake guest.
 
-Is it scanning 100k pages 10 times a second? or 10k pages a hundred
-times a second? How long does a batch take to run? how long does is
-sleep between processing batches? Is there any change in these
-metrics as a result of the multi-gen LRU patches?
+In my testcase on Skylake, neither the host nor the guest triggered the 
+soft lock.
 
-Basically, we're looking at how access to the mapping lock is
-changing the contention profile, and whether that is signficant or
-not. I suspect it is, because when you have highly contended locks
-and you do something external that reduces unrelated lock
-contention, it's because that external thing is taking more time to
-do and so there's less time to spend hitting locks hard...
+>
+> And, I have used "-overcommit mem-lock=on"  when soft lockup happens.
 
-As such, I don't think this test is a good measure of the multi-gen
-LRU patches at all - performance is dominated by the severity of
-lock contention external to the LRU scanning algorithm, and it's
-hard to infer anything through suck lock contention....
+I misunderstood the use of "mem-lock=on". It is not the same as the
+guest mem pin and I believe more kernel patches are needed.
 
-> I don't want to paste everything here -- they'd clutter. Please see
-> all the detailed profiles in the attachment. Let me know if their
-> formats are no to your liking. I still have the raw perf.data.
+>
+>
+> Now, I have tried to configure 1G-hugepages for 2G-mem vm. Each of guest 
+> numa nodes has 1G mem.
+> When I use pebs(perf record -e cycles:pp) in guest, there are successful 
+> pebs samples just for a while and
+> then I cannot get pebs samples. Host doesn't soft lockup in this process.
 
-Which makes the discussion thread just about impossible to follow or
-comment on. Please just post the relevant excerpt of the stack
-profile that you are commenting on.
+In the worst case, no samples are expected.
 
-> > > And I plan to reach out to other communities, e.g., PostgreSQL, to
-> > > benchmark the patchset. I heard they have been complaining about the
-> > > buffered io performance under memory pressure. Any other benchmarks
-> > > you'd suggest?
-> > >
-> > > BTW, you might find another surprise in how less frequently slab
-> > > shrinkers are called under memory pressure, because this patchset is a
-> > > lot better at finding pages to reclaim and therefore doesn't overkill
-> > > slabs.
-> >
-> > That's actually very likely to be a Bad Thing and cause unexpected
-> > perofrmance and OOM based regressions. When the machine finally runs
-> > out of page cache it can easily reclaim, it's going to get stuck
-> > with long tail latencies reclaiming huge slab caches as they've had
-> > no substantial ongoing pressure put on them to keep them in balance
-> > with the overall memory pressure the system is under...
-> 
-> Well. It does use the existing equation. That is if it scans X% of
-> pages, then it scans X% of slab objects. But 1) it often finds pages
-> to reclaim at a lower X% 2) the pages it reclaims are less likely to
-> refault. So the side effect is the overall slab objects it scans also
-> reduce. I do see your point but don't see any options, at the moment.
+>
+> Are there something wrong on skylake for we can only get a few samples? 
+> IRQ?  Or using hugepage is not effecitve?
 
-You'll have to rebalance the memory reclaim algorithms to either:
+The few samples comes from hardware limitation.
+The Skylake doesn't have this "EPT-Friendly PEBS" capabilityand
+some PEBS records will be lost when used by guests.
 
-a) make the shrinkers more aggressive so they do more reclaim when
-called less often, or
+>
+> Thanks!
+>
+>>>
+>>>
+>>> On 2021/4/6 13:14, Xu, Like wrote:
+>>>> Hi Xiangdong,
+>>>>
+>>>> On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service 
+>>>> Product Dept.) wrote:
+>>>>> Hi，like.
+>>>>> Some questions about this new pebs patches set：
+>>>>> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/ 
+>>>>>
+>>>>>
+>>>>> The new hardware facility supporting guest PEBS is only available
+>>>>> on Intel Ice Lake Server platforms for now.
+>>>>
+>>>> Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
+>>>> 18.3.10.1 Processor Event Based Sampling (PEBS) Facility
+>>>>
+>>>> And again, this patch set doesn't officially support guest PEBS on the 
+>>>> Skylake.
+>>>>
+>>>>>
+>>>>>
+>>>>> AFAIK， Icelake supports adaptive PEBS and extended PEBS which Skylake 
+>>>>> doesn't.
+>>>>> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
+>>>>> counter in Skylake.
+>>>>
+>>>> For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
+>>>> mask the other unsupported bits in the pmu->pebs_enable_mask.
+>>>>
+>>>>> Is there anything else that only Icelake supports in this patches set?
+>>>>
+>>>> The PDIR counter on the Ice Lake is the fixed counter 0
+>>>> while the PDIR counter on the Sky Lake is the gp counter 1.
+>>>>
+>>>> You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
+>>>>
+>>>>>
+>>>>>
+>>>>> Besides, we have tried this patches set in Icelake.  We can use 
+>>>>> pebs(eg: "perf record -e cycles:pp")
+>>>>> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
+>>>>> minimum guest kernel version requirement?
+>>>>
+>>>> The Ice Lake CPU model has been added since v5.4.
+>>>>
+>>>> You may double check whether the stable tree(s) code has
+>>>> INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
+>>>>
+>>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Xiangdong Liu
+>>>>
+>>>
+>>
+>
 
-b) lower the threshold at which shrinkers are called.
-
-Keeping the slab caches in balance with page cache memory pressure
-is fairly important for the performance of workloads that generate
-inode and dentry cache load, especially those that don't actually
-generate page cache pressure. This is the hardest part about making
-fundamental changes to memory reclaim behaviour: ensuring that the
-system remains balanced over a wide range of differing workloads and
-reacts sanely to sudden step changes in workload behaviour...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
