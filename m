@@ -2,111 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891CC3603ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B693603EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhDOIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhDOIKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:10:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D7D61158;
-        Thu, 15 Apr 2021 08:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618474190;
-        bh=437iNytFiVAZCufObGd8LNYwkwhJtKlWYmMmdO67tOk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BFmDMOPseKxr4oPbSPTx/qkc21GocG5z0CNwjMHzvLpMqklOGLR+ZQESWW+FLXIM7
-         ghLssycFh4dLoiXIo0ybqEc+U3imsvmsJaOrga5kGECXm83OjaJc0C2zsYNFocXIaR
-         oFdZieDGpJDk/PND1NbzAMe8hkgh9tpRDCEWm3dUbzTmFnbAtLF4iadzeY73kP2+rm
-         chAu5vjuYJoQ15rKpV61nuCKKFqZTpSzzN+jXzU8B8ssauMEcOFBM/DbSuFwJZTahU
-         PYYCwjCEkX2d1bM7oW8zZ0OV+3YFseSUPp0gE7gkTABDNicaDvHLBGG5CbPLtW3llX
-         1YRLeq/YBprVA==
-From:   Georgi Djakov <djakov@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org, Georgi Djakov <djakov@kernel.org>
-Subject: [GIT PULL] interconnect changes for 5.13
-Date:   Thu, 15 Apr 2021 11:09:48 +0300
-Message-Id: <20210415080948.17167-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.29.0
+        id S231520AbhDOILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhDOILT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:11:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654CCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 01:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pNl50OnfrsTMw9KJLwf0kvnMVVjH09VJYTN9ZXHDw+M=; b=DCZRjJtg5q6QH3lkg0Ou4stg0O
+        BbAQXLss0hhVEXlHG/YgG9f+mZJcp6HvmXJPNMs6/Z5DijH2isBJkudZ9lRksWBEQSD4ZoLSbDsm7
+        zjtJ6b5I0pduCbWrSNLyIXJUvJMRxz8ajH+E2++KXIKnmt89PHrdDqg24L3iYPov0rHVOaVnY9vgt
+        Q6W5c+4GAHo0SzjqiBcIMqKpEWwGs0hIIlTeZqiQXDjFgPcVPw+zoilG95xnoesbICYo3ncXTHMJH
+        48cGFpMO26asbEcRiC3pEVv8ibVbe3MkxpHm/5hS/nDfaXjaz6tQ62ANszqtTNDdprgz7NFiSrkcY
+        f6Jzh1Ug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWx4W-008Gu6-Ec; Thu, 15 Apr 2021 08:09:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 268BB30021C;
+        Thu, 15 Apr 2021 10:09:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E504820BF5EDB; Thu, 15 Apr 2021 10:09:54 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 10:09:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Guo Ren <guoren@kernel.org>,
+        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi
+Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
+Message-ID: <YHf00hgpB5C20tH3@hirez.programming.kicks-ass.net>
+References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
+ <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
+ <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
+ <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+ <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
+ <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+ <20210414204734.GJ3288043@lianli.shorne-pla.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414204734.GJ3288043@lianli.shorne-pla.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Thu, Apr 15, 2021 at 05:47:34AM +0900, Stafford Horne wrote:
 
-This is the pull request with the interconnect changes for the 5.13-rc1
-merge window. These include two new drivers.
+> > How's this then? Compile tested only on openrisc/simple_smp_defconfig.
+> 
+> I did my testing with this FPGA build SoC:
+> 
+>  https://github.com/stffrdhrn/de0_nano-multicore
+> 
+> Note, the CPU timer sync logic uses mb() and is a bit flaky.  So missing mb()
+> might be a reason.  I thought we had defined mb() and l.msync, but it seems to
+> have gotten lost.
+> 
+> With that said I could test out this ticket-lock implementation.  How would I
+> tell if its better than qspinlock?
 
-Patches have been in linux-next without any reported issues. Please pull
-into char-misc-next.
+Mostly if it isn't worse, it's better for being *much* simpler. As you
+can see, the guts of ticket is like 16 lines of C (lock+unlock) and you
+only need the behaviour of atomic_fetch_add() to reason about behaviour
+of the whole thing. qspinlock OTOH is mind bending painful to reason
+about.
 
-Thanks,
-Georgi
+There are some spinlock tests in locktorture; but back when I had a
+userspace copy of the lot and would measure min,avg,max acquire times
+under various contention loads (making sure to only run a single task
+per CPU etc.. to avoid lock holder preemption and other such 'fun'
+things).
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+It took us a fair amount of work to get qspinlock to compete with ticket
+for low contention cases (by far the most common in the kernel), and it
+took a fairly large amount of CPUs for qspinlock to really win from
+ticket on the contended case. Your hardware may vary. In particular the
+access to the external cacheline (for queueing, see the queue: label in
+queued_spin_lock_slowpath) is a pain-point and the relative cost of
+cacheline misses for your arch determines where (and if) low contention
+behaviour is competitive.
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+Also, less variance (the reason for the min/max measure) is better.
+Large variance is typically a sign of fwd progress trouble.
 
-are available in the Git repository at:
+That's not saying that qspinlock isn't awesome, but I'm arguing that you
+should get there by first trying all the simpler things. By gradually
+increasing complexity you can also find the problem spots (for your
+architecture) and you have something to fall back to in case of trouble.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.13-rc1
+Now, the obvious selling point of qspinlock is that due to the MCS style
+nature of the thing it doesn't bounce the lock around, but that comes at
+a cost of having to use that extra cacheline (due to the kernel liking
+sizeof(spinlock_t) == sizeof(u32)). But things like ARM64's WFE (see
+smp_cond_load_acquire()) can shift the balance quite a bit on that front
+as well (ARM has a similar thing but less useful, see it's spinlock.h
+and look for wfe() and dsb_sev()).
 
-for you to fetch changes up to c1de07884f2bafa11ad3780cf08b234c88c2cc9d:
-
-  Merge branch 'icc-sm8350' into icc-next (2021-04-02 13:12:37 +0300)
-
-----------------------------------------------------------------
-interconnect changes for 5.13
-
-These are the interconnect changes for the 5.13-rc1 merge window
-with the highlights being drivers for two new platforms.
-
-Driver changes:
-- New driver for SM8350 platforms.
-- New driver for SDM660 platforms.
-
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-AngeloGioacchino Del Regno (2):
-      dt-bindings: interconnect: Add bindings for Qualcomm SDM660 NoC
-      interconnect: qcom: Add SDM660 interconnect provider driver
-
-Benjamin Li (1):
-      interconnect: qcom: icc-rpm: record slave RPM id in error log
-
-Georgi Djakov (5):
-      interconnect: qcom: sdm660: Fix kerneldoc warning
-      interconnect: qcom: sm8350: Use the correct ids
-      interconnect: qcom: sm8350: Add missing link between nodes
-      Merge branch 'icc-sdm660' into icc-next
-      Merge branch 'icc-sm8350' into icc-next
-
-Vinod Koul (3):
-      dt-bindings: interconnect: Add Qualcomm SM8350 DT bindings
-      interconnect: qcom: Add SM8350 interconnect provider driver
-      MAINTAINERS: icc: add interconnect tree
-
- Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   |  10 +
- Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml | 147 ++
- MAINTAINERS                                                     |   1 +
- drivers/interconnect/qcom/Kconfig                               |  18 +
- drivers/interconnect/qcom/Makefile                              |   4 +
- drivers/interconnect/qcom/icc-rpm.c                             |   4 +-
- drivers/interconnect/qcom/sdm660.c                              | 923 ++++++++
- drivers/interconnect/qcom/sm8350.c                              | 633 +++++
- drivers/interconnect/qcom/sm8350.h                              | 168 ++
- include/dt-bindings/interconnect/qcom,sdm660.h                  | 116 +
- include/dt-bindings/interconnect/qcom,sm8350.h                  | 172 ++
- 11 files changed, 2194 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
- create mode 100644 drivers/interconnect/qcom/sdm660.c
- create mode 100644 drivers/interconnect/qcom/sm8350.c
- create mode 100644 drivers/interconnect/qcom/sm8350.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sdm660.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sm8350.h
+Once your arch hits NUMA, qspinlock is probably a win. However, low
+contention performance is still king for most workloads. Better high
+contention behaviour is nice.
