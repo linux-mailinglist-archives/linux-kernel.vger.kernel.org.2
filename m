@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F013604D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C453604D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhDOIt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhDOIt1 (ORCPT
+        id S231907AbhDOIuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:50:02 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53137 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231512AbhDOIuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:49:27 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B9AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 01:49:05 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id b17so16440780pgh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 01:49:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9EqqgG+q8KzPD6ybwhaMMrl+lTUL1ThiaE2usmOBrbU=;
-        b=vfEhPcBuw6/bl7NR8nCxzGsao6TLi2NirGNNZYMBz1Indy9smfYatKTzZBrgZHQBu1
-         8IiRk896u8QitG0cES3OJ+6NbD88dhnRq8dUAMeGL9PsGUY0FXKGXceJ1lupog7yc65P
-         4ZSp99yAV2pgT5UM3+Cx+tic3/jpNk+vFbLnEFYKohVTigzttQn1xG0LhY7mXuLAnfK5
-         yzoQlvW1vPRjDeO7vW+9iJtyxJ5GNoZtvJPd4AY9j+DUVurXRKFUTLwHhFLKe8+wTFM2
-         kbaI6Z4EawlksGBRwcGusRiQQaz5oTwDR8jYlpDL56n/uUlK/tG8gGTTI1CL089VCrn2
-         RWRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9EqqgG+q8KzPD6ybwhaMMrl+lTUL1ThiaE2usmOBrbU=;
-        b=SFxpFBCDqasDgrQYEPjqywG9VfyfHsgeWGimVhnnLb5ZnFu1h69RiZsGP3GLeb41T4
-         GKWbrxIVctK5Lb2ZLtDGNdTudJgyXSwBk9Z5ke9ZqEnOpGL94Hi+F1qVGpyx/+Zbj4gc
-         QQZiv6e/9yMJZGZMjaVcsfIuI0SmV3Lv48s5I/FLVw6Oy5SQ6YRFgBmirbT4iutKjVm5
-         0Kck/SmVLHpz24BpUhi+oDECopxCxxLhG/pOVYR+Htp2bTKj6OSxHu+MuNoLAE3ZP7e8
-         rH1zif0OR/LVQw2PWNlQUH8QRZ7EWNBspeBpmVI/PsZYklH7w3t/dmPI3fBta3kGVEYw
-         OWOg==
-X-Gm-Message-State: AOAM530Krz1PiQ0m3zi9S5jAIAGcWSprCznrdY4+hd07nlL4M0CMIodC
-        GQlWjKxIGa/NohZhQfZ01jXFy99Va09kmIYZH20=
-X-Google-Smtp-Source: ABdhPJzV8NcdMMkmFae6tlWn2vbxz7EW8i/bYcidOFXALsI3VmGy1faviRJnJ8EJuaDKQBomhvY1T9lDbTPGL/KjICY=
-X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
- 189-20020a6205c60000b029024de97f1b1dmr2218277pff.40.1618476544690; Thu, 15
- Apr 2021 01:49:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
- <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
- <YHcnckePpKDujCU+@kroah.com> <YHcqxMLR44laX2PZ@smile.fi.intel.com>
- <YHc68v7keeITnA3K@kroah.com> <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
- <YHf6s2r28XOtP2+2@kroah.com>
-In-Reply-To: <YHf6s2r28XOtP2+2@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 15 Apr 2021 11:48:48 +0300
-Message-ID: <CAHp75Vf7UrRuN=rBkBYrSDz3yiUq4_k2HVvCJ7cTB=_4y8+W7g@mail.gmail.com>
-Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 15 Apr 2021 04:50:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVdfbcR_1618476570;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVdfbcR_1618476570)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Apr 2021 16:49:37 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     marcel@holtmann.org
+Cc:     johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] Bluetooth: 6lowpan: remove unused function
+Date:   Thu, 15 Apr 2021 16:49:28 +0800
+Message-Id: <1618476568-117243-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 11:35 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 14, 2021 at 10:14:34PM +0300, Alexander Shishkin wrote:
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> >
-> > >> Using raw buffer APIs against uuid_t / guid_t.
-> > >
-> > > So you want to do that, or you do not want to do that?  Totally
-> > > confused,
-> >
-> > My understanding is that:
-> > 1) generate_random_uuid() use is allegedly bad even though it's in their
-> > header,
-> > 2) poking directly at the byte array inside uuid_t is bad, even though,
-> > again, header.
-> >
-> > It is, indeed, not ideal.
-> >
-> > If agreeable, I'll update this patch to the below and respin the whole
-> > series.
->
-> You are showing that Andy wrote this, when you are the one that did :(
+Fix the following clang warning:
 
-> Anyway, I've dropped this single patch from the series and applied the
-> rest.  Feel free to send this patch as a stand-alone one once you have
-> the authorship issues sorted out.
+net/bluetooth/6lowpan.c:913:20: warning: unused function 'bdaddr_type'
+[-Wunused-function].
 
-Internally it was proposed by me as well, so authorship is correct.
+net/bluetooth/6lowpan.c:106:35: warning: unused function
+'peer_lookup_ba' [-Wunused-function].
 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ net/bluetooth/6lowpan.c | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
+
+diff --git a/net/bluetooth/6lowpan.c b/net/bluetooth/6lowpan.c
+index cff4944..49c2612 100644
+--- a/net/bluetooth/6lowpan.c
++++ b/net/bluetooth/6lowpan.c
+@@ -103,34 +103,6 @@ static inline bool peer_del(struct lowpan_btle_dev *dev,
+ 	return false;
+ }
+ 
+-static inline struct lowpan_peer *peer_lookup_ba(struct lowpan_btle_dev *dev,
+-						 bdaddr_t *ba, __u8 type)
+-{
+-	struct lowpan_peer *peer;
+-
+-	BT_DBG("peers %d addr %pMR type %d", atomic_read(&dev->peer_count),
+-	       ba, type);
+-
+-	rcu_read_lock();
+-
+-	list_for_each_entry_rcu(peer, &dev->peers, list) {
+-		BT_DBG("dst addr %pMR dst type %d",
+-		       &peer->chan->dst, peer->chan->dst_type);
+-
+-		if (bacmp(&peer->chan->dst, ba))
+-			continue;
+-
+-		if (type == peer->chan->dst_type) {
+-			rcu_read_unlock();
+-			return peer;
+-		}
+-	}
+-
+-	rcu_read_unlock();
+-
+-	return NULL;
+-}
+-
+ static inline struct lowpan_peer *
+ __peer_lookup_chan(struct lowpan_btle_dev *dev, struct l2cap_chan *chan)
+ {
+@@ -910,14 +882,6 @@ static long chan_get_sndtimeo_cb(struct l2cap_chan *chan)
+ 	.set_shutdown		= l2cap_chan_no_set_shutdown,
+ };
+ 
+-static inline __u8 bdaddr_type(__u8 type)
+-{
+-	if (type == ADDR_LE_DEV_PUBLIC)
+-		return BDADDR_LE_PUBLIC;
+-	else
+-		return BDADDR_LE_RANDOM;
+-}
+-
+ static int bt_6lowpan_connect(bdaddr_t *addr, u8 dst_type)
+ {
+ 	struct l2cap_chan *chan;
 -- 
-With Best Regards,
-Andy Shevchenko
+1.8.3.1
+
