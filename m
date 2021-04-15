@@ -2,67 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B070360560
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AB2360568
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhDOJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:13:11 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39419 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhDOJNJ (ORCPT
+        id S232077AbhDOJPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231965AbhDOJPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:13:09 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lWy3J-0002hA-6U; Thu, 15 Apr 2021 09:12:45 +0000
-Subject: Re: [PATCH][next] can: etas_es58x: Fix potential null pointer
- dereference on pointer cf
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210415085535.1808272-1-colin.king@canonical.com>
- <20210415090314.vvyvr2wihwnauyi6@pengutronix.de>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <c2d87a09-118a-7521-b78f-a7af114046fc@canonical.com>
-Date:   Thu, 15 Apr 2021 10:12:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 15 Apr 2021 05:15:30 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2DDC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:15:08 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id t22so11386182ply.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raydium-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Lx7lp550nbZTbNEa04UfaUkL45vm+IaJz5waIuGeAo=;
+        b=LoVeORfd0p9VjKGkKluZZpS5EzROGEBP+3RPl6eRvzDbbr97mLlz/ZyzQKpwe+Cpbh
+         XyVh6+KQwMJbY6+6DfADPXQVXmg6D5epp7PlMk0PInhIbSMp+zlhBunqMyv6VqI3IHDv
+         qb7CVxoRwtQYbSIOcLe33OKMrTeWW2xetQwwRsBVjRLKyys9xRbuuYFwMeyVtwKluHPI
+         +empEiAqfPC8eJg/QwRj4J0cBg/Nrvel1kTqHqS94Dah3FIPA3HRMyjaVZHJ9KwsM2oc
+         v/+G8sPChKj8RC+tr3DofmzcgvGsFz6xlqaPghpab/mb430+isoloLxiozlturRD0FB3
+         nAOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Lx7lp550nbZTbNEa04UfaUkL45vm+IaJz5waIuGeAo=;
+        b=ZsYsJO7vqaDLC7VfFV2kRhr7CwEskU9Zuo05qJPKQxD2l4S8+iShNaHR2nOkXc3Foa
+         sLyPqbIVZ+rjrnC5h3xsHzlm/1GN3d3kT7WSruVvvHwwVWfEgeSuRG/ddvzasTW1fQ23
+         VT/xpXU/0TUqcWLOUI5Vx66pdBtnMVCQQN3D8MRDjuCzv1j+zj2K15+oaIhqpCN6X2qL
+         mTbN8Wc6icDGqHuYzRoabhHZTLfRGJfwE1QQjYfM6CVVhY46IhaiLKtlBwPzYb3K9v0a
+         LtPZFxm57s3CpHyy8s/ZbfpgCxlHugtkoJI9T9n/eDteMLrKDjyLnsQQ5U+rBz+CdT2c
+         cbUg==
+X-Gm-Message-State: AOAM533sX3QMU6/z09HTsBvqLwTY+826mnIWKc5OJ45ElEttjUtODomJ
+        I22ErT/g09Lcuzrs1Nz/8gqYyA==
+X-Google-Smtp-Source: ABdhPJzSXFx4cpaTiG3Q4+d7Ihyk1fl2vtbWLlfjYpSGQpAOpD5niTY1eLUn7D1UejzeLbOtFj5Xdw==
+X-Received: by 2002:a17:902:20a:b029:eb:873d:d73d with SMTP id 10-20020a170902020ab02900eb873dd73dmr214245plc.54.1618478107751;
+        Thu, 15 Apr 2021 02:15:07 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:568:4ad6:bcb:c5d1:c270:7333])
+        by smtp.gmail.com with ESMTPSA id b23sm1881004pju.0.2021.04.15.02.15.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 02:15:07 -0700 (PDT)
+From:   "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+To:     dmitry.torokhov@gmail.com, furquan@google.com,
+        seanpaul@chromium.org, rrangel@chromium.org, simba.hsu@rad-ic.com
+Cc:     jeffrey.lin@rad-ic.com, KP.li@rad-ic.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+Subject: [PATCH] driver: input: touchscreen: modify Raydium i2c touchscreen driver
+Date:   Thu, 15 Apr 2021 17:14:35 +0800
+Message-Id: <20210415091435.1419555-1-simba.hsu@raydium.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210415090314.vvyvr2wihwnauyi6@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2021 10:03, Marc Kleine-Budde wrote:
-> On 15.04.2021 09:55:35, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The pointer cf is being null checked earlier in the code, however the
->> update of the rx_bytes statistics is dereferencing cf without null
->> checking cf.  Fix this by moving the statement into the following code
->> block that has a null cf check.
->>
->> Addresses-Coverity: ("Dereference after null check")
->> Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> A somewhat different fix is already in net-next/master
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=e2b1e4b532abdd39bfb7313146153815e370d60c
+This path makes auto-update available when IC's status is
+Recovery mode
 
-+1 on that
+Signed-off-by: simba.hsu <simba.hsu@raydium.corp-partner.google.com>
+Change-Id: Icf974d59f7717da0de8bd97a06c496a32dafa1ff
+---
+ drivers/input/touchscreen/raydium_i2c_ts.c | 53 ++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 8 deletions(-)
 
-> 
-> Marc
-> 
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index 4d2d22a86977..a97403c55f75 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -36,7 +36,8 @@
+ #define RM_CMD_BOOT_CHK		0x33		/* send data check */
+ #define RM_CMD_BOOT_READ	0x44		/* send wait bl data ready*/
+ 
+-#define RM_BOOT_RDY		0xFF		/* bl data ready */
++#define RM_BOOT_RDY		0xFF			/* bl data ready */
++#define RM_BOOT_CMD_READHWID	0x0E	/* read hwid */
+ 
+ /* I2C main commands */
+ #define RM_CMD_QUERY_BANK	0x2B
+@@ -155,6 +156,7 @@ static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
+ 	 * sent first. Else, skip the header i.e. xfer[0].
+ 	 */
+ 	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
++
+ 	xfer_count -= xfer_start_idx;
+ 
+ 	ret = i2c_transfer(client->adapter, &xfer[xfer_start_idx], xfer_count);
+@@ -289,6 +291,44 @@ static int raydium_i2c_sw_reset(struct i2c_client *client)
+ 
+ 	return 0;
+ }
++static int raydium_i2c_query_ts_BL_info(struct raydium_data *ts)
++{
++	struct i2c_client *client = ts->client;
++	static const u8 get_hwid[7] = {RM_BOOT_CMD_READHWID,
++					 0x10, 0xc0, 0x01, 0x00, 0x04, 0x00};
++	int error;
++	u8 rbuf[5] = {0, 0, 0, 0, 0};
++	u32 tmpdata = 0;
++
++	error = raydium_i2c_send(client,
++				 RM_CMD_BOOT_WRT, get_hwid, sizeof(get_hwid));
++	if (error) {
++		dev_err(&client->dev, "WRT HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, rbuf, 1);
++	if (error) {
++		dev_err(&client->dev, "Ack HWID command failed: %d\n", error);
++		return error;
++	}
++
++	error = raydium_i2c_read(client,
++				 RM_CMD_BOOT_CHK, rbuf, sizeof(rbuf));
++	if (!error) {
++		tmpdata = (rbuf[1]<<24|rbuf[2]<<16|rbuf[3]<<8|rbuf[4]);
++		ts->info.hw_ver = cpu_to_le32(tmpdata);
++		dev_err(&client->dev, "HWID %08X\n", ts->info.hw_ver);
++	} else {
++		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
++		dev_err(&client->dev, "raydium_i2c_read HWID failed, %X, %X, %X, %X\n",
++					 rbuf[1], rbuf[2], rbuf[3], rbuf[4]);
++	}
++	ts->info.main_ver = 0xff;
++	ts->info.sub_ver = 0xff;
++
++	return error;
++}
+ 
+ static int raydium_i2c_query_ts_info(struct raydium_data *ts)
+ {
+@@ -388,13 +428,10 @@ static int raydium_i2c_initialize(struct raydium_data *ts)
+ 	if (error)
+ 		ts->boot_mode = RAYDIUM_TS_BLDR;
+ 
+-	if (ts->boot_mode == RAYDIUM_TS_BLDR) {
+-		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
+-		ts->info.main_ver = 0xff;
+-		ts->info.sub_ver = 0xff;
+-	} else {
++	if (ts->boot_mode == RAYDIUM_TS_BLDR)
++		raydium_i2c_query_ts_BL_info(ts);
++	else
+ 		raydium_i2c_query_ts_info(ts);
+-	}
+ 
+ 	return error;
+ }
+@@ -1218,7 +1255,7 @@ static SIMPLE_DEV_PM_OPS(raydium_i2c_pm_ops,
+ 			 raydium_i2c_suspend, raydium_i2c_resume);
+ 
+ static const struct i2c_device_id raydium_i2c_id[] = {
+-	{ "raydium_i2c" , 0 },
++	{ "raydium_i2c", 0 },
+ 	{ "rm32380", 0 },
+ 	{ /* sentinel */ }
+ };
+-- 
+2.25.1
 
