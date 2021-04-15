@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244AB360C63
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A053F360CA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhDOOul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37562 "EHLO mail.kernel.org"
+        id S234122AbhDOOwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:52:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233854AbhDOOuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 311B4613CC;
-        Thu, 15 Apr 2021 14:49:45 +0000 (UTC)
+        id S234018AbhDOOux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:50:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64878613CC;
+        Thu, 15 Apr 2021 14:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498186;
-        bh=5B0FtqAekw/UCDUpLgN3upPE0PsH0a4hB3BtH20oZlk=;
+        s=korg; t=1618498230;
+        bh=oNJ7nW236P+gK/BfG289r6FyJMKBLvxHsPXI/q0g6+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DbBwtEUixUSy/FepPZg8q7cLAohmxxyfd+xiFcL5Rk2Hj4J41v5BH4BpBo8ms8jcF
-         XfCGr/NGtrX2G2Xk94i1PA5nqpuqzsWoWKCMx7O7ACg7O3MkkNwEr0QzTkwucs3hTs
-         NYNwdrsLa9qZnDUNmLXbNYQOpeium2oOsPsVHxhQ=
+        b=YDu9OJqQOyFbUxAFebt70Yr5zhAXousxTxGpAL2iEc+DrrU6yDrq6V3+7UYNKqP0U
+         h5Jd496+m+KjhmOmJX2OEt3Fyk+aIvc0Ml2dxKiS9iIcOj7fY/KCka420+ovCz5m1P
+         dVTUTkHQJEFIjEF7oyMCFNvthQQfG0uC/qQpLlZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Muhammad Usama Anjum <musamaanjum@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 08/38] net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
+Subject: [PATCH 4.9 10/47] net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
 Date:   Thu, 15 Apr 2021 16:47:02 +0200
-Message-Id: <20210415144413.619158550@linuxfoundation.org>
+Message-Id: <20210415144413.806295129@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -59,7 +59,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/ipv6/route.c
 +++ b/net/ipv6/route.c
-@@ -2980,9 +2980,11 @@ static int ip6_route_multipath_add(struc
+@@ -3069,9 +3069,11 @@ static int ip6_route_multipath_add(struc
  		 * nexthops have been replaced by first new, the rest should
  		 * be added to it.
  		 */
