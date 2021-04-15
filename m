@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EB4360B94
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6FC360B97
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbhDOOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:14:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:47254 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233216AbhDOOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:14:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D334B106F;
-        Thu, 15 Apr 2021 07:13:39 -0700 (PDT)
-Received: from [10.57.57.112] (unknown [10.57.57.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C21233F694;
-        Thu, 15 Apr 2021 07:13:37 -0700 (PDT)
-Subject: Re: [PATCH v4 1/6] perf arm-spe: Remove unused enum value
- ARM_SPE_PER_CPU_MMAPS
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Al Grant <Al.Grant@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210412091006.468557-1-leo.yan@linaro.org>
- <20210412091006.468557-2-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <882e13d1-c793-88c6-0b1e-629462fb99ac@arm.com>
-Date:   Thu, 15 Apr 2021 17:13:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233461AbhDOOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:14:33 -0400
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:53088 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233328AbhDOOO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:14:29 -0400
+Received: by mail-wm1-f45.google.com with SMTP id y204so11165737wmg.2;
+        Thu, 15 Apr 2021 07:14:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hz1ZY9HWxRoofHmlH+XWpgXg6c/7rbXj8kFMXTJUiXE=;
+        b=tjLQUD2dfF+TL5y6KmArEWZx+pHJJbT1aZ3cLHWdsF0JCK6dMa4eJUSMssMK19hvc3
+         TOBGtjq9X8eFfP58y7RA5JWl7tFJU+SwDuMJckSilh6PnJMcKTrBUXGD+2CMf6oRBgA4
+         fZOEf9t161iPaIMYhEw6w/7NbUqFhsamxheUhdbfcXLAncX9KXf0GsoT6Tl99XP5HslH
+         RA5WrjjpyBoEjwNFwmDqtNZ/Ib6Y56rwmVe53fB9yjRTMd6oUV/+CFg26dsJv7TtcKg6
+         YKo7f8oJ4Dmk1ywf+s0IlGAfGF43WnW7abpaGOuazk1Lkn6a6gRmyrBfuQyIWaywM36s
+         J54w==
+X-Gm-Message-State: AOAM5323HewuuEMHcuEeNWbgFI6SMdIFckZc7mShSv4AjDMnVwEKWQOu
+        jeBXNmeRHcN+TvGmmPlXtXY=
+X-Google-Smtp-Source: ABdhPJwRJ+quRmCDl1pvKPCwx18Jq+JqjVXi9jMcrkxPA4UL5EwVUWMch3ilw837jkMX1O4b+f4iog==
+X-Received: by 2002:a7b:c195:: with SMTP id y21mr3405656wmi.178.1618496045398;
+        Thu, 15 Apr 2021 07:14:05 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id v18sm2798213wmh.28.2021.04.15.07.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:14:04 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 14:14:03 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH RFC 01/22] asm-generic/hyperv: add
+ HV_STATUS_ACCESS_DENIED definition
+Message-ID: <20210415141403.hftsza3ucrf262tq@liuwe-devbox-debian-v2>
+References: <20210413122630.975617-1-vkuznets@redhat.com>
+ <20210413122630.975617-2-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210412091006.468557-2-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413122630.975617-2-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/04/2021 12:10, Leo Yan wrote:
-> The enum value 'ARM_SPE_PER_CPU_MMAPS' is never used so remove it.
-
-Hi Leo,
-
-I think this causes an error when attempting to open a newly recorded file
-with an old version of perf. The value ARM_SPE_AUXTRACE_PRIV_MAX is used here:
-
-	size_t min_sz = sizeof(u64) * ARM_SPE_AUXTRACE_PRIV_MAX;
-	struct perf_record_time_conv *tc = &session->time_conv;
-	struct arm_spe *spe;
-	int err;
-
-	if (auxtrace_info->header.size < sizeof(struct perf_record_auxtrace_info) +
-					min_sz)
-		return -EINVAL;
-
-And removing ARM_SPE_PER_CPU_MMAPS changes the value of ARM_SPE_AUXTRACE_PRIV_MAX.
-
-At least I think that's what's causing the problem. I get this error:
-
-	./perf report -i per-thread-spe-time.data
-	0x1c0 [0x18]: failed to process type: 70 [Invalid argument]
-	Error:
-	failed to process sample
-	# To display the perf.data header info, please use --header/--header-only options.
-	#
-
-James
-
+On Tue, Apr 13, 2021 at 02:26:09PM +0200, Vitaly Kuznetsov wrote:
+> From TLFSv6.0b, this status means: "The caller did not possess sufficient
+> access rights to perform the requested operation."
 > 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+This can be applied to hyperv-next right away. Let me know what you
+think.
+
+Wei.
+
 > ---
->  tools/perf/util/arm-spe.h | 1 -
->  1 file changed, 1 deletion(-)
+>  include/asm-generic/hyperv-tlfs.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/tools/perf/util/arm-spe.h b/tools/perf/util/arm-spe.h
-> index 98d3235781c3..105ce0ea0a01 100644
-> --- a/tools/perf/util/arm-spe.h
-> +++ b/tools/perf/util/arm-spe.h
-> @@ -11,7 +11,6 @@
->  
->  enum {
->  	ARM_SPE_PMU_TYPE,
-> -	ARM_SPE_PER_CPU_MMAPS,
->  	ARM_SPE_AUXTRACE_PRIV_MAX,
->  };
->  
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index 83448e837ded..e01a3bade13a 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -187,6 +187,7 @@ enum HV_GENERIC_SET_FORMAT {
+>  #define HV_STATUS_INVALID_HYPERCALL_INPUT	3
+>  #define HV_STATUS_INVALID_ALIGNMENT		4
+>  #define HV_STATUS_INVALID_PARAMETER		5
+> +#define HV_STATUS_ACCESS_DENIED			6
+>  #define HV_STATUS_OPERATION_DENIED		8
+>  #define HV_STATUS_INSUFFICIENT_MEMORY		11
+>  #define HV_STATUS_INVALID_PORT_ID		17
+> -- 
+> 2.30.2
 > 
