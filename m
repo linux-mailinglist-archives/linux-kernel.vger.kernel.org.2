@@ -2,55 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2890D3612B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C763612B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234737AbhDOTGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234505AbhDOTGu (ORCPT
+        id S234767AbhDOTG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:06:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234749AbhDOTG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:06:50 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7172C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:06:25 -0700 (PDT)
-Received: from [192.168.1.101] (abac128.neoplus.adsl.tpnet.pl [83.6.166.128])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 75FE41F9F3;
-        Thu, 15 Apr 2021 21:06:20 +0200 (CEST)
-Subject: Re: [PATCH RFC 1/2] thermal: qcom: tsens-v1: Add support for MSM8994
- TSENS
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210209195346.457803-1-konrad.dybcio@somainline.org>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <1906acf0-9238-eab2-aac8-20f98e0e1403@somainline.org>
-Date:   Thu, 15 Apr 2021 21:06:19 +0200
+        Thu, 15 Apr 2021 15:06:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618513593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gEe76+1lfitRLX7ayQ138JdnojjAHhZEepE6oK4fMzM=;
+        b=H67Muo1X73tlPmia4K7LglApEuG1s2zaApj3eA+e1bLPoY2vDLqovBatsNJ2gPs4FCBX5f
+        3zHO7uRxEjPLDuJcLrW/2LlPK8VBAj6W6ZI9u+NpaRZRogJd8AEGWXPpRgXNTM2/8VSMl4
+        W2KweDrwHJGG5ICPwclJkX+acPy/w5c=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-NH4EKSrLO42WnnhuEehOYA-1; Thu, 15 Apr 2021 15:06:32 -0400
+X-MC-Unique: NH4EKSrLO42WnnhuEehOYA-1
+Received: by mail-qv1-f71.google.com with SMTP id z17-20020a0cf0110000b029019a84330150so2457412qvk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gEe76+1lfitRLX7ayQ138JdnojjAHhZEepE6oK4fMzM=;
+        b=sjtRjhXpO+mhO/GEV3jGlZkWKAI/4labYSxKcCYIec85uMuFXzGMJ0WI/isiEfxL96
+         RfhtliTrt1U7SkKSMUJ/Gy5PGhYCHev2QXCv8P9lof9GuxpjHQNWa1dXxDYef8qNVDKf
+         C92yG8Sohl8BPX/l9tjokVjAZq9wYsR6VjBL1zr1oFOi74o5Eq8AVN9T7KOjPDDu61hF
+         9oTb9Em85Y3sxrTI46Jy9u8mtP20h8rsNMwBMFYJnR1jzUmT+wpLTxVolV7fM+gW+Kmb
+         N+3Fek2uzOdcvMAyzslYoCTnZ8FmNBGOhXPvXJopVJnRZ5xOaL71o4NcANsoW+kK6LaH
+         HwOw==
+X-Gm-Message-State: AOAM532w0qBIDs53/WsbxXPcXkMr0/WFuFLmEZFCIroOkVBEaxArlm91
+        wVdWlZaxWIyhJSAf6luupzUA32C+Yk/JUEKq42HOvK7GmnmiY91WyqV1XhveiAk7k+E4Qj9+Hre
+        1jCEElzaD8tbZ5ty4zR7ssw2G
+X-Received: by 2002:ad4:50d0:: with SMTP id e16mr4732751qvq.6.1618513591646;
+        Thu, 15 Apr 2021 12:06:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwuVQaHY7IISH7UyW+PwaDWQOamBxU2GgKPhE5CUuu6sk1Maoqcddj2cyAcylO6CivOxCKntA==
+X-Received: by 2002:ad4:50d0:: with SMTP id e16mr4732719qvq.6.1618513591332;
+        Thu, 15 Apr 2021 12:06:31 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id o189sm2659335qkd.60.2021.04.15.12.06.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 12:06:29 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
+ access
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <llong@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-6-longman@redhat.com> <YHh9l1+TUIzzFBtO@cmpxchg.org>
+ <8dbd3505-9c51-362f-82d8-5efa5773e020@redhat.com>
+ <YHiLmxE9oCOfmbS3@cmpxchg.org>
+Message-ID: <d4d4de9b-5020-fe62-3709-bcd97e9b54ba@redhat.com>
+Date:   Thu, 15 Apr 2021 15:06:28 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210209195346.457803-1-konrad.dybcio@somainline.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YHiLmxE9oCOfmbS3@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bump, this is very important in 8994's case..
+On 4/15/21 2:53 PM, Johannes Weiner wrote:
+> On Thu, Apr 15, 2021 at 02:16:17PM -0400, Waiman Long wrote:
+>> On 4/15/21 1:53 PM, Johannes Weiner wrote:
+>>> On Tue, Apr 13, 2021 at 09:20:27PM -0400, Waiman Long wrote:
+>>>> Most kmem_cache_alloc() calls are from user context. With instrumentation
+>>>> enabled, the measured amount of kmem_cache_alloc() calls from non-task
+>>>> context was about 0.01% of the total.
+>>>>
+>>>> The irq disable/enable sequence used in this case to access content
+>>>> from object stock is slow.  To optimize for user context access, there
+>>>> are now two object stocks for task context and interrupt context access
+>>>> respectively.
+>>>>
+>>>> The task context object stock can be accessed after disabling preemption
+>>>> which is cheap in non-preempt kernel. The interrupt context object stock
+>>>> can only be accessed after disabling interrupt. User context code can
+>>>> access interrupt object stock, but not vice versa.
+>>>>
+>>>> The mod_objcg_state() function is also modified to make sure that memcg
+>>>> and lruvec stat updates are done with interrupted disabled.
+>>>>
+>>>> The downside of this change is that there are more data stored in local
+>>>> object stocks and not reflected in the charge counter and the vmstat
+>>>> arrays.  However, this is a small price to pay for better performance.
+>>>>
+>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>> Acked-by: Roman Gushchin <guro@fb.com>
+>>>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>>> This makes sense, and also explains the previous patch a bit
+>>> better. But please merge those two.
+>> The reason I broke it into two is so that the patches are individually
+>> easier to review. I prefer to update the commit log of patch 4 to explain
+>> why the obj_stock structure is introduced instead of merging the two.
+> Well I did not find them easier to review separately.
+>
+>>>> @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
+>>>>    	local_irq_save(flags);
+>>>>    	stock = this_cpu_ptr(&memcg_stock);
+>>>> -	drain_obj_stock(&stock->obj);
+>>>> +	drain_obj_stock(&stock->irq_obj);
+>>>> +	if (in_task())
+>>>> +		drain_obj_stock(&stock->task_obj);
+>>>>    	drain_stock(stock);
+>>>>    	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>>>> @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+>>>>    	memcg = obj_cgroup_memcg(objcg);
+>>>>    	if (pgdat)
+>>>>    		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+>>>> -	__mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+>>>> +	mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+>>>>    	rcu_read_unlock();
+>>> This is actually a bug introduced in the earlier patch, isn't it?
+>>> Calling __mod_memcg_lruvec_state() without irqs disabled...
+>>>
+>> Not really, in patch 3, mod_objcg_state() is called only in the stock update
+>> context where interrupt had already been disabled. But now, that is no
+>> longer the case, that is why i need to update mod_objcg_state() to make sure
+>> irq is disabled before updating vmstat data array.
+> Oh, I see it now. Man, that's subtle. We've had several very hard to
+> track down preemption bugs in those stats, because they manifest as
+> counter imbalances and you have no idea if there is a leak somewhere.
+>
+> The convention for these functions is that the __ prefix indicates
+> that preemption has been suitably disabled. Please always follow this
+> convention, even if the semantic change is temporary.
+I see. I will fix that in the next version.
+>
+> Btw, is there a reason why the stock caching isn't just part of
+> mod_objcg_state()? Why does the user need to choose if they want the
+> caching or not? It's not like we ask for this when charging, either.
+>
+Yes, I can revert it to make mod_objcg_state() to call 
+mod_obj_stock_state() internally instead of the other way around.
 
-
-Konrad
+Cheers,
+Longman
 
