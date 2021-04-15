@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2CC36008E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A06C3600A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhDODhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 23:37:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25837 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229784AbhDODhT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 23:37:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618457798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=czJHMaI3E97Ji0Ap43HwtLZnd4lX6ZvCcTZR3x3oep8=;
-        b=dFTGNs7w+171BiO7uPN+OgWhdWjFnMrHa1psX1DmzusM6GI4ang7AbLbZJHaavWWj1yay9
-        q9okA5CQSOS/LUIOLKvZzoT7mmCdLR3pbr2k8t5TJfTKSQ/Byjyfhnkl87AxjR+OPJjKA5
-        1Q8sh5mWeVN9u45oX4jjYWXvEo4rMS8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-xKvgv2EXP12NRNw8PZi2Hg-1; Wed, 14 Apr 2021 23:36:37 -0400
-X-MC-Unique: xKvgv2EXP12NRNw8PZi2Hg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9FD38189C8;
-        Thu, 15 Apr 2021 03:36:35 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-220.pek2.redhat.com [10.72.13.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C3CDC5D9DC;
-        Thu, 15 Apr 2021 03:36:29 +0000 (UTC)
-Subject: Re: [PATCH 3/3] vDPA/ifcvf: get_config_size should return dev
- specific config size
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414091832.5132-1-lingshan.zhu@intel.com>
- <20210414091832.5132-4-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <cc72edee-cbc1-89e6-f901-3f044f738693@redhat.com>
-Date:   Thu, 15 Apr 2021 11:36:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S229784AbhDODsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 23:48:14 -0400
+Received: from mail.wangsu.com ([123.103.51.227]:42184 "EHLO wangsu.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229457AbhDODsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 23:48:12 -0400
+X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Apr 2021 23:48:11 EDT
+Received: from fedora33.wangsu.com (unknown [183.253.10.81])
+        by app2 (Coremail) with SMTP id 4zNnewAHX5B1tXdgWAwCAA--.5503S2;
+        Thu, 15 Apr 2021 11:39:45 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, ming.lei@redhat.com, linf@wangsu.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] blk-mq: bypass IO scheduler's limit_depth for passthrough request
+Date:   Thu, 15 Apr 2021 11:39:20 +0800
+Message-Id: <20210415033920.213963-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210414091832.5132-4-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-CM-TRANSID: 4zNnewAHX5B1tXdgWAwCAA--.5503S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4UCF45KF17AF18WFy7Awb_yoW8tF1fpF
+        WDAFs5CFW8XF1xKFn7t3W3uw18Xw43ury7JFW5Kr1rA3s5KFsFgr95Xr40qryfAws3KFWU
+        Jrs8J3s8ur1j93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
+        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26r48McIj6xkF7I0En7xvr7AKxVW8
+        Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
+        AqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8GwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
+        JbIYCTnIWIevJa73UjIFyTuYvjfUcLZ2DUUUU
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 01e99aeca39796003 ("blk-mq: insert passthrough request into
+hctx->dispatch directly") gives high priority to passthrough requests and
+bypass underlying IO scheduler. But as we allocate tag for such request it
+still runs io-scheduler's callback limit_depth, while we really want is to
+give full sbitmap-depth capabity to such request for acquiring available
+tag.
+blktrace shows PC requests(dmraid -s -c -i) hit bfq's limit_depth:
+  8,0    2        0     0.000000000 39952 1,0  m   N bfq [bfq_limit_depth] wr_busy 0 sync 0 depth 8
+  8,0    2        1     0.000008134 39952  D   R 4 [dmraid]
+  8,0    2        2     0.000021538    24  C   R [0]
+  8,0    2        0     0.000035442 39952 1,0  m   N bfq [bfq_limit_depth] wr_busy 0 sync 0 depth 8
+  8,0    2        3     0.000038813 39952  D   R 24 [dmraid]
+  8,0    2        4     0.000044356    24  C   R [0]
 
-ÔÚ 2021/4/14 ÏÂÎç5:18, Zhu Lingshan Ð´µÀ:
-> get_config_size() should return the size based on the decected
-> device type.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+This patch introduce a new wrapper to make code not that ugly.
 
+Signed-off-by: Lin Feng <linf@wangsu.com>
+---
+ block/blk-mq.c         | 3 ++-
+ include/linux/blkdev.h | 6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 9b6a38b798fa..b48b9789b69e 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -347,7 +347,16 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->   
->   static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
->   {
-> -	return sizeof(struct virtio_net_config);
-> +	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-> +	size_t size;
-> +
-> +	if (vf->dev_type == VIRTIO_ID_NET)
-> +		size = sizeof(struct virtio_net_config);
-> +
-> +	if (vf->dev_type == VIRTIO_ID_BLOCK)
-> +		size = sizeof(struct virtio_blk_config);
-> +
-> +	return size;
->   }
->   
->   static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index d4d7c1caa439..927189a55575 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -361,11 +361,12 @@ static struct request *__blk_mq_alloc_request(struct blk_mq_alloc_data *data)
+ 
+ 	if (e) {
+ 		/*
+-		 * Flush requests are special and go directly to the
++		 * Flush/passthrough requests are special and go directly to the
+ 		 * dispatch list. Don't include reserved tags in the
+ 		 * limiting, as it isn't useful.
+ 		 */
+ 		if (!op_is_flush(data->cmd_flags) &&
++		    !blk_op_is_passthrough(data->cmd_flags) &&
+ 		    e->type->ops.limit_depth &&
+ 		    !(data->flags & BLK_MQ_REQ_RESERVED))
+ 			e->type->ops.limit_depth(data->cmd_flags, data);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 158aefae1030..0d81eed39833 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -272,6 +272,12 @@ static inline bool bio_is_passthrough(struct bio *bio)
+ 	return blk_op_is_scsi(op) || blk_op_is_private(op);
+ }
+ 
++static inline bool blk_op_is_passthrough(unsigned int op)
++{
++	return (blk_op_is_scsi(op & REQ_OP_MASK) ||
++			blk_op_is_private(op & REQ_OP_MASK));
++}
++
+ static inline unsigned short req_get_ioprio(struct request *req)
+ {
+ 	return req->ioprio;
+-- 
+2.30.2
 
