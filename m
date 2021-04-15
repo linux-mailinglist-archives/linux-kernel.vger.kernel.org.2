@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D25360661
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF2D360674
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhDOKDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbhDOKCp (ORCPT
+        id S231862AbhDOKFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:05:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2860 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229841AbhDOKFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:02:45 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FDDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:02:21 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d8so11760896plh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zm6WOLpoBupP5HjBPdb3l9pYDvQOSku0pOkw8t2295U=;
-        b=j4Iyb3iIzlUmiMrepUSmxPvgLsBjtBUY9oW1JFiiGooOW/MM7tJyI686cDprjLhKhG
-         0RxNwyJ6DSqcxWRpM+qG96okUZ00v72RSqY9S38fwz3Y6bQczIUSvLx4H72t5hqWNBo9
-         DyhISgnfnVl2NYzMRRsjwRyR/FavV8c3pGIydbSVC8Qb7TLnOEFmZ9qv8iMKxH9Fqzyr
-         GIhXpaXZ+tXYz/N7a+fhIWjtR+FCjUNL58PUn7yHtrodKkmvhHxYa5+08EjEGRO9XiV+
-         RW+oTqd1p+ecNFZDRpo+NpNk1Okp1hnmYKO+q85wyrTk3COEVbqsYzi/pfFxCcAuNXUu
-         zWCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zm6WOLpoBupP5HjBPdb3l9pYDvQOSku0pOkw8t2295U=;
-        b=mNOYsc8yPvXG4PjCbfdWFV9v/MpYBg5lUZEaqIz44N7RU9wCZ5+yN9PL3Ki2KDYJBN
-         vnxx5WT/1lOsWm7pZG3Hm1veIuaRO4e7ZJYxXyJjNlZyabXUqhFg5EQeuGPMtbkkc4fy
-         Gl/4iWT1vlK//pyofO7KVEk1L6CPxPhWE4BqUV8cyOlJ+2uQIkHa9aOp6zlcRyXQo6x8
-         JH9sBZ5UTXU/AaWruqIhBrNPIEErdyz/e3wD3vp9ZyAuwlfveYM+vCjdgv0XEjrL8XVV
-         r2Of9n98D5t0/nWx56W1OOCJPlo/FbWyZwLN464ydADFQv5Jq4zcXqd1iA352mUz0yX8
-         brBQ==
-X-Gm-Message-State: AOAM531nfG55sDhb9fHhQalL8ClPbTNZ4H1en2O727GjIXJVo+b7BqJi
-        CDy05f5YQQixV1Pa7Po/amxHyhzMOSLm9Bfx27fEPA==
-X-Google-Smtp-Source: ABdhPJzIqo/dJxuaB4eMFPaHL4ZYJTOustyDLlI9/weAm8+moE/xsKoxTvOPspHWx9D3rPi459BckDQzTdfnDVLt/eI=
-X-Received: by 2002:a17:902:ea93:b029:eb:65ee:ddd3 with SMTP id
- x19-20020a170902ea93b02900eb65eeddd3mr3020294plb.24.1618480936088; Thu, 15
- Apr 2021 03:02:16 -0700 (PDT)
+        Thu, 15 Apr 2021 06:05:14 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FLZWv5YZDz688pV;
+        Thu, 15 Apr 2021 17:57:31 +0800 (CST)
+Received: from fraphisprd00473.huawei.com (7.182.8.141) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 15 Apr 2021 12:04:48 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <jmorris@namei.org>, <paul@paul-moore.com>,
+        <casey@schaufler-ca.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
+        <reiserfs-devel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 0/5] evm: Prepare for moving to the LSM infrastructure
+Date:   Thu, 15 Apr 2021 12:04:30 +0200
+Message-ID: <20210415100435.18619-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-5-songmuchun@bytedance.com> <YHa5ao/JgoqHQh0Z@dhcp22.suse.cz>
- <CAMZfGtXBqxxgNaB5dcNGvtoH7Gn-1+Ara1YOGS-OahNXaExhsQ@mail.gmail.com> <YHcrRMsmrXd5n3oQ@cmpxchg.org>
-In-Reply-To: <YHcrRMsmrXd5n3oQ@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 15 Apr 2021 18:01:38 +0800
-Message-ID: <CAMZfGtV8eKE4JP3wqzy2YhQ2McxE-36jJm=8yi1geGbT6ps=rw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/7] mm: memcontrol: simplify lruvec_holds_page_lru_lock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [7.182.8.141]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 1:49 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Apr 14, 2021 at 06:00:42PM +0800, Muchun Song wrote:
-> > On Wed, Apr 14, 2021 at 5:44 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 13-04-21 14:51:50, Muchun Song wrote:
-> > > > We already have a helper lruvec_memcg() to get the memcg from lruvec, we
-> > > > do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
-> > > > lruvec_memcg() instead. And if mem_cgroup_disabled() returns false, the
-> > > > page_memcg(page) (the LRU pages) cannot be NULL. So remove the odd logic
-> > > > of "memcg = page_memcg(page) ? : root_mem_cgroup". And use lruvec_pgdat
-> > > > to simplify the code. We can have a single definition for this function
-> > > > that works for !CONFIG_MEMCG, CONFIG_MEMCG + mem_cgroup_disabled() and
-> > > > CONFIG_MEMCG.
-> > >
-> > > Neat. While you are at it wouldn't it make sesne to rename the function
-> > > as well. I do not want to bikeshed but this is really a misnomer. it
-> > > doesn't check anything about locking. page_belongs_lruvec?
-> >
-> > Right. lruvec_holds_page_lru_lock is used to check whether
-> > the page belongs to the lruvec. page_belongs_lruvec
-> > obviously more clearer. I can rename it to
-> > page_belongs_lruvec the next version.
->
-> This sounds strange to me, I think 'belongs' needs a 'to' to be
-> correct, so page_belongs_to_lruvec(). Still kind of a mouthful.
->
-> page_matches_lruvec()?
->
+This patch set depends on:
 
-I prefer this name. If you also agree, I will use this name.
+https://lore.kernel.org/linux-integrity/20210409114313.4073-1-roberto.sassu@huawei.com/
+https://lore.kernel.org/linux-integrity/20210407105252.30721-1-roberto.sassu@huawei.com/
 
-Thanks.
+One of the challenges that must be tackled to move IMA and EVM to the LSM
+infrastructure is to ensure that EVM is capable to correctly handle
+multiple stacked LSMs providing an xattr at file creation. At the moment,
+there are few issues that would prevent a correct integration. This patch
+set aims at solving them.
 
-> page_from_lruvec()?
+From the LSM infrastructure side, the LSM stacking feature added the
+possibility of registering multiple implementations of the security hooks,
+that are called sequentially whenever someone calls the corresponding
+security hook. However, security_inode_init_security() and
+security_old_inode_init_security() are currently limited to support one
+xattr provided by LSM and one by EVM.
+
+In addition, using the call_int_hook() macro causes some issues. According
+to the documentation in include/linux/lsm_hooks.h, it is a legitimate case
+that an LSM returns -EOPNOTSUPP when it does not want to provide an xattr.
+However, the loop defined in the macro would stop calling subsequent LSMs
+if that happens. In the case of security_old_inode_init_security(), using
+the macro would also cause a memory leak due to replacing the *value
+pointer, if multiple LSMs provide an xattr.
+
+From EVM side, the first operation to be done is to change the definition
+of evm_inode_init_security() to be compatible with the security hook
+definition. Unfortunately, the current definition does not provide enough
+information for EVM, as it must have visibility of all xattrs provided by
+LSMs to correctly calculate the HMAC. This patch set changes the security
+hook definition by adding the full array of xattr as a parameter.
+
+Secondly, EVM must know how many elements are in the xattr array. It seems
+that it is not necessary to add another parameter, as all filesystems that
+define an initxattr function, expect that the last element of the array is
+one with the name field set to NULL. EVM reuses the same assumption.
+
+This patch set has been tested by introducing several instances of a
+TestLSM (some providing an xattr, some not, one with a wrong implementation
+to see how the LSM infrastructure handles it). The patch is not included
+in this set but it is available here:
+
+https://github.com/robertosassu/linux/commit/0370ff0fbc16e5d63489836a958e65d697f956db
+
+The test, added to ima-evm-utils, is available here:
+
+https://github.com/robertosassu/ima-evm-utils/blob/evm-multiple-lsms-v1-devel-v1/tests/evm_multiple_lsms.test
+
+The test takes a UML kernel built by Travis and launches it several times,
+each time with a different combination of LSMs. After boot, it first checks
+that there is an xattr for each LSM providing it, and then calculates the
+HMAC in user space and compares it with the HMAC calculated by EVM in
+kernel space.
+
+A test report can be obtained here:
+
+https://www.travis-ci.com/github/robertosassu/ima-evm-utils/jobs/498699540
+
+Lastly, running the test on reiserfs to check
+security_old_inode_init_security(), some issues have been discovered: a
+free of xattr->name which is not correct after commit 9548906b2bb7 ('xattr:
+Constify ->name member of "struct xattr"'), and a misalignment with
+security_inode_init_security() (the old version expects the full xattr name
+with the security. prefix, the new version just the suffix). The last issue
+has not been fixed yet.
+
+Roberto Sassu (5):
+  xattr: Complete constify ->name member of "struct xattr"
+  security: Support multiple LSMs implementing the inode_init_security
+    hook
+  security: Pass xattrs allocated by LSMs to the inode_init_security
+    hook
+  evm: Align evm_inode_init_security() definition with LSM
+    infrastructure
+  evm: Support multiple LSMs providing an xattr
+
+ fs/reiserfs/xattr_security.c        |  2 -
+ include/linux/evm.h                 | 21 ++++---
+ include/linux/lsm_hook_defs.h       |  2 +-
+ include/linux/lsm_hooks.h           |  5 +-
+ security/integrity/evm/evm.h        |  2 +
+ security/integrity/evm/evm_crypto.c |  9 ++-
+ security/integrity/evm/evm_main.c   | 35 +++++++----
+ security/security.c                 | 95 +++++++++++++++++++++++------
+ security/selinux/hooks.c            |  3 +-
+ security/smack/smack_lsm.c          |  4 +-
+ 10 files changed, 135 insertions(+), 43 deletions(-)
+
+-- 
+2.26.2
+
