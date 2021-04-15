@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CC3361362
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDB6361363
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235347AbhDOUUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37486 "EHLO mail.kernel.org"
+        id S235326AbhDOUVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:21:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235326AbhDOUUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:20:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3AF6101C;
-        Thu, 15 Apr 2021 20:19:30 +0000 (UTC)
+        id S234701AbhDOUVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:21:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F39716101C;
+        Thu, 15 Apr 2021 20:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618517978;
-        bh=yAbWbMoOThDBMD78Afb1Hhb0xzAEM3MhGqdKoiAqF9E=;
+        s=k20201202; t=1618518046;
+        bh=sEHTvEBWPeRgAzpSQ47g5PZ7ItNHh1f48TH7cljWUTM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ASGiOXybLGBN9jky71hzUL63CN23ZTbqiyqPyd7trogRfIBbUJ94NZUfXaGzL3qao
-         M22ns77dO0DGQjlD4aSJrUDrnJRA5gvGnMlQAXV88TLRUB7QaKqK3LQohhS1AZgQZK
-         TWIeT3cURYQ1AebYCwegPMUw8vj7eH/Ag1EDVr6i4/rXjU+GQVZuDRvvn0YBeZcuMI
-         f0h/1rH+4I3rzaTYoIjy79kIkyVe/908IujhGGDfKmY/Ur32F0bMv22FpyLV86oE39
-         VZwEhKAfDER1L+AMqUA4MOxzFOn0W4HaAn8i/Yt7VA9LIqdqHLxEUQZJoAELU6qsna
-         WzbspCNRt7GqQ==
-Date:   Thu, 15 Apr 2021 22:19:26 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fix 'assignment to __be16' warning
-Message-ID: <20210415201926.GE2360@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210412115302.95686-1-bence98@sch.bme.hu>
+        b=UOsmaKNIFQZ+8SgBzCWq3jFMbaUG5iZwPZvvQfjdkan2B+u1euJ5cPnZqYimm0O6P
+         3A25lXNexEZZI/Dbg4pOb/itoF4PhEeWkQTxq+CHcwOHv9jT14pPd5u9SdfDePRRJU
+         EYgopLcxoV48K1F2Ro//o6+/ZkL1TFmWW9H3cI3nUDxY9rqw2QIlMZC/Ggz3+Q1hFX
+         zlCa+f7F5bhTu79KSV33q77yVXS2boVP5h0qbjPefvWzEHx1oP4BO1c/kazEQCxz1x
+         NzvmAQ9o4baPRqGVOby5EjhKDc0PoH6sZHkW1VOpvsEdf5wJK3Yh/Cc90oilJXiXtm
+         xK/6RWi0DssYQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ED8FF40647; Thu, 15 Apr 2021 17:20:42 -0300 (-03)
+Date:   Thu, 15 Apr 2021 17:20:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Subject: Re: [PATCH v8 2/4] libperf: Add evsel mmap support
+Message-ID: <YHigGiII9wo33Q+Q@kernel.org>
+References: <20210414155412.3697605-1-robh@kernel.org>
+ <20210414155412.3697605-2-robh@kernel.org>
+ <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com>
+ <YHcuIKjNDkOUCupx@kernel.org>
+ <YHczIzjv6Kt3cxI7@kernel.org>
+ <CAM9d7chYYa5B-QR6xNJG5NeLb0ENv5inLdLMqT_e+8jkRZZCJA@mail.gmail.com>
+ <YHiV5vqSD3TmUspL@kernel.org>
+ <CAL_JsqKv2rpMrbYu4Dzq9jsmUGiZyJHzi8MOJMqbRnRbzcrc9w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EgVrEAR5UttbsTXg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412115302.95686-1-bence98@sch.bme.hu>
+In-Reply-To: <CAL_JsqKv2rpMrbYu4Dzq9jsmUGiZyJHzi8MOJMqbRnRbzcrc9w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, Apr 15, 2021 at 03:09:28PM -0500, Rob Herring escreveu:
+> On Thu, Apr 15, 2021 at 2:37 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Ok, b4 failed on it, probably some missing Reply to, so I'll apply it by
+> > hand:
+> 
+> That's my fault. A duplicate message-id is the issue. git-send-email
+> died after patch 1/4 (can't say I've ever had that happen). So in my
+> attempt to manually resend 2-4, I was off by 1 in the message-id and
+> duplicated patch 1's message-id. I should have just resent the whole
+> thing.
 
---EgVrEAR5UttbsTXg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No problem, it is already in, just letting you know to fix your scripts
+:-)
 
-Hi Bence,
-
-On Mon, Apr 12, 2021 at 11:53:02AM +0000, Bence Cs=C3=B3k=C3=A1s wrote:
-> While the preamble field _is_ technically big-endian, its value is always=
- 0x2A2A,
-> which is the same in either endianness, therefore it should be u16 instea=
-d.
-
-Why should it be u16? I don't see it.
-
-I thought the fix would be to add the suffix 'U' to 0x2A2A when it is
-assigned to preamble?
-
-Also, please use "i2c: cp2615: <patch header>" in the $subject
-
-Happy hacking,
-
-   Wolfram
-
-
---EgVrEAR5UttbsTXg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB4n80ACgkQFA3kzBSg
-KbaIyw//QJqkdQCzK2VDX58T2MDqDK7YvdjmX1PpBnj4ioPj9LVkr4ewykmliTRS
-m+CkGtxNplY3jila/8m4GDmqepAfZKRTGkS2rh2ndYKIJ8IYDlPhMEtDGoQeF2Ya
-1GMVo++AMcdxMZ6FuXXT55YDqZsknpZnFXUhDRzorexfhqL4rjA9tmXu69bC9Vzb
-mtlY+Ge6gNyL0PFupPUm0s6vZtfQ5GYo6rv3VMHk9SG0GBMLdeL+3BrGZWILDOIs
-LOhFeqCFz6UMGoFW28qj3lERRVZ63p3+1qnqZ5opU591oDoGcvFqKjormGSuimd2
-5TnCMXr9iLa3J7JJRfg763OAzkC2oWuzLO+IPkl60UVprzkenbkpxUGE/qwqpmwp
-aLzyngu5t77NJK7SMg4e0XkcRVheB76Yn5GroxEAF8UaVchFdaT6xhaQ7EqMPXVP
-AYUyGZ9GMZNvcWJxcsZpwqcCe/3/VB1XXvuNBh/UIo1iqk8ZtLAWvVDhWqGv8ge0
-mti9N79lDbkYI0Cgij/jtmyUGIjCUghWKgY7mr73L9R/AFdNibuP1wnpGc3zZ4W2
-1u5mNerAxtRbesbAC/hqjLQSan47/oEqAP464V1xD83UbKpnUk7H4TBpxcWpxYlf
-1JMAL5NJbetQMs6jTUA3Zl2hXO/a0KokHVEHxShHIkhv/IuJEbk=
-=WjyG
------END PGP SIGNATURE-----
-
---EgVrEAR5UttbsTXg--
+- Arnaldo
