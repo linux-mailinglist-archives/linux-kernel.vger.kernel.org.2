@@ -2,189 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8188361423
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C4F361415
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbhDOVak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:30:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8933 "EHLO mga09.intel.com"
+        id S235919AbhDOVZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235835AbhDOVaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:30:39 -0400
-IronPort-SDR: M16VoHaVvbZ4HrTln6WYQAlNpE+sr8X/WBANVhADVQX1OKo+e80cU8db1AvM/2Z+YC0tiAveOt
- 7r77F2XtkBVg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="195058515"
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="195058515"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 14:30:15 -0700
-IronPort-SDR: lfTKbKre0OBv6ge5Wa/shNrmskHfegjKmdmgkTJ42VWSuNEm6MRdJMf1DGyVGKmTkDNKAYzlUe
- CCIa5FkElBLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="421822574"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga007.jf.intel.com with ESMTP; 15 Apr 2021 14:30:15 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, acme@kernel.org, andreas@oehler-net.de,
-        eranian@google.com, osk@google.com, tglx@linutronix.de,
-        mark@voidzero.net, steve.wahl@hpe.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel/uncore: Remove uncore extra PCI dev HSWEP_PCI_PCU_3
-Date:   Thu, 15 Apr 2021 14:22:43 -0700
-Message-Id: <1618521764-100923-1-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S235093AbhDOVZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 17:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9867761026;
+        Thu, 15 Apr 2021 21:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618521902;
+        bh=wAzWz1t/6xImauPcT3XLaMkS802uQtcKstpMe9mSozY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E/51QtVt+JZLl5YJKUji4jjUv0dBmA0cmazs/5w6+Bc4wZzO5QnL2dejEJKPWm3Nz
+         blOgsYGjclj6JlD5IGboMfeGiQ+yiXB0FaNPitc6n+Pgc/BPT4z4QUAn8LElc43w2p
+         DW0iYl09HZIPMm0/dSBmP6P7h0NNhw9kIp61XrB2T4R+z31rL4dpIhDyAXI0P+/egD
+         PKDC65q1VxcwFiaRYagT0Ob/+o2VdMqInrUvQpaSh8X9S4oseMskkKhQEu7aHiu4Pa
+         Rjns9bJQt/R4aYcJnf1arUZqeetP5o8esJ0rxv9BXDiQWIGv52jx2HETOIhpRi/JxD
+         Q8daW7WZwkObA==
+Received: by mail-qk1-f174.google.com with SMTP id d23so14764484qko.12;
+        Thu, 15 Apr 2021 14:25:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532oaoYr97VvPhYbqYexx/1nCp6yi/SOQ48uIT9z1T6UsVsFY9+Y
+        5rOkD7/DhlCDcmL/6ElHSLh6id0keRcF7d6Eug==
+X-Google-Smtp-Source: ABdhPJwEOtVU/PBX8pl5Ub9lOQ0rQ9elsjO6RSPqK7TVDKWJEeKEiIDMHMw6Ipuhxv6/Qi8T03BgwK/XvLFUmMN9Nds=
+X-Received: by 2002:a37:84b:: with SMTP id 72mr5665420qki.464.1618521901808;
+ Thu, 15 Apr 2021 14:25:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
+ <1617766086-5502-5-git-send-email-flora.fu@mediatek.com> <20210409182538.GA3913794@robh.at.kernel.org>
+ <1618209895.25062.11.camel@mtksdccf07>
+In-Reply-To: <1618209895.25062.11.camel@mtksdccf07>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 15 Apr 2021 16:24:50 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
+Message-ID: <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
+Subject: Re: [PATCH 4/8] dt-bindings: arm: mediatek: Add new document bindings
+ for APU
+To:     Flora Fu <flora.fu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
+        Chiawen Lee <chiawen.lee@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Apr 12, 2021 at 1:45 AM Flora Fu <flora.fu@mediatek.com> wrote:
+>
+> On Fri, 2021-04-09 at 13:25 -0500, Rob Herring wrote:
+> > On Wed, Apr 07, 2021 at 11:28:02AM +0800, Flora Fu wrote:
+> > > Document the apusys bindings.
+> > >
+> > > Signed-off-by: Flora Fu <flora.fu@mediatek.com>
+> > > ---
+> > >  .../arm/mediatek/mediatek,apusys.yaml         | 56 +++++++++++++++++++
+> > >  1 file changed, 56 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> > > new file mode 100644
+> > > index 000000000000..dc04a46f1bad
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> > > @@ -0,0 +1,56 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: https://urldefense.com/v3/__http://devicetree.org/schemas/arm/mediatek/mediatek,apusys.yaml*__;Iw!!CTRNKA9wMg0ARbw!3ryKFTA2CvsVss4Pt2ZOG7wv4jgR-2LPxuGn30IxFmpxoxSRdzNdf8FrAYYvZWcw$
+> > > +$schema: https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!3ryKFTA2CvsVss4Pt2ZOG7wv4jgR-2LPxuGn30IxFmpxoxSRdzNdf8FrARlhCQ0w$
+> > > +
+> > > +title: MediaTek APUSYS Controller
+> > > +
+> > > +maintainers:
+> > > +  - Flora Fu <flora.fu@mediatek.com>
+> > > +
+> > > +description:
+> > > +  The Mediatek apusys controller provides functional configurations and clocks
+> > > +  to the system.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - enum:
+> > > +          - mediatek,mt8192-apu_mbox
+> > > +          - mediatek,mt8192-apu_conn
+> > > +          - mediatek,mt8192-apu_vcore
+> >
+> > s/_/-/
+> >
+>
+> OK. I will update expression strings in the next version.
+>
+> > > +      - const: syscon
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#clock-cells':
+> > > +    const: 1
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    apu_mbox: apu_mbox@19000000 {
+> >
+> > mailbox@...? Is this a mailbox provider?
+> >
+>
+> Yes, the apu_mbox is the for setup mailbox in the APU hardware.
 
-There may be a kernel panic on the Haswell server and the Broadwell
-server, if the snbep_pci2phy_map_init() return error.
+Then you need #mbox-cells here.
 
-The uncore_extra_pci_dev[HSWEP_PCI_PCU_3] is used in the cpu_init() to
-detect the existence of the SBOX, which is a MSR type of PMON unit.
-The uncore_extra_pci_dev is allocated in the uncore_pci_init(). If the
-snbep_pci2phy_map_init() returns error, perf doesn't initialize the
-PCI type of the PMON units, so the uncore_extra_pci_dev will not be
-allocated. But perf may continue initializing the MSR type of PMON
-units. A null dereference kernel panic will be triggered.
+And in that case, what makes it a syscon?
 
-The sockets in a Haswell server or a Broadwell server are identical.
-Only need to detect the existence of the SBOX once.
-Current perf probes all available PCU devices and stores them into the
-uncore_extra_pci_dev. It's unnecessary.
-Use the pci_get_device() to replace the uncore_extra_pci_dev. Only
-detect the existence of the SBOX on the first available PCU device once.
-
-Factor out hswep_has_limit_sbox(), since the Haswell server and the
-Broadwell server uses the same way to detect the existence of the SBOX.
-
-Add some macros to replace the magic number.
-
-Fixes: 5306c31c5733 ("perf/x86/uncore/hsw-ep: Handle systems with only two SBOXes")
-Reported-by: Steve Wahl <steve.wahl@hpe.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore_snbep.c | 61 +++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 35 deletions(-)
-
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index b79951d..9b89376 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -1159,7 +1159,6 @@ enum {
- 	SNBEP_PCI_QPI_PORT0_FILTER,
- 	SNBEP_PCI_QPI_PORT1_FILTER,
- 	BDX_PCI_QPI_PORT2_FILTER,
--	HSWEP_PCI_PCU_3,
- };
- 
- static int snbep_qpi_hw_config(struct intel_uncore_box *box, struct perf_event *event)
-@@ -2857,22 +2856,33 @@ static struct intel_uncore_type *hswep_msr_uncores[] = {
- 	NULL,
- };
- 
--void hswep_uncore_cpu_init(void)
-+#define HSWEP_PCU_DID			0x2fc0
-+#define HSWEP_PCU_CAPID4_OFFET		0x94
-+#define hswep_get_chop(_cap)		(((_cap) >> 6) & 0x3)
-+
-+static bool hswep_has_limit_sbox(unsigned int device)
- {
--	int pkg = boot_cpu_data.logical_proc_id;
-+	struct pci_dev *dev = pci_get_device(PCI_VENDOR_ID_INTEL, device, NULL);
-+	u32 capid4;
-+
-+	if (!dev)
-+		return false;
-+
-+	pci_read_config_dword(dev, HSWEP_PCU_CAPID4_OFFET, &capid4);
-+	if (!hswep_get_chop(capid4))
-+		return true;
- 
-+	return false;
-+}
-+
-+void hswep_uncore_cpu_init(void)
-+{
- 	if (hswep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
- 		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
- 
- 	/* Detect 6-8 core systems with only two SBOXes */
--	if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
--		u32 capid4;
--
--		pci_read_config_dword(uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3],
--				      0x94, &capid4);
--		if (((capid4 >> 6) & 0x3) == 0)
--			hswep_uncore_sbox.num_boxes = 2;
--	}
-+	if (hswep_has_limit_sbox(HSWEP_PCU_DID))
-+		hswep_uncore_sbox.num_boxes = 2;
- 
- 	uncore_msr_uncores = hswep_msr_uncores;
- }
-@@ -3135,11 +3145,6 @@ static const struct pci_device_id hswep_uncore_pci_ids[] = {
- 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
- 						   SNBEP_PCI_QPI_PORT1_FILTER),
- 	},
--	{ /* PCU.3 (for Capability registers) */
--		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x2fc0),
--		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
--						   HSWEP_PCI_PCU_3),
--	},
- 	{ /* end: all zeroes */ }
- };
- 
-@@ -3231,27 +3236,18 @@ static struct event_constraint bdx_uncore_pcu_constraints[] = {
- 	EVENT_CONSTRAINT_END
- };
- 
-+#define BDX_PCU_DID			0x6fc0
-+
- void bdx_uncore_cpu_init(void)
- {
--	int pkg = topology_phys_to_logical_pkg(boot_cpu_data.phys_proc_id);
--
- 	if (bdx_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
- 		bdx_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
- 	uncore_msr_uncores = bdx_msr_uncores;
- 
--	/* BDX-DE doesn't have SBOX */
--	if (boot_cpu_data.x86_model == 86) {
--		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
- 	/* Detect systems with no SBOXes */
--	} else if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
--		struct pci_dev *pdev;
--		u32 capid4;
--
--		pdev = uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3];
--		pci_read_config_dword(pdev, 0x94, &capid4);
--		if (((capid4 >> 6) & 0x3) == 0)
--			bdx_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
--	}
-+	if ((boot_cpu_data.x86_model == 86) || hswep_has_limit_sbox(BDX_PCU_DID))
-+		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
-+
- 	hswep_uncore_pcu.constraints = bdx_uncore_pcu_constraints;
- }
- 
-@@ -3472,11 +3468,6 @@ static const struct pci_device_id bdx_uncore_pci_ids[] = {
- 		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
- 						   BDX_PCI_QPI_PORT2_FILTER),
- 	},
--	{ /* PCU.3 (for Capability registers) */
--		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x6fc0),
--		.driver_data = UNCORE_PCI_DEV_DATA(UNCORE_EXTRA_PCI_DEV,
--						   HSWEP_PCI_PCU_3),
--	},
- 	{ /* end: all zeroes */ }
- };
- 
--- 
-2.7.4
-
+>
+> > > +        compatible = "mediatek,mt8192-apu_mbox", "syscon";
+> > > +        reg = <0x19000000 0x1000>;
+> > > +    };
