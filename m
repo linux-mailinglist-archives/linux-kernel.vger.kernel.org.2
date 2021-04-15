@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4EA361351
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981C6361355
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235288AbhDOUKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:10:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36346 "EHLO mail.kernel.org"
+        id S235314AbhDOULR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:11:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:53988 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235282AbhDOUJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:09:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB98D610E6;
-        Thu, 15 Apr 2021 20:09:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618517372;
-        bh=e/gUe1PEZqxNuH4A9nYQSWV6y+9lQUySaH6Y23bYtsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Prw2VaGCHfswogZ4rloufawxncBWtI4QapaNxpB2ED/ASQndB91uazK1r1fNEqJZ7
-         y9bA3LJEzocNY0vo5/GJxPN9pVh51gQRFIjIwFslctf5XaLjSVDocsbLM7aCvjo6cw
-         3kKet9oy6dYFtuu9ARHRndZZT9Yi3hJw05oXItg5yLhkdg7T36pbg/5tgXDckn58rW
-         Lmj4+r5/7Re9sMS3Pw31fWFpLZlF1gkmQo9dGFA5arpOmDgA2aV2oKR5G4AwuTxAiU
-         k6wa8i+CH9U87j/3s0mN7HEPpUeB+g1NuFOZaR9f5GbRBkEfzhLYq2BkotDXcL9j6+
-         89kIIScG12Hig==
-Date:   Thu, 15 Apr 2021 22:09:28 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] i2c: mpc: Refactor to improve responsiveness
-Message-ID: <20210415200928.GC2360@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
+        id S234654AbhDOULP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:11:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46EEF11B3;
+        Thu, 15 Apr 2021 13:10:51 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 29A103FA35;
+        Thu, 15 Apr 2021 13:10:48 -0700 (PDT)
+Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Ruifeng Zhang <ruifeng.zhang0110@gmail.com>,
+        linux@armlinux.org.uk, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        a.p.zijlstra@chello.nl, mingo@kernel.org,
+        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com>
+ <8735vrmnc7.mognet@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <b7a76995-f6c3-67c5-b14e-d40587495d7e@arm.com>
+Date:   Thu, 15 Apr 2021 22:10:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
-Content-Disposition: inline
-In-Reply-To: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <8735vrmnc7.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/04/2021 20:09, Valentin Schneider wrote:
+> On 14/04/21 20:23, Ruifeng Zhang wrote:
+>> From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+>>
+>> In Unisoc, the sc9863a SoC which using cortex-a55, it has two software
+>> version, one of them is the kernel running on EL1 using aarch32.
+>>                 user(EL0)             kernel(EL1)
+>> sc9863a_go      aarch32               aarch32
+>> sc9863a         aarch64               aarch64
+>>
+>> When kernel runs on EL1 using aarch32, the topology will parse wrong.
+>> For example,
+>> The MPIDR has been written to the chip register in armv8.2 format.
+>> For example,
+>> core0: 0000000080000000
+>> core1: 0000000080000100
+>> core2: 0000000080000200
+>> ...
+>>
+>> It will parse to:
+>> |       | aff2 | packageid | coreid |
+>> |-------+------+-----------+--------|
+>> | Core0 |    0 |         0 |    0   |
+>> | Core1 |    0 |         1 |    0   |
+>> | Core2 |    0 |         2 |    0   |
+>> |  ...  |      |           |        |
+>>
+>> The wrong topology is that all of the coreid are 0 and unexpected
+>> packageid.
+>>
+>> The reason is the MPIDR format is different between armv7 and armv8.2.
+>> armv7 (A7) mpidr is:
+>> [11:8]      [7:2]       [1:0]
+>> cluster     reserved    cpu
+>> The cortex-a7 spec DDI0464F 4.3.5
+>> https://developer.arm.com/documentation/ddi0464/f/?lang=en
+>>
+>> armv8.2 (A55) mpidr is:
+>> [23:16]     [15:8]      [7:0]
+>> cluster     cpu         thread
+>>
+> 
+> What I had understood from our conversation was that there *isn't* a format
+> difference (at least for the bottom 32 bits) - arm64/kernel/topopology.c
+> would parse it the same, except that MPIDR parsing has been deprecated for
+> arm64.
+> 
+> The problem is that those MPIDR values don't match the actual topology. If
+> they had the MT bit set, i.e.
+> 
+>   core0: 0000000081000000
+>   core1: 0000000081000100
+>   core2: 0000000081000200
+> 
+> then it would be parsed as:
+> 
+>   |       | package_id | core_id | thread_id |
+>   |-------+------------+---------+-----------|
+>   | Core0 |          0 |       0 |         0 |
+>   | Core1 |          0 |       1 |         0 |
+>   | Core2 |          0 |       2 |         0 |
+> 
+> which would make more sense (wrt the actual, physical topology).
 
---1SQmhf2mF2YjsYvc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+... and this would be in sync with
+https://developer.arm.com/documentation/100442/0200/register-descriptions/aarch32-system-registers/mpidr--multiprocessor-affinity-register
 
-On Thu, Apr 15, 2021 at 10:33:19AM +1200, Chris Packham wrote:
-> I've tested on T2081 and P2041 based systems with a number of i2c and smb=
-us
-> devices.
->=20
-> I've included some clean ups provided by Andy Shevchenko to make applying=
- the
-> series easier.
+MT, [24]
 
-Applied to for-next, thanks!
+   0b1 ...
 
+There is no 0b0 for MT.
 
---1SQmhf2mF2YjsYvc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB4nXgACgkQFA3kzBSg
-KbbpuA/9GUAKGAr4Saj1JcWgv1ni/f/nIeao+b/K2FFb6IcNRkIwICYHKQHdNDg0
-SaZVmR5fFDMuje0qfqWjFYAvbyQL1hKFC5KSjF4emi/jdQwY+L2CXegTGju371Rf
-KkczdWXRIv9+x6JO5rn+KXyvvbg8L0eTg1UwggoBVdLCVi5FcppAYNgUNptWH/5L
-C6rxzi3sq7pjHv+8r6EiWXGHG/s4apALrrn+hgeda4ki8fXdttnWz8ze9D1XCsg0
-Iyv8BYaDU5CPQC9v0D663Kd1GUneMdzBXVFTJQG8a9YPkt2qe3y3qCyFvguatxxG
-NBY5MN+NDE5gGkQRnAs44NAprP6dmTdRqFG/j0VuvKiQwJwRmsZAJeJ1C7ZaqIeP
-ZEQpQcTFh+unJQHKjjxJQ1WJNgdHOiEHcSdkY7kWpha3k+Ez7L3F8LHi0AsbhbtY
-KiIrhu8s3fL75P6LHokmLR97+291Mc6nmYuke9Xkp7x8gbaJJYHbDhxqRxODVxcq
-btyzN8OqMAKF0PX3nOdY2oKeWVjXFNwZfcxDIZJE/iikkyQ2ieBgTMhAiOPMh6uR
-CaXgMzVXYRLYopvmqUCEyJbS73DUoT1YR2O+sRu/Vv9CpHB0u0umJHX7qnjPPk+d
-XBwLMT5uG9cLqMK13qf1HCwe9Y/aY1rnHVre+8PAmPEB8yxl8DY=
-=YiHi
------END PGP SIGNATURE-----
-
---1SQmhf2mF2YjsYvc--
