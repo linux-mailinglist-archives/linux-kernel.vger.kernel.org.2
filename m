@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E0C361696
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12360361699
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235151AbhDOXxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:53:02 -0400
-Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:58744 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234735AbhDOXw7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:52:59 -0400
-Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 389091808827C;
-        Thu, 15 Apr 2021 23:52:30 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 486BD2448BB;
-        Thu, 15 Apr 2021 23:52:29 +0000 (UTC)
-Message-ID: <82fc2a9a0df1fa6c901645693cca2eab34d5f032.camel@perches.com>
-Subject: Re: [PATCH 2/2] Input: evbug - Use 'pr_debug()' instead of
- hand-writing it
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Thu, 15 Apr 2021 16:52:27 -0700
-In-Reply-To: <5bc599f199df4e43c4a7f02f167af3e897f823dd.1618520227.git.christophe.jaillet@wanadoo.fr>
-References: <fda981546203427a0ac86ef47f231239ad18ecfe.1618520227.git.christophe.jaillet@wanadoo.fr>
-         <5bc599f199df4e43c4a7f02f167af3e897f823dd.1618520227.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S236102AbhDOXxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:53:30 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54612 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235758AbhDOXx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:53:28 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lXBn9-00GzB0-VQ; Fri, 16 Apr 2021 01:52:59 +0200
+Date:   Fri, 16 Apr 2021 01:52:59 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 08/10] net: korina: Get mdio input clock via
+ common clock framework
+Message-ID: <YHjR244c9MJU9lli@lunn.ch>
+References: <20210414230648.76129-1-tsbogend@alpha.franken.de>
+ <20210414230648.76129-9-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 3rr1ck6noq6yr1bba6hr6fyqncmzgtx7
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 486BD2448BB
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18L6sZKnhCru4z3Lnm5SnBf8KVcLAjIW4I=
-X-HE-Tag: 1618530749-3431
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414230648.76129-9-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-15 at 22:58 +0200, Christophe JAILLET wrote:
-> 'printk(KERN_DEBUG pr_fmt(...))' can be replaced by a much less verbose
-> 'pr_debug()'.
+> @@ -1079,6 +1078,14 @@ static int korina_probe(struct platform_device *pdev)
+>  			eth_hw_addr_random(dev);
+>  	}
+>  
+> +	clk = devm_clk_get(&pdev->dev, NULL);
 
-This is not really true because
-	printk(KERN_DEBUG ...);
-will _always_ be emitted if the console level allows
-	pr_debug(...);
-will _only_ be emitted if the console level allows _and_
-	DEBUG is defined or dynamic_debug is enabled
-		(and for dynamic_debug, only if specifically enabled)
-	DEBUG is defined and dynamic_debug is enabled
+You should use a name here. It makes future expansion of the binding
+easier. devm_clk_get_optional() is probably better. If there is a real
+error it will return an error. If the clock does not exist, you get a
+NULL. Real errors should cause the problem to fail, but with a NULL
+you can use the fallback value.
 
-> diff --git a/drivers/input/evbug.c b/drivers/input/evbug.c
-[]
-> @@ -21,8 +21,8 @@ MODULE_LICENSE("GPL");
->  
-> 
->  static void evbug_event(struct input_handle *handle, unsigned int type, unsigned int code, int value)
->  {
-> -	printk(KERN_DEBUG pr_fmt("Event. Dev: %s, Type: %d, Code: %d, Value: %d\n"),
-> -	       dev_name(&handle->dev->dev), type, code, value);
-> +	pr_debug("Event. Dev: %s, Type: %d, Code: %d, Value: %d\n",
-> +		 dev_name(&handle->dev->dev), type, code, value);
->  }
+You also need to document the device tree binding.
 
-
+    Andrew
