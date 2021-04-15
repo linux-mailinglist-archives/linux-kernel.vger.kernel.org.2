@@ -2,189 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E81360E9B
+	by mail.lfdr.de (Postfix) with ESMTP id 941B7360E9C
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbhDOPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:16:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39996 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbhDOPHP (ORCPT
+        id S233813AbhDOPRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:17:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43298 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234525AbhDOPIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:07:15 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FF6h3G105295;
-        Thu, 15 Apr 2021 10:06:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618499203;
-        bh=ZUQ7eGe9TC2rG+9jEiaBnwOBWIoWkbZdY2OQh2g7HDs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Ut1TFhKZWYZSN92LaS+mGFbd4oytZy9Rijl+b0tqiVLfI68dcZH/YgA6ZsQWrNf4H
-         Rea1DGrtD97vOH7aMMbB54pXuVRT6q0FR8adto4+OIFwGR8xUNz5vCYwoBD/0dEAaZ
-         AhDnRtaeh1jfy83LTrBPD/FD3BwTC/oUNoNqq0Ek=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FF6hXv018345
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 10:06:43 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 10:06:43 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 10:06:43 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FF6TGJ129989;
-        Thu, 15 Apr 2021 10:06:39 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH 2/2] can: m_can: Add support for transceiver as phy
-Date:   Thu, 15 Apr 2021 20:36:29 +0530
-Message-ID: <20210415150629.5417-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210415150629.5417-1-a-govindraju@ti.com>
-References: <20210415150629.5417-1-a-govindraju@ti.com>
+        Thu, 15 Apr 2021 11:08:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618499281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B+RcMi9EUTEAeg0+e1n9WdYE+vOGCi6FPADfZ4q309g=;
+        b=MKui4G1XymTNN/EWfqj81zMgXUBJ1VFELq85BAESUUMdyMMME0/G3yjQ5LZuz9ovPsbs+B
+        Eegn+rziqeefFI5hg7XURlcedjCJuqG2JlwFXzXGb3KnYErJx18rDo4FHDZngFqMNZfGTf
+        2lBZAEZKzunASlksvrvEBtNBKQMV5iA=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-336-OCe_C0YwOXStH9ZD_iixDA-1; Thu, 15 Apr 2021 11:07:59 -0400
+X-MC-Unique: OCe_C0YwOXStH9ZD_iixDA-1
+Received: by mail-qk1-f198.google.com with SMTP id k188so1729142qkb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:07:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=B+RcMi9EUTEAeg0+e1n9WdYE+vOGCi6FPADfZ4q309g=;
+        b=KD8+YAkZHc3fFg2mTnNgGycgScD9I9us5J57Ug5LEi5Fb2ll0THDLbpt4KbSwGuvlC
+         RWdF1MtFmprEHCsNRDm69pgklgiNMFASb6gv+q2DaMAjXp0TzJSUeFIkOhOcnosg2FlB
+         AP1XmsVi/JzWuk497aEuGltCs6r/7ArB1innu9aAEtgjuJoDbY4thLvuYFWCwQwoqbDi
+         /ZSXvqBC3YBJbktvYuqnnX6CXamm1vywZUWRjLnn0CT37i8m9oIWqFOIkCKMaEkAGDFd
+         wlausa8GsJfer2f7IWVfn/Xyjx4fYeg3JS4a3RwcG9vuq0WXnga85lKfHcU/Y/qmCmjU
+         hx+g==
+X-Gm-Message-State: AOAM530PH7iRMQX1ZMyro+ppuLD17p2TRS0ouYL7bv3j35QtGqA8MT0R
+        plO9H6kgQHp8bVgBVHBXHhYoQ/d2i4CFnJNvZatelYley8FHyc7jXIRT8q4VR/OFOts+Q53YY3c
+        rOvPUgwhTYcQO7xJ/jFyq//IM
+X-Received: by 2002:a05:6214:204:: with SMTP id i4mr3540340qvt.47.1618499279015;
+        Thu, 15 Apr 2021 08:07:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFhlSmtVXAW8WqrqvmMdkj8FJ8KrqXP3B4vqoT5iqmvk3ewYPi9VqZkE/YEGGVxA8TVTDVJQ==
+X-Received: by 2002:a05:6214:204:: with SMTP id i4mr3540316qvt.47.1618499278816;
+        Thu, 15 Apr 2021 08:07:58 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id q23sm2083865qtl.25.2021.04.15.08.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 08:07:58 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath
+To:     Ali Saidi <alisaidi@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, steve.capper@arm.com,
+        benh@kernel.crashing.org, stable@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <20210415142552.30916-1-alisaidi@amazon.com>
+Message-ID: <8f6a7af0-476e-ec34-b93a-d4331429c17c@redhat.com>
+Date:   Thu, 15 Apr 2021 11:07:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210415142552.30916-1-alisaidi@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+On 4/15/21 10:25 AM, Ali Saidi wrote:
+> While this code is executed with the wait_lock held, a reader can
+> acquire the lock without holding wait_lock.  The writer side loops
+> checking the value with the atomic_cond_read_acquire(), but only truly
+> acquires the lock when the compare-and-exchange is completed
+> successfully which isn’t ordered. The other atomic operations from this
+> point are release-ordered and thus reads after the lock acquisition can
+> be completed before the lock is truly acquired which violates the
+> guarantees the lock should be making.
+>
+> Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwloc")
+> Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+> Cc: stable@vger.kernel.org
+> ---
+>   kernel/locking/qrwlock.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> index 4786dd271b45..10770f6ac4d9 100644
+> --- a/kernel/locking/qrwlock.c
+> +++ b/kernel/locking/qrwlock.c
+> @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+>   
+>   	/* When no more readers or writers, set the locked flag */
+>   	do {
+> -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
+> +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
+>   					_QW_LOCKED) != _QW_WAITING);
+>   unlock:
+>   	arch_spin_unlock(&lock->wait_lock);
 
-Add support for implementing transceiver node as phy. The max_bitrate is
-obtained by getting a phy attribute.
+I think the original code isn't wrong. The read_acquire provides the 
+acquire barrier for cmpxchg. Because of conditional dependency, the 
+wait_lock unlock won't happen until the cmpxchg succeeds. Without doing 
+a read_acquire, there may be a higher likelihood that the cmpxchg may fail.
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/net/can/m_can/m_can.c          | 10 ++++++++++
- drivers/net/can/m_can/m_can.h          |  2 ++
- drivers/net/can/m_can/m_can_platform.c | 13 +++++++++++++
- 3 files changed, 25 insertions(+)
+Anyway, I will let Will or Peter chime in on this as I am not as 
+proficient as them on this topic.
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 34073cd077e4..7d31250446c2 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -21,6 +21,7 @@
- #include <linux/iopoll.h>
- #include <linux/can/dev.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/phy/phy.h>
- 
- #include "m_can.h"
- 
-@@ -1514,6 +1515,7 @@ static void m_can_stop(struct net_device *dev)
- static int m_can_close(struct net_device *dev)
- {
- 	struct m_can_classdev *cdev = netdev_priv(dev);
-+	int err;
- 
- 	netif_stop_queue(dev);
- 
-@@ -1536,6 +1538,10 @@ static int m_can_close(struct net_device *dev)
- 	close_candev(dev);
- 	can_led_event(dev, CAN_LED_EVENT_STOP);
- 
-+	err = phy_power_off(cdev->transceiver);
-+	if (err)
-+		return err;
-+
- 	return 0;
- }
- 
-@@ -1720,6 +1726,10 @@ static int m_can_open(struct net_device *dev)
- 	struct m_can_classdev *cdev = netdev_priv(dev);
- 	int err;
- 
-+	err = phy_power_on(cdev->transceiver);
-+	if (err)
-+		return err;
-+
- 	err = m_can_clk_start(cdev);
- 	if (err)
- 		return err;
-diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
-index ace071c3e58c..38cad068abad 100644
---- a/drivers/net/can/m_can/m_can.h
-+++ b/drivers/net/can/m_can/m_can.h
-@@ -28,6 +28,7 @@
- #include <linux/iopoll.h>
- #include <linux/can/dev.h>
- #include <linux/pinctrl/consumer.h>
-+#include <linux/phy/phy.h>
- 
- /* m_can lec values */
- enum m_can_lec_type {
-@@ -82,6 +83,7 @@ struct m_can_classdev {
- 	struct workqueue_struct *tx_wq;
- 	struct work_struct tx_work;
- 	struct sk_buff *tx_skb;
-+	struct phy *transceiver;
- 
- 	struct can_bittiming_const *bit_timing;
- 	struct can_bittiming_const *data_timing;
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 599de0e08cd7..006e13ee7cd7 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -6,6 +6,7 @@
- // Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
- 
- #include <linux/platform_device.h>
-+#include <linux/phy/phy.h>
- 
- #include "m_can.h"
- 
-@@ -67,6 +68,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *addr;
- 	void __iomem *mram_addr;
-+	struct phy *transceiver;
- 	int irq, ret = 0;
- 
- 	mcan_class = m_can_class_allocate_dev(&pdev->dev,
-@@ -101,6 +103,16 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 		goto probe_fail;
- 	}
- 
-+	transceiver = devm_of_phy_optional_get_by_index(&pdev->dev, pdev->dev.of_node, 0);
-+	if (IS_ERR(transceiver)) {
-+		ret = PTR_ERR(transceiver);
-+		dev_err(&pdev->dev, "error while getting phy, err=%d\n", ret);
-+		return ret;
-+	}
-+
-+	if (transceiver)
-+		priv->cdev.can.bitrate_max = transceiver->attrs.max_link_rate;
-+
- 	priv->base = addr;
- 	priv->mram_base = mram_addr;
- 
-@@ -108,6 +120,7 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	mcan_class->pm_clock_support = 1;
- 	mcan_class->can.clock.freq = clk_get_rate(mcan_class->cclk);
- 	mcan_class->dev = &pdev->dev;
-+	mcan_class->transceiver = transceiver;
- 
- 	mcan_class->ops = &m_can_plat_ops;
- 
--- 
-2.17.1
+Cheers,
+Longman
+
 
