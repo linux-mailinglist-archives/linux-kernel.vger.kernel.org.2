@@ -2,90 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B46636069A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC9936069F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbhDOKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbhDOKII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:08:08 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE51BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:07:44 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id c15so13773810wro.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ggLldia6CekOvY/WIKEl4n4MVtuqBFto21z/p6tICc0=;
-        b=Xy6W3Sc8SKGwsEPHocd8YFc66ryEpSeUQYGBv0gCYzk2Y1iuW2rDBZBVXObh5j/gWJ
-         jcGEs+I08d/jxqFIcBd0pzjYwPtya83cuafr5jOLQddDPPk2cloiuW7jK8xo1bIds/aC
-         s9c15+a8/RLwgYD+D3I9VQeYZCVlat94TtFnWEJdpwYJvk9BXEictvx1BmjT0qjwZJW/
-         Y0Isau3VXG3ehvOmK6XKfYlB5FZ6RYW8f3B8DgFvmrMdnwByBZjdT8NDQhmw+C5sd6HE
-         LXmFW8vzXQecaSp91Xrng9sZEcyQOiTPUq1bD1ySEzPu3zcvbcz01HQcHgduNOKm7Asy
-         77fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ggLldia6CekOvY/WIKEl4n4MVtuqBFto21z/p6tICc0=;
-        b=Lo54bdOycDgkNbbfmfiD7zl0tSxR6ynXfooFGKFXl8FaPpgdsxO5OaIz6hk+ZlPCrG
-         9MNXVIX76Se1g8c51rKKLDCvd+dqj3JxttGq/VEurzEKYKgE1q/tUgazUyW/iPkDDhFa
-         +FB9xL55G6qCjqBvtMGdsUfIOMizfVomo9OwNPTEVtrtPPvE4wJwgHp19crEs6jkNBCm
-         VNnEucPn7SQjiGSD15AZ+vtDnRIghiqIsruqnq4Wl58aZ41TnePlRyZm408pG3ichunK
-         9D+gvsCXVuqQVSgP6YNw0AeCuWwF+cxITBw8RSiZQZVAM8ngnRQitUgkwa/F0OtJe3VE
-         D/CQ==
-X-Gm-Message-State: AOAM531ukCIiUM4nxN7qQGBZBYRw2ZtDWBThB0Yhks49/tlGPhlEEJFb
-        eZGrvReN4lOmSsd71LKsfMcAQ01WU5Y=
-X-Google-Smtp-Source: ABdhPJyniNcfSUS9tZjV3hpRH2Tnaw5KFZior4AifmoJmunogoiTE7Vjo+cpsZPGbMlOh6grLFNYWw==
-X-Received: by 2002:adf:e60e:: with SMTP id p14mr2495139wrm.427.1618481263456;
-        Thu, 15 Apr 2021 03:07:43 -0700 (PDT)
-Received: from agape ([5.171.72.223])
-        by smtp.gmail.com with ESMTPSA id f6sm2151415wrt.19.2021.04.15.03.07.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 03:07:43 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] staging: rtl8723bs: remove empty #ifdef block
-Date:   Thu, 15 Apr 2021 12:07:24 +0200
-Message-Id: <c2600c9a71d4e222963cbc600b2e703fe2b1289f.1618480688.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1618480688.git.fabioaiuto83@gmail.com>
-References: <cover.1618480688.git.fabioaiuto83@gmail.com>
+        id S232358AbhDOKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:09:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:43325 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231482AbhDOKJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:09:01 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FLZmh27Cqz9v4hK;
+        Thu, 15 Apr 2021 12:08:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id LP0fL-5C7Yzl; Thu, 15 Apr 2021 12:08:36 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FLZmh0xfrz9v4hH;
+        Thu, 15 Apr 2021 12:08:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C7FDD8B7F2;
+        Thu, 15 Apr 2021 12:08:36 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Vxga-qz6IDKm; Thu, 15 Apr 2021 12:08:36 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D580B8B7F6;
+        Thu, 15 Apr 2021 12:08:33 +0200 (CEST)
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ powerpc tree
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+References: <20210415194417.498e71b7@canb.auug.org.au>
+ <20210415195814.0dc4ced9@canb.auug.org.au>
+ <9bc1b8fd-8051-54ed-b9d8-198fe1f4c348@csgroup.eu>
+Message-ID: <1d3b44a8-f19c-b52b-ce44-20c5e5b706ad@csgroup.eu>
+Date:   Thu, 15 Apr 2021 12:08:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
+In-Reply-To: <9bc1b8fd-8051-54ed-b9d8-198fe1f4c348@csgroup.eu>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove #ifdef block left empty after DBG_871X_LEVEL
-deletion.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 4 ----
- 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-index c767651e2134..d2bf444117b8 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -487,10 +487,6 @@ static int __init rtw_drv_entry(void)
- {
- 	int ret;
- 
--#ifdef BTCOEXVERSION
--#endif /*  BTCOEXVERSION */
--
--
- 	ret = sdio_register_driver(&rtl8723bs_sdio_driver);
- 	if (ret != 0)
- 		rtw_ndev_notifier_unregister();
--- 
-2.20.1
+Le 15/04/2021 à 12:07, Christophe Leroy a écrit :
+> 
+> 
+> Le 15/04/2021 à 11:58, Stephen Rothwell a écrit :
+>> Hi all,
+>>
+>> On Thu, 15 Apr 2021 19:44:17 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>>
+>>> Today's linux-next merge of the akpm-current tree got a conflict in:
+>>>
+>>>    arch/powerpc/kernel/module.c
+>>>
+>>> between commit:
+>>>
+>>>    2ec13df16704 ("powerpc/modules: Load modules closer to kernel text")
+>>>
+>>> from the powerpc tree and commit:
+>>>
+>>>    4930ba789f8d ("powerpc/64s/radix: enable huge vmalloc mappings")
+>>>
+>>> from the akpm-current tree.
+>>>
+>>> I fixed it up (I think - see below) and can carry the fix as
+>>> necessary. This is now fixed as far as linux-next is concerned, but any
+>>> non trivial conflicts should be mentioned to your upstream maintainer
+>>> when your tree is submitted for merging.  You may also want to consider
+>>> cooperating with the maintainer of the conflicting tree to minimise any
+>>> particularly complex conflicts.
+>>>
+>>> -- 
+>>> Cheers,
+>>> Stephen Rothwell
+>>>
+>>> diff --cc arch/powerpc/kernel/module.c
+>>> index fab84024650c,cdb2d88c54e7..000000000000
+>>> --- a/arch/powerpc/kernel/module.c
+>>> +++ b/arch/powerpc/kernel/module.c
+>>> @@@ -88,29 -88,26 +89,42 @@@ int module_finalize(const Elf_Ehdr *hdr
+>>>        return 0;
+>>>    }
+>>> - #ifdef MODULES_VADDR
+>>>   -void *module_alloc(unsigned long size)
+>>>   +static __always_inline void *
+>>>   +__module_alloc(unsigned long size, unsigned long start, unsigned long end)
+>>>    {
+>>>   -    unsigned long start = VMALLOC_START;
+>>>   -    unsigned long end = VMALLOC_END;
+>>>   -
+>>>   -#ifdef MODULES_VADDR
+>>>   -    BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+>>>   -    start = MODULES_VADDR;
+>>>   -    end = MODULES_END;
+>>>   -#endif
+>>>   -
+>>> +     /*
+>>> +      * Don't do huge page allocations for modules yet until more testing
+>>> +      * is done. STRICT_MODULE_RWX may require extra work to support this
+>>> +      * too.
+>>> +      */
+>>> +
+>>>        return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
+>>> -                     PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+>>> +                     PAGE_KERNEL_EXEC,
+>>> +                     VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
+>>> +                     NUMA_NO_NODE,
+>>>                        __builtin_return_address(0));
+>>>    }
+>>>   +
+>>> ++
+>>>   +void *module_alloc(unsigned long size)
+>>>   +{
+>>> ++    unsigned long start = VMALLOC_START;
+>>> ++    unsigned long end = VMALLOC_END;
+>>>   +    unsigned long limit = (unsigned long)_etext - SZ_32M;
+>>>   +    void *ptr = NULL;
+>>>   +
+>>> ++#ifdef MODULES_VADDR
+>>>   +    BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+>>> ++    start = MODULES_VADDR;
+>>> ++    end = MODULES_END;
+> 
+> The #endif should be here.
+> 
+> 
+>>>   +
+>>>   +    /* First try within 32M limit from _etext to avoid branch trampolines */
+>>>   +    if (MODULES_VADDR < PAGE_OFFSET && MODULES_END > limit)
 
+Should also use start and end here instead of MODULES_VADDR  and MODULES_END
+
+>>> -         ptr = __module_alloc(size, limit, MODULES_END);
+>>> ++        ptr = __module_alloc(size, limit, end);
+>>>   +
+>>>   +    if (!ptr)
+>>> -         ptr = __module_alloc(size, MODULES_VADDR, MODULES_END);
+>>> ++#endif
+>>> ++        ptr = __module_alloc(size, start, end);
+>>>   +
+>>>   +    return ptr;
+>>>   +}
+>>> - #endif
+>>
+>> Unfortunately, it also needs this:
+> 
+> Before the #endif is too far.
+> 
+>>
+>> From: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Date: Thu, 15 Apr 2021 19:53:58 +1000
+>> Subject: [PATCH] merge fix up for powerpc merge fix
+>>
+>> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> ---
+>>   arch/powerpc/kernel/module.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+>> index d8ab1ad2eb05..c060f99afd4d 100644
+>> --- a/arch/powerpc/kernel/module.c
+>> +++ b/arch/powerpc/kernel/module.c
+>> @@ -110,7 +110,9 @@ void *module_alloc(unsigned long size)
+>>   {
+>>       unsigned long start = VMALLOC_START;
+>>       unsigned long end = VMALLOC_END;
+>> +#ifdef MODULES_VADDR
+>>       unsigned long limit = (unsigned long)_etext - SZ_32M;
+>> +#endif
+>>       void *ptr = NULL;
+>>   #ifdef MODULES_VADDR
+>>
