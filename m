@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9411B3607A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AC73607A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhDOKvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:51:53 -0400
+        id S230118AbhDOKv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:51:57 -0400
 Received: from esa.microchip.iphmx.com ([68.232.153.233]:49604 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhDOKvr (ORCPT
+        with ESMTP id S230526AbhDOKvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:51:47 -0400
+        Thu, 15 Apr 2021 06:51:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618483885; x=1650019885;
+  t=1618483890; x=1650019890;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5n/eIECTY9hFagkyjJsXISpsdO0v8XT2RhEXcNl0HII=;
-  b=vsPxVl1Ny4OMDXZ3FV0p8MD5OJTrjNwSlwW+yCsW734Zl1SnX9zSt8bw
-   cmPgKLbONoxMGB47TO/MQ21aYLiJQTVudmGPhNwAL0WUuG0ebOTurZVno
-   nWzaqpGwoNyghCjSooLcMmFW+EUnJ3N/qYForFAysOlnddrkqdqAzjrY1
-   rzDA6huJcn7eV391JT2Y9Vod9qcgYngD4bgjB8aq5YXnuPoPU0ZM43rCj
-   YWCV7jfXiNfHC2F5/g01fomweolUhJp7kTPeFNvM2oiJgpxYnCFeNfeXj
-   J5SwAtBHzAPj6UkSSTUT6PZ/xhYpHIRSUkFGEwSYdlzPlX8oQvM/HYnOz
-   Q==;
-IronPort-SDR: 6H4oUjQXAw/psqTbbWogwmu9lxNnzCeCtkx434BiNFp8+rvzGW8kzAgjY8yu3Ht/Vby96gEjrG
- roWsXcKuXVrbNsvXGB9o9TpwIw9GhjfoJki6wR72RGMwLg/uEWf01fFIKDd2tHMQfPtXguCn5g
- HwS2ihojrxMu8jnjpyy3yNPx/gVW5gNmI3BArBvkj8z4OmxS+IgCfMbS3OuIi5jeu4apLb8O8L
- m1ru1pRxXigCuG2poT+52XiBtaFJ0rE9KrDxLjJ0OgkxaGDkQMd4tfNtUAZSv37i5rrkj33T3h
- h+g=
+  bh=NVdLR/4vBiZXHdxKzbg48TM13jojIDCbZRf2vOwtXD0=;
+  b=mm+8iuYMZfVslhQH14ih8TR8jvInuPnK5YUiNOd7aVd8IKCkCuJbyUkA
+   qswmZ8fYHVAXjKm+hk5Xt1/IsIn3XAX6dpOogj88dIPK/NZiRkML5Hw9c
+   TOKA64MkcBZtBt/rGiXdQHjYw7uQ4dSK+vENOwUTwjP6FCGuqwPdnQaf5
+   HV4JUwknhbGKNeP/OwK4g7MKW5Iqdnmam0eCKOhDL3l7IB8QCkJ2FFX4P
+   PlLA8bVD1thTgmIJV/yqhiLe1WTLrdTFW8jDCx9K7IbqFrfrdlQ3SnMug
+   3etwpmTZFsUjZ272QMIPpbFyPw7xrx3mMUJ5UuLbgoQqb0FR5NCIFIhEy
+   w==;
+IronPort-SDR: soura4eL2MGDRs/nN7aO2upcnUabgjr4BGBuWD8tWVJ2fENdC+jlxSo7dLIpKKle8N9SmsPQl3
+ rq93Cl2mvOjD5Bpe5GEz3ZXxLDMUoqFkPH6HBn5NCqWRbemtOeIm39750Q6uYeBY3sQeyqTz5d
+ P07BW459zZisHxPTixVndSWpuL5WS6nEjGn8w+DsU1KEWe4JVoSVs0AGRubta2v41pdYe9y9sR
+ F5IwKpdJ0SF+Wp5tX2y95J2jglruGkpjnvlEuwrLQRsntqr85A2NV13uov/0UpNabxpNWavWDJ
+ rCc=
 X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
-   d="scan'208";a="116551595"
+   d="scan'208";a="116551622"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:51:25 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:51:30 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Apr 2021 03:51:22 -0700
+ 15.1.2176.2; Thu, 15 Apr 2021 03:51:26 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:51:17 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:51:24 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 09/24] ARM: at91: pm: add support for waiting MCK1..4
-Date:   Thu, 15 Apr 2021 13:49:55 +0300
-Message-ID: <20210415105010.569620-10-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 10/24] ARM: at91: sfrbu: add sfrbu registers definitions for sama7g5
+Date:   Thu, 15 Apr 2021 13:49:56 +0300
+Message-ID: <20210415105010.569620-11-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210415105010.569620-1-claudiu.beznea@microchip.com>
 References: <20210415105010.569620-1-claudiu.beznea@microchip.com>
@@ -61,151 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAMA7G5 has 5 master clocks 0..4. MCK0 is controlled differently than
-MCK 1..4. MCK 1..4 should also be saved/restored in the last phase of
-suspend/resume. Thus, adapt wait_mckrdy to support also MCK1..4.
+Add SFRBU registers definitions for SAMA7G5.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/mach-at91/pm_suspend.S | 48 ++++++++++++++++++++++++---------
- 1 file changed, 35 insertions(+), 13 deletions(-)
+ include/soc/at91/sama7-sfrbu.h | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+ create mode 100644 include/soc/at91/sama7-sfrbu.h
 
-diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-index 1f63bbfad728..7669b32d5257 100644
---- a/arch/arm/mach-at91/pm_suspend.S
-+++ b/arch/arm/mach-at91/pm_suspend.S
-@@ -22,11 +22,23 @@ tmp3	.req	r6
- 
- /*
-  * Wait until master clock is ready (after switching master clock source)
+diff --git a/include/soc/at91/sama7-sfrbu.h b/include/soc/at91/sama7-sfrbu.h
+new file mode 100644
+index 000000000000..76b740810d34
+--- /dev/null
++++ b/include/soc/at91/sama7-sfrbu.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Microchip SAMA7 SFRBU registers offsets and bit definitions.
 + *
-+ * @r_mckid:	register holding master clock identifier
++ * Copyright (C) [2020] Microchip Technology Inc. and its subsidiaries
 + *
-+ * Side effects: overwrites r7, r8
-  */
--	.macro wait_mckrdy
--1:	ldr	tmp1, [pmc, #AT91_PMC_SR]
--	tst	tmp1, #AT91_PMC_MCKRDY
--	beq	1b
-+	.macro wait_mckrdy r_mckid
++ * Author: Claudu Beznea <claudiu.beznea@microchip.com>
++ */
++
++#ifndef __SAMA7_SFRBU_H__
++#define __SAMA7_SFRBU_H__
++
 +#ifdef CONFIG_SOC_SAMA7
-+	cmp	\r_mckid, #0
-+	beq	1f
-+	mov	r7, #AT91_PMC_MCKXRDY
-+	b	2f
-+#endif
-+1:	mov	r7, #AT91_PMC_MCKRDY
-+2:	ldr	r8, [pmc, #AT91_PMC_SR]
-+	and	r8, r7
-+	cmp	r8, r7
-+	bne	2b
- 	.endm
- 
- /*
-@@ -231,7 +243,9 @@ sr_dis_exit:
- 	bic	tmp1, tmp1, #AT91_PMC_PRES
- 	orr	tmp1, tmp1, #AT91_PMC_PRES_64
- 	str	tmp1, [pmc, tmp3]
--	wait_mckrdy
 +
-+	mov	tmp3, #0
-+	wait_mckrdy tmp3
- 	b	1f
- 
- 0:
-@@ -267,10 +281,13 @@ sr_dis_exit:
- 	bne	5f
- 
- 	/* Set lowest prescaler for fast resume. */
-+	ldr	tmp3, .mckr_offset
- 	ldr	tmp1, [pmc, tmp3]
- 	bic	tmp1, tmp1, #AT91_PMC_PRES
- 	str	tmp1, [pmc, tmp3]
--	wait_mckrdy
++#define AT91_SFRBU_PSWBU			(0x00)		/* SFRBU Power Switch BU Control Register */
++#define		AT91_SFRBU_PSWBU_PSWKEY		(0x4BD20C << 8)	/* Specific value mandatory to allow writing of other register bits */
++#define		AT91_SFRBU_PSWBU_STATE		(1 << 2)	/* Power switch BU state */
++#define		AT91_SFRBU_PSWBU_SOFTSWITCH	(1 << 1)	/* Power switch BU source selection */
++#define		AT91_SFRBU_PSWBU_CTRL		(1 << 0)	/* Power switch BU control */
 +
-+	mov	tmp3, #0
-+	wait_mckrdy tmp3
- 	b	6f
- 
- 5:	/* Restore RC oscillator state */
-@@ -307,6 +324,7 @@ sr_dis_exit:
- .macro at91_pm_ulp1_mode
- 	ldr	pmc, .pmc_base
- 	ldr	tmp2, .mckr_offset
-+	mov	tmp3, #0
- 
- 	/* Save RC oscillator state and check if it is enabled. */
- 	ldr	tmp1, [pmc, #AT91_PMC_SR]
-@@ -348,7 +366,7 @@ sr_dis_exit:
- 	orr	tmp1, tmp1, #AT91_PMC_CSS_MAIN
- 	str	tmp1, [pmc, tmp2]
- 
--	wait_mckrdy
-+	wait_mckrdy tmp3
- 
- 	/* Enter the ULP1 mode by set WAITMODE bit in CKGR_MOR */
- 	ldr	tmp1, [pmc, #AT91_CKGR_MOR]
-@@ -361,7 +379,7 @@ sr_dis_exit:
- 	nop
- 	nop
- 
--	wait_mckrdy
-+	wait_mckrdy tmp3
- 
- 	/* Enable the crystal oscillator */
- 	ldr	tmp1, [pmc, #AT91_CKGR_MOR]
-@@ -377,7 +395,7 @@ sr_dis_exit:
- 	bic	tmp1, tmp1, #AT91_PMC_CSS
- 	str	tmp1, [pmc, tmp2]
- 
--	wait_mckrdy
-+	wait_mckrdy tmp3
- 
- 	/* Switch main clock source to crystal oscillator */
- 	ldr	tmp1, [pmc, #AT91_CKGR_MOR]
-@@ -394,7 +412,7 @@ sr_dis_exit:
- 	orr	tmp1, tmp1, #AT91_PMC_CSS_MAIN
- 	str	tmp1, [pmc, tmp2]
- 
--	wait_mckrdy
-+	wait_mckrdy tmp3
- 
- 	/* Restore RC oscillator state */
- 	ldr	tmp1, .saved_osc_status
-@@ -573,10 +591,12 @@ sr_dis_exit:
- save_mck:
- 	str	tmp1, [pmc, tmp2]
- 
--	wait_mckrdy
-+	mov	tmp3, #0
-+	wait_mckrdy tmp3
- 
- 	at91_plla_disable
- 
-+	ldr	tmp3, .pm_mode
- 	cmp	tmp3, #AT91_PM_ULP1
- 	beq	ulp1_mode
- 
-@@ -599,7 +619,8 @@ ulp_exit:
- 	ldr	tmp2, .saved_mckr
- 	str	tmp2, [pmc, tmp1]
- 
--	wait_mckrdy
-+	mov	tmp3, #0
-+	wait_mckrdy tmp3
- 
- .endm
- 
-@@ -611,7 +632,8 @@ ulp_exit:
- 	bic	tmp1, tmp1, #AT91_PMC_CSS
- 	str	tmp1, [pmc, tmp2]
- 
--	wait_mckrdy
-+	mov	tmp3, #0
-+	wait_mckrdy tmp3
- 
- 	/*BUMEN*/
- 	ldr	r0, .sfrbu
++#define AT91_SFRBU_25LDOCR			(0x0C)		/* SFRBU 2.5V LDO Control Register */
++#define		AT91_SFRBU_25LDOCR_LDOANAKEY	(0x3B6E18 << 8)	/* Specific value mandatory to allow writing of other register bits. */
++#define		AT91_SFRBU_25LDOCR_STATE	(1 << 3)	/* LDOANA Switch On/Off Control */
++#define		AT91_SFRBU_25LDOCR_LP		(1 << 2)	/* LDOANA Low-Power Mode Control */
++#define		AT91_SFRBU_PD_VALUE_MSK		(0x3)
++#define		AT91_SFRBU_25LDOCR_PD_VALUE(v)	((v) & AT91_SFRBU_PD_VALUE_MSK)	/* LDOANA Pull-down value */
++
++#define AT91_FRBU_DDRPWR			(0x10)		/* SFRBU DDR Power Control Register */
++#define		AT91_FRBU_DDRPWR_STATE		(1 << 0)	/* DDR Power Mode State */
++
++#endif /* CONFIG_SOC_SAMA7 */
++
++#endif /* __SAMA7_SFRBU_H__ */
++
 -- 
 2.25.1
 
