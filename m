@@ -2,172 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADFD360785
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04AA36078B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhDOKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhDOKsK (ORCPT
+        id S232233AbhDOKvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:51:07 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:65507 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhDOKvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:48:10 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E78C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:47:46 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id z16so16622050pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=UbWREfxBgBA46ljl4hzVe4POfFo0RJt+3RiVINqCR2w=;
-        b=LudU/lZJma6j8HbUABdfJH1ovBCkubCT/zyHmenELpeVz3cmGlBjQDpbyXPvqA1xQO
-         oN6JDTR+pEQc8z7UlzgknGcFnc+4aT59tvsbwuG0f+aXaALP8cfl2/Ypku7uTm76Q1hw
-         zThdKIIHpXfWXfSd9TVmMGorlNz34Glkl+POqJkwtDZvEj9s3lSux0wZx/mYLq3fMb3D
-         DsZgTqQEd5JD+bA+8Rrzz9LKXaIU8GYwDH7FcRN3V9sMvix5qk7dL2tBqv8aojE7Ax+t
-         Y2ej84FN196JeGk/sROEzWa86dO6PhlFCQPQRoMu1vQA/a/5DZ/ZFwA9IojqNkI+sdD2
-         uDXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=UbWREfxBgBA46ljl4hzVe4POfFo0RJt+3RiVINqCR2w=;
-        b=XKmtsCX4/Uuz/N8HtubFGn6tor/LXFiyjGQrlHFhhCHdHl3sspojuUxeIYLxmTI9gg
-         +JGq4W9xZT0RD1c0NUl5CgxZ5W//rzMYJby/T3o3kmCn1uj8F9K3SqrYP83oHiybUFg0
-         ZVZHWPzQ6tGYBYm4sO2KIRKhEnP1Scor5rjhpyH+uZAJCDn/hJ/zIOmnrKNOsdA4LDi/
-         LnmRvY2lXLVxBPVYlRvYNA9sZEpGd3w+B3Kjk9PQREM9QNVuG5AAwEBGH6zs7bOhFfMk
-         iTRTzSA7cfArjBaKkdJA6P5wMeLQy+FldHcBjfMiwI/5oj5PSp6qiWEGzJ4pNrX3+sG+
-         MTzw==
-X-Gm-Message-State: AOAM533LKpRh8uSMm4SnvKQQY2PPxhdi3nTve6zJitF5sriDgqY7cBie
-        AJNNs+5AJQTKn7UlwJ0YBopo6GuLIJoruXeQ
-X-Google-Smtp-Source: ABdhPJzFLKlpVtGZ0q11kbQWo2JAfA/tLTLQocjqxnmeMvk5/ShA9HzQ7iBZwbt0bc1xk8QUzvhilA==
-X-Received: by 2002:aa7:9183:0:b029:24b:87e2:6281 with SMTP id x3-20020aa791830000b029024b87e26281mr2599798pfa.14.1618483666469;
-        Thu, 15 Apr 2021 03:47:46 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id f65sm2130672pgc.19.2021.04.15.03.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 03:47:46 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v2 2/2] brcmfmac: support parse country code map from DT
-Date:   Thu, 15 Apr 2021 18:47:28 +0800
-Message-Id: <20210415104728.8471-3-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210415104728.8471-1-shawn.guo@linaro.org>
-References: <20210415104728.8471-1-shawn.guo@linaro.org>
+        Thu, 15 Apr 2021 06:51:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1618483843; x=1650019843;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=sHNXguuv2AsybwGIwlmWK3OpD0jz+l0cgkpDopfwnZU=;
+  b=jG7wV7NM/1W2aaVQCwgDlRimip8Tx0P8qbz71Cu2Co5yBEbMAe6K8Lys
+   lsJUXuHm0RSg0ITW8kbEoeNZfd+h1t0DaeD2nikZaZ5Ige/Iqcf8Wr0SR
+   op5pEp0PgydjxHtSYHaz1J/Q525DRG56k8YW2MBxIIQfTA0r7qiWzvwI7
+   960EiLBiMhftr+ajzomp1aoYZ9+HQ9V08SyTufZMM3urL41YmJ1TkCvga
+   KTDTymqjVpnIHjEth81rqQInbOiuIzALNSIZNqdEy3m0mGJmbs5ToUsXC
+   I7mT9y6Yy3DvRgUjrH1HVyKcRSJO8swD088sGuDBrXb60HMAB5FBtyzg2
+   g==;
+IronPort-SDR: YN7MNPJF+QGGxTNfo+SRqLAR5MpT6bTHDgm2Zv3YWCCevTzh1xcEbN4zY4NYzORsDO7lODKg6c
+ BQizWeRwrLTrIxsnn8TTjiK9LJTOqmBGlrON3q0cM+H/yLbDdZFoouwsExLKDmCiTKU4uFQsg0
+ 880gjxU7kDAdVtzhD1NDLth7bFkQCbvhT+cHEtrenYnjrrNpHDNpYKR8ArTHtDg1oLPYeaxcFz
+ J0Vxutw7QBbVr/epJSG7csD34wxzCClYZTAzfztHvVcHYJ9y8Ns6NQH4riYdoDXk9DM5+4Uzfu
+ pTs=
+X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
+   d="scan'208";a="117122020"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:50:42 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Apr 2021 03:50:42 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:50:38 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v3 00/24] ARM: at91: pm: add support for sama7g5
+Date:   Thu, 15 Apr 2021 13:49:46 +0300
+Message-ID: <20210415105010.569620-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With any regulatory domain requests coming from either user space or
-802.11 IE (Information Element), the country is coded in ISO3166
-standard.  It needs to be translated to firmware country code and
-revision with the mapping info in settings->country_codes table.
-Support populate country_codes table by parsing the mapping from DT.
+Hi,
 
-The BRCMF_BUSTYPE_SDIO bus_type check gets separated from general DT
-validation, so that country code can be handled as general part rather
-than SDIO bus specific one.
+This series adds PM support for SAMA7G5. The standby, ulp0, ulp1, and
+backup modes are supported.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
----
- .../wireless/broadcom/brcm80211/brcmfmac/of.c | 57 ++++++++++++++++++-
- 1 file changed, 55 insertions(+), 2 deletions(-)
+Thank you,
+Claudiu Beznea
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-index a7554265f95f..dd99ac3410e3 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-@@ -12,12 +12,59 @@
- #include "common.h"
- #include "of.h"
- 
-+static int brcmf_of_get_country_codes(struct device *dev,
-+				      struct brcmf_mp_device *settings)
-+{
-+	struct device_node *np = dev->of_node;
-+	struct brcmfmac_pd_cc_entry *cce;
-+	struct brcmfmac_pd_cc *cc;
-+	int count;
-+	int i;
-+
-+	count = of_property_count_strings(np, "brcm,ccode-map");
-+	if (count < 0) {
-+		/* The property is optional, so return success if it doesn't
-+		 * exist. Otherwise propagate the error code.
-+		 */
-+		return (count == -EINVAL) ? 0 : count;
-+	}
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc) + count * sizeof(*cce), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->table_size = count;
-+
-+	for (i = 0; i < count; i++) {
-+		const char *map;
-+
-+		cce = &cc->table[i];
-+
-+		if (of_property_read_string_index(np, "brcm,ccode-map",
-+						  i, &map))
-+			continue;
-+
-+		/* String format e.g. US-Q2-86 */
-+		if (sscanf(map, "%2c-%2c-%d", cce->iso3166, cce->cc,
-+			   &cce->rev) != 3)
-+			brcmf_err("failed to read country map %s\n", map);
-+		else
-+			brcmf_dbg(INFO, "%s-%s-%d", cce->iso3166, cce->cc,
-+				  cce->rev);
-+	}
-+
-+	settings->country_codes = cc;
-+
-+	return 0;
-+}
-+
- void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
- 		    struct brcmf_mp_device *settings)
- {
- 	struct brcmfmac_sdio_pd *sdio = &settings->bus.sdio;
- 	struct device_node *root, *np = dev->of_node;
- 	int irq;
-+	int err;
- 	u32 irqf;
- 	u32 val;
- 
-@@ -43,8 +90,14 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
- 		of_node_put(root);
- 	}
- 
--	if (!np || bus_type != BRCMF_BUSTYPE_SDIO ||
--	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-+	if (!np || !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-+		return;
-+
-+	err = brcmf_of_get_country_codes(dev, settings);
-+	if (err)
-+		brcmf_err("failed to get OF country code map (err=%d)\n", err);
-+
-+	if (bus_type != BRCMF_BUSTYPE_SDIO)
- 		return;
- 
- 	if (of_property_read_u32(np, "brcm,drive-strength", &val) == 0)
+Changes in v3:
+- drop: status = "okay" in patch 16/24
+
+Changes in v2:
+- keep only the generic sama7_dt in patch 22/24 and adapt patch 23/24
+- collected tags
+
+Claudiu Beznea (23):
+  ARM: at91: pm: move pm_bu to soc_pm data structure
+  ARM: at91: pm: move the setup of soc_pm.bu->suspended
+  ARM: at91: pm: document at91_soc_pm structure
+  ARM: at91: pm: check for different controllers in at91_pm_modes_init()
+  ARM: at91: pm: do not initialize pdev
+  ARM: at91: pm: use r7 instead of tmp1
+  ARM: at91: pm: avoid push and pop on stack while memory is in
+    self-refersh
+  ARM: at91: pm: s/CONFIG_SOC_SAM9X60/CONFIG_HAVE_AT91_SAM9X60_PLL/g
+  ARM: at91: pm: add support for waiting MCK1..4
+  ARM: at91: sfrbu: add sfrbu registers definitions for sama7g5
+  ARM: at91: ddr: add registers definitions for sama7g5's ddr
+  ARM: at91: pm: add self-refresh support for sama7g5
+  ARM: at91: pm: add support for MCK1..4 save/restore for ulp modes
+  ARM: at91: pm: add support for 2.5V LDO regulator control
+  ARM: at91: pm: wait for ddr power mode off
+  dt-bindings: atmel-sysreg: add bindings for sama7g5
+  ARM: at91: pm: add sama7g5 ddr controller
+  ARM: at91: pm: add sama7g5 ddr phy controller
+  ARM: at91: pm: save ddr phy calibration data to securam
+  ARM: at91: pm: add backup mode support for SAMA7G5
+  ARM: at91: pm: add sama7g5's pmc
+  ARM: at91: pm: add pm support for SAMA7G5
+  ARM: at91: pm: add sama7g5 shdwc
+
+Eugen Hristev (1):
+  ARM: at91: sama7: introduce sama7 SoC family
+
+ .../devicetree/bindings/arm/atmel-sysregs.txt |  14 +-
+ arch/arm/mach-at91/Makefile                   |   1 +
+ arch/arm/mach-at91/generic.h                  |   2 +
+ arch/arm/mach-at91/pm.c                       | 343 ++++++--
+ arch/arm/mach-at91/pm.h                       |   3 +
+ arch/arm/mach-at91/pm_data-offsets.c          |   2 +
+ arch/arm/mach-at91/pm_suspend.S               | 827 +++++++++++++-----
+ arch/arm/mach-at91/sama7.c                    |  33 +
+ include/soc/at91/sama7-ddr.h                  |  80 ++
+ include/soc/at91/sama7-sfrbu.h                |  34 +
+ 10 files changed, 1049 insertions(+), 290 deletions(-)
+ create mode 100644 arch/arm/mach-at91/sama7.c
+ create mode 100644 include/soc/at91/sama7-ddr.h
+ create mode 100644 include/soc/at91/sama7-sfrbu.h
+
 -- 
-2.17.1
+2.25.1
 
