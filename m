@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F401136024B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAE1360256
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhDOGUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60170 "EHLO mail.kernel.org"
+        id S230407AbhDOG0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:26:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:45226 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230297AbhDOGUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:20:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0A561626;
-        Thu, 15 Apr 2021 06:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618467600;
-        bh=HYP7yuHfpv8Q1ChKSjcORPDo6Pm/UOEFcuQ22NmOOXE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sh6i2eyNs/SirnN/bSO29kEvVmnMAU19vtBs09nkBn7KSH0L6JWY3QeK+rGdcPauC
-         z19trp6HI+RWnTQT+QRa2P7Y1iWDcXpjCGjcOVlH7VlI6M6iUSfgufZLeCRGWn5TRW
-         nf4WB4lqxpTvrvareqizd8YMfMzLMkxikPn3WoME=
-Date:   Thu, 15 Apr 2021 08:19:55 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Outreachy patch] [PATCH v3 1/2] staging: rtl8723bs: Remove
- useless led_blink_hdl()
-Message-ID: <YHfbC8EvrmwFs6If@kroah.com>
-References: <20210414192750.4974-1-fmdefrancesco@gmail.com>
- <20210414192750.4974-2-fmdefrancesco@gmail.com>
+        id S230366AbhDOG0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:26:11 -0400
+IronPort-SDR: 3M1ecVUBcJ83xrr9h0SXiRSX+QWmD8G0U+mig7csHqeN5PHoXV9mVJqX2fAFTVQnrJHaRnU1ZG
+ pHxjF10/WzzA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215297418"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="215297418"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:25:47 -0700
+IronPort-SDR: zY54dWZOt7m6OJWkJm9OClz48C/KRlYVNxj28nO9i1Ow2gAi24vZ3f0pwI7yaw5r46tPMikjTP
+ 74pQ++ZiUsUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="421587324"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2021 23:25:41 -0700
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, wsa@the-dreams.de
+Cc:     wsa@kernel.org, wsa@the-dreams.de, mst@redhat.com,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <e93836c3-d444-0b8c-c9df-559de0d5f27e@intel.com>
+ <20210414035229.7uqfdcd6dy2ryg3s@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <dc5d6f92-8f90-5731-5fce-4b2b6a72c81f@intel.com>
+Date:   Thu, 15 Apr 2021 14:25:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414192750.4974-2-fmdefrancesco@gmail.com>
+In-Reply-To: <20210414035229.7uqfdcd6dy2ryg3s@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 09:27:49PM +0200, Fabio M. De Francesco wrote:
-> Removed useless led_blink_hdl() prototype and definition. In wlancmds[]
-> the slot #60 is now set to NULL using the macro GEN_MLME_EXT_HANDLER. This
-> change has not unwanted side effects because the code in rtw_cmd.c checks
-> if the function pointer is valid before using it.
-> 
-> Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> Changes from v2: no changes.
-> Changes from v1: Corrected a bad solution to this issue that made use of
-> an unnecessary dummy function.
-> 
->  drivers/staging/rtl8723bs/core/rtw_cmd.c         | 2 +-
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c    | 9 ---------
->  drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 1 -
->  3 files changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> index 0297fbad7bce..f82dbd4f4c3d 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> @@ -150,7 +150,7 @@ static struct cmd_hdl wlancmds[] = {
->  
->  	GEN_MLME_EXT_HANDLER(0, h2c_msg_hdl) /*58*/
->  	GEN_MLME_EXT_HANDLER(sizeof(struct SetChannelPlan_param), set_chplan_hdl) /*59*/
-> -	GEN_MLME_EXT_HANDLER(sizeof(struct LedBlink_param), led_blink_hdl) /*60*/
-> +	GEN_MLME_EXT_HANDLER(0, NULL) /*60*/
 
-Do not do this "intermediate stage" type thing like this please.  This
-should be one simple patch.  Again, look in the kernel archives for an
-example of how to do this.
+On 2021/4/14 11:52, Viresh Kumar wrote:
+>
+>> Is i2c/for-next the right tree to merge it
+>> ?
+> It should be.
 
-thanks,
+Thanks Viresh.
 
-greg k-h
+
+Hi Wolfram,
+
+Do you have any comments for this patch ? Your opinion will be important 
+to improve this patch
+
+since you are the maintainer of I2C.
+
+Thanks,
+
+Jie
+
