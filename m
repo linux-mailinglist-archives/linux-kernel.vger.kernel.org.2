@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E96360B65
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B507360B6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhDOOFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:05:11 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:46207 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233428AbhDOOFI (ORCPT
+        id S233233AbhDOOGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhDOOGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:05:08 -0400
-Received: from [192.168.2.10] ([84.202.3.209])
-        by smtp.xs4all.nl with ESMTPA
-        id X2bnl3mgIsMyaX2bqlUPit; Thu, 15 Apr 2021 16:04:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618495483; bh=KzRZVFNb/tVjZ4zVD8dN9LPR+RtfZo+UyOgJpDh0Z4s=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=TDecdCDCnvBoJTXlUHSwQF8Md5dtl6+yBQGGnhr5XIoX9KijaCJnxt9TrGkZiekpj
-         eBiEXJMoTZPsS6be4+fI+xZPF6lBXLtU0bMDYJA5wTwvHvHCfnsy7PXwZxBOjGiPiu
-         juPf0rMUJ7fWyjS8d/g1OwEBR8sngKtx4a55bvEi5/M7zu8dZR7PNq0Tn5XnE95XBZ
-         uPGqNXzgdPK0YNG+LhEio2CQqDBca40WoJQ2IjCLD1Ps/RQ1QyEz69gM7QctVuxM1u
-         wHFT6vURMtdVZo9edRhdNV6FGRGtdUDIX+s4ZU729IzPnBQvw+GrNgm6Km2CXfEepi
-         818TJWQtd2zoA==
-Subject: Re: [PATCH] staging: media: tegra-video: Align line break to match
- with the open parenthesis in file vi.c
-To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-References: <20210414130939.GA15290@focaruja>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <72418471-9cd9-e271-e125-3196ff589891@xs4all.nl>
-Date:   Thu, 15 Apr 2021 16:04:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Thu, 15 Apr 2021 10:06:15 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DFFC061574;
+        Thu, 15 Apr 2021 07:05:50 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id n8so39500500lfh.1;
+        Thu, 15 Apr 2021 07:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gPiY+FwH2gRVnDBLwBz7oG10TpGLnHGvMx4jxp9Wvb0=;
+        b=Bm/MilRSFScyxsdyRbsaFklFyVzW5XBChpPpkddUspJnlJHDAHL2WaNfbwL4YYzeYf
+         HY97f36MnQnI4+C3p3BFnwKUPY+1weOoouiJrlc7atEw+PTHqEAas7g9rZ+EJGfkzfk6
+         6Lph8E6+JfDGxLl97XzI/+uTehOYt/rkI8rNVq8BFD+UUfsYBjNvL1urIVvpyHkLc5ui
+         gN273E+h4hVoopBQdRdbl/jOH/7IivhCEr1YYsvo7geoP64CBvyU8eJT9Pe4eBn+QCPC
+         pS7Wk1a//Fib5HW41jbelDx2/DguRhnZxYp215mcPHca397Su/a1Tyn4W3LNklKhrJVX
+         kh1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gPiY+FwH2gRVnDBLwBz7oG10TpGLnHGvMx4jxp9Wvb0=;
+        b=UINMxaPpPfkcrF8cUAXqUK3IDl/W6OAiR5TnIjt2oB8gbZuAndQgQlXiwwPpRqkR3o
+         car6BWzcnsCD0sWt6eHmsxkihvJHiUz8L4oAHC0QRbPHa6qOZsy8WMEZfS4lH7dkc/kc
+         kvinhq8DJEW93JyJXRvwc/NbK00Zt7IoOd7vExL07swfBcvGIO/g4ihRWWwq5mXGWw0C
+         zHtFsZr4cTSv1/ii2fgZHaWXCVVZs1tSOVQWzpJP91QbZbia8jZhqcHENRlEqpwTuc3u
+         BIFESLG2+8pXhfYbk5Opx07PA0NqJOTvT4z/T7YqV5qbQlEtahH489U94CvqmCLo/4OO
+         1rjg==
+X-Gm-Message-State: AOAM531WKkFrrw+rPuCNnnuMollSxV6Gbh91RSnrUPEhNjSQ9l+Gk8W0
+        ffDxRxs3BDjMgNo5wWKmejqYkdkpwppzTg==
+X-Google-Smtp-Source: ABdhPJxAeJyOtPFkQla5RZUI+PSioepyRmiAJnqiyvMHao6fbwWN5/M8/Izt4TBFrDdx2Ps0RJLv6Q==
+X-Received: by 2002:ac2:520a:: with SMTP id a10mr2814536lfl.362.1618495548924;
+        Thu, 15 Apr 2021 07:05:48 -0700 (PDT)
+Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
+        by smtp.gmail.com with ESMTPSA id l11sm679210lfh.16.2021.04.15.07.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:05:48 -0700 (PDT)
+Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
+        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 13FE5jxN011398;
+        Thu, 15 Apr 2021 17:05:46 +0300
+Received: (from paul@localhost)
+        by home.paul.comp (8.15.2/8.15.2/Submit) id 13FE5hEH011397;
+        Thu, 15 Apr 2021 17:05:43 +0300
+From:   Paul Fertser <fercerpav@gmail.com>
+To:     linux-aspeed@lists.ozlabs.org
+Cc:     Paul Fertser <fercerpav@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm: dts: aspeed: tiogapass: add hotplug controller
+Date:   Thu, 15 Apr 2021 17:05:00 +0300
+Message-Id: <20210415140521.11352-1-fercerpav@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210414130939.GA15290@focaruja>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfO+qT6QUSM93GsLUJm9b5upqI50NiYAuIw6wYQFkThBjMjREGCEovLzuZoCyvenBZwSjvIvFDDYW7nBu5t947gzu89ScMktX/5dgZWcF0re6VWYHh1II
- YG5YEXGqHOpcRvg0RrlLgO2xaZIYnCPkcazYplsdBCrE0F4NPBeBTWLt/K2zqDOkVWPrNyNVIPKQnvr3llObyKUm6umX5vS15SoYT65olJSAmcOzBfgH3Bqa
- dZILwEJIKuOLLQZ1/zGfjCLldcAAHsIBR6kCA5b78Y0Y0kIv0WH0EH8zTrep+MucdNV2Nop8HJpK597kIbAznJabRoy14KyqbjQTGew4GxzlLIyrsVnXMZXL
- Jbio8qF1plTUK6RWIkYR47DuvXLmV65cBOVyI6Phla5+Ac3Y4zF/a1FIFy2grdZ8erBCgQeez9AJLIUPGfSiNCHqsFzkcHXgmemkhZUvAykuvmaSz7ecQF9/
- gZKe2cRlzY84a0zY5miuS6N2WTtXimapfues0oURDOZ7C5eeZvBwW0vJQOXjZDIQD6EUdr8yy8BkhxcJ
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2021 15:09, Aline Santana Cordeiro wrote:
-> Align line break to match with the open parenthesis.
-> Issue detected by checkpatch.pl.
-> 
-> Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-> ---
->  drivers/staging/media/tegra-video/vi.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
-> index 7a09061c..9878d1e 100644
-> --- a/drivers/staging/media/tegra-video/vi.c
-> +++ b/drivers/staging/media/tegra-video/vi.c
-> @@ -1813,7 +1813,8 @@ static int tegra_vi_graph_parse_one(struct tegra_vi_channel *chan,
->  		}
->  
->  		tvge = v4l2_async_notifier_add_fwnode_subdev(&chan->notifier,
-> -				remote, struct tegra_vi_graph_entity);
-> +							     remote,
+The ADM1278 IC is accessible on I2C bus and on both Wiwynn and Quanta
+Tioga Pass implementations a pair of parallel 0.5 mOhm resistors is used
+for current measurement.
 
-Add this line to the previous line. That looks a bit better and is one line
-shorter.
+Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+---
+ arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Regards,
-
-	Hans
-
-> +							     struct tegra_vi_graph_entity);
->  		if (IS_ERR(tvge)) {
->  			ret = PTR_ERR(tvge);
->  			dev_err(vi->dev,
-> 
+diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+index 3cc2004fa2f2..500661956dea 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+@@ -591,6 +591,11 @@
+ &i2c7 {
+ 	status = "okay";
+ 	//HSC, AirMax Conn A
++	adm1278@0x45 {
++		compatible = "adm1275";
++		reg = <0x45>;
++		shunt-resistor-micro-ohms = <250>;
++	};
+ };
+ 
+ &i2c8 {
+-- 
+2.17.1
 
