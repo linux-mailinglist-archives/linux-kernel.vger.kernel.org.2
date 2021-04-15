@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690D936078F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33713360792
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbhDOKvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:51:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:63519 "EHLO
+        id S232483AbhDOKvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:51:25 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:49548 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbhDOKvT (ORCPT
+        with ESMTP id S232427AbhDOKvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:51:19 -0400
+        Thu, 15 Apr 2021 06:51:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618483856; x=1650019856;
+  t=1618483860; x=1650019860;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OekT/yOqa/XDBMBTQSpkviI/blzoLGSPwS38au5y5kw=;
-  b=royqlor1NTzldOPs6WiPHHtkQemqa7Y+DltYMpJ39/P4nKq9deXkHRq6
-   sqh5AMqasrNllZdSmTUsUyISALkYU7JVJ1NCYpu4kRe+uo4mSqDKmUsYP
-   r7UG11HLh7fE94DSiks5hr6QL0/JdjqueJ0rDUBu4rCx+a7IFPJ2Ha/6N
-   TldoIAAmR84dMVdVnyTgG8sRQl4SFS8UjcAV6DL+dqz162ETifTbxqNjy
-   MFW4eBSIqDZyY5bHGwvMuQxGaxu6TsJQq1V4WrqvEJiTpnIg7VNo7ltZY
-   rcddR/kr+iotD3QTfxNgoILze+Z/vChSoKSl4ADrwL+U4nKzHKkUjzVwG
-   w==;
-IronPort-SDR: E4Sd1DVwPfLTZiZPAwkuu96fhG1qhJGIV6Lr1Ip1oaZqst4/PnIdVJxAGHZg+Py3YbnrGP8BFQ
- dLLZ9Lp0tlFc0tzucQQ+PKhuMQvorlW7fHwFxdtDEvFG+N4FhJ6H67mw1gOH0JvTl+/sV6j0n7
- TIF8+L/q9hTHh8ZBzOP8ze9XFsQmj7hRt5QpRc0r5HekOKdLIRgLKmVWqzsyo8hi8KLUgEcSS3
- aLTVR2pFshovtUqR4Gs837KKXk9CnepL9pWjFr+L4jUkNRby3ggi5RSCnW+BSUXhfuv8IvY50I
- Bus=
+  bh=cHhcRE9999WTkqGlGEpWgWnBMHmK4LuT5bxkyB8koIw=;
+  b=tP2fSw2AvctZvyhvS99JCG74Xuq3b4NB7rjeIkc+cPjabyD0tyInaQhb
+   4Nb1wm1gdwOs/EsF0bhRhD4k7L8QTls3pG5UCha0uFlIFZbxO4qMcyTMw
+   0KonB4vkfrRanTRoktzI3rpSgDoq/sPWruv6earKP2oZFop036IDyV2yk
+   d9larao6EnhPtwPYRnhCWVvwI++EscrLuMyE4c9Rfkso1ihLCQhDZb1wb
+   c7zeJHgwx1f+F4S00i+wt84GgE4KIT80N/JuWX3WNtsqXppcac5SyW/r3
+   ih2P1fw0N5v0+//RepxqhtQn1fhrQ1miz8wpQDUgpe6MuHTG8/QguN0J1
+   A==;
+IronPort-SDR: 6asvA0ltWbMQvpfc/W5FeJ+xoIMDpTq4pBTNEDqAgcFAV6bf0eRi7Ur9KGAlGomDNDlB7xR5xy
+ AgIDrprLyckE5Ce5qyHqntYeiHxtSQPJkqW36Fzp8aMXpFaPg/NGSz4FdSd17+UIfraK4he8Rk
+ V7kM+7t6jbSNFSUH6z4tXgt7GBfvrR/QUVJHnqC/16eAZz3q90Tiakn7ASFu0W0fOuDIUEDwZa
+ v2jWythJgU/OaZGhdvl5V7NNikBFa7kO1Bu5EgwUkqBlsmEIcpy33EBfIC9T777B49cjWTMbdO
+ xNI=
 X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
-   d="scan'208";a="110922867"
+   d="scan'208";a="116551504"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:50:55 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:51:00 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Apr 2021 03:50:55 -0700
+ 15.1.2176.2; Thu, 15 Apr 2021 03:50:58 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:50:53 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:50:56 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 03/24] ARM: at91: pm: document at91_soc_pm structure
-Date:   Thu, 15 Apr 2021 13:49:49 +0300
-Message-ID: <20210415105010.569620-4-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 04/24] ARM: at91: pm: check for different controllers in at91_pm_modes_init()
+Date:   Thu, 15 Apr 2021 13:49:50 +0300
+Message-ID: <20210415105010.569620-5-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210415105010.569620-1-claudiu.beznea@microchip.com>
 References: <20210415105010.569620-1-claudiu.beznea@microchip.com>
@@ -61,32 +61,236 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document at91_soc_pm structure.
+at91_pm_modes_init() checks for proper nodes in device tree and maps
+them accordingly. Up to SAMA7G5 all AT91 SoCs had the same mapping
+b/w power saving modes and different controllers needed in the
+final/first steps of suspend/resume. SAMA7G5 is not aligned with the
+old SoCs thus the code is adapted for this. This patch prepares
+the field for next commits.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/mach-at91/pm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/mach-at91/pm.c | 143 +++++++++++++++++++++++++---------------
+ 1 file changed, 91 insertions(+), 52 deletions(-)
 
 diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 3742a1fb76db..3029351ec78e 100644
+index 3029351ec78e..5a6ce1d88971 100644
 --- a/arch/arm/mach-at91/pm.c
 +++ b/arch/arm/mach-at91/pm.c
-@@ -41,6 +41,14 @@ struct at91_pm_bu {
- 	phys_addr_t resume;
+@@ -57,6 +57,18 @@ struct at91_soc_pm {
+ 	struct at91_pm_data data;
  };
  
 +/**
-+ * struct at91_soc_pm - AT91 SoC power management data structure
-+ * @config_shdwc_ws: wakeup sources configuration function for SHDWC
-+ * @config_pmc_ws: wakeup srouces configuration function for PMC
-+ * @ws_ids: wakup sources of_device_id array
-+ * @data: PM data to be used on last phase of suspend
-+ * @bu: backup unit mapped data (for backup mode)
++ * enum at91_pm_iomaps:	IOs that needs to be mapped for different PM modes
++ * @AT91_PM_IOMAP_SHDWC:	SHDWC controller
++ * @AT91_PM_IOMAP_SFRBU:	SFRBU controller
 + */
- struct at91_soc_pm {
- 	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
- 	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
++enum at91_pm_iomaps {
++	AT91_PM_IOMAP_SHDWC,
++	AT91_PM_IOMAP_SFRBU,
++};
++
++#define AT91_PM_IOMAP(name)	BIT(AT91_PM_IOMAP_##name)
++
+ static struct at91_soc_pm soc_pm = {
+ 	.data = {
+ 		.standby_mode = AT91_PM_STANDBY,
+@@ -656,24 +668,15 @@ static int __init at91_pm_backup_init(void)
+ 	if (!at91_is_pm_mode_active(AT91_PM_BACKUP))
+ 		return 0;
+ 
+-	np = of_find_compatible_node(NULL, NULL, "atmel,sama5d2-sfrbu");
+-	if (!np) {
+-		pr_warn("%s: failed to find sfrbu!\n", __func__);
+-		return ret;
+-	}
+-
+-	soc_pm.data.sfrbu = of_iomap(np, 0);
+-	of_node_put(np);
+-
+ 	np = of_find_compatible_node(NULL, NULL, "atmel,sama5d2-securam");
+ 	if (!np)
+-		goto securam_fail_no_ref_dev;
++		return ret;
+ 
+ 	pdev = of_find_device_by_node(np);
+ 	of_node_put(np);
+ 	if (!pdev) {
+ 		pr_warn("%s: failed to find securam device!\n", __func__);
+-		goto securam_fail_no_ref_dev;
++		return ret;
+ 	}
+ 
+ 	sram_pool = gen_pool_get(&pdev->dev, NULL);
+@@ -697,64 +700,92 @@ static int __init at91_pm_backup_init(void)
+ 
+ securam_fail:
+ 	put_device(&pdev->dev);
+-securam_fail_no_ref_dev:
+-	iounmap(soc_pm.data.sfrbu);
+-	soc_pm.data.sfrbu = NULL;
+ 	return ret;
+ }
+ 
+-static void __init at91_pm_use_default_mode(int pm_mode)
+-{
+-	if (pm_mode != AT91_PM_ULP1 && pm_mode != AT91_PM_BACKUP)
+-		return;
+-
+-	if (soc_pm.data.standby_mode == pm_mode)
+-		soc_pm.data.standby_mode = AT91_PM_ULP0;
+-	if (soc_pm.data.suspend_mode == pm_mode)
+-		soc_pm.data.suspend_mode = AT91_PM_ULP0;
+-}
+-
+ static const struct of_device_id atmel_shdwc_ids[] = {
+ 	{ .compatible = "atmel,sama5d2-shdwc" },
+ 	{ .compatible = "microchip,sam9x60-shdwc" },
+ 	{ /* sentinel. */ }
+ };
+ 
+-static void __init at91_pm_modes_init(void)
++static void __init at91_pm_modes_init(const u32 *maps, int len)
+ {
+ 	struct device_node *np;
+-	int ret;
++	int ret, mode;
+ 
+-	if (!at91_is_pm_mode_active(AT91_PM_BACKUP) &&
+-	    !at91_is_pm_mode_active(AT91_PM_ULP1))
+-		return;
++	ret = at91_pm_backup_init();
++	if (ret) {
++		if (soc_pm.data.standby_mode == AT91_PM_BACKUP)
++			soc_pm.data.standby_mode = AT91_PM_ULP0;
++		if (soc_pm.data.suspend_mode == AT91_PM_BACKUP)
++			soc_pm.data.suspend_mode = AT91_PM_ULP0;
++	}
+ 
+-	np = of_find_matching_node(NULL, atmel_shdwc_ids);
+-	if (!np) {
+-		pr_warn("%s: failed to find shdwc!\n", __func__);
+-		goto ulp1_default;
++	if (maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SHDWC) ||
++	    maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SHDWC)) {
++		np = of_find_matching_node(NULL, atmel_shdwc_ids);
++		if (!np) {
++			pr_warn("%s: failed to find shdwc!\n", __func__);
++
++			/* Use ULP0 if it doesn't needs SHDWC.*/
++			if (!(maps[AT91_PM_ULP0] & AT91_PM_IOMAP(SHDWC)))
++				mode = AT91_PM_ULP0;
++			else
++				mode = AT91_PM_STANDBY;
++
++			if (maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SHDWC))
++				soc_pm.data.standby_mode = mode;
++			if (maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SHDWC))
++				soc_pm.data.suspend_mode = mode;
++		} else {
++			soc_pm.data.shdwc = of_iomap(np, 0);
++			of_node_put(np);
++		}
+ 	}
+ 
+-	soc_pm.data.shdwc = of_iomap(np, 0);
+-	of_node_put(np);
++	if (maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SFRBU) ||
++	    maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SFRBU)) {
++		np = of_find_compatible_node(NULL, NULL, "atmel,sama5d2-sfrbu");
++		if (!np) {
++			pr_warn("%s: failed to find sfrbu!\n", __func__);
++
++			/*
++			 * Use ULP0 if it doesn't need SHDWC or if SHDWC
++			 * was already located.
++			 */
++			if (!(maps[AT91_PM_ULP0] & AT91_PM_IOMAP(SHDWC)) ||
++			    soc_pm.data.shdwc)
++				mode = AT91_PM_ULP0;
++			else
++				mode = AT91_PM_STANDBY;
++
++			if (maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SFRBU))
++				soc_pm.data.standby_mode = mode;
++			if (maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SFRBU))
++				soc_pm.data.suspend_mode = mode;
++		} else {
++			soc_pm.data.sfrbu = of_iomap(np, 0);
++			of_node_put(np);
++		}
++	}
+ 
+-	ret = at91_pm_backup_init();
+-	if (ret) {
+-		if (!at91_is_pm_mode_active(AT91_PM_ULP1))
+-			goto unmap;
+-		else
+-			goto backup_default;
++	/* Unmap all unnecessary. */
++	if (soc_pm.data.shdwc &&
++	    !(maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SHDWC) ||
++	      maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SHDWC))) {
++		iounmap(soc_pm.data.shdwc);
++		soc_pm.data.shdwc = NULL;
+ 	}
+ 
+-	return;
++	if (soc_pm.data.sfrbu &&
++	    !(maps[soc_pm.data.standby_mode] & AT91_PM_IOMAP(SFRBU) ||
++	      maps[soc_pm.data.suspend_mode] & AT91_PM_IOMAP(SFRBU))) {
++		iounmap(soc_pm.data.sfrbu);
++		soc_pm.data.sfrbu = NULL;
++	}
+ 
+-unmap:
+-	iounmap(soc_pm.data.shdwc);
+-	soc_pm.data.shdwc = NULL;
+-ulp1_default:
+-	at91_pm_use_default_mode(AT91_PM_ULP1);
+-backup_default:
+-	at91_pm_use_default_mode(AT91_PM_BACKUP);
++	return;
+ }
+ 
+ struct pmc_info {
+@@ -917,12 +948,15 @@ void __init sam9x60_pm_init(void)
+ 	static const int modes[] __initconst = {
+ 		AT91_PM_STANDBY, AT91_PM_ULP0, AT91_PM_ULP0_FAST, AT91_PM_ULP1,
+ 	};
++	static const int iomaps[] __initconst = {
++		[AT91_PM_ULP1]		= AT91_PM_IOMAP(SHDWC),
++	};
+ 
+ 	if (!IS_ENABLED(CONFIG_SOC_SAM9X60))
+ 		return;
+ 
+ 	at91_pm_modes_validate(modes, ARRAY_SIZE(modes));
+-	at91_pm_modes_init();
++	at91_pm_modes_init(iomaps, ARRAY_SIZE(iomaps));
+ 	at91_dt_ramc();
+ 	at91_pm_init(NULL);
+ 
+@@ -967,12 +1001,17 @@ void __init sama5d2_pm_init(void)
+ 		AT91_PM_STANDBY, AT91_PM_ULP0, AT91_PM_ULP0_FAST, AT91_PM_ULP1,
+ 		AT91_PM_BACKUP,
+ 	};
++	static const u32 iomaps[] __initconst = {
++		[AT91_PM_ULP1]		= AT91_PM_IOMAP(SHDWC),
++		[AT91_PM_BACKUP]	= AT91_PM_IOMAP(SHDWC) |
++					  AT91_PM_IOMAP(SFRBU),
++	};
+ 
+ 	if (!IS_ENABLED(CONFIG_SOC_SAMA5D2))
+ 		return;
+ 
+ 	at91_pm_modes_validate(modes, ARRAY_SIZE(modes));
+-	at91_pm_modes_init();
++	at91_pm_modes_init(iomaps, ARRAY_SIZE(iomaps));
+ 	at91_dt_ramc();
+ 	at91_pm_init(NULL);
+ 
 -- 
 2.25.1
 
