@@ -2,127 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8C736103C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CE7361049
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhDOQgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:36:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37737 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231549AbhDOQgN (ORCPT
+        id S233664AbhDOQjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:39:39 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:37421 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDOQji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:36:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618504550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s47wUvhDxo7f8LaX+UuV/f8OqzaAqCVXK0vtBt6gLnc=;
-        b=FYmibwOvsQ/3bq1uvCQrILUCuFotTsoUHM7QDc3LeHXDG5PFG8618dMMyPnnW78N1XUO6j
-        OLBERX4I/YSBS2o3F8ZojIWrhRDhIqK5/18pAOH6tGXfF9iEPK+4zJ7yKABbSrig6hDB5C
-        fSK9yQIAoRznQjm95c2Yxjol/4gkDUU=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-SlEYoF4mPkeaCFV_FM-fLA-1; Thu, 15 Apr 2021 12:35:48 -0400
-X-MC-Unique: SlEYoF4mPkeaCFV_FM-fLA-1
-Received: by mail-qk1-f200.google.com with SMTP id 79so1869372qkm.20
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:35:48 -0700 (PDT)
+        Thu, 15 Apr 2021 12:39:38 -0400
+Received: by mail-ot1-f46.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso9048668otm.4;
+        Thu, 15 Apr 2021 09:39:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=s47wUvhDxo7f8LaX+UuV/f8OqzaAqCVXK0vtBt6gLnc=;
-        b=cN9iyokOFXG8Bhbek1L+bwZTFSqCTC/ji/QCiLDvP2lP6/6u3FmMbDG4WPMXjGNRys
-         461jb/lTJPEd5u0NXe51k+Dr5RNdxBDdfVpPilTDdjiQxlo837bsa90xYURm5Q7UVVh0
-         v7/RchzZa4PxWEwfpkl7F3tHKndmJij/QCF77OKwrilkBIIZ0sq4Y8tebIqlPPl1Wnfs
-         /s9aLy2M4f9yE2VWIKpPA0TpRfZEkmn/SLbXw8zKsGo+9kwx822zoTXx0HNd7fmAyXSk
-         Wl9Qmtu160yIhT8/c+hJTjiUEKqB9aaBx1joGpEiqweIsAlBp9Z1bymotpj8mjS7S970
-         LKjQ==
-X-Gm-Message-State: AOAM531F4vJf9GEKCoOOSCg225VE5ivBL+rDc3TbMelQYqOjwABERd4C
-        fSTLokHHH5L6y7jWw83n7Cusa60NRD4avSrhmvUxNdM9SZOE4txg9lPL8qhKV8mJlQJ9qVe8Y3G
-        tFnxBjcuHbWK9pu6C+PjOhclG
-X-Received: by 2002:a05:622a:14c6:: with SMTP id u6mr3732885qtx.125.1618504547885;
-        Thu, 15 Apr 2021 09:35:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzdrAITzN7+b2b1F20V9MktKhAkmPaXFgdVujfeKgC7dKMBGFp5V/bRqqBWQ3QhezwWOXSwBg==
-X-Received: by 2002:a05:622a:14c6:: with SMTP id u6mr3732852qtx.125.1618504547668;
-        Thu, 15 Apr 2021 09:35:47 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id 26sm2171153qtd.73.2021.04.15.09.35.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 09:35:47 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 2/5] mm/memcg: Introduce
- obj_cgroup_uncharge_mod_state()
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-3-longman@redhat.com> <YHhqPYcajI9JgXk/@cmpxchg.org>
-Message-ID: <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
-Date:   Thu, 15 Apr 2021 12:35:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZpKNZqJMtuMERJQ2AbPwF8sZgkJqLPk+S+d3HTR1z9Y=;
+        b=K0IiRTYEBWmDwwSF1epcas/AIxV+gFsAgWd3co5eYSxNkZYhV21TiWv9/1UgI+XY5a
+         Ud4SqbKckofpWU2H/2dX3tJ38+/n3FgkH/jPzvbguaZVDFeWZLYCMg5tPNBPT6UjrTzC
+         VxkcygaabuRYwjxD88D/R6Dq81UJaFyiSz9FCIdnHEumC8yO33ypV66KQvAEQ0eJSDk3
+         zdfqsPrqNuQmSPSKF2IwmS+gQ+r55kg+5EeaK11ZYUKzJDd1FNRbfAVCYkB3jxc7AUXU
+         fi4PPe7y4uZOw1v5LF7HlFLhvrsywaaoKubJuA5ubvxkidU+KR9Q9trWCclMMHjeOBpU
+         B6nA==
+X-Gm-Message-State: AOAM533wWySHh3qR3Pb/HWbP14W6XcApXL/CJzwNwT2+vqt3CXtJjB9x
+        lpKiNsX1BHLt5Zi9u6mPzQ==
+X-Google-Smtp-Source: ABdhPJxfrT1TEsqC3ayPTt5SJKenn6259qEOzXxjhfz6tyEYwEVQfneK+liMC8rKdst2Q11qlP7W+Q==
+X-Received: by 2002:a05:6830:2491:: with SMTP id u17mr147988ots.198.1618504753664;
+        Thu, 15 Apr 2021 09:39:13 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m3sm700725oiw.27.2021.04.15.09.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 09:39:13 -0700 (PDT)
+Received: (nullmailer pid 1533253 invoked by uid 1000);
+        Thu, 15 Apr 2021 16:39:12 -0000
+Date:   Thu, 15 Apr 2021 11:39:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+Subject: Re: [PATCH v4 4/9] ASoC: dt-bindings: wcd938x-sdw: add bindings for
+ wcd938x-sdw
+Message-ID: <20210415163912.GA1524320@robh.at.kernel.org>
+References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
+ <20210414154845.21964-5-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <YHhqPYcajI9JgXk/@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414154845.21964-5-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 12:30 PM, Johannes Weiner wrote:
-> On Tue, Apr 13, 2021 at 09:20:24PM -0400, Waiman Long wrote:
->> In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
->> is followed by mod_objcg_state()/mod_memcg_state(). Each of these
->> function call goes through a separate irq_save/irq_restore cycle. That
->> is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
->> that combines them with a single irq_save/irq_restore cycle.
->>
->> @@ -3292,6 +3296,25 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->>   	refill_obj_stock(objcg, size);
->>   }
->>   
->> +void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
->> +				   struct pglist_data *pgdat, int idx)
-> The optimization makes sense.
->
-> But please don't combine independent operations like this into a
-> single function. It makes for an unclear parameter list, it's a pain
-> in the behind to change the constituent operations later on, and it
-> has a habit of attracting more random bools over time. E.g. what if
-> the caller already has irqs disabled? What if it KNOWS that irqs are
-> enabled and it could use local_irq_disable() instead of save?
->
-> Just provide an __obj_cgroup_uncharge() that assumes irqs are
-> disabled, combine with the existing __mod_memcg_lruvec_state(), and
-> bubble the irq handling up to those callsites which know better.
->
-That will also work. However, the reason I did that was because of patch 
-5 in the series. I could put the get_obj_stock() and put_obj_stock() 
-code in slab.h and allowed them to be used directly in various places, 
-but hiding in one function is easier.
+On Wed, Apr 14, 2021 at 04:48:40PM +0100, Srinivas Kandagatla wrote:
+> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+> connected over SoundWire. This device has two SoundWire devices RX and
+> TX respectively. This bindings is for those slave devices on WCD9380/WCD9385.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/sound/qcom,wcd938x-sdw.yaml      | 61 +++++++++++++++++++
+>  1 file changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+> new file mode 100644
+> index 000000000000..fff33c65491b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/qcom,wcd938x-sdw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for Qualcomm SoundWire Slave devices on WCD9380/WCD9385
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +
+> +description: |
+> +  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
+> +  It has RX and TX Soundwire slave devices. This bindings is for the
+> +  slave devices.
+> +
+> +properties:
+> +  compatible:
+> +    const: sdw20217010d00
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  qcom,direction:
+> +    description: direction of the SoundWire device instance
+> +    enum:
+> +      - rx
+> +      - tx
 
-Anyway, I can change the patch if you think that is the right way.
+Was thinking these were some established bus properties...
 
-Cheers,
-Longman
+This would just be implied by the 'reg' property index. You could define 
+'reg-names' too I guess.
 
+> +
+> +  qcom,port-mapping:
+> +    description: |
+> +      Specifies static port mapping between slave and master ports.
+> +      In the order of slave port index.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 4
+> +    maxItems: 5
+
+qcom,rx-port-mapping and qcom,tx-port-mapping?
+
+Or keep a single property and the driver knows how many slave ports for 
+each direction. IOW, an array of 9 with first 4 entries for tx and last 
+5 for rx.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - qcom,direction
+> +  - qcom,port-mapping
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soundwire@3230000 {
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x03230000 0x2000>;
+> +
+> +        codec@0,3 {
+> +            compatible = "sdw20217010d00";
+> +            reg  = <0 3>;
+> +            qcom,direction = "tx";
+> +            qcom,port-mapping = <2 3 4 5>;
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.21.0
+> 
