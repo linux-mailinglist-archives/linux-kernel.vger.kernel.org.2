@@ -2,110 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2843436033C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFB936033F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhDOHZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhDOHY6 (ORCPT
+        id S231355AbhDOHZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:25:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14566 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231280AbhDOHZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:24:58 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCBAC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:24:35 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id lt13so2747411pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:24:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m8DeQWG9KEDynT5LsxE499wF6Jjldde7Gdw6tjI8mlU=;
-        b=eZ/SrbRyNsOdHBJv+PPQB5u0DBBBrqjDN9wB85pqiqZUYOSG2v6sExV769zTHLCsem
-         lh3U3u3Jt+WD1k3qPNE4v2In1evp5wMA6+m7o4ptPfyxyOBYnflaGZjxRBz+MgsOaFtS
-         Vd27V7jgcxdrkB8i1I2M9DWuqI5X4qm+X73vYQ3mx/LuUtmrRL5e3lcyKCCy7kvV3L4z
-         lM281T34X7neXewDXTqIsLHV4mCdG1IbpzGY4N0NAWinfwp7Xa6sCUDpXd4NjfqQ3K8F
-         htYHAq+SdRc8uGUx08wI0UnRwhvQNXJAcpS+8MOPpqKV1OKUYx7x3Gcd0q6l34tkyc8s
-         K+RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m8DeQWG9KEDynT5LsxE499wF6Jjldde7Gdw6tjI8mlU=;
-        b=tr22UTXGR7oPg9cOBTKGXNqujga5IcfcmM+l368wXqu4bSvIaov81+6HxVpkUAbH47
-         s5rwwxSREw9mstum6BdOU5k1O509OCkY4R1TWy1WRrllzb2+R5wZlbDdB9wJNfSG8yUM
-         dICiQHBmfHwqO2JVxRy9WJoA2oDEhXZuIesJ9thnjlGvmcTgW211sC3FTmo4mCOUm0II
-         4T96oYhbUanKFYUeyJ5JPlOBky71e3Df8ymp5gUKWaLjA1s+lIBMyOmJrSSoz2llXL7x
-         XMEtgKvnQpfz5vFdhoIhK6Z+Vyi9a0liFLg4YGFMGd2aqeyeY92g8j4LkHEeWNhA5HXB
-         3lKA==
-X-Gm-Message-State: AOAM532tNa2vcYcbT9X9LFRF8wV9+mgtLU7Lz56xJN9o44QIiwLXwLdQ
-        BqJed/MhWx8/ZqBxlcw7WXHkPg==
-X-Google-Smtp-Source: ABdhPJyTWNqs9DMkceI2bV/ilNrmZO65Qj9f980HcPSnamOeh+qG5A4tJDY1TZtsTUgIHcmNN9ZN1g==
-X-Received: by 2002:a17:902:7b92:b029:eb:6fc0:39e6 with SMTP id w18-20020a1709027b92b02900eb6fc039e6mr2439407pll.83.1618471474705;
-        Thu, 15 Apr 2021 00:24:34 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id i22sm1513886pgj.90.2021.04.15.00.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 00:24:33 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 12:54:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
- <20210415072131.GA1006@kunai>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415072131.GA1006@kunai>
-User-Agent: NeoMutt/20180716-391-311a52
+        Thu, 15 Apr 2021 03:25:10 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13F73hkK136923;
+        Thu, 15 Apr 2021 03:24:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=q9T8SahEZUqDVixHepan04p7Sk4pDUeFxzkOwHaURFg=;
+ b=dlZeaupqjVIc5GSpHSE+gdpu7tsZANMiW38zVzpg/8NUEJlCT3oNl6I7OzXruGdYDGjT
+ CSoFTle7AsQznYRJca4p19MS3Fh3BxxIR0uQ09eU7KGRObWJZjBCkeweVE1LrnGGKbTj
+ 5DFcuLBiN3BZf8e16o4vSgZxrszn+TpidTpU9ZZR/fDXblsitHN5WSWUrvS4fRCJQHhN
+ E3UgU1oKzCu4mpIQMb+02qkfYXgSj5Ns+H4SyrV8yUdPXRmR1rE0eDR97yL73ZurSkpI
+ VNH3yTuxYnLnK1CUPqaw/CMqgy1uNBEijPZF+W/lGs4OTBdqjed227c4c07qHpGN115Q YA== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88hu7df-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 03:24:42 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13F77RnN023783;
+        Thu, 15 Apr 2021 07:24:37 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8bq4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 07:24:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13F7OXWh66060664
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Apr 2021 07:24:34 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D397AAE055;
+        Thu, 15 Apr 2021 07:24:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 58A46AE045;
+        Thu, 15 Apr 2021 07:24:33 +0000 (GMT)
+Received: from sig-9-145-170-145.de.ibm.com (unknown [9.145.170.145])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 15 Apr 2021 07:24:33 +0000 (GMT)
+Message-ID: <bd95605ed435ad3978535d865b883f58c1d542d6.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] s390/pci: expose a PCI device's UID as its index
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Narendra K <narendra_k@dell.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>,
+        Stefan Raspl <raspl@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Date:   Thu, 15 Apr 2021 09:24:33 +0200
+In-Reply-To: <20210414201755.GA2532433@bjorn-Precision-5520>
+References: <20210414201755.GA2532433@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: bRJFPuNoMNuWoQLkOpRZm60i16bhhTiI
+X-Proofpoint-ORIG-GUID: bRJFPuNoMNuWoQLkOpRZm60i16bhhTiI
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_03:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104150046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-04-21, 09:21, Wolfram Sang wrote:
-> 
-> > I didn't forget this. It is a very small change. I'm not sure if the
-> > maintainer Wolfram
+On Wed, 2021-04-14 at 15:17 -0500, Bjorn Helgaas wrote:
+> On Mon, Apr 12, 2021 at 03:59:05PM +0200, Niklas Schnelle wrote:
+> > On s390 each PCI device has a user-defined ID (UID) exposed under
+> > /sys/bus/pci/devices/<dev>/uid. This ID was designed to serve as the PCI
+> > device's primary index and to match the device within Linux to the
+> > device configured in the hypervisor. To serve as a primary identifier
+> > the UID must be unique within the Linux instance, this is guaranteed by
+> > the platform if and only if the UID Uniqueness Checking flag is set
+> > within the CLP List PCI Functions response.
 > > 
-> > has any comments so that I can address them together in one version.
+> > In this sense the UID serves an analogous function as the SMBIOS
+> > instance number or ACPI index exposed as the "index" respectively
+> > "acpi_index" device attributes and used by e.g. systemd to set interface
+> > names. As s390 does not use and will likely never use ACPI nor SMBIOS
+> > there is no conflict and we can just expose the UID under the "index"
+> > attribute whenever UID Uniqueness Checking is active and get systemd's
+> > interface naming support for free.
+> > 
+> > Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> > Acked-by: Viktor Mihajlovski <mihajlov@linux.ibm.com>
 > 
-> Noted. I'll have a look in the next days.
+> This seems like a nice solution to me.
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Now that we were able to catch you, I will use the opportunity to
-clarify the doubts I had.
+Thanks! Yes I agree it's a simple solution that also makes sense from a
+design point. I'll wait for Narendra's opinion of course.
 
-- struct mutex lock in struct virtio_i2c, I don't think this is
-  required since the core takes care of locking in absence of this.
+> 
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci | 11 +++++---
+> >  arch/s390/pci/pci_sysfs.c               | 35 +++++++++++++++++++++++++
+> >  2 files changed, 42 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index 25c9c39770c6..1241b6d11a52 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -195,10 +195,13 @@ What:		/sys/bus/pci/devices/.../index
+> >  Date:		July 2010
+> >  Contact:	Narendra K <narendra_k@dell.com>, linux-bugs@dell.com
+> >  Description:
+> > -		Reading this attribute will provide the firmware
+> > -		given instance (SMBIOS type 41 device type instance) of the
+> > -		PCI device. The attribute will be created only if the firmware
+> > -		has given an instance number to the PCI device.
+> > +		Reading this attribute will provide the firmware given instance
+> > +		number of the PCI device.  Depending on the platform this can
+> > +		be for example the SMBIOS type 41 device type instance or the
+> > +		user-defined ID (UID) on s390. The attribute will be created
+> > +		only if the firmware has given an instance number to the PCI
+> > +		device and that number is guaranteed to uniquely identify the
+> > +		device in the system.
+> >  Users:
+> >  		Userspace applications interested in knowing the
+> >  		firmware assigned device type instance of the PCI
+> > diff --git a/arch/s390/pci/pci_sysfs.c b/arch/s390/pci/pci_sysfs.c
+> > index e14d346dafd6..20dbb2058d51 100644
+> > --- a/arch/s390/pci/pci_sysfs.c
+> > +++ b/arch/s390/pci/pci_sysfs.c
+> > @@ -138,6 +138,38 @@ static ssize_t uid_is_unique_show(struct device *dev,
+> >  }
+> >  static DEVICE_ATTR_RO(uid_is_unique);
+> >  
+> > +#ifndef CONFIG_DMI
+> > +/* analogous to smbios index */
+> 
+> I think this is smbios_attr_instance, right?  Maybe mention that
+> specifically to make it easier to match these up.
+> 
+> Looks like smbios_attr_instance and the similar ACPI stuff could use
+> some updating to use the current attribute group infrastructure.
+> 
+> > +static ssize_t index_show(struct device *dev,
+> > +			  struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct zpci_dev *zdev = to_zpci(to_pci_dev(dev));
+> > +	u32 index = ~0;
+> > +
+> > +	if (zpci_unique_uid)
+> > +		index = zdev->uid;
+> > +
+> > +	return sysfs_emit(buf, "%u\n", index);
+> > +}
+> > +static DEVICE_ATTR_RO(index);
+> > +
+> > +static umode_t zpci_unique_uids(struct kobject *kobj,
+> > +				struct attribute *attr, int n)
+> > +{
+> > +	return zpci_unique_uid ? attr->mode : 0;
+> > +}
+> > +
+> > +static struct attribute *zpci_ident_attrs[] = {
+> > +	&dev_attr_index.attr,
+> > +	NULL,
+> > +};
+> > +
+> > +static struct attribute_group zpci_ident_attr_group = {
+> > +	.attrs = zpci_ident_attrs,
+> > +	.is_visible = zpci_unique_uids,
+> 
+> It's conventional to name these functions *_is_visible() (another
+> convention that smbios_attr_instance and acpi_attr_index probably
+> predate).
 
-- Use of I2C_CLASS_DEPRECATED flag, I don't think it is required for
-  new drivers.
+Thanks, will change. Since he function then references the attribtue
+instead of the condition, I'll go with zpci_index_is_visible().
 
-:)
+> 
+> > +};
+> > +#endif
+> > +
+> >  static struct bin_attribute *zpci_bin_attrs[] = {
+> >  	&bin_attr_util_string,
+> >  	&bin_attr_report_error,
+> > @@ -179,5 +211,8 @@ static struct attribute_group pfip_attr_group = {
+> >  const struct attribute_group *zpci_attr_groups[] = {
+> >  	&zpci_attr_group,
+> >  	&pfip_attr_group,
+> > +#ifndef CONFIG_DMI
+> > +	&zpci_ident_attr_group,
+> > +#endif
+> >  	NULL,
+> >  };
+> > -- 
+> > 2.25.1
+> > 
 
--- 
-viresh
