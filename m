@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8E93601FA
+	by mail.lfdr.de (Postfix) with ESMTP id A0E7C3601FB
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhDOFxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:53:21 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59452 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230296AbhDOFxR (ORCPT
+        id S230468AbhDOFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:53:23 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48116 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230384AbhDOFxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:53:17 -0400
-X-UUID: 2ba8bfba7a6949e18e695d9be56cc462-20210415
-X-UUID: 2ba8bfba7a6949e18e695d9be56cc462-20210415
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        Thu, 15 Apr 2021 01:53:18 -0400
+X-UUID: c783005b5ec24466a25de45071b422bc-20210415
+X-UUID: c783005b5ec24466a25de45071b422bc-20210415
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
         (envelope-from <flora.fu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 126229938; Thu, 15 Apr 2021 13:52:51 +0800
+        with ESMTP id 867824182; Thu, 15 Apr 2021 13:52:53 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Apr 2021 13:52:50 +0800
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Apr 2021 13:52:51 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Apr 2021 13:52:49 +0800
+ Transport; Thu, 15 Apr 2021 13:52:50 +0800
 From:   Flora Fu <flora.fu@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -39,152 +39,90 @@ CC:     Liam Girdwood <lgirdwood@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
         <srv_heupstream@mediatek.com>
-Subject: [PATCH v2 2/7] clk: mediatek: mt8192: Add APU clocks support
-Date:   Thu, 15 Apr 2021 13:52:35 +0800
-Message-ID: <1618465960-3013-3-git-send-email-flora.fu@mediatek.com>
+Subject: [PATCH v2 3/7] dt-bindings: arm: mediatek: Add new document bindings for APU
+Date:   Thu, 15 Apr 2021 13:52:36 +0800
+Message-ID: <1618465960-3013-4-git-send-email-flora.fu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1618465960-3013-1-git-send-email-flora.fu@mediatek.com>
 References: <1618465960-3013-1-git-send-email-flora.fu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-SNTS-SMTP: 16CE3117B475B4EDD03E74C2F10B07A397CF72A65CC12EBB254D20C05A6BDD232000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add APU clocks support on MT8192.
+Document the apusys bindings.
 
 Signed-off-by: Flora Fu <flora.fu@mediatek.com>
 ---
- drivers/clk/mediatek/clk-mt8192.c | 91 +++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ .../arm/mediatek/mediatek,apusys.yaml         | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
 
-diff --git a/drivers/clk/mediatek/clk-mt8192.c b/drivers/clk/mediatek/clk-mt8192.c
-index bf6a2084a348..4eb61f006306 100644
---- a/drivers/clk/mediatek/clk-mt8192.c
-+++ b/drivers/clk/mediatek/clk-mt8192.c
-@@ -244,6 +244,65 @@ static const char * const ccu_parents[] = {
- 	"univpll_d6_d2"
- };
- 
-+static const char * const dsp_parents[] = {
-+	"clk26m",
-+	"univpll_d6_d2",
-+	"univpll_d4_d2",
-+	"univpll_d5",
-+	"univpll_d4",
-+	"mmpll_d4",
-+	"mainpll_d3",
-+	"univpll_d3"
-+};
+diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+new file mode 100644
+index 000000000000..d46290548b34
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/mediatek/mediatek,apusys.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static const char * const dsp1_parents[] = {
-+	"clk26m",
-+	"npupll_ck",
-+	"mainpll_d4_d2",
-+	"univpll_d5",
-+	"univpll_d4",
-+	"mainpll_d3",
-+	"univpll_d3",
-+	"apupll_ck"
-+};
++title: MediaTek APUSYS Controller
 +
-+static const char * const dsp1_npupll_parents[] = {
-+	"dsp1_sel",
-+	"npupll_ck"
-+};
++maintainers:
++  - Flora Fu <flora.fu@mediatek.com>
 +
-+static const char * const dsp2_parents[] = {
-+	"clk26m",
-+	"npupll_ck",
-+	"mainpll_d4_d2",
-+	"univpll_d5",
-+	"univpll_d4",
-+	"mainpll_d3",
-+	"univpll_d3",
-+	"apupll_ck"
-+};
++description:
++  The Mediatek apusys controller provides functional configurations and clocks
++  to the system.
 +
-+static const char * const dsp2_npupll_parents[] = {
-+	"dsp2_sel",
-+	"npupll_ck"
-+};
++properties:
++  compatible:
++    items:
++      - enum:
++          - mediatek,mt8192-apu-mbox
++          - mediatek,mt8192-apu-conn
++          - mediatek,mt8192-apu-vcore
++      - const: syscon
 +
-+static const char * const dsp5_parents[] = {
-+	"clk26m",
-+	"apupll_ck",
-+	"univpll_d4_d2",
-+	"mainpll_d4",
-+	"univpll_d4",
-+	"mmpll_d4",
-+	"mainpll_d3",
-+	"univpll_d3"
-+};
++  reg:
++    maxItems: 1
 +
-+static const char * const dsp5_apupll_parents[] = {
-+	"dsp5_sel",
-+	"apupll_ck"
-+};
++  '#clock-cells':
++    const: 1
 +
- static const char * const dsp7_parents[] = {
- 	"clk26m",
- 	"mainpll_d4_d2",
-@@ -255,6 +314,17 @@ static const char * const dsp7_parents[] = {
- 	"mmpll_d4"
- };
- 
-+static const char * const ipu_if_parents[] = {
-+	"clk26m",
-+	"univpll_d6_d2",
-+	"mainpll_d4_d2",
-+	"univpll_d4_d2",
-+	"univpll_d5",
-+	"mainpll_d4",
-+	"tvdpll_ck",
-+	"univpll_d4"
-+};
++required:
++  - compatible
++  - reg
 +
- static const char * const mfg_ref_parents[] = {
- 	"clk26m",
- 	"clk26m",
-@@ -734,9 +804,26 @@ static const struct mtk_mux top_mtk_muxes[] = {
- 		cam_parents, 0x030, 0x034, 0x038, 16, 4, 23, 0x004, 10),
- 	MUX_GATE_CLR_SET_UPD(CLK_TOP_CCU_SEL, "ccu_sel",
- 		ccu_parents, 0x030, 0x034, 0x038, 24, 4, 31, 0x004, 11),
-+	/* CLK_CFG_3 */
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DSP_SEL, "dsp_sel",
-+		dsp_parents, 0x040, 0x044, 0x048, 0, 3, 7, 0x004, 12),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DSP1_SEL, "dsp1_sel",
-+		dsp1_parents, 0x040, 0x044, 0x048, 8, 3, 15, 0x004, 13),
-+	MUX_CLR_SET_UPD(CLK_TOP_DSP1_NPUPLL_SEL, "dsp1_npupll_sel",
-+		dsp1_npupll_parents, 0x040, 0x044, 0x048, 11, 1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DSP2_SEL, "dsp2_sel",
-+		dsp2_parents, 0x040, 0x044, 0x048, 16, 3, 23, 0x004, 14),
-+	MUX_CLR_SET_UPD(CLK_TOP_DSP2_NPUPLL_SEL, "dsp2_npupll_sel",
-+		dsp2_npupll_parents, 0x040, 0x044, 0x048, 19, 1, -1, -1),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_DSP5_SEL, "dsp5_sel",
-+		dsp5_parents, 0x040, 0x044, 0x048, 24, 3, 31, 0x004, 15),
-+	MUX_CLR_SET_UPD(CLK_TOP_DSP5_APUPLL_SEL, "dsp5_apupll_sel",
-+		dsp5_apupll_parents, 0x040, 0x044, 0x048, 27, 1, -1, -1),
- 	/* CLK_CFG_4 */
- 	MUX_GATE_CLR_SET_UPD(CLK_TOP_DSP7_SEL, "dsp7_sel",
- 		dsp7_parents, 0x050, 0x054, 0x058, 0, 3, 7, 0x004, 16),
-+	MUX_GATE_CLR_SET_UPD(CLK_TOP_IPU_IF_SEL, "ipu_if_sel",
-+		ipu_if_parents, 0x050, 0x054, 0x058, 8, 3, 15, 0x004, 17),
- 	MUX_GATE_CLR_SET_UPD(CLK_TOP_MFG_REF_SEL, "mfg_ref_sel",
- 		mfg_ref_parents, 0x050, 0x054, 0x058, 16, 2, 23, 0x004, 18),
- 	MUX_CLR_SET_UPD(CLK_TOP_MFG_PLL_SEL, "mfg_pll_sel",
-@@ -1175,6 +1262,10 @@ static const struct mtk_pll_data plls[] = {
- 		0, 0, 32, 0x031c, 24, 0x0040, 0x000c, 0, 0x0320, 0),
- 	PLL_B(CLK_APMIXED_APLL2, "apll2", 0x032c, 0x033c, 0x00000000,
- 		0, 0, 32, 0x0330, 24, 0, 0, 0, 0x0334, 0),
-+	PLL_B(CLK_APMIXED_APUPLL, "apupll", 0x03a0, 0x03ac, 0xff000001,
-+		HAVE_RST_BAR, BIT(23), 22, 0x03a4, 24, 0, 0, 0, 0x03a4, 0),
-+	PLL_B(CLK_APMIXED_NPUPLL, "npupll", 0x03b4, 0x03c0, 0x00000001,
-+		0, 0, 22, 0x03b8, 24, 0, 0, 0, 0x03b8, 0),
- };
- 
- static struct clk_onecell_data *top_clk_data;
++additionalProperties: false
++
++examples:
++  - |
++    apu_mbox: apu_mbox@19000000 {
++        compatible = "mediatek,mt8192-apu-mbox", "syscon";
++        reg = <0x19000000 0x1000>;
++    };
++
++  - |
++    apu_conn: apu_conn@19020000 {
++        compatible = "mediatek,mt8192-apu-conn", "syscon";
++        reg = <0x19020000 0x1000>;
++        #clock-cells = <1>;
++    };
++
++  - |
++    apu_vcore: apu_vcore@19029000 {
++        compatible = "mediatek,mt8192-apu-vcore", "syscon";
++        reg = <0x19029000 0x1000>;
++        #clock-cells = <1>;
++    };
 -- 
 2.18.0
 
