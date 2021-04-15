@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2261636157D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF54361580
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235926AbhDOW2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbhDOW2R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:28:17 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EC9C061574;
-        Thu, 15 Apr 2021 15:27:53 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 53E4A2224D;
-        Fri, 16 Apr 2021 00:27:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1618525668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4EpAThp1KbLIOtaa6ziaIprjD37b45cKEYo+IUj/xDc=;
-        b=RADHosZmWWj2QD7mjS4sz9BVJiaQERQe0Bcb7BXZpDpOfvtxEOplhXLMYDSwYK+S4V5ZQ0
-        b+Zd4SNiE5Ahu0UYMQkOUv498tZhLqOXS4P9LAlKjuxzZnVRZAKrUHR/71v8j3vAwnTxBq
-        pEVrfONiHlfZ2usUT9gjS36RKk4W1t4=
+        id S235279AbhDOWcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:32:14 -0400
+Received: from mga18.intel.com ([134.134.136.126]:26527 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234764AbhDOWcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 18:32:12 -0400
+IronPort-SDR: Z545+vNWPPckl0KnvurPgzhFitYbQBbnlKvrR1ZgK+WD+aKRW2ue6G4n+fH7i0xgGIo35z1ZPx
+ hWRGx7AKljkw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="182451049"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="182451049"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 15:31:48 -0700
+IronPort-SDR: Vz5L/aqOpzPiervUyJdJvGmElFJ3yi7owML1W7i9kVQSa51SUX+IF0Ae+DeYJ+ot/rKL0yKwgo
+ WSqa4xn66c/g==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="453108163"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.21.67])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 15:31:46 -0700
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+To:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>
+Cc:     Yang Shi <shy828301@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
+ <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com>
+ <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
+ <YHABLBYU0UgzwOZi@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <4a864946-a316-3d9c-8780-64c6281276d1@linux.intel.com>
+Date:   Thu, 15 Apr 2021 15:31:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <YHABLBYU0UgzwOZi@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 16 Apr 2021 00:27:46 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: add
- nvmem-mac-address-offset property
-In-Reply-To: <20210415215955.GA1937954@robh.at.kernel.org>
-References: <20210414152657.12097-1-michael@walle.cc>
- <20210414152657.12097-2-michael@walle.cc> <YHcNtdq+oIYcB08+@lunn.ch>
- <20210415215955.GA1937954@robh.at.kernel.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <fefde522146d18aa7f8fbb8fa698cb58@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-15 23:59, schrieb Rob Herring:
-> On Wed, Apr 14, 2021 at 05:43:49PM +0200, Andrew Lunn wrote:
->> On Wed, Apr 14, 2021 at 05:26:55PM +0200, Michael Walle wrote:
->> > It is already possible to read the MAC address via a NVMEM provider. But
->> > there are boards, esp. with many ports, which only have a base MAC
->> > address stored. Thus we need to have a way to provide an offset per
->> > network device.
->> 
->> We need to see what Rob thinks of this. There was recently a patchset
->> to support swapping the byte order of the MAC address in a NVMEM. Rob
->> said the NVMEM provider should have the property, not the MAC driver.
->> This does seems more ethernet specific, so maybe it should be an
->> Ethernet property?
+
+
+On 4/9/21 12:24 AM, Michal Hocko wrote:
+> On Thu 08-04-21 13:29:08, Shakeel Butt wrote:
+>> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
+> [...]
+>>> The low priority jobs should be able to be restricted by cpuset, for
+>>> example, just keep them on second tier memory nodes. Then all the
+>>> above problems are gone.
 > 
-> There was also this one[1]. I'm not totally opposed, but don't want to
-> see a never ending addition of properties to try to describe any
-> possible transformation.
+> Yes, if the aim is to isolate some users from certain numa node then
+> cpuset is a good fit but as Shakeel says this is very likely not what
+> this work is aiming for.
+> 
+>> Yes that's an extreme way to overcome the issue but we can do less
+>> extreme by just (hard) limiting the top tier usage of low priority
+>> jobs.
+> 
+> Per numa node high/hard limit would help with a more fine grained control.
+> The configuration would be tricky though. All low priority memcgs would
+> have to be carefully configured to leave enough for your important
+> processes. That includes also memory which is not accounted to any
+> memcg. 
+> The behavior of those limits would be quite tricky for OOM situations
+> as well due to a lack of NUMA aware oom killer.
+> 
 
-Agreed, that stuff like ASCII MAC address parsing should be done
-elsewhere. But IMHO adding an offset is a pretty common one (as also
-pointed out in [1]). And it also need to be a per ethernet device
-property.
+Another downside of putting limits on individual NUMA
+node is it would limit flexibility.  For example two memory nodes are
+similar enough in performance, that you really only care about a cgroup
+not using more than a threshold of the combined capacity from the two
+memory nodes.  But when you put a hard limit on NUMA node, then you are
+tied down to a fix allocation partition for each node.  Perhaps there are
+some kernel resources that are pre-allocated primarily from one node. A
+cgroup may bump into the limit on the node and failed the allocation,
+even when it has a lot of slack in the other node.  This makes getting
+the configuration right trickier.
 
--michael
+There are some differences in opinion currently
+on whether grouping memory nodes into tiers, and putting limit on
+using them by cgroup is a desirable.  Many people want the 
+management constraint placed at individual NUMA node for each cgroup, instead
+of at the tier level.  Will appreciate feedbacks from folks who have
+insights on how such NUMA based control interface will work, so we
+at least agree here in order to move forward.
 
-[1] 
-https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20200920095724.8251-4-ansuelsmth@gmail.com/
+Tim
+
