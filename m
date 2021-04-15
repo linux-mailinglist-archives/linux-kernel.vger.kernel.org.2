@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEE1360F2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C042F360F34
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhDOPly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
+        id S233363AbhDOPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDOPlu (ORCPT
+        with ESMTP id S231137AbhDOPng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:41:50 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA70C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:41:27 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id m9so11015737wrx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:41:27 -0700 (PDT)
+        Thu, 15 Apr 2021 11:43:36 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EB5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:43:11 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id s7so23657879wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qzCmIc5xh7d+ubWNy7gZo3UPfbkyUvg8kMmWmppBNes=;
-        b=BEj/1/8XPncnjRfRK8mLiZ1SoZ2+BwrE+a39LxPwB/MsIFJnzBAICQLZ2jiwGGbQov
-         4zqh7un0jhEP1iNaKM1PurWOo4uOYi/n2gtxwCVm76y8egSWq0m6KnadRWC5DH8hi34C
-         K41+UsN0jCiClEebcR9kPZsL0Lx6/VJV5Li9dNkP8mG/+bW6Uxqyyarpphfbe13+sVlb
-         FizX/3RV1YXqCKanusixVoY8OxsNOXFXCWpfkOB2NeLmRvAHXodqwMYxxCYasGQZQftV
-         OsBicx1g9iYrnNMRoDBiJ4p9GtlEji++P0zPJAhhkeDvxObWb1E6q5IO+XBq+ah9VkM2
-         b8CQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jNkMGzubXRxw57h3TICWZ9B02X30bGEcbInmKNYGThM=;
+        b=udNICUrhXQth0zC5lC/KWtYgmfoTrW0teUsWz47d1euhA51lzYNCbh/ukJMs5ZWER+
+         ixOQC8S0ydmBygkgeNksKe5AjD6izMLOH5HgybaG3KFGJVKZa9B9k6ko+e/cMfyQ1uZM
+         vCprxBDtOn+1iw6MhKpGSaJyQyxdMAvM7BskbIQKLE4dVeJS8RQTzui9xdAUGtoC7LYi
+         IyuHGu1Nv45w+xHOdDEnAnm5Jcb1w4j/51oHX/hEGsuPbYkQNZeVZhmDyNqNya3aT0eZ
+         cOUFagJNavjoIIF4Jhtk36SMEo73ujx8nSYYZtJU/HHchVM3Oeo3vnfVRD81KH3fsxWc
+         B5WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qzCmIc5xh7d+ubWNy7gZo3UPfbkyUvg8kMmWmppBNes=;
-        b=WT7B/WkMVQBDpTZCfzArgN3UfhgwmITH70n3dS6cpSbITIkrFeTMczGygzSXEVIGcC
-         V915h6D0/tmnGJNHItEIMkKCu36dzDvA8WfMPInYlyOrzHrucjvqgLtc7/Z2OOGU8lSE
-         TTY3KjU5bo7dI84ICS/DxT96ui7sSlE84swzOIoeedyHHoGOfhIbVHgfoGUmH9bElhCF
-         0YLnHN4AlPqcuAh9BnOeP+EVqscrBjbw11DYtr0JO6tHNgk8hwuXqZXzEzp/U7hqdMg9
-         itp2j9LYhP23ekV3F9KEDpTj8/55R6ZqOAsO5+mwKKN47iStubvZCf+0G35M84kZ9FEF
-         zksw==
-X-Gm-Message-State: AOAM532NKqzSCkiafWlMQ4fgR3LRpFo7dRwDPqVVR+c8nxF+LUP/+LpG
-        zg10ftHn8Br8lbGcp+SO7wuBvg==
-X-Google-Smtp-Source: ABdhPJyLNMOWPYjLpplPAmINNkz2Fou+qVJXho8kWclmtHcejA/NRHvG9yzn7ifRTNHYBMXjICP1Nw==
-X-Received: by 2002:a05:6000:ca:: with SMTP id q10mr4272021wrx.104.1618501286182;
-        Thu, 15 Apr 2021 08:41:26 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.87.196])
-        by smtp.gmail.com with ESMTPSA id l14sm1920076wmq.4.2021.04.15.08.41.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 08:41:25 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
-Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        illusionist.neo@gmail.com, linux@armlinux.org.uk,
-        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        paulburton@kernel.org, tsbogend@alpha.franken.de,
-        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
-        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
-        horms@verge.net.au, nicolas.dichtel@6wind.com,
-        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
-        keescook@chromium.org, tklauser@distanz.ch, grantseltzer@gmail.com,
-        irogers@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        iecedge@gmail.com
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
-Date:   Thu, 15 Apr 2021 16:41:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jNkMGzubXRxw57h3TICWZ9B02X30bGEcbInmKNYGThM=;
+        b=mxs7aKPdftAanY8nvuU5h/n0e9nkpQs/wy7xsdxHAgAAcNRM/1w9d7SaUFeOt/jOBy
+         nXaguXE5UGFLqIx+o7B90rnuZF3Luljpl4NZKW7vQdRn2Kfg8WSQou8EFeRNbxGkqSaF
+         tkI8ksJoTjErSmotvSj/FsOYQ85RgtzBoAcQe3LorQmy9t9Pa5BfwZ2UUfABeLnyvsVE
+         q/tyetKnO+Sds465vtcSTnvEkOrvFkCL5wwiO/pvTuetp9V1cNu1Vf45Yo4Wu7oKeB45
+         h099TqSi7fMBn3FrmYkCvYT4dz5QlLuWFeVlRMtKENj9BGJ+fHauF/d5ZWLyHgl91v6o
+         wWIg==
+X-Gm-Message-State: AOAM532JaRF3OFc1bRSyM7pYth3ZaRYS4oNHG+iOkqF+r3oCnPCVk+Zj
+        WvLs2/XYk9h7VrgrBBlYoDnjCQ==
+X-Google-Smtp-Source: ABdhPJzPoVA0W934lS29ibclMrJptcQX/oaE0xjn8AVXj8t/bG4V74/s3PpeqdBqA1otJe3B7qo2yQ==
+X-Received: by 2002:a05:6000:186d:: with SMTP id d13mr4244100wri.199.1618501389832;
+        Thu, 15 Apr 2021 08:43:09 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id c1sm3961297wrx.89.2021.04.15.08.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 08:43:09 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 15:43:06 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, dietmar.eggemann@arm.com
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+Message-ID: <YHhfCr+7KztYpIkD@google.com>
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+ <YHg8s4VTQdiBNOpr@google.com>
+ <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
+ <YHhU6pb8E5W2eeCX@google.com>
+ <20210415151446.GC391924@e120877-lin.cambridge.arm.com>
+ <YHhZrbLcUD6I83m1@google.com>
+ <cc9d7743-7795-a9c9-c1fb-4162cb02bfe2@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc9d7743-7795-a9c9-c1fb-4162cb02bfe2@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
-> On 4/15/21 11:32 AM, Jianlin Lv wrote:
->> For debugging JITs, dumping the JITed image to kernel log is discouraged,
->> "bpftool prog dump jited" is much better way to examine JITed dumps.
->> This patch get rid of the code related to bpf_jit_enable=2 mode and
->> update the proc handler of bpf_jit_enable, also added auxiliary
->> information to explain how to use bpf_jit_disasm tool after this change.
->>
->> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+On Thursday 15 Apr 2021 at 16:32:31 (+0100), Lukasz Luba wrote:
+> Are you sure that the 'policy' can be accessed from compute_energy()?
+> It can be from schedutil freq switch path, but I'm not use about our
+> feec()..
 
-Hello,
+Right, I was just looking at cpufreq_cpu_get() and we'll have locking
+issue in the wake-up path :/ So maybe making feec() aware of policy caps
+is for later ...
 
-For what it's worth, I have already seen people dump the JIT image in
-kernel logs in Qemu VMs running with just a busybox, not for kernel
-development, but in a context where buiding/using bpftool was not
-possible. Maybe not a common case, but still, removing the debugging
-mode will make that impossible. Is there a particular incentive to
-remove the feature?
+> For me this cpufreq_driver_resolve_freq sounds a bit out of this patch
+> subject.
 
-Best regards,
-Quentin
+Not sure I agree -- if we're going to index the EM table from schedutil
+it should be integrated nicely if possible.
+
+Thanks
