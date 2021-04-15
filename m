@@ -2,263 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9343601B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDAC3601B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhDOFkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:40:20 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56450 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230239AbhDOFkS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:40:18 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 26602404B4;
-        Thu, 15 Apr 2021 05:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618465196; bh=hpok5kVHp0MfHWo/Afzmy8pDTmAO8J2XmKEyi0l2Cjk=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=aCQwl9rOgFwK5z+VnGsK1mwzxQLnJLeVZywH8w4MtZPCHdg4z9hTGxcvUYQBI8Xf2
-         0hPoJ/DKUuuvCT7bj6a+F6qLiBRpDPIrTis5HFOkkWdfuPG3qGQ5d/rofdgiMKc7W9
-         MCxVUWk3IV/lh2SbFnLnpiHXrbU1dxDQX5h/0Dk+b74De+nQcO3S7NkN9OpWkYpUfH
-         yNAXCMrGI57HtkU/X+tZ1s19kecD75GSds6J0HyzKqzo6UzGhACZ9jGxCFHZFPusEv
-         a7mS8fCmoC0Tq1j6mK8Bh+IDCGS0FmFNTTOtLpcW/A07INmKsiH5C/TS2+4UY154i3
-         H30AomaBb6IMA==
-Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id DA4CCA005C;
-        Thu, 15 Apr 2021 05:39:52 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:39:51 +0400
-Date:   Thu, 15 Apr 2021 09:39:51 +0400
-Message-Id: <c2dbfb1790f41745d8972068f8ac635cf4d06fc7.1618464534.git.Arthur.Petrosyan@synopsys.com>
-In-Reply-To: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
-References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
-X-SNPS-Relay: synopsys.com
-From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 04/15] usb: dwc2: Fix hibernation between host and device modes.
-To:     John Youn <John.Youn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        Vardan Mikayelyan <Vardan.Mikayelyan@synopsys.com>,
-        Grigor Tovmasyan <Grigor.Tovmasyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+        id S230388AbhDOFkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:40:47 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:13764 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230204AbhDOFkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:40:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=KvftrG5Lhi1GCGuoRVYKNQEyYty8Kzz1Wdzom
+        p/vDD4=; b=S5hFYQolkCCfs1nHoOdOZXKwlirk5PCTD0DdUVaKS3GU91O5Pntt6
+        WLne41UtfDLfBYKDfMr1oeGZC42v8XlmqNaRA9pRzmNl+VVDAaPjBE+57/bMreFB
+        g1uz7JIRTJ6sR6cY5tA9EMHD70YgfZegto5dRjCDjT2Y8pfSB6PDBk=
+Received: from bobwxc.top (unknown [120.238.248.129])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgAXi9Gu0XdghZddAA--.16668S2;
+        Thu, 15 Apr 2021 13:40:00 +0800 (CST)
+Date:   Thu, 15 Apr 2021 13:39:58 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     "Zengtao (B)" <prime.zeng@hisilicon.com>
+Cc:     Alex Shi <alexs@kernel.org>, Bernard Zhao <bernard@vivo.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        YanTeng Si <sterlingteng@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v5] docs/zh_CN:
+ add translations in zh_CN/dev-tools/gcov
+Message-ID: <20210415053958.GB26262@bobwxc.top>
+References: <20210414082316.15160-1-bernard@vivo.com>
+ <20210414132127.GA13306@bobwxc.top>
+ <e26cc66e2a2745f994eb8ede9a783563@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e26cc66e2a2745f994eb8ede9a783563@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: LCKnCgAXi9Gu0XdghZddAA--.16668S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy5uw1UuFyUXFWrZr4fKrg_yoW5Ww4xpF
+        4DKFWfK3Wxury3CFW2gF1UAFyUAas7Ww4DKryIq3s0qrWqvr4Fyr17tryjgr9rWr48Za45
+        Za18WFyj93s0kFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyGb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
+        z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
+        vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
+        Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2
+        IY04v7MxkIecxEwVAFwVW8WwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4U
+        Jr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+        0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUUO6pPUUUUU==
+X-Originating-IP: [120.238.248.129]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When core is in hibernation in host mode and a device cable
-was connected then driver exited from device hibernation.
-However, registers saved for host mode and when exited from
-device hibernation register restore would be done for device
-register which was wrong because there was no device registers
-stored to restore.
+On Thu, Apr 15, 2021 at 04:01:55AM +0000, Zengtao (B) wrote:
+> > -----邮件原件-----
+> > 发件人: Wu XiangCheng [mailto:bobwxc@email.cn]
+> > 发送时间: 2021年4月14日 21:21
+> > 收件人: Alex Shi <alexs@kernel.org>; Bernard Zhao <bernard@vivo.com>
+> > 抄送: Jonathan Corbet <corbet@lwn.net>; YanTeng Si
+> > <sterlingteng@gmail.com>; Nathan Chancellor <nathan@kernel.org>; Nick
+> > Desaulniers <ndesaulniers@google.com>; linux-doc@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; clang-built-linux@googlegroups.com
+> > 主题: [PATCH v5] docs/zh_CN: add translations in zh_CN/dev-tools/gcov
+> > 
+> > From: Bernard Zhao <bernard@vivo.com>
+> > 
+> > Add new zh translations
+> > * zh_CN/dev-tools/gcov.rst
+> > * zh_CN/dev-tools/index.rst
+> > and link them to zh_CN/index.rst
+> > 
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
+> > Reviewed-by: Wu XiangCheng <bobwxc@email.cn>
+> > Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
+> > ---
+> > base: linux-next
+> > commit 269dd42f4776 ("docs/zh_CN: add riscv to zh_CN index")
+> > 
+> > Changes since V4:
+> > * modified some words under Alex Shi's advices
+> > 
+> > Changes since V3:
+> > * update to newest linux-next
+> > * fix ``
+> > * fix tags
+> > * fix list indent
+> > 
+> > Changes since V2:
+> > * fix some inaccurate translation
+> > 
+> > Changes since V1:
+> > * add index.rst in dev-tools and link to to zh_CN/index.rst
+> > * fix some inaccurate translation
+> > 
+> >  .../translations/zh_CN/dev-tools/gcov.rst     | 265 ++++++++++++++++++
+> >  .../translations/zh_CN/dev-tools/index.rst    |  35 +++
+> >  Documentation/translations/zh_CN/index.rst    |   1 +
+> >  3 files changed, 301 insertions(+)
+> >  create mode 100644 Documentation/translations/zh_CN/dev-tools/gcov.rst
+> >  create mode 100644 Documentation/translations/zh_CN/dev-tools/index.rst
+> > 
+> > diff --git a/Documentation/translations/zh_CN/dev-tools/gcov.rst
+> > b/Documentation/translations/zh_CN/dev-tools/gcov.rst
+> > new file mode 100644
+> > index 000000000000..7515b488bc4e
+> > --- /dev/null
+> > +++ b/Documentation/translations/zh_CN/dev-tools/gcov.rst
+> > @@ -0,0 +1,265 @@
+> > +.. include:: ../disclaimer-zh_CN.rst
+> > +
+> > +:Original: Documentation/dev-tools/gcov.rst
+> > +:Translator: 赵军奎 Bernard Zhao <bernard@vivo.com>
+> > +
+> > +在Linux内核里使用gcov做代码覆盖率检查
+> > +=====================================
+> > +
+> > +gcov是linux中已经集成的一个分析模块，该模块在内核中对GCC的代码
+> > 覆盖率统
+> 
+> Gcov is a tool/function, misleading for " gcov是linux中已经集成的一个分析
+> 模块"
+> 
+> I 'd suggest:
+> "Linux内核中已经集成一个特性支持gcov功能，该特性让用户可以使用gcov
+>  工具对内核代码覆盖率进行统计"
+> 
+> Thanks.
 
-- Added dwc_handle_gpwrdn_disc_det() function which handles
-  gpwrdn disconnect detect flow and exits hibernation
-  without restoring the registers.
-- Updated exiting from hibernation in GPWRDN_STS_CHGINT with
-  calling dwc_handle_gpwrdn_disc_det() function. Here no register
-  is restored which is the solution described above.
+Have rewrited it.
 
-Fixes: 65c9c4c6b01f ("usb: dwc2: Add dwc2_handle_gpwrdn_intr() handler")
-Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
----
- drivers/usb/dwc2/core_intr.c | 154 +++++++++++++++++++----------------
- 1 file changed, 83 insertions(+), 71 deletions(-)
-
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index 550c52c1a0c7..27d729fad227 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -680,6 +680,71 @@ static u32 dwc2_read_common_intr(struct dwc2_hsotg *hsotg)
- 		return 0;
- }
- 
-+/**
-+ * dwc_handle_gpwrdn_disc_det() - Handles the gpwrdn disconnect detect.
-+ * Exits hibernation without restoring registers.
-+ *
-+ * @hsotg: Programming view of DWC_otg controller
-+ * @gpwrdn: GPWRDN register
-+ */
-+static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
-+					      u32 gpwrdn)
-+{
-+	u32 gpwrdn_tmp;
-+
-+	/* Switch-on voltage to the core */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp &= ~GPWRDN_PWRDNSWTCH;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+	udelay(5);
-+
-+	/* Reset core */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp &= ~GPWRDN_PWRDNRSTN;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+	udelay(5);
-+
-+	/* Disable Power Down Clamp */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp &= ~GPWRDN_PWRDNCLMP;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+	udelay(5);
-+
-+	/* Deassert reset core */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp |= GPWRDN_PWRDNRSTN;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+	udelay(5);
-+
-+	/* Disable PMU interrupt */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp &= ~GPWRDN_PMUINTSEL;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+
-+	/* De-assert Wakeup Logic */
-+	gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
-+	gpwrdn_tmp &= ~GPWRDN_PMUACTV;
-+	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
-+
-+	hsotg->hibernated = 0;
-+	hsotg->bus_suspended = 0;
-+
-+	if (gpwrdn & GPWRDN_IDSTS) {
-+		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
-+		dwc2_core_init(hsotg, false);
-+		dwc2_enable_global_interrupts(hsotg);
-+		dwc2_hsotg_core_init_disconnected(hsotg, false);
-+		dwc2_hsotg_core_connect(hsotg);
-+	} else {
-+		hsotg->op_state = OTG_STATE_A_HOST;
-+
-+		/* Initialize the Core for Host mode */
-+		dwc2_core_init(hsotg, false);
-+		dwc2_enable_global_interrupts(hsotg);
-+		dwc2_hcd_start(hsotg);
-+	}
-+}
-+
- /*
-  * GPWRDN interrupt handler.
-  *
-@@ -701,64 +766,14 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 
- 	if ((gpwrdn & GPWRDN_DISCONN_DET) &&
- 	    (gpwrdn & GPWRDN_DISCONN_DET_MSK) && !linestate) {
--		u32 gpwrdn_tmp;
--
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_DISCONN_DET\n", __func__);
--
--		/* Switch-on voltage to the core */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp &= ~GPWRDN_PWRDNSWTCH;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--		udelay(10);
--
--		/* Reset core */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp &= ~GPWRDN_PWRDNRSTN;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--		udelay(10);
--
--		/* Disable Power Down Clamp */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp &= ~GPWRDN_PWRDNCLMP;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--		udelay(10);
--
--		/* Deassert reset core */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp |= GPWRDN_PWRDNRSTN;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--		udelay(10);
--
--		/* Disable PMU interrupt */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp &= ~GPWRDN_PMUINTSEL;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--
--		/* De-assert Wakeup Logic */
--		gpwrdn_tmp = dwc2_readl(hsotg, GPWRDN);
--		gpwrdn_tmp &= ~GPWRDN_PMUACTV;
--		dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
--
--		hsotg->hibernated = 0;
--
--		if (gpwrdn & GPWRDN_IDSTS) {
--			hsotg->op_state = OTG_STATE_B_PERIPHERAL;
--			dwc2_core_init(hsotg, false);
--			dwc2_enable_global_interrupts(hsotg);
--			dwc2_hsotg_core_init_disconnected(hsotg, false);
--			dwc2_hsotg_core_connect(hsotg);
--		} else {
--			hsotg->op_state = OTG_STATE_A_HOST;
--
--			/* Initialize the Core for Host mode */
--			dwc2_core_init(hsotg, false);
--			dwc2_enable_global_interrupts(hsotg);
--			dwc2_hcd_start(hsotg);
--		}
--	}
--
--	if ((gpwrdn & GPWRDN_LNSTSCHG) &&
--	    (gpwrdn & GPWRDN_LNSTSCHG_MSK) && linestate) {
-+		/*
-+		 * Call disconnect detect function to exit from
-+		 * hibernation
-+		 */
-+		dwc_handle_gpwrdn_disc_det(hsotg, gpwrdn);
-+	} else if ((gpwrdn & GPWRDN_LNSTSCHG) &&
-+		   (gpwrdn & GPWRDN_LNSTSCHG_MSK) && linestate) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_LNSTSCHG\n", __func__);
- 		if (hsotg->hw_params.hibernation &&
- 		    hsotg->hibernated) {
-@@ -769,24 +784,21 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 				dwc2_exit_hibernation(hsotg, 1, 0, 1);
- 			}
- 		}
--	}
--	if ((gpwrdn & GPWRDN_RST_DET) && (gpwrdn & GPWRDN_RST_DET_MSK)) {
-+	} else if ((gpwrdn & GPWRDN_RST_DET) &&
-+		   (gpwrdn & GPWRDN_RST_DET_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_RST_DET\n", __func__);
- 		if (!linestate && (gpwrdn & GPWRDN_BSESSVLD))
- 			dwc2_exit_hibernation(hsotg, 0, 1, 0);
--	}
--	if ((gpwrdn & GPWRDN_STS_CHGINT) &&
--	    (gpwrdn & GPWRDN_STS_CHGINT_MSK) && linestate) {
-+	} else if ((gpwrdn & GPWRDN_STS_CHGINT) &&
-+		   (gpwrdn & GPWRDN_STS_CHGINT_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_STS_CHGINT\n", __func__);
--		if (hsotg->hw_params.hibernation &&
--		    hsotg->hibernated) {
--			if (gpwrdn & GPWRDN_IDSTS) {
--				dwc2_exit_hibernation(hsotg, 0, 0, 0);
--				call_gadget(hsotg, resume);
--			} else {
--				dwc2_exit_hibernation(hsotg, 1, 0, 1);
--			}
--		}
-+		/*
-+		 * As GPWRDN_STS_CHGINT exit from hibernation flow is
-+		 * the same as in GPWRDN_DISCONN_DET flow. Call
-+		 * disconnect detect helper function to exit from
-+		 * hibernation.
-+		 */
-+		dwc_handle_gpwrdn_disc_det(hsotg, gpwrdn);
- 	}
- }
- 
--- 
-2.25.1
+Thanks
+Wu
 
