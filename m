@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D67360A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78711360A40
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhDONMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:12:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36824 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231482AbhDONMD (ORCPT
+        id S233086AbhDONMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233026AbhDONMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:12:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618492300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uJFJJborCVJEMqUuUmQ0ihhHIFtN58LgRcEx9fJY0yk=;
-        b=YfdYhD1KXOQofVDi6ddoyfUiLfmOSpXtVQo48PGgsItO1LiUx5Bi46thUvFlk12UnUU5rl
-        Cjjp7LYpRteqZB7Wtz1KvjifuKM/0sZQQ9SA5V1Q9mEUmsuW+csMfblwdqfiW8Fl7JO0I1
-        B2Zwi1X8/2q0XKteF2uCgdI0xB/S12A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-8zek38_XN6qIhkiadECvyA-1; Thu, 15 Apr 2021 09:11:36 -0400
-X-MC-Unique: 8zek38_XN6qIhkiadECvyA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 279A710054F6;
-        Thu, 15 Apr 2021 13:11:33 +0000 (UTC)
-Received: from [10.36.114.81] (ovpn-114-81.ams2.redhat.com [10.36.114.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0911660C22;
-        Thu, 15 Apr 2021 13:11:21 +0000 (UTC)
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
- <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-Date:   Thu, 15 Apr 2021 15:11:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 15 Apr 2021 09:12:35 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0E8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:12:10 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so12343847wmj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:12:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TUSZ/BomOYlWKTNTQpJ8HqVOZhEzMmsbC34dCgL4juw=;
+        b=aIsrTemccaGvtzgxncx3SEH3AGtsq45FIb2e3mR/w1P2nuD6g61axeT+uEGhNhck/r
+         FdyuxTbKue2w6Cp1QgUqlUvtlzY7IC1GYL3n+BP4x9Wg5zKkYMlM0PyrHoch+p5fz6+C
+         cnQueH0YTXw6n8jLTqkYY0/pEYopLxMYZ3kTXNGUYFMrgmLP7iavgVCe8gEf8U1wcynD
+         OVor81zIa7Y+fr3YMMzJLQeeJnuHa12Wd0viQQzB8CKpz5UWJCnxYsCuo7p93hgTbgis
+         K8+d9CnlrWQ9u6k1da9y4j96kPiMJQDLcJPztbDVmsd9Jv4DFA19dMBQDq/vRSVGG8d3
+         zohg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TUSZ/BomOYlWKTNTQpJ8HqVOZhEzMmsbC34dCgL4juw=;
+        b=uZfPvSQVR8caV3WEsdieAXcf0s9hz2/yLbOMKYOp4bo2kC7bzGMZ5J/Lc8jZ38I4Hz
+         /4SiUf7dLTL2gK1zXQNtJfhLHTE1GgvwD/+APbF8ANIiIKkp3qqs/BegLEjJ9j9GrYrG
+         S7JxqCgboopRxDVBOJ1qn3wF+EVtcC9B3eJ3lmw/eW/Hn2jfJ8dT59nL2vjj86vo/2IO
+         CZqCiyr9Aev9J6xP3Dkknxt58KU20mzvU8iSuTAsSymQsbo5WJmSSvyAKcvpaMI6RBLZ
+         YCxA51ZGPgJ6N1aRiHXGIVKABT8Q7oYLZMWfUTRCy7WqY2cfG9ZUqkN9EIwNiSYuObI3
+         tHLA==
+X-Gm-Message-State: AOAM533oKg8zZpzrgywp1Ua29Nq8dNJpKIb5ZuGdKTLOZyFEqjczDAW4
+        V+F61fE87+I1GjfL/uR/TGLiGQ==
+X-Google-Smtp-Source: ABdhPJy/MDbZwe+gvLFz77StseXRnPfAQ/GuF0VdBHDh9g6iaEP5utLLO9C0ujSmdYI9OVERJg48FA==
+X-Received: by 2002:a7b:c4cc:: with SMTP id g12mr3074244wmk.3.1618492329262;
+        Thu, 15 Apr 2021 06:12:09 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id h81sm3291938wmf.41.2021.04.15.06.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 06:12:08 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 13:12:05 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+Message-ID: <YHg7pfGKhzlMrXqC@google.com>
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210401160337.GJ1463678@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+Hi Vincent,
 
-On 4/1/21 6:03 PM, Jason Gunthorpe wrote:
-> On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
+On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
+> Some SoCs, such as the sd855 have OPPs within the same performance domain,
+> whose cost is higher than others with a higher frequency. Even though
+> those OPPs are interesting from a cooling perspective, it makes no sense
+> to use them when the device can run at full capacity. Those OPPs handicap
+> the performance domain, when choosing the most energy-efficient CPU and
+> are wasting energy. They are inefficient.
 > 
->> DMA page faults are delivered to root-complex via page request message and
->> it is per-device according to PCIe spec. Page request handling flow is:
->>
->> 1) iommu driver receives a page request from device
->> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
->>    page and requested permissions etc.
->> 3) iommu driver triggers fault handler registered by device driver with
->>    iommu_report_device_fault()
+> Hence, add support for such OPPs to the Energy Model, which creates for
+> each OPP a performance state. The Energy Model can now be read using the
+> regular table, which contains all performance states available, or using
+> an efficient table, where inefficient performance states (and by
+> extension, inefficient OPPs) have been removed.
 > 
-> This seems confused.
+> Currently, the efficient table is used in two paths. Schedutil, and
+> find_energy_efficient_cpu(). We have to modify both paths in the same
+> patch so they stay synchronized. The thermal framework still relies on
+> the original table and hence, DevFreq devices won't create the efficient
+> table.
 > 
-> The PASID should define how to handle the page fault, not the driver.
+> As used in the hot-path, the efficient table is a lookup table, generated
+> dynamically when the perf domain is created. The complexity of searching
+> a performance state is hence changed from O(n) to O(1). This also
+> speeds-up em_cpu_energy() even if no inefficient OPPs have been found.
 
-In my series I don't use PASID at all. I am just enabling nested stage
-and the guest uses a single context. I don't allocate any user PASID at
-any point.
+Interesting. Do you have measurements showing the benefits on wake-up
+duration? I remember doing so by hacking the wake-up path to force tasks
+into feec()/compute_energy() even when overutilized, and then running
+hackbench. Maybe something like that would work for you?
 
-When there is a fault at physical level (a stage 1 fault that concerns
-the guest), this latter needs to be reported and injected into the
-guest. The vfio pci driver registers a fault handler to the iommu layer
-and in that fault handler it fills a circ bugger and triggers an eventfd
-that is listened to by the VFIO-PCI QEMU device. this latter retrives
-the faault from the mmapped circ buffer, it knowns which vIOMMU it is
-attached to, and passes the fault to the vIOMMU.
-Then the vIOMMU triggers and IRQ in the guest.
+Just want to make sure we actually need all that complexity -- while
+it's good to reduce the asymptotic complexity, we're looking at a rather
+small problem (max 30 OPPs or so I expect?), so other effects may be
+dominating. Simply skipping inefficient OPPs could be implemented in a
+much simpler way I think.
 
-We are reusing the existing concepts from VFIO, region, IRQ to do that.
-
-For that use case, would you also use /dev/ioasid?
-
-Thanks
-
-Eric
-> 
-> I don't remember any device specific actions in ATS, so what is the
-> driver supposed to do?
-> 
->> 4) device driver's fault handler signals an event FD to notify userspace to
->>    fetch the information about the page fault. If it's VM case, inject the
->>    page fault to VM and let guest to solve it.
-> 
-> If the PASID is set to 'report page fault to userspace' then some
-> event should come out of /dev/ioasid, or be reported to a linked
-> eventfd, or whatever.
-> 
-> If the PASID is set to 'SVM' then the fault should be passed to
-> handle_mm_fault
-> 
-> And so on.
-> 
-> Userspace chooses what happens based on how they configure the PASID
-> through /dev/ioasid.
-> 
-> Why would a device driver get involved here?
-> 
->> Eric has sent below series for the page fault reporting for VM with passthru
->> device.
->> https://lore.kernel.org/kvm/20210223210625.604517-5-eric.auger@redhat.com/
-> 
-> It certainly should not be in vfio pci. Everything using a PASID needs
-> this infrastructure, VDPA, mdev, PCI, CXL, etc.
-> 
-> Jason
-> 
-
+Thanks,
+Quentin
