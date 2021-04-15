@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C97360BCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD85F360BD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhDOObI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:31:08 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55317 "EHLO m43-7.mailgun.net"
+        id S233393AbhDOObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:31:15 -0400
+Received: from phobos.denx.de ([85.214.62.61]:40646 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhDOObG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:31:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618497043; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=0Ah5ryHnTWmb/aziyAyTop0bFjbjJbdTwgbBd55EmSw=; b=vl5UUJ6oMkQtDIdT0Ty1FE3vTOuTkAp7fomDpOwKCY1rftJnwJQu5yk0bf7v9yfhqqIJ9hLC
- 3Ys+Uu4LM8JuUaRlbirtNzLJlewFNH9NxA96ryRCOHFNuuIApFkyQH2RT25ql86cIn6loLK5
- TqbDA1gbFdQW0OS3TkecmfKAbIY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60784df774f773a66492b4ea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 14:30:15
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E7CBEC43461; Thu, 15 Apr 2021 14:30:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hydlnxeng14.qualcomm.com (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S233341AbhDOObM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:31:12 -0400
+X-Greylist: delayed 4155 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 10:31:11 EDT
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7F8EC433CA;
-        Thu, 15 Apr 2021 14:30:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7F8EC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] sched,psi: fix the 'int' underflow for psi
-Date:   Thu, 15 Apr 2021 19:59:41 +0530
-Message-Id: <1618496981-6148-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 31C6B81FD5;
+        Thu, 15 Apr 2021 16:30:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1618497045;
+        bh=QCFlP+DjDQQ/peWcEBQFC8IoSA2aoys0PklnNs1hhLw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Hg5s2vAe5leyJERNEtnaXGvcHS2i5r2lX942XGx3T7rPZx1Lddv495O0ezzI3YJEe
+         274OkqHdDLEBNFVviWcCwoQGQ8Xv2Y/JrM0TNLi8jsC2Tt2fl2/hs0p+l2a4TPHwko
+         6Euo2siHp9C6s0HuameFet8tjz0DJsBgk1tEt0tp0JvcLTYPvyj8FPeV95YH7FIfud
+         xMazhhb7XSzjBgpYzrN8RHaSY+QYWgHdub6eRo5UB16NVVsgCRSsXLHntW7G0fJvL0
+         F54soBKqD3w7kY8+s0dYzbslIVCyO8Y23VkDSJDeiRoBjVsa/HnY9CH7t+8okXEv16
+         efWSkQJG/d5QA==
+Subject: Re: [PATCH 11/13] ARM: dts: stm32: fix LTDC port node on STM32 MCU ad
+ MPU
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>, arnd@arndb.de,
+        robh+dt@kernel.org, jagan@amarulasolutions.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        kuba@kernel.org
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-12-alexandre.torgue@foss.st.com>
+ <3b39908b-a263-a5d4-f6ac-ac30ffb06269@denx.de>
+ <36e9f0df-dfdb-e2f5-3d6e-ac32a1b8156e@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <fa3885df-8977-9540-f2af-d4095f519483@denx.de>
+Date:   Thu, 15 Apr 2021 16:30:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <36e9f0df-dfdb-e2f5-3d6e-ac32a1b8156e@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-psi_group_cpu->tasks, represented by the unsigned int, stores the number
-of tasks that could be stalled on a psi resource(io/mem/cpu).
-Decrementing these counters at zero leads to wrapping which further
-leads to the psi_group_cpu->state_mask is being set with the respective
-pressure state. This could result into the unnecessary time sampling for
-the pressure state thus cause the spurious psi events. This can further
-lead to wrong actions being taken at the user land based on these psi
-events.
-Though psi_bug is set under these conditions but that just for debug
-purpose. Fix it by decrementing the ->tasks count only when it is
-non-zero.
+On 4/15/21 3:34 PM, Alexandre TORGUE wrote:
+> Hi Marek
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- kernel/sched/psi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hello Alexandre,
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 967732c..f925468 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -718,7 +718,8 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 					groupc->tasks[3], clear, set);
- 			psi_bug = 1;
- 		}
--		groupc->tasks[t]--;
-+		if (groupc->tasks[t])
-+			groupc->tasks[t]--;
- 	}
- 
- 	for (t = 0; set; set &= ~(1 << t), t++)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+>>> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts 
+>>> b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>> index 2bc92ef3aeb9..19ef475a48fc 100644
+>>> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>> @@ -82,9 +82,15 @@
+>>>   };
+>>>   &ltdc {
+>>> -    status = "okay";
+>>> -
+>>>       port {
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <0>;
+>>> +
+>>> +        ltdc_ep0_out: endpoint@0 {
+>>> +            reg = <0>;
+>>> +            remote-endpoint = <&sii9022_in>;
+>>> +        };
+>>> +
+>>>           ltdc_ep1_out: endpoint@1 {
+>>>               reg = <1>;
+>>>               remote-endpoint = <&dsi_in>;
+>>
+>> [...]
+>>
+>>> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi 
+>>> b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>> index 64dca5b7f748..e7f10975cacf 100644
+>>> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>> @@ -277,11 +277,7 @@
+>>>       status = "okay";
+>>>       port {
+>>> -        #address-cells = <1>;
+>>> -        #size-cells = <0>;
+>>> -
+>>> -        ltdc_ep0_out: endpoint@0 {
+>>> -            reg = <0>;
+>>> +        ltdc_ep0_out: endpoint {
+>>>               remote-endpoint = <&adv7513_in>;
+>>>           };
+>>>       };
+>>
+>> I think this is wrong, the AV96 can have two displays connected to two 
+>> ports of the LTDC, just like DK2 for example.
+> 
+> As for dk2 address/size cells are added only if there are 2 endpoints. 
+> It is for this reason I moved endpoint0 definition from stm32mp15xx-dkx 
+> to stm32mp151a-dk1.dts (dk1 has only one endpoint).
+> 
+> Here it's the same, if you have second endpoint then adress/size will 
+> have to be added.
 
+That's a bit problematic. Consider either the use case of DTO which adds 
+the other display, or even a custom board DTS. Without your patch, this 
+works:
+
+arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+&ltdc {
+   ...
+   ports {
+     ltdc_ep0_out: endpoint@0 {
+       remote-endpoint = <&adv7513_in>;
+     };
+   };
+};
+
+board-with-display.dts or board-overlay.dts
+&ltdc {
+   ports {
+     endpoint@1 { // just add another endpoint@1, no problem
+       remote-endpoint = <&display>;
+     };
+   };
+};
+
+With your patch, the DTS would have to modify the "endpoint" node to be 
+"endpoint@0" probably with a whole lot of /detele-node/ etc. magic (DTO 
+cannot do that, so that's a problem, and I do use DTOs on AV96 
+extensively for the various expansion cards) and then add the 
+endpoint@1. That becomes real complicated in custom board DT, and 
+impossible with DTO.
