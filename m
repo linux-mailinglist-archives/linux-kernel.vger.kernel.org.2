@@ -2,150 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A8F3610B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CAE3610BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhDOREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S233772AbhDORHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDORD7 (ORCPT
+        with ESMTP id S233330AbhDORHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:03:59 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DDDC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:03:36 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id z8so27889984ljm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:03:36 -0700 (PDT)
+        Thu, 15 Apr 2021 13:07:14 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F312C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:06:51 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s15so28978942edd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:06:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8nRxp9yxovE2rmz0BaOdHpuJsy82akPvndDf9QOMYI=;
-        b=UJ/0rFU007c1xrSDt8rnZaY/C/1wRNIWX286uco8cqj/s1k0wTz/Ujh2svSH30FjaK
-         XZxpO8u7ysEBnv0NcKQ6dpO+A7eotLNYjTXnUYy3V4XHhFL97q6dQrqErGkeVyLzoPyM
-         evSWoRUKIrCVBH9EKNzM7YPyS/tfKFqIVyfQhe9TTbCJq4kpxktOhkBsUT6sa4veCcK0
-         Jkq3Hcp2rb1dcFf8JUBPOJaNKkW/wUMRirwse8u+dFV6BPCyyKZ87niieDLZDN/I6n7r
-         uVFfDpxnHrlO8VrY6z0ZjHBAcVmB/EYs5p8a51hOiHFPmWy7s09RQUEGXYYLeGwLbEgk
-         5GYg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qiaTdRxVP+PjHJWnCOqI9pORWv0g/7bqvQKS7jz0//U=;
+        b=SeU4I60J41yRkWpulsHcyPQ0lGGZjLMdyTuau+HGDQ2VjSz3SciXMHUC3QvsZbqVcZ
+         voda+hYW9t0JiCwoD+6pWkUmyxu8t2ZvdA/PN+qMiHpbrhnM+z79QAtyGCb9577D4F/5
+         cb8mDEjiHuRcGGOQl8CsUsHU8dKj4L/bTu8JwtubTZWnlJ10yUV9DMW9zk7oyUTfilo1
+         PB96VLQ5miWm6uBcSkcY8dsCa9J0GgeCuRyJETl9c6vJAtiTh6alxsYKQ7tEbzHCPbv7
+         V8YMGaYrHRewcISh9agCA2zc5m6KwvJEMnVq5HSSWud0g0I+Sf58ew0RLoRfmX/dGO6f
+         uHsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8nRxp9yxovE2rmz0BaOdHpuJsy82akPvndDf9QOMYI=;
-        b=cTAzDY4wyuFiTsrrDEbaDKFLLQXk7v/6sZ4Y3YTiUNiC6K3niVCUgh1cR5XRfdJ28w
-         ch7ISbbGkVRWl3dBT9RpADbFBAwmEbVAyZ+qj5/1oVShRPwT+PUYbm7ySMtR7ZGQL5tF
-         XLWAckghsgz37KoF9anSTKVv8VoaLY6M4eT4TbA4gsMDnu5Xe1GUrbaV1DE5OHYR4ZZE
-         VKn6kZrVxzfrOfs7wxemSrjaVR/R7/vr7HWhgP6S+NlLrVmAVCKk09savk2kNQCc2QYA
-         o+8M8+D+/5/C2Dih8oM63l1hpnOwprCKz8TV5VuFTkP26uPeqnIvYP+ph5sz+Jt2LK+D
-         iZeg==
-X-Gm-Message-State: AOAM532NBeQmieRYVZsGH/XWw+6Cs2Wnjen/CFPdGZh6RzWMuK/mVl0i
-        1jx8Ub3JE+b1EJMT/Te9gEyFP/y8IO1KHNRFeglbyA==
-X-Google-Smtp-Source: ABdhPJzdrq2tUExTUzkH5bkt6SJE+5dWE9+ZFyIQkUZDabxJo2IcH+5mYxkVQlZgH+J+JU3vOyIDEuaaM678dV7Y+wU=
-X-Received: by 2002:a2e:968a:: with SMTP id q10mr121750lji.0.1618506214722;
- Thu, 15 Apr 2021 10:03:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qiaTdRxVP+PjHJWnCOqI9pORWv0g/7bqvQKS7jz0//U=;
+        b=tL0wpnQjCc7PAIE8zE+Hqz6ghnZZYOJ8aGIayXmG9GNDtqUVDQx99txnvAaMikeCpt
+         XnbT5ycYq6tNYMRxuquoL5LU7P0gRWBoYpZML+QuREEaMX4WLmRXo+y0rk7XpuwZH/2a
+         MzIYnzaYcGPkCl1bWUWtk19we6crJx8US97rrv19pnF3UzOeFpGqj3h6pdOSar6fsQee
+         CjcZRJr1GHOpGuIwjXzi4x5UpvAmmVLZtrvC1WCpp/Pun1c8SPmwtasSKQVCmJ/GRdPP
+         WKTj2ayLNvdQvmXdWgE9bUGjoanLm2YLUaInncWTV/OHSsPzvQxZE7f/LP1N/jWROc8n
+         u3pw==
+X-Gm-Message-State: AOAM5316X0tLRS2dnm1irnofj3AkcDyL+hiRZ+Lv8xX+60fY5RtOucD2
+        GdGGN7RMBAR5fZQHsQ20ImZBkA==
+X-Google-Smtp-Source: ABdhPJxnIwBJcv7n1yI2CZjRa7oKLiVaHxuL6ZCvd/+6CoD3FiDgjO1KW9xeG7XlP6U3ppCryqzvfQ==
+X-Received: by 2002:aa7:c349:: with SMTP id j9mr5643684edr.41.1618506409735;
+        Thu, 15 Apr 2021 10:06:49 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id cq26sm3046543edb.60.2021.04.15.10.06.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 10:06:49 -0700 (PDT)
+Subject: Re: [PATCH v4 1/9] ASoC: dt-bindings: wcd938x: add bindings for
+ wcd938x
+To:     Rob Herring <robh@kernel.org>
+Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
+ <20210414154845.21964-2-srinivas.kandagatla@linaro.org>
+ <20210415162947.GA1511094@robh.at.kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <019aa3c0-56ce-de17-4d64-be6dbc0a3a65@linaro.org>
+Date:   Thu, 15 Apr 2021 18:06:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210415094305.30964-1-zhaoxiao@uniontech.com>
-In-Reply-To: <20210415094305.30964-1-zhaoxiao@uniontech.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 15 Apr 2021 10:03:23 -0700
-Message-ID: <CAKwvOdmNkMb35q=jNfpGSxtabaDSQStXtWHrnYaBizRq+GQ2XQ@mail.gmail.com>
-Subject: Re: [PATCH] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>, clin@suse.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210415162947.GA1511094@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 2:43 AM zhaoxiao <zhaoxiao@uniontech.com> wrote:
->
-> In preparation for x86 supporting ftrace built on other compiler
-> options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
-> flags, whatever these may be, rather than assuming '-pg'.
->
-> There should be no functional change as a result of this patch.
->
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
->  arch/x86/kernel/Makefile | 16 ++++++++--------
->  arch/x86/lib/Makefile    |  2 +-
-
-I see additional CFLAGS_REMOVE_* = -pg in
-- arch/x86/mm/Makefile
-- arch/x86/kernel/cpu/Makefile
-- arch/x86/entry/vdso/Makefile
-- arch/x86/um/vdso/Makefile
-- arch/x86/xen/Makefile
-
-Would this same change be appropriate to all of the above?  Seeing the
-additional possible values of CC_FLAGS_FTRACE (`-mrecord-mcount`,
-`-mnop-mcount`, `-mfentry`) makes we wonder if those are currently
-broken for these files as they are not removed, or if only `-pg` is
-problematic?
-
-Thank you for the patch.
-
->  2 files changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 2ddf08351f0b..2811fc6a17ba 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
->
->  ifdef CONFIG_FUNCTION_TRACER
->  # Do not profile debug and lowlevel utilities
-> -CFLAGS_REMOVE_tsc.o = -pg
-> -CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
-> -CFLAGS_REMOVE_pvclock.o = -pg
-> -CFLAGS_REMOVE_kvmclock.o = -pg
-> -CFLAGS_REMOVE_ftrace.o = -pg
-> -CFLAGS_REMOVE_early_printk.o = -pg
-> -CFLAGS_REMOVE_head64.o = -pg
-> -CFLAGS_REMOVE_sev-es.o = -pg
-> +CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
->  endif
->
->  KASAN_SANITIZE_head$(BITS).o                           := n
-> diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-> index bad4dee4f0e4..0aa71b8a5bc1 100644
-> --- a/arch/x86/lib/Makefile
-> +++ b/arch/x86/lib/Makefile
-> @@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
->  KCSAN_SANITIZE_cmdline.o  := n
->
->  ifdef CONFIG_FUNCTION_TRACER
-> -CFLAGS_REMOVE_cmdline.o = -pg
-> +CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
->  endif
->
->  CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
-> --
-> 2.20.1
->
->
->
 
 
--- 
-Thanks,
-~Nick Desaulniers
+On 15/04/2021 17:29, Rob Herring wrote:
+>> +    codec {
+>> +        compatible = "qcom,wcd9380-codec";
+>> +        reset-gpios = <&tlmm 32 0>;
+>> +        #sound-dai-cells = <1>;
+>> +        qcom,tx-device = <&wcd938x_tx>;
+>> +        qcom,rx-device = <&wcd938x_rx>;
+>> +        qcom,micbias1-microvolt = <1800000>;
+>> +        qcom,micbias2-microvolt = <1800000>;
+>> +        qcom,micbias3-microvolt = <1800000>;
+>> +        qcom,micbias4-microvolt = <1800000>;
+>> +        qcom,mbhc-hphl-switch;
+>> +        qcom,mbhc-ground-switch;
+>> +        qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+>> +        qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+>> +        qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+>> +        qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+>> +    };
+>> +
+>> +    /* ... */
+>> +
+>> +    soundwire@3230000 {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <0>;
+>> +        reg = <0x03230000 0x2000>;
+>> +        wcd938x_tx: codec@0,3 {
+>> +            compatible = "sdw20217010d00";
+>> +            reg  = <0 3>;
+>> +            qcom,direction = "tx";
+>> +            qcom,port-mapping = <2 3 4 5>;
+>> +        };
+>> +
+>> +        wcd938x_rx: codec@0,4 {
+>> +            compatible = "sdw20217010d00";
+>> +            reg  = <0 4>;
+>> +            qcom,direction = "rx";
+>> +            qcom,port-mapping = <1 2 3 4 5>;
+>> +        };
+
+> This is a single device, right? We shouldn't need 3 nodes to describe
+
+Just realized that the example is bit misleading here.
+It should look like:
+
+  codec {
+         compatible = "qcom,wcd9380-codec";
+         reset-gpios = <&tlmm 32 0>;
+         #sound-dai-cells = <1>;
+         qcom,tx-device = <&wcd938x_tx>;
+         qcom,rx-device = <&wcd938x_rx>;
+         qcom,micbias1-microvolt = <1800000>;
+         qcom,micbias2-microvolt = <1800000>;
+         qcom,micbias3-microvolt = <1800000>;
+         qcom,micbias4-microvolt = <1800000>;
+         qcom,mbhc-hphl-switch;
+         qcom,mbhc-ground-switch;
+         qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+         qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+         qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+         qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+         qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+     };
+
+
+soundwire-controller@3230000 {
+	reg = <0 0x3230000 0 0x2000>;
+	compatible = "qcom,soundwire-v1.5.1";
+	wcd938x_tx: codec@0,3 {
+		compatible = "sdw20217010d00";
+		reg  = <0 3>;
+		qcom,direction = "tx";
+		qcom,port-mapping = <2 3 4 5>;
+	};
+};
+
+
+soundwire-controller@3210000 {
+	reg = <0 0x3210000 0 0x2000>;
+	compatible = "qcom,soundwire-v1.5.1";
+	 wcd938x_rx: codec@0,4 {
+		compatible = "sdw20217010d00";
+		reg  = <0 4>;
+		qcom,direction = "rx";
+		qcom,port-mapping = <1 2 3 4 5>;
+	};
+};
+
+
+--srini
