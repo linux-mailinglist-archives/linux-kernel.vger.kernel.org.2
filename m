@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24483360CCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2C0360C51
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234269AbhDOOxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38482 "EHLO mail.kernel.org"
+        id S233765AbhDOOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234003AbhDOOvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B733613C1;
-        Thu, 15 Apr 2021 14:51:08 +0000 (UTC)
+        id S233562AbhDOOtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D29961029;
+        Thu, 15 Apr 2021 14:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498268;
-        bh=HPuqvidDJ8JOu/ztHPpa7knjrlZvsLIhK2ifuXy5ccw=;
+        s=korg; t=1618498159;
+        bh=Ub6m28BE0ICh1XxVxZ+Mu45AI4DQtsYrFPeIFqel9RM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fS/hKtD85pivxJxj+bevtXkwY7CLWvPnq1VO6rtb96VrLN1rq+ub3FWmGiahTMxCf
-         nUsb1a3Fk/qOQbkLU0uvww4+yIIWFO2MKZGbxWwQqqZa8hD1oRFd9VqDUngISZHO7C
-         U+JjUVMNOTcoh3gUM+Ac3kdPlQW5UxhoznyoouFk=
+        b=brbiyeQszsMXoazK5qr8Jzv/qB1S+hJXXH9q9n3ZRdMFt13QyX5QphaH8S1us9hII
+         yNYWEMJikqLq1Oakv1WhZnM70yAPWk5y2sdmb6MZ6UlOHCH7HLx+wHO1uOQ16+sT3m
+         f9yNZjfN2OXhcDQ4iXlFb0p+nrwVc8XApGzXt7dI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 23/47] workqueue: Move the position of debug_work_activate() in __queue_work()
-Date:   Thu, 15 Apr 2021 16:47:15 +0200
-Message-Id: <20210415144414.197213846@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+5f9392825de654244975@syzkaller.appspotmail.com,
+        Du Cheng <ducheng2@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.4 22/38] cfg80211: remove WARN_ON() in cfg80211_sme_connect
+Date:   Thu, 15 Apr 2021 16:47:16 +0200
+Message-Id: <20210415144414.058015430@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Du Cheng <ducheng2@gmail.com>
 
-[ Upstream commit 0687c66b5f666b5ad433f4e94251590d9bc9d10e ]
+commit 1b5ab825d9acc0f27d2f25c6252f3526832a9626 upstream.
 
-The debug_work_activate() is called on the premise that
-the work can be inserted, because if wq be in WQ_DRAINING
-status, insert work may be failed.
+A WARN_ON(wdev->conn) would trigger in cfg80211_sme_connect(), if multiple
+send_msg(NL80211_CMD_CONNECT) system calls are made from the userland, which
+should be anticipated and handled by the wireless driver. Remove this WARN_ON()
+to prevent kernel panic if kernel is configured to "panic_on_warn".
 
-Fixes: e41e704bc4f4 ("workqueue: improve destroy_workqueue() debuggability")
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Bug reported by syzbot.
+
+Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Link: https://lore.kernel.org/r/20210407162756.6101-1-ducheng2@gmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/workqueue.c | 2 +-
+ net/wireless/sme.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 205c3131f8b0..3231088afd73 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1377,7 +1377,6 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
- 	 */
- 	WARN_ON_ONCE(!irqs_disabled());
+--- a/net/wireless/sme.c
++++ b/net/wireless/sme.c
+@@ -507,7 +507,7 @@ static int cfg80211_sme_connect(struct w
+ 	if (wdev->current_bss)
+ 		return -EALREADY;
  
--	debug_work_activate(work);
+-	if (WARN_ON(wdev->conn))
++	if (wdev->conn)
+ 		return -EINPROGRESS;
  
- 	/* if draining, only works from the same workqueue are allowed */
- 	if (unlikely(wq->flags & __WQ_DRAINING) &&
-@@ -1460,6 +1459,7 @@ retry:
- 		worklist = &pwq->delayed_works;
- 	}
- 
-+	debug_work_activate(work);
- 	insert_work(pwq, work, worklist, work_flags);
- 
- 	spin_unlock(&pwq->pool->lock);
--- 
-2.30.2
-
+ 	wdev->conn = kzalloc(sizeof(*wdev->conn), GFP_KERNEL);
 
 
