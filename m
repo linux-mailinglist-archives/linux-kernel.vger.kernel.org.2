@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4162D360C9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15C5360C67
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbhDOOwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:52:15 -0400
+        id S233984AbhDOOuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:46 -0400
 Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232767AbhDOOu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:50:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01D386113B;
-        Thu, 15 Apr 2021 14:50:31 +0000 (UTC)
+        id S233868AbhDOOuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:50:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FE53613BB;
+        Thu, 15 Apr 2021 14:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498232;
+        s=korg; t=1618498189;
         bh=y7Cv+OVHuX4wPsXxP2+C6mwyl21cXJ8vYFpW84dFT1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hheCZu9b8PZSXZm9PFxl31W/3NOjUb8D2UxR5BW5s05np8NI6bUZ94ybyj28y4UIT
-         Sh1udGRNSVNgOfctOyonC8nT5xl2SX/G5hOzBDCoZaYrXPn5/jMN/mfkWtuy02xCXV
-         BzjWKv5Fk/a8xFV474zbK7vxQlXMgFKScD22u7DM=
+        b=afg+broNJ1BcFS1WxLTsA/jE51nNOMomSkk8T0QufjKSTouDkWOjZFV88FnESHPlg
+         JsRUBKcerMcgvLHDQYOd69i7pWP+jkle/0bRdTSG9Rx1HlquwuPcJzPUenOVOBXXHX
+         iwBC4PVtxHdg00VbQqQVe6zQoWB777KJ78bcUvvw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Oleg Nesterov <oleg@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 11/47] ia64: fix user_stack_pointer() for ptrace()
+Subject: [PATCH 4.4 09/38] ia64: fix user_stack_pointer() for ptrace()
 Date:   Thu, 15 Apr 2021 16:47:03 +0200
-Message-Id: <20210415144413.836396126@linuxfoundation.org>
+Message-Id: <20210415144413.652932081@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
