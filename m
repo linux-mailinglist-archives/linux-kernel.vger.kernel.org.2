@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB123609F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64C9360A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhDONFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:05:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36774 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhDONFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:05:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5DD2BAF0F;
-        Thu, 15 Apr 2021 13:04:39 +0000 (UTC)
-Subject: Re: [PATCH 10/11] mm/page_alloc: Update PGFREE outside the zone lock
- in __free_pages_ok
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20210414133931.4555-1-mgorman@techsingularity.net>
- <20210414133931.4555-11-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5fd4ecc7-460d-ae44-2722-8c6ab405a82a@suse.cz>
-Date:   Thu, 15 Apr 2021 15:04:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S232655AbhDONG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:06:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48594 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233102AbhDONGX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:06:23 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lX1h1-0000Dq-Bl; Thu, 15 Apr 2021 13:05:59 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Richard Russon <ldm@flatcap.org>, Jens Axboe <axboe@kernel.dk>,
+        linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] partitions/ldm: remove redundant assignment to variable r_index
+Date:   Thu, 15 Apr 2021 14:05:59 +0100
+Message-Id: <20210415130559.1960198-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210414133931.4555-11-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 3:39 PM, Mel Gorman wrote:
-> VM events do not need explicit protection by disabling IRQs so
-> update the counter with IRQs enabled in __free_pages_ok.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+From: Colin Ian King <colin.king@canonical.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+The variable r_index is being assigned a value that is never read,
+the assignment is redundant and can be removed.
 
-> ---
->  mm/page_alloc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index a0b210077178..8a94fe77bef7 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1569,10 +1569,11 @@ static void __free_pages_ok(struct page *page, unsigned int order,
->  	migratetype = get_pfnblock_migratetype(page, pfn);
->  
->  	spin_lock_irqsave(&zone->lock, flags);
-> -	__count_vm_events(PGFREE, 1 << order);
->  	migratetype = check_migratetype_isolated(zone, page, pfn, migratetype);
->  	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
->  	spin_unlock_irqrestore(&zone->lock, flags);
-> +
-> +	__count_vm_events(PGFREE, 1 << order);
->  }
->  
->  void __free_pages_core(struct page *page, unsigned int order)
-> 
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ block/partitions/ldm.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/block/partitions/ldm.c b/block/partitions/ldm.c
+index d333786b5c7e..b40c0ac9022c 100644
+--- a/block/partitions/ldm.c
++++ b/block/partitions/ldm.c
+@@ -964,7 +964,6 @@ static bool ldm_parse_prt3(const u8 *buffer, int buflen, struct vblk *vb)
+ 		}
+ 		len = r_index;
+ 	} else {
+-		r_index = 0;
+ 		len = r_diskid;
+ 	}
+ 	if (len < 0) {
+-- 
+2.30.2
 
