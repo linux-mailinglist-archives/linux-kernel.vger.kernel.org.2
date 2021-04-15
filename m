@@ -2,112 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9153613A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197123613A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhDOUkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:40:13 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34902 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbhDOUkM (ORCPT
+        id S235367AbhDOUlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:41:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234536AbhDOUlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:40:12 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lX8m8-0001rQ-My; Thu, 15 Apr 2021 16:39:44 -0400
-Message-ID: <a5abd06c61e4152b483043f8b180ba041f0464d1.camel@surriel.com>
-Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
-From:   Rik van Riel <riel@surriel.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Date:   Thu, 15 Apr 2021 16:39:44 -0400
-In-Reply-To: <20210415175846.494385-3-valentin.schneider@arm.com>
-References: <20210415175846.494385-1-valentin.schneider@arm.com>
-         <20210415175846.494385-3-valentin.schneider@arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-TXy3XvJZvO43nCmvBjz0"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 15 Apr 2021 16:41:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618519250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CsPfzp1p/2pzO6cfMOH8ycpbd/j0e31h/uzGn/wi2UA=;
+        b=CXl4G4eIuCuDDD56alL3iD76JXs4+uUmIGDa11wBaEGHapEBLrhkqJDPsUlfjYPUJniWIZ
+        bDLmWcXhU3k/VM8G5oAesKqfthayQHpR8lU0Z/D/MckvvSREar8r9dBF43bsE0PZ7pIkO1
+        pQyhostxcXR1Ahh/nBpK/9tziCLgTYU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-xxC1izwgM6SfYI9q4iVU8A-1; Thu, 15 Apr 2021 16:40:46 -0400
+X-MC-Unique: xxC1izwgM6SfYI9q4iVU8A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57581874998;
+        Thu, 15 Apr 2021 20:40:45 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B5AC10074E1;
+        Thu, 15 Apr 2021 20:40:38 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 22E994179B89; Thu, 15 Apr 2021 17:40:17 -0300 (-03)
+Date:   Thu, 15 Apr 2021 17:40:17 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>
+Subject: [PATCH v4] hrtimer: avoid retrigger_next_event IPI
+Message-ID: <20210415204017.GA111847@fuller.cnet>
+References: <20210407135301.GA16985@fuller.cnet>
+ <87o8en4k9a.ffs@nanos.tec.linutronix.de>
+ <20210409165146.GA40118@fuller.cnet>
+ <87lf9q4lue.ffs@nanos.tec.linutronix.de>
+ <20210413170431.GA16190@fuller.cnet>
+ <20210415153935.GA69750@fuller.cnet>
+ <87im4nv0fh.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87im4nv0fh.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Setting the realtime clock triggers an IPI to all CPUs to reprogram
+the clock event device.
 
---=-TXy3XvJZvO43nCmvBjz0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+However, only realtime and TAI clocks have their offsets updated
+(and therefore potentially require a reprogram).
 
-On Thu, 2021-04-15 at 18:58 +0100, Valentin Schneider wrote:
-> Consider the following topology:
->=20
-> Long story short, preempted misfit tasks are affected by task_hot(),
-> while
-> currently running misfit tasks are intentionally preempted by the
-> stopper
-> task to migrate them over to a higher-capacity CPU.
->=20
-> Align detach_tasks() with the active-balance logic and let it pick a
-> cache-hot misfit task when the destination CPU can provide a capacity
-> uplift.
->=20
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Instead of sending an IPI unconditionally, check each per CPU hrtimer base
+whether it has active timers in the CLOCK_REALTIME and CLOCK_TAI bases. If
+that's not the case, update the realtime and TAI base offsets remotely and
+skip the IPI. This ensures that any subsequently armed timers on
+CLOCK_REALTIME and CLOCK_TAI are evaluated with the correct offsets.
 
-Reviewed-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
+---
 
-This patch looks good, but...
+v4:
+   - Drop unused code (Thomas).
 
-> @@ -7672,6 +7698,15 @@ int can_migrate_task(struct task_struct *p,
-> struct lb_env *env)
->  	if (tsk_cache_hot =3D=3D -1)
->  		tsk_cache_hot =3D task_hot(p, env);
-> =20
-> +	/*
-> +	 * On a (sane) asymmetric CPU capacity system, the increase in
-> compute
-> +	 * capacity should offset any potential performance hit caused
-> by a
-> +	 * migration.
-> +	 */
-> +	if ((env->dst_grp_type =3D=3D group_has_spare) &&
-> +	    !migrate_degrades_capacity(p, env))
-> +		tsk_cache_hot =3D 0;
+v3:
+   - Nicer changelog  (Thomas).
+   - Code style fixes (Thomas).
+   - Compilation warning with CONFIG_HIGH_RES_TIMERS=n (Thomas).
+   - Shrink preemption disabled section (Thomas).
 
-... I'm starting to wonder if we should not rename the
-tsk_cache_hot variable to something else to make this
-code more readable. Probably in another patch :)
+v2:
+   - Only REALTIME and TAI bases are affected by offset-to-monotonic changes (Thomas).
+   - Don't special case nohz_full CPUs (Thomas).
 
---=20
-All Rights Reversed.
-
---=-TXy3XvJZvO43nCmvBjz0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB4pJAACgkQznnekoTE
-3oNZBQgAiarBNquYuLTpU8dvB0Q9jSo4pszYmC09h7UUCB5m9GWLbvBSxG1VvCF1
-dWGxCwoj3tkjmlbmGjxTwQUh9Q2PHiIFC0gJu8GBpyj6bRk/ICakO3U2+WjD3lNf
-HbTrkb6FH8DJ52QhiyxzOiMkcuMkTtrCCD98EdqUwXxba6ZAxNiMsnQ5+7xYz+Pe
-uGqfAjuIGloMvKbejE4myMg3dfQvOSHovPUC0lsLJnYbEereFA2mt3+JwQ8IXW47
-gDmYwfhspr7eslvTIyZiQfqkY2GBOgyDlez5a9yD8EBJnzYsrj2cuPhbgSfw5oY2
-DOWIyz510QNL3NiBSWEwm8yrLGai7g==
-=G9Ps
------END PGP SIGNATURE-----
-
---=-TXy3XvJZvO43nCmvBjz0--
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 5c9d968187ae..e228c0a0c98f 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -871,6 +871,19 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ 	tick_program_event(expires, 1);
+ }
+ 
++#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME) |	\
++			 (1U << HRTIMER_BASE_REALTIME_SOFT) |	\
++			 (1U << HRTIMER_BASE_TAI) |		\
++			 (1U << HRTIMER_BASE_TAI_SOFT))
++
++static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
++{
++	if (cpu_base->softirq_activated)
++		return true;
++
++	return (cpu_base->active_bases & CLOCK_SET_BASES) != 0;
++}
++
+ /*
+  * Clock realtime was set
+  *
+@@ -885,8 +898,32 @@ static void hrtimer_reprogram(struct hrtimer *timer, bool reprogram)
+ void clock_was_set(void)
+ {
+ #ifdef CONFIG_HIGH_RES_TIMERS
+-	/* Retrigger the CPU local events everywhere */
+-	on_each_cpu(retrigger_next_event, NULL, 1);
++	cpumask_var_t mask;
++	int cpu;
++
++	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
++		on_each_cpu(retrigger_next_event, NULL, 1);
++		goto set_timerfd;
++	}
++
++	/* Avoid interrupting CPUs if possible */
++	cpus_read_lock();
++	for_each_online_cpu(cpu) {
++		unsigned long flags;
++		struct hrtimer_cpu_base *cpu_base = &per_cpu(hrtimer_bases, cpu);
++
++		raw_spin_lock_irqsave(&cpu_base->lock, flags);
++		if (need_reprogram_timer(cpu_base))
++			cpumask_set_cpu(cpu, mask);
++		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
++	}
++
++	preempt_disable();
++	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
++	preempt_enable();
++	cpus_read_unlock();
++	free_cpumask_var(mask);
++set_timerfd:
+ #endif
+ 	timerfd_clock_was_set();
+ }
 
