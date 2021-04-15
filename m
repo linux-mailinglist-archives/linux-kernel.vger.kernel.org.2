@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6485A360DFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBF3360E13
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhDOPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:08:13 -0400
-Received: from phobos.denx.de ([85.214.62.61]:55638 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234869AbhDOPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:05 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id C55F181FE1;
-        Thu, 15 Apr 2021 16:59:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1618498780;
-        bh=Kw07LkJdKop/yJQQqAUybaOom8omiDfjimVgY6INlKM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=qG3vJnacjJH2T6/LHSUKQqKJUBWrcEN7r6NhcGCSdBtN4nss3tWZ0nO/Ises27Xvc
-         VJGziRkn7XGX6HeJNFZ3NKxgJfYbo1qxsVRITxF5utVsu0V855wi9W/o5nOiAsG4j4
-         LzmcixCWz41r3/bCwgBpZpWa7aJMXgqoXHnAz/0L093+4TBflUjIMWQCZR0RFKlVXg
-         k47GEkzZmKdFN1i6BrfQukuubfOoZ8NLj6HD4D23S0QhGYD27jXWwe+QQ52WES1B9h
-         aS32TR1XAlYbdiafXGiMDKeW4MksrP+jd/DapR7g7HXa8+g0bzZaaTBKJcCvdhW4+c
-         +FMQpDAlr3Yfg==
-Subject: Re: [PATCH 11/13] ARM: dts: stm32: fix LTDC port node on STM32 MCU ad
- MPU
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>, arnd@arndb.de,
-        robh+dt@kernel.org, jagan@amarulasolutions.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        kuba@kernel.org
-References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
- <20210415101037.1465-12-alexandre.torgue@foss.st.com>
- <3b39908b-a263-a5d4-f6ac-ac30ffb06269@denx.de>
- <36e9f0df-dfdb-e2f5-3d6e-ac32a1b8156e@foss.st.com>
- <fa3885df-8977-9540-f2af-d4095f519483@denx.de>
- <3961c9ae-41cc-5a15-2704-ffc0832f0fe8@foss.st.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <57a7f4bf-42e9-56fb-e898-2c5749f53c60@denx.de>
-Date:   Thu, 15 Apr 2021 16:59:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235330AbhDOPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235097AbhDOPAW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:22 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A49C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:59:59 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so433245wmi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wEmeE+nRU2i2HuTEhl2l+nDu4F3N+EEwdYCFM019aAY=;
+        b=A45SPYWVLdT7S1dswSXWtbcLIKQs4WiHE/Ut3PZ0xIiaRcL3umDmo8P9ZrwTDFF7V6
+         YDKC6g0b1KhlecjvXgtySFWKVq2QdkQo3ARkALOHZ6iR40y5YaYTHl62khsxLAXngB7c
+         uYneF1Yx836FyhliuVUFQPVgyur9q5JMyd3+Hp3PM8OmyHRFEVJa5x1Y9DGVkVOzcoA1
+         mAHyIuuYFbu3alcwhnvS5wzJetRQ+vkZSlD+Os/ylplcUuJBtBoQ3zLOLpbgrpaC0zxX
+         zd3u5giUf0USAYnGu5e+saklLbDrHTbUg8euRGtwECxLoaZPeSy2JNm4I5kGH7WDqmWp
+         i8wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wEmeE+nRU2i2HuTEhl2l+nDu4F3N+EEwdYCFM019aAY=;
+        b=pG9vcaZR6uVWYuBySp4Jli3o8AAQhRO076/fNhFpWorvs6JO04wOlNSAl//hSZbwS2
+         T6FjkpnbDFfH4YcbiYYpAA2ALWqQzbEM0FgO9v1+3fYhc/k40PlOmNkeQOSQ5T9AfzzA
+         sQFjbnYlabHKEgaxVjviolClnbiPWOGyU25s9fX4DLBfFi7g+53t18d7DYGXHixQSSW6
+         RX5WCbjwg5ucPi+X3+CxilA8yoRACo3dRtSxgAn18fOQPXZk6hCcbK+naIsUqhEph04Z
+         G715DKKvKLF1TN3aSGkAyr6+lJ3TqR3pV7GuGoSIgVrHl3ZZ6BvWKYDLmEeX4DvNNVMH
+         SxXw==
+X-Gm-Message-State: AOAM533+bziXh4PtGJCgav5i1Ey8C+wf8wGHSJvLUCvPyerBrhOJ3iv9
+        JNfQRShaLBu7DWHxZtQ7++rXVmBXdIDA9Q==
+X-Google-Smtp-Source: ABdhPJxqlVPWGCKsf2QzXPRd1bPNJjdG3jhIFGVI5LZlI6SFJOqN137fv0fwdNdQbhLlYHVVqC+ipA==
+X-Received: by 2002:a05:600c:3544:: with SMTP id i4mr3497996wmq.38.1618498797586;
+        Thu, 15 Apr 2021 07:59:57 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id 3sm3820681wma.45.2021.04.15.07.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:59:57 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 14:59:54 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, lukasz.luba@arm.com,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+Message-ID: <YHhU6pb8E5W2eeCX@google.com>
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+ <YHg8s4VTQdiBNOpr@google.com>
+ <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
 MIME-Version: 1.0
-In-Reply-To: <3961c9ae-41cc-5a15-2704-ffc0832f0fe8@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 4:35 PM, Alexandre TORGUE wrote:
+On Thursday 15 Apr 2021 at 15:34:53 (+0100), Vincent Donnefort wrote:
+> On Thu, Apr 15, 2021 at 01:16:35PM +0000, Quentin Perret wrote:
+> > On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
+> > > --- a/kernel/sched/cpufreq_schedutil.c
+> > > +++ b/kernel/sched/cpufreq_schedutil.c
+> > > @@ -10,6 +10,7 @@
+> > >  
+> > >  #include "sched.h"
+> > >  
+> > > +#include <linux/energy_model.h>
+> > >  #include <linux/sched/cpufreq.h>
+> > >  #include <trace/events/power.h>
+> > >  
+> > > @@ -164,6 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+> > >  
+> > >  	freq = map_util_freq(util, freq, max);
+> > >  
+> > > +	/* Avoid inefficient performance states */
+> > > +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
+> > 
+> > I remember this was discussed when Douglas sent his patches some time
+> > ago, but I still find it sad we index the EM table here but still
+> > re-index the cpufreq frequency table later :/
+> > 
+> > Yes in your case this lookup is very inexpensive, but still. EAS relies
+> > on the EM's table matching cpufreq's accurately, so this second lookup
+> > still feels rather unnecessary ...
 > 
+> To get only a single lookup, we would need to bring the inefficiency knowledge
+> directly to the cpufreq framework. But it has its own limitations: 
 > 
-> On 4/15/21 4:30 PM, Marek Vasut wrote:
->> On 4/15/21 3:34 PM, Alexandre TORGUE wrote:
->>> Hi Marek
->>
->> Hello Alexandre,
->>
->>>>> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts 
->>>>> b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>>> index 2bc92ef3aeb9..19ef475a48fc 100644
->>>>> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>>> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>>> @@ -82,9 +82,15 @@
->>>>>   };
->>>>>   &ltdc {
->>>>> -    status = "okay";
->>>>> -
->>>>>       port {
->>>>> +        #address-cells = <1>;
->>>>> +        #size-cells = <0>;
->>>>> +
->>>>> +        ltdc_ep0_out: endpoint@0 {
->>>>> +            reg = <0>;
->>>>> +            remote-endpoint = <&sii9022_in>;
->>>>> +        };
->>>>> +
->>>>>           ltdc_ep1_out: endpoint@1 {
->>>>>               reg = <1>;
->>>>>               remote-endpoint = <&dsi_in>;
->>>>
->>>> [...]
->>>>
->>>>> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi 
->>>>> b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>>> index 64dca5b7f748..e7f10975cacf 100644
->>>>> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>>> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>>> @@ -277,11 +277,7 @@
->>>>>       status = "okay";
->>>>>       port {
->>>>> -        #address-cells = <1>;
->>>>> -        #size-cells = <0>;
->>>>> -
->>>>> -        ltdc_ep0_out: endpoint@0 {
->>>>> -            reg = <0>;
->>>>> +        ltdc_ep0_out: endpoint {
->>>>>               remote-endpoint = <&adv7513_in>;
->>>>>           };
->>>>>       };
->>>>
->>>> I think this is wrong, the AV96 can have two displays connected to 
->>>> two ports of the LTDC, just like DK2 for example.
->>>
->>> As for dk2 address/size cells are added only if there are 2 
->>> endpoints. It is for this reason I moved endpoint0 definition from 
->>> stm32mp15xx-dkx to stm32mp151a-dk1.dts (dk1 has only one endpoint).
->>>
->>> Here it's the same, if you have second endpoint then adress/size will 
->>> have to be added.
->>
->> That's a bit problematic. Consider either the use case of DTO which 
->> adds the other display, or even a custom board DTS. Without your 
->> patch, this works:
->>
->> arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->> &ltdc {
->>    ...
->>    ports {
->>      ltdc_ep0_out: endpoint@0 {
->>        remote-endpoint = <&adv7513_in>;
->>      };
->>    };
->> };
->>
->> board-with-display.dts or board-overlay.dts
->> &ltdc {
->>    ports {
->>      endpoint@1 { // just add another endpoint@1, no problem
->>        remote-endpoint = <&display>;
->>      };
->>    };
->> };
->>
->> With your patch, the DTS would have to modify the "endpoint" node to 
->> be "endpoint@0" probably with a whole lot of /detele-node/ etc. magic 
->> (DTO cannot do that, so that's a problem, and I do use DTOs on AV96 
->> extensively for the various expansion cards) and then add the 
->> endpoint@1. That becomes real complicated in custom board DT, and 
->> impossible with DTO.
+>   The cpufreq driver can have its own resolve_freq() callback, which means that
+>   not all the drivers would benefit from that feature.
 > 
-> Yes I agree that it'll be problematic. So maybe so solution would be to 
-> not detect a warning for the initial case (only one endpoint with a reg)
+>   The cpufreq_table can be ordered and accessed in several ways which brings
+>   many combinations that would need to be supported, ending-up with something
+>   much more intrusive. (We can though decide to limit the feature to the low to
+>   high access that schedutil needs).
+> 
+> As the EM needs schedutil to exist anyway, it seemed to be the right place for
+> this code. It allows any cpufreq driver to benefit from the feature, simplify a
+> potential extension for a usage by devfreq devices and as a bonus it speeds-up
+> energy computing, allowing a more complex Energy Model.
 
-That looks OK. Or even better, if the checker warned only on IPs which 
-cannot have more than one endpoint, but have endpoint@N in DT (where N 
-in 0..+inf) . On IPs which can have one or more endpoints, the warning 
-should not be emitted.
+I was thinking of something a bit simpler. cpufreq_driver_resolve_freq
+appears to be used only from schedutil (why is it even then?), so we
+could just pull it into cpufreq_schedutil.c and just plain skip the call
+to cpufreq_frequency_table_target if the target freq has been indexed in
+the EM table -- it should already be matching a real OPP.
+
+Thoughts?
+Quentin
