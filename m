@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB84360E71
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926E0360E45
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237076AbhDOPP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48936 "EHLO mail.kernel.org"
+        id S234917AbhDOPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235291AbhDOPFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:05:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CA69613D5;
-        Thu, 15 Apr 2021 14:59:01 +0000 (UTC)
+        id S233776AbhDOPBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:01:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD5C66141A;
+        Thu, 15 Apr 2021 14:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498741;
-        bh=8xO/cEt6QtVIp3eUU5Pg8GYK7mK+IxgT5Gx/DrAEV6Y=;
+        s=korg; t=1618498660;
+        bh=Ia2AGff4BGo7uPvZn6BYE9TgzvbUrM1qVxEeDs5Acng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kxeyWHIXnO0Bw9tRB9Ue5MkVhdOcPJ9Lvm98qSAQ5JDm8ZNFdlw6b/YnM2SQ3qiBG
-         iJwE0vBm2iX531wzC3QvBZQnc4OhBfbN5rLShtjsiQ+fbOPg8TWUgXeEospsrlV6Qa
-         CZIm9UnU9qz6CMJ3FM6ykkIlB/+6Iu3FO/wt4gzQ=
+        b=jX16jZY1GrfW9Oc706lYDKVkhuAt54Ulix2fkGKw1LTCIWD5CBbpFPnc/YfUcrbxm
+         1cYubGPlFl6n2NmFxLAKEa/mFL0ZkK8Q8IcmDiAKrj6KGnMmPnZuMI1CU9TVIPDwrU
+         bzRCQV/QJFb4AYKubxq/rWyUkEBcgSFTREiUSkWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 09/23] drm/tegra: dc: Dont set PLL clock to 0Hz
-Date:   Thu, 15 Apr 2021 16:48:16 +0200
-Message-Id: <20210415144413.444081503@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 23/25] net: sfp: relax bitrate-derived mode check
+Date:   Thu, 15 Apr 2021 16:48:17 +0200
+Message-Id: <20210415144413.883930924@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
-References: <20210415144413.146131392@linuxfoundation.org>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+References: <20210415144413.165663182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit f8fb97c915954fc6de6513cdf277103b5c6df7b3 ]
+commit 7a77233ec6d114322e2c4f71b4e26dbecd9ea8a7 upstream.
 
-RGB output doesn't allow to change parent clock rate of the display and
-PCLK rate is set to 0Hz in this case. The tegra_dc_commit_state() shall
-not set the display clock to 0Hz since this change propagates to the
-parent clock. The DISP clock is defined as a NODIV clock by the tegra-clk
-driver and all NODIV clocks use the CLK_SET_RATE_PARENT flag.
+Do not check the encoding when deriving 1000BASE-X from the bitrate
+when no other modes are discovered. Some GPON modules (VSOL V2801F
+and CarlitoxxPro CPGOS03-0490 v2.0) indicate NRZ encoding with a
+1200Mbaud bitrate, but should be driven with 1000BASE-X on the host
+side.
 
-This bug stayed unnoticed because by default PLLP is used as the parent
-clock for the display controller and PLLP silently skips the erroneous 0Hz
-rate changes because it always has active child clocks that don't permit
-rate changes. The PLLP isn't acceptable for some devices that we want to
-upstream (like Samsung Galaxy Tab and ASUS TF700T) due to a display panel
-clock rate requirements that can't be fulfilled by using PLLP and then the
-bug pops up in this case since parent clock is set to 0Hz, killing the
-display output.
-
-Don't touch DC clock if pclk=0 in order to fix the problem.
-
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: Pali Rohár <pali@kernel.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/tegra/dc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/phy/sfp-bus.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 8eeef5017826..134986dc2783 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1688,6 +1688,11 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
- 			dev_err(dc->dev,
- 				"failed to set clock rate to %lu Hz\n",
- 				state->pclk);
-+
-+		err = clk_set_rate(dc->clk, state->pclk);
-+		if (err < 0)
-+			dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
-+				dc->clk, state->pclk, err);
+--- a/drivers/net/phy/sfp-bus.c
++++ b/drivers/net/phy/sfp-bus.c
+@@ -349,14 +349,13 @@ void sfp_parse_support(struct sfp_bus *b
  	}
  
- 	DRM_DEBUG_KMS("rate: %lu, div: %u\n", clk_get_rate(dc->clk),
-@@ -1698,11 +1703,6 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
- 		value = SHIFT_CLK_DIVIDER(state->div) | PIXEL_CLK_DIVIDER_PCD1;
- 		tegra_dc_writel(dc, value, DC_DISP_DISP_CLOCK_CONTROL);
+ 	/* If we haven't discovered any modes that this module supports, try
+-	 * the encoding and bitrate to determine supported modes. Some BiDi
+-	 * modules (eg, 1310nm/1550nm) are not 1000BASE-BX compliant due to
+-	 * the differing wavelengths, so do not set any transceiver bits.
++	 * the bitrate to determine supported modes. Some BiDi modules (eg,
++	 * 1310nm/1550nm) are not 1000BASE-BX compliant due to the differing
++	 * wavelengths, so do not set any transceiver bits.
+ 	 */
+ 	if (bitmap_empty(modes, __ETHTOOL_LINK_MODE_MASK_NBITS)) {
+-		/* If the encoding and bit rate allows 1000baseX */
+-		if (id->base.encoding == SFF8024_ENCODING_8B10B && br_nom &&
+-		    br_min <= 1300 && br_max >= 1200)
++		/* If the bit rate allows 1000baseX */
++		if (br_nom && br_min <= 1300 && br_max >= 1200)
+ 			phylink_set(modes, 1000baseX_Full);
  	}
--
--	err = clk_set_rate(dc->clk, state->pclk);
--	if (err < 0)
--		dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
--			dc->clk, state->pclk, err);
- }
  
- static void tegra_dc_stop(struct tegra_dc *dc)
--- 
-2.30.2
-
 
 
