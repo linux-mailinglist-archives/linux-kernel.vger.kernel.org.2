@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAFC360CC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD9D360CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbhDOOyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:54:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38804 "EHLO mail.kernel.org"
+        id S233804AbhDOOyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:54:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233625AbhDOOvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B43CE6113B;
-        Thu, 15 Apr 2021 14:51:21 +0000 (UTC)
+        id S234072AbhDOOvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2321613BB;
+        Thu, 15 Apr 2021 14:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498282;
-        bh=0G2t/u4UGpcS50sYNbUfPHmfD+IG25lvJtbd9qHARL0=;
+        s=korg; t=1618498285;
+        bh=rKs7XCrUW6sXmV4U4qBajC/vDGRR/PNicC23f4ay+QM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tOci1fLZM4kZL7E5bJP+y9uuAAfeMB/NbxfkUs74MXpBxjDYPQ1Mx3jtmumF96PFn
-         s+qjs3e9Afz6y5aLuug/bTP/siQNZVLZUUEevcIu6ok5T31QR5ZvdoI2LwVg1fyWDW
-         Ba/9awh58YLFCjGntK8BvnDb5X2T4MUDAUuo4lqc=
+        b=hkimSMeYcU/Qgg/xcKbnNdXJeYjfd8Jy7D9aUFNbs2DBeAwbvAlQq4A0s0An6ABTM
+         hmWaaFcI5/ayNp3soisq4Q6M3ABauVTPrNOypEd+AUugoRzTHS8CHPCW4OVCBhhyLL
+         AbFW1uXv/cQlmvgWfG+4XbA+RHNw13858/EQVTts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 04/47] ASoC: intel: atom: Stop advertising non working S24LE support
-Date:   Thu, 15 Apr 2021 16:46:56 +0200
-Message-Id: <20210415144413.623616016@linuxfoundation.org>
+        stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 05/47] nfc: fix refcount leak in llcp_sock_bind()
+Date:   Thu, 15 Apr 2021 16:46:57 +0200
+Message-Id: <20210415144413.652529355@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
 References: <20210415144413.487943796@linuxfoundation.org>
@@ -41,61 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Xiaoming Ni <nixiaoming@huawei.com>
 
-commit aa65bacdb70e549a81de03ec72338e1047842883 upstream.
+commit c33b1cc62ac05c1dbb1cdafe2eb66da01c76ca8d upstream.
 
-The SST firmware's media and deep-buffer inputs are hardcoded to
-S16LE, the corresponding DAIs don't have a hw_params callback and
-their prepare callback also does not take the format into account.
+nfc_llcp_local_get() is invoked in llcp_sock_bind(),
+but nfc_llcp_local_put() is not invoked in subsequent failure branches.
+As a result, refcount leakage occurs.
+To fix it, add calling nfc_llcp_local_put().
 
-So far the advertising of non working S24LE support has not caused
-issues because pulseaudio defaults to S16LE, but changing pulse-audio's
-config to use S24LE will result in broken sound.
-
-Pipewire is replacing pulse now and pipewire prefers S24LE over S16LE
-when available, causing the problem of the broken S24LE support to
-come to the surface now.
-
-Cc: stable@vger.kernel.org
-BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/866
-Fixes: 098c2cd281409 ("ASoC: Intel: Atom: add 24-bit support for media playback and capture")
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210324132711.216152-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+fix CVE-2020-25670
+Fixes: c7aa12252f51 ("NFC: Take a reference on the LLCP local pointer when creating a socket")
+Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
+Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
+Cc: <stable@vger.kernel.org> #v3.6
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/nfc/llcp_sock.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -508,14 +508,14 @@ static struct snd_soc_dai_driver sst_pla
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
- 		.stream_name = "Headset Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
- {
-@@ -526,7 +526,7 @@ static struct snd_soc_dai_driver sst_pla
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
- {
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -119,11 +119,13 @@ static int llcp_sock_bind(struct socket
+ 					  llcp_sock->service_name_len,
+ 					  GFP_KERNEL);
+ 	if (!llcp_sock->service_name) {
++		nfc_llcp_local_put(llcp_sock->local);
+ 		ret = -ENOMEM;
+ 		goto put_dev;
+ 	}
+ 	llcp_sock->ssap = nfc_llcp_get_sdp_ssap(local, llcp_sock);
+ 	if (llcp_sock->ssap == LLCP_SAP_MAX) {
++		nfc_llcp_local_put(llcp_sock->local);
+ 		kfree(llcp_sock->service_name);
+ 		llcp_sock->service_name = NULL;
+ 		ret = -EADDRINUSE;
 
 
