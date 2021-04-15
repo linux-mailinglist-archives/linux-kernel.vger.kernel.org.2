@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2111F360DFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB7360E1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbhDOPIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46112 "EHLO mail.kernel.org"
+        id S234529AbhDOPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:09:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234752AbhDOO7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D58C61400;
-        Thu, 15 Apr 2021 14:55:42 +0000 (UTC)
+        id S235171AbhDOPA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1951C6044F;
+        Thu, 15 Apr 2021 14:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498543;
-        bh=Zlzr6/2W0FMvgSiVRcS5cBfjwkkOo+nYlv7TcrxfX/M=;
+        s=korg; t=1618498592;
+        bh=TXztknuaVtG48pbylDS46y44Jtupw/59hlWRCyx51hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VBPfllAhBG1f/DVNw4C4S1hhHMqLfSw0+sEF4vcARSvGrUK6gpvtvVlh0majV5LGK
-         RxxTNyCnk7qrgFNuI6G0Ad/AtVqayPHKEpo/vFzHiJx+6594VIA+gYsBU1Tlk4ig4Q
-         iOyec6ptrwvCH1INJtAi7sEV1aTB9/5CWaJfT1YA=
+        b=QEbIGlg80nPXihYPNsIy7nkcemYyxXZWkAS0v9vbfhPexR507gx5Gn/GwwOkFDyKX
+         JF1icvqURHGUq9J0z/CuI+99gmJ42frpzfv7rLvQO1z/a1SfnWoX/i15y5BAAWola8
+         U3ZFnVGzViJJrSaAdYxySkxor/6tinJp2MZXRIVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+cfc0247ac173f597aaaa@syzkaller.appspotmail.com,
-        Andy Nguyen <theflow@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.19 10/13] netfilter: x_tables: fix compat match/target pad out-of-bound write
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 06/18] drm/tegra: dc: Dont set PLL clock to 0Hz
 Date:   Thu, 15 Apr 2021 16:47:59 +0200
-Message-Id: <20210415144411.938926747@linuxfoundation.org>
+Message-Id: <20210415144413.254896444@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-References: <20210415144411.596695196@linuxfoundation.org>
+In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
+References: <20210415144413.055232956@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,100 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit b29c457a6511435960115c0f548c4360d5f4801d upstream.
+[ Upstream commit f8fb97c915954fc6de6513cdf277103b5c6df7b3 ]
 
-xt_compat_match/target_from_user doesn't check that zeroing the area
-to start of next rule won't write past end of allocated ruleset blob.
+RGB output doesn't allow to change parent clock rate of the display and
+PCLK rate is set to 0Hz in this case. The tegra_dc_commit_state() shall
+not set the display clock to 0Hz since this change propagates to the
+parent clock. The DISP clock is defined as a NODIV clock by the tegra-clk
+driver and all NODIV clocks use the CLK_SET_RATE_PARENT flag.
 
-Remove this code and zero the entire blob beforehand.
+This bug stayed unnoticed because by default PLLP is used as the parent
+clock for the display controller and PLLP silently skips the erroneous 0Hz
+rate changes because it always has active child clocks that don't permit
+rate changes. The PLLP isn't acceptable for some devices that we want to
+upstream (like Samsung Galaxy Tab and ASUS TF700T) due to a display panel
+clock rate requirements that can't be fulfilled by using PLLP and then the
+bug pops up in this case since parent clock is set to 0Hz, killing the
+display output.
 
-Reported-by: syzbot+cfc0247ac173f597aaaa@syzkaller.appspotmail.com
-Reported-by: Andy Nguyen <theflow@google.com>
-Fixes: 9fa492cdc160c ("[NETFILTER]: x_tables: simplify compat API")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Don't touch DC clock if pclk=0 in order to fix the problem.
+
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/netfilter/arp_tables.c |    2 ++
- net/ipv4/netfilter/ip_tables.c  |    2 ++
- net/ipv6/netfilter/ip6_tables.c |    2 ++
- net/netfilter/x_tables.c        |   10 ++--------
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/tegra/dc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1195,6 +1195,8 @@ static int translate_compat_table(struct
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
+diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+index fbf57bc3cdab..617cbe468aec 100644
+--- a/drivers/gpu/drm/tegra/dc.c
++++ b/drivers/gpu/drm/tegra/dc.c
+@@ -1667,6 +1667,11 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
+ 			dev_err(dc->dev,
+ 				"failed to set clock rate to %lu Hz\n",
+ 				state->pclk);
 +
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_ARP_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1433,6 +1433,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
++		err = clk_set_rate(dc->clk, state->pclk);
++		if (err < 0)
++			dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
++				dc->clk, state->pclk, err);
+ 	}
  
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1448,6 +1448,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
+ 	DRM_DEBUG_KMS("rate: %lu, div: %u\n", clk_get_rate(dc->clk),
+@@ -1677,11 +1682,6 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
+ 		value = SHIFT_CLK_DIVIDER(state->div) | PIXEL_CLK_DIVIDER_PCD1;
+ 		tegra_dc_writel(dc, value, DC_DISP_DISP_CLOCK_CONTROL);
+ 	}
+-
+-	err = clk_set_rate(dc->clk, state->pclk);
+-	if (err < 0)
+-		dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
+-			dc->clk, state->pclk, err);
+ }
  
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -738,7 +738,7 @@ void xt_compat_match_from_user(struct xt
- {
- 	const struct xt_match *match = m->u.kernel.match;
- 	struct compat_xt_entry_match *cm = (struct compat_xt_entry_match *)m;
--	int pad, off = xt_compat_match_offset(match);
-+	int off = xt_compat_match_offset(match);
- 	u_int16_t msize = cm->u.user.match_size;
- 	char name[sizeof(m->u.user.name)];
- 
-@@ -748,9 +748,6 @@ void xt_compat_match_from_user(struct xt
- 		match->compat_from_user(m->data, cm->data);
- 	else
- 		memcpy(m->data, cm->data, msize - sizeof(*cm));
--	pad = XT_ALIGN(match->matchsize) - match->matchsize;
--	if (pad > 0)
--		memset(m->data + match->matchsize, 0, pad);
- 
- 	msize += off;
- 	m->u.user.match_size = msize;
-@@ -1121,7 +1118,7 @@ void xt_compat_target_from_user(struct x
- {
- 	const struct xt_target *target = t->u.kernel.target;
- 	struct compat_xt_entry_target *ct = (struct compat_xt_entry_target *)t;
--	int pad, off = xt_compat_target_offset(target);
-+	int off = xt_compat_target_offset(target);
- 	u_int16_t tsize = ct->u.user.target_size;
- 	char name[sizeof(t->u.user.name)];
- 
-@@ -1131,9 +1128,6 @@ void xt_compat_target_from_user(struct x
- 		target->compat_from_user(t->data, ct->data);
- 	else
- 		memcpy(t->data, ct->data, tsize - sizeof(*ct));
--	pad = XT_ALIGN(target->targetsize) - target->targetsize;
--	if (pad > 0)
--		memset(t->data + target->targetsize, 0, pad);
- 
- 	tsize += off;
- 	t->u.user.target_size = tsize;
+ static void tegra_dc_stop(struct tegra_dc *dc)
+-- 
+2.30.2
+
 
 
