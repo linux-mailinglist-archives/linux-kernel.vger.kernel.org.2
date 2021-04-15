@@ -2,123 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFB2361331
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6E7361330
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbhDOT4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:56:40 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.191]:19970 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234815AbhDOT4e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:56:34 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 6872140159B18
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:54:24 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id X84Gl39nsPkftX84GlLYCK; Thu, 15 Apr 2021 14:54:24 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=0kHnTRwN0hxqCsvTD3VbFwdfLw6YEEfoemtA7hgFdeY=; b=Uz5ISGpvbu8Eh1ur5FcrX5PwqN
-        L/Jl1ogfKgW2x9xQaRMfWaV1L0HpT+UGvP/6RH7IxwPKtVJ7miG6I21IxzHg8JqlNP4TUcsqdhOgO
-        zpz2soKPSa0UKVS6Guo6BokfVR2PiAu03lBnbn7f3fUMCLggwBfV1AqtTT0zBt4ExnDFtosuM4u+O
-        fsoOSRFxwzYtVpQhnP6PFVbfYrc50eGqZf4QmH7dQTohqgNSgsuXcBxMNi/MgFS0hIUlq0RCUTXbR
-        mB224o3I1uvTbZOjXX2a0eO4phhoo/7CSQUvThlgi7T0DaHJ9CYLF52iIcwbEPurF+wqrPkDzV4XS
-        eW/PIiHQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:47186 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lX84D-001iz4-TV; Thu, 15 Apr 2021 14:54:21 -0500
-Subject: Re: [PATCH][next] hpfs: Replace one-element array with flexible-array
- member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210326173510.GA81212@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <d204fcb3-d8d0-34ad-1f22-79104ac32ac7@embeddedor.com>
-Date:   Thu, 15 Apr 2021 14:54:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235105AbhDOT4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:56:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234735AbhDOT4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:56:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D046109D;
+        Thu, 15 Apr 2021 19:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618516556;
+        bh=f6zX1JTHDKJY5RAHzBASAEJeJPaS4icspmPXrKvXjCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cfhiug9/6ao8U96bXhC7D7ueiWI+fUpy1bMPmJ7S2wS+TalPR86ZoMqAEUV+VQUTD
+         yiNiUSvpPWb/Yrro2k4JfpM6rNaP/MDWoENWHnqolzk1ZpJ4ljJrdj62X4iryhrB0y
+         UPxIyYkvzbfejidy2Nc25BFrsiscet1hzNDm9oEcUPaRdf8RAbdfTCRBHJep3qAIpW
+         reNK7pKaUlZs4V/ZrNCqt0BV1bljefsfYlLKxgDvMWmiyIhHgGGqviuCX4hZtI9C3+
+         hVYOjM4Nw6T2wAsrZFaZiR3UiHK9tzTq1/EmAB/tLXdzTwT1OJvwEZqo6WKkyCoUfr
+         UdkuBT2WISphg==
+Date:   Thu, 15 Apr 2021 12:55:54 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 6/8] block: keyslot-manager: introduce
+ blk_ksm_restrict_dus_to_queue_limits()
+Message-ID: <YHiaShR5molnCQFy@gmail.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <20210325212609.492188-7-satyat@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210326173510.GA81212@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lX84D-001iz4-TV
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:47186
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325212609.492188-7-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-Friendly ping: who can take this, please?
-
-Thanks
---
-Gustavo
-
-On 3/26/21 12:35, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
+On Thu, Mar 25, 2021 at 09:26:07PM +0000, Satya Tangirala wrote:
+> Not all crypto data unit sizes might be supported by the block layer due to
+> certain queue limits. This new function checks the queue limits and
+> appropriately modifies the keyslot manager to reflect only the supported
+> crypto data unit sizes. blk_ksm_register() runs any given ksm through this
+> function before actually registering the ksm with a queue.
 > 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warning:
-> 
->   CC [M]  fs/hpfs/dir.o
-> fs/hpfs/dir.c: In function ‘hpfs_readdir’:
-> fs/hpfs/dir.c:163:41: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
->   163 |         || de ->name[0] != 1 || de->name[1] != 1))
->       |                                 ~~~~~~~~^~~
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
 > ---
->  fs/hpfs/hpfs.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  block/keyslot-manager.c | 59 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
 > 
-> diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
-> index 302f45101a96..d92c4af3e1b4 100644
-> --- a/fs/hpfs/hpfs.h
-> +++ b/fs/hpfs/hpfs.h
-> @@ -356,7 +356,8 @@ struct hpfs_dirent {
->    u8 no_of_acls;			/* number of ACL's (low 3 bits) */
->    u8 ix;				/* code page index (of filename), see
->  					   struct code_page_data */
-> -  u8 namelen, name[1];			/* file name */
-> +  u8 namelen;				/* file name length */
-> +  u8 name[];				/* file name */
->    /* dnode_secno down;	  btree down pointer, if present,
->       			  follows name on next word boundary, or maybe it
->  			  precedes next dirent, which is on a word boundary. */
-> 
+> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+> index 2a2b1a9785d2..fad6d9c4b649 100644
+> --- a/block/keyslot-manager.c
+> +++ b/block/keyslot-manager.c
+> @@ -450,12 +450,71 @@ bool blk_ksm_is_empty(struct blk_keyslot_manager *ksm)
+>  }
+>  EXPORT_SYMBOL_GPL(blk_ksm_is_empty);
+>  
+> +/*
+> + * Restrict the supported data unit sizes of the ksm based on the request queue
+> + * limits
+> + */
+> +void blk_ksm_restrict_dus_to_queue_limits(struct blk_keyslot_manager *ksm,
+> +					  struct queue_limits *limits)
+
+As the kernel test robot hinted at, this function needs to be 'static'.
+
+> +{
+> +	/* The largest possible data unit size we support is PAGE_SIZE. */
+> +	unsigned long largest_dus = PAGE_SIZE;
+> +	unsigned int dus_allowed_mask;
+> +	int i;
+> +	bool dus_was_restricted = false;
+> +
+> +	/*
+> +	 * If the queue doesn't support SG gaps, a bio might get split in the
+> +	 * middle of a data unit. So require SG gap support for inline
+> +	 * encryption for any data unit size larger than a single sector.
+> +	 */
+> +	if (limits->virt_boundary_mask)
+> +		largest_dus = SECTOR_SIZE;
+> +
+> +	/*
+> +	 * If the queue has chunk_sectors, the bio might be split within a data
+> +	 * unit if the data unit size is larger than a single sector. So only
+> +	 * support a single sector data unit size in this case.
+> +	 */
+> +	if (limits->chunk_sectors)
+> +		largest_dus = SECTOR_SIZE;
+
+So in practice, this means that inline encryption will be disabled on any disk
+that declares a virt_boundary_mask or chunk_sectors.
+
+What are the real-world consequences of that?  Will that have any consequences
+for UFS or eMMC, or are those things never applicable to UFS or eMMC?
+
+It would also be helpful if the comments explained why these restrictions are
+necessary.  They kind of do, but they don't explicitly give an example --
+presumably the issue is that a crypto data unit could cross a virt_boundary_mask
+or chunk_sectors boundary?
+
+> +	/*
+> +	 * Any bio sent to the queue must be allowed to contain at least a
+> +	 * data_unit_size worth of data. Since each segment in a bio contains
+> +	 * at least a SECTOR_SIZE worth of data, it's sufficient that
+> +	 * queue_max_segments(q) * SECTOR_SIZE >= data_unit_size. So disable
+> +	 * all data_unit_sizes not satisfiable.
+> +	 */
+> +	largest_dus = min(largest_dus,
+> +			1UL << (fls(limits->max_segments) - 1 + SECTOR_SHIFT));
+> +
+> +	/* Clear all unsupported data unit sizes. */
+> +	dus_allowed_mask = (largest_dus << 1) - 1;
+> +	for (i = 0; i < ARRAY_SIZE(ksm->crypto_modes_supported); i++) {
+> +		if (ksm->crypto_modes_supported[i] & (~dus_allowed_mask))
+> +			dus_was_restricted = true;
+> +		ksm->crypto_modes_supported[i] &= dus_allowed_mask;
+> +	}
+
+So again in practice, this effectively disables inline encryption on any disk
+that doesn't declare max_segments >= 8.  What are the real-world consequences of
+that -- will this ever be a problem for UFS or eMMC?
+
+Also, why is it necessary to assume the worst case of 512 bytes per segment?
+
+> +	if (dus_was_restricted) {
+> +		pr_warn("Disallowed use of encryption data unit sizes above %lu bytes with inline encryption hardware because of device request queue limits.\n",
+> +			largest_dus);
+> +	}
+
+Could this message include the disk that it is talking about?
+
+>  bool blk_ksm_register(struct blk_keyslot_manager *ksm, struct request_queue *q)
+>  {
+>  	if (blk_integrity_queue_supports_integrity(q)) {
+>  		pr_warn("Integrity and hardware inline encryption are not supported together. Disabling hardware inline encryption.\n");
+>  		return false;
+>  	}
+> +
+> +	blk_ksm_restrict_dus_to_queue_limits(ksm, &q->limits);
+> +
+> +	if (blk_ksm_is_empty(ksm))
+> +		return false;
+> +
+>  	q->ksm = ksm;
+>  	return true;
+>  }
+
+Adding a kerneldoc comment to this function would be helpful.  Especially to
+explain what a return value of false means, exactly.
+
+- Eric
