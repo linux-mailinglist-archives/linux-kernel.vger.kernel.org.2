@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A50360869
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E196436086E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhDOLmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:42:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40090 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhDOLmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:42:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618486915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AWTd6/m39oUkBJNSJE/HcyD5g317S23D1lc5xsrQSqU=;
-        b=kN0KZ311irOy1r/ebS07SxvLArmpSGA7tXgukgChcYaIhqBMflXvyWDqzn4PrO4FZOzU7T
-        bMG3K9f7+u8mFA+8ykHLozY4yZE9V+I1Gou3HVAsZnU8WxpHDRtL4lQ3PYnUNtO4Mbl34d
-        Yfjjy9XUbLxv0hSqMcaiCyrdCjbvFvQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 33686AF11;
-        Thu, 15 Apr 2021 11:41:55 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 13:41:54 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 3/7] mm,hugetlb: Drop clearing of flag from
- prep_new_huge_page
-Message-ID: <YHgmgtJRadMB2c5k@dhcp22.suse.cz>
-References: <20210415103544.6791-1-osalvador@suse.de>
- <20210415103544.6791-4-osalvador@suse.de>
+        id S232646AbhDOLnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:43:13 -0400
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:45663 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhDOLnL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 07:43:11 -0400
+Received: by mail-yb1-f178.google.com with SMTP id g38so25775677ybi.12;
+        Thu, 15 Apr 2021 04:42:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I5b6XAHxeefLRvPDk8t3YKHG/hquBKc6aBz1bhGKFzg=;
+        b=HDwNv+UsyBKuYBAROKWqE7WKK5QX3sKN7aGINdI124v5zZRroHhRT4BcAoRjtr0eBH
+         Y107LfR/dd8YGjT8YWxTYE0648+SejKFstANP5aU/EfVZn8/FicecAvp4GPr9luXEKHA
+         nBGOzw96GB/b+Rl0jvaHlxUbc2m9+ML8DBbm26CbA8aSQjCAIX2V2jLchHC4D9+XJQ/u
+         aL/hVEpxLYmgbafUQlj82G1BDWjWBEbXuBCwVTwYAB1RrJXhXxLLeDYRBA01yrkabQaw
+         80H1wZ8+Cno7Ylj9UCn2j2afFC8OhSemnLbyKlQrQJqoWJ3iqZS0vdONywzIK7kaZ8mJ
+         D1HA==
+X-Gm-Message-State: AOAM5308js4AS3FgYfjehQr+jZngcZdJIt4kHSzsYCLFXUu5AyQsKKrc
+        u0RjgzvpGxuE25Yqd9YoLyLTbK8czpnfIfeEaSQ=
+X-Google-Smtp-Source: ABdhPJyZEHl9axgrvEnSDsaxgaykdNnNbKsYZXPrDOqdS8lyvUA/qa5E116myALM5bNLzof1l/pq4QQB3I5Q9/FuDZg=
+X-Received: by 2002:a25:be09:: with SMTP id h9mr3884853ybk.239.1618486967845;
+ Thu, 15 Apr 2021 04:42:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415103544.6791-4-osalvador@suse.de>
+References: <20210415084723.1807935-1-colin.king@canonical.com> <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
+In-Reply-To: <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Thu, 15 Apr 2021 20:42:36 +0900
+Message-ID: <CAMZ6RqJvN10Qf7rg-Z1aD82kJGPqueqgr+t88=yoJH93m+OuGw@mail.gmail.com>
+Subject: Re: [PATCH][next] can: etas_es58x: Fix missing null check on netdev pointer
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Colin King <colin.king@canonical.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 15-04-21 12:35:40, Oscar Salvador wrote:
-> Pages allocated after boot get its private field cleared by means
-> of post_alloc_hook().
+On Thu. 15 Apr 2021 at 18:04, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 15.04.2021 09:47:23, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > There is an assignment to *netdev that is can potentially be null but the
+                                           ^^
+Typo: that is can -> that can
 
-You surely meant to say s@boot@page/cma allocator@ here
+> > null check is checking netdev and not *netdev as intended. Fix this by
+> > adding in the missing * operator.
+> >
+> > Addresses-Coverity: ("Dereference before null check")
+> > Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> Pages allocated during boot, that is directly from the memblock allocator,
-> get cleared by paging_init()->..->memmap_init_zone->..->__init_single_page()
-> before any memblock allocation.
-> 
-> Based on this ground, let us remove the clearing of the flag from
-> prep_new_huge_page() as it is not needed.
+Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-I would also mention that this is a leftover from 6c0371490140
-("hugetlb: convert PageHugeFreed to HPageFreed flag"). Previously the
-explicit clearing was necessary because compound allocations do not get
-this initialization (see prep_compound_page).
-
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-
-with that
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  mm/hugetlb.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 54d81d5947ed..2cb9fa79cbaa 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1493,7 +1493,6 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
->  	spin_lock_irq(&hugetlb_lock);
->  	h->nr_huge_pages++;
->  	h->nr_huge_pages_node[nid]++;
-> -	ClearHPageFreed(page);
->  	spin_unlock_irq(&hugetlb_lock);
->  }
->  
-> -- 
-> 2.16.3
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks Colin!
