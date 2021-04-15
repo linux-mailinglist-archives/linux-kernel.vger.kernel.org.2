@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD353610D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5523610D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhDORMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        id S233933AbhDOROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDORL7 (ORCPT
+        with ESMTP id S231726AbhDORO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:11:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A41C061574;
-        Thu, 15 Apr 2021 10:11:36 -0700 (PDT)
+        Thu, 15 Apr 2021 13:14:26 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC746C061574;
+        Thu, 15 Apr 2021 10:14:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YwgbDheT+MJJ4trDHQZMYorZHJyXvzB0bzY8L8H53Zg=; b=pqDZ5QWhUwnCMzzTpH+57MdG8e
-        g0vSEvFaeMGsKZ8bh0uo5UlIzHiiUgtJXiYwSvzacGqhh6T6NUMa7H0FmZtHyRyC3p6SM9J82c7nt
-        wJ42qJWzFe26oOKJIu3NFrFYbbArdbYa6HooTaeAKc+NP3I6rczNl963yeZNi4aDr08izYDfRM3GD
-        lb8BDY8K66PWBgEDvI5KTaFM7dI7gmB3dxzh0jphKMJR33jYTh5zvGwlqJWJriDwVOvk8EUzYHs4K
-        WlLbiUz0IBvw1/FZNpfVY943UN1CCV+CB9CaByZSj9Jt8m13uHY+rBW34SoQuSqLRa7q6/dbT68+r
-        T9a1b7tg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX5Vj-008r8z-8x; Thu, 15 Apr 2021 17:10:41 +0000
-Date:   Thu, 15 Apr 2021 18:10:35 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
- overhead
-Message-ID: <20210415171035.GB2531743@casper.infradead.org>
-References: <20210414012027.5352-1-longman@redhat.com>
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=nkflvBcB1OAOg8cL9Czq3wUEW43GgtwSsqa8GY7v0s4=; b=Fuz5Og5Ss/NLF5hz+9ZGKDnVGN
+        cWlPJlCqVYU0nKJRcwBOx9cECNKJnuQUY2U5nqmhC8JFZ1M8tdrdpP8Z5qhGRvBpFIag+gDtqX/CR
+        HP1bSmoYb3N0EnMJwei9q+xecabngB9crdWOLcCRJVqgifSpqKQejQo3Lu772Pp0PsrscMWeeFVc0
+        eIrRvTMeJLdF8FHp/4UsbCw9A1gSCbZYqmESq5cvlT3oHKRJVWZZMzJkWdJ6aOQYgf/Y4iyIJRhXG
+        RLOxyNMi/UDm24+SgRcWS9IJ4VFbWbbKsIS/rFnhy1eknz3iOBb2eBVh+4d109BHf8kMUU3HykOay
+        s27BTC1w==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX5Yz-00GpJa-JD; Thu, 15 Apr 2021 17:13:59 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Subject: [PATCH v2] uml: fix W=1 missing-include-dirs warnings
+Date:   Thu, 15 Apr 2021 10:13:52 -0700
+Message-Id: <20210415171352.27398-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414012027.5352-1-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 09:20:22PM -0400, Waiman Long wrote:
-> With memory accounting disable, the run time was 2.848s. With memory
-> accounting enabled, the run times with the application of various
-> patches in the patchset were:
-> 
->   Applied patches   Run time   Accounting overhead   Overhead %age
->   ---------------   --------   -------------------   -------------
->        None          10.800s         7.952s              100.0%
->         1-2           9.140s         6.292s               79.1%
->         1-3           7.641s         4.793s               60.3%
->         1-5           6.801s         3.953s               49.7%
+Currently when using "W=1" with UML builds, there are over 700 warnings
+like so:
 
-I think this is a misleading way to report the overhead.  I would have said:
+  CC      arch/um/drivers/stderr_console.o
+cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
 
-			10.800s		7.952s		279.2%
-			 9.140s		6.292s		220.9%
-			 7.641s		4.793s		168.3%
-			 6.801s		3.953s		138.8%
+but arch/um/ does not have include/uapi/ at all, so add that
+subdir and put one Kbuild file into it (since git does not track
+empty subdirs).
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: linux-kbuild@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+---
+v2: use Option 4 from v1: add arch/um/include/uapi so that 'make' is
+    placated -- and just like all other arch's have.
+
+ arch/um/include/uapi/asm/Kbuild |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/um/include/uapi/asm/Kbuild b/arch/um/include/uapi/asm/Kbuild
+new file mode 100644
+index 000000000000..f66554cd5c45
+--- /dev/null
++++ b/arch/um/include/uapi/asm/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0
