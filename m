@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B23361566
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B89361571
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237495AbhDOWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S234879AbhDOWXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237401AbhDOWWA (ORCPT
+        with ESMTP id S237420AbhDOWXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:22:00 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E0EC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v2so3937482ybc.17
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=5bZDkTOmF30k3ylXE7mjWEUF6Se+XKGXeTtOG326tls=;
-        b=u8/EHms+P5QHbtTJ6SsWhwk29xFysKHQdf/9xINwhk2Wxp21WIFSsVeUCy33wKtjFy
-         lUmj0nJPEi1n3Oh0A/Bgumm6PBfeRQ6rZ6U/hC52JnbgBrzx6Jwpq61xXK+tFBYn07IA
-         kAc09ehAkcpVLpAu8SPSKStvPEd9Ubx9twCwkgnSJZd30C8OLAntIF86x0Zdvht71NN5
-         s84XV5pqBHrcqFv2Av1nDsm/Dn5rp/O/+/cSldZguahj7hUC9TWg1fG2Nd5xxJ9MgVCK
-         hmjkzhRlEIteP178WSGuZ8PcLY0tZW6hKtnGHn1ErP7Lmb892CbNGFt4X8R+qosWioiv
-         3SSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=5bZDkTOmF30k3ylXE7mjWEUF6Se+XKGXeTtOG326tls=;
-        b=MDgrBykJziuHqBttvssIOAO4lBsRJlV2cl1LLXT56o/sHyK0I9Fb1iTO++a/kzpA/n
-         tN1vQbAyRPOJlK7FC8MiTJa1AxL7S6smyT5gPdvwjLt7HMylHFbHKJYKOB/YLiKjPEGl
-         ISIBuKSw7xUpcrVrlFWHu1mrWOrbOKWEX6ajUoJn1iZq1jLrgHmLCxgZIstZx5KEbu+s
-         3Gmb8J2Ab1VF5tZvZF/Lm2I7zjuofu8utp5/p/jzeO9DwqJ32m+RtJP4UQh1+Md2GACS
-         v8Mlu08kELf/b2fLMp1DIGdYl7MpGCV9IYFG789gSlV/oiLrqrQDsKVw3QngFm5z5+Ri
-         HTTg==
-X-Gm-Message-State: AOAM5333Jo34hQSQKBpBmglWKUWOLRM1emQStIR6DezgF4utUxXpFy0T
-        WvuykB7y5MFw6Orbwz02oj8pLvrJlig=
-X-Google-Smtp-Source: ABdhPJzkSOmVcTYZbMZ5mFcI1gbLLhi87LjETeJ5cPYgxWeheNNd0DFYGFGeWJlxcCCk0oPTkVNLc+BLJCU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c93:ada0:6bbf:e7db])
- (user=seanjc job=sendgmr) by 2002:a25:f80e:: with SMTP id u14mr7738720ybd.428.1618525294052;
- Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 15 Apr 2021 15:21:06 -0700
-In-Reply-To: <20210415222106.1643837-1-seanjc@google.com>
-Message-Id: <20210415222106.1643837-10-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210415222106.1643837-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
- enter/exit to x86 code
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 15 Apr 2021 18:23:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8F4C061763;
+        Thu, 15 Apr 2021 15:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yCQQJkhIcMUmiG+jHzQ5AkwvKN7ARCVTOi/VwlhPfFg=; b=G7souXSd1HEpHpbqWUh5lxEnqG
+        72yPOet6m6dISSd7axpLwF1GuIay1RV/45F6tKEj6BDbJeHO2gR22kOlntma0FZZPbcvmmD/MXrGS
+        ZotJA+5b3Jkfa2AaHAwGam44BVigQtO2OUUWx5K1MxtG1pZ5CiucXxAz7iHzXIdBtZHCcO6t1Akn0
+        Jf6e7BP75Cnv6p6VHUjizlw9iKFlwP1TXfBnuT7H8BBwGli/+jYj8lop4Y87z4ime9iPQZllplUcx
+        wCGblTZ9lVpuPqcW+hkdOWg1I0lN04CeqlSLB7/d6d7euI/yXPCIGsLBBIFSox+o2XhR8MFrZidLv
+        V60jL89w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXANH-0099VJ-Ux; Thu, 15 Apr 2021 22:22:19 +0000
+Date:   Thu, 15 Apr 2021 23:22:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210415222211.GG2531743@casper.infradead.org>
+References: <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+ <20210414115052.GS2531743@casper.infradead.org>
+ <20210414211322.3799afd4@carbon>
+ <20210414213556.GY2531743@casper.infradead.org>
+ <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+ <20210415200832.32796445@carbon>
+ <20210415182155.GD2531743@casper.infradead.org>
+ <5179a01a462f43d6951a65de2a299070@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5179a01a462f43d6951a65de2a299070@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the instrumentation_{begin,end}() annonations from the common KVM
-guest enter/exit helpers, and massage the x86 code as needed to preserve
-the necessary annotations.  x86 is the only architecture whose transition
-flow is tagged as noinstr, and more specifically, it is the only
-architecture for which instrumentation_{begin,end}() can be non-empty.
+On Thu, Apr 15, 2021 at 09:11:56PM +0000, David Laight wrote:
+> Isn't it possible to move the field down one long?
+> This might require an explicit zero - but this is not a common
+> code path - the extra write will be noise.
 
-No other architecture supports CONFIG_STACK_VALIDATION=y, and s390 is the
-only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
-instrumentation annontations to be meaningful, both aformentioned configs
-must be enabled.
-
-Letting x86 deal with the annotations avoids unnecessary nops by
-squashing back-to-back instrumention-safe sequences.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.h       | 4 ++--
- include/linux/kvm_host.h | 9 +--------
- 2 files changed, 3 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 285953e81777..b17857ac540b 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -25,9 +25,9 @@ static __always_inline void kvm_guest_enter_irqoff(void)
- 	instrumentation_begin();
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--	instrumentation_end();
--
- 	guest_enter_irqoff();
-+	instrumentation_end();
-+
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 444d5f0225cb..e5eb64019f47 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -339,9 +339,7 @@ static __always_inline void guest_enter_irqoff(void)
- 	 * This is running in ioctl context so its safe to assume that it's the
- 	 * stime pending cputime to flush.
- 	 */
--	instrumentation_begin();
- 	vtime_account_guest_enter();
--	instrumentation_end();
- 
- 	/*
- 	 * KVM does not hold any references to rcu protected data when it
-@@ -351,21 +349,16 @@ static __always_inline void guest_enter_irqoff(void)
- 	 * one time slice). Lets treat guest mode as quiescent state, just like
- 	 * we do with user-mode execution.
- 	 */
--	if (!context_tracking_guest_enter_irqoff()) {
--		instrumentation_begin();
-+	if (!context_tracking_guest_enter_irqoff())
- 		rcu_virt_note_context_switch(smp_processor_id());
--		instrumentation_end();
--	}
- }
- 
- static __always_inline void guest_exit_irqoff(void)
- {
- 	context_tracking_guest_exit_irqoff();
- 
--	instrumentation_begin();
- 	/* Flush the guest cputime we spent on the guest */
- 	vtime_account_guest_exit();
--	instrumentation_end();
- }
- 
- static inline void guest_exit(void)
--- 
-2.31.1.368.gbe11c130af-goog
-
+Then it overlaps page->mapping.  See emails passim.
