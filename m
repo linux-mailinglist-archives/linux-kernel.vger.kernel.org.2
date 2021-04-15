@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6447E360430
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131E7360439
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhDOIWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhDOIWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94372611AC;
-        Thu, 15 Apr 2021 08:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618474917;
-        bh=MzgBwo6AvTH3Xni+y03+CAO5/Yr7OdgG7HKKkkwlV5I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LLBtLksNikM5Oy26xFOqMe0HES0hX/EkAWnX2quUoqQn8cobXY1ABlJwAOH2+rC7c
-         3eWHg4n6J4qfoWP5KWrgEGdEnPSAla2IIleDywNSdSpXtS/Q0pGQap5MyYOhMn6oce
-         QtvPYLoP0X9jOGUPhiRlwOkx1ccQKHL1FM8qfmP8=
-Date:   Thu, 15 Apr 2021 10:21:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH 00/13] tty.h cleanups
-Message-ID: <YHf3ojj44ex2dd3M@kroah.com>
-References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
- <YG8SUl+B8+76JZwV@hovoldconsulting.com>
- <YG9E5GpLljkXARDj@kroah.com>
- <YHADHYKMhfYE1aNw@hovoldconsulting.com>
+        id S231518AbhDOIZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:25:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51251 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231215AbhDOIZj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:25:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618475115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/bQmWZhJFBGurEcgsfC0EuOHiXGG/UZMr42BKHCg0CM=;
+        b=FrLbKiWI78+iV+MeIABfx+K9zAaRG/DDZJY6QU8LGlMryR2JBVkthmbJWj0GSj+fyfxu1w
+        kCoD4Jofj26FBTwiLgkIoqTirJOGbYiH9fKKAYiCJPDTeOJ2CR423ZNrzaFetgEubFODyr
+        RsvI7E0cksB0klAXaN6FDIZrz35Z4eA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-MmHzXUJqOXmNGosXnVpltg-1; Thu, 15 Apr 2021 04:25:14 -0400
+X-MC-Unique: MmHzXUJqOXmNGosXnVpltg-1
+Received: by mail-ed1-f69.google.com with SMTP id ay2-20020a0564022022b02903824b52f2d8so4779686edb.22
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 01:25:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/bQmWZhJFBGurEcgsfC0EuOHiXGG/UZMr42BKHCg0CM=;
+        b=Ag1cbqe1wzTb+ru6FsEyiOuiskuDDJq0nvgsYGCtJeomFZphf19stHq4mSOEpaCNq8
+         2uuBrtGkSZPFmaOFuziziYpKPSZLNhQD/TMckSwbGohAAormLGFWuVFANR+mIspr59r7
+         11L38dUrxut2kj7ACcgIAK4ZrloPJra6r7ntrfWfFFatJqllytxY5+b0Ewj6etl5okjj
+         qAddKWMfcI+C6vO0NBCbdb5Ua/ehY186bIOlDq39VWEL910IwAhXiGiJNbsqQ0a/DADl
+         l4JmtP58xaP5i9PdaJ4p9jWJ9jArdARYDrrIGn1DqwqPO+JNp7usNvoo2R85WVrMOYvd
+         RSFA==
+X-Gm-Message-State: AOAM5329y/Osx1a0/XUzoQ+JZoElGpH1srgyVL1+VHBtbSgx95CTVjAX
+        3p0Wkfh6UpdjXycWNR6urgFJqA750s9CCaN+CqfMYi4FhJ9Nh5enNVzw5yxzl7WqwiBHDXVuJ9h
+        c+FvWSMyD1rSVG64iu3TOYdhT
+X-Received: by 2002:a17:906:fb90:: with SMTP id lr16mr2188965ejb.173.1618475113127;
+        Thu, 15 Apr 2021 01:25:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwV9d4Hf8P/msHacfoZkJ3KBX3z8yqEirLBflCXrob29FKDQvETDro/hTdN8fxJUXyuYv/GnQ==
+X-Received: by 2002:a17:906:fb90:: with SMTP id lr16mr2188956ejb.173.1618475112977;
+        Thu, 15 Apr 2021 01:25:12 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id bm13sm1380535ejb.75.2021.04.15.01.25.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 01:25:12 -0700 (PDT)
+Subject: Re: [PATCH 2/2] tools: do not include scripts/Kbuild.include
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Harish <harish@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Networking <netdev@vger.kernel.org>
+References: <20210415072700.147125-1-masahiroy@kernel.org>
+ <20210415072700.147125-2-masahiroy@kernel.org>
+ <9d33ee98-9de3-2215-0c0b-cc856cec1b69@redhat.com>
+ <CAK7LNAQupbmeEVR0njSciv0X9FD+MofeB2Xm=wprEdNaO4TQKQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2e46231f-1d30-6a6f-c768-f34295376d0a@redhat.com>
+Date:   Thu, 15 Apr 2021 10:25:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHADHYKMhfYE1aNw@hovoldconsulting.com>
+In-Reply-To: <CAK7LNAQupbmeEVR0njSciv0X9FD+MofeB2Xm=wprEdNaO4TQKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 09:32:45AM +0200, Johan Hovold wrote:
-> On Thu, Apr 08, 2021 at 08:01:08PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Apr 08, 2021 at 04:25:22PM +0200, Johan Hovold wrote:
-> > > On Thu, Apr 08, 2021 at 02:51:21PM +0200, Greg Kroah-Hartman wrote:
-> > > > Turns out there is a lot of tty-internal stuff in include/linux/tty.h
-> > > > that do not belong there.  Create a internal-to-the-tty-layer .h file
-> > > > for these types of things and move function prototypes to it instead of
-> > > > being in the system-wide header file.
-> > > > 
-> > > > Along the way clean up the use of some old tty-only debugging macros and
-> > > > use the in-kernel dev_*() calls instead.
-> > > 
-> > > I'm afraid that's not a good idea since not all ttys have a
-> > > corresponding class device. Notable exception include pseudo terminals
-> > > and serdev.
-> > > 
-> > > While dev_printk() can handle a NULL device argument without crashing,
-> > > we'll actually lose log information by removing the tty printk helpers.
-> > 
-> > I think the same info will be printed here as before, just some NULL
-> > information at the beginning, right?  And the benifits overall (for real
-> > tty devices), should outweigh the few devices that do not have this
-> > information.
+On 15/04/21 10:04, Masahiro Yamada wrote:
+> On Thu, Apr 15, 2021 at 4:40 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>> I think it would make sense to add try-run, cc-option and
+>> .DELETE_ON_ERROR to tools/build/Build.include?
 > 
-> No, you'll only be losing information (tty driver and tty name). Here's
-> a pty example, where the first line in each pair use dev_info() and the
-> second tty_info():
-> 
-> [   10.235331] (NULL device *): tty_get_device
-> [   10.235441] ptm ptm0: tty_get_device
-> 
-> [   10.235586] (NULL device *): tty_get_device
-> [   10.235674] pts pts0: tty_get_device
-> 
-> and similar for serdev, which is becoming more and more common.
+> To be safe, I just copy-pasted what the makefiles need.
+> If someone wants to refactor the tool build system, that is fine,
+> but, to me, I do not see consistent rules or policy under tools/.
 
-Ok, good point, I'll go apply only the first 2 patches in this series
-(moving the macros out of tty.h and removing the unused one) and then
-will redo this set of patches again.   I think a better tty_msg() macro
-is warrented so that we can provide dev_*() output if we have a device,
-otherwise fall back to the old style to preserve functionality.
+"Please put this in a common file instead of introducing duplication" is 
+not asking for wholesale refactoring.
 
-thanks,
+Paolo
 
-greg k-h
