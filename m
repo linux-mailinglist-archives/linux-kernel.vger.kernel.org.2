@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB53636113F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE9B361141
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhDORl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:41:28 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38868 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233134AbhDORl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:41:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618508464; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1h4g4HCpxjuVIRzjGY/X9sGZ4OJArnjvLpi4gAm/6E4=;
- b=Dq5O7Ghqpv6sr8bfRGnWpODkE1fkmFzp//E18gFPiUGxqSI897MvNxR7+ZPPxKA6XBhiU0Em
- l9jfmy+uME9Ywu9g7oHiG4s+0X6XivYCd2tbakYnfQdg7izhjAzynDC6Qb9Ud9Q0433b71Fc
- z/CnPJ2WXxUwfRwN6Tvgvu0hNKQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60787a9e87ce1fbb56124858 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 17:40:46
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7BF47C43462; Thu, 15 Apr 2021 17:40:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A32CFC433CA;
-        Thu, 15 Apr 2021 17:40:44 +0000 (UTC)
+        id S234188AbhDORlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:41:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233980AbhDORlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:41:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618508471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wTimRIr0YgBuVLpWvKPM6c0MAPH0f+KQspjahIIUAlU=;
+        b=cPDV7WzTQ9rHwfUAQ/ac8bvWdvjyTkXGWriMaF++nEkSbJ+qL0n8Miec9j2pcwCP3jD+sH
+        R6TckrEa6JX8ZyygS7AnxLHcSdnNw7s2A6J/GQ6S4KME/FKCJ9tWSLOBsC0ts8eb/9IbGh
+        oJuCPBuWTEs8RtOWTWoY/1i4yja7kqQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-pxp1gya3MFWwH2GlIlJCMA-1; Thu, 15 Apr 2021 13:41:10 -0400
+X-MC-Unique: pxp1gya3MFWwH2GlIlJCMA-1
+Received: by mail-qt1-f199.google.com with SMTP id e6-20020ac85dc60000b029019d9cbbc077so4492900qtx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:41:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=wTimRIr0YgBuVLpWvKPM6c0MAPH0f+KQspjahIIUAlU=;
+        b=Ve7bkuUc5dERHWidVXG+3JYCKnFzBVCDj018pj5qXNlC3nlL8dr8thzmq1cQe2HeBm
+         EopzT+s/XNAOfeAzahPlPs9PeM81CfLKWWzUDuMGhBg4GpEsU5Y/zEEgn9LAcKB9WQKI
+         plb1i7slkyf51Rc15ZfV8+SkTGk3ZCjuHtBMIIr/kXoQYy24/Zkhu2a/e6Jdh6mb+w/G
+         +KMw4HITbLfVooZf6eKpPX2n9RVzZryDx8/Evbg83ICkQ3Tcjm2j0k5peb/zjSBdI+Nw
+         G7AZ8mIwgKyT8SeCwQm5Fi/w7q1txzlz02nCe7u40mVq/fqycbP/ZC+8jXL6nQjtLQAu
+         9bqA==
+X-Gm-Message-State: AOAM531VeJbEISWjJ6sl4XW7vC9SHDxXfZA0HwT6k03aPlBGkmc1qrOH
+        wl9eti5C1fV59dz0zLgg9mzv/m7LugYUXXcvAHppUcSUUeeRplBvBJ6fRG6y59fTWCFxUGIyUio
+        L4DcYc7V5kLnpsmvnENiLJ1Sy
+X-Received: by 2002:a37:7c5:: with SMTP id 188mr4791832qkh.348.1618508469965;
+        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmgbFnszT76GybNyzgAt7zTaWK3t49+b+KRVvGIM0rKdDofO0Sm6ySwTeX6EQ7djs0OMFxww==
+X-Received: by 2002:a37:7c5:: with SMTP id 188mr4791794qkh.348.1618508469626;
+        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id x18sm2247420qtj.58.2021.04.15.10.41.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
+ overhead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210415171035.GB2531743@casper.infradead.org>
+Message-ID: <15cf3cfa-c221-9e84-9f5b-80082207efd3@redhat.com>
+Date:   Thu, 15 Apr 2021 13:41:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210415171035.GB2531743@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 15 Apr 2021 10:40:44 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] drm/msm/dp: initialize audio_comp when audio
- starts
-In-Reply-To: <161843536949.46595.14917924989191979850@swboyd.mtv.corp.google.com>
-References: <1618434170-28302-1-git-send-email-khsieh@codeaurora.org>
- <161843536949.46595.14917924989191979850@swboyd.mtv.corp.google.com>
-Message-ID: <645818ed642db192a252343199ecbcc5@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-14 14:22, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-04-14 14:02:50)
->> Initialize audio_comp when audio starts and wait for audio_comp at
->> dp_display_disable(). This will take care of both dongle unplugged
->> and display off (suspend) cases.
->> 
->> Changes in v2:
->> -- add dp_display_start_audio()
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> 
-> Looking better. Thanks!
-> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->> b/drivers/gpu/drm/msm/dp/dp_display.c
->> index 0ba71c7..8a69bcd 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> @@ -177,6 +177,14 @@ static int dp_del_event(struct dp_display_private 
->> *dp_priv, u32 event)
->> 
->>         return 0;
->>  }
->> +void dp_display_start_audio(struct msm_dp *dp_display)
-> 
-> Please unstick this from previous function by adding a newline above.
-> 
->> +{
->> +       struct dp_display_private *dp;
->> +
->> +       dp = container_of(dp_display, struct dp_display_private, 
->> dp_display);
->> +
->> +       reinit_completion(&dp->audio_comp);
->> +}
->> 
->>  void dp_display_signal_audio_complete(struct msm_dp *dp_display)
->>  {
->> @@ -648,10 +656,6 @@ static int dp_hpd_unplug_handle(struct 
->> dp_display_private *dp, u32 data)
->>         /* start sentinel checking in case of missing uevent */
->>         dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, 
->> DP_TIMEOUT_5_SECOND);
->> 
->> -       /* signal the disconnect event early to ensure proper teardown 
->> */
-> 
-> This doesn't need to be done early anymore? Please mention why in the
-> commit text.
-> 
-This is my mistake, it still need signal audio here, will fix it
+On 4/15/21 1:10 PM, Matthew Wilcox wrote:
+> On Tue, Apr 13, 2021 at 09:20:22PM -0400, Waiman Long wrote:
+>> With memory accounting disable, the run time was 2.848s. With memory
+>> accounting enabled, the run times with the application of various
+>> patches in the patchset were:
+>>
+>>    Applied patches   Run time   Accounting overhead   Overhead %age
+>>    ---------------   --------   -------------------   -------------
+>>         None          10.800s         7.952s              100.0%
+>>          1-2           9.140s         6.292s               79.1%
+>>          1-3           7.641s         4.793s               60.3%
+>>          1-5           6.801s         3.953s               49.7%
+> I think this is a misleading way to report the overhead.  I would have said:
+>
+> 			10.800s		7.952s		279.2%
+> 			 9.140s		6.292s		220.9%
+> 			 7.641s		4.793s		168.3%
+> 			 6.801s		3.953s		138.8%
+>
+What I want to emphasize is the reduction in the accounting overhead 
+part of execution time. Your percentage used the accounting disable time 
+as the denominator. I think both are valid, I will be more clear about 
+that in my version of the patch.
 
->> -       reinit_completion(&dp->audio_comp);
->> -       dp_display_handle_plugged_change(g_dp_display, false);
->> -
->>         dp_catalog_hpd_config_intr(dp->catalog, 
->> DP_DP_HPD_PLUG_INT_MASK |
->>                                         DP_DP_IRQ_HPD_INT_MASK, true);
->> 
->> @@ -894,7 +898,6 @@ static int dp_display_disable(struct 
->> dp_display_private *dp, u32 data)
->>         /* wait only if audio was enabled */
->>         if (dp_display->audio_enabled) {
->>                 /* signal the disconnect event */
->> -               reinit_completion(&dp->audio_comp);
->>                 dp_display_handle_plugged_change(dp_display, false);
->>                 if (!wait_for_completion_timeout(&dp->audio_comp,
->>                                 HZ * 5))
+Thanks,
+Longman
+
