@@ -2,172 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825C636163B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8515C361641
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237840AbhDOX3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:29:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31759 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236754AbhDOX3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:29:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618529337; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=piGppBojtqCVXDMpx0SlbAI0Ep5s6X3/HUnzkiklKDw=; b=gR1CXvg0+LP5+V1OLn218ZHHANNvqkFuBPiR6keaMd+sHryW2yosVEnR84mtfwq/h+bwEezt
- w/c9GUgCKQdWI7OGn5BorBxwwqeT65qdqfrYqrL3O1Q88v7p3ZtWR8dvphUORlxxs3Xhf+7c
- XXUMKA39nX2EPRiz7xTy49Tj+5c=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6078cc39a817abd39a506a73 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 23:28:57
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5F581C43464; Thu, 15 Apr 2021 23:28:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B02C6C433CA;
-        Thu, 15 Apr 2021 23:28:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B02C6C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] drm/msm/dp: check main link status before start aux read
-Date:   Thu, 15 Apr 2021 16:28:46 -0700
-Message-Id: <1618529326-26883-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <161852681935.46595.9941294298184495830@swboyd.mtv.corp.google.com>
-References: <161852681935.46595.9941294298184495830@swboyd.mtv.corp.google.com>
+        id S237856AbhDOXaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237446AbhDOX3u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:29:50 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC75C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:29:24 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so9387674pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=jw2PSbrXAEN39rMTtQwepRsUrzSF/PJDp6qJKD1maOQ=;
+        b=Fni1JOOo4PrUzlzK7TjMF4v5KQ8JMEB8GQFvJdoCIs85gQ7hkEMknpG3xaXPhS80Fg
+         xJbRmZBxuaLCaLsDL4AVpD5/12galNW2GkHBhD13nBI/qZ+kzKtFLFCZKRtePFqUO/Re
+         Zz++4+ACyGOOamm7Y7acj4xF6H4JSsTKL7jUc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=jw2PSbrXAEN39rMTtQwepRsUrzSF/PJDp6qJKD1maOQ=;
+        b=KUJC5hJibFOK8me9kLA631rIp/TwCagEYDJkPGJ0IyZKHTfyUpLA2uT+ZvG0aFUIYp
+         JUXz9u7DA7Pxhy6yAPgMB4gBfkJ6G+64kpsEQL9MgtBJ/V7IiKvs6yXjWz9drF05M917
+         HNWxtfVYceJQx3ylKvt7r3rpugyTwxRhFdESAU+Shg6kOk4caDDuztUXuIfnGQAuXhbS
+         6+My2PNkRI7oSRtYAo4kGxIhk+jSkSOUbqRJs4+L4wRpjAYICzIKH0lM1UQ24JKGYJdP
+         8gpcDYXVGPy5H5KMycVA8jiVG4A/XjlFOeJmsfzGhckxoWQoYSYH4DuNHt1G4GjPq7rK
+         furg==
+X-Gm-Message-State: AOAM5335eh6h27zRoU4uJEEfp7CfH74C2Hz9NZIjA2B0Sx7IKHadPbiN
+        BNQHU0m++pmkBOmWcm3Na1R4gw==
+X-Google-Smtp-Source: ABdhPJxSv6iVBSeJJdGrfMFvazb0EusrLGidlTGj83XpU/NnbzX7T+WOwAI5+RKJlavNfX48j0XS8Q==
+X-Received: by 2002:a17:90a:6c88:: with SMTP id y8mr6713418pjj.38.1618529364161;
+        Thu, 15 Apr 2021 16:29:24 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-3f8b-a64e-9a27-b872.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:3f8b:a64e:9a27:b872])
+        by smtp.gmail.com with ESMTPSA id nv7sm3342006pjb.18.2021.04.15.16.29.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 16:29:23 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 4/5] mm: ptdump: Support hugepd table entries
+In-Reply-To: <f41a177a0fd5a71db616e586a9ec5c51102c6656.1618506910.git.christophe.leroy@csgroup.eu>
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu> <f41a177a0fd5a71db616e586a9ec5c51102c6656.1618506910.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 16 Apr 2021 09:29:20 +1000
+Message-ID: <87zgxzyvn3.fsf@dja-thinkpad.axtens.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe when the cable is disconnected the DP phy should be shutdown and
-some bit in the phy could effectively "cut off" the aux channel and then
-NAKs would start coming through here in the DP controller I/O register
-space. This patch have DP aux channel read/write to return NAK immediately
-if DP controller connection status is in unplugged state.
+Hi Christophe,
 
-Changes in V3:
--- check core_initialized before handle irq_hpd
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_aux.c     |  5 +++++
- drivers/gpu/drm/msm/dp/dp_display.c | 14 ++++++++++----
- drivers/gpu/drm/msm/dp/dp_link.c    | 20 +++++++++++++++-----
- 3 files changed, 30 insertions(+), 9 deletions(-)
+> Which hugepd, page table entries can be at any level
+> and can be of any size.
+>
+> Add support for them.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  mm/ptdump.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/ptdump.c b/mm/ptdump.c
+> index 61cd16afb1c8..6efdb8c15a7d 100644
+> --- a/mm/ptdump.c
+> +++ b/mm/ptdump.c
+> @@ -112,11 +112,24 @@ static int ptdump_pte_entry(pte_t *pte, unsigned long addr,
+>  {
+>  	struct ptdump_state *st = walk->private;
+>  	pte_t val = ptep_get(pte);
+> +	unsigned long page_size = next - addr;
+> +	int level;
+> +
+> +	if (page_size >= PGDIR_SIZE)
+> +		level = 0;
+> +	else if (page_size >= P4D_SIZE)
+> +		level = 1;
+> +	else if (page_size >= PUD_SIZE)
+> +		level = 2;
+> +	else if (page_size >= PMD_SIZE)
+> +		level = 3;
+> +	else
+> +		level = 4;
+>  
+>  	if (st->effective_prot)
+> -		st->effective_prot(st, 4, pte_val(val));
+> +		st->effective_prot(st, level, pte_val(val));
+>  
+> -	st->note_page(st, addr, 4, pte_val(val), PAGE_SIZE);
+> +	st->note_page(st, addr, level, pte_val(val), page_size);
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index 7c22bfe..fae3806 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -343,6 +343,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 
- 	mutex_lock(&aux->mutex);
- 
-+	if (!dp_catalog_link_is_connected(aux->catalog)) {
-+		ret = -ETIMEDOUT;
-+		goto unlock_exit;
-+	}
-+
- 	aux->native = msg->request & (DP_AUX_NATIVE_WRITE & DP_AUX_NATIVE_READ);
- 
- 	/* Ignore address only message */
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 1784e11..db3f45e 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -571,7 +571,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 		dp->hpd_state = ST_DISCONNECTED;
- 
- 		if (ret == -ECONNRESET) { /* cable unplugged */
--			dp->core_initialized = false;
-+			DRM_ERROR("dongle unplugged = %d\n", ret);
- 		}
- 
- 	} else {
-@@ -711,9 +711,15 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
- 	}
- 
--	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
--	if (ret == -ECONNRESET) { /* cable unplugged */
--		dp->core_initialized = false;
-+	/*
-+	 * dp core (ahb/aux clks) must be initialized before
-+	 * irq_hpd be handled
-+	 */
-+	if (dp->core_initialized) {
-+		ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
-+		if (ret == -ECONNRESET) { /* cable unplugged */
-+			DRM_ERROR("dongle unplugged = %d\n", ret);
-+		}
- 	}
- 
- 	mutex_unlock(&dp->event_mutex);
-diff --git a/drivers/gpu/drm/msm/dp/dp_link.c b/drivers/gpu/drm/msm/dp/dp_link.c
-index be986da..53ecae6 100644
---- a/drivers/gpu/drm/msm/dp/dp_link.c
-+++ b/drivers/gpu/drm/msm/dp/dp_link.c
-@@ -737,18 +737,25 @@ static int dp_link_parse_sink_count(struct dp_link *dp_link)
- 	return 0;
- }
- 
--static void dp_link_parse_sink_status_field(struct dp_link_private *link)
-+static int dp_link_parse_sink_status_field(struct dp_link_private *link)
- {
- 	int len = 0;
- 
- 	link->prev_sink_count = link->dp_link.sink_count;
--	dp_link_parse_sink_count(&link->dp_link);
-+	len = dp_link_parse_sink_count(&link->dp_link);
-+	if (len < 0) {
-+		DRM_ERROR("DP parse sink count failed\n");
-+		return len;
-+	}
- 
- 	len = drm_dp_dpcd_read_link_status(link->aux,
- 		link->link_status);
--	if (len < DP_LINK_STATUS_SIZE)
-+	if (len < DP_LINK_STATUS_SIZE) {
- 		DRM_ERROR("DP link status read failed\n");
--	dp_link_parse_request(link);
-+		return len;
-+	}
-+
-+	return dp_link_parse_request(link);
- }
- 
- /**
-@@ -1032,7 +1039,10 @@ int dp_link_process_request(struct dp_link *dp_link)
- 
- 	dp_link_reset_data(link);
- 
--	dp_link_parse_sink_status_field(link);
-+	ret = dp_link_parse_sink_status_field(link);
-+	if (ret) {
-+		return ret;
-+	}
- 
- 	if (link->request.test_requested == DP_TEST_LINK_EDID_READ) {
- 		dp_link->sink_request |= DP_TEST_LINK_EDID_READ;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+It seems to me that passing both level and page_size is a bit redundant,
+but I guess it does reduce the impact on each arch's code?
 
+Kind regards,
+Daniel
+
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.0
