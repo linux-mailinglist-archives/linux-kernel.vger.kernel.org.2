@@ -2,66 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9344C360615
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4880360618
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhDOJpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:45:20 -0400
-Received: from vmi485042.contaboserver.net ([161.97.139.209]:36860 "EHLO
-        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231309AbhDOJpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:45:20 -0400
-Received: by gentwo.de (Postfix, from userid 1001)
-        id 21905B00648; Thu, 15 Apr 2021 11:44:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id 1FE1BB0002A;
-        Thu, 15 Apr 2021 11:44:55 +0200 (CEST)
-Date:   Thu, 15 Apr 2021 11:44:55 +0200 (CEST)
-From:   Christoph Lameter <cl@gentwo.de>
-To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
-cc:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
- access
-In-Reply-To: <20210415032836.lohexqge3cvpsqoa@gabell>
-Message-ID: <alpine.DEB.2.22.394.2104151143080.632904@gentwo.de>
-References: <20210414012027.5352-1-longman@redhat.com> <20210414012027.5352-6-longman@redhat.com> <20210415032836.lohexqge3cvpsqoa@gabell>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S232116AbhDOJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:45:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231614AbhDOJpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:45:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB0D61166;
+        Thu, 15 Apr 2021 09:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618479929;
+        bh=mHUO7q4YvF+53ZYq0pQFLbZx8vFSz2zouLM+2LlidfU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YPEm9qCqJC4JDRH/aghhEkUciuEY6MwfRW9090WGKTseKblzftczluysGbJHsALvt
+         44N/Am9hdQZrxt6Ulyb7av6c/XGbVEFgQGt4wlWiaqR3Y6NSNYt32p+eIg84SXt6uK
+         f0wQVGC/ZtYPE7XuCo51SSIfUzttu4UnqZxqBktzBobKAt7PB2wpMDmcaQtg9vY+G5
+         uvC1cexTsf5ffMhFf3XdVU0OKAlK16MlpD9zuVztOxTBkHz++J3cKxqWmQmJPzrhHu
+         e/bJF3bHO05b9Pq0vP5M2c7EFnRUtSSZdR3leJlXmB11L7d4swfGraXMRXmu29QIEH
+         tZnTGFCme3dlw==
+Subject: Re: [PATCH 1/2] i2c: s3c2410: simplify getting of_device_id match
+ data
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+References: <20210415093803.162673-1-krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <acb1c39f-8098-1457-c996-05f647bfa25f@kernel.org>
+Date:   Thu, 15 Apr 2021 11:45:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210415093803.162673-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021, Masayoshi Mizuma wrote:
 
-> Please feel free to add:
->
-> Tested-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
->
-> Thanks!
-> Masa
->
+On 15.04.2021 11:38, Krzysztof Kozlowski wrote:
+> Use of_device_get_match_data() to make the code slightly smaller.
+> 
+> Signed-off-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
 
-Would you please stop quoting the whole patch when you have nothing to say
-about the details? It is enough to just respond without quoting. I was
-looking through this trying to find something you said about individual
-sections of code but there was nothing.
-
-
-
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
