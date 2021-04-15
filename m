@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601B336105D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6830E361062
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhDOQp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhDOQpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:45:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DFD161131;
-        Thu, 15 Apr 2021 16:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618505130;
-        bh=ORDWc1SvZXapQesN2ExjiEM8+hTKGdHW2Wy08olAwvI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uoSxpjQHEJNh+Pp+AAZrgXSYNm4fZ3LeZbMPrimQ3V90L8gYhXSTscqM593et/W8N
-         bf216QKOJxE1KmKJA9Yc8MnOIaUVB5Fi/a5xjm7NT+yNP891163fgT3hCtqlhpBCG4
-         7y7UwDefcbfnLTgZMdcrehFpuZTMUpgqIRsiAgGnRLQ3n6Y05F+I1FiSSiEEYoqrqA
-         6ELYv/mkSiJrcIh0o7AiyQ2p5tC1LMQstqFQ6cgryIFNbca3ZWTvw8GTCNLsP+eKLQ
-         AOm7kabmfeoAqgJ3rcLed6yXOCA23ptpPYxMtlyDDDiiyQgwi9/dbt0jWpPZyGAa0O
-         dVMrseoLUAolw==
-Date:   Thu, 15 Apr 2021 17:45:25 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Ali Saidi <alisaidi@amazon.com>
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        longman@redhat.com, mingo@redhat.com, peterz@infradead.org,
-        stable@vger.kernel.org, steve.capper@arm.com
-Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
- queued_write_lock_slowpath
-Message-ID: <20210415164525.GC26594@willie-the-truck>
-References: <20210415150228.GA26439@willie-the-truck>
- <20210415162646.9882-1-alisaidi@amazon.com>
+        id S233977AbhDOQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:48:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32900 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDOQr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:47:59 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618505255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ij+uTvdXS+i44BI8usBRso/TQwX1K1KTl2LSXZhUKWo=;
+        b=vEAEiuyatSPvPasYmHicpnRVSKCmNLpbaupdo2cJ2KNDO3r9kLSwyDKKYfVEXJpfliRe8A
+        vwS/CfbECdwH2oz4Rzgv+Gc1t4jzPaW1DULTHR+nYoZzq1rCJ1cPMqn/Mdvt5x9uUbNk51
+        q3Oz6A550mCu4oUvX40/ueEc48sYLdRR3tV9cLqlsnu7NaHHnE+PAMLsAgT02BX2saN0LE
+        ehblqAGvMD6PYC7vYqtPA40HliOUuFj8APztpRRnKsPLMX00SiVnHPts0dKrTRRr035n+A
+        hnGr5g5mj+1u5ui7rNCchaF92y0hG/ngzUDQMMRH+/X5pQseUW96D5D4J6NgqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618505255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ij+uTvdXS+i44BI8usBRso/TQwX1K1KTl2LSXZhUKWo=;
+        b=XIpKNyzm6L4xPG0HN3vGp+unsBCCbWn4VN6zHsp1zE+YXOWbwpcesZ4B+2yuQxMmc6N94c
+        oNKzfDriw3Ix5MBg==
+To:     Lorenzo Colitti <lorenzo@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        mikael.beckius@windriver.com,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>
+Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
+In-Reply-To: <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
+References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com> <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
+Date:   Thu, 15 Apr 2021 18:47:35 +0200
+Message-ID: <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210415162646.9882-1-alisaidi@amazon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:26:46PM +0000, Ali Saidi wrote:
-> 
-> On Thu, 15 Apr 2021 16:02:29 +0100, Will Deacon wrote:
-> > On Thu, Apr 15, 2021 at 02:25:52PM +0000, Ali Saidi wrote:
-> > > While this code is executed with the wait_lock held, a reader can
-> > > acquire the lock without holding wait_lock.  The writer side loops
-> > > checking the value with the atomic_cond_read_acquire(), but only truly
-> > > acquires the lock when the compare-and-exchange is completed
-> > > successfully which isn’t ordered. The other atomic operations from this
-> > > point are release-ordered and thus reads after the lock acquisition can
-> > > be completed before the lock is truly acquired which violates the
-> > > guarantees the lock should be making.
-> > 
-> > I think it would be worth spelling this out with an example. The issue
-> > appears to be a concurrent reader in interrupt context taking and releasing
-> > the lock in the window where the writer has returned from the
-> > atomic_cond_read_acquire() but has not yet performed the cmpxchg(). Loads
-> > can be speculated during this time, but the A-B-A of the lock word
-> > from _QW_WAITING to (_QW_WAITING | _QR_BIAS) and back to _QW_WAITING allows
-> > the atomic_cmpxchg_relaxed() to succeed. Is that right?
-> 
-> You're right. What we're seeing is an A-B-A problem that can allow 
-> atomic_cond_read_acquire() to succeed and before the cmpxchg succeeds a reader
-> performs an A-B-A on the lock which allows the core to observe a read that
-> follows the cmpxchg ahead of the cmpxchg succeeding. 
-> 
-> We've seen a problem in epoll where the reader does a xchg while
-> holding the read lock, but the writer can see a value change out from under it. 
-> 
-> Writer                               | Reader 2
-> --------------------------------------------------------------------------------
-> ep_scan_ready_list()                 |
-> |- write_lock_irq()                  |
->     |- queued_write_lock_slowpath()  |
->       |- atomic_cond_read_acquire()  |
->                                      | read_lock_irqsave(&ep->lock, flags);
->                                      | chain_epi_lockless()
->                                      |    epi->next = xchg(&ep->ovflist, epi);
->                                      | read_unlock_irqrestore(&ep->lock, flags);
->                                      |       
->          atomic_cmpxchg_relaxed()    |
->   READ_ONCE(ep->ovflist);    
+On Wed, Apr 14 2021 at 11:49, Lorenzo Colitti wrote:
+> On Wed, Apr 14, 2021 at 2:14 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> To give context, the commit is now 46eb1701c046 ("hrtimer: Update
+>> softirq_expires_next correctly after __hrtimer_get_next_event()") and is
+>> attached below.
+>>
+>> The f_ncm.c driver is doing a lot of calls to hrtimer_start() with mode
+>> HRTIMER_MODE_REL_SOFT for I think every packet it gets.  If that should
+>> not be happening, we can easily fix it but I guess no one has actually
+>> had fast USB devices that noticed this until now :)
+>
+> AIUI the purpose of this timer is to support packet aggregation. USB
+> transfers are relatively expensive/high latency. 6 Gbps is 500k
+> 1500-byte packets per second, or one every 2us. So f_ncm buffers as
+> many packets as will fit into 16k (usually, 10 1500-byte packets), and
+> only initiates a USB transfer when those packets have arrived. That
+> ends up doing only one transfer every 20us. It sets a 300us timer to
+> ensure that if the 10 packets haven't arrived, it still sends out
+> whatever it has when the timer fires. The timer is set/updated on
+> every packet buffered by ncm.
+>
+> Is this somehow much more expensive in 5.10.24 than it was before?
+> Even if this driver is somehow "holding it wrong", might there not be
+> other workloads that have a similar problem? What about regressions on
+> those workloads?
 
+Let's put the question of whether this hrtimer usage is sensible or not
+aside for now.
 
-Please stick this in the commit message, preferably annotated a bit like
-Peter's example to show the READ_ONCE() being speculated.
+I stared at the change for a while and did some experiments to recreate
+the problem, but that didn't get me anywhere.
 
-> > With that in mind, it would probably be a good idea to eyeball the qspinlock
-> > slowpath as well, as that uses both atomic_cond_read_acquire() and
-> > atomic_try_cmpxchg_relaxed().
-> 
-> It seems plausible that the same thing could occur here in qspinlock:
->           if ((val & _Q_TAIL_MASK) == tail) {
->                   if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
->                           goto release; /* No contention */
->           }
+Could you please do the following?
 
-Just been thinking about this, but I don't see an issue here because
-everybody is queuing the same way (i.e. we don't have a mechanism to jump
-the queue like we do for qrwlock) and the tail portion of the lock word
-isn't susceptible to ABA. That is, once we're at the head of the queue
-and we've seen the lock become unlocked via atomic_cond_read_acquire(),
-then we know we hold it.
+Enable tracing and enable the following tracepoints:
 
-So qspinlock looks fine to me, but I'd obviously value anybody else's
-opinion on that.
+    timers/hrtimer_cancel
+    timers/hrtimer_start
+    timers/hrtimer_expire_entry
+    irq/softirq_raise
+    irq/softirq_enter
+    irq/softirq_exit
 
-Will
+and function tracing filtered on ncm_wrap_ntb() and
+package_for_tx() only (to reduce the noise).
+
+Run the test on a kernels with and without that commit and collect trace
+data for both.
+
+That should give me a pretty clear picture what's going on.
+
+Thanks,
+
+        tglx
