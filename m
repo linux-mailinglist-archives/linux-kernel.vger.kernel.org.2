@@ -2,164 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E913600CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662EB3600CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhDOEG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 00:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S229598AbhDOEHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 00:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhDOEG0 (ORCPT
+        with ESMTP id S229485AbhDOEHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:06:26 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B731C061574;
-        Wed, 14 Apr 2021 21:06:03 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 31so534522pgn.13;
-        Wed, 14 Apr 2021 21:06:03 -0700 (PDT)
+        Thu, 15 Apr 2021 00:07:37 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F70C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 21:07:13 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id a11so20801193ioo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 21:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5okE2pNjTTIl5cI5vBAhcxTA0JhIWxKGfIW1DlM/nVc=;
-        b=Ca2AWSv3XA6rjNJHwwHmVS5D1+lP5vAjQWRjq6oZzvFHILkiPrU8YSj4mRabHQpI/N
-         XiGXoaEhvSfgWaT4UDcr8w8x9XxqHhmb5NqIqvuzGcgnQ1wOVKWvkAuSLR7Gc0MG7Raj
-         z/qj6SiFCuH5gxzVOaaawsgaWKcMi7Qto2A8cfwIQyQJcKtn+w2VNkgtiKMWJSpy9rHQ
-         jLX9JHqt4wMn+3c1Ek0kAKnEFr3gRCrhurEiD5mCZrlzOdz0Phv3pQoNQLBH3GezF7nn
-         2T3sFDP5Aas4pHpYO+pswg8Z5aIPWe7DqK5sWoyETpcFzbYXMhDKPX/MJl6B4i6s5R7B
-         /Cgw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6AY733fGeYnXuyutjzCDjkciisfbvulWzaOHZ289MSo=;
+        b=g+uB2jOSsHNLUINlbn5GDoqTqrYOf6elH+fG2NZo4sFIYzRUzYkbZR2L7b9BWjiyGR
+         qCSqED8miQHqrxXw9fUSZnouWyO6e9lreI7BiUFj6rPbzmHc2JjPD/pnJTYXtfZsgnAB
+         7EeE+WE2jOtacH1whI5r56Ovj5UaoI2oSp59ZpxD4tlH5muut9EzH4Hl3IIKjhP42rVB
+         Fw4wstzeYnQbhk6DaGVvgCs6KD6on+lx5ofNdYIPAvFYzerEY2g0kKbPw6zeextA14lq
+         UgVKEJF4q4XYIyEknElyxQcde/2oI2uOP25T6xnMO8VBlLHEBscQW/1kyqsC07Db1ZRT
+         HYHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=5okE2pNjTTIl5cI5vBAhcxTA0JhIWxKGfIW1DlM/nVc=;
-        b=pCRMwaDyqbheeG+yImBF/QAfd3F68FMqsV2bZgsMGj6LedESvBKJNE1BTbmRaZUeTZ
-         emt/Uya1/uR8ePhtSHAYc1VlLwmtuyyrG9OampO0Hg0uYo4qVt+M09s6UUm1uwnkFVpb
-         jp49VwZe1L61nkxfvBaurkrt2MUA5sta/l9NCWM9tEWPSLy8ye7RJaxuAq8YdXcoJC9F
-         ch5kXJdf/MI6ONtwOMpJrb7OrECHkTVUzbCgoK3NRF1+PMGlKNwbkBC2IEBbUaF6I+xk
-         HqRRTjLBmcJvYlImicijJasfd7Ml2xBQjlthbW77wIO9BOvX+k9FNstBZWyNNIZlUt5T
-         aK9w==
-X-Gm-Message-State: AOAM533MlpfsHktuOWfSHW2XT/v0g8PCzBDHrztfNFfFt2dA4iyAg/qM
-        aVtisM192HvcRpmigeimt7I=
-X-Google-Smtp-Source: ABdhPJxXCM2VgJlCZBXJcwUQZVsSP4mmZOJBR0UN91zBxyHrFvAkHST7fZ5yMMgvM3F0TU5FvAmunQ==
-X-Received: by 2002:a63:b509:: with SMTP id y9mr1663679pge.148.1618459563081;
-        Wed, 14 Apr 2021 21:06:03 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id i17sm714406pfd.84.2021.04.14.21.05.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Apr 2021 21:06:02 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     krzysztof.kozlowski@canonical.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, krzk@kernel.org, linux@rempel-privat.de,
-        s.riedmueller@phytec.de, matthias.schiffer@ew.tq-group.com,
-        leoyang.li@nxp.com, arnd@arndb.de, olof@lixom.net,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        prabhakar.csengg@gmail.com, mchehab@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v3 4/4] media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}() to set xvclk on/off
-Date:   Thu, 15 Apr 2021 12:05:35 +0800
-Message-Id: <1618459535-8141-5-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
-References: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6AY733fGeYnXuyutjzCDjkciisfbvulWzaOHZ289MSo=;
+        b=F9hl7kFVbKsCuAzP8qnjXy1W7q6nlvunjgxU1FPwQL/7UUGgcN/YtbbhqdM7YXf3IF
+         2xMMA+hMca18KZx8kR2eD/UJwdbrm8yCuHwAZsTzg8DJE+Vv9G8QWtb8HyYM31CzDvM3
+         CxsfRSYjhfZIEO26MtjWstwpr6VqCbq6R2qb/DnupV5yjsGw3sfwPhwofk4qoKmQFNdH
+         udLStQ6eUAsxetW/GCqjhfhW7tD/mJzFIvfJXdMp2Tc1tObz6ThyzmRx1wOlzHvh/0ZT
+         u/XRtWFpTURLma10w9FEO6Ij9j6dmOtR15tAx31BDl69e26sCXPuwRuoxDkPl9KUvQbY
+         31mQ==
+X-Gm-Message-State: AOAM533ZqqXyfuZ95U1odMAyIjuuD91D75jX8a76ZaSncwGhKlObSiDh
+        GZz+OwDErqNpJ4OnzGaOrHJR4YA/Cik4nQPqR398Qg==
+X-Google-Smtp-Source: ABdhPJwcQgwBEVmrdjdVbeLZ/5I5D9yyyGLw9MkszxLxsK5BIx7H5Snojbzb4cyLRN70qv1qZIM8drfIumagG6aiACg=
+X-Received: by 2002:a5e:8c16:: with SMTP id n22mr1089398ioj.156.1618459633060;
+ Wed, 14 Apr 2021 21:07:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183219.DC1928FA@viggo.jf.intel.com>
+ <CAAPL-u8Jk-i-9-iSnU7_nb-k2ZMqdRk5c88d-M6Bi1rfv4kSLQ@mail.gmail.com> <20210414080849.GA20886@linux>
+In-Reply-To: <20210414080849.GA20886@linux>
+From:   Wei Xu <weixugc@google.com>
+Date:   Wed, 14 Apr 2021 21:07:01 -0700
+Message-ID: <CAAPL-u-w_WShb0RyXhs8koihTOPvFK_dCwB22RhzA=f9kRyqqQ@mail.gmail.com>
+Subject: Re: [PATCH 02/10] mm/numa: automatically generate node migration order
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+On Wed, Apr 14, 2021 at 1:08 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> Hi Wei Xu,
+>
+> I have some questions about it
+>
+> Fast class/memory are pictured as those nodes with CPUs, while Slow class/memory
+> are PMEM, right?
+> Then, what stands for medium class/memory?
 
-On some platform(imx6q), xvclk might not switch on in advance,
-also for power save purpose, xvclk should not be always on.
-so, add clk_prepare_enable(), clk_disable_unprepare() in driver
-side to set xvclk on/off at proper stage.
+That is Dave's example.  I think David's guess makes sense (HBM - fast, DRAM -
+medium, PMEM - slow).  It may also be possible that we have DDR5 as fast,
+CXL-DDR4 as medium, and CXL-PMEM as slow.  But the most likely use cases for
+now should be just two tiers: DRAM vs PMEM or other types of slower
+memory devices.
 
-Add following changes:
-- add 'struct clk *clk;' in 'struct ov2659 {}'
-- enable xvclk in ov2659_power_on()
-- disable xvclk in ov2659_power_off()
+> In Dave's example, list is created in a way that stays local to the socket,
+> and we go from the fast one to the slow one.
+> In yours, lists are created taking the fastest nodes from all sockets and
+> we work our way down, which means have cross-socket nodes in the list.
+> How much of a penalty is that?
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
-v3: optimize commit message
+Cross-socket demotion is certainly more expensive.  But because it is
+sequential access
+and can also be optimized with non-temporal stores, it may not be much
+slower than
+demotion to a local node in the next tier.  The actual penalty will
+depend on the devices.
 
- drivers/media/i2c/ov2659.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+> And while I get your point, I am not sure if that is what we pretend here.
+> This patchset aims to place cold pages that are about to be reclaim in slower
+> nodes to give them a second chance, while your design seems more to have kind
+> of different memory clases and be able to place applications in one of those tiers
+> depending on its demands or sysadmin-demand.
+>
+> Could you expand some more?
 
-diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
-index 42f64175a6df..fb78a1cedc03 100644
---- a/drivers/media/i2c/ov2659.c
-+++ b/drivers/media/i2c/ov2659.c
-@@ -204,6 +204,7 @@ struct ov2659 {
- 	struct i2c_client *client;
- 	struct v4l2_ctrl_handler ctrls;
- 	struct v4l2_ctrl *link_frequency;
-+	struct clk *clk;
- 	const struct ov2659_framesize *frame_size;
- 	struct sensor_register *format_ctrl_regs;
- 	struct ov2659_pll_ctrl pll;
-@@ -1270,6 +1271,8 @@ static int ov2659_power_off(struct device *dev)
- 
- 	gpiod_set_value(ov2659->pwdn_gpio, 1);
- 
-+	clk_disable_unprepare(ov2659->clk);
-+
- 	return 0;
- }
- 
-@@ -1278,9 +1281,17 @@ static int ov2659_power_on(struct device *dev)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct ov2659 *ov2659 = to_ov2659(sd);
-+	int ret;
- 
- 	dev_dbg(&client->dev, "%s:\n", __func__);
- 
-+	ret = clk_prepare_enable(ov2659->clk);
-+	if (ret) {
-+		dev_err(&client->dev, "%s: failed to enable clock\n",
-+			__func__);
-+		return ret;
-+	}
-+
- 	gpiod_set_value(ov2659->pwdn_gpio, 0);
- 
- 	if (ov2659->resetb_gpio) {
-@@ -1425,7 +1436,6 @@ static int ov2659_probe(struct i2c_client *client)
- 	const struct ov2659_platform_data *pdata = ov2659_get_pdata(client);
- 	struct v4l2_subdev *sd;
- 	struct ov2659 *ov2659;
--	struct clk *clk;
- 	int ret;
- 
- 	if (!pdata) {
-@@ -1440,11 +1450,11 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->pdata = pdata;
- 	ov2659->client = client;
- 
--	clk = devm_clk_get(&client->dev, "xvclk");
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
-+	ov2659->clk = devm_clk_get(&client->dev, "xvclk");
-+	if (IS_ERR(ov2659->clk))
-+		return PTR_ERR(ov2659->clk);
- 
--	ov2659->xvclk_frequency = clk_get_rate(clk);
-+	ov2659->xvclk_frequency = clk_get_rate(ov2659->clk);
- 	if (ov2659->xvclk_frequency < 6000000 ||
- 	    ov2659->xvclk_frequency > 27000000)
- 		return -EINVAL;
-@@ -1506,7 +1516,9 @@ static int ov2659_probe(struct i2c_client *client)
- 	ov2659->frame_size = &ov2659_framesizes[2];
- 	ov2659->format_ctrl_regs = ov2659_formats[0].format_ctrl_regs;
- 
--	ov2659_power_on(&client->dev);
-+	ret = ov2659_power_on(&client->dev);
-+	if (ret < 0)
-+		goto error;
- 
- 	ret = ov2659_detect(sd);
- 	if (ret < 0)
--- 
-2.7.4
+Sure.  What I have described has the same goal as Dave's patchset,
+i,e, to demote
+cold pages to the slower nodes when they are about to be reclaimed.  The only
+difference is that in my suggestion the demotion target of a fast tier
+node is expanded
+from a single node to a set of nodes from the slow tier and one node
+in such a set
+can be marked as the preferred/local demotion target.   This can help
+enable more
+flexible demotion policies to be configured, such as to allow a cgroup
+to allocate from
+all fast tier nodes, but only demote to a local slow tier node.  Such
+a policy can reduce
+memory stranding at the fast tier (compared to if memory hardwall is
+used) and still
+allow demotion from all fast tier nodes without incurring the expensive random
+accesses to the demoted pages if they were demoted to remote slow tier nodes.
 
+I understand that Dave started this patchset with a simplified
+demotion path definition,
+which I agree.  Meanwhile, I think this more generalized definition of
+demotion path
+is useful and can also be important for some use cases.
