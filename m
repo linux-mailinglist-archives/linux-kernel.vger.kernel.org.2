@@ -2,114 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE593604DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCACE3604E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhDOIwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S231739AbhDOIxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhDOIwn (ORCPT
+        with ESMTP id S231251AbhDOIxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:52:43 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F7AC061574;
-        Thu, 15 Apr 2021 01:52:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Thu, 15 Apr 2021 04:53:01 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF35FC061574;
+        Thu, 15 Apr 2021 01:52:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4CBfBwbeMsKIjwkyJR8CxYymWxWHjQjc6bfUFfaI+Gs=; b=QBDzWwCqnCVNNJJRT76eqhcTut
+        LJyRWhwc+cIYbhVTOqkQGWi8yzOpqbWFL7LnP+ig0xblXqVeDfiwKS8mxZHxfCuCHgDI26Q1SKUip
+        SpSPh9jEZO/jl+4AmGezYhmakcrF3eLNvr5+WXdlE2auoWnTq/p57pHByXajtxuzVaZiBdXoc+5eK
+        zRe4DFDcdkusDn/wXnN71n1RP6tOTnGAo5k7qDpmG5BGvh2BfCj138t/ZFnna4utbjxiGi3bp5Igs
+        KginFPVdzlX0JCklTMbn4AJWL/L5N8Ff4d4IkUIJgcVFhU4lwsqIGi1A8kUFMzY1nh7RF8kAQLD0f
+        9T315q8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWxjk-00FPvr-8a; Thu, 15 Apr 2021 08:52:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLY4c6r5tz9sV5;
-        Thu, 15 Apr 2021 18:52:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618476737;
-        bh=QB4BCrjpgU5KIJI4AkeD+l2HmZyaeGojTt9+DV9zCLo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sPz/Rn+h//t1rbqV0p7oPnMtgSi30MbEu9LFkiVRK1KgD+aYNJaEMc1C2aN+M3fye
-         fes31BRejNNvBZKZUu62VGkuA/CLovh65QZhFnCgxsr42AFUug1K/AzlTUqWMh3kVg
-         BPBf5/NaTkuXlwDYbceTPisTBHOVuKRwCXg5V8YF4ETTCXrkfPSQkcXn1oPSNhiXu6
-         wJ33Vwqw3Q8CB/m0/2BhAueZl7DD0avibnZvzg7dFX6y4szTuhjd4yske9TQg6BlPW
-         aWwZaYs7AhZE6wgSdlsxi9j4K3nTA1al9L0Gqn9j1lgxA0uw0dH568UVvuKpHq9te0
-         UP0cX6fCV7U8g==
-Date:   Thu, 15 Apr 2021 18:52:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Shivaprasad G Bhat <sbhat@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the powerpc tree
-Message-ID: <20210415185214.01e1e64f@canb.auug.org.au>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6ED28300033;
+        Thu, 15 Apr 2021 10:52:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 566E32022422C; Thu, 15 Apr 2021 10:52:31 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 10:52:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     guoren@kernel.org
+Cc:     Anup.Patel@wdc.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH] riscv: atomic: Using ARCH_ATOMIC in asm/atomic.h
+Message-ID: <YHf+z0AotZmjvaJ/@hirez.programming.kicks-ass.net>
+References: <1618472362-85193-1-git-send-email-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S2nGF_z4WmlMfPGsNq_GhQO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618472362-85193-1-git-send-email-guoren@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S2nGF_z4WmlMfPGsNq_GhQO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 15, 2021 at 07:39:22AM +0000, guoren@kernel.org wrote:
+>  - Add atomic_andnot_* operation
 
-Hi all,
+> @@ -76,6 +59,12 @@ ATOMIC_OPS(sub, add, -i)
+>  ATOMIC_OPS(and, and,  i)
+>  ATOMIC_OPS( or,  or,  i)
+>  ATOMIC_OPS(xor, xor,  i)
+> +ATOMIC_OPS(andnot, and,  -i)
 
-After merging the powerpc tree, today's linux-next build (powerpc
-allyesconfig) produced this warning:
-
-In file included from include/linux/device.h:15,
-                 from arch/powerpc/include/asm/io.h:27,
-                 from include/linux/io.h:13,
-                 from include/linux/irq.h:20,
-                 from arch/powerpc/include/asm/hardirq.h:6,
-                 from include/linux/hardirq.h:11,
-                 from include/linux/highmem.h:10,
-                 from include/linux/bio.h:8,
-                 from include/linux/libnvdimm.h:14,
-                 from arch/powerpc/platforms/pseries/papr_scm.c:12:
-arch/powerpc/platforms/pseries/papr_scm.c: In function 'papr_scm_pmem_flush=
-':
-arch/powerpc/platforms/pseries/papr_scm.c:144:26: warning: format '%lld' ex=
-pects argument of type 'long long int', but argument 3 has type 'long int' =
-[-Wformat=3D]
-  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
-      |                          ^~~~~~~~~~~~~~~~~~~
-include/linux/dev_printk.h:19:22: note: in definition of macro 'dev_fmt'
-   19 | #define dev_fmt(fmt) fmt
-      |                      ^~~
-arch/powerpc/platforms/pseries/papr_scm.c:144:3: note: in expansion of macr=
-o 'dev_err'
-  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
-      |   ^~~~~~~
-arch/powerpc/platforms/pseries/papr_scm.c:144:43: note: format string is de=
-fined here
-  144 |   dev_err(&p->pdev->dev, "flush error: %lld", rc);
-      |                                        ~~~^
-      |                                           |
-      |                                           long long int
-      |                                        %ld
-
-Introduced by commit
-
-  75b7c05ebf90 ("powerpc/papr_scm: Implement support for H_SCM_FLUSH hcall")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/S2nGF_z4WmlMfPGsNq_GhQO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB3/r4ACgkQAVBC80lX
-0GzHTQf/fKx+jXRlPW1AX2OiUn+d7JMj6eTElM/cuCdqNjO8RMmqrbh/MVl7UJ7G
-WKy22wVfJp+d8gaJMmosAoNjCC8CPwYBgbjGrzQ8ipBRp9kguHl/er1jMusYAyvQ
-dJ3DcV8BDhltacPQ8AFBChzw0tm7WfOQsfdMo00k+OMnQSrYIefEeaxSilpCgL6s
-Af2mli1J1MjfnR6uqUpLgQyY6WM/9s+LFKhzrvWkdJhqVR9BUEwPA51XzU+RleLZ
-KsrWHQW5mgaoLxzdr0zols3KvT8Rq3rzIZ2u7MsqCLKrng8lC4xDMRPz1wohfVBL
-/WjL2J1eG9vys5Ts5vj8pVMmNpyj6g==
-=KZQ0
------END PGP SIGNATURE-----
-
---Sig_/S2nGF_z4WmlMfPGsNq_GhQO--
+~i, surely.
