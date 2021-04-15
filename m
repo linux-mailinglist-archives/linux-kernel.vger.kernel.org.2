@@ -2,186 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910936055C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAE536055A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhDOJMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:12:54 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47648 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbhDOJMr (ORCPT
+        id S231949AbhDOJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231732AbhDOJMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Apr 2021 05:12:47 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13F9C3QS127848;
-        Thu, 15 Apr 2021 04:12:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618477923;
-        bh=jGR561TrDqzLWL9VO6pvcCN3CbJFcTaYeFYvpbcz6N0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Z1jk2Vh/7eTOg55ohx9aljFaNhj3h4q4T2EY2S/V2NDbm16BoErnBInCT0JO0wL6/
-         5S0Uh/YA/4aUqMUJzHQBad2dqXgIh8DwMDmc97bzcDdiIdq+HlmvRNSENd4P6cShZl
-         07h4mzsn/LWP8wCgyBvOyTxnyAb7EVFFkFT79f5E=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13F9C31w073960
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 04:12:03 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 04:12:03 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 04:12:03 -0500
-Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13F9BwUV106092;
-        Thu, 15 Apr 2021 04:11:59 -0500
-Subject: Re: [PATCH v2 3/6] dt-bindings: phy: Add binding for TI TCAN104x CAN
- transceivers
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20210414140521.11463-1-a-govindraju@ti.com>
- <20210414140521.11463-4-a-govindraju@ti.com>
- <20210414153303.yig6bguue3g25yhg@pengutronix.de>
- <9a9a3b8b-f345-faae-b9bc-3961518e3d29@ti.com>
- <20210415073810.nwoi2hx57hdg4ima@pengutronix.de>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <072648d4-a747-bc5f-a525-25dd055905ee@ti.com>
-Date:   Thu, 15 Apr 2021 14:41:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB96C061574;
+        Thu, 15 Apr 2021 02:12:23 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id r22so15583841ljc.5;
+        Thu, 15 Apr 2021 02:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yWvqsI9bDP94NFY7a0CrpSrstBZeg9rVyS+9OHcqvYk=;
+        b=QZ2HATlif07v0vjr7jZHCGM4yPRG0TAKJdfLgZDVZPHgUJE9qyNsZKPZfAiNq+pIcn
+         GOEsP8IBJ+2yaNC5A0/W0fL1W2aJbA+98FUSFEwfd202y7A51DeMaNdbdcYOewId53nG
+         +Rqs2eRrsrSnlAo6c9TM0yDNg7yx7zdmi1S7zh8BPUD8QJt1d8Mg6ZAepeN+odaXwYKh
+         s3n76Oa5FXsyTWxQfPxxQQNqgxDkAA/a6emxmP+Ud51hDVH5wGhLxw3kDlP/Olnf+90C
+         yAu7HvxP6KLbv0jitb2MpknYM8GLRmi7NjegJWSqNtdseYNe7s5qnAG+5lLGbYK6r/Uu
+         taMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=yWvqsI9bDP94NFY7a0CrpSrstBZeg9rVyS+9OHcqvYk=;
+        b=CuHQfO0WXSGqYZCqt8ndVRHxsPoWhKNTACQ3v1BICYI2cyFWz5Ww54EFqJg1HJSSRd
+         +WdB2nVji/tKO8cPd3UHvRCNPuzPQKvp5dRl/lXTU6k/7Z1YfvdoIyGEa56ZYcLRHTXj
+         Vugxe/K0yHnkQw35SGpCP6VosxLncxr4NE1YUkzIDA2AX8gxz6THtVhRhXJSvddEIYEW
+         0cTe8v53NPSPoLGjXJ47jf9tSP1zKr7UOGyeCLQA1LGG40AozeVyQ5lxHUO0jMjpwCOa
+         rRyKGVOHZhAbicsufsPXg0pHj7cD5heqyjWif6NlnVOO9gpiZELyg+AemXADnfYgIPCL
+         OmqA==
+X-Gm-Message-State: AOAM531uJg2EjycbdW6jg+Ma4ogdoG0FtJrV32n9dt5EiBKSkphXCuO4
+        bfqQ185TJDPaVMcTH3C3dxQ=
+X-Google-Smtp-Source: ABdhPJzaaR0Ou1781MJ2Ni/i4B3MZMnik/PlzGdE+fOvJpRUkKeLfKZdCtPul/CguwbgtPfeOJR/fA==
+X-Received: by 2002:a2e:9041:: with SMTP id n1mr1196553ljg.127.1618477942094;
+        Thu, 15 Apr 2021 02:12:22 -0700 (PDT)
+Received: from [192.168.1.100] ([31.173.84.170])
+        by smtp.gmail.com with ESMTPSA id d15sm598649lfs.277.2021.04.15.02.12.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 02:12:21 -0700 (PDT)
+Subject: Re: [PATCH 10/15] usb: dwc2: Allow exit hibernation in urb enqueue
+To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     John Youn <John.Youn@synopsys.com>
+References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
+ <65daa916b29e0009083702cb4584c8274e58ddac.1618464534.git.Arthur.Petrosyan@synopsys.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <8b16e1ea-b8bb-b3fd-29ce-a997579f92eb@gmail.com>
+Date:   Thu, 15 Apr 2021 12:12:13 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210415073810.nwoi2hx57hdg4ima@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <65daa916b29e0009083702cb4584c8274e58ddac.1618464534.git.Arthur.Petrosyan@synopsys.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On 15.04.2021 8:40, Artur Petrosyan wrote:
 
-On 15/04/21 1:08 pm, Marc Kleine-Budde wrote:
-> On 15.04.2021 11:57:20, Aswath Govindraju wrote:
->> Hi Marc,
->>
->> On 14/04/21 9:03 pm, Marc Kleine-Budde wrote:
->>> On 14.04.2021 19:35:18, Aswath Govindraju wrote:
->>>> Add binding documentation for TI TCAN104x CAN transceivers.
->>>>
->>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->>>> ---
->>>>  .../bindings/phy/ti,tcan104x-can.yaml         | 56 +++++++++++++++++++
->>>>  MAINTAINERS                                   |  1 +
->>>>  2 files changed, 57 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->>>> new file mode 100644
->>>> index 000000000000..4abfc30a97d0
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->>>> @@ -0,0 +1,56 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: "http://devicetree.org/schemas/phy/ti,tcan104x-can.yaml#"
->>>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>>> +
->>>> +title: TCAN104x CAN TRANSCEIVER PHY
->>>> +
->>>> +maintainers:
->>>> +  - Aswath Govindraju <a-govindraju@ti.com>
+> When core is in hibernation state and an external
+> hub is connected, upper layer sends URB enqueue request,
+> which results in port reset issue.
 > 
-> Can you create a maintainers entry for this file with your address?
+> - Added exit from hibernation state to avoid port
+> reset issue and process upper layer request properly.
+> 
+> Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
+> ---
+>   drivers/usb/dwc2/hcd.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+> index cc9ad6cf02d9..3b03b2d73aaa 100644
+> --- a/drivers/usb/dwc2/hcd.c
+> +++ b/drivers/usb/dwc2/hcd.c
+> @@ -4631,12 +4631,29 @@ static int _dwc2_hcd_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
+>   	struct dwc2_qh *qh;
+>   	bool qh_allocated = false;
+>   	struct dwc2_qtd *qtd;
+> +	struct dwc2_gregs_backup *gr;
+> +
+> +	gr = &hsotg->gr_backup;
+>   
+>   	if (dbg_urb(urb)) {
+>   		dev_vdbg(hsotg->dev, "DWC OTG HCD URB Enqueue\n");
+>   		dwc2_dump_urb_info(hcd, urb, "urb_enqueue");
+>   	}
+>   
+> +	if (hsotg->hibernated) {
+> +		if (gr->gotgctl & GOTGCTL_CURMODE_HOST) {
+> +			retval = dwc2_exit_hibernation(hsotg, 0, 0, 1);
+> +			if (retval)
+> +				dev_err(hsotg->dev,
+> +					"exit hibernation failed.\n");
+> +		} else {
+> +			retval = dwc2_exit_hibernation(hsotg, 0, 0, 0);
+> +			if (retval)
+> +				dev_err(hsotg->dev,
+> +					"exit hibernation failed.\n");
 
-I don't see this being done for other phy yamls in the
-Documentation/devicetree/bindings/phy folder. Also,
-scripts/get_maintainer.pl is giving the names of maintainers after
-reading the yaml files too.
+    Why not put these identical *if*s outside the the outer *if*?
 
-Thanks,
-Aswath
 
-> 
->>>> +
->>>> +properties:
->>>> +  $nodename:
->>>> +    pattern: "^tcan104x-phy"
->>>> +
->>>> +  compatible:
->>>> +    enum:
->>>> +      - ti,tcan1042
->>>> +      - ti,tcan1043
->>>
->>> Can you ensure that the 1042 has only the standby gpio and the 1043 has both?
->>>
->>
->> In the driver, it is the way the flags have been set for ti,tcan1042 and
->> ti,tcan1043.
-> 
-> I was wondering if we would enforce in the DT the 1042 has exactly one
-> the standby GPIO and the 1043 has exactly the standby and the enable
-> GPIO.
-> 
-> On the other hand the HW might have pulled one or the other pin high or
-> low and only one of the pins is connected to a GPIO.
-> 
->>>> +
->>>> +  '#phy-cells':
->>>> +    const: 0
->>>> +
->>>> +  standby-gpios:
->>>> +    description:
->>>> +      gpio node to toggle standby signal on transceiver
->>>> +    maxItems: 1
->>>> +
->>>> +  enable-gpios:
->>>> +    description:
->>>> +      gpio node to toggle enable signal on transceiver
->>>> +    maxItems: 1
->>>> +
->>>> +  max-bitrate:
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    description:
->>>> +      max bit rate supported in bps
->>>> +    minimum: 1
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - '#phy-cells'
->>>> +
->>>> +additionalProperties: false
->>>> +
->>>> +examples:
->>>> +  - |
->>>> +    #include <dt-bindings/gpio/gpio.h>
->>>> +
->>>> +    transceiver1: tcan104x-phy {
->>>> +      compatible = "ti,tcan1043";
->>>> +      #phy-cells = <0>;
->>>> +      max-bitrate = <5000000>;
->>>> +      standby-gpios = <&wakeup_gpio1 16 GPIO_ACTIVE_LOW>;
->>>> +      enable-gpios = <&main_gpio1 67 GPIO_ACTIVE_LOW>;
->>>
->>> AFAICS the enable gpio is active high.
->>>
->>
->> I will correct this in the respin.
-> 
-> Marc
-> 
+> +		}
+> +	}
+> +
+>   	if (hsotg->in_ppd) {
+>   		retval = dwc2_exit_partial_power_down(hsotg, 0, true);
+>   		if (retval)
 
+MBR, Sergei
