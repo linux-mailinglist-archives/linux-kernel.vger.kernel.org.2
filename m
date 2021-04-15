@@ -2,208 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25B1360224
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D514360227
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhDOGFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:05:51 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21331 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhDOGFs (ORCPT
+        id S230473AbhDOGHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:07:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25740 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhDOGHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:05:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1618466719; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=M3ddWaQ+qb+J8RiAPpgE3x1VqPC/HFoUS6tsXNcnRaJp3X3BumAThmX2P2eSpDv8k0NIqhdwDmGaxZMzceClbFBiX2MhFwGmegsYBjm7eIhUO+xj4ujVmus7E/W17pnBqvYPVHi5a2rzpOaHEOAT49+xyIURmRlPk2YNW+6+Fj8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1618466719; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=BtxGurJ2WPFeR1ekeiCa0B5pnQ7t0xfLSrOPoZH2J/Q=; 
-        b=MBtcS26uunXxkQEUH9+4IXvK1SMo4K88WuJXgXDDwxXjQWWQ1lN6GrUpiYTmqpw2tBVNUsccrkA/ZoiqSntoCohvGUcfVVQUle/lv9oviqIpxESD8S+Lhl9phClO36xlcMtUk8mV3UUKf+ulVOfx+6SuujELx5FzuNSjlmaoEBo=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1618466719;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=BtxGurJ2WPFeR1ekeiCa0B5pnQ7t0xfLSrOPoZH2J/Q=;
-        b=uNTy7y1sMukjSX7E3XVJlJbLU+jIcbCHv9aiupm6+mwMqik9J0NZ+ERDb9CrHoLY
-        QsLdxHKSJguvD3MdeopBu32fJT+a33IW3llBuA1znBbTXY025lvN+dxBDipwZLlmYAP
-        BhIp/jEI8igJ1Ct3xR1vi+R04JbRVyYHyiWLZbvo=
-Received: from anirudhrb.com (49.207.216.151 [49.207.216.151]) by mx.zohomail.com
-        with SMTPS id 1618466718199202.62878359563967; Wed, 14 Apr 2021 23:05:18 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 11:35:12 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Junyong Sun <sunjy516@gmail.com>,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] firmware_loader: fix use-after-free in
- firmware_fallback_sysfs
-Message-ID: <YHfXmFDwiLJir6z7@anirudhrb.com>
-References: <20210414085406.1842-1-mail@anirudhrb.com>
- <20210414125540.GJ4332@42.do-not-panic.com>
+        Thu, 15 Apr 2021 02:07:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618466831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+zQpfJqpx9ouYTivVYHq0zZnLNXpxnHkEi/8kwyW1R0=;
+        b=a0v1mNj/cgE58K7k80u+PLWYSEpOGbbSEr2S8zSxzQ77fG9rSL6nH3ZSvomZTSaq/gzHis
+        rkNCE+4q2E90VDqb2TFKjZgwNIeLzaLTaQqhK9LA2HeKhOhTi3QhzrBvqn1/vUfeAG44zn
+        WSn61MF6IiBcAQHx1B2fFcnUelcJR3E=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-JQoklg8MOzuDJUNEbGyAsQ-1; Thu, 15 Apr 2021 02:07:09 -0400
+X-MC-Unique: JQoklg8MOzuDJUNEbGyAsQ-1
+Received: by mail-ej1-f70.google.com with SMTP id j25-20020a1709060519b029037cb8ca241aso537138eja.19
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:07:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+zQpfJqpx9ouYTivVYHq0zZnLNXpxnHkEi/8kwyW1R0=;
+        b=CYKgopsRNM5g2G7Z+7TGQoDlr9U9pDGD0y7OyFZQNnL6B5AbbVv9MDfiexGMSUVWHl
+         pameKHpf9NQzZPeSU7bVjqhmJyrVNQ5j379G2aCHbeqwfHWCXeyN+n55ttoibL81G48s
+         yPqYUbpxDpbhKDWJZ0JetMziIbUeciRTYSBxutC+wqbyXrqGxHrEBdrJA1EMb/IVLKyp
+         rmEZuGHMWXbmRlHDB8mO3b8mBxWfjFJthUc6B5LvLulNn/fNBKUi189uZyXBpSQ8F0F2
+         J4VU0mbdTqYqDQx6Pi1W2Xynfdfydg1D71z1l7XC+eX1I7YPpAiLFlhKBlRK5I8HO+4y
+         c6iQ==
+X-Gm-Message-State: AOAM533cz6VCoCSM+dmhZfU1e5kqHTYwH9CdTfbHYiG3IbFKrxSe5XdK
+        mBUQGi3J7a/andKRuvEEaMPQT2sK7iP6w89VwdG0H09XfSWH4bBagEZttaOzg5++slEd9mqWuTn
+        ye4cxdlsOMQeImuq3Ru2jI+Ow
+X-Received: by 2002:a17:906:5052:: with SMTP id e18mr1711345ejk.112.1618466828689;
+        Wed, 14 Apr 2021 23:07:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRvvfi/7R2Qj/6IiukMYJNx/KuJdr6BgooLpTLPmk3qQeui/HM+RKSnJeBX/QpfGrRkoxWTw==
+X-Received: by 2002:a17:906:5052:: with SMTP id e18mr1711322ejk.112.1618466828430;
+        Wed, 14 Apr 2021 23:07:08 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id f11sm1113767ejc.62.2021.04.14.23.07.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Apr 2021 23:07:07 -0700 (PDT)
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Filippo Sironi <sironi@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "v4.7+" <stable@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20201127112114.3219360-1-pbonzini@redhat.com>
+ <20201127112114.3219360-3-pbonzini@redhat.com>
+ <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
+ <YHS/BxMiO6I1VOEY@google.com>
+ <CAJhGHyAcnwkCfTcnxXcgAHnF=wPbH2EDp7H+e74ce+oNOWJ=_Q@mail.gmail.com>
+ <80b013dc-0078-76f4-1299-3cff261ef7d8@redhat.com>
+ <CAJhGHyChfXdcAMzzD7P3aC8tnhFW5GvOt88vOY=D3pyb7hgNAA@mail.gmail.com>
+ <6d9dafb1-b8ff-82ef-93dc-da869fe7ba0f@redhat.com>
+ <CAJhGHyA=v_va2QTvo7Ve8JyZO4j5LjiCdB9CLnvRXGwGwa3e+A@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
+ window request
+Message-ID: <5b422691-ffc5-d73a-1bda-f1ee61116756@redhat.com>
+Date:   Thu, 15 Apr 2021 08:07:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414125540.GJ4332@42.do-not-panic.com>
-X-ZohoMailClient: External
+In-Reply-To: <CAJhGHyA=v_va2QTvo7Ve8JyZO4j5LjiCdB9CLnvRXGwGwa3e+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 12:55:40PM +0000, Luis Chamberlain wrote:
-> Shuah, a question for you toward the end here.
+On 15/04/21 02:59, Lai Jiangshan wrote:
+> The next call to inject_pending_event() will reach here AT FIRST with
+> vcpu->arch.exception.injected==false and vcpu->arch.exception.pending==false
 > 
-> On Wed, Apr 14, 2021 at 02:24:05PM +0530, Anirudh Rayabharam wrote:
-> > This use-after-free happens when a fw_priv object has been freed but
-> > hasn't been removed from the pending list (pending_fw_head). The next
-> > time fw_load_sysfs_fallback tries to insert into the list, it ends up
-> > accessing the pending_list member of the previoiusly freed fw_priv.
-> > 
-> > The root cause here is that all code paths that abort the fw load
-> > don't delete it from the pending list. For example:
-> > 
-> > 	_request_firmware()
-> > 	  -> fw_abort_batch_reqs()
-> > 	      -> fw_state_aborted()
-> > 
-> > To fix this, delete the fw_priv from the list in __fw_set_state() if
-> > the new state is DONE or ABORTED. This way, all aborts will remove
-> > the fw_priv from the list. Accordingly, remove calls to list_del_init
-> > that were being made before calling fw_state_(aborted|done).
-> > 
-> > Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
-> > list if it is already aborted. Instead, just jump out and return early.
-> > 
-> > Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> > Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> > ---
-> > 
-> > Changes in v3:
-> > Modified the patch to incorporate suggestions by Luis Chamberlain in
-> > order to fix the root cause instead of applying a "band-aid" kind of
-> > fix.
-> > https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
-> > 
-> > Changes in v2:
-> > 1. Fixed 1 error and 1 warning (in the commit message) reported by
-> > checkpatch.pl. The error was regarding the format for referring to
-> > another commit "commit <sha> ("oneline")". The warning was for line
-> > longer than 75 chars. 
-> > 
-> > ---
-> >  drivers/base/firmware_loader/fallback.c | 8 ++++++--
-> >  drivers/base/firmware_loader/firmware.h | 6 +++++-
-> >  drivers/base/firmware_loader/main.c     | 2 ++
-> >  3 files changed, 13 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> > index 91899d185e31..73581b6998b4 100644
-> > --- a/drivers/base/firmware_loader/fallback.c
-> > +++ b/drivers/base/firmware_loader/fallback.c
-> > @@ -94,7 +94,6 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
-> >  	if (fw_sysfs_done(fw_priv))
-> >  		return;
-> >  
-> > -	list_del_init(&fw_priv->pending_list);
-> >  	fw_state_aborted(fw_priv);
-> >  }
-> >  
-> > @@ -280,7 +279,6 @@ static ssize_t firmware_loading_store(struct device *dev,
-> >  			 * Same logic as fw_load_abort, only the DONE bit
-> >  			 * is ignored and we set ABORT only on failure.
-> >  			 */
-> > -			list_del_init(&fw_priv->pending_list);
-> >  			if (rc) {
-> >  				fw_state_aborted(fw_priv);
-> >  				written = rc;
-> > @@ -513,6 +511,11 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
-> >  	}
-> >  
-> >  	mutex_lock(&fw_lock);
-> > +	if (fw_state_is_aborted(fw_priv)) {
-> > +		mutex_unlock(&fw_lock);
-> > +		retval = -EAGAIN;
-> > +		goto out;
-> > +	}
-> 
-> Thanks for the quick follow up!
-> 
-> This would regress commit 76098b36b5db1 ("firmware: send -EINTR on
-> signal abort on fallback mechanism") which I had mentioned in my follow
-> up email you posted a link to. It would regress it since the condition
-> is just being met earlier and you nullify the effort. So essentially
-> on Android you would make not being able to detect signal handlers
-> like the SIGCHLD signal sent to init, if init was the same process
-> dealing with the sysfs fallback firmware upload.
+>>           ... if (!vcpu->arch.exception.pending) {
+>>                   if (vcpu->arch.nmi_injected) {
+>>                           static_call(kvm_x86_set_nmi)(vcpu);
+>>                           can_inject = false;
+>>                   } else if (vcpu->arch.interrupt.injected) {
+>>                           static_call(kvm_x86_set_irq)(vcpu);
+>>                           can_inject = false;
+>
+> And comes here and vcpu->arch.interrupt.injected is true for there is
+> an interrupt queued by KVM_INTERRUPT for pure user irqchip. It then does
+> the injection of the interrupt without checking the EFLAGS.IF.
 
-Thanks for the detailed comments, Luis!
-
-I don't see how my patch changes existing error code behaviour. Even
-without my patch this function would return -EAGAIN if the fw is already
-aborted. Without my patch, it would call fw_sysfs_wait_timeout() which
-would return -ENOENT (because fw is already aborted) as follows:
-
-	ret = wait_for_completion_killable_timeout(...)
-	if (ret != 0 && fw_st->status == FW_STATUS_ABORTED)
-		return -ENOENT;
-	if (!ret)
-		return -ETIMEDOUT;
-
-	return ret < 0 ? ret : 0;
-
-Now, this -ENOENT gets converted to -EAGAIN due to this piece of code
-in fw_load_sysfs_fallback():
-
-	if (fw_state_is_aborted(fw_priv)) {
-		if (retval == -ERESTARTSYS)
-			retval = -EINTR;
-		else
-			retval = -EAGAIN;
-	} else if (fw_priv->is_paged_buf && !fw_priv->data)
-		retval = -ENOMEM;
-
-So, at the end, fw_load_sysfs_fallback() returns -EAGAIN for the case
-where the fw is already aborted.  Which is what I did in my patch. So, my
-patch doesn't seem to regress anything. If this is not the intended behavior
-then it means that things are already regressed and not because of this
-patch.
-
-Please do correct me if I missed something here.
-
-> 
-> The way I dealt with this in my patch was I decided to return -EINTR
-> in the earlier case in the hunk you added, instead of -EAGAIN. In
-> addition to this, later on fw_load_sysfs_fallback() when
-> fw_sysfs_wait_timeout() is used that would also deal with checking
-> for error codes on wait, and only then check if it was a signal
-> that cancelled things (the check for -ERESTARTSYS). We therefore
-> only send to userspace -EAGAIN when the wait really did hit the
-> timeout.
-> 
-> But also note that my change added a check for
-> fw_state_is_aborted(fw_priv) inside fw_sysfs_wait_timeout(),
-> as that was a recently intended goal.
-> 
-> In either case I documented well *why* we do these error checks
-> before sending a code to userspace on fw_sysfs_wait_timeout() since
-> otherwise it would be easy to regress that code, so please also
-> document that as I did.
-
-The goal of this patch is to fix the UAF reported by syzbot.
-
-I am okay with simply documenting the reasons behind error codes, but I
-would rather not do any more refactoring of the error handling code in
-this patch since it doesn't directly contribute to fixing the uaf.
-
-Does that sound reasonable?
+Ok, understood now.  Yeah, that could be a problem for userspace irqchip 
+so we should switch it to use pending_external_vector instead.  Are you 
+going to write the patch or should I?
 
 Thanks!
 
-	- Anirudh.
+Paolo
+
+> My question is that what stops the next call to inject_pending_event()
+> to reach here when KVM_INTERRUPT is called with exepction pending.
+
