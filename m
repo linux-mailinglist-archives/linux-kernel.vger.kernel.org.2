@@ -2,122 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBF3360E13
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50963360E3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbhDOPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        id S234902AbhDOPMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235097AbhDOPAW (ORCPT
+        with ESMTP id S235403AbhDOPBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:22 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A49C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:59:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so433245wmi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:59:58 -0700 (PDT)
+        Thu, 15 Apr 2021 11:01:12 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9ECC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:00:44 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id l4so37299136ejc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wEmeE+nRU2i2HuTEhl2l+nDu4F3N+EEwdYCFM019aAY=;
-        b=A45SPYWVLdT7S1dswSXWtbcLIKQs4WiHE/Ut3PZ0xIiaRcL3umDmo8P9ZrwTDFF7V6
-         YDKC6g0b1KhlecjvXgtySFWKVq2QdkQo3ARkALOHZ6iR40y5YaYTHl62khsxLAXngB7c
-         uYneF1Yx836FyhliuVUFQPVgyur9q5JMyd3+Hp3PM8OmyHRFEVJa5x1Y9DGVkVOzcoA1
-         mAHyIuuYFbu3alcwhnvS5wzJetRQ+vkZSlD+Os/ylplcUuJBtBoQ3zLOLpbgrpaC0zxX
-         zd3u5giUf0USAYnGu5e+saklLbDrHTbUg8euRGtwECxLoaZPeSy2JNm4I5kGH7WDqmWp
-         i8wg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eXenppMlRDUQ3XdUE6tp7seWuh83v/wLWPDlePTYdvs=;
+        b=zFqtXN64INKdW9Wp27smv397vK6c+sxT6p8RXlfTxilSGWMk0lFvnhiU26e07+pIUB
+         hcc1oQGLMYDGMv2uqKc5a4h+LCVInU16GWEYmM0UB/DYOorY+Gr6w1zhW0UyYG/F5tIL
+         FMumVsOyrYxS39j5JsTUwnTakDG/Oh4Oqo2cx49z19e6BfVkXAoPY2vngcWVnZ8xfg9c
+         A6ULc0sYXeyw7eT1Lebnm657vKjuivkZnGf7k/hpnqCjcQDEK8EpkFSdnWYD8RMYvnjI
+         ZcRBMijcslm925/ak9wkfidh5qTzaJcyGTrFYEXKq2C7AE1WxmWN5XlGQ4TrSUgtIEHa
+         0OrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wEmeE+nRU2i2HuTEhl2l+nDu4F3N+EEwdYCFM019aAY=;
-        b=pG9vcaZR6uVWYuBySp4Jli3o8AAQhRO076/fNhFpWorvs6JO04wOlNSAl//hSZbwS2
-         T6FjkpnbDFfH4YcbiYYpAA2ALWqQzbEM0FgO9v1+3fYhc/k40PlOmNkeQOSQ5T9AfzzA
-         sQFjbnYlabHKEgaxVjviolClnbiPWOGyU25s9fX4DLBfFi7g+53t18d7DYGXHixQSSW6
-         RX5WCbjwg5ucPi+X3+CxilA8yoRACo3dRtSxgAn18fOQPXZk6hCcbK+naIsUqhEph04Z
-         G715DKKvKLF1TN3aSGkAyr6+lJ3TqR3pV7GuGoSIgVrHl3ZZ6BvWKYDLmEeX4DvNNVMH
-         SxXw==
-X-Gm-Message-State: AOAM533+bziXh4PtGJCgav5i1Ey8C+wf8wGHSJvLUCvPyerBrhOJ3iv9
-        JNfQRShaLBu7DWHxZtQ7++rXVmBXdIDA9Q==
-X-Google-Smtp-Source: ABdhPJxqlVPWGCKsf2QzXPRd1bPNJjdG3jhIFGVI5LZlI6SFJOqN137fv0fwdNdQbhLlYHVVqC+ipA==
-X-Received: by 2002:a05:600c:3544:: with SMTP id i4mr3497996wmq.38.1618498797586;
-        Thu, 15 Apr 2021 07:59:57 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id 3sm3820681wma.45.2021.04.15.07.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 07:59:57 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:59:54 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-Message-ID: <YHhU6pb8E5W2eeCX@google.com>
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
- <YHg8s4VTQdiBNOpr@google.com>
- <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eXenppMlRDUQ3XdUE6tp7seWuh83v/wLWPDlePTYdvs=;
+        b=YcE9cS9yAI16VaAG8aRb6obTltq4wfJIsb56KeO1SHKxvU7nnRIv2/nLG4aULOWefE
+         8a48R+Wok8iEprI+SWpL50NlbJzJj2i4f61TLcv1mCMeu98thDIZoH8wS+oHBteoBBT6
+         wtzCNgROzg0lHPaxTVjlrDYfLwiPExvooHJJAm5IPtctOYtxxyLBFaqxpgJdzDMMIad9
+         uNLGJf/7IUPUqQjDOkMGupKnl7WCVhmI9vft4bTJKhQlgRhwd3LWGkh6NUfUFmO7+lIq
+         ywRfHVVEnp41FdgTwzh8Ftzzlaly6y+kVWv6UHp3t7KVQo1q0aoDj53PONeJNOKWuZWj
+         qXVA==
+X-Gm-Message-State: AOAM531XHExmOQL5KdM5AXts6ZxMnJ5e9SpgrDyRvErawLbb3hD7WOEY
+        X9ToeXTe0JX6QcGATRJyx2hgN57osir9Xfn8z+byHQ==
+X-Google-Smtp-Source: ABdhPJwKcD6cFbBQ45jvvBX/yt9qT0Adavqea2M2F5q+zROXwVwkprD4+BjXKKV4lspmITb/ruX30pXWP4W6s0zYNI4=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr3830424ejw.341.1618498843483;
+ Thu, 15 Apr 2021 08:00:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
+References: <161728744224.2474040.12854720917440712854.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161728746928.2474040.8309331256371634167.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210406183232.00003189@Huawei.com>
+In-Reply-To: <20210406183232.00003189@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 15 Apr 2021 08:00:00 -0700
+Message-ID: <CAPcyv4jvhc6wgne4r_zgJzB3PgSHgMtHrnsRCvx=F8JxPKfBCw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] cxl/acpi: Introduce ACPI0017 driver and cxl_root
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 15 Apr 2021 at 15:34:53 (+0100), Vincent Donnefort wrote:
-> On Thu, Apr 15, 2021 at 01:16:35PM +0000, Quentin Perret wrote:
-> > On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
-> > > --- a/kernel/sched/cpufreq_schedutil.c
-> > > +++ b/kernel/sched/cpufreq_schedutil.c
-> > > @@ -10,6 +10,7 @@
-> > >  
-> > >  #include "sched.h"
-> > >  
-> > > +#include <linux/energy_model.h>
-> > >  #include <linux/sched/cpufreq.h>
-> > >  #include <trace/events/power.h>
-> > >  
-> > > @@ -164,6 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> > >  
-> > >  	freq = map_util_freq(util, freq, max);
-> > >  
-> > > +	/* Avoid inefficient performance states */
-> > > +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
-> > 
-> > I remember this was discussed when Douglas sent his patches some time
-> > ago, but I still find it sad we index the EM table here but still
-> > re-index the cpufreq frequency table later :/
-> > 
-> > Yes in your case this lookup is very inexpensive, but still. EAS relies
-> > on the EM's table matching cpufreq's accurately, so this second lookup
-> > still feels rather unnecessary ...
-> 
-> To get only a single lookup, we would need to bring the inefficiency knowledge
-> directly to the cpufreq framework. But it has its own limitations: 
-> 
->   The cpufreq driver can have its own resolve_freq() callback, which means that
->   not all the drivers would benefit from that feature.
-> 
->   The cpufreq_table can be ordered and accessed in several ways which brings
->   many combinations that would need to be supported, ending-up with something
->   much more intrusive. (We can though decide to limit the feature to the low to
->   high access that schedutil needs).
-> 
-> As the EM needs schedutil to exist anyway, it seemed to be the right place for
-> this code. It allows any cpufreq driver to benefit from the feature, simplify a
-> potential extension for a usage by devfreq devices and as a bonus it speeds-up
-> energy computing, allowing a more complex Energy Model.
+On Tue, Apr 6, 2021 at 10:47 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 1 Apr 2021 07:31:09 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > While CXL builds upon the PCI software model for dynamic enumeration and
+> > control, a static platform component is required to bootstrap the CXL
+> > memory layout. In addition to identifying the host bridges ACPI is
+> > responsible for enumerating the CXL memory space that can be addressed
+> > by decoders. This is similar to the requirement for ACPI to publish
+> > resources reported by _CRS for PCI host bridges.
+> >
+> > Introduce the cxl_root object as an abstract "port" into the CXL.mem
+> > address space described by HDM decoders identified by the ACPI
+> > CEDT.CHBS.
+> >
+> > For now just establish the initial boilerplate and sysfs attributes, to
+> > be followed by enumeration of the ports within the host bridge.
+> >
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> A few minor comments inline.
+>
+> > ---
+> >  drivers/cxl/Kconfig  |   14 ++
+> >  drivers/cxl/Makefile |    2
+> >  drivers/cxl/acpi.c   |   39 ++++++
+> >  drivers/cxl/core.c   |  349 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/cxl/cxl.h    |   64 +++++++++
+> >  5 files changed, 468 insertions(+)
+> >  create mode 100644 drivers/cxl/acpi.c
+> >
+> > diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> > index 97dc4d751651..fb282af84afd 100644
+> > --- a/drivers/cxl/Kconfig
+> > +++ b/drivers/cxl/Kconfig
+> > @@ -50,4 +50,18 @@ config CXL_MEM_RAW_COMMANDS
+> >         potential impact to memory currently in use by the kernel.
+> >
+> >         If developing CXL hardware or the driver say Y, otherwise say N.
+> > +
+> > +config CXL_ACPI
+> > +     tristate "CXL ACPI: Platform Support"
+> > +     depends on ACPI
+> > +     help
+> > +       Enable support for host managed device memory (HDM) resources
+> > +       published by a platform's ACPI CXL memory layout description.
+> > +       See Chapter 9.14.1 CXL Early Discovery Table (CEDT) in the CXL
+> > +       2.0 specification. The CXL core consumes these resource to
+> > +       publish port and address_space objects used to map regions
+> > +       that represent System RAM, or Persistent Memory regions to be
+> > +       managed by LIBNVDIMM.
+> > +
+> > +       If unsure say 'm'.
+> >  endif
+> > diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
+> > index 3808e39dd31f..f429ca6b59d9 100644
+> > --- a/drivers/cxl/Makefile
+> > +++ b/drivers/cxl/Makefile
+> > @@ -1,7 +1,9 @@
+> >  # SPDX-License-Identifier: GPL-2.0
+> >  obj-$(CONFIG_CXL_BUS) += cxl_core.o
+> >  obj-$(CONFIG_CXL_MEM) += cxl_mem.o
+> > +obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
+> >
+> >  ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
+> >  cxl_core-y := core.o
+> >  cxl_mem-y := mem.o
+> > +cxl_acpi-y := acpi.o
+> > diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> > new file mode 100644
+> > index 000000000000..d54c2d5de730
+> > --- /dev/null
+> > +++ b/drivers/cxl/acpi.c
+> > @@ -0,0 +1,39 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* Copyright(c) 2021 Intel Corporation. All rights reserved. */
+> > +#include <linux/platform_device.h>
+> > +#include <linux/module.h>
+> > +#include <linux/device.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/acpi.h>
+>
+> swap acpi.h that for mod_devicetable.h unless this is going to
+> need acpi.h later for something else.
 
-I was thinking of something a bit simpler. cpufreq_driver_resolve_freq
-appears to be used only from schedutil (why is it even then?), so we
-could just pull it into cpufreq_schedutil.c and just plain skip the call
-to cpufreq_frequency_table_target if the target freq has been indexed in
-the EM table -- it should already be matching a real OPP.
+It will need it after patch7, so I'll just leave it as is for now.
 
-Thoughts?
-Quentin
+[..]
+> > +static struct cxl_root *cxl_root_alloc(struct device *parent,
+> > +                                    struct cxl_address_space *cxl_space,
+> > +                                    int nr_spaces)
+> > +{
+> > +     struct cxl_root *cxl_root;
+> > +     struct cxl_port *port;
+> > +     struct device *dev;
+> > +     int rc;
+> > +
+> > +     cxl_root = kzalloc(struct_size(cxl_root, address_space, nr_spaces),
+> > +                        GFP_KERNEL);
+> > +     if (!cxl_root)
+> > +             return ERR_PTR(-ENOMEM);
+> > +
+> > +     memcpy(cxl_root->address_space, cxl_space,
+> > +            flex_array_size(cxl_root, address_space, nr_spaces));
+> > +     cxl_root->nr_spaces = nr_spaces;
+> > +
+> > +     rc = ida_alloc(&cxl_port_ida, GFP_KERNEL);
+> > +     if (rc < 0)
+> > +             goto err;
+> > +     port = &cxl_root->port;
+> > +     port->id = rc;
+> > +
+> > +     /*
+> > +      * Root does not have a cxl_port as its parent and it does not
+> > +      * have any corresponding component registers it is only a
+>
+> have any corresponding component registers; it is only a
+> .. or you could use two sentences
+
+Sure.
+
+>
+> > +      * logical anchor to the first level of actual ports that decode
+> > +      * the root address spaces.
+> > +      */
+> > +     port->port_host = parent;
+> > +     port->target_id = -1;
+> > +     port->component_regs_phys = -1;
+> > +
+> > +     dev = &port->dev;
+> > +     device_initialize(dev);
+> > +     device_set_pm_not_required(dev);
+> > +     dev->parent = parent;
+> > +     dev->bus = &cxl_bus_type;
+> > +     dev->type = &cxl_root_type;
+> > +
+> > +     return cxl_root;
+> > +
+> > +err:
+> > +     kfree(cxl_root);
+> > +     return ERR_PTR(rc);
+> > +}
+> > +
+> > +static struct cxl_address_space_dev *
+> > +cxl_address_space_dev_alloc(struct device *parent,
+> > +                         struct cxl_address_space *space)
+> > +{
+> > +     struct cxl_address_space_dev *cxl_asd;
+> > +     struct resource *res;
+> > +     struct device *dev;
+> > +     int rc;
+> > +
+> > +     cxl_asd = kzalloc(sizeof(*cxl_asd), GFP_KERNEL);
+> > +     if (!cxl_asd)
+> > +             return ERR_PTR(-ENOMEM);
+> > +
+> > +     res = &cxl_asd->res;
+> > +     res->name = "CXL Address Space";
+> > +     res->start = space->range.start;
+> > +     res->end = space->range.end;
+> > +     res->flags = IORESOURCE_MEM;
+> > +
+> > +     rc = insert_resource(&iomem_resource, res);
+> > +     if (rc)
+> > +             goto err;
+> > +
+> > +     cxl_asd->address_space = space;
+> > +     dev = &cxl_asd->dev;
+> > +     device_initialize(dev);
+> > +     device_set_pm_not_required(dev);
+> > +     dev->parent = parent;
+> > +     dev->type = &cxl_address_space_type;
+> > +
+> > +     return cxl_asd;
+> > +
+> > +err:
+> > +     kfree(cxl_asd);
+> > +     return ERR_PTR(rc);
+> > +}
+> > +
+> > +static int cxl_address_space_dev_add(struct device *host,
+> > +                                  struct cxl_address_space_dev *cxl_asd,
+> > +                                  int id)
+> > +{
+> > +     struct device *dev = &cxl_asd->dev;
+> > +     int rc;
+> > +
+> > +     rc = dev_set_name(dev, "address_space%d", id);
+> > +     if (rc)
+> > +             goto err;
+> > +
+> > +     rc = device_add(dev);
+> > +     if (rc)
+> > +             goto err;
+> > +
+> > +     dev_dbg(host, "%s: register %s\n", dev_name(dev->parent),
+> > +             dev_name(dev));
+> > +
+> > +     return devm_add_action_or_reset(host, unregister_dev, dev);
+> > +
+> > +err:
+> > +     put_device(dev);
+> This is unusual. The error handling is undoing something this function
+> wasn't responsible for.  See below for suggested resolution.
+>
+> > +     return rc;
+> > +}
+> > +
+> > +struct cxl_root *devm_cxl_add_root(struct device *host,
+> > +                                struct cxl_address_space *cxl_space,
+> > +                                int nr_spaces)
+> > +{
+> > +     struct cxl_root *cxl_root;
+> > +     struct cxl_port *port;
+> > +     struct device *dev;
+> > +     int i, rc;
+> > +
+> > +     cxl_root = cxl_root_alloc(host, cxl_space, nr_spaces);
+> > +     if (IS_ERR(cxl_root))
+> > +             return cxl_root;
+> > +
+> > +     port = &cxl_root->port;
+> > +     dev = &port->dev;
+> > +     rc = dev_set_name(dev, "root%d", port->id);
+> > +     if (rc)
+> > +             goto err;
+> > +
+> > +     rc = device_add(dev);
+> > +     if (rc)
+> > +             goto err;
+> > +
+> > +     rc = devm_add_action_or_reset(host, unregister_dev, dev);
+> > +     if (rc)
+> > +             return ERR_PTR(rc);
+> > +
+> > +     for (i = 0; i < nr_spaces; i++) {
+> > +             struct cxl_address_space *space = &cxl_root->address_space[i];
+> > +             struct cxl_address_space_dev *cxl_asd;
+> > +
+> > +             if (!range_len(&space->range))
+> > +                     continue;
+> > +
+> > +             cxl_asd = cxl_address_space_dev_alloc(dev, space);
+> > +             if (IS_ERR(cxl_asd))
+> > +                     return ERR_CAST(cxl_asd);
+> > +
+>
+> Nothing is done between the dev_alloc() and the dev_add()
+> and this is currently in the odd position of doing put_device() in the
+> error path of *dev_add() when it wasn't responsible for getting the
+> reference it is putting, dev_alloc() did that.
+
+No, you missed the back and forth that Jason and I had about proper
+device initialization flows:
+
+https://lore.kernel.org/linux-cxl/161714738634.2168142.10860201861152789544.stgit@dwillia2-desk3.amr.corp.intel.com/
+
+The put_device() is not undoing the dev_alloc(), it is undoing the
+dev_alloc() + follow on allocations. Specifically it undoes the
+dev_set_name() allocation. That is why the alloc and the add are split
+into explicit code paths where the recovery shifts from alloc-unwind
+to put_device().
+
+> That suggests to me that we can clean up the oddity by just combining
+> cxl_address_space_dev_alloc() and cxl_adress_space_dev_add() into one
+>
+> alloc_and_add() function (with a better name)
+
+It's not an oddity and alloc_and_add() is an anti-pattern that leads to bugs.
+
+>
+> > +             rc = cxl_address_space_dev_add(host, cxl_asd, i);
+>
+> Lifetime management here seems overly complex.   Why not use host for both
+> the alloc and add() devm calls?  I guess there is a good reason
+> though so good to have a comment here saying what it is.
+
+I'll add a kernel-doc to cxl_address_space_dev_add() to clarify what
+is happening here.
