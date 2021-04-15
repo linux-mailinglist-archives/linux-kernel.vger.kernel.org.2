@@ -2,120 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F30A360191
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301FC360192
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhDOF0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:26:41 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35494 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhDOF0j (ORCPT
+        id S230085AbhDOF1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOF1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:26:39 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5K4wW114359;
-        Thu, 15 Apr 2021 05:26:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=u1HGY2pdiUJpZnVn7iUNNrPvZ0VUQmj8sncbkjdtkWI=;
- b=JuHbIj78j45980ej6OquW305F61Ve91x3TL1DIfMgFv0mG6VPsffq8M7HaIQ/0eRwrAM
- aG1ZgNXuiio8pc6GGwmPKsOuCI4BW54Urro0yavfXCp8Y1oFmKY9eDpaTtaRs0gw45Fj
- yhEP/OE4CzzIvNlTTxub7gcq2IdkwuirZxhQOTfcqyzsn+ipjrWpyHUt9AIjug9wP0tl
- B7JB7+Wnn/ishOv1IJS5Ui49yz4024/LhH6GRAPWHspyW9U7DDA89rAi6PPOTMixBeli
- oUY6db/Fjpz9zVljUDg7WcmbiLpr8RHoSH/evy8lW16eRMSa3Lqq3IczpY6Uk/yxr8XD yg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 37u3ermjfa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 05:26:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13F5OZxu189813;
-        Thu, 15 Apr 2021 05:26:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 37unks2ajd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 05:26:04 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13F5Q4Ut017954;
-        Thu, 15 Apr 2021 05:26:04 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Apr 2021 05:26:03 +0000
-Date:   Thu, 15 Apr 2021 08:25:56 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 37/57] staging: rtl8188eu: os_dep: ioctl_linux: Move 2
- large data buffers into the heap
-Message-ID: <20210415052556.GZ6021@kadam>
-References: <20210414181129.1628598-1-lee.jones@linaro.org>
- <20210414181129.1628598-38-lee.jones@linaro.org>
- <20210415051835.GY6021@kadam>
+        Thu, 15 Apr 2021 01:27:23 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8998C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 22:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=FMTd8I8cM7ZBmOYcdPGq5q1CD9LHK5h6uuZ0K6Eod94=; b=gs7eGgnMpOvl7mf1Md8+Hgyu+u
+        zr9W8DMqYp0bX7sUfA2mOC5r0JWxkLSSkGLLFzsELCUJrw/Sy5VCu402GbwsSVA1s+G6GqXw/l6MD
+        bPXN+rM5fIz8fb9gYZm2mFSHXlJgZCDe27CCACKBAROSr3xUUrdRCKr0S/omkGV7gNFZ61YbksKfh
+        g149DSC4YV4TUBEtZSEunvbW4/Dcu8k/DoIbVGQgeruIungJF7d+C9Kwff19mwKeh4IZWp5IYD+Wt
+        /pKbSICrXfRHe4rtHeX0qynsueOPE3/yfVkKWCrCKrJj2G9ZBNaW3A0Qba7bp/BwD7XVhK9UaF0IO
+        UnIN2Vxg==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWuWi-00Eu5H-3E; Thu, 15 Apr 2021 05:26:54 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH] sound: virtio: correct the function name in kernel-doc comment
+Date:   Wed, 14 Apr 2021 22:26:45 -0700
+Message-Id: <20210415052645.14465-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415051835.GY6021@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150038
-X-Proofpoint-ORIG-GUID: rDoebdlzTrhoDEkwAfrnVev4-GCD-9bq
-X-Proofpoint-GUID: rDoebdlzTrhoDEkwAfrnVev4-GCD-9bq
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9954 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104150037
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 08:20:16AM +0300, Dan Carpenter wrote:
-> On Wed, Apr 14, 2021 at 07:11:09PM +0100, Lee Jones wrote:
-> > ---
-> >  drivers/staging/rtl8188eu/os_dep/ioctl_linux.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > index c95ae4d6a3b6b..cc14f00947781 100644
-> > --- a/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > +++ b/drivers/staging/rtl8188eu/os_dep/ioctl_linux.c
-> > @@ -224,7 +224,7 @@ static char *translate_scan(struct adapter *padapter,
-> >  	/* parsing WPA/WPA2 IE */
-> >  	{
-> >  		u8 *buf;
-> > -		u8 wpa_ie[255], rsn_ie[255];
-> > +		u8 *wpa_ie, *rsn_ie;
-> >  		u16 wpa_len = 0, rsn_len = 0;
-> >  		u8 *p;
-> >  
-> > @@ -232,6 +232,14 @@ static char *translate_scan(struct adapter *padapter,
-> >  		if (!buf)
-> >  			return start;
+Fix kernel-doc warning that the wrong function name is used in a
+kernel-doc comment:
 
-Arnd, added this return...  I don't understand why we aren't returning
--ENOMEM here.
+../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
 
-> >  
-> > +		wpa_ie = kzalloc(255, GFP_ATOMIC);
-> > +		if (!wpa_ie)
-> > +			return start;
-> 
-> kfree(buf);
-> 
-> > +
-> > +		rsn_ie = kzalloc(255, GFP_ATOMIC);
-> > +		if (!rsn_ie)
-> > +			return start;
-> 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: alsa-devel@alsa-project.org
+---
+ sound/virtio/virtio_ctl_msg.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-regards,
-dan carpenter
-
+--- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
++++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
+@@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
+ }
+ 
+ /**
+- * virtsnd_ctl_msg_request() - Get a pointer to the response header.
++ * virtsnd_ctl_msg_response() - Get a pointer to the response header.
+  * @msg: Control message.
+  *
+  * Context: Any context.
