@@ -2,324 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32E9360F9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BC8360F99
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhDOP6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:58:35 -0400
-Received: from mail-mw2nam12on2043.outbound.protection.outlook.com ([40.107.244.43]:22998
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233835AbhDOP6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:58:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LUuezIMoiP4TuxRfOXRZZYMTRAjFflevohZ6e6UJzUrzYx5lzgUW0N6/zXGVYpNkwNor24Oj3pOHbr6yHM/ii1wEtFVn7+tj8Vz9VM36Axb3gIHSJS/PoYUWi95RvGzcKt8hdnk4WJqs5DctAKUY9y3v23Kgnhd6zSn2jOtnICCE5NbMwjGUo7ZumFM2OmF0czyro8WEYEI73RPGM76mmYxtVyOqqBiima3O7sWQ5NVVx0EhhDMTii24UfxJqVmVYlK4YH2JmcgNtNjgpRnOqZoHaksLacfPrDtQaLczmRYBReqzx8QPAn1mvLSHKTHGbkqnwIvWneUz029epjnUew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aeeqct5+sugnu9WBplpXTxst9mSGFBE80DKsxBaznhQ=;
- b=khJ/flng2RvR8TEjL2S82/UDQzxJYnCBp6liXRT33itBWVxSk5EM5CEREejpJI4PRFHFYTQo9VGBI6dfsHQXcIeGGm9BMlD+lwA9rsV+kx+2KJ58WcEIjT0lUjrYzUqIc+Uq6ZdZIKuGVKXKZlxaZ+DlzuX3pZZRBNUz8GaC4vtgiMJ3Fg4p5Sg7Hn9/Pt8ibDdKV8Z99mNsVFNGDnAyhlpeBf24brBroJeIa2FulfrApDgfO7rXackl2zwaGavjgV6U6grxw/5Erj+guEDjiOf1XimuENidKa9ibzzZkfMv92c52LD4PxeFkdTYrccHfGU+j59qDG9jM+9c9P/X7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aeeqct5+sugnu9WBplpXTxst9mSGFBE80DKsxBaznhQ=;
- b=wt7spPrUKwdG35q9Bb5y8PjDw5rXnXiRvdRmy+7yKBfKsU/Hm9dzNeRXY/EA6TZ4PQldVWC7Yg6A7YxrSyoZ5J5c3YHcjzJDDJJXvcU0+bv9JeQ8mYa4YWC+T8cTNvedfKK9+ZktEtMmhv//yKaNUZPqW2e1PafVzEVF/pW4Raw=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN6PR12MB2720.namprd12.prod.outlook.com (2603:10b6:805:70::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Thu, 15 Apr
- 2021 15:58:09 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e%6]) with mapi id 15.20.4042.018; Thu, 15 Apr 2021
- 15:58:09 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: [PATCH v13 09/12] mm: x86: Invoke hypercall when page encryption status is changed
-Date:   Thu, 15 Apr 2021 15:57:26 +0000
-Message-Id: <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1618498113.git.ashish.kalra@amd.com>
-References: <cover.1618498113.git.ashish.kalra@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA0PR13CA0008.namprd13.prod.outlook.com
- (2603:10b6:806:130::13) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        id S234215AbhDOP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:58:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233939AbhDOP54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618502253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+LsS0ftAjENjqdx8EBjDPwi/OUCdobBCtVY48zTQ40w=;
+        b=MBocAMNt8NtX1v8n3wYr6HV7/T++rhu9i/SnIKXWkAoKl0koWtJZfVwG9UuM6vIZjoQIPr
+        0BUfO59gmbDVz3n1v0dVNqY6Tr0C4bCWzBb3IRLOKi0tuqUZX2at6AP4rPf2z/uRVU2J3C
+        fWyjBj8nTIuGcOJJu5jc+8NVQbUoQb0=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-9GHUZn57OnWExDgtS7G9VQ-1; Thu, 15 Apr 2021 11:57:31 -0400
+X-MC-Unique: 9GHUZn57OnWExDgtS7G9VQ-1
+Received: by mail-ej1-f70.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so1112926ejb.18
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:57:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=+LsS0ftAjENjqdx8EBjDPwi/OUCdobBCtVY48zTQ40w=;
+        b=kE1YrYhyIVXdNyz5+e9IN5RaHjDYsfq3MBkYC34y9GXNxluM0JUFV0lo+GD+VG51dt
+         H6SpE4DufABagex9qJyvhirfUPbEX4bkV9XOWgNHd1LVzNOZNOy9E6V3oGfYCvIQ0zuu
+         PqNEFR84hfkfNgZCwAx0YwfvYJmYpNzOMX7KWOdN/83HBg0/+rQAykyT6U7F1VfNwHY8
+         ck1vTxNzHy/Iv5wizTZd0AVuU8MIv7z7oFZqL5Jtl+MdVhNLsg6MIldQweVrL4XUQcgM
+         dKV2OkIXmMFwoAH/VqgXmsBwELTXngjAUnM3ttTC/pLBjhaX52Ne8eUgsW6hXr19rHLn
+         JMSg==
+X-Gm-Message-State: AOAM532uznL34LNXf5aTEq5O9vMEOyAPEp38+4LmIqiZ12qAe6ztPYan
+        fw+sFN+MpPxSX2wPjisPfbFHy7PIXYU7aq2D6MxbXqsZlUss3pqVVbg+IRMQT1ViPUMO3isrlgP
+        omLFcS/zWtvEzobI4wdVXbio7
+X-Received: by 2002:a17:906:7e53:: with SMTP id z19mr4151986ejr.422.1618502249508;
+        Thu, 15 Apr 2021 08:57:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4N2v3zSfzaI8sojkPWLL/T2oIA/OEpL4yra5qcFBBjmH+et1M12PxSwhPmxWTUWs5xHO7Jw==
+X-Received: by 2002:a17:906:7e53:: with SMTP id z19mr4151940ejr.422.1618502249016;
+        Thu, 15 Apr 2021 08:57:29 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id qt10sm2285687ejb.34.2021.04.15.08.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 08:57:28 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5AEE91806B3; Thu, 15 Apr 2021 17:57:27 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <CAEf4Bzbb0ECMjhAvD-1wpp3qJJcrpgKr_=ONN4ZQmuNUgYrH4A@mail.gmail.com>
+References: <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+ <20210402190806.nhcgappm3iocvd3d@apollo>
+ <20210403174721.vg4wle327wvossgl@ast-mbp>
+ <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+ <87blar4ti7.fsf@toke.dk>
+ <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
+ <874kg9m8t1.fsf@toke.dk>
+ <CAEf4BzaEkzPeAXqmm5aEdQxnCkrqJTHcSu7afnV11+697KgZTQ@mail.gmail.com>
+ <87wnt4jx8m.fsf@toke.dk>
+ <CAEf4Bzbb0ECMjhAvD-1wpp3qJJcrpgKr_=ONN4ZQmuNUgYrH4A@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 15 Apr 2021 17:57:27 +0200
+Message-ID: <87v98nilqw.fsf@toke.dk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SA0PR13CA0008.namprd13.prod.outlook.com (2603:10b6:806:130::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Thu, 15 Apr 2021 15:58:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd91f4b0-329e-4cfe-b442-08d90027439c
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2720:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB27205521B18D79F9FFB89DDF8E4D9@SN6PR12MB2720.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qvv/VkVrWPj3pnYbTGzTcYWYzbjn9cYJbh670G4TeTTtRoX46QJFG1TAdQsve+73wLaeayBFa0ULYsyEtuVTgcf32lcYJzrFJ9k+QLNbl4mY3efAySdQniSB/KJlFvXQm0P8J9XrxOr4V+RfMJd99F+mtZxn2tE6Q5gXGu3TVr4+JE/7hK8p1u85vJyIxMoQ2QodpxE4OcJCIUMVoCyuRUsAbVFnmuTGHVWdeMtsOVGnvD74sfMEL/AmeKRsMa+SaC0/USFZFGflEQY97l719nDIsEpcvvQuOf79zT9yyjITPFDai9XUHDSQFBtDEbkXYWABCNmOFnpD5ZolVBikGj+RVZdUsTZ+w9mbmMInTQcKM2ctUs8M8HezEX6SStHL+lrLO3ZgEVREG/AQYpJB5Z79m2XjkI6B4sh7/TjhINlnuqPSFsLjmBRrVR7R2eRt/XU9E3jc0nQGKAQely1374lqLNzLY+L8lJMSR4KAqBExDX7vpOSdxPckEJAf8JKMjLxvNEncCEIQvfxrnl8z2T+Af4Q8et7r9Qsr5m71Wf88HimiP6cUPhJmK8dev2VuY3FIfigmejjZGGG65irrthYr9CBkz40oBZtcvwBzWia3uYlNue/oJm+dD6w2xreN/BefoddFzCVf9vxwEsCnzA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(16526019)(186003)(6666004)(26005)(2906002)(956004)(2616005)(8936002)(316002)(83380400001)(66556008)(66946007)(5660300002)(66476007)(86362001)(478600001)(38350700002)(4326008)(38100700002)(8676002)(7416002)(52116002)(7696005)(36756003)(6486002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?khCPJPozJFeaa7sqUYwsuPtH5e3oLxfN5GXQAjH4xicOR9R1yb/FncRpvIp6?=
- =?us-ascii?Q?fxDzQcYv8i4oCqi4g3krKjC2RBciF8quY31uprNurvpwSTJuZZ4zJ1eRWt7d?=
- =?us-ascii?Q?5Fj46Qp3/jmR6OfkMT+sIj4tRTFKRlJ9zZpsXxbNEP76pEzxw9I5UQ1pvUEF?=
- =?us-ascii?Q?lpDEtvZTzfuvAtHwSfCKKApTXkkBwqngfq8hzU/s1IJLGM/Uy0wM7UBPO2lR?=
- =?us-ascii?Q?vm096AIlwcJF1ahIpFWctQRFGO/Y1SMGojM/CgJcwuhXzKODYkxcJ9tTn/oV?=
- =?us-ascii?Q?Q/lmTdndZOPZAeKnnLFECSwC2J7ElbstO3uEqZtcuf/YkslStiOYROa610DA?=
- =?us-ascii?Q?5qMTbAezEQE2583TaP2qmWoscQ4FlzQV5T/ckN4iBgpqjM93mDs0ZWwzMqqC?=
- =?us-ascii?Q?5YFaPHTnRVoy5KwW0t+RyF1r4HkyJ+Acz94CrDh6s/DMYvHT4MaKSsXh7XF/?=
- =?us-ascii?Q?rTHlWFdh4ZaRyP4WqboQbMFQIVz3ib1h3G+mf2omDX35exZY81lkWKxBpJrY?=
- =?us-ascii?Q?he78e2gakmjS4GxAVVWFO0u5NJGgNA1uL62uSJH4Lf/nSeX9dJA3DBcDbYQY?=
- =?us-ascii?Q?W2p5m4pJ7JbkBRIkZjAsd8tH132LMaMh0ISFZLn8YqB4qLuCUGERTsl9Br6Z?=
- =?us-ascii?Q?ECsRW9hE4G0iY3VAvocz6mB52lKt8Jn8QhmV7hmsAzO+ymptF7v3jKGOjQd0?=
- =?us-ascii?Q?aZlpwW+33zLfqZiTTyzYMSOdQLdCWNTvNTqcvXfBM5jWBWz8CyXmyv+8tuB4?=
- =?us-ascii?Q?KBO1+4kyaCiD2h4w+S/1MS1z7W0TqPbZTfHOmuuAjwlQb2kSPMzjbZo3kkrY?=
- =?us-ascii?Q?zvf8D9k8mHPxvcTOR1Ea6E13U6O6mXR99YtkhYQtAyUGz2x5WFblwcMLpY7B?=
- =?us-ascii?Q?hOKifGgCQCv1kxU33tBcG1rQY+GxjLHmMfrMnx52f9kl9MDwq8qtBzFywEDA?=
- =?us-ascii?Q?9fQrEzBDqg34Bj0MCiyng9K0Cj+4YKAYelaZGHyeMQOTTgaN9xBO3inLaIlV?=
- =?us-ascii?Q?SkldsLjlRBoOXwGjjAVxn2howp2Q7f4CGKHgTE6Bs3SXc/+mGk0DjMM2J51c?=
- =?us-ascii?Q?K5kDgEI+8uYQdPdBMrPEVwIk9cS1ispkLdx9Jtkjec9WPrV15EWLy5rsmrXg?=
- =?us-ascii?Q?5v0308QI5+Q7LcDpqbFDxLqEjhwfkw8HQB3kGSCfH7Z3V7pesOTwRQkdvcoL?=
- =?us-ascii?Q?m/c1x1BwfyjmYXzYKSBkDRrvL2mEgWWyTbrkkVQCzDFMbuLmTvtrDObLqoCM?=
- =?us-ascii?Q?HeWLRQJBIban7DhnHDXJdOux1ZbTo9rYq0GzwYX5xY5FWkNX64/7f3s6Yy76?=
- =?us-ascii?Q?Faez2JRH0um8fUNoNLOBFl5s?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd91f4b0-329e-4cfe-b442-08d90027439c
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 15:58:08.9042
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RAhNjALUP6Tp+LjEgKnMzsxPBsHbXbPesH2xl+GN3diy40io67PbuwpCbGdv6b57OwqIxd52KWs4nsStS4gqsA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2720
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brijesh Singh <brijesh.singh@amd.com>
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Invoke a hypercall when a memory region is changed from encrypted ->
-decrypted and vice versa. Hypervisor needs to know the page encryption
-status during the guest migration.
+> On Wed, Apr 14, 2021 at 3:51 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Wed, Apr 14, 2021 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >>
+>> >> > On Tue, Apr 6, 2021 at 3:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+>> >> >>
+>> >> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>> >> >>
+>> >> >> > On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
+>> >> >> > <alexei.starovoitov@gmail.com> wrote:
+>> >> >> >>
+>> >> >> >> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwive=
+di wrote:
+>> >> >> >> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wr=
+ote:
+>> >> >> >> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <mem=
+xor@gmail.com> wrote:
+>> >> >> >> > > > [...]
+>> >> >> >> > >
+>> >> >> >> > > All of these things are messy because of tc legacy. bpf tri=
+ed to follow tc style
+>> >> >> >> > > with cls and act distinction and it didn't quite work. cls =
+with
+>> >> >> >> > > direct-action is the only
+>> >> >> >> > > thing that became mainstream while tc style attach wasn't r=
+eally addressed.
+>> >> >> >> > > There were several incidents where tc had tens of thousands=
+ of progs attached
+>> >> >> >> > > because of this attach/query/index weirdness described abov=
+e.
+>> >> >> >> > > I think the only way to address this properly is to introdu=
+ce bpf_link style of
+>> >> >> >> > > attaching to tc. Such bpf_link would support ingress/egress=
+ only.
+>> >> >> >> > > direction-action will be implied. There won't be any index =
+and query
+>> >> >> >> > > will be obvious.
+>> >> >> >> >
+>> >> >> >> > Note that we already have bpf_link support working (without s=
+upport for pinning
+>> >> >> >> > ofcourse) in a limited way. The ifindex, protocol, parent_id,=
+ priority, handle,
+>> >> >> >> > chain_index tuple uniquely identifies a filter, so we stash t=
+his in the bpf_link
+>> >> >> >> > and are able to operate on the exact filter during release.
+>> >> >> >>
+>> >> >> >> Except they're not unique. The library can stash them, but some=
+thing else
+>> >> >> >> doing detach via iproute2 or their own netlink calls will detac=
+h the prog.
+>> >> >> >> This other app can attach to the same spot a different prog and=
+ now
+>> >> >> >> bpf_link__destroy will be detaching somebody else prog.
+>> >> >> >>
+>> >> >> >> > > So I would like to propose to take this patch set a step fu=
+rther from
+>> >> >> >> > > what Daniel said:
+>> >> >> >> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>> >> >> >> > > and make this proposed api to return FD.
+>> >> >> >> > > To detach from tc ingress/egress just close(fd).
+>> >> >> >> >
+>> >> >> >> > You mean adding an fd-based TC API to the kernel?
+>> >> >> >>
+>> >> >> >> yes.
+>> >> >> >
+>> >> >> > I'm totally for bpf_link-based TC attachment.
+>> >> >> >
+>> >> >> > But I think *also* having "legacy" netlink-based APIs will allow
+>> >> >> > applications to handle older kernels in a much nicer way without=
+ extra
+>> >> >> > dependency on iproute2. We have a similar situation with kprobe,=
+ where
+>> >> >> > currently libbpf only supports "modern" fd-based attachment, but=
+ users
+>> >> >> > periodically ask questions and struggle to figure out issues on =
+older
+>> >> >> > kernels that don't support new APIs.
+>> >> >>
+>> >> >> +1; I am OK with adding a new bpf_link-based way to attach TC prog=
+rams,
+>> >> >> but we still need to support the netlink API in libbpf.
+>> >> >>
+>> >> >> > So I think we'd have to support legacy TC APIs, but I agree with
+>> >> >> > Alexei and Daniel that we should keep it to the simplest and most
+>> >> >> > straightforward API of supporting direction-action attachments a=
+nd
+>> >> >> > setting up qdisc transparently (if I'm getting all the terminolo=
+gy
+>> >> >> > right, after reading Quentin's blog post). That coincidentally s=
+hould
+>> >> >> > probably match how bpf_link-based TC API will look like, so all =
+that
+>> >> >> > can be abstracted behind a single bpf_link__attach_tc() API as w=
+ell,
+>> >> >> > right? That's the plan for dealing with kprobe right now, btw. L=
+ibbpf
+>> >> >> > will detect the best available API and transparently fall back (=
+maybe
+>> >> >> > with some warning for awareness, due to inherent downsides of le=
+gacy
+>> >> >> > APIs: no auto-cleanup being the most prominent one).
+>> >> >>
+>> >> >> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make t=
+he
+>> >> >> high-level API auto-detect. That way users can also still use the
+>> >> >> netlink attach function if they don't want the fd-based auto-close
+>> >> >> behaviour of bpf_link.
+>> >> >
+>> >> > So I thought a bit more about this, and it feels like the right move
+>> >> > would be to expose only higher-level TC BPF API behind bpf_link. It
+>> >> > will keep the API complexity and amount of APIs that libbpf will ha=
+ve
+>> >> > to support to the minimum, and will keep the API itself simple:
+>> >> > direct-attach with the minimum amount of input arguments. By not
+>> >> > exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
+>> >> > design discussion, as we now can keep as much info as needed inside
+>> >> > bpf_link_tc (which will embed bpf_link internally as well) to suppo=
+rt
+>> >> > detachment and possibly some additional querying, if needed.
+>> >>
+>> >> But then there would be no way for the caller to explicitly select a
+>> >> mechanism? I.e., if I write a BPF program using this mechanism target=
+ing
+>> >> a 5.12 kernel, I'll get netlink attachment, which can stick around wh=
+en
+>> >> I do bpf_link__disconnect(). But then if the kernel gets upgraded to
+>> >> support bpf_link for TC programs I'll suddenly transparently get
+>> >> bpf_link and the attachments will go away unless I pin them. This
+>> >> seems... less than ideal?
+>> >
+>> > That's what we are doing with bpf_program__attach_kprobe(), though.
+>> > And so far I've only seen people (privately) saying how good it would
+>> > be to have bpf_link-based TC APIs, doesn't seem like anyone with a
+>> > realistic use case prefers the current APIs. So I suspect it's not
+>> > going to be a problem in practice. But at least I'd start there and
+>> > see how people are using it and if they need anything else.
+>>
+>> *sigh* - I really wish you would stop arbitrarily declaring your own use
+>> cases "realistic" and mine (implied) "unrealistic". Makes it really hard
+>> to have a productive discussion...
+>
+> Well (sigh?..), this wasn't my intention, sorry you read it this way.
+> But we had similar discussions when I was adding bpf_link-based XDP
+> attach APIs.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: x86@kernel.org
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Steve Rutherford <srutherford@google.com>
-Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
----
- arch/x86/include/asm/paravirt.h       | 10 +++++
- arch/x86/include/asm/paravirt_types.h |  2 +
- arch/x86/kernel/paravirt.c            |  1 +
- arch/x86/mm/mem_encrypt.c             | 57 ++++++++++++++++++++++++++-
- arch/x86/mm/pat/set_memory.c          |  7 ++++
- 5 files changed, 76 insertions(+), 1 deletion(-)
+Great, thank you! And yeah, we did discuss exactly this before, which is
+where my mental sigh came from - I feel like we already covered this
+ground and that I'm just being dismissed with "that is not a real use
+case". But OK, I'll give it another shot, see below.
 
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 4abf110e2243..efaa3e628967 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -84,6 +84,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
- 	PVOP_VCALL1(mmu.exit_mmap, mm);
- }
- 
-+static inline void page_encryption_changed(unsigned long vaddr, int npages,
-+						bool enc)
-+{
-+	PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
-+}
-+
- #ifdef CONFIG_PARAVIRT_XXL
- static inline void load_sp0(unsigned long sp0)
- {
-@@ -799,6 +805,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
- static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
- {
- }
-+
-+static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
-+{
-+}
- #endif
- #endif /* __ASSEMBLY__ */
- #endif /* _ASM_X86_PARAVIRT_H */
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index de87087d3bde..69ef9c207b38 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -195,6 +195,8 @@ struct pv_mmu_ops {
- 
- 	/* Hook for intercepting the destruction of an mm_struct. */
- 	void (*exit_mmap)(struct mm_struct *mm);
-+	void (*page_encryption_changed)(unsigned long vaddr, int npages,
-+					bool enc);
- 
- #ifdef CONFIG_PARAVIRT_XXL
- 	struct paravirt_callee_save read_cr2;
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index c60222ab8ab9..9f206e192f6b 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -335,6 +335,7 @@ struct paravirt_patch_template pv_ops = {
- 			(void (*)(struct mmu_gather *, void *))tlb_remove_page,
- 
- 	.mmu.exit_mmap		= paravirt_nop,
-+	.mmu.page_encryption_changed	= paravirt_nop,
- 
- #ifdef CONFIG_PARAVIRT_XXL
- 	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(native_read_cr2),
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index ae78cef79980..fae9ccbd0da7 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -19,6 +19,7 @@
- #include <linux/kernel.h>
- #include <linux/bitops.h>
- #include <linux/dma-mapping.h>
-+#include <linux/kvm_para.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/fixmap.h>
-@@ -29,6 +30,7 @@
- #include <asm/processor-flags.h>
- #include <asm/msr.h>
- #include <asm/cmdline.h>
-+#include <asm/kvm_para.h>
- 
- #include "mm_internal.h"
- 
-@@ -229,6 +231,47 @@ void __init sev_setup_arch(void)
- 	swiotlb_adjust_size(size);
- }
- 
-+static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
-+					bool enc)
-+{
-+	unsigned long sz = npages << PAGE_SHIFT;
-+	unsigned long vaddr_end, vaddr_next;
-+
-+	vaddr_end = vaddr + sz;
-+
-+	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
-+		int psize, pmask, level;
-+		unsigned long pfn;
-+		pte_t *kpte;
-+
-+		kpte = lookup_address(vaddr, &level);
-+		if (!kpte || pte_none(*kpte))
-+			return;
-+
-+		switch (level) {
-+		case PG_LEVEL_4K:
-+			pfn = pte_pfn(*kpte);
-+			break;
-+		case PG_LEVEL_2M:
-+			pfn = pmd_pfn(*(pmd_t *)kpte);
-+			break;
-+		case PG_LEVEL_1G:
-+			pfn = pud_pfn(*(pud_t *)kpte);
-+			break;
-+		default:
-+			return;
-+		}
-+
-+		psize = page_level_size(level);
-+		pmask = page_level_mask(level);
-+
-+		kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
-+				   pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
-+
-+		vaddr_next = (vaddr & pmask) + psize;
-+	}
-+}
-+
- static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
- {
- 	pgprot_t old_prot, new_prot;
-@@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
- static int __init early_set_memory_enc_dec(unsigned long vaddr,
- 					   unsigned long size, bool enc)
- {
--	unsigned long vaddr_end, vaddr_next;
-+	unsigned long vaddr_end, vaddr_next, start;
- 	unsigned long psize, pmask;
- 	int split_page_size_mask;
- 	int level, ret;
- 	pte_t *kpte;
- 
-+	start = vaddr;
- 	vaddr_next = vaddr;
- 	vaddr_end = vaddr + size;
- 
-@@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
- 
- 	ret = 0;
- 
-+	set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
-+					enc);
- out:
- 	__flush_tlb_all();
- 	return ret;
-@@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
- 	if (sev_active() && !sev_es_active())
- 		static_branch_enable(&sev_enable_key);
- 
-+#ifdef CONFIG_PARAVIRT
-+	/*
-+	 * With SEV, we need to make a hypercall when page encryption state is
-+	 * changed.
-+	 */
-+	if (sev_active())
-+		pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
-+#endif
-+
- 	print_mem_encrypt_feature_info();
- }
- 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 16f878c26667..3576b583ac65 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -27,6 +27,7 @@
- #include <asm/proto.h>
- #include <asm/memtype.h>
- #include <asm/set_memory.h>
-+#include <asm/paravirt.h>
- 
- #include "../mm_internal.h"
- 
-@@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
- 	 */
- 	cpa_flush(&cpa, 0);
- 
-+	/* Notify hypervisor that a given memory range is mapped encrypted
-+	 * or decrypted. The hypervisor will use this information during the
-+	 * VM migration.
-+	 */
-+	page_encryption_changed(addr, numpages, enc);
-+
- 	return ret;
- }
- 
--- 
-2.17.1
+> And guess what, now I see that samples/bpf/whatever_xdp is switched to
+> bpf_link-based XDP, because that makes everything simpler and more
+> reliable. What I also know is that in production we ran into multiple
+> issues with anything that doesn't auto-detach on process exit/crash
+> (unless pinned explicitly, of course). And that people that are trying
+> to use TC right now are saying how having bpf_link-based TC APIs would
+> make everything *simpler* and *safer*. So I don't know... I understand
+> it might be convenient in some cases to not care about a lifetime of
+> BPF programs you are attaching, but then there are usually explicit
+> and intentional ways to achieve at least similar behavior with safety
+> by default.
+>
+> So I guess call me unconvinced (yet? still?). Give it another shot,
+> though.
+
+I'm not arguing against adding bpf_link support, and I'm even fine with
+making it the default. As you say, there are plenty of use cases where
+the bpf_link semantics make sense, and the XDP programs in samples all
+fall in this category. So sure, let's add this support and make this
+convenient to use.
+
+But there are also use cases where the BPF program lifetime absolutely
+shouldn't follow that of the userspace application. This includes both
+applications that don't have a long-running daemon at all (like a
+firewall that just loads a ruleset at boot; xdp-filter is such an
+application in the BPF world, but I'm sure there are others). And
+daemons that use BPF as a data path and want the packets to keep flowing
+even when they restart, like Cilium as Daniel mentioned.
+
+So the latter category of applications need their BPF programs to be
+permanently attached to the interface. And sure, this can sorta be done
+by pinning the bpf_link; but not really, because then:
+
+- You incur a new dependency on bpffs, so you have to make sure that is
+  mounted and that you can get at the particular fs instance you're
+  using; the latter is especially painful if you switch namespaces.
+
+- Your BPF program lifetime is no longer tied to the interface, so you
+  have to deal with garbage collecting your pinned files somehow. This
+  is especially painful if you don't have a daemon.
+
+Together, these issues make bpf_link a much less compelling proposition,
+to the point where it's no longer the better API for these use cases,
+IMO. And I know that because I had to work around just these issues with
+bpf_link for xdp-tools.
+
+But I'm not even asking for the netlink API to be the default, I'm
+fine with bpf_link being the default and encouraged API. I'm just asking
+for a way to make it *possible* to select which attach mode I want.
+Either by a flag to bpf_program__attach_tc(), or by exposing the
+low-level bpf_tc_cls_*() netlink functions, like we do for XDP.
+
+>> >> If we expose the low-level API I can elect to just use this if I know=
+ I
+>> >> want netlink behaviour, but if bpf_program__attach_tc() is the only A=
+PI
+>> >> available it would at least need a flag to enforce one mode or the ot=
+her
+>> >> (I can see someone wanting to enforce kernel bpf_link semantics as we=
+ll,
+>> >> so a flag for either mode seems reasonable?).
+>> >
+>> > Sophisticated enough users can also do feature detection to know if
+>> > it's going to work or not.
+>>
+>> Sure, but that won't help if there's no API to pick the attach mode they
+>> want.
+>
+> I'm not intending to allow legacy kprobe APIs to be "chosen", for
+> instance. Because I'm convinced it's a bad API that no one should use
+> if they can use an FD-based one.
+
+I'd tend to agree with you for the tracing APIs, actually. But a
+BPF-based data plane is different, as I tried to explain above.
+
+> It might be a different case for TC, who knows. I'd just start with
+> safer APIs and then evaluate whether there is a real demand for less
+> safe ones. It's just some minor refactoring and exposing more APIs,
+> when/if we need them.
+
+There you go again with the "real demand" argument. How can I read this
+in any other way than that you don't consider my use case "real" (as you
+just assured me above was not the case)? What do you consider "real
+demand"?
+
+-Toke
 
