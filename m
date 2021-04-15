@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301FC360192
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6297360196
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhDOF1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhDOF1X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:27:23 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8998C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 22:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=FMTd8I8cM7ZBmOYcdPGq5q1CD9LHK5h6uuZ0K6Eod94=; b=gs7eGgnMpOvl7mf1Md8+Hgyu+u
-        zr9W8DMqYp0bX7sUfA2mOC5r0JWxkLSSkGLLFzsELCUJrw/Sy5VCu402GbwsSVA1s+G6GqXw/l6MD
-        bPXN+rM5fIz8fb9gYZm2mFSHXlJgZCDe27CCACKBAROSr3xUUrdRCKr0S/omkGV7gNFZ61YbksKfh
-        g149DSC4YV4TUBEtZSEunvbW4/Dcu8k/DoIbVGQgeruIungJF7d+C9Kwff19mwKeh4IZWp5IYD+Wt
-        /pKbSICrXfRHe4rtHeX0qynsueOPE3/yfVkKWCrCKrJj2G9ZBNaW3A0Qba7bp/BwD7XVhK9UaF0IO
-        UnIN2Vxg==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWuWi-00Eu5H-3E; Thu, 15 Apr 2021 05:26:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH] sound: virtio: correct the function name in kernel-doc comment
-Date:   Wed, 14 Apr 2021 22:26:45 -0700
-Message-Id: <20210415052645.14465-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S230104AbhDOF2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:28:14 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:52166 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229503AbhDOF2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:28:12 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Thu, 15 Apr 2021 13:27:22
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.72.8]
+Date:   Thu, 15 Apr 2021 13:27:22 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     wqyoung <quanyang.wang@windriver.com>
+Cc:     kjlu@umn.edu, "Mark Brown" <broonie@kernel.org>,
+        "Michal Simek" <michal.simek@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] [v2] spi: spi-zynqmp-gqspi: Fix runtime PM
+ imbalance in zynqmp_qspi_probe
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20210415012158.GA2465158@pek-qwang2-d1>
+References: <20210412073154.25011-1-dinghao.liu@zju.edu.cn>
+ <20210415012158.GA2465158@pek-qwang2-d1>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <7b720ae6.58927.178d3ff88f3.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgC3nz66zndgCbQmAQ--.40483W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwNBlZdtTXCvwAIs7
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warning that the wrong function name is used in a
-kernel-doc comment:
-
-../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: alsa-devel@alsa-project.org
----
- sound/virtio/virtio_ctl_msg.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
-+++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
-@@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
- }
- 
- /**
-- * virtsnd_ctl_msg_request() - Get a pointer to the response header.
-+ * virtsnd_ctl_msg_response() - Get a pointer to the response header.
-  * @msg: Control message.
-  *
-  * Context: Any context.
+PiBIaSBEaW5naGFvLAo+IE9uIE1vbiwgQXByIDEyLCAyMDIxIGF0IDAzOjMxOjU0UE0gKzA4MDAs
+IERpbmdoYW8gTGl1IHdyb3RlOgo+ID4gVGhlcmUgaXMgYSBQTSB1c2FnZSBjb3VudGVyIGRlY3Jl
+bWVudCBhZnRlciB6eW5xbXBfcXNwaV9pbml0X2h3KCkKPiA+IHdpdGhvdXQgYW55IHJlZmNvdW50
+IGluY3JlbWVudCwgd2hpY2ggbGVhZHMgdG8gcmVmY291bnQgbGVhay5BZGQKPiA+IGEgcmVmY291
+bnQgaW5jcmVtZW50IHRvIGJhbGFuY2UgdGhlIHJlZmNvdW50LiBBbHNvIHNldAo+ID4gYXV0b19y
+dW50aW1lX3BtIHRvIHJlc3VtZSBzdXNwZW5kZWQgc3BpIGNvbnRyb2xsZXIuCj4gPiAKPiA+IFNp
+Z25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPgo+ID4gLS0t
+Cj4gPiBjaGFuZ2Vsb2c6Cj4gPiAKPiA+IHYyOiAtIEFkZCBhIHJlZmNvdW50IGluY3JlbWVudCB0
+byBmaXggcmVmY291dCBsZWFrIGluc3RlYWQgb2YgdGhlCj4gPiAgICAgICByZWZjb3VudCBkZWNy
+ZW1lbnQgb24gZXJyb3IuCj4gPiAgICAgICBTZXQgY3Rsci0+YXV0b19ydW50aW1lX3BtID0gdHJ1
+ZS4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvc3BpL3NwaS16eW5xbXAtZ3FzcGkuYyB8IDIgKysKPiA+
+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL3NwaS9zcGktenlucW1wLWdxc3BpLmMgYi9kcml2ZXJzL3NwaS9zcGktenlucW1wLWdx
+c3BpLmMKPiA+IGluZGV4IGM4ZmE2ZWUxOGFlNy4uOGIyMWM3YjBlN2ViIDEwMDY0NAo+ID4gLS0t
+IGEvZHJpdmVycy9zcGkvc3BpLXp5bnFtcC1ncXNwaS5jCj4gPiArKysgYi9kcml2ZXJzL3NwaS9z
+cGktenlucW1wLWdxc3BpLmMKPiA+IEBAIC0xMTYwLDYgKzExNjAsNyBAQCBzdGF0aWMgaW50IHp5
+bnFtcF9xc3BpX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPiAgCXBtX3J1
+bnRpbWVfc2V0X2F1dG9zdXNwZW5kX2RlbGF5KCZwZGV2LT5kZXYsIFNQSV9BVVRPU1VTUEVORF9U
+SU1FT1VUKTsKPiA+ICAJcG1fcnVudGltZV9zZXRfYWN0aXZlKCZwZGV2LT5kZXYpOwo+ID4gIAlw
+bV9ydW50aW1lX2VuYWJsZSgmcGRldi0+ZGV2KTsKPiA+ICsJcG1fcnVudGltZV9nZXRfc3luYygm
+cGRldi0+ZGV2KTsKPiBQbGVhc2UgY2hlY2sgdGhlIHJldHVybiB2YWx1ZSBoZXJlLCBpZiByZXQg
+aXMgIjwgMCIsIGdvdG8gZXJyb3IgbGFiZWwsCj4gYW5kIGEgcG1fcnVudGltZV9wdXRfc3luYyBp
+cyBuZWVkZWQgaW4gZXJyb3IgbGFiZWwKPiA+ICAJLyogUVNQSSBjb250cm9sbGVyIGluaXRpYWxp
+emF0aW9ucyAqLwo+ID4gIAl6eW5xbXBfcXNwaV9pbml0X2h3KHhxc3BpKTsKPiA+ICAKPiA+IEBA
+IC0xMTg3LDYgKzExODgsNyBAQCBzdGF0aWMgaW50IHp5bnFtcF9xc3BpX3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gPiAgCWN0bHItPm1vZGVfYml0cyA9IFNQSV9DUE9MIHwg
+U1BJX0NQSEEgfCBTUElfUlhfRFVBTCB8IFNQSV9SWF9RVUFEIHwKPiA+ICAJCQkgICAgU1BJX1RY
+X0RVQUwgfCBTUElfVFhfUVVBRDsKPiA+ICAJY3Rsci0+ZGV2Lm9mX25vZGUgPSBucDsKPiA+ICsJ
+Y3Rsci0+YXV0b19ydW50aW1lX3BtID0gdHJ1ZTsKPiA+ICAKPiA+ICAJcmV0ID0gZGV2bV9zcGlf
+cmVnaXN0ZXJfY29udHJvbGxlcigmcGRldi0+ZGV2LCBjdGxyKTsKPiA+ICAJaWYgKHJldCkgewo+
+IFRoZXNlIDIgZnVuY3Rpb24KPiAgICAgIHBtX3J1bnRpbWVfbWFya19sYXN0X2J1c3koJnBkZXYt
+PmRldik7Cj4gICAgICAgcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQoJnBkZXYtPmRldik7Cj4g
+YXJlIHRoZSBsYXN0IG9wZXJhdGlvbnMgaW4gcHJvYmUgZnVuY3Rpb24gc2luY2UgaWYgdGhleSBy
+dW5zLAo+IHNwaV9jb250cm9sbGVyIHdpbGwgZW50ZXIgc3VzcGVuZCBzdGF0ZSBhbmQgZGlzYWJs
+ZSBjbGtzIGFmdGVyIDNzCj4gcGFzc2luZy4gU28gcGxlYXNlIG1vdmUgdGhlbSBqdXN0IGJlZm9y
+ZSAicmV0dXJuIDAiLgo+IAo+IEFuZCB3b3VsZCB5b3UgcGxlYXNlIGNjIG1lIHdoZW4geW91IHNl
+bmQgVjM/IEkgYW0gcHJlcGFyaW5nIHRvIHNlbmQgYSBwYXRjaCBzZXJpZXMKPiB0byBmaXggY2xr
+IGFuZCBzdXNwZW5kL3Jlc3VtZSBpc3N1ZXMgd2hpY2ggYmFzZXMgb24gdGhlIHBtX3J1bnRpbWUg
+aXNzdWUuCj4gCgpUaGFua3MgZm9yIHlvdXIgYWR2aWNlIGFuZCBJIHdpbGwgc2VuZCBhIG5ldyBw
+YXRjaCBzb29uLgoKUmVnYXJkcywKRGluZ2hhbw==
