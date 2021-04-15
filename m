@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FACC3602F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECDB3602F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhDOHKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:10:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45180 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhDOHKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:10:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618470599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O34oorYRMDyrmgMKgoTmWvClmcyXSz4Fkb1f6zWfq3Q=;
-        b=fvy9hkrg6pvauC7J6sX3c0DpPTulBZKkWEgtvmoT/CWRahIA80V+vk61CToRBkWrSxg+46
-        YsVzsVRg2zJ4rRPg4zkn/OL3KZVVD3mSH6kbzu+rJFEb32te56AZc1+xIYoZfGtfC0Tqh8
-        K9NkH9o6wR8ypiYnL2jqIG6il7PqIAY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B257DB035;
-        Thu, 15 Apr 2021 07:09:59 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 09:09:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com
-Subject: Re: [External] Re: [PATCH 2/7] mm: memcontrol: bail out early when
- !mm in get_mem_cgroup_from_mm
-Message-ID: <YHfmx2j6kj16gYtO@dhcp22.suse.cz>
-References: <20210413065153.63431-1-songmuchun@bytedance.com>
- <20210413065153.63431-3-songmuchun@bytedance.com>
- <YHa00lx7ACWcS1/h@dhcp22.suse.cz>
- <CAMZfGtVpUW1=Zvys7J=gW1xqkuUVLuPYcQbwJoe=TEkBa6qqQw@mail.gmail.com>
- <YHbAzL9ls6EBsB3L@dhcp22.suse.cz>
- <CAMZfGtVGBW-j8_2+dmrD=Bbc2mOXUj4Hg_pjOKi0YrY_OVj1nA@mail.gmail.com>
+        id S231264AbhDOHKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhDOHKf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:10:35 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2DBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:10:13 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id f8so26716641edd.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cVJbiBboy1l3Ex5mXO1TqNUpkFbiSXvC2bEmtOt51do=;
+        b=o3uvJtrcuH/G7imD/Au58YPKPN98NKGlM/g+B1oDZtDbqRb1Wn4OIZOQW9jV95E0IN
+         L0Ou+PdFlVMqLSU0ZnVfigJidlWASZ8NrtRuGkxzhotKufy3ZNjQ1irtu6SlCcQGdDCq
+         LsODTEAaD1/yXJFdVQHAIsfOFBY1lpO5vLejISh+uDE9asQS2YlnXQRT9WdyK6ymdTOI
+         oBO6Cyd2+rGjIJE1SnGocRO6nb9ebp0f3a5jAb4x1jPlzdj67O0tHydByRAAXi/4mMbw
+         kzSjVbX9sFxmNwW7Zw7XQLZkJNzMfEdTi3IE/HpPn0XzKBg5HtWXLMV62G6gJW/Alkjh
+         j1zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cVJbiBboy1l3Ex5mXO1TqNUpkFbiSXvC2bEmtOt51do=;
+        b=JsccTvCnN4dVVg19bQqR8N0j+nZMT6WdJyL16O0HA3eVh6+KH0zEL24RT09Z399gB/
+         nP2FbGZRTFI50tc1EA+DhNbEC1iDHuVO48Mx9qHbXGbZAoraOtkQeQ8ilLxe2OudtNV2
+         jePlASeEbYqCuk3ct2MCu6ZicEYfbJdMgJnnCeyorXRWiqABCAGOwkdFs2ToQsJgSHvo
+         VbOEycc5fBNE6+DRW/NFDoL9vx1KgA24XrUX7BzKpJTgxgFj1uqPe6hgYsF+MH/Njxif
+         0/Aquwttd1uWH6N9p3iPKWeYg785xQ49iaKjf6ysXsCakb1WyxnXdEW2GKUWrTwfvyC4
+         mGLQ==
+X-Gm-Message-State: AOAM531m+a6NOnfT/8kLvujvjeBGCGfrGk9GdcJop/6vWRBxhJS8Lmbq
+        Ok3ecKDhB1LQJLJtd4KZNbdtyw==
+X-Google-Smtp-Source: ABdhPJxUb5VhQZnEL91I2SJ6ZNy+oArB6BT1PUTEgTaNKWNU7cSgQhqUpHB8lUZMWvgfsQiAyskrqw==
+X-Received: by 2002:a05:6402:1255:: with SMTP id l21mr1740882edw.362.1618470611776;
+        Thu, 15 Apr 2021 00:10:11 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:4aaf:625b:29ae:a5])
+        by smtp.gmail.com with ESMTPSA id c16sm1250634ejx.81.2021.04.15.00.10.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 00:10:11 -0700 (PDT)
+To:     David Gow <davidgow@google.com>, Nico Pache <npache@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+References: <cover.1618388989.git.npache@redhat.com>
+ <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
+ <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+Message-ID: <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+Date:   Thu, 15 Apr 2021 09:10:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVGBW-j8_2+dmrD=Bbc2mOXUj4Hg_pjOKi0YrY_OVj1nA@mail.gmail.com>
+In-Reply-To: <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 15-04-21 11:13:16, Muchun Song wrote:
-> On Wed, Apr 14, 2021 at 6:15 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 14-04-21 18:04:35, Muchun Song wrote:
-> > > On Wed, Apr 14, 2021 at 5:24 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Tue 13-04-21 14:51:48, Muchun Song wrote:
-> > > > > When mm is NULL, we do not need to hold rcu lock and call css_tryget for
-> > > > > the root memcg. And we also do not need to check !mm in every loop of
-> > > > > while. So bail out early when !mm.
-> > > >
-> > > > mem_cgroup_charge and other callers unconditionally drop the reference
-> > > > so how come this does not underflow reference count?
-> > >
-> > > For the root memcg, the CSS_NO_REF flag is set, so css_get
-> > > and css_put do not get or put reference.
-> >
-> > Ohh, right you are. I must have forgot about that special case. I am
-> > pretty sure I (and likely few more) will stumble over that in the future
-> > again. A small comment explaining that the reference can be safely
-> > ignore would be helpful.
+Hi David,
+
+Thank you for your very clear reply!
+
+On 15/04/2021 08:01, David Gow wrote:
+> On Wed, Apr 14, 2021 at 5:25 PM Matthieu Baerts
+> <matthieu.baerts@tessares.net> wrote:
+>> Up to the KUnit maintainers to decide ;-)
 > 
-> OK. Will do.
+> To summarise my view: personally, I'd prefer things the way this patch
+> works: have everything end in _KUNIT_TEST, even if that enables a
+> couple of suites. The extra 'S' on the end isn't a huge problem if you
+> have a good reason to particularly want to keep it, though: as long as
+> you don't have something like _K_UNIT_VERIFICATION or something
+> equally silly that'd break grepping for '_KUNIT_TEST', it's fine be
+> me.
 
-I would go with the following if that helps
-	/*
-	 * No need to css_get on root memcg as the reference counting is
-	 * disabled on the root level in the cgroup core. See CSS_NO_REF
-	 */
+Indeed it makes sense: we don't need to split nor to have a meta-Kconfig 
+entry. We can then remove the extra 'S' and update our tests suite:
 
-Thanks
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+
+I see that the whole series has been marked as "Not Applicable" on 
+Netdev's patchwork:
+
+https://patchwork.kernel.org/project/netdevbpf/patch/0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com/
+
+Like patch 1/6, I can apply it in MPTCP tree and send it later to 
+net-next with other patches.
+Except if you guys prefer to apply it in KUnit tree and send it to 
+linux-next?
+
+Cheers,
+Matt
 -- 
-Michal Hocko
-SUSE Labs
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
