@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBBD360722
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865F5360728
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhDOKag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:30:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43974 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhDOKac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:30:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB622B1E8;
-        Thu, 15 Apr 2021 10:30:08 +0000 (UTC)
-Subject: Re: [PATCH v4 2/3] mm/slub, kunit: add a KUnit test for SLUB
- debugging functionality
-To:     glittao@gmail.com, brendanhiggins@google.com, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-mm@kvack.org, elver@google.com,
-        dlatypov@google.com
-References: <20210413100747.4921-1-glittao@gmail.com>
- <20210413100747.4921-2-glittao@gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d31f8829-1cbd-7159-6f93-6f750fd3cbd4@suse.cz>
-Date:   Thu, 15 Apr 2021 12:30:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231725AbhDOKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:32:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230190AbhDOKcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:32:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618482721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rxu5W4NqttayWiJx0YLwC8tZ6Q9P2DOL2R7jZQALhDQ=;
+        b=J4uMtdLcM2RUge2++xB5uWc7MM7BIZ9fA96T4jA+zvNi4ANutEHO8CuDtSPgLX8CHwxQ4C
+        DMkfPr1F+xWi0RLOIg6a+R7zjdGETWVsuQ1jjxBBlnqfNcJmhhFVGuM/ZAzAP2M50+koP5
+        WE+OLzvdggFKmwpmUI9cf2NGoj+fhys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-cDtOEI6tOpOGHIEIEUvbXw-1; Thu, 15 Apr 2021 06:31:59 -0400
+X-MC-Unique: cDtOEI6tOpOGHIEIEUvbXw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95957107ACCD;
+        Thu, 15 Apr 2021 10:31:56 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63BF42B4A0;
+        Thu, 15 Apr 2021 10:31:46 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 12:31:45 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     brouer@redhat.com, kerneljasonxing@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, anthony.l.nguyen@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: Re: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv
+ mode
+Message-ID: <20210415123145.56af01ca@carbon>
+In-Reply-To: <20210414190652.00006680@intel.com>
+References: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+        <20210414023428.10121-1-kerneljasonxing@gmail.com>
+        <20210414190652.00006680@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210413100747.4921-2-glittao@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 12:07 PM, glittao@gmail.com wrote:
-> From: Oliver Glitta <glittao@gmail.com>
-> 
-> SLUB has resiliency_test() function which is hidden behind #ifdef
-> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
-> runs it. KUnit should be a proper replacement for it.
-> 
-> Try changing byte in redzone after allocation and changing
-> pointer to next free node, first byte, 50th byte and redzone
-> byte. Check if validation finds errors.
-> 
-> There are several differences from the original resiliency test:
-> Tests create own caches with known state instead of corrupting
-> shared kmalloc caches.
-> 
-> The corruption of freepointer uses correct offset, the original
-> resiliency test got broken with freepointer changes.
-> 
-> Scratch changing random byte test, because it does not have
-> meaning in this form where we need deterministic results.
-> 
-> Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
-> Because the test deliberatly modifies non-allocated objects, it depends on
-> !KASAN which would have otherwise prevented that.
-> 
-> Use kunit_resource to count errors in cache and silence bug reports.
-> Count error whenever slab_bug() or slab_fix() is called or when
-> the count of pages is wrong.
-> 
-> Signed-off-by: Oliver Glitta <glittao@gmail.com>
+On Wed, 14 Apr 2021 19:06:52 -0700
+Jesse Brandeburg <jesse.brandeburg@intel.com> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> kerneljasonxing@gmail.com wrote:
+> 
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> > 
+> > Fix this panic by adding more rules to calculate the value of @rss_size_max
+> > which could be used in allocating the queues when bpf is loaded, which,
+> > however, could cause the failure and then trigger the NULL pointer of
+> > vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> > cpus are online and then allocates 256 queues on the machine with 32 cpus
+> > online actually.
+> > 
+> > Once the load of bpf begins, the log will go like this "failed to get
+> > tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> > failed".
+> > 
+> > Thus, I attach the key information of the crash-log here.
+> > 
+> > BUG: unable to handle kernel NULL pointer dereference at
+> > 0000000000000000
+> > RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> > Call Trace:
+> > [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> > [2160294.717666]  dev_xdp_install+0x4f/0x70
+> > [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> > [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> > [2160294.718705]  do_setlink+0xac7/0xe70
+> > [2160294.719035]  ? __nla_parse+0xed/0x120
+> > [2160294.719365]  rtnl_newlink+0x73b/0x860
+> > 
+> > Fixes: 41c445ff0f48 ("i40e: main driver core")
+> > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>  
+> 
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> 
+> @Jakub/@DaveM - feel free to apply this directly.
 
-(again with a disclaimer that I'm the advisor of Oliver's student project)
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+The crash/bug happens in this code:
+
+ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
+			  struct netlink_ext_ack *extack)
+ {
+ [...]
+	for (i = 0; i < vsi->num_queue_pairs; i++)
+		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
+
+
+And this is a side effect of i40e_setup_pf_switch() failing with "setup
+of MAIN VSI failed".
+
+LGTM
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
