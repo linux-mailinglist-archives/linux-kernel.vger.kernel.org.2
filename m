@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DF43601C7
+	by mail.lfdr.de (Postfix) with ESMTP id BC0C53601C9
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhDOFlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:41:24 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:53780 "EHLO
+        id S230503AbhDOFlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:41:35 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56518 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230264AbhDOFlX (ORCPT
+        by vger.kernel.org with ESMTP id S230090AbhDOFlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:41:23 -0400
+        Thu, 15 Apr 2021 01:41:31 -0400
 Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 248AAC0619;
-        Thu, 15 Apr 2021 05:41:01 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 39637404B4;
+        Thu, 15 Apr 2021 05:41:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618465261; bh=d87QjhQf/cs9tD6ioQrtQbqw59Z9zhbJBKqLhxDVfus=;
+        t=1618465269; bh=sMYUcJjmu6mpKPzTc6LOGrbWk7P4Y2uZaj8qYVP7Nzo=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=mGQpHIWrv83OyuZKlCGghm8+EYtOoh/04NVLNzYbtNCdwxZ5zZ24b5b3VJ9cTS0js
-         eGa1PRIL1ebm2Q5EwMpQI/ru8oHK1M/LHR9XEiF1QzRLi7h2r4H+dlnEGbX1EI1oJY
-         3AuwiZApHzlQY2uUyijl7GT6ExEjykVovNuNQBd0+QU0erAf6qjDA2hI8NVbREtgJ7
-         B+T4ttpVvLO5Pk6INQ+TjuXE3pxCDAgPqLh8Siz7PBoOGKZfi5K8jG41RFy/0Rd3bS
-         kskUmBuxLO0xekKDHbAJ9zQTOAoqoB0AnKhqbs3Iq6qiKEDKMgP0nBqFqhM4OS22No
-         2TLYoLIaZy3Qw==
+        b=ZupbC7992yJg9PJjU9XWNfboBKnb6zFoFvYOPIFlJB3Sg/TRMcmt5z6e4ArYn/2cf
+         MN9WtATVDGXx6FWaZTn19CFlxS8D96IdZQlEI7E2YNONs/I68u5eyYmLO/IJh6RgGr
+         qH6OMhI2hR1fohXpsxAiEda7yZIcWjcoeN1iyNRlfXaEeU6076t6kyrjqyseKUfSYx
+         lCUWO/lrvVofS6JYWBSY90V13t01wFG+/mL43J4wvMjb6a2+IJ5XsIDw2CEO/Jynti
+         IDbpRoK/0XhLy/7MuU+eYjXNPRGkYjDZYT3LqNOUF+4OLaPE0I6WjOruK73ZMUeMmo
+         APnQXzJpPYGXA==
 Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 2DC7EA005C;
-        Thu, 15 Apr 2021 05:40:58 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:40:56 +0400
-Date:   Thu, 15 Apr 2021 09:40:56 +0400
-Message-Id: <59963c145b78ce9677ae66c33f84720480bf6882.1618464534.git.Arthur.Petrosyan@synopsys.com>
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 3654DA005C;
+        Thu, 15 Apr 2021 05:41:06 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:41:04 +0400
+Date:   Thu, 15 Apr 2021 09:41:04 +0400
+Message-Id: <d01d23e2473407af37c42acb6ca4815ae5fd256e.1618464534.git.Arthur.Petrosyan@synopsys.com>
 In-Reply-To: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 X-SNPS-Relay: synopsys.com
 From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 12/15] usb: dwc2: Add hibernation exiting flow by system resume
+Subject: [PATCH 13/15] usb: dwc2: Add exit hibernation mode before removing drive
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
@@ -49,35 +49,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a new flow of exiting hibernation when PC is resumed
-from suspend state.
+When dwc2 core is in hibernation mode loading
+driver again causes driver fail. Because in
+that mode registers are not accessible.
+
+In order to exit from hibernation checking
+dwc2 core power saving state in "dwc2_driver_remove()"
+function. If core is in hibernation, then checking the
+operational mode of the driver. To check whether dwc2 core
+is operating in host mode or device mode there is one way
+which is retrieving the backup value of "gotgctl" and compare
+the "CurMod" value. If previously core entered hibernation
+in host mode then the exit is performed for host if not then
+exit is performed for device mode. The introduced checking
+is because in hibernation state all registers are not
+accessible.
 
 Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 ---
- drivers/usb/dwc2/hcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/dwc2/platform.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index db8eb1940d17..c92307775863 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -4470,6 +4470,16 @@ static int _dwc2_hcd_resume(struct usb_hcd *hcd)
- 		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
- 		break;
- 	case DWC2_POWER_DOWN_PARAM_HIBERNATION:
-+		ret = dwc2_exit_hibernation(hsotg, 0, 0, 1);
-+		if (ret)
-+			dev_err(hsotg->dev, "exit hibernation failed.\n");
+diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
+index f8b819cfa80e..2ae4748ed5ec 100644
+--- a/drivers/usb/dwc2/platform.c
++++ b/drivers/usb/dwc2/platform.c
+@@ -316,8 +316,24 @@ static int dwc2_lowlevel_hw_init(struct dwc2_hsotg *hsotg)
+ static int dwc2_driver_remove(struct platform_device *dev)
+ {
+ 	struct dwc2_hsotg *hsotg = platform_get_drvdata(dev);
++	struct dwc2_gregs_backup *gr;
+ 	int ret = 0;
+ 
++	/* Exit Hibernation when driver is removed. */
++	if (hsotg->hibernated) {
++		if (gr->gotgctl & GOTGCTL_CURMODE_HOST) {
++			ret = dwc2_exit_hibernation(hsotg, 0, 0, 1);
++			if (ret)
++				dev_err(hsotg->dev,
++					"exit hibernation failed.\n");
++		} else {
++			ret = dwc2_exit_hibernation(hsotg, 0, 0, 0);
++			if (ret)
++				dev_err(hsotg->dev,
++					"exit hibernation failed.\n");
++		}
++	}
 +
-+		/*
-+		 * Set HW accessible bit before powering on the controller
-+		 * since an interrupt may rise.
-+		 */
-+		set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
-+		break;
- 	case DWC2_POWER_DOWN_PARAM_NONE:
- 		/*
- 		 * If not hibernation nor partial power down are supported,
+ 	/* Exit Partial Power Down when driver is removed. */
+ 	if (hsotg->in_ppd) {
+ 		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
 -- 
 2.25.1
 
