@@ -2,255 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF982360719
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E25336071D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhDOK1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:27:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24261 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232130AbhDOK1V (ORCPT
+        id S232109AbhDOK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhDOK3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:27:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618482418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
-        b=Uk9k7vgKRYy/wUVbHTHus80kG5QoiX0tCYucSSb3VUMHFKdnODyv8tn+FpnHTkl7SKTJuC
-        WPdExKHl7tvf6ismBOd91G1PMms0ibRLAHmzJNJn2CKmtAw2KVpPGDS9LZsLl0hNY7LKG1
-        T1dbp+GcP+vi3Qvq3FhQ9kWMFZpENjg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313--qInjY2TPJSE_9NpsaDrtQ-1; Thu, 15 Apr 2021 06:26:56 -0400
-X-MC-Unique: -qInjY2TPJSE_9NpsaDrtQ-1
-Received: by mail-wr1-f72.google.com with SMTP id m2-20020a5d64a20000b02900fd24e6af66so2537459wrp.21
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:26:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
-        b=CSEbgkskbt/LMWFL2pWrRdH9P7BKzoq16+5mASOYV2081h5AQEIyvpRUe8KvTwJBjh
-         euzuXQ8c2hbLD8ngVFYtXqOXz1BykNeoDQ2vWKcY03BywkB+LfS8M9Bqx8F5/OMQUYFv
-         EfanhmXDarDWxXtBWMVdDsaJlg9cMnzTwzaKzcODcG9qRyjVJNIBCR4PF7sx/VP3+sW5
-         4jDaun1WmR70zdjzbb46U/DhWxPAfmFUaZ+5nxFXACnM+Yenzv+CixXebCaECumIDnFe
-         uSKbLJVfle4ckj+oxWl5wMX6CthZrE4dQXWK/lB2E7icVKUQHKSTz3gZskTSdqlNo9HZ
-         TsUw==
-X-Gm-Message-State: AOAM530xkWPPuUH11/+I2BvmD57KAnQTc5rERH4mqR9q3JRcJZg7qOXP
-        jK+kQcIgzEogQiz/wd5kwZt0pzixPiOGzno9EHa1YVz9wPiBbb+Fownc//vdAwkTGLe/PT2CCW+
-        aXJxBTEHb403ZTeSpxQLPLjyh
-X-Received: by 2002:adf:f186:: with SMTP id h6mr2569769wro.89.1618482415085;
-        Thu, 15 Apr 2021 03:26:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwv7Q012I0Vz8MHqIPLa4Xkx+hS8m+nH/TPxEyn3JS7V7NiE9yOuvehr7qVZbxLbS4BFGfVVQ==
-X-Received: by 2002:adf:f186:: with SMTP id h6mr2569712wro.89.1618482414741;
-        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
-        by smtp.gmail.com with ESMTPSA id z17sm2386902wro.1.2021.04.15.03.26.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
-From:   David Hildenbrand <david@redhat.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <20210317110644.25343-1-david@redhat.com>
- <20210317110644.25343-3-david@redhat.com>
- <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
- <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
- <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
- <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
- <54165ffe-dbf7-377a-a710-d15be4701f20@redhat.com>
- <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
- to prefault/prealloc memory
-Message-ID: <273f9c4b-2a1a-23e7-53b9-0da5441895b3@redhat.com>
-Date:   Thu, 15 Apr 2021 12:26:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 15 Apr 2021 06:29:39 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF304C061574;
+        Thu, 15 Apr 2021 03:29:16 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=truhe.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lWzFK-0007Zb-Mc; Thu, 15 Apr 2021 12:29:14 +0200
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] docs: reporting-issues.rst: CC subsystem and maintainers on regressions
+Date:   Thu, 15 Apr 2021 12:29:14 +0200
+Message-Id: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1618482557;f56efbec;
+X-HE-SMSGID: 1lWzFK-0007Zb-Mc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.04.21 12:31, David Hildenbrand wrote:
-> On 30.03.21 18:31, David Hildenbrand wrote:
->> On 30.03.21 18:30, David Hildenbrand wrote:
->>> On 30.03.21 18:21, Jann Horn wrote:
->>>> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
->>>>>>> +                           unsigned long end, bool write, int *locked)
->>>>>>> +{
->>>>>>> +       struct mm_struct *mm = vma->vm_mm;
->>>>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
->>>>>>> +       int gup_flags;
->>>>>>> +
->>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
->>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
->>>>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
->>>>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
->>>>>>> +       mmap_assert_locked(mm);
->>>>>>> +
->>>>>>> +       /*
->>>>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
->>>>>>> +        *                a poisoned page.
->>>>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
->>>>>>> +        * !FOLL_FORCE: Require proper access permissions.
->>>>>>> +        */
->>>>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
->>>>>>> +       if (write)
->>>>>>> +               gup_flags |= FOLL_WRITE;
->>>>>>> +
->>>>>>> +       /*
->>>>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
->>>>>>> +        * or with insufficient permissions.
->>>>>>> +        */
->>>>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
->>>>>>> +                               NULL, NULL, locked);
->>>>>>
->>>>>> You mentioned in the commit message that you don't want to actually
->>>>>> dirty all the file pages and force writeback; but doesn't
->>>>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
->>>>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
->>>>>
->>>>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
->>>>> primarily set it because populate_vma_page_range() also sets it.
->>>>>
->>>>> Is it safe to *not* set it? IOW, fault something writable into a page
->>>>> table (where the CPU could dirty it without additional page faults)
->>>>> without marking it accessed? For me, this made logically sense. Thus I
->>>>> also understood why populate_vma_page_range() set it.
->>>>
->>>> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
->>>> essentially means "the caller of get_user_pages wants to read/write
->>>> the contents of the returned page, so please do the same things you
->>>> would do if userspace was accessing the page". So in particular, if
->>>> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
->>>> that tells the MM subsystem "I will be writing into this page directly
->>>> from the kernel, bypassing the userspace page tables, so please mark
->>>> it as dirty now so that it will be properly written back later". Part
->>>> of that is that it marks the page as recently used, which has an
->>>> effect on LRU pageout behavior, I think - as far as I understand, that
->>>> is why populate_vma_page_range() uses FOLL_TOUCH.
->>>>
->>>> If you look at __get_user_pages(), you can see that it is split up
->>>> into two major parts: faultin_page() for creating PTEs, and
->>>> follow_page_mask() for grabbing pages from PTEs. faultin_page()
->>>> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
->>>>
->>>> In a way I guess maybe you do want the "mark as recently accessed"
->>>> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
->>>> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
->>>> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
->>>> only want to mark as recently used, I don't want to dirty". Or maybe
->>>> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
->>>
->>> Any thoughts why populate_vma_page_range() does it?
->>
->> Sorry, I missed the explanation above - thanks!
-> 
-> Looking into the details, adjusting the FOLL_TOUCH logic won't make too
-> much of a difference for MADV_POPULATE_WRITE I guess. AFAIKs, the
-> biggest impact of FOLL_TOUCH is actually with FOLL_FORCE - which we are
-> not using, but populate_vma_page_range() is.
-> 
-> 
-> If a page was not faulted in yet,
-> faultin_page(FOLL_WRITE)->handle_mm_fault(FAULT_FLAG_WRITE) will already
-> mark the PTE/PMD/... dirty and accessed. One example is
-> handle_pte_fault(). We will mark the page accessed again via FOLL_TOUCH,
-> which doesn't seem to be strictly required.
-> 
-> 
-> If the page was already faulted in, we have three cases:
-> 
-> 1. Page faulted in writable. The page should already be dirty (otherwise
-> we would be in trouble I guess). We will mark it accessed.
-> 
-> 2. Page faulted in readable. handle_mm_fault() will fault it in writable
-> and set the page dirty.
-> 
-> 3. Page faulted in readable and we have FOLL_FORCE. We mark the page
-> dirty and accessed.
-> 
-> 
-> So doing a MADV_POPULATE_WRITE, whereby we prefault page tables
-> writable, doesn't seem to fly without marking the pages dirty. That's
-> one reason why I included MADV_POPULATE_READ.
-> 
-> We could
-> 
-> a) Drop FOLL_TOUCH. We are not marking the page accessed, which would
-> mean it gets evicted rather earlier than later.
-> 
-> b) Introduce FOLL_ACCESSED which won't do the dirtying. But then, the
-> pages are already dirty as explained above, so there isn't a real
-> observable change.
-> 
-> c) Keep it as is: Mark the page accessed and dirty. As it's already
-> dirty, that does not seem to be a real issue.
-> 
-> Am I missing something obvious? Thanks!
-> 
+When reporting a regression, users ideally should CC the subsystem and
+its maintainers, as that will ensure they get aware of the regression
+quickly. And if the culprit is known, they should also CC everyone who
+signed if off; the text mentioned the latter in once place already, but
+forgot to do so in two other areas where it's relevant.
 
-I did some more digging. I think there are cases for shared mappings 
-where we can have pte_write() but not pte_dirty().
+While fixing this also remind readers to check the mailing list archives
+for issues that need to be reported to a bug tracker, as someone might
+have reported it by mail only.
 
-One example seems to be mm/memory.c:copy_present_pte() , used during fork.
+All of this got triggered by a recent report where these changes would
+have made a difference.
 
-IIUC, this means that the child process can write to these pages, but 
-won't mark the PTEs dirty -- as there won't be a write fault. I'd assume 
-we'd need pte_mkclean(pte_wrprotect(pte)), but I'm fairly new to that code.
+Link: https://lore.kernel.org/lkml/dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info/
+Link: https://lore.kernel.org/lkml/CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com/
+Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+---
+ .../admin-guide/reporting-issues.rst          | 49 ++++++++++++-------
+ 1 file changed, 30 insertions(+), 19 deletions(-)
 
-(Similarly, we do an pte_mkold() without revoking any protection, 
-meaning we won't catch read accesses.)
+diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
+index 48b4d0ef2b09..18d8e25ba9df 100644
+--- a/Documentation/admin-guide/reporting-issues.rst
++++ b/Documentation/admin-guide/reporting-issues.rst
+@@ -24,7 +24,8 @@ longterm series? One still supported? Then search the `LKML
+ you don't find any, install `the latest release from that series
+ <https://kernel.org/>`_. If it still shows the issue, report it to the stable
+ mailing list (stable@vger.kernel.org) and CC the regressions list
+-(regressions@lists.linux.dev).
++(regressions@lists.linux.dev); ideally also CC the maintainer and the mailing
++list for the subsystem in question.
+ 
+ In all other cases try your best guess which kernel part might be causing the
+ issue. Check the :ref:`MAINTAINERS <maintainers>` file for how its developers
+@@ -48,8 +49,9 @@ before the issue occurs.
+ If you are facing multiple issues with the Linux kernel at once, report each
+ separately. While writing your report, include all information relevant to the
+ issue, like the kernel and the distro used. In case of a regression, CC the
+-regressions mailing list (regressions@lists.linux.dev) to your report; also try
+-to include the commit-id of the change causing it, which a bisection can find.
++regressions mailing list (regressions@lists.linux.dev) to your report. Also try
++to pin-point the culprit with a bisection; if you succeed, include its
++commit-id and CC everyone in the sign-off-by chain.
+ 
+ Once the report is out, answer any questions that come up and help where you
+ can. That includes keeping the ball rolling by occasionally retesting with newer
+@@ -198,10 +200,11 @@ report them:
+ 
+  * Send a short problem report to the Linux stable mailing list
+    (stable@vger.kernel.org) and CC the Linux regressions mailing list
+-   (regressions@lists.linux.dev). Roughly describe the issue and ideally
+-   explain how to reproduce it. Mention the first version that shows the
+-   problem and the last version that's working fine. Then wait for further
+-   instructions.
++   (regressions@lists.linux.dev); if you suspect the cause in a particular
++   subsystem, CC its maintainer and its mailing list. Roughly describe the
++   issue and ideally explain how to reproduce it. Mention the first version
++   that shows the problem and the last version that's working fine. Then
++   wait for further instructions.
+ 
+ The reference section below explains each of these steps in more detail.
+ 
+@@ -768,7 +771,9 @@ regular internet search engine and add something like
+ the results to the archives at that URL.
+ 
+ It's also wise to check the internet, LKML and maybe bugzilla.kernel.org again
+-at this point.
++at this point. If your report needs to be filed in a bug tracker, you may want
++to check the mailing list archives for the subsystem as well, as someone might
++have reported it only there.
+ 
+ For details how to search and what to do if you find matching reports see
+ "Search for existing reports, first run" above.
+@@ -1249,9 +1254,10 @@ and the oldest where the issue occurs (say 5.8-rc1).
+ 
+ When sending the report by mail, CC the Linux regressions mailing list
+ (regressions@lists.linux.dev). In case the report needs to be filed to some web
+-tracker, proceed to do so; once filed, forward the report by mail to the
+-regressions list. Make sure to inline the forwarded report, hence do not attach
+-it. Also add a short note at the top where you mention the URL to the ticket.
++tracker, proceed to do so. Once filed, forward the report by mail to the
++regressions list; CC the maintainer and the mailing list for the subsystem in
++question. Make sure to inline the forwarded report, hence do not attach it.
++Also add a short note at the top where you mention the URL to the ticket.
+ 
+ When mailing or forwarding the report, in case of a successful bisection add the
+ author of the culprit to the recipients; also CC everyone in the signed-off-by
+@@ -1536,17 +1542,20 @@ Report the regression
+ 
+     *Send a short problem report to the Linux stable mailing list
+     (stable@vger.kernel.org) and CC the Linux regressions mailing list
+-    (regressions@lists.linux.dev). Roughly describe the issue and ideally
+-    explain how to reproduce it.  Mention the first version that shows the
+-    problem and the last version that's working fine. Then wait for further
+-    instructions.*
++    (regressions@lists.linux.dev); if you suspect the cause in a particular
++    subsystem, CC its maintainer and its mailing list. Roughly describe the
++    issue and ideally explain how to reproduce it. Mention the first version
++    that shows the problem and the last version that's working fine. Then
++    wait for further instructions.*
+ 
+ When reporting a regression that happens within a stable or longterm kernel
+ line (say when updating from 5.10.4 to 5.10.5) a brief report is enough for
+-the start to get the issue reported quickly. Hence a rough description is all
+-it takes.
++the start to get the issue reported quickly. Hence a rough description to the
++stable and regressions mailing list is all it takes; but in case you suspect
++the cause in a particular subsystem, CC its maintainers and its mailing list
++as well, because that will speed things up.
+ 
+-But note, it helps developers a great deal if you can specify the exact version
++And note, it helps developers a great deal if you can specify the exact version
+ that introduced the problem. Hence if possible within a reasonable time frame,
+ try to find that version using vanilla kernels. Lets assume something broke when
+ your distributor released a update from Linux kernel 5.10.5 to 5.10.8. Then as
+@@ -1563,7 +1572,9 @@ pinpoint the exact change that causes the issue (which then can easily get
+ reverted to fix the issue quickly). Hence consider to do a proper bisection
+ right away if time permits. See the section 'Special care for regressions' and
+ the document 'Documentation/admin-guide/bug-bisect.rst' for details how to
+-perform one.
++perform one. In case of a successful bisection add the author of the culprit to
++the recipients; also CC everyone in the signed-off-by chain, which you find at
++the end of its commit message.
+ 
+ 
+ Reference for "Reporting issues only occurring in older kernel version lines"
 
-
-Maybe the logic here is that if the PTE was writable in some parent, it 
-was also dirty in some parent (at least in the one originally mapping it 
-writable). When evicting/writeback'ing file pages, we'll have go over 
-the rmap and zap all entries of any page tables either way; it's 
-sufficient if one PTE entry is dirty. I can spot that even 
-zap_pte_range() will sync the dirty flag back to the page.
-
-Am I right or is there some other magic going on? :)
-
+base-commit: 6161a4b18a66746c3f5afa72c054d7e58e49c847
 -- 
-Thanks,
-
-David / dhildenb
+2.30.2
 
