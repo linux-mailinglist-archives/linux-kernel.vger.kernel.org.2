@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1425360DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069E4360DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhDOPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:04:09 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43410 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233968AbhDOO4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:56:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618498560; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FFS6EKj/DWquOwjPpszmYv2XYXjqrSmpSWLrx/ZGvbE=; b=Sga/2GUowc3M+Ek/yy/k/FARd34ODjhnFJd15OUUbU0CDGWXSMqZldlL8AQuyzFcJsX3Nkof
- XD4x6N22enj9wejn5zAFD+gExcqd8A6n7QKcc5iZw0euvTBEHV1bRjpQ7dH5jZpbSUqukVLG
- 9NHGsHl0z/hKYuOCBtihtNCpOA8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 607853ed8166b7eff7484a62 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 14:55:41
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C022C43468; Thu, 15 Apr 2021 14:55:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.156.137])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D93F2C43464;
-        Thu, 15 Apr 2021 14:55:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D93F2C43464
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] sched,psi: fix the 'int' underflow for psi
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-References: <1618496981-6148-1-git-send-email-charante@codeaurora.org>
- <YHhQ7tDZWF6tHXSQ@cmpxchg.org>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <b0a0b8f5-a5bc-4807-f55b-288db57c74e2@codeaurora.org>
-Date:   Thu, 15 Apr 2021 20:25:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235324AbhDOPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234526AbhDOO5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:57:24 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93429C061359
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:56:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m11so16224005pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PhTmwH8PhT9mJZ3C0aVcmTrvg6qX9lyZC429IhOM4QM=;
+        b=q3BREvqEB2G3BNbpkG8kBbf7BElXASTuxr+GvNV7K1WJc89G3SaGdHjDAu4UCtVvSC
+         2K/277udq3BCCJdE/9yr6aITZn/oJlz51iW7Zdkd18ZaAdvTgOWDCIghYIioeLa9qww1
+         Hb1ScRJLz9eagiwvAhGAIJPscYOodOkHrj71r+Rx0ZhP2dq6eGZUlDYY+/Zimj1KV86V
+         1wfO4DtWvxGrQUdx+g1Wxtc3jnNe9PM+JCPlz3dXZp6PPi8VyEU3hAAtGcszP3YU7HHB
+         9C7Z2xfnAZ5k5jWOdBMenO/zr3PdZ0sl1Tk3bLOQ+GnOHC4dMd0bp8NQOzNmYlVmswmn
+         LJSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PhTmwH8PhT9mJZ3C0aVcmTrvg6qX9lyZC429IhOM4QM=;
+        b=flPRthSpJUtj8LI4uIONeVF/EpZbwB8Ux/PjIGYGg7TObrfGiqoK10kRbk1jqAhGdL
+         dPUgfevxPoPJAjHFEkHNuAbSneQ2Hifl47EVb7ngdwn9qGkpEaCKnRAsSQX5K9jqqD0y
+         G6vXR/qTp6Ocz8qWsRE55j7GRI7FVexQ7yCeCtCN3DeUmWQeRx6IaEQiLq8wyEvZv2w+
+         TzeCc5uTfPrUP3OwjwIh2WRk9yfv4HQaWBOe+TAwxyQjdjVRSAtCwimi+lQGwhfq/6zn
+         yFAVng6ZxF/3OiMKPA/kzTo4ZAJ92cbAyhO95EDTDFu2wvFpUiMfwzSJsyYXOl2AHzaN
+         n+AQ==
+X-Gm-Message-State: AOAM532ez05d+JEPUeitGQjc/HaultdKU9i1b1/hieVTUHouO8dpSzbg
+        2yIoBS1aRtjwR3iPE6J0MS11wQ==
+X-Google-Smtp-Source: ABdhPJwbpBWFS/DrNNeCNcxK8P61L/I09eLggFGIfDMGJvBkdCoJ0HdLMHpYtG/PdQm7IT5fig4+fw==
+X-Received: by 2002:a63:6b4a:: with SMTP id g71mr2225731pgc.274.1618498588061;
+        Thu, 15 Apr 2021 07:56:28 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id s1sm2754011pgc.28.2021.04.15.07.56.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 07:56:27 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 22:56:22 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Al Grant <Al.Grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] perf arm-spe: Enable timestamp
+Message-ID: <20210415145622.GE1011890@leoy-ThinkPad-X240s>
+References: <20210412091006.468557-1-leo.yan@linaro.org>
+ <570051ef-eda0-ead2-96de-0e22ca226e0a@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YHhQ7tDZWF6tHXSQ@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <570051ef-eda0-ead2-96de-0e22ca226e0a@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Johannes!!
-
-On 4/15/2021 8:12 PM, Johannes Weiner wrote:
-> Makes sense, it's more graceful in the event of a bug.
+On Thu, Apr 15, 2021 at 05:43:24PM +0300, James Clark wrote:
+> Hi Leo,
 > 
-> But what motivates this change? Is it something you hit recently with
-> an upstream kernel and we should investigate?
-
-We specifically didn't hit the issue around this change. Identified this
-while doing code walk through.
-
+> I was looking at testing this on N1SDP and I thought I would try the round trip with perf inject and
+> then perf report but saw that perf inject with SPE always results in an error (unrelated to your change)
 > 
-> There is already a branch on the tasks to signal the bug. How about:
+> 	 -> ./perf report -i per-thread-spe-time.inject.data
+> 	0x1328 [0x8]: failed to process type: 9 [Bad address]
+> 	Error:
+> 	failed to process sample
 > 
-> 		if (groupc->tasksk[t]) {
-> 			groupc->tasks[t]--;
-> 		} else if (!psi_bug) {
-> 			printk_deferred(...
-> 			psi_bug = 1;
-> 		}
+> 
+> Do you have any test suggestions other than looking at the raw data?
 
-Looks cleaner. Will raise V2 with this.
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+Good catching!  I didn't use inject mode for Arm SPE before (it's not
+not like Arm CoreSight for instruction sample, or SPE's branch sample
+is statistical so we cannot generate branch samples based on accurate
+interval).
+
+For the debugging, it's good to use "git grep" to search "Bad address"
+to check where the error happens, and can use gdb.  I personally think
+it's possible to go back to check the sythenization flow, simply to
+say, it might have problems when inject samples but not in the
+decoding flow.
+
+Thanks,
+Leo
