@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4403615AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A113615AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237473AbhDOWr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+        id S237489AbhDOWsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbhDOWrZ (ORCPT
+        with ESMTP id S234854AbhDOWr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:47:25 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA64EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:47:01 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so15237167pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:47:01 -0700 (PDT)
+        Thu, 15 Apr 2021 18:47:59 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6803C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:47:35 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id v13so5517502ilj.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=4QXyNLhNR/ybAA8PhqI1Y4BCgzCX+KpeDdgoizSFaz0=;
-        b=L8G3d+gV+ZHqNkVAriDsrtVhQMCQV82uICqEb1zx1gUZUrHTLb/QtmAwXKfy4wXRNo
-         sbi42TE/mnsc+Lp3EC3yZuCmD88NlzUjqVXVC0gKoWE3IyTBrFsxCEmEtKHEQa35W/3/
-         eoBFIqvEgEVTAx6u4F3UxeGblQP8MygfDsj2U=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Pn220cerfCbXUEgP8xwN65Bb5Bk2GTtUPKKnK3A4WMI=;
+        b=CIOco4bDolOwXJzk6aOYGB+fvo1tji00v/bBZyftoTelfsg/UryYP3byZ0YnnQVYSQ
+         QagcseECBtaAUzv8ehsIM/cA5g/NFzy0aWNnUV1FwHTSn/H/4HSPYVUJYyDDCnuuuemv
+         drM9W4dhQhXxwy8ME/Zl+i16x15DKWpFL2ZrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=4QXyNLhNR/ybAA8PhqI1Y4BCgzCX+KpeDdgoizSFaz0=;
-        b=KCUI7bVilVSG2790XDxZ/HBtf81FJwhRteiB2uhnxtDnoFNkJ87cKIClRrBWiFQQDr
-         JxGSFKCTIxeLGEX7nTUZ0UVP6xPKdcvHqYyuur8wnCVBvkufBf/cFf1lzpS0v4xWSBVR
-         katNJ5PtkDKB8IiBdS1KXPI5Iq1aWlkz8JE9gmHPPcVJRP3HTvzsU7vIcFNbucAxf0AD
-         hv8FnnTPQJZw3cth8dNthS7HWsX7VZM/KhKHyBunlrfZbo5iyfQQ4/uQ5l0RwhiXqsr9
-         YoKB0ASlsomyWDJVNmv2/kReNbSKviA9cTcP8dTI72ZzH8Suej50KqKPFK1KapDl2/WW
-         7+Lw==
-X-Gm-Message-State: AOAM530ZYzOajyDqgfsstxQBkZVukSGsgzC8TM5+a1Wm6SALnBXg0O1m
-        ax0jaLWwbuh7dDOIGDy4eS286w==
-X-Google-Smtp-Source: ABdhPJxFhcnc0BQvrngfQ3Z5AFfIdVKhj/xb/yL3sabyo7p2u8N5bSvEyBbGwKVUGR30J7RRrB+6pA==
-X-Received: by 2002:a17:902:b188:b029:e8:bd90:3f99 with SMTP id s8-20020a170902b188b02900e8bd903f99mr6372521plr.6.1618526821364;
-        Thu, 15 Apr 2021 15:47:01 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:1ddc:37d8:5171:510d])
-        by smtp.gmail.com with ESMTPSA id a128sm3038828pfd.115.2021.04.15.15.47.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 15:47:00 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Pn220cerfCbXUEgP8xwN65Bb5Bk2GTtUPKKnK3A4WMI=;
+        b=unA0XJ9taTPnAbOV/ZPEnmr5h6WejHfbEEwrAR0h5xgw+8UCNUT1yKL96+ufaHitKp
+         os74NemMVFHymLOZglrQ+TFtNPudUFpuGKHsJfTrQnPdQaMWE6w5o0uevmGg+LECWv9P
+         JwXJCYndisgS4QMf/7NTg2ePeJC0esSU6e/ALvRhKJNOjZiXxJqEYVQYPt65w0VbWeeU
+         xTLhhY1NPkb2YjASEcTHG2d01BmoeG26QUlPFER41FLGf88TQaF0MPsD16Fb1h4tlC9E
+         nABAfqabFuSGpzU4Asra8l4fu7tVgvwahew1bhPqM3OMZJQUbwS4j/sUN5XXMmR8wV+r
+         EN6w==
+X-Gm-Message-State: AOAM532qMm8bUvEahXLv6rsgFThb15S+LIMaFIj/rR8C/0CtgYsrhClI
+        2lAbNPtNwVSIbKBVdFlXg8jlPA==
+X-Google-Smtp-Source: ABdhPJwLPQj7pt7dqaloCvEsgRm6ta50aKaY6AyRXQzor/qy3zqhOgk7RBvHl5otIKXTED7vifCzAg==
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr4653393ili.157.1618526855363;
+        Thu, 15 Apr 2021 15:47:35 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l5sm1844741ils.61.2021.04.15.15.47.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 15:47:35 -0700 (PDT)
+Subject: Re: [PATCH 4.4 00/38] 4.4.267-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4e84da31-03a6-1007-962a-e968b2c1dd8a@linuxfoundation.org>
+Date:   Thu, 15 Apr 2021 16:47:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <78036f23979206070bd9c9df180e2866@codeaurora.org>
-References: <1618355504-5401-1-git-send-email-khsieh@codeaurora.org> <161843459482.46595.11409016331159748598@swboyd.mtv.corp.google.com> <60bceecc3d4dcc71c66a4b093d0e6c0f@codeaurora.org> <161851718969.46595.12896385877607476879@swboyd.mtv.corp.google.com> <78036f23979206070bd9c9df180e2866@codeaurora.org>
-Subject: Re: [PATCH v2 3/3] drm/msm/dp: check main link status before start aux read
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     khsieh@codeaurora.org
-Date:   Thu, 15 Apr 2021 15:46:59 -0700
-Message-ID: <161852681935.46595.9941294298184495830@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2021-04-15 15:02:40)
-> On 2021-04-15 13:06, Stephen Boyd wrote:
-> >=20
-> > Is it really necessary to have this patch at all? I think there are
-> > bigger problems with suspend/resume of the DP driver in relation to the
-> > kthread stopping. I hope that the aux channel would start NAKing
-> > transfers once the cable is disconnected too, so that we don't need to
-> > do an extra check for each aux transfer.
->=20
-> I am working on duplicate this problem, but it is not happen on me yet=20
-> so far.
->  From kernel dump, i can see it crash at dp_irq_hdp_handle() after=20
-> suspended.
-> dp_irq_hpd_handle and dp_pm_suspend() are serialized by event_mutex.
->=20
-> After suspend, ahb clock is disabled.
-> Hence next dp_catalog_link_is_connected() crash at acess dp ctrl=20
-> registers.
->=20
->=20
-> aux channel does not do NAKing immediately if unplugged. Therefore=20
-> aux_transfer will wait until timeout (HZ/4).
-> worst, drm_dp_dpcd_access() will retry 32 times before return dpcd=20
-> read/write failed.
-> This patch try to eliminate the time spinning on waiting for timeout 32=20
-> times.
->=20
+On 4/15/21 8:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.267 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.267-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Would be useful to have that level of detail in the commit text.
+Compiled and booted on my test system. No dmesg regressions.
 
-Maybe when the cable is disconnected the DP phy should be shutdown and
-some bit in the phy could effectively "cut off" the aux channel and then
-NAKs would start coming through here in the DP controller I/O register
-space?
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
+
+
