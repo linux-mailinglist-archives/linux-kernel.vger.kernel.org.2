@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33993607C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CB73607A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbhDOKx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:53:26 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:55011 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbhDOKxN (ORCPT
+        id S232674AbhDOKv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232648AbhDOKvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:53:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618483970; x=1650019970;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kSpQpv98sh3osaRVrIiVAdt+VOG++l/L01AbZfP6hA4=;
-  b=a4CI7zzzKM5GKAUZWwYrs7sSom9BWf7gTdreQNHjPgYY2/Hk2s8cGBmD
-   LS5SnHjpiicpdon/WbTA9XlYkZvbPf05FmDXN6ReAjFt1BKIb53LxBuG1
-   vwxxMZtDfcgldCmDF5Vq0gjDQkPr9siAxatGI0gr/RXCfDf/QPkF86SHC
-   cUC/3RjyrIR7G/lVBUPe9586oP4sqlGAPsogkRSlyiVd+Wp4/G+V8NVoF
-   /SXS6zK/kZzg+OYr5Ws6afTifF0A42XI0Ab1nzDQJmkHCGWvHp9mHih6K
-   FFMXVZWuqydUbWFyw4UrfoNl/hwuUuVWMSVEDq03Gze7ts4m53C4xw1xn
-   g==;
-IronPort-SDR: wzaoyz5ZxuGfha5Uk9u7i2qc1njj3Ernw1OKLNcNBcMLNRlldWDU/J7E3sbit9rMFNvm4fJig1
- h2r5XYArn8NoAlt0O6H5TlDbBbOj557qiec3UmzRkwmqHbJOc6/MAN3sTcbnHiMgFhqfuJZ/vS
- V6ZVdJ/W7X5MWDQNXBakRo3SP0Kv5d1gWJHra1+EU13ckvWkmww+IvniUR+L4HG0a0lIFUhs5S
- PaQB9abZ6RMVsKyXt5ysvo9Mjg8OQzbDmpkf5La75ODPDjorq33gozqo8zy64We6944Zou0oYO
- UhY=
-X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
-   d="scan'208";a="113688736"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:52:50 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Apr 2021 03:52:31 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:52:28 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 24/24] ARM: at91: pm: add sama7g5 shdwc
-Date:   Thu, 15 Apr 2021 13:50:10 +0300
-Message-ID: <20210415105010.569620-25-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210415105010.569620-1-claudiu.beznea@microchip.com>
-References: <20210415105010.569620-1-claudiu.beznea@microchip.com>
+        Thu, 15 Apr 2021 06:51:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69042C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:51:27 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lWzan-0006nD-JK; Thu, 15 Apr 2021 12:51:25 +0200
+Subject: Re: [PATCH 10/13] dt-bindings: mfd: add vref_ddr-supply to st,stpmic1
+ yaml
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>, arnd@arndb.de,
+        robh+dt@kernel.org, Marek Vasut <marex@denx.de>,
+        jagan@amarulasolutions.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        kuba@kernel.org
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-11-alexandre.torgue@foss.st.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <9fc27672-765b-9bd3-bb0a-d9159cb7d502@pengutronix.de>
+Date:   Thu, 15 Apr 2021 12:51:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20210415101037.1465-11-alexandre.torgue@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SAMA7G5 SHDWC.
+Hi,
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- arch/arm/mach-at91/pm.c | 1 +
- 1 file changed, 1 insertion(+)
+On 15.04.21 12:10, Alexandre Torgue wrote:
+> Add vref_ddr-supply to the STPMIC1 regulators supplies pattern
+> list.
+> 
+> Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+> index 305123e74a58..ffc32d209496 100644
+> --- a/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/st,stpmic1.yaml
+> @@ -184,7 +184,7 @@ properties:
+>          additionalProperties: false
+>  
+>      patternProperties:
+> -      "^(buck[1-4]|ldo[1-6]|boost|pwr_sw[1-2])-supply$":
+> +      "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])-supply$":
 
-diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 24d5fd06d487..d6cfe7c4bb00 100644
---- a/arch/arm/mach-at91/pm.c
-+++ b/arch/arm/mach-at91/pm.c
-@@ -794,6 +794,7 @@ static int __init at91_pm_backup_init(void)
- static const struct of_device_id atmel_shdwc_ids[] = {
- 	{ .compatible = "atmel,sama5d2-shdwc" },
- 	{ .compatible = "microchip,sam9x60-shdwc" },
-+	{ .compatible = "microchip,sama7g5-shdwc" },
- 	{ /* sentinel. */ }
- };
- 
+IIRC, vref-ddr was a hack because a change in the regulator core broke
+the STM32MP1 boards. I believe vref-ddr should be removed altogether
+instead. It's supplied from BUCK2IN, which is already in the binding,
+so it's redundant.
+
+Cheers,
+Ahmad
+
+>          description: STPMIC1 voltage regulators supplies
+>  
+>        "^(buck[1-4]|ldo[1-6]|boost|vref_ddr|pwr_sw[1-2])$":
+> 
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
