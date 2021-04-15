@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1A1361561
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169C2361562
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237516AbhDOWWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S237549AbhDOWWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237357AbhDOWVx (ORCPT
+        with ESMTP id S237184AbhDOWVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:21:53 -0400
+        Thu, 15 Apr 2021 18:21:55 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A72C06138D
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:27 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id e187so3961170yba.15
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540F0C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:30 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w9so3970897ybw.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=GxVp+ryze51SPBwC3MTXA+xy9qBEqXXT0EKwo/t1PP8=;
-        b=FfHMOfr4Q3Myap3t2mwmp1oRd7b57KdkfdzZDDLFiAyG4mWLRZ4cIjmr7JpMPhg9Ad
-         TyAQWEXgFiD3k2RYMGxRkZ3OatJQwIH9Grt6VHWA1kkb9kI/sz3dUMFv8Mv0JDgN3pUk
-         ZHZMOXha6V3X5iMGJxDeNzgP5e4nomVqXO5PMpAQyH4uOaQTk5BgS877mSycz9vH+XcA
-         0vjLrFAKPizs/JHbpGX2IENWOJMGz5vAp8DD3ywh2xKBE3/VlV8KorPLiDUkQdEKqZ9s
-         KDyltpcE81/KElbpgmWkVMT8u01t4/p1/4fbBHUFENaSsgywO4IPTGoqM2d7g4riOxFM
-         zytQ==
+        bh=+Q7N2cYAdSmHRUValmwElnJxz6XY8f0FCfRpSDgKNLE=;
+        b=eKlmba/fklhyQO8ifozDbg41fKwUqk0wTnP7HmwHaFZzjpnne81CqI7rWXtb0p2jwi
+         ql36e6v8p+NondHs3HGfguWrWObcA/hD6fjQwYn8ZAxfo1hZsfBf9BKnKuCHLpse16sz
+         Q4oyko9ZUBY1CLMZscwAYlzHF/LOKGQapa1rNireRLUpK653l3cPbr8U4HP6U3ne62Mm
+         hj82i08I88bJ7c3p2+IvFpL5fEqVNw9ya34NY2XwdBc7vz4Fiu0K0c2LXJ5dDHZCFCup
+         3w6g3ejgsaKCvyEuvKmJFk05p2DQBNEQkK3GPdT/+gGkrkuOxNVRksT8I8CVkp2Qc8Hb
+         qRZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=GxVp+ryze51SPBwC3MTXA+xy9qBEqXXT0EKwo/t1PP8=;
-        b=UGbEgY1Kewn27jLczjuwc1FSEdFXJqyUMhoOjL0BHfLEkH6Adju1nkdnCgxRmSGAiG
-         r3o8zuYRXhAsRJu7su37di/1ZlJsPNPbKrlLAZYJ1YDVHTllpCZSLdlAWSN0AjyzzzMl
-         2JrJpPqWA0ghL1kF6QW45A4oyr8Kej9poXQxYDMUd0nK/yyqagOrVCANV95lOF13DhzF
-         H4s0JOPQLzyDl7EDW1s9eHpPNawwMvmwc6V5gh0PGNXTl5tUEm0q6ACYAtu2/L+X/Ewz
-         HqlyAePMQqBN4BDk8xF/R7TsS781jIU1ZvG0djzTjcjbSDKWGVR1EM1z6Bmlu5tvCEVP
-         ihFA==
-X-Gm-Message-State: AOAM531EH5/NDJ6/Crh3vyIxq7+5b83E7QAB1Z3KJ+5mNXJm+DnpCz/D
-        9VmXWN/ELdMK7GZtIIEh3cuEbgN1rE4=
-X-Google-Smtp-Source: ABdhPJy13lXczJDkYzHt9Br8KeDanZBPTQtGMChtFt9J9YcQr5yvscDjY6/LGh4Ti4U7Y9aMDQCI1NIGrnM=
+        bh=+Q7N2cYAdSmHRUValmwElnJxz6XY8f0FCfRpSDgKNLE=;
+        b=OvWeZchQsr2Qps6Lp5bsdVicjCUdQkU8Ml8O3UU3O0xrScxtO6UgPeMGSf1yimvgik
+         wFo9dE0luktJAGDjP3w03r5q/zaRk/nwmx4OJsAOrhizlou75PJOHyMwCiFUsI9RBUkw
+         T2RhHtpf6ZHLHtru8JQDYJrtluK+JgDbbz4nua7rIeLVD8cevoMeMFODTPxkSXpw9GTV
+         cI3W3kM5OQdYZSM2in18NzoMPnnkfKZgFNXAyVTRt4fhkhY6QA7P4r0zqnmj2saRRaLc
+         HdPm6n/V7bkrc9Ik6F7zOxomLf31DTwnmRao9/i9/4Ouv+mDepw7nEFlgMPDxatEPwPp
+         SuhQ==
+X-Gm-Message-State: AOAM533wlwd5I8AVEKP3BE6kh+/ogyGxcNkoeO5RXnyBWB25b0pVb4Bv
+        jbBL2n8x/m4Qf16uDwn9jv0XaRcV0Rc=
+X-Google-Smtp-Source: ABdhPJwdfxfknW8XueOKXwvg9xz3GccSdgvEBXBAfRtjv22Xy2oZZAR+QwtxE1rJgrN0vgqKUuB5WFcHiC4=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c93:ada0:6bbf:e7db])
- (user=seanjc job=sendgmr) by 2002:a25:818f:: with SMTP id p15mr7234120ybk.135.1618525287170;
- Thu, 15 Apr 2021 15:21:27 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:1905:: with SMTP id 5mr7510706ybz.302.1618525289526;
+ Thu, 15 Apr 2021 15:21:29 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 15 Apr 2021 15:21:03 -0700
+Date:   Thu, 15 Apr 2021 15:21:04 -0700
 In-Reply-To: <20210415222106.1643837-1-seanjc@google.com>
-Message-Id: <20210415222106.1643837-7-seanjc@google.com>
+Message-Id: <20210415222106.1643837-8-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210415222106.1643837-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v3 6/9] context_tracking: Consolidate guest enter/exit wrappers
+Subject: [PATCH v3 7/9] context_tracking: KVM: Move guest enter/exit wrappers
+ to KVM's domain
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,134 +69,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate the guest enter/exit wrappers, providing and tweaking stubs
-as needed.  This will allow moving the wrappers under KVM without having
-to bleed #ifdefs into the soon-to-be KVM code.
+Move the guest enter/exit wrappers to kvm_host.h so that KVM can manage
+its context tracking vs. vtime accounting without bleeding too many KVM
+details into the context tracking code.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- include/linux/context_tracking.h | 65 ++++++++++++--------------------
- 1 file changed, 24 insertions(+), 41 deletions(-)
+ include/linux/context_tracking.h | 45 --------------------------------
+ include/linux/kvm_host.h         | 45 ++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 45 deletions(-)
 
 diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index 1c05035396ad..e172a547b2d0 100644
+index e172a547b2d0..d4dc9c4d79aa 100644
 --- a/include/linux/context_tracking.h
 +++ b/include/linux/context_tracking.h
-@@ -71,6 +71,19 @@ static inline void exception_exit(enum ctx_state prev_ctx)
- 	}
- }
- 
-+static __always_inline bool context_tracking_guest_enter_irqoff(void)
-+{
-+	if (context_tracking_enabled())
-+		__context_tracking_enter(CONTEXT_GUEST);
-+
-+	return context_tracking_enabled_this_cpu();
-+}
-+
-+static __always_inline void context_tracking_guest_exit_irqoff(void)
-+{
-+	if (context_tracking_enabled())
-+		__context_tracking_exit(CONTEXT_GUEST);
-+}
- 
- /**
-  * ct_state() - return the current context tracking state if known
-@@ -92,6 +105,9 @@ static inline void user_exit_irqoff(void) { }
- static inline enum ctx_state exception_enter(void) { return 0; }
- static inline void exception_exit(enum ctx_state prev_ctx) { }
- static inline enum ctx_state ct_state(void) { return CONTEXT_DISABLED; }
-+static inline bool context_tracking_guest_enter_irqoff(void) { return false; }
-+static inline void context_tracking_guest_exit_irqoff(void) { }
-+
- #endif /* !CONFIG_CONTEXT_TRACKING */
- 
- #define CT_WARN_ON(cond) WARN_ON(context_tracking_enabled() && (cond))
-@@ -102,74 +118,41 @@ extern void context_tracking_init(void);
+@@ -118,49 +118,4 @@ extern void context_tracking_init(void);
  static inline void context_tracking_init(void) { }
  #endif /* CONFIG_CONTEXT_TRACKING_FORCE */
  
--
--#ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
- /* must be called with irqs disabled */
- static __always_inline void guest_enter_irqoff(void)
- {
-+	/*
-+	 * This is running in ioctl context so its safe to assume that it's the
-+	 * stime pending cputime to flush.
-+	 */
- 	instrumentation_begin();
--	if (vtime_accounting_enabled_this_cpu())
--		vtime_guest_enter(current);
--	else
--		current->flags |= PF_VCPU;
-+	vtime_account_guest_enter();
- 	instrumentation_end();
- 
--	if (context_tracking_enabled())
--		__context_tracking_enter(CONTEXT_GUEST);
--
--	/* KVM does not hold any references to rcu protected data when it
-+	/*
-+	 * KVM does not hold any references to rcu protected data when it
- 	 * switches CPU into a guest mode. In fact switching to a guest mode
- 	 * is very similar to exiting to userspace from rcu point of view. In
- 	 * addition CPU may stay in a guest mode for quite a long time (up to
- 	 * one time slice). Lets treat guest mode as quiescent state, just like
- 	 * we do with user-mode execution.
- 	 */
--	if (!context_tracking_enabled_this_cpu()) {
-+	if (!context_tracking_guest_enter_irqoff()) {
- 		instrumentation_begin();
- 		rcu_virt_note_context_switch(smp_processor_id());
- 		instrumentation_end();
- 	}
- }
- 
--static __always_inline void context_tracking_guest_exit_irqoff(void)
+-/* must be called with irqs disabled */
+-static __always_inline void guest_enter_irqoff(void)
 -{
--	if (context_tracking_enabled())
--		__context_tracking_exit(CONTEXT_GUEST);
+-	/*
+-	 * This is running in ioctl context so its safe to assume that it's the
+-	 * stime pending cputime to flush.
+-	 */
+-	instrumentation_begin();
+-	vtime_account_guest_enter();
+-	instrumentation_end();
+-
+-	/*
+-	 * KVM does not hold any references to rcu protected data when it
+-	 * switches CPU into a guest mode. In fact switching to a guest mode
+-	 * is very similar to exiting to userspace from rcu point of view. In
+-	 * addition CPU may stay in a guest mode for quite a long time (up to
+-	 * one time slice). Lets treat guest mode as quiescent state, just like
+-	 * we do with user-mode execution.
+-	 */
+-	if (!context_tracking_guest_enter_irqoff()) {
+-		instrumentation_begin();
+-		rcu_virt_note_context_switch(smp_processor_id());
+-		instrumentation_end();
+-	}
 -}
 -
- static __always_inline void guest_exit_irqoff(void)
- {
- 	context_tracking_guest_exit_irqoff();
- 
+-static __always_inline void guest_exit_irqoff(void)
+-{
+-	context_tracking_guest_exit_irqoff();
+-
 -	instrumentation_begin();
+-	/* Flush the guest cputime we spent on the guest */
 -	vtime_account_guest_exit();
 -	instrumentation_end();
 -}
 -
--#else
--static __always_inline void guest_enter_irqoff(void)
+-static inline void guest_exit(void)
 -{
--	/*
--	 * This is running in ioctl context so its safe
--	 * to assume that it's the stime pending cputime
--	 * to flush.
--	 */
--	instrumentation_begin();
--	vtime_account_guest_enter();
--	rcu_virt_note_context_switch(smp_processor_id());
--	instrumentation_end();
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	guest_exit_irqoff();
+-	local_irq_restore(flags);
 -}
 -
--static __always_inline void context_tracking_guest_exit_irqoff(void) { }
--
--static __always_inline void guest_exit_irqoff(void)
--{
- 	instrumentation_begin();
- 	/* Flush the guest cputime we spent on the guest */
- 	vtime_account_guest_exit();
- 	instrumentation_end();
- }
--#endif /* CONFIG_VIRT_CPU_ACCOUNTING_GEN */
+ #endif
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 3b06d12ec37e..444d5f0225cb 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -332,6 +332,51 @@ struct kvm_vcpu {
+ 	struct kvm_dirty_ring dirty_ring;
+ };
  
- static inline void guest_exit(void)
++/* must be called with irqs disabled */
++static __always_inline void guest_enter_irqoff(void)
++{
++	/*
++	 * This is running in ioctl context so its safe to assume that it's the
++	 * stime pending cputime to flush.
++	 */
++	instrumentation_begin();
++	vtime_account_guest_enter();
++	instrumentation_end();
++
++	/*
++	 * KVM does not hold any references to rcu protected data when it
++	 * switches CPU into a guest mode. In fact switching to a guest mode
++	 * is very similar to exiting to userspace from rcu point of view. In
++	 * addition CPU may stay in a guest mode for quite a long time (up to
++	 * one time slice). Lets treat guest mode as quiescent state, just like
++	 * we do with user-mode execution.
++	 */
++	if (!context_tracking_guest_enter_irqoff()) {
++		instrumentation_begin();
++		rcu_virt_note_context_switch(smp_processor_id());
++		instrumentation_end();
++	}
++}
++
++static __always_inline void guest_exit_irqoff(void)
++{
++	context_tracking_guest_exit_irqoff();
++
++	instrumentation_begin();
++	/* Flush the guest cputime we spent on the guest */
++	vtime_account_guest_exit();
++	instrumentation_end();
++}
++
++static inline void guest_exit(void)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	guest_exit_irqoff();
++	local_irq_restore(flags);
++}
++
+ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
  {
+ 	/*
 -- 
 2.31.1.368.gbe11c130af-goog
 
