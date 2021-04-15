@@ -2,139 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7C36114F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0B2361154
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbhDORq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:46:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36650 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233395AbhDORqY (ORCPT
+        id S234402AbhDORrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233395AbhDORrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:46:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618508761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mAQgrrs/fT5iNfRVmF2BgfffAf7Nhr3HzWZJ/IDRqis=;
-        b=OOvJC6R4otrdzb9op85ngGLWPLClzSK6qLqk8GbD8PzTOaRDRo9I9GQ5hk9ZlmE4WzPP2M
-        8up2yvrGoAroazETU1J810OV3yWtO+IeZxs6zgLme+oWBkO8j1ObtQ9wJzInaXZzmLaYlc
-        XMr5QrzXZkGUMOJc8gu9BWTR2QOb+Mc=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-mBfLwsDRMdeX73fu5-sRUQ-1; Thu, 15 Apr 2021 13:45:57 -0400
-X-MC-Unique: mBfLwsDRMdeX73fu5-sRUQ-1
-Received: by mail-qt1-f198.google.com with SMTP id x7-20020a05622a0007b029019d73c63053so4500667qtw.16
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:45:57 -0700 (PDT)
+        Thu, 15 Apr 2021 13:47:19 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED45EC061574;
+        Thu, 15 Apr 2021 10:46:55 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id b139so20677136qkc.10;
+        Thu, 15 Apr 2021 10:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mhXBXYwoCRAXpMsd3KaS7b2rQuZgED58JI4YZLlaHjw=;
+        b=rFS3f0P/A0txl5h5r1SSUvafPyq4dTlHtA+rjP92XjkbqprSJLz69eaMWg9GXXXQAG
+         cO5K5EC+jt30W/aVIaA7zC+9TnGdNTfEwjNmKcRA4lw6Jtx7w/a5/cQMtZ2zD4zPfTwA
+         b+ACdSdWyzL8MZLaMwFbQiynXjC9oCvUDhR/PW+Y/fC8f5pPU5Nl/4rB4ynkqRstXtcd
+         KWqC0sqA+bfIHgjoXBp1wQdUUQ7pkYrPhwd3xfFENzQKgfr5B9cCiCKjWf0COOvweT65
+         PeuRhTZk7/TBglV6mRw1VvGGetQRKc7NWCZu0A79Oe4uS4jyb3OGqIJRk8l56YGKH0Mm
+         pUFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mAQgrrs/fT5iNfRVmF2BgfffAf7Nhr3HzWZJ/IDRqis=;
-        b=n1iRENn0FIHmEy+WRbik1h0Rp6MvAvEm+7Psny6sYilBTXosdgOwqYRpZDqZUdVTUz
-         MJRrdMumT/KfD+zH0U6pfv76RK744GKNDrCvO8zc7RA16V713yHTVU3it0LrUJ9TUSO1
-         tCO0+OTTT8F2SHmNIXn5AM8PXExMcwaUHkTLNuIkcpl+Q1XI4ew1kTwUDqRttB2sT12x
-         7GFa/rovmVF5rLxgLzIqcEY4gM9MuaQtosXtzaOQHeOWxEH6nEOD0lecORXhRJFlH/fQ
-         BNkPfEBjXkA8CynsZE+NiSyJImjgmuxFvSROSr4mz864DXunMdV485NmjOH7A6IMi31t
-         7i1w==
-X-Gm-Message-State: AOAM533s9pRl1MUZPD/7PgSodO8nrhn4hltJfJalvWu/HoFLp3BQ5mb8
-        sGK4HysVZAbxCpxk1lv+m8yq1H3X9GbAMTrcDSfL/R9tLqTJ1i6yonO5ulQZ05m72Dx1onUt3u7
-        2oYwWT/DYZORsCrXajSzqkT7N
-X-Received: by 2002:ac8:594:: with SMTP id a20mr4035562qth.295.1618508757084;
-        Thu, 15 Apr 2021 10:45:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxiT8Jqne8RPHHOTMVAUMxBUqZMQ4EbB4wRNPSvpefvx4TGPTVunaMkrSKpc7DZg2DEUwpeWQ==
-X-Received: by 2002:ac8:594:: with SMTP id a20mr4035543qth.295.1618508756868;
-        Thu, 15 Apr 2021 10:45:56 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c23sm2375540qkk.24.2021.04.15.10.45.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 10:45:55 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2] locking/qrwlock: Fix ordering in
- queued_write_lock_slowpath
-To:     Ali Saidi <alisaidi@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, steve.capper@arm.com,
-        benh@kernel.crashing.org, stable@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-References: <20210415172711.15480-1-alisaidi@amazon.com>
-Message-ID: <e9dfb6c2-3efc-5f4c-ebba-2f26f14295d5@redhat.com>
-Date:   Thu, 15 Apr 2021 13:45:54 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mhXBXYwoCRAXpMsd3KaS7b2rQuZgED58JI4YZLlaHjw=;
+        b=BXVvHtR6gYlJmWQZo/R4jm0MOb9EWGGyf6X3qczVKNTYgmV44xsxbDvH2ZwsIBbFaa
+         ztQV/N0/9XvMhrHe50JSvclKbAT2ALUfuXyjd+i0EaubrjdNqTmvQJWoykFwfH0aSNgc
+         7ofj9uTXwQR38hsb2/vNq4nctwKtLbEzp7f/6rpO8Nt0R+6v7n+3K7Vt7SkB7eaM0E68
+         wBVGcZzdALboBfXnHMtRdLf8lWqzQde6aqzYXXk2VvYD1eRnEiq4RpDNL3vIAkrCmJlF
+         kRtwiOqpjSAFdPEKmOIdLDAYKNrC7HQGDmZ6IRv0cYvQGlkVXO4OuyKxNwEhY11/NCez
+         nvSA==
+X-Gm-Message-State: AOAM530/j03Rz5y+A0DjxUqtDhfqPnfsC1W3ECnSucY5t581zI3ld69i
+        zyJ2fs/VNchSnZesQYw+DkGoHTIHlIQMmTo8
+X-Google-Smtp-Source: ABdhPJyVgOIXBRedpUSEoh8jnOu2UZd0zxOSbA0PXgO0dLeByA86vxn6yHTQ6HV5oA4jiBl/KlMzMQ==
+X-Received: by 2002:a05:620a:1093:: with SMTP id g19mr4782578qkk.112.1618508815178;
+        Thu, 15 Apr 2021 10:46:55 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id a4sm2186800qta.19.2021.04.15.10.46.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 10:46:54 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v4 0/3] add batched ops for percpu array
+Date:   Thu, 15 Apr 2021 14:46:16 -0300
+Message-Id: <20210415174619.51229-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210415172711.15480-1-alisaidi@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 1:27 PM, Ali Saidi wrote:
-> While this code is executed with the wait_lock held, a reader can
-> acquire the lock without holding wait_lock.  The writer side loops
-> checking the value with the atomic_cond_read_acquire(), but only truly
-> acquires the lock when the compare-and-exchange is completed
-> successfully which isn’t ordered. This exposes the window between the
-> acquire and the cmpxchg to an A-B-A problem which allows reads following
-> the lock acquisition to observe values speculatively before the write
-> lock is truly acquired.
->
-> We've seen a problem in epoll where the reader does a xchg while
-> holding the read lock, but the writer can see a value change out from under it.
->
-> Writer                               | Reader 2
-> --------------------------------------------------------------------------------
-> ep_scan_ready_list()                 |
-> |- write_lock_irq()                  |
->      |- queued_write_lock_slowpath()  |
->        |- atomic_cond_read_acquire()  |
->                                       | read_lock_irqsave(&ep->lock, flags);
->     --> (observes value before unlock)|  chain_epi_lockless()
->     |                                 |    epi->next = xchg(&ep->ovflist, epi);
->     |                                 | read_unlock_irqrestore(&ep->lock, flags);
->     |                                 |
->     |     atomic_cmpxchg_relaxed()    |
->     |-- READ_ONCE(ep->ovflist);       |
->
-> A core can order the read of the ovflist ahead of the
-> atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire semantics
-> addresses this issue at which point the atomic_cond_read can be switched
-> to use relaxed semantics.
->
-> Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
-> Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-> Cc: stable@vger.kernel.org
-> Acked-by: Will Deacon <will@kernel.org>
-> Tested-by: Steve Capper <steve.capper@arm.com>
-> Reviewed-by: Steve Capper <steve.capper@arm.com>
->
-> ---
->   kernel/locking/qrwlock.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-> index 4786dd271b45..10770f6ac4d9 100644
-> --- a/kernel/locking/qrwlock.c
-> +++ b/kernel/locking/qrwlock.c
-> @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
->   
->   	/* When no more readers or writers, set the locked flag */
->   	do {
-> -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
-> -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
-> +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
-> +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
->   					_QW_LOCKED) != _QW_WAITING);
->   unlock:
->   	arch_spin_unlock(&lock->wait_lock);
+This patchset introduces batched operations for the per-cpu variant of
+the array map.
 
-Acked-by: Waiman Long <longman@redhat.com>
+It also removes the percpu macros from 'bpf_util.h'. This change was
+suggested by Andrii in a earlier iteration of this patchset.
+
+The tests were updated to reflect all the new changes.
+
+v3 -> v4:
+- Prefer 'calloc()' over 'malloc()' on batch ops tests
+- Add missing static keyword in a couple of test functions
+- 'offset' to 'cpu_offset' as suggested by Martin
+
+v2 -> v3:
+- Remove percpu macros as suggested by Andrii
+- Update tests that used the per cpu macros
+
+v1 -> v2:
+- Amended a more descriptive commit message
+
+Pedro Tammela (3):
+  bpf: add batched ops support for percpu array
+  bpf: selftests: remove percpu macros from bpf_util.h
+  bpf: selftests: update array map tests for per-cpu batched ops
+
+ kernel/bpf/arraymap.c                         |   2 +
+ tools/testing/selftests/bpf/bpf_util.h        |   7 --
+ .../bpf/map_tests/array_map_batch_ops.c       | 104 +++++++++++++-----
+ .../bpf/map_tests/htab_map_batch_ops.c        |  87 +++++++--------
+ .../selftests/bpf/prog_tests/map_init.c       |   9 +-
+ tools/testing/selftests/bpf/test_maps.c       |  84 ++++++++------
+ 6 files changed, 173 insertions(+), 120 deletions(-)
+
+-- 
+2.25.1
 
