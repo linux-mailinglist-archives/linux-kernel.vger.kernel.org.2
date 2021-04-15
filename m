@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE053360E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DE0360E15
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhDOPIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:08:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47066 "EHLO mail.kernel.org"
+        id S235474AbhDOPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:09:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234964AbhDOPAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF92661409;
-        Thu, 15 Apr 2021 14:56:04 +0000 (UTC)
+        id S235128AbhDOPAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53877613F3;
+        Thu, 15 Apr 2021 14:56:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498565;
-        bh=czU1BBx5gFfWn2AkdLFSpb+b7yuGXEGeypDvJmsYFWU=;
+        s=korg; t=1618498587;
+        bh=lxjiYfaOWr/v12SmQ8SF17LZ0TNM0xbnrmvM/grhm1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ClBx+QZ0hc04Oha7csX0wG41jfwH3Tl0utqzcDTZzXZmhVzYYLMsJFDZjlh9C6y+b
-         oLFupOlwzxLJqC9xMYDCHp+qSBQLvObi14H0yvEGrOue185Fx1t62OLj3JpAV8n7qQ
-         26fpdRahpEuoH69JEOaZo+M/jlpuNwPD3mXQ3u5E=
+        b=KA/OaYoU2iPEFyr/0wmEA08HLsRA1rGJz0+eKital1BzFjMazuBz9ANyntQod3S1i
+         BuriTgkgMh/pqOTZ5ALaSbp2fV4Zgmn6j/CYQh7VScXa3d5SKuW1eK15XnyBCH2Gwb
+         DNo2i4Fn3274yoIaSFFvt9nYlzNgOF99j+TuY31s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zihao Yu <yuzihao@ict.ac.cn>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Liu Ying <victor.liu@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/13] riscv,entry: fix misaligned base for excp_vect_table
-Date:   Thu, 15 Apr 2021 16:47:56 +0200
-Message-Id: <20210415144411.843251257@linuxfoundation.org>
+Subject: [PATCH 5.4 04/18] drm/imx: imx-ldb: fix out of bounds array access warning
+Date:   Thu, 15 Apr 2021 16:47:57 +0200
+Message-Id: <20210415144413.193686119@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-References: <20210415144411.596695196@linuxfoundation.org>
+In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
+References: <20210415144413.055232956@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zihao Yu <yuzihao@ict.ac.cn>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit ac8d0b901f0033b783156ab2dc1a0e73ec42409b ]
+[ Upstream commit 33ce7f2f95cabb5834cf0906308a5cb6103976da ]
 
-In RV64, the size of each entry in excp_vect_table is 8 bytes. If the
-base of the table is not 8-byte aligned, loading an entry in the table
-will raise a misaligned exception. Although such exception will be
-handled by opensbi/bbl, this still causes performance degradation.
+When CONFIG_OF is disabled, building with 'make W=1' produces warnings
+about out of bounds array access:
 
-Signed-off-by: Zihao Yu <yuzihao@ict.ac.cn>
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
+drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
+
+Add an error check before the index is used, which helps with the
+warning, as well as any possible other error condition that may be
+triggered at runtime.
+
+The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
+but Liu Ying points out that the driver may hit the out-of-bounds
+problem at runtime anyway.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Liu Ying <victor.liu@nxp.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/entry.S | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/imx/imx-ldb.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index a03821b2656a..d9de22686e27 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -449,6 +449,7 @@ ENDPROC(__fstate_restore)
+diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
+index d6629fc869f3..116473c2360a 100644
+--- a/drivers/gpu/drm/imx/imx-ldb.c
++++ b/drivers/gpu/drm/imx/imx-ldb.c
+@@ -197,6 +197,11 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
+ 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+ 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
  
++	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
++		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
++		return;
++	}
++
+ 	drm_panel_prepare(imx_ldb_ch->panel);
  
- 	.section ".rodata"
-+	.align LGREG
- 	/* Exception vector table */
- ENTRY(excp_vect_table)
- 	RISCV_PTR do_trap_insn_misaligned
+ 	if (dual) {
+@@ -255,6 +260,11 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
+ 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
+ 	u32 bus_format = imx_ldb_ch->bus_format;
+ 
++	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
++		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
++		return;
++	}
++
+ 	if (mode->clock > 170000) {
+ 		dev_warn(ldb->dev,
+ 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
 -- 
 2.30.2
 
