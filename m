@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BCA3615A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1303D3615A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbhDOWpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
+        id S237425AbhDOWpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbhDOWpB (ORCPT
+        with ESMTP id S235576AbhDOWpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:45:01 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93192C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:44:36 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id c18so21526438iln.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:44:36 -0700 (PDT)
+        Thu, 15 Apr 2021 18:45:32 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7FEC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:45:09 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id r5so13379398ilb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K6QwOJC/txLdkjoz36oCI2bVJnzMTChtJNvH/SoXmFQ=;
-        b=Rx/3RoYUVhYWuJoi+Dp60mJCWS3kcIGJmYQMq4moV59v/2MFvQOV56oB/eDZtCWY/T
-         RzFFdl6RXvfahr9cckrLiUKW7kQ8j5PQe8Z+sm837eKD2o5JW2UrADYtnia4ZFkn06Ui
-         nrL3RitWmraUwv25WpBKZy0Xrpub03P/xqlNY=
+        bh=isaEdqPMxtoDq3XFhQQhVA/vIQIjADKBBa0PEexNjeU=;
+        b=H+WgLMOPoZ9jxydug9vKEA+sDFTmGhnSiILMeZCsRkSLBcFPGO4pEw0FuC7/bGSmtC
+         IDfUwXI+gTYrkXgrrPolLeGutrj9K8g3F+jl5NZKmmdhzIaVYpHiPiIz6UGABtzUvuVW
+         JnYjE+bP6veba2qx+cxjy01ai1TTO1ZKPxUq4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=K6QwOJC/txLdkjoz36oCI2bVJnzMTChtJNvH/SoXmFQ=;
-        b=tArRNfWuF+hxc8B6VMh9BoXOkTvI6UQAJNv2zSv1aRTJS9EtyNDR3jX68fGCtb826N
-         +ZNYamXKsP2R7/5f1wXo2sph2qAaVWC+xC7o0Mokwlvdv6eoliA6JGtnCmUyNHs4MzVV
-         sjH1hBHAq+91sx/9/4VikQmHuDTFS6nAPQM/gP74XJZR8U4yw6tEhd4C8XX8EYQ1Kn8k
-         iTITqzGJEOVancVAYpYAqrJgVpxlX/LEfyj/bJUTeO5nXOJwd/hINpgwMPFtEOgV+COQ
-         J2lniZQZmnffm7kzjIRofqRwjgTSO2CmWquD15viqRHty2Ccy1oyYpUdul0tilIMZQWc
-         hSbg==
-X-Gm-Message-State: AOAM530qJ1SSqmFFVCGsKh1vC8ZHEmvR038gn59LdlfGAUzj1End52Px
-        XEZ0vuGTDDZJdxkCKJUqAXxipg==
-X-Google-Smtp-Source: ABdhPJwW/SdtlsQbrX2kqL8CGDoKXg+mqVkKT/8tjswJfM36R40zOMajYgOC55aG/0s0ZSjtHm+W2g==
-X-Received: by 2002:a92:7307:: with SMTP id o7mr2991946ilc.5.1618526676123;
-        Thu, 15 Apr 2021 15:44:36 -0700 (PDT)
+        bh=isaEdqPMxtoDq3XFhQQhVA/vIQIjADKBBa0PEexNjeU=;
+        b=IHg/NhYky4GqvA8tnvvqbimErHyXuvKpvoc1lTA/n0WBCO4zQCzj+IsKNOpqIPsNsz
+         cguMPGaQOBuK1zXyuuT73ZpaHlpJWOSxq7Hzn5Yq8r26vCgIwWLB+rs9EUQsqBdO4NN5
+         XE06zolakA7qQTOgJg5JY0DGDrKDOl4/I801wgxBdBBq6jsI/dCzNnk0p5eQiBXxAUyS
+         oE5/hUEEl2FtnxHA40PkVSmshE634bEStx2QNwMf5rGDbZmOjEdL7QTpO0sWQ007sPB8
+         wge63P7SheSl2Z4LvYuIjtzm5W/YrdpSism1S+8GMprAFkOESHYTWgoBK6p0PCbjczc+
+         AZ7g==
+X-Gm-Message-State: AOAM532vD70xTpa8h7EnrRU1bf+bs6IRdOp+kNp5gL1Dy3gpyO/Yvro9
+        9CGUS4uxWkl7UgRgDTzkKBValw==
+X-Google-Smtp-Source: ABdhPJx6QPGNJXucQuhxZPGvIwN+dK0F1fuGC/xzL15OUr4KnYDdjGesd7C5LRAD9d1cYcLOhiP0TQ==
+X-Received: by 2002:a05:6e02:b49:: with SMTP id f9mr4649296ilu.28.1618526708547;
+        Thu, 15 Apr 2021 15:45:08 -0700 (PDT)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k6sm1672563ior.28.2021.04.15.15.44.35
+        by smtp.gmail.com with ESMTPSA id y12sm1691168ioa.12.2021.04.15.15.45.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 15:44:35 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/47] 4.9.267-rc1 review
+        Thu, 15 Apr 2021 15:45:08 -0700 (PDT)
+Subject: Re: [PATCH 4.14 00/68] 4.14.231-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
@@ -54,24 +54,24 @@ Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
         f.fainelli@gmail.com, stable@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144414.464797272@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <68b0387e-6133-ae06-1713-2c44cc4fd297@linuxfoundation.org>
-Date:   Thu, 15 Apr 2021 16:44:35 -0600
+Message-ID: <fdcea8eb-c320-aa11-2b7b-c57af21020c3@linuxfoundation.org>
+Date:   Thu, 15 Apr 2021 16:45:07 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 4/15/21 8:46 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.267 release.
-> There are 47 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 4.14.231 release.
+> There are 68 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -79,19 +79,305 @@ On 4/15/21 8:46 AM, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.267-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.231-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
 > and the diffstat can be found below.
 > 
 > thanks,
 > 
 > greg k-h
 > 
-
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>      Linux 4.14.231-rc1
+> 
+> Juergen Gross <jgross@suse.com>
+>      xen/events: fix setting irq affinity
+> 
+> Arnaldo Carvalho de Melo <acme@redhat.com>
+>      perf map: Tighten snprintf() string precision to pass gcc check on some 32-bit arches
+> 
+> Florian Westphal <fw@strlen.de>
+>      netfilter: x_tables: fix compat match/target pad out-of-bound write
+> 
+> Florian Fainelli <f.fainelli@gmail.com>
+>      net: phy: broadcom: Only advertise EEE for supported modes
+> 
+> Yufen Yu <yuyufen@huawei.com>
+>      block: only update parent bi_status when bio fail
+> 
+> Bob Peterson <rpeterso@redhat.com>
+>      gfs2: report "already frozen/thawed" errors
+> 
+> Arnd Bergmann <arnd@arndb.de>
+>      drm/imx: imx-ldb: fix out of bounds array access warning
+> 
+> Suzuki K Poulose <suzuki.poulose@arm.com>
+>      KVM: arm64: Disable guest access to trace filter controls
+> 
+> Suzuki K Poulose <suzuki.poulose@arm.com>
+>      KVM: arm64: Hide system instruction access to Trace registers
+> 
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>      Revert "cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath."
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: stop dump llsec params for monitors
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: forbid monitor for del llsec seclevel
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: forbid monitor for set llsec params
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: fix nl802154 del llsec devkey
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: fix nl802154 add llsec key
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: fix nl802154 del llsec dev
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: fix nl802154 del llsec key
+> 
+> Alexander Aring <aahringo@redhat.com>
+>      net: ieee802154: nl-mac: fix check on panid
+> 
+> Pavel Skripkin <paskripkin@gmail.com>
+>      net: mac802154: Fix general protection fault
+> 
+> Pavel Skripkin <paskripkin@gmail.com>
+>      drivers: net: fix memory leak in peak_usb_create_dev
+> 
+> Pavel Skripkin <paskripkin@gmail.com>
+>      drivers: net: fix memory leak in atusb_probe
+> 
+> Phillip Potter <phil@philpotter.co.uk>
+>      net: tun: set tun->dev->addr_len during TUNSETLINK processing
+> 
+> Du Cheng <ducheng2@gmail.com>
+>      cfg80211: remove WARN_ON() in cfg80211_sme_connect
+> 
+> Shuah Khan <skhan@linuxfoundation.org>
+>      usbip: fix vudc usbip_sockfd_store races leading to gpf
+> 
+> Samuel Mendoza-Jonas <sam@mendozajonas.com>
+>      net/ncsi: Avoid GFP_KERNEL in response handler
+> 
+> Samuel Mendoza-Jonas <sam@mendozajonas.com>
+>      net/ncsi: Refactor MAC, VLAN filters
+> 
+> Samuel Mendoza-Jonas <sam@mendozajonas.com>
+>      net/ncsi: Add generic netlink family
+> 
+> Samuel Mendoza-Jonas <sam@mendozajonas.com>
+>      net/ncsi: Don't return error on normal response
+> 
+> Samuel Mendoza-Jonas <sam@mendozajonas.com>
+>      net/ncsi: Improve general state logging
+> 
+> Wei Yongjun <weiyongjun1@huawei.com>
+>      net/ncsi: Make local function ncsi_get_filter() static
+> 
+> Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>      clk: socfpga: fix iomem pointer cast on 64-bit
+> 
+> Potnuri Bharat Teja <bharat@chelsio.com>
+>      RDMA/cxgb4: check for ipv6 address properly while destroying listener
+> 
+> Raed Salem <raeds@nvidia.com>
+>      net/mlx5: Fix placement of log_max_flow_counter
+> 
+> Alexander Gordeev <agordeev@linux.ibm.com>
+>      s390/cpcmd: fix inline assembly register clobbering
+> 
+> Zqiang <qiang.zhang@windriver.com>
+>      workqueue: Move the position of debug_work_activate() in __queue_work()
+> 
+> Lukasz Bartosik <lb@semihalf.com>
+>      clk: fix invalid usage of list cursor in unregister
+> 
+> Lukasz Bartosik <lb@semihalf.com>
+>      clk: fix invalid usage of list cursor in register
+> 
+> Arnd Bergmann <arnd@arndb.de>
+>      soc/fsl: qbman: fix conflicting alignment attributes
+> 
+> Bastian Germann <bage@linutronix.de>
+>      ASoC: sunxi: sun4i-codec: fill ASoC card owner
+> 
+> Milton Miller <miltonm@us.ibm.com>
+>      net/ncsi: Avoid channel_monitor hrtimer deadlock
+> 
+> Stefan Riedmueller <s.riedmueller@phytec.de>
+>      ARM: dts: imx6: pbab01: Set vmmc supply for both SD interfaces
+> 
+> Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+>      net:tipc: Fix a double free in tipc_sk_mcast_rcv
+> 
+> Claudiu Manoil <claudiu.manoil@nxp.com>
+>      gianfar: Handle error code at MAC address change
+> 
+> Eric Dumazet <edumazet@google.com>
+>      sch_red: fix off-by-one checks in red_check_params()
+> 
+> Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+>      amd-xgbe: Update DMA coherency values
+> 
+> Shengjiu Wang <shengjiu.wang@nxp.com>
+>      ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled for some chips
+> 
+> Geert Uytterhoeven <geert+renesas@glider.be>
+>      regulator: bd9571mwv: Fix AVS and DVFS voltage range
+> 
+> Wolfram Sang <wsa+renesas@sang-engineering.com>
+>      i2c: turn recovery error on init to debug
+> 
+> Shuah Khan <skhan@linuxfoundation.org>
+>      usbip: synchronize event handler with sysfs code paths
+> 
+> Shuah Khan <skhan@linuxfoundation.org>
+>      usbip: stub-dev synchronize sysfs code paths
+> 
+> Shuah Khan <skhan@linuxfoundation.org>
+>      usbip: add sysfs_lock to synchronize sysfs code paths
+> 
+> Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+>      net: sched: sch_teql: fix null-pointer dereference
+> 
+> Eric Dumazet <edumazet@google.com>
+>      net: ensure mac header is set in virtio_net_hdr_to_skb()
+> 
+> Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>      batman-adv: initialize "struct batadv_tvlv_tt_vlan_data"->reserved field
+> 
+> Marek Behún <kabel@kernel.org>
+>      ARM: dts: turris-omnia: configure LED[2]/INTn pin as interrupt pin
+> 
+> Gao Xiang <hsiangkao@redhat.com>
+>      parisc: avoid a warning on u8 cast for cmpxchg on u8 pointers
+> 
+> Helge Deller <deller@gmx.de>
+>      parisc: parisc-agp requires SBA IOMMU driver
+> 
+> Jack Qiu <jack.qiu@huawei.com>
+>      fs: direct-io: fix missing sdio->boundary
+> 
+> Wengang Wang <wen.gang.wang@oracle.com>
+>      ocfs2: fix deadlock between setattr and dio_end_io_write
+> 
+> Sergei Trofimovich <slyfox@gentoo.org>
+>      ia64: fix user_stack_pointer() for ptrace()
+> 
+> Muhammad Usama Anjum <musamaanjum@gmail.com>
+>      net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
+> 
+> Luca Fancellu <luca.fancellu@arm.com>
+>      xen/evtchn: Change irq_info lock to raw_spinlock_t
+> 
+> Xiaoming Ni <nixiaoming@huawei.com>
+>      nfc: Avoid endless loops caused by repeated llcp_sock_connect()
+> 
+> Xiaoming Ni <nixiaoming@huawei.com>
+>      nfc: fix memory leak in llcp_sock_connect()
+> 
+> Xiaoming Ni <nixiaoming@huawei.com>
+>      nfc: fix refcount leak in llcp_sock_connect()
+> 
+> Xiaoming Ni <nixiaoming@huawei.com>
+>      nfc: fix refcount leak in llcp_sock_bind()
+> 
+> Hans de Goede <hdegoede@redhat.com>
+>      ASoC: intel: atom: Stop advertising non working S24LE support
+> 
+> Jonas Holmberg <jonashg@axis.com>
+>      ALSA: aloop: Fix initialization of controls
+> 
+> 
+> -------------
+> 
+> Diffstat:
+> 
+>   Makefile                                      |   4 +-
+>   arch/arm/boot/dts/armada-385-turris-omnia.dts |   1 +
+>   arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi  |   2 +
+>   arch/arm64/include/asm/kvm_arm.h              |   1 +
+>   arch/arm64/kernel/cpufeature.c                |   1 -
+>   arch/arm64/kvm/debug.c                        |   2 +
+>   arch/ia64/include/asm/ptrace.h                |   8 +-
+>   arch/parisc/include/asm/cmpxchg.h             |   2 +-
+>   arch/s390/kernel/cpcmd.c                      |   6 +-
+>   block/bio.c                                   |   2 +-
+>   drivers/char/agp/Kconfig                      |   2 +-
+>   drivers/clk/clk.c                             |  47 ++-
+>   drivers/clk/socfpga/clk-gate.c                |   2 +-
+>   drivers/gpu/drm/imx/imx-ldb.c                 |  10 +
+>   drivers/i2c/i2c-core-base.c                   |   7 +-
+>   drivers/infiniband/hw/cxgb4/cm.c              |   3 +-
+>   drivers/net/can/usb/peak_usb/pcan_usb_core.c  |   6 +-
+>   drivers/net/ethernet/amd/xgbe/xgbe.h          |   6 +-
+>   drivers/net/ethernet/freescale/gianfar.c      |   6 +-
+>   drivers/net/ieee802154/atusb.c                |   1 +
+>   drivers/net/phy/bcm-phy-lib.c                 |  11 +-
+>   drivers/net/tun.c                             |  48 +++
+>   drivers/regulator/bd9571mwv-regulator.c       |   4 +-
+>   drivers/soc/fsl/qbman/qman.c                  |   2 +-
+>   drivers/usb/usbip/stub_dev.c                  |  11 +-
+>   drivers/usb/usbip/usbip_common.h              |   3 +
+>   drivers/usb/usbip/usbip_event.c               |   2 +
+>   drivers/usb/usbip/vhci_hcd.c                  |   1 +
+>   drivers/usb/usbip/vhci_sysfs.c                |  30 +-
+>   drivers/usb/usbip/vudc_sysfs.c                |  42 ++-
+>   drivers/xen/events/events_base.c              |  14 +-
+>   drivers/xen/events/events_internal.h          |   2 +-
+>   fs/cifs/connect.c                             |   1 -
+>   fs/direct-io.c                                |   5 +-
+>   fs/gfs2/super.c                               |  10 +-
+>   fs/ocfs2/aops.c                               |  11 +-
+>   fs/ocfs2/file.c                               |   8 +-
+>   include/linux/mlx5/mlx5_ifc.h                 |   6 +-
+>   include/linux/virtio_net.h                    |   2 +
+>   include/net/red.h                             |   4 +-
+>   include/uapi/linux/ncsi.h                     | 115 +++++++
+>   kernel/workqueue.c                            |   2 +-
+>   net/batman-adv/translation-table.c            |   2 +
+>   net/ieee802154/nl-mac.c                       |   7 +-
+>   net/ieee802154/nl802154.c                     |  23 +-
+>   net/ipv4/netfilter/arp_tables.c               |   2 +
+>   net/ipv4/netfilter/ip_tables.c                |   2 +
+>   net/ipv6/netfilter/ip6_tables.c               |   2 +
+>   net/ipv6/route.c                              |   8 +-
+>   net/mac802154/llsec.c                         |   2 +-
+>   net/ncsi/Makefile                             |   2 +-
+>   net/ncsi/internal.h                           |  35 ++-
+>   net/ncsi/ncsi-aen.c                           |  15 +-
+>   net/ncsi/ncsi-manage.c                        | 342 +++++++++------------
+>   net/ncsi/ncsi-netlink.c                       | 415 ++++++++++++++++++++++++++
+>   net/ncsi/ncsi-netlink.h                       |  20 ++
+>   net/ncsi/ncsi-rsp.c                           | 215 ++++++-------
+>   net/netfilter/x_tables.c                      |  10 +-
+>   net/nfc/llcp_sock.c                           |  10 +
+>   net/sched/sch_teql.c                          |   3 +
+>   net/tipc/socket.c                             |   2 +-
+>   net/wireless/sme.c                            |   2 +-
+>   sound/drivers/aloop.c                         |  11 +-
+>   sound/soc/codecs/wm8960.c                     |   8 +-
+>   sound/soc/intel/atom/sst-mfld-platform-pcm.c  |   6 +-
+>   sound/soc/sunxi/sun4i-codec.c                 |   5 +
+>   tools/perf/util/map.c                         |   7 +-
+>   67 files changed, 1132 insertions(+), 477 deletions(-)
+> 
+> 
+> 
 Compiled and booted on my test system. No dmesg regressions.
 
 Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
 thanks,
 -- Shuah
+
