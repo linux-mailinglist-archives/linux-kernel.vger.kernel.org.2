@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475CB360F56
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAF8360F5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhDOPs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:48:26 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35036 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhDOPsY (ORCPT
+        id S233773AbhDOPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDOPs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:48:24 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FFlpL0028482;
-        Thu, 15 Apr 2021 10:47:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618501671;
-        bh=uiHPH94tE4sIxoTIhjL8lKWiz49jYbtUss22vgnacZU=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=eq0H2pxoQWFYaqm9B/JzGiBnJOx0DF8elBRyPAmjU2X4zb03AnWoTO7SWkwPqiKM/
-         0FRZXhDCD3VIVOcOfBsOvRF8ryigttBQenPgbdsiEfFHsnJyndNjrsZ201gBk6kqzN
-         3RJlJdlDP8A1eypvOq5+2B3R1BlWOiArX2tmyl1M=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FFlpI0091560
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 10:47:51 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 10:47:51 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 10:47:51 -0500
-Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FFlkM9088230;
-        Thu, 15 Apr 2021 10:47:47 -0500
-Subject: Re: [PATCH 0/2] MCAN: Add support for implementing transceiver as a
- phy
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20210415150629.5417-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <3b669b65-9e68-7148-90fb-7ad28e9a93cc@ti.com>
-Date:   Thu, 15 Apr 2021 21:17:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Apr 2021 11:48:59 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46CFC061574;
+        Thu, 15 Apr 2021 08:48:34 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id g5so30879831ejx.0;
+        Thu, 15 Apr 2021 08:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ayGURnHq7wmSKaDUrrltJ9EF5TW5D/i9Qzk+7xK9jcE=;
+        b=bTVqVIniyk/vSt6glC8hYD/mGom31RseQA5JKeyjSmx5myZ2gtxEJ+m0q2Pe6vgtrF
+         Plrm81Posl68o62eVaPU8gBcTvIRZ1K8pbP7HEmLT98g4mgVbYVVcfgIMtCSqRsn7r8o
+         TcJPFU9loC/HUHjAoncJKvmR5TlFCsLfJUlNCld51xw42X3J3NN8A0yWWWf5ivLMPy0r
+         U5/u8s53U/Qjw/bjIE4/lCOwgnkKoEn2IH8pJsQDen7bQsH2Z+SoMMEX2Y3gO+d9R0IM
+         CkHF7eVdGW10hUfYW+aNtHRWvySGKfdsJTQhp+6yOLpSMOpkKTPPp6R5CaGpALKxw65n
+         tdlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ayGURnHq7wmSKaDUrrltJ9EF5TW5D/i9Qzk+7xK9jcE=;
+        b=UA5tb3kIWj/m8A7gFl+zqc8jZFwYWdF7y05H67gy0mIP7MIGkg8wlFiUajE5SLqhAG
+         O9H1P9CI3SIXgKDQ8F67CrFcdW0raqzPt4Nb1xsjcjtP91Mcg83xmVDF+e4xp7Udjsbe
+         w05LkGxbrEmLomeDKRtRee9DSDvuXi9n/AY6MEfx5jhFO56NPa6tAZj7J6Wjhg/vjl9o
+         nIgCQdl4N9JtdmMKWYGPX0t4pkSm9soFNMoEJMxg4ED5XvjPdjjh19LlSdbLZ0FomJfi
+         1omKSVX4IrjraZfmQyoX5cQr6UZZBvMEilQe21xW4F7JTCf4laD1xnVnEND+4hRGNWSD
+         MGsA==
+X-Gm-Message-State: AOAM530jVmfU1f76oFY8HYUaVNrsxbjYicwjUTlCvg99LexPAONacYZS
+        0Q/u3m9Zy73Unkab+hrADa4=
+X-Google-Smtp-Source: ABdhPJx4xzQ1G5vhPZnh9xgVnUGgcnXe8Bvj4eboHAX0kHDGCJy+E++Wx5gf0Uj4FLxS2/rB+DCmpw==
+X-Received: by 2002:a17:906:c04a:: with SMTP id bm10mr4061202ejb.521.1618501713494;
+        Thu, 15 Apr 2021 08:48:33 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id gn19sm2136640ejc.68.2021.04.15.08.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 08:48:32 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 17:49:14 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] drm/tegra: Fix shift overflow in
+ tegra_shared_plane_atomic_update
+Message-ID: <YHhgekKvL5te6K6n@orome.fritz.box>
+References: <20210415152913.1363964-1-nathan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210415150629.5417-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Ue6mK/lIz3sBypv6"
+Content-Disposition: inline
+In-Reply-To: <20210415152913.1363964-1-nathan@kernel.org>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-On 15/04/21 8:36 pm, Aswath Govindraju wrote:
-> The following series of patches add support for implementing the
-> transceiver as a phy of m_can_platform driver.
-> 
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put the
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
-> 
-> These gpios are set in phy driver, and the transceiver can be put in
-> different states using phy API. The phy driver is added in the series [3].
-> 
-> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495365
-> 
+--Ue6mK/lIz3sBypv6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Posted v2 for this series.
+On Thu, Apr 15, 2021 at 08:29:14AM -0700, Nathan Chancellor wrote:
+> Clang warns:
+>=20
+> drivers/gpu/drm/tegra/hub.c:513:11: warning: shift count >=3D width of
+> type [-Wshift-count-overflow]
+>                 base |=3D BIT(39);
+>                         ^~~~~~~
+>=20
+> BIT is unsigned long, which is 32-bit on ARCH=3Darm, hence the overflow
+> warning. Switch to BIT_ULL, which is 64-bit and will not overflow.
+>=20
+> Fixes: 7b6f846785f4 ("drm/tegra: Support sector layout on Tegra194")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1351
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/gpu/drm/tegra/hub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Aswath
+This code never runs on 32-bit platforms, so another option would be to
+not try and build this on 32-bit configurations either. But none of the
+rest of the code is built conditionally, so fixing this is preferable.
 
-> Faiz Abbas (2):
->   dt-bindings: net: can: Document transceiver implementation as phy
->   can: m_can: Add support for transceiver as phy
-> 
->  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
->  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
->  drivers/net/can/m_can/m_can.h                       |  2 ++
->  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
->  4 files changed, 28 insertions(+)
-> 
+Applied, thanks.
 
+Thierry
+
+--Ue6mK/lIz3sBypv6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB4YHgACgkQ3SOs138+
+s6H1eBAApx8g0dh+NPpyZQCcGFt3Hv+BaE/kZh7PJeSDp6ce2EYECbJZ0K92GclY
+DrQwJx6ukiYTTNkJiq3cul1lpEgfnbTvG4VRH8mXDxAIOUmje2p0OTXr1yg30IUZ
+QqfCS3RLXYXQyLGVlej1/1jhrFM65FQMRxVyHty0bF2j7LQ/C4OIiCjFCMvk+/ML
+8HxLpmvH2R159bVxElAW/8B7eakxkwMD84h9/EjUX6EPKxZqEULQb2eMvNHvRCqm
+dNjJPUGF5N78pbNSV4n4me3oN1TpB3W4Q0RKZXRksJKj0e/e5iw7LuaDh0DnHDCG
+ulD0F7XY7esK4rU/4vBuemcO7u96+2wTTf6UM90UD8w2UTmABLmSBKZXvYUffjYM
+fsdtpE2MfG82B2B3GeFgDefDS53bDOR3HMoh8CHP/0jgdxaDM67sk+hnjMgMSIjW
+6qky2nOl6DuODDbH6zB2sjeddrg6z7TCMhkE3LueD/vJsO1smMzIuaRQ81NwUOAc
+0onVjKmrWsv3NCDPDs3Xd1OtGxLHDqzy+PIco7rM/JuOD0sBSzMYpBXP0zzVf8I9
+s+vm53QAuUAV9K9HICZomkkxrUA4ifZ8mpXsAOkH1C3n0g+R3KPMUgDO0mRZmTL7
+/udq89CLU/trkJU+ZUkrthPkIYarB/XAx37LCILdunTeEZFivZQ=
+=/+7x
+-----END PGP SIGNATURE-----
+
+--Ue6mK/lIz3sBypv6--
