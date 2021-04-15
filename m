@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980DA3610F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD23361103
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbhDORTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
+        id S234490AbhDORTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234415AbhDORSr (ORCPT
+        with ESMTP id S233520AbhDORT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:18:47 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36974C061756;
-        Thu, 15 Apr 2021 10:18:22 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q136so5048902qka.7;
-        Thu, 15 Apr 2021 10:18:22 -0700 (PDT)
+        Thu, 15 Apr 2021 13:19:29 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F30FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:19:06 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso13107827pje.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=Q96K00hD2NjD86HPQFbde/I+2OWvsg2PMKdChk2z1WQ=;
-        b=ddvqhdSlR4JBrqD26ZAbHTyS/jISDCdj0isRUj+pXvidKnZWtAKeoAweWjGkUGyXre
-         8QrqI69VUqRxqTjbm4P/4j8oWMQK3J1+D583o1BReRErogmSzebk8tnUQdu8VfD1N9Qw
-         tfLUtjGTeXpkH2T/HKpZfODuzUCJeXWJ1gFOarOr4JUFKWANjLr07cuGNyQCuS68kfeb
-         6ZFijZIXXpGNRPLycR4T97CaAG7lwXcZ0gkhHozZbRFEyjrFhDZ1WmAKw3CUUllwhlvm
-         xKzpfOXQ+R93vvDW0/R4HVtcbl9Av/+6E4CYVaZK0C2n1XHD6kD6kYKfi7nFsZtiHFk7
-         upUQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8a04NZRtQScmgjBHOwbl/yFtfKtVthaZ/Hnily7UrCw=;
+        b=sZMHlhHOU+xc4n8FPvxaAa+E0NTQTmyghhvxpESoKgjXzKi1k+qc9uquNBtg9hVddS
+         z3M/fCvYprkqPl2LRyAECaO3XSv85TRvN4A/BFM6YjIC+xIlKa78AOMGuBMmW5axXmS9
+         M9/AaXZBOFjIDDxQ0a1PdpygCWQpxryatlidL25bEAZQRjEgrVHCO6go+UFbYcco62H5
+         a4I71OFriBDb8dGwAHhEhMrWaKxK4AZR5wCCN3jEVytsMXYm0KLQzqC0XqsC4Yz9rLHx
+         xjtH8lPEwOsnC3VEogoNaUvnI6FktMv1krkMdxY07Q6aMr0X8Y/OOJKviqsZLO/mqZH2
+         d1/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=Q96K00hD2NjD86HPQFbde/I+2OWvsg2PMKdChk2z1WQ=;
-        b=sZGpi/ArEtGVpowNsATDPy+SmZxtL9C+HZdlpDixOq7lynZZkBdswRtEMase2qWotY
-         pJ4yFvL/LnKI2JMDTD3D+hQ6MP1vvXVO3eVamc7Uodv+qpSxniZUaUdvpM5XbJNKe0el
-         RdpPMEmM8Uf7npmu8ztE/p/IC7CV4+jRe/NP9yehgq4AVFBvFDXRp7YJQX7f5cH3BKDK
-         6wPLHV8Wdob3DRihs2QHVTYJp5ui/8bCkXsZvJTiRTEwe0zNwSRAG907rDHzOqPToMrL
-         cSPCVmO2dk7u6FYRNeXLaXj9t93Qk3jxl+33MzCWhDagcIZ0Ld1WE8Ki4su+Rwo/NZ4/
-         UQGw==
-X-Gm-Message-State: AOAM532ytF2BwVClDDAQRlJkQEpn9fPCZ9VN0rhJ5OGonSDAbiK0jf26
-        nlpHLPHHOwhKOZuIQ9Fc5Kk=
-X-Google-Smtp-Source: ABdhPJzEeoGFvRA6C2GrN3MyutBLywjuX4YWpzv3eENExAZSRapqgaY2CO4cYEJvd2bDOBxm0Pjy8Q==
-X-Received: by 2002:a05:620a:a4b:: with SMTP id j11mr4754516qka.19.1618507101535;
-        Thu, 15 Apr 2021 10:18:21 -0700 (PDT)
-Received: from focaruja ([2001:1284:f016:a037:fda3:4e59:60ec:90e5])
-        by smtp.gmail.com with ESMTPSA id c27sm2417598qtg.97.2021.04.15.10.18.20
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 15 Apr 2021 10:18:21 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:18:18 -0300
-From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: [PATCH v2] staging: media: tegra-video: Align line break to match
- with the open parenthesis in file vi.c
-Message-ID: <20210415171818.GA18601@focaruja>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8a04NZRtQScmgjBHOwbl/yFtfKtVthaZ/Hnily7UrCw=;
+        b=oAbveS5O44FepssRa0oO3e1ffRzDFK1gd8WBAfjEaNLQF8AcDfPiXIxV2o5LxG3FFC
+         QNFLr51mTkdp2liuRKVqbj6aIEg/yT8nCAjMBiVWz1lT3mhQg7+6M//34NxYtpN0fAoD
+         mTdPYscGSETaA2XVLc0YmIrrMflI6b3Uqtm9SNRsGiWX6m7oB+F9oufFsDDqFQ2gC+Ik
+         SffSKCakfrmYtdXIly6x60MM8hS1GvEdcAYwyVeI3SDWGwoOYe/s0KbDhg/jetcqH51j
+         Qg55McYJcXVJWTPR92PcKetumeAdaNsIfC8s3jAUZc0oj3nqyH9soBwrWz8WFnIyrUoi
+         nsJQ==
+X-Gm-Message-State: AOAM531YJ4kQxIr9uf1lh1mKzY+H8fm6oDcRRBt8vP7zDkec/zQbbgJm
+        jg6iW+dW6fA+D2E5KgLisV0XSmj12oogJc0JmqyWzoz6mxlFmA==
+X-Google-Smtp-Source: ABdhPJzCwBCGWG/Tzyck7Lf3AD0CL7doHhTFOrbl/SO6fEKkdBuHsyBziigBUUwlbTl8K/Sogznec33DsY81TRdW8B4=
+X-Received: by 2002:a17:90a:156:: with SMTP id z22mr5256977pje.181.1618507145950;
+ Thu, 15 Apr 2021 10:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com> <87eefblbji.fsf@vajain21.in.ibm.com>
+In-Reply-To: <87eefblbji.fsf@vajain21.in.ibm.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 15 Apr 2021 20:18:49 +0300
+Message-ID: <CAHp75VcPANL+LBTxy2V8f2Ksy=FJmdbU1=r60KKO7YSUf9BCLg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and API
+To:     Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align line break to match with the open parenthesis.
-Issue detected by checkpatch.pl.
+On Thu, Apr 15, 2021 at 8:10 PM Vaibhav Jain <vaibhav@linux.ibm.com> wrote:
+>
+>
+> Thanks for the patch Andy,
+>
+> Unfortunately ran into a compilation issue due to missing "#include
+> <asm/unaligned.h>" that provides definition for
+> get_unaligned_le64(). Gcc reported following error:
+>
+> error: implicit declaration of function =E2=80=98get_unaligned_le64=E2=80=
+=99
 
-Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
----
+Right, I have not tested it (as mentioned in the comments to the patch)
 
-Changes since v1:
- - Move short argument to the previous line in function call
-   since it didn't exceeded 80 characters in line
+> After including the necessary header file, kernel compiled fine and I
+> was able to test & verify the patch.
 
- drivers/staging/media/tegra-video/vi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you very much for the testing.
 
-diff --git a/drivers/staging/media/tegra-video/vi.c b/drivers/staging/media/tegra-video/vi.c
-index 7a09061c..3f06d69 100644
---- a/drivers/staging/media/tegra-video/vi.c
-+++ b/drivers/staging/media/tegra-video/vi.c
-@@ -1812,8 +1812,8 @@ static int tegra_vi_graph_parse_one(struct tegra_vi_channel *chan,
- 			continue;
- 		}
- 
--		tvge = v4l2_async_notifier_add_fwnode_subdev(&chan->notifier,
--				remote, struct tegra_vi_graph_entity);
-+		tvge = v4l2_async_notifier_add_fwnode_subdev(&chan->notifier, remote,
-+							     struct tegra_vi_graph_entity);
- 		if (IS_ERR(tvge)) {
- 			ret = PTR_ERR(tvge);
- 			dev_err(vi->dev,
--- 
-2.7.4
+I'm not sure what the coverage of your test is. That's why I have an
+additional question below. Is the byte ordering kept the same in BE
+(32- and 64-bit) cases? Because I'm worrying that I might have missed
+something.
 
+
+--=20
+With Best Regards,
+Andy Shevchenko
