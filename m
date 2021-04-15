@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C653D360C8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB5E360C90
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhDOOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37380 "EHLO mail.kernel.org"
+        id S233555AbhDOOvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233943AbhDOOug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233955AbhDOOug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Apr 2021 10:50:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD04613C5;
-        Thu, 15 Apr 2021 14:50:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C5761029;
+        Thu, 15 Apr 2021 14:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498210;
-        bh=1CHQqZ0SKCLREiN5YmCl73sBFHNBSX5ps+q7JR2MWsI=;
+        s=korg; t=1618498213;
+        bh=DfrchYlm/qQHndknXSNXvdeATPlmycX7q6lxTmTxyqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qvJkFsrEA+0a3sbDeZnAMoXtOlyElrOm7Nqbdu87VAT03tr0LnCMitITvZaRdh6qW
-         3gZ6Ki9jCA5n+6oqDPasXTGppwTYLzH5Fc0q3kCbgEdTb4Rwt5e/FNPl8YhkMLfD4+
-         nfHvpJlmW5WDOkB92fTaBZ+Lanxhk9bVejqP7mnQ=
+        b=qjoBMxfuyxJaZb4SYBDZukEkCj4JD4iSPKN950rkcX3OiyHVgee4ENTX4b9at6obK
+         x6qH3ZDKHdMuTGgD0ez6C9Mmn/m8ORexwIAgl1kPqHZj13Dsj5KzwpYHSPgEVqHUdz
+         I7HdEyvX93phmRW6IN11CRqbG79KS/MHWGbGA0U8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com,
+        syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com,
         Alexander Aring <aahringo@redhat.com>,
         Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.4 32/38] net: ieee802154: forbid monitor for set llsec params
-Date:   Thu, 15 Apr 2021 16:47:26 +0200
-Message-Id: <20210415144414.385468574@linuxfoundation.org>
+Subject: [PATCH 4.4 33/38] net: ieee802154: forbid monitor for del llsec seclevel
+Date:   Thu, 15 Apr 2021 16:47:27 +0200
+Message-Id: <20210415144414.416255005@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
 References: <20210415144413.352638802@linuxfoundation.org>
@@ -43,14 +43,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-commit 88c17855ac4291fb462e13a86b7516773b6c932e upstream.
+commit 9dde130937e95b72adfae64ab21d6e7e707e2dac upstream.
 
-This patch forbids to set llsec params for monitor interfaces which we
-don't support yet.
+This patch forbids to del llsec seclevel for monitor interfaces which we
+don't support yet. Otherwise we will access llsec mib which isn't
+initialized for monitors.
 
-Reported-by: syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com
+Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-3-aahringo@redhat.com
+Link: https://lore.kernel.org/r/20210405003054.256017-15-aahringo@redhat.com
 Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -59,15 +60,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/ieee802154/nl802154.c
 +++ b/net/ieee802154/nl802154.c
-@@ -1367,6 +1367,9 @@ static int nl802154_set_llsec_params(str
- 	u32 changed = 0;
- 	int ret;
+@@ -2087,6 +2087,9 @@ static int nl802154_del_llsec_seclevel(s
+ 	struct wpan_dev *wpan_dev = dev->ieee802154_ptr;
+ 	struct ieee802154_llsec_seclevel sl;
  
 +	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
 +		return -EOPNOTSUPP;
 +
- 	if (info->attrs[NL802154_ATTR_SEC_ENABLED]) {
- 		u8 enabled;
- 
+ 	if (!info->attrs[NL802154_ATTR_SEC_LEVEL] ||
+ 	    llsec_parse_seclevel(info->attrs[NL802154_ATTR_SEC_LEVEL],
+ 				 &sl) < 0)
 
 
