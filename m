@@ -2,142 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F364B36068B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BE7360684
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhDOKGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:06:31 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2865 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhDOKG1 (ORCPT
+        id S232392AbhDOKGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231919AbhDOKFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:06:27 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FLZVJ3cf5z689tm;
-        Thu, 15 Apr 2021 17:56:08 +0800 (CST)
-Received: from fraphisprd00473.huawei.com (7.182.8.141) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 15 Apr 2021 12:06:02 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <jmorris@namei.org>, <paul@paul-moore.com>,
-        <casey@schaufler-ca.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        <reiserfs-devel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 5/5] evm: Support multiple LSMs providing an xattr
-Date:   Thu, 15 Apr 2021 12:04:35 +0200
-Message-ID: <20210415100435.18619-6-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210415100435.18619-1-roberto.sassu@huawei.com>
-References: <20210415100435.18619-1-roberto.sassu@huawei.com>
+        Thu, 15 Apr 2021 06:05:38 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2048C061574;
+        Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id v72so4783095ybe.11;
+        Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6oeIFs7Ag00+enOPg/8U9CSlTyarnRdS/t7jZtMEknc=;
+        b=cQe+lD2xs9LqPIp0h34xkwPNKG5VP0FV8kgPnyqPsbxBPvbT7u9hNVwYeyFeACyCuJ
+         hq/WcLJuBM8uCBhVWaIurCV2BC/cklpaMWHUMY+Ox+RMS2tTJOvfx4J6eFAE0LzHdKxv
+         46RJ0UJwwoYz//bYLnxEPv7cK/hBU7Be91qKB/iDiFECylr2flES0UFsqu4mLP3rUJvJ
+         kAVl8L1PL5MHXbLJZ1XbDPe77RJMwnR26T02s0eRDIL7HjW35iUG9VMRFOBo5Kv6jaLM
+         A8Nfot/8TmXuR9ph8IyrJgrEGH0fiqgduXMjvYZ7/f7TuzGCFJb1/lwpsQSZau6+P+3n
+         AoRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6oeIFs7Ag00+enOPg/8U9CSlTyarnRdS/t7jZtMEknc=;
+        b=rupAi2SqoLX7JCNNJqiM2LaUJ1zlopX/0388LAsoYJUd5JZemtufBbAUpaEzErSxpw
+         bbdODBS8c8cEWZogbDJot/S4+rOzvUGwvDsCZvKDdmRNYX19VxKpEY3bKpbFR0f4/1wH
+         U386uBSs6I6GHSsz6f0Dly0hniE+3TR/ySHWwjOzoqTOhk2qoCCClxN5ZakrZQ8OV1gf
+         qW/TB1s1nWb6TaCfRxhjRf1JTVmPqZYTCof9QKZBDIpqIZIqO+QrSUNOvsTgAE4BR3cP
+         nedpJ4fhmmyDC6mXTiGan+HLxk46QDB/+hKGE+ieG35izrvw7kbBY6V7+8siVxDL8jXT
+         PgQg==
+X-Gm-Message-State: AOAM532Rv20tgS+MXHGSsuPlZwJzhf+ksjnv1gGPIT9oH//x7qgEdCvm
+        bIqylUQqkZpqvw0bOGZoXdpxIZftpFUfIhrJs06GDo1EmWBHzg==
+X-Google-Smtp-Source: ABdhPJxboetpX1Mmk/0DFs1Mo4sZybpbdkNJuiEPy+sitIoWrv9qaflK3e4jCMm+PMOGa/JD2jUmJVR1Cdr5b8WV1Zw=
+X-Received: by 2002:a25:c444:: with SMTP id u65mr3406193ybf.93.1618481114331;
+ Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [7.182.8.141]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+References: <20210414184604.23473-1-ojeda@kernel.org> <CAKwvOdm8s7Yp8e=8tpscY805-bjQWyoNVzhFZnH4KL-q9ZP4Hw@mail.gmail.com>
+In-Reply-To: <CAKwvOdm8s7Yp8e=8tpscY805-bjQWyoNVzhFZnH4KL-q9ZP4Hw@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 15 Apr 2021 12:05:03 +0200
+Message-ID: <CANiq72n-trsFMzzUTPw9qP+98auYk9uOO0NNMrJzq-=SkEo5BA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, evm_inode_init_security() takes as input a single LSM xattr,
-passed by security_inode_init_security(), and calculates the HMAC on it and
-other inode metadata.
+On Thu, Apr 15, 2021 at 2:23 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Looks like Wedson's writeup is now live. Nice job Wedson!
+> https://security.googleblog.com/2021/04/rust-in-linux-kernel.html
 
-Given that initxattrs(), called by security_inode_init_security(), expects
-that this array is terminated when the xattr name is set to NULL, this
-patch reuses the same assumption for evm_inode_init_security() to scan all
-xattrs and to calculate the HMAC on all of them.
++1 It is very nicely written and explains the semaphore samples
+(included in the RFC) he wrote, with nice tables comparing how
+different parts look like between C and Rust!
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- security/integrity/evm/evm.h        |  2 ++
- security/integrity/evm/evm_crypto.c |  9 ++++++++-
- security/integrity/evm/evm_main.c   | 15 +++++++++++----
- 3 files changed, 21 insertions(+), 5 deletions(-)
+Anyone interested in this RFC, C or Rust, please take a look!
 
-diff --git a/security/integrity/evm/evm.h b/security/integrity/evm/evm.h
-index ae590f71ce7d..24eac42b9f32 100644
---- a/security/integrity/evm/evm.h
-+++ b/security/integrity/evm/evm.h
-@@ -49,6 +49,8 @@ struct evm_digest {
- 	char digest[IMA_MAX_DIGEST_SIZE];
- } __packed;
- 
-+int evm_protected_xattr(const char *req_xattr_name);
-+
- int evm_init_key(void);
- int __init evm_init_crypto(void);
- int evm_update_evmxattr(struct dentry *dentry,
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index b66264b53d5d..35c5eec0517d 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -358,6 +358,7 @@ int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
- 		  char *hmac_val)
- {
- 	struct shash_desc *desc;
-+	const struct xattr *xattr;
- 
- 	desc = init_desc(EVM_XATTR_HMAC, evm_hash_algo);
- 	if (IS_ERR(desc)) {
-@@ -365,7 +366,13 @@ int evm_init_hmac(struct inode *inode, const struct xattr *lsm_xattr,
- 		return PTR_ERR(desc);
- 	}
- 
--	crypto_shash_update(desc, lsm_xattr->value, lsm_xattr->value_len);
-+	for (xattr = lsm_xattr; xattr->name != NULL; xattr++) {
-+		if (!evm_protected_xattr(xattr->name))
-+			continue;
-+
-+		crypto_shash_update(desc, xattr->value, xattr->value_len);
-+	}
-+
- 	hmac_add_misc(desc, inode, EVM_XATTR_HMAC, hmac_val);
- 	kfree(desc);
- 	return 0;
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index a5069d69a893..fde366149499 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -260,7 +260,7 @@ static enum integrity_status evm_verify_hmac(struct dentry *dentry,
- 	return evm_status;
- }
- 
--static int evm_protected_xattr(const char *req_xattr_name)
-+int evm_protected_xattr(const char *req_xattr_name)
- {
- 	int namelen;
- 	int found = 0;
-@@ -712,14 +712,21 @@ int evm_inode_init_security(struct inode *inode, struct inode *dir,
- 			    void **value, size_t *len,
- 			    struct xattr *lsm_xattrs)
- {
-+	struct xattr *xattr;
- 	struct evm_xattr *xattr_data;
--	int rc;
-+	int rc, evm_protected_xattrs = 0;
- 
- 	if (!name || !value || !len || !lsm_xattrs)
- 		return 0;
- 
--	if (!(evm_initialized & EVM_INIT_HMAC) ||
--	    !evm_protected_xattr(lsm_xattrs->name))
-+	if (!(evm_initialized & EVM_INIT_HMAC))
-+		return -EOPNOTSUPP;
-+
-+	for (xattr = lsm_xattrs; xattr && xattr->name != NULL; xattr++)
-+		if (evm_protected_xattr(xattr->name))
-+			evm_protected_xattrs++;
-+
-+	if (!evm_protected_xattrs)
- 		return -EOPNOTSUPP;
- 
- 	xattr_data = kzalloc(sizeof(*xattr_data), GFP_NOFS);
--- 
-2.26.2
-
+Cheers,
+Miguel
