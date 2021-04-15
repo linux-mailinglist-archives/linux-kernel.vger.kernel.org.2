@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D06360D2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93053360D2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhDOO6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39406 "EHLO mail.kernel.org"
+        id S233895AbhDOO6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:58:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233782AbhDOOyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:54:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A58B4613E6;
-        Thu, 15 Apr 2021 14:53:01 +0000 (UTC)
+        id S233707AbhDOOyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02151613E8;
+        Thu, 15 Apr 2021 14:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498382;
-        bh=77IDkFCRls2A4Pq8onU6x5tT1l5CfYyzaLwouAljdAU=;
+        s=korg; t=1618498384;
+        bh=03lnoLwtvfakn9qS2j6N2xANgmHsXIC9ebr0dCjfQ0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qmYSSHHkSPZ8U9g6lRnQwDobNhraD+6bCdeConP7lwJ0WWGpAQslHcK3WwfvwI4B2
-         rDxjy3HfDLU1NwmXKfDT4z0cKyX6tK4iGDN+ZrddNc1taX2Al6IgDaaCxnD0MJ5i9d
-         p1zZZF2IqKTRH4ySjPLmCtOBPfKY+OynNvxF31CU=
+        b=wMXzj788Ds1WriT8GgEprmVKId/MVN+dbQSzhrilp9il++c1K5tMFP0Vmk9uFureX
+         LaUP22+1B+cBggwNFHHGDXmtRbXCZDSArrbTqg/oXYFM1YSg7kWxn3j2byb4K+mu4d
+         iUqj4pE0xXP9Ezihy//4pFblUEphAfTUPlGOkKDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
         syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 18/68] usbip: add sysfs_lock to synchronize sysfs code paths
-Date:   Thu, 15 Apr 2021 16:46:59 +0200
-Message-Id: <20210415144415.064274800@linuxfoundation.org>
+Subject: [PATCH 4.14 19/68] usbip: stub-dev synchronize sysfs code paths
+Date:   Thu, 15 Apr 2021 16:47:00 +0200
+Message-Id: <20210415144415.094122560@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 References: <20210415144414.464797272@linuxfoundation.org>
@@ -41,147 +41,83 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 4e9c93af7279b059faf5bb1897ee90512b258a12 upstream.
+commit 9dbf34a834563dada91366c2ac266f32ff34641a upstream.
 
 Fuzzing uncovered race condition between sysfs code paths in usbip
 drivers. Device connect/disconnect code paths initiated through
 sysfs interface are prone to races if disconnect happens during
 connect and vice versa.
 
-This problem is common to all drivers while it can be reproduced easily
-in vhci_hcd. Add a sysfs_lock to usbip_device struct to protect the paths.
-
-Use this in vhci_hcd to protect sysfs paths. For a complete fix, usip_host
-and usip-vudc drivers and the event handler will have to use this lock to
-protect the paths. These changes will be done in subsequent patches.
+Use sysfs_lock to protect sysfs paths in stub-dev.
 
 Cc: stable@vger.kernel.org
 Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/b6568f7beae702bbc236a545d3c020106ca75eac.1616807117.git.skhan@linuxfoundation.org
+Link: https://lore.kernel.org/r/2b182f3561b4a065bf3bf6dce3b0e9944ba17b3f.1616807117.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/usbip_common.h |    3 +++
- drivers/usb/usbip/vhci_hcd.c     |    1 +
- drivers/usb/usbip/vhci_sysfs.c   |   30 +++++++++++++++++++++++++-----
- 3 files changed, 29 insertions(+), 5 deletions(-)
+ drivers/usb/usbip/stub_dev.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -277,6 +277,9 @@ struct usbip_device {
- 	/* lock for status */
- 	spinlock_t lock;
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -77,6 +77,7 @@ static ssize_t store_sockfd(struct devic
  
-+	/* mutex for synchronizing sysfs store paths */
-+	struct mutex sysfs_lock;
+ 		dev_info(dev, "stub up\n");
+ 
++		mutex_lock(&sdev->ud.sysfs_lock);
+ 		spin_lock_irq(&sdev->ud.lock);
+ 
+ 		if (sdev->ud.status != SDEV_ST_AVAILABLE) {
+@@ -101,13 +102,13 @@ static ssize_t store_sockfd(struct devic
+ 		tcp_rx = kthread_create(stub_rx_loop, &sdev->ud, "stub_rx");
+ 		if (IS_ERR(tcp_rx)) {
+ 			sockfd_put(socket);
+-			return -EINVAL;
++			goto unlock_mutex;
+ 		}
+ 		tcp_tx = kthread_create(stub_tx_loop, &sdev->ud, "stub_tx");
+ 		if (IS_ERR(tcp_tx)) {
+ 			kthread_stop(tcp_rx);
+ 			sockfd_put(socket);
+-			return -EINVAL;
++			goto unlock_mutex;
+ 		}
+ 
+ 		/* get task structs now */
+@@ -126,6 +127,8 @@ static ssize_t store_sockfd(struct devic
+ 		wake_up_process(sdev->ud.tcp_rx);
+ 		wake_up_process(sdev->ud.tcp_tx);
+ 
++		mutex_unlock(&sdev->ud.sysfs_lock);
 +
- 	int sockfd;
- 	struct socket *tcp_socket;
+ 	} else {
+ 		dev_info(dev, "stub down\n");
  
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -1115,6 +1115,7 @@ static void vhci_device_init(struct vhci
- 	vdev->ud.side   = USBIP_VHCI;
- 	vdev->ud.status = VDEV_ST_NULL;
- 	spin_lock_init(&vdev->ud.lock);
-+	mutex_init(&vdev->ud.sysfs_lock);
+@@ -136,6 +139,7 @@ static ssize_t store_sockfd(struct devic
+ 		spin_unlock_irq(&sdev->ud.lock);
  
- 	INIT_LIST_HEAD(&vdev->priv_rx);
- 	INIT_LIST_HEAD(&vdev->priv_tx);
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -199,6 +199,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_dbg_vhci_sysfs("enter\n");
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
-+
- 	/* lock */
- 	spin_lock_irqsave(&vhci->lock, flags);
- 	spin_lock(&vdev->ud.lock);
-@@ -209,6 +211,7 @@ static int vhci_port_disconnect(struct v
- 		/* unlock */
- 		spin_unlock(&vdev->ud.lock);
- 		spin_unlock_irqrestore(&vhci->lock, flags);
-+		mutex_unlock(&vdev->ud.sysfs_lock);
- 
- 		return -EINVAL;
- 	}
-@@ -219,6 +222,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN);
- 
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
- 	return 0;
- }
- 
-@@ -363,30 +368,36 @@ static ssize_t store_attach(struct devic
- 	else
- 		vdev = &vhci->vhci_hcd_hs->vdev[rhport];
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
-+
- 	/* Extract socket from fd. */
- 	socket = sockfd_lookup(sockfd, &err);
- 	if (!socket) {
- 		dev_err(dev, "failed to lookup sock");
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	if (socket->type != SOCK_STREAM) {
- 		dev_err(dev, "Expecting SOCK_STREAM - found %d",
- 			socket->type);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
+ 		usbip_event_add(&sdev->ud, SDEV_EVENT_DOWN);
++		mutex_unlock(&sdev->ud.sysfs_lock);
  	}
  
- 	/* create threads before locking */
- 	tcp_rx = kthread_create(vhci_rx_loop, &vdev->ud, "vhci_rx");
- 	if (IS_ERR(tcp_rx)) {
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	tcp_tx = kthread_create(vhci_tx_loop, &vdev->ud, "vhci_tx");
- 	if (IS_ERR(tcp_tx)) {
- 		kthread_stop(tcp_rx);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	/* get task structs now */
-@@ -411,7 +422,8 @@ static ssize_t store_attach(struct devic
- 		 * Will be retried from userspace
- 		 * if there's another free port.
- 		 */
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto unlock_mutex;
- 	}
- 
- 	dev_info(dev, "pdev(%u) rhport(%u) sockfd(%d)\n",
-@@ -436,7 +448,15 @@ static ssize_t store_attach(struct devic
- 
- 	rh_port_connect(vdev, speed);
- 
-+	dev_info(dev, "Device attached\n");
-+
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
  	return count;
-+
+@@ -144,6 +148,8 @@ sock_err:
+ 	sockfd_put(socket);
+ err:
+ 	spin_unlock_irq(&sdev->ud.lock);
 +unlock_mutex:
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+	return err;
++	mutex_unlock(&sdev->ud.sysfs_lock);
+ 	return -EINVAL;
  }
- static DEVICE_ATTR(attach, S_IWUSR, NULL, store_attach);
+ static DEVICE_ATTR(usbip_sockfd, S_IWUSR, NULL, store_sockfd);
+@@ -309,6 +315,7 @@ static struct stub_device *stub_device_a
+ 	sdev->ud.side		= USBIP_STUB;
+ 	sdev->ud.status		= SDEV_ST_AVAILABLE;
+ 	spin_lock_init(&sdev->ud.lock);
++	mutex_init(&sdev->ud.sysfs_lock);
+ 	sdev->ud.tcp_socket	= NULL;
+ 	sdev->ud.sockfd		= -1;
  
 
 
