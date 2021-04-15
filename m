@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B0636078D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1313A360796
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhDOKvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:51:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:65518 "EHLO
+        id S232602AbhDOKvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:51:33 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:54803 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhDOKvM (ORCPT
+        with ESMTP id S232453AbhDOKv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:51:12 -0400
+        Thu, 15 Apr 2021 06:51:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618483850; x=1650019850;
+  t=1618483863; x=1650019863;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FFWqdC3u8rrc15OFLABpNkyEHG7NR8VJAkLO3zUhwh8=;
-  b=KFoNU2euNFadNAUp33OrMkpyEUajlaxhfL7UL7c9soYPxY+5xrT4Po/g
-   Q87BFqwDp7dSvuH3GeQiQyVnnXmyypwEJSC0QMrZ5AMeCLVTg0Af3+qf2
-   DgWi/pskWn6JexLLtCvylCnTz3F+dMwJo7TjF+7vgaahT+H8IbnGtJphA
-   JZnRoDAx5tw75kyKCsjw+UPPviBwSGeCWiCOpoLucwZXxLjvTt/aWwP/H
-   7UTdLApE7RBVRKk61QI4HE3AtWzNXxFICFPlm86i3XSPB1H706nhfExZF
-   aLnuTRknRKRNPhH3EzJFa4Tn0Nzetc9uAEkjMoMhuKXcqZof7OYQWuYlb
-   A==;
-IronPort-SDR: 37jM2Usx5EYpHhDMcfMpOAgbN5/nCN1egCzZ9GDD577UCEyB2yL3ek4qWIrdeW9THBgy53xMpP
- 0gTDj7vwQBqv4lOlgXHih0iPPhxGembbUNLFYmIat+9o3Lw/m1/ZkGaosy3PuzAl3i+6RjmqLa
- EJ4TKjZaOd3sWZqNyWSLVSm4OA0GfEcw85w/60Rf2ulJ1LLQfc09fJ8DSLI5HDEWmrjveRCv/W
- tM6CECsYwhscacUPBhNdf7MBxfqeKAE3OltuzU7gg9KWOSBTNS9E99TkhvbuXJbFSTu3ZaSUrp
- dKg=
+  bh=EMydS6SpF+3ky5OFGHF+CX/2ifm7LJRo+KdwzVglFdE=;
+  b=UcXmPdfb7I83JdShKO/0yZE91jY93hqQtzD7koYcx8i/J7joKUCh72qE
+   xkFwPRYwfpdj/fxgKAze/ZZIwwzmBsagdxHZ8yJYJ9JY+wKZutsF3HsTI
+   KbQYNVBj8k1WSnJpjEGKsugLi+MBiZgDlFxCjhLuEtT8W7oa72ASAKpV/
+   yJBuzB4IXH7bRapZrpcYEQRBL/b5ZUPg3WRc6E+qmM4Oz/LBzF1h1xEgd
+   HmPzhdUZDZCre2CF0TUiowrBsEZl9iTiIChWtmqk8dSmwEUQXoQhI8IJy
+   4bCrDKzPWergKZVoqelCe9LFnTYOeybxcwQejQdMcbExTocJXPmpCz0Fz
+   Q==;
+IronPort-SDR: aNPeE1F5hCsUQzeED8p3GY5b3eJnDySepGq5BLmOM7Qk0q3wv5DO00/atzFKKeS9aok5xldc6i
+ FmIE/0KEyi4BiK3C7k/AYu0s8toQ7oamM46D8bSpAhl1md5mfQZ9CtDu6YGMgSoCdBn1ULF4E1
+ OMicRTsSFIuxg+1vQxxMtvfhpkSI9OrbaadW9C4UMRd3J8GP/FzALqGlkIXAEhvELLjXB9yzl0
+ rLm20N7f6tG7sXn2eqMldOfMRXstnBUJmngc2/lh6aigkmKWETz/0Itnyrw0kiwqQ5Sd76UwbE
+ MtE=
 X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
-   d="scan'208";a="117122033"
+   d="scan'208";a="113688131"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:50:49 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 03:50:53 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 15 Apr 2021 03:50:49 -0700
+ 15.1.2176.2; Thu, 15 Apr 2021 03:50:52 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:50:46 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 03:50:49 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 01/24] ARM: at91: pm: move pm_bu to soc_pm data structure
-Date:   Thu, 15 Apr 2021 13:49:47 +0300
-Message-ID: <20210415105010.569620-2-claudiu.beznea@microchip.com>
+Subject: [PATCH v3 02/24] ARM: at91: pm: move the setup of soc_pm.bu->suspended
+Date:   Thu, 15 Apr 2021 13:49:48 +0300
+Message-ID: <20210415105010.569620-3-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210415105010.569620-1-claudiu.beznea@microchip.com>
 References: <20210415105010.569620-1-claudiu.beznea@microchip.com>
@@ -61,88 +61,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move pm_bu to soc_pm data structure.
+Move the setup of soc_pm.bu->suspended in platform_suspend::begin
+function so that the PMC code in charge with clocks suspend/resume
+to differentiate b/w standard PM mode and backup mode.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- arch/arm/mach-at91/pm.c | 34 +++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ arch/arm/mach-at91/pm.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
-index 90dcdfe3b3d0..e13ceef7ac9a 100644
+index e13ceef7ac9a..3742a1fb76db 100644
 --- a/arch/arm/mach-at91/pm.c
 +++ b/arch/arm/mach-at91/pm.c
-@@ -27,10 +27,25 @@
- #include "generic.h"
- #include "pm.h"
- 
-+/**
-+ * struct at91_pm_bu - AT91 power management backup unit data structure
-+ * @suspended: true if suspended to backup mode
-+ * @reserved: reserved
-+ * @canary: canary data for memory checking after exit from backup mode
-+ * @resume: resume API
-+ */
-+struct at91_pm_bu {
-+	int suspended;
-+	unsigned long reserved;
-+	phys_addr_t canary;
-+	phys_addr_t resume;
-+};
+@@ -214,6 +214,8 @@ static int at91_sam9x60_config_pmc_ws(void __iomem *pmc, u32 mode, u32 polarity)
+  */
+ static int at91_pm_begin(suspend_state_t state)
+ {
++	int ret;
 +
- struct at91_soc_pm {
- 	int (*config_shdwc_ws)(void __iomem *shdwc, u32 *mode, u32 *polarity);
- 	int (*config_pmc_ws)(void __iomem *pmc, u32 mode, u32 polarity);
- 	const struct of_device_id *ws_ids;
-+	struct at91_pm_bu *bu;
- 	struct at91_pm_data data;
- };
+ 	switch (state) {
+ 	case PM_SUSPEND_MEM:
+ 		soc_pm.data.mode = soc_pm.data.suspend_mode;
+@@ -227,7 +229,16 @@ static int at91_pm_begin(suspend_state_t state)
+ 		soc_pm.data.mode = -1;
+ 	}
  
-@@ -71,13 +86,6 @@ static int at91_pm_valid_state(suspend_state_t state)
+-	return at91_pm_config_ws(soc_pm.data.mode, true);
++	ret = at91_pm_config_ws(soc_pm.data.mode, true);
++	if (ret)
++		return ret;
++
++	if (soc_pm.data.mode == AT91_PM_BACKUP)
++		soc_pm.bu->suspended = 1;
++	else if (soc_pm.bu)
++		soc_pm.bu->suspended = 0;
++
++	return 0;
+ }
  
- static int canary = 0xA5A5A5A5;
- 
--static struct at91_pm_bu {
--	int suspended;
--	unsigned long reserved;
--	phys_addr_t canary;
--	phys_addr_t resume;
--} *pm_bu;
--
- struct wakeup_source_info {
- 	unsigned int pmc_fsmr_bit;
- 	unsigned int shdwc_mr_bit;
-@@ -288,7 +296,7 @@ static int at91_suspend_finish(unsigned long val)
+ /*
+@@ -296,8 +307,6 @@ static int at91_suspend_finish(unsigned long val)
  static void at91_pm_suspend(suspend_state_t state)
  {
  	if (soc_pm.data.mode == AT91_PM_BACKUP) {
--		pm_bu->suspended = 1;
-+		soc_pm.bu->suspended = 1;
- 
+-		soc_pm.bu->suspended = 1;
+-
  		cpu_suspend(0, at91_suspend_finish);
  
-@@ -657,16 +665,16 @@ static int __init at91_pm_backup_init(void)
- 		goto securam_fail;
- 	}
- 
--	pm_bu = (void *)gen_pool_alloc(sram_pool, sizeof(struct at91_pm_bu));
--	if (!pm_bu) {
-+	soc_pm.bu = (void *)gen_pool_alloc(sram_pool, sizeof(struct at91_pm_bu));
-+	if (!soc_pm.bu) {
- 		pr_warn("%s: unable to alloc securam!\n", __func__);
- 		ret = -ENOMEM;
- 		goto securam_fail;
- 	}
- 
--	pm_bu->suspended = 0;
--	pm_bu->canary = __pa_symbol(&canary);
--	pm_bu->resume = __pa_symbol(cpu_resume);
-+	soc_pm.bu->suspended = 0;
-+	soc_pm.bu->canary = __pa_symbol(&canary);
-+	soc_pm.bu->resume = __pa_symbol(cpu_resume);
- 
- 	return 0;
- 
+ 		/* The SRAM is lost between suspend cycles */
 -- 
 2.25.1
 
