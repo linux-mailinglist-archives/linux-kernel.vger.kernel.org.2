@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACFF360E0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62935360E4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbhDOPJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:09:03 -0400
+        id S234567AbhDOPNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:13:33 -0400
 Received: from mail.kernel.org ([198.145.29.99]:47212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234993AbhDOPAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49E8C6140D;
-        Thu, 15 Apr 2021 14:56:07 +0000 (UTC)
+        id S234160AbhDOPCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:02:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C5A661421;
+        Thu, 15 Apr 2021 14:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498568;
-        bh=l2QtIfWfPxcp5/ACxCh3296t4OV1Zjaa2ba4KpJE9Wo=;
+        s=korg; t=1618498667;
+        bh=edrHdlNwHoJ85Z4+U9rf8Th14sr62UQK7lx5Mw/15vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yq4wi7mU0mZd45rAGIF7dTJc0ZQ2H60OhVl7MWXISNe0LHMFt2F2oSkp2Nl6AU2gP
-         n8/4f+Kfeh552X97+/fCa86U0aWqn8rBQpgef8j4Y+sYRQwUiCiuT00rsDBWJ4xZ3z
-         1wscBDS9gR565l9v5tohYfXA4NjITwB3Wiqmlx4M=
+        b=GOAjbtgJ/zwyo+Cb9JbSkESWcw60D8Yw2qpW3yp869WaqwfkzpKgs7zT3d7eyYOVW
+         NZHI01Ug5y8m5Y6WzaeGf+cFS1bJTAZYzMsisWJlG/KiGZiN13LZI6pjbsTC+8nSGD
+         hXqwm3hWFLz0LlDM5KaVedr+J/TfOrtBe+TQU+pQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/13] net: phy: broadcom: Only advertise EEE for supported modes
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 03/25] KVM: arm64: Hide system instruction access to Trace registers
 Date:   Thu, 15 Apr 2021 16:47:57 +0200
-Message-Id: <20210415144411.873197197@linuxfoundation.org>
+Message-Id: <20210415144413.276476074@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-References: <20210415144411.596695196@linuxfoundation.org>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+References: <20210415144413.165663182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-commit c056d480b40a68f2520ccc156c7fae672d69d57d upstream
+[ Upstream commit 1d676673d665fd2162e7e466dcfbe5373bfdb73e ]
 
-We should not be advertising EEE for modes that we do not support,
-correct that oversight by looking at the PHY device supported linkmodes.
+Currently we advertise the ID_AA6DFR0_EL1.TRACEVER for the guest,
+when the trace register accesses are trapped (CPTR_EL2.TTA == 1).
+So, the guest will get an undefined instruction, if trusts the
+ID registers and access one of the trace registers.
+Lets be nice to the guest and hide the feature to avoid
+unexpected behavior.
 
-Fixes: 99cec8a4dda2 ("net: phy: broadcom: Allow enabling or disabling of EEE")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Even though this can be done at KVM sysreg emulation layer,
+we do this by removing the TRACEVER from the sanitised feature
+register field. This is fine as long as the ETM drivers
+can handle the individual trace units separately, even
+when there are differences among the CPUs.
+
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210323120647.454211-2-suzuki.poulose@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/bcm-phy-lib.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/cpufeature.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/net/phy/bcm-phy-lib.c
-+++ b/drivers/net/phy/bcm-phy-lib.c
-@@ -198,7 +198,7 @@ EXPORT_SYMBOL_GPL(bcm_phy_enable_apd);
- 
- int bcm_phy_set_eee(struct phy_device *phydev, bool enable)
- {
--	int val;
-+	int val, mask = 0;
- 
- 	/* Enable EEE at PHY level */
- 	val = phy_read_mmd(phydev, MDIO_MMD_AN, BRCM_CL45VEN_EEE_CONTROL);
-@@ -217,10 +217,15 @@ int bcm_phy_set_eee(struct phy_device *p
- 	if (val < 0)
- 		return val;
- 
-+	if (phydev->supported & SUPPORTED_1000baseT_Full)
-+		mask |= MDIO_EEE_1000T;
-+	if (phydev->supported & SUPPORTED_100baseT_Full)
-+		mask |= MDIO_EEE_100TX;
-+
- 	if (enable)
--		val |= (MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val |= mask;
- 	else
--		val &= ~(MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val &= ~mask;
- 
- 	phy_write_mmd(phydev, MDIO_MMD_AN, BCM_CL45VEN_EEE_ADV, (u32)val);
- 
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 7da9a7cee4ce..5001c43ea6c3 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -382,7 +382,6 @@ static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
+ 	 * of support.
+ 	 */
+ 	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_EXACT, ID_AA64DFR0_PMUVER_SHIFT, 4, 0),
+-	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_TRACEVER_SHIFT, 4, 0),
+ 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_DEBUGVER_SHIFT, 4, 0x6),
+ 	ARM64_FTR_END,
+ };
+-- 
+2.30.2
+
 
 
