@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26D43612DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139BB3612E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhDOTVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:21:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234505AbhDOTVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:21:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618514439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0CvpRqi5jGMrmijnPGQZkntMS3EsXhFky90lDqKKQCU=;
-        b=BgKQaJZvDdKUX4ziVNUZJQNTFc0MXsukDXE7BpqXC6Vu9EMYteLugtCPnFLAvHilIW37BW
-        w5Eu2GAetp02SPjZvKplO8wEuQ9HKGSYJ5q/s2jhaWS04xHR1QA2PEJQHHFdQgqSO9lJXm
-        ER6rOQQIhPfkRPRxh4NkjPP1RHssgyQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-535-6p05y1-QOHG4jhT6-4vN-A-1; Thu, 15 Apr 2021 15:20:35 -0400
-X-MC-Unique: 6p05y1-QOHG4jhT6-4vN-A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24F3E195D563;
-        Thu, 15 Apr 2021 19:20:33 +0000 (UTC)
-Received: from redhat.com (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 269B510013C1;
-        Thu, 15 Apr 2021 19:20:29 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 13:20:29 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: linux-next: manual merge of the vfio tree with the drm tree
-Message-ID: <20210415132029.3055578b@redhat.com>
-In-Reply-To: <20210415130855.GR227011@ziepe.ca>
-References: <20210415164734.1143f20d@canb.auug.org.au>
-        <20210415130855.GR227011@ziepe.ca>
+        id S234882AbhDOTVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234863AbhDOTVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:21:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE9AB61139;
+        Thu, 15 Apr 2021 19:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618514481;
+        bh=ZauktqtvUFNKTTNi5nrXkKpa4N3m/DBZfGw8y1tCB88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KG+P7kI9lYjUe1L10cJBj2/qGFRDXbzfonnc68VS4+SJ7LkEbwtSZ5loR22b9p3lH
+         0/YPRGFm65Q/TcdeofvHi9woaa5nNa9IJC8KXLL9WAELHO5jNNUpW3m6STEEignJQw
+         WoHq0QB2vL5galdBu66jgU6V7FUTEDHJPRGR4THIrHjrIlwSmniqaTkFRhJD6nO3rC
+         2XNYqsS3uoeKl1DZO7s5kyNimV1ocRdx8hq2cQOre62eivhdmkabui/Sid3OK3GOuC
+         0tBVjxshcnxQk0r1QK/j9qR8x0e/qYCD9NDO3x5nXu5+qpQbjF69HMo2sl0IypN8fv
+         tcDws6DuG791w==
+Date:   Thu, 15 Apr 2021 12:21:02 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 1/8] block: introduce blk_ksm_is_empty()
+Message-ID: <YHiSHnZRZYLbSCB4@gmail.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <20210325212609.492188-2-satyat@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325212609.492188-2-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 10:08:55 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
-
-> On Thu, Apr 15, 2021 at 04:47:34PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Today's linux-next merge of the vfio tree got a conflict in:
-> > 
-> >   drivers/gpu/drm/i915/gvt/gvt.c
-> > 
-> > between commit:
-> > 
-> >   9ff06c385300 ("drm/i915/gvt: Remove references to struct drm_device.pdev")
-> > 
-> > from the drm tree and commit:
-> > 
-> >   383987fd15ba ("vfio/gvt: Use mdev_get_type_group_id()")
-> > 
-> > from the vfio tree.
-> > 
-> > I fixed it up (I used the latter version) and can carry the fix as
-> > necessary.  
+On Thu, Mar 25, 2021 at 09:26:02PM +0000, Satya Tangirala wrote:
+> This function checks if a given keyslot manager supports any encryption
+> mode/data unit size combination (and returns true if there is no such
+> supported combination). Helps clean up code a little.
 > 
-> Yes that is right, thank you
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  block/keyslot-manager.c         | 13 +++++++++++++
+>  drivers/md/dm-table.c           | 11 +----------
+>  include/linux/keyslot-manager.h |  2 ++
+>  3 files changed, 16 insertions(+), 10 deletions(-)
+> 
+> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+> index 2c4a55bea6ca..2a2b1a9785d2 100644
+> --- a/block/keyslot-manager.c
+> +++ b/block/keyslot-manager.c
+> @@ -437,6 +437,19 @@ void blk_ksm_destroy(struct blk_keyslot_manager *ksm)
+>  }
+>  EXPORT_SYMBOL_GPL(blk_ksm_destroy);
+>  
+> +bool blk_ksm_is_empty(struct blk_keyslot_manager *ksm)
+> +{
 
-Yep, thanks!
+I agree with Christoph that this could use a kerneldoc comment.
 
-Alex
+> diff --git a/include/linux/keyslot-manager.h b/include/linux/keyslot-manager.h
+> index a27605e2f826..5bf0cea20c81 100644
+> --- a/include/linux/keyslot-manager.h
+> +++ b/include/linux/keyslot-manager.h
+> @@ -117,4 +117,6 @@ bool blk_ksm_is_superset(struct blk_keyslot_manager *ksm_superset,
+>  void blk_ksm_update_capabilities(struct blk_keyslot_manager *target_ksm,
+>  				 struct blk_keyslot_manager *reference_ksm);
+>  
+> +bool blk_ksm_is_empty(struct blk_keyslot_manager *ksm);
+> +
 
+It's easier to read if declarations are kept in the same order as the
+definitions.
+
+- Eric
