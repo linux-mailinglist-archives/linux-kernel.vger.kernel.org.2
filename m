@@ -2,516 +2,482 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BF2360A6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE1A360A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbhDONXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:23:01 -0400
-Received: from mail-bn7nam10on2090.outbound.protection.outlook.com ([40.107.92.90]:58690
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230056AbhDONW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:22:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=epAY+ppdoGEl8HjO+IiolrwQAjNPuv0AZFEQb79aN/5JE1RqPvhJ/YPPhs2CCdUO01/WJHlEhb3/IrK2XdRP8GCJfQRDRQrec2VHpIIvRk+WsJddMsuWptUW7o3I8gjQ2k96CAqzLdxB3h/jA5GfxxIF6vE4eef8q4tTPlnPsj+ZIPjDA0W4/OKw+Fs48qslkOvdmiC3uejZD+k57XAWw/h2L7ZOhHQShtKAvxgvDbuNCNllgZ+y8VK+AHN9i59dgqxYYI4xUetkhcZtQ4DAYKcLXdmAbGuq9PosoEqtBu8ebf8agMtZ34fB9sSGldOMwxhlBbU4uP+ai1lcox2nKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AnX1ahyoiPJEPcLxArs2jRR30w75nKbkXAL3uSmMZGU=;
- b=NNwN0faVgzjsHyEs1gpiOmDLscMajpnnhVDTEgJ4XBkgj16s31ByH0kbi5YeGZ6xnB7oaQm/KGUGILXlQV/WpscZ2M6cAzYZmhKDv9JiWWF9+hJNCibLPLFMQNpdCZBnHn7rm70/1OwCsli6TNyB7TbPmr8+oBvBfZa/L9F1EcOSN+AaBiKqvRSUI7aTW7eD0HLFMOHmbvnONCRblv6Ai5N9K6QXjEmYGOXMTbepT4H+Iy8NSiqKmSW8Cl1XdPyNw0fNvh7+vbcp6WfSEjdMW1L1srCZfNQVQyHMB48dKCaR3Z/ekuY7GEdqThApAuPmLAMfuLvpA5fXZ7wHMa/PrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AnX1ahyoiPJEPcLxArs2jRR30w75nKbkXAL3uSmMZGU=;
- b=XCnkPPfGnnKTU/dbvptJXwd6l5bW8sCAPEbMYH1F+C40iN/uBWs1Cnr4f1z0NVoBZoVyAwrL5Z5ZNaT7TxZy9SVOwAtQJ6/rYd8zqmCXpHh+0i2RIAeMp4+vyBLxnWsSX7R9h7mntlQ0+YCW+vx4MMEn5nuzf+mQUzEsj4JbUn0=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MW4PR21MB1955.namprd21.prod.outlook.com (2603:10b6:303:71::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.2; Thu, 15 Apr
- 2021 13:22:33 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f%4]) with mapi id 15.20.4042.019; Thu, 15 Apr 2021
- 13:22:33 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: RE: [PATCH hyperv-next] scsi: storvsc: Use blk_mq_unique_tag() to
- generate requestIDs
-Thread-Topic: [PATCH hyperv-next] scsi: storvsc: Use blk_mq_unique_tag() to
- generate requestIDs
-Thread-Index: AQHXMeZ5+UsCvMGzVUiOCHBsvAGtu6q1kH6g
-Date:   Thu, 15 Apr 2021 13:22:32 +0000
-Message-ID: <MWHPR21MB15936B2FBD1C1FE91C654F3DD74D9@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210415105926.3688-1-parri.andrea@gmail.com>
-In-Reply-To: <20210415105926.3688-1-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=600f892f-0115-4979-b64e-862b4d5708e3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-15T13:20:47Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2deb3f0b-0c78-43f8-39d5-08d900118718
-x-ms-traffictypediagnostic: MW4PR21MB1955:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR21MB1955594F0FD58281034F9FA8D74D9@MW4PR21MB1955.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: szwdCBihlYhpVTUhqwAWPeUBw/z25cwDZNHoMh8pWUbxPr6QLD5VY/2FLRcXJWMi8nZNYFYWDfsLgRZ4owj32bHTR8Drb00yblf/5cxeQw1tCCgoHbIXs/SV+jEVCvYgQCg9iFiIeDi2kLDdmaZboZVxG1a9VM4ryeE7AQfr4ucl+IhRhplk4dbJatPK1iL2P4dmnrPHEfBGJB2wKWNrhU4I+tbrZR+lTECh/+soiOsXDmcTkyyxgjqVnunDW5R5p01ZkXZ8PLr1qn/KF/FjSudUqWczSLleNsrYpf4JY5Ban1M6m9H8ewUPe3qfv5YvqRUOPdGRkOXbqRLt3GqBb6lZBTcJL1axZu4XQ0ksLfOdjeCHCefUP1P5diV2Tx4cjUNu7NKJ3j+8hlEty/XIp7N6KkvjPKIWBT86N0aIFNx4XB3UfHmsKH0ReXt/pzaf8ojBcNUeKDwK8h9ePF4HRxHIAVyxTRYPToA8d8rzhqtMRXG1O1nesLy0s/dkbjQetorqy6utYwyjALGDfuYoBSBcs8C13ZWbOefoHIKLW02OkkUB9QvYWsxP1rPsA869sI3ONrVVOzRMTY4wzARyqlkdCjjDWO/Jf12A98u5UM6tD+9FgR+97xmrpr3iIJMXabFLPRrT5YUidkf6OczkqAyRGQnVU18DXJTB7XLIwPvgPrCbDMHK2VskX3LlrJfY
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(366004)(136003)(30864003)(6506007)(33656002)(66446008)(186003)(7416002)(8990500004)(26005)(10290500003)(52536014)(55016002)(66476007)(83380400001)(122000001)(316002)(478600001)(7696005)(64756008)(82950400001)(54906003)(9686003)(2906002)(110136005)(71200400001)(4326008)(66556008)(76116006)(66946007)(82960400001)(8676002)(5660300002)(38100700002)(86362001)(8936002)(966005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?rP6/m2clStSVhBDAPcfRDh8Qc1MH/vNm3DB3lLfJKcsrSOHNJ7OkbQkI5LDy?=
- =?us-ascii?Q?WfG0u/kjoEO9D545+08zeJKrdwjr4Cs+lrKHk2+8OO9u+PUoxiIJ3LzObi8U?=
- =?us-ascii?Q?wu8BC0dIuXebGDCna59MVwFenR0lB7R7D34S3m7pxicpo6Y4skB91ntrp2CV?=
- =?us-ascii?Q?NhrYaDqz+Ds+0FgamqPaHtmjscE1X8FRHIA+uaZECf1emVAB+ONxicTRhJ3r?=
- =?us-ascii?Q?EimuEQ+zDXEGL0GXV2Bg9PeOlH8oc4IzX2KZwHRftYYawbZP30g7cBVXomXP?=
- =?us-ascii?Q?StIoa+U37lbpJTw3lh06zXOa8zQiQ6Ut2xHgXfedbX7lyPiHwpFH2YrX5jCh?=
- =?us-ascii?Q?gtwPcoWeuI9ZmYACmvv7Ymp7yD/G6VrAyyr+Qlz6XI21EHbC1g55xat035yP?=
- =?us-ascii?Q?Kz/ZiJUBnqaAZnJhcxlaZgK3txtqWYjHnIXb3K1NEnN8fsaLm2GRneUChZoI?=
- =?us-ascii?Q?F9+LE86lxLwcInfwn75gukQh0UU97HM9xJMIODui0qQfyRhsv9h3Edeo6WlK?=
- =?us-ascii?Q?n6DwUYTlfN6jT0U04Z+IgRU36F39l9r84Hw/dtmnhsY3aUQLEDbIOF2Z2EiW?=
- =?us-ascii?Q?0ifnR25uvhQ/g0F3TQN6G0jC28zARwIyQ4TkDfkvqtLg1wyEBf23w/nCE+tB?=
- =?us-ascii?Q?MvR9mo85ss1C+4FDCQ6YWzEZumx5MzKD9n/rCozZQo3K0iJLoTLpqXyAf0Ti?=
- =?us-ascii?Q?JeflGrqyLZx7V4907AN2vK/Oc1rdJkMTrgxV/0JkOu/cSzvtqIXsjk/b7kDP?=
- =?us-ascii?Q?am3+ECqCIr1qxW0pKIcVM+H0XsTZ2zQeWMNmUItOjyWjmYErlcQqgaFnQIxI?=
- =?us-ascii?Q?qAJ8/2NjNfEEU98AW4iGQorjUvUukdp7V+spWWuSNwvtttrS+UlwXWuL/62p?=
- =?us-ascii?Q?mZFOWN1uPF51jF5X9ZN/CJZb2HemPfszv0CGQ54kwIcr4Cw5f0pmQK8LjI7r?=
- =?us-ascii?Q?NMGH330CtkYhy84aMaMElgZO6CpQVWkreyaSfnqy4D25VXDW5VNz97qoTALa?=
- =?us-ascii?Q?acckTLDYqnseiv7JhWl6b76SwDNiNr1gqLfqM5edpYMtL/m9pOX5HI6lXRQw?=
- =?us-ascii?Q?XbbmDv71mJd3otR1+BgYe+PALOKKIHmiMSs+9cuZkzz9TwyzdubINvu+RaIJ?=
- =?us-ascii?Q?jwp1SQgx8BFbpLzo8p9bWyJNy7QcpyrY4tQCvQGcC6c1vOhmTLvqJTp93cOG?=
- =?us-ascii?Q?aN8jRq4YJUleLNZq+Ba1YDIN1S1uU6RIZIH9XfcaqKO7AdTnih9mrZw3ClaN?=
- =?us-ascii?Q?F3U61j7KRwn4NWr0SB9ONhj5omWUZDylioqJAfWcbS3iJwS9Qcf/F/lPWWcH?=
- =?us-ascii?Q?ROpiiUyQgKxXdBuF2DQLmsla?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233147AbhDONXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:23:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233092AbhDONXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:23:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618492977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pGV51z/usrS1hQ4D2fvkw4t5pvqiVsDoLlcb6+T8FmE=;
+        b=TzwPGBulwZbPHzde8JuZHdx2MRLNjn8StMzFiHG27L2kgGdGNOayWWpytincwEHwFSaSoq
+        u+geoj4Bv8Rju0x+w+jKXXB3IUWzkoDTAMNwEh1DSASNdnuE76Nc787qoO1yBLhop0shz0
+        a8y62aigU+ii8oHFa68PbbqvO3ln3LA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-2nsn58eRM8mvuwm2FCKQfA-1; Thu, 15 Apr 2021 09:22:55 -0400
+X-MC-Unique: 2nsn58eRM8mvuwm2FCKQfA-1
+Received: by mail-ed1-f70.google.com with SMTP id d27-20020a50f69b0000b02903827b61b783so5215475edn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:22:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pGV51z/usrS1hQ4D2fvkw4t5pvqiVsDoLlcb6+T8FmE=;
+        b=MbyZeH/Cl9pVFaoTsilfGdKQ897+l0LhUotwRU4dYlIOvkJHGfCPoblqliZrR4aTYT
+         vxVP0s9MRuAmaGn7Ya2zRU+WyltdaqR4YK3/toJeZkEZOD5h1qDFgRYBqz87diU5F7iA
+         ONInkxFZoHx4ebs2EBNcTk9iuH8fl9yxq6WOimWChxRQKgyLSBDTt3AQskiI6SuoIZu7
+         bwSwVB5vf41dssaJHQDHL/q6LaV14OiCUSd9D2+cD9LNf3qBxjF5h7GH/xv0gz6uEinE
+         AauSxD7RglT7lx8yxLDv3E8y96y26vB2k7NdwAkmNtiQuYtwGEENQjIgUnnZb53yTtT3
+         kQww==
+X-Gm-Message-State: AOAM530ymblbaGh6toALw4oeAp4JmnlC0CgAfiRSmWC/QG2kWAonlGoU
+        9c6wcz8e4FlupJuJakBot+r1+3LXoDEdKQmCb1YyA7rVVjeRJWaNhNgKPMdHgHyc2/JKlmhXrc+
+        y2uaovnFdCZZu4ycg9UCSbstP
+X-Received: by 2002:a17:906:c9d8:: with SMTP id hk24mr3460565ejb.480.1618492974001;
+        Thu, 15 Apr 2021 06:22:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAL5WmKiee4K1Rey26vkRplVgrgGt4D2DFy+mWeFf8XGvsxY+pfdobIz8/jHYwKuBtBeDwdg==
+X-Received: by 2002:a17:906:c9d8:: with SMTP id hk24mr3460550ejb.480.1618492973777;
+        Thu, 15 Apr 2021 06:22:53 -0700 (PDT)
+Received: from x1.bristot.me (host-79-56-201-31.retail.telecomitalia.it. [79.56.201.31])
+        by smtp.gmail.com with ESMTPSA id o20sm2531764eds.65.2021.04.15.06.22.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 06:22:53 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/5] tracing/hwlat: Implement the per-cpu mode
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, kcarcia@redhat.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1617889883.git.bristot@redhat.com>
+ <1c99ca2d7403474508aa7b025869c0673238400a.1617889883.git.bristot@redhat.com>
+ <20210414104102.7589626c@gandalf.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <bce142fc-4b1d-9924-e0d7-c02b0bd38405@redhat.com>
+Date:   Thu, 15 Apr 2021 15:22:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2deb3f0b-0c78-43f8-39d5-08d900118718
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2021 13:22:32.9742
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pU1mZ1MslbyhY0u2BWkZkhRND0D3D4SoyL7/X0oNqOURqLXMZJYXPqvUr4s+NJSRzV+5mef9Td7m+SWWDJkA/Cv3oHtvIiRTUCbutU6hYFc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1955
+In-Reply-To: <20210414104102.7589626c@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Thursday, Apr=
-il 15, 2021 3:59 AM
->=20
-> Use blk_mq_unique_tag() to generate requestIDs for StorVSC, avoiding
-> all issues with allocating enough entries in the VMbus requestor.
->=20
-> Suggested-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
-> Changes since RFC:
->   - pass sentinel values for {init,reset}_request in vmbus_sendpacket()
->   - remove/inline the storvsc_request_addr() callback
->   - make storvsc_next_request_id() 'static'
->   - add code to handle the case of an unsolicited message from Hyper-V
->   - other minor/style changes
->=20
-> [1] https://lore.kernel.org/linux-hyperv/20210408161315.341888-1-parri.an=
-drea@gmail.com/
->=20
->  drivers/hv/channel.c              | 14 ++---
->  drivers/hv/ring_buffer.c          | 13 +++--
->  drivers/net/hyperv/netvsc.c       |  8 ++-
->  drivers/net/hyperv/rndis_filter.c |  2 +
->  drivers/scsi/storvsc_drv.c        | 94 +++++++++++++++++++++----------
->  include/linux/hyperv.h            | 13 ++++-
->  6 files changed, 95 insertions(+), 49 deletions(-)
+On 4/14/21 4:41 PM, Steven Rostedt wrote:
+> On Thu,  8 Apr 2021 16:13:21 +0200
+> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+> 
+>> Implements the per-cpu mode in which a sampling thread is created for
+>> each cpu in the "cpus" (and tracing_mask).
+>>
+>> The per-cpu mode has the potention to speed up the hwlat detection by
+>> running on multiple CPUs at the same time.
+> 
+> And totally slow down the entire system in the process ;-)
 
-LGTM
+Too :-) But this is not the default config... So it should be an intentional change.
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+>>
+>> Cc: Jonathan Corbet <corbet@lwn.net>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
+>> Cc: Clark Willaims <williams@redhat.com>
+>> Cc: John Kacur <jkacur@redhat.com>
+>> Cc: Juri Lelli <juri.lelli@redhat.com>
+>> Cc: linux-doc@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+>>
+>> ---
+>>  Documentation/trace/hwlat_detector.rst |   6 +-
+>>  kernel/trace/trace_hwlat.c             | 171 +++++++++++++++++++------
+>>  2 files changed, 137 insertions(+), 40 deletions(-)
+>>
+>> diff --git a/Documentation/trace/hwlat_detector.rst b/Documentation/trace/hwlat_detector.rst
+>> index f63fdd867598..7a6fab105b29 100644
+>> --- a/Documentation/trace/hwlat_detector.rst
+>> +++ b/Documentation/trace/hwlat_detector.rst
+>> @@ -85,10 +85,12 @@ the available options are:
+>>  
+>>   - none:        do not force migration
+>>   - round-robin: migrate across each CPU specified in cpus between each window
+>> + - per-cpu:     create a per-cpu thread for each cpu in cpus
+>>  
+>>  By default, hwlat detector will also obey the tracing_cpumask, so the thread
+>>  will be placed only in the set of cpus that is both on the hwlat detector's
+>>  cpus and in the global tracing_cpumask file. The user can overwrite the
+>>  cpumask by setting it manually. Changing the hwlatd affinity externally,
+>> -e.g., via taskset tool, will disable the round-robin migration.
+>> -
+>> +e.g., via taskset tool, will disable the round-robin migration. In the
+>> +per-cpu mode, the per-cpu thread (hwlatd/CPU) will be pinned to its relative
+>> +cpu, and its affinity cannot be changed.
+>> diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
+>> index 3818200c9e24..52968ea312df 100644
+>> --- a/kernel/trace/trace_hwlat.c
+>> +++ b/kernel/trace/trace_hwlat.c
+>> @@ -34,7 +34,7 @@
+>>   * Copyright (C) 2008-2009 Jon Masters, Red Hat, Inc. <jcm@redhat.com>
+>>   * Copyright (C) 2013-2016 Steven Rostedt, Red Hat, Inc. <srostedt@redhat.com>
+>>   *
+>> - * Includes useful feedback from Clark Williams <clark@redhat.com>
+>> + * Includes useful feedback from Clark Williams <williams@redhat.com>
+> 
+> Interesting update ;-)
 
->=20
-> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-> index db30be8f9ccea..f78e02ace51e8 100644
-> --- a/drivers/hv/channel.c
-> +++ b/drivers/hv/channel.c
-> @@ -1121,15 +1121,14 @@ EXPORT_SYMBOL_GPL(vmbus_recvpacket_raw);
->   * vmbus_next_request_id - Returns a new request id. It is also
->   * the index at which the guest memory address is stored.
->   * Uses a spin lock to avoid race conditions.
-> - * @rqstor: Pointer to the requestor struct
-> + * @channel: Pointer to the VMbus channel struct
->   * @rqst_add: Guest memory address to be stored in the array
->   */
-> -u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr)
-> +u64 vmbus_next_request_id(struct vmbus_channel *channel, u64 rqst_addr)
->  {
-> +	struct vmbus_requestor *rqstor =3D &channel->requestor;
->  	unsigned long flags;
->  	u64 current_id;
-> -	const struct vmbus_channel *channel =3D
-> -		container_of(rqstor, const struct vmbus_channel, requestor);
->=20
->  	/* Check rqstor has been initialized */
->  	if (!channel->rqstor_size)
-> @@ -1163,16 +1162,15 @@ EXPORT_SYMBOL_GPL(vmbus_next_request_id);
->  /*
->   * vmbus_request_addr - Returns the memory address stored at @trans_id
->   * in @rqstor. Uses a spin lock to avoid race conditions.
-> - * @rqstor: Pointer to the requestor struct
-> + * @channel: Pointer to the VMbus channel struct
->   * @trans_id: Request id sent back from Hyper-V. Becomes the requestor's
->   * next request id.
->   */
-> -u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id)
-> +u64 vmbus_request_addr(struct vmbus_channel *channel, u64 trans_id)
->  {
-> +	struct vmbus_requestor *rqstor =3D &channel->requestor;
->  	unsigned long flags;
->  	u64 req_addr;
-> -	const struct vmbus_channel *channel =3D
-> -		container_of(rqstor, const struct vmbus_channel, requestor);
->=20
->  	/* Check rqstor has been initialized */
->  	if (!channel->rqstor_size)
-> diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-> index ecd82ebfd5bc4..2bf57677272b5 100644
-> --- a/drivers/hv/ring_buffer.c
-> +++ b/drivers/hv/ring_buffer.c
-> @@ -310,10 +310,12 @@ int hv_ringbuffer_write(struct vmbus_channel *chann=
-el,
->  	 */
->=20
->  	if (desc->flags =3D=3D VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
-> -		rqst_id =3D vmbus_next_request_id(&channel->requestor, requestid);
-> -		if (rqst_id =3D=3D VMBUS_RQST_ERROR) {
-> -			spin_unlock_irqrestore(&outring_info->ring_lock, flags);
-> -			return -EAGAIN;
-> +		if (channel->next_request_id_callback !=3D NULL) {
-> +			rqst_id =3D channel->next_request_id_callback(channel, requestid);
-> +			if (rqst_id =3D=3D VMBUS_RQST_ERROR) {
-> +				spin_unlock_irqrestore(&outring_info->ring_lock, flags);
-> +				return -EAGAIN;
-> +			}
->  		}
->  	}
->  	desc =3D hv_get_ring_buffer(outring_info) + old_write;
-> @@ -341,7 +343,8 @@ int hv_ringbuffer_write(struct vmbus_channel *channel=
-,
->  	if (channel->rescind) {
->  		if (rqst_id !=3D VMBUS_NO_RQSTOR) {
->  			/* Reclaim request ID to avoid leak of IDs */
-> -			vmbus_request_addr(&channel->requestor, rqst_id);
-> +			if (channel->request_addr_callback !=3D NULL)
-> +				channel->request_addr_callback(channel, rqst_id);
->  		}
->  		return -ENODEV;
->  	}
-> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-> index c64cc7639c39c..1a221ce2d6fdc 100644
-> --- a/drivers/net/hyperv/netvsc.c
-> +++ b/drivers/net/hyperv/netvsc.c
-> @@ -730,7 +730,7 @@ static void netvsc_send_tx_complete(struct net_device=
- *ndev,
->  	int queue_sends;
->  	u64 cmd_rqst;
->=20
-> -	cmd_rqst =3D vmbus_request_addr(&channel->requestor, (u64)desc->trans_i=
-d);
-> +	cmd_rqst =3D channel->request_addr_callback(channel, (u64)desc->trans_i=
-d);
->  	if (cmd_rqst =3D=3D VMBUS_RQST_ERROR) {
->  		netdev_err(ndev, "Incorrect transaction id\n");
->  		return;
-> @@ -790,8 +790,8 @@ static void netvsc_send_completion(struct net_device =
-*ndev,
->=20
->  	/* First check if this is a VMBUS completion without data payload */
->  	if (!msglen) {
-> -		cmd_rqst =3D vmbus_request_addr(&incoming_channel->requestor,
-> -					      (u64)desc->trans_id);
-> +		cmd_rqst =3D incoming_channel->request_addr_callback(incoming_channel,
-> +								   (u64)desc->trans_id);
->  		if (cmd_rqst =3D=3D VMBUS_RQST_ERROR) {
->  			netdev_err(ndev, "Invalid transaction id\n");
->  			return;
-> @@ -1602,6 +1602,8 @@ struct netvsc_device *netvsc_device_add(struct hv_d=
-evice
-> *device,
->  		       netvsc_poll, NAPI_POLL_WEIGHT);
->=20
->  	/* Open the channel */
-> +	device->channel->next_request_id_callback =3D vmbus_next_request_id;
-> +	device->channel->request_addr_callback =3D vmbus_request_addr;
->  	device->channel->rqstor_size =3D netvsc_rqstor_size(netvsc_ring_bytes);
->  	ret =3D vmbus_open(device->channel, netvsc_ring_bytes,
->  			 netvsc_ring_bytes,  NULL, 0,
-> diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis=
-_filter.c
-> index 123cc9d25f5ed..ebf34bf3f9075 100644
-> --- a/drivers/net/hyperv/rndis_filter.c
-> +++ b/drivers/net/hyperv/rndis_filter.c
-> @@ -1259,6 +1259,8 @@ static void netvsc_sc_open(struct vmbus_channel *ne=
-w_sc)
->  	/* Set the channel before opening.*/
->  	nvchan->channel =3D new_sc;
->=20
-> +	new_sc->next_request_id_callback =3D vmbus_next_request_id;
-> +	new_sc->request_addr_callback =3D vmbus_request_addr;
->  	new_sc->rqstor_size =3D netvsc_rqstor_size(netvsc_ring_bytes);
->  	ret =3D vmbus_open(new_sc, netvsc_ring_bytes,
->  			 netvsc_ring_bytes, NULL, 0,
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> index 6bc5453cea8a7..b219a266cca80 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -684,6 +684,23 @@ static void storvsc_change_target_cpu(struct vmbus_c=
-hannel
-> *channel, u32 old,
->  	spin_unlock_irqrestore(&stor_device->lock, flags);
->  }
->=20
-> +static u64 storvsc_next_request_id(struct vmbus_channel *channel, u64 rq=
-st_addr)
-> +{
-> +	struct storvsc_cmd_request *request =3D
-> +		(struct storvsc_cmd_request *)(unsigned long)rqst_addr;
-> +
-> +	if (rqst_addr =3D=3D VMBUS_RQST_INIT)
-> +		return VMBUS_RQST_INIT;
-> +	if (rqst_addr =3D=3D VMBUS_RQST_RESET)
-> +		return VMBUS_RQST_RESET;
-> +
-> +	/*
-> +	 * Cannot return an ID of 0, which is reserved for an unsolicited
-> +	 * message from Hyper-V.
-> +	 */
-> +	return (u64)blk_mq_unique_tag(request->cmd->request) + 1;
-> +}
-> +
->  static void handle_sc_creation(struct vmbus_channel *new_sc)
->  {
->  	struct hv_device *device =3D new_sc->primary_channel->device_obj;
-> @@ -698,11 +715,7 @@ static void handle_sc_creation(struct vmbus_channel =
-*new_sc)
->=20
->  	memset(&props, 0, sizeof(struct vmstorage_channel_properties));
->=20
-> -	/*
-> -	 * The size of vmbus_requestor is an upper bound on the number of reque=
-sts
-> -	 * that can be in-progress at any one time across all channels.
-> -	 */
-> -	new_sc->rqstor_size =3D scsi_driver.can_queue;
-> +	new_sc->next_request_id_callback =3D storvsc_next_request_id;
->=20
->  	ret =3D vmbus_open(new_sc,
->  			 storvsc_ringbuffer_size,
-> @@ -769,7 +782,7 @@ static void  handle_multichannel_storage(struct hv_de=
-vice *device,
-> int max_chns)
->  	ret =3D vmbus_sendpacket(device->channel, vstor_packet,
->  			       (sizeof(struct vstor_packet) -
->  			       stor_device->vmscsi_size_delta),
-> -			       (unsigned long)request,
-> +			       VMBUS_RQST_INIT,
->  			       VM_PKT_DATA_INBAND,
->  			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
->=20
-> @@ -838,7 +851,7 @@ static int storvsc_execute_vstor_op(struct hv_device =
-*device,
->  	ret =3D vmbus_sendpacket(device->channel, vstor_packet,
->  			       (sizeof(struct vstor_packet) -
->  			       stor_device->vmscsi_size_delta),
-> -			       (unsigned long)request,
-> +			       VMBUS_RQST_INIT,
->  			       VM_PKT_DATA_INBAND,
->  			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
->  	if (ret !=3D 0)
-> @@ -1240,6 +1253,7 @@ static void storvsc_on_channel_callback(void *conte=
-xt)
->  	const struct vmpacket_descriptor *desc;
->  	struct hv_device *device;
->  	struct storvsc_device *stor_device;
-> +	struct Scsi_Host *shost;
->=20
->  	if (channel->primary_channel !=3D NULL)
->  		device =3D channel->primary_channel->device_obj;
-> @@ -1250,20 +1264,12 @@ static void storvsc_on_channel_callback(void *con=
-text)
->  	if (!stor_device)
->  		return;
->=20
-> -	foreach_vmbus_pkt(desc, channel) {
-> -		void *packet =3D hv_pkt_data(desc);
-> -		struct storvsc_cmd_request *request;
-> -		u64 cmd_rqst;
-> -
-> -		cmd_rqst =3D vmbus_request_addr(&channel->requestor,
-> -					      desc->trans_id);
-> -		if (cmd_rqst =3D=3D VMBUS_RQST_ERROR) {
-> -			dev_err(&device->device,
-> -				"Incorrect transaction id\n");
-> -			continue;
-> -		}
-> +	shost =3D stor_device->host;
->=20
-> -		request =3D (struct storvsc_cmd_request *)(unsigned long)cmd_rqst;
-> +	foreach_vmbus_pkt(desc, channel) {
-> +		struct vstor_packet *packet =3D hv_pkt_data(desc);
-> +		struct storvsc_cmd_request *request =3D NULL;
-> +		u64 rqst_id =3D desc->trans_id;
->=20
->  		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
->  				stor_device->vmscsi_size_delta) {
-> @@ -1271,14 +1277,44 @@ static void storvsc_on_channel_callback(void *con=
-text)
->  			continue;
->  		}
->=20
-> -		if (request =3D=3D &stor_device->init_request ||
-> -		    request =3D=3D &stor_device->reset_request) {
-> -			memcpy(&request->vstor_packet, packet,
-> -			       (sizeof(struct vstor_packet) - stor_device->vmscsi_size_delta)=
-);
-> -			complete(&request->wait_event);
-> +		if (rqst_id =3D=3D VMBUS_RQST_INIT) {
-> +			request =3D &stor_device->init_request;
-> +		} else if (rqst_id =3D=3D VMBUS_RQST_RESET) {
-> +			request =3D &stor_device->reset_request;
->  		} else {
-> +			/* Hyper-V can send an unsolicited message with ID of 0 */
-> +			if (rqst_id =3D=3D 0) {
-> +				/*
-> +				 * storvsc_on_receive() looks at the vstor_packet in the
-> message
-> +				 * from the ring buffer.  If the operation in the vstor_packet
-> is
-> +				 * COMPLETE_IO, then we call storvsc_on_io_completion(),
-> and
-> +				 * dereference the guest memory address.  Make sure we
-> don't call
-> +				 * storvsc_on_io_completion() with a guest memory
-> address that is
-> +				 * zero if Hyper-V were to construct and send such a bogus
-> packet.
-> +				 */
-> +				if (packet->operation =3D=3D
-> VSTOR_OPERATION_COMPLETE_IO) {
-> +					dev_err(&device->device, "Invalid packet with ID of
-> 0\n");
-> +					continue;
-> +				}
-> +			} else {
-> +				struct scsi_cmnd *scmnd;
-> +
-> +				/* Transaction 'rqst_id' corresponds to tag 'rqst_id - 1' */
-> +				scmnd =3D scsi_host_find_tag(shost, rqst_id - 1);
-> +				if (scmnd =3D=3D NULL) {
-> +					dev_err(&device->device, "Incorrect transaction
-> ID\n");
-> +					continue;
-> +				}
-> +				request =3D (struct storvsc_cmd_request
-> *)scsi_cmd_priv(scmnd);
-> +			}
-> +
->  			storvsc_on_receive(stor_device, packet, request);
-> +			continue;
->  		}
-> +
-> +		memcpy(&request->vstor_packet, packet,
-> +		       (sizeof(struct vstor_packet) - stor_device->vmscsi_size_delta))=
-;
-> +		complete(&request->wait_event);
->  	}
->  }
->=20
-> @@ -1290,11 +1326,7 @@ static int storvsc_connect_to_vsp(struct hv_device=
- *device, u32
-> ring_size,
->=20
->  	memset(&props, 0, sizeof(struct vmstorage_channel_properties));
->=20
-> -	/*
-> -	 * The size of vmbus_requestor is an upper bound on the number of reque=
-sts
-> -	 * that can be in-progress at any one time across all channels.
-> -	 */
-> -	device->channel->rqstor_size =3D scsi_driver.can_queue;
-> +	device->channel->next_request_id_callback =3D storvsc_next_request_id;
->=20
->  	ret =3D vmbus_open(device->channel,
->  			 ring_size,
-> @@ -1620,7 +1652,7 @@ static int storvsc_host_reset_handler(struct scsi_c=
-mnd *scmnd)
->  	ret =3D vmbus_sendpacket(device->channel, vstor_packet,
->  			       (sizeof(struct vstor_packet) -
->  				stor_device->vmscsi_size_delta),
-> -			       (unsigned long)&stor_device->reset_request,
-> +			       VMBUS_RQST_RESET,
->  			       VM_PKT_DATA_INBAND,
->  			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
->  	if (ret !=3D 0)
-> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> index 2c18c8e768efe..5692ffa60e022 100644
-> --- a/include/linux/hyperv.h
-> +++ b/include/linux/hyperv.h
-> @@ -779,7 +779,11 @@ struct vmbus_requestor {
->=20
->  #define VMBUS_NO_RQSTOR U64_MAX
->  #define VMBUS_RQST_ERROR (U64_MAX - 1)
-> +/* NetVSC-specific */
->  #define VMBUS_RQST_ID_NO_RESPONSE (U64_MAX - 2)
-> +/* StorVSC-specific */
-> +#define VMBUS_RQST_INIT (U64_MAX - 2)
-> +#define VMBUS_RQST_RESET (U64_MAX - 3)
->=20
->  struct vmbus_device {
->  	u16  dev_type;
-> @@ -1007,13 +1011,18 @@ struct vmbus_channel {
->  	u32 fuzz_testing_interrupt_delay;
->  	u32 fuzz_testing_message_delay;
->=20
-> +	/* callback to generate a request ID from a request address */
-> +	u64 (*next_request_id_callback)(struct vmbus_channel *channel, u64 rqst=
-_addr);
-> +	/* callback to retrieve a request address from a request ID */
-> +	u64 (*request_addr_callback)(struct vmbus_channel *channel, u64 rqst_id=
-);
-> +
->  	/* request/transaction ids for VMBus */
->  	struct vmbus_requestor requestor;
->  	u32 rqstor_size;
->  };
->=20
-> -u64 vmbus_next_request_id(struct vmbus_requestor *rqstor, u64 rqst_addr)=
-;
-> -u64 vmbus_request_addr(struct vmbus_requestor *rqstor, u64 trans_id);
-> +u64 vmbus_next_request_id(struct vmbus_channel *channel, u64 rqst_addr);
-> +u64 vmbus_request_addr(struct vmbus_channel *channel, u64 trans_id);
->=20
->  static inline bool is_hvsock_channel(const struct vmbus_channel *c)
->  {
-> --
-> 2.25.1
+Should I make it a separated patch? :-)
+
+>>   *
+>>   */
+>>  #include <linux/kthread.h>
+>> @@ -54,9 +54,6 @@ static struct trace_array	*hwlat_trace;
+>>  #define DEFAULT_SAMPLE_WIDTH	500000			/* 0.5s */
+>>  #define DEFAULT_LAT_THRESHOLD	10			/* 10us */
+>>  
+>> -/* sampling thread*/
+>> -static struct task_struct *hwlat_kthread;
+>> -
+>>  static struct dentry *hwlat_sample_width;	/* sample width us */
+>>  static struct dentry *hwlat_sample_window;	/* sample window us */
+>>  static struct dentry *hwlat_cpumask_dentry;	/* hwlat cpus allowed */
+>> @@ -65,19 +62,27 @@ static struct dentry *hwlat_thread_mode;	/* hwlat thread mode */
+>>  enum {
+>>  	MODE_NONE = 0,
+>>  	MODE_ROUND_ROBIN,
+>> +	MODE_PER_CPU,
+>>  	MODE_MAX
+>>  };
+>>  
+>> -static char *thread_mode_str[] = { "none", "round-robin" };
+>> +static char *thread_mode_str[] = { "none", "round-robin", "per-cpu" };
+>>  
+>>  /* Save the previous tracing_thresh value */
+>>  static unsigned long save_tracing_thresh;
+>>  
+>> -/* NMI timestamp counters */
+>> -static u64 nmi_ts_start;
+>> -static u64 nmi_total_ts;
+>> -static int nmi_count;
+>> -static int nmi_cpu;
+>> +/* runtime kthread data */
+>> +struct hwlat_kthread_data {
+>> +	struct task_struct *kthread;
+>> +	/* NMI timestamp counters */
+>> +	u64 nmi_ts_start;
+>> +	u64 nmi_total_ts;
+>> +	int nmi_count;
+>> +	int nmi_cpu;
+>> +};
+>> +
+>> +struct hwlat_kthread_data hwlat_single_cpu_data;
+>> +DEFINE_PER_CPU(struct hwlat_kthread_data, hwlat_per_cpu_data);
+>>  
+>>  /* Tells NMIs to call back to the hwlat tracer to record timestamps */
+>>  bool trace_hwlat_callback_enabled;
+>> @@ -114,6 +119,14 @@ static struct hwlat_data {
+>>  	.thread_mode		= MODE_ROUND_ROBIN
+>>  };
+>>  
+>> +struct hwlat_kthread_data *get_cpu_data(void)
+>> +{
+>> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
+>> +		return this_cpu_ptr(&hwlat_per_cpu_data);
+>> +	else
+>> +		return &hwlat_single_cpu_data;
+>> +}
+>> +
+>>  static bool hwlat_busy;
+>>  
+>>  static void trace_hwlat_sample(struct hwlat_sample *sample)
+>> @@ -151,7 +164,9 @@ static void trace_hwlat_sample(struct hwlat_sample *sample)
+>>  
+>>  void trace_hwlat_callback(bool enter)
+>>  {
+>> -	if (smp_processor_id() != nmi_cpu)
+>> +	struct hwlat_kthread_data *kdata = get_cpu_data();
+>> +
+>> +	if (kdata->kthread)
+>>  		return;
+>>  
+>>  	/*
+>> @@ -160,13 +175,13 @@ void trace_hwlat_callback(bool enter)
+>>  	 */
+>>  	if (!IS_ENABLED(CONFIG_GENERIC_SCHED_CLOCK)) {
+>>  		if (enter)
+>> -			nmi_ts_start = time_get();
+>> +			kdata->nmi_ts_start = time_get();
+>>  		else
+>> -			nmi_total_ts += time_get() - nmi_ts_start;
+>> +			kdata->nmi_total_ts += time_get() - kdata->nmi_ts_start;
+>>  	}
+>>  
+>>  	if (enter)
+>> -		nmi_count++;
+>> +		kdata->nmi_count++;
+>>  }
+>>  
+>>  /**
+>> @@ -178,6 +193,7 @@ void trace_hwlat_callback(bool enter)
+>>   */
+>>  static int get_sample(void)
+>>  {
+>> +	struct hwlat_kthread_data *kdata = get_cpu_data();
+>>  	struct trace_array *tr = hwlat_trace;
+>>  	struct hwlat_sample s;
+>>  	time_type start, t1, t2, last_t2;
+>> @@ -190,9 +206,8 @@ static int get_sample(void)
+>>  
+>>  	do_div(thresh, NSEC_PER_USEC); /* modifies interval value */
+>>  
+>> -	nmi_cpu = smp_processor_id();
+>> -	nmi_total_ts = 0;
+>> -	nmi_count = 0;
+>> +	kdata->nmi_total_ts = 0;
+>> +	kdata->nmi_count = 0;
+>>  	/* Make sure NMIs see this first */
+>>  	barrier();
+>>  
+>> @@ -262,15 +277,15 @@ static int get_sample(void)
+>>  		ret = 1;
+>>  
+>>  		/* We read in microseconds */
+>> -		if (nmi_total_ts)
+>> -			do_div(nmi_total_ts, NSEC_PER_USEC);
+>> +		if (kdata->nmi_total_ts)
+>> +			do_div(kdata->nmi_total_ts, NSEC_PER_USEC);
+>>  
+>>  		hwlat_data.count++;
+>>  		s.seqnum = hwlat_data.count;
+>>  		s.duration = sample;
+>>  		s.outer_duration = outer_sample;
+>> -		s.nmi_total_ts = nmi_total_ts;
+>> -		s.nmi_count = nmi_count;
+>> +		s.nmi_total_ts = kdata->nmi_total_ts;
+>> +		s.nmi_count = kdata->nmi_count;
+>>  		s.count = count;
+>>  		trace_hwlat_sample(&s);
+>>  
+>> @@ -376,23 +391,43 @@ static int kthread_fn(void *data)
+>>  }
+>>  
+>>  /**
+>> - * start_kthread - Kick off the hardware latency sampling/detector kthread
+>> + * stop_stop_kthread - Inform the hardware latency samping/detector kthread to stop
+>> + *
+>> + * This kicks the running hardware latency sampling/detector kernel thread and
+>> + * tells it to stop sampling now. Use this on unload and at system shutdown.
+>> + */
+>> +static void stop_single_kthread(void)
+>> +{
+>> +	struct hwlat_kthread_data *kdata = get_cpu_data();
+>> +	struct task_struct *kthread = kdata->kthread;
+>> +
+>> +	if (!kthread)
+>> +
+>> +		return;
+>> +	kthread_stop(kthread);
+>> +
+>> +	kdata->kthread = NULL;
+>> +}
+>> +
+>> +
+>> +/**
+>> + * start_single_kthread - Kick off the hardware latency sampling/detector kthread
+>>   *
+>>   * This starts the kernel thread that will sit and sample the CPU timestamp
+>>   * counter (TSC or similar) and look for potential hardware latencies.
+>>   */
+>> -static int start_kthread(struct trace_array *tr)
+>> +static int start_single_kthread(struct trace_array *tr)
+>>  {
+>> +	struct hwlat_kthread_data *kdata = get_cpu_data();
+>>  	struct cpumask *current_mask = &save_cpumask;
+>>  	struct task_struct *kthread;
+>>  	int next_cpu;
+>>  
+>> -	if (hwlat_kthread)
+>> +	if (kdata->kthread)
+>>  		return 0;
+>>  
+>> -
+>>  	kthread = kthread_create(kthread_fn, NULL, "hwlatd");
+>> -	if (IS_ERR(kthread)) {
+>> +	if (IS_ERR(kdata->kthread)) {
+>>  		pr_err(BANNER "could not start sampling thread\n");
+>>  		return -ENOMEM;
+>>  	}
+>> @@ -419,24 +454,77 @@ static int start_kthread(struct trace_array *tr)
+>>  
+>>  	sched_setaffinity(kthread->pid, current_mask);
+>>  
+>> -	hwlat_kthread = kthread;
+>> +	kdata->kthread = kthread;
+>>  	wake_up_process(kthread);
+>>  
+>>  	return 0;
+>>  }
+>>  
+>>  /**
+>> - * stop_kthread - Inform the hardware latency samping/detector kthread to stop
+>> + * stop_per_cpu_kthread - Inform the hardware latency samping/detector kthread to stop
+>>   *
+>> - * This kicks the running hardware latency sampling/detector kernel thread and
+>> + * This kicks the running hardware latency sampling/detector kernel threads and
+>>   * tells it to stop sampling now. Use this on unload and at system shutdown.
+>>   */
+>> -static void stop_kthread(void)
+>> +static void stop_per_cpu_kthreads(void)
+>>  {
+>> -	if (!hwlat_kthread)
+>> -		return;
+>> -	kthread_stop(hwlat_kthread);
+>> -	hwlat_kthread = NULL;
+>> +	struct task_struct *kthread;
+>> +	int cpu;
+>> +
+>> +	for_each_online_cpu(cpu) {
+>> +		kthread = per_cpu(hwlat_per_cpu_data, cpu).kthread;
+>> +		if (kthread)
+>> +			kthread_stop(kthread);
+> 
+> Probably want:
+> 
+> 		per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
+> 
+> Just to be safe. I don't like to rely on the start doing the job, as things
+> can change in the future. Having the clearing here as well makes the code
+> more robust.
+
+Ack!
+
+> 
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * start_per_cpu_kthread - Kick off the hardware latency sampling/detector kthreads
+>> + *
+>> + * This starts the kernel threads that will sit on potentially all cpus and
+>> + * sample the CPU timestamp counter (TSC or similar) and look for potential
+>> + * hardware latencies.
+>> + */
+>> +static int start_per_cpu_kthreads(struct trace_array *tr)
+>> +{
+>> +	struct cpumask *current_mask = &save_cpumask;
+>> +	struct cpumask *this_cpumask;
+>> +	struct task_struct *kthread;
+>> +	char comm[24];
+>> +	int cpu;
+>> +
+>> +	if (!alloc_cpumask_var(&this_cpumask, GFP_KERNEL))
+>> +		return -ENOMEM;
+>> +
+>> +	get_online_cpus();
+>> +	/*
+>> +	 * Run only on CPUs in which trace and hwlat are allowed to run.
+>> +	 */
+>> +	cpumask_and(current_mask, tr->tracing_cpumask, &hwlat_cpumask);
+>> +	/*
+>> +	 * And the CPU is online.
+>> +	 */
+>> +	cpumask_and(current_mask, cpu_online_mask, current_mask);
+>> +	put_online_cpus();
+>> +
+>> +	for_each_online_cpu(cpu)
+>> +		per_cpu(hwlat_per_cpu_data, cpu).kthread = NULL;
+>> +
+>> +	for_each_cpu(cpu, current_mask) {
+>> +		snprintf(comm, 24, "hwlatd/%d", cpu);
+>> +
+>> +		kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
+>> +		if (IS_ERR(kthread)) {
+>> +			pr_err(BANNER "could not start sampling thread\n");
+>> +			stop_per_cpu_kthreads();
+>> +			return -ENOMEM;
+>> +		}
+>> +
+>> +		per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
+>> +		wake_up_process(kthread);
+>> +	}
+>> +
+>> +	return 0;
+>>  }
+>>  
+>>  /*
+>> @@ -701,7 +789,8 @@ static int hwlat_mode_open(struct inode *inode, struct file *file)
+>>   * The "none" sets the allowed cpumask for a single hwlatd thread at the
+>>   * startup and lets the scheduler handle the migration. The default mode is
+>>   * the "round-robin" one, in which a single hwlatd thread runs, migrating
+>> - * among the allowed CPUs in a round-robin fashion.
+>> + * among the allowed CPUs in a round-robin fashion. The "per-cpu" mode
+>> + * creates one hwlatd thread per allowed CPU.
+>>   */
+>>  static ssize_t hwlat_mode_write(struct file *filp, const char __user *ubuf,
+>>  				 size_t cnt, loff_t *ppos)
+>> @@ -827,14 +916,20 @@ static void hwlat_tracer_start(struct trace_array *tr)
+>>  {
+>>  	int err;
+>>  
+>> -	err = start_kthread(tr);
+>> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
+>> +		err = start_per_cpu_kthreads(tr);
+>> +	else
+>> +		err = start_single_kthread(tr);
+>>  	if (err)
+>>  		pr_err(BANNER "Cannot start hwlat kthread\n");
+>>  }
+>>  
+>>  static void hwlat_tracer_stop(struct trace_array *tr)
+>>  {
+>> -	stop_kthread();
+>> +	if (hwlat_data.thread_mode == MODE_PER_CPU)
+>> +		stop_per_cpu_kthreads();
+>> +	else
+>> +		stop_single_kthread();
+> 
+> This explains why you have the "busy" check in the changing of the modes.
+> But really, I don't see why you cant change the mode. Just stop the
+> previous mode, and start the new one.
+
+I will try it!
+
+Thanks!
+-- Daniel
+
+> -- Steve
+> 
+> 
+>>  }
+>>  
+>>  static int hwlat_tracer_init(struct trace_array *tr)
+>> @@ -864,7 +959,7 @@ static int hwlat_tracer_init(struct trace_array *tr)
+>>  
+>>  static void hwlat_tracer_reset(struct trace_array *tr)
+>>  {
+>> -	stop_kthread();
+>> +	hwlat_tracer_stop(tr);
+>>  
+>>  	/* the tracing threshold is static between runs */
+>>  	last_tracing_thresh = tracing_thresh;
+> 
 
