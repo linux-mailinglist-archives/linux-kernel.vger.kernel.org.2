@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E80360530
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A71B360534
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhDOJEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:04:13 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:34484 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231996AbhDOJEF (ORCPT
+        id S232087AbhDOJEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhDOJEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:04:05 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 7CB8BC82DB;
-        Thu, 15 Apr 2021 17:03:24 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P13171T139812371683072S1618477404344929_;
-        Thu, 15 Apr 2021 17:03:24 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <820a1f75bc7e53e62c16055c5e259f9c>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tsbogend@alpha.franken.de
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tsbogend@alpha.franken.de
-Cc:     yangtiezhu@loongson.cn, jiaxun.yang@flygoat.com,
-        viro@zeniv.linux.org.uk, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] MIPS: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Date:   Thu, 15 Apr 2021 17:03:22 +0800
-Message-Id: <20210415090322.17519-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 15 Apr 2021 05:04:44 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183AEC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:04:21 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lWxv5-000169-KF; Thu, 15 Apr 2021 11:04:15 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id B209860F2DC;
+        Thu, 15 Apr 2021 09:04:12 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 11:04:12 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] can: etas_es58x: Fix missing null check on netdev
+ pointer
+Message-ID: <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
+References: <20210415084723.1807935-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="szmpbpc75mtqb4hx"
+Content-Disposition: inline
+In-Reply-To: <20210415084723.1807935-1-colin.king@canonical.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for mips supporting ftrace built on other compiler
-options, let's have the mips Makefiles remove the $(CC_FLAGS_FTRACE)
-flags, whatever these may be, rather than assuming '-pg'.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- arch/mips/kernel/Makefile | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+--szmpbpc75mtqb4hx
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-index b4a57f1de772..77b9ec938ad8 100644
---- a/arch/mips/kernel/Makefile
-+++ b/arch/mips/kernel/Makefile
-@@ -17,10 +17,10 @@ obj-y		+= cpu-probe.o
- endif
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_ftrace.o = -pg
--CFLAGS_REMOVE_early_printk.o = -pg
--CFLAGS_REMOVE_perf_event.o = -pg
--CFLAGS_REMOVE_perf_event_mipsxx.o = -pg
-+CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event_mipsxx.o = $(CC_FLAGS_FTRACE)
- endif
- 
- obj-$(CONFIG_CEVT_BCM1480)	+= cevt-bcm1480.o
--- 
-2.20.1
+On 15.04.2021 09:47:23, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There is an assignment to *netdev that is can potentially be null but the
+> null check is checking netdev and not *netdev as intended. Fix this by
+> adding in the missing * operator.
+>=20
+> Addresses-Coverity: ("Dereference before null check")
+> Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CA=
+N USB interfaces")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
+Looks good. Applied to linux-can-next/testing.
 
+Tnx,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--szmpbpc75mtqb4hx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4AYgACgkQqclaivrt
+76lQ5gf+MVDfgP/lHzpBKIj8U4d1CJ+Hb2cUtI+HcxDsNqc08ZCbsoiWhze1E0df
+W4Hv7r7oN5RtUpsmM5hF8NV1jwjR3/buD6AIaTTMYWLOLm0QU+o/W2uKydBy1M9y
+ythlIG/6MN132kMeNLk7iHfXzT4jHCrVouq1kNVGZBwch+ljGCYw+1LJ5WwCutvh
+PP04dZZF/9EmYX10mWgmor6bMcD5tCPGd4P54sYsGuN6KV0pZiCWK2H2xqpi8sPW
+K3yWIPUnrI3RGqwmwAq/0v+JHi2rpipNvEUKz6+t326FhQcE6vy6oQ71pfcHM3Vk
+FN2fr4XDZLDEqPIe3Sl90lCNwKWhBA==
+=NznM
+-----END PGP SIGNATURE-----
+
+--szmpbpc75mtqb4hx--
