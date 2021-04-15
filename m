@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3328C3611C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3F43611C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbhDOSK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        id S234579AbhDOSK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233595AbhDOSKY (ORCPT
+        with ESMTP id S233551AbhDOSK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:10:24 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EB9C061574;
-        Thu, 15 Apr 2021 11:09:59 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id 1so18902366qtb.0;
-        Thu, 15 Apr 2021 11:09:59 -0700 (PDT)
+        Thu, 15 Apr 2021 14:10:56 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC01C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:10:32 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id j7so18874806qtx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Z8o2eF8WW0GN2VLTkAq3OumygwjQqYyVi3fNlIvWwiI=;
-        b=Duv85+DYznnAFwi/q+Zxi2c5YnmcJKrf+XUB68Byd2A15FYncD2i+j5jJxy6U6EdSF
-         lfwKRbEJ0dZC67j0WWswopaUjbvqC7Z7C1Fx6a5BoertXUsnykzmeClaU+kyhp9CBYs8
-         1I5ftmCsHx35smzynbGEP5c2TBhIrNzYR8VFsta3vGLDyTeVTay4e1QXgUHFAScGzOM8
-         XHJtBYHevxCfyAhrHF4ianLU1OyetPIO50/IUupmE6i9MH6vK8d0h1GqnsCdF8l9oF4W
-         ql1kY2WbAm2G6eJGeQGt39vHbfzivZIe6HY8tbe9jywU/r7ykmzmzQYh8jEIjdQGEI8V
-         N14g==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0BLFn8+sPdB8VIxTPCUa0jMJG0oUhmRim/8smTI9xvY=;
+        b=tGeopoVpJDMNEO8IkqF3ObY96XlRxdzEQbmT9ebDYCAN4ET4ZXVB5BRc1gdegOLnak
+         R8ziD48IV5FhyKUzjU/965vBnK3955PsmO/8G6vqpc6FGij3sKbVDMJ0k15g75yhqXwv
+         Obm+pY4Y+EGZNhKxOR/m//LoLYgQb/8andXi1lEzejlWt68oznT+oVYvFzgAFGADEsvO
+         D/oUUST0NO20OhtluWsk4eLbpqrQ9NiAfrHk5abtOTRRxlcNByjSosE1MWQfOpXAZY46
+         AWkz6NuwLa7NgR4h667WlfYY7biLEF+jWhwCyrOSthB7+/SIix5qEZZdP6NsirMSVje6
+         oAig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Z8o2eF8WW0GN2VLTkAq3OumygwjQqYyVi3fNlIvWwiI=;
-        b=pusCuvY6L6nmF9ZRU+esJCa4z7ginjmh/YKUpnMZF+PsHvV1W9wv77BZPHHPFgE7Fq
-         gDn83cM+eKBf9mEq8DEvQ9nVF5Voui3QRn6Tkmd9K6JWUb8pQBGFbW60cbtblfAKP5mJ
-         xUu/1+qaIcl5urAcXIUlin1TrxddIrM3NevM3mUxo6zmKX7ho9FA3qrfikRHHOVLgBSo
-         H2Oc42PGS5wzl/9+SdVQ5SbTXE4dOSgEY4XdTuGrwr/LjTDfV954ap9woOfoGueYSin7
-         Z41/QGOseQSFhARpl2cYBjov/crv3x3q87A5taRAAVO9O7eXNDQUJygJft5PGZ+dyQx8
-         ftqw==
-X-Gm-Message-State: AOAM53293NDW7yhZSOWRkF+VYPP8J8wnAxlS0xCnym0UsK0B7p06fk1n
-        Y6MY1aQSXxWwcYoJtuBiFvE=
-X-Google-Smtp-Source: ABdhPJy+SV3+lHg4xIpApam1jIImVhMJPVyBAuCeN8GIR+uE6lNYBWEYSLKqqbWVwZthy43uopci0g==
-X-Received: by 2002:ac8:7d03:: with SMTP id g3mr4391644qtb.330.1618510198723;
-        Thu, 15 Apr 2021 11:09:58 -0700 (PDT)
-Received: from [192.168.100.7] ([138.204.24.234])
-        by smtp.gmail.com with ESMTPSA id p21sm405918qkp.95.2021.04.15.11.09.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0BLFn8+sPdB8VIxTPCUa0jMJG0oUhmRim/8smTI9xvY=;
+        b=OTL+S+uIQoPzGnbIdPYdKZ2GJvjSyAQGoRiKIz1iPry9OvN7OXZ16yGhBvI4nOKDoW
+         kxFiC/tOIAoGp+rnxTm55lqfwvEG3YmCXxoDMZu3CmPXZNLnMYfd+Cs5nxFtKAoISFHP
+         oW5F+s8liNgFSE2dpyeFgyal/b8ROMkmhGBsVZXS3tzH2ycyDoB2P97Gvq7DZP7OSS1r
+         jsJVbbXbakGLY8Zbk9j6zLqAQkv80rdFA06+qGs+wPjFNEYORuuwgx48B0oswLPBx2MR
+         7+2QikmmBRHfGB8NiAFlGOUNgI74LPklpzL9sXKCp0uNEaiv+p9B144r2fRhNdW94QPf
+         macg==
+X-Gm-Message-State: AOAM533pa5spGGjlVPGkQ30buyuZ5BLioPW73MGud4IYQDeXj550rAFd
+        sz2JlcKPhg5RcSvhRLvJfVhMCw==
+X-Google-Smtp-Source: ABdhPJw6PHuhjW/tD1vcjOhY1V1iCeSWzEI3KrO9oZ5Knuwf7DACMiVKlt/E/e57U6gUYzF+4Ftuxw==
+X-Received: by 2002:ac8:4b7b:: with SMTP id g27mr4048708qts.220.1618510232013;
+        Thu, 15 Apr 2021 11:10:32 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 23sm850142qkk.51.2021.04.15.11.10.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 11:09:58 -0700 (PDT)
-Message-ID: <74c59fd225b7b107662ce045086cdd8560e3e08f.camel@gmail.com>
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Thu, 15 Apr 2021 15:09:54 -0300
-In-Reply-To: <20210415171409.GC2531743@casper.infradead.org>
-References: <20210415170819.GA17534@focaruja>
-         <20210415171409.GC2531743@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Thu, 15 Apr 2021 11:10:31 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 14:10:30 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 2/5] mm/memcg: Introduce
+ obj_cgroup_uncharge_mod_state()
+Message-ID: <YHiBlhUWoCKqQgM7@cmpxchg.org>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-3-longman@redhat.com>
+ <YHhqPYcajI9JgXk/@cmpxchg.org>
+ <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em qui, 2021-04-15 às 18:14 +0100, Matthew Wilcox escreveu:
-> On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro
-> wrote:
-> > -const struct atomisp_format_bridge
-> > *get_atomisp_format_bridge_from_mbus(
-> > -    u32 mbus_code);
-> > +const struct atomisp_format_bridge*
-> > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
-> 
-> No, this does not match coding style.  Probably best to break the
-> 80-column guideline in this instance.  Best would be to have a
-> function
-> and/or struct name that isn't so ridiculously long, but that would
-> require some in-depth thinking.
-> 
+On Thu, Apr 15, 2021 at 12:35:45PM -0400, Waiman Long wrote:
+> On 4/15/21 12:30 PM, Johannes Weiner wrote:
+> > On Tue, Apr 13, 2021 at 09:20:24PM -0400, Waiman Long wrote:
+> > > In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
+> > > is followed by mod_objcg_state()/mod_memcg_state(). Each of these
+> > > function call goes through a separate irq_save/irq_restore cycle. That
+> > > is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
+> > > that combines them with a single irq_save/irq_restore cycle.
+> > > 
+> > > @@ -3292,6 +3296,25 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+> > >   	refill_obj_stock(objcg, size);
+> > >   }
+> > > +void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
+> > > +				   struct pglist_data *pgdat, int idx)
+> > The optimization makes sense.
+> > 
+> > But please don't combine independent operations like this into a
+> > single function. It makes for an unclear parameter list, it's a pain
+> > in the behind to change the constituent operations later on, and it
+> > has a habit of attracting more random bools over time. E.g. what if
+> > the caller already has irqs disabled? What if it KNOWS that irqs are
+> > enabled and it could use local_irq_disable() instead of save?
+> > 
+> > Just provide an __obj_cgroup_uncharge() that assumes irqs are
+> > disabled, combine with the existing __mod_memcg_lruvec_state(), and
+> > bubble the irq handling up to those callsites which know better.
+> > 
+> That will also work. However, the reason I did that was because of patch 5
+> in the series. I could put the get_obj_stock() and put_obj_stock() code in
+> slab.h and allowed them to be used directly in various places, but hiding in
+> one function is easier.
 
-I left the type of function and its name with the parameters in
-different lines, following up some examples of other files, such as
-atomisp_acc.c.
+Yeah it's more obvious after getting to patch 5.
 
-But I didn't pay attention and left the pointer with the function name
-instead of left it with the type of the function in v1, so Hans
-suggested it to a v2, as I did.
+But with the irq disabling gone entirely, is there still an incentive
+to combine the atomic section at all? Disabling preemption is pretty
+cheap, so it wouldn't matter to just do it twice.
 
-What should I do in this case?
+I.e. couldn't the final sequence in slab code simply be
 
-Thank you in advance,
-Aline
+	objcg_uncharge()
+	mod_objcg_state()
 
-> > -void atomisp_apply_css_parameters(
-> > -    struct atomisp_sub_device *asd,
-> > -    struct atomisp_css_params *css_param);
-> > +void atomisp_apply_css_parameters(struct atomisp_sub_device *asd,
-> > +                                 struct atomisp_css_params
-> > *css_param);
-> > +
-> 
-> Good.
-> 
+again and each function disables preemption (and in the rare case
+irqs) as it sees fit?
 
-
+You lose the irqsoff batching in the cold path, but as you say, hit
+rates are pretty good, and it doesn't seem worth complicating the code
+for the cold path.
