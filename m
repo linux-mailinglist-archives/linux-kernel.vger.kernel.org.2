@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A6D360B93
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EB4360B94
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhDOOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:14:00 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52784 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbhDOON4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:13:56 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FEDMS4080848;
-        Thu, 15 Apr 2021 09:13:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618496002;
-        bh=5YT4Chv8mcz9fg6kjX7nJNPI+VOiKdBSqrEsz1/Lbd4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZxRZGOZIgQZ6xsENZGmqYsFwRhtOzaIrZ2JPiEJY5Qh6sLUON28GkgRT1zzJQxmZo
-         B8H+YjnHkNJ6i8TcmRBWLVLkA+klPikfZvEpuF1/ylf2/XIsHEiPsT6tKUfWmOmFwe
-         qur5gz0xJ5YgQ+LLnWPjK6Ig0MSYqQlm2UVaQ0jc=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FEDMLN057555
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 09:13:22 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 09:13:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 09:13:21 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FEDL52023697;
-        Thu, 15 Apr 2021 09:13:21 -0500
-Date:   Thu, 15 Apr 2021 09:13:21 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Lokesh Vutla <lokeshvutla@ti.com>
-CC:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] dt-bindings: mailbox: ti,message-manager: Convert to yaml
-Message-ID: <20210415141321.fbzzjgwpavoggpqh@endless>
-References: <20210414002721.23638-1-nm@ti.com>
- <e649b712-071b-0287-a1bc-2de422806619@ti.com>
+        id S233452AbhDOOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:14:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:47254 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233216AbhDOOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:14:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D334B106F;
+        Thu, 15 Apr 2021 07:13:39 -0700 (PDT)
+Received: from [10.57.57.112] (unknown [10.57.57.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C21233F694;
+        Thu, 15 Apr 2021 07:13:37 -0700 (PDT)
+Subject: Re: [PATCH v4 1/6] perf arm-spe: Remove unused enum value
+ ARM_SPE_PER_CPU_MMAPS
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Al Grant <Al.Grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210412091006.468557-1-leo.yan@linaro.org>
+ <20210412091006.468557-2-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <882e13d1-c793-88c6-0b1e-629462fb99ac@arm.com>
+Date:   Thu, 15 Apr 2021 17:13:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e649b712-071b-0287-a1bc-2de422806619@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210412091006.468557-2-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19:32-20210415, Lokesh Vutla wrote:
-> [..snip..]
+
+
+On 12/04/2021 12:10, Leo Yan wrote:
+> The enum value 'ARM_SPE_PER_CPU_MMAPS' is never used so remove it.
+
+Hi Leo,
+
+I think this causes an error when attempting to open a newly recorded file
+with an old version of perf. The value ARM_SPE_AUXTRACE_PRIV_MAX is used here:
+
+	size_t min_sz = sizeof(u64) * ARM_SPE_AUXTRACE_PRIV_MAX;
+	struct perf_record_time_conv *tc = &session->time_conv;
+	struct arm_spe *spe;
+	int err;
+
+	if (auxtrace_info->header.size < sizeof(struct perf_record_auxtrace_info) +
+					min_sz)
+		return -EINVAL;
+
+And removing ARM_SPE_PER_CPU_MMAPS changes the value of ARM_SPE_AUXTRACE_PRIV_MAX.
+
+At least I think that's what's causing the problem. I get this error:
+
+	./perf report -i per-thread-spe-time.data
+	0x1c0 [0x18]: failed to process type: 70 [Invalid argument]
+	Error:
+	failed to process sample
+	# To display the perf.data header info, please use --header/--header-only options.
+	#
+
+James
+
 > 
-> > diff --git a/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
-> > new file mode 100644
-> > index 000000000000..4987e803ac37
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
-> > @@ -0,0 +1,75 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mailbox/ti,message-manager.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Texas Instruments' Message Manager Driver
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/util/arm-spe.h | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Driver is not the right word here. Can you change it to node?
-
-
-Indeed, thanks. v2 incoming. I also noticed a commit message typo while
-at it.
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> diff --git a/tools/perf/util/arm-spe.h b/tools/perf/util/arm-spe.h
+> index 98d3235781c3..105ce0ea0a01 100644
+> --- a/tools/perf/util/arm-spe.h
+> +++ b/tools/perf/util/arm-spe.h
+> @@ -11,7 +11,6 @@
+>  
+>  enum {
+>  	ARM_SPE_PMU_TYPE,
+> -	ARM_SPE_PER_CPU_MMAPS,
+>  	ARM_SPE_AUXTRACE_PRIV_MAX,
+>  };
+>  
+> 
