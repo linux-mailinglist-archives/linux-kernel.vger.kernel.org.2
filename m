@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D930636083E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196FF360847
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhDOL2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:28:49 -0400
-Received: from mx1.opensynergy.com ([217.66.60.4]:57273 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDOL2s (ORCPT
+        id S232445AbhDOLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:31:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44831 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhDOLbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:28:48 -0400
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 28873A1BD7;
-        Thu, 15 Apr 2021 13:28:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=81cfrwKyk1g4
-        YvKpu+6SDuRsAjmGLhY0/Dw8H276Oys=; b=taWd7haYyNaObn8OcPAQl5IKK4PR
-        JGYiK21bgYczqSr/5ZfIRTXbyNFiSpUcxWxXcxIP+kFLMigUKzxIz3iDVUlCJT2/
-        RsYznnc20WhhFG/G3K/L3vPeBX0px+mnxPZAkAzAt3uqbQ1yVf3NrJf6GmYMFaOj
-        MGuDAxpg33TKiWZkjLdreyPN/wBFhd2bJaIq+yApxQGwEk+3BHoeKgCXgBD0LFYe
-        NY3VJ5ozWwfNWWj6wdo9vu2OCUPQa8muBFK4jHu5U67ae4nuvSDLO3/wS+Ct4ySx
-        VBhzeCoNNL6qik4cHfFLs08YJW8lJGYcu5JHQLSEXZweKhSXYwsGxurjMw==
-Subject: Re: [PATCH] sound: virtio: correct the function name in kernel-doc
- comment
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alsa-devel@alsa-project.org>,
-        <virtualization@lists.linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210415052645.14465-1-rdunlap@infradead.org>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <f63f2698-991f-409a-0d00-009059f0588d@opensynergy.com>
-Date:   Thu, 15 Apr 2021 13:28:23 +0200
+        Thu, 15 Apr 2021 07:31:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lX0Cw-00061I-L2; Thu, 15 Apr 2021 11:30:50 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] can: etas_es58x: Fix a couple of spelling mistakes
+Date:   Thu, 15 Apr 2021 12:30:50 +0100
+Message-Id: <20210415113050.1942333-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210415052645.14465-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-02.open-synergy.com (10.26.10.22)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.04.2021 07:26, Randy Dunlap wrote:
-> 
-> Fix kernel-doc warning that the wrong function name is used in a
-> kernel-doc comment:
-> 
-> ../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: alsa-devel@alsa-project.org
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks for fixing the copy/paste mistake. :)
+There are spelling mistakes in netdev_dbg and netdev_dbg messages,
+fix these.
 
-Reviewed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->   sound/virtio/virtio_ctl_msg.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
-> +++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
-> @@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
->   }
-> 
->   /**
-> - * virtsnd_ctl_msg_request() - Get a pointer to the response header.
-> + * virtsnd_ctl_msg_response() - Get a pointer to the response header.
->    * @msg: Control message.
->    *
->    * Context: Any context.
-> 
-
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 57e5f94468e9..8e9102482c52 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -688,7 +688,7 @@ int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
+ 
+ 	case ES58X_ERR_PROT_STUFF:
+ 		if (net_ratelimit())
+-			netdev_dbg(netdev, "Error BITSUFF\n");
++			netdev_dbg(netdev, "Error BITSTUFF\n");
+ 		if (cf)
+ 			cf->data[2] |= CAN_ERR_PROT_STUFF;
+ 		break;
+@@ -1015,7 +1015,7 @@ int es58x_rx_cmd_ret_u32(struct net_device *netdev,
+ 			int ret;
+ 
+ 			netdev_warn(netdev,
+-				    "%s: channel is already opened, closing and re-openning it to reflect new configuration\n",
++				    "%s: channel is already opened, closing and re-opening it to reflect new configuration\n",
+ 				    ret_desc);
+ 			ret = ops->disable_channel(es58x_priv(netdev));
+ 			if (ret)
 -- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
+2.30.2
 
