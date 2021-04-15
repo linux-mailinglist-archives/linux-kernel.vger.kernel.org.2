@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA7835FFF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3775C36000F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhDOCWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:22:33 -0400
-Received: from mga05.intel.com ([192.55.52.43]:29039 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhDOCWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:22:30 -0400
-IronPort-SDR: /yqU6CHvMnFWvvZIJ9TfUfxya1dmwgKDMLrPIC0Ww9S4mcjs3a1ebIsfqIbQvQvFKKhJddCwac
- TuFBTjs/bJTg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="280090656"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="280090656"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:22:08 -0700
-IronPort-SDR: ggwZsxSbhGyBGUchl9E+OtB9B8VKWhqmkzuPbSU6GF6wDANuPymFEXZzxREtBtSQily6tuFsTU
- aJQG2fWdlUGw==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="418570192"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:22:07 -0700
-Date:   Thu, 15 Apr 2021 10:26:00 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Calvin Walton <calvin.walton@kepstin.ca>
-Cc:     Linux PM list <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH] Fix turbostat exiting with an error when run on AMD CPUs
-Message-ID: <20210415022600.GA341188@chenyu-desktop>
-References: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
- <07f5e30a2af1674f0a2f8995641bbaaf64e47d34.camel@kepstin.ca>
+        id S229677AbhDOChV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:37:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhDOChU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 22:37:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618454217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pJ/NhFJ/5w97cge6L4nB3sFH5WwdkeYqRWij9oLcRHk=;
+        b=T1u/6aHfyt/pLoMurLYPjLjWjH47QpVtN0pGZzHMMsRMnEQ6MHRnYWG57R748zjQODY+0R
+        /YpgG78FVBfDNfmnAcCfjJugPpnn67A03scenD2jujyFA7JqHPRGDFikz7r4eiMYIiIg3n
+        k9vGYUHkF0NqYg2gudTVHWhICZ2/SwE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-wkaO773ZNSyuj9guWvsjXw-1; Wed, 14 Apr 2021 22:36:53 -0400
+X-MC-Unique: wkaO773ZNSyuj9guWvsjXw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B94A64157;
+        Thu, 15 Apr 2021 02:36:52 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8DCF16064B;
+        Thu, 15 Apr 2021 02:36:51 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 20:36:50 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Ingmar Klein <ingmar_klein@web.de>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: QCA6174 pcie wifi: Add pci quirks
+Message-ID: <20210414203650.1f83a5dd@x1.home.shazbot.org>
+In-Reply-To: <20210414210350.GA2537653@bjorn-Precision-5520>
+References: <08982e05-b6e8-5a8d-24ab-da1488ee50a8@web.de>
+        <20210414210350.GA2537653@bjorn-Precision-5520>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <07f5e30a2af1674f0a2f8995641bbaaf64e47d34.camel@kepstin.ca>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Calvin,
-On Wed, Apr 14, 2021 at 10:08:07PM -0400, Calvin Walton wrote:
-> On Wed, 2021-04-14 at 22:05 -0400, Calvin Walton wrote:
-> > The current version of turbostat exits immediately upon entering the
-> > main loop, with error code -13. This is a regression that was
-> > introducted
-> > in these commits:
+On Wed, 14 Apr 2021 16:03:50 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
+
+> [+cc Alex]
+> 
+> On Fri, Apr 09, 2021 at 11:26:33AM +0200, Ingmar Klein wrote:
+> > Edit: Retry, as I did not consider, that my mail-client would make this
+> > party html.
 > > 
-> > 9972d5d84d76 tools/power turbostat: Enable accumulate RAPL display
-> > 87e15da95775 tools/power turbostat: Introduce functions to accumulate
-> > RAPL consumption
+> > Dear maintainers,
+> > I recently encountered an issue on my Proxmox server system, that
+> > includes a Qualcomm QCA6174 m.2 PCIe wifi module.
+> > https://deviwiki.com/wiki/AIRETOS_AFX-QCA6174-NX
+> > 
+> > On system boot and subsequent virtual machine start (with passed-through
+> > QCA6174), the VM would just freeze/hang, at the point where the ath10k
+> > driver loads.
+> > Quick search in the proxmox related topics, brought me to the following
+> > discussion, which suggested a PCI quirk entry for the QCA6174 in the kernel:
+> > https://forum.proxmox.com/threads/pcie-passthrough-freezes-proxmox.27513/
+> > 
+> > I then went ahead, got the Proxmox kernel source (v5.4.106) and applied
+> > the attached patch.
+> > Effect was as hoped, that the VM hangs are now gone. System boots and
+> > runs as intended.
+> > 
+> > Judging by the existing quirk entries for Atheros, I would think, that
+> > my proposed "fix" could be included in the vanilla kernel.
+> > As far as I saw, there is no entry yet, even in the latest kernel sources.  
 > 
-> Ah, I failed to check the mailing list before sending this patch! Terry
-> Bowman's fix here should probably be preferred:
-> https://patchwork.kernel.org/project/linux-pm/patch/20210331155807.3838-1-terry.bowman@amd.com/
+> This would need a signed-off-by; see
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v5.11#n361
 > 
-> My patch was simply the minimum necessary to get turbostat working
-> again.
-Thanks for reporting this. We had a fix for this previously at
-https://lkml.org/lkml/2021/3/12/682
+> This is an old issue, and likely we'll end up just applying this as
+> yet another quirk.  But looking at c3e59ee4e766 ("PCI: Mark Atheros
+> AR93xx to avoid bus reset"), where it started, it seems to be
+> connected to 425c1b223dac ("PCI: Add Virtual Channel to save/restore
+> support").
+> 
+> I'd like to dig into that a bit more to see if there are any clues.
+> AFAIK Linux itself still doesn't use VC at all, and 425c1b223dac added
+> a fair bit of code.  I wonder if we're restoring something out of
+> order or making some simple mistake in the way to restore VC config.
 
-I'll check with Len if this patch has been merged.
+I don't really have any faith in that bisect report in commit
+c3e59ee4e766.  To double check I dug out the card from that commit,
+installed an old Fedora release so I could build kernel v3.13,
+pre-dating 425c1b223dac and tested triggering a bus reset both via
+setpci and by masking PM reset so that sysfs can trigger the bus reset
+path with the kernel save/restore code.  Both result in the system
+hanging when the device is accessed either restoring from the kernel
+bus reset or reading from the device after the setpci reset.  Thanks,
 
-thanks,
-Chenyu
-> -- 
-> Calvin Walton <calvin.walton@kepstin.ca>
-> 
+Alex
+
