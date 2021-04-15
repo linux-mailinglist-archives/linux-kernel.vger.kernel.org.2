@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98E2361199
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95F936119B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbhDOSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S234479AbhDOSCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhDOSBm (ORCPT
+        with ESMTP id S233052AbhDOSCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:01:42 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E73DC061574;
-        Thu, 15 Apr 2021 11:01:19 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ace00a15c83b1ea17ab01.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ce00:a15c:83b1:ea17:ab01])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C4C981EC0288;
-        Thu, 15 Apr 2021 20:01:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618509677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/BCCbxcbS/Yzgkj80ahhjEBvELn55ocOb9GzJxQIpLw=;
-        b=DyHjLsb5mIn2Oq87CClqvfBrEtMtKjdpi818iniK8WEy13D2dAI7zTxhFFmuaqVpDOWMC8
-        MjZPrGJM5v5u49OXakEUi+BG+88pSFjCYqkj1RvLDpjDCh+xHjUtGPip1gaWt/GsaoeyF5
-        z2IJBg7JN2vTm/33sSaDzkmbP5tiS9o=
-Date:   Thu, 15 Apr 2021 20:00:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, ak@linux.intel.com,
-        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part2 PATCH 03/30] x86: add helper functions for RMPUPDATE
- and PSMASH instruction
-Message-ID: <20210415180040.GF6318@zn.tnic>
-References: <20210324170436.31843-1-brijesh.singh@amd.com>
- <20210324170436.31843-4-brijesh.singh@amd.com>
+        Thu, 15 Apr 2021 14:02:05 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF56C061574;
+        Thu, 15 Apr 2021 11:01:42 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id ef17so6482514qvb.0;
+        Thu, 15 Apr 2021 11:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+WxuAKEYQzQlAdaDBCbqiRsU5nkpRKPpDVKPGbJZoo=;
+        b=omSdtTy3Z5hj1lplWc42YYdNIlvPA/d1BuVz2FqBEc6iBdhR0s/5+WagAAL4Zk1YAc
+         CWjUthRXgYMcuzLis14YOrHsvBbIuTUswDXGQQJmOJ1+VpihxfgTWaBSqvA41vXj1lAR
+         ATm6S/A6Cbh/mzZHi9MgQnA8xEmV7s8/xCWzzUNZ8kVFvt++osMV0Pn1/pvc6B9PuHE4
+         YY12+zAA6R6/zkUeoIz1yTyqsuKrwU8Q+aw5AxOGJv177G0bgQZI4W8ZV/qRKccUshhz
+         umO9bqMYm9LobzFe6oKAEY3NlD/z4o17Lw3g/CKtL9Wk3um/gQJ2qZeLPffjsCTz6h2b
+         J3NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T+WxuAKEYQzQlAdaDBCbqiRsU5nkpRKPpDVKPGbJZoo=;
+        b=UvsdVXU3luBqHVFcBBa8mxdqvMX3afDcZVrusEfsg0TclYRhgbVuBp4wQVZYKbQSmL
+         Cjx2obj7ID09THyhy4S28myR+HvIYp4fSqo7lMw5altMNTDDdnaOQzvc7OfoFZEFJuRR
+         KfMPCejmE2NcvgnxvbMEWSSoyS1ppDNwkcmQuZ0DigcggxKpuzoJovYH05O+pWk6SrUD
+         Sa9WraZ9wJmYhEH9csNRM7LBMNGLU4GGSR5ekcvLqTKvc4OreznjBcE4eoeQ4wOssYZu
+         kqKFOSIgo09UibaCIlbvhEwU4NNFqjSe2a/yqszMjLGG+8HsTCyfu/YsmCxKARjVwEgk
+         Cyxw==
+X-Gm-Message-State: AOAM530Z8QF9ta26GpWdMv/3OHOchN4fHOXWXBJb7Lw7yimqWIRQS4bd
+        ZVpuAQLbaquo+44PRplKQnk=
+X-Google-Smtp-Source: ABdhPJwbEnxJ32ca8ntb2wP5VKo0v0Tu2H5S4ts3+g6Ej4zFLT4aKZE3Po2+SmGJRN4ouqA+MCapFw==
+X-Received: by 2002:a0c:fd62:: with SMTP id k2mr4410395qvs.51.1618509701724;
+        Thu, 15 Apr 2021 11:01:41 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1000])
+        by smtp.gmail.com with ESMTPSA id f16sm2544834qkl.25.2021.04.15.11.01.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 11:01:41 -0700 (PDT)
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>, aik@ozlabs.ru
+Cc:     Leonardo Bras <leobras.c@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses
+Date:   Thu, 15 Apr 2021 15:00:51 -0300
+Message-Id: <20210415180050.373791-1-leobras.c@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324170436.31843-4-brijesh.singh@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:04:09PM -0500, Brijesh Singh wrote:
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index 06394b6d56b2..7a0138cb3e17 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -644,3 +644,44 @@ rmpentry_t *lookup_page_in_rmptable(struct page *page, int *level)
->  	return entry;
->  }
->  EXPORT_SYMBOL_GPL(lookup_page_in_rmptable);
-> +
-> +int rmptable_psmash(struct page *page)
+Many other resource flag parsers already add this flag when the input
+has bits 24 & 25 set, so update this one to do the same.
 
-psmash() should be enough like all those other wrappers around insns.
+Some devices (like virtio-net) have more than one memory resource
+(like MMIO32 and MMIO64) and without this flag it would be needed to
+verify the address range to know which one is which.
 
-> +{
-> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
-> +	int ret;
-> +
-> +	if (!static_branch_unlikely(&snp_enable_key))
-> +		return -ENXIO;
-> +
-> +	/* Retry if another processor is modifying the RMP entry. */
+Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+---
+ drivers/of/address.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Also, a comment here should say which binutils version supports the
-insn mnemonic so that it can be converted to "psmash" later. Ditto for
-rmpupdate below.
-
-Looking at the binutils repo, it looks like since version 2.36.
-
-/me rebuilds objdump...
-
-> +	do {
-> +		asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> +			      : "=a"(ret)
-> +			      : "a"(spa)
-> +			      : "memory", "cc");
-> +	} while (ret == PSMASH_FAIL_INUSE);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(rmptable_psmash);
-> +
-> +int rmptable_rmpupdate(struct page *page, struct rmpupdate *val)
-
-rmpupdate()
-
-> +{
-> +	unsigned long spa = page_to_pfn(page) << PAGE_SHIFT;
-> +	bool flush = true;
-> +	int ret;
-> +
-> +	if (!static_branch_unlikely(&snp_enable_key))
-> +		return -ENXIO;
-> +
-> +	/* Retry if another processor is modifying the RMP entry. */
-> +	do {
-> +		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
-> +			     : "=a"(ret)
-> +			     : "a"(spa), "c"((unsigned long)val), "d"(flush)
-					    ^^^^^^^^^^^^^^^
-
-what's the cast for?
-
-"d"(flush)?
-
-There's nothing in the APM talking about RMPUPDATE taking an input arg
-in %rdx?
-
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 73ddf2540f3f..dc7147843783 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -116,9 +116,12 @@ static unsigned int of_bus_pci_get_flags(const __be32 *addr)
+ 		flags |= IORESOURCE_IO;
+ 		break;
+ 	case 0x02: /* 32 bits */
+-	case 0x03: /* 64 bits */
+ 		flags |= IORESOURCE_MEM;
+ 		break;
++
++	case 0x03: /* 64 bits */
++		flags |= IORESOURCE_MEM | IORESOURCE_MEM_64;
++		break;
+ 	}
+ 	if (w & 0x40000000)
+ 		flags |= IORESOURCE_PREFETCH;
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
