@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24B2360425
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD813603D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhDOIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbhDOIUU (ORCPT
+        id S231480AbhDOIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:05:54 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:56681 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhDOIFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:20:20 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECE7C061574;
-        Thu, 15 Apr 2021 01:19:57 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j18so37893803lfg.5;
-        Thu, 15 Apr 2021 01:19:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FfnqRo/ZbtdxVGZff5uYV7HooY4ykDd6sr4h4ImhvwQ=;
-        b=N6ZsqXWlokRSDYCT4+xA6odNxdJnv7grSWwu0sxH4elIwp7jQ6MPiwZZuCO2fTU59v
-         rnLylYpfOHfv0AQjYQ/KPNDosT2vGm+Nqy0OBHKuT3ZhgCH/+ZK7mOEZlaTOwZmzya/u
-         U/lgzKFdEwK6KwdxaRYfFNpXa2DBCwgn93RaUKeivGYNXzwSD650kY6H+M4gPAVye1HL
-         lE/tXudQTuHTo/JF/3VdfvR7JPQ1fr1PXbyMHtlvprJqct7EYtkY6F03g32R7i+NPxXC
-         pJMWQ8L+qrqsF7Pc3E0TTfxlCvQ2RZ6Nl9H1sfo8OKJ2pL03AEYeKHggmfjmMpluverF
-         uBhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FfnqRo/ZbtdxVGZff5uYV7HooY4ykDd6sr4h4ImhvwQ=;
-        b=Pq6V7ggX74IP05Jp2xusYZLbRZLwE57rWG7LZqNDJR83nhBLBx8NwgQlayvt9M3Pja
-         UtYavdTOPi9Un1O9hx5JIKZkq5XT4XLIwYSKXb7N6rigjaNlOKLMSQ2B2byN8Fi46qiG
-         koGN0Evia8tv2+U27pHqgDBsI4naeU7Gg2DnRSkNARIChDmgOa72ajP0Z9nfsJ25C0Cb
-         AhHnkrTyAEEQaoeKYQ65Rr6TpHcN/fLxkiz7/ugZY48M+WjRqz4Q2gJ96U9/7tdXr5pZ
-         bUeCM211aeYVOOCTXdRvf3kOufLSRqO3SOUeONxIHimWKvnG9R7xLIKZH8Ne9WEXW4Gg
-         qG+A==
-X-Gm-Message-State: AOAM533ImeOl1QnKVT58ihbUdCLVYfnkD6BjrQB9guRFF7aW6z7Ajw1t
-        5UmdoKyf1j0KBFhpQ+tlGoGscEyG6PYd4QjhQa0iHAnS
-X-Google-Smtp-Source: ABdhPJyxWDC9p3efVyUxwazeMnyrL0/ToYsX1iaQQo8kZRbCfX6/ATFc5gfc1kCCW7fV3A8PYyjwxikEp2L07Fv0Fpo=
-X-Received: by 2002:a05:6512:1050:: with SMTP id c16mr1866048lfb.295.1618474795857;
- Thu, 15 Apr 2021 01:19:55 -0700 (PDT)
+        Thu, 15 Apr 2021 04:05:52 -0400
+X-Greylist: delayed 2136 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 04:05:51 EDT
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 13F856Vb022773;
+        Thu, 15 Apr 2021 17:05:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13F856Vb022773
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618473906;
+        bh=LC1wwORrxX4s+QOHO85pxZXBS/KtIoUE4bsRAFozad4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=da54tceNg+886hk0L1yXNqwic53kMAl/yYDA9rfAYHj0ARbrEgFju4bNK2u7DwSzr
+         0Nzz3nN74NFBD6BY3vVYIsLJyVstisa/a9wZNFo5HTfFMQNiNdQt34xs/EogI5R2pe
+         cGfTLcVB02siJoTnsZGY694SycVShDrvLKCT+fJH4c6gdApVr4yI8sDuiQRVb46uzf
+         5zxp+cpLvrquwzMBoqWdhFppX0LrOMfnMp2ux+33w21NjgtbXApne1xnDYHSASKVVS
+         d+1LtEJ5CKw8N5jVYem55TDcIAFV5Dpgqe/WelWt36GppnQoPbMUoN2vTaIcYxpiyl
+         UETUaHqyqS3pw==
+X-Nifty-SrcIP: [209.85.210.169]
+Received: by mail-pf1-f169.google.com with SMTP id p67so10591283pfp.10;
+        Thu, 15 Apr 2021 01:05:06 -0700 (PDT)
+X-Gm-Message-State: AOAM531srx0f25gk07BlcHD6re3R/c0h0vtMMO8k4EDCH91XPITvrY15
+        0r22kx+4zgJ8DL4Pd3zbcikywpxA58RKjrTsciQ=
+X-Google-Smtp-Source: ABdhPJySz/Ot0PzvuAqwezBmRSJBPOAtDPcVcBLTIDgzgzX8BI0wuMQUhTWcJdx8cpQqmQVarwqfYRNaT9Sfb7D43/8=
+X-Received: by 2002:aa7:946b:0:b029:24c:57ea:99bf with SMTP id
+ t11-20020aa7946b0000b029024c57ea99bfmr2063757pfq.63.1618473905663; Thu, 15
+ Apr 2021 01:05:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210222132822.7830-1-kevin3.tang@gmail.com> <20210222132822.7830-7-kevin3.tang@gmail.com>
- <20210324112745.n76qhrbhzyfunmkd@gilmour> <CAFPSGXYK0Hi2-eYkukO2pNhHrJVZ=f79sj_hjXnGBZ_meVmkFg@mail.gmail.com>
- <20210407104854.fgn67pvau7dchcm2@gilmour>
-In-Reply-To: <20210407104854.fgn67pvau7dchcm2@gilmour>
-From:   Kevin Tang <kevin3.tang@gmail.com>
-Date:   Thu, 15 Apr 2021 08:19:44 +0800
-Message-ID: <CAFPSGXbJwNd47UAwVu4c1t5K7j4sgMtTLtDZ15woHZbRTghVfA@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] drm/sprd: add Unisoc's drm mipi dsi&dphy driver
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
+References: <20210415072700.147125-1-masahiroy@kernel.org> <20210415072700.147125-2-masahiroy@kernel.org>
+ <9d33ee98-9de3-2215-0c0b-cc856cec1b69@redhat.com>
+In-Reply-To: <9d33ee98-9de3-2215-0c0b-cc856cec1b69@redhat.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 15 Apr 2021 17:04:28 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQupbmeEVR0njSciv0X9FD+MofeB2Xm=wprEdNaO4TQKQ@mail.gmail.com>
+Message-ID: <CAK7LNAQupbmeEVR0njSciv0X9FD+MofeB2Xm=wprEdNaO4TQKQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tools: do not include scripts/Kbuild.include
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Harish <harish@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=887=E6=97=
-=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=886:48=E5=86=99=E9=81=93=EF=BC=9A
+On Thu, Apr 15, 2021 at 4:40 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> On Wed, Mar 31, 2021 at 09:47:12AM +0800, Kevin Tang wrote:
-> > > > diff --git a/drivers/gpu/drm/sprd/Makefile
-> > > b/drivers/gpu/drm/sprd/Makefile
-> > > > index 6c25bfa99..d49f4977b 100644
-> > > > --- a/drivers/gpu/drm/sprd/Makefile
-> > > > +++ b/drivers/gpu/drm/sprd/Makefile
-> > > > @@ -1,5 +1,8 @@
-> > > >  # SPDX-License-Identifier: GPL-2.0
-> > > >
-> > > >  obj-y :=3D sprd_drm.o \
-> > > > -     sprd_dpu.o
-> > > > -
-> > > > +     sprd_dpu.o \
-> > > > +     sprd_dsi.o \
-> > > > +     dw_dsi_ctrl.o \
-> > > > +     dw_dsi_ctrl_ppi.o \
-> > >
-> > > So it's a designware IP? There's a driver for it already that seems
-> > > fairly similar:
-> > > drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> > >
-> > Our dw dsi controller is not a standard synopsys ip, we have updated a =
-lot
-> > on the basic ip version,
-> > the entire control register is different, i have cc to drm/bridge revie=
-wers
-> > and maintainers.
+> On 15/04/21 09:27, Masahiro Yamada wrote:
+> > Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+> > scripts/Makefile.compiler"), some kselftests fail to build.
+> >
+> > The tools/ directory opted out Kbuild, and went in a different
+> > direction. They copy any kind of files to the tools/ directory
+> > in order to do whatever they want to do in their world.
+> >
+> > tools/build/Build.include mimics scripts/Kbuild.include, but some
+> > tool Makefiles included the Kbuild one to import a feature that is
+> > missing in tools/build/Build.include:
+> >
+> >   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+> >     only if supported") included scripts/Kbuild.include from
+> >     tools/thermal/tmon/Makefile to import the cc-option macro.
+> >
+> >   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+> >     not support -no-pie") included scripts/Kbuild.include from
+> >     tools/testing/selftests/kvm/Makefile to import the try-run macro.
+> >
+> >   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+> >     failures") included scripts/Kbuild.include from
+> >     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+> >     target.
+> >
+> >   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+> >     unrecognized option") included scripts/Kbuild.include from
+> >     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+> >     try-run macro.
+> >
+> > Copy what they want there, and stop including scripts/Kbuild.include
+> > from the tool Makefiles.
 >
-> You should make it more obvious then in a comment or in the name of the
-> driver. If it's fairly different from the original IP from Synopsys,
-> maybe you should just drop the reference to the name?
-Thks, i will be fix it.
->
-> Maxime
+> I think it would make sense to add try-run, cc-option and
+> .DELETE_ON_ERROR to tools/build/Build.include?
+
+
+To be safe, I just copy-pasted what the makefiles need.
+If someone wants to refactor the tool build system, that is fine,
+but, to me, I do not see consistent rules or policy under tools/.
+
+-- 
+Best Regards
+Masahiro Yamada
