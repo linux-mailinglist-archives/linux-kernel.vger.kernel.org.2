@@ -2,167 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A79D360BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5964360BF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhDOOi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:38:27 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41750 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233363AbhDOOiV (ORCPT
+        id S233346AbhDOOiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:38:16 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39699 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232759AbhDOOiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:38:21 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lX37j-000708-Ga; Thu, 15 Apr 2021 16:37:39 +0200
-Received: from [85.7.101.30] (helo=pc-6.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lX37i-000EJ3-8n; Thu, 15 Apr 2021 16:37:38 +0200
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
-Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        illusionist.neo@gmail.com, linux@armlinux.org.uk,
-        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        paulburton@kernel.org, tsbogend@alpha.franken.de,
-        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
-        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
-        horms@verge.net.au, nicolas.dichtel@6wind.com,
-        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
-        keescook@chromium.org, quentin@isovalent.com, tklauser@distanz.ch,
-        grantseltzer@gmail.com, irogers@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, iecedge@gmail.com
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
-Date:   Thu, 15 Apr 2021 16:37:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 15 Apr 2021 10:38:15 -0400
+Received: (qmail 1532246 invoked by uid 1000); 15 Apr 2021 10:37:51 -0400
+Date:   Thu, 15 Apr 2021 10:37:51 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Dmitry Vyukov <dvyukov@google.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, abrestic@google.com,
+        paulburton@google.com
+Subject: Re: UBSAN: array-index-out-of-bounds in ehci_hub_control
+Message-ID: <20210415143751.GB1530055@rowland.harvard.edu>
+References: <CACT4Y+YOXJ15j6c_8N-09xpxTHXO3J07K83p4p+SAFa4=47ayw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26141/Thu Apr 15 13:13:26 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YOXJ15j6c_8N-09xpxTHXO3J07K83p4p+SAFa4=47ayw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 11:32 AM, Jianlin Lv wrote:
-> For debugging JITs, dumping the JITed image to kernel log is discouraged,
-> "bpftool prog dump jited" is much better way to examine JITed dumps.
-> This patch get rid of the code related to bpf_jit_enable=2 mode and
-> update the proc handler of bpf_jit_enable, also added auxiliary
-> information to explain how to use bpf_jit_disasm tool after this change.
+On Thu, Apr 15, 2021 at 04:10:45PM +0200, Dmitry Vyukov wrote:
+> Hi,
 > 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-[...]
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-> index 0a7a2870f111..8d36b4658076 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -2566,9 +2566,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   		cond_resched();
->   	}
->   
-> -	if (bpf_jit_enable > 1)
-> -		bpf_jit_dump(prog->len, proglen, pass + 1, image);
-> -
->   	if (image) {
->   		bpf_jit_binary_lock_ro(header);
->   		prog->bpf_func = (void *)image;
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index c8496c1142c9..990b1720c7a4 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-> @@ -273,16 +273,8 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
->   
->   	tmp.data = &jit_enable;
->   	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
-> -	if (write && !ret) {
-> -		if (jit_enable < 2 ||
-> -		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
-> -			*(int *)table->data = jit_enable;
-> -			if (jit_enable == 2)
-> -				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
-> -		} else {
-> -			ret = -EPERM;
-> -		}
-> -	}
-> +	if (write && !ret)
-> +		*(int *)table->data = jit_enable;
->   	return ret;
->   }
->   
-> @@ -389,7 +381,7 @@ static struct ctl_table net_core_table[] = {
->   		.extra2		= SYSCTL_ONE,
->   # else
->   		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_ONE,
->   # endif
->   	},
->   # ifdef CONFIG_HAVE_EBPF_JIT
-> diff --git a/tools/bpf/bpf_jit_disasm.c b/tools/bpf/bpf_jit_disasm.c
-> index c8ae95804728..efa4b17ae016 100644
-> --- a/tools/bpf/bpf_jit_disasm.c
-> +++ b/tools/bpf/bpf_jit_disasm.c
-> @@ -7,7 +7,7 @@
->    *
->    * To get the disassembly of the JIT code, do the following:
->    *
-> - *  1) `echo 2 > /proc/sys/net/core/bpf_jit_enable`
-> + *  1) Insert bpf_jit_dump() and recompile the kernel to output JITed image into log
-
-Hmm, if we remove bpf_jit_dump(), the next drive-by cleanup patch will be thrown
-at bpf@vger stating that bpf_jit_dump() has no in-tree users and should be removed.
-Maybe we should be removing bpf_jit_disasm.c along with it as well as bpf_jit_dump()
-itself ... I guess if it's ever needed in those rare occasions for JIT debugging we
-can resurrect it from old kernels just locally. But yeah, bpftool's jit dump should
-suffice for vast majority of use cases.
-
-There was a recent set for ppc32 jit which was merged into ppc tree which will create
-a merge conflict with this one [0]. So we would need a rebase and take it maybe during
-merge win once the ppc32 landed..
-
-   [0] https://lore.kernel.org/bpf/cover.1616430991.git.christophe.leroy@csgroup.eu/
-
->    *  2) Load a BPF filter (e.g. `tcpdump -p -n -s 0 -i eth1 host 192.168.20.0/24`)
->    *  3) Run e.g. `bpf_jit_disasm -o` to read out the last JIT code
->    *
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 40a88df275f9..98c7eec2923f 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -203,9 +203,6 @@ static void probe_jit_enable(void)
->   		case 1:
->   			printf("JIT compiler is enabled\n");
->   			break;
-> -		case 2:
-> -			printf("JIT compiler is enabled with debugging traces in kernel logs\n");
-> -			break;
-
-This would still need to be there for older kernels ...
-
->   		case -1:
->   			printf("Unable to retrieve JIT-compiler status\n");
->   			break;
+> I've got this report while booting v5.10.13 kernel, but upstream code
+> seems to be the same.
+> The access to port_status, the code is:
 > 
+> struct ehci_regs {
+>     u32 port_status[0]; /* up to N_PORTS */
+>     u32 reserved3[9];
+> https://elixir.bootlin.com/linux/v5.12-rc7/source/include/linux/usb/ehci_def.h#L130
+> 
+> Question: should it be an empty array "[]" to prevent the undefined behavior?
+> Or should it be declared as "[9]" to be more explicit?
 
+Arnd has already looked at this:
+
+	https://marc.info/?t=158828240200001&r=1&w=2
+
+I thought we had arrived at an acceptable (though not great) solution, 
+but he never posted any finished patches.  :-(
+
+Alan Stern
+
+> UBSAN: array-index-out-of-bounds in drivers/usb/host/ehci-hub.c:893:16
+> index 1 is out of range for type 'u32 [0]'
+> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.10.13+ #1
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x183/0x225 lib/dump_stack.c:118
+>  ubsan_epilogue lib/ubsan.c:148 [inline]
+>  __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:356
+>  ehci_hub_control+0x1d27/0x2370 drivers/usb/host/ehci-hub.c:893
+>  rh_call_control+0x938/0x11a0 drivers/usb/core/hcd.c:683
+>  rh_urb_enqueue drivers/usb/core/hcd.c:842 [inline]
+>  usb_hcd_submit_urb+0x2f2/0x5f0 drivers/usb/core/hcd.c:1543
+>  usb_start_wait_urb+0x11a/0x550 drivers/usb/core/message.c:58
+>  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+>  usb_control_msg+0x281/0x470 drivers/usb/core/message.c:153
+>  hub_power_on+0x1a8/0x3c0 arch/x86/include/asm/bitops.h:219
+>  hub_activate+0x330/0x1ba0 drivers/usb/core/hub.c:1076
+>  hub_configure+0x19e0/0x2690 drivers/usb/core/hub.c:1680
+>  hub_probe+0x82f/0x9b0 drivers/usb/core/hub.c:1882
+>  usb_probe_interface+0x67b/0xb70 drivers/usb/core/driver.c:396
+>  really_probe+0x58b/0x1580 drivers/base/dd.c:558
+>  driver_probe_device+0x15a/0x310 drivers/base/dd.c:740
+>  bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+>  __device_attach+0x2b2/0x4b0 drivers/base/dd.c:914
+>  bus_probe_device+0xb8/0x200 drivers/base/bus.c:491
+>  device_add+0x8e7/0xcb0 drivers/base/core.c:2954
+>  usb_set_configuration+0x1b98/0x2230 drivers/usb/core/message.c:2159
+>  usb_generic_driver_probe+0x83/0x140 drivers/usb/core/generic.c:238
+>  usb_probe_device+0x13a/0x260 drivers/usb/core/driver.c:293
+>  really_probe+0x58b/0x1580 drivers/base/dd.c:558
+>  driver_probe_device+0x15a/0x310 drivers/base/dd.c:740
+>  bus_for_each_drv+0x16a/0x1f0 drivers/base/bus.c:431
+>  __device_attach+0x2b2/0x4b0 drivers/base/dd.c:914
+>  bus_probe_device+0xb8/0x200 drivers/base/bus.c:491
+>  device_add+0x8e7/0xcb0 drivers/base/core.c:2954
+>  usb_new_device+0xa43/0x1120 drivers/usb/core/hub.c:2554
+>  register_root_hub+0x214/0x560 drivers/usb/core/hcd.c:1009
+>  usb_add_hcd+0x8ee/0x1080 drivers/usb/core/hcd.c:2793
+>  usb_hcd_pci_probe+0xa61/0x1280 drivers/usb/core/hcd-pci.c:264
+>  local_pci_probe drivers/pci/pci-driver.c:308 [inline]
+>  pci_call_probe drivers/pci/pci-driver.c:365 [inline]
+>  __pci_device_probe drivers/pci/pci-driver.c:390 [inline]
+>  pci_device_probe+0x3ef/0x630 drivers/pci/pci-driver.c:433
+>  really_probe+0x544/0x1580 drivers/base/dd.c:554
+>  driver_probe_device+0x15a/0x310 drivers/base/dd.c:740
+>  device_driver_attach+0x176/0x280 drivers/base/dd.c:1015
+>  __driver_attach+0xa7/0x490 drivers/base/dd.c:1092
+>  bus_for_each_dev+0x168/0x1d0 drivers/base/bus.c:305
+>  bus_add_driver+0x324/0x5e0 drivers/base/bus.c:622
+>  driver_register+0x2e9/0x3e0 drivers/base/driver.c:171
+>  do_one_initcall+0x1a3/0x410 init/main.c:1217
+>  do_initcall_level+0x168/0x218 init/main.c:1290
+>  do_initcalls+0x50/0x91 init/main.c:1306
+>  kernel_init_freeable+0x33b/0x47f init/main.c:1527
+>  kernel_init+0xd/0x290 init/main.c:1415
