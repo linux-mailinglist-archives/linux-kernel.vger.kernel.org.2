@@ -2,103 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81647361078
+	by mail.lfdr.de (Postfix) with ESMTP id 13155361077
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbhDOQxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:53:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21554 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233992AbhDOQxf (ORCPT
+        id S234237AbhDOQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:53:37 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:40462 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233583AbhDOQxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Apr 2021 12:53:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618505592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mOZmiQsPM2z8JFg2yCo7YvOl2YlV7mTl6vjBKTI8sno=;
-        b=V7Bj+N3Ca0kjhDsDS7JbFcB6UhwqQqrge9p/MgMKXC74nldcGfJzy4MCj+GBDXRDSXEW5G
-        Jsn1TF5LUaMTgSj5wC5wPGOpcZuMU93XAst8k4HEfOmstvt/g7t+ao01vddq1areM9qgBc
-        LdaAV89RQmAOegKKKFPj9oC8nzEeu5k=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-lgFYKKD_NY6R0yas26HLPA-1; Thu, 15 Apr 2021 12:53:08 -0400
-X-MC-Unique: lgFYKKD_NY6R0yas26HLPA-1
-Received: by mail-qt1-f198.google.com with SMTP id o15-20020ac872cf0000b02901b358afcd96so4408069qtp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:53:08 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so23170172otb.7;
+        Thu, 15 Apr 2021 09:53:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=mOZmiQsPM2z8JFg2yCo7YvOl2YlV7mTl6vjBKTI8sno=;
-        b=ZESB8yqpbaOiuoLw0b/z6vkLl1YTfn80vnMGSd0Cneb0xZMZLeIu2zFcLWlfNxhYbP
-         igACZCcMzTDRtzMSCRO4j6BIVkFpb4BPukyKQBfxpWX8JTDoBULYwLUvXqwSjBEOKvwH
-         g4+dISVY4P5hMweJmLLFvWwf2MqDzM5Tdfovgd5jVSm+raNqO9K7thY6CBszeWYhyg8l
-         GIxmbBurpscCZ740aDU3N0NonrUJFL8SdKnjKa1kOUMZZMsZ4bZjAUxNcLNF6KF/Eybp
-         OlBOI+3urBI0rX8fC+W6vuIq8qaQE4NJNtHFYStSU5M3EH2KSh28Pzq54ATGd0x3T3Q8
-         nPcw==
-X-Gm-Message-State: AOAM530G3VyeOtG/S/vVqZXaVaQG3YfX2SfRSrg/iaD/UzqmQqCf4CxV
-        Iq+LA1cyf/3kPSV4Jk7CSe76IIum9I55+DliYiUMZEp5Dln6OImS5ak369T15947DixyzXch7+p
-        9HzN+fPphQzEOBGhJyohwjiS7
-X-Received: by 2002:ae9:eb8a:: with SMTP id b132mr4255235qkg.296.1618505587822;
-        Thu, 15 Apr 2021 09:53:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrDSSW59HtlgLMvEXKM92wd1+sNACdsKWQFt9qD/GAPiFXLioBFNt+Mx3E93UmMiShqhM9ug==
-X-Received: by 2002:ae9:eb8a:: with SMTP id b132mr4255216qkg.296.1618505587640;
-        Thu, 15 Apr 2021 09:53:07 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id i5sm2356913qka.126.2021.04.15.09.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 09:53:07 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
- queued_write_lock_slowpath
-To:     Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>
-Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, stable@vger.kernel.org,
-        steve.capper@arm.com
-References: <20210415150228.GA26439@willie-the-truck>
- <20210415162646.9882-1-alisaidi@amazon.com>
- <20210415164525.GC26594@willie-the-truck>
-Message-ID: <c288c94a-a545-492a-79c1-3d741c001504@redhat.com>
-Date:   Thu, 15 Apr 2021 12:53:06 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BkPRrq2X8pI/PWJmFc2vGqD8uKorT4TSwv8nxW2F7tY=;
+        b=mLM4E9i5RJbZ9q2A9jXK5SdM41xPUevZ88cip6A74u8QQp9uWQvfZIO1AtkvIurWbQ
+         5DZWW/w3nvWTfGY4xQg0hU9RFosxRzB3jjgIGLtN72WRMjpdcj8Tp3GNRjPIyPO6wBjP
+         M0Ofbdf72ZWPQT9sEpgYIsLremdhlHVsQUZEQGtcDkcUqNfopMF7pdq2mb7+Op0hLyWL
+         N7yKhAhq1UK9HoIYeXhJaGKASINRvVYpNbhC93KqTut9cYooXGLJonIyb/PIyasXCX+f
+         ovImRHd15kwBUr9EikQLnMpc8JHyYM6wrbIFG+mcz9nJZQ3oEsftsbiS2btow5UpkOYz
+         VFjg==
+X-Gm-Message-State: AOAM5324M9ksdDGrkM9+HYh1Ic4fKrEtS8P0vyyMzdYpmHTtGiTP2jCk
+        ujlIPu7wnnpsKmRVH0uCEA==
+X-Google-Smtp-Source: ABdhPJzA7edpjMrFZYgGmlpgqiNAm4TmvK2c2cIzF1IKc+l7PY5NsWG3cwQmqz49K5TQdDTwZW6aSQ==
+X-Received: by 2002:a9d:a2a:: with SMTP id 39mr147491otg.371.1618505591354;
+        Thu, 15 Apr 2021 09:53:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t19sm788585otm.40.2021.04.15.09.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 09:53:10 -0700 (PDT)
+Received: (nullmailer pid 1551645 invoked by uid 1000);
+        Thu, 15 Apr 2021 16:53:09 -0000
+Date:   Thu, 15 Apr 2021 11:53:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/7] dt-bindings: media: max9286: Define
+ 'maxim,gpio-poc'
+Message-ID: <20210415165309.GA1535842@robh.at.kernel.org>
+References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+ <20210415122602.87697-3-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-In-Reply-To: <20210415164525.GC26594@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415122602.87697-3-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 12:45 PM, Will Deacon wrote:
->
->>> With that in mind, it would probably be a good idea to eyeball the qspinlock
->>> slowpath as well, as that uses both atomic_cond_read_acquire() and
->>> atomic_try_cmpxchg_relaxed().
->> It seems plausible that the same thing could occur here in qspinlock:
->>            if ((val & _Q_TAIL_MASK) == tail) {
->>                    if (atomic_try_cmpxchg_relaxed(&lock->val, &val, _Q_LOCKED_VAL))
->>                            goto release; /* No contention */
->>            }
-> Just been thinking about this, but I don't see an issue here because
-> everybody is queuing the same way (i.e. we don't have a mechanism to jump
-> the queue like we do for qrwlock) and the tail portion of the lock word
-> isn't susceptible to ABA. That is, once we're at the head of the queue
-> and we've seen the lock become unlocked via atomic_cond_read_acquire(),
-> then we know we hold it.
->
-> So qspinlock looks fine to me, but I'd obviously value anybody else's
-> opinion on that.
+On Thu, Apr 15, 2021 at 02:25:57PM +0200, Jacopo Mondi wrote:
+> Define a new vendor property in the maxim,max9286 binding schema.
+> 
+> The new property allows to declare that the remote camera
+> power-over-coax is controlled by one of the MAX9286 gpio lines.
+> 
+> As it is currently not possible to establish a regulator as consumer
+> of the MAX9286 gpio controller for this purpose, the property allows to
+> declare that the camera power is controlled by the MAX9286 directly.
+> 
+> The property accepts a gpio-index (0 or 1) and one line polarity
+> flag as defined by dt-bindings/gpio/gpio.h.
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  .../bindings/media/i2c/maxim,max9286.yaml     | 71 ++++++++++++++++++-
+>  1 file changed, 70 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> index 0e7162998b77..e2422241b7d0 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> @@ -70,6 +70,28 @@ properties:
+>        a remote serializer whose high-threshold noise immunity is not enabled
+>        is 100000 micro volts
+>  
+> +  maxim,gpio-poc:
+> +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
+> +    minItems: 2
+> +    maxItems: 2
+> +    description: |
+> +      Index of the MAX9286 gpio output line (0 or 1) that controls Power over
+> +      Coax to the cameras and its associated polarity flag.
+> +
+> +      The property accepts an array of two unsigned integers, the first being
+> +      the gpio line index (0 or 1) and the second being the gpio line polarity
+> +      flag (GPIO_ACTIVE_HIGH or GPIO_ACTIVE_LOW) as defined in
+> +      <include/dt-bindings/gpio/gpio.h>.
+> +
+> +      When the remote cameras power is controlled by one of the MAX9286 gpio
+> +      lines, this property has to be used to specify which line among the two
+> +      available ones controls the remote camera power enablement.
+> +
+> +      When this property is used it is not possible to register a gpio
+> +      controller as the gpio lines are controlled directly by the MAX9286 and
+> +      not available for consumers, nor the 'poc-supply' property should be
+> +      specified.
+> +
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> @@ -182,7 +204,20 @@ required:
+>    - reg
+>    - ports
+>    - i2c-mux
+> -  - gpio-controller
+> +
+> +# If 'maxim,gpio-poc' is present, then 'poc-supply' and 'gpio-controller'
+> +# are not allowed.
+> +if:
+> +  required:
+> +    - maxim,gpio-poc
+> +then:
+> +  allOf:
+> +    - not:
+> +        required:
+> +          - poc-supply
+> +    - not:
+> +        required:
+> +          - gpio-controller
 
-I agree with your assessment of qspinlock. I think qspinlock is fine.
+I did tell you to do it this way on irc, but looking at it again, it's 
+slightly more concise to do:
 
-Cheers,
-Longman
+     properties:
+       poc-supply: false
+       gpio-controller: false
 
+Note that 'properties' in the 'if' doesn't work because a schema 
+for a property evaluates as true when the property is not present.
+
+Either way,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+Rob
