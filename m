@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B78A360F07
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21AC360F0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbhDOPbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDOPbp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:31:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941A2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uxFNx8Ls1EjAX5avuFuqLLc2lUBNPz30HeVoOn1uPWc=; b=ffatmZJhGimSLIXmb3ZAtXSywv
-        eCgq7k6Azr3gDPUc5delTOvcRcZqsDOdai7Ynzwmoya8Es/c40PbkRVyJx6I/k5Y1qQyY2UQYYQCg
-        CjkWO7fnhDsl0p54tIlLPel9aAitY4lv/wzNtjhqzip4xRcQhCq+kZ7ZgJf7XQ6xjB338UmTzhdNl
-        ZA0yRlLcsdhzof4tMnszeql8DD3CPNDOsojg2UoHLM9Xa/vO3vnm0eZXXhJI4mak3p2xE6ijlvAjk
-        +3kxT36sgH+oTMx/U87y4uJ1oFm9vfJASiCMYsjshTYN9MtbiFFAW+JN04IxrbX+dV4P7CsL24DT7
-        YAt0e0Iw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX3wO-008kng-U2; Thu, 15 Apr 2021 15:30:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 839E6300209;
-        Thu, 15 Apr 2021 17:29:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6C6322C7727AE; Thu, 15 Apr 2021 17:29:59 +0200 (CEST)
-Date:   Thu, 15 Apr 2021 17:29:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
-        swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
- hotplug-rollback
-Message-ID: <YHhb99iRHXcxD2/e@hirez.programming.kicks-ass.net>
-References: <20210310145258.899619710@infradead.org>
- <20210310150109.259726371@infradead.org>
- <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
- <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
- <87r1jfmn8d.mognet@arm.com>
- <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
- <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
- <87a6pzmxec.mognet@arm.com>
+        id S233598AbhDOPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:33:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:49444 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231137AbhDOPc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:32:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 347C5106F;
+        Thu, 15 Apr 2021 08:32:35 -0700 (PDT)
+Received: from [10.57.24.156] (unknown [10.57.24.156])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20BA93FA35;
+        Thu, 15 Apr 2021 08:32:32 -0700 (PDT)
+Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
+To:     Quentin Perret <qperret@google.com>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com, dietmar.eggemann@arm.com
+References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+ <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+ <YHg8s4VTQdiBNOpr@google.com>
+ <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
+ <YHhU6pb8E5W2eeCX@google.com>
+ <20210415151446.GC391924@e120877-lin.cambridge.arm.com>
+ <YHhZrbLcUD6I83m1@google.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <cc9d7743-7795-a9c9-c1fb-4162cb02bfe2@arm.com>
+Date:   Thu, 15 Apr 2021 16:32:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6pzmxec.mognet@arm.com>
+In-Reply-To: <YHhZrbLcUD6I83m1@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:32:11PM +0100, Valentin Schneider wrote:
-> > So instead, make sure balance_push is enabled between
-> > sched_cpu_deactivate() and sched_cpu_activate() (eg. when
-> > !cpu_active()), and gate it's utility with cpu_dying().
-> 
-> I'd word that "is enabled below sched_cpu_activate()", since
-> sched_cpu_deactivate() is now out of the picture.
+Hi Quentin,
 
-I are confused (again!). Did you mean to say something like: 'is enabled
-below SCHED_AP_ACTIVE' ?
+On 4/15/21 4:20 PM, Quentin Perret wrote:
+> On Thursday 15 Apr 2021 at 16:14:46 (+0100), Vincent Donnefort wrote:
+>> On Thu, Apr 15, 2021 at 02:59:54PM +0000, Quentin Perret wrote:
+>>> On Thursday 15 Apr 2021 at 15:34:53 (+0100), Vincent Donnefort wrote:
+>>>> On Thu, Apr 15, 2021 at 01:16:35PM +0000, Quentin Perret wrote:
+>>>>> On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
+>>>>>> --- a/kernel/sched/cpufreq_schedutil.c
+>>>>>> +++ b/kernel/sched/cpufreq_schedutil.c
+>>>>>> @@ -10,6 +10,7 @@
+>>>>>>   
+>>>>>>   #include "sched.h"
+>>>>>>   
+>>>>>> +#include <linux/energy_model.h>
+>>>>>>   #include <linux/sched/cpufreq.h>
+>>>>>>   #include <trace/events/power.h>
+>>>>>>   
+>>>>>> @@ -164,6 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>>>>>>   
+>>>>>>   	freq = map_util_freq(util, freq, max);
+>>>>>>   
+>>>>>> +	/* Avoid inefficient performance states */
+>>>>>> +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
+>>>>>
+>>>>> I remember this was discussed when Douglas sent his patches some time
+>>>>> ago, but I still find it sad we index the EM table here but still
+>>>>> re-index the cpufreq frequency table later :/
+>>>>>
+>>>>> Yes in your case this lookup is very inexpensive, but still. EAS relies
+>>>>> on the EM's table matching cpufreq's accurately, so this second lookup
+>>>>> still feels rather unnecessary ...
+>>>>
+>>>> To get only a single lookup, we would need to bring the inefficiency knowledge
+>>>> directly to the cpufreq framework. But it has its own limitations:
+>>>>
+>>>>    The cpufreq driver can have its own resolve_freq() callback, which means that
+>>>>    not all the drivers would benefit from that feature.
+>>>>
+>>>>    The cpufreq_table can be ordered and accessed in several ways which brings
+>>>>    many combinations that would need to be supported, ending-up with something
+>>>>    much more intrusive. (We can though decide to limit the feature to the low to
+>>>>    high access that schedutil needs).
+>>>>
+>>>> As the EM needs schedutil to exist anyway, it seemed to be the right place for
+>>>> this code. It allows any cpufreq driver to benefit from the feature, simplify a
+>>>> potential extension for a usage by devfreq devices and as a bonus it speeds-up
+>>>> energy computing, allowing a more complex Energy Model.
+>>>
+>>> I was thinking of something a bit simpler. cpufreq_driver_resolve_freq
+>>> appears to be used only from schedutil (why is it even then?), so we
+>>> could just pull it into cpufreq_schedutil.c and just plain skip the call
+>>> to cpufreq_frequency_table_target if the target freq has been indexed in
+>>> the EM table -- it should already be matching a real OPP.
+>>>
+>>> Thoughts?
+>>> Quentin
+>>
+>> Can try that for a V2. That means em_pd_get_efficient_freq() would have to
+>> know about policy clamping (but I don't think that's an issue)
+> 
+> Indeed, and I think we can even see this as an improvement as EAS will
+> now see policy clamps as well in compute_energy().
+
+Are you sure that the 'policy' can be accessed from compute_energy()?
+It can be from schedutil freq switch path, but I'm not use about our
+feec()..
+
+For me this cpufreq_driver_resolve_freq sounds a bit out of this patch
+subject.
+
+Regards,
+Lukasz
