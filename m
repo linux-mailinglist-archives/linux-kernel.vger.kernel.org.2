@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EBE36145E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72032361468
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236301AbhDOVwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S236318AbhDOV7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbhDOVwP (ORCPT
+        with ESMTP id S234777AbhDOV7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:52:15 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA84EC061574;
-        Thu, 15 Apr 2021 14:51:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLtMy1FzZz9sV5;
-        Fri, 16 Apr 2021 07:51:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618523502;
-        bh=XMmGtBGt/E/Mqrfx2tRr0oZSYnq8pEEEm6oDs936Pto=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Dst4ADLVgQtoP88y6NgWfxWNu4x+xUkBv/x8Slay8UbQldyV6JMA8XfCc42+u0JrM
-         ocU9NEIpgOvSmzw4BnuPOMrSpjfuBIV9jSyvueTSOHD6vx78MdnbvK/7O2oj4Xbuw5
-         z8+1K7vNd6INwBJJY1C0EKlyrg4W+9jVjlkW9HBHqq/o6BtLMm5pvZbeh1bKdPR7No
-         5iXwlK1WBV/g8kMQRrExa3yW3fWOGb26THAuUT3yJ0rym/uWA9kqOzsTyATyW3kmnW
-         XHS8ohv4r12ZIxlu5XAFMaSX4nGuISIAZDR/ayT0sC7y55QQrsxew9CV9tUY69QDQ7
-         qX8pfIIS2PRoQ==
-Date:   Fri, 16 Apr 2021 07:51:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the iommu tree
-Message-ID: <20210416075141.0b3a4e6e@canb.auug.org.au>
+        Thu, 15 Apr 2021 17:59:15 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:58:51 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso1509064otl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TS/T6BhQTib7rhqu+BkkOlINUb8326KpIVMIZIBfyRs=;
+        b=Uk+6Z/v7I1+QPVozlnRfwxkdFxgIRoz0Ks6iwhFGDjAT/wm66qj1hDI67/z8f9w9D0
+         Ll1HqqfDw4cGQIzPAR4PfRzkAH6rELzC7gp6A0pMEB61tOLXInvabrFujzLviCF1xEH5
+         DbS+DAkfUAi4vfAIp8V6UQFalhVnxCHAyzostoGpvgEAdQaCCuDStYPngZqUm41bgE2G
+         faC64Chg8HFACqviUSUEboKjQJlzlHdq4GU3he045WOAxjUZf2o0BqJI2wlKrYqkPMB4
+         BzX1z6fr6AObpeuKT2GBuj7/mF+cfdUyx8We8lf9uS+P8j1oJRMuYoa4zs70owIUNAUx
+         HqWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TS/T6BhQTib7rhqu+BkkOlINUb8326KpIVMIZIBfyRs=;
+        b=G6v/r5cnJaHgUrIP0aoLtcurGJWJZeHUcAdYhjS6/1ildNPTyF1wwiY112MYcrWdTj
+         TenNtA4zoweBB4bga87FqzHQBafWGRX5KUPIVvMD0hUBqa9bPpZItRYWfHdoRrhS/da9
+         z/U1Y+rPrgm1TXRt1hVzZdSPjeAn1k4zcn2LW7ix7gEBtMj4IMc/b/AwcCao48j6O8Hx
+         xUGOZU1wd93LdugzM0m9BiQIoLDc++ahFaJZ7xBYHphy1m7UOzpP89UM7TOE7Rvk47Kz
+         rE2xTgXH3+bJzkC5rRexKEBmpwB0YOXSi0m65JwRqprSiuHERYOvyii51N0pg4w2d4sj
+         FraQ==
+X-Gm-Message-State: AOAM530gN8isrd9D9vb5VEef71XWwwaKelZ2Q8hYw7A6QYcJQbdgv5iG
+        jzXVuvWvXgJN3vsV18OsClzMCRT0H/kyM7qaWyGn5w==
+X-Google-Smtp-Source: ABdhPJzCgZ9EkYnkd7FsmrKt+LBuBwVNbW9sg5zrNYIsNaphOJoqPRKqun/xV8h0fHvxDpnchA6eDUK2nyz+Y2ndux0=
+X-Received: by 2002:a9d:aa4:: with SMTP id 33mr1021366otq.295.1618523930945;
+ Thu, 15 Apr 2021 14:58:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+ahpKIWzN=eEOSj8Jdfk70a";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210412222050.876100-1-seanjc@google.com> <20210412222050.876100-4-seanjc@google.com>
+In-Reply-To: <20210412222050.876100-4-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 15 Apr 2021 14:58:39 -0700
+Message-ID: <CALMp9eRmpm3HPUjizYXp27drY0xtWhSrsec51W7QkSHWADayNQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] KVM: Add proper lockdep assertion in I/O bus unregister
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hao Sun <sunhao.th@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+ahpKIWzN=eEOSj8Jdfk70a
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 12, 2021 at 3:23 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Convert a comment above kvm_io_bus_unregister_dev() into an actual
+> lockdep assertion, and opportunistically add curly braces to a multi-line
+> for-loop.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  virt/kvm/kvm_main.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index ab1fa6f92c82..ccc2ef1dbdda 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4485,21 +4485,23 @@ int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
+>         return 0;
+>  }
+>
+> -/* Caller must hold slots_lock. */
+>  int kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+>                               struct kvm_io_device *dev)
+>  {
+>         int i, j;
+>         struct kvm_io_bus *new_bus, *bus;
+>
+> +       lockdep_assert_held(&kvm->slots_lock);
+> +
+>         bus = kvm_get_bus(kvm, bus_idx);
+>         if (!bus)
+>                 return 0;
+>
+> -       for (i = 0; i < bus->dev_count; i++)
+> +       for (i = 0; i < bus->dev_count; i++) {
+>                 if (bus->range[i].dev == dev) {
+>                         break;
+>                 }
+> +       }
+Per coding-style.rst, neither the for loop nor the if-block should have braces.
 
-Hi all,
+"Do not unnecessarily use braces where a single statement will do."
 
-In commit
+Stylistic nits aside,
 
-  af5247b169a0 ("iommu/mediatek: Always enable the clk on resume")
-
-Fixes tag
-
-  Fixes: commit c0b57581b73b ("iommu/mediatek: Add power-domain operation")
-
-has these problem(s):
-
-  - leading word 'commit' unexpected
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+ahpKIWzN=eEOSj8Jdfk70a
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB4tW0ACgkQAVBC80lX
-0Gxoswf/TPdj2GalQhEJi8XoZof5dY6roo5O9ECwYMZygLl51BeQU/3Jl6mccmZO
-/vja+g5JBMX6GMgcg13i6CUQm0X0dMDfTJwevJZ2RUTip1etW7lDqmpJhBVW6tej
-RV7TflVkTAu9cgs/3L3g2ZAmEC79OpTJuK0jFrLBGusVJrl9zfG6+QgLCb420mOZ
-U9dqD7Dr7OzP3vAk+YXBCt60FjyjQXJFTfscYxWOpN05aUwWHaQb5moHVamVNuKl
-ZvnLbcyTdn13/HeR7Qox+OzNzLG1kH0r1XnDcFp/sGhqpXUkpTPvQK2uOZgRlaEs
-mPBU1HOk9BwqkLfsMQo2Qz0FQn0Ohg==
-=AFw7
------END PGP SIGNATURE-----
-
---Sig_/+ahpKIWzN=eEOSj8Jdfk70a--
+Reviewed-by: Jim Mattson <jmattson@google.com>
