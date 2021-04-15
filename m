@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA12E360DFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92394360DFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhDOPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S234444AbhDOPID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:08:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234743AbhDOO7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1921261407;
-        Thu, 15 Apr 2021 14:55:44 +0000 (UTC)
+        id S234770AbhDOO7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:59:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BAA4613DF;
+        Thu, 15 Apr 2021 14:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498545;
-        bh=cQU0+XOWp0nJM700UOu15PgUUqFBCwBNwQGEhRmYy+Y=;
+        s=korg; t=1618498548;
+        bh=SeQeTzR/XyOR8ZwJy8318GWeLUJYKmCe2HRlgf8cV1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zTNs4jouX6vjcDfU9rshbhwTKxzXwCKkfL+beioy3cV8YpGhTN+tgiD76dve4PR6E
-         Onl+RAVgBxy31uhBqRPI7YlzMXN2nyjToxcmL7eKQIZ81e6WKoHFkkeWH/Dbq8DQ3S
-         kKyS0BpA5+GHANVH8PgYjB13YjXPjqLXErgTyszY=
+        b=rg6iXbDd7T03But6SUe2XRxo5qBDsKfqkemJq9CMNXe2JYu9yUKOH6mwavbcapmz1
+         +psBL2wzZhMl7rL67qiERja509YdLH+4mjgNs/ax4hAyBp/2+9q1i7S2y2CUMUIjNo
+         3yVtGmz2AwhQvqSHPmq/WTfLNgBiQk9nDG1sXm3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>
-Subject: [PATCH 4.19 11/13] driver core: Fix locking bug in deferred_probe_timeout_work_func()
-Date:   Thu, 15 Apr 2021 16:48:00 +0200
-Message-Id: <20210415144411.970293701@linuxfoundation.org>
+        stable@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH 4.19 12/13] perf map: Tighten snprintf() string precision to pass gcc check on some 32-bit arches
+Date:   Thu, 15 Apr 2021 16:48:01 +0200
+Message-Id: <20210415144412.000369809@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
 References: <20210415144411.596695196@linuxfoundation.org>
@@ -38,46 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-commit eed6e41813deb9ee622cd9242341f21430d7789f upstream.
+commit 77d02bd00cea9f1a87afe58113fa75b983d6c23a upstream.
 
-list_for_each_entry_safe() is only useful if we are deleting nodes in a
-linked list within the loop. It doesn't protect against other threads
-adding/deleting nodes to the list in parallel. We need to grab
-deferred_probe_mutex when traversing the deferred_probe_pending_list.
+Noticed on a debian:experimental mips and mipsel cross build build
+environment:
 
-Cc: stable@vger.kernel.org
-Fixes: 25b4e70dcce9 ("driver core: allow stopping deferred probe after init")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Link: https://lore.kernel.org/r/20210402040342.2944858-2-saravanak@google.com
+  perfbuilder@ec265a086e9b:~$ mips-linux-gnu-gcc --version | head -1
+  mips-linux-gnu-gcc (Debian 10.2.1-3) 10.2.1 20201224
+  perfbuilder@ec265a086e9b:~$
+
+    CC       /tmp/build/perf/util/map.o
+  util/map.c: In function 'map__new':
+  util/map.c:109:5: error: '%s' directive output may be truncated writing between 1 and 2147483645 bytes into a region of size 4096 [-Werror=format-truncation=]
+    109 |    "%s/platforms/%s/arch-%s/usr/lib/%s",
+        |     ^~
+  In file included from /usr/mips-linux-gnu/include/stdio.h:867,
+                   from util/symbol.h:11,
+                   from util/map.c:2:
+  /usr/mips-linux-gnu/include/bits/stdio2.h:67:10: note: '__builtin___snprintf_chk' output 32 or more bytes (assuming 4294967321) into a destination of size 4096
+     67 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     68 |        __bos (__s), __fmt, __va_arg_pack ());
+        |        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  cc1: all warnings being treated as errors
+
+Since we have the lenghts for what lands in that place, use it to give
+the compiler more info and make it happy.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Anders Roxell <anders.roxell@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/base/dd.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/perf/util/map.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -254,14 +254,16 @@ int driver_deferred_probe_check_state(st
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -88,8 +88,7 @@ static inline bool replace_android_lib(c
+ 	if (!strncmp(filename, "/system/lib/", 12)) {
+ 		char *ndk, *app;
+ 		const char *arch;
+-		size_t ndk_length;
+-		size_t app_length;
++		int ndk_length, app_length;
  
- static void deferred_probe_timeout_work_func(struct work_struct *work)
- {
--	struct device_private *private, *p;
-+	struct device_private *p;
+ 		ndk = getenv("NDK_ROOT");
+ 		app = getenv("APP_PLATFORM");
+@@ -117,8 +116,8 @@ static inline bool replace_android_lib(c
+ 		if (new_length > PATH_MAX)
+ 			return false;
+ 		snprintf(newfilename, new_length,
+-			"%s/platforms/%s/arch-%s/usr/lib/%s",
+-			ndk, app, arch, libname);
++			"%.*s/platforms/%.*s/arch-%s/usr/lib/%s",
++			ndk_length, ndk, app_length, app, arch, libname);
  
- 	deferred_probe_timeout = 0;
- 	driver_deferred_probe_trigger();
- 	flush_work(&deferred_probe_work);
- 
--	list_for_each_entry_safe(private, p, &deferred_probe_pending_list, deferred_probe)
--		dev_info(private->device, "deferred probe pending");
-+	mutex_lock(&deferred_probe_mutex);
-+	list_for_each_entry(p, &deferred_probe_pending_list, deferred_probe)
-+		dev_info(p->device, "deferred probe pending\n");
-+	mutex_unlock(&deferred_probe_mutex);
- }
- static DECLARE_DELAYED_WORK(deferred_probe_timeout_work, deferred_probe_timeout_work_func);
- 
+ 		return true;
+ 	}
 
 
