@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A084360938
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE75C360944
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhDOMVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:21:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55386 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230202AbhDOMVn (ORCPT
+        id S232754AbhDOMZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:25:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16124 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231391AbhDOMZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:21:43 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FC3NUN037904;
-        Thu, 15 Apr 2021 08:20:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=BJ8vT+zdtijIJ63F5bRpUZcIpEAXyB7xSiiu0EiR3AE=;
- b=lqnNjMkDdKOIVL9emzvdhra3fldjBHU/IOeopSt1uinqa1JfIVINDUkhZWf3dUdXLgXP
- 5Cd6+opDn4W14eIXi+4RSA4lZ5lG/Hgm0myxACaCn9zTl4IBvaEZy6SawVvOsYN2McOZ
- y3v7ks+qYtAC2WI3Iw33EKRu7KLiIMFvb2r+F9gZVdCIj3b6szJfmeeDjc9bCew+pryD
- TVDPhVsS9q+bI0y9zNpLLvC8ZQ8Lcdy/WXGWjA0mUFjXprGZMClHofcNrwqSGEGZUsMz
- 3EufkW6Zf/xnbygvhgrUBSbNDBu6xDoX8Xxp87yhHHzvn/KVh6CCXQIkYYv0sYXjZa/+ vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88j2vgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 08:20:55 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13FC5j7G060273;
-        Thu, 15 Apr 2021 08:20:55 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88j2vf7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 08:20:55 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13FCCeu1011734;
-        Thu, 15 Apr 2021 12:20:53 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 37u3n8a33e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 12:20:53 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13FCKoQB39911756
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 12:20:50 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F12A052050;
-        Thu, 15 Apr 2021 12:20:49 +0000 (GMT)
-Received: from osiris (unknown [9.171.3.254])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 37F265204E;
-        Thu, 15 Apr 2021 12:20:49 +0000 (GMT)
-Date:   Thu, 15 Apr 2021 14:20:48 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: consolidate the flock uapi definitions
-Message-ID: <YHgvoCpqLrcbQETJ@osiris>
-References: <20210412085545.2595431-1-hch@lst.de>
+        Thu, 15 Apr 2021 08:25:54 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLdlC5ynrzpY88;
+        Thu, 15 Apr 2021 20:22:31 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 15 Apr 2021
+ 20:25:15 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>, <liudongdong3@huawei.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+Subject: [RFC PATCH] USB:XHCI:skip hub registration
+Date:   Thu, 15 Apr 2021 20:22:38 +0800
+Message-ID: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412085545.2595431-1-hch@lst.de>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GYiuXa6MwPoYPHEW5dNs6OA4IVhEE-Qd
-X-Proofpoint-ORIG-GUID: WIGbMGvshmA6lDf2tv4RGrRtJ4XbrxTC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_04:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=762 clxscore=1011
- mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150081
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:55:40AM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> currently we deal with the slight differents in the various architecture
-> variants of the flock and flock64 stuctures in a very cruft way.  This
-> series switches to just use small arch hooks and define the rest in
-> asm-generic and linux/compat.h instead.
-> 
-> Diffstat:
->  arch/arm64/include/asm/compat.h        |   20 --------------------
->  arch/mips/include/asm/compat.h         |   23 ++---------------------
->  arch/mips/include/uapi/asm/fcntl.h     |   28 +++-------------------------
->  arch/parisc/include/asm/compat.h       |   16 ----------------
->  arch/powerpc/include/asm/compat.h      |   20 --------------------
->  arch/s390/include/asm/compat.h         |   20 --------------------
->  arch/sparc/include/asm/compat.h        |   22 +---------------------
->  arch/x86/include/asm/compat.h          |   24 +++---------------------
->  include/linux/compat.h                 |   31 +++++++++++++++++++++++++++++++
->  include/uapi/asm-generic/fcntl.h       |   21 +++++++--------------
->  tools/include/uapi/asm-generic/fcntl.h |   21 +++++++--------------
->  11 files changed, 54 insertions(+), 192 deletions(-)
+When the number of ports on the USB hub is 0, skip the registration
+operation of the USB hub.
 
-for the s390 bits:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+The current Kunpeng930's XHCI hardware controller is defective. The number
+of ports on its USB3.0 bus controller is 0, and the number of ports on
+the USB2.0 bus controller is 1.
+
+In order to solve this problem that the USB3.0 controller does not have
+a port which causes the registration of the hub to fail, this patch passes
+the defect information by adding flags in the quirks of xhci and usb_hcd,
+and finally skips the registration process of the hub directly according
+to the results of these flags when the hub is initialized.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/usb/core/hub.c      | 6 ++++++
+ drivers/usb/host/xhci-pci.c | 4 ++++
+ drivers/usb/host/xhci.c     | 5 +++++
+ drivers/usb/host/xhci.h     | 1 +
+ include/linux/usb/hcd.h     | 1 +
+ 5 files changed, 17 insertions(+)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b1e14be..2d6869d 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -1769,9 +1769,15 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 	struct usb_host_interface *desc;
+ 	struct usb_device *hdev;
+ 	struct usb_hub *hub;
++	struct usb_hcd *hcd;
+ 
+ 	desc = intf->cur_altsetting;
+ 	hdev = interface_to_usbdev(intf);
++	hcd = bus_to_hcd(hdev->bus);
++	if (hcd->usb3_no_port) {
++		dev_warn(&intf->dev, "USB hub has no port\n");
++		return -ENODEV;
++	}
+ 
+ 	/*
+ 	 * Set default autosuspend delay as 0 to speedup bus suspend,
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index ef513c2..63b89a4 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -281,6 +281,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+ 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+ 		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+ 				"QUIRK: Resetting on resume");
++
++	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
++	    pdev->device == 0xa23c)
++		xhci->quirks |= XHCI_USB3_NOPORT;
+ }
+ 
+ #ifdef CONFIG_ACPI
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index bee5dec..e3e3573 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -5184,6 +5184,11 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+ 		/* xHCI private pointer was set in xhci_pci_probe for the second
+ 		 * registered roothub.
+ 		 */
++		if (xhci->quirks & XHCI_USB3_NOPORT) {
++			xhci_info(xhci, "xHCI host has no port\n");
++			hcd->usb3_no_port = 1;
++		}
++
+ 		return 0;
+ 	}
+ 
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 2c6c4f8..d3c658f 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1874,6 +1874,7 @@ struct xhci_hcd {
+ #define XHCI_RESET_PLL_ON_DISCONNECT	BIT_ULL(34)
+ #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
+ #define XHCI_RENESAS_FW_QUIRK	BIT_ULL(36)
++#define XHCI_USB3_NOPORT	BIT_ULL(37)
+ 
+ 	unsigned int		num_active_eps;
+ 	unsigned int		limit_active_eps;
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index 3dbb42c..7df23a0f 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -172,6 +172,7 @@ struct usb_hcd {
+ 	unsigned		tpl_support:1; /* OTG & EH TPL support */
+ 	unsigned		cant_recv_wakeups:1;
+ 			/* wakeup requests from downstream aren't received */
++	unsigned		usb3_no_port:1; /* xHCI main_hcd has no port */
+ 
+ 	unsigned int		irq;		/* irq allocated */
+ 	void __iomem		*regs;		/* device memory/io */
+-- 
+2.8.1
+
