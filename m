@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219F5361352
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4EA361351
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhDOUKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:10:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36458 "EHLO mail.kernel.org"
+        id S235288AbhDOUKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:10:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235282AbhDOUKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:10:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C646117A
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:09:40 +0000 (UTC)
+        id S235282AbhDOUJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:09:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB98D610E6;
+        Thu, 15 Apr 2021 20:09:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618517380;
-        bh=1mFerlxmQDlgP3rSY+LkdD6i+HmMcCUK2bOxuwAOSWQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kch6TuoYPCfySv1kxwUNrGG2HmtUEFQgruThKzfPKxv7uV0qOpmEuVxVtKdfeVr7J
-         qEgbFVPNEvU1V/7u9dkqvP0uQNIZg+fVshu4VSF/W1rOpXqXSj7pPU5cgRGzcgaUX5
-         iTklAXBwXyEh664Ovwb5jDQ57xg5VzuXjhkK7jiWd3sQReCz38ydDF6mKfRaD42r0j
-         KX6T/8ge8BNsIPKPU5oBiQGbr8ldtGk3jJNZSY65TCj0aKhvHpKuC2QDP4etQk/YLc
-         qpvscngE8i4IrzpBxtLxX17GxAm8eSopTmlpy92Ewbav6cvst0KBIH6JaSXxheasAk
-         nauiiIdMaXAlg==
-Received: by mail-qk1-f174.google.com with SMTP id q136so5655276qka.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:09:40 -0700 (PDT)
-X-Gm-Message-State: AOAM531zvv2wTz66FE3zEKwvudujYNYO64TErsJLsKEV+xYGzedq7wLr
-        6I4objIo/EI7FdcWHWDwasCJQdF3pGB6RryJLw==
-X-Google-Smtp-Source: ABdhPJz/9ZRwMOtBJCgIX1lvMfUNATJrZ1P2pA0oGlYnms0mByoTl1RU5yVk8p8aT3T5ubaLX396zV46vZuGfnK/ynA=
-X-Received: by 2002:a37:a2cb:: with SMTP id l194mr5105864qke.364.1618517379973;
- Thu, 15 Apr 2021 13:09:39 -0700 (PDT)
+        s=k20201202; t=1618517372;
+        bh=e/gUe1PEZqxNuH4A9nYQSWV6y+9lQUySaH6Y23bYtsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Prw2VaGCHfswogZ4rloufawxncBWtI4QapaNxpB2ED/ASQndB91uazK1r1fNEqJZ7
+         y9bA3LJEzocNY0vo5/GJxPN9pVh51gQRFIjIwFslctf5XaLjSVDocsbLM7aCvjo6cw
+         3kKet9oy6dYFtuu9ARHRndZZT9Yi3hJw05oXItg5yLhkdg7T36pbg/5tgXDckn58rW
+         Lmj4+r5/7Re9sMS3Pw31fWFpLZlF1gkmQo9dGFA5arpOmDgA2aV2oKR5G4AwuTxAiU
+         k6wa8i+CH9U87j/3s0mN7HEPpUeB+g1NuFOZaR9f5GbRBkEfzhLYq2BkotDXcL9j6+
+         89kIIScG12Hig==
+Date:   Thu, 15 Apr 2021 22:09:28 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] i2c: mpc: Refactor to improve responsiveness
+Message-ID: <20210415200928.GC2360@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20210414155412.3697605-1-robh@kernel.org> <20210414155412.3697605-2-robh@kernel.org>
- <CAM9d7cibppJUQuqcxEO9gU-KcHJNsoMJQw=1+_Fw3oXXHEKUCA@mail.gmail.com>
- <YHcuIKjNDkOUCupx@kernel.org> <YHczIzjv6Kt3cxI7@kernel.org>
- <CAM9d7chYYa5B-QR6xNJG5NeLb0ENv5inLdLMqT_e+8jkRZZCJA@mail.gmail.com> <YHiV5vqSD3TmUspL@kernel.org>
-In-Reply-To: <YHiV5vqSD3TmUspL@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 15 Apr 2021 15:09:28 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKv2rpMrbYu4Dzq9jsmUGiZyJHzi8MOJMqbRnRbzcrc9w@mail.gmail.com>
-Message-ID: <CAL_JsqKv2rpMrbYu4Dzq9jsmUGiZyJHzi8MOJMqbRnRbzcrc9w@mail.gmail.com>
-Subject: Re: [PATCH v8 2/4] libperf: Add evsel mmap support
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1SQmhf2mF2YjsYvc"
+Content-Disposition: inline
+In-Reply-To: <20210414223325.23352-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 2:37 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Apr 15, 2021 at 04:14:31AM +0900, Namhyung Kim escreveu:
-> > On Thu, Apr 15, 2021 at 3:23 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Wed, Apr 14, 2021 at 03:02:08PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Em Thu, Apr 15, 2021 at 01:41:35AM +0900, Namhyung Kim escreveu:
-> > > > > Hello,
-> > > > >
-> > > > > On Thu, Apr 15, 2021 at 1:07 AM Rob Herring <robh@kernel.org> wrote:
-> > > > > > +void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
-> > > > > > +{
-> > > > > > +       if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
-> > > > > > +               return NULL;
-> > > > >
-> > > > > I think you should check the cpu and the thread is in
-> > > > > a valid range.  Currently xyarray__entry() simply accesses
-> > > > > the content without checking the boundaries.
-> > > >
-> > > > So, since xyarray has the bounds, it should check it, i.e. we need to
-> > > > have a __xyarray__entry() that is what xyarray__entry() does, i.e.
-> > > > assume the values have been bounds checked, then a new method,
-> > > > xyarray__entry() that does bounds check, if it fails, return NULL,
-> > > > otherwise calls __xyarray__entry().
-> > > >
-> > > > I see this is frustrating and I should've chimed in earlier, but at
-> > > > least now this is getting traction, and the end result will be better
-> > > > not just for the feature you've been dilligently working on,
-> > > >
-> > > > Thank you for your persistence,
-> > >
-> > > Re-reading, yeah, this can be done in a separate patch, Namhyung, can I
-> > > have your Reviewed-by? That or an Acked-by?
-> >
-> > Sure, for the series:
-> >
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
->
-> Ok, b4 failed on it, probably some missing Reply to, so I'll apply it by
-> hand:
 
-That's my fault. A duplicate message-id is the issue. git-send-email
-died after patch 1/4 (can't say I've ever had that happen). So in my
-attempt to manually resend 2-4, I was off by 1 in the message-id and
-duplicated patch 1's message-id. I should have just resent the whole
-thing.
+--1SQmhf2mF2YjsYvc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Rob
+On Thu, Apr 15, 2021 at 10:33:19AM +1200, Chris Packham wrote:
+> I've tested on T2081 and P2041 based systems with a number of i2c and smb=
+us
+> devices.
+>=20
+> I've included some clean ups provided by Andy Shevchenko to make applying=
+ the
+> series easier.
+
+Applied to for-next, thanks!
+
+
+--1SQmhf2mF2YjsYvc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB4nXgACgkQFA3kzBSg
+KbbpuA/9GUAKGAr4Saj1JcWgv1ni/f/nIeao+b/K2FFb6IcNRkIwICYHKQHdNDg0
+SaZVmR5fFDMuje0qfqWjFYAvbyQL1hKFC5KSjF4emi/jdQwY+L2CXegTGju371Rf
+KkczdWXRIv9+x6JO5rn+KXyvvbg8L0eTg1UwggoBVdLCVi5FcppAYNgUNptWH/5L
+C6rxzi3sq7pjHv+8r6EiWXGHG/s4apALrrn+hgeda4ki8fXdttnWz8ze9D1XCsg0
+Iyv8BYaDU5CPQC9v0D663Kd1GUneMdzBXVFTJQG8a9YPkt2qe3y3qCyFvguatxxG
+NBY5MN+NDE5gGkQRnAs44NAprP6dmTdRqFG/j0VuvKiQwJwRmsZAJeJ1C7ZaqIeP
+ZEQpQcTFh+unJQHKjjxJQ1WJNgdHOiEHcSdkY7kWpha3k+Ez7L3F8LHi0AsbhbtY
+KiIrhu8s3fL75P6LHokmLR97+291Mc6nmYuke9Xkp7x8gbaJJYHbDhxqRxODVxcq
+btyzN8OqMAKF0PX3nOdY2oKeWVjXFNwZfcxDIZJE/iikkyQ2ieBgTMhAiOPMh6uR
+CaXgMzVXYRLYopvmqUCEyJbS73DUoT1YR2O+sRu/Vv9CpHB0u0umJHX7qnjPPk+d
+XBwLMT5uG9cLqMK13qf1HCwe9Y/aY1rnHVre+8PAmPEB8yxl8DY=
+=YiHi
+-----END PGP SIGNATURE-----
+
+--1SQmhf2mF2YjsYvc--
