@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5523610D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09F93610D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233933AbhDOROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S234065AbhDORPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhDORO0 (ORCPT
+        with ESMTP id S231726AbhDORO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:14:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC746C061574;
-        Thu, 15 Apr 2021 10:14:02 -0700 (PDT)
+        Thu, 15 Apr 2021 13:14:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2539DC061574;
+        Thu, 15 Apr 2021 10:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=nkflvBcB1OAOg8cL9Czq3wUEW43GgtwSsqa8GY7v0s4=; b=Fuz5Og5Ss/NLF5hz+9ZGKDnVGN
-        cWlPJlCqVYU0nKJRcwBOx9cECNKJnuQUY2U5nqmhC8JFZ1M8tdrdpP8Z5qhGRvBpFIag+gDtqX/CR
-        HP1bSmoYb3N0EnMJwei9q+xecabngB9crdWOLcCRJVqgifSpqKQejQo3Lu772Pp0PsrscMWeeFVc0
-        eIrRvTMeJLdF8FHp/4UsbCw9A1gSCbZYqmESq5cvlT3oHKRJVWZZMzJkWdJ6aOQYgf/Y4iyIJRhXG
-        RLOxyNMi/UDm24+SgRcWS9IJ4VFbWbbKsIS/rFnhy1eknz3iOBb2eBVh+4d109BHf8kMUU3HykOay
-        s27BTC1w==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX5Yz-00GpJa-JD; Thu, 15 Apr 2021 17:13:59 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: [PATCH v2] uml: fix W=1 missing-include-dirs warnings
-Date:   Thu, 15 Apr 2021 10:13:52 -0700
-Message-Id: <20210415171352.27398-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=USIt7kQju8YFJVq4Oq/9MfaoCKu4uLeI8t4U8FPhcmk=; b=bT3jy1Cxw3z/cEHs8tgvzwL3u5
+        7wRsbvatgfLKvp+ni8I1+1LRiWSNDU6dpwMNk3YCaMDJpWlh6fK70Fl8MByC9hNDlD502a2Acf552
+        qk+x2nkMAB5vl5CGsHU0t3yP6d9YTqTIrM4W/39a6qMxDEApmSyE9SNokr8vrufuQseacbVFtFJgV
+        KLsZywHDDAAstkbh1g9qc32ne7wmwEmJ35+CbkNyJLwPuMbgDQOiGKk6n0tndBvQMEVQvcY5Myw/M
+        Cac9ti3V/K2BYBIIXbz7J+7YzlTPEAoebb0A1F6p60CEa7PWdjm/qjJk6inVbDxuIX0JPbeHJ//XX
+        d56scmVg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX5ZB-008rHM-US; Thu, 15 Apr 2021 17:14:12 +0000
+Date:   Thu, 15 Apr 2021 18:14:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+Message-ID: <20210415171409.GC2531743@casper.infradead.org>
+References: <20210415170819.GA17534@focaruja>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415170819.GA17534@focaruja>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently when using "W=1" with UML builds, there are over 700 warnings
-like so:
+On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
+> -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> -    u32 mbus_code);
+> +const struct atomisp_format_bridge*
+> +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
 
-  CC      arch/um/drivers/stderr_console.o
-cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+No, this does not match coding style.  Probably best to break the
+80-column guideline in this instance.  Best would be to have a function
+and/or struct name that isn't so ridiculously long, but that would
+require some in-depth thinking.
 
-but arch/um/ does not have include/uapi/ at all, so add that
-subdir and put one Kbuild file into it (since git does not track
-empty subdirs).
+> -void atomisp_apply_css_parameters(
+> -    struct atomisp_sub_device *asd,
+> -    struct atomisp_css_params *css_param);
+> +void atomisp_apply_css_parameters(struct atomisp_sub_device *asd,
+> +				  struct atomisp_css_params *css_param);
+> +
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>
-Cc: linux-kbuild@vger.kernel.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
----
-v2: use Option 4 from v1: add arch/um/include/uapi so that 'make' is
-    placated -- and just like all other arch's have.
+Good.
 
- arch/um/include/uapi/asm/Kbuild |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/include/uapi/asm/Kbuild b/arch/um/include/uapi/asm/Kbuild
-new file mode 100644
-index 000000000000..f66554cd5c45
---- /dev/null
-+++ b/arch/um/include/uapi/asm/Kbuild
-@@ -0,0 +1 @@
-+# SPDX-License-Identifier: GPL-2.0
