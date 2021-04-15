@@ -2,118 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9B361141
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960736114D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhDORlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:41:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51503 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233980AbhDORlf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:41:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618508471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wTimRIr0YgBuVLpWvKPM6c0MAPH0f+KQspjahIIUAlU=;
-        b=cPDV7WzTQ9rHwfUAQ/ac8bvWdvjyTkXGWriMaF++nEkSbJ+qL0n8Miec9j2pcwCP3jD+sH
-        R6TckrEa6JX8ZyygS7AnxLHcSdnNw7s2A6J/GQ6S4KME/FKCJ9tWSLOBsC0ts8eb/9IbGh
-        oJuCPBuWTEs8RtOWTWoY/1i4yja7kqQ=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-pxp1gya3MFWwH2GlIlJCMA-1; Thu, 15 Apr 2021 13:41:10 -0400
-X-MC-Unique: pxp1gya3MFWwH2GlIlJCMA-1
-Received: by mail-qt1-f199.google.com with SMTP id e6-20020ac85dc60000b029019d9cbbc077so4492900qtx.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:41:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wTimRIr0YgBuVLpWvKPM6c0MAPH0f+KQspjahIIUAlU=;
-        b=Ve7bkuUc5dERHWidVXG+3JYCKnFzBVCDj018pj5qXNlC3nlL8dr8thzmq1cQe2HeBm
-         EopzT+s/XNAOfeAzahPlPs9PeM81CfLKWWzUDuMGhBg4GpEsU5Y/zEEgn9LAcKB9WQKI
-         plb1i7slkyf51Rc15ZfV8+SkTGk3ZCjuHtBMIIr/kXoQYy24/Zkhu2a/e6Jdh6mb+w/G
-         +KMw4HITbLfVooZf6eKpPX2n9RVzZryDx8/Evbg83ICkQ3Tcjm2j0k5peb/zjSBdI+Nw
-         G7AZ8mIwgKyT8SeCwQm5Fi/w7q1txzlz02nCe7u40mVq/fqycbP/ZC+8jXL6nQjtLQAu
-         9bqA==
-X-Gm-Message-State: AOAM531VeJbEISWjJ6sl4XW7vC9SHDxXfZA0HwT6k03aPlBGkmc1qrOH
-        wl9eti5C1fV59dz0zLgg9mzv/m7LugYUXXcvAHppUcSUUeeRplBvBJ6fRG6y59fTWCFxUGIyUio
-        L4DcYc7V5kLnpsmvnENiLJ1Sy
-X-Received: by 2002:a37:7c5:: with SMTP id 188mr4791832qkh.348.1618508469965;
-        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmgbFnszT76GybNyzgAt7zTaWK3t49+b+KRVvGIM0rKdDofO0Sm6ySwTeX6EQ7djs0OMFxww==
-X-Received: by 2002:a37:7c5:: with SMTP id 188mr4791794qkh.348.1618508469626;
-        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id x18sm2247420qtj.58.2021.04.15.10.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 10:41:09 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
- overhead
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210415171035.GB2531743@casper.infradead.org>
-Message-ID: <15cf3cfa-c221-9e84-9f5b-80082207efd3@redhat.com>
-Date:   Thu, 15 Apr 2021 13:41:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S234172AbhDORot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:44:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233134AbhDORom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:44:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 246D06115B;
+        Thu, 15 Apr 2021 17:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618508659;
+        bh=FQz0pD4kv15nu6Gh8jeOf7Ip6Z3DdOPGbJ6/uOkYSmc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fECi0I1N7U6/gNqBXmbNEU9TdnsRDZvWE680GsvE78zRk2D5aamSbkRiFxFGpMhOo
+         GzT0+4mWV4vASYHFP/1zhIKgmT3l0UCFkLCMuHbuB1m/rarLZ+aJzCwEiKR3kfXF3g
+         1TgTfl9pFvDWRcSLGJZg5Hsbj43sGlVITCHktJX0xdDL7mdle9gMJfGx8Yov9Zj9kg
+         nQW17bAZE+WJqSWCEDHkFF4mYRvwiniKKEAX5NrIJtPaCtJ4quwtofDzI9HVKdD44i
+         a2JDMZI86qYDwD4E2+qWjdlm4mGPD9NuK3OnMYvT51t1mg+leMzqGdUWl7RYKtjVE0
+         kgAhCnrSNvvKA==
+Date:   Thu, 15 Apr 2021 10:44:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     davem@davemloft.net, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
+        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
+        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
+        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH v6 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210415104417.6269cd9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210415054519.12944-1-decui@microsoft.com>
+References: <20210415054519.12944-1-decui@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415171035.GB2531743@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 1:10 PM, Matthew Wilcox wrote:
-> On Tue, Apr 13, 2021 at 09:20:22PM -0400, Waiman Long wrote:
->> With memory accounting disable, the run time was 2.848s. With memory
->> accounting enabled, the run times with the application of various
->> patches in the patchset were:
->>
->>    Applied patches   Run time   Accounting overhead   Overhead %age
->>    ---------------   --------   -------------------   -------------
->>         None          10.800s         7.952s              100.0%
->>          1-2           9.140s         6.292s               79.1%
->>          1-3           7.641s         4.793s               60.3%
->>          1-5           6.801s         3.953s               49.7%
-> I think this is a misleading way to report the overhead.  I would have said:
->
-> 			10.800s		7.952s		279.2%
-> 			 9.140s		6.292s		220.9%
-> 			 7.641s		4.793s		168.3%
-> 			 6.801s		3.953s		138.8%
->
-What I want to emphasize is the reduction in the accounting overhead 
-part of execution time. Your percentage used the accounting disable time 
-as the denominator. I think both are valid, I will be more clear about 
-that in my version of the patch.
+On Wed, 14 Apr 2021 22:45:19 -0700 Dexuan Cui wrote:
+> +	buf = dma_alloc_coherent(gmi->dev, length, &dma_handle,
+> +				 GFP_KERNEL | __GFP_ZERO);
 
-Thanks,
-Longman
+No need for GFP_ZERO, dma_alloc_coherent() zeroes the memory these days.
 
+> +static int mana_gd_register_irq(struct gdma_queue *queue,
+> +				const struct gdma_queue_spec *spec)
+> ...
+> +	struct gdma_irq_context *gic;
+> +
+> +	struct gdma_context *gc;
+
+Why the empty line?
+
+> +	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+> +	if (!queue)
+> +		return -ENOMEM;
+> +
+> +	gmi = &queue->mem_info;
+> +	err = mana_gd_alloc_memory(gc, spec->queue_size, gmi);
+> +	if (err)
+> +		return err;
+
+Leaks the memory from 'queue'?
+
+Same code in mana_gd_create_mana_eq(), ...wq_cq(), etc.
+
+> +int mana_do_attach(struct net_device *ndev, enum mana_attach_caller caller)
+> +{
+> +	struct mana_port_context *apc = netdev_priv(ndev);
+> +	struct gdma_dev *gd = apc->ac->gdma_dev;
+> +	u32 max_txq, max_rxq, max_queues;
+> +	int port_idx = apc->port_idx;
+> +	u32 num_indirect_entries;
+> +	int err;
+> +
+> +	if (caller == MANA_OPEN)
+> +		goto start_open;
+> +
+> +	err = mana_init_port_context(apc);
+> +	if (err)
+> +		return err;
+> +
+> +	err = mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
+> +				   &num_indirect_entries);
+> +	if (err) {
+> +		netdev_err(ndev, "Failed to query info for vPort 0\n");
+> +		goto reset_apc;
+> +	}
+> +
+> +	max_queues = min_t(u32, max_txq, max_rxq);
+> +	if (apc->max_queues > max_queues)
+> +		apc->max_queues = max_queues;
+> +
+> +	if (apc->num_queues > apc->max_queues)
+> +		apc->num_queues = apc->max_queues;
+> +
+> +	memcpy(ndev->dev_addr, apc->mac_addr, ETH_ALEN);
+> +
+> +	if (caller == MANA_PROBE)
+> +		return 0;
+> +
+> +start_open:
+
+Why keep this as a single function, there is no overlap between what's
+done for OPEN and PROBE, it seems.
+
+Similarly detach should probably be split into clearly distinct parts.
+
+> +	err = mana_create_eq(apc);
+> +	if (err)
+> +		goto reset_apc;
+> +
+> +	err = mana_create_vport(apc, ndev);
+> +	if (err)
+> +		goto destroy_eq;
+> +
+> +	err = netif_set_real_num_tx_queues(ndev, apc->num_queues);
+> +	if (err)
+> +		goto destroy_vport;
+> +
+> +	err = mana_add_rx_queues(apc, ndev);
+> +	if (err)
+> +		goto destroy_vport;
+> +
+> +	apc->rss_state = apc->num_queues > 1 ? TRI_STATE_TRUE : TRI_STATE_FALSE;
+> +
+> +	err = netif_set_real_num_rx_queues(ndev, apc->num_queues);
+> +	if (err)
+> +		goto destroy_vport;
+> +
+> +	mana_rss_table_init(apc);
+> +
+> +	err = mana_config_rss(apc, TRI_STATE_TRUE, true, true);
+> +	if (err)
+> +		goto destroy_vport;
+> +
+> +	return 0;
+> +
+> +destroy_vport:
+> +	mana_destroy_vport(apc);
+> +destroy_eq:
+> +	mana_destroy_eq(gd->gdma_context, apc);
+> +reset_apc:
+> +	if (caller == MANA_OPEN)
+> +		return err;
+> +	kfree(apc->rxqs);
+> +	apc->rxqs = NULL;
+> +	return err;
+> +}
+> +
+> +int mana_attach(struct net_device *ndev)
+> +{
+> +	struct mana_port_context *apc = netdev_priv(ndev);
+> +	int err;
+> +
+> +	ASSERT_RTNL();
+> +
+> +	err = mana_do_attach(ndev, MANA_ATTACH);
+> +	if (err)
+> +		return err;
+> +
+> +	netif_device_attach(ndev);
+> +
+> +	apc->port_is_up = apc->port_st_save;
+> +
+> +	/* Ensure port state updated before txq state */
+> +	smp_wmb();
+> +
+> +	if (apc->port_is_up) {
+> +		netif_carrier_on(ndev);
+> +		netif_tx_wake_all_queues(ndev);
+> +	}
+> +
+> +	return 0;
+> +}
