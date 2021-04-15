@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F1E360A5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79208360A7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhDONSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:18:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23149 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232253AbhDONSG (ORCPT
+        id S233092AbhDON1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhDON1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:18:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618492662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ekDAkkr77eB7AxytMHc6R8nrzotwIpYRJxiGpMYfIQ=;
-        b=Uodcfmich+hUu73FW+LcOlBja1FCvDUuXc6PZIxoTKwKY8wz/0vxmVlSoTtLrbTs8tZbDQ
-        /eC31E+HrGkb4Pg8T2uCUnLshzWrTZ23G95We/HPi8Lk3ab4qn7xKlA2pDGV9k0bnEzxVF
-        FcyO60eD28Ig+kUaum1j6rwvKC5cHQU=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-HRA3KqH7NlK2HhDJFGDh_A-1; Thu, 15 Apr 2021 09:17:41 -0400
-X-MC-Unique: HRA3KqH7NlK2HhDJFGDh_A-1
-Received: by mail-qv1-f72.google.com with SMTP id m19-20020a0cdb930000b029019a25080c40so1736101qvk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:17:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6ekDAkkr77eB7AxytMHc6R8nrzotwIpYRJxiGpMYfIQ=;
-        b=fNgIzJEgh0na49LhWTu7jnr+vARwaY36XMYnONN7xq/c2Ldox4E0FKzN7UTI6XGBA0
-         8Y1MBP9p4bVKGKufFasF20x6CETSrxrJXpHwciQO/U+DiIdTlaA7LE/6Lm6vN9OUth6T
-         ZbehE0oPCLcAZ9O1FITOuxBg8Qjf01rYpxDrTtwHmeph0iyz//gx+9HGU2934LxtHyuY
-         9sVCjFowBShKMLI9zThOo5cmUguTH3sWP3LOtI5A5HVCsmzkaWJ5HSU26CZqju5iLr9y
-         kUhOmiZzNlR1sHw36yyS/R6e9gx/pM90fL5ahs1/P5jJvYC/VL1KKChn8RtB62eMgyg1
-         Ma3g==
-X-Gm-Message-State: AOAM5330NYrCkBH1wrpyQu0dIbAC4d7QJqqTZ4hLJHHbGN8cHKYySmmw
-        MwUSIwygMvOgHvU8qyOerGAWa8pKXXPQkKrYJHwZrFCKr1NvnBWcRU7kSiENECoiZlPF8dgxn8s
-        leQkj0mvWbnM8Xm+AKZbUX1NI
-X-Received: by 2002:aed:2042:: with SMTP id 60mr2968649qta.340.1618492660576;
-        Thu, 15 Apr 2021 06:17:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxD+jDw+3d0Vt7K0lMNcqpB1cyAf1PizDO/B0uJhdje9Ty4/DaY0Axl2ZceZ8eUq0lZta2ATw==
-X-Received: by 2002:aed:2042:: with SMTP id 60mr2968619qta.340.1618492660352;
-        Thu, 15 Apr 2021 06:17:40 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h82sm1946504qke.30.2021.04.15.06.17.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 06:17:39 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
- overhead
-To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210415032642.gfaevezaxoj4od3d@gabell>
-Message-ID: <12cba05a-e268-3a5d-69d7-feb00e36ef40@redhat.com>
-Date:   Thu, 15 Apr 2021 09:17:37 -0400
+        Thu, 15 Apr 2021 09:27:50 -0400
+X-Greylist: delayed 354 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Apr 2021 06:27:27 PDT
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C1FC061574;
+        Thu, 15 Apr 2021 06:27:25 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 8025681E77;
+        Thu, 15 Apr 2021 15:21:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1618492888;
+        bh=ZONWGzYKtU8DHCzBAyEFfKxI0PsF5qLdYZOEWoxUxKQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rFO2ciQsIJnRAm72WtUX1yUdmKRSKfPKLDR/Zkra4IVdcKMG9S/2EoTdPdr1yEazy
+         +V5V1F4LGvrw4RrmrpCZXFx50uaqsIYaU/af6YL3hPsgqEAjiOA99WEPKs5Vr+LNl+
+         nCxoVRycYBM7p8bG1ewYdBtqr3imi2bM2JhN2lQvSMzOSP1g/4n/Zlp+4oUIqdIVGB
+         4H5iVZeBMkNhxtCBLLNG4O//I+MILGLIKcLPnFx4LH5bnFmPb6o9ZlQgbofSAYYu0s
+         ayRhbM9YD5mIKPKqhQIxEpzUYdiA7pLhWNGSln3l9RIHsO6UjVjxNEVFyae/Q1011+
+         1dd4NJLYniHHw==
+Subject: Re: [PATCH 11/13] ARM: dts: stm32: fix LTDC port node on STM32 MCU ad
+ MPU
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>, arnd@arndb.de,
+        robh+dt@kernel.org, jagan@amarulasolutions.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        kuba@kernel.org
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-12-alexandre.torgue@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <3b39908b-a263-a5d4-f6ac-ac30ffb06269@denx.de>
+Date:   Thu, 15 Apr 2021 15:21:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210415032642.gfaevezaxoj4od3d@gabell>
+In-Reply-To: <20210415101037.1465-12-alexandre.torgue@foss.st.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 11:26 PM, Masayoshi Mizuma wrote:
->
-> Hi Longman,
->
-> Thank you for your patches.
-> I rerun the benchmark with your patches, it seems that the reduction
-> is small... The total duration of sendto() and recvfrom() system call
-> during the benchmark are as follows.
->
-> - sendto
->    - v5.8 vanilla:                      2576.056 msec (100%)
->    - v5.12-rc7 vanilla:                 2988.911 msec (116%)
->    - v5.12-rc7 with your patches (1-5): 2984.307 msec (115%)
->
-> - recvfrom
->    - v5.8 vanilla:                      2113.156 msec (100%)
->    - v5.12-rc7 vanilla:                 2305.810 msec (109%)
->    - v5.12-rc7 with your patches (1-5): 2287.351 msec (108%)
->
-> kmem_cache_alloc()/kmem_cache_free() are called around 1,400,000 times during
-> the benchmark. I ran a loop in a kernel module as following. The duration
-> is reduced by your patches actually.
->
->    ---
->    dummy_cache = KMEM_CACHE(dummy, SLAB_ACCOUNT);
->    for (i = 0; i < 1400000; i++) {
-> 	p = kmem_cache_alloc(dummy_cache, GFP_KERNEL);
-> 	kmem_cache_free(dummy_cache, p);
->    }
->    ---
->
-> - v5.12-rc7 vanilla:                 110 msec (100%)
-> - v5.12-rc7 with your patches (1-5):  85 msec (77%)
->
-> It seems that the reduction is small for the benchmark though...
-> Anyway, I can see your patches reduce the overhead.
-> Please feel free to add:
->
-> 	Tested-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
->
-> Thanks!
-> Masa
->
-Thanks for the testing.
+On 4/15/21 12:10 PM, Alexandre Torgue wrote:
+> Running "make dtbs_check W=1", some warnings are reported concerning
+> LTDC port subnode:
+> 
+> /soc/display-controller@5a001000/port:
+> unnecessary #address-cells/#size-cells without "ranges" or child "reg"
+> property
+> /soc/display-controller@5a001000/port: graph node has single child node
+> 'endpoint', #address-cells/#size-cells are not necessary
 
-I was focusing on your kernel module benchmark in testing my patch. I 
-will try out your pgbench benchmark to see if there can be other tuning 
-that can be done.
+btw could you retain diffstat on your patches ? It's useful to see which 
+files changed right away.
 
-BTW, how many numa nodes does your test machine? I did my testing with a 
-2-socket system. The vmstat caching part may be less effective on 
-systems with more numa nodes. I will try to find a larger 4-socket 
-systems for testing.
+[...]
 
-Cheers,
-Longman
+> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> index 2bc92ef3aeb9..19ef475a48fc 100644
+> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+> @@ -82,9 +82,15 @@
+>   };
+>   
+>   &ltdc {
+> -	status = "okay";
+> -
+>   	port {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ltdc_ep0_out: endpoint@0 {
+> +			reg = <0>;
+> +			remote-endpoint = <&sii9022_in>;
+> +		};
+> +
+>   		ltdc_ep1_out: endpoint@1 {
+>   			reg = <1>;
+>   			remote-endpoint = <&dsi_in>;
 
+[...]
+
+> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+> index 64dca5b7f748..e7f10975cacf 100644
+> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+> @@ -277,11 +277,7 @@
+>   	status = "okay";
+>   
+>   	port {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		ltdc_ep0_out: endpoint@0 {
+> -			reg = <0>;
+> +		ltdc_ep0_out: endpoint {
+>   			remote-endpoint = <&adv7513_in>;
+>   		};
+>   	};
+
+I think this is wrong, the AV96 can have two displays connected to two 
+ports of the LTDC, just like DK2 for example.
