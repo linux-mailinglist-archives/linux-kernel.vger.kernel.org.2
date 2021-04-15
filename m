@@ -2,167 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9E0360BEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A79D360BFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhDOOgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:36:09 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60421 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232759AbhDOOgH (ORCPT
+        id S233502AbhDOOi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:38:27 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41750 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233363AbhDOOiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:36:07 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FEWU1M032290;
-        Thu, 15 Apr 2021 16:35:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=dd8MLNMxo70LEUwacsNT/EmSpkArncu11OuNGUbGgZ8=;
- b=L5XlhZ7sGVykh0fltQSnNx98qVaWO+8yPJ1HYHKsoRJfeoBammc9QL+aaLp15Gim21FD
- BTDDZ2Pc0TLJdDE8SA4fTtEqngMKj747ePu3OCJ+wcB2O9JDHbWw03CjQHBWrW3CgqJ1
- waxl6GL1kGib5XTiwmeRny6h7v9VF/PPkz63jjyhaccVyR34nk53D4iEZAIaaAD30nm3
- NwU7fgjjoqLBCP7ny+SvBnDP/nU4p5Je+nxn2m3q9VfY40I71dVOdlKKT41c1nRwjeNP
- +2ygpHdVuDdTvcge82wNYTj582BxWNYVYTp/F/fNgMCdQfMeKIXSoU/fDYepJle2R+ai ug== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37xg6w3854-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 16:35:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 72EC010002A;
-        Thu, 15 Apr 2021 16:35:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36130241571;
-        Thu, 15 Apr 2021 16:35:27 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Apr
- 2021 16:35:26 +0200
-Subject: Re: [PATCH 11/13] ARM: dts: stm32: fix LTDC port node on STM32 MCU ad
- MPU
-To:     Marek Vasut <marex@denx.de>, <arnd@arndb.de>, <robh+dt@kernel.org>,
-        <jagan@amarulasolutions.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        <kuba@kernel.org>
-References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
- <20210415101037.1465-12-alexandre.torgue@foss.st.com>
- <3b39908b-a263-a5d4-f6ac-ac30ffb06269@denx.de>
- <36e9f0df-dfdb-e2f5-3d6e-ac32a1b8156e@foss.st.com>
- <fa3885df-8977-9540-f2af-d4095f519483@denx.de>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <3961c9ae-41cc-5a15-2704-ffc0832f0fe8@foss.st.com>
-Date:   Thu, 15 Apr 2021 16:35:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Apr 2021 10:38:21 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lX37j-000708-Ga; Thu, 15 Apr 2021 16:37:39 +0200
+Received: from [85.7.101.30] (helo=pc-6.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lX37i-000EJ3-8n; Thu, 15 Apr 2021 16:37:38 +0200
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        illusionist.neo@gmail.com, linux@armlinux.org.uk,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        paulburton@kernel.org, tsbogend@alpha.franken.de,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
+        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
+        horms@verge.net.au, nicolas.dichtel@6wind.com,
+        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
+        keescook@chromium.org, quentin@isovalent.com, tklauser@distanz.ch,
+        grantseltzer@gmail.com, irogers@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, iecedge@gmail.com
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+Date:   Thu, 15 Apr 2021 16:37:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <fa3885df-8977-9540-f2af-d4095f519483@denx.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_06:2021-04-15,2021-04-15 signatures=0
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26141/Thu Apr 15 13:13:26 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/15/21 11:32 AM, Jianlin Lv wrote:
+> For debugging JITs, dumping the JITed image to kernel log is discouraged,
+> "bpftool prog dump jited" is much better way to examine JITed dumps.
+> This patch get rid of the code related to bpf_jit_enable=2 mode and
+> update the proc handler of bpf_jit_enable, also added auxiliary
+> information to explain how to use bpf_jit_disasm tool after this change.
+> 
+> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+[...]
+> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+> index 0a7a2870f111..8d36b4658076 100644
+> --- a/arch/x86/net/bpf_jit_comp32.c
+> +++ b/arch/x86/net/bpf_jit_comp32.c
+> @@ -2566,9 +2566,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   		cond_resched();
+>   	}
+>   
+> -	if (bpf_jit_enable > 1)
+> -		bpf_jit_dump(prog->len, proglen, pass + 1, image);
+> -
+>   	if (image) {
+>   		bpf_jit_binary_lock_ro(header);
+>   		prog->bpf_func = (void *)image;
+> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> index c8496c1142c9..990b1720c7a4 100644
+> --- a/net/core/sysctl_net_core.c
+> +++ b/net/core/sysctl_net_core.c
+> @@ -273,16 +273,8 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
+>   
+>   	tmp.data = &jit_enable;
+>   	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
+> -	if (write && !ret) {
+> -		if (jit_enable < 2 ||
+> -		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
+> -			*(int *)table->data = jit_enable;
+> -			if (jit_enable == 2)
+> -				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
+> -		} else {
+> -			ret = -EPERM;
+> -		}
+> -	}
+> +	if (write && !ret)
+> +		*(int *)table->data = jit_enable;
+>   	return ret;
+>   }
+>   
+> @@ -389,7 +381,7 @@ static struct ctl_table net_core_table[] = {
+>   		.extra2		= SYSCTL_ONE,
+>   # else
+>   		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= &two,
+> +		.extra2		= SYSCTL_ONE,
+>   # endif
+>   	},
+>   # ifdef CONFIG_HAVE_EBPF_JIT
+> diff --git a/tools/bpf/bpf_jit_disasm.c b/tools/bpf/bpf_jit_disasm.c
+> index c8ae95804728..efa4b17ae016 100644
+> --- a/tools/bpf/bpf_jit_disasm.c
+> +++ b/tools/bpf/bpf_jit_disasm.c
+> @@ -7,7 +7,7 @@
+>    *
+>    * To get the disassembly of the JIT code, do the following:
+>    *
+> - *  1) `echo 2 > /proc/sys/net/core/bpf_jit_enable`
+> + *  1) Insert bpf_jit_dump() and recompile the kernel to output JITed image into log
 
+Hmm, if we remove bpf_jit_dump(), the next drive-by cleanup patch will be thrown
+at bpf@vger stating that bpf_jit_dump() has no in-tree users and should be removed.
+Maybe we should be removing bpf_jit_disasm.c along with it as well as bpf_jit_dump()
+itself ... I guess if it's ever needed in those rare occasions for JIT debugging we
+can resurrect it from old kernels just locally. But yeah, bpftool's jit dump should
+suffice for vast majority of use cases.
 
-On 4/15/21 4:30 PM, Marek Vasut wrote:
-> On 4/15/21 3:34 PM, Alexandre TORGUE wrote:
->> Hi Marek
-> 
-> Hello Alexandre,
-> 
->>>> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts 
->>>> b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>> index 2bc92ef3aeb9..19ef475a48fc 100644
->>>> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->>>> @@ -82,9 +82,15 @@
->>>>   };
->>>>   &ltdc {
->>>> -    status = "okay";
->>>> -
->>>>       port {
->>>> +        #address-cells = <1>;
->>>> +        #size-cells = <0>;
->>>> +
->>>> +        ltdc_ep0_out: endpoint@0 {
->>>> +            reg = <0>;
->>>> +            remote-endpoint = <&sii9022_in>;
->>>> +        };
->>>> +
->>>>           ltdc_ep1_out: endpoint@1 {
->>>>               reg = <1>;
->>>>               remote-endpoint = <&dsi_in>;
->>>
->>> [...]
->>>
->>>> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi 
->>>> b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>> index 64dca5b7f748..e7f10975cacf 100644
->>>> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
->>>> @@ -277,11 +277,7 @@
->>>>       status = "okay";
->>>>       port {
->>>> -        #address-cells = <1>;
->>>> -        #size-cells = <0>;
->>>> -
->>>> -        ltdc_ep0_out: endpoint@0 {
->>>> -            reg = <0>;
->>>> +        ltdc_ep0_out: endpoint {
->>>>               remote-endpoint = <&adv7513_in>;
->>>>           };
->>>>       };
->>>
->>> I think this is wrong, the AV96 can have two displays connected to 
->>> two ports of the LTDC, just like DK2 for example.
->>
->> As for dk2 address/size cells are added only if there are 2 endpoints. 
->> It is for this reason I moved endpoint0 definition from 
->> stm32mp15xx-dkx to stm32mp151a-dk1.dts (dk1 has only one endpoint).
->>
->> Here it's the same, if you have second endpoint then adress/size will 
->> have to be added.
-> 
-> That's a bit problematic. Consider either the use case of DTO which adds 
-> the other display, or even a custom board DTS. Without your patch, this 
-> works:
-> 
-> arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
-> &ltdc {
->    ...
->    ports {
->      ltdc_ep0_out: endpoint@0 {
->        remote-endpoint = <&adv7513_in>;
->      };
->    };
-> };
-> 
-> board-with-display.dts or board-overlay.dts
-> &ltdc {
->    ports {
->      endpoint@1 { // just add another endpoint@1, no problem
->        remote-endpoint = <&display>;
->      };
->    };
-> };
-> 
-> With your patch, the DTS would have to modify the "endpoint" node to be 
-> "endpoint@0" probably with a whole lot of /detele-node/ etc. magic (DTO 
-> cannot do that, so that's a problem, and I do use DTOs on AV96 
-> extensively for the various expansion cards) and then add the 
-> endpoint@1. That becomes real complicated in custom board DT, and 
-> impossible with DTO.
+There was a recent set for ppc32 jit which was merged into ppc tree which will create
+a merge conflict with this one [0]. So we would need a rebase and take it maybe during
+merge win once the ppc32 landed..
 
-Yes I agree that it'll be problematic. So maybe so solution would be to 
-not detect a warning for the initial case (only one endpoint with a reg)
+   [0] https://lore.kernel.org/bpf/cover.1616430991.git.christophe.leroy@csgroup.eu/
+
+>    *  2) Load a BPF filter (e.g. `tcpdump -p -n -s 0 -i eth1 host 192.168.20.0/24`)
+>    *  3) Run e.g. `bpf_jit_disasm -o` to read out the last JIT code
+>    *
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index 40a88df275f9..98c7eec2923f 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+> @@ -203,9 +203,6 @@ static void probe_jit_enable(void)
+>   		case 1:
+>   			printf("JIT compiler is enabled\n");
+>   			break;
+> -		case 2:
+> -			printf("JIT compiler is enabled with debugging traces in kernel logs\n");
+> -			break;
+
+This would still need to be there for older kernels ...
+
+>   		case -1:
+>   			printf("Unable to retrieve JIT-compiler status\n");
+>   			break;
+> 
+
