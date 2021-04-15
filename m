@@ -2,136 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6192236096E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C778360974
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbhDOMbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhDOMbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:31:14 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E40C061574;
-        Thu, 15 Apr 2021 05:30:51 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id w8so12487773pfn.9;
-        Thu, 15 Apr 2021 05:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Oc2rPOnWzyrclF7F9nO0fBn/63oDkmp1ea78ZK6nw5g=;
-        b=Ma5rHnfELxLsbqH1af038TLPuGBjDd1FDm/XDEE6R75L8LcUmVbO9rcye6GLssvxEA
-         QDF32oC/D6f6IrYUmqo9Y3UHWGLmGl2LTvi8T4JjXjRthmr8y1RduQucDw9N1TBMY+55
-         vjop4ur7AGbVCu/6iUyvMKmy1u8z6YpR/j9tV6qAGKUlcx57mwdoFX9TDbvczt0sgpDh
-         coTfFQfmM3X/spRr+acqJ6KWIBVCpqljaSGOhtbbZfgTXj9frz04rBlO2Hr6tx6cTTWk
-         xk8FYrx1JUA8aZghQKnQOZyFlE7okttPFC7nqLjCJ+grVZodriJcy4UE4cv+HWXceTdU
-         Z20w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Oc2rPOnWzyrclF7F9nO0fBn/63oDkmp1ea78ZK6nw5g=;
-        b=U/CtfycdI7mFXEiRiG/NSy/vrXUX4XmZG1LX8euAIIFixGiWijsEft5yK6UJiGBdvp
-         4ilgfzx8ymx56Wyc6IsxfegARwIMhOAa15+76C7las/aIlioh2zsGlSefHfwFtLWis7T
-         9fk4nAx4ACFpfXYB27naE8Sy6RCU1NGqi5Er6UCji8b7B/wNqSVfv6AgXWXX5x8iuqSU
-         emTy+UVgaGShGYnlTs/CJRT5wZ+MeBfePhDiVvMgGPuYXketVv0hbANu835IXsKjX96Y
-         OMshFuHW74jR82Z2Et7FyWtJB1v7WGLAi0W28HIn8C1LFT91g/Ao7CvMFUdbrZPiLZxY
-         ZhVg==
-X-Gm-Message-State: AOAM532d9rXLjWJafl0wJZAf0k6s/eV+u1MoFlD/SrP315lmINq9pqWp
-        mu2S886kpehoYDDlfAZaZGF0p46gvAw82mKb3+yd6ZP2n/8=
-X-Google-Smtp-Source: ABdhPJz5GeIzW1eATHfdoBVFSQCgTq8fgQSaigNe1rclRFnPH2uLQCCEljnXanBpyq/PGxIwE/mXKugLiEbAnC57fnI=
-X-Received: by 2002:a63:cb42:: with SMTP id m2mr3248502pgi.140.1618489851103;
- Thu, 15 Apr 2021 05:30:51 -0700 (PDT)
+        id S232910AbhDOMc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230056AbhDOMcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:32:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EE156044F;
+        Thu, 15 Apr 2021 12:32:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618489921;
+        bh=RNLyWYivf1iCOu+XiSao9whpVt5jOI9e5kwCwe8J3pE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DALDjikH1xYjbgAE5ZFULhAmlzFpYm8GTppSG2ZGuDBqASeVmY7hS3mli9ZAIWm8m
+         KTQfZwqZMT6wy5u+5KTdnLbYoa9sjYrHsbyr0WZRtdR3DrYdAWaZh44IM0+Pk/lTrs
+         1Xgv6BAacZV5RpwD07Y4gE0xta0IKFoqx2ZJjFFA=
+Date:   Thu, 15 Apr 2021 14:31:59 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     chris.chiu@canonical.com
+Cc:     stern@rowland.harvard.edu, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's
+ Realtek Hub
+Message-ID: <YHgyP8tGNM1Wi5dJ@kroah.com>
+References: <20210415114856.4555-1-chris.chiu@canonical.com>
 MIME-Version: 1.0
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
- <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com> <CAJfpegtJ6100CS34+MSi8Rn_NMRGHw5vxbs+fOHBBj8GZLEexw@mail.gmail.com>
- <CA+a=Yy4Ea6Vn7md2KxGc_Tkxx04Ck-JCBL7qz-JWecJ9W2nT_g@mail.gmail.com> <CAJfpegtXJ=waad2SNtru90Nn6f4yOkRD5Pot9K-13z249PjFgg@mail.gmail.com>
-In-Reply-To: <CAJfpegtXJ=waad2SNtru90Nn6f4yOkRD5Pot9K-13z249PjFgg@mail.gmail.com>
-From:   Peng Tao <bergwolf@gmail.com>
-Date:   Thu, 15 Apr 2021 20:30:40 +0800
-Message-ID: <CA+a=Yy57TdKEpEn0SC8zBCm8KmMuAYwSDqS=vtownzyt9qD6bA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415114856.4555-1-chris.chiu@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 9:20 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Wed, Apr 14, 2021 at 2:22 PM Peng Tao <bergwolf@gmail.com> wrote:
-> >
->
-> > > --- a/fs/fuse/file.c
-> > > +++ b/fs/fuse/file.c
-> > > @@ -1117,17 +1117,12 @@ static ssize_t fuse_send_write_pages(str
-> > >       count = ia->write.out.size;
-> > >       for (i = 0; i < ap->num_pages; i++) {
-> > >               struct page *page = ap->pages[i];
-> > > +             bool page_locked = ap->page_locked && (i == ap->num_pages - 1);
-> > Any reason for just handling the last locked page in the page array?
-> > To be specific, it look like the first page in the array can also be
-> > partial dirty and locked?
->
-> In that case the first partial page will be locked, and it'll break
-> out of the loop...
->
-> > >
-> > > -             if (!err && !offset && count >= PAGE_SIZE)
-> > > -                     SetPageUptodate(page);
-> > > -
-> > > -             if (count > PAGE_SIZE - offset)
-> > > -                     count -= PAGE_SIZE - offset;
-> > > -             else
-> > > -                     count = 0;
-> > > -             offset = 0;
-> > > -
-> > > -             unlock_page(page);
-> > > +             if (err)
-> > > +                     ClearPageUptodate(page);
-> > > +             if (page_locked)
-> > > +                     unlock_page(page);
-> > >               put_page(page);
-> > >       }
-> > >
-> > > @@ -1191,6 +1186,16 @@ static ssize_t fuse_fill_write_pages(str
-> > >               if (offset == PAGE_SIZE)
-> > >                       offset = 0;
-> > >
-> > > +             /* If we copied full page, mark it uptodate */
-> > > +             if (tmp == PAGE_SIZE)
-> > > +                     SetPageUptodate(page);
-> > > +
-> > > +             if (PageUptodate(page)) {
-> > > +                     unlock_page(page);
-> > > +             } else {
-> > > +                     ap->page_locked = true;
-> > > +                     break;
->
-> ... here, and send it as a separate WRITE request.
->
-> So the multi-page case with a partial & non-uptodate head page will
-> always result in the write request being split into two (even if
-> there's no partial tail page).
+On Thu, Apr 15, 2021 at 07:48:56PM +0800, chris.chiu@canonical.com wrote:
+> From: Chris Chiu <chris.chiu@canonical.com>
+> 
+> Realtek Hub (0bda:5487) in Dell Dock WD19 sometimes fails to work
+> after the system resumes from suspend with remote wakeup enabled
+> device connected:
+> [ 1947.640907] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> [ 1947.641208] usb 5-2.3-port5: cannot disable (err = -71)
+> [ 1947.641401] hub 5-2.3:1.0: hub_ext_port_status failed (err = -71)
+> [ 1947.641450] usb 5-2.3-port4: cannot reset (err = -71)
 
-Ah, good point! Thanks for the explanation. I agree that it can fix
-the deadlock issue here.
+How does other operating systems handle this?  The hardware seems like
+it does not follow the USB spec, how did it get "certified"?
 
-One thing I'm still uncertain about is that fuse used to fill the
-page, wait for page writeback, and send it to userspace all with the
-page locked, which is kind of like a stable page mechanism for FUSE.
-With the above change, we no longer lock a PG_uptodate page when
-waiting for its writeback and sending it to userspace. Then the page
-can be modified when being sent to userspace. Is it acceptable?
+> Information of this hub:
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 10 Spd=480  MxCh= 5
+> D:  Ver= 2.10 Cls=09(hub  ) Sub=00 Prot=02 MxPS=64 #Cfgs=  1
+> P:  Vendor=0bda ProdID=5487 Rev= 1.47
+> S:  Manufacturer=Dell Inc.
+> S:  Product=Dell dock
+> C:* #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=  0mA
+> I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=01 Driver=hub
+> E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> I:* If#= 0 Alt= 1 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=02 Driver=hub
+> E:  Ad=81(I) Atr=03(Int.) MxPS=   1 Ivl=256ms
+> 
+> The failure results from the ETIMEDOUT by chance when turning on
+> the suspend feature for the target port of the hub. The port
+> will be unresponsive and placed in unknown state. The hub_activate
+> invoked during resume will fail to get the port stautus with -EPROTO.
+> Then all devices connected to the hub will never be found and probed.
+> 
+> The USB_PORT_FEAT_SUSPEND is not really necessary due to the
+> "global suspend" in USB 2.0 spec. It's only for many hub devices
+> which don't relay wakeup requests from the devices connected to
+> downstream ports. For this realtek hub, there's no problem waking
+> up the system from connected keyboard.
+> 
+> This commit bypasses the USB_PORT_FEAT_SUSPEND for the quirky hub.
 
-Cheers,
-Tao
--- 
-Into Sth. Rich & Strange
+Can you make this only be allowed for hubs?  But why doesn't the nomal
+"this can not suspend properly" bit work for this?  We have that for
+other USB devices already.
+
+thanks,
+
+greg k-h
