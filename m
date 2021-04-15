@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF531360A72
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374D3360A7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhDONYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbhDONYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:24:11 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829F5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:23:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id s7so23190569wru.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2byzceuK3pVnwSQR1hAUK7MTfgfE49ObHg97SKhpp+I=;
-        b=gHz5ulHPjyGzx58KOs2I/mZratDDUnZQOXLx9H13nEFfFB0VM2EOH/+jYdoTdG2PIG
-         pffpmQSF4ayc1tfeq4wD4h4xXvNv2TUObtoDg15v74rarty49XSTnlKwrG1dG2ZTzAgD
-         YHWbQC6nuAhLI2DHeIww6BVzA82BI5DiI8m3o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=2byzceuK3pVnwSQR1hAUK7MTfgfE49ObHg97SKhpp+I=;
-        b=UJY8VRipkuIc08OwgUsF9+oQlmQZBVXo5s0dt82eBUURvIJKAV5QtQXdzV0vTuPF3B
-         yEQW78XAtKi3hyQRZCfcn4RGuIMzY6H2rt5RZTO1PvJz02ViqHZtkC286NbiSXRjS1BS
-         8VAyLC/Rpaajo1mJRuvHZRcwYr58ey/uIdTRrUN1EljalcWbPb1FZ1WDDlRvcl0l9Wtp
-         a8zGYv+q9oGoGzLQOvzNVrhAcdXniZhUwekdLlYax4x4DjGt+d5sSfQ7Bnie92FeS8ql
-         Fg2q7m4bWkQDq/1zed4y/C3aA71SwBLBYP7H+UQ9e6eunT3+QLCeN2v2haV9jdHBjbFQ
-         lLeg==
-X-Gm-Message-State: AOAM530D3/+CNW9oWetCJJbywDR0v0ifiI/rFvUjW+9BEnZeySD5phnj
-        3kqLPhMcE1OVIfpcxdmyU116Fw==
-X-Google-Smtp-Source: ABdhPJxk1bRa6Yg4LDCIMkLe5Y4AfcZMposl53lwQa5X8eeL0yZm+SFvcApMmBpSk+Vtic4l7YLXIA==
-X-Received: by 2002:adf:fdc3:: with SMTP id i3mr3457489wrs.385.1618493026340;
-        Thu, 15 Apr 2021 06:23:46 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u14sm3290214wrq.65.2021.04.15.06.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 06:23:45 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 15:23:43 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, vbabka@suse.cz, daniel@ffwll.ch,
-        ray.huang@amd.com, akpm@linux-foundation.org
-Subject: Re: [PATCH 1/2] mm/vmscan: add sync_shrinkers function
-Message-ID: <YHg+X7KLCmn2+yqw@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, vbabka@suse.cz, ray.huang@amd.com,
-        akpm@linux-foundation.org
-References: <20210415115624.2904-1-christian.koenig@amd.com>
+        id S233085AbhDON01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232332AbhDON0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:26:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30368611F1;
+        Thu, 15 Apr 2021 13:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618493162;
+        bh=a8YGM1QHoejUmqiDy7BCC4AnhOry2uZdLnJGbKmlUmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JIQBEpSUcpxCqzmgP/zge9t7wuxruG3GEHMThTNvEAs1l3ScE8wGKihQsAAZrWg+K
+         ha6HQSdyAN4sLgi2Czq+M/vhfPtmAmJf3N7Vw+uK4+MmXdHlNF2w2v0aw8+tdlhB5O
+         dw34wOlvjzszW8UISFNUnETSsGNi7IbT4m/a9AmgmqhDCv7nOnYCwigxjugK3A11AQ
+         0s0iiduCcDKkhYz+eEBKhHcgnOrnxuOaaZgi5jC2tp1V+DG//N42TT7EeL6JPWBWzp
+         EGSx2KsM1G1kWeQxp2MSjq6YKdJpPQhDffcuUD+PfzN7MW+R8R2Y/LC6bjBApUNg5k
+         0+r+/BMs3uuTg==
+Date:   Thu, 15 Apr 2021 06:25:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Jian Cai <jiancai@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: alternatives: Move length validation in
+ alternative_{insn,endif}
+Message-ID: <YHg+5RSG4XPLlZD8@archlinux-ax161>
+References: <20210414000803.662534-1-nathan@kernel.org>
+ <20210415091743.GB1015@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210415115624.2904-1-christian.koenig@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210415091743.GB1015@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 01:56:23PM +0200, Christian König wrote:
-> To be able to switch to a spinlock and reduce lock contention in the TTM
-> shrinker we don't want to hold a mutex while unmapping and freeing pages
-> from the pool.
+On Thu, Apr 15, 2021 at 10:17:43AM +0100, Catalin Marinas wrote:
+> Hi Nathan,
 > 
-> But then we somehow need to prevent a race between (for example) the shrinker
-> trying to free pages and hotplug trying to remove the device which those pages
-> belong to.
+> On Tue, Apr 13, 2021 at 05:08:04PM -0700, Nathan Chancellor wrote:
+> > After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
+> > set atomically"), LLVM's integrated assembler fails to build entry.S:
+> > 
+> > <instantiation>:5:7: error: expected assembly-time absolute expression
+> >  .org . - (664b-663b) + (662b-661b)
+> >       ^
+> > <instantiation>:6:7: error: expected assembly-time absolute expression
+> >  .org . - (662b-661b) + (664b-663b)
+> >       ^
 > 
-> Taking and releasing the shrinker semaphore on the write side after
-> unmapping and freeing all pages should make sure that no shrinker is running in
-> paralell any more.
+> I tried the latest Linus' tree and linux-next (defconfig) with this
+> commit in and I can't get your build error. I used both clang-10 from
+> Debian stable and clang-11 from Debian sid. So, which clang version did
+> you use or which kernel config options?
 > 
-> Signed-off-by: Christian König <christian.koenig@amd.com>
-> ---
->  include/linux/shrinker.h |  1 +
->  mm/vmscan.c              | 10 ++++++++++
->  2 files changed, 11 insertions(+)
-> 
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 0f80123650e2..6b75dc372fce 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -92,4 +92,5 @@ extern void register_shrinker_prepared(struct shrinker *shrinker);
->  extern int register_shrinker(struct shrinker *shrinker);
->  extern void unregister_shrinker(struct shrinker *shrinker);
->  extern void free_prealloced_shrinker(struct shrinker *shrinker);
-> +extern void sync_shrinkers(void);
->  #endif
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 562e87cbd7a1..46cd9c215d73 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -408,6 +408,16 @@ void unregister_shrinker(struct shrinker *shrinker)
->  }
->  EXPORT_SYMBOL(unregister_shrinker);
->  
-> +/**
-> + * sync_shrinker - Wait for all running shrinkers to complete.
-
-Maybe make it clear this is a barrier type thing, it wont stop shrinkers
-at all, just synchronize with them.
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-But needs an ack from Andrew for merging through drm-misc-next before we
-push it there.
--Daniel
-
-> + */
-> +void sync_shrinkers(void)
-> +{
-> +	down_write(&shrinker_rwsem);
-> +	up_write(&shrinker_rwsem);
-> +}
-> +EXPORT_SYMBOL(sync_shrinkers);
-> +
->  #define SHRINK_BATCH 128
->  
->  static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
 > -- 
-> 2.25.1
+> Catalin
 > 
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Hi Catalin,
+
+Interesting, this reproduces for me with LLVM 12 or newer with just
+defconfig.
+
+$ make -j"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- LLVM=1 LLVM_IAS=1 defconfig arch/arm64/kernel/entry.o
+
+https://github.com/ClangBuiltLinux/continuous-integration2/runs/2350258778?check_suite_focus=true
+
+Cheers,
+Nathan
