@@ -2,189 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6602136134B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94B836134F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhDOUHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234894AbhDOUHM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:07:12 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969C1C061574;
-        Thu, 15 Apr 2021 13:06:48 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id n10so1567088plc.0;
-        Thu, 15 Apr 2021 13:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hbkiMSiKidRorb2FvgVX++i0ISPpZNRMdVyX5qA+jH8=;
-        b=S0VN6CrtAk7OyDcJBpc9jww/TfUKRygibF6cW467NPzSOoUwbikl6OPJ5heSYSlWLn
-         PUwAaKWlDU646C8WnT4Cy2ctbmoFnrzcGOUf/m+rAEZKEyvYJYY1KJORboOmemQ5K7w8
-         Q90GTyOPIY5dgD+shPX1nEkIuTJzNpvGsW0g35vkHvJLcyhsYEpUD83PzQ8rMlEpbVIg
-         YsQKqCiPXxBTjBSw/ykgFWoZiZrQo+uEjNahi/pbEZ6FliGAdW3v2zgSamfUZHI1c0KO
-         l6UrWWHx+OmQ2pXFrSxJfefL7Z+1I4TTod7fYvj+eGSBjZFa5lY8mje/SMdRYqHLn6RC
-         4Gxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hbkiMSiKidRorb2FvgVX++i0ISPpZNRMdVyX5qA+jH8=;
-        b=nuvLva5wJRpjXFxMrhQ0uxsapA3gyRy15bA+vGgEm437f4UAGPeXbhmvBzBHInkxgR
-         DzMaWCr2nXRfdupYlkWu63sVf3NDyzehH1OzA5iDY/e6JklBcZSDxsEbO05EdUFq7GT6
-         3xxpcHy5RxBUdLmFjCM6L9D9kpbfm23z4uUzuAXKUURIZYT/Wi6NOH4cDVKwNdlXFheM
-         e4813J19LL6FjwwW4D3XNV3gZfBYcwb29qf6yLhFD+knxNbFnJiuG/UToJ6u5VRe1un1
-         Umbpy5vKC9ZPwuDnj2d8CRtYOblUZpyMJEABtgoR/WSEZaNqr/bQrT4foALyGIiJT+f4
-         Xp0Q==
-X-Gm-Message-State: AOAM530sbKvmh2BSMWQBMtSMviuX/rGP2twCtU5aJlV6MLsH1irco0ls
-        ZiXp58t1gj2zvDgo5EPVVdU=
-X-Google-Smtp-Source: ABdhPJxY/0xR0eDSiqfYHIhgyTp3GsDZolQqbtNxmu/LVayR3JSlItfY/ykJTqwPieOr4JaMHQJt9g==
-X-Received: by 2002:a17:90a:bb86:: with SMTP id v6mr5828987pjr.37.1618517208079;
-        Thu, 15 Apr 2021 13:06:48 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j26sm2803889pfn.47.2021.04.15.13.06.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 13:06:47 -0700 (PDT)
-Subject: Re: [PATCH v2 4/7] net: add generic selftest support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-References: <20210415130738.19603-1-o.rempel@pengutronix.de>
- <20210415130738.19603-5-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <347139c5-d7be-04c0-8857-3bb4891522cf@gmail.com>
-Date:   Thu, 15 Apr 2021 13:06:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S235071AbhDOUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234889AbhDOUJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FB04610E6;
+        Thu, 15 Apr 2021 20:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618517365;
+        bh=9Hvt7ePox3QgJubOSIX8KQquBcnInyFFZh8g81xTVeM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BoK9Cn3cifdfaBtZDAeHnspinFceNTSLN8CS9kWZcK33AkfoFSe/7wiPsmFpLJcD9
+         l60x6pAXZ7zjbja4299g8PXTzKGpIVv3ABsCy9EjzP3k3E4VYjP2JkZL1icN8VUzt+
+         iAN0bfzEe8HEfG8cUOW/c4C1vA5TW31/kugf96qwGCo3wuzmzeX70Cej3zpd4kdfjs
+         cIPJxrBmDYr1CHjHtlsYsQvYmjIL2ePfj8SfuBf5szCSoAUJLzs1TdJZOZsWki6aTz
+         4BQiM5o7g9HdYu/pdRsSrcmZEz3JJeRMAMyjeToxZ4NlfCvlgyDdgWmjbeXDi7xc90
+         TpFXK+AN1yPRg==
+Date:   Thu, 15 Apr 2021 13:09:23 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Message-ID: <YHidc5Xdjo5LK0D5@gmail.com>
+References: <20210415194646.13387-1-crecklin@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415130738.19603-5-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415194646.13387-1-crecklin@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/15/2021 6:07 AM, Oleksij Rempel wrote:
-> Port some parts of the stmmac selftest and reuse it as basic generic selftest
-> library. This patch was tested with following combinations:
-> - iMX6DL FEC -> AT8035
-> - iMX6DL FEC -> SJA1105Q switch -> KSZ8081
-> - iMX6DL FEC -> SJA1105Q switch -> KSZ9031
-> - AR9331 ag71xx -> AR9331 PHY
-> - AR9331 ag71xx -> AR9331 switch -> AR9331 PHY
+On Thu, Apr 15, 2021 at 03:46:46PM -0400, Chris von Recklinghausen wrote:
+> Hibernation fails on a system in fips mode because md5 is used for the e820
+> integrity check and is not available. Use crc32 instead.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
+> This patch changes the integrity check algorithm from md5 to crc32.
 
-[snip]
+The second paragraph is redundant with the first.
 
-> +
-> +struct net_packet_attrs {
-> +	unsigned char *src;
-> +	unsigned char *dst;
-> +	u32 ip_src;
-> +	u32 ip_dst;
-> +	int tcp;
+>  /**
+> - * get_e820_md5 - calculate md5 according to given e820 table
+> + * compute_e820_crc32 - calculate md5 according to given e820 table
+>   *
+>   * @table: the e820 table to be calculated
+> - * @buf: the md5 result to be stored to
+>   */
 
-This can be an u8 and named proto maybe?
+This comment still mentions MD5.
 
-> +	int sport;
-> +	int dport;
+Also, this isn't a well-formed kerneldoc comment, since it doesn't document the
+return value.
 
-These two can be u16
+Also, this function is calculating the checksum *of* the table, not calculating
+a checksum "according to" it (whatever that means).
 
-> +	int timeout;
-> +	int size;
-> +	int max_size;
-> +	u8 id;
-> +	u16 queue_mapping;
-> +};
+Something like this would be good, I think:
 
-[snip]
+/**
+ * compute_e820_crc32 - compute the CRC-32 of the given e820 table
+ *
+ * @table: the e820 table to be checksummed
+ *
+ * Return: the resulting checksum
+ */
 
-> +static const struct net_test {
-> +	char name[ETH_GSTRING_LEN];
-> +	int (*fn)(struct net_device *ndev);
-> +} net_selftests[] = {
-> +	{
-> +		.name = "PHY Loopback, UDP          ",
+Also, please try 'git grep -i md5 arch/x86/kernel/'.  There is still another
+reference to MD5 that should be updated, in arch/x86/kernel/e820.c.
 
-This should be "PHY internal loopback, UDP"
-
-> +		.fn = net_test_phy_loopback_udp,
-> +	}, {
-> +		.name = "PHY Loopback, TCP          ",
-> +		.fn = net_test_phy_loopback_tcp,
-
-and "PHY internal loopback, TCP"
-
-to make it clear that the loopback is internal, as opposed to external.
-Or if you prefer to use the line-side or MAC-side that works too.
-
-> +	},
-> +};
-> +
-> +void net_selftest(struct net_device *ndev, struct ethtool_test *etest, u64 *buf)
-> +{
-> +	int count = net_selftest_get_count();
-> +	int i;
-> +
-> +	memset(buf, 0, sizeof(*buf) * count);
-> +	net_test_next_id = 0;
-> +
-> +	if (etest->flags != ETH_TEST_FL_OFFLINE) {
-> +		netdev_err(ndev, "Only offline tests are supported\n");
-> +		etest->flags |= ETH_TEST_FL_FAILED;
-> +		return;
-> +	} else if (!netif_carrier_ok(ndev)) {
-> +		netdev_err(ndev, "You need valid Link to execute tests\n");
-> +		etest->flags |= ETH_TEST_FL_FAILED;
-> +		return;
-> +	}
-> +
-> +	if (!ndev->phydev)
-> +		return;
-
-Can you move that as the first test and return -EOPNOTSUPP instead?
-
-> +
-> +	/* PHY loopback tests should be combined to avoid delays on each PHY
-> +	 * reconfiguration
-> +	 */
-> +	phy_loopback(ndev->phydev, true);
-> +
-> +	/* give PHYs some time to establish the loopback link */
-> +	msleep(100);
-
-Cannot you poll for LSTATUS instead?
-
-> +
-> +	for (i = 0; i < count; i++) {
-> +		buf[i] = net_selftests[i].fn(ndev);
-> +		if (buf[i] && (buf[i] != -EOPNOTSUPP))
-> +			etest->flags |= ETH_TEST_FL_FAILED;
-> +	}
-> +
-> +	phy_loopback(ndev->phydev, false);
-
-Can you propagate the return value here?
-
-As spotted by the test robot please export all of these symbols as
-EXPORT_SYMBOL_GPL().
--- 
-Florian
+- Eric
