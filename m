@@ -2,86 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4757836072E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D4136073A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhDOKc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDOKc5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:32:57 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7B3C061574;
-        Thu, 15 Apr 2021 03:32:32 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lWzIU-0003GZ-AA; Thu, 15 Apr 2021 12:32:30 +0200
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        w4v3 <vv4v3@protonmail.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <vaWPnw1Txo_MD5Sf-BnMmq3pBTkITza0W5p_jAi8JIy3hBAbCsKPXZ5g5IHKYGqK6zLjzUNgJ59xMCHvhREBUq6Vc1105b8yCIVDgaPABqE=@protonmail.com>
- <dff6badf-58f5-98c8-871c-94d901ac6919@leemhuis.info>
- <wqM80O49houE3ZJHpxjcrNxijZ_h9pMjxZU2OCL-ZpsdwMhIVFcGXZb9qe93r2AY0qd0dB-94ZVQaF-Xb-i-zqX5DIO5S4C6UTBpVkxvszA=@protonmail.com>
- <CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: "Reporting issues" document feedback
-Message-ID: <b1cbdc62-85a8-93f6-0158-1a905f3986da@leemhuis.info>
-Date:   Thu, 15 Apr 2021 12:32:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231809AbhDOKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:36:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49378 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhDOKgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:36:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 06E3FABED;
+        Thu, 15 Apr 2021 10:35:49 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v8 0/7] Make alloc_contig_range handle Hugetlb pages
+Date:   Thu, 15 Apr 2021 12:35:37 +0200
+Message-Id: <20210415103544.6791-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hX2StQVttAciHYH-urUH+Hi92z9z2ZbcNgQPt0E2Jpwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1618482754;2913ccfc;
-X-HE-SMSGID: 1lWzIU-0003GZ-AA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.04.21 15:42, Rafael J. Wysocki wrote:
-> On Wed, Apr 14, 2021 at 3:22 PM w4v3 <vv4v3@protonmail.com> wrote:
->>> Links to your bug report and the thread on the mailing list would have
->>> helped here to understand better what's going on, but whatever, they are
->>> not that important.
->> Here you go: https://bugzilla.kernel.org/show_bug.cgi?id=212643
->> https://marc.info/?l=linux-acpi&m=161824910030600&w=2
+So, after Mike's work [1] has gone in, here is a new version of top.
 
-BTW: thx!
+NOTE: If you are going to try out this patchset, be aware of [2].
+      You should fix that up before any testing.
 
->>> But it should, otherwise the subsystem should remove the line starting
->>> with B: ("bugs:" in the webview).
->>>
->>> Rafael might be able to clarify things.
->>
->>> But afais it's appropriate there is a B: line: just a few weeks ago I
->>> took a quick look at bugzilla and ACPI bugs in particular, and back then
->>> most of the bug reports there got handled by the maintainers. That's why
->>> I assume you were just unlucky and your report fall through the cracks
->>> (but obviously I might be wrong here). And maybe your report even did
->>> help: the developer that fixed the issue might have seen both the bug
->>> entry and the mailed report, but simply forget to close the former.
->>
->> Good to know. It does seem like many recent ACPI bug reports on bugzilla
->> have been processed by maintainers. Maybe it is the ACPI-subcomponent I
->> chose for the bug: in Config-Tables, only two other bugs were submitted
->> and they did not attract comments. Anyways, I understand now that it's
->> not an issue with the document so thanks for forwarding it to Rafael.
-> 
-> As a rule, ACPI bugs submitted through the BZ are processed by the
-> ACPI team (not necessarily by me in person, though), but the response
-> time may vary, so it's better to report urgent issues by sending
-> e-mail to linux-acpi@vger.kernel.org.
+[1] https://patchwork.kernel.org/project/linux-mm/cover/20210409205254.242291-1-mike.kravetz@oracle.com/
+[2] https://patchwork.kernel.org/project/linux-mm/patch/1617259448-22529-5-git-send-email-anshuman.khandual@arm.com/#24108247
 
-Rafael, thx for clarifying. And what you wrote is likely the case for
-subsystems as well, so I submitted a patch to mentioned that in
-reporting-issues.rst:
+v7 -> v8:
+ - Remove clearing of flag from prep_new_huge_page()
+ - Reworded comment in alloc_and_dissolve_huge_page() by Michal
+ - Adressed feedback from David
+ - Collect Reviewed-by/Acked-by
 
-https://lore.kernel.org/linux-doc/dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info/
+v6 -> v7:
+ - Add patch to move the clearing of HPageFreed flag out of the lock
+ - Add patch to decouple counter handling from prep_new_huge_page().
+   We end up with two new functions, __prep_new_huge_page() which
+   does the proper initialization of the new huge page, and
+   __prep_account_new_huge_page(), which increments hstate->nr_huge_pages.
+   prep_new_huge_page() still calls both of them (details in patch#4).
+   This comes in handy in patch#5, where the whole operation of
+   replacing the page must be done under the lock.
+ - Remove Reviewed-by/Acked-by from patch#5, as needs to be checked again.
 
-Thx everyone! Ciao, Thorsten
+v5 -> v6:
+ - Collect Acked-by from Michal
+ - Adressed feedback for patch#2 (expand the comment about migrate_pfn and
+   change return values)
+ - Complete pathc#3's changelog (per Michal)
+ - Place retry lock inside of alloc_and_dissolve_huge_page()
+
+v4 -> v5:
+ - Collect Acked-by and Reviewed-by from David and Vlastimil
+ - Drop racy checks in pfn_range_valid_contig (David)
+ - Rebased on top of 5.12-rc3
+
+v3 -> v4:
+ - Addressed some feedback from David and Michal
+ - Make more clear what hugetlb_lock protects in isolate_or_dissolve_huge_page
+ - Start reporting proper error codes from isolate_migratepages_{range,block}
+ - Bail out earlier in __alloc_contig_migrate_range on -ENOMEM
+ - Addressed internal feedback from Vastlimil wrt. compaction code changes
+
+v2 -> v3:
+ - Drop usage of high-level generic helpers in favour of
+   low-level approach (per Michal)
+ - Check for the page to be marked as PageHugeFreed
+ - Add a one-time retry in case someone grabbed the free huge page
+   from under us
+
+v1 -> v2:
+ - Adressed feedback by Michal
+ - Restrict the allocation to a node with __GFP_THISNODE
+ - Drop PageHuge check in alloc_and_dissolve_huge_page
+ - Re-order comments in isolate_or_dissolve_huge_page
+ - Extend comment in isolate_migratepages_block
+ - Place put_page right after we got the page, otherwise
+   dissolve_free_huge_page will fail
+
+ RFC -> v1:
+ - Drop RFC
+ - Addressed feedback from David and Mike
+ - Fence off gigantic pages as there is a cyclic dependency between
+   them and alloc_contig_range
+ - Re-organize the code to make race-window smaller and to put
+   all details in hugetlb code
+ - Drop nodemask initialization. First a node will be tried and then we
+   will back to other nodes containing memory (N_MEMORY). Details in
+   patch#1's changelog
+ - Count new page as surplus in case we failed to dissolve the old page
+   and the new one. Details in patch#1.
+
+Cover letter:
+
+ alloc_contig_range lacks the hability for handling HugeTLB pages.
+ This can be problematic for some users, e.g: CMA and virtio-mem, where those
+ users will fail the call if alloc_contig_range ever sees a HugeTLB page, even
+ when those pages lay in ZONE_MOVABLE and are free.
+ That problem can be easily solved by replacing the page in the free hugepage
+ pool.
+
+ In-use HugeTLB are no exception though, as those can be isolated and migrated
+ as any other LRU or Movable page.
+
+ This patchset aims for improving alloc_contig_range->isolate_migratepages_block,
+ so HugeTLB pages can be recognized and handled.
+
+ Since we also need to start reporting errors down the chain (e.g: -ENOMEM due to
+ not be able to allocate a new hugetlb page), isolate_migratepages_{range,block}
+ interfaces  need to change to start reporting error codes instead of the pfn == 0
+ vs pfn != 0 scheme it is using right now.
+ From now on, isolate_migratepages_block will not return the next pfn to be scanned
+ anymore, but -EINTR, -ENOMEM or 0, so we the next pfn to be scanned will be recorded
+ in cc->migrate_pfn field (as it is already done in isolate_migratepages_range()).
+
+ Below is an insight from David (thanks), where the problem can clearly be seen:
+
+ "Start a VM with 4G. Hotplug 1G via virtio-mem and online it to
+  ZONE_MOVABLE. Allocate 512 huge pages.
+
+  [root@localhost ~]# cat /proc/meminfo
+  MemTotal:        5061512 kB
+  MemFree:         3319396 kB
+  MemAvailable:    3457144 kB
+  ...
+  HugePages_Total:     512
+  HugePages_Free:      512
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+  Hugepagesize:       2048 kB
+
+  The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging
+  1G via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+
+  [  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+  [  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+  [  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy"
+
+ And then with this patchset running:
+
+ "Same experiment with ZONE_MOVABLE:
+
+  a) Free huge pages: all memory can get unplugged again.
+
+  b) Allocated/populated but idle huge pages: all memory can get unplugged
+     again.
+
+  c) Allocated/populated but all 512 huge pages are read/written in a
+     loop: all memory can get unplugged again, but I get a single
+
+  [  121.192345] alloc_contig_range: [180000, 188000) PFNs busy
+
+  Most probably because it happened to try migrating a huge page while it
+  was busy. As virtio-mem retries on ZONE_MOVABLE a couple of times, it
+  can deal with this temporary failure.
+
+  Last but not least, I did something extreme:
+
+  # cat /proc/meminfo
+  MemTotal:        5061568 kB
+  MemFree:          186560 kB
+  MemAvailable:     354524 kB
+  ...
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0
+
+  Triggering unplug would require to dissolve+alloc - which now fails when
+  trying to allocate an additional ~512 huge pages (1G).
+
+  As expected, I can properly see memory unplug not fully succeeding. + I
+  get a fairly continuous stream of
+
+  [  226.611584] alloc_contig_range: [19f400, 19f800) PFNs busy
+  ...
+
+  But more importantly, the hugepage count remains stable, as configured
+  by the admin (me):
+
+  HugePages_Total:    2048
+  HugePages_Free:     2048
+  HugePages_Rsvd:        0
+  HugePages_Surp:        0"
+
+Oscar Salvador (7):
+  mm,page_alloc: Bail out earlier on -ENOMEM in
+    alloc_contig_migrate_range
+  mm,compaction: Let isolate_migratepages_{range,block} return error
+    codes
+  mm,hugetlb: Drop clearing of flag from prep_new_huge_page
+  mm,hugetlb: Split prep_new_huge_page functionality
+  mm: Make alloc_contig_range handle free hugetlb pages
+  mm: Make alloc_contig_range handle in-use hugetlb pages
+  mm,page_alloc: Drop unnecessary checks from pfn_range_valid_contig
+
+ include/linux/hugetlb.h |   7 +++
+ mm/compaction.c         |  93 +++++++++++++++++++++---------
+ mm/hugetlb.c            | 150 ++++++++++++++++++++++++++++++++++++++++++++++--
+ mm/internal.h           |  10 +++-
+ mm/page_alloc.c         |  22 +++----
+ mm/vmscan.c             |   5 +-
+ 6 files changed, 240 insertions(+), 47 deletions(-)
+
+-- 
+2.16.3
+
