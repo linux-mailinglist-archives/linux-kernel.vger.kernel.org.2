@@ -2,176 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5237C360383
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B10360387
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhDOHkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S231451AbhDOHkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhDOHkD (ORCPT
+        with ESMTP id S231424AbhDOHkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:40:03 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CFCC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:39:41 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q136so3349631qka.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:39:41 -0700 (PDT)
+        Thu, 15 Apr 2021 03:40:14 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0486C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:39:51 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id c1so17771824ljd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:39:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RQ4Q87xBrzCDyq10w6Xjp2756dW0ujWlXDbBBS5gu3g=;
-        b=TH83Sm2XDd8xPQ3hDBxUDg3ty0nGrnvVdnVbOMVdR174U9BJUkMz8JM2K7i9z/q2eo
-         xPtmQ85CYtbrW5R7xZ/Kpt0qmD3IPFzqoM6qEo0Pe4VwzGc0JX9aKY+4kVbaGWPFGit5
-         iCP++hPrlKkZV925xgmkWkYkPJiCenAo6+sOW36UX0KLGH1XN68SfMjrQCmVCIiknI+f
-         QP84IPgsnb3IDI4ShxL1nppD0CrCqOViWHlfPIbd3JfycH9G0CGIcrGSj9G1x02UWBSM
-         qipZnCBC5W2d0zWOX2guBqZXHC6ZOGH6uV/nW51qw7+4XfqonialxtrLswU3dYEwQU9H
-         hBfQ==
+        bh=xMBHOqRNLVRMS07iUqFEuZb5xzgm/L59GDWK4D2fxw4=;
+        b=leylOg12nQE524kr0iJBrc+3WKLv4y/Hr5k7IgmS9wIeRIoKk3K3kBQZ+l1u5onlWf
+         7hMszo1+KSbkquXbRUDMs0h5PriyyDK0btcwTDupomKAB6Y8Ris9NqziYPOH8qt5xXxE
+         Bo3vY6j9/lbvx0S28JJMgof1BZSn3j1xLx8q7e2JEs0I3ukRVBOTdrvjFwvU/5SZ0RyD
+         E3ettyogrKmL23WA9z2PVGh1nLHj0wLLTLJV13LeGvvp8MXof54Ngv7h9xlqHfGiK3fv
+         t1RAupcbqj5JhAV1oF3ZyQoqcoBWL2CyNacOtLXajyqgnMSm9Xf/KugQ8R73+oXSdwNW
+         ycLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RQ4Q87xBrzCDyq10w6Xjp2756dW0ujWlXDbBBS5gu3g=;
-        b=gZCFmCW2A8EafeKLRlcLYX+eCvcal9QQVk4FeUGbCt/e0EK4Vg1JD5i8wBwE182BR6
-         +vSa7M/apMnkXDRHgkg2PxwAAzD42Pugw9CRnDsCrB8mpUQq+b9jZkMf5/kvoTBX26Co
-         4NDxOrTtJ687ydDPSXavCbjZtbmh3zyaXXXvc0WGtyB5FtJzRe52J60p+Ahao7HO02Lh
-         Gp5JslqDRUusBL+AqB1+zicZ7xxZjkyFDcQgGDVEDrErWrxc5L02OHumGAxLRpr+4s2m
-         aHgbcwzZOxs0rHV7Yg+zGHxCH80lMUt3iwv3eeSQlIHL+eduWJouz6skFK85loIAAesM
-         pblg==
-X-Gm-Message-State: AOAM532dk+xCthewVE9gG+aRwqhx3TRlHseGLdNxis+Pw9xGUJ158wdo
-        RjfuErTu5PRGQ1OVvc5PEvZfn1Y8Mj4FnEVo55WYyA==
-X-Google-Smtp-Source: ABdhPJzQYDJ19v6r6vobTgNRmzq6or+GRPWPSG3B3q75i30MJId/Xl2qbljRywyB69CyppZNiFmSmrp0sXmIAbL3tpI=
-X-Received: by 2002:a37:a993:: with SMTP id s141mr2142569qke.265.1618472380261;
- Thu, 15 Apr 2021 00:39:40 -0700 (PDT)
+        bh=xMBHOqRNLVRMS07iUqFEuZb5xzgm/L59GDWK4D2fxw4=;
+        b=Ax2Fq2hmlL2/7fSPbjGBvXT3bA4MeuASqnjmdPSP4DKq7xpd1UQxTGqNbKZg6yTF9C
+         alQr08aLP/m9cwuyngWCDjmuc2TeTsH53p7D1xONA9fOY5uv437nmm7Koh1I3iGKOFRJ
+         rEmKbBgkrtcA90GzKYApbxFTLgzm0EZ4trC22zGzSRR28Ixln0rxgGYFZftYw59YHIv/
+         W5P5Tu69lqsp5I309FCN/w/8Mxq8qPJ7p6JhLOw/q3vofW9q3zhJuenZMRsPDEGJwzlp
+         WStBUBD/7VGXzhThsTXr9ilCItsKvhoes55a6D20agAbLbjsZx8QV1yWLY1vgPhWD4sP
+         D13g==
+X-Gm-Message-State: AOAM530nKfab8cE81nWqyprMEfPGYxMttMCT0WI5DoUkgZvrAleNmyqt
+        KytoLeQWONeY/GJ/2dG6Ob+JdWu/z3+Py9IWeBH/Tw==
+X-Google-Smtp-Source: ABdhPJzKJCLVxMyPPIOdJxtB78ccCcPVTYA4Gw6TmU/x85vr96OM7FRzJcBabBmcCKR2n70fjgFYyOGv9iShj4W78Ek=
+X-Received: by 2002:a2e:968a:: with SMTP id q10mr1048369lji.0.1618472389953;
+ Thu, 15 Apr 2021 00:39:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000d5358b05bfe10354@google.com> <20210415072313.629-1-hdanton@sina.com>
-In-Reply-To: <20210415072313.629-1-hdanton@sina.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 15 Apr 2021 09:39:28 +0200
-Message-ID: <CACT4Y+aCda1r=Ss1ERQK4ruOZjp71CRt-HPT9ujjiNtkimNg5g@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in io_poll_double_wake (3)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+e654d4e15e6b3b9deb53@syzkaller.appspotmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-10-ojeda@kernel.org>
+ <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
+ <CAKwvOd=Vo3wwm-egc6fTa7gD4dsrc77OvBhUy8e+VM=LujRCfg@mail.gmail.com> <YHfm+tCYp+I1C5I/@kroah.com>
+In-Reply-To: <YHfm+tCYp+I1C5I/@kroah.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Apr 2021 00:39:38 -0700
+Message-ID: <CAKwvOdmx1whzPhofkPZ3GXgjDqV4=xQ5Ph_VX_eM+bqBZE1rFA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] Samples: Rust examples
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 9:23 AM Hillf Danton <hdanton@sina.com> wrote:
+On Thu, Apr 15, 2021 at 12:10 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Tue, 13 Apr 2021 14:07:16
-> > Hello,
+> On Wed, Apr 14, 2021 at 04:24:45PM -0700, Nick Desaulniers wrote:
+> > On Wed, Apr 14, 2021 at 12:35 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Wed, Apr 14, 2021 at 11:47 AM <ojeda@kernel.org> wrote:
+> > > >
+> > > > From: Miguel Ojeda <ojeda@kernel.org>
+> > > >
+> > > > A set of Rust modules that showcase how Rust modules look like
+> > > > and how to use the abstracted kernel features.
+> > >
+> > > Honestly, I'd like to see a real example. This is fine for testing,
+> > > but I'd like to see something a bit more real, and a bit less special
+> > > than the Android "binder" WIP that comes a few patches later.
+> > >
+> > > Would there be some kind of real driver or something that people could
+> > > use as a example of a real piece of code that actually does something
+> > > meaningful?
 > >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    17e7124a Merge tag '5.12-rc6-smb3' of git://git.samba.org/..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=102c3891d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9320464bf47598bd
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e654d4e15e6b3b9deb53
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15fe3096d00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147b9431d00000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e654d4e15e6b3b9deb53@syzkaller.appspotmail.com
-> >
-> > ============================================
-> > WARNING: possible recursive locking detected
-> > 5.12.0-rc6-syzkaller #0 Not tainted
-> > --------------------------------------------
-> > swapper/0/0 is trying to acquire lock:
-> > ffff88802108c130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-> > ffff88802108c130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4988
-> >
-> > but task is already holding lock:
-> > ffff888014fd8130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-> >
-> > other info that might help us debug this:
-> >  Possible unsafe locking scenario:
-> >
-> >        CPU0
-> >        ----
-> >   lock(&runtime->sleep);
-> >   lock(&runtime->sleep);
-> >
-> >  *** DEADLOCK ***
+> > Are you suggesting that they "rewrite it in Rust?" :^P *ducks*
 >
-> Wasnt it fixed by 1c3b3e6527e57, given the same call trace at the first
-> glance?
+> Well, that's what they are doing here with the binder code :)
 
-1c3b3e6527e57 is present in the tested tree on 17e7124a. So syzbot
-just gave the answer to your question.
+I know, but imagine the meme magic if Linus said literally that!
+Missed opportunity.
 
-> >  May be due to missing lock nesting notation
-> >
-> > 2 locks held by swapper/0/0:
-> >  #0: ffff888020d18108 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
-> >  #1: ffff888014fd8130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-> >
-> > stack backtrace:
-> > CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.12.0-rc6-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  <IRQ>
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
-> >  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
-> >  check_deadlock kernel/locking/lockdep.c:2872 [inline]
-> >  validate_chain kernel/locking/lockdep.c:3661 [inline]
-> >  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
-> >  lock_acquire kernel/locking/lockdep.c:5510 [inline]
-> >  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
-> >  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-> >  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-> >  spin_lock include/linux/spinlock.h:354 [inline]
-> >  io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4988
-> >  __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
-> >  __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
-> >  snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
-> >  snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
-> >  snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
-> >  dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:377
-> >  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-> >  __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1601
-> >  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-> >  __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
-> >  invoke_softirq kernel/softirq.c:221 [inline]
-> >  __irq_exit_rcu kernel/softirq.c:422 [inline]
-> >  irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
-> >  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
-> >  </IRQ>
-> >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-> > RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-> > RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
-> > RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:137 [inline]
-> > RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:112 [inline]
-> > RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:517
-> > Code: cd cb 6e f8 84 db 75 ac e8 14 c5 6e f8 e8 1f b4 74 f8 e9 0c 00 00 00 e8 05 c5 6e f8 0f 00 2d 0e 18 c8 00 e8 f9 c4 6e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 04 cd 6e f8 48 85 db
-> > RSP: 0018:ffffffff8bc07d60 EFLAGS: 00000293
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> > RDX: ffffffff8bcbc400 RSI: ffffffff89052c17 RDI: 0000000000000000
-> > RBP: ffff888015078064 R08: 0000000000000001 R09: 0000000000000001
-> > R10: ffffffff8179e058 R11: 0000000000000000 R12: 0000000000000001
-> > R13: ffff888015078000 R14: ffff888015078064 R15: ffff888143a48004
-> >  acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:654
-> >  cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
-> >  cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
-> >  call_cpuidle kernel/sched/idle.c:158 [inline]
-> >  cpuidle_idle_call kernel/sched/idle.c:239 [inline]
-> >  do_idle+0x3e1/0x590 kernel/sched/idle.c:300
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > syzbot can test patches for this issue, for details see:
-> > https://goo.gl/tpsmEJ#testing-patches
+> Seriously, binder is not a "normal" driver by any means, the only way
+> you can squint at it and consider it a driver is that it has a char
+> device node that it uses to talk to userspace with.  Other than that,
+> it's very stand-alone and does crazy things to kernel internals, which
+> makes it a good canidate for a rust rewrite in that it is easy to
+> benchmark and no one outside of one ecosystem relies on it.
+>
+> The binder code also shows that there is a bunch of "frameworks" that
+> need to be ported to rust to get it to work, I think the majority of the
+> rust code for binder is just trying to implement core kernel things like
+> linked lists and the like.  That will need to move into the rust kernel
+> core eventually.
+>
+> The binder rewrite here also is missing a number of features that the
+> in-kernel binder code has gotten over the years, so it is not
+> feature-complete by any means yet, it's still a "toy example".
+>
+> > (sorry, I couldn't help myself) Perhaps it would be a good exercise to
+> > demonstrate some of the benefits of using Rust for driver work?
+>
+> I've been talking with the developers here about doing a "real" driver,
+> as the interaction between the rust code which has one set of lifetime
+> rules, and the driver core/model which has a different set of lifetime
+> rules, is going to be what shows if this actually can be done or not.
+> If the two can not successfully be "bridged" together, then there will
+> be major issues.
+>
+> Matthew points out that a nvme driver would be a good example, and I
+> have a few other thoughts about what would be good to start with for
+> some of the basics that driver authors deal with on a daily basis
+> (platform driver, gpio driver, pcspkr driver, /dev/zero replacement), or
+> that might be more suited for a "safety critical language use-case" like
+> the HID parser or maybe the ACPI parser (but that falls into the rewrite
+> category that we want to stay away from for now...)
+
+Sage advice, and it won't hurt to come back with more examples.
+Perhaps folks in the Rust community who have been itching to get
+involved in developing their favorite operating system might be
+interested?
+
+One technique for new language adoption I've seen at Mozilla and
+Google has been a moratorium that any code in <newlang> needs to have
+a fallback in <oldlang> in case <newlang> doesn't work out.  Perhaps
+that would be a good policy to consider; you MAY rewrite existing
+drivers in Rust, but you MUST provide a C implementation or ensure one
+exists as fallback until further notice.  That might also allay
+targetability concerns.
+
+> Let's see what happens here, this patchset is a great start that
+> provides the core "here's how to build rust in the kernel build system",
+> which was a non-trivial engineering effort.  Hats off to them that "all"
+> I had to do was successfully install the proper rust compiler on my
+> system (not these developers fault), and then building the kernel code
+> here did "just work".  That's a major achievement.
+
+For sure, kudos folks and thanks Greg for taking the time to try it
+out and provide feedback plus ideas for more interesting drivers.
+-- 
+Thanks,
+~Nick Desaulniers
