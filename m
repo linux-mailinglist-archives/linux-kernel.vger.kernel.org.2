@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9B3607F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737BB3607FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhDOLE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:04:56 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:64835 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDOLEz (ORCPT
+        id S232558AbhDOLHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:07:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43972 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232493AbhDOLHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:04:55 -0400
-X-Originating-IP: 2.7.49.219
-Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id E665324000C;
-        Thu, 15 Apr 2021 11:04:27 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH] riscv: Protect kernel linear mapping only if CONFIG_STRICT_KERNEL_RWX is set
-Date:   Thu, 15 Apr 2021 07:04:26 -0400
-Message-Id: <20210415110426.2238-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        Thu, 15 Apr 2021 07:07:20 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lWzpm-0004Eh-8H; Thu, 15 Apr 2021 11:06:54 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Dave Jiang <dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+        dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: idxd: Fix potential null dereference on pointer status
+Date:   Thu, 15 Apr 2021 12:06:54 +0100
+Message-Id: <20210415110654.1941580-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different permissions
-to the kernel data and text sections, so make sure it is defined before
-trying to protect the kernel linear mapping.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+There are calls to idxd_cmd_exec that pass a null status pointer however
+a recent commit has added an assignment to *status that can end up
+with a null pointer dereference.  The function expects a null status
+pointer sometimes as there is a later assignment to *status where
+status is first null checked.  Fix the issue by null checking status
+before making the assignment.
+
+Addresses-Coverity: ("Explicit null dereferenced")
+Fixes: 89e3becd8f82 ("dmaengine: idxd: check device state before issue command")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/riscv/kernel/setup.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/dma/idxd/device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 626003bb5fca..ab394d173cd4 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
+diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
+index 31c819544a22..78d2dc5e9bd8 100644
+--- a/drivers/dma/idxd/device.c
++++ b/drivers/dma/idxd/device.c
+@@ -451,7 +451,8 @@ static void idxd_cmd_exec(struct idxd_device *idxd, int cmd_code, u32 operand,
  
- 	sbi_init();
+ 	if (idxd_device_is_halted(idxd)) {
+ 		dev_warn(&idxd->pdev->dev, "Device is HALTED!\n");
+-		*status = IDXD_CMDSTS_HW_ERR;
++		if (status)
++			*status = IDXD_CMDSTS_HW_ERR;
+ 		return;
+ 	}
  
--	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
-+	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
- 		protect_kernel_text_data();
--
--#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
--	protect_kernel_linear_mapping_text_rodata();
-+#ifdef CONFIG_64BIT
-+		protect_kernel_linear_mapping_text_rodata();
- #endif
-+	}
- 
- #ifdef CONFIG_SWIOTLB
- 	swiotlb_init(1);
 -- 
-2.20.1
+2.30.2
 
