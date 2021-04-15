@@ -2,293 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6082360977
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512A936097C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhDOMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbhDOMdk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:33:40 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E7AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:33:16 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id u22so1100683vsu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:33:16 -0700 (PDT)
+        id S232952AbhDOMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:34:09 -0400
+Received: from mail-bn8nam08on2108.outbound.protection.outlook.com ([40.107.100.108]:43016
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230056AbhDOMeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:34:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n7SP8flmIj2nZhPEb5Bkse7vLTOFMMImrqaW1jPbRFbewIZpaEjrMP3+iyYADS8Y1sqBpoDmcrhbQSauLONXKZ/EMUt6BBn17XB5A9OtBNh+BDHVRaTq4SY1mxJPc55d5qMfkp5umnzyOOMlKi3JVgSYED6qMFLEE5iT1QgE1OChid/m3G4B3IeniLT3vBRFsykbQKyCB0Y3BDMQHdnQLLkkaWiUgQbVPg8UwpkXn1OMcKFBdMphvF33fZkFH4wN4XDeZNSvxQ4/2Grh0s11DFp/zMdUgKHy7v0i7QhLWwDCYA61N68cxR4QOCHk9rL3K6ZgYDiNG6T6pLy9wr+uiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DW4Kka2qupOM46QdWkRL/vvANFhn0m466i6Irwcq+PE=;
+ b=gPhd/Dt4dxUcjIqfbw3GjV1nnWDz/LjegGt/3/tymnERcTnd47dncnB+UWoc8Clis+HhMiRoc62TU9N5Ds8WRHVgsSA8WsyjgRzM1I338L51DX4sPENlivvu6jHa8pVX9oLW5EWP1mEqly+RngMFCeeDIxjxhH9PLUv7Xukd/RSm4kD1qbjpLVPbc9Eq1l2l8nP2oKC6lugdDnXonP6kKXfUaVpu7fDg/LaAyYiDQT3IXRnHi3K4JWjI9/oeM+YQYulTc393Qfn1Q/PyiTGHO83F7/qbnCyuN3ZhGKTJFK7PPD/q5C7EEeIgl9dSgd1lzbF7WxG3FQVhJRMtnN+Fxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cn61o3l+cQhuqA8gP7u3apjojEDo5OUcEov4kpx8ITg=;
-        b=aFLAzVsGTqdAyT89VvUVPZMDzJ2TWCVoxlBxLbWtJLNY091tzshEX80XxYWSKVAgrh
-         lGqNFLzcv2Gi1yEHbNedzyXs3TLXnOh+28JTUTqROTeVNytVZirmo16oFzXh8sTyHUUZ
-         0wx75rkVYb0ygzgej5zNHRbo4x9Fuh2uziUVMroDwnYsW7u+TNy9zLpOMp4AUqIc0gCO
-         97iwKJvtGqJZahDVUtsH8UK7MbhiRyBq04m6ovQcA7gcse5xEe3UxNKogCMelcyxq8N1
-         XcV38Y9/yANrf07XhXxYxTtgBC0+G+RoXlFDSaTfOkBDBlW/qV8z95YMBLaKhVegppPH
-         JXYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cn61o3l+cQhuqA8gP7u3apjojEDo5OUcEov4kpx8ITg=;
-        b=KQsH3bOULQ2NidiXSkkCwZDW5NBvqiiS4qYajmvV8fatVgYqESWAZnnySnQRveLf6Z
-         PQg3fT4AKU4cvtvOUJ9YcLLZa1lPryxtYqgp8eee1dtzxEsHUX0c6nIzwPCFKixpIFmL
-         sFufCxGTa6j0htQSzJSBzcEoKTlTkXT25DI8XAIL9cKaVCVD29Fd0aNACqRNVFGHg+ds
-         uFl24/PsRT+Q77/giXjxXWWX4UTy8iVg/QGsywCMspp4V/M7qvX7oZ47J2opd9LbVE8X
-         B67sYqVEBVcmDmbgFFkCNaSf/3mwgQzXAp64FBlxhtJ30CZFV/SjDDnX9iwQQ7iVr+TO
-         NFzg==
-X-Gm-Message-State: AOAM530wp17Lroek0gaZ7LmSAfLtLXQNDc/VFfxKt1nyEXNkJPzDnvwm
-        qGnivAYgPm5GpBZX7UG+xL1bVkx3dIK4ke/UccJ6PA==
-X-Google-Smtp-Source: ABdhPJyukeR2yBo7fgb1puieSQLzNGAskdjLyUz7e3Da1oSPXpu3mc9ujLE8b6uhI4Psx+RP3cDkJRevTtrSdprzwSU=
-X-Received: by 2002:a67:cf41:: with SMTP id f1mr1879671vsm.42.1618489995214;
- Thu, 15 Apr 2021 05:33:15 -0700 (PDT)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DW4Kka2qupOM46QdWkRL/vvANFhn0m466i6Irwcq+PE=;
+ b=hJ7RnpQB+DZeuQvu32a4krLMpyc8HDEFcyL4iPYnUHZfp2iRCmX0kNFwPVduaOUAswXU6RiEax//Hd+RPHnEEK4LMKu4pRCOoWia6oEJnQ4NGuksMn7/paEoIiVfSufEBL0dAVgkQj9viDgUoTR5ALCoi7ihF4wW+3MQ7V+/4RM=
+Authentication-Results: os.amperecomputing.com; dkim=none (message not signed)
+ header.d=none;os.amperecomputing.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ MWHPR0101MB2944.prod.exchangelabs.com (2603:10b6:301:33::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.21; Thu, 15 Apr 2021 12:33:36 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::d840:7aa7:58d4:b503%5]) with mapi id 15.20.4042.018; Thu, 15 Apr 2021
+ 12:33:35 +0000
+Subject: Re: [PATCH v3 1/4] dt-bindings: mfd: Add bindings for Ampere Altra
+ SMPro drivers
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+References: <20210409031332.21919-1-quan@os.amperecomputing.com>
+ <20210409031332.21919-2-quan@os.amperecomputing.com>
+ <20210413134906.GA1538655@robh.at.kernel.org>
+ <8eb27308-03e3-1a90-28a3-d8b3ad720cc4@os.amperecomputing.com>
+Message-ID: <3f227d50-1f4a-d5d4-eba1-dab1322c45d9@os.amperecomputing.com>
+Date:   Thu, 15 Apr 2021 19:33:12 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+In-Reply-To: <8eb27308-03e3-1a90-28a3-d8b3ad720cc4@os.amperecomputing.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [118.69.219.201]
+X-ClientProxiedBy: SG2PR04CA0179.apcprd04.prod.outlook.com
+ (2603:1096:4:14::17) To MW2PR0102MB3482.prod.exchangelabs.com
+ (2603:10b6:302:c::32)
 MIME-Version: 1.0
-References: <20210401230221.12532-1-luserhker@gmail.com>
-In-Reply-To: <20210401230221.12532-1-luserhker@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 15 Apr 2021 14:32:38 +0200
-Message-ID: <CAPDyKFpjTikAzDqkcbyxa1Y918OevojZYhREPsmQgeo_Sd0xgA@mail.gmail.com>
-Subject: Re: [PATCH v3] Re-submit of the erase command addition plus removal
- of MMC_IOC_MULTI_CMD ifndef for erase. Author=Kimito Sakata <kimito.sakata@oracle.com>
-To:     luserhker@gmail.com, Avri Altman <avri.altman@wdc.com>
-Cc:     "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        kenny.gibbons@oracle.com, kimito.sakata@oracle.com,
-        rkamdar@micron.com, linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kimito Sakata <ksakata@kimitos-mbp.hsd1.co.comcast.net>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.38.32.245] (118.69.219.201) by SG2PR04CA0179.apcprd04.prod.outlook.com (2603:1096:4:14::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Thu, 15 Apr 2021 12:33:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 452505ce-79c6-42f4-d258-08d9000aafcf
+X-MS-TrafficTypeDiagnostic: MWHPR0101MB2944:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR0101MB294429BA0D2CEFA6A019AB36F24D9@MWHPR0101MB2944.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SiJjrV6CXB5nO9BG+4hyMZmCpocPnIkE3FiR6SllHbicIjeRNfvDY7XCHjGAzgnOUg9lRsqMI2g4bWaNvEt5MzUqgNLGRsetsGtPkyCzMEYpoqiD4YNVO0TlXggmoV3z2cFHux0CLY6GiM89I3DPI7hPD+z2zed2MgDExDeF9NFCZ96sogPBL0H6Y+hKe8PkM27XAuNWwp9crYdQQvs5997seBPHKtVPBydGwGwRBolGWHRLPQNyw1lJc6cGiPHcEXthFAyqmCKGi3dYU1g+GwEHewf9hxA4WI+pr1vjtxS3SPflYDWa/GFx+9tTiAsfKvDv3nFA9FpGxoJbnuSWYcP8bz+n61na8XJwUpkSHY9XA9+1jt7MFW1URZ9prCUVlmKrAqJ2sUDQPfCSvZIlAEGyDpJY2aDgDv85kYpSPQgg8BhY2yHLXxUo7sQPaIQ1+f1pRbTjnXOrUkk5oMBezeX4mryuO1w8AntI1mA84hnQ4o+uGRgtb5mqugBCmb0f2GskNTZfRFxtL6Ze9XsZsgtEwuKHAuo2lwsxTiIA3jKUFM3iAyGcKXHrbSLfh+x+n8aTRp9EPTmWVRNGFzWN6Cu3AFztcp9tGS70Kc5jVFnFNyei73ik4bHqgObCnF2FIDF2LXO63DROazu4dWiDmEHCHvDJCJjvfchPWvckY5sAzPrTE5pMJYTjzyz/f5sp2zzSeYX/pXIarji2ROkwh0OS5kmuMJ59yeSP5AfjC0UQq3ZdltPtGVEP+hP5t9UcX9uLszjqkheuJFkktyWgQYI2s3FpUOYfGqHPMCTfh14=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(376002)(396003)(346002)(366004)(6916009)(53546011)(478600001)(966005)(107886003)(83380400001)(4326008)(316002)(54906003)(186003)(26005)(2906002)(16526019)(16576012)(31696002)(86362001)(6666004)(956004)(2616005)(66946007)(5660300002)(7416002)(8936002)(52116002)(38350700002)(66476007)(66556008)(38100700002)(8676002)(31686004)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OGw2eGhlcmFoLzhsVy9vVVJoVi8wYXZoQVhhRlFxVFlSRTdNMk1zQTdNalI4?=
+ =?utf-8?B?QWJjL2ZLUWszMGxxUFU1Tml5OEFRSGNSUktuNXpkbGt2ciswT1pFMDFiQ3Ez?=
+ =?utf-8?B?bGdvRVpwZ1l6Uk9ydmc4RFFIZnNpbUJSL1pGSHNRbmNxQUJYc2xDSy9WTm5E?=
+ =?utf-8?B?aEpOdkpYRDFTR0NtcURJUm84STlsRUVFZnNsMnYrTmo0eTQwY0tzbW5QaGZn?=
+ =?utf-8?B?Y2JVSU1tL0NZb3RyTUs2dktOU0pUYm1xVk5CeExmUEYyOWk0Z1RZd21Hdk0w?=
+ =?utf-8?B?amZ3YzhWdjc5S0Nncm9kQXlMQ0lsR3cyVEpQWUFqQmV2dWI3eEhkU0xodXUr?=
+ =?utf-8?B?YlZxNVNhWU9FQ0hxUmNRWmdYWTkyYXRLMTh2OVE1ODdaRzFuTTBtR1BBTkND?=
+ =?utf-8?B?U0hxZ1NySUhRaGM5MlhibzJyRHNLVHVSTTF3NkRiYlorbmRKaXI3RzRsa0Q0?=
+ =?utf-8?B?UjJudWpIRDBiNHBDT1hEUUZUTVl0cHZCcE9mb1IrczlsRWhRb2t2N1dQSVRY?=
+ =?utf-8?B?YWZlZlZGRGRxZWM3aVdpSzI5Tmc0RXJhR1lkRjRWSE5lODNaMXhzTGZhS3hj?=
+ =?utf-8?B?WmNGZk9GYm5XcFlkeEJhaVF3aXJpTWwxcW0vTkxIQTltNDVnVnUxeFYycjlW?=
+ =?utf-8?B?bGpkc3JvNWR2WWVRbTJWSWZ4Y1hvOUN4cWFNd2xhbFZEd0VydEZPbjd5Q291?=
+ =?utf-8?B?R0lvQTZnQ0dXbHNIMTl6Z2ZOL21GSGlNOTVmTExDdzNGaGoxdFJidkhzNTRB?=
+ =?utf-8?B?OTZ3V1BqWDVacXlXeGZnaU9TTUdDOXpvL1VlS2ZldW85a1JrOWw4RHR0T2Ex?=
+ =?utf-8?B?MnI4aUhlV2RkSG5wbjJWMm9UMDRoMHQ4ek5zQXNiT1ZlTUdwbXpjVlhQTHFl?=
+ =?utf-8?B?OTkrSThoRnUrTkoxc2JuSHlzTEUyd082aGRGTlFYemdENW15VFJnSWpWYXFX?=
+ =?utf-8?B?NUdqUDJNMFNKc1kra0NDRzhGMWQwWnFLTXVPZ0I4ZXMrMmEyZTFHQk9mV3pz?=
+ =?utf-8?B?OFRIbU1MbWlNdzI2ZXg4S1NWSEhLT3NQbHhJS0RzNk92R0s3MHllaGYwL0RS?=
+ =?utf-8?B?V1RhcG8yTTV3bXNWWmNYNHhid29TRy9rdjREeFFEdUZKQVdsVnJ5Mi9vZThx?=
+ =?utf-8?B?alFoS2tJaGlOVXo1M3U4bWdmcTVCdkY0L2FlYVAvRHN6N0dSeVk5Y0l2Tlpu?=
+ =?utf-8?B?R3BKV1hyc2lvQ3c5NmJBcVdtVDEvR0VwVm1pTkFFR0UxSXAvaDJDeEc4ZS82?=
+ =?utf-8?B?ZXA2MWhGQ1J6bkY4NXIrN2ZFbytTbGVlRTJCbW05cTNoSzhWem1GZzdIRG9x?=
+ =?utf-8?B?YlBERlN2ZElBM1NVZ0RocnljU3p3UUtaMXZuc3VWRk5LYlJCMms5bXFLTE5P?=
+ =?utf-8?B?NStUOVU5MDc4OVRyNjdOakM3Q0lTYVFJUDF4SG13cVY1dmRTaFM0WFlBenFG?=
+ =?utf-8?B?WjBhNDFYVG5WSHJjbGxzV3pKWnZJQmhQdlEzYy9QVzEydXFOVE1XK2lqeCs4?=
+ =?utf-8?B?MXk3dnQvaCtqSHNsUFJaYy90YmdoZDMxQWdSOWFJanhFU2JERGlXQ0FsSnA5?=
+ =?utf-8?B?dS82aHRHS2tZSkNpdi9FMldXVDQ5SzBQYWpTZ1NoWW1KL0dhdW5Bc0J2eG54?=
+ =?utf-8?B?ZEFWNjlWRjBOSnhiMUpueHlUT3lBdUlmS1pjR3NXL081TThXUWZrVHdWZDBT?=
+ =?utf-8?B?ZFpDR0lqeTA5RHgxSTgvMSt2Z0tSa2ZXMzRkWmdldVhVNElBM25jbHFvQ25w?=
+ =?utf-8?Q?N043bZq/lmZqh7yU6DN8yDeCrcBADJSYQrIf4x2?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 452505ce-79c6-42f4-d258-08d9000aafcf
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 12:33:35.5077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WNChd4EKGW3FV2olipOcjL0zNea0T9bRTiko0EQAkt4RjlNtRX0O67SFeYvrgiGkZPZ/ZbAagzyUwWNG+d3w8BB4fLQjEHRHyuCgP/kQTBQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR0101MB2944
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Avri
+On 14/04/2021 15:28, Quan Nguyen wrote:
+> On 13/04/2021 20:49, Rob Herring wrote:
+>> On Fri, Apr 09, 2021 at 10:13:29AM +0700, Quan Nguyen wrote:
+>>> Adds device tree bindings for SMPro drivers found on the Mt.Jade 
+>>> hardware
+>>> reference platform with Ampere's Altra Processor family.
+>>>
+>>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+>>> ---
+>>>   .../bindings/hwmon/ampere,ac01-hwmon.yaml     |  28 +++++
+>>>   .../devicetree/bindings/mfd/ampere,smpro.yaml | 105 ++++++++++++++++++
+>>>   2 files changed, 133 insertions(+)
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+>>>
+>>> diff --git 
+>>> a/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml 
+>>> b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+>>> new file mode 100644
+>>> index 000000000000..fbf7ec754160
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/hwmon/ampere,ac01-hwmon.yaml
+>>> @@ -0,0 +1,28 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/hwmon/ampere,ac01-hwmon.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Hardware monitoring driver for the Ampere Altra SMPro
+>>> +
+>>> +maintainers:
+>>> +  - Quan Nguyen <quan@os.amperecomputing.com>
+>>> +
+>>> +description: |
+>>> +  This module is part of the Ampere Altra SMPro multi-function 
+>>> device. For more
+>>> +  details see ../mfd/ampere,smpro.yaml.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - ampere,ac01-hwmon
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +
+>>> +additionalProperties: false
+>>> diff --git a/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml 
+>>> b/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+>>> new file mode 100644
+>>> index 000000000000..5613c420869e
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/mfd/ampere,smpro.yaml
+>>> @@ -0,0 +1,105 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/mfd/ampere,smpro.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Ampere Altra SMPro firmware driver
+>>> +
+>>> +maintainers:
+>>> +  - Quan Nguyen <quan@os.amperecomputing.com>
+>>> +
+>>> +description: |
+>>> +  Ampere Altra SMPro firmware may contain different blocks like 
+>>> hardware
+>>> +  monitoring, error monitoring and other miscellaneous features.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    enum:
+>>> +      - ampere,smpro
+>>
+>> Again, not very specific. There's only 1 version of 'smpro' h/w or
+>> firmware? Are the firmware version and features discoverable? If not,
+>> you need to be more specific (or better yet, make them discoverable).
+>>
+> Hi Rob,
+> 
+> So far, there's nothing to guarantee this is the only version of SMPro 
+> and neither firmware version nor features that are discoverable.
+> 
+> In fact, it was "ampere,ac01-smpro" specifically in my v1. But this is 
+> the "ampere,smpro" in arch/arm/boot/dts/nuvoton-npcm730-kudo.dts, that 
+> is why it got changed to "ampere,smpro" to avoid changes in that dts file.
+> 
+> I'm thinking about change it back to "ampere,ac01-smpro" in next version 
+> to make this compatible string more specific.
+> 
 
-On Fri, 2 Apr 2021 at 01:02, <luserhker@gmail.com> wrote:
->
-> From: Kimito Sakata <kimito.sakata@oracle.com>
->
-> Signed-off-by: Kimito Sakata <ksakata@Kimitos-MBP.hsd1.co.comcast.net>
+Hi Rob, I have a second thought on this.
 
-This looks okay to me, but I have looped in Avri who might have some comments.
+What MFD SMPro driver does is only to expose the register map for child 
+drivers to use. Child drivers are capable to handle the specific details 
+among SMPro version if necessary. Hence, even though we address the 
+SMPro specific here (ie: by using specific compatible string), 
+eventually, regardless of any version the SMPro might be, the MFD SMPro 
+driver still just to expose the register map for its child drivers.
 
-Kind regards
-Uffe
+So, if that makes sense, I'd like to keep the "ampere,smpro" as 
+compatible string.
 
-> ---
->  mmc.c      |   8 ++++
->  mmc.h      |  13 +++++-
->  mmc_cmds.c | 129 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  mmc_cmds.h |   1 +
->  4 files changed, 150 insertions(+), 1 deletion(-)
->
-> diff --git a/mmc.c b/mmc.c
-> index f3d724b..eb2638b 100644
-> --- a/mmc.c
-> +++ b/mmc.c
-> @@ -229,6 +229,14 @@ static struct Command commands[] = {
->                 "Run Field Firmware Update with <image name> on <device>.\n",
->           NULL
->         },
-> +       { do_erase, -4,
-> +       "erase", "<type> " "<start address> " "<end address> " "<device>\n"
-> +               "Send Erase CMD38 with specific argument to the <device>\n\n"
-> +               "NOTE!: This will delete all user data in the specified region of the device\n"
-> +               "<type> must be: legacy | discard | secure-erase | "
-> +               "secure-trim1 | secure-trim2 | trim \n",
-> +       NULL
-> +       },
->         { 0, 0, 0, 0 }
->  };
->
-> diff --git a/mmc.h b/mmc.h
-> index 5754a9d..e9766d7 100644
-> --- a/mmc.h
-> +++ b/mmc.h
-> @@ -35,7 +35,15 @@
->  #define MMC_SET_WRITE_PROT     28    /* ac   [31:0] data addr   R1b */
->  #define MMC_CLEAR_WRITE_PROT   29    /* ac   [31:0] data addr   R1b */
->  #define MMC_SEND_WRITE_PROT_TYPE 31   /* ac   [31:0] data addr   R1  */
-> -
-> +#define MMC_ERASE_GROUP_START  35    /* ac   [31:0] data addr   R1  */
-> +#define MMC_ERASE_GROUP_END    36    /* ac   [31:0] data addr   R1  */
-> +#define MMC_ERASE              38    /* ac   [31] Secure request
-> +                                             [30:16] set to 0
-> +                                             [15] Force Garbage Collect request
-> +                                             [14:2] set to 0
-> +                                             [1] Discard Enable
-> +                                             [0] Identify Write Blocks for
-> +                                             Erase (or TRIM Enable)  R1b */
->  /*
->   * EXT_CSD fields
->   */
-> @@ -62,6 +70,7 @@
->  #define EXT_CSD_CACHE_SIZE_2           251
->  #define EXT_CSD_CACHE_SIZE_1           250
->  #define EXT_CSD_CACHE_SIZE_0           249
-> +#define EXT_CSD_SEC_FEATURE_SUPPORT    231
->  #define EXT_CSD_BOOT_INFO              228     /* R/W */
->  #define EXT_CSD_HC_ERASE_GRP_SIZE      224
->  #define EXT_CSD_HC_WP_GRP_SIZE         221
-> @@ -190,6 +199,8 @@
->  #define EXT_CSD_REV_V4_2               2
->  #define EXT_CSD_REV_V4_1               1
->  #define EXT_CSD_REV_V4_0               0
-> +#define EXT_CSD_SEC_GB_CL_EN           (1<<4)
-> +#define EXT_CSD_SEC_ER_EN              (1<<0)
->
->
->  /* From kernel linux/mmc/core.h */
-> diff --git a/mmc_cmds.c b/mmc_cmds.c
-> index 6c24cea..3e36ff2 100644
-> --- a/mmc_cmds.c
-> +++ b/mmc_cmds.c
-> @@ -2514,6 +2514,135 @@ int do_cache_dis(int nargs, char **argv)
->         return do_cache_ctrl(0, nargs, argv);
->  }
->
-> +static int erase(int dev_fd, __u32 argin, __u32 start, __u32 end)
-> +{
-> +       int ret = 0;
-> +       struct mmc_ioc_multi_cmd *multi_cmd;
-> +
-> +       multi_cmd = calloc(1, sizeof(struct mmc_ioc_multi_cmd) +
-> +                          3 * sizeof(struct mmc_ioc_cmd));
-> +       if (!multi_cmd) {
-> +               perror("Failed to allocate memory");
-> +               return -ENOMEM;
-> +       }
-> +
-> +       multi_cmd->num_of_cmds = 3;
-> +       /* Set erase start address */
-> +       multi_cmd->cmds[0].opcode = MMC_ERASE_GROUP_START;
-> +       multi_cmd->cmds[0].arg = start;
-> +       multi_cmd->cmds[0].flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_AC;
-> +       multi_cmd->cmds[0].write_flag = 1;
-> +
-> +       /* Set erase end address */
-> +       multi_cmd->cmds[1].opcode = MMC_ERASE_GROUP_END;
-> +       multi_cmd->cmds[1].arg = end;
-> +       multi_cmd->cmds[1].flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_AC;
-> +       multi_cmd->cmds[1].write_flag = 1;
-> +
-> +       /* Send Erase Command */
-> +       multi_cmd->cmds[2].opcode = MMC_ERASE;
-> +       multi_cmd->cmds[2].arg = argin;
-> +       multi_cmd->cmds[2].cmd_timeout_ms = 300*255*255;
-> +       multi_cmd->cmds[2].flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B | MMC_CMD_AC;
-> +       multi_cmd->cmds[2].write_flag = 1;
-> +
-> +       /* send erase cmd with multi-cmd */
-> +       ret = ioctl(dev_fd, MMC_IOC_MULTI_CMD, multi_cmd);
-> +       if (ret)
-> +               perror("Erase multi-cmd ioctl");
-> +
-> +       free(multi_cmd);
-> +       return ret;
-> +}
-> +
-> +int do_erase(int nargs, char **argv)
-> +{
-> +       int dev_fd, ret;
-> +       char *print_str;
-> +       char **eptr = NULL;
-> +       __u8 ext_csd[512], checkup_mask = 0;
-> +       __u32 arg, start, end;
-> +
-> +       if (nargs != 5) {
-> +               fprintf(stderr, "Usage: erase <type> <start addr> <end addr> </path/to/mmcblkX>\n");
-> +               exit(1);
-> +       }
-> +
-> +       if (strstr(argv[2], "0x") || strstr(argv[2], "0X"))
-> +               start = strtol(argv[2], eptr, 16);
-> +       else
-> +               start = strtol(argv[2], eptr, 10);
-> +
-> +       if (strstr(argv[3], "0x") || strstr(argv[3], "0X"))
-> +               end = strtol(argv[3], eptr, 16);
-> +       else
-> +               end = strtol(argv[3], eptr, 10);
-> +
-> +       if (end < start) {
-> +               fprintf(stderr, "erase start [0x%08x] > erase end [0x%08x]\n",
-> +                       start, end);
-> +               exit(1);
-> +       }
-> +
-> +       if (strcmp(argv[1], "legacy") == 0) {
-> +               arg = 0x00000000;
-> +               print_str = "Legacy Erase";
-> +       } else if (strcmp(argv[1], "discard") == 0) {
-> +               arg = 0x00000003;
-> +               print_str = "Discard";
-> +       } else if (strcmp(argv[1], "secure-erase") == 0) {
-> +               print_str = "Secure Erase";
-> +               checkup_mask = EXT_CSD_SEC_ER_EN;
-> +               arg = 0x80000000;
-> +       } else if (strcmp(argv[1], "secure-trim1") == 0) {
-> +               print_str = "Secure Trim Step 1";
-> +               checkup_mask = EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN;
-> +               arg = 0x80000001;
-> +       } else if (strcmp(argv[1], "secure-trim2") == 0) {
-> +               print_str = "Secure Trim Step 2";
-> +               checkup_mask = EXT_CSD_SEC_ER_EN | EXT_CSD_SEC_GB_CL_EN;
-> +               arg = 0x80008000;
-> +       } else if (strcmp(argv[1], "trim") == 0) {
-> +               print_str = "Trim";
-> +               checkup_mask = EXT_CSD_SEC_GB_CL_EN;
-> +               arg = 0x00000001;
-> +       } else {
-> +               fprintf(stderr, "Unknown erase type: %s\n", argv[1]);
-> +               exit(1);
-> +       }
-> +
-> +       dev_fd = open(argv[4], O_RDWR);
-> +       if (dev_fd < 0) {
-> +               perror(argv[4]);
-> +               exit(1);
-> +       }
-> +
-> +       if (checkup_mask) {
-> +               ret = read_extcsd(dev_fd, ext_csd);
-> +               if (ret) {
-> +                       fprintf(stderr, "Could not read EXT_CSD from %s\n",
-> +                               argv[4]);
-> +                       goto out;
-> +               }
-> +               if ((checkup_mask & ext_csd[EXT_CSD_SEC_FEATURE_SUPPORT]) !=
-> +                                                               checkup_mask) {
-> +                       fprintf(stderr, "%s is not supported in %s\n",
-> +                               print_str, argv[4]);
-> +                       ret = -ENOTSUP;
-> +                       goto out;
-> +               }
-> +
-> +       }
-> +       printf("Executing %s from 0x%08x to 0x%08x\n", print_str, start, end);
-> +
-> +       ret = erase(dev_fd, arg, start, end);
-> +out:
-> +       printf(" %s %s!\n\n", print_str, ret ? "Failed" : "Succeed");
-> +       close(dev_fd);
-> +       return ret;
-> +}
-> +
-> +
->  int do_ffu(int nargs, char **argv)
->  {
->  #ifndef MMC_IOC_MULTI_CMD
-> diff --git a/mmc_cmds.h b/mmc_cmds.h
-> index 9d3246c..8331ab2 100644
-> --- a/mmc_cmds.h
-> +++ b/mmc_cmds.h
-> @@ -45,3 +45,4 @@ int do_ffu(int nargs, char **argv);
->  int do_read_scr(int argc, char **argv);
->  int do_read_cid(int argc, char **argv);
->  int do_read_csd(int argc, char **argv);
-> +int do_erase(int nargs, char **argv);
-> --
-> 2.24.1 (Apple Git-126)
->
+- Quan
+
+>>> +
+>>> +  reg:
+>>> +    description:
+>>> +      I2C device address.
+>>> +    maxItems: 1
+>>> +
+>>> +  "#address-cells":
+>>> +    const: 1
+>>> +
+>>> +  "#size-cells":
+>>> +    const: 0
+>>> +
+>>> +patternProperties:
+>>> +  "^hwmon(@[0-9a-f]+)?$":
+>>> +    $ref: ../hwmon/ampere,ac01-hwmon.yaml
+>>> +
+>>> +  "^misc(@[0-9a-f]+)?$":
+>>
+>> You don't need these child nodes in DT if there are no resources
+>> associated with them. The parent driver can instantiate all the
+>> sub-functions.
+>>
+> 
+>  From v3, there is a "reg" property introduced for the child driver, 
+> especially for the misc driver. This is unavoidable because other 
+> properties might be introduced in future for other misc features.
+> 
+>>> +    type: object
+>>> +    description: |
+>>> +      This module is part of the Ampere Altra SMPro multi-function 
+>>> device
+>>> +      to support miscellaneous features
+>>> +    properties:
+>>> +      compatible:
+>>> +        enum:
+>>> +          - ampere,ac01-misc
+>>> +      reg:
+>>> +        maxItems: 1
+>>> +
+>>> +    required:
+>>> +      - compatible
+>>> +      - reg
+>>> +
+>>> +  "^errmon(@[0-9a-f]+)?$":
+>>> +    type: object
+>>> +    description: |
+>>> +      This module is part of the Ampere Altra SMPro multi-function 
+>>> device
+>>> +      that supports error monitoring feature.
+>>> +
+>>> +    properties:
+>>> +      compatible:
+>>> +        enum:
+>>> +          - ampere,ac01-errmon
+>>> +      reg:
+>>> +        maxItems: 1
+>>> +
+>>> +    required:
+>>> +      - compatible
+>>> +      - reg
+>>> +
+>>> +required:
+>>> +  - "#address-cells"
+>>> +  - "#size-cells"
+>>> +  - compatible
+>>> +  - reg
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    i2c {
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <0>;
+>>> +
+>>> +        smpro@4f {
+>>> +            compatible = "ampere,smpro";
+>>> +            reg = <0x4f>;
+>>> +            #address-cells = <1>;
+>>> +            #size-cells = <0>;
+>>> +
+>>> +            hwmon@10 {
+>>> +                compatible = "ampere,ac01-hwmon";
+>>> +                reg = <0x10>;
+>>> +            };
+>>> +
+>>> +            misc@b0 {
+>>> +                compatible = "ampere,ac01-misc";
+>>> +                reg = <0xb0>;
+>>> +            };
+>>> +
+>>> +            errmon@80 {
+>>> +                compatible = "ampere,ac01-errmon";
+>>> +                reg = <0x80>;
+>>> +            };
+>>> +
+>>> +        };
+>>> +    };
+>>> -- 
+>>> 2.28.0
+>>>
+> 
+
