@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BCF36060F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868EE360611
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhDOJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:43:45 -0400
-Received: from lucky1.263xmail.com ([211.157.147.134]:59976 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhDOJnm (ORCPT
+        id S231200AbhDOJoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:44:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17340 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232204AbhDOJoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:43:42 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 13372C8357;
-        Thu, 15 Apr 2021 17:43:08 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P13171T139812676667136S1618479787805733_;
-        Thu, 15 Apr 2021 17:43:08 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <b89a07e032a563fb55c0761d28643f7a>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tglx@linutronix.de
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, nivedita@alum.mit.edu, clin@suse.com,
-        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
-        dan.j.williams@intel.com, masahiroy@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jroedel@suse.de, peterz@infradead.org, jpoimboe@redhat.com,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Date:   Thu, 15 Apr 2021 17:43:05 +0800
-Message-Id: <20210415094305.30964-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 15 Apr 2021 05:44:17 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FLZ9V26V1zB1Gr;
+        Thu, 15 Apr 2021 17:41:34 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 15 Apr 2021 17:43:42 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <jack@suse.com>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] direct-io: use read lock for DIO_LOCKING flag
+Date:   Thu, 15 Apr 2021 17:43:32 +0800
+Message-ID: <20210415094332.37231-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for x86 supporting ftrace built on other compiler
-options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
-flags, whatever these may be, rather than assuming '-pg'.
+9902af79c01a ("parallel lookups: actual switch to rwsem") changes inode
+lock from mutex to rwsem, however, we forgot to adjust lock for
+DIO_LOCKING flag in do_blockdev_direct_IO(), so let's change to hold read
+lock to mitigate performance regression in the case of read DIO vs read DIO,
+meanwhile it still keeps original functionality of avoiding buffered access
+vs direct access.
 
-There should be no functional change as a result of this patch.
-
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- arch/x86/kernel/Makefile | 16 ++++++++--------
- arch/x86/lib/Makefile    |  2 +-
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ fs/direct-io.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ddf08351f0b..2811fc6a17ba 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index b2e86e739d7a..93ff912f2749 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -1166,7 +1166,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+ 	dio->flags = flags;
+ 	if (dio->flags & DIO_LOCKING && iov_iter_rw(iter) == READ) {
+ 		/* will be released by direct_io_worker */
+-		inode_lock(inode);
++		inode_lock_shared(inode);
+ 	}
  
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
--CFLAGS_REMOVE_tsc.o = -pg
--CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
--CFLAGS_REMOVE_pvclock.o = -pg
--CFLAGS_REMOVE_kvmclock.o = -pg
--CFLAGS_REMOVE_ftrace.o = -pg
--CFLAGS_REMOVE_early_printk.o = -pg
--CFLAGS_REMOVE_head64.o = -pg
--CFLAGS_REMOVE_sev-es.o = -pg
-+CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
- endif
+ 	/* Once we sampled i_size check for reads beyond EOF */
+@@ -1316,7 +1316,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+ 	 * of protecting us from looking up uninitialized blocks.
+ 	 */
+ 	if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+-		inode_unlock(dio->inode);
++		inode_unlock_shared(dio->inode);
  
- KASAN_SANITIZE_head$(BITS).o				:= n
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index bad4dee4f0e4..0aa71b8a5bc1 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
- KCSAN_SANITIZE_cmdline.o  := n
+ 	/*
+ 	 * The only time we want to leave bios in flight is when a successful
+@@ -1341,7 +1341,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
  
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_cmdline.o = -pg
-+CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
- endif
+ fail_dio:
+ 	if (dio->flags & DIO_LOCKING && iov_iter_rw(iter) == READ)
+-		inode_unlock(inode);
++		inode_unlock_shared(inode);
  
- CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
+ 	kmem_cache_free(dio_cache, dio);
+ 	return retval;
 -- 
-2.20.1
-
-
+2.29.2
 
