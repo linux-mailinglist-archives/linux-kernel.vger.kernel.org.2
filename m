@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7F2360D36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C6F360D3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhDOO64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S234310AbhDOO7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:59:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233928AbhDOOzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:55:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0B31613BB;
-        Thu, 15 Apr 2021 14:53:11 +0000 (UTC)
+        id S234176AbhDOOzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:55:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12132613F2;
+        Thu, 15 Apr 2021 14:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498392;
-        bh=V9xvxP8k/XmODRuncv6XiR6jQXqFGYWEuL2cNPrhvuM=;
+        s=korg; t=1618498394;
+        bh=bJsXpKSqyj1cZNbOMWjoIUDMfbguaHKgqMhkeNIfpZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovnL2+DOeW1hsDGwcF/lJgjsEuAhDUlk0NmfkiOTJvB3trjTGaj8lWc+HmpDmD1XZ
-         Wws/Vp/6YL8mEoG2nxMp9DA8jHflhAyEJgvK1nFwc82hPlNwoSQUjXMuE/Mna/EvmD
-         Ne7dQajAlKB0o/FHznqzNYDdM0GHTpw7dppXavzw=
+        b=jL2Rc7IEtxLIyg7nov9nl+VOeevyro1wS70r1ixF8QpOn3C/5BgqSRuqXnJeuT6uN
+         WWlwuwcSbNr6ZNIgtpg6DoptRSiBkejcjsIN5ljaSFDKMR0s0TnzhUW86mmww4SJQg
+         w8bAiQR1viJXbNOdwPtInva5an2f4YRFXP1HQrX4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, stable@kernel.org
-Subject: [PATCH 4.14 21/68] i2c: turn recovery error on init to debug
-Date:   Thu, 15 Apr 2021 16:47:02 +0200
-Message-Id: <20210415144415.157036767@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 22/68] regulator: bd9571mwv: Fix AVS and DVFS voltage range
+Date:   Thu, 15 Apr 2021 16:47:03 +0200
+Message-Id: <20210415144415.193794871@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 References: <20210415144414.464797272@linuxfoundation.org>
@@ -40,51 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit e409a6a3e0690efdef9b8a96197bc61ff117cfaf upstream.
+[ Upstream commit 3b6e7088afc919f5b52e4d2de8501ad34d35b09b ]
 
-In some configurations, recovery is optional. So, don't throw an error
-when it is not used because e.g. pinctrl settings for recovery are not
-provided. Reword the message and make it debug output.
+According to Table 30 ("DVFS_MoniVDAC [6:0] Setting Table") in the
+BD9571MWV-M Datasheet Rev. 002, the valid voltage range is 600..1100 mV
+(settings 0x3c..0x6e).  While the lower limit is taken into account (by
+setting regulator_desc.linear_min_sel to 0x3c), the upper limit is not.
 
-Reported-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by reducing regulator_desc.n_voltages from 0x80 to 0x6f.
+
+Fixes: e85c5a153fe237f2 ("regulator: Add ROHM BD9571MWV-M PMIC regulator driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210312130242.3390038-2-geert+renesas@glider.be
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-core-base.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/regulator/bd9571mwv-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -262,13 +262,14 @@ EXPORT_SYMBOL_GPL(i2c_recover_bus);
- static void i2c_init_recovery(struct i2c_adapter *adap)
- {
- 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
--	char *err_str;
-+	char *err_str, *err_level = KERN_ERR;
+diff --git a/drivers/regulator/bd9571mwv-regulator.c b/drivers/regulator/bd9571mwv-regulator.c
+index c67a83d53c4c..167c05029f9e 100644
+--- a/drivers/regulator/bd9571mwv-regulator.c
++++ b/drivers/regulator/bd9571mwv-regulator.c
+@@ -119,7 +119,7 @@ static struct regulator_ops vid_ops = {
  
- 	if (!bri)
- 		return;
+ static struct regulator_desc regulators[] = {
+ 	BD9571MWV_REG("VD09", "vd09", VD09, avs_ops, 0, 0x7f,
+-		      0x80, 600000, 10000, 0x3c),
++		      0x6f, 600000, 10000, 0x3c),
+ 	BD9571MWV_REG("VD18", "vd18", VD18, vid_ops, BD9571MWV_VD18_VID, 0xf,
+ 		      16, 1625000, 25000, 0),
+ 	BD9571MWV_REG("VD25", "vd25", VD25, vid_ops, BD9571MWV_VD25_VID, 0xf,
+@@ -128,7 +128,7 @@ static struct regulator_desc regulators[] = {
+ 		      11, 2800000, 100000, 0),
+ 	BD9571MWV_REG("DVFS", "dvfs", DVFS, reg_ops,
+ 		      BD9571MWV_DVFS_MONIVDAC, 0x7f,
+-		      0x80, 600000, 10000, 0x3c),
++		      0x6f, 600000, 10000, 0x3c),
+ };
  
- 	if (!bri->recover_bus) {
--		err_str = "no recover_bus() found";
-+		err_str = "no suitable method provided";
-+		err_level = KERN_DEBUG;
- 		goto err;
- 	}
- 
-@@ -296,7 +297,7 @@ static void i2c_init_recovery(struct i2c
- 
- 	return;
-  err:
--	dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
-+	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
- 	adap->bus_recovery_info = NULL;
- }
- 
+ static int bd9571mwv_regulator_probe(struct platform_device *pdev)
+-- 
+2.30.2
+
 
 
