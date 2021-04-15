@@ -2,67 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22803610B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A8F3610B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbhDORDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        id S234385AbhDOREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233330AbhDORDo (ORCPT
+        with ESMTP id S231137AbhDORD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:03:44 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53488C061574;
-        Thu, 15 Apr 2021 10:03:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ace002a6aea191a6cda8f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ce00:2a6a:ea19:1a6c:da8f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF4521EC0518;
-        Thu, 15 Apr 2021 19:03:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618506199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=85rANTp4s3hfSEAzqIke+mB4040PR0V7EE7so0qvb5s=;
-        b=PeHE1Cw1jDqrpOm6BurHBGaSQPaWKl7OYwZwT1K0n3r56Bio4a2l+4coVRyAcWCRb0Mrs2
-        m8MZN/xAbjUbGVU8ctTPItmgLhLpHE8TY7k3AqPw0nuasVMret3U3H0XJiHCXX+m6Aq6Rx
-        dhsDFY7zXCzyGrczCPq5ZFfHEF7J2kU=
-Date:   Thu, 15 Apr 2021 19:03:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, ak@linux.intel.com,
-        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part2 PATCH 02/30] x86/sev-snp: add RMP entry lookup helpers
-Message-ID: <20210415170322.GE6318@zn.tnic>
-References: <20210324170436.31843-1-brijesh.singh@amd.com>
- <20210324170436.31843-3-brijesh.singh@amd.com>
+        Thu, 15 Apr 2021 13:03:59 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DDDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:03:36 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id z8so27889984ljm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U8nRxp9yxovE2rmz0BaOdHpuJsy82akPvndDf9QOMYI=;
+        b=UJ/0rFU007c1xrSDt8rnZaY/C/1wRNIWX286uco8cqj/s1k0wTz/Ujh2svSH30FjaK
+         XZxpO8u7ysEBnv0NcKQ6dpO+A7eotLNYjTXnUYy3V4XHhFL97q6dQrqErGkeVyLzoPyM
+         evSWoRUKIrCVBH9EKNzM7YPyS/tfKFqIVyfQhe9TTbCJq4kpxktOhkBsUT6sa4veCcK0
+         Jkq3Hcp2rb1dcFf8JUBPOJaNKkW/wUMRirwse8u+dFV6BPCyyKZ87niieDLZDN/I6n7r
+         uVFfDpxnHrlO8VrY6z0ZjHBAcVmB/EYs5p8a51hOiHFPmWy7s09RQUEGXYYLeGwLbEgk
+         5GYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U8nRxp9yxovE2rmz0BaOdHpuJsy82akPvndDf9QOMYI=;
+        b=cTAzDY4wyuFiTsrrDEbaDKFLLQXk7v/6sZ4Y3YTiUNiC6K3niVCUgh1cR5XRfdJ28w
+         ch7ISbbGkVRWl3dBT9RpADbFBAwmEbVAyZ+qj5/1oVShRPwT+PUYbm7ySMtR7ZGQL5tF
+         XLWAckghsgz37KoF9anSTKVv8VoaLY6M4eT4TbA4gsMDnu5Xe1GUrbaV1DE5OHYR4ZZE
+         VKn6kZrVxzfrOfs7wxemSrjaVR/R7/vr7HWhgP6S+NlLrVmAVCKk09savk2kNQCc2QYA
+         o+8M8+D+/5/C2Dih8oM63l1hpnOwprCKz8TV5VuFTkP26uPeqnIvYP+ph5sz+Jt2LK+D
+         iZeg==
+X-Gm-Message-State: AOAM532NBeQmieRYVZsGH/XWw+6Cs2Wnjen/CFPdGZh6RzWMuK/mVl0i
+        1jx8Ub3JE+b1EJMT/Te9gEyFP/y8IO1KHNRFeglbyA==
+X-Google-Smtp-Source: ABdhPJzdrq2tUExTUzkH5bkt6SJE+5dWE9+ZFyIQkUZDabxJo2IcH+5mYxkVQlZgH+J+JU3vOyIDEuaaM678dV7Y+wU=
+X-Received: by 2002:a2e:968a:: with SMTP id q10mr121750lji.0.1618506214722;
+ Thu, 15 Apr 2021 10:03:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324170436.31843-3-brijesh.singh@amd.com>
+References: <20210415094305.30964-1-zhaoxiao@uniontech.com>
+In-Reply-To: <20210415094305.30964-1-zhaoxiao@uniontech.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Apr 2021 10:03:23 -0700
+Message-ID: <CAKwvOdmNkMb35q=jNfpGSxtabaDSQStXtWHrnYaBizRq+GQ2XQ@mail.gmail.com>
+Subject: Re: [PATCH] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
+To:     zhaoxiao <zhaoxiao@uniontech.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>, clin@suse.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:04:08PM -0500, Brijesh Singh wrote:
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+On Thu, Apr 15, 2021 at 2:43 AM zhaoxiao <zhaoxiao@uniontech.com> wrote:
+>
+> In preparation for x86 supporting ftrace built on other compiler
+> options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
+> flags, whatever these may be, rather than assuming '-pg'.
+>
+> There should be no functional change as a result of this patch.
+>
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> ---
+>  arch/x86/kernel/Makefile | 16 ++++++++--------
+>  arch/x86/lib/Makefile    |  2 +-
 
-Also, why is all this SNP stuff landing in this file instead of in sev.c
-or so which is AMD-specific?
+I see additional CFLAGS_REMOVE_* = -pg in
+- arch/x86/mm/Makefile
+- arch/x86/kernel/cpu/Makefile
+- arch/x86/entry/vdso/Makefile
+- arch/x86/um/vdso/Makefile
+- arch/x86/xen/Makefile
+
+Would this same change be appropriate to all of the above?  Seeing the
+additional possible values of CC_FLAGS_FTRACE (`-mrecord-mcount`,
+`-mnop-mcount`, `-mfentry`) makes we wonder if those are currently
+broken for these files as they are not removed, or if only `-pg` is
+problematic?
+
+Thank you for the patch.
+
+>  2 files changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> index 2ddf08351f0b..2811fc6a17ba 100644
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
+>
+>  ifdef CONFIG_FUNCTION_TRACER
+>  # Do not profile debug and lowlevel utilities
+> -CFLAGS_REMOVE_tsc.o = -pg
+> -CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
+> -CFLAGS_REMOVE_pvclock.o = -pg
+> -CFLAGS_REMOVE_kvmclock.o = -pg
+> -CFLAGS_REMOVE_ftrace.o = -pg
+> -CFLAGS_REMOVE_early_printk.o = -pg
+> -CFLAGS_REMOVE_head64.o = -pg
+> -CFLAGS_REMOVE_sev-es.o = -pg
+> +CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
+> +CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
+>  endif
+>
+>  KASAN_SANITIZE_head$(BITS).o                           := n
+> diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+> index bad4dee4f0e4..0aa71b8a5bc1 100644
+> --- a/arch/x86/lib/Makefile
+> +++ b/arch/x86/lib/Makefile
+> @@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
+>  KCSAN_SANITIZE_cmdline.o  := n
+>
+>  ifdef CONFIG_FUNCTION_TRACER
+> -CFLAGS_REMOVE_cmdline.o = -pg
+> +CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
+>  endif
+>
+>  CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
+> --
+> 2.20.1
+>
+>
+>
+
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+~Nick Desaulniers
