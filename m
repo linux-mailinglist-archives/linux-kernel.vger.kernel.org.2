@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF5A35FF07
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2615435FF13
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbhDOAsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
+        id S230245AbhDOAuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhDOAs1 (ORCPT
+        with ESMTP id S229815AbhDOAuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:48:27 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEDFC061574;
-        Wed, 14 Apr 2021 17:48:03 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id c195so24214355ybf.9;
-        Wed, 14 Apr 2021 17:48:03 -0700 (PDT)
+        Wed, 14 Apr 2021 20:50:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EC5C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 17:49:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so3842227pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 17:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MllpCSIPMGfCbWa4NZxlMqGZ/D3zjxnnOzGw5yr7J00=;
-        b=rnlshmz0m5uO0F1y596lEBhYgquF6kLp205P3AdzdDicA8uoNpWprlOsqd5meqbQ0F
-         5RVT7lQQLJe7qCPVUWsztBXCTm2ErU2/oUWlQLxbsG79Q+jycEMAU4CovGt3usIOizn+
-         j8QbynvRYejfKT1mKclK8PnURuxPe2HUctQecr2afgwyCQ4FGIFhBBDnzRW2FvF9ePTO
-         h+Y4PGU4IoRnUg/l7hniNi7NE0ettMzQ7q1kBs+1kA6W1JyGU0+Vge8fU08nh+j+4bkp
-         m5nWYJUYQFj23rrfKReqNGBCjnwgvueurmjFJn4etT41dSnVBm6f/cIEqgqhvrKf6PHw
-         8grQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fOJI4hThVgEOLJyImgusGGiOxy9mpTSNJ/Mrm5n5Wk0=;
+        b=lEI57So+mLNKqR8MOcAK5p3MZw4vqrkk9etbelECfBcXuY5eDWQoby3QMZLzSfY8Ld
+         RvK2vdibjbtjGeqLJkWkmBpcWbieDeicodh6t61TVGzdFOeCO2Tfi3KhnWWSjua3I+7/
+         zjdNxm+qgvPvgZ9WsJ9ZUeZ5YYiuAJh6XbZ6tEsTahjj4Zht3bVEskNbzX1vDUHFjevH
+         xvzIDu3EKHqfEu4p4n1g3O6vhoUbUZUSS7b6TvAcCczNn3L241mIvi8mFqtGd8FZSgLw
+         Yy8ROdcJrDJ/TYNZnks+IkY99l1c7xmHX3Jt5yK9PVXmr+doXnNzkHsWhkATfYP4LBZn
+         OCgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MllpCSIPMGfCbWa4NZxlMqGZ/D3zjxnnOzGw5yr7J00=;
-        b=T4NTcVKslgAZiiaqsuWo5txzk+IW/QMoRj998410x+vKgmo4vcLhJ/4C1h6CDqyVbJ
-         nVBS91+D477jLkOl8AQNReV52cm33Uo14LlwFa1XUmA3wvPVkib9INHipz9oyAeI2DeZ
-         8simxNTFcF5uUN3Fb2jOEiKetPpL6kNa4F6IhfuZkl8qMTaXTQEtS0nur24jcbhaJbWe
-         3L/JYm1RweAvm0H2s1LuUCToOxhaWTm9CJ7oyUTvBRtZUmIqP/d2H19sG5pJOsAiUS8e
-         F5doSUunx9f5xOLI5n70V/A3DRs/s4sIEw8n1FLIwV0q4HI32UTTVwMmWigFKMTc++vN
-         ph3w==
-X-Gm-Message-State: AOAM531f5cynxY0sVR28fTDM+RneCyVJSit+3HJhDnmBokPcunNACWjb
-        yLN+DmYTgsjnvnT2oOCWqLv3K5x/lh/L9kpgWEc=
-X-Google-Smtp-Source: ABdhPJyFnt/9OejzItdMJY3l1hqEaYduiYaS/FBnAk5Q+XVduQ29yG/Y19SvcLZMhCf/aky519Hvhg8+8PpGUf8rVec=
-X-Received: by 2002:a25:b781:: with SMTP id n1mr971106ybh.115.1618447682909;
- Wed, 14 Apr 2021 17:48:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fOJI4hThVgEOLJyImgusGGiOxy9mpTSNJ/Mrm5n5Wk0=;
+        b=g17Gd0BMsBMThS7zmfTghIPOfcP/D0glZiU85kNz8DAlx3olAU4GL7mrE+8HvI7nwS
+         AmlmkeOWu4KRV+343O4DPQ/HrbkcyIqXha/0A69LqtrfrqKjWsG2S+edyMIb/MDKClQt
+         5qUzxnItEV1QjQpNjvB2JU3ITItnJPAFAlytYKr3yG0XsaNh/AViCc1UoazA8Fg7g9SU
+         cUHMkAgxqjmPGwUH0l2/jWF6gKa2eFiqwjwT8ttO1JrF+/mOJ/3YB5zKBro/yO190UcB
+         r+GEZfa9/X9WUZaz08qI+4Z3FRAd2wT+g7i/NYXLn64immBjS0qTORQOIRd8nDYL+by8
+         mqHQ==
+X-Gm-Message-State: AOAM530xGvurcKEttu2Ay3ADBHhtr41Md+eENNgiHdP+aEGOSfPItPT7
+        hrghls1B770HicI7BFZH7RMy9g==
+X-Google-Smtp-Source: ABdhPJxRBMrjNapa9s3nteduAiJXZXONsLdWBJOaAaq7bl/eTin1t4vjjR9fsQXFfqGsZoPswRvjvQ==
+X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr915481pjb.54.1618447785825;
+        Wed, 14 Apr 2021 17:49:45 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id z29sm589556pga.52.2021.04.14.17.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 17:49:45 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 00:49:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Tokarev <mjt@tls.msk.ru>
+Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
+Message-ID: <YHeNpUd1ZO1JVaAf@google.com>
+References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
+ <YHXUFJuLXY8VZw3B@google.com>
+ <CANRm+CzDW_5SPM0131OvRn3UPBp1nahxCykCP61XWeUpYeHU5Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-4-ojeda@kernel.org>
- <CAKwvOd=YV1Ck3hYKEC9035o+yghy_Oh1VWAyeGLQP5B9SR9xLw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=YV1Ck3hYKEC9035o+yghy_Oh1VWAyeGLQP5B9SR9xLw@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 15 Apr 2021 02:47:51 +0200
-Message-ID: <CANiq72kwge0-d-MYQ2vR9NBTe+0CKwzaVYtG3BEMjB-kLQ2e+g@mail.gmail.com>
-Subject: Re: [PATCH 03/13] Makefile: Generate CLANG_FLAGS even in GCC builds
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+CzDW_5SPM0131OvRn3UPBp1nahxCykCP61XWeUpYeHU5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 1:47 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> I'm ok with this approach, but I'm curious:
-> If the user made a copy of the CLANG_FLAGS variable and modified its
-> copy, would TENTATIVE_CLANG_FLAGS even be necessary? IIUC,
-> TENTATIVE_CLANG_FLAGS is used to filter out certain flags before
-> passing them to bindgen?
->
-> Or, I'm curious whether you even need to rename this variable (or
-> create a new variable) at all? Might make for a shorter diff if you
-> just keep the existing identifier (CLANG_FLAGS), but create them
-> unconditionally (at least not conditional on CC=clang).
+On Wed, Apr 14, 2021, Wanpeng Li wrote:
+> On Wed, 14 Apr 2021 at 01:25, Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Tue, Apr 13, 2021, Wanpeng Li wrote:
+> > > The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
+> > > reported that the guest time remains 0 when running a while true
+> > > loop in the guest.
+> > >
+> > > The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
+> > > belongs") moves guest_exit_irqoff() close to vmexit breaks the
+> > > tick-based time accouting when the ticks that happen after IRQs are
+> > > disabled are incorrectly accounted to the host/system time. This is
+> > > because we exit the guest state too early.
+> > >
+> > > This patchset splits both context tracking logic and the time accounting
+> > > logic from guest_enter/exit_irqoff(), keep context tracking around the
+> > > actual vmentry/exit code, have the virt time specific helpers which
+> > > can be placed at the proper spots in kvm. In addition, it will not
+> > > break the world outside of x86.
+> >
+> > IMO, this is going in the wrong direction.  Rather than separate context tracking,
+> > vtime accounting, and KVM logic, this further intertwines the three.  E.g. the
+> > context tracking code has even more vtime accounting NATIVE vs. GEN vs. TICK
+> > logic baked into it.
+> >
+> > Rather than smush everything into context_tracking.h, I think we can cleanly
+> > split the context tracking and vtime accounting code into separate pieces, which
+> > will in turn allow moving the wrapping logic to linux/kvm_host.h.  Once that is
+> > done, splitting the context tracking and time accounting logic for KVM x86
+> > becomes a KVM detail as opposed to requiring dedicated logic in the context
+> > tracking code.
+> >
+> > I have untested code that compiles on x86, I'll send an RFC shortly.
+> 
+> We need an easy to backport fix and then we might have some further
+> cleanups on top.
 
-This is only for the GCC builds -- and yeah, it is a hack. I still
-need to think a bit more how to do this better; although ultimately
-the proper solution is to have `bindgen` use GCC like it does with
-`libclang` and avoid this altogether. That way we can ensure the
-bindings are correct, support plugins, etc.
-
-Cheers,
-Miguel
+I fiddled with this a bit today, I think I have something workable that will be
+a relatively clean and short backport.  With luck, I'll get it posted tomorrow.
