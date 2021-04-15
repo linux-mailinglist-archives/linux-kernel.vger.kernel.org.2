@@ -2,161 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB9E360514
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE2D360511
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhDOI5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:57:08 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:25870 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbhDOI5H (ORCPT
+        id S231913AbhDOI4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:56:15 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:46863 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhDOI4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:57:07 -0400
+        Thu, 15 Apr 2021 04:56:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1618477005; x=1650013005;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=iiDxyQQVApQCyXfItWhX1Y3j3ChdqoLMwidUMbY+ZH8=;
-  b=TMV2oG06M6bOSELoJ9MB6anoi6nekrrbKRTOwoDOd0tqw+YQ6E4MYFZ4
-   xzXzbdvCFPO0m6medZrZpan5UNV/Amb/wZsvFi3clxkcjqXxGdSYRSbeV
-   xOdV8Q1BBC2RrbbcWEp8Yy+4cvNoSMNFLuWGrdv+utj9L0xdUftgQjoNg
-   omeqlr2j2kSenfnDxzK6a7cH/EGanOCySFSvJeF3YjrJNLANtf1DRmVLY
-   yR+eIOx0JhRpImZO1zIZhohph2qRnQhPR7CXHBtEyhNCLHWstkIRhFtBC
-   2NxEgAgKaly2nW+RJO+DkgcxFRDnXlW3z451wmgGD+eE9o4iWoB4aRhxE
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1618476952; x=1650012952;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Nyf5AssqNqTyNhoPZLV/aqdkykZq1hbIytCxJBNgp9g=;
+  b=xeIofJ3aSl8uMgnB365FpA3kW1XzgpbR7MbNB6+jUjJJ2dVxhv0MKSgN
+   x7xP6UjH9HfEJTTea4XHlN5LWkkdiUPearfEoJFTs4AzIrRZvy/Oh3EzC
+   Mt5pIXdqolhxJlp2bJGQ65r91AmvTenJlZtboCM+ObBO5/uaxg6TQNM4g
+   R4fkbcufRZamRkotdW2Z/hF1LNF2RA/jK5fmn1iyvbqB5w18UKUY+bu19
+   7incTxVRsdWclYn+siTWcbYgKMXrN16hN3QX8eiT10bACjKT7kC3oWTTe
+   v88xGCGMRF4xA8x/84LDo2obUXB89oW9G8/l3zE+iHfHJYykiTdwUZRKd
    w==;
-IronPort-SDR: XB2EKXTKTuufBFjn4rMGPkgFhmQ3g471Ix+sh9fzAFmPtrFbhOidfJM+UKmbVdU1HJ2YZdAswD
- D9Npjo9IrzYwL/9nfHIT7cHRxJ4ptD1lfjWEad1kDTHoQy4AiN1btpLA+rUIkEeZgDECl8wQbW
- nf33TK9H2e16wS6/rbwaidh5aEGD/zc8xz6kK0wTMH+gHWelIXg9f/3V6PKzqGsAl7I0obc3Jr
- WtMAun9IHQ2K72M8r+3lfCpuNBZ+RKxyVj+V2T5P/NLHu7m7R87B068M99u7VmsuDmtwhBQfwK
- Sv8=
-X-IronPort-AV: E=Sophos;i="5.82,223,1613404800"; 
-   d="scan'208";a="165539862"
-Received: from mail-bn3nam04lp2058.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.58])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2021 16:55:57 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K+NTCJlK4GxX6jBKtXLahUjdi287dOLN14dZ5KHitHkOhE+FAYrrN8bsgfEFDoN7bcuOEa2ziHlUkcW95u0yMU9PtAJX0+Vw6JjWInnfm6CZ95j68wm4wfqBDvpgCMaq2ex/GFqM8skw/V/An1H2sOxLs+GZRBNaZTEUB8tTw8o1m3be9Mvzry9mTJVQNUJBT0QS3uNCO7LNZRQZwnC6FeVIEMHHeE0eT8czCbv7GJOdioLUs4AK7tFjobLtnwMz90HfJINRJEfhYL8mYRMIrpYJnP609gRtu4VN3CyposNTW2ihRN5ZGNpHZvlrb4cfzScJ//lPVcA1VKtjqx7msw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GYHvVW02IMw+rcLYHdJoXdAQ5WtAS4Z9hUwNzo8cT8A=;
- b=Jjzae76kvEIRR05LutznbXPKs2xDJ2rs8uU9ovc1WZTpMAEDuQZ22bC0JYOUb//YOBg7RzhHFoF575LkKIfE95gRkv+LbEIQE65XKBYCe20ChRBtx+JtpW1NzeWeBA30m+hcFFOTDvUU7zwpKVgQ83cL671SF3eyeidKaJr3uB5pN6fKsN4QBzSwaMXpAdXUn3QhlkOeU2DqyWLzoqL4SC9e5IFglxy9GHUn0Os9KgDkuE++k/gCQgIq1RE3wDdeFP22K1BBV2vEuhVMguHYwtWCQpUYXKFWwnx5pLelRTedM/tFeR+sTh/vLNBxJrqMQoNgK0g5drravC4pEhw7eA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GYHvVW02IMw+rcLYHdJoXdAQ5WtAS4Z9hUwNzo8cT8A=;
- b=zomaerw/ybr2iLCkYdQit6mud3LPPeTBKnPEAgHnXtj0mNY8Wbtk9GA8+5UyhuSGBMMQXvM2aauCVSkbDf6lLKIpXnlMiK3ZWNf7PUOHhl3yGtSsp/3YAIN9Ueyafn/HQ9SPuIXYrlN0NX1urP0CHUy0x3caxi7FzZ586OnaqFQ=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
- by DM5PR04MB0828.namprd04.prod.outlook.com (2603:10b6:3:fa::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Thu, 15 Apr
- 2021 08:55:47 +0000
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::38c0:cc46:192b:1868]) by DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::38c0:cc46:192b:1868%7]) with mapi id 15.20.4020.022; Thu, 15 Apr 2021
- 08:55:47 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anup Patel <anup.patel@wdc.com>, stable@vger.kernel.org
-Subject: [PATCH] RISC-V: Fix error code returned by riscv_hartid_to_cpuid()
-Date:   Thu, 15 Apr 2021 14:25:22 +0530
-Message-Id: <20210415085522.108624-1-anup.patel@wdc.com>
+IronPort-SDR: VGAJ1F9yrHUUwWVijfzQWesMku3gRc8+ncRJZprRe4SGT495JM2Wmh01eXwSpWdV7JS9PA9A4K
+ ccI7cvHEjrTRoid+ruu8JdbsY9yJqOhtyUUOJb3JkROM/fFv3VrjIp/bRrP0VSx39XMBecx7K5
+ 9VMNJpkjiPWsQNIejwefBOZ0d9Irfab8SocXDaDHOIRQX3STYO7Hf3GWMWAac5tY8csRoncHvp
+ 5/Toe7Da8HSuzfTWJabJDgiwfM608KR8pMNn/vKAdxFKIOJ4Ylx+BrYNAqK8kSrnmN6p5FpWvh
+ G3w=
+X-IronPort-AV: E=Sophos;i="5.82,223,1613458800"; 
+   d="scan'208";a="116538076"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Apr 2021 01:55:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Apr 2021 01:55:49 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 15 Apr 2021 01:55:37 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <devicetree@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <jacopo@jmondi.org>, <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH v4 29/33] dt-bindings: media: atmel-isc: convert to yaml
+Date:   Thu, 15 Apr 2021 11:55:30 +0300
+Message-ID: <20210415085530.824638-1-eugen.hristev@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210413105731.610028-30-eugen.hristev@microchip.com>
+References: <20210413105731.610028-30-eugen.hristev@microchip.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [122.167.44.95]
-X-ClientProxiedBy: MA1PR0101CA0065.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:20::27) To DM6PR04MB6201.namprd04.prod.outlook.com
- (2603:10b6:5:127::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (122.167.44.95) by MA1PR0101CA0065.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Thu, 15 Apr 2021 08:55:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 08ce1bba-3502-445c-d0f2-08d8ffec42ce
-X-MS-TrafficTypeDiagnostic: DM5PR04MB0828:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR04MB0828FCFB6890A09775D92EF78D4D9@DM5PR04MB0828.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V33uRKnVS2hGMefI/kBG4w5I3hm3dxN7LAw/Bvfx2y26lrWwxo9qal3zr9tv6efdQYC69wmj3f5UFDIstrmmz8ZgDEB70fmdUp0r5t4BX1E1fC/ridiRcdXY8qAbqaQp6naLAk6L0AQ2TCxdzlz9TeCGPaHvzlw+VqhoMRebtoTnP59RXlinfeoAqRbokTWERuQCxfZ9aKlNxUU3RKHTBiTQlriy8D4BQ5Uq5U5S7giAvEaaY8PteK3BEntAWG66OsCQItbCfJq8g6hN49MWNqFyjIeK2i4xJIEpOzsQQkdfFsQ8E535Pjw1c7nfwzDh3n8PyqFt+d/c1uhYCAru14X/bVILsW9NDdn2J3m0A8ZNdyopn9TDj638TiyNtKlv4XKdgtqFwAKrY5MhMCrNT9FKPeiOnmmVXj/8Vqu30NrN/v0g/R5XcDUQ0+GSk7IeNmhgIgUb7agTI+FrL1CD35BcbCk9ioq58wEu28sm44DSxAgPJ5vgIkVgAcye3lXxGuESdIpMJgnli5F8HFp0IFEJS/W2pRNqec4wwTx1nr5n51XflJ+FSQaGogEDsGOHRgVqmRnLRgR0ba7dn7kSHwMifFwiNk2nw+IqYEqbuFjLO/iKKCinMpGSAp/abSEg6o1fIZ686LvY7Hue5Me9Q7SCmmB+HEjYVtvkGD5u9+4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(6666004)(66946007)(316002)(66476007)(55016002)(54906003)(478600001)(8886007)(110136005)(5660300002)(66556008)(83380400001)(8936002)(4326008)(7696005)(4744005)(8676002)(86362001)(1076003)(26005)(186003)(36756003)(956004)(16526019)(2616005)(2906002)(38100700002)(52116002)(38350700002)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ckq9kmgNVBtvYVP7F3dWHHmT5Py4W3m5ZkCr1FiEU6DeW2yLBP9S9z5gR/HB?=
- =?us-ascii?Q?ORqLYzA6+QtZOmZyK4TgzFcnbDDB6MYimwWnxmnYgcxRoxhxSZx9d71IG9Pb?=
- =?us-ascii?Q?4MMyRL+UnpNE0kPV+RL8D9xvaSMOUbpoHucL7BDk0Jk88tDmHSALWbRMxhhu?=
- =?us-ascii?Q?F0k9jhsAKRsR0YVBK/v0LfAM+MkFzth49iIChvFhdsrEZVmBSmIHEV4Y7Zzd?=
- =?us-ascii?Q?j7phhmzKTwb9Y3vDTOGNkUEcXwbOeNbhi/f2tillHdCro9P5L0tBToliP1rM?=
- =?us-ascii?Q?ylSJVtOj+5FNinOvDJwFCxc8WStpmw6y9Jn7dVVUDlT+3zy6ctQ2WctQcmqo?=
- =?us-ascii?Q?KIv39IGO/lOBt0UMbYHYNkaf9+58Yu1E8eK32YQ3QxE1yWdyn1TCysxmqiaE?=
- =?us-ascii?Q?ZTNPtuBbIG6slUxq7rdb1271vRUsPmAazmMc7BB+ckW+KgxmVHh9N61d2404?=
- =?us-ascii?Q?GWNe5WXPAh/a9QCPsgtpcbVBc2tdth0OPlql53Jdp5QerDrWH6Jr1r6znrqY?=
- =?us-ascii?Q?aWaIRLRARlNN1feD/3thjh2eh8B0Gbf8PY/BQyYD4DrDKdfExHhmJDbUhcQW?=
- =?us-ascii?Q?5AydPHr8cOukiS5zPMqURVxb6sIgXkBF+LIQBAuYMEkz/RMonGcAvAuaCEL7?=
- =?us-ascii?Q?Aw7yhxE7xJOk2wdvI6uFrNGYLt2Wl4RWVUPTsyB7L9V+HeXdXUFnAJ4KG8cZ?=
- =?us-ascii?Q?kvarHMhGpnezpUsLUddFgjjKGoVqip4ZTPgpjdLnXfCRD9kiUDrm4HaHdAIo?=
- =?us-ascii?Q?n4AKljwvLsXP1Fd2Zmq/j7kjazF6gVdE+ni6Jd91KbEAKIV5HJhX/vyxVmZY?=
- =?us-ascii?Q?/xY6KESHl7o7cNTHEFLwIUo7h7fPftlsirgSrmdkx9vlUKjLw5mdKRss5Z6U?=
- =?us-ascii?Q?xUPFoTk7RfBVSZlEXRv79TrThUQk+SUrmQyhTB89G75st3u2j4gYvvU/3C+S?=
- =?us-ascii?Q?u6pycdXAeFel3TU6K8mlc9/tycD/J0Y2/zristIDxAhrVZKSJX8RyJJU/d6V?=
- =?us-ascii?Q?0NSC4SemQCwHeZFaCy3XPWGNKcLs1hod5bk63IIT2CG4+nLTq2WWy3+y1R1F?=
- =?us-ascii?Q?Kg9UlfNyG/O/IsGtOStdK0o/Ig/BDRQaYWG8H9Sg7YA+7xCkK47b6p652ugG?=
- =?us-ascii?Q?1nOPM3hQG8c3Z8e7+XcqsLgGYuGfM4k+B8NNyE4Hernb9V5wAX1Vm0ujNbo0?=
- =?us-ascii?Q?LPRcmtG1Eb2bXyt9ULyilY8W3kIbP7iVylxcG6rM89cBqIx0b87dsRHttTCj?=
- =?us-ascii?Q?3vTSHODLoiu8Y2d/jDMX4r46i4Ui5mGENl6jJEieAKS1gMM7Ck/HxLG4WE95?=
- =?us-ascii?Q?P/DEPtPukaXGBP6IHehSLHYl?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08ce1bba-3502-445c-d0f2-08d8ffec42ce
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 08:55:47.5427
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /s1rWd8BY39shLNyQJFj/dKYjRoswcZ/JZ8Ueu8GHQx1s2ZKGlooIqofnUKaaFEKgua/IGYI8BB0kmXR9WtW0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0828
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should return a negative error code upon failure in
-riscv_hartid_to_cpuid() instead of NR_CPUS. This is also
-aligned with all uses of riscv_hartid_to_cpuid() which
-expect negative error code upon failure.
+Convert the Atmel ISC to yaml binding format.
 
-Fixes: 6825c7a80f18 ("RISC-V: Add logical CPU indexing
-for RISC-V")
-Cc: stable@vger.kernel.org
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 ---
- arch/riscv/kernel/smp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v4:
+- added '|' at description to maintain line breaks
 
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index ea028d9e0d24..d44567490d91 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -54,7 +54,7 @@ int riscv_hartid_to_cpuid(int hartid)
- 			return i;
- 
- 	pr_err("Couldn't find cpu id for hartid [%d]\n", hartid);
--	return i;
-+	return -ENOENT;
- }
- 
- void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out)
+ .../devicetree/bindings/media/atmel,isc.yaml  | 115 ++++++++++++++++++
+ .../devicetree/bindings/media/atmel-isc.txt   |  65 ----------
+ 2 files changed, 115 insertions(+), 65 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/atmel,isc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/media/atmel-isc.txt
+
+diff --git a/Documentation/devicetree/bindings/media/atmel,isc.yaml b/Documentation/devicetree/bindings/media/atmel,isc.yaml
+new file mode 100644
+index 000000000000..a29c11667c82
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/atmel,isc.yaml
+@@ -0,0 +1,115 @@
++# SPDX-License-Identifier: GPL-2.0-only
++# Copyright (C) 2016-2021 Microchip Technology, Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/atmel,isc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Atmel Image Sensor Controller (ISC)
++
++maintainers:
++  - Eugen Hristev <eugen.hristev@microchip.com>
++
++description: |
++  The Image Sensor Controller (ISC) device provides the video input capabilities for the
++  Atmel/Microchip AT91 SAMA family of devices.
++
++  The ISC has a single parallel input that supports RAW Bayer, RGB or YUV video,
++  with both external synchronization and BT.656 synchronization for the latter.
++
++properties:
++  compatible:
++    const: atmel,sama5d2-isc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 3
++    maxItems: 3
++
++  clock-names:
++    items:
++      - const: hclock
++      - const: iscck
++      - const: gck
++
++  '#clock-cells':
++    const: 0
++
++  clock-output-names:
++    const: isc-mck
++
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++    description:
++      Input port node, single endpoint describing the input pad.
++
++    properties:
++      endpoint:
++        $ref: video-interfaces.yaml#
++
++        properties:
++          remote-endpoint: true
++
++          bus-width:
++            enum: [8, 9, 10, 11, 12]
++            default: 12
++
++          hsync-active:
++            enum: [0, 1]
++            default: 1
++
++          vsync-active:
++            enum: [0, 1]
++            default: 1
++
++          pclk-sample:
++            enum: [0, 1]
++            default: 1
++
++        required:
++          - remote-endpoint
++
++        additionalProperties: false
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - '#clock-cells'
++  - clock-output-names
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    isc: isc@f0008000 {
++        compatible = "atmel,sama5d2-isc";
++        reg = <0xf0008000 0x4000>;
++        interrupts = <46 IRQ_TYPE_LEVEL_HIGH 5>;
++        clocks = <&isc_clk>, <&iscck>, <&isc_gclk>;
++        clock-names = "hclock", "iscck", "gck";
++        #clock-cells = <0>;
++        clock-output-names = "isc-mck";
++
++        port {
++                isc_0: endpoint {
++                       remote-endpoint = <&ov7740_0>;
++                       hsync-active = <1>;
++                       vsync-active = <0>;
++                       pclk-sample = <1>;
++                       bus-width = <8>;
++                };
++        };
++    };
++
+diff --git a/Documentation/devicetree/bindings/media/atmel-isc.txt b/Documentation/devicetree/bindings/media/atmel-isc.txt
+deleted file mode 100644
+index bbe0e87c6188..000000000000
+--- a/Documentation/devicetree/bindings/media/atmel-isc.txt
++++ /dev/null
+@@ -1,65 +0,0 @@
+-Atmel Image Sensor Controller (ISC)
+-----------------------------------------------
+-
+-Required properties for ISC:
+-- compatible
+-	Must be "atmel,sama5d2-isc".
+-- reg
+-	Physical base address and length of the registers set for the device.
+-- interrupts
+-	Should contain IRQ line for the ISC.
+-- clocks
+-	List of clock specifiers, corresponding to entries in
+-	the clock-names property;
+-	Please refer to clock-bindings.txt.
+-- clock-names
+-	Required elements: "hclock", "iscck", "gck".
+-- #clock-cells
+-	Should be 0.
+-- clock-output-names
+-	Should be "isc-mck".
+-- pinctrl-names, pinctrl-0
+-	Please refer to pinctrl-bindings.txt.
+-
+-ISC supports a single port node with parallel bus. It should contain one
+-'port' child node with child 'endpoint' node. Please refer to the bindings
+-defined in Documentation/devicetree/bindings/media/video-interfaces.txt.
+-
+-Example:
+-isc: isc@f0008000 {
+-	compatible = "atmel,sama5d2-isc";
+-	reg = <0xf0008000 0x4000>;
+-	interrupts = <46 IRQ_TYPE_LEVEL_HIGH 5>;
+-	clocks = <&isc_clk>, <&iscck>, <&isc_gclk>;
+-	clock-names = "hclock", "iscck", "gck";
+-	#clock-cells = <0>;
+-	clock-output-names = "isc-mck";
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
+-
+-	port {
+-		isc_0: endpoint {
+-			remote-endpoint = <&ov7740_0>;
+-			hsync-active = <1>;
+-			vsync-active = <0>;
+-			pclk-sample = <1>;
+-		};
+-	};
+-};
+-
+-i2c1: i2c@fc028000 {
+-	ov7740: camera@21 {
+-		compatible = "ovti,ov7740";
+-		reg = <0x21>;
+-		clocks = <&isc>;
+-		clock-names = "xvclk";
+-		assigned-clocks = <&isc>;
+-		assigned-clock-rates = <24000000>;
+-
+-		port {
+-			ov7740_0: endpoint {
+-				remote-endpoint = <&isc_0>;
+-			};
+-		};
+-	};
+-};
 -- 
 2.25.1
 
