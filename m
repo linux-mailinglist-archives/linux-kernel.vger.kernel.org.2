@@ -2,98 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6839360707
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF982360719
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhDOKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:24:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34052 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232080AbhDOKYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:24:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED0B2ACC4;
-        Thu, 15 Apr 2021 10:24:14 +0000 (UTC)
-Subject: Re: [PATCH 08/11] mm/page_alloc: Explicitly acquire the zone lock in
- __free_pages_ok
-To:     Mel Gorman <mgorman@techsingularity.net>,
+        id S232215AbhDOK1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:27:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24261 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232130AbhDOK1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:27:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618482418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=Uk9k7vgKRYy/wUVbHTHus80kG5QoiX0tCYucSSb3VUMHFKdnODyv8tn+FpnHTkl7SKTJuC
+        WPdExKHl7tvf6ismBOd91G1PMms0ibRLAHmzJNJn2CKmtAw2KVpPGDS9LZsLl0hNY7LKG1
+        T1dbp+GcP+vi3Qvq3FhQ9kWMFZpENjg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313--qInjY2TPJSE_9NpsaDrtQ-1; Thu, 15 Apr 2021 06:26:56 -0400
+X-MC-Unique: -qInjY2TPJSE_9NpsaDrtQ-1
+Received: by mail-wr1-f72.google.com with SMTP id m2-20020a5d64a20000b02900fd24e6af66so2537459wrp.21
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 03:26:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=CSEbgkskbt/LMWFL2pWrRdH9P7BKzoq16+5mASOYV2081h5AQEIyvpRUe8KvTwJBjh
+         euzuXQ8c2hbLD8ngVFYtXqOXz1BykNeoDQ2vWKcY03BywkB+LfS8M9Bqx8F5/OMQUYFv
+         EfanhmXDarDWxXtBWMVdDsaJlg9cMnzTwzaKzcODcG9qRyjVJNIBCR4PF7sx/VP3+sW5
+         4jDaun1WmR70zdjzbb46U/DhWxPAfmFUaZ+5nxFXACnM+Yenzv+CixXebCaECumIDnFe
+         uSKbLJVfle4ckj+oxWl5wMX6CthZrE4dQXWK/lB2E7icVKUQHKSTz3gZskTSdqlNo9HZ
+         TsUw==
+X-Gm-Message-State: AOAM530xkWPPuUH11/+I2BvmD57KAnQTc5rERH4mqR9q3JRcJZg7qOXP
+        jK+kQcIgzEogQiz/wd5kwZt0pzixPiOGzno9EHa1YVz9wPiBbb+Fownc//vdAwkTGLe/PT2CCW+
+        aXJxBTEHb403ZTeSpxQLPLjyh
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569769wro.89.1618482415085;
+        Thu, 15 Apr 2021 03:26:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv7Q012I0Vz8MHqIPLa4Xkx+hS8m+nH/TPxEyn3JS7V7NiE9yOuvehr7qVZbxLbS4BFGfVVQ==
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569712wro.89.1618482414741;
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
+        by smtp.gmail.com with ESMTPSA id z17sm2386902wro.1.2021.04.15.03.26.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+From:   David Hildenbrand <david@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>
-References: <20210414133931.4555-1-mgorman@techsingularity.net>
- <20210414133931.4555-9-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1f6fbbaa-bd0e-3e04-26d5-d8f6aee6bd1d@suse.cz>
-Date:   Thu, 15 Apr 2021 12:24:14 +0200
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210317110644.25343-1-david@redhat.com>
+ <20210317110644.25343-3-david@redhat.com>
+ <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
+ <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
+ <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
+ <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
+ <54165ffe-dbf7-377a-a710-d15be4701f20@redhat.com>
+ <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+Message-ID: <273f9c4b-2a1a-23e7-53b9-0da5441895b3@redhat.com>
+Date:   Thu, 15 Apr 2021 12:26:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210414133931.4555-9-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 3:39 PM, Mel Gorman wrote:
-> __free_pages_ok() disables IRQs before calling a common helper
-> free_one_page() that acquires the zone lock. This is not safe according
-> to Documentation/locking/locktypes.rst and in this context, IRQ disabling
-> is not protecting a per_cpu_pages structure either or a local_lock would
-> be used.
+On 07.04.21 12:31, David Hildenbrand wrote:
+> On 30.03.21 18:31, David Hildenbrand wrote:
+>> On 30.03.21 18:30, David Hildenbrand wrote:
+>>> On 30.03.21 18:21, Jann Horn wrote:
+>>>> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>> +                           unsigned long end, bool write, int *locked)
+>>>>>>> +{
+>>>>>>> +       struct mm_struct *mm = vma->vm_mm;
+>>>>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
+>>>>>>> +       int gup_flags;
+>>>>>>> +
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
+>>>>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
+>>>>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
+>>>>>>> +       mmap_assert_locked(mm);
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
+>>>>>>> +        *                a poisoned page.
+>>>>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
+>>>>>>> +        * !FOLL_FORCE: Require proper access permissions.
+>>>>>>> +        */
+>>>>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
+>>>>>>> +       if (write)
+>>>>>>> +               gup_flags |= FOLL_WRITE;
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
+>>>>>>> +        * or with insufficient permissions.
+>>>>>>> +        */
+>>>>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
+>>>>>>> +                               NULL, NULL, locked);
+>>>>>>
+>>>>>> You mentioned in the commit message that you don't want to actually
+>>>>>> dirty all the file pages and force writeback; but doesn't
+>>>>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
+>>>>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
+>>>>>
+>>>>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
+>>>>> primarily set it because populate_vma_page_range() also sets it.
+>>>>>
+>>>>> Is it safe to *not* set it? IOW, fault something writable into a page
+>>>>> table (where the CPU could dirty it without additional page faults)
+>>>>> without marking it accessed? For me, this made logically sense. Thus I
+>>>>> also understood why populate_vma_page_range() set it.
+>>>>
+>>>> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
+>>>> essentially means "the caller of get_user_pages wants to read/write
+>>>> the contents of the returned page, so please do the same things you
+>>>> would do if userspace was accessing the page". So in particular, if
+>>>> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
+>>>> that tells the MM subsystem "I will be writing into this page directly
+>>>> from the kernel, bypassing the userspace page tables, so please mark
+>>>> it as dirty now so that it will be properly written back later". Part
+>>>> of that is that it marks the page as recently used, which has an
+>>>> effect on LRU pageout behavior, I think - as far as I understand, that
+>>>> is why populate_vma_page_range() uses FOLL_TOUCH.
+>>>>
+>>>> If you look at __get_user_pages(), you can see that it is split up
+>>>> into two major parts: faultin_page() for creating PTEs, and
+>>>> follow_page_mask() for grabbing pages from PTEs. faultin_page()
+>>>> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
+>>>>
+>>>> In a way I guess maybe you do want the "mark as recently accessed"
+>>>> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
+>>>> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
+>>>> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
+>>>> only want to mark as recently used, I don't want to dirty". Or maybe
+>>>> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
+>>>
+>>> Any thoughts why populate_vma_page_range() does it?
+>>
+>> Sorry, I missed the explanation above - thanks!
 > 
-> This patch explicitly acquires the lock with spin_lock_irqsave instead of
-> relying on a helper. This removes the last instance of local_irq_save()
-> in page_alloc.c.
-
-\o/
-
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  mm/page_alloc.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
+> Looking into the details, adjusting the FOLL_TOUCH logic won't make too
+> much of a difference for MADV_POPULATE_WRITE I guess. AFAIKs, the
+> biggest impact of FOLL_TOUCH is actually with FOLL_FORCE - which we are
+> not using, but populate_vma_page_range() is.
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 1ed370668e7f..6791e9361076 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1559,21 +1559,18 @@ static void __free_pages_ok(struct page *page, unsigned int order,
->  	unsigned long flags;
->  	int migratetype;
->  	unsigned long pfn = page_to_pfn(page);
-> +	struct zone *zone = page_zone(page);
->  
->  	if (!free_pages_prepare(page, order, true))
->  		return;
->  
->  	migratetype = get_pfnblock_migratetype(page, pfn);
->  
-> -	/*
-> -	 * TODO FIX: Disable IRQs before acquiring IRQ-safe zone->lock
-> -	 * and protect vmstat updates.
-> -	 */
-> -	local_irq_save(flags);
-> +	spin_lock_irqsave(&zone->lock, flags);
->  	__count_vm_events(PGFREE, 1 << order);
-> -	free_one_page(page_zone(page), page, pfn, order, migratetype,
-> -		      fpi_flags);
-> -	local_irq_restore(flags);
-> +	migratetype = check_migratetype_isolated(zone, page, pfn, migratetype);
-> +	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
-> +	spin_unlock_irqrestore(&zone->lock, flags);
->  }
->  
->  void __free_pages_core(struct page *page, unsigned int order)
 > 
+> If a page was not faulted in yet,
+> faultin_page(FOLL_WRITE)->handle_mm_fault(FAULT_FLAG_WRITE) will already
+> mark the PTE/PMD/... dirty and accessed. One example is
+> handle_pte_fault(). We will mark the page accessed again via FOLL_TOUCH,
+> which doesn't seem to be strictly required.
+> 
+> 
+> If the page was already faulted in, we have three cases:
+> 
+> 1. Page faulted in writable. The page should already be dirty (otherwise
+> we would be in trouble I guess). We will mark it accessed.
+> 
+> 2. Page faulted in readable. handle_mm_fault() will fault it in writable
+> and set the page dirty.
+> 
+> 3. Page faulted in readable and we have FOLL_FORCE. We mark the page
+> dirty and accessed.
+> 
+> 
+> So doing a MADV_POPULATE_WRITE, whereby we prefault page tables
+> writable, doesn't seem to fly without marking the pages dirty. That's
+> one reason why I included MADV_POPULATE_READ.
+> 
+> We could
+> 
+> a) Drop FOLL_TOUCH. We are not marking the page accessed, which would
+> mean it gets evicted rather earlier than later.
+> 
+> b) Introduce FOLL_ACCESSED which won't do the dirtying. But then, the
+> pages are already dirty as explained above, so there isn't a real
+> observable change.
+> 
+> c) Keep it as is: Mark the page accessed and dirty. As it's already
+> dirty, that does not seem to be a real issue.
+> 
+> Am I missing something obvious? Thanks!
+> 
+
+I did some more digging. I think there are cases for shared mappings 
+where we can have pte_write() but not pte_dirty().
+
+One example seems to be mm/memory.c:copy_present_pte() , used during fork.
+
+IIUC, this means that the child process can write to these pages, but 
+won't mark the PTEs dirty -- as there won't be a write fault. I'd assume 
+we'd need pte_mkclean(pte_wrprotect(pte)), but I'm fairly new to that code.
+
+(Similarly, we do an pte_mkold() without revoking any protection, 
+meaning we won't catch read accesses.)
+
+
+Maybe the logic here is that if the PTE was writable in some parent, it 
+was also dirty in some parent (at least in the one originally mapping it 
+writable). When evicting/writeback'ing file pages, we'll have go over 
+the rmap and zap all entries of any page tables either way; it's 
+sufficient if one PTE entry is dirty. I can spot that even 
+zap_pte_range() will sync the dirty flag back to the page.
+
+Am I right or is there some other magic going on? :)
+
+-- 
+Thanks,
+
+David / dhildenb
 
