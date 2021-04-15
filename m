@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890D6360A56
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343BE360A5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbhDONRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhDONRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:17:02 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C8AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:16:39 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id g9so7255905wrx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NKejnveXNi5sKQ3Fqa03VCfcV7AALd2c36ccz7nhPZY=;
-        b=ba6yy8JJ2NkhGLg2FXH94QCAJwG/HzFyRsAvCFc2WH8bdvAq4Ou7Dj/t+mLuWyHUP5
-         p83FLHxXC1vkKLcHKmmsqWEy6wjWbGdUzumINwnJMu0myqEoR+EgZRR4E9cQfcLPb1mk
-         qd0kQTif5m9NPRTVER/al96QKXCRNfrOvsDRsZHaE+2H5wEhHkJ6x6nl7LElU/7zjcVx
-         Wk7mNtuZpqoCeVVW3cdE2W3PLIo2j6x7pl2AuPY2CTi6aS/mAk7etwqaf7tRPpSG/BH1
-         JvtenQM2vmZxjSKSXFV2DYyJJ1Y+/1PcU2VtHdb7chZekR3sjVWsBb9mJKwhQisi0hDh
-         Q1yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NKejnveXNi5sKQ3Fqa03VCfcV7AALd2c36ccz7nhPZY=;
-        b=cGcFdbvKgw4Wv2V7ygqIPvxj3rZIt1oSS2/phhGNdd0Wkx4fV+lR+FGbpv+VCHfdt3
-         ddOPwqvcoiHBIenqROO3XJKxejwDAOg14sCIKWCvrBDAg92paJQAldwcxed292NNLSKh
-         5ONLmW3utDPHC3I7v9r0+/V6/nmj/wgpPZOlpynBNrSFBmek0MHSctqTvGB0/kiq807I
-         gIrtbdbRqmpir7hfGjw4xx0ICDgG48KWI0WIO3Qeh7F0iV0MI5l2+DFtbxE751j0bBgT
-         vg2g2TdsFMlEogRjwqtyo49Glp/FHbz8egcMwYkQCq/DHqrIfi8dvqSdzrspUtLg6SjH
-         2y/Q==
-X-Gm-Message-State: AOAM533PcuOv7cr+YQDW8S4FSYLGIC8/cVC7ZUH9pl5HhYhVEpZ2qXgE
-        2heK45cLhQIpezvN5NcRglJlSw==
-X-Google-Smtp-Source: ABdhPJxnEOUyAdmWKbK1/Gr1j9sErW51Sk0p5PhFGVckJwsRyUGTQ5aaYvbcIE6YM7zEGp0le51qKw==
-X-Received: by 2002:adf:eb4a:: with SMTP id u10mr3587905wrn.409.1618492598330;
-        Thu, 15 Apr 2021 06:16:38 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n9sm3134003wrq.86.2021.04.15.06.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 06:16:38 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 13:16:35 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-Message-ID: <YHg8s4VTQdiBNOpr@google.com>
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+        id S233125AbhDONRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:17:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23637 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230202AbhDONRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:17:46 -0400
+IronPort-SDR: 0qTLG80XTVR5pZtTdv2U6FJnVlJN2vRGgD6VUYoQTIuzG6BuXGP4WU78xzL5SQaJ5ZpWGnOydH
+ /PULSr5une2w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="191660689"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="191660689"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 06:17:22 -0700
+IronPort-SDR: paL3/EwV1myg1aP9Iv1Py3BJX2j/Qc1tLpcLyw0bBYKrWCIeYTGoLp50KXWosEPR+9z2tHYrcK
+ 35fELMgquAMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="444174967"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2021 06:17:19 -0700
+Date:   Thu, 15 Apr 2021 21:17:19 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@suse.de>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, zhengjun.xing@intel.com
+Subject: Re: [thermal]  9223d0dccb:  stress-ng.msg.ops_per_sec -27.4%
+ regression
+Message-ID: <20210415131719.GA77225@shbuild999.sh.intel.com>
+References: <20210413135800.GA10266@xsang-OptiPlex-9020>
+ <20210413172827.GC17097@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413172827.GC17097@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -10,6 +10,7 @@
->  
->  #include "sched.h"
->  
-> +#include <linux/energy_model.h>
->  #include <linux/sched/cpufreq.h>
->  #include <trace/events/power.h>
->  
-> @@ -164,6 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->  
->  	freq = map_util_freq(util, freq, max);
->  
-> +	/* Avoid inefficient performance states */
-> +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
+Hi Boris, Srinivas,
 
-I remember this was discussed when Douglas sent his patches some time
-ago, but I still find it sad we index the EM table here but still
-re-index the cpufreq frequency table later :/
+On Tue, Apr 13, 2021 at 07:28:27PM +0200, Borislav Petkov wrote:
+> On Tue, Apr 13, 2021 at 09:58:01PM +0800, kernel test robot wrote:
+> > Greeting,
+> > 
+> > FYI, we noticed a -27.4% regression of stress-ng.msg.ops_per_sec due to commit:
+> > 
+> > 
+> > commit: 9223d0dccb8f8523754122f68316dd1a4f39f7f8 ("thermal: Move therm_throt there from x86/mce")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-Yes in your case this lookup is very inexpensive, but still. EAS relies
-on the EM's table matching cpufreq's accurately, so this second lookup
-still feels rather unnecessary ...
+This seems to be another case that performance jump is caused by 
+kernel's data alignment change triggered by an irrelevant patch.  
 
->  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
->  		return sg_policy->next_freq;
->  
-> -- 
-> 2.7.4
+With a debug patch to force aligned all data sections of .o files,
+the performance diff is reduced from -27.4 to -2.8%.
+
+And from perf profile and c2c data, we did see differenc about spinlock
+around calling do_msgrcv/do_msgsnd with the 2 commits
+
+> Hmm, so I went and ran your reproducer, but simplified (see end of
+> mail), on a KBL box here. The kernel is tip:x86/urgent from last week:
 > 
+> 5.12.0-rc6+
+> -----------
+> stress-ng: info:  [1430] dispatching hogs: 9 msg
+> stress-ng: info:  [1430] successful run completed in 60.01s (1 min, 0.01 secs)
+> stress-ng: info:  [1430] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
+> stress-ng: info:  [1430]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+> stress-ng: info:  [1430] msg           237390147     60.01    104.03    255.85   3955872.56    659636.95
+> stress-ng: info:  [1430] for a 60.01s run time:
+> stress-ng: info:  [1430]     360.08s available CPU time
+> stress-ng: info:  [1430]     104.11s user time   ( 28.91%)
+> stress-ng: info:  [1430]     255.93s system time ( 71.08%)
+> stress-ng: info:  [1430]     360.04s total time  ( 99.99%)
+> stress-ng: info:  [1430] load average: 8.47 3.71 1.48
+> 
+> Now the same kernel with
+> 
+> >   4f432e8bb1 ("x86/mce: Get rid of mcheck_intel_therm_init()")
+> >   9223d0dccb ("thermal: Move therm_throt there from x86/mce")
+> 
+> reverted.
+> 
+> 5.12.0-rc6-rev+
+> ---------------
+> stress-ng: info:  [1246] dispatching hogs: 9 msg
+> stress-ng: info:  [1246] successful run completed in 60.02s (1 min, 0.02 secs)
+> stress-ng: info:  [1246] stressor       bogo ops real time  usr time  sys time   bogo ops/s   bogo ops/s
+> stress-ng: info:  [1246]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+> stress-ng: info:  [1246] msg           215174467     60.01     99.64    260.24   3585438.79    597906.15
+> stress-ng: info:  [1246] for a 60.02s run time:
+> stress-ng: info:  [1246]     360.10s available CPU time
+> stress-ng: info:  [1246]      99.72s user time   ( 27.69%)
+> stress-ng: info:  [1246]     260.32s system time ( 72.29%)
+> stress-ng: info:  [1246]     360.04s total time  ( 99.98%)
+> stress-ng: info:  [1246] load average: 7.98 2.33 0.80
+> 
+> so if I'm reading this correctly, reverting the patches here brings the
+> *slow-down*.
+> 
+> What's up?
+> 
+> reproducer:
+> ----------
+> 
+> #!/usr/bin/bash
+> 
+> for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
+> do
+>         online_file="$cpu_dir"/online
+>         [ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
+> 
+>         file="$cpu_dir"/cpufreq/scaling_governor
+>         [ -f "$file" ] && echo "performance" > "$file"
+> done
+> 
+> stress-ng --timeout 60 --times --verify --metrics-brief --msg 9
+
+The original test case is for 'nr_threads=10%' which turns to '9' for the
+96 CPU 2-sockets  Cascade Lake platform. So I guess it may not be reproduced
+on 1 socket platform, and sometimes kernel config also matters for
+micro-benchmark like 'stress-ng' 
+
+Thanks,
+Feng
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
