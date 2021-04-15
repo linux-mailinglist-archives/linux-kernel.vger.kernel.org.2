@@ -2,116 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F01336030E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1BE360310
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhDOHQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S231271AbhDOHQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhDOHQP (ORCPT
+        with ESMTP id S230201AbhDOHQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:16:15 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04906C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:15:53 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u15so2999113plf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RgNR7eI/Uw8a9iJY+TsDCOg5IUfvzI2+Hb5tNImKknU=;
-        b=jkziAWgRadT6a7zgsT7qTCXkAiJIDK64WqeqveOXp/mjGzPoYyjZPhTpV7UITLOZP3
-         j28yVzN5zaBkf64iDfT4D4y9zqYVIwDooBNacLA0Z7beJXbd3R7W/cxry7VBpmSTwFGX
-         +OziTWo6GsvDGhurk4TnnN/kAyzlHTOKHzfsGrG/wadzgUoMTXhwR9euEWApLSr3SiKL
-         +fnm7+5yMBaoIMnj5Q7n6kwHmOF2d5C8kjACO5Y3LeSQCxDEKzjhy14d09GqjkV06Qb2
-         NcNnE7vAqnPhlnnGmt7YyMebnqbqP16v7te8F/mAFEU5hRIWOe3Uq8j0wwa5aliXJM5w
-         XZ1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RgNR7eI/Uw8a9iJY+TsDCOg5IUfvzI2+Hb5tNImKknU=;
-        b=M0Hq5z92lCYrZ/XNJIfjBj3BIOcJf/xrUKOZmVrgChY1tV3ovr3rWK1iMSZ9PDuDbc
-         r2U27L8cCM8cd14xZNqQi3hCaqNcbtlU3gJWZmKFdRHPfKCrOGDvqwGa8fTIYuFvCUl7
-         6U+1dWp9VZq5vL7mlipnYU9V6BVRm8mdZgNlP5K0IzV+SuGPGFzj+0pykAqYC9hpQiI3
-         7NsdZft2rId0Hx2DLpuCvy7s+Y/hxUaCJMbQB0WRFeG65PqhhSBPgIGH1ukUELVPhHbK
-         zKppwDCPbCk0Q0XZDbOgNr/jae/smo3TW+mtO7oe80GSiIxhLQ1ZW6HXpGh2kR9Q6gC0
-         kfaw==
-X-Gm-Message-State: AOAM531TnX6fW64Z/QVpH/bdOG/y9Pjen5QDZavRN/Wfy8U3bUrBbEJa
-        ymTYGWLpDzuftpKkMluTadHfZvC6//lZdQ==
-X-Google-Smtp-Source: ABdhPJw/bpZ7i6ekhnOCzmBecFj4xM2sUaMjFHMYOxR0OgOAPlIWdbZFsGlzKM5st71MKrRx4NV2rQ==
-X-Received: by 2002:a17:90b:1904:: with SMTP id mp4mr2331401pjb.193.1618470952483;
-        Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id p22sm1385614pjg.39.2021.04.15.00.15.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 00:15:52 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 12:45:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210415071549.mh4tgb6dqfjzuflx@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+        Thu, 15 Apr 2021 03:16:42 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E35C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:16:19 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=54382)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@b7-media.org>)
+        id 1lWwEZ-0005Cc-S6
+        for linux-kernel@vger.kernel.org; Thu, 15 Apr 2021 09:16:15 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@b7-media.org>
+Subject: Fair Pay: Non-synesthesia is where it is at!
+Message-ID: <7a7d3050-6f9f-88f4-6fb1-dcca351831b7@b7-media.org>
+Date:   Thu, 15 Apr 2021 09:16:09 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-04-21, 14:56, Jie Deng wrote:
-> 
-> On 2021/4/15 14:45, Viresh Kumar wrote:
-> > On 23-03-21, 10:27, Arnd Bergmann wrote:
-> > > I usually recommend the use of __maybe_unused for the suspend/resume
-> > > callbacks for drivers that use SIMPLE_DEV_PM_OPS() or similar helpers
-> > > that hide the exact conditions under which the functions get called.
-> > > 
-> > > In this driver, there is an explicit #ifdef in the reference to the
-> > > functions, so
-> > > it would make sense to use the same #ifdef around the definition.
-> > Jie,
-> > 
-> > I was talking about this comment when I said I was expecting a new
-> > version. I think you still need to make this change.
-> 
-> 
-> I didn't forget this. It is a very small change. I'm not sure if the
-> maintainer Wolfram
-> 
-> has any comments so that I can address them together in one version.
+After some thinkings on this, I think it is where it is at.
 
-Ahh, okay then. That's fine. I have been waiting for the final version
-to give my Tested/reviewed by :)
+I am trying a de-synesthesia version of 'god', Ko, on my primary channel.
+My secondary channels deals with the synesthesia remain, and humour 
+videos related to Rhumba blip 800, or other things.
 
--- 
-viresh
+The related OS could be:
+
+LXe - The Lexic OS supporting a fair pay economy.
+
+Serene Greetings,
+Ywe Cærlyn.
