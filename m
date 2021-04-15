@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2C0360C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC33360CB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233765AbhDOOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37006 "EHLO mail.kernel.org"
+        id S234364AbhDOOyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233562AbhDOOtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D29961029;
-        Thu, 15 Apr 2021 14:49:18 +0000 (UTC)
+        id S234125AbhDOOvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C8F613C7;
+        Thu, 15 Apr 2021 14:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498159;
-        bh=Ub6m28BE0ICh1XxVxZ+Mu45AI4DQtsYrFPeIFqel9RM=;
+        s=korg; t=1618498271;
+        bh=D+0MZIwCjVIkAh0pYeUB0k/Y8o720m5527efrRHJSe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=brbiyeQszsMXoazK5qr8Jzv/qB1S+hJXXH9q9n3ZRdMFt13QyX5QphaH8S1us9hII
-         yNYWEMJikqLq1Oakv1WhZnM70yAPWk5y2sdmb6MZ6UlOHCH7HLx+wHO1uOQ16+sT3m
-         f9yNZjfN2OXhcDQ4iXlFb0p+nrwVc8XApGzXt7dI=
+        b=p64xasl4C7EsTxFMSJdeGLgMcSSUyIV7Wu9jRwoqL/ubvqJBmIFjRAY221m2mg7vI
+         xlS+fXbORUNuXaGIAWDKQ+Q8Yc7Mf6rVdb/9GTaSxddyv2v/oiqzstbIE3Ydk615iY
+         DBTa+zVUdl1IKq9j4BVkrN1bl5BqpToXGI5Z9fP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+5f9392825de654244975@syzkaller.appspotmail.com,
-        Du Cheng <ducheng2@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.4 22/38] cfg80211: remove WARN_ON() in cfg80211_sme_connect
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 24/47] s390/cpcmd: fix inline assembly register clobbering
 Date:   Thu, 15 Apr 2021 16:47:16 +0200
-Message-Id: <20210415144414.058015430@linuxfoundation.org>
+Message-Id: <20210415144414.230752710@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-commit 1b5ab825d9acc0f27d2f25c6252f3526832a9626 upstream.
+[ Upstream commit 7a2f91441b2c1d81b77c1cd816a4659f4abc9cbe ]
 
-A WARN_ON(wdev->conn) would trigger in cfg80211_sme_connect(), if multiple
-send_msg(NL80211_CMD_CONNECT) system calls are made from the userland, which
-should be anticipated and handled by the wireless driver. Remove this WARN_ON()
-to prevent kernel panic if kernel is configured to "panic_on_warn".
+Register variables initialized using arithmetic. That leads to
+kasan instrumentaton code corrupting the registers contents.
+Follow GCC guidlines and use temporary variables for assigning
+init values to register variables.
 
-Bug reported by syzbot.
-
-Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Link: https://lore.kernel.org/r/20210407162756.6101-1-ducheng2@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 94c12cc7d196 ("[S390] Inline assembly cleanup.")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Link: https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Local-Register-Variables.html
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/sme.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/cpcmd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/wireless/sme.c
-+++ b/net/wireless/sme.c
-@@ -507,7 +507,7 @@ static int cfg80211_sme_connect(struct w
- 	if (wdev->current_bss)
- 		return -EALREADY;
+diff --git a/arch/s390/kernel/cpcmd.c b/arch/s390/kernel/cpcmd.c
+index 7f48e568ac64..540912666740 100644
+--- a/arch/s390/kernel/cpcmd.c
++++ b/arch/s390/kernel/cpcmd.c
+@@ -37,10 +37,12 @@ static int diag8_noresponse(int cmdlen)
  
--	if (WARN_ON(wdev->conn))
-+	if (wdev->conn)
- 		return -EINPROGRESS;
+ static int diag8_response(int cmdlen, char *response, int *rlen)
+ {
++	unsigned long _cmdlen = cmdlen | 0x40000000L;
++	unsigned long _rlen = *rlen;
+ 	register unsigned long reg2 asm ("2") = (addr_t) cpcmd_buf;
+ 	register unsigned long reg3 asm ("3") = (addr_t) response;
+-	register unsigned long reg4 asm ("4") = cmdlen | 0x40000000L;
+-	register unsigned long reg5 asm ("5") = *rlen;
++	register unsigned long reg4 asm ("4") = _cmdlen;
++	register unsigned long reg5 asm ("5") = _rlen;
  
- 	wdev->conn = kzalloc(sizeof(*wdev->conn), GFP_KERNEL);
+ 	asm volatile(
+ 		"	sam31\n"
+-- 
+2.30.2
+
 
 
