@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6FC360B97
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16553360B98
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhDOOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:14:33 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:53088 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbhDOOO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:14:29 -0400
-Received: by mail-wm1-f45.google.com with SMTP id y204so11165737wmg.2;
-        Thu, 15 Apr 2021 07:14:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hz1ZY9HWxRoofHmlH+XWpgXg6c/7rbXj8kFMXTJUiXE=;
-        b=tjLQUD2dfF+TL5y6KmArEWZx+pHJJbT1aZ3cLHWdsF0JCK6dMa4eJUSMssMK19hvc3
-         TOBGtjq9X8eFfP58y7RA5JWl7tFJU+SwDuMJckSilh6PnJMcKTrBUXGD+2CMf6oRBgA4
-         fZOEf9t161iPaIMYhEw6w/7NbUqFhsamxheUhdbfcXLAncX9KXf0GsoT6Tl99XP5HslH
-         RA5WrjjpyBoEjwNFwmDqtNZ/Ib6Y56rwmVe53fB9yjRTMd6oUV/+CFg26dsJv7TtcKg6
-         YKo7f8oJ4Dmk1ywf+s0IlGAfGF43WnW7abpaGOuazk1Lkn6a6gRmyrBfuQyIWaywM36s
-         J54w==
-X-Gm-Message-State: AOAM5323HewuuEMHcuEeNWbgFI6SMdIFckZc7mShSv4AjDMnVwEKWQOu
-        jeBXNmeRHcN+TvGmmPlXtXY=
-X-Google-Smtp-Source: ABdhPJwRJ+quRmCDl1pvKPCwx18Jq+JqjVXi9jMcrkxPA4UL5EwVUWMch3ilw837jkMX1O4b+f4iog==
-X-Received: by 2002:a7b:c195:: with SMTP id y21mr3405656wmi.178.1618496045398;
-        Thu, 15 Apr 2021 07:14:05 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v18sm2798213wmh.28.2021.04.15.07.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 07:14:04 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:14:03 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Siddharth Chandrasekaran <sidcha@amazon.de>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>
-Subject: Re: [PATCH RFC 01/22] asm-generic/hyperv: add
- HV_STATUS_ACCESS_DENIED definition
-Message-ID: <20210415141403.hftsza3ucrf262tq@liuwe-devbox-debian-v2>
-References: <20210413122630.975617-1-vkuznets@redhat.com>
- <20210413122630.975617-2-vkuznets@redhat.com>
+        id S233460AbhDOOPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233324AbhDOOO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:14:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89B53611F1;
+        Thu, 15 Apr 2021 14:14:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618496073;
+        bh=yNptOTNB9XNO8218LdPcrvhxfXswOzhpZVCSbvOxAmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kfgqJWsF5tn6cUwRDWluNMjgXy/U11l0WL8ddQrP7nWLp2Qajgwne6uMUVSgy5Qil
+         RjGFs3iXZ+a+GmuJcNlyaQ9Kp4cP2UHwQkiA2Im5vOzZpW+nVaC88/tLn7eiME3FAT
+         oLWFMQZ2Sk9+ZcsRUZiq9QbYkVYP89vomzLoYPPR5hFjyYmMqg1iN324KafucmZ0M8
+         wtnO8aU2O5M6QIIMS4lTqwMTreWJKCmjBfkepBz3oxaQJ0Tyxz1q2G93MYx/GLrU2i
+         ++VqlH+fuBb/Yxpsx+PMm1MH3/AgAo4jnt+VOh7TzKJdMr3aNycEWABMHJdova9cmU
+         oCoW19/SmKidA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lX2lN-0000PF-Jy; Thu, 15 Apr 2021 16:14:33 +0200
+Date:   Thu, 15 Apr 2021 16:14:33 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH 00/13] tty.h cleanups
+Message-ID: <YHhKSdVpo9mo0sCn@hovoldconsulting.com>
+References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
+ <YG8SUl+B8+76JZwV@hovoldconsulting.com>
+ <YG9E5GpLljkXARDj@kroah.com>
+ <YHADHYKMhfYE1aNw@hovoldconsulting.com>
+ <YHf3ojj44ex2dd3M@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413122630.975617-2-vkuznets@redhat.com>
+In-Reply-To: <YHf3ojj44ex2dd3M@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:26:09PM +0200, Vitaly Kuznetsov wrote:
-> From TLFSv6.0b, this status means: "The caller did not possess sufficient
-> access rights to perform the requested operation."
+On Thu, Apr 15, 2021 at 10:21:54AM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Apr 09, 2021 at 09:32:45AM +0200, Johan Hovold wrote:
+> > On Thu, Apr 08, 2021 at 08:01:08PM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, Apr 08, 2021 at 04:25:22PM +0200, Johan Hovold wrote:
+> > > > On Thu, Apr 08, 2021 at 02:51:21PM +0200, Greg Kroah-Hartman wrote:
+> > > > > Turns out there is a lot of tty-internal stuff in include/linux/tty.h
+> > > > > that do not belong there.  Create a internal-to-the-tty-layer .h file
+> > > > > for these types of things and move function prototypes to it instead of
+> > > > > being in the system-wide header file.
+> > > > > 
+> > > > > Along the way clean up the use of some old tty-only debugging macros and
+> > > > > use the in-kernel dev_*() calls instead.
+> > > > 
+> > > > I'm afraid that's not a good idea since not all ttys have a
+> > > > corresponding class device. Notable exception include pseudo terminals
+> > > > and serdev.
+> > > > 
+> > > > While dev_printk() can handle a NULL device argument without crashing,
+> > > > we'll actually lose log information by removing the tty printk helpers.
+> > > 
+> > > I think the same info will be printed here as before, just some NULL
+> > > information at the beginning, right?  And the benifits overall (for real
+> > > tty devices), should outweigh the few devices that do not have this
+> > > information.
+> > 
+> > No, you'll only be losing information (tty driver and tty name). Here's
+> > a pty example, where the first line in each pair use dev_info() and the
+> > second tty_info():
+> > 
+> > [   10.235331] (NULL device *): tty_get_device
+> > [   10.235441] ptm ptm0: tty_get_device
+> > 
+> > [   10.235586] (NULL device *): tty_get_device
+> > [   10.235674] pts pts0: tty_get_device
+> > 
+> > and similar for serdev, which is becoming more and more common.
 > 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Ok, good point, I'll go apply only the first 2 patches in this series
+> (moving the macros out of tty.h and removing the unused one) and then
+> will redo this set of patches again.
 
-This can be applied to hyperv-next right away. Let me know what you
-think.
+Perhaps no harm in leaving the tty_info() on in there for consistency.
+We have users of the _ratelimited() flavour of it (even if there's no
+dependency).
 
-Wei.
+> I think a better tty_msg() macro is warrented so that we can provide
+> dev_*() output if we have a device, otherwise fall back to the old
+> style to preserve functionality.
 
-> ---
->  include/asm-generic/hyperv-tlfs.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> index 83448e837ded..e01a3bade13a 100644
-> --- a/include/asm-generic/hyperv-tlfs.h
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> @@ -187,6 +187,7 @@ enum HV_GENERIC_SET_FORMAT {
->  #define HV_STATUS_INVALID_HYPERCALL_INPUT	3
->  #define HV_STATUS_INVALID_ALIGNMENT		4
->  #define HV_STATUS_INVALID_PARAMETER		5
-> +#define HV_STATUS_ACCESS_DENIED			6
->  #define HV_STATUS_OPERATION_DENIED		8
->  #define HV_STATUS_INSUFFICIENT_MEMORY		11
->  #define HV_STATUS_INVALID_PORT_ID		17
-> -- 
-> 2.30.2
-> 
+Possibly, but the dev_printk() for the tty class devices wouldn't
+provide any more info than what's already there (i.e. driver name + tty
+name).
+
+(And associating ttys with other devices and drivers (e.g. a serdev
+client and its driver) might not be what we want since you lose the
+connection to the underlying tty driver.)
+
+Johan
