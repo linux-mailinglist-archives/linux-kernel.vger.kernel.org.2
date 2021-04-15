@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF25F3609E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5B9360A76
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbhDONBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:01:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48522 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDONBC (ORCPT
+        id S233026AbhDONZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:25:34 -0400
+Received: from icebox.esperi.org.uk ([81.187.191.129]:48454 "EHLO
+        mail.esperi.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232759AbhDONZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:01:02 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lX1bY-0008PN-9f; Thu, 15 Apr 2021 13:00:20 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Denis Efremov <efremov@linux.com>, Willy Tarreau <w@1wt.eu>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] floppy: remove redundant assignment to variable st
-Date:   Thu, 15 Apr 2021 14:00:20 +0100
-Message-Id: <20210415130020.1959951-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 15 Apr 2021 09:25:33 -0400
+X-Greylist: delayed 2585 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 09:25:32 EDT
+Received: from loom (nix@sidle.srvr.nix [192.168.14.8])
+        by mail.esperi.org.uk (8.16.1/8.16.1) with ESMTP id 13FCg21I028870;
+        Thu, 15 Apr 2021 13:42:02 +0100
+From:   Nix <nix@esperi.org.uk>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bernd Schubert <bernd.schubert@itwm.fraunhofer.de>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] scsi: Set allocation length to 255 for ATA Information VPD page
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+        <alpine.DEB.2.21.2104141306130.44318@angie.orcam.me.uk>
+Emacs:  a compelling argument for pencil and paper.
+Date:   Thu, 15 Apr 2021 13:42:02 +0100
+In-Reply-To: <alpine.DEB.2.21.2104141306130.44318@angie.orcam.me.uk> (Maciej
+        W. Rozycki's message of "Thu, 15 Apr 2021 00:39:28 +0200 (CEST)")
+Message-ID: <878s5joh2d.fsf@esperi.org.uk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-DCC--Metrics: loom 1481; Body=8 Fuz1=8 Fuz2=8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 14 Apr 2021, Maciej W. Rozycki stated:
 
-The variable st is being assigned a value that is never read and
-it is being updated later with a new value. The initialization is
-redundant and can be removed.
+> Set the allocation length to 255 for the ATA Information VPD page 
+> requested in the WRITE SAME handler, so as not to limit information 
+> examined by `scsi_get_vpd_page' in the supported vital product data 
+> pages unnecessarily.
+>
+> Originally it was thought that Areca hardware may have issues with a 
+> valid allocation length supplied for a VPD inquiry, however older SCSI 
+> standard revisions[1] consider 255 the maximum length allowed and what 
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- arch/x86/include/asm/floppy.h | 1 -
- 1 file changed, 1 deletion(-)
+Aaaah. That explains a lot! (Not that I can remember what SCSI standard
+rev that Areca firmware claimed to implement. I know I never updated the
+firmware, so it's going to be something no newer than mid-2009 and
+probably quite a bit older.)
 
-diff --git a/arch/x86/include/asm/floppy.h b/arch/x86/include/asm/floppy.h
-index d43717b423cb..6ec3fc969ad5 100644
---- a/arch/x86/include/asm/floppy.h
-+++ b/arch/x86/include/asm/floppy.h
-@@ -74,7 +74,6 @@ static irqreturn_t floppy_hardint(int irq, void *dev_id)
- 		int lcount;
- 		char *lptr;
- 
--		st = 1;
- 		for (lcount = virtual_dma_count, lptr = virtual_dma_addr;
- 		     lcount; lcount--, lptr++) {
- 			st = inb(virtual_dma_port + FD_STATUS);
+> Nix,
+>
+>  I can see you're still around.  Would you therefore please be so kind 
+> as to verify this change with your Areca hardware if you still have it?
+
+It's been up in the loft for years, but I'll get it out this weekend and
+give it a spin :) this'll let me make sure the disks still spin as well,
+which matters for an in-case-of-lightning-strike disaster-recovery
+backup box.
+
+(I just hope this kernel boots on it at all. It's about three years
+since I retired it... let's see!)
+
+>  It looks to me like you were thinking in the right direction with: 
+> <https://lore.kernel.org/linux-scsi/87vc3nuipg.fsf@spindle.srvr.nix/>. 
+
+It's the sort of mistake I could see myself making: an easy mistake to
+make when so many things in C require buffer size - 1 or you get a
+disastrous security hole...
+
 -- 
-2.30.2
-
+NULL && (void)
