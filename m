@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F513604C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751FF3604C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhDOIrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:47:35 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:42913 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231648AbhDOIrd (ORCPT
+        id S231800AbhDOIrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:47:52 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38580 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhDOIru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:47:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVdGEaf_1618476423;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVdGEaf_1618476423)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 15 Apr 2021 16:47:09 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     hjc@rock-chips.com
-Cc:     heiko@sntech.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/rockchip: remove unused function
-Date:   Thu, 15 Apr 2021 16:47:01 +0800
-Message-Id: <1618476421-114429-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 15 Apr 2021 04:47:50 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lWxel-0000fq-88; Thu, 15 Apr 2021 08:47:23 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] can: etas_es58x: Fix missing null check on netdev pointer
+Date:   Thu, 15 Apr 2021 09:47:23 +0100
+Message-Id: <20210415084723.1807935-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
+From: Colin Ian King <colin.king@canonical.com>
 
-drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:320:20: warning: unused
-function 'dsi_set' [-Wunused-function].
+There is an assignment to *netdev that is can potentially be null but the
+null check is checking netdev and not *netdev as intended. Fix this by
+adding in the missing * operator.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/can/usb/etas_es58x/es58x_core.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-index 24a7109..60d64a1 100644
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -317,11 +317,6 @@ static inline u32 dsi_read(struct dw_mipi_dsi_rockchip *dsi, u32 reg)
- 	return readl(dsi->base + reg);
- }
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.h b/drivers/net/can/usb/etas_es58x/es58x_core.h
+index 5f4e7dc5be35..fcf219e727bf 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.h
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.h
+@@ -625,7 +625,7 @@ static inline int es58x_get_netdev(struct es58x_device *es58x_dev,
+ 		return -ECHRNG;
  
--static inline void dsi_set(struct dw_mipi_dsi_rockchip *dsi, u32 reg, u32 mask)
--{
--	dsi_write(dsi, reg, dsi_read(dsi, reg) | mask);
--}
--
- static inline void dsi_update_bits(struct dw_mipi_dsi_rockchip *dsi, u32 reg,
- 				   u32 mask, u32 val)
- {
+ 	*netdev = es58x_dev->netdev[channel_idx];
+-	if (!netdev || !netif_device_present(*netdev))
++	if (!*netdev || !netif_device_present(*netdev))
+ 		return -ENODEV;
+ 
+ 	return 0;
 -- 
-1.8.3.1
+2.30.2
 
