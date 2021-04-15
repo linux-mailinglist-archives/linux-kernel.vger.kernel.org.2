@@ -2,180 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3389A3615D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0313615D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236339AbhDOXIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:08:02 -0400
-Received: from mail-dm6nam11on2043.outbound.protection.outlook.com ([40.107.223.43]:26689
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234941AbhDOXIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:08:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZPn7V+rZSnMkn0zpr/E6nMyez4An/tAegaIVddBYaWifVhbxcoe750XAdCwoEP0GDIQZcf2mE+rG0DPXUgoBJNwpY/EtaG/6XsGbJs63n3i5MWVDbZq6W7C5RuBoTOl2DLB2L2vOd1HKMHGVUwuI6jiDzYZTGYMaiB/gYNDbptTydXV+uSa/1sbGVHwCPGQL+Wu4Dv2FpXYOTp/VmOZRCdgruBB0RV9XKkZyJ/i6O/FjKsk7CJkqbWnx0B8r8cI2VZ2sXKzgvxUWREU1eNuIdJhC/TBLNX3Jw4d1aP10W+5JyibCAdPJ9uAo+gZwh/RJNsXsho0wjjjla1XyWLt5EQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lQAb58lwgyE+plmuAkfcQ1sPEzNXE19zU0nknw5tjs0=;
- b=fqWdx+UaRSeZ1uYdUKNXaJRiTJetgMeaOBgdNxdjtRnpDQDF8nGmlplZ1SzWBL1ivCxjwKX4NSrF2tazmhTTC3az7pZVw58ub7EK3QDeeJOG3t4V40DPvnX5lAAb+wZeetxG3gEtQRPp6nB48HwLWtXrERreiBxbR7mlReghcM8E6AZcTWn2NXokdKgjIB/bOYFIycuwawifi8kZHTdDUN/xWGgV8BKCID3+/1HLi0Adhhmsp2aEKKHcl9JAW++rjcr41YIgkdT0ixf+O5lJeuMmEqX6qysxVFOTx/wcAHzlI3APKDyg2vKmpjko4Id5nE/PUu2hpxNaU3dUCj33SA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lQAb58lwgyE+plmuAkfcQ1sPEzNXE19zU0nknw5tjs0=;
- b=mlfGdLlcOxgpclL093Ex0D98Trzl6JzDNoAfOL1XBR+gkJdaZNfXk7WLjTnDPBPlRswQmeXoQG2/ZOLSVpEeh0leUuUSa/1MZAsiohJhTJvL8O+Yv6WJ91STJxt1jKUNo/cnHkHKIUOMxfdiHgsGKkL3xn0gxUP2wfrmtRd70qWrAwI0tLva1YMUVyKr85JJCLD7+ddaqSfx4yvZDOCIWeSm6PsFS3hEWlgjgDjrNLMWRbiUVf18lg6V6TH8yANCuu91HWe3m/NMBk9JEiHDOiDpP2PP5VdWfwaNCW/+34OP9rhhuKh2IUtQOsHTwsjnQZcqch3CPv3sJtdIy6VaTg==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0105.namprd12.prod.outlook.com (2603:10b6:4:54::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Thu, 15 Apr
- 2021 23:07:34 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.024; Thu, 15 Apr 2021
- 23:07:34 +0000
-Date:   Thu, 15 Apr 2021 20:07:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210415230732.GG1370958@nvidia.com>
-References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
- <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR05CA0028.namprd05.prod.outlook.com
- (2603:10b6:208:c0::41) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S236353AbhDOXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:10:31 -0400
+Received: from www62.your-server.de ([213.133.104.62]:38876 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232659AbhDOXK3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:10:29 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lXB7a-00017s-Cs; Fri, 16 Apr 2021 01:10:02 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lXB7a-0003w3-0W; Fri, 16 Apr 2021 01:10:02 +0200
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20210325120020.236504-4-memxor@gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+ <20210402190806.nhcgappm3iocvd3d@apollo>
+ <20210403174721.vg4wle327wvossgl@ast-mbp>
+ <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+ <87blar4ti7.fsf@toke.dk>
+ <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
+ <874kg9m8t1.fsf@toke.dk>
+ <CAEf4BzaEkzPeAXqmm5aEdQxnCkrqJTHcSu7afnV11+697KgZTQ@mail.gmail.com>
+ <87wnt4jx8m.fsf@toke.dk>
+ <CAEf4Bzbb0ECMjhAvD-1wpp3qJJcrpgKr_=ONN4ZQmuNUgYrH4A@mail.gmail.com>
+ <4b99d6c3-0281-f539-e6dc-0b307c5a7db3@iogearbox.net>
+ <CAEf4BzZtivCFfMLa5vnu6QtNL75BC4WoreS=4v1TScsfVX1jQQ@mail.gmail.com>
+ <848d7864-44f3-79a2-ad3c-80adee6aa27a@iogearbox.net>
+ <CAEf4BzaHwiQLmXOHcDfDtuBuPF7HZgoDW-=u6eYhQ2svHuGAWw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <13e37535-51f2-bbc3-b9dd-2e1c450c2391@iogearbox.net>
+Date:   Fri, 16 Apr 2021 01:10:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR05CA0028.namprd05.prod.outlook.com (2603:10b6:208:c0::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.8 via Frontend Transport; Thu, 15 Apr 2021 23:07:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lXB5A-0072aJ-U6; Thu, 15 Apr 2021 20:07:32 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 59867b5e-199e-40a2-7eca-08d9006340ed
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0105:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB01052B9C161B842BAF5E54EAC24D9@DM5PR1201MB0105.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uvKB7IO5S/nlFwb+HAhfmiNwWb3kd09qzRMGUZOxWZcke2r1TvSMJ8h9L1cot20Z43D2AMMvWft8aCKdgcUNwSgIY7k5vyWUZY8zmKlRTPwl7AIPKzeVGK6tNCxj8FEsBYoEShh9bJoXOmImpITd0ARxwdE5SHTwdjcKfskEYWHpyiXVHMP6t7WYhEl/eLy/2X8hqUFcvhFX15AZZeu7XCdE00U4sY6/40KT5VW29yACeUL0e6PF6IjQ2gMy5MQD0sbT7ptkpWvePRzp/FhOdohl92s0ml8dpKIkY/jKHzA933AcZLRzyhFTwjTqJpgoQvf+1wQSuAS+6YHZkc1nm9h0blyh4ReU+2iXIUscnTFf/IHM1GzBVnCEtYWffxHv8Ne91q3xd7s2xXpUwZ9eYtqvFvxbAZ4wFDgQVniCF8qXsFCVo09UtXT25j5J66GMjVNMgB0qcL6xS7QksCj7cZxfEeSr8zECBfyn12nqS3UdkTCt52MtCe+F18a1BDu37T4zq7Vqu1wmcQWJSobdc7j/jcvLcZzbFxtOpc1iEyghKFe9xNdW39+bmLLNL6cwpTzGsc+nvNplQGRxM8GzxjCcO4SDkzHE8xoQW5Tr/2s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(346002)(396003)(376002)(36756003)(4326008)(53546011)(54906003)(86362001)(33656002)(6916009)(426003)(8936002)(1076003)(38100700002)(7416002)(26005)(83380400001)(2616005)(186003)(9746002)(9786002)(5660300002)(316002)(2906002)(66946007)(66476007)(66556008)(8676002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gL3pYZ0CQeyATs0d4WTMbJgOcufdMHcqmMh6nFfRkK44u9TCfhE3GU0xTRjs?=
- =?us-ascii?Q?oUIIx6x0tU6udVcOAZFGTS+KlNmVg1cWGOyaB5dbTs3DacCubCc6oklFRkBg?=
- =?us-ascii?Q?b1Mh/ABcdqGckrjCNN2EJ7PZy7PWYRP10swKT+GIlI6twfmYWs0Kj35VcOwD?=
- =?us-ascii?Q?ai4Nv9T/1L77p1nbm3JjKF4dkHEXtForIwpUnGlYjsRJ7QRQz27FzZbRAqB0?=
- =?us-ascii?Q?6vFQ0vLAO+udk5R5TxDpYXsMGLcHDmjGWM4JdzNxygs8f+92hVBL6+7kfC1M?=
- =?us-ascii?Q?JA6aLzoJRb8pmI3mqZaXSnESvlNF0YpHHd62rA+G8CWjlA3bm5vfJOFdbv3z?=
- =?us-ascii?Q?qC6MbEcGI+mWuteswS9Uwo5LmdIKSKwamku3WaZZiEMGib1HS9K4ergqzJx7?=
- =?us-ascii?Q?AXTGU6opFnZ9of3O4MStuXohdL5FhuIMj/vdptSmnfDLeCX5ofwj2AtBNoB0?=
- =?us-ascii?Q?45OPOZ0zm3Vnay/6O4PnrpDhQOZgj/HFHiDYNO6yRUrir7ugOoyJNsZ9PlDm?=
- =?us-ascii?Q?ftKSGFmXTefnX8fezf8AmjUSC2YGBPl4U2CJld7XGF5fJLMpNrkk2m/eIqK8?=
- =?us-ascii?Q?RtK1i7Tlgis2IFqsp/BgP4nDFxa6E4jEfsHANPJSFVSDaciejj9ZMziz4akM?=
- =?us-ascii?Q?VCgdXYbhfujaZ6k741BMpfpZ55W109HfaBTqh/jvzA+izmNLoSDClnKKkfCe?=
- =?us-ascii?Q?QpxQx+pEUbCzCRr0+xwwkGhf5EkXQimRwn10YC1/HZ/QNux56rYTm1TWxrYT?=
- =?us-ascii?Q?HuvTvTpKg3duWN2RtYZUSf5AO3e2vT4EiR1h0Z263Z65hGcuf3JzOWOz/8mJ?=
- =?us-ascii?Q?wadUZOuLR2m6q9FyC3OOGxiRlLEUJ+QkNoUk/zTG3+6/M5/6exxwLMuT0HH6?=
- =?us-ascii?Q?9jtw5UF/uQTQWKEMwaJ72QNCEkhtC6kp+FOCY7OZf62MF7NbeDE9R/z8Jl1z?=
- =?us-ascii?Q?kTr2NlyygvgzQ6UId3lVcwFz14J+IkbaNbIBuTZBiNyEeXHFCLcgjilHKwrm?=
- =?us-ascii?Q?LixjVQQ8kd2ivuX1zgT9Ruf45mksnFZMmXBqbs2DvnMnhx4JNGr45lBNeeiV?=
- =?us-ascii?Q?/szDysrbdujgPS/MJ23kS0Bg4TP4vOjGcO/SVJxLbZqIqbOcajmZJXL9booZ?=
- =?us-ascii?Q?HeCBCcmGRBS4eijc4boHstCSAdnEak1s98i/Uh/ma1Wbe+xV+uxdWQkGF5EM?=
- =?us-ascii?Q?8q4YcaYRxaIUJDxSi0RzgBxAxj2hyqFIgaR3YXXB/rm4x4yd/bylZhFUxMov?=
- =?us-ascii?Q?lvLkR33lnSEDIjPFs4HG3druO8I0GMbmZkhQKTVNdK6qgptwReBppzZxDEjF?=
- =?us-ascii?Q?QNHpPFGracmtTr7KOQcg1Gju?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59867b5e-199e-40a2-7eca-08d9006340ed
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 23:07:34.3512
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NIlUtknwzUiL97gu0eA/3qnGOpk4Cy5US4HRY+BlnaQtDufQf9OdRkTOCI2AwB86
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0105
+In-Reply-To: <CAEf4BzaHwiQLmXOHcDfDtuBuPF7HZgoDW-=u6eYhQ2svHuGAWw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26141/Thu Apr 15 13:13:26 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:
-> Hi Jason,
+On 4/16/21 12:22 AM, Andrii Nakryiko wrote:
+> On Thu, Apr 15, 2021 at 3:10 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 4/15/21 1:58 AM, Andrii Nakryiko wrote:
+>>> On Wed, Apr 14, 2021 at 4:32 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>> On 4/15/21 1:19 AM, Andrii Nakryiko wrote:
+>>>>> On Wed, Apr 14, 2021 at 3:51 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>>>>>> On Wed, Apr 14, 2021 at 3:58 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>>>>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>>>>>>>> On Tue, Apr 6, 2021 at 3:06 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>>>>>>>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>>>>>>>>>> On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
+>>>>>>>>>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>>>>>>>>> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wrote:
+>>>>>>>>>>>>> On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
+>>>>>>>>>>>>>> On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>>>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> All of these things are messy because of tc legacy. bpf tried to follow tc style
+>>>>>>>>>>>>>> with cls and act distinction and it didn't quite work. cls with
+>>>>>>>>>>>>>> direct-action is the only
+>>>>>>>>>>>>>> thing that became mainstream while tc style attach wasn't really addressed.
+>>>>>>>>>>>>>> There were several incidents where tc had tens of thousands of progs attached
+>>>>>>>>>>>>>> because of this attach/query/index weirdness described above.
+>>>>>>>>>>>>>> I think the only way to address this properly is to introduce bpf_link style of
+>>>>>>>>>>>>>> attaching to tc. Such bpf_link would support ingress/egress only.
+>>>>>>>>>>>>>> direction-action will be implied. There won't be any index and query
+>>>>>>>>>>>>>> will be obvious.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Note that we already have bpf_link support working (without support for pinning
+>>>>>>>>>>>>> ofcourse) in a limited way. The ifindex, protocol, parent_id, priority, handle,
+>>>>>>>>>>>>> chain_index tuple uniquely identifies a filter, so we stash this in the bpf_link
+>>>>>>>>>>>>> and are able to operate on the exact filter during release.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Except they're not unique. The library can stash them, but something else
+>>>>>>>>>>>> doing detach via iproute2 or their own netlink calls will detach the prog.
+>>>>>>>>>>>> This other app can attach to the same spot a different prog and now
+>>>>>>>>>>>> bpf_link__destroy will be detaching somebody else prog.
+>>>>>>>>>>>>
+>>>>>>>>>>>>>> So I would like to propose to take this patch set a step further from
+>>>>>>>>>>>>>> what Daniel said:
+>>>>>>>>>>>>>> int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>>>>>>>>>>>>>> and make this proposed api to return FD.
+>>>>>>>>>>>>>> To detach from tc ingress/egress just close(fd).
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> You mean adding an fd-based TC API to the kernel?
+>>>>>>>>>>>>
+>>>>>>>>>>>> yes.
+>>>>>>>>>>>
+>>>>>>>>>>> I'm totally for bpf_link-based TC attachment.
+>>>>>>>>>>>
+>>>>>>>>>>> But I think *also* having "legacy" netlink-based APIs will allow
+>>>>>>>>>>> applications to handle older kernels in a much nicer way without extra
+>>>>>>>>>>> dependency on iproute2. We have a similar situation with kprobe, where
+>>>>>>>>>>> currently libbpf only supports "modern" fd-based attachment, but users
+>>>>>>>>>>> periodically ask questions and struggle to figure out issues on older
+>>>>>>>>>>> kernels that don't support new APIs.
+>>>>>>>>>>
+>>>>>>>>>> +1; I am OK with adding a new bpf_link-based way to attach TC programs,
+>>>>>>>>>> but we still need to support the netlink API in libbpf.
+>>>>>>>>>>
+>>>>>>>>>>> So I think we'd have to support legacy TC APIs, but I agree with
+>>>>>>>>>>> Alexei and Daniel that we should keep it to the simplest and most
+>>>>>>>>>>> straightforward API of supporting direction-action attachments and
+>>>>>>>>>>> setting up qdisc transparently (if I'm getting all the terminology
+>>>>>>>>>>> right, after reading Quentin's blog post). That coincidentally should
+>>>>>>>>>>> probably match how bpf_link-based TC API will look like, so all that
+>>>>>>>>>>> can be abstracted behind a single bpf_link__attach_tc() API as well,
+>>>>>>>>>>> right? That's the plan for dealing with kprobe right now, btw. Libbpf
+>>>>>>>>>>> will detect the best available API and transparently fall back (maybe
+>>>>>>>>>>> with some warning for awareness, due to inherent downsides of legacy
+>>>>>>>>>>> APIs: no auto-cleanup being the most prominent one).
+>>>>>>>>>>
+>>>>>>>>>> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
+>>>>>>>>>> high-level API auto-detect. That way users can also still use the
+>>>>>>>>>> netlink attach function if they don't want the fd-based auto-close
+>>>>>>>>>> behaviour of bpf_link.
+>>>>>>>>>
+>>>>>>>>> So I thought a bit more about this, and it feels like the right move
+>>>>>>>>> would be to expose only higher-level TC BPF API behind bpf_link. It
+>>>>>>>>> will keep the API complexity and amount of APIs that libbpf will have
+>>>>>>>>> to support to the minimum, and will keep the API itself simple:
+>>>>>>>>> direct-attach with the minimum amount of input arguments. By not
+>>>>>>>>> exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
+>>>>>>>>> design discussion, as we now can keep as much info as needed inside
+>>>>>>>>> bpf_link_tc (which will embed bpf_link internally as well) to support
+>>>>>>>>> detachment and possibly some additional querying, if needed.
+>>>>>>>>
+>>>>>>>> But then there would be no way for the caller to explicitly select a
+>>>>>>>> mechanism? I.e., if I write a BPF program using this mechanism targeting
+>>>>>>>> a 5.12 kernel, I'll get netlink attachment, which can stick around when
+>>>>>>>> I do bpf_link__disconnect(). But then if the kernel gets upgraded to
+>>>>>>>> support bpf_link for TC programs I'll suddenly transparently get
+>>>>>>>> bpf_link and the attachments will go away unless I pin them. This
+>>>>>>>> seems... less than ideal?
+>>>>>>>
+>>>>>>> That's what we are doing with bpf_program__attach_kprobe(), though.
+>>>>>>> And so far I've only seen people (privately) saying how good it would
+>>>>>>> be to have bpf_link-based TC APIs, doesn't seem like anyone with a
+>>>>>>> realistic use case prefers the current APIs. So I suspect it's not
+>>>>>>> going to be a problem in practice. But at least I'd start there and
+>>>>>>> see how people are using it and if they need anything else.
+>>>>>>
+>>>>>> *sigh* - I really wish you would stop arbitrarily declaring your own use
+>>>>>> cases "realistic" and mine (implied) "unrealistic". Makes it really hard
+>>>>>> to have a productive discussion...
+>>>>>
+>>>>> Well (sigh?..), this wasn't my intention, sorry you read it this way.
+>>>>> But we had similar discussions when I was adding bpf_link-based XDP
+>>>>> attach APIs. And guess what, now I see that samples/bpf/whatever_xdp
+>>>>> is switched to bpf_link-based XDP, because that makes everything
+>>>>> simpler and more reliable. What I also know is that in production we
+>>>>> ran into multiple issues with anything that doesn't auto-detach on
+>>>>> process exit/crash (unless pinned explicitly, of course). And that
+>>>>> people that are trying to use TC right now are saying how having
+>>>>> bpf_link-based TC APIs would make everything *simpler* and *safer*. So
+>>>>> I don't know... I understand it might be convenient in some cases to
+>>>>> not care about a lifetime of BPF programs you are attaching, but then
+>>>>> there are usually explicit and intentional ways to achieve at least
+>>>>> similar behavior with safety by default.
+>>>>
+>>>> [...]
+>>>>
+>>>>    >>> There are many ways to skin this cat. I'd prioritize bpf_link-based TC
+>>>>    >>> APIs to be added with legacy TC API as a fallback.
+>>>>
+>>>> I think the problem here is though that this would need to be deterministic
+>>>> when upgrading from one kernel version to another where we don't use the
+>>>> fallback anymore, e.g. in case of Cilium we always want to keep the progs
+>>>> attached to allow headless updates on the agent, meaning, traffic keeps
+>>>> flowing through the BPF datapath while in user space, our agent restarts
+>>>> after upgrade, and atomically replaces the BPF progs once up and running
+>>>> (we're doing this for the whole range of 4.9 to 5.x kernels that we support).
+>>>> While we use the 'simple' api that is discussed here internally in Cilium,
+>>>> this attach behavior would have to be consistent, so transparent fallback
+>>>> inside libbpf on link vs non-link availability won't work (at least in our
+>>>> case).
+>>>
+>>> What about pinning? It's not exactly the same, but bpf_link could
+>>> actually pin a BPF program, if using legacy TC, and pin bpf_link, if
+>>> using bpf_link-based APIs. Of course before switching from iproute2 to
+>>> libbpf APIs you'd need to design your applications to use pinning
+>>> instead of relying implicitly on permanently attached BPF program.
+>>
+>> All the progs we load from Cilium in a K8s setting w/ Pods, we could have easily
+>> over 100 loaded at the same time on a node, and we template the per Pod ones, so
+>> the complexity of managing those pinned lifecycles from the agent and dealing with
+>> the semantic/fallback differences between kernels feels probably not worth the
+>> gain. So if there would be a libbpf tc simplified attach API, I'd for the time
+>> being stick to the existing aka legacy means.
 > 
-> On 4/1/21 6:03 PM, Jason Gunthorpe wrote:
-> > On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
-> > 
-> >> DMA page faults are delivered to root-complex via page request message and
-> >> it is per-device according to PCIe spec. Page request handling flow is:
-> >>
-> >> 1) iommu driver receives a page request from device
-> >> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
-> >>    page and requested permissions etc.
-> >> 3) iommu driver triggers fault handler registered by device driver with
-> >>    iommu_report_device_fault()
-> > 
-> > This seems confused.
-> > 
-> > The PASID should define how to handle the page fault, not the driver.
-> 
-> In my series I don't use PASID at all. I am just enabling nested stage
-> and the guest uses a single context. I don't allocate any user PASID at
-> any point.
-> 
-> When there is a fault at physical level (a stage 1 fault that concerns
-> the guest), this latter needs to be reported and injected into the
-> guest. The vfio pci driver registers a fault handler to the iommu layer
-> and in that fault handler it fills a circ bugger and triggers an eventfd
-> that is listened to by the VFIO-PCI QEMU device. this latter retrives
-> the faault from the mmapped circ buffer, it knowns which vIOMMU it is
-> attached to, and passes the fault to the vIOMMU.
-> Then the vIOMMU triggers and IRQ in the guest.
-> 
-> We are reusing the existing concepts from VFIO, region, IRQ to do that.
-> 
-> For that use case, would you also use /dev/ioasid?
+> Sure. Then what do you think about keeping only low-level TC APIs, and
+> in the future add bpf_program__attach_tc(), which will use
+> bpf_link-based one. It seems like it's not worth it to pretend we have
+> bpf_link-based semantics with "legacy" current TC APIs. Similarly how
+> we have a low-level XDP attach API, and bpf_link-based (only)
+> bpf_program__attach_xdp().
 
-/dev/ioasid could do all the things you described vfio-pci as doing,
-it can even do them the same way you just described.
-
-Stated another way, do you plan to duplicate all of this code someday
-for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
-platform devices, right?
-
-I feel what you guys are struggling with is some choice in the iommu
-kernel APIs that cause the events to be delivered to the pci_device
-owner, not the PASID owner.
-
-That feels solvable.
-
-Jason
+I think that's okay. I guess question is what do we define as initial scope for
+the low-level TC API. cls_bpf w/ fixed direct-action mode + fixed eth_p_all,
+allowing to flexibly specify handle / priority or a block_index feels reasonable.
