@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B509360D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A945360D00
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhDOO47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        id S233963AbhDOO43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234282AbhDOOx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:53:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7329C613D7;
-        Thu, 15 Apr 2021 14:52:31 +0000 (UTC)
+        id S234101AbhDOOwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:52:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB0E961131;
+        Thu, 15 Apr 2021 14:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498352;
-        bh=2W8o1gYyf2lPNJY4lrbNxni64c6yxSIkHaHfmmrXssw=;
+        s=korg; t=1618498303;
+        bh=WLwkVW7ARwuad7wlX3HpAR9iso5njstDWOSAv4yxZac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RKSvdldTIq91Q/i1PW+iHk6BByyvC7a2xl+v+qY++erhkz8ARFyndxT3jvP5qYXSI
-         gk1IjuQNJUgSx9xqKWxEe1+chUG/gXL75uu4TR6/Plp0hj4aQCfwWeJFlYKVsROaEz
-         y29UBh2ozTyWUTKA8M3SZVGt+rQbUztHpuZepM9g=
+        b=cdQe/ir1copZynptqPJV73X4VifZv80NvZZd8jF7MRNEH5BMDpWw+/xyGeUA/21Nw
+         HxjicLiRL0rlKn6Q6rRNd76pS/xC1aq3iVzFTj8+wNpJ3yu56L22EWs19VCmeLB56N
+         x1D1Fw63+NJGRtiZbN6HAhyWr7iHXqk+A6Xi93GU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+d946223c2e751d136c94@syzkaller.appspotmail.com,
+        syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com,
         Alexander Aring <aahringo@redhat.com>,
         Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.9 36/47] net: ieee802154: fix nl802154 del llsec dev
-Date:   Thu, 15 Apr 2021 16:47:28 +0200
-Message-Id: <20210415144414.615063660@linuxfoundation.org>
+Subject: [PATCH 4.9 37/47] net: ieee802154: fix nl802154 add llsec key
+Date:   Thu, 15 Apr 2021 16:47:29 +0200
+Message-Id: <20210415144414.646084458@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
 References: <20210415144413.487943796@linuxfoundation.org>
@@ -43,14 +43,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-commit 3d1eac2f45585690d942cf47fd7fbd04093ebd1b upstream.
+commit 20d5fe2d7103f5c43ad11a3d6d259e9d61165c35 upstream.
 
-This patch fixes a nullpointer dereference if NL802154_ATTR_SEC_DEVICE is
+This patch fixes a nullpointer dereference if NL802154_ATTR_SEC_KEY is
 not set by the user. If this is the case nl802154 will return -EINVAL.
 
-Reported-by: syzbot+d946223c2e751d136c94@syzkaller.appspotmail.com
+Reported-by: syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210221174321.14210-2-aahringo@redhat.com
+Link: https://lore.kernel.org/r/20210221174321.14210-3-aahringo@redhat.com
 Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -59,15 +59,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/ieee802154/nl802154.c
 +++ b/net/ieee802154/nl802154.c
-@@ -1796,7 +1796,8 @@ static int nl802154_del_llsec_dev(struct
- 	struct nlattr *attrs[NL802154_DEV_ATTR_MAX + 1];
- 	__le64 extended_addr;
+@@ -1577,7 +1577,8 @@ static int nl802154_add_llsec_key(struct
+ 	struct ieee802154_llsec_key_id id = { };
+ 	u32 commands[NL802154_CMD_FRAME_NR_IDS / 32] = { };
  
--	if (nla_parse_nested(attrs, NL802154_DEV_ATTR_MAX,
-+	if (!info->attrs[NL802154_ATTR_SEC_DEVICE] ||
-+	    nla_parse_nested(attrs, NL802154_DEV_ATTR_MAX,
- 			     info->attrs[NL802154_ATTR_SEC_DEVICE],
- 			     nl802154_dev_policy))
+-	if (nla_parse_nested(attrs, NL802154_KEY_ATTR_MAX,
++	if (!info->attrs[NL802154_ATTR_SEC_KEY] ||
++	    nla_parse_nested(attrs, NL802154_KEY_ATTR_MAX,
+ 			     info->attrs[NL802154_ATTR_SEC_KEY],
+ 			     nl802154_key_policy))
  		return -EINVAL;
 
 
