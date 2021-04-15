@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16C7360C5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149B6360C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhDOOuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
+        id S233855AbhDOOuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233774AbhDOOt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5A8C61029;
-        Thu, 15 Apr 2021 14:49:33 +0000 (UTC)
+        id S233786AbhDOOuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:50:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73A326137D;
+        Thu, 15 Apr 2021 14:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498174;
-        bh=dOEmeZVtLN6A6stJt4jZlXIR4gD4KajIaH4FyQotPJY=;
+        s=korg; t=1618498177;
+        bh=81t4OGQ95M/SSGCQ/HhEOqWh2evErBTASNTw8IAe/78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0O9m2VcZVvCzaky+xEfQuWG++ZYOFvF/45EwN/Cg/6me0mLQ7QoJJi87TTGLoEZgn
-         Uw5irHOImNcdd71PTYYj5PYcLL+KDdcg0TDPXaWk6cRs5PYOindNnB4P0OfGryZyCE
-         v+2V/WNILeURUKZDhmTak4cVGp/5pNp2Op8R7Nn4=
+        b=KJqiQiVQoLrGOkR2otnnnTEcDymn+KzRcjXoc5PcrjLzO2M4m/YmdfmL07MTksZwO
+         yijPueLr7T3LFQQPwto6FU/TNwilFJM6UcmSknrm5BeEpsXBs3Jk1nLXHL7cxq9eN+
+         +SdQJVloIQ4Xwggqk+V6SxDbJDhudkbksGCWIzdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, =?UTF-8?q?kiyin ?= <kiyin@tencent.com>,
         Xiaoming Ni <nixiaoming@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 04/38] nfc: fix refcount leak in llcp_sock_connect()
-Date:   Thu, 15 Apr 2021 16:46:58 +0200
-Message-Id: <20210415144413.498744361@linuxfoundation.org>
+Subject: [PATCH 4.4 05/38] nfc: fix memory leak in llcp_sock_connect()
+Date:   Thu, 15 Apr 2021 16:46:59 +0200
+Message-Id: <20210415144413.529292544@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
 References: <20210415144413.352638802@linuxfoundation.org>
@@ -42,18 +42,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Xiaoming Ni <nixiaoming@huawei.com>
 
-commit 8a4cd82d62b5ec7e5482333a72b58a4eea4979f0 upstream.
+commit 7574fcdbdcb335763b6b322f6928dc0fd5730451 upstream.
 
-nfc_llcp_local_get() is invoked in llcp_sock_connect(),
-but nfc_llcp_local_put() is not invoked in subsequent failure branches.
-As a result, refcount leakage occurs.
-To fix it, add calling nfc_llcp_local_put().
+In llcp_sock_connect(), use kmemdup to allocate memory for
+ "llcp_sock->service_name". The memory is not released in the sock_unlink
+label of the subsequent failure branch.
+As a result, memory leakage occurs.
 
-fix CVE-2020-25671
-Fixes: c7aa12252f51 ("NFC: Take a reference on the LLCP local pointer when creating a socket")
+fix CVE-2020-25672
+
+Fixes: d646960f7986 ("NFC: Initial LLCP support")
 Reported-by: "kiyin(尹亮)" <kiyin@tencent.com>
 Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
-Cc: <stable@vger.kernel.org> #v3.6
+Cc: <stable@vger.kernel.org> #v3.3
 Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -63,21 +64,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/nfc/llcp_sock.c
 +++ b/net/nfc/llcp_sock.c
-@@ -710,6 +710,7 @@ static int llcp_sock_connect(struct sock
- 	llcp_sock->local = nfc_llcp_local_get(local);
- 	llcp_sock->ssap = nfc_llcp_get_local_ssap(local);
- 	if (llcp_sock->ssap == LLCP_SAP_MAX) {
-+		nfc_llcp_local_put(llcp_sock->local);
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -747,6 +748,7 @@ static int llcp_sock_connect(struct sock
- 
- sock_unlink:
- 	nfc_llcp_put_ssap(local, llcp_sock->ssap);
-+	nfc_llcp_local_put(llcp_sock->local);
+@@ -751,6 +751,8 @@ sock_unlink:
+ 	nfc_llcp_local_put(llcp_sock->local);
  
  	nfc_llcp_sock_unlink(&local->connecting_sockets, sk);
++	kfree(llcp_sock->service_name);
++	llcp_sock->service_name = NULL;
  
+ put_dev:
+ 	nfc_put_device(dev);
 
 
